@@ -4,7 +4,7 @@ import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
 
 const randomTopics = await apiClient.getRandomTopics()
-const recentPublished = await apiClient.getRecentPublishedArticles()
+const recentPublished = await apiClient.getRecentPublishedArticles({})
 const topMonth = await apiClient.getTopMonthArticles()
 const topOverall = await apiClient.getTopArticles()
 

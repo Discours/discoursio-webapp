@@ -99,7 +99,7 @@ export const apiClient = {
       })
       .toPromise()
 
-    return response.data.recentAll
+    return response.data.recentPublished
   },
   getArticlesForTopics: async ({
     topicSlugs,
@@ -153,15 +153,15 @@ export const apiClient = {
 
   // auth
 
-  signIn: async({ email, password }) => {
+  signIn: async ({ email, password }) => {
     const response = await publicGraphQLClient.query(authLogin, { email, password }).toPromise()
     return response.data.signIn
   },
-  signUp: async({ email, password }) => {
+  signUp: async ({ email, password }) => {
     const response = await publicGraphQLClient.query(authRegister, { email, password }).toPromise()
     return response.data.registerUser
   },
-  signOut: async() => {
+  signOut: async () => {
     const response = await publicGraphQLClient.query(authLogout, {}).toPromise()
     return response.data.signOut
   },
@@ -170,17 +170,17 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authCheck, { email }).toPromise()
     return response.data.isEmailUsed
   },
-  signReset: async({ email }) => {
+  signReset: async ({ email }) => {
     // send reset link with code on email
     const response = await publicGraphQLClient.query(authForget, { email }).toPromise()
     return response.data.reset
   },
-  signResend: async({ email }) => {
+  signResend: async ({ email }) => {
     // same as reset if code is expired
     const response = await publicGraphQLClient.query(authResend, { email }).toPromise()
     return response.data.resend
   },
-  signResetConfirm: async({ code }) => {
+  signResetConfirm: async ({ code }) => {
     // confirm reset password with code
     const response = await publicGraphQLClient.query(authReset, { code }).toPromise()
     return response.data.reset
@@ -251,23 +251,17 @@ export const apiClient = {
   },
 
   createReaction: async ({ reaction }) => {
-    const response = await privateGraphQLClient
-      .mutation(reactionCreate, { reaction })
-      .toPromise()
+    const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()
     log.debug('[api] create reaction mutation called')
     return response.data.createReaction
   },
   updateReaction: async ({ reaction }) => {
-    const response = await privateGraphQLClient
-      .mutation(reactionUpdate, { reaction })
-      .toPromise()
+    const response = await privateGraphQLClient.mutation(reactionUpdate, { reaction }).toPromise()
 
     return response.data.createReaction
   },
   destroyReaction: async ({ id }) => {
-    const response = await privateGraphQLClient
-      .mutation(reactionDestroy, { id })
-      .toPromise()
+    const response = await privateGraphQLClient.mutation(reactionDestroy, { id }).toPromise()
 
     return response.data.deleteReaction
   }

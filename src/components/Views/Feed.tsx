@@ -56,7 +56,9 @@ export const FeedPage = (props: FeedProps) => {
     // TODO: list of articles where you are co-author
     // TODO: preload proposals
     // TODO: (maybe?) and changes history
-    console.debug(reactions().filter((r) => r.kind in AUTHORSHIP_REACTIONS))    // 2 community self-regulating mechanics
+    console.debug(reactions().filter((r) => r.kind in AUTHORSHIP_REACTIONS))
+
+    // 2 community self-regulating mechanics
     // TODO: query all new posts to be rated for publishing
     // TODO: query all reactions where user is in authors list
     return []

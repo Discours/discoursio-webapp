@@ -45,11 +45,6 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(articlesTopMonth, { page: 1, size: 10 }).toPromise()
     return response.data.articlesTopMonth
   },
-  getRecentPublishedArticles: async () => {
-    const response = await publicGraphQLClient.query(articlesRecentPublished, {}).toPromise()
-
-    return response.data.recentPublished
-  },
   getRandomTopics: async () => {
     const response = await publicGraphQLClient.query(topicsRandomQuery, {}).toPromise()
 
@@ -74,7 +69,7 @@ export const apiClient = {
 
     return response.data.searchQuery
   },
-  getRecentArticles: async ({
+  getRecentAllArticles: async ({
     page = 1,
     size = FEED_PAGE_SIZE
   }: {
@@ -83,6 +78,22 @@ export const apiClient = {
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesRecentAll, {
+        page,
+        size
+      })
+      .toPromise()
+
+    return response.data.recentAll
+  },
+  getRecentPublishedArticles: async ({
+    page = 1,
+    size = FEED_PAGE_SIZE
+  }: {
+    page?: number
+    size?: number
+  }): Promise<Shout[]> => {
+    const response = await publicGraphQLClient
+      .query(articlesRecentPublished, {
         page,
         size
       })
@@ -181,12 +192,6 @@ export const apiClient = {
   },
 
   // feeds
-
-  getPublishedShouts: async ({ page, size }: { page: number; size: number }) => {
-    const response = await publicGraphQLClient.query(articlesRecentPublished, { page, size }).toPromise()
-
-    return response.data.recentPublished
-  },
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
     return response.data.topicsAll
@@ -203,6 +208,9 @@ export const apiClient = {
 
     return response.data?.getShoutBySlug
   },
+
+  // reactions
+
   getReactionsForShouts: async ({
     shoutSlugs,
     page = 1,
@@ -241,8 +249,6 @@ export const apiClient = {
 
     return response.data.reactionsByShout
   },
-
-  // reactions
 
   createReaction: async ({ reaction }) => {
     const response = await privateGraphQLClient

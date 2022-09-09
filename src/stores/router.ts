@@ -44,8 +44,8 @@ router.listen((r) => setResource(r.path))
 
 // signals
 
-const [pageState, setPage] = createSignal()
-const [sizeState, setSize] = createSignal()
+const [getPage, setPage] = createSignal<number>(1)
+const [getSize, setSize] = createSignal<number>(10)
 
 export type SortBy =
   | 'rating'
@@ -109,8 +109,8 @@ const updateParams = () => {
   // get request search query params
   const paramsDict = {
     by: by(), // sort name
-    page: pageState(), // page number
-    size: sizeState() // entries per page
+    page: getPage(), // page number
+    size: getSize() // entries per page
     // TODO: add q for /search
   }
   console.log('[router] updated url with stored params')
@@ -138,4 +138,4 @@ if (!isServer) {
   createEffect(() => router.open(window.location.pathname), [window.location])
 }
 
-export { slug, route, setPage, setSize, by, setBy, resource }
+export { slug, route, setPage, getPage, getSize, setSize, by, setBy, resource }

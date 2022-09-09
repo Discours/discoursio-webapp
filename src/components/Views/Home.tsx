@@ -23,7 +23,7 @@ import {
   topCommented
 } from '../../stores/zine/top'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { useArticlesStore } from '../../stores/zine/articles'
+import { loadMorePublished, useArticlesStore } from '../../stores/zine/articles'
 
 type HomeProps = {
   randomTopics: Topic[]
@@ -86,12 +86,6 @@ export const HomePage = (props: HomeProps) => {
     console.info('[home] mounted')
   })
 
-  const loadMore = () => {
-    const size = props['size'] || 50
-    const page = (props.page || 1) + 1
-    console.log('[home] try to load ' + page + ' page with ' + size + ' items')
-    // FIXME: loadPublished({ page, size })
-  }
   return (
     <Suspense fallback={t('Loading')}>
       <Show when={Boolean(articles())}>
@@ -145,7 +139,7 @@ export const HomePage = (props: HomeProps) => {
         <Row3 articles={articles().slice(31, 34) as []} />
 
         <p class="load-more-container">
-          <button class="button" onClick={loadMore}>
+          <button class="button" onClick={loadMorePublished}>
             {t('Load more')}
           </button>
         </p>

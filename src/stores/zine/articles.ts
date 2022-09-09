@@ -3,6 +3,7 @@ import type { Shout } from '../../graphql/types.gen'
 import type { WritableAtom } from 'nanostores'
 import { useStore } from '@nanostores/solid'
 import { apiClient } from '../../utils/apiClient'
+import { getPage, setPage } from '../router'
 
 let articleEntitiesStore: WritableAtom<Record<string, Shout>>
 let sortedArticlesStore: WritableAtom<Shout[]>
@@ -69,8 +70,13 @@ const addArticles = (articles: Shout[]) => {
   }
 }
 
-export const loadRecentArticles = async ({ page }: { page: number }): Promise<void> => {
-  const newArticles = await apiClient.getRecentArticles({ page })
+export const loadRecentAllArticles = async ({ page }: { page: number }): Promise<void> => {
+  const newArticles = await apiClient.getRecentAllArticles({ page, size: 50 })
+  addArticles(newArticles)
+}
+
+export const loadRecentPublishedArticles = async ({ page }: { page: number }): Promise<void> => {
+  const newArticles = await apiClient.getRecentPublishedArticles({ page, size: 50 })
   addArticles(newArticles)
 }
 
@@ -87,4 +93,14 @@ export const useArticlesStore = ({ sortedArticles }: InitialState) => {
   const getArticlesByTopics = useStore(articlesByTopicsStore)
 
   return { getArticleEntities, getSortedArticles, getArticlesByTopics, getArticlesByAuthors }
+}
+
+export const loadMoreAll = () => {
+  setPage(getPage() + 1)
+  loadRecentAllArticles({ page: getPage() + 1 })
+}
+
+export const loadMorePublished = () => {
+  setPage(getPage() + 1)
+  loadRecentPublishedArticles({ page: getPage() + 1 })
 }

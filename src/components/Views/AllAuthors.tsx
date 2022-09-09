@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { byFirstChar, sortBy } from '../../utils/sortby'
@@ -6,7 +6,7 @@ import { groupByName } from '../../utils/groupby'
 import Icon from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { route, by, setBy, SortBy } from '../../stores/router'
+import { route, params as paramsStore } from '../../stores/router'
 import { session } from '../../stores/auth'
 import { useStore } from '@nanostores/solid'
 import '../../styles/AllTopics.scss'
@@ -18,9 +18,9 @@ export const AllAuthorsPage = (props: any) => {
   const [abc, setAbc] = createSignal([])
   const auth = useStore(session)
   const subscribed = (s) => Boolean(auth()?.info?.authors && auth()?.info?.authors?.includes(s || ''))
-
+  const params = useStore(paramsStore)
   createEffect(() => {
-    if (!by() && abc().length === 0) {
+    if ((!params()['by'] || params()['by'] === 'abc') && abc().length === 0) {
       console.log('[authors] default grouping by abc')
       const grouped = { ...groupByName(authorslist()) }
       grouped['A-Z'] = sortBy(grouped['A-Z'], byFirstChar)
@@ -29,12 +29,10 @@ export const AllAuthorsPage = (props: any) => {
       keys.sort()
       setSortedKeys(keys as string[])
     } else {
-      console.log('[authors] sorting by ' + by())
-      setSortedAuthors(sortBy(authorslist(), by()))
+      console.log('[authors] sorting by ' + params()['by'])
+      setSortedAuthors(sortBy(authorslist(), params()['by']))
     }
-  }, [by()])
-
-  onMount(() => setBy('' as SortBy))
+  }, [authorslist(), params()])
 
   return (
     <div class="all-topics-page">
@@ -50,17 +48,17 @@ export const AllAuthorsPage = (props: any) => {
             <div class="row">
               <div class="col">
                 <ul class="view-switcher">
-                  <li classList={{ selected: by() === 'shouts' }}>
+                  <li classList={{ selected: params()['by'] === 'shouts' }}>
                     <a href="/authors?by=shouts" onClick={route}>
                       {t('By shouts')}
                     </a>
                   </li>
-                  <li classList={{ selected: by() === 'rating' }}>
+                  <li classList={{ selected: params()['by'] === 'rating' }}>
                     <a href="/authors?by=rating" onClick={route}>
                       {t('By rating')}
                     </a>
                   </li>
-                  <li classList={{ selected: !by() }}>
+                  <li classList={{ selected: !params()['by'] || params()['by'] === 'abc' }}>
                     <a href="/authors" onClick={route}>
                       {t('By alphabet')}
                     </a>
@@ -73,7 +71,7 @@ export const AllAuthorsPage = (props: any) => {
                   </li>
                 </ul>
                 <Show
-                  when={!by()}
+                  when={!params()['by'] || params()['by'] === 'abc'}
                   fallback={() => (
                     <div class="stats">
                       <For each={sortedAuthors()}>

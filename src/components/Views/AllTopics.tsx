@@ -1,10 +1,10 @@
-import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { byFirstChar, sortBy } from '../../utils/sortby'
 import Icon from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { by, route, setBy } from '../../stores/router'
+import { params as paramstore, route } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import { session } from '../../stores/auth'
 import { useStore } from '@nanostores/solid'
@@ -18,9 +18,9 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
   const { getSortedTopics: topicslist } = useTopicsStore({ topics: props.topics })
   const auth = useStore(session)
   const subscribed = (s) => Boolean(auth()?.info?.topics && auth()?.info?.topics?.includes(s || ''))
-
+  const params = useStore(paramstore)
   createEffect(() => {
-    if (!by() && abc().length === 0) {
+    if (abc().length === 0 && (!params()['by'] || params()['by'] === 'abc')) {
       console.log('[topics] default grouping by abc')
       const grouped = { ...groupByTitle(topicslist()) }
       grouped['A-Z'] = sortBy(grouped['A-Z'], byFirstChar)
@@ -29,12 +29,12 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
       keys.sort()
       setSortedKeys(keys as string[])
     } else {
-      console.log('[topics] sorting by ' + by())
-      setSortedTopics(sortBy(topicslist(), by()))
+      console.log('[topics] sorting by ' + params()['by'])
+      setSortedTopics(sortBy(topicslist(), params()['by']))
     }
-  }, [topicslist(), by()])
+  }, [topicslist(), params()])
 
-  onMount(() => setBy(''))
+  // onMount(() => setBy(''))
 
   return (
     <>
@@ -52,17 +52,17 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
               <div class="row">
                 <div class="col">
                   <ul class="view-switcher">
-                    <li classList={{ selected: by() === 'shouts' }}>
+                    <li classList={{ selected: params()['by'] === 'shouts' }}>
                       <a href="/topics?by=shouts" onClick={route}>
                         {t('By shouts')}
                       </a>
                     </li>
-                    <li classList={{ selected: by() === 'authors' }}>
+                    <li classList={{ selected: params()['by'] === 'authors' }}>
                       <a href="/topics?by=authors" onClick={route}>
                         {t('By authors')}
                       </a>
                     </li>
-                    <li classList={{ selected: !by() }}>
+                    <li classList={{ selected: params()['by'] === 'abc' }}>
                       <a href="/topics" onClick={route}>
                         {t('By alphabet')}
                       </a>
@@ -76,7 +76,7 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
                   </ul>
 
                   <Show
-                    when={!by()}
+                    when={params()['by'] === 'abc'}
                     fallback={() => (
                       <div class="stats">
                         <For each={sortedTopics()}>

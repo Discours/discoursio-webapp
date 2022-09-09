@@ -7,9 +7,10 @@ import { ArticleCard } from '../Feed/Card'
 import '../../styles/Topic.scss'
 import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
-import { by, setBy } from '../../stores/router'
+import { params } from '../../stores/router'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useArticlesStore } from '../../stores/zine/articles'
+import { useStore } from '@nanostores/solid'
 
 interface TopicProps {
   topic: Topic
@@ -17,6 +18,7 @@ interface TopicProps {
 }
 
 export const TopicPage = (props: TopicProps) => {
+  const args = useStore(params)
   const { getAuthorsByTopic } = useTopicsStore({ topics: [props.topic] })
   const { getSortedArticles: sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
   const topic = createMemo(() => props.topic)
@@ -43,23 +45,23 @@ export const TopicPage = (props: TopicProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: !by() }}>
-                <button type="button" onClick={() => setBy('recent')}>
+              <li classList={{ selected: args()['by'] === 'recent' || !args()['by'] }}>
+                <button type="button" onClick={() => (args()['by'] = 'recent')}>
                   {t('Recent')}
                 </button>
               </li>
-              <li classList={{ selected: by() === 'rating' }}>
-                <button type="button" onClick={() => setBy('rating')}>
+              <li classList={{ selected: args()['by'] === 'rating' }}>
+                <button type="button" onClick={() => (args()['by'] = 'rating')}>
                   {t('Popular')}
                 </button>
               </li>
-              <li classList={{ selected: by() === 'viewed' }}>
-                <button type="button" onClick={() => setBy('viewed')}>
+              <li classList={{ selected: args()['by'] === 'viewed' }}>
+                <button type="button" onClick={() => (args()['by'] = 'viewed')}>
                   {t('Views')}
                 </button>
               </li>
-              <li classList={{ selected: by() === 'commented' }}>
-                <button type="button" onClick={() => setBy('commented')}>
+              <li classList={{ selected: args()['by'] === 'commented' }}>
+                <button type="button" onClick={() => (args()['by'] = 'commented')}>
                   {t('Discussing')}
                 </button>
               </li>

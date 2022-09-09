@@ -2,16 +2,17 @@ import { Show, For, createSignal, createMemo } from 'solid-js'
 import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
-import { sortBy } from '../../utils/sortby'
 import { t } from '../../utils/intl'
-import { by, setBy } from '../../stores/router'
+import { params } from '../../stores/router'
 import { useArticlesStore } from '../../stores/zine/articles'
+import { useStore } from '@nanostores/solid'
 
 type Props = {
   results: Shout[]
 }
 
 export const SearchPage = (props: Props) => {
+  const args = useStore(params)
   const { getSortedArticles } = useArticlesStore({ sortedArticles: props.results })
 
   // FIXME server sort
@@ -62,12 +63,12 @@ export const SearchPage = (props: Props) => {
 
       <ul class="view-switcher">
         <li class="selected">
-          <a href="?by=relevance" onClick={() => setBy('relevance')}>
+          <a href="?by=relevance" onClick={() => (args()['by'] = 'relevance')}>
             {t('By relevance')}
           </a>
         </li>
         <li>
-          <a href="?by=rating" onClick={() => setBy('rating')}>
+          <a href="?by=rating" onClick={() => (args()['by'] = 'rating')}>
             {t('Top rated')}
           </a>
         </li>

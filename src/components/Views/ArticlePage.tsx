@@ -9,8 +9,6 @@ import { slug } from '../../stores/router'
 
 import '../../styles/Article.scss'
 
-import '../../styles/Article.scss'
-
 interface ArticlePageProps {
   article: Shout
   slug: string

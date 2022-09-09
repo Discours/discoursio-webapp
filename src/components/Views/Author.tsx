@@ -5,11 +5,12 @@ import Row3 from '../Feed/Row3'
 import AuthorFull from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { by, setBy } from '../../stores/router'
+import { params as paramsStore } from '../../stores/router'
 import { useArticlesStore } from '../../stores/zine/articles'
 
 import '../../styles/Topic.scss'
 import Beside from '../Feed/Beside'
+import { useStore } from '@nanostores/solid'
 
 type AuthorProps = {
   authorArticles: Shout[]
@@ -17,6 +18,7 @@ type AuthorProps = {
 }
 
 export const AuthorPage = (props: AuthorProps) => {
+  const params = useStore(paramsStore)
   const { getSortedArticles: articles, getArticlesByAuthors: articlesByAuthors } = useArticlesStore({
     sortedArticles: props.authorArticles
   })
@@ -43,12 +45,16 @@ export const AuthorPage = (props: AuthorProps) => {
     }
   }, [articles()])
   const title = createMemo(() => {
-    const m = by()
+    const m = params()['by']
     if (m === 'viewed') return t('Top viewed')
     if (m === 'rating') return t('Top rated')
     if (m === 'commented') return t('Top discussed')
     return t('Top recent')
   })
+
+  const setBy = (what: string) => {
+    params()['by'] = what
+  }
 
   return (
     <div class="container author-page">
@@ -57,22 +63,22 @@ export const AuthorPage = (props: AuthorProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: by() === '' }}>
+              <li classList={{ selected: !params()['by'] || params()['by'] === 'recent' }}>
                 <button type="button" onClick={() => setBy('')}>
                   {t('Recent')}
                 </button>
               </li>
-              <li classList={{ selected: by() === 'rating' }}>
+              <li classList={{ selected: params()['by'] === 'rating' }}>
                 <button type="button" onClick={() => setBy('rating')}>
                   {t('Popular')}
                 </button>
               </li>
-              <li classList={{ selected: by() === 'viewed' }}>
+              <li classList={{ selected: params()['by'] === 'viewed' }}>
                 <button type="button" onClick={() => setBy('viewed')}>
                   {t('Views')}
                 </button>
               </li>
-              <li classList={{ selected: by() === 'commented' }}>
+              <li classList={{ selected: params()['by'] === 'commented' }}>
                 <button type="button" onClick={() => setBy('commented')}>
                   {t('Discussing')}
                 </button>

@@ -3,7 +3,7 @@ import type { Shout } from '../../graphql/types.gen'
 import type { WritableAtom } from 'nanostores'
 import { useStore } from '@nanostores/solid'
 import { apiClient } from '../../utils/apiClient'
-import { getPage, setPage } from '../router'
+import { params } from '../router'
 
 let articleEntitiesStore: WritableAtom<Record<string, Shout>>
 let sortedArticlesStore: WritableAtom<Shout[]>
@@ -96,11 +96,13 @@ export const useArticlesStore = ({ sortedArticles }: InitialState) => {
 }
 
 export const loadMoreAll = () => {
-  setPage(getPage() + 1)
-  loadRecentAllArticles({ page: getPage() + 1 })
+  const searchParams = useStore(params)
+  const pn = Number.parseInt(searchParams()['page'], 10)
+  loadRecentAllArticles({ page: pn + 1 })
 }
 
 export const loadMorePublished = () => {
-  setPage(getPage() + 1)
-  loadRecentPublishedArticles({ page: getPage() + 1 })
+  const searchParams = useStore(params)
+  const pn = Number.parseInt(searchParams()['page'], 10)
+  loadRecentPublishedArticles({ page: pn + 1 })
 }

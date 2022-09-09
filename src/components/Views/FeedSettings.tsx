@@ -1,16 +1,18 @@
 import '../../styles/FeedSettings.scss'
 import { t } from '../../utils/intl'
-import { setBy, by } from '../../stores/router' // global routing signals
+import { params } from '../../stores/router' // global routing signals
+import { useStore } from '@nanostores/solid'
 
 export const FeedSettings = (props: any) => {
-  console.log('[feed-settings] setup articles by', by())
+  const args = useStore(params)
+  console.log('[feed-settings] setup articles by', args()['by'])
   return (
     <div class="container">
       <h1>{t('Feed settings')}</h1>
 
       <ul class="view-switcher">
         <li class="selected">
-          <a href="?by=topics" onClick={() => setBy('topics')}>
+          <a href="?by=topics" onClick={() => (args()['by'] = 'topics')}>
             {t('topics')}
           </a>
         </li>
@@ -20,12 +22,12 @@ export const FeedSettings = (props: any) => {
           </a>
   </li>*/}
         <li>
-          <a href="?by=authors" onClick={() => setBy('authors')}>
+          <a href="?by=authors" onClick={() => (args()['by'] = 'authors')}>
             {t('authors')}
           </a>
         </li>
         <li>
-          <a href="?by=reacted" onClick={() => setBy('reacted')}>
+          <a href="?by=reacted" onClick={() => (args()['by'] = 'reacted')}>
             {t('reactions')}
           </a>
         </li>

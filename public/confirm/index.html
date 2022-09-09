@@ -1,0 +1,29 @@
+<html>
+<head><title>discours.io</title></head>
+<body onmousemove="window.close()" onclick="window.close()" onkeydown="window.close()">
+    <style>
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 420px;
+    }
+    </style>
+    <div class="center">
+    Авторизация завершена, это окно закрывается по куче причин.
+    </div>
+    <script>
+        window.onload = function () {
+            const ccc = document.cookie.split(';')
+            if (ccc) {
+                const t = ccc[0].replace('token=','')
+                if (t) {
+                    console.log('[auth] got token cookie!')
+                    document.cookie = ""
+                    window.localStorage.setItem('token', t)
+                }
+            }
+        }
+    </script>    
+</body>
+</html>

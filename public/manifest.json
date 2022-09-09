@@ -1,0 +1,18 @@
+{
+  "theme_color": "#111111",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "name": "discours.io",
+  "short_name": "discours.io",
+  "description": "Дискурс - коллаборативная журналистика",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "200x200",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+.circlewrap {
+  border-radius: 100%;
+  height: 32px;
+  margin-right: 1.2rem;
+  min-width: 32px;
+  max-width: 32px;
+  overflow: hidden;
+  position: relative;
+  width: 32px;
+
+  img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .userpic {
+    border-radius: 50%;
+    font-size: small;
+    border: 2px solid black;
+    background-color: white;
+    text-align: center;
+    line-height: 32px;
+  }
+
+  .anonymous {
+    object-fit: contain;
+  }
+
+  a {
+    &:hover {
+      color: #000;
+    }
+  }
+}

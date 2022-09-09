@@ -1,0 +1,6 @@
+{
+  "*.{js,ts,tsx,json,scss,css,html,astro}": "prettier --write",
+  "package.json": "sort-package-json",
+  "*.{scss,css}": "stylelint",
+  "*.{ts,tsx,js}": "eslint --fix",
+}

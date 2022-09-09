@@ -1,0 +1,17 @@
+---
+import { TopicPage } from '../../components/Views/Topic'
+import Zine from '../../layouts/zine.astro'
+import { apiClient } from '../../utils/apiClient'
+
+const slug = Astro.params.slug?.toString() || ''
+const page = parseInt(Astro.params?.page as string, 10) || 1
+const size = parseInt(Astro.params?.size as string, 10) || 50
+const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], page, size })
+const topic = articles[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+---
+
+<Zine>
+  <TopicPage topicArticles={articles} topic={topic} />
+</Zine>

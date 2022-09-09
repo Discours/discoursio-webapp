@@ -1,0 +1,60 @@
+.settings-list {
+  display: table;
+
+  h2 {
+    margin-top: 1em;
+  }
+
+  label {
+    cursor: pointer;
+  }
+
+  input[type='checkbox'] {
+    & + label {
+      padding: 0;
+
+      &::before {
+        background: url('/icons/checkbox-big.svg') no-repeat;
+        content: '';
+        display: inline-block;
+        height: 2.8rem;
+        position: static;
+        width: 2.8rem;
+        vertical-align: middle;
+      }
+    }
+
+    &:checked + label {
+      &::before {
+        background-image: url('/icons/checkbox-checked-big.svg');
+      }
+    }
+
+    &.notifications-checkbox {
+      & + label {
+        &::before {
+          background: url('/icons/checkbox-notifications.svg') no-repeat;
+        }
+      }
+
+      &:checked + label {
+        &::before {
+          background-image: url('/icons/checkbox-notifications-checked.svg');
+        }
+      }
+    }
+  }
+}
+
+.settings-list__row {
+  display: table-row;
+}
+
+.settings-list__cell {
+  display: table-cell;
+  padding: 0 0.5em 1em 0;
+
+  &:first-child {
+    padding-right: 2em;
+  }
+}

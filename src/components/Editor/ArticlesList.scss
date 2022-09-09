@@ -1,0 +1,49 @@
+.articles-list {
+  padding-right: 2em;
+}
+
+.articles-list__item {
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 1.5em;
+  padding-bottom: 1.5em;
+}
+
+.article__title {
+  @include font-size(2.4rem);
+
+  line-height: 1.25;
+}
+
+.article__status {
+  @include font-size(1.4rem);
+}
+
+.article__status--draft {
+  color: #2638d9;
+}
+
+.article__status--published {
+  color: #2bb452;
+}
+
+.article__date {
+  color: #696969;
+  @include font-size(1.2rem);
+}
+
+.article__controls {
+  align-content: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  @include font-size(1.4rem);
+
+  padding-top: 2em;
+}
+
+.article-control {
+  margin-right: 2em;
+}
+
+.article-control--remove {
+  color: #d00820;
+}

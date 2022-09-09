@@ -1,0 +1,13 @@
+---
+import { AllTopicsPage } from '../components/Views/AllTopics'
+import Zine from '../layouts/zine.astro'
+import { apiClient } from '../utils/apiClient'
+
+const topics = await apiClient.getAllTopics()
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+---
+
+<Zine>
+  <AllTopicsPage topics={topics} client:load />
+</Zine>

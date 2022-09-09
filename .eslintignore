@@ -1,0 +1,5 @@
+node_modules
+public
+*.cjs
+src/graphql/*.gen.ts
+src/legacy_*

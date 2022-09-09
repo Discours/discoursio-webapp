@@ -1,0 +1,42 @@
+.subnavigation {
+  @include font-size(1.5rem);
+
+  margin-bottom: 2.4rem;
+
+  @include media-breakpoint-down(sm) {
+    padding: 0 divide($container-padding-x, 2);
+  }
+
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .item {
+    margin-right: 2.4rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    a {
+      border-bottom: 0;
+    }
+  }
+
+  .selected {
+    color: black;
+  }
+
+  a {
+    color: #141414;
+  }
+
+  a:hover {
+    font-weight: 500;
+    color: white;
+  }
+}

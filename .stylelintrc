@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-prettier-scss",
+    "stylelint-config-css-modules"
+  ],
+  "plugins": [
+    "stylelint-order",
+    "stylelint-scss"
+  ],
+  "rules": {
+    "selector-class-pattern": null,
+    "no-descending-specificity": null,
+    "scss/function-no-unknown": null,
+    "function-url-quotes": null,
+    "font-family-no-missing-generic-family-keyword": null,
+    "order/order": [
+      "custom-properties",
+      "declarations"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+.subscribe-form {
+  display: flex;
+  width: 100%;
+
+  input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid;
+    color: #fff;
+    font-family: inherit;
+    @include font-size(2rem);
+
+    padding: 0.2em 0.5em 0.3em 0;
+    width: 100%;
+
+    &::placeholder {
+      color: #fff;
+    }
+  }
+
+  a {
+    align-items: center;
+    background: #fff;
+    border: none;
+    color: #000;
+    display: flex;
+    @include font-size(1.5rem);
+
+    padding: 0 0.5em;
+  }
+
+  button {
+    padding-bottom: 0.8rem;
+  }
+}

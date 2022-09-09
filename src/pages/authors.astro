@@ -1,0 +1,13 @@
+---
+import { AllAuthorsPage } from '../components/Views/AllAuthors'
+import Zine from '../layouts/zine.astro'
+import { apiClient } from '../utils/apiClient'
+
+const authors = await apiClient.getAllAuthors()
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+---
+
+<Zine>
+  <AllAuthorsPage authors={authors} client:load />
+</Zine>

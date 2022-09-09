@@ -1,0 +1,15 @@
+---
+import { AuthorPage } from '../../../components/Views/Author'
+import Zine from '../../../layouts/zine.astro'
+import { apiClient } from '../../../utils/apiClient'
+
+const slug = Astro.params.slug.toString()
+const articles = await apiClient.getArticlesForAuthors({ authorSlugs: [slug] })
+const author = articles[0].authors.find((a) => a.slug === slug)
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+---
+
+<Zine>
+  <AuthorPage authorArticles={articles} author={author} />
+</Zine>

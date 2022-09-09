@@ -1,0 +1,199 @@
+.view {
+  background: #fff;
+  position: relative;
+
+  input {
+    font-size: 1.7rem;
+  }
+
+  h4 {
+    margin-bottom: 0.6em;
+    text-align: left;
+  }
+}
+
+.view--sign-up {
+  .auth-image {
+    order: 2;
+  }
+
+  .auth-image::before {
+    background: linear-gradient(0deg, rgb(20 20 20 / 80%), rgb(20 20 20 / 80%));
+    content: '';
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  & ~ .close-control {
+    filter: invert(1);
+  }
+}
+
+.auth-image {
+  background: #141414 url('/auth-page.jpg') center no-repeat;
+  background-size: cover;
+  color: #fff;
+  display: flex;
+  @include font-size(1.5rem);
+
+  padding: 3em;
+  position: relative;
+
+  @include media-breakpoint-down(sm) {
+    display: none;
+  }
+
+  h2 {
+    text-transform: uppercase;
+  }
+
+  h4 {
+    font-weight: normal;
+  }
+}
+
+.auth-image__text {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  text-align: left;
+  z-index: 1;
+
+  a {
+    color: #fff;
+
+    &:hover {
+      color: rgb(255 255 255 / 70%);
+    }
+  }
+}
+
+.auth-image__text.show {
+  display: flex;
+}
+
+.auth-benefits {
+  flex: 1;
+}
+
+.disclamer {
+  color: #9fa1a7;
+  @include font-size(1.2rem);
+}
+
+.auth-actions {
+  @include font-size(1.5rem);
+
+  margin-top: 1.6rem;
+  text-align: center;
+
+  a {
+    color: #9fa1a7;
+  }
+}
+
+.auth {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: $container-padding-x;
+
+  @include media-breakpoint-up(lg) {
+    padding: 10rem 6rem;
+  }
+}
+
+.submitbtn {
+  display: block;
+  font-weight: 700;
+  padding: 1.6rem;
+  width: 100%;
+}
+
+.social-provider {
+  border-bottom: 1px solid #141414;
+  border-top: 1px solid #141414;
+  margin-top: 1em;
+  padding: 0.8em 0 1em;
+}
+
+.social {
+  background-color: white !important;
+  display: flex;
+  margin: 0 -5px;
+
+  > * {
+    background-color: #f7f7f7;
+    cursor: pointer;
+    flex: 1;
+    margin: 0 5px;
+    padding: 0.5em;
+    text-align: center;
+  }
+
+  img {
+    height: 1.4em;
+    max-width: 1.8em;
+    vertical-align: middle;
+    width: auto;
+  }
+
+  a {
+    border: none;
+  }
+
+  .github-auth:hover {
+    img {
+      filter: invert(1);
+    }
+  }
+}
+
+.auth-control {
+  color: $link-color;
+  margin-top: 1em;
+  text-align: center;
+
+  div {
+    display: none;
+  }
+
+  .show {
+    display: block;
+  }
+}
+
+.auth-link {
+  cursor: pointer;
+}
+
+.providers-text {
+  @include font-size(1.5rem);
+
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.auth-subtitle {
+  @include font-size(1.5rem);
+
+  margin: 1em;
+}
+
+.auth-info {
+  min-height: 5em;
+  font-weight: 400;
+  font-size: smaller;
+
+  .warn {
+    color: #a00;
+  }
+
+  .info {
+    color: gray;
+  }
+}

@@ -1,0 +1,58 @@
+.modalwrap {
+  pointer-events: all;
+  align-items: center;
+  background: rgb(20 20 20 / 70%);
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+
+  .close-control {
+    position: absolute;
+    top: 1em;
+    cursor: pointer;
+    height: 0.8em;
+    opacity: 1;
+    padding: 0;
+    right: 0;
+    transition: opacity 0.3s;
+    width: 0.8em;
+    z-index: 1;
+
+    svg {
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    .icon {
+      height: 100%;
+      width: 100%;
+    }
+
+    @media (min-width: 800px) and (max-width: 991px) {
+      // top: 11em;
+    }
+  }
+}
+
+.modalwrap__inner {
+  background: #fff;
+  max-width: 1000px;
+  position: relative;
+  width: 80%;
+}
+
+.modalwrap__content {
+  padding: $container-padding-x;
+
+  @media (min-width: 800px) and (max-width: 991px) {
+    padding: 10rem 6rem;
+  }
+}

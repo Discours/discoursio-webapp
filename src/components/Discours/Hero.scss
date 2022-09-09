@@ -1,0 +1,47 @@
+.about-discours {
+  background: #000;
+  color: #fff;
+  @include font-size(1.7rem);
+
+  font-weight: 400;
+  margin-bottom: 6.4rem;
+  padding: 3.6rem 0;
+  text-align: center;
+
+  @include media-breakpoint-up(md) {
+    margin-top: -6.4rem;
+  }
+
+  h4 {
+    margin-bottom: 4rem;
+  }
+
+  em {
+    font-weight: inherit;
+  }
+
+  .wide-container {
+    padding: 0;
+  }
+}
+
+.about-discours__actions {
+  margin-top: 4.8rem;
+
+  .button {
+    border: 3px solid;
+    border-radius: 1.2em;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 0.8rem;
+    margin-bottom: 0.8em;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #fff;
+      border-color: #fff;
+      color: #000;
+    }
+  }
+}

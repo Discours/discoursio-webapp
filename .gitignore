@@ -1,0 +1,15 @@
+dist/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode
+.env
+.env.production
+.DS_Store
+.vercel
+.idea/
+.eslint/.eslintcache
+public/upload/*
+src/graphql/introspec.gen.ts

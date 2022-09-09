@@ -1,0 +1,23 @@
+.topic-page {
+  .group__controls {
+    align-items: baseline;
+    margin-bottom: 4rem;
+    margin-top: 7rem;
+  }
+
+  .floor--important {
+    a:hover {
+      background: #fff;
+      color: #000 !important;
+    }
+  }
+
+  .container {
+    padding-left: $container-padding-x;
+  }
+
+  .floor {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

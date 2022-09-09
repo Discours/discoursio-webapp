@@ -50,3 +50,9 @@ export const signResetConfirm = action(session, 'signResetConfirm', async (store
   setToken(auth.token)
   store.set(auth)
 })
+
+export const renewSession = action(session, 'renewSession', async (store) => {
+  const s = await apiClient.getSession() // token in header
+  setToken(s.token)
+  store.set(s)
+})

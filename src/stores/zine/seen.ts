@@ -1,7 +1,7 @@
 import { persistentAtom } from '@nanostores/persistent'
-import { action } from 'nanostores'
+import { useStore } from '@nanostores/solid'
 
-export const seen = persistentAtom<{ [slug: string]: Date }>(
+const seen = persistentAtom<{ [slug: string]: Date }>(
   'seen',
   {},
   {
@@ -10,9 +10,9 @@ export const seen = persistentAtom<{ [slug: string]: Date }>(
   }
 )
 
-export const addSeen =
-  (slug) => action(
-    seen,
-    'addSeen',
-    (s) => s.set({ ...s.get(), [slug]: Date.now() })
-  )
+export const addSeen = (slug) => seen.set({ ...seen.get(), [slug]: Date.now() })
+
+export const useSeenStore = () => {
+  const getSeen = useStore(seen)
+  return { getSeen }
+}

@@ -9,6 +9,7 @@ import { t } from '../../utils/intl'
 // import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
 import { renderMarkdown } from '@astrojs/markdown-remark'
 import { markdownOptions } from '../../../mdx.config'
+import { deleteReaction } from '../../stores/zine/reactions'
 
 export default (props: {
   level?: number
@@ -20,16 +21,16 @@ export default (props: {
   const [body, setBody] = createSignal('')
   onMount(() => {
     const b: string = props.comment?.body
-    if (b?.toString().startsWith('<')) setBody(b)
-    else {
+    if (b?.toString().startsWith('<')) {
+      setBody(b)
+    } else {
       renderMarkdown(b, markdownOptions).then(({ code }) => setBody(code))
     }
   })
   const remove = () => {
     if (comment()?.id) {
       console.log('[comment] removing', comment().id)
-      // FIXME
-      // deleteReaction(comment().id)
+      deleteReaction(comment().id)
     }
   }
 
@@ -79,7 +80,7 @@ export default (props: {
               </button>
 
               <Show when={props.canEdit}>
-                {/*FIXME*/}
+                {/*FIXME implement edit comment modal*/}
                 {/*<button*/}
                 {/*  class="comment-control comment-control--edit"*/}
                 {/*  onClick={() => showModal('editComment')}*/}
@@ -93,7 +94,7 @@ export default (props: {
                 </button>
               </Show>
 
-              {/*FIXME*/}
+              {/*FIXME implement modals */}
               {/*<button*/}
               {/*  class="comment-control comment-control--share"*/}
               {/*  onClick={() => showModal('shareComment')}*/}

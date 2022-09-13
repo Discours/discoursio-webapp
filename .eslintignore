@@ -3,3 +3,5 @@ public
 *.cjs
 src/graphql/*.gen.ts
 src/legacy_*
+dist/
+.vercel/

@@ -5,9 +5,9 @@ import { apiClient } from '../utils/apiClient'
 
 const params: URLSearchParams = Astro.url.searchParams
 const q = params.get('q')
-const results = await apiClient.getSearchResults({ query: q, page: 1, size: 50 })
+const results = await apiClient.getSearchResults({ query: q })
 ---
 
 <Zine>
-  <SearchPage results={results || []} client:load />
+  <SearchPage results={results} query={q} client:load />
 </Zine>

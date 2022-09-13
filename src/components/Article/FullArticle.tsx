@@ -9,6 +9,9 @@ import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
 import { renderMarkdown } from '@astrojs/markdown-remark'
 import { markdownOptions } from '../../../mdx.config'
+import { useStore } from '@nanostores/solid'
+import { session } from '../../stores/auth'
+
 const MAX_COMMENT_LEVEL = 6
 
 const getCommentLevel = (comment: Reaction, level = 0) => {
@@ -36,10 +39,14 @@ const formatDate = (date: Date) => {
 
 export const FullArticle = (props: ArticleProps) => {
   const [body, setBody] = createSignal('')
+
+  const auth = useStore(session)
+
   onMount(() => {
     const b: string = props.article?.body
-    if (b?.toString().startsWith('<')) setBody(b)
-    else {
+    if (b?.toString().startsWith('<')) {
+      setBody(b)
+    } else {
       renderMarkdown(b, markdownOptions).then(({ code }) => setBody(code))
     }
   })
@@ -136,16 +143,15 @@ export const FullArticle = (props: ArticleProps) => {
           <div class="shout-stats__item shout-stats__item--date">{formattedDate}</div>
         </div>
 
-        {/*FIXME*/}
-        {/*<div class="topics-list">*/}
-        {/*  <For each={props.article.topics}>*/}
-        {/*    {(topic) => (*/}
-        {/*      <div class="shout__topic">*/}
-        {/*        <a href={`/topic/${topic.slug}`}>{props.topicsBySlug[topic.slug].title}</a>*/}
-        {/*      </div>*/}
-        {/*    )}*/}
-        {/*  </For>*/}
-        {/*</div>*/}
+        <div class="topics-list">
+          <For each={props.article.topics}>
+            {(topic) => (
+              <div class="shout__topic">
+                <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+              </div>
+            )}
+          </For>
+        </div>
 
         <div class="shout__authors-list">
           <Show when={props.article?.authors?.length > 1}>
@@ -166,32 +172,28 @@ export const FullArticle = (props: ArticleProps) => {
               <ArticleComment
                 comment={reaction}
                 level={getCommentLevel(reaction)}
-                // FIXME
-                // canEdit={reaction.createdBy?.slug === session()?.user?.slug}
-                canEdit={false}
+                canEdit={reaction.createdBy?.slug === auth()?.user?.slug}
               />
             )}
           </For>
         </Show>
-
-        {/*FIXME*/}
-        {/*<Show when={!session()?.user?.slug}>*/}
-        {/*  <div class="comment-warning" id="comments">*/}
-        {/*    {t('To leave a comment you please')}*/}
-        {/*    <a*/}
-        {/*      href={''}*/}
-        {/*      onClick={(evt) => {*/}
-        {/*        evt.preventDefault()*/}
-        {/*        showModal('auth')*/}
-        {/*      }}*/}
-        {/*    >*/}
-        {/*      <i>{t('sign up or sign in')}</i>*/}
-        {/*    </a>*/}
-        {/*  </div>*/}
-        {/*</Show>*/}
-        {/*<Show when={session()?.user?.slug}>*/}
-        {/*  <textarea class="write-comment" rows="1" placeholder={t('Write comment')} />*/}
-        {/*</Show>*/}
+        <Show when={!auth()?.user?.slug}>
+          <div class="comment-warning" id="comments">
+            {t('To leave a comment you please')}
+            <a
+              href={''}
+              onClick={(evt) => {
+                evt.preventDefault()
+                showModal('auth')
+              }}
+            >
+              <i>{t('sign up or sign in')}</i>
+            </a>
+          </div>
+        </Show>
+        <Show when={auth()?.user?.slug}>
+          <textarea class="write-comment" rows="1" placeholder={t('Write comment')} />
+        </Show>
       </div>
     </div>
   )

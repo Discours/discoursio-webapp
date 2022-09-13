@@ -1,11 +1,13 @@
-import { action, atom, WritableAtom } from 'nanostores'
+import { atom, WritableAtom } from 'nanostores'
 import type { Reaction } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
 import { apiClient } from '../../utils/apiClient'
 import { reduceBy } from '../../utils/reduce'
 
-export let reactionsOrdered: WritableAtom<Reaction[]>
-export const reactions = atom<{ [slug: string]: Reaction[] }>({}) // by shout
+// FIXME
+
+let reactionsOrdered: WritableAtom<Reaction[]>
+const reactions = atom<{ [slug: string]: Reaction[] }>({}) // by shout
 
 export const useReactionsStore = (initial?: Reaction[]) => {
   if (!reactionsOrdered) {
@@ -41,18 +43,14 @@ export const loadReactions = async ({
   reactionsOrdered.set(reactions)
 }
 
+export const createReaction = async (reaction: Reaction) =>
+  // FIXME
+  reactionsOrdered.set(await apiClient.createReaction({ reaction }))
 
-export const createReaction = (reaction) =>
-  action(reactionsOrdered, 'createReaction', async (store) => {
-    store.set(await apiClient.createReaction({ reaction }))
-  })
+export const updateReaction = async (reaction: Reaction) =>
+  // FIXME
+  reactionsOrdered.set(await apiClient.updateReaction({ reaction }))
 
-export const updateReaction = (reaction) =>
-  action(reactionsOrdered, 'updateReaction', async (store) => {
-    store.set(await apiClient.updateReaction({ reaction }))
-  })
-
-export const deleteReaction = (reaction_id) =>
-  action(reactionsOrdered, 'deleteReaction', async (store) => {
-    store.set(await apiClient.destroyReaction({ id: reaction_id }))
-  })
+export const deleteReaction = async (reactionId: number) =>
+  // FIXME
+  reactionsOrdered.set(await apiClient.destroyReaction({ id: reactionId }))

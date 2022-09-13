@@ -24,7 +24,6 @@ const Link = (
   <button
     class={clsx('sidebar-link', props.className)}
     style={{ 'margin-bottom': props.withMargin ? '10px' : '' }}
-    // eslint-disable-next-line solid/reactivity
     onClick={props.onClick}
     disabled={props.disabled}
     title={props.title}
@@ -34,9 +33,52 @@ const Link = (
   </button>
 )
 
-// FIXME
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export default () => {
+type FileLinkProps = {
+  file: File
+  onOpenFile: (file: File) => void
+}
+
+const FileLink = (props: FileLinkProps) => {
+  const length = 100
+  let content = ''
+  const getContent = (node: any) => {
+    if (node.text) {
+      content += node.text
+    }
+
+    if (content.length > length) {
+      content = `${content.slice(0, Math.max(0, length))}...`
+
+      return content
+    }
+
+    if (node.content) {
+      for (const child of node.content) {
+        if (content.length >= length) {
+          break
+        }
+
+        content = getContent(child)
+      }
+    }
+
+    return content
+  }
+
+  const text = () =>
+    props.file.path
+      ? props.file.path.slice(Math.max(0, props.file.path.length - length))
+      : getContent(props.file.text?.doc)
+
+  return (
+    // eslint-disable-next-line solid/no-react-specific-props
+    <Link className="file" onClick={() => props.onOpenFile(props.file)} data-testid="open">
+      {text()} {props.file.path && '📎'}
+    </Link>
+  )
+}
+
+export const Sidebar = () => {
   const [store, ctrl] = useState()
   const [lastAction, setLastAction] = createSignal<string | undefined>()
   const toggleTheme = () => {
@@ -101,46 +143,6 @@ export default () => {
   //     setLastAction('copy-collab-app-link')
   //   })
   // }
-
-  const FileLink = (p: { file: File }) => {
-    const length = 100
-    let content = ''
-    const getContent = (node: any) => {
-      if (node.text) {
-        content += node.text
-      }
-
-      if (content.length > length) {
-        content = `${content.slice(0, Math.max(0, length))}...`
-
-        return content
-      }
-
-      if (node.content) {
-        for (const child of node.content) {
-          if (content.length >= length) {
-            break
-          }
-
-          content = getContent(child)
-        }
-      }
-
-      return content
-    }
-
-    const text = () =>
-      p.file.path
-        ? p.file.path.slice(Math.max(0, p.file.path.length - length))
-        : getContent(p.file.text?.doc)
-
-    return (
-      // eslint-disable-next-line solid/no-react-specific-props
-      <Link className="file" onClick={() => onOpenFile(p.file)} data-testid="open">
-        {text()} {p.file.path && '📎'}
-      </Link>
-    )
-  }
 
   // const Keys = (props: { keys: string[] }) => (
   //   <span>
@@ -229,7 +231,7 @@ export default () => {
             <Show when={store.files?.length > 0}>
               <h4>Files:</h4>
               <p>
-                <For each={store.files}>{(file) => <FileLink file={file} />}</For>
+                <For each={store.files}>{(file) => <FileLink file={file} onOpenFile={onOpenFile} />}</For>
               </p>
             </Show>
 

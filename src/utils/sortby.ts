@@ -1,3 +1,5 @@
+import type { Stat } from '../graphql/types.gen'
+
 export const byFirstChar = (a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || '')
 
 export const byCreated = (a: any, b: any) => {
@@ -22,7 +24,7 @@ export const byLength = (a: any[], b: any[]) => {
   return 0
 }
 
-export const byStat = (metric: string) => {
+export const byStat = (metric: keyof Stat) => {
   return (a, b) => {
     const x = (a?.stat && a.stat[metric]) || 0
     const y = (b?.stat && b.stat[metric]) || 0

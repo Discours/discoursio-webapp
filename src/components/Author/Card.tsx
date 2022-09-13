@@ -21,7 +21,6 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
-  // const [zine, { follow, unfollow }] = useZine()
   const locale = useStore(locstore)
   const auth = useStore(session)
   const subscribed = createMemo(

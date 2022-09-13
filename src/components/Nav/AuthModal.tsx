@@ -6,7 +6,7 @@ import { Form } from 'solid-js-form'
 import { t } from '../../utils/intl'
 import { hideModal, useModalStore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
-import { session as sessionstore, signIn, renewSession } from '../../stores/auth'
+import { session as sessionstore, signIn } from '../../stores/auth'
 import { apiClient } from '../../utils/apiClient'
 import { useValidator } from '../../utils/validators'
 

@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query RefreshSessionMutation {
+  query RefreshSessionQuery {
     refreshSession {
       error
       token

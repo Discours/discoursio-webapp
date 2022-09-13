@@ -18,7 +18,7 @@ interface ArticlePageProps {
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 
 export const ArticlePage = (props: ArticlePageProps) => {
-  const { getCurrentArticle } = useCurrentArticleStore(props.article)
+  const { getCurrentArticle } = useCurrentArticleStore({ currentArticle: props.article })
   const [getCommentsPage] = createSignal(1)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
 

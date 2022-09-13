@@ -4,11 +4,18 @@ import { useStore } from '@nanostores/solid'
 
 let currentArticleStore: WritableAtom<Shout | null>
 
-// TODO add author, topic?
-export const useCurrentArticleStore = (initialState: Shout) => {
+type InitialState = {
+  currentArticle: Shout
+}
+
+export const useCurrentArticleStore = ({ currentArticle }: InitialState) => {
   if (!currentArticleStore) {
-    currentArticleStore = atom(initialState)
+    currentArticleStore = atom(currentArticle)
   }
+
+  // FIXME
+  // addTopicsByAuthor
+  // addAuthorsByTopic
 
   const getCurrentArticle = useStore(currentArticleStore)
 

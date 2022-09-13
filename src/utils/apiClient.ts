@@ -11,6 +11,7 @@ import reactionsForShouts from '../graphql/query/reactions-for-shouts'
 import mySession from '../graphql/mutation/my-session'
 import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import authLogout from '../graphql/mutation/auth-logout'
+import authLogin from '../graphql/query/auth-login'
 import authRegister from '../graphql/mutation/auth-register'
 import followMutation from '../graphql/mutation/follow'
 import unfollowMutation from '../graphql/mutation/unfollow'
@@ -24,16 +25,22 @@ import authorsAll from '../graphql/query/authors-all'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
-// import authorsBySlugs from '../graphql/query/authors-by-slugs'
-import authLogin from '../graphql/query/auth-login'
 import authCheck from '../graphql/query/auth-check'
 import authReset from '../graphql/mutation/auth-reset'
 import authForget from '../graphql/mutation/auth-forget'
 import authResend from '../graphql/mutation/auth-resend'
+import authorsBySlugs from '../graphql/query/authors-by-slugs'
 
 const log = getLogger('api-client')
-const FEED_PAGE_SIZE = 50
-const REACTIONS_PAGE_SIZE = 100
+
+// TODO: paging
+const DEFAULT_AUTHOR_ARTICLES_PAGE_SIZE = 999999
+const DEFAULT_TOPIC_ARTICLES_PAGE_SIZE = 50
+const DEFAULT_RECENT_ARTICLES_PAGE_SIZE = 50
+const DEFAULT_REACTIONS_PAGE_SIZE = 50
+const DEFAULT_SEARCH_RESULTS_PAGE_SIZE = 50
+const DEFAULT_PUBLISHED_ARTICLES_PAGE_SIZE = 50
+const DEFAULT_RANDOM_TOPICS_AMOUNT = 12
 
 export const apiClient = {
   getTopArticles: async () => {
@@ -44,15 +51,28 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(articlesTopMonth, { page: 1, size: 10 }).toPromise()
     return response.data.topMonth
   },
+  getRecentPublishedArticles: async ({
+    page = 1,
+    size = DEFAULT_RECENT_ARTICLES_PAGE_SIZE
+  }: {
+    page?: number
+    size?: number
+  }) => {
+    const response = await publicGraphQLClient.query(articlesRecentPublished, { page, size }).toPromise()
+
+    return response.data.recentPublished
+  },
   getRandomTopics: async () => {
-    const response = await publicGraphQLClient.query(topicsRandomQuery, {}).toPromise()
+    const response = await publicGraphQLClient
+      .query(topicsRandomQuery, { amount: DEFAULT_RANDOM_TOPICS_AMOUNT })
+      .toPromise()
 
     return response.data.topicsRandom
   },
   getSearchResults: async ({
     query,
     page = 1,
-    size = FEED_PAGE_SIZE
+    size = DEFAULT_SEARCH_RESULTS_PAGE_SIZE
   }: {
     query: string
     page?: number
@@ -68,36 +88,26 @@ export const apiClient = {
 
     return response.data.searchQuery
   },
-  getRecentAllArticles: async ({ page, size }: { page?: number; size?: number }): Promise<Shout[]> => {
-    const response = await publicGraphQLClient
-      .query(articlesRecentAll, {
-        page: page || 1,
-        size: size || FEED_PAGE_SIZE
-      })
-      .toPromise()
-
-    return response.data.recentAll
-  },
-  getRecentPublishedArticles: async ({
-    page,
-    size
+  getRecentArticles: async ({
+    page = 1,
+    size = DEFAULT_RECENT_ARTICLES_PAGE_SIZE
   }: {
     page?: number
     size?: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
-      .query(articlesRecentPublished, {
-        page: page || 1,
-        size: size || FEED_PAGE_SIZE
+      .query(articlesRecentAll, {
+        page,
+        size
       })
       .toPromise()
 
-    return response.data.recentPublished
+    return response.data.recentAll
   },
   getArticlesForTopics: async ({
     topicSlugs,
     page = 1,
-    size = FEED_PAGE_SIZE
+    size = DEFAULT_TOPIC_ARTICLES_PAGE_SIZE
   }: {
     topicSlugs: string[]
     page?: number
@@ -116,7 +126,7 @@ export const apiClient = {
   getArticlesForAuthors: async ({
     authorSlugs,
     page = 1,
-    size = FEED_PAGE_SIZE
+    size = DEFAULT_AUTHOR_ARTICLES_PAGE_SIZE
   }: {
     authorSlugs: string[]
     page?: number
@@ -183,15 +193,24 @@ export const apiClient = {
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
     return response.data.refreshSession
   },
+  getPublishedArticles: async ({
+    page = 1,
+    size = DEFAULT_PUBLISHED_ARTICLES_PAGE_SIZE
+  }: {
+    page?: number
+    size?: number
+  }) => {
+    const response = await publicGraphQLClient.query(articlesRecentPublished, { page, size }).toPromise()
 
-  // feeds
+    return response.data.recentPublished
+  },
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
     return response.data.topicsAll
   },
 
   getAllAuthors: async () => {
-    const response = await publicGraphQLClient.query(authorsAll, { page: 1, size: 9999 }).toPromise()
+    const response = await publicGraphQLClient.query(authorsAll, { page: 1, size: 999999 }).toPromise()
     return response.data.authorsAll
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
@@ -205,7 +224,7 @@ export const apiClient = {
   getReactionsForShouts: async ({
     shoutSlugs,
     page = 1,
-    size = REACTIONS_PAGE_SIZE
+    size = DEFAULT_REACTIONS_PAGE_SIZE
   }: {
     shoutSlugs: string[]
     page?: number
@@ -240,7 +259,10 @@ export const apiClient = {
 
     return response.data.reactionsByShout
   },
-
+  getAuthorsBySlugs: async ({ slugs }) => {
+    const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()
+    return response.data.getUsersBySlugs
+  },
   createReaction: async ({ reaction }) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()
     log.debug('[api] create reaction mutation called')

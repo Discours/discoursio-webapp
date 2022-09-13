@@ -1,30 +1,32 @@
 import { useStore } from '@nanostores/solid'
-import type { Author, Shout } from '../../graphql/types.gen'
+import { For } from 'solid-js'
+import type { Author } from '../../graphql/types.gen'
 import { session } from '../../stores/auth'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { t } from '../../utils/intl'
 import Icon from '../Nav/Icon'
+import { useTopicsStore } from '../../stores/zine/topics'
+import { useArticlesStore } from '../../stores/zine/articles'
+import { useSeenStore } from '../../stores/zine/seen'
 
 type FeedSidebarProps = {
   authors: Author[]
 }
 
 export const FeedSidebar = (props: FeedSidebarProps) => {
-  // const seen = useStore(seenstore)
+  const { getSeen: seen } = useSeenStore()
   const auth = useStore(session)
-  // const topics = useTopicsStore()
-  const { getSortedAuthors: authors } = useAuthorsStore()
-  // const articlesByTopics = useStore(abt)
+  const { getSortedAuthors: authors } = useAuthorsStore({ authors: props.authors })
+  const { getArticlesByTopic } = useArticlesStore()
+  const { getTopicEntities } = useTopicsStore()
 
-  // const topicIsSeen = (topic: string) => {
-  //   let allSeen = false
-  //   articlesByTopics()[topic].forEach((s: Shout) => (allSeen = !seen()[s.slug]))
-  //   return allSeen
-  // }
-  //
-  // const authorIsSeen = (slug: string) => {
-  //   return !!seen()[slug]
-  // }
+  const checkTopicIsSeen = (topicSlug: string) => {
+    return getArticlesByTopic()[topicSlug].every((article) => Boolean(seen()[article.slug]))
+  }
+
+  const checkAuthorIsSeen = (authorSlug: string) => {
+    return Boolean(seen()[authorSlug])
+  }
 
   return (
     <>
@@ -61,27 +63,27 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
             <strong>{t('My subscriptions')}</strong>
           </a>
         </li>
-        {/*FIXME rework seen*/}
-        {/*<For each={auth()?.info?.authors}>*/}
-        {/*  {(aslug) => (*/}
-        {/*    <li>*/}
-        {/*      <a href={`/author/${aslug}`} classList={{ unread: authorIsSeen(aslug) }}>*/}
-        {/*        <small>@{aslug}</small>*/}
-        {/*        {(authors()[aslug] as Author).name}*/}
-        {/*      </a>*/}
-        {/*    </li>*/}
-        {/*  )}*/}
-        {/*</For>*/}
 
-        {/*<For each={auth()?.info?.topics as string[]}>*/}
-        {/*  {(topic: string) => (*/}
-        {/*    <li>*/}
-        {/*      <a href={`/author/${topic}`} classList={{ unread: topicIsSeen(topic) }}>*/}
-        {/*        {topics()[topic]?.title}*/}
-        {/*      </a>*/}
-        {/*    </li>*/}
-        {/*  )}*/}
-        {/*</For>*/}
+        <For each={auth()?.info?.authors}>
+          {(authorSlug) => (
+            <li>
+              <a href={`/author/${authorSlug}`} classList={{ unread: checkAuthorIsSeen(authorSlug) }}>
+                <small>@{authorSlug}</small>
+                {authors()[authorSlug].name}
+              </a>
+            </li>
+          )}
+        </For>
+
+        <For each={auth()?.info?.topics}>
+          {(topicSlug) => (
+            <li>
+              <a href={`/author/${topicSlug}`} classList={{ unread: checkTopicIsSeen(topicSlug) }}>
+                {getTopicEntities()[topicSlug]?.title}
+              </a>
+            </li>
+          )}
+        </For>
       </ul>
 
       <p class="settings">

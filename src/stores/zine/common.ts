@@ -3,6 +3,7 @@ import { apiClient } from '../../utils/apiClient'
 
 export const follow = async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
   await apiClient.follow({ what, slug })
+  // refresh session
   // TODO: _store update code
 }
 export const unfollow = async ({ what, slug }: { what: FollowingEntity; slug: string }) => {

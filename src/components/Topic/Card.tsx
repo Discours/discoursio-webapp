@@ -3,10 +3,12 @@ import { Show } from 'solid-js/web'
 import './Card.scss'
 import { createMemo } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
+import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { locale as locstore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { session } from '../../stores/auth'
+import { follow, unfollow } from '../../stores/zine/common'
 
 interface TopicProps {
   topic: Topic
@@ -22,22 +24,18 @@ export const TopicCard = (props: TopicProps) => {
 
   const topic = createMemo(() => props.topic)
 
-  // const subscribed = createMemo(() => {
-  //   return Boolean(auth()?.user?.slug) && topic().slug ? topic().slug in auth().info.topics : false
-  // })
+  const subscribed = createMemo(() => {
+    return Boolean(auth()?.user?.slug) && topic().slug ? topic().slug in auth().info.topics : false
+  })
 
   // FIXME use store actions
-  // const subscribe = async (really = true) => {
-  //   if (really) {
-  //     const result = await apiClient.q(follow, { what: 'topic', slug: topic().slug })
-  //     if (result.error) console.error(result.error)
-  //     // TODO: setSubscribers(topic().stat?.followers as number + 1)
-  //   } else {
-  //     const result = await apiClient.q(unfollow, { what: 'topic', slug: topic().slug })
-  //     if (result.error) console.error(result.error)
-  //     // TODO: setSubscribers(topic().stat?.followers as number - 1)
-  //   }
-  // }
+  const subscribe = async (really = true) => {
+    if (really) {
+      follow({ what: FollowingEntity.Topic, slug: topic().slug })
+    } else {
+      unfollow({ what: FollowingEntity.Topic, slug: topic().slug })
+    }
+  }
   return (
     <div class="topic" classList={{ row: !props.compact && !props.subscribeButtonBottom }}>
       <div classList={{ 'col-md-7': !props.compact && !props.subscribeButtonBottom }}>
@@ -101,19 +99,18 @@ export const TopicCard = (props: TopicProps) => {
         </Show>
       </div>
       <div classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}>
-        {/*FIXME*/}
-        {/*<Show*/}
-        {/*  when={subscribed()}*/}
-        {/*  fallback={*/}
-        {/*    <button onClick={() => subscribe(true)} class="button--light">*/}
-        {/*      +&nbsp;{t('Follow')}*/}
-        {/*    </button>*/}
-        {/*  }*/}
-        {/*>*/}
-        {/*  <button onClick={() => subscribe(false)} class="button--light">*/}
-        {/*    -&nbsp;{t('Unfollow')}*/}
-        {/*  </button>*/}
-        {/*</Show>*/}
+        <Show
+          when={subscribed()}
+          fallback={
+            <button onClick={() => subscribe(true)} class="button--light">
+              +&nbsp;{t('Follow')}
+            </button>
+          }
+        >
+          <button onClick={() => subscribe(false)} class="button--light">
+            -&nbsp;{t('Unfollow')}
+          </button>
+        </Show>
       </div>
     </div>
   )

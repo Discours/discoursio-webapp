@@ -1,19 +1,19 @@
 ---
 import { ArticlePage } from '../components/Views/ArticlePage'
-import type { Shout } from '../graphql/types.gen'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
-
 const slug = Astro.params.slug as string
-let article: Shout
 
-if (slug.includes('/') || slug.includes('.map') || slug.includes('.ico')) {
-  Astro.redirect('/404')
-} else {
-  article = await apiClient.getArticle({ slug })
-  if (!article) Astro.redirect('/404')
-  Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+if (slug.includes('/') || slug.includes('.map')) {
+  return Astro.redirect('/404')
 }
+
+const article = await apiClient.getArticle({ slug })
+if (!article) {
+  return Astro.redirect('/404')
+}
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
 <Zine>

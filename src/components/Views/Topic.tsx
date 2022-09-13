@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createEffect, createSignal } from 'solid-js'
+import { For, Show, createMemo } from 'solid-js'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import Row3 from '../Feed/Row3'
 import Row2 from '../Feed/Row2'
@@ -8,11 +8,10 @@ import '../../styles/Topic.scss'
 import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
 import { params } from '../../stores/router'
-import { useArticlesStore } from '../../stores/zine/articles'
-import { useStore } from '@nanostores/solid'
-import { unique } from '../../utils'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { byCreated, sortBy } from '../../utils/sortby'
+import { useArticlesStore } from '../../stores/zine/articles'
+import { useAuthorsStore } from '../../stores/zine/authors'
+import { useStore } from '@nanostores/solid'
 
 interface TopicProps {
   topic: Topic
@@ -21,22 +20,20 @@ interface TopicProps {
 
 export const TopicPage = (props: TopicProps) => {
   const args = useStore(params)
-  const { getArticlesByTopics } = useArticlesStore({ sortedArticles: props.topicArticles })
-
-  const [topicAuthors, setTopicAuthors] = createSignal([])
-  const sortedArticles = createMemo(() => {
-    const aaa = getArticlesByTopics()[props.topic.slug] || []
-    aaa.forEach((a: Shout) => {
-      a.topics?.forEach((t: Topic) => {
-        if (props.topic.slug === t.slug) {
-          setTopicAuthors((aaa) => [...aaa, a])
-        }
-      })
-    })
-    return args()['by'] ? sortBy(aaa, args()['by']) : sortBy(aaa, byCreated)
-  })
+  const { getSortedArticles: sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
   const { getTopicEntities } = useTopicsStore({ topics: [props.topic] })
-  const topic = createMemo(() => getTopicEntities()[props.topic.slug] || props.topic)
+
+  const { getAuthorsByTopic } = useAuthorsStore()
+
+  const topic = createMemo(() => getTopicEntities()[props.topic.slug])
+
+  /*
+  const slug = createMemo<string>(() => {
+    let slug = props?.slug
+    if (props?.slug.startsWith('@')) slug = slug.replace('@', '')
+    return slug
+  })
+  */
 
   const title = createMemo(() => {
     const m = args()['by']
@@ -88,9 +85,9 @@ export const TopicPage = (props: TopicProps) => {
             <div class="row">
               <h3 class="col-12">{title()}</h3>
               <For each={sortedArticles().slice(0, 6)}>
-                {(a: Shout) => (
+                {(article) => (
                   <div class="col-md-6">
-                    <ArticleCard article={a} />
+                    <ArticleCard article={article} />
                   </div>
                 )}
               </For>
@@ -102,7 +99,7 @@ export const TopicPage = (props: TopicProps) => {
           <Show when={sortedArticles().length > 5}>
             <Beside
               title={t('Topic is supported by')}
-              values={unique(topicAuthors()) as any}
+              values={getAuthorsByTopic()[topic().slug]}
               beside={sortedArticles()[6]}
               wrapper={'author'}
             />

@@ -3,23 +3,25 @@ import type { ReadableAtom, WritableAtom } from 'nanostores'
 import { atom, computed } from 'nanostores'
 import type { Author } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
-import { byCreated } from '../../utils/sortby'
+import { byCreated, byStat } from '../../utils/sortby'
 
 export type AuthorsSortBy = 'created' | 'name'
 
-const sortByStore = atom<AuthorsSortBy>('created')
+const sortAllByStore = atom<AuthorsSortBy>('created')
 
-let authorEntitiesStore: WritableAtom<Record<string, Author>>
+let authorEntitiesStore: WritableAtom<{ [authorSlug: string]: Author }>
+let authorsByTopicStore: WritableAtom<{ [topicSlug: string]: Author[] }>
 let sortedAuthorsStore: ReadableAtom<Author[]>
-let authorsByTopicStore: WritableAtom<Record<string, Author[]>>
-const initStore = (initial?: Record<string, Author>) => {
+let topAuthorsStore: ReadableAtom<Author[]>
+
+const initStore = (initial: { [authorSlug: string]: Author }) => {
   if (authorEntitiesStore) {
     return
   }
 
-  authorEntitiesStore = atom<Record<string, Author>>(initial)
+  authorEntitiesStore = atom(initial)
 
-  sortedAuthorsStore = computed([authorEntitiesStore, sortByStore], (authorEntities, sortBy) => {
+  sortedAuthorsStore = computed([authorEntitiesStore, sortAllByStore], (authorEntities, sortBy) => {
     const authors = Object.values(authorEntities)
     switch (sortBy) {
       case 'created': {
@@ -27,12 +29,21 @@ const initStore = (initial?: Record<string, Author>) => {
         break
       }
       case 'name': {
-        // FIXME
+        authors.sort((a, b) => a.name.localeCompare(b.name))
         break
       }
     }
     return authors
   })
+
+  topAuthorsStore = computed(authorEntitiesStore, (authorEntities) => {
+    // TODO real top authors
+    return Object.values(authorEntities)
+  })
+}
+
+export const setSortAllBy = (sortBy: AuthorsSortBy) => {
+  sortAllByStore.set(sortBy)
 }
 
 const addAuthors = (authors: Author[]) => {
@@ -51,16 +62,47 @@ const addAuthors = (authors: Author[]) => {
   }
 }
 
+export const addAuthorsByTopic = (authorsByTopic: { [topicSlug: string]: Author[] }) => {
+  const allAuthors = Object.values(authorsByTopic).flat()
+  addAuthors(allAuthors)
+
+  if (!authorsByTopicStore) {
+    authorsByTopicStore = atom<{ [topicSlug: string]: Author[] }>(authorsByTopic)
+  } else {
+    const newState = Object.entries(authorsByTopic).reduce((acc, [topicSlug, authors]) => {
+      if (!acc[topicSlug]) {
+        acc[topicSlug] = []
+      }
+
+      authors.forEach((author) => {
+        if (!acc[topicSlug].some((a) => a.slug === author.slug)) {
+          acc[topicSlug].push(author)
+        }
+      })
+
+      return acc
+    }, authorsByTopicStore.get())
+
+    authorsByTopicStore.set(newState)
+  }
+}
+
 export const loadAllAuthors = async (): Promise<void> => {
   const authors = await apiClient.getAllAuthors()
   addAuthors(authors)
 }
 
-export const useAuthorsStore = (initial?: Author[]) => {
-  if (initial) addAuthors(initial)
+type InitialState = {
+  authors?: Author[]
+}
+
+export const useAuthorsStore = ({ authors }: InitialState = {}) => {
+  addAuthors(authors || [])
 
   const getAuthorEntities = useStore(authorEntitiesStore)
   const getSortedAuthors = useStore(sortedAuthorsStore)
   const getAuthorsByTopic = useStore(authorsByTopicStore)
-  return { getAuthorEntities, getSortedAuthors, getAuthorsByTopic }
+  const getTopAuthors = useStore(topAuthorsStore)
+
+  return { getAuthorEntities, getSortedAuthors, getAuthorsByTopic, getTopAuthors }
 }

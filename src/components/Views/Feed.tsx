@@ -1,68 +1,64 @@
 import { createMemo, For, Show } from 'solid-js'
-import { Shout, Reaction, ReactionKind, Topic, Author } from '../../graphql/types.gen'
+import type { Shout, Reaction } from '../../graphql/types.gen'
 import '../../styles/Feed.scss'
 import Icon from '../Nav/Icon'
 import { byCreated, sortBy } from '../../utils/sortby'
 import { TopicCard } from '../Topic/Card'
 import { ArticleCard } from '../Feed/Card'
+import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
 import { useStore } from '@nanostores/solid'
+import { FeedSidebar } from '../Feed/Sidebar'
 import { session } from '../../stores/auth'
 import CommentCard from '../Article/Comment'
-import { loadMoreAll, useArticlesStore } from '../../stores/zine/articles'
+import { loadRecentArticles, useArticlesStore } from '../../stores/zine/articles'
 import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { FeedSidebar } from '../Feed/Sidebar'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { unique } from '../../utils'
-import { AuthorCard } from '../Author/Card'
 
 interface FeedProps {
-  recentArticles: Shout[]
+  articles: Shout[]
   reactions: Reaction[]
+  page?: number
+  size?: number
 }
 
-const AUTHORSHIP_REACTIONS = [
-  ReactionKind.Accept,
-  ReactionKind.Reject,
-  ReactionKind.Propose,
-  ReactionKind.Ask
-]
+// const AUTHORSHIP_REACTIONS = [
+//   ReactionKind.Accept,
+//   ReactionKind.Reject,
+//   ReactionKind.Propose,
+//   ReactionKind.Ask
+// ]
 
 export const FeedPage = (props: FeedProps) => {
   // state
-  const { getSortedArticles: articles } = useArticlesStore({ sortedArticles: props.recentArticles })
+  const { getSortedArticles: articles } = useArticlesStore({ sortedArticles: props.articles })
   const reactions = useReactionsStore(props.reactions)
-  const {
-    // getAuthorEntities: authorsBySlug,
-    getSortedAuthors: authors
-  } = useAuthorsStore() // test if it catches preloaded authors
+  const { getTopAuthors, getSortedAuthors: authors } = useAuthorsStore()
+  const { getTopTopics } = useTopicsStore()
+
   const auth = useStore(session)
-  const topics = createMemo(() => {
-    const ttt = []
-    articles().forEach((s: Shout) => s.topics.forEach((tpc: Topic) => ttt.push(tpc)))
-    return unique(ttt)
-  })
-  const { getSortedTopics } = useTopicsStore({ topics: topics() })
-  // derived
+
   const topReactions = createMemo(() => sortBy(reactions(), byCreated))
-  const topAuthors = createMemo(() => sortBy(authors(), 'shouts'))
-  // note this became synthetic
 
-  // methods
+  // const expectingFocus = createMemo<Shout[]>(() => {
+  //   // 1 co-author notifications needs
+  //   // TODO: list of articles where you are co-author
+  //   // TODO: preload proposals
+  //   // TODO: (maybe?) and changes history
+  //   console.debug(reactions().filter((r) => r.kind in AUTHORSHIP_REACTIONS))
+  //
+  //   // 2 community self-regulating mechanics
+  //   // TODO: query all new posts to be rated for publishing
+  //   // TODO: query all reactions where user is in authors list
+  //   return []
+  // })
 
-  const expectingFocus = createMemo<Shout[]>(() => {
-    // 1 co-author notifications needs
-    // TODO: list of articles where you are co-author
-    // TODO: preload proposals
-    // TODO: (maybe?) and changes history
-    console.debug(reactions().filter((r) => r.kind in AUTHORSHIP_REACTIONS))
-
-    // 2 community self-regulating mechanics
-    // TODO: query all new posts to be rated for publishing
-    // TODO: query all reactions where user is in authors list
-    return []
-  })
+  const loadMore = () => {
+    // FIXME
+    const page = (props.page || 1) + 1
+    loadRecentArticles({ page })
+  }
   return (
     <>
       <div class="container feed">
@@ -103,8 +99,8 @@ export const FeedPage = (props: FeedProps) => {
               </div>
 
               <ul class="beside-column">
-                <For each={topAuthors()}>
-                  {(author: Author) => (
+                <For each={getTopAuthors().slice(0, 5)}>
+                  {(author) => (
                     <li>
                       <AuthorCard author={author} compact={true} hasLink={true} />
                     </li>
@@ -125,22 +121,23 @@ export const FeedPage = (props: FeedProps) => {
           <aside class="col-md-3">
             <section class="feed-comments">
               <h4>{t('Comments')}</h4>
-              <For each={topReactions() as Reaction[]}>
-                {(c: Reaction) => <CommentCard comment={c} compact={true} />}
+              <For each={topReactions()}>
+                {(comment) => <CommentCard comment={comment} compact={true} />}
               </For>
             </section>
-            <Show when={getSortedTopics().length > 0}>
+            <Show when={getTopTopics().length > 0}>
               <section class="feed-topics">
                 <h4>{t('Topics')}</h4>
-                <For each={getSortedTopics().slice(0, 5)}>
+                <For each={getTopTopics().slice(0, 5)}>
                   {(topic) => <TopicCard topic={topic} subscribeButtonBottom={true} />}
                 </For>
               </section>
             </Show>
           </aside>
         </div>
+
         <p class="load-more-container">
-          <button class="button" onClick={loadMoreAll}>
+          <button class="button" onClick={loadMore}>
             {t('Load more')}
           </button>
         </p>

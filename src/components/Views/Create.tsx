@@ -4,7 +4,7 @@ import { State, StateContext } from '../Editor/prosemirror/context'
 import { createCtrl } from '../Editor/store/ctrl'
 import { Layout } from '../Editor/Layout'
 import Editor from '../Editor'
-import Sidebar from '../Editor/Sidebar'
+import { Sidebar } from '../Editor/Sidebar'
 import ErrorView from '../Editor/Error'
 import { newState } from '../Editor/store'
 

@@ -4,58 +4,38 @@ import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
 import { params } from '../../stores/router'
-import { useArticlesStore } from '../../stores/zine/articles'
+import { useArticlesStore, loadSearchResults } from '../../stores/zine/articles'
 import { useStore } from '@nanostores/solid'
 
 type Props = {
+  query: string
   results: Shout[]
 }
 
 export const SearchPage = (props: Props) => {
   const args = useStore(params)
   const { getSortedArticles } = useArticlesStore({ sortedArticles: props.results })
+  const [getQuery, setQuery] = createSignal(props.query)
 
-  // FIXME server sort
-  // const [q, setq] = createSignal(props?.q || '')
-  // const articles = createMemo(() => {
-  //   const sorted = sortBy(articles(), by() || byRelevance)
-  //   return q().length > 3
-  //     ? sorted.filter(
-  //         (a) =>
-  //           a.title?.toLowerCase().includes(q().toLowerCase()) ||
-  //           a.body?.toLowerCase().includes(q().toLowerCase())
-  //       )
-  //     : sorted
-  // })
-  //
-  // function handleQueryChange(ev) {
-  //   const el = ev.target as HTMLInputElement
-  //   const query = el.value
-  //   setq(query)
-  // }
-  //
-  // function handleSubmit(ev) {
-  //   ev.preventDefault()
-  //   const el = ev.target as HTMLInputElement
-  //   const query = el.value
-  //   setq(query)
-  //   setBy('')
-  // }
+  const handleQueryChange = (ev) => {
+    setQuery(ev.target.value)
+  }
+
+  const handleSubmit = (ev) => {
+    // TODO page
+    // TODO sort
+    loadSearchResults({ query: getQuery() })
+  }
 
   return (
     <div class="search-page wide-container">
       <form action="/search" class="search-form row">
         <div class="col-sm-9">
-          {/*FIXME*/}
-          {/*<input type="search" name="q" onChange={handleQueryChange} placeholder="Введите текст..." />*/}
-          <input type="search" name="q" placeholder="Введите текст..." />
+          {/*FIXME t*/}
+          <input type="search" name="q" onChange={handleQueryChange} placeholder="Введите текст..." />
         </div>
         <div class="col-sm-3">
-          {/*FIXME*/}
-          {/*<button class="button" type="submit" onClick={handleSubmit}>*/}
-          {/*  {t('Search')}*/}
-          {/*</button>*/}
-          <button class="button" type="submit">
+          <button class="button" type="submit" onClick={handleSubmit}>
             {t('Search')}
           </button>
         </div>

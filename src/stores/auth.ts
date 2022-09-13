@@ -8,51 +8,51 @@ const log = getLogger('auth-store')
 
 export const session = atom<AuthResult>()
 
-export const signIn = action(session, 'signIn', async (store, params) => {
+export const signIn = async (params) => {
   const s = await apiClient.signIn(params)
-  store.set(s)
+  session.set(s)
   setToken(s.token)
   log.debug('signed in')
-})
+}
 
-export const signUp = action(session, 'signUp', async (store, params) => {
+export const signUp = async (params) => {
   const s = await apiClient.signUp(params)
-  store.set(s)
+  session.set(s)
   setToken(s.token)
   log.debug('signed up')
-})
+}
 
-export const signOut = action(session, 'signOut', (store) => {
-  store.set(null)
+export const signOut = () => {
+  session.set(null)
   resetToken()
   log.debug('signed out')
-})
+}
 
 export const emailChecks = atom<{ [email: string]: boolean }>({})
 
-export const signCheck = action(emailChecks, 'signCheck', async (store, params) => {
-  store.set(await apiClient.signCheck(params))
-})
+export const signCheck = async (params) => {
+  emailChecks.set(await apiClient.signCheck(params))
+}
 
 export const resetCode = atom<string>()
 
-export const signReset = action(resetCode, 'signReset', async (_store, params) => {
+export const signReset = async (params) => {
   await apiClient.signReset(params) // { email }
   resetToken()
-})
+}
 
-export const signResend = action(resetCode, 'signResend', async (_store, params) => {
+export const signResend = async (params) => {
   await apiClient.signResend(params) // { email }
-})
+}
 
-export const signResetConfirm = action(session, 'signResetConfirm', async (store, params) => {
+export const signResetConfirm = async (params) => {
   const auth = await apiClient.signResetConfirm(params) // { code }
   setToken(auth.token)
-  store.set(auth)
-})
+  session.set(auth)
+}
 
-export const renewSession = action(session, 'renewSession', async (store) => {
+export const renewSession = async () => {
   const s = await apiClient.getSession() // token in header
   setToken(s.token)
-  store.set(s)
-})
+  session.set(s)
+}

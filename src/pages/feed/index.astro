@@ -3,11 +3,11 @@ import { FeedPage } from '../../components/Views/Feed'
 import Zine from '../../layouts/zine.astro'
 import { apiClient } from '../../utils/apiClient'
 
-const recentArticles = await apiClient.getRecentAllArticles({})
+const recentArticles = await apiClient.getRecentArticles({ page: 1 })
 const shoutSlugs = recentArticles.map((s) => s.slug)
 const reactions = await apiClient.getReactionsForShouts({ shoutSlugs })
 ---
 
 <Zine>
-  <FeedPage recentArticles={recentArticles} reactions={reactions} client:load />
+  <FeedPage articles={recentArticles} reactions={reactions} client:load />
 </Zine>

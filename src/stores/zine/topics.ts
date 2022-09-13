@@ -3,14 +3,18 @@ import type { ReadableAtom, WritableAtom } from 'nanostores'
 import { atom, computed } from 'nanostores'
 import type { Topic } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
-import { byCreated } from '../../utils/sortby'
+import { byCreated, byStat } from '../../utils/sortby'
+import type { AuthorsSortBy } from './authors'
 
 export type TopicsSortBy = 'created' | 'name'
 
-const sortByStore = atom<TopicsSortBy>('created')
+const sortAllByStore = atom<TopicsSortBy>('created')
 
-let topicEntitiesStore: WritableAtom<Record<string, Topic>>
+let topicEntitiesStore: WritableAtom<{ [topicSlug: string]: Topic }>
 let sortedTopicsStore: ReadableAtom<Topic[]>
+let topTopicsStore: ReadableAtom<Topic[]>
+let randomTopicsStore: WritableAtom<Topic[]>
+let topicsByAuthorStore: WritableAtom<{ [authorSlug: string]: Topic[] }>
 
 const initStore = (initial?: Record<string, Topic>) => {
   if (topicEntitiesStore) {
@@ -19,7 +23,7 @@ const initStore = (initial?: Record<string, Topic>) => {
 
   topicEntitiesStore = atom<Record<string, Topic>>(initial)
 
-  sortedTopicsStore = computed([topicEntitiesStore, sortByStore], (topicEntities, sortBy) => {
+  sortedTopicsStore = computed([topicEntitiesStore, sortAllByStore], (topicEntities, sortBy) => {
     const topics = Object.values(topicEntities)
     switch (sortBy) {
       case 'created': {
@@ -35,10 +39,24 @@ const initStore = (initial?: Record<string, Topic>) => {
     }
     return topics
   })
+
+  topTopicsStore = computed(topicEntitiesStore, (topicEntities) => {
+    const topics = Object.values(topicEntities)
+    // DISCUSS
+    // topics.sort(byStat('shouts'))
+    topics.sort(byStat('rating'))
+    return topics
+  })
 }
 
-const addTopics = (topics: Topic[] = []) => {
-  const newTopicEntities = topics.reduce((acc, topic) => {
+export const setSortAllBy = (sortBy: TopicsSortBy) => {
+  sortAllByStore.set(sortBy)
+}
+
+const addTopics = (...args: Topic[][]) => {
+  const allTopics = args.flatMap((topics) => topics || [])
+
+  const newTopicEntities = allTopics.reduce((acc, topic) => {
     acc[topic.slug] = topic
     return acc
   }, {} as Record<string, Topic>)
@@ -53,6 +71,31 @@ const addTopics = (topics: Topic[] = []) => {
   }
 }
 
+export const addTopicsByAuthor = (topicsByAuthors: { [authorSlug: string]: Topic[] }) => {
+  const allTopics = Object.values(topicsByAuthors).flat()
+  addTopics(allTopics)
+
+  if (!topicsByAuthorStore) {
+    topicsByAuthorStore = atom<{ [authorSlug: string]: Topic[] }>(topicsByAuthors)
+  } else {
+    const newState = Object.entries(topicsByAuthors).reduce((acc, [authorSlug, topics]) => {
+      if (!acc[authorSlug]) {
+        acc[authorSlug] = []
+      }
+
+      topics.forEach((topic) => {
+        if (!acc[authorSlug].some((t) => t.slug === topic.slug)) {
+          acc[authorSlug].push(topic)
+        }
+      })
+
+      return acc
+    }, topicsByAuthorStore.get())
+
+    topicsByAuthorStore.set(newState)
+  }
+}
+
 export const loadAllTopics = async (): Promise<void> => {
   const topics = await apiClient.getAllTopics()
   addTopics(topics)
@@ -63,11 +106,18 @@ type InitialState = {
   randomTopics?: Topic[]
 }
 
-export const useTopicsStore = ({ topics }: InitialState) => {
-  addTopics(topics)
+export const useTopicsStore = ({ topics, randomTopics }: InitialState = {}) => {
+  addTopics(topics, randomTopics)
+
+  if (!randomTopicsStore) {
+    randomTopicsStore = atom(randomTopics)
+  }
 
   const getTopicEntities = useStore(topicEntitiesStore)
   const getSortedTopics = useStore(sortedTopicsStore)
+  const getRandomTopics = useStore(randomTopicsStore)
+  const getTopicsByAuthor = useStore(topicsByAuthorStore)
+  const getTopTopics = useStore(topTopicsStore)
 
-  return { getTopicEntities, getSortedTopics }
+  return { getTopicEntities, getSortedTopics, getRandomTopics, getTopicsByAuthor, getTopTopics }
 }

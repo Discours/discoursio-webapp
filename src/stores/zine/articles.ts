@@ -97,12 +97,12 @@ export const useArticlesStore = ({ sortedArticles }: InitialState) => {
 
 export const loadMoreAll = () => {
   const searchParams = useStore(params)
-  const pn = Number.parseInt(searchParams()['page'], 10)
+  const pn = Number.parseInt(searchParams()['page'] || '1', 10) || 1
   loadRecentAllArticles({ page: pn + 1 })
 }
 
 export const loadMorePublished = () => {
   const searchParams = useStore(params)
-  const pn = Number.parseInt(searchParams()['page'], 10)
+  const pn = Number.parseInt(searchParams()['page'] || '1', 10) || 1
   loadRecentPublishedArticles({ page: pn + 1 })
 }

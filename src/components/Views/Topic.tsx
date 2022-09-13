@@ -1,4 +1,4 @@
-import { For, Show, createMemo } from 'solid-js'
+import { For, Show, createMemo, createEffect, createSignal } from 'solid-js'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import Row3 from '../Feed/Row3'
 import Row2 from '../Feed/Row2'
@@ -8,9 +8,11 @@ import '../../styles/Topic.scss'
 import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
 import { params } from '../../stores/router'
-import { useTopicsStore } from '../../stores/zine/topics'
 import { useArticlesStore } from '../../stores/zine/articles'
 import { useStore } from '@nanostores/solid'
+import { unique } from '../../utils'
+import { useTopicsStore } from '../../stores/zine/topics'
+import { byCreated, sortBy } from '../../utils/sortby'
 
 interface TopicProps {
   topic: Topic
@@ -19,22 +21,28 @@ interface TopicProps {
 
 export const TopicPage = (props: TopicProps) => {
   const args = useStore(params)
-  const { getAuthorsByTopic } = useTopicsStore({ topics: [props.topic] })
-  const { getSortedArticles: sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
-  const topic = createMemo(() => props.topic)
-  /*
-  const slug = createMemo<string>(() => {
-    let slug = props?.slug
-    if (props?.slug.startsWith('@')) slug = slug.replace('@', '')
-    return slug
+  const { getArticlesByTopics } = useArticlesStore({ sortedArticles: props.topicArticles })
+
+  const [topicAuthors, setTopicAuthors] = createSignal([])
+  const sortedArticles = createMemo(() => {
+    const aaa = getArticlesByTopics()[props.topic.slug] || []
+    aaa.forEach((a: Shout) => {
+      a.topics?.forEach((t: Topic) => {
+        if (props.topic.slug === t.slug) {
+          setTopicAuthors((aaa) => [...aaa, a])
+        }
+      })
+    })
+    return args()['by'] ? sortBy(aaa, args()['by']) : sortBy(aaa, byCreated)
   })
-  */
+  const { getTopicEntities } = useTopicsStore({ topics: [props.topic] })
+  const topic = createMemo(() => getTopicEntities()[props.topic.slug] || props.topic)
 
   const title = createMemo(() => {
-    // const m = by()
-    // if (m === 'viewed') return t('Top viewed')
-    // if (m === 'rating') return t('Top rated')
-    // if (m === 'commented') return t('Top discussed')
+    const m = args()['by']
+    if (m === 'viewed') return t('Top viewed')
+    if (m === 'rating') return t('Top rated')
+    if (m === 'commented') return t('Top discussed')
     return t('Top recent')
   })
 
@@ -94,7 +102,7 @@ export const TopicPage = (props: TopicProps) => {
           <Show when={sortedArticles().length > 5}>
             <Beside
               title={t('Topic is supported by')}
-              values={getAuthorsByTopic() as any}
+              values={unique(topicAuthors()) as any}
               beside={sortedArticles()[6]}
               wrapper={'author'}
             />

@@ -1,5 +1,5 @@
 {
-  "name": "discoursio-astro",
+  "name": "discoursio-webapp",
   "version": "0.5.1",
   "private": true,
   "license": "MIT",
@@ -28,7 +28,7 @@
     "vercel-build": "astro build"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.159.0",
+    "@aws-sdk/client-s3": "^3.169.0",
     "@nanostores/i18n": "^0.6.0",
     "@nanostores/persistent": "^0.6.2",
     "@nanostores/router": "^0.6.0",
@@ -37,7 +37,7 @@
     "google-translate-api-x": "^10.3.5",
     "loglevel": "^1.8.0",
     "loglevel-plugin-prefix": "^0.8.4",
-    "mailgun.js": "^8.0.0",
+    "mailgun.js": "^8.0.1",
     "nanostores": "^0.6.0",
     "rehype-autolink-headings": "^6.1.1",
     "rehype-slug": "^5.0.1",

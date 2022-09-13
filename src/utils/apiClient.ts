@@ -21,7 +21,6 @@ import topicsRandomQuery from '../graphql/query/topics-random'
 import articlesTopMonth from '../graphql/query/articles-top-month'
 import articlesTopRated from '../graphql/query/articles-top-rated'
 import authorsAll from '../graphql/query/authors-all'
-import { GRAPHQL_MAX_INT } from 'graphql/type'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
@@ -43,7 +42,7 @@ export const apiClient = {
   },
   getTopMonthArticles: async () => {
     const response = await publicGraphQLClient.query(articlesTopMonth, { page: 1, size: 10 }).toPromise()
-    return response.data.articlesTopMonth
+    return response.data.topMonth
   },
   getRandomTopics: async () => {
     const response = await publicGraphQLClient.query(topicsRandomQuery, {}).toPromise()
@@ -69,33 +68,27 @@ export const apiClient = {
 
     return response.data.searchQuery
   },
-  getRecentAllArticles: async ({
-    page = 1,
-    size = FEED_PAGE_SIZE
-  }: {
-    page?: number
-    size?: number
-  }): Promise<Shout[]> => {
+  getRecentAllArticles: async ({ page, size }: { page?: number; size?: number }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesRecentAll, {
-        page,
-        size
+        page: page || 1,
+        size: size || FEED_PAGE_SIZE
       })
       .toPromise()
 
     return response.data.recentAll
   },
   getRecentPublishedArticles: async ({
-    page = 1,
-    size = FEED_PAGE_SIZE
+    page,
+    size
   }: {
     page?: number
     size?: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesRecentPublished, {
-        page,
-        size
+        page: page || 1,
+        size: size || FEED_PAGE_SIZE
       })
       .toPromise()
 
@@ -198,9 +191,7 @@ export const apiClient = {
   },
 
   getAllAuthors: async () => {
-    const response = await publicGraphQLClient
-      .query(authorsAll, { page: 1, size: GRAPHQL_MAX_INT })
-      .toPromise()
+    const response = await publicGraphQLClient.query(authorsAll, { page: 1, size: 9999 }).toPromise()
     return response.data.authorsAll
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {

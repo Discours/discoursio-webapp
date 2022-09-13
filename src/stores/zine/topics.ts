@@ -11,7 +11,6 @@ const sortByStore = atom<TopicsSortBy>('created')
 
 let topicEntitiesStore: WritableAtom<Record<string, Topic>>
 let sortedTopicsStore: ReadableAtom<Topic[]>
-let randomTopicsStore: WritableAtom<Topic[]>
 
 const initStore = (initial?: Record<string, Topic>) => {
   if (topicEntitiesStore) {
@@ -64,18 +63,11 @@ type InitialState = {
   randomTopics?: Topic[]
 }
 
-export const useTopicsStore = ({ topics, randomTopics }: InitialState) => {
+export const useTopicsStore = ({ topics }: InitialState) => {
   addTopics(topics)
-
-  // WIP
-  if (!randomTopicsStore) {
-    randomTopicsStore = atom<Topic[]>(randomTopics)
-  }
 
   const getTopicEntities = useStore(topicEntitiesStore)
   const getSortedTopics = useStore(sortedTopicsStore)
-  const getRandomTopics = useStore(randomTopicsStore)
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const getAuthorsByTopic = () => [] // FIXME: useStore(authorsByTopic)
-  return { getTopicEntities, getSortedTopics, getRandomTopics, getAuthorsByTopic }
+
+  return { getTopicEntities, getSortedTopics }
 }

@@ -11,7 +11,7 @@ const sortByStore = atom<AuthorsSortBy>('created')
 
 let authorEntitiesStore: WritableAtom<Record<string, Author>>
 let sortedAuthorsStore: ReadableAtom<Author[]>
-
+let authorsByTopicStore: WritableAtom<Record<string, Author[]>>
 const initStore = (initial?: Record<string, Author>) => {
   if (authorEntitiesStore) {
     return
@@ -61,6 +61,6 @@ export const useAuthorsStore = (initial?: Author[]) => {
 
   const getAuthorEntities = useStore(authorEntitiesStore)
   const getSortedAuthors = useStore(sortedAuthorsStore)
-
-  return { getAuthorEntities, getSortedAuthors }
+  const getAuthorsByTopic = useStore(authorsByTopicStore)
+  return { getAuthorEntities, getSortedAuthors, getAuthorsByTopic }
 }

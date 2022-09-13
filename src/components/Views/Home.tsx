@@ -24,6 +24,8 @@ import {
 } from '../../stores/zine/top'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { loadMorePublished, useArticlesStore } from '../../stores/zine/articles'
+import { sortBy } from '../../utils/sortby'
+import { shuffle } from '../../utils'
 
 type HomeProps = {
   randomTopics: Topic[]
@@ -39,39 +41,31 @@ const LAYOUTS = ['article', 'prose', 'music', 'video', 'image']
 export const HomePage = (props: HomeProps) => {
   const [someLayout, setSomeLayout] = createSignal([] as Shout[])
   const [selectedLayout, setSelectedLayout] = createSignal('article')
-  const [byLayout, setByLayout] = createSignal({} as { [layout: string]: Shout[] })
-  const [byTopic, setByTopic] = createSignal({} as { [topic: string]: Shout[] })
-  const { getSortedArticles } = useArticlesStore({ sortedArticles: props.recentPublishedArticles })
-  const articles = createMemo(() => getSortedArticles())
-  const { getRandomTopics, getSortedTopics } = useTopicsStore({ randomTopics: props.randomTopics })
+  const [byLayout, setByLayout] = createSignal<{ [layout: string]: Shout[] }>({})
+  const { getSortedArticles: articles, getArticlesByTopics: byTopic } = useArticlesStore({
+    sortedArticles: props.recentPublishedArticles
+  })
+  const { getSortedTopics } = useTopicsStore({ topics: sortBy(props.randomTopics, 'shouts') })
 
   createEffect(() => {
     if (articles() && articles().length > 0 && Object.keys(byTopic()).length === 0) {
-      console.debug('[home] ' + getRandomTopics().length.toString() + ' random topics loaded')
       console.debug('[home] ' + articles().length.toString() + ' overall shouts loaded')
       console.log('[home] preparing published articles...')
       // get shouts lists by
       const bl: { [key: string]: Shout[] } = {}
-      const bt: { [key: string]: Shout[] } = {}
       articles().forEach((s: Shout) => {
-        // by topic
-        s.topics?.forEach(({ slug }: any) => {
-          if (!bt[slug || '']) bt[slug || ''] = []
-          bt[slug as string].push(s)
-        })
         // by layout
         const l = s.layout || 'article'
         if (!bl[l]) bl[l] = []
         bl[l].push(s)
       })
       setByLayout(bl)
-      setByTopic(bt)
-      console.log('[home] some grouped articles are ready')
+      console.log('[home] some grouped by layout articles are ready')
     }
   }, [articles()])
 
   createEffect(() => {
-    if (Object.keys(byLayout()).length > 0 && getSortedTopics()) {
+    if (getSortedTopics() && !selectedLayout()) {
       // random special layout pick
       const special = LAYOUTS.filter((la) => la !== 'article')
       const layout = special[Math.floor(Math.random() * special.length)]
@@ -85,7 +79,7 @@ export const HomePage = (props: HomeProps) => {
     if (props.topOverallArticles) setTopRated(props.topOverallArticles)
     console.info('[home] mounted')
   })
-
+  const getRandomTopics = () => shuffle(getSortedTopics()).slice(0, 12)
   return (
     <Suspense fallback={t('Loading')}>
       <Show when={Boolean(articles())}>

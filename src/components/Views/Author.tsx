@@ -1,5 +1,5 @@
 import { Show, createMemo } from 'solid-js'
-import type { Author, Shout } from '../../graphql/types.gen'
+import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import Row2 from '../Feed/Row2'
 import Row3 from '../Feed/Row3'
 import Beside from '../Feed/Beside'
@@ -13,13 +13,16 @@ import '../../styles/Topic.scss'
 import { useStore } from '@nanostores/solid'
 import { useTopicsStore } from '../../stores/zine/topics'
 
+// TODO: load reactions on client
 type AuthorProps = {
   authorArticles: Shout[]
   author: Author
+  // FIXME author topics fro server
+  // topics: Topic[]
 }
 
 export const AuthorPage = (props: AuthorProps) => {
-  const { getSortedArticles: articles, getArticlesByAuthor } = useArticlesStore({
+  const { getSortedArticles: articles } = useArticlesStore({
     sortedArticles: props.authorArticles
   })
   const { getAuthorEntities: authors } = useAuthorsStore({ authors: [props.author] })

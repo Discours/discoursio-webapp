@@ -32,10 +32,8 @@ export const TopicCard = (props: TopicProps) => {
   const subscribe = async (really = true) => {
     if (really) {
       follow({ what: FollowingEntity.Topic, slug: topic().slug })
-      // TODO: setSubscribers(topic().stat?.followers as number + 1)
     } else {
       unfollow({ what: FollowingEntity.Topic, slug: topic().slug })
-      // TODO: setSubscribers(topic().stat?.followers as number - 1)
     }
   }
   return (

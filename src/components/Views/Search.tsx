@@ -31,14 +31,11 @@ export const SearchPage = (props: Props) => {
     <div class="search-page wide-container">
       <form action="/search" class="search-form row">
         <div class="col-sm-9">
+          {/*FIXME t*/}
           <input type="search" name="q" onChange={handleQueryChange} placeholder="Введите текст..." />
-          <input type="search" name="q" placeholder="Введите текст..." />
         </div>
         <div class="col-sm-3">
           <button class="button" type="submit" onClick={handleSubmit}>
-            {t('Search')}
-          </button>
-          <button class="button" type="submit">
             {t('Search')}
           </button>
         </div>

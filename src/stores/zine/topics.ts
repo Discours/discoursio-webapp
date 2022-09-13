@@ -4,10 +4,11 @@ import { atom, computed } from 'nanostores'
 import type { Topic } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
 import { byCreated, byStat } from '../../utils/sortby'
+import type { AuthorsSortBy } from './authors'
 
 export type TopicsSortBy = 'created' | 'name'
 
-const sortByStore = atom<TopicsSortBy>('created')
+const sortAllByStore = atom<TopicsSortBy>('created')
 
 let topicEntitiesStore: WritableAtom<{ [topicSlug: string]: Topic }>
 let sortedTopicsStore: ReadableAtom<Topic[]>
@@ -22,7 +23,7 @@ const initStore = (initial?: Record<string, Topic>) => {
 
   topicEntitiesStore = atom<Record<string, Topic>>(initial)
 
-  sortedTopicsStore = computed([topicEntitiesStore, sortByStore], (topicEntities, sortBy) => {
+  sortedTopicsStore = computed([topicEntitiesStore, sortAllByStore], (topicEntities, sortBy) => {
     const topics = Object.values(topicEntities)
     switch (sortBy) {
       case 'created': {
@@ -46,6 +47,10 @@ const initStore = (initial?: Record<string, Topic>) => {
     topics.sort(byStat('rating'))
     return topics
   })
+}
+
+export const setSortAllBy = (sortBy: TopicsSortBy) => {
+  sortAllByStore.set(sortBy)
 }
 
 const addTopics = (...args: Topic[][]) => {

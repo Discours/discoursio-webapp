@@ -7,7 +7,7 @@ import { byCreated, byStat } from '../../utils/sortby'
 
 export type AuthorsSortBy = 'created' | 'name'
 
-const sortByStore = atom<AuthorsSortBy>('created')
+const sortAllByStore = atom<AuthorsSortBy>('created')
 
 let authorEntitiesStore: WritableAtom<{ [authorSlug: string]: Author }>
 let authorsByTopicStore: WritableAtom<{ [topicSlug: string]: Author[] }>
@@ -21,7 +21,7 @@ const initStore = (initial: { [authorSlug: string]: Author }) => {
 
   authorEntitiesStore = atom(initial)
 
-  sortedAuthorsStore = computed([authorEntitiesStore, sortByStore], (authorEntities, sortBy) => {
+  sortedAuthorsStore = computed([authorEntitiesStore, sortAllByStore], (authorEntities, sortBy) => {
     const authors = Object.values(authorEntities)
     switch (sortBy) {
       case 'created': {
@@ -40,6 +40,10 @@ const initStore = (initial: { [authorSlug: string]: Author }) => {
     // TODO real top authors
     return Object.values(authorEntities)
   })
+}
+
+export const setSortAllBy = (sortBy: AuthorsSortBy) => {
+  sortAllByStore.set(sortBy)
 }
 
 const addAuthors = (authors: Author[]) => {

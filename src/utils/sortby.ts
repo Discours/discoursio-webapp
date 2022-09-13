@@ -24,6 +24,7 @@ export const byLength = (a: any[], b: any[]) => {
   return 0
 }
 
+// FIXME keyof TopicStat
 export const byStat = (metric: keyof Stat) => {
   return (a, b) => {
     const x = (a?.stat && a.stat[metric]) || 0

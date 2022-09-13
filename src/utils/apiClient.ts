@@ -33,7 +33,8 @@ import authorsBySlugs from '../graphql/query/authors-by-slugs'
 
 const log = getLogger('api-client')
 
-const DEFAULT_AUTHOR_ARTICLES_PAGE_SIZE = 50
+// TODO: paging
+const DEFAULT_AUTHOR_ARTICLES_PAGE_SIZE = 999999
 const DEFAULT_TOPIC_ARTICLES_PAGE_SIZE = 50
 const DEFAULT_RECENT_ARTICLES_PAGE_SIZE = 50
 const DEFAULT_REACTIONS_PAGE_SIZE = 50

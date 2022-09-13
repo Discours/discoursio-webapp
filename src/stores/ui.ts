@@ -1,5 +1,5 @@
 import { persistentAtom } from '@nanostores/persistent'
-import { action, atom } from 'nanostores'
+import { atom } from 'nanostores'
 import { useStore } from '@nanostores/solid'
 
 export const locale = persistentAtom<string>('locale', 'ru')

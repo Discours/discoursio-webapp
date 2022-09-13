@@ -55,6 +55,7 @@ export const FeedPage = (props: FeedProps) => {
   // })
 
   const loadMore = () => {
+    // FIXME
     const page = (props.page || 1) + 1
     loadRecentArticles({ page })
   }
@@ -98,7 +99,7 @@ export const FeedPage = (props: FeedProps) => {
               </div>
 
               <ul class="beside-column">
-                <For each={getTopAuthors()}>
+                <For each={getTopAuthors().slice(0, 5)}>
                   {(author) => (
                     <li>
                       <AuthorCard author={author} compact={true} hasLink={true} />
@@ -127,7 +128,7 @@ export const FeedPage = (props: FeedProps) => {
             <Show when={getTopTopics().length > 0}>
               <section class="feed-topics">
                 <h4>{t('Topics')}</h4>
-                <For each={getTopTopics()}>
+                <For each={getTopTopics().slice(0, 5)}>
                   {(topic) => <TopicCard topic={topic} subscribeButtonBottom={true} />}
                 </For>
               </section>

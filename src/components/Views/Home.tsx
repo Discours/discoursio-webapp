@@ -92,6 +92,7 @@ export const HomePage = (props: HomeProps) => {
   // }, [byLayout()])
 
   const loadMore = () => {
+    // FIXME
     const page = (props.page || 1) + 1
     loadPublishedArticles({ page })
   }

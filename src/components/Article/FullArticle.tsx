@@ -11,6 +11,7 @@ import { renderMarkdown } from '@astrojs/markdown-remark'
 import { markdownOptions } from '../../../mdx.config'
 import { useStore } from '@nanostores/solid'
 import { session } from '../../stores/auth'
+import { incrementView, loadArticle } from '../../stores/zine/articles'
 
 const MAX_COMMENT_LEVEL = 6
 
@@ -43,12 +44,22 @@ export const FullArticle = (props: ArticleProps) => {
   const auth = useStore(session)
 
   onMount(() => {
-    const b: string = props.article?.body
-    if (b?.toString().startsWith('<')) {
-      setBody(b)
-    } else {
-      renderMarkdown(b, markdownOptions).then(({ code }) => setBody(code))
+    if (!props.article.body) {
+      loadArticle({ slug: props.article.slug })
     }
+  })
+
+  // onMount(() => {
+  //   const b: string = props.article?.body
+  //   if (b?.toString().startsWith('<')) {
+  //     setBody(b)
+  //   } else {
+  //     renderMarkdown(b, markdownOptions).then(({ code }) => setBody(code))
+  //   }
+  // })
+
+  onMount(() => {
+    incrementView({ articleSlug: props.article.slug })
   })
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))

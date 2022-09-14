@@ -1,5 +1,4 @@
 import { createRouter, createSearchParams } from '@nanostores/router'
-import { createEffect } from 'solid-js'
 import { isServer } from 'solid-js/web'
 
 // Types for :params in route templates
@@ -41,24 +40,15 @@ export const router = createRouter<Routes>(
   }
 )
 
-// suppresses reload
-export const route = (ev) => {
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const _route = (ev) => {
-    const href: string = ev.target.href
-    console.log('[router] faster link', href)
-    ev.stopPropoganation()
-    ev.preventDefault()
-    router.open(href)
-  }
-  if (typeof ev === 'function') {
-    return _route
-  } else if (!isServer && ev?.target && ev.target.href) {
-    _route(ev)
-  }
+export const handleClientRouteLinkClick = (ev) => {
+  const href = ev.target.href
+  console.log('[router] faster link', href)
+  ev.stopPropagation()
+  ev.preventDefault()
+  router.open(href)
 }
 
 if (!isServer) {
-  console.log('[router] client runtime')
-  createEffect(() => router.open(window.location.pathname), [window.location])
+  const { pathname, search } = window.location
+  router.open(pathname + search)
 }

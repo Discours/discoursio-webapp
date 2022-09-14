@@ -170,6 +170,14 @@ export const loadSearchResults = async ({
   addSortedArticles(newArticles)
 }
 
+export const incrementView = async ({ articleSlug }: { articleSlug: string }): Promise<void> => {
+  await apiClient.incrementView({ articleSlug })
+}
+
+export const loadArticle = async ({ slug }: { slug: string }): Promise<Shout> => {
+  return await apiClient.getArticle({ slug })
+}
+
 type InitialState = {
   sortedArticles?: Shout[]
   topRatedArticles?: Shout[]

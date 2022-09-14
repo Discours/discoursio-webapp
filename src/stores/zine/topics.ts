@@ -14,7 +14,9 @@ let topicEntitiesStore: WritableAtom<{ [topicSlug: string]: Topic }>
 let sortedTopicsStore: ReadableAtom<Topic[]>
 let topTopicsStore: ReadableAtom<Topic[]>
 let randomTopicsStore: WritableAtom<Topic[]>
-let topicsByAuthorStore: WritableAtom<{ [authorSlug: string]: Topic[] }>
+let topicsByAuthorStore: WritableAtom<{ [authorSlug: string]: Topic[] }> = atom<{
+  [authorSlug: string]: Topic[]
+}>({})
 
 const initStore = (initial?: Record<string, Topic>) => {
   if (topicEntitiesStore) {

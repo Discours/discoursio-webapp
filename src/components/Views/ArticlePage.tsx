@@ -29,8 +29,8 @@ export const ArticlePage = (props: ArticlePageProps) => {
       setIsCommentsLoading(true)
       await loadArticleReactions({
         articleSlug: props.slug,
-        page: getCommentsPage(),
-        size: ARTICLE_COMMENTS_PAGE_SIZE
+        limit: ARTICLE_COMMENTS_PAGE_SIZE,
+        offset: getCommentsPage() * ARTICLE_COMMENTS_PAGE_SIZE
       })
     } finally {
       setIsCommentsLoading(false)

@@ -3,7 +3,9 @@ import { FeedPage } from '../../components/Views/Feed'
 import Zine from '../../layouts/zine.astro'
 import { apiClient } from '../../utils/apiClient'
 
-const recentArticles = await apiClient.getRecentArticles({ limit: 50, offset: 0 })
+const limit = parseInt(Astro.params?.limit as string, 10) || 50
+const offset = parseInt(Astro.params?.offset as string, 10) || 0
+const recentArticles = await apiClient.getRecentArticles({ limit, offset })
 const shoutSlugs = recentArticles.map((s) => s.slug)
 const reactions = await apiClient.getReactionsForShouts({ shoutSlugs })
 ---

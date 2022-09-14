@@ -22,8 +22,8 @@ type HomeProps = {
   recentPublishedArticles: Shout[]
   topMonthArticles: Shout[]
   topOverallArticles: Shout[]
-  page?: number
-  size?: number
+  limit?: number
+  offset?: number
 }
 
 const LAYOUTS = ['article', 'prose', 'music', 'video', 'image']
@@ -92,8 +92,9 @@ export const HomePage = (props: HomeProps) => {
   // }, [byLayout()])
 
   const loadMore = () => {
-    const page = (props.page || 1) + 1
-    loadPublishedArticles({ page })
+    const limit = props.limit || 50
+    const offset = props.offset || 0
+    loadPublishedArticles({ limit, offset })
   }
   return (
     <Suspense fallback={t('Loading')}>

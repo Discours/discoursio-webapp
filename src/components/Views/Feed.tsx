@@ -19,8 +19,8 @@ import { useTopicsStore } from '../../stores/zine/topics'
 interface FeedProps {
   articles: Shout[]
   reactions: Reaction[]
-  page?: number
-  size?: number
+  limit?: number
+  offset?: number
 }
 
 // const AUTHORSHIP_REACTIONS = [
@@ -54,9 +54,11 @@ export const FeedPage = (props: FeedProps) => {
   //   return []
   // })
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const loadMore = () => {
-    const page = (props.page || 1) + 1
-    loadRecentArticles({ page })
+    const limit = props.limit || 50
+    const offset = props.offset || 0
+    loadRecentArticles({ limit, offset })
   }
   return (
     <>

@@ -132,20 +132,40 @@ const addSortedArticles = (articles: Shout[]) => {
   }
 }
 
-export const loadRecentArticles = async ({ page }: { page: number }): Promise<void> => {
-  const newArticles = await apiClient.getRecentArticles({ page })
+export const loadRecentArticles = async ({
+  limit,
+  offset
+}: {
+  limit?: number
+  offset?: number
+}): Promise<void> => {
+  const newArticles = await apiClient.getRecentArticles({ limit, offset })
   addArticles(newArticles)
   addSortedArticles(newArticles)
 }
 
-export const loadPublishedArticles = async ({ page }: { page: number }): Promise<void> => {
-  const newArticles = await apiClient.getPublishedArticles({ page })
+export const loadPublishedArticles = async ({
+  limit,
+  offset
+}: {
+  limit?: number
+  offset?: number
+}): Promise<void> => {
+  const newArticles = await apiClient.getPublishedArticles({ limit, offset })
   addArticles(newArticles)
   addSortedArticles(newArticles)
 }
 
-export const loadSearchResults = async ({ query }: { query: string }): Promise<void> => {
-  const newArticles = await apiClient.getSearchResults({ query })
+export const loadSearchResults = async ({
+  query,
+  limit,
+  offset
+}: {
+  query: string
+  limit?: number
+  offset?: number
+}): Promise<void> => {
+  const newArticles = await apiClient.getSearchResults({ query, limit, offset })
   addArticles(newArticles)
   addSortedArticles(newArticles)
 }

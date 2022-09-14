@@ -30,6 +30,7 @@ import authReset from '../graphql/mutation/auth-reset'
 import authForget from '../graphql/mutation/auth-forget'
 import authResend from '../graphql/mutation/auth-resend'
 import authorsBySlugs from '../graphql/query/authors-by-slugs'
+import incrementView from '../graphql/mutation/increment-view'
 
 const log = getLogger('api-client')
 
@@ -81,7 +82,7 @@ export const apiClient = {
       })
       .toPromise()
 
-    return response.data.searchQuery
+    return response.data?.searchQuery || []
   },
   getRecentArticles: async ({
     limit = FEED_SIZE,
@@ -266,5 +267,8 @@ export const apiClient = {
     const response = await privateGraphQLClient.mutation(reactionDestroy, { id }).toPromise()
 
     return response.data.deleteReaction
+  },
+  incrementView: async ({ articleSlug }) => {
+    await privateGraphQLClient.mutation(incrementView, { shout: articleSlug })
   }
 }

@@ -6,7 +6,7 @@ import { groupByName } from '../../utils/groupby'
 import Icon from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { route, params as paramsStore } from '../../stores/router'
+import { params as paramsStore, handleClientRouteLinkClick } from '../../stores/router'
 import { session } from '../../stores/auth'
 import { useStore } from '@nanostores/solid'
 import '../../styles/AllTopics.scss'
@@ -18,7 +18,9 @@ export const AllAuthorsPage = (props: any) => {
   const [abc, setAbc] = createSignal([])
   const auth = useStore(session)
   const subscribed = (s) => Boolean(auth()?.info?.authors && auth()?.info?.authors?.includes(s || ''))
+
   const params = useStore(paramsStore)
+
   createEffect(() => {
     if ((!params()['by'] || params()['by'] === 'abc') && abc().length === 0) {
       console.log('[authors] default grouping by abc')
@@ -49,17 +51,17 @@ export const AllAuthorsPage = (props: any) => {
               <div class="col">
                 <ul class="view-switcher">
                   <li classList={{ selected: params()['by'] === 'shouts' }}>
-                    <a href="/authors?by=shouts" onClick={route}>
+                    <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
                       {t('By shouts')}
                     </a>
                   </li>
                   <li classList={{ selected: params()['by'] === 'rating' }}>
-                    <a href="/authors?by=rating" onClick={route}>
+                    <a href="/authors?by=rating" onClick={handleClientRouteLinkClick}>
                       {t('By rating')}
                     </a>
                   </li>
                   <li classList={{ selected: !params()['by'] || params()['by'] === 'abc' }}>
-                    <a href="/authors" onClick={route}>
+                    <a href="/authors" onClick={handleClientRouteLinkClick}>
                       {t('By alphabet')}
                     </a>
                   </li>

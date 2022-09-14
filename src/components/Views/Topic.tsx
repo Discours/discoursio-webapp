@@ -99,7 +99,7 @@ export const TopicPage = (props: TopicProps) => {
           <Show when={sortedArticles().length > 5}>
             <Beside
               title={t('Topic is supported by')}
-              values={getAuthorsByTopic()[topic().slug]}
+              values={getAuthorsByTopic()[topic().slug].slice(0, 7)}
               beside={sortedArticles()[6]}
               wrapper={'author'}
             />

@@ -4,12 +4,10 @@ import { useStore } from '@nanostores/solid'
 import { Suspense } from 'solid-js'
 import { Header } from '../components/Nav/Header'
 import { locale as langstore } from '../stores/ui'
-import { router } from '../stores/router'
 import { t } from '../utils/intl'
 
 const { title } = Astro.params
 const locale = useStore(langstore)
-router.open(Astro.url.pathname) // mb doesn't work!
 ---
 
 <html lang={locale() || 'ru'}>

@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ReactionsByShoutQuery($slug: String!, $page: Int!, $size: Int!) {
-    reactionsByShout(slug: $slug, page: $page, size: $size) {
+  query ReactionsByShoutQuery($limit: String!, $limit: Int!, $offset: Int!) {
+    reactionsByShout(slug: $slug, limit: $limit, offset: $offset) {
       id
       body
       createdAt

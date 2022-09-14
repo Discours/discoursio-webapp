@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query RecentAllQuery($page: Int!, $size: Int!) {
-    recentAll(page: $page, size: $size) {
+  query RecentAllQuery($limit: Int!, $offset: Int!) {
+    recentAll(limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

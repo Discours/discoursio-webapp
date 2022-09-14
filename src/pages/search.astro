@@ -5,7 +5,7 @@ import { apiClient } from '../utils/apiClient'
 
 const params: URLSearchParams = Astro.url.searchParams
 const q = params.get('q')
-const results = await apiClient.getSearchResults({ query: q })
+const results = await apiClient.getSearchResults({ query: q, limit: 50, offset: 0 })
 ---
 
 <Zine>

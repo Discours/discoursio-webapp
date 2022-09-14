@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query AuthorssAllQuery($page: Int!, $size: Int!) {
-    authorsAll(page: $page, size: $size) {
+  query AuthorssAllQuery($limit: Int!, $offset: Int!) {
+    authorsAll(limit: $limit, offset: $offset) {
       _id: slug
       slug
       name

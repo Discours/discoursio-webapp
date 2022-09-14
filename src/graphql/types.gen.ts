@@ -371,8 +371,8 @@ export type Query = {
 }
 
 export type QueryAuthorsAllArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryEnterChatArgs = {
@@ -386,8 +386,8 @@ export type QueryGetCommunityArgs = {
 
 export type QueryGetMessagesArgs = {
   chatId: Scalars['String']
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryGetShoutBySlugArgs = {
@@ -411,41 +411,41 @@ export type QueryIsEmailUsedArgs = {
 }
 
 export type QueryMyCandidatesArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryReactionsByAuthorArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
   slug: Scalars['String']
 }
 
 export type QueryReactionsByShoutArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
   slug: Scalars['String']
 }
 
 export type QueryReactionsForShoutsArgs = {
-  page: Scalars['Int']
+  limit: Scalars['Int']
   shouts: Array<InputMaybe<Scalars['String']>>
-  size: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryRecentAllArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryRecentPublishedArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryRecentReactedArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QuerySearchQueryArgs = {
@@ -455,8 +455,8 @@ export type QuerySearchQueryArgs = {
 }
 
 export type QueryShoutsByAuthorsArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
   slugs: Array<InputMaybe<Scalars['String']>>
 }
 
@@ -467,20 +467,20 @@ export type QueryShoutsByCollectionArgs = {
 }
 
 export type QueryShoutsByCommunitiesArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
   slugs: Array<InputMaybe<Scalars['String']>>
 }
 
 export type QueryShoutsByTopicsArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
   slugs: Array<InputMaybe<Scalars['String']>>
 }
 
 export type QueryShoutsForFeedArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QuerySignInArgs = {
@@ -489,18 +489,18 @@ export type QuerySignInArgs = {
 }
 
 export type QueryTopMonthArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryTopOverallArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryTopViewedArgs = {
-  page: Scalars['Int']
-  size: Scalars['Int']
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryTopicsByAuthorArgs = {

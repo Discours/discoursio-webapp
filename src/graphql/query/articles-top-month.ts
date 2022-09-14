@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query TopMonthShoutsQuery($page: Int!, $size: Int!) {
-    topMonth(page: $page, size: $size) {
+  query TopMonthShoutsQuery($limit: Int!, $offset: Int!) {
+    topMonth(limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

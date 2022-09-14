@@ -33,31 +33,27 @@ import authorsBySlugs from '../graphql/query/authors-by-slugs'
 
 const log = getLogger('api-client')
 
-const DEFAULT_AUTHOR_ARTICLES_PAGE_SIZE = 50
-const DEFAULT_TOPIC_ARTICLES_PAGE_SIZE = 50
-const DEFAULT_RECENT_ARTICLES_PAGE_SIZE = 50
-const DEFAULT_REACTIONS_PAGE_SIZE = 50
-const DEFAULT_SEARCH_RESULTS_PAGE_SIZE = 50
-const DEFAULT_PUBLISHED_ARTICLES_PAGE_SIZE = 50
+const FEED_SIZE = 50
+const REACTIONS_PAGE_SIZE = 100
 const DEFAULT_RANDOM_TOPICS_AMOUNT = 12
 
 export const apiClient = {
   getTopArticles: async () => {
-    const response = await publicGraphQLClient.query(articlesTopRated, { page: 1, size: 10 }).toPromise()
+    const response = await publicGraphQLClient.query(articlesTopRated, { limit: 10, offset: 0 }).toPromise()
     return response.data.topOverall
   },
   getTopMonthArticles: async () => {
-    const response = await publicGraphQLClient.query(articlesTopMonth, { page: 1, size: 10 }).toPromise()
+    const response = await publicGraphQLClient.query(articlesTopMonth, { limit: 10, offset: 0 }).toPromise()
     return response.data.topMonth
   },
   getRecentPublishedArticles: async ({
-    page = 1,
-    size = DEFAULT_RECENT_ARTICLES_PAGE_SIZE
+    limit = FEED_SIZE,
+    offset = 0
   }: {
-    page?: number
-    size?: number
+    limit?: number
+    offset?: number
   }) => {
-    const response = await publicGraphQLClient.query(articlesRecentPublished, { page, size }).toPromise()
+    const response = await publicGraphQLClient.query(articlesRecentPublished, { limit, offset }).toPromise()
 
     return response.data.recentPublished
   },
@@ -70,34 +66,34 @@ export const apiClient = {
   },
   getSearchResults: async ({
     query,
-    page = 1,
-    size = DEFAULT_SEARCH_RESULTS_PAGE_SIZE
+    limit = FEED_SIZE,
+    offset = 0
   }: {
     query: string
-    page?: number
-    size?: number
+    limit: number
+    offset: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(searchResults, {
         q: query,
-        page,
-        size
+        limit,
+        offset
       })
       .toPromise()
 
     return response.data.searchQuery
   },
   getRecentArticles: async ({
-    page = 1,
-    size = DEFAULT_RECENT_ARTICLES_PAGE_SIZE
+    limit = FEED_SIZE,
+    offset = 0
   }: {
-    page?: number
-    size?: number
+    limit: number
+    offset: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesRecentAll, {
-        page,
-        size
+        limit,
+        offset
       })
       .toPromise()
 
@@ -105,18 +101,18 @@ export const apiClient = {
   },
   getArticlesForTopics: async ({
     topicSlugs,
-    page = 1,
-    size = DEFAULT_TOPIC_ARTICLES_PAGE_SIZE
+    limit = FEED_SIZE,
+    offset = 0
   }: {
     topicSlugs: string[]
-    page?: number
-    size?: number
+    limit: number
+    offset: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesForTopics, {
         slugs: topicSlugs,
-        page,
-        size
+        limit,
+        offset
       })
       .toPromise()
 
@@ -124,18 +120,18 @@ export const apiClient = {
   },
   getArticlesForAuthors: async ({
     authorSlugs,
-    page = 1,
-    size = DEFAULT_AUTHOR_ARTICLES_PAGE_SIZE
+    limit = FEED_SIZE,
+    offset = 0
   }: {
     authorSlugs: string[]
-    page?: number
-    size?: number
+    limit: number
+    offset: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesForAuthors, {
         slugs: authorSlugs,
-        page,
-        size
+        limit,
+        offset
       })
       .toPromise()
 
@@ -192,14 +188,8 @@ export const apiClient = {
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
     return response.data.refreshSession
   },
-  getPublishedArticles: async ({
-    page = 1,
-    size = DEFAULT_PUBLISHED_ARTICLES_PAGE_SIZE
-  }: {
-    page?: number
-    size?: number
-  }) => {
-    const response = await publicGraphQLClient.query(articlesRecentPublished, { page, size }).toPromise()
+  getPublishedArticles: async ({ limit = FEED_SIZE, offset }: { limit?: number; offset?: number }) => {
+    const response = await publicGraphQLClient.query(articlesRecentPublished, { limit, offset }).toPromise()
 
     return response.data.recentPublished
   },
@@ -209,7 +199,7 @@ export const apiClient = {
   },
 
   getAllAuthors: async () => {
-    const response = await publicGraphQLClient.query(authorsAll, { page: 1, size: 999999 }).toPromise()
+    const response = await publicGraphQLClient.query(authorsAll, { limit: 9999, offset: 9999 }).toPromise()
     return response.data.authorsAll
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
@@ -222,18 +212,18 @@ export const apiClient = {
 
   getReactionsForShouts: async ({
     shoutSlugs,
-    page = 1,
-    size = DEFAULT_REACTIONS_PAGE_SIZE
+    limit = FEED_SIZE,
+    offset = 0
   }: {
     shoutSlugs: string[]
-    page?: number
-    size?: number
+    limit?: number
+    offset?: number
   }): Promise<Reaction[]> => {
     const response = await publicGraphQLClient
       .query(reactionsForShouts, {
         shouts: shoutSlugs,
-        page,
-        size
+        limit,
+        offset
       })
       .toPromise()
 
@@ -241,18 +231,18 @@ export const apiClient = {
   },
   getArticleReactions: async ({
     articleSlug,
-    page,
-    size
+    limit = REACTIONS_PAGE_SIZE,
+    offset = 0
   }: {
     articleSlug: string
-    page: number
-    size: number
+    limit: number
+    offset: number
   }): Promise<Reaction[]> => {
     const response = await publicGraphQLClient
       .query(articleReactions, {
         slug: articleSlug,
-        page,
-        size
+        limit,
+        offset
       })
       .toPromise()
 

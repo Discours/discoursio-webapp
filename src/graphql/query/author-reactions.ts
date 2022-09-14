@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ReactionsByAuthorQuery($author: String!, $page: Int!, $size: Int!) {
-    reactionsByAuthor(slug: $author, page: $page, size: $size) {
+  query ReactionsByAuthorQuery($author: String!, $limit: Int!, $offset: Int!) {
+    reactionsByAuthor(slug: $author, limit: $limit, offset: $offset) {
       id
       body
       createdAt

@@ -9,6 +9,7 @@ import { useStore } from '@nanostores/solid'
 import { session as sessionstore, signIn } from '../../stores/auth'
 import { apiClient } from '../../utils/apiClient'
 import { useValidator } from '../../utils/validators'
+import { baseUrl } from '../../graphql/publicGraphQLClient'
 
 type AuthMode = 'sign-in' | 'sign-up' | 'forget' | 'reset' | 'resend' | 'password'
 
@@ -47,8 +48,6 @@ export default (props: { code?: string; mode?: string }) => {
 
   // 3rd party providier auth handler
   const oauth = (provider: string): void => {
-    // TODO: move to config
-    const baseUrl = 'https://newapi.discours.io'
     const popup = window.open(`${baseUrl}/oauth/${provider}`, provider, 'width=740, height=420')
     popup?.focus()
     hideModal()

@@ -1,5 +1,5 @@
 [0.5.1]
-[+] nanostores-based custom spa routing
+[+] nanostores-base global store
 [-] Root.tsx components
 [+] astro/solid basic hydration
 

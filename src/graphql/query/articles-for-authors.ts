@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsForAuthorsQuery($slugs: [String]!, $page: Int!, $size: Int!) {
-    shoutsByAuthors(slugs: $slugs, page: $page, size: $size) {
+  query ShoutsForAuthorsQuery($slugs: [String]!, $limit: Int!, $offset: Int!) {
+    shoutsByAuthors(slugs: $slugs, limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

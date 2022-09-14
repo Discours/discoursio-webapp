@@ -1,13 +1,11 @@
 import { createClient, ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
 import { authExchanges } from './auth'
+import { baseUrl } from './publicGraphQLClient'
 
 const isDev = true
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
-
-//export const baseUrl = 'http://localhost:8000'
-export const baseUrl = 'https://newapi.discours.io'
 
 const exchanges: Exchange[] = [dedupExchange, ...authExchanges, fetchExchange]
 

@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsForCommunitiesQuery($slugs: [String]!, $page: Int!, $size: Int!) {
-    shoutsByCommunities(slugs: $slugs, page: $page, size: $size) {
+  query ShoutsForCommunitiesQuery($slugs: [String]!, $limit: Int!, $offset: Int!) {
+    shoutsByCommunities(slugs: $slugs, limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

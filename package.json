@@ -51,7 +51,7 @@
     "@astrojs/partytown": "^1.0.0",
     "@astrojs/sitemap": "^1.0.0",
     "@astrojs/solid-js": "^1.0.0",
-    "@astrojs/vercel": "^1.0.1",
+    "@astrojs/vercel": "^2.0.0",
     "@babel/core": "^7.18.13",
     "@graphql-codegen/cli": "^2.6.1",
     "@graphql-codegen/typescript": "^2.5.1",

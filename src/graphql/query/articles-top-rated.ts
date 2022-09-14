@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query TopOverallShoutsQuery($page: Int!, $size: Int!) {
-    topOverall(page: $page, size: $size) {
+  query TopOverallShoutsQuery($limit: Int!, $offset: Int!) {
+    topOverall(limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

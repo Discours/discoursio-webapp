@@ -3,7 +3,7 @@ import { FeedPage } from '../../components/Views/Feed'
 import Zine from '../../layouts/zine.astro'
 import { apiClient } from '../../utils/apiClient'
 
-const recentArticles = await apiClient.getRecentArticles({ page: 1 })
+const recentArticles = await apiClient.getRecentArticles({ limit: 50, offset: 0 })
 const shoutSlugs = recentArticles.map((s) => s.slug)
 const reactions = await apiClient.getReactionsForShouts({ shoutSlugs })
 ---

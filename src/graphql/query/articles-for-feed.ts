@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsBySessionQuery($page: Int!, $size: Int!) {
-    shoutsForFeed(page: $page, size: $size) {
+  query ShoutsBySessionQuery($limit: Int!, $offset: Int!) {
+    shoutsForFeed(limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

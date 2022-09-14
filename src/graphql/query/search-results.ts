@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query SearchResultsQuery($q: String!, $page: Int!, $size: Int!) {
-    searchQuery(q: $q, page: $page, size: $size) {
+  query SearchResultsQuery($q: String!, $limit: Int!, $offset: Int!) {
+    searchQuery(q: $q, limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

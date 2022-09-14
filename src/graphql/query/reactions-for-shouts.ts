@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ReactionsForShoutsQuery($shouts: [String]!, $page: Int!, $size: Int!) {
-    reactionsForShouts(shouts: $shouts, page: $page, size: $size) {
+  query ReactionsForShoutsQuery($shouts: [String]!, $limit: Int!, $offset: Int!) {
+    reactionsForShouts(shouts: $shouts, limit: $limit, offset: $offset) {
       id
       createdBy {
         slug

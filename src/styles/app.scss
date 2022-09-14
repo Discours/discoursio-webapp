@@ -33,7 +33,7 @@ body {
   font-family: Muller, Arial, Helvetica, sans-serif;
   font-size: 2rem;
   line-height: 1.4;
-  height: 100%;
+  min-height: 100%;
   text-size-adjust: 100%;
 
   &.fixed {

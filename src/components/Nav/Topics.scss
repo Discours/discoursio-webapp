@@ -1,7 +1,11 @@
 .subnavigation {
   @include font-size(1.5rem);
 
-  margin-bottom: 2.4rem;
+  height: 3em;
+  line-height: 3em;
+  margin-bottom: 1.2rem !important;
+  overflow: hidden;
+  position: relative;
 
   @include media-breakpoint-down(sm) {
     padding: 0 divide($container-padding-x, 2);
@@ -10,6 +14,7 @@
   .topics {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     list-style: none;
     margin: 0;
     padding: 0;

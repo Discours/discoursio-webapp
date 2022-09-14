@@ -1,7 +1,12 @@
 header {
   margin-bottom: 2.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
   .wide-container {
+    background: #fff;
+
     @include media-breakpoint-down(sm) {
       padding: 0 divide($container-padding-x, 2);
     }

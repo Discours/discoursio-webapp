@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createMemo, createEffect } from 'solid-js'
+import {For, Show, createSignal, createMemo, createEffect, onMount} from 'solid-js'
 import Private from './Private'
 import Notifications from './Notifications'
 import Icon from './Icon'
@@ -44,8 +44,26 @@ export const Header = () => {
   const authorized = createMemo(() => session()?.user?.slug)
   const enterClick = route(() => showModal('auth'))
   const bellClick = createMemo(() => (authorized() ? route(toggleWarnings) : enterClick))
+
+  const root = null;
+
+  onMount(() => {
+    let scrollTop = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+      const scrolledTop = scrollTop < window.scrollY;
+
+      window.console.log(scrolledTop);
+
+      root.classList.toggle('header--scrolled-top', scrolledTop);
+      root.classList.toggle('header--scrolled-bottom', !scrolledTop);
+
+      scrollTop = window.scrollY;
+    });
+  });
+
   return (
-    <header>
+    <header ref={root}>
       <Modal name="auth">
         <AuthModal />
       </Modal>

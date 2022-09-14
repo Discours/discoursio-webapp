@@ -355,6 +355,7 @@ export type Query = {
   shoutsForFeed: Array<Maybe<Shout>>
   signIn: AuthResult
   signOut: AuthResult
+  topAuthors: Array<Maybe<Author>>
   topMonth: Array<Maybe<Shout>>
   topOverall: Array<Maybe<Shout>>
   topViewed: Array<Maybe<Shout>>
@@ -386,8 +387,8 @@ export type QueryGetCommunityArgs = {
 
 export type QueryGetMessagesArgs = {
   chatId: Scalars['String']
-  limit: Scalars['Int']
-  offset: Scalars['Int']
+  page: Scalars['Int']
+  size: Scalars['Int']
 }
 
 export type QueryGetShoutBySlugArgs = {
@@ -429,8 +430,8 @@ export type QueryReactionsByShoutArgs = {
 
 export type QueryReactionsForShoutsArgs = {
   limit: Scalars['Int']
-  shouts: Array<InputMaybe<Scalars['String']>>
   offset: Scalars['Int']
+  shouts: Array<InputMaybe<Scalars['String']>>
 }
 
 export type QueryRecentAllArgs = {
@@ -449,9 +450,9 @@ export type QueryRecentReactedArgs = {
 }
 
 export type QuerySearchQueryArgs = {
-  page?: InputMaybe<Scalars['Int']>
+  limit: Scalars['Int']
+  offset: Scalars['Int']
   q?: InputMaybe<Scalars['String']>
-  size?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryShoutsByAuthorsArgs = {
@@ -462,8 +463,8 @@ export type QueryShoutsByAuthorsArgs = {
 
 export type QueryShoutsByCollectionArgs = {
   collection: Scalars['String']
-  page?: InputMaybe<Scalars['Int']>
-  size?: InputMaybe<Scalars['Int']>
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryShoutsByCommunitiesArgs = {
@@ -486,6 +487,11 @@ export type QueryShoutsForFeedArgs = {
 export type QuerySignInArgs = {
   email: Scalars['String']
   password?: InputMaybe<Scalars['String']>
+}
+
+export type QueryTopAuthorsArgs = {
+  limit: Scalars['Int']
+  offset: Scalars['Int']
 }
 
 export type QueryTopMonthArgs = {

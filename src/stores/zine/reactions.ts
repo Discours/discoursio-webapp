@@ -19,27 +19,27 @@ export const useReactionsStore = (initial?: Reaction[]) => {
 
 export const loadArticleReactions = async ({
   articleSlug,
-  page,
-  size
+  limit = 100,
+  offset = 0
 }: {
   articleSlug: string
-  page: number
-  size: number
+  limit?: number
+  offset?: number
 }): Promise<void> => {
-  const resp = await apiClient.getArticleReactions({ articleSlug, page, size })
+  const resp = await apiClient.getArticleReactions({ articleSlug, limit, offset })
   reactionsOrdered.set(resp)
 }
 
 export const loadReactions = async ({
   shoutSlugs,
-  page,
-  size
+  limit = 100,
+  offset = 0
 }: {
   shoutSlugs: string[]
-  page: number
-  size: number
+  limit: number
+  offset: number
 }): Promise<void> => {
-  const reactions = await apiClient.getReactionsForShouts({ shoutSlugs, page, size })
+  const reactions = await apiClient.getReactionsForShouts({ shoutSlugs, limit, offset })
   reactionsOrdered.set(reactions)
 }
 

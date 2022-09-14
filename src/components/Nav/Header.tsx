@@ -58,7 +58,7 @@ export const Header = () => {
           <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
             <For each={resources}>
               {(r: { href: string; name: string }) => (
-                <li classList={{ selected: subpath() === r.href }}>
+                <li classList={{ selected: r.href.startsWith(subpath()) }}>
                   <a href={r.href} onClick={route}>
                     {r.name}
                   </a>

@@ -21,7 +21,7 @@ export const SearchPage = (props: Props) => {
     setQuery(ev.target.value)
   }
 
-  const handleSubmit = (ev) => {
+  const handleSubmit = (_ev) => {
     // TODO page
     // TODO sort
     loadSearchResults({ query: getQuery() })

@@ -3,8 +3,8 @@ import { AuthorPage } from '../../../components/Views/Author'
 import Zine from '../../../layouts/zine.astro'
 import { apiClient } from '../../../utils/apiClient'
 
-const limit = parseInt(Astro.params?.limit as string, 10) || 50
-const offset = parseInt(Astro.params?.offset as string, 10) || 0
+const limit = 50
+const offset = 0
 const slug = Astro.params.slug.toString()
 const articles = await apiClient.getArticlesForAuthors({ authorSlugs: [slug], offset, limit })
 const author = articles[0].authors.find((a) => a.slug === slug)

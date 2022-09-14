@@ -1,5 +1,4 @@
 import { createRouter, createSearchParams } from '@nanostores/router'
-import { atom, computed, onMount } from 'nanostores'
 import { createEffect } from 'solid-js'
 import { isServer } from 'solid-js/web'
 

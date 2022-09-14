@@ -3,8 +3,8 @@ import { HomePage } from '../components/Views/Home'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
 
-const limit = parseInt(Astro.params?.limit as string, 10) || 50
-const offset = parseInt(Astro.params?.offset as string, 10) || 0
+const limit = 50
+const offset = 0
 const randomTopics = await apiClient.getRandomTopics()
 const recentPublished = await apiClient.getRecentPublishedArticles({ limit, offset })
 const topMonth = await apiClient.getTopMonthArticles()

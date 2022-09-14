@@ -2,9 +2,11 @@
 import { AllAuthorsPage } from '../components/Views/AllAuthors'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
+import { byCreated, sortBy } from '../utils/sortby'
 
-const authors = await apiClient.getAllAuthors()
-
+const { by } = Object.fromEntries(Astro.url.searchParams.entries())
+let authors = await apiClient.getAllAuthors()
+authors = sortBy(authors, by || byCreated)
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 

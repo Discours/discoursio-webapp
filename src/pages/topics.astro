@@ -2,9 +2,11 @@
 import { AllTopicsPage } from '../components/Views/AllTopics'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
+import { sortBy } from '../utils/sortby'
 
-const topics = await apiClient.getAllTopics()
-
+const { by } = Object.fromEntries(Astro.url.searchParams.entries())
+let topics = await apiClient.getAllTopics()
+topics = sortBy(topics, by || 'shouts')
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 

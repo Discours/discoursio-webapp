@@ -1,5 +1,5 @@
 import { createRouter, createSearchParams } from '@nanostores/router'
-import { atom, onMount } from 'nanostores'
+import { atom, computed, onMount } from 'nanostores'
 import { createEffect } from 'solid-js'
 import { isServer } from 'solid-js/web'
 
@@ -19,8 +19,6 @@ interface Routes {
   topic: 'slug'
 }
 
-export const resource = atom<string>('')
-export const slug = atom<string>('')
 export const params = createSearchParams()
 export const router = createRouter<Routes>(
   {
@@ -65,13 +63,3 @@ if (!isServer) {
   console.log('[router] client runtime')
   createEffect(() => router.open(window.location.pathname), [window.location])
 }
-
-onMount(router, () => {
-  router.listen((r) => {
-    resource.set(r.path)
-    const last = resource.get().split('/').pop().split('?').at(0)
-    if (Boolean(last) && router.routes.filter((x) => x[0] === last).length === 0) {
-      slug.set(last || '')
-    }
-  })
-})

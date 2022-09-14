@@ -8,7 +8,7 @@ import { t } from '../../utils/intl'
 import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { session as ssession } from '../../stores/auth'
-import { route, resource } from '../../stores/router'
+import { route, router } from '../../stores/router'
 import './Header.scss'
 
 const resources = [
@@ -26,7 +26,8 @@ export const Header = () => {
   const { getWarnings } = useWarningsStore()
   const session = useStore(ssession)
   const { getModal } = useModalStore()
-  const subpath = useStore(resource)
+  const routing = useStore(router)
+  const subpath = createMemo(() => routing().path)
   // methods
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
   const toggleFixed = () => setFixed(!fixed())
@@ -58,7 +59,7 @@ export const Header = () => {
           <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
             <For each={resources}>
               {(r: { href: string; name: string }) => (
-                <li classList={{ selected: r.href.startsWith(subpath()) }}>
+                <li classList={{ selected: r.href === subpath() }}>
                   <a href={r.href} onClick={route}>
                     {r.name}
                   </a>

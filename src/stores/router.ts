@@ -69,7 +69,7 @@ if (!isServer) {
 onMount(router, () => {
   router.listen((r) => {
     resource.set(r.path)
-    const last = resource.get().split('/').pop()
+    const last = resource.get().split('/').pop().split('?').at(0)
     if (Boolean(last) && router.routes.filter((x) => x[0] === last).length === 0) {
       slug.set(last || '')
     }

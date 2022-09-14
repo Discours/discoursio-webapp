@@ -1,6 +1,6 @@
 import { createRouter, createSearchParams } from '@nanostores/router'
-import { onMount } from 'nanostores'
-import { createEffect, createMemo, createSignal } from 'solid-js'
+import { atom, onMount } from 'nanostores'
+import { createEffect } from 'solid-js'
 import { isServer } from 'solid-js/web'
 
 // Types for :params in route templates
@@ -19,6 +19,8 @@ interface Routes {
   topic: 'slug'
 }
 
+export const resource = atom<string>('')
+export const slug = atom<string>('')
 export const params = createSearchParams()
 export const router = createRouter<Routes>(
   {
@@ -42,21 +44,16 @@ export const router = createRouter<Routes>(
   }
 )
 
-const [resource, setResource] = createSignal<string>('')
-const slug = createMemo<string>(() => {
-  const s = resource().split('/').pop()
-  return (Boolean(s) && router.routes.filter((x) => x[0] === s).length === 0 && s) || ''
-})
-
-const _route = (ev) => {
-  const href: string = ev.target.href
-  console.log('[router] faster link', href)
-  ev.stopPropoganation()
-  ev.preventDefault()
-  router.open(href)
-}
-
-const route = (ev) => {
+// suppresses reload
+export const route = (ev) => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const _route = (ev) => {
+    const href: string = ev.target.href
+    console.log('[router] faster link', href)
+    ev.stopPropoganation()
+    ev.preventDefault()
+    router.open(href)
+  }
   if (typeof ev === 'function') {
     return _route
   } else if (!isServer && ev?.target && ev.target.href) {
@@ -70,7 +67,11 @@ if (!isServer) {
 }
 
 onMount(router, () => {
-  router.listen((r) => setResource(r.path))
+  router.listen((r) => {
+    resource.set(r.path)
+    const last = resource.get().split('/').pop()
+    if (Boolean(last) && router.routes.filter((x) => x[0] === last).length === 0) {
+      slug.set(last || '')
+    }
+  })
 })
-
-export { slug, route, resource }

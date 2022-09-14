@@ -15,7 +15,7 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
   const [sortedTopics, setSortedTopics] = createSignal<Partial<Topic>[]>([])
   const [sortedKeys, setSortedKeys] = createSignal<string[]>()
   const [abc, setAbc] = createSignal([])
-  const { getSortedTopics: topicslist } = useTopicsStore({ topics: props.topics })
+  const { getSortedTopics: topicslist } = useTopicsStore({ topics: props.topics || [] })
   const auth = useStore(session)
   const subscribed = (s) => Boolean(auth()?.info?.topics && auth()?.info?.topics?.includes(s || ''))
   const params = useStore(paramstore)
@@ -33,8 +33,6 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
       setSortedTopics(sortBy(topicslist(), params()['by']))
     }
   }, [topicslist(), params()])
-
-  // onMount(() => setBy(''))
 
   return (
     <>

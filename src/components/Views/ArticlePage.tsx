@@ -5,9 +5,10 @@ import { t } from '../../utils/intl'
 import type { Reaction, Shout } from '../../graphql/types.gen'
 import { useCurrentArticleStore } from '../../stores/zine/currentArticle'
 import { loadArticleReactions, useReactionsStore } from '../../stores/zine/reactions'
-import { slug } from '../../stores/router'
+import { slug as slugstore } from '../../stores/router'
 
 import '../../styles/Article.scss'
+import { useStore } from '@nanostores/solid'
 
 interface ArticlePageProps {
   article: Shout
@@ -21,7 +22,7 @@ export const ArticlePage = (props: ArticlePageProps) => {
   const { getCurrentArticle } = useCurrentArticleStore({ currentArticle: props.article })
   const [getCommentsPage] = createSignal(1)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
-
+  const slug = useStore(slugstore)
   const reactionslist = useReactionsStore(props.reactions)
 
   createEffect(async () => {

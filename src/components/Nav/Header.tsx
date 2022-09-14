@@ -26,6 +26,7 @@ export const Header = () => {
   const { getWarnings } = useWarningsStore()
   const session = useStore(ssession)
   const { getModal } = useModalStore()
+  const subpath = useStore(resource)
   // methods
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
   const toggleFixed = () => setFixed(!fixed())
@@ -57,7 +58,7 @@ export const Header = () => {
           <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
             <For each={resources}>
               {(r: { href: string; name: string }) => (
-                <li classList={{ selected: resource() === r.href }}>
+                <li classList={{ selected: subpath() === r.href }}>
                   <a href={r.href} onClick={route}>
                     {r.name}
                   </a>

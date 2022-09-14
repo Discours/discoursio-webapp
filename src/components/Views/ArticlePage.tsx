@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, Show, Suspense } from 'solid-js'
+import { createEffect, createSignal, Show, Suspense } from 'solid-js'
 import { FullArticle } from '../Article/FullArticle'
 import { t } from '../../utils/intl'
 
@@ -7,7 +7,6 @@ import { useCurrentArticleStore } from '../../stores/zine/currentArticle'
 import { loadArticleReactions, useReactionsStore } from '../../stores/zine/reactions'
 
 import '../../styles/Article.scss'
-import { useStore } from '@nanostores/solid'
 
 interface ArticlePageProps {
   article: Shout
@@ -21,7 +20,6 @@ export const ArticlePage = (props: ArticlePageProps) => {
   const { getCurrentArticle } = useCurrentArticleStore({ currentArticle: props.article })
   const [getCommentsPage] = createSignal(1)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
-  const slug = createMemo(() => props.slug)
   const reactionslist = useReactionsStore(props.reactions)
 
   createEffect(async () => {
@@ -43,7 +41,7 @@ export const ArticlePage = (props: ArticlePageProps) => {
         <Suspense>
           <FullArticle
             article={getCurrentArticle()}
-            reactions={reactionslist().filter((r) => r.shout.slug === slug())}
+            reactions={reactionslist().filter((r) => r.shout.slug === props.slug)}
             isCommentsLoading={getIsCommentsLoading()}
           />
         </Suspense>

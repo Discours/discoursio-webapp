@@ -10,6 +10,7 @@ import { useStore } from '@nanostores/solid'
 import { session as ssession } from '../../stores/auth'
 import { route, router } from '../../stores/router'
 import './Header.scss'
+import { Shout } from '../../graphql/types.gen'
 
 const resources = [
   { name: t('zine'), href: '/' },
@@ -18,9 +19,10 @@ const resources = [
   //{ name: t('community'), href: '/community' }
 ]
 
-export const Header = () => {
+export const Header = (props: Shout) => {
   // signals
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
+  const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   // stores
@@ -46,13 +48,12 @@ export const Header = () => {
   const enterClick = route(() => showModal('auth'))
   const bellClick = createMemo(() => (authorized() ? route(toggleWarnings) : enterClick))
 
-  const root = null
-
   onMount(() => {
     let scrollTop = window.scrollY
 
     const handleScroll = () => {
       setIsScrollingBottom(window.scrollY > scrollTop)
+      setIsScrolled(window.scrollY > 0)
       scrollTop = window.scrollY
     }
 
@@ -65,8 +66,8 @@ export const Header = () => {
   return (
     <header
       classList={{
-        ['header--scrolled-top']: !getIsScrollingBottom(),
-        ['header--scrolled-bottom']: getIsScrollingBottom()
+        ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
+        ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
       }}
     >
       <Modal name="auth">
@@ -79,17 +80,24 @@ export const Header = () => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
-            <For each={resources}>
-              {(r: { href: string; name: string }) => (
-                <li classList={{ selected: r.href === subpath() }}>
-                  <a href={r.href} onClick={route}>
-                    {r.name}
-                  </a>
-                </li>
-              )}
-            </For>
-          </ul>
+          <div class="col main-navigation">
+            <div class="article-header">
+              Дискурс — независимый художественно-аналитический журнал с горизонтальной редакцией,
+              основанный на принципах свободы слова, прямой демократии и совместного редактирования.
+            </div>
+
+            <ul class="text-xl inline-flex" classList={{ fixed: fixed() }}>
+              <For each={resources}>
+                {(r: { href: string; name: string }) => (
+                  <li classList={{ selected: r.href === subpath() }}>
+                    <a href={r.href} onClick={route}>
+                      {r.name}
+                    </a>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
           <div class="usernav">
             <div class="usercontrol col">
               <div class="usercontrol__item">

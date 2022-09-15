@@ -10,23 +10,21 @@ import '../../styles/Article.scss'
 
 interface ArticlePageProps {
   article: Shout
-  slug: string
-  reactions?: Reaction[]
 }
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 
-export const ArticlePage = (props: ArticlePageProps) => {
+export const ArticleView = (props: ArticlePageProps) => {
   const { getCurrentArticle } = useCurrentArticleStore({ currentArticle: props.article })
   const [getCommentsPage] = createSignal(1)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
-  const reactionslist = useReactionsStore(props.reactions)
+  const reactionslist = useReactionsStore()
 
   createEffect(async () => {
     try {
       setIsCommentsLoading(true)
       await loadArticleReactions({
-        articleSlug: props.slug,
+        articleSlug: props.article.slug,
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
         offset: getCommentsPage() * ARTICLE_COMMENTS_PAGE_SIZE
       })
@@ -41,7 +39,7 @@ export const ArticlePage = (props: ArticlePageProps) => {
         <Suspense>
           <FullArticle
             article={getCurrentArticle()}
-            reactions={reactionslist().filter((r) => r.shout.slug === props.slug)}
+            reactions={reactionslist().filter((r) => r.shout.slug === props.article.slug)}
             isCommentsLoading={getIsCommentsLoading()}
           />
         </Suspense>

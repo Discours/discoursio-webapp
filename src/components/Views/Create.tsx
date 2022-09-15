@@ -8,7 +8,7 @@ import { Sidebar } from '../Editor/Sidebar'
 import ErrorView from '../Editor/Error'
 import { newState } from '../Editor/store'
 
-export default () => {
+export const CreateView = () => {
   const [store, ctrl] = createCtrl(newState())
   const mouseEnterCoords = createMutable({ x: 0, y: 0 })
 

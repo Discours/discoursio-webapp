@@ -1,41 +1,36 @@
-import { createEffect, createSignal, For, Show } from 'solid-js'
+import { createEffect, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { byFirstChar, sortBy } from '../../utils/sortby'
 import Icon from '../Nav/Icon'
 import { t } from '../../utils/intl'
-import { useTopicsStore } from '../../stores/zine/topics'
-import { params as paramstore, handleClientRouteLinkClick, router } from '../../stores/router'
+import { setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
+import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import { session } from '../../stores/auth'
 import { useStore } from '@nanostores/solid'
 import '../../styles/AllTopics.scss'
-import { groupByTitle } from '../../utils/groupby'
 
-export const AllTopicsPage = (props: { topics?: Topic[] }) => {
-  const [, setSortedTopics] = createSignal<Partial<Topic>[]>([])
-  const [, setSortedKeys] = createSignal<string[]>()
-  const [abc, setAbc] = createSignal([])
-  const { getSortedTopics } = useTopicsStore({ topics: props.topics || [] })
+type AllTopicsPageSearchParams = {
+  by: 'shouts' | 'authors' | 'title' | ''
+}
+
+type Props = {
+  topics: Topic[]
+}
+
+export const AllTopicsView = (props: Props) => {
+  const { getSearchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
+
+  const { getSortedTopics } = useTopicsStore({
+    topics: props.topics,
+    sortBy: getSearchParams().by || 'shouts'
+  })
   const auth = useStore(session)
 
-  const subscribed = (s) => Boolean(auth()?.info?.topics && auth()?.info?.topics?.includes(s || ''))
-
-  const params = useStore(paramstore)
-
   createEffect(() => {
-    if (abc().length === 0 && (!params()['by'] || params()['by'] === 'abc')) {
-      console.log('[topics] default grouping by abc')
-      const grouped = { ...groupByTitle(getSortedTopics()) }
-      grouped['A-Z'] = sortBy(grouped['A-Z'], byFirstChar)
-      setAbc(grouped)
-      const keys = Object.keys(abc)
-      keys.sort()
-      setSortedKeys(keys as string[])
-    } else {
-      console.log('[topics] sorting by ' + params()['by'])
-      setSortedTopics(sortBy(getSortedTopics(), params()['by']))
-    }
-  }, [getSortedTopics(), params()])
+    setSortAllTopicsBy(getSearchParams().by || 'shouts')
+  })
+
+  const subscribed = (s) => Boolean(auth()?.info?.topics && auth()?.info?.topics?.includes(s || ''))
 
   return (
     <div class="all-topics-page">
@@ -52,18 +47,25 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
             <div class="row">
               <div class="col">
                 <ul class="view-switcher">
-                  <li classList={{ selected: params()['by'] === 'shouts' }}>
+                  <li classList={{ selected: getSearchParams().by === 'shouts' || !getSearchParams().by }}>
                     <a href="/topics?by=shouts" onClick={handleClientRouteLinkClick}>
                       {t('By shouts')}
                     </a>
                   </li>
-                  <li classList={{ selected: params()['by'] === 'authors' }}>
+                  <li classList={{ selected: getSearchParams().by === 'authors' }}>
                     <a href="/topics?by=authors" onClick={handleClientRouteLinkClick}>
                       {t('By authors')}
                     </a>
                   </li>
-                  <li classList={{ selected: params()['by'] === 'abc' }}>
-                    <a href="/topics" onClick={handleClientRouteLinkClick}>
+                  <li classList={{ selected: getSearchParams().by === 'title' }}>
+                    <a
+                      href="/topics?by=title"
+                      onClick={(ev) => {
+                        // just an example
+                        ev.preventDefault()
+                        changeSearchParam('by', 'title')
+                      }}
+                    >
                       {t('By alphabet')}
                     </a>
                   </li>

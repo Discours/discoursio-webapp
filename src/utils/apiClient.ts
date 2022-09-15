@@ -101,7 +101,7 @@ export const apiClient = {
   }: {
     query: string
     limit: number
-    offset: number
+    offset?: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(searchResults, {
@@ -118,7 +118,7 @@ export const apiClient = {
     offset = 0
   }: {
     limit: number
-    offset: number
+    offset?: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesRecentAll, {
@@ -136,7 +136,7 @@ export const apiClient = {
   }: {
     topicSlugs: string[]
     limit: number
-    offset: number
+    offset?: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesForTopics, {
@@ -155,7 +155,7 @@ export const apiClient = {
   }: {
     authorSlugs: string[]
     limit: number
-    offset: number
+    offset?: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(articlesForAuthors, {

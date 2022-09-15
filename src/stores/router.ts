@@ -1,54 +1,84 @@
+import type { Accessor } from 'solid-js'
 import { createRouter, createSearchParams } from '@nanostores/router'
 import { isServer } from 'solid-js/web'
+import { useStore } from '@nanostores/solid'
 
-// Types for :params in route templates
-interface Routes {
-  home: void // TODO: more
+// TODO: more
+export interface Routes {
+  home: void
   topics: void
-  authors: void
-  feed: void
-  post: 'slug'
-  article: 'slug'
-  expo: 'slug'
-  create: 'collab'
-  search: 'q'
-  inbox: 'chat'
-  author: 'slug'
   topic: 'slug'
+  authors: void
+  author: 'slug'
+  feed: void
+  article: 'slug'
+  search: 'q'
 }
 
-export const params = createSearchParams()
-export const router = createRouter<Routes>(
+const searchParamsStore = createSearchParams()
+const routerStore = createRouter<Routes>(
   {
     home: '/',
     topics: '/topics',
+    topic: '/topic/:slug',
     authors: '/authors',
-    feed: '/feed',
-    create: '/create/:collab?',
-    inbox: '/inbox/:chat?',
-    search: '/search/:q?',
-    post: '/:slug',
-    article: '/articles/:slug',
-    expo: '/expo/:layout/:topic/:slug',
     author: '/author/:slug',
-    topic: '/topic/:slug'
+    feed: '/feed',
+    search: '/search/:q?',
+    article: '/:slug'
   },
   {
-    // enabling search query params passing
-    search: true,
+    search: false,
     links: false
   }
 )
 
-export const handleClientRouteLinkClick = (ev) => {
-  const href = ev.target.href
-  console.log('[router] faster link', href)
-  ev.stopPropagation()
-  ev.preventDefault()
-  router.open(href)
+export const router = routerStore
+
+export const handleClientRouteLinkClick = (event) => {
+  const link = event.target.closest('a')
+  if (
+    link &&
+    event.button === 0 &&
+    link.target !== '_blank' &&
+    link.rel !== 'external' &&
+    !link.download &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  ) {
+    const url = new URL(link.href)
+    if (url.origin === location.origin) {
+      event.preventDefault()
+      // TODO: search params
+      routerStore.open(url.pathname)
+    }
+  }
+}
+
+export const initRouter = (pathname: string, search: string) => {
+  routerStore.open(pathname)
+  const params = Object.fromEntries(new URLSearchParams(search))
+  searchParamsStore.open(params)
 }
 
 if (!isServer) {
   const { pathname, search } = window.location
-  router.open(pathname + search)
+  initRouter(pathname, search)
+}
+
+export const useRouter = <TSearchParams extends Record<string, string> = Record<string, string>>() => {
+  const getPage = useStore(routerStore)
+  const getSearchParams = useStore(searchParamsStore) as unknown as Accessor<TSearchParams>
+
+  const changeSearchParam = <TKey extends keyof TSearchParams>(key: TKey, value: TSearchParams[TKey]) => {
+    searchParamsStore.open({ ...searchParamsStore.get(), [key]: value })
+  }
+
+  return {
+    getPage,
+    getSearchParams,
+    changeSearchParam
+  }
 }

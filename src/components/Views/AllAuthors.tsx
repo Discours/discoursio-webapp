@@ -6,23 +6,31 @@ import { groupByName } from '../../utils/groupby'
 import Icon from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { params as paramsStore, handleClientRouteLinkClick } from '../../stores/router'
+import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { session } from '../../stores/auth'
 import { useStore } from '@nanostores/solid'
 import '../../styles/AllTopics.scss'
 
-export const AllAuthorsPage = (props: any) => {
-  const { getSortedAuthors: authorslist } = useAuthorsStore(props.authors)
+type AllAuthorsPageSearchParams = {
+  by: '' | 'name' | 'shouts' | 'rating'
+}
+
+type Props = {
+  authors: Author[]
+}
+
+export const AllAuthorsView = (props: Props) => {
+  const { getSortedAuthors: authorslist } = useAuthorsStore({ authors: props.authors })
   const [sortedAuthors, setSortedAuthors] = createSignal<Author[]>([])
   const [sortedKeys, setSortedKeys] = createSignal<string[]>([])
   const [abc, setAbc] = createSignal([])
   const auth = useStore(session)
   const subscribed = (s) => Boolean(auth()?.info?.authors && auth()?.info?.authors?.includes(s || ''))
 
-  const params = useStore(paramsStore)
+  const { getSearchParams } = useRouter<AllAuthorsPageSearchParams>()
 
   createEffect(() => {
-    if ((!params()['by'] || params()['by'] === 'abc') && abc().length === 0) {
+    if ((!getSearchParams().by || getSearchParams().by === 'name') && abc().length === 0) {
       console.log('[authors] default grouping by abc')
       const grouped = { ...groupByName(authorslist()) }
       grouped['A-Z'] = sortBy(grouped['A-Z'], byFirstChar)
@@ -31,10 +39,10 @@ export const AllAuthorsPage = (props: any) => {
       keys.sort()
       setSortedKeys(keys as string[])
     } else {
-      console.log('[authors] sorting by ' + params()['by'])
-      setSortedAuthors(sortBy(authorslist(), params()['by']))
+      console.log('[authors] sorting by ' + getSearchParams().by)
+      setSortedAuthors(sortBy(authorslist(), getSearchParams().by))
     }
-  }, [authorslist(), params()])
+  }, [authorslist(), getSearchParams().by])
 
   return (
     <div class="all-topics-page">
@@ -50,17 +58,17 @@ export const AllAuthorsPage = (props: any) => {
             <div class="row">
               <div class="col">
                 <ul class="view-switcher">
-                  <li classList={{ selected: params()['by'] === 'shouts' }}>
+                  <li classList={{ selected: getSearchParams().by === 'shouts' }}>
                     <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
                       {t('By shouts')}
                     </a>
                   </li>
-                  <li classList={{ selected: params()['by'] === 'rating' }}>
+                  <li classList={{ selected: getSearchParams().by === 'rating' }}>
                     <a href="/authors?by=rating" onClick={handleClientRouteLinkClick}>
                       {t('By rating')}
                     </a>
                   </li>
-                  <li classList={{ selected: !params()['by'] || params()['by'] === 'abc' }}>
+                  <li classList={{ selected: !getSearchParams().by || getSearchParams().by === 'name' }}>
                     <a href="/authors" onClick={handleClientRouteLinkClick}>
                       {t('By alphabet')}
                     </a>
@@ -73,7 +81,7 @@ export const AllAuthorsPage = (props: any) => {
                   </li>
                 </ul>
                 <Show
-                  when={!params()['by'] || params()['by'] === 'abc'}
+                  when={!getSearchParams().by || getSearchParams().by === 'name'}
                   fallback={() => (
                     <div class="stats">
                       <For each={sortedAuthors()}>

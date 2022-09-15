@@ -2,11 +2,14 @@ import { apiClient } from '../../utils/apiClient'
 import { map, MapStore, ReadableAtom, WritableAtom, atom, computed } from 'nanostores'
 import type { Topic } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
-import { byCreated, byStat } from '../../utils/sortby'
+import { byCreated, byTopicStatDesc } from '../../utils/sortby'
+import { getLogger } from '../../utils/logger'
 
-export type TopicsSortBy = 'created' | 'name'
+const log = getLogger('topics store')
 
-const sortAllByStore = atom<TopicsSortBy>('created')
+export type TopicsSortBy = 'created' | 'title' | 'authors' | 'shouts'
+
+const sortAllByStore = atom<TopicsSortBy>('shouts')
 
 let topicEntitiesStore: MapStore<Record<string, Topic>>
 let sortedTopicsStore: ReadableAtom<Topic[]>
@@ -14,7 +17,7 @@ let topTopicsStore: ReadableAtom<Topic[]>
 let randomTopicsStore: WritableAtom<Topic[]>
 let topicsByAuthorStore: MapStore<Record<string, Topic[]>>
 
-const initStore = (initial?: Record<string, Topic>) => {
+const initStore = (initial?: { [topicSlug: string]: Topic }) => {
   if (topicEntitiesStore) {
     return
   }
@@ -25,30 +28,36 @@ const initStore = (initial?: Record<string, Topic>) => {
     const topics = Object.values(topicEntities)
     switch (sortBy) {
       case 'created': {
+        log.debug('sorted by created')
         topics.sort(byCreated)
         break
       }
-      // eslint-disable-next-line unicorn/no-useless-switch-case
-      case 'name':
-      default: {
-        // use default sorting abc stores
-        console.debug('[topics.store] default sort')
-      }
+      case 'shouts':
+      case 'authors':
+        log.debug(`sorted by ${sortBy}`)
+        topics.sort(byTopicStatDesc(sortBy))
+        break
+      case 'title':
+        log.debug('sorted by title')
+        topics.sort((a, b) => a.title.localeCompare(b.title))
+        break
+      default:
+        log.error(`Unknown sort: ${sortBy}`)
     }
     return topics
   })
 
   topTopicsStore = computed(topicEntitiesStore, (topicEntities) => {
     const topics = Object.values(topicEntities)
-    // DISCUSS
-    // topics.sort(byStat('shouts'))
-    topics.sort(byStat('rating'))
+    topics.sort(byTopicStatDesc('shouts'))
     return topics
   })
 }
 
-export const setSortAllBy = (sortBy: TopicsSortBy) => {
-  sortAllByStore.set(sortBy)
+export const setSortAllTopicsBy = (sortBy: TopicsSortBy) => {
+  if (sortAllByStore.get() !== sortBy) {
+    sortAllByStore.set(sortBy)
+  }
 }
 
 const addTopics = (...args: Topic[][]) => {
@@ -102,24 +111,27 @@ export const loadAllTopics = async (): Promise<void> => {
 type InitialState = {
   topics?: Topic[]
   randomTopics?: Topic[]
+  sortBy?: TopicsSortBy
 }
 
-export const useTopicsStore = ({ topics, randomTopics }: InitialState = {}) => {
-  if (topics) {
-    addTopics(topics)
+export const useTopicsStore = ({ topics, randomTopics, sortBy }: InitialState = {}) => {
+  if (sortBy) {
+    sortAllByStore.set(sortBy)
   }
-  if (randomTopics) {
-    addTopics(randomTopics)
-  }
+
+  addTopics(topics, randomTopics)
+
   if (!randomTopicsStore) {
     randomTopicsStore = atom(randomTopics)
   }
 
   const getTopicEntities = useStore(topicEntitiesStore)
+
   const getSortedTopics = useStore(sortedTopicsStore)
+
   const getRandomTopics = useStore(randomTopicsStore)
-  const getTopicsByAuthor = useStore(topicsByAuthorStore)
+
   const getTopTopics = useStore(topTopicsStore)
 
-  return { getTopicEntities, getSortedTopics, getRandomTopics, getTopicsByAuthor, getTopTopics }
+  return { getTopicEntities, getSortedTopics, getRandomTopics, getTopTopics }
 }

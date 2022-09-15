@@ -1,4 +1,4 @@
-import { atom, computed, ReadableAtom } from 'nanostores'
+import { atom, computed, map, ReadableAtom } from 'nanostores'
 import type { Author, Shout, Topic } from '../../graphql/types.gen'
 import type { WritableAtom } from 'nanostores'
 import { useStore } from '@nanostores/solid'
@@ -21,7 +21,7 @@ const initStore = (initial?: Record<string, Shout>) => {
     return
   }
 
-  articleEntitiesStore = atom<Record<string, Shout>>(initial)
+  articleEntitiesStore = map<Record<string, Shout>>(initial)
 
   articlesByAuthorsStore = computed(articleEntitiesStore, (articleEntities) => {
     return Object.values(articleEntities).reduce((acc, article) => {
@@ -69,7 +69,7 @@ const addArticles = (...args: Shout[][]) => {
   const newArticleEntities = allArticles.reduce((acc, article) => {
     acc[article.slug] = article
     return acc
-  }, {} as Record<string, Shout>)
+  }, {} as { [articleSLug: string]: Shout })
 
   if (!articleEntitiesStore) {
     initStore(newArticleEntities)

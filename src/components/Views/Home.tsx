@@ -1,4 +1,4 @@
-import { createMemo, createSignal, Show, Suspense } from 'solid-js'
+import { createSignal, Show, Suspense } from 'solid-js'
 import Banner from '../Discours/Banner'
 import NavTopics from '../Nav/Topics'
 import Row5 from '../Feed/Row5'
@@ -16,24 +16,21 @@ import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { loadPublishedArticles, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { router } from '../../stores/router'
 
 type HomeProps = {
-  randomTopics: Topic[]
+  // randomTopics: Topic[]
   recentPublishedArticles: Shout[]
-  topMonthArticles: Shout[]
-  topOverallArticles: Shout[]
-  limit?: number
-  offset?: number
+  // topMonthArticles: Shout[]
+  // topOverallArticles: Shout[]
 }
 
 // const LAYOUTS = ['article', 'prose', 'music', 'video', 'image']
 
-export const HomePage = (props: HomeProps) => {
+export const HomeView = (props: HomeProps) => {
   const [someLayout, setSomeLayout] = createSignal([] as Shout[])
   const [selectedLayout, setSelectedLayout] = createSignal('article')
-  const [byLayout, setByLayout] = createSignal({} as { [layout: string]: Shout[] })
-  const [byTopic, setByTopic] = createSignal({} as { [topic: string]: Shout[] })
+  // const [byLayout, setByLayout] = createSignal({} as { [layout: string]: Shout[] })
+  // const [byTopic, setByTopic] = createSignal({} as { [topic: string]: Shout[] })
 
   const {
     getSortedArticles,
@@ -42,14 +39,12 @@ export const HomePage = (props: HomeProps) => {
     getTopViewedArticles,
     getTopCommentedArticles
   } = useArticlesStore({
-    sortedArticles: props.recentPublishedArticles,
-    topRatedArticles: props.topOverallArticles,
-    topRatedMonthArticles: props.topMonthArticles
+    sortedArticles: props.recentPublishedArticles
+    // topRatedArticles: props.topOverallArticles,
+    // topRatedMonthArticles: props.topMonthArticles
   })
-
-  const articles = createMemo(() => getSortedArticles())
-  const { getRandomTopics, getSortedTopics, getTopTopics } = useTopicsStore({
-    randomTopics: props.randomTopics
+  const { getRandomTopics, getTopTopics } = useTopicsStore({
+    randomTopics: [] // props.randomTopics
   })
 
   const { getTopAuthors } = useAuthorsStore()
@@ -92,26 +87,26 @@ export const HomePage = (props: HomeProps) => {
   //   }
   // }, [byLayout()])
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const loadMore = () => {
-    const limit = props.limit || 50
-    const offset = props.offset || 0
-    loadPublishedArticles({ limit, offset })
+    // FIXME
+    loadPublishedArticles({ limit: 50, offset: 5 })
   }
   return (
     <Suspense fallback={t('Loading')}>
-      <Show when={articles().length > 0}>
+      <Show when={getSortedArticles().length > 0}>
         <NavTopics topics={getRandomTopics()} />
-        <Row5 articles={articles().slice(0, 5)} />
+        <Row5 articles={getSortedArticles().slice(0, 5)} />
         <Hero />
         <Beside
-          beside={articles().slice(5, 6)[0]}
+          beside={getSortedArticles()[5]}
           title={t('Top viewed')}
           values={getTopViewedArticles().slice(0, 5)}
           wrapper={'top-article'}
         />
-        <Row3 articles={articles().slice(6, 9)} />
+        <Row3 articles={getSortedArticles().slice(6, 9)} />
         <Beside
-          beside={articles().slice(9, 10)[0]}
+          beside={getSortedArticles()[9]}
           title={t('Top authors')}
           values={getTopAuthors().slice(0, 5)}
           wrapper={'author'}
@@ -119,10 +114,10 @@ export const HomePage = (props: HomeProps) => {
 
         <Slider title={t('Top month articles')} articles={getTopRatedMonthArticles()} />
 
-        <Row2 articles={articles().slice(10, 12)} />
-        <RowShort articles={articles().slice(12, 16)} />
-        <Row1 article={articles().slice(16, 17)[0]} />
-        <Row3 articles={articles().slice(17, 20)} />
+        <Row2 articles={getSortedArticles().slice(10, 12)} />
+        <RowShort articles={getSortedArticles().slice(12, 16)} />
+        <Row1 article={getSortedArticles()[16]} />
+        <Row3 articles={getSortedArticles().slice(17, 20)} />
         <Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
         <Group
           articles={someLayout()}
@@ -136,18 +131,18 @@ export const HomePage = (props: HomeProps) => {
         <Slider title={t('Favorite')} articles={getTopRatedArticles()} />
 
         <Beside
-          beside={articles().slice(20, 21)[0]}
+          beside={getSortedArticles()[20]}
           title={t('Top topics')}
           values={getTopTopics().slice(0, 5)}
           wrapper={'topic'}
           isTopicCompact={true}
         />
-        <Row3 articles={articles().slice(21, 24)} />
+        <Row3 articles={getSortedArticles().slice(21, 24)} />
         <Banner />
-        <Row2 articles={articles().slice(24, 26)} />
-        <Row3 articles={articles().slice(26, 29)} />
-        <Row2 articles={articles().slice(29, 31)} />
-        <Row3 articles={articles().slice(31, 34)} />
+        <Row2 articles={getSortedArticles().slice(24, 26)} />
+        <Row3 articles={getSortedArticles().slice(26, 29)} />
+        <Row2 articles={getSortedArticles().slice(29, 31)} />
+        <Row3 articles={getSortedArticles().slice(31, 34)} />
 
         <p class="load-more-container">
           <button class="button" onClick={loadMore}>

@@ -8,6 +8,7 @@ import Icon from '../Nav/Icon'
 import './Card.scss'
 import { locale as localestore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
+import { handleClientRouteLinkClick } from '../../stores/router'
 
 interface ArticleCardProps {
   settings?: {
@@ -53,15 +54,15 @@ export const ArticleCard = (props: ArticleCardProps) => {
   }
 
   // FIXME: move this to store action
-  const translateAuthors = () => {
-    const aaa = new Set(article().authors)
-    aaa.forEach((a) => {
-      a.name =
-        a.name === 'Дискурс' && locale() !== 'ru' ? 'Discours' : translit(a.name || '', locale() || 'ru')
-    })
-    return [...aaa]
-  }
-  createEffect(translateAuthors, [article(), locale()])
+  // const translateAuthors = () => {
+  //   const aaa = new Set(article().authors)
+  //   aaa.forEach((a) => {
+  //     a.name =
+  //       a.name === 'Дискурс' && locale() !== 'ru' ? 'Discours' : translit(a.name || '', locale() || 'ru')
+  //   })
+  //   return [...aaa]
+  // }
+  // createEffect(translateAuthors, [article(), locale()])
   onMount(detectSubtitle)
 
   return (
@@ -108,7 +109,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </Show>
 
           <div class="shout-card__titles-container">
-            <a href={`/${props.article.slug || ''}`}>
+            <a href={`/${props.article.slug || ''}`} onClick={handleClientRouteLinkClick}>
               <div class="shout-card__title">
                 <span class="shout-card__link-container">{title()}</span>
               </div>

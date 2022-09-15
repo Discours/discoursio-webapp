@@ -18,9 +18,7 @@ import { useTopicsStore } from '../../stores/zine/topics'
 
 interface FeedProps {
   articles: Shout[]
-  reactions: Reaction[]
-  limit?: number
-  offset?: number
+  reactions?: Reaction[]
 }
 
 // const AUTHORSHIP_REACTIONS = [
@@ -30,10 +28,10 @@ interface FeedProps {
 //   ReactionKind.Ask
 // ]
 
-export const FeedPage = (props: FeedProps) => {
+export const FeedView = (props: FeedProps) => {
   // state
   const { getSortedArticles: articles } = useArticlesStore({ sortedArticles: props.articles })
-  const reactions = useReactionsStore(props.reactions)
+  const reactions = useReactionsStore()
   const { getTopAuthors, getSortedAuthors: authors } = useAuthorsStore()
   const { getTopTopics } = useTopicsStore()
 
@@ -56,9 +54,10 @@ export const FeedPage = (props: FeedProps) => {
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const loadMore = () => {
-    const limit = props.limit || 50
-    const offset = props.offset || 0
-    loadRecentArticles({ limit, offset })
+    // const limit = props.limit || 50
+    // const offset = props.offset || 0
+    // FIXME
+    loadRecentArticles({ limit: 50, offset: 0 })
   }
   return (
     <>

@@ -5,6 +5,10 @@ import type { Author } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
 import { byCreated, byStat } from '../../utils/sortby'
 
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('authors store')
+
 export type AuthorsSortBy = 'created' | 'name'
 
 const sortAllByStore = atom<AuthorsSortBy>('created')

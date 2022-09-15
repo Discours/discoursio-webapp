@@ -3,19 +3,23 @@ import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
-import { params } from '../../stores/router'
 import { useArticlesStore, loadSearchResults } from '../../stores/zine/articles'
-import { useStore } from '@nanostores/solid'
+import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 
-type Props = {
-  query?: string
-  results?: Shout[]
+type SearchPageSearchParams = {
+  by: '' | 'relevance' | 'rating'
 }
 
-export const SearchPage = (props: Props) => {
-  const args = useStore(params)
+type Props = {
+  query: string
+  results: Shout[]
+}
+
+export const SearchView = (props: Props) => {
   const { getSortedArticles } = useArticlesStore({ sortedArticles: props.results })
   const [getQuery, setQuery] = createSignal(props.query)
+
+  const { getSearchParams } = useRouter<SearchPageSearchParams>()
 
   const handleQueryChange = (ev) => {
     setQuery(ev.target.value)
@@ -42,13 +46,21 @@ export const SearchPage = (props: Props) => {
       </form>
 
       <ul class="view-switcher">
-        <li class="selected">
-          <a href="?by=relevance" onClick={() => (args()['by'] = 'relevance')}>
+        <li
+          classList={{
+            selected: getSearchParams().by === 'relevance'
+          }}
+        >
+          <a href="?by=relevance" onClick={handleClientRouteLinkClick}>
             {t('By relevance')}
           </a>
         </li>
-        <li>
-          <a href="?by=rating" onClick={() => (args()['by'] = 'rating')}>
+        <li
+          classList={{
+            selected: getSearchParams().by === 'rating'
+          }}
+        >
+          <a href="?by=rating" onClick={handleClientRouteLinkClick}>
             {t('Top rated')}
           </a>
         </li>

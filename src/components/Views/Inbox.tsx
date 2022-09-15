@@ -1,14 +1,14 @@
-import type { Author, Chat, Message } from '../../graphql/types.gen'
+import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import Icon from '../Nav/Icon'
 import '../../styles/Inbox.scss'
 
-interface InboxProps {
-  chats?: Chat[]
-  messages?: Message[]
-}
+// interface InboxProps {
+//   chats?: Chat[]
+//   messages?: Message[]
+// }
 
-export default (_props: InboxProps) => {
+export const InboxView = () => {
   // TODO: get user session
   return (
     <div class="messages container">

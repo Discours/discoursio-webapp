@@ -1,4 +1,4 @@
-import type { Stat } from '../graphql/types.gen'
+import type { Stat, Topic, TopicStat } from '../graphql/types.gen'
 
 export const byFirstChar = (a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || '')
 
@@ -24,9 +24,19 @@ export const byLength = (a: any[], b: any[]) => {
   return 0
 }
 
-// FIXME keyof TopicStat
+// TODO more typing
 export const byStat = (metric: keyof Stat) => {
   return (a, b) => {
+    const x = (a?.stat && a.stat[metric]) || 0
+    const y = (b?.stat && b.stat[metric]) || 0
+    if (x > y) return -1
+    if (x < y) return 1
+    return 0
+  }
+}
+
+export const byTopicStatDesc = (metric: keyof TopicStat) => {
+  return (a: Topic, b: Topic) => {
     const x = (a?.stat && a.stat[metric]) || 0
     const y = (b?.stat && b.stat[metric]) || 0
     if (x > y) return -1

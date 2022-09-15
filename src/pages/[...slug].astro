@@ -1,15 +1,16 @@
 ---
-import { ArticlePage } from '../components/Views/ArticlePage'
+import { Root } from '../components/Root'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
 
-const slug = Astro.params.slug as string
+const slug = Astro.params.slug?.toString() || ''
 
 if (slug.includes('/') || slug.includes('.map')) {
   return Astro.redirect('/404')
 }
 
 const article = await apiClient.getArticle({ slug })
+
 if (!article) {
   return Astro.redirect('/404')
 }
@@ -18,5 +19,5 @@ Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate'
 ---
 
 <Zine>
-  <ArticlePage slug={slug} article={article} client:idle />
+  <Root article={article} client:load />
 </Zine>

@@ -1,14 +1,15 @@
 import { isServer } from 'solid-js/web'
-import { router } from '../../stores/router'
+import { initRouter } from '../../stores/router'
 
 type Props = {
-  href: string
+  pathname: string
+  search: string
   children: any
 }
 
 export const ServerRouterProvider = (props: Props) => {
   if (isServer) {
-    router.open(props.href)
+    initRouter(props.pathname, props.search)
   }
 
   return props.children

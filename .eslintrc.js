@@ -27,7 +27,13 @@ module.exports = {
         // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
       rules: {
-        '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^log$'
+          }
+        ],
         // TODO: Remove any usage and enable
         '@typescript-eslint/no-explicit-any': 'off',
         // TODO: Fix errors and enable this rule
@@ -45,9 +51,6 @@ module.exports = {
   },
   globals: {},
   rules: {
-    // FIXME: turn on
-    'import/no-default-export': 'off',
-
     // FIXME
     'unicorn/prefer-dom-node-append': 'off',
 

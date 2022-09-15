@@ -3,15 +3,15 @@ import './Full.scss'
 import Icon from '../Nav/Icon'
 import ArticleComment from './Comment'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
-import { renderMarkdown } from '@astrojs/markdown-remark'
-import { markdownOptions } from '../../../mdx.config'
 import { useStore } from '@nanostores/solid'
 import { session } from '../../stores/auth'
-import { incrementView, loadArticle } from '../../stores/zine/articles'
+import { incrementView } from '../../stores/zine/articles'
+import { renderMarkdown } from '@astrojs/markdown-remark'
+import { markdownOptions } from '../../../mdx.config'
 
 const MAX_COMMENT_LEVEL = 6
 
@@ -39,24 +39,21 @@ const formatDate = (date: Date) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
-  const [body, setBody] = createSignal('')
+  const [body, setBody] = createSignal(props.article.body?.startsWith('<') ? props.article.body : '')
 
   const auth = useStore(session)
 
-  onMount(() => {
-    if (!props.article.body) {
-      loadArticle({ slug: props.article.slug })
+  createEffect(() => {
+    if (body() || !props.article.body) {
+      return
+    }
+
+    if (props.article.body.startsWith('<')) {
+      setBody(props.article.body)
+    } else {
+      renderMarkdown(props.article.body, markdownOptions).then(({ code }) => setBody(code))
     }
   })
-
-  // onMount(() => {
-  //   const b: string = props.article?.body
-  //   if (b?.toString().startsWith('<')) {
-  //     setBody(b)
-  //   } else {
-  //     renderMarkdown(b, markdownOptions).then(({ code }) => setBody(code))
-  //   }
-  // })
 
   onMount(() => {
     incrementView({ articleSlug: props.article.slug })

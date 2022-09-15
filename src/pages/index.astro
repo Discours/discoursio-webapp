@@ -1,24 +1,15 @@
 ---
-import { HomePage } from '../components/Views/Home'
 import Zine from '../layouts/zine.astro'
+import { Root } from '../components/Root'
 import { apiClient } from '../utils/apiClient'
 
-const limit = 50
-const offset = 0
-const randomTopics = await apiClient.getRandomTopics()
-const recentPublished = await apiClient.getRecentPublishedArticles({ limit, offset })
-const topMonth = await apiClient.getTopMonthArticles()
-const topOverall = await apiClient.getTopArticles()
+const randomTopics = await apiClient.getRandomTopics({ amount: 12 })
+const articles = await apiClient.getRecentPublishedArticles({ limit: 5 })
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
 <Zine>
-  <HomePage
-    recentPublishedArticles={recentPublished}
-    randomTopics={randomTopics}
-    topMonthArticles={topMonth}
-    topOverallArticles={topOverall}
-    client:load
-  />
+  <Root randomTopics={randomTopics} articles={articles} client:load />
 </Zine>
+

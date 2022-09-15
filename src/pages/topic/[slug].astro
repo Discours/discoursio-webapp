@@ -1,17 +1,15 @@
 ---
-import { TopicPage } from '../../components/Views/Topic'
+import { Root } from '../../components/Root'
 import Zine from '../../layouts/zine.astro'
 import { apiClient } from '../../utils/apiClient'
 
 const slug = Astro.params.slug?.toString() || ''
-const limit = parseInt(Astro.params?.limit as string, 10) || 50
-const offset = parseInt(Astro.params?.offset as string, 10) || 0
-const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit, offset })
+const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: 50 })
 const topic = articles[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
 <Zine>
-  <TopicPage topicArticles={articles} topic={topic} />
+  <Root articles={articles} topic={topic} client:load />
 </Zine>

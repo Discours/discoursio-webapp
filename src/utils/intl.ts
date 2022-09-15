@@ -3,7 +3,7 @@ import ru from '../locales/ru.json'
 
 const dict = { ru }
 
-export const t = (s, lang = 'ru') => {
+export const t = (s, lang = 'ru'): string => {
   try {
     return dict[lang][s]
   } catch {

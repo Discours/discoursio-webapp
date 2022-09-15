@@ -21,7 +21,7 @@ router.open(Astro.url.pathname) // looks like doesn't work!
     <title>{t('Discours')}</title>
   </head>
   <body>
-    <Header />
+    <Header client:load />
     <main class="main-content">
       <Suspense>
         <slot />

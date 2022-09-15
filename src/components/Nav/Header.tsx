@@ -1,4 +1,4 @@
-import {For, Show, createSignal, createMemo, createEffect, onMount} from 'solid-js'
+import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup } from 'solid-js'
 import Private from './Private'
 import Notifications from './Notifications'
 import Icon from './Icon'
@@ -20,6 +20,7 @@ const resources = [
 
 export const Header = () => {
   // signals
+  const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   // stores
@@ -45,25 +46,29 @@ export const Header = () => {
   const enterClick = route(() => showModal('auth'))
   const bellClick = createMemo(() => (authorized() ? route(toggleWarnings) : enterClick))
 
-  const root = null;
+  const root = null
 
   onMount(() => {
-    let scrollTop = window.scrollY;
+    let scrollTop = window.scrollY
 
-    window.addEventListener('scroll', () => {
-      const scrolledTop = scrollTop < window.scrollY;
+    const handleScroll = () => {
+      setIsScrollingBottom(window.scrollY > scrollTop)
+      scrollTop = window.scrollY
+    }
 
-      window.console.log(scrolledTop);
-
-      root.classList.toggle('header--scrolled-top', scrolledTop);
-      root.classList.toggle('header--scrolled-bottom', !scrolledTop);
-
-      scrollTop = window.scrollY;
-    });
-  });
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    onCleanup(() => {
+      window.removeEventListener('scroll', handleScroll)
+    })
+  })
 
   return (
-    <header ref={root}>
+    <header
+      classList={{
+        ['header--scrolled-top']: !getIsScrollingBottom(),
+        ['header--scrolled-bottom']: getIsScrollingBottom()
+      }}
+    >
       <Modal name="auth">
         <AuthModal />
       </Modal>

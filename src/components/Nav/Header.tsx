@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createMemo, createEffect } from 'solid-js'
+import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup } from 'solid-js'
 import Private from './Private'
 import Notifications from './Notifications'
 import Icon from './Icon'
@@ -20,6 +20,8 @@ const resources = [
 
 export const Header = () => {
   // signals
+  const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
+  const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   // stores
@@ -58,8 +60,28 @@ export const Header = () => {
     handleClientRouteLinkClick(ev)
   }
 
+  onMount(() => {
+    let scrollTop = window.scrollY
+
+    const handleScroll = () => {
+      setIsScrollingBottom(window.scrollY > scrollTop)
+      setIsScrolled(window.scrollY > 0)
+      scrollTop = window.scrollY
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    onCleanup(() => {
+      window.removeEventListener('scroll', handleScroll)
+    })
+  })
+
   return (
-    <header>
+    <header
+      classList={{
+        ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
+        ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
+      }}
+    >
       <Modal name="auth">
         <AuthModal />
       </Modal>
@@ -70,17 +92,25 @@ export const Header = () => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
-            <For each={resources}>
-              {(r: { href: string; name: string }) => (
-                <li classList={{ selected: r.href === subpath() }}>
-                  <a href={r.href} onClick={handleClientRouteLinkClick}>
-                    {r.name}
-                  </a>
-                </li>
-              )}
-            </For>
-          </ul>
+          <div class="col main-navigation">
+            {/*FIXME article header*/}
+            <div class="article-header">
+              Дискурс — независимый художественно-аналитический журнал с горизонтальной редакцией,
+              основанный на принципах свободы слова, прямой демократии и совместного редактирования.
+            </div>
+
+            <ul class="text-xl inline-flex" classList={{ fixed: fixed() }}>
+              <For each={resources}>
+                {(r: { href: string; name: string }) => (
+                  <li classList={{ selected: r.href === subpath() }}>
+                    <a href={r.href} onClick={handleClientRouteLinkClick}>
+                      {r.name}
+                    </a>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
           <div class="usernav">
             <div class="usercontrol col">
               <div class="usercontrol__item">

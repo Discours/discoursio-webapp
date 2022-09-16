@@ -1,9 +1,27 @@
 header {
+  background: #fff;
   margin-bottom: 2.2rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
 
   .wide-container {
+    background: #fff;
+
     @include media-breakpoint-down(sm) {
       padding: 0 divide($container-padding-x, 2);
+    }
+  }
+}
+
+.header--scrolled-bottom,
+.header--scrolled-top {
+  .main-logo {
+    height: 56px;
+
+    img {
+      height: 20px;
     }
   }
 }
@@ -35,8 +53,9 @@ header {
   display: inline-flex;
   height: 70px;
   padding: 0 $container-padding-x 0 0;
-  text-align: center;
   position: relative;
+  transition: height 0.2s;
+  text-align: center;
   z-index: 9;
 
   @include media-breakpoint-up(lg) {
@@ -44,6 +63,10 @@ header {
   }
 
   img {
+    height: 32px;
+    object-fit: contain;
+    object-position: left;
+    transition: height 0.2s;
     vertical-align: middle;
     width: 100px;
 
@@ -79,40 +102,51 @@ nav {
 }
 
 .main-navigation {
-  display: inline-flex;
+  position: relative;
   @include font-size(1.7rem);
 
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  ul {
+    display: inline-flex;
+    list-style: none;
+    margin: 0;
+    opacity: 1;
+    padding: 0;
+    transition: opacity 0.3s;
 
-  @include media-breakpoint-down(md) {
-    background: #fff;
-    bottom: 0;
-    display: none;
-    font-size: 2.6rem;
-    font-weight: bold;
-    left: 0;
-    padding: $container-padding-x;
-    position: fixed;
-    top: 74px;
-    width: 100%;
-    z-index: 1;
+    @include media-breakpoint-down(md) {
+      background: #fff;
+      bottom: 0;
+      display: none;
+      font-size: 2.6rem;
+      font-weight: bold;
+      left: 0;
+      padding: $container-padding-x;
+      position: fixed;
+      top: 74px;
+      width: 100%;
+      z-index: 1;
 
-    li {
-      margin-bottom: 2.4rem;
+      li {
+        margin-bottom: 2.4rem;
+      }
+    }
+
+    @include media-breakpoint-down(sm) {
+      padding: divide($container-padding-x, 2);
+    }
+
+    .header--scrolled-bottom & {
+      opacity: 0;
     }
   }
 
-  @include media-breakpoint-down(sm) {
-    padding: divide($container-padding-x, 2);
-  }
-
   &.fixed {
-    display: inline-flex;
+    ul {
+      display: inline-flex;
 
-    @include media-breakpoint-down(lg) {
-      display: block !important;
+      @include media-breakpoint-down(lg) {
+        display: block !important;
+      }
     }
   }
 
@@ -127,8 +161,8 @@ nav {
   .selected a {
     border-bottom: 2px solid;
     color: #000;
-    pointer-events: none;
     cursor: default;
+    pointer-events: none;
   }
 }
 
@@ -206,5 +240,26 @@ nav {
       transform: rotate(45deg);
       top: 0.8rem;
     }
+  }
+}
+
+.article-header {
+  @include font-size(1.4rem);
+
+  left: 0;
+  margin: 0.2em;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s, z-index 0s 0.3s;
+  white-space: nowrap;
+  width: 100%;
+  z-index: -1;
+
+  .header--scrolled-bottom & {
+    transition: opacity 0.3s;
+    opacity: 1;
+    z-index: 1;
   }
 }

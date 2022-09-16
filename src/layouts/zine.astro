@@ -23,7 +23,7 @@ const locale = useStore(langstore)
       <title>{t('Discours')}</title>
     </head>
     <body>
-      <Header />
+      <Header client:load />
       <main class="main-content">
         <Suspense>
           <slot />

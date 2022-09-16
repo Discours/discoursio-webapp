@@ -1,27 +1,25 @@
 import { apiClient } from '../../utils/apiClient'
-import type { ReadableAtom, WritableAtom } from 'nanostores'
-import { atom, computed } from 'nanostores'
+import { map, MapStore, ReadableAtom, WritableAtom, atom, computed } from 'nanostores'
 import type { Topic } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
 import { byCreated, byStat } from '../../utils/sortby'
-import type { AuthorsSortBy } from './authors'
 
 export type TopicsSortBy = 'created' | 'name'
 
 const sortAllByStore = atom<TopicsSortBy>('created')
 
-let topicEntitiesStore: WritableAtom<{ [topicSlug: string]: Topic }>
+let topicEntitiesStore: MapStore<Record<string, Topic>>
 let sortedTopicsStore: ReadableAtom<Topic[]>
 let topTopicsStore: ReadableAtom<Topic[]>
 let randomTopicsStore: WritableAtom<Topic[]>
-let topicsByAuthorStore: WritableAtom<{ [authorSlug: string]: Topic[] }>
+let topicsByAuthorStore: MapStore<Record<string, Topic[]>>
 
 const initStore = (initial?: Record<string, Topic>) => {
   if (topicEntitiesStore) {
     return
   }
 
-  topicEntitiesStore = atom<Record<string, Topic>>(initial)
+  topicEntitiesStore = map<Record<string, Topic>>(initial)
 
   sortedTopicsStore = computed([topicEntitiesStore, sortAllByStore], (topicEntities, sortBy) => {
     const topics = Object.values(topicEntities)
@@ -76,7 +74,7 @@ export const addTopicsByAuthor = (topicsByAuthors: { [authorSlug: string]: Topic
   addTopics(allTopics)
 
   if (!topicsByAuthorStore) {
-    topicsByAuthorStore = atom<{ [authorSlug: string]: Topic[] }>(topicsByAuthors)
+    topicsByAuthorStore = map<Record<string, Topic[]>>(topicsByAuthors)
   } else {
     const newState = Object.entries(topicsByAuthors).reduce((acc, [authorSlug, topics]) => {
       if (!acc[authorSlug]) {
@@ -107,10 +105,18 @@ type InitialState = {
 }
 
 export const useTopicsStore = ({ topics, randomTopics }: InitialState = {}) => {
-  addTopics(topics, randomTopics)
-
+  console.log('using topics store')
+  if (topics) {
+    addTopics(topics)
+    console.log('topics added')
+  }
+  if (randomTopics) {
+    addTopics(randomTopics)
+    console.log('random topics added')
+  }
   if (!randomTopicsStore) {
     randomTopicsStore = atom(randomTopics)
+    console.log('random topics separate store')
   }
 
   const getTopicEntities = useStore(topicEntitiesStore)

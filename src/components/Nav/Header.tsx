@@ -8,9 +8,8 @@ import { t } from '../../utils/intl'
 import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { session as ssession } from '../../stores/auth'
-import { route, router } from '../../stores/router'
+import { handleClientRouteLinkClick, router } from '../../stores/router'
 import './Header.scss'
-import { Shout } from '../../graphql/types.gen'
 
 const resources = [
   { name: t('zine'), href: '/' },
@@ -19,7 +18,7 @@ const resources = [
   //{ name: t('community'), href: '/community' }
 ]
 
-export const Header = (props: Shout) => {
+export const Header = () => {
   // signals
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -45,8 +44,21 @@ export const Header = (props: Shout) => {
 
   // derived
   const authorized = createMemo(() => session()?.user?.slug)
-  const enterClick = route(() => showModal('auth'))
-  const bellClick = createMemo(() => (authorized() ? route(toggleWarnings) : enterClick))
+
+  const handleEnterClick = (ev) => {
+    showModal('auth')
+    handleClientRouteLinkClick(ev)
+  }
+
+  const handleBellIconClick = (ev) => {
+    if (!authorized()) {
+      handleEnterClick(ev)
+      return
+    }
+
+    toggleWarnings()
+    handleClientRouteLinkClick(ev)
+  }
 
   onMount(() => {
     let scrollTop = window.scrollY
@@ -76,11 +88,12 @@ export const Header = (props: Shout) => {
       <div class="wide-container">
         <nav class="row header__inner" classList={{ fixed: fixed() }}>
           <div class="main-logo col-auto">
-            <a href="/" onClick={route}>
+            <a href="/" onClick={handleClientRouteLinkClick}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
           <div class="col main-navigation">
+            {/*FIXME article header*/}
             <div class="article-header">
               Дискурс — независимый художественно-аналитический журнал с горизонтальной редакцией,
               основанный на принципах свободы слова, прямой демократии и совместного редактирования.
@@ -90,7 +103,7 @@ export const Header = (props: Shout) => {
               <For each={resources}>
                 {(r: { href: string; name: string }) => (
                   <li classList={{ selected: r.href === subpath() }}>
-                    <a href={r.href} onClick={route}>
+                    <a href={r.href} onClick={handleClientRouteLinkClick}>
                       {r.name}
                     </a>
                   </li>
@@ -101,7 +114,7 @@ export const Header = (props: Shout) => {
           <div class="usernav">
             <div class="usercontrol col">
               <div class="usercontrol__item">
-                <a href="#auth" onClick={bellClick}>
+                <a href="#auth" onClick={handleBellIconClick}>
                   <div>
                     <Icon name="bell-white" counter={authorized() ? getWarnings().length : 1} />
                   </div>
@@ -118,7 +131,7 @@ export const Header = (props: Shout) => {
                 when={authorized()}
                 fallback={
                   <div class="usercontrol__item loginbtn">
-                    <a href="#auth" onClick={enterClick}>
+                    <a href="#auth" onClick={handleEnterClick}>
                       {t('enter')}
                     </a>
                   </div>

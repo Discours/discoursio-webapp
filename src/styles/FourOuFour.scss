@@ -1,0 +1,70 @@
+.error-page-wrapper {
+  height: 100vh;
+}
+
+.error-page {
+  position: relative;
+  top: 35%;
+  transform: translateY(-40%);
+
+  .error-image {
+    display: block;
+    margin: auto;
+    width: 85%;
+  }
+
+  .error-text {
+    font-weight: 300;
+    font-size: 28px;
+    left: 80px;
+    position: absolute;
+    text-align: center;
+    top: -2.25em;
+
+    .big {
+      font-weight: 900;
+      letter-spacing: 4px;
+      font-size: 60px;
+    }
+  }
+
+  .error-explain {
+    font-size: 16px;
+    position: absolute;
+    top: -3.4em;
+    left: 65px;
+
+    p {
+      margin: 0 0 0.3em;
+    }
+  }
+
+  .image-link:hover {
+    background: none;
+  }
+
+  .search-submit {
+    height: 100%;
+    padding: 0 1em;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .pretty-form {
+    margin-top: 0.5em;
+  }
+
+  .pretty-form__item input {
+    padding-right: 2.7em;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+}
+
+.error-text-container,
+.search-form-container {
+  position: relative;
+}

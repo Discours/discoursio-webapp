@@ -105,18 +105,16 @@ type InitialState = {
 }
 
 export const useTopicsStore = ({ topics, randomTopics }: InitialState = {}) => {
-  console.log('using topics store')
+  // console.log('using topics store')
   if (topics) {
     addTopics(topics)
-    console.log('topics added')
   }
   if (randomTopics) {
     addTopics(randomTopics)
-    console.log('random topics added')
   }
   if (!randomTopicsStore) {
     randomTopicsStore = atom(randomTopics)
-    console.log('random topics separate store')
+    // console.log('random topics separate store')
   }
 
   const getTopicEntities = useStore(topicEntitiesStore)

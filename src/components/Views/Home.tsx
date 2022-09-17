@@ -16,6 +16,7 @@ import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { loadPublishedArticles, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
+import { router } from '../../stores/router'
 
 type HomeProps = {
   randomTopics: Topic[]
@@ -26,7 +27,7 @@ type HomeProps = {
   offset?: number
 }
 
-const LAYOUTS = ['article', 'prose', 'music', 'video', 'image']
+// const LAYOUTS = ['article', 'prose', 'music', 'video', 'image']
 
 export const HomePage = (props: HomeProps) => {
   const [someLayout, setSomeLayout] = createSignal([] as Shout[])

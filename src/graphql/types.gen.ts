@@ -145,12 +145,11 @@ export type Mutation = {
   refreshSession: AuthResult
   registerUser: AuthResult
   removeAuthor: Result
-  requestPasswordUpdate: Result
+  sendLink: Result
   unfollow: Result
   updateCollection: Result
   updateCommunity: Result
   updateMessage: MessageResult
-  updatePassword: Result
   updateProfile: Result
   updateReaction: Result
   updateShout: Result
@@ -160,7 +159,7 @@ export type Mutation = {
 }
 
 export type MutationConfirmEmailArgs = {
-  token: Scalars['String']
+  code: Scalars['String']
 }
 
 export type MutationCreateChatArgs = {
@@ -252,7 +251,7 @@ export type MutationRemoveAuthorArgs = {
   shout: Scalars['String']
 }
 
-export type MutationRequestPasswordUpdateArgs = {
+export type MutationSendLinkArgs = {
   email: Scalars['String']
 }
 
@@ -273,11 +272,6 @@ export type MutationUpdateMessageArgs = {
   body: Scalars['String']
   chatId: Scalars['String']
   id: Scalars['Int']
-}
-
-export type MutationUpdatePasswordArgs = {
-  password: Scalars['String']
-  token: Scalars['String']
 }
 
 export type MutationUpdateProfileArgs = {
@@ -356,6 +350,7 @@ export type Query = {
   signIn: AuthResult
   signOut: AuthResult
   topAuthors: Array<Maybe<Author>>
+  topCommented: Array<Maybe<Shout>>
   topMonth: Array<Maybe<Shout>>
   topOverall: Array<Maybe<Shout>>
   topViewed: Array<Maybe<Shout>>
@@ -490,6 +485,11 @@ export type QuerySignInArgs = {
 }
 
 export type QueryTopAuthorsArgs = {
+  limit: Scalars['Int']
+  offset: Scalars['Int']
+}
+
+export type QueryTopCommentedArgs = {
   limit: Scalars['Int']
   offset: Scalars['Int']
 }

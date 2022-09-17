@@ -22,8 +22,6 @@ export const AllTopicsPage = (props: { topics?: Topic[] }) => {
 
   const params = useStore(paramstore)
 
-  console.log({ router })
-
   createEffect(() => {
     if (abc().length === 0 && (!params()['by'] || params()['by'] === 'abc')) {
       console.log('[topics] default grouping by abc')

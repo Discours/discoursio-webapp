@@ -4,8 +4,8 @@ import { devtoolsExchange } from '@urql/devtools'
 // FIXME actual value
 const isDev = true
 
-//export const baseUrl = 'https://newapi.discours.io'
-export const baseUrl = 'http://localhost:8000'
+export const baseUrl = 'https://newapi.discours.io'
+//export const baseUrl = 'http://localhost:8000'
 
 const exchanges: Exchange[] = [dedupExchange, fetchExchange]
 

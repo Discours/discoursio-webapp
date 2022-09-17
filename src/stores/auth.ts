@@ -1,4 +1,4 @@
-import { atom, action } from 'nanostores'
+import { atom } from 'nanostores'
 import type { AuthResult } from '../graphql/types.gen'
 import { getLogger } from '../utils/logger'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
@@ -9,14 +9,14 @@ const log = getLogger('auth-store')
 export const session = atom<AuthResult>()
 
 export const signIn = async (params) => {
-  const s = await apiClient.signIn(params)
+  const s = await apiClient.authLogin(params)
   session.set(s)
   setToken(s.token)
   log.debug('signed in')
 }
 
 export const signUp = async (params) => {
-  const s = await apiClient.signUp(params)
+  const s = await apiClient.authRegiser(params)
   session.set(s)
   setToken(s.token)
   log.debug('signed up')
@@ -31,22 +31,18 @@ export const signOut = () => {
 export const emailChecks = atom<{ [email: string]: boolean }>({})
 
 export const signCheck = async (params) => {
-  emailChecks.set(await apiClient.signCheck(params))
+  emailChecks.set(await apiClient.authCheckEmail(params))
 }
 
 export const resetCode = atom<string>()
 
-export const signReset = async (params) => {
-  await apiClient.signReset(params) // { email }
+export const signSendLink = async (params) => {
+  await apiClient.authSendLink(params) // { email }
   resetToken()
 }
 
-export const signResend = async (params) => {
-  await apiClient.signResend(params) // { email }
-}
-
-export const signResetConfirm = async (params) => {
-  const auth = await apiClient.signResetConfirm(params) // { code }
+export const signConfirm = async (params) => {
+  const auth = await apiClient.authConfirmCode(params) // { code }
   setToken(auth.token)
   session.set(auth)
 }

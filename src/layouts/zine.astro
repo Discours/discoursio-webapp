@@ -5,17 +5,13 @@ import { Header } from '../components/Nav/Header'
 import { Footer } from '../components/Discours/Footer'
 import { ServerRouterProvider } from '../components/providers/ServerRouterProvider'
 import { t } from '../utils/intl'
-import { locale as langstore } from '../stores/ui'
-import { useStore } from '@nanostores/solid'
 
 const { pathname, search } = Astro.url
-
-// FIXME always returns ru
-const locale = useStore(langstore)
+const lang = Astro.url.searchParams['lang']
 ---
 
 <ServerRouterProvider href={pathname + search}>
-  <html lang={locale() || 'en'}>
+  <html lang={lang || 'en'}>
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width" />

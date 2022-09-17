@@ -2,7 +2,7 @@
 import signIn from './query/auth-login'
 import signUp from './mutation/auth-register'
 import signOut from './mutation/auth-logout'
-import checkEmail from './query/auth-check'
+import checkEmail from './query/auth-check-email'
 import getSession from './mutation/my-session'
 // articles
 import topOverall from './query/articles-top-rated'

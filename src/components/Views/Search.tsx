@@ -8,8 +8,8 @@ import { useArticlesStore, loadSearchResults } from '../../stores/zine/articles'
 import { useStore } from '@nanostores/solid'
 
 type Props = {
-  query: string
-  results: Shout[]
+  query?: string
+  results?: Shout[]
 }
 
 export const SearchPage = (props: Props) => {

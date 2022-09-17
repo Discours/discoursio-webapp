@@ -10,9 +10,12 @@ import { getLogger } from './logger'
 import reactionsForShouts from '../graphql/query/reactions-for-shouts'
 import mySession from '../graphql/mutation/my-session'
 import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
-import authLogout from '../graphql/mutation/auth-logout'
-import authLogin from '../graphql/query/auth-login'
-import authRegister from '../graphql/mutation/auth-register'
+import authLogoutQuery from '../graphql/mutation/auth-logout'
+import authLoginQuery from '../graphql/query/auth-login'
+import authRegisterMutation from '../graphql/mutation/auth-register'
+import authCheckEmailQuery from '../graphql/query/auth-check-email'
+import authConfirmCodeMutation from '../graphql/mutation/auth-confirm-email'
+import authSendLinkMutation from '../graphql/mutation/auth-send-link'
 import followMutation from '../graphql/mutation/follow'
 import unfollowMutation from '../graphql/mutation/unfollow'
 import articlesForAuthors from '../graphql/query/articles-for-authors'
@@ -25,10 +28,6 @@ import authorsAll from '../graphql/query/authors-all'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
-import authCheck from '../graphql/query/auth-check'
-import authReset from '../graphql/mutation/auth-reset'
-import authForget from '../graphql/mutation/auth-forget'
-import authResend from '../graphql/mutation/auth-resend'
 import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 
@@ -39,6 +38,36 @@ const REACTIONS_PAGE_SIZE = 100
 const DEFAULT_RANDOM_TOPICS_AMOUNT = 12
 
 export const apiClient = {
+  // auth
+
+  authLogin: async ({ email, password }) => {
+    const response = await publicGraphQLClient.query(authLoginQuery, { email, password }).toPromise()
+    return response.data.signIn
+  },
+  authRegiser: async ({ email, password }) => {
+    const response = await publicGraphQLClient.query(authRegisterMutation, { email, password }).toPromise()
+    return response.data.registerUser
+  },
+  authSignOut: async () => {
+    const response = await publicGraphQLClient.query(authLogoutQuery, {}).toPromise()
+    return response.data.signOut
+  },
+  authCheckEmail: async ({ email }) => {
+    // check if email is used
+    const response = await publicGraphQLClient.query(authCheckEmailQuery, { email }).toPromise()
+    return response.data.isEmailUsed
+  },
+  authSendLink: async ({ email }) => {
+    // send link with code on email
+    const response = await publicGraphQLClient.query(authSendLinkMutation, { email }).toPromise()
+    return response.data.reset
+  },
+  authConfirmCode: async ({ code }) => {
+    // confirm email with code from link
+    const response = await publicGraphQLClient.query(authConfirmCodeMutation, { code }).toPromise()
+    return response.data.reset
+  },
+
   getTopArticles: async () => {
     const response = await publicGraphQLClient.query(articlesTopRated, { limit: 10, offset: 0 }).toPromise()
     return response.data.topOverall
@@ -150,40 +179,6 @@ export const apiClient = {
     return response.data.unfollow
   },
 
-  // auth
-
-  signIn: async ({ email, password }) => {
-    const response = await publicGraphQLClient.query(authLogin, { email, password }).toPromise()
-    return response.data.signIn
-  },
-  signUp: async ({ email, password }) => {
-    const response = await publicGraphQLClient.query(authRegister, { email, password }).toPromise()
-    return response.data.registerUser
-  },
-  signOut: async () => {
-    const response = await publicGraphQLClient.query(authLogout, {}).toPromise()
-    return response.data.signOut
-  },
-  signCheck: async ({ email }) => {
-    // check if email is used
-    const response = await publicGraphQLClient.query(authCheck, { email }).toPromise()
-    return response.data.isEmailUsed
-  },
-  signReset: async ({ email }) => {
-    // send reset link with code on email
-    const response = await publicGraphQLClient.query(authForget, { email }).toPromise()
-    return response.data.reset
-  },
-  signResend: async ({ email }) => {
-    // same as reset if code is expired
-    const response = await publicGraphQLClient.query(authResend, { email }).toPromise()
-    return response.data.resend
-  },
-  signResetConfirm: async ({ code }) => {
-    // confirm reset password with code
-    const response = await publicGraphQLClient.query(authReset, { code }).toPromise()
-    return response.data.reset
-  },
   getSession: async () => {
     // renew session with auth token in header (!)
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
@@ -247,7 +242,7 @@ export const apiClient = {
       })
       .toPromise()
 
-    return response.data.reactionsByShout
+    return response.data?.reactionsByShout
   },
   getAuthorsBySlugs: async ({ slugs }) => {
     const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()

@@ -30,12 +30,12 @@ async function handle(req, res) {
 }
 
 const server = createServer((req, res) => {
-	handle(req, res).catch((err) => {
-		console.error('[ssr] server error', err);
+	handle(req, res).catch((error) => {
+		console.error('[ssr] server error', error);
 		res.writeHead(500, {
 			'Content-Type': 'text/plain',
 		});
-		res.end(err.toString());
+		res.end(error.toString());
 	});
 });
 

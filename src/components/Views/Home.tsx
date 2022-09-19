@@ -10,7 +10,7 @@ import Beside from '../Feed/Beside'
 import RowShort from '../Feed/RowShort'
 import Slider from '../Feed/Slider'
 import Group from '../Feed/Group'
-import type { Shout, Topic } from '../../graphql/types.gen'
+import type { Shout } from '../../graphql/types.gen'
 import Icon from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
@@ -27,8 +27,8 @@ type HomeProps = {
 // const LAYOUTS = ['article', 'prose', 'music', 'video', 'image']
 
 export const HomeView = (props: HomeProps) => {
-  const [someLayout, setSomeLayout] = createSignal([] as Shout[])
-  const [selectedLayout, setSelectedLayout] = createSignal('article')
+  const [someLayout] = createSignal([] as Shout[])
+  const [selectedLayout] = createSignal('article')
   // const [byLayout, setByLayout] = createSignal({} as { [layout: string]: Shout[] })
   // const [byTopic, setByTopic] = createSignal({} as { [topic: string]: Shout[] })
 

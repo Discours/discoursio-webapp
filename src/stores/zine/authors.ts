@@ -3,7 +3,7 @@ import type { ReadableAtom, WritableAtom } from 'nanostores'
 import { atom, computed } from 'nanostores'
 import type { Author } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
-import { byCreated, byStat } from '../../utils/sortby'
+import { byCreated } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
 
@@ -29,10 +29,12 @@ const initStore = (initial: { [authorSlug: string]: Author }) => {
     const authors = Object.values(authorEntities)
     switch (sortBy) {
       case 'created': {
+        log.debug('sorted by created')
         authors.sort(byCreated)
         break
       }
       case 'name': {
+        log.debug('sorted by name')
         authors.sort((a, b) => a.name.localeCompare(b.name))
         break
       }

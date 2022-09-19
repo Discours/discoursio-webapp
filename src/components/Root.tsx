@@ -1,4 +1,4 @@
-import { Component, Switch, Match, createMemo, lazy } from 'solid-js'
+import { Component, createMemo, lazy } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
 import { Dynamic } from 'solid-js/web'
 import { getLogger } from '../utils/logger'

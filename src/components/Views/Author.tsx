@@ -2,14 +2,14 @@ import { Show, createMemo } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import Row2 from '../Feed/Row2'
 import Row3 from '../Feed/Row3'
-import Beside from '../Feed/Beside'
+// import Beside from '../Feed/Beside'
 import AuthorFull from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useArticlesStore } from '../../stores/zine/articles'
 
 import '../../styles/Topic.scss'
-import { useTopicsStore } from '../../stores/zine/topics'
+// import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
 
 // TODO: load reactions on client

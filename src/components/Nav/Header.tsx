@@ -23,10 +23,10 @@ const handleEnterClick = () => {
 }
 
 type Props = {
-  title: string
+  title?: string
 }
 
-export const Header = (props) => {
+export const Header = (props: Props) => {
   // signals
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)

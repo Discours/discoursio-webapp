@@ -29,7 +29,7 @@ const titles = {
   password: t('Enter your new password')
 }
 
-const isProperEmail = (email) => email && email.length > 5 && email.includes('@') && email.includes('.')
+// const isProperEmail = (email) => email && email.length > 5 && email.includes('@') && email.includes('.')
 
 // FIXME !!!
 // eslint-disable-next-line sonarjs/cognitive-complexity

@@ -1,4 +1,4 @@
-import { Show, For, createSignal, createMemo } from 'solid-js'
+import { Show, For, createSignal } from 'solid-js'
 import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'

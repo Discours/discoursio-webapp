@@ -7,8 +7,8 @@ import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
-import { renderMarkdown } from '@astrojs/markdown-remark'
-import { markdownOptions } from '../../../mdx.config'
+// import { renderMarkdown } from '@astrojs/markdown-remark'
+// import { markdownOptions } from '../../../mdx.config'
 import { useStore } from '@nanostores/solid'
 import { session } from '../../stores/auth'
 import { incrementView, loadArticle } from '../../stores/zine/articles'
@@ -39,7 +39,8 @@ const formatDate = (date: Date) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
-  const [body, setBody] = createSignal('')
+  // const [body, setBody] = createSignal('')
+  const [body] = createSignal('')
 
   const auth = useStore(session)
 

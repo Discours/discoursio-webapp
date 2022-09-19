@@ -1,5 +1,5 @@
 import { For, Show, createMemo } from 'solid-js'
-import type { Maybe, Scalars, Shout, Topic } from '../../graphql/types.gen'
+import type { Shout, Topic } from '../../graphql/types.gen'
 import Row3 from '../Feed/Row3'
 import Row2 from '../Feed/Row2'
 import Beside from '../Feed/Beside'

@@ -45,9 +45,6 @@ module.exports = {
   },
   globals: {},
   rules: {
-    // FIXME: turn on
-    'import/no-default-export': 'off',
-
     // FIXME
     'unicorn/prefer-dom-node-append': 'off',
 

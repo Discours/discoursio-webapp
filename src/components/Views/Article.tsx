@@ -2,7 +2,7 @@ import { createEffect, createSignal, Show, Suspense } from 'solid-js'
 import { FullArticle } from '../Article/FullArticle'
 import { t } from '../../utils/intl'
 
-import type { Reaction, Shout } from '../../graphql/types.gen'
+import type { Shout } from '../../graphql/types.gen'
 import { useCurrentArticleStore } from '../../stores/zine/currentArticle'
 import { loadArticleReactions, useReactionsStore } from '../../stores/zine/reactions'
 

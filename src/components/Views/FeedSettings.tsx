@@ -1,14 +1,12 @@
 import '../../styles/FeedSettings.scss'
 import { t } from '../../utils/intl'
-import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
+import { handleClientRouteLinkClick } from '../../stores/router'
 
-type FeedSettingsSearchParams = {
-  by: '' | 'topics' | 'authors' | 'reacted'
-}
+// type FeedSettingsSearchParams = {
+//   by: '' | 'topics' | 'authors' | 'reacted'
+// }
 
-export const FeedSettingsView = (props: any) => {
-  const { getSearchParams } = useRouter<FeedSettingsSearchParams>()
-
+export const FeedSettingsView = () => {
   return (
     <div class="container">
       <h1>{t('Feed settings')}</h1>

@@ -9,7 +9,7 @@
     "codegen": "graphql-codegen",
     "deploy": "graphql-codegen && npm run typecheck && astro build && vercel",
     "dev": "astro dev",
-    "ffix": "npm run lint:code:fix && npm run lint:styles:fix && npm run format",
+    "ffix": "npm run fix && npm run format",
     "fix": "npm run lint:code:fix && npm run lint:styles:fix",
     "format": "npx prettier \"{,!(node_modules)/**/}*.{js,ts,tsx,json,scss,css}\" --write --ignore-path .gitignore",
     "lint": "npm run lint:code && npm run lint:styles",

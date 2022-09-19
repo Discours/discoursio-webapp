@@ -109,6 +109,12 @@ export const Header = () => {
                   </li>
                 )}
               </For>
+              <li class="header__search">
+                <a href="#">
+                  <Icon name="search" />
+                  {t('Search')}
+                </a>
+              </li>
             </ul>
           </div>
           <div class="usernav">

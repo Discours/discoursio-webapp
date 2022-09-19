@@ -263,3 +263,15 @@ nav {
     z-index: 1;
   }
 }
+
+.header__search {
+  text-transform: lowercase;
+
+  .icon {
+    display: inline-block;
+    height: 1em;
+    margin-right: 0.3em;
+    vertical-align: middle;
+    width: 1em;
+  }
+}

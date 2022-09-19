@@ -1,4 +1,4 @@
-import { MainLayout } from '../Layours/MainLayout'
+import { MainLayout } from '../Layouts/MainLayout'
 import { AuthorView } from '../Views/Author'
 import type { PageProps } from '../types'
 

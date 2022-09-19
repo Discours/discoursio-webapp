@@ -1,5 +1,5 @@
 import { FourOuFourView } from '../Views/FourOuFour'
-import { MainLayout } from '../Layours/MainLayout'
+import { MainLayout } from '../Layouts/MainLayout'
 
 export const FourOuFourPage = () => {
   return (

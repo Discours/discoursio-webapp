@@ -1,5 +1,5 @@
 import { HomeView } from '../Views/Home'
-import { MainLayout } from '../Layours/MainLayout'
+import { MainLayout } from '../Layouts/MainLayout'
 import type { PageProps } from '../types'
 
 export const HomePage = (props: PageProps) => {

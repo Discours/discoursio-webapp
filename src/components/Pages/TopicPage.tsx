@@ -1,4 +1,4 @@
-import { MainLayout } from '../Layours/MainLayout'
+import { MainLayout } from '../Layouts/MainLayout'
 import { TopicView } from '../Views/Topic'
 import type { PageProps } from '../types'
 

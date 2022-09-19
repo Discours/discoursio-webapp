@@ -99,7 +99,7 @@ export default (props: { code?: string; mode?: string }) => {
           setError(t('Passwords are not equal'))
         } else {
           // FIXME use store actions
-          const r = await apiClient.signUp({
+          const r = await apiClient.authRegiser({
             email: emailElement?.value,
             password: passElement?.value
           })

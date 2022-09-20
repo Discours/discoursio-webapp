@@ -3,7 +3,7 @@ import { gql } from '@urql/core'
 // WARNING: need Auth header
 
 export default gql`
-  query ShoutsReactedByUserQuery($limit: String!, $limit: Int!, $offset: Int!) {
+  query ShoutsReactedByUserQuery($slug: String!, $limit: Int!, $offset: Int!) {
     userReactedShouts(slug: String!, page: Int!, size: Int!) {
       _id: slug
       title

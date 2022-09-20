@@ -1,3 +1,5 @@
+import 'solid-devtools'
+
 import { Component, createMemo, lazy } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
 import { Dynamic } from 'solid-js/web'
@@ -31,12 +33,12 @@ const pagesMap: Record<keyof Routes, Component<PageProps>> = {
 export const Root = (props: PageProps) => {
   const { getPage } = useRouter()
 
-  log.debug({ route: getPage().route })
+  // log.debug({ route: getPage().route })
 
   const pageComponent = createMemo(() => {
     const result = pagesMap[getPage().route]
 
-    log.debug('page', getPage())
+    // log.debug('page', getPage())
 
     if (!result) {
       return FourOuFourPage

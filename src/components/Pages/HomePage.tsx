@@ -5,7 +5,7 @@ import type { PageProps } from '../types'
 export const HomePage = (props: PageProps) => {
   return (
     <MainLayout>
-      <HomeView recentPublishedArticles={props.articles || []} />
+      <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.articles || []} />
     </MainLayout>
   )
 }

@@ -3,6 +3,7 @@ import type { Author, Shout, Topic } from '../graphql/types.gen'
 
 // all the things (she said) that could be passed from the server
 export type PageProps = {
+  randomTopics?: Topic[]
   article?: Shout
   articles?: Shout[]
   author?: Author

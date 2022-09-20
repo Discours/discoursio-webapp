@@ -4,6 +4,7 @@ import type { Topic } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
 import { byCreated, byTopicStatDesc } from '../../utils/sortby'
 import { getLogger } from '../../utils/logger'
+import { createSignal } from 'solid-js'
 
 const log = getLogger('topics store')
 
@@ -14,7 +15,9 @@ const sortAllByStore = atom<TopicsSortBy>('shouts')
 let topicEntitiesStore: MapStore<Record<string, Topic>>
 let sortedTopicsStore: ReadableAtom<Topic[]>
 let topTopicsStore: ReadableAtom<Topic[]>
-let randomTopicsStore: WritableAtom<Topic[]>
+
+const [getRandomTopics, setRandomTopics] = createSignal<Topic[]>()
+// let randomTopicsStore: WritableAtom<Topic[]>
 let topicsByAuthorStore: MapStore<Record<string, Topic[]>>
 
 const initStore = (initial?: { [topicSlug: string]: Topic }) => {
@@ -28,17 +31,17 @@ const initStore = (initial?: { [topicSlug: string]: Topic }) => {
     const topics = Object.values(topicEntities)
     switch (sortBy) {
       case 'created': {
-        log.debug('sorted by created')
+        // log.debug('sorted by created')
         topics.sort(byCreated)
         break
       }
       case 'shouts':
       case 'authors':
-        log.debug(`sorted by ${sortBy}`)
+        // log.debug(`sorted by ${sortBy}`)
         topics.sort(byTopicStatDesc(sortBy))
         break
       case 'title':
-        log.debug('sorted by title')
+        // log.debug('sorted by title')
         topics.sort((a, b) => a.title.localeCompare(b.title))
         break
       default:
@@ -115,21 +118,23 @@ type InitialState = {
 }
 
 export const useTopicsStore = ({ topics, randomTopics, sortBy }: InitialState = {}) => {
+  log.debug(
+    'useTopicsStore',
+    randomTopics.map((topic) => topic.slug)
+  )
   if (sortBy) {
     sortAllByStore.set(sortBy)
   }
 
   addTopics(topics, randomTopics)
 
-  if (!randomTopicsStore) {
-    randomTopicsStore = atom(randomTopics)
+  if (randomTopics) {
+    setRandomTopics(randomTopics)
   }
 
   const getTopicEntities = useStore(topicEntitiesStore)
 
   const getSortedTopics = useStore(sortedTopicsStore)
-
-  const getRandomTopics = useStore(randomTopicsStore)
 
   const getTopTopics = useStore(topTopicsStore)
 

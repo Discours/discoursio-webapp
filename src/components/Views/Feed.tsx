@@ -32,7 +32,7 @@ export const FeedView = (props: FeedProps) => {
   // state
   const { getSortedArticles: articles } = useArticlesStore({ sortedArticles: props.articles })
   const reactions = useReactionsStore()
-  const { getTopAuthors, getSortedAuthors: authors } = useAuthorsStore()
+  const { getSortedAuthors: authors } = useAuthorsStore()
   const { getTopTopics } = useTopicsStore()
 
   const auth = useStore(session)

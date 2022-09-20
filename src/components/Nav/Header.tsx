@@ -11,6 +11,9 @@ import { session as ssession } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import './Header.scss'
 import { getPagePath } from '@nanostores/router'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('header')
 
 const resources: { name: string; route: keyof Routes }[] = [
   { name: t('zine'), route: 'home' },

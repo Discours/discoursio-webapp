@@ -73,6 +73,15 @@ export const TopicCard = (props: TopicProps) => {
                   t('author') +
                   plural(topic().stat?.authors || 0, locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's'])}
               </span>
+              <span class="topic-details__item" classList={{ compact: props.compact }}>
+                {topic().stat?.followers +
+                  ' ' +
+                  t('follower') +
+                  plural(
+                    topic().stat?.followers || 0,
+                    locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
+                  )}
+              </span>
               {/*FIXME*/}
               {/*<Show when={false && !props.subscribeButtonBottom}>*/}
               {/*  <span class='topic-details__item'>*/}

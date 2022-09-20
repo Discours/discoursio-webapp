@@ -223,7 +223,7 @@ export const apiClient = {
       })
       .toPromise()
 
-    return response.data.reactionsByShout
+    return response.data.reactionsForShouts
   },
   getArticleReactions: async ({
     articleSlug,

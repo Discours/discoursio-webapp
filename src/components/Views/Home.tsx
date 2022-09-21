@@ -125,59 +125,52 @@ export const HomeView = (props: HomeProps) => {
     loadPublishedArticles({ limit: LOAD_MORE_ARTICLES_COUNT, offset: getSortedArticles().length })
   }
 
-  createEffect(() =>
-    log.debug(
-      'random',
-      getRandomTopics().map((topic) => topic.slug)
-    )
-  )
-
   return (
     <>
       <NavTopics topics={getRandomTopics()} />
       <Row5 articles={getSortedArticles().slice(0, 5)} />
-      {/*<Hero />*/}
-      {/*<Beside*/}
-      {/*  beside={getSortedArticles()[5]}*/}
-      {/*  title={t('Top viewed')}*/}
-      {/*  values={getTopViewedArticles().slice(0, 5)}*/}
-      {/*  wrapper={'top-article'}*/}
-      {/*/>*/}
-      {/*<Row3 articles={getSortedArticles().slice(6, 9)} />*/}
+      <Hero />
+      <Beside
+        beside={getSortedArticles()[5]}
+        title={t('Top viewed')}
+        values={getTopViewedArticles().slice(0, 5)}
+        wrapper={'top-article'}
+      />
+      <Row3 articles={getSortedArticles().slice(6, 9)} />
 
-      {/*{topAuthors()}*/}
+      {topAuthors()}
 
-      {/*<Slider title={t('Top month articles')} articles={getTopMonthArticles()} />*/}
+      <Slider title={t('Top month articles')} articles={getTopMonthArticles()} />
 
-      {/*<Row2 articles={getSortedArticles().slice(10, 12)} />*/}
-      {/*<RowShort articles={getSortedArticles().slice(12, 16)} />*/}
-      {/*<Row1 article={getSortedArticles()[16]} />*/}
-      {/*<Row3 articles={getSortedArticles().slice(17, 20)} />*/}
-      {/*<Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />*/}
+      <Row2 articles={getSortedArticles().slice(10, 12)} />
+      <RowShort articles={getSortedArticles().slice(12, 16)} />
+      <Row1 article={getSortedArticles()[16]} />
+      <Row3 articles={getSortedArticles().slice(17, 20)} />
+      <Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
 
-      {/*{randomLayout()}*/}
+      {randomLayout()}
 
-      {/*<Slider title={t('Favorite')} articles={getTopArticles()} />*/}
+      <Slider title={t('Favorite')} articles={getTopArticles()} />
 
-      {/*<Beside*/}
-      {/*  beside={getSortedArticles()[20]}*/}
-      {/*  title={t('Top topics')}*/}
-      {/*  values={getTopTopics().slice(0, 5)}*/}
-      {/*  wrapper={'topic'}*/}
-      {/*  isTopicCompact={true}*/}
-      {/*/>*/}
-      {/*<Row3 articles={getSortedArticles().slice(21, 24)} />*/}
-      {/*<Banner />*/}
-      {/*<Row2 articles={getSortedArticles().slice(24, 26)} />*/}
-      {/*<Row3 articles={getSortedArticles().slice(26, 29)} />*/}
-      {/*<Row2 articles={getSortedArticles().slice(29, 31)} />*/}
-      {/*<Row3 articles={getSortedArticles().slice(31, 34)} />*/}
+      <Beside
+        beside={getSortedArticles()[20]}
+        title={t('Top topics')}
+        values={getTopTopics().slice(0, 5)}
+        wrapper={'topic'}
+        isTopicCompact={true}
+      />
+      <Row3 articles={getSortedArticles().slice(21, 24)} />
+      <Banner />
+      <Row2 articles={getSortedArticles().slice(24, 26)} />
+      <Row3 articles={getSortedArticles().slice(26, 29)} />
+      <Row2 articles={getSortedArticles().slice(29, 31)} />
+      <Row3 articles={getSortedArticles().slice(31, 34)} />
 
-      {/*<p class="load-more-container">*/}
-      {/*  <button class="button" onClick={loadMore}>*/}
-      {/*    {t('Load more')}*/}
-      {/*  </button>*/}
-      {/*</p>*/}
+      <p class="load-more-container">
+        <button class="button" onClick={loadMore}>
+          {t('Load more')}
+        </button>
+      </p>
     </>
   )
 }

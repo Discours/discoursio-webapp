@@ -1,5 +1,5 @@
 import { t } from '../../utils/intl'
-import { createMemo, createSignal, onMount } from 'solid-js'
+import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
 import { For, Show } from 'solid-js/web'
 import type { Author, Shout, Topic } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
@@ -9,6 +9,9 @@ import './Card.scss'
 import { locale as localestore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { handleClientRouteLinkClick } from '../../stores/router'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('card component')
 
 interface ArticleCardProps {
   settings?: {
@@ -28,10 +31,8 @@ interface ArticleCardProps {
 export const ArticleCard = (props: ArticleCardProps) => {
   const locale = useStore(localestore)
 
-  // const article = createMemo<Shout>(() => props.article)
-  // const authors = createMemo<Author[]>(() => article().authors)
-  const mainTopic = createMemo<Topic>(() =>
-    props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic)
+  const mainTopic = props.article.topics.find(
+    (articleTopic) => articleTopic.slug === props.article.mainTopic
   )
 
   const formattedDate = createMemo<string>(() => {

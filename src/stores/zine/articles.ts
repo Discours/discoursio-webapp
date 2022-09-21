@@ -19,7 +19,7 @@ let articlesByTopicsStore: ReadableAtom<{ [topicSlug: string]: Shout[] }>
 let topViewedArticlesStore: ReadableAtom<Shout[]>
 let topCommentedArticlesStore: ReadableAtom<Shout[]>
 
-const [getSortedArticles, setSortedArticled] = createSignal<Shout[]>([])
+const [getSortedArticles, setSortedArticles] = createSignal<Shout[]>([])
 
 const topArticlesStore = atom<Shout[]>()
 const topMonthArticlesStore = atom<Shout[]>()
@@ -143,7 +143,7 @@ const addArticles = (...args: Shout[][]) => {
 }
 
 const addSortedArticles = (articles: Shout[]) => {
-  setSortedArticled((prevSortedArticles) => [...prevSortedArticles, ...articles])
+  setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
 export const loadRecentArticles = async ({

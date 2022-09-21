@@ -118,10 +118,6 @@ type InitialState = {
 }
 
 export const useTopicsStore = ({ topics, randomTopics, sortBy }: InitialState = {}) => {
-  log.debug(
-    'useTopicsStore',
-    randomTopics.map((topic) => topic.slug)
-  )
   if (sortBy) {
     sortAllByStore.set(sortBy)
   }

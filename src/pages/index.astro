@@ -3,12 +3,13 @@ import Zine from '../layouts/zine.astro'
 import { Root } from '../components/Root'
 import { apiClient } from '../utils/apiClient'
 
-const articles = await apiClient.getRecentPublishedArticles({ limit: 50 })
+const randomTopics = await apiClient.getRandomTopics({ amount: 12 })
+const articles = await apiClient.getRecentPublishedArticles({ limit: 5 })
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
 <Zine>
-  <Root articles={articles} client:load />
+  <Root randomTopics={randomTopics} articles={articles} client:load />
 </Zine>
 

@@ -1,8 +1,6 @@
 import { ClientOptions, dedupExchange, fetchExchange, createClient, Exchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
-
-// FIXME actual value
-const isDev = true
+import { isDev } from '../utils/config'
 
 export const baseUrl = 'https://newapi.discours.io'
 //export const baseUrl = 'http://localhost:8000'

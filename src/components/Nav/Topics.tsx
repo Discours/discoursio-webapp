@@ -8,13 +8,14 @@ import { useStore } from '@nanostores/solid'
 
 export default (props: { topics: Topic[] }) => {
   const locale = useStore(langstore)
+
   const tag = (t: Topic) => (/[ЁА-яё]/.test(t.title || '') && locale() !== 'ru' ? t.slug : t.title)
 
   // TODO: something about subtopics
   return (
     <nav class="subnavigation wide-container text-2xl">
       <ul class="topics">
-        <Show when={!!props.topics}>
+        <Show when={props.topics.length > 0}>
           <For each={props.topics}>
             {(t: Topic) => (
               <li class="item">

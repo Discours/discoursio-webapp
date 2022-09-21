@@ -35,7 +35,6 @@ const log = getLogger('api-client')
 
 const FEED_SIZE = 50
 const REACTIONS_PAGE_SIZE = 100
-const DEFAULT_RANDOM_TOPICS_AMOUNT = 12
 
 export const apiClient = {
   // auth
@@ -87,10 +86,9 @@ export const apiClient = {
 
     return response.data.recentPublished
   },
-  getRandomTopics: async () => {
-    const response = await publicGraphQLClient
-      .query(topicsRandomQuery, { amount: DEFAULT_RANDOM_TOPICS_AMOUNT })
-      .toPromise()
+  getRandomTopics: async ({ amount }: { amount: number }) => {
+    log.debug('getRandomTopics')
+    const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
 
     return response.data.topicsRandom
   },

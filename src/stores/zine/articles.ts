@@ -7,21 +7,30 @@ import { addAuthorsByTopic } from './authors'
 import { addTopicsByAuthor } from './topics'
 import { byStat } from '../../utils/sortby'
 
+import { getLogger } from '../../utils/logger'
+import { createSignal } from 'solid-js'
+
+const log = getLogger('articles store')
+
 let articleEntitiesStore: WritableAtom<{ [articleSlug: string]: Shout }>
-let sortedArticlesStore: WritableAtom<Shout[]>
-let topRatedArticlesStore: WritableAtom<Shout[]>
-let topRatedMonthArticlesStore: WritableAtom<Shout[]>
 let articlesByAuthorsStore: ReadableAtom<{ [authorSlug: string]: Shout[] }>
+let articlesByLayoutStore: ReadableAtom<{ [layout: string]: Shout[] }>
 let articlesByTopicsStore: ReadableAtom<{ [topicSlug: string]: Shout[] }>
 let topViewedArticlesStore: ReadableAtom<Shout[]>
 let topCommentedArticlesStore: ReadableAtom<Shout[]>
 
+const [getSortedArticles, setSortedArticles] = createSignal<Shout[]>([])
+
+const topArticlesStore = atom<Shout[]>()
+const topMonthArticlesStore = atom<Shout[]>()
+
 const initStore = (initial?: Record<string, Shout>) => {
+  log.debug('initStore')
   if (articleEntitiesStore) {
-    return
+    throw new Error('articles store already initialized')
   }
 
-  articleEntitiesStore = map<Record<string, Shout>>(initial)
+  articleEntitiesStore = map(initial)
 
   articlesByAuthorsStore = computed(articleEntitiesStore, (articleEntities) => {
     return Object.values(articleEntities).reduce((acc, article) => {
@@ -47,6 +56,18 @@ const initStore = (initial?: Record<string, Shout>) => {
 
       return acc
     }, {} as { [authorSlug: string]: Shout[] })
+  })
+
+  articlesByLayoutStore = computed(articleEntitiesStore, (articleEntities) => {
+    return Object.values(articleEntities).reduce((acc, article) => {
+      if (!acc[article.layout]) {
+        acc[article.layout] = []
+      }
+
+      acc[article.layout].push(article)
+
+      return acc
+    }, {} as { [layout: string]: Shout[] })
   })
 
   topViewedArticlesStore = computed(articleEntitiesStore, (articleEntities) => {
@@ -122,14 +143,7 @@ const addArticles = (...args: Shout[][]) => {
 }
 
 const addSortedArticles = (articles: Shout[]) => {
-  if (!sortedArticlesStore) {
-    sortedArticlesStore = atom(articles)
-    return
-  }
-
-  if (articles) {
-    sortedArticlesStore.set([...sortedArticlesStore.get(), ...articles])
-  }
+  setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
 export const loadRecentArticles = async ({
@@ -154,6 +168,18 @@ export const loadPublishedArticles = async ({
   const newArticles = await apiClient.getPublishedArticles({ limit, offset })
   addArticles(newArticles)
   addSortedArticles(newArticles)
+}
+
+export const loadTopMonthArticles = async (): Promise<void> => {
+  const articles = await apiClient.getTopMonthArticles()
+  addArticles(articles)
+  topMonthArticlesStore.set(articles)
+}
+
+export const loadTopArticles = async (): Promise<void> => {
+  const articles = await apiClient.getTopArticles()
+  addArticles(articles)
+  topArticlesStore.set(articles)
 }
 
 export const loadSearchResults = async ({
@@ -184,32 +210,16 @@ type InitialState = {
   topRatedMonthArticles?: Shout[]
 }
 
-export const useArticlesStore = ({
-  sortedArticles,
-  topRatedArticles,
-  topRatedMonthArticles
-}: InitialState = {}) => {
-  addArticles(sortedArticles, topRatedArticles, topRatedMonthArticles)
+export const useArticlesStore = ({ sortedArticles }: InitialState = {}) => {
+  addArticles(sortedArticles)
   addSortedArticles(sortedArticles)
 
-  if (!topRatedArticlesStore) {
-    topRatedArticlesStore = atom(topRatedArticles)
-  } else {
-    topRatedArticlesStore.set(topRatedArticles)
-  }
-
-  if (!topRatedMonthArticlesStore) {
-    topRatedMonthArticlesStore = atom(topRatedMonthArticles)
-  } else {
-    topRatedMonthArticlesStore.set(topRatedMonthArticles)
-  }
-
   const getArticleEntities = useStore(articleEntitiesStore)
-  const getSortedArticles = useStore(sortedArticlesStore)
-  const getTopRatedArticles = useStore(topRatedArticlesStore)
-  const getTopRatedMonthArticles = useStore(topRatedMonthArticlesStore)
+  const getTopArticles = useStore(topArticlesStore)
+  const getTopMonthArticles = useStore(topMonthArticlesStore)
   const getArticlesByAuthor = useStore(articlesByAuthorsStore)
   const getArticlesByTopic = useStore(articlesByTopicsStore)
+  const getArticlesByLayout = useStore(articlesByLayoutStore)
   // TODO: get from server
   const getTopViewedArticles = useStore(topViewedArticlesStore)
   // TODO: get from server
@@ -220,9 +230,10 @@ export const useArticlesStore = ({
     getSortedArticles,
     getArticlesByTopic,
     getArticlesByAuthor,
-    getTopRatedArticles,
+    getTopArticles,
+    getTopMonthArticles,
     getTopViewedArticles,
     getTopCommentedArticles,
-    getTopRatedMonthArticles
+    getArticlesByLayout
   }
 }

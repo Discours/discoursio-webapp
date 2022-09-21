@@ -1,5 +1,5 @@
 import { t } from '../../utils/intl'
-import { createMemo, createSignal, onMount } from 'solid-js'
+import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
 import { For, Show } from 'solid-js/web'
 import type { Author, Shout, Topic } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
@@ -9,6 +9,9 @@ import './Card.scss'
 import { locale as localestore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { handleClientRouteLinkClick } from '../../stores/router'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('card component')
 
 interface ArticleCardProps {
   settings?: {
@@ -28,30 +31,31 @@ interface ArticleCardProps {
 export const ArticleCard = (props: ArticleCardProps) => {
   const locale = useStore(localestore)
 
-  const [title, setTitle] = createSignal<string>('')
-  const [subtitle, setSubtitle] = createSignal<string>('')
-
-  const article = createMemo<Shout>(() => props.article)
-  const authors = createMemo<Author[]>(() => article().authors)
-  const mainTopic = createMemo<Topic>(() =>
-    props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic)
+  const mainTopic = props.article.topics.find(
+    (articleTopic) => articleTopic.slug === props.article.mainTopic
   )
 
-  const detectSubtitle = () => {
-    const a = article()
-    setTitle(a.title || '')
-    if (!a.subtitle) {
-      let tt: string[] = a.title?.split('. ') || []
-      if (tt?.length === 1) tt = a.title?.split(/{!|\?|:|;}\s/) || []
-      if (tt && tt.length > 1) {
-        const sep = a.title?.replace(tt[0], '').split(' ', 1)[0]
-        setTitle(tt[0] + (!(sep === '.' || sep === ':') ? sep : ''))
-        setSubtitle(capitalize(a.title?.replace(tt[0] + sep, ''), true))
-      }
-    } else {
-      setSubtitle(a.subtitle || '')
-    }
-  }
+  const formattedDate = createMemo<string>(() => {
+    return new Date(props.article.createdAt)
+      .toLocaleDateString(locale(), { month: 'long', day: 'numeric', year: 'numeric' })
+      .replace(' г.', '')
+  })
+
+  // const detectSubtitle = () => {
+  //   const a = article()
+  //   setTitle(a.title || '')
+  //   if (!a.subtitle) {
+  //     let tt: string[] = a.title?.split('. ') || []
+  //     if (tt?.length === 1) tt = a.title?.split(/{!|\?|:|;}\s/) || []
+  //     if (tt && tt.length > 1) {
+  //       const sep = a.title?.replace(tt[0], '').split(' ', 1)[0]
+  //       setTitle(tt[0] + (!(sep === '.' || sep === ':') ? sep : ''))
+  //       setSubtitle(capitalize(a.title?.replace(tt[0] + sep, ''), true))
+  //     }
+  //   } else {
+  //     setSubtitle(a.subtitle || '')
+  //   }
+  // }
 
   // FIXME: move this to store action
   // const translateAuthors = () => {
@@ -63,7 +67,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   //   return [...aaa]
   // }
   // createEffect(translateAuthors, [article(), locale()])
-  onMount(detectSubtitle)
+  // onMount(detectSubtitle)
 
   return (
     <section
@@ -111,12 +115,12 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <div class="shout-card__titles-container">
             <a href={`/${props.article.slug || ''}`} onClick={handleClientRouteLinkClick}>
               <div class="shout-card__title">
-                <span class="shout-card__link-container">{title()}</span>
+                <span class="shout-card__link-container">{props.article.title}</span>
               </div>
 
-              <Show when={!props.settings?.nosubtitle && subtitle()}>
+              <Show when={!props.settings?.nosubtitle && props.article.subtitle}>
                 <div class="shout-card__subtitle">
-                  <span class="shout-card__link-container">{subtitle()}</span>
+                  <span class="shout-card__link-container">{props.article.subtitle}</span>
                 </div>
               </Show>
             </a>
@@ -126,11 +130,11 @@ export const ArticleCard = (props: ArticleCardProps) => {
             <div class="shout__details">
               <Show when={!props.settings?.noauthor}>
                 <div class="shout__author">
-                  <For each={authors()}>
-                    {(a: Author) => (
+                  <For each={props.article.authors}>
+                    {(author, index) => (
                       <>
-                        <Show when={authors().indexOf(a) > 0}>, </Show>
-                        <a href={`/author/${a.slug}`}>{a.name}</a>
+                        <Show when={index() > 0}>, </Show>
+                        <a href={`/author/${author.slug}`}>{author.name}</a>
                       </>
                     )}
                   </For>
@@ -138,11 +142,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </Show>
 
               <Show when={!props.settings?.nodate}>
-                <div class="shout__date">
-                  {new Date(props.article.createdAt)
-                    .toLocaleDateString(locale(), { month: 'long', day: 'numeric', year: 'numeric' })
-                    .replace(' г.', '')}
-                </div>
+                <div class="shout__date">{formattedDate()}</div>
               </Show>
             </div>
           </Show>

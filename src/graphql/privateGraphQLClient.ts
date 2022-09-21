@@ -1,8 +1,7 @@
 import { createClient, ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
 import { baseUrl } from './publicGraphQLClient'
-
-const isDev = true
+import { isDev } from '../utils/config'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 

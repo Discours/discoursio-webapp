@@ -10,11 +10,20 @@ import type { CSSOptions } from 'vite'
 
 // const dev = process.env.NODE_ENV != 'production'
 
+const css: CSSOptions = {
+  preprocessorOptions: {
+    scss: {
+      additionalData: '@import "src/styles/imports";\n'
+    }
+  }
+}
+
 const astroConfig: AstroUserConfig = {
   site: 'https://new.discours.io',
   // Enable Solid to support Solid JSX components.
   // experimental: { integrations: true },
-  integrations: [solidJs(), mdx()], // sitemap({
+  integrations: [solidJs()],
+  // sitemap({
   /*  customPages: [
       '',
       '/feed',
@@ -39,13 +48,7 @@ const astroConfig: AstroUserConfig = {
         '@': './src'
       }
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@import "src/styles/imports";\n'
-        }
-      }
-    } as CSSOptions
+    css
   }
 }
 

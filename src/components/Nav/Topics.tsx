@@ -5,16 +5,11 @@ import './Topics.scss'
 import { t } from '../../utils/intl'
 import { locale as langstore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
-import { debugOwnerComputations, debugOwnerSignals, debugProps } from '@solid-devtools/logger'
 
 export default (props: { topics: Topic[] }) => {
-  debugOwnerComputations()
-  debugOwnerSignals()
-  debugProps(props)
-  // const locale = useStore(langstore)
-  // const tag = (t: Topic) => (/[ЁА-яё]/.test(t.title || '') && locale() !== 'ru' ? t.slug : t.title)
+  const locale = useStore(langstore)
 
-  const tag = (t: Topic) => t.title
+  const tag = (t: Topic) => (/[ЁА-яё]/.test(t.title || '') && locale() !== 'ru' ? t.slug : t.title)
 
   // TODO: something about subtopics
   return (

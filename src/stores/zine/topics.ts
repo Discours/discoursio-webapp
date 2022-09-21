@@ -17,7 +17,6 @@ let sortedTopicsStore: ReadableAtom<Topic[]>
 let topTopicsStore: ReadableAtom<Topic[]>
 
 const [getRandomTopics, setRandomTopics] = createSignal<Topic[]>()
-// let randomTopicsStore: WritableAtom<Topic[]>
 let topicsByAuthorStore: MapStore<Record<string, Topic[]>>
 
 const initStore = (initial?: { [topicSlug: string]: Topic }) => {

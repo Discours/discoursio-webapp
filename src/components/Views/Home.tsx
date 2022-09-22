@@ -1,6 +1,6 @@
-import { createEffect, createMemo, onMount, Show, Suspense } from 'solid-js'
+import { createMemo, For, onMount, Show } from 'solid-js'
 import Banner from '../Discours/Banner'
-import NavTopics from '../Nav/Topics'
+import { NavTopics } from '../Nav/Topics'
 import { Row5 } from '../Feed/Row5'
 import Row3 from '../Feed/Row3'
 import Row2 from '../Feed/Row2'
@@ -12,7 +12,7 @@ import Slider from '../Feed/Slider'
 import Group from '../Feed/Group'
 import { getLogger } from '../../utils/logger'
 import type { Shout, Topic } from '../../graphql/types.gen'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
 import {
@@ -21,7 +21,7 @@ import {
   loadTopMonthArticles,
   useArticlesStore
 } from '../../stores/zine/articles'
-import { useAuthorsStore } from '../../stores/zine/authors'
+import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 
 const log = getLogger('home view')
 
@@ -36,9 +36,8 @@ const LOAD_MORE_ARTICLES_COUNT = 30
 export const HomeView = (props: HomeProps) => {
   const {
     getSortedArticles,
-    //getTopArticles,
-    getArticlesByAuthor,
-    //getTopMonthArticles,
+    getTopArticles,
+    getTopMonthArticles,
     getTopViewedArticles,
     getTopCommentedArticles,
     getArticlesByLayout
@@ -49,25 +48,23 @@ export const HomeView = (props: HomeProps) => {
     randomTopics: props.randomTopics
   })
 
-  const { getAuthorEntities } = useAuthorsStore()
+  const { getTopAuthors } = useTopAuthorsStore()
 
   onMount(() => {
-    // loadTopArticles()
-    // loadTopMonthArticles()
-    // loadPublishedArticles({ limit: CLIENT_LOAD_ARTICLES_COUNT, offset: getSortedArticles().length })
-    loadPublishedArticles({ limit: 10, offset: getSortedArticles().length })
+    loadTopArticles()
+    loadTopMonthArticles()
+    loadPublishedArticles({ limit: CLIENT_LOAD_ARTICLES_COUNT, offset: getSortedArticles().length })
   })
 
   const randomLayout = createMemo(() => {
     const articlesByLayout = getArticlesByLayout()
     const filledLayouts = Object.keys(articlesByLayout).filter(
+      // FIXME: is 7 ok? or more complex logic needed?
       (layout) => articlesByLayout[layout].length > 7
     )
 
     const randomLayout =
       filledLayouts.length > 0 ? filledLayouts[Math.floor(Math.random() * filledLayouts.length)] : ''
-
-    // log.debug({ randomLayout })
 
     return (
       <Show when={Boolean(randomLayout)}>
@@ -83,101 +80,75 @@ export const HomeView = (props: HomeProps) => {
     )
   })
 
-  const topAuthors = createMemo(() => {
-    const articlesByAuthor = getArticlesByAuthor()
-    const authorEntities = getAuthorEntities()
-
-    const topAuthors = Object.keys(articlesByAuthor)
-      .sort((authorSlug1, authorSlug2) => {
-        const author1Rating = articlesByAuthor[authorSlug1].reduce(
-          (acc, article) => acc + article.stat.rating,
-          0
-        )
-        const author2Rating = articlesByAuthor[authorSlug2].reduce(
-          (acc, article) => acc + article.stat.rating,
-          0
-        )
-        if (author1Rating === author2Rating) {
-          return 0
-        }
-
-        return author1Rating > author2Rating ? 1 : -1
-      })
-      .slice(0, 5)
-      .map((authorSlug) => authorEntities[authorSlug])
-      .filter(Boolean)
-
-    // log.debug({ topAuthors })
-
-    return (
-      <Show when={topAuthors.length === 5}>
-        <Beside
-          beside={getSortedArticles()[9]}
-          title={t('Top authors')}
-          values={topAuthors}
-          wrapper={'author'}
-        />
-      </Show>
-    )
-  })
-
   const loadMore = () => {
     loadPublishedArticles({ limit: LOAD_MORE_ARTICLES_COUNT, offset: getSortedArticles().length })
   }
 
-  createEffect(() =>
-    log.debug(
-      'random',
-      getRandomTopics().map((topic) => topic.slug)
-    )
-  )
-
   return (
-    <Suspense>
+    <>
       <NavTopics topics={getRandomTopics()} />
+
       <Row5 articles={getSortedArticles().slice(0, 5)} />
-      {/*<Hero />*/}
-      {/*<Beside*/}
-      {/*  beside={getSortedArticles()[5]}*/}
-      {/*  title={t('Top viewed')}*/}
-      {/*  values={getTopViewedArticles().slice(0, 5)}*/}
-      {/*  wrapper={'top-article'}*/}
-      {/*/>*/}
-      {/*<Row3 articles={getSortedArticles().slice(6, 9)} />*/}
 
-      {/*{topAuthors()}*/}
+      <Hero />
 
-      {/*<Slider title={t('Top month articles')} articles={getTopMonthArticles()} />*/}
+      <Beside
+        beside={getSortedArticles()[5]}
+        title={t('Top viewed')}
+        values={getTopViewedArticles().slice(0, 5)}
+        wrapper={'top-article'}
+      />
 
-      {/*<Row2 articles={getSortedArticles().slice(10, 12)} />*/}
-      {/*<RowShort articles={getSortedArticles().slice(12, 16)} />*/}
-      {/*<Row1 article={getSortedArticles()[16]} />*/}
-      {/*<Row3 articles={getSortedArticles().slice(17, 20)} />*/}
-      {/*<Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />*/}
+      <Row3 articles={getSortedArticles().slice(6, 9)} />
 
-      {/*{randomLayout()}*/}
+      {/*FIXME: ?*/}
+      <Show when={getTopAuthors().length === 5}>
+        <Beside
+          beside={getSortedArticles()[9]}
+          title={t('Top authors')}
+          values={getTopAuthors()}
+          wrapper={'author'}
+        />
+      </Show>
 
-      {/*<Slider title={t('Favorite')} articles={getTopArticles()} />*/}
+      <Slider title={t('Top month articles')} articles={getTopMonthArticles()} />
 
-      {/*<Beside*/}
-      {/*  beside={getSortedArticles()[20]}*/}
-      {/*  title={t('Top topics')}*/}
-      {/*  values={getTopTopics().slice(0, 5)}*/}
-      {/*  wrapper={'topic'}*/}
-      {/*  isTopicCompact={true}*/}
-      {/*/>*/}
-      {/*<Row3 articles={getSortedArticles().slice(21, 24)} />*/}
-      {/*<Banner />*/}
-      {/*<Row2 articles={getSortedArticles().slice(24, 26)} />*/}
-      {/*<Row3 articles={getSortedArticles().slice(26, 29)} />*/}
-      {/*<Row2 articles={getSortedArticles().slice(29, 31)} />*/}
-      {/*<Row3 articles={getSortedArticles().slice(31, 34)} />*/}
+      <Row2 articles={getSortedArticles().slice(10, 12)} />
 
-      {/*<p class="load-more-container">*/}
-      {/*  <button class="button" onClick={loadMore}>*/}
-      {/*    {t('Load more')}*/}
-      {/*  </button>*/}
-      {/*</p>*/}
-    </Suspense>
+      <RowShort articles={getSortedArticles().slice(12, 16)} />
+
+      <Row1 article={getSortedArticles()[16]} />
+      <Row3 articles={getSortedArticles().slice(17, 20)} />
+      <Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
+
+      {randomLayout()}
+
+      <Slider title={t('Favorite')} articles={getTopArticles()} />
+
+      <Beside
+        beside={getSortedArticles()[20]}
+        title={t('Top topics')}
+        values={getTopTopics().slice(0, 5)}
+        wrapper={'topic'}
+        isTopicCompact={true}
+      />
+
+      <Row3 articles={getSortedArticles().slice(21, 24)} />
+
+      <Banner />
+
+      <Row2 articles={getSortedArticles().slice(24, 26)} />
+      <Row3 articles={getSortedArticles().slice(26, 29)} />
+      <Row2 articles={getSortedArticles().slice(29, 31)} />
+      <Row3 articles={getSortedArticles().slice(31, 34)} />
+
+      <For each={getSortedArticles().slice(35)}>{(article) => <Row1 article={article} />}</For>
+
+      <p class="load-more-container">
+        <button class="button" onClick={loadMore}>
+          {t('Load more')}
+        </button>
+      </p>
+    </>
   )
 }

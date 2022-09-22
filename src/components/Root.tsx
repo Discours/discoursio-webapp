@@ -1,4 +1,5 @@
-import 'solid-devtools'
+// FIXME: breaks on vercel, research
+// import 'solid-devtools'
 
 import { Component, createMemo, lazy } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
@@ -46,6 +47,6 @@ export const Root = (props: PageProps) => {
 
     return result
   })
-
+  // TODO: move MainLayout here
   return <Dynamic component={pageComponent()} {...props} />
 }

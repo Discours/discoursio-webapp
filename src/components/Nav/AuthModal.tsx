@@ -1,5 +1,5 @@
 import { Show } from 'solid-js/web'
-import Icon from './Icon'
+import { Icon } from './Icon'
 import { createEffect, createSignal, onMount } from 'solid-js'
 import './AuthModal.scss'
 import { Form } from 'solid-js-form'

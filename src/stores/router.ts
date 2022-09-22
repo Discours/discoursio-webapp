@@ -79,7 +79,6 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   return {
     getPage,
     getSearchParams,
-    changeSearchParam,
-    initRouter
+    changeSearchParam
   }
 }

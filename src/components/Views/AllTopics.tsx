@@ -1,6 +1,6 @@
 import { createEffect, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'

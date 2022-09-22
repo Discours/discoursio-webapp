@@ -1,7 +1,7 @@
 import { createMemo, For, Show } from 'solid-js'
 import type { Shout, Reaction } from '../../graphql/types.gen'
 import '../../styles/Feed.scss'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import { byCreated, sortBy } from '../../utils/sortby'
 import { TopicCard } from '../Topic/Card'
 import { ArticleCard } from '../Feed/Card'
@@ -15,6 +15,7 @@ import { loadRecentArticles, useArticlesStore } from '../../stores/zine/articles
 import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
+import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 
 interface FeedProps {
   articles: Shout[]
@@ -34,6 +35,7 @@ export const FeedView = (props: FeedProps) => {
   const reactions = useReactionsStore()
   const { getSortedAuthors: authors } = useAuthorsStore()
   const { getTopTopics } = useTopicsStore()
+  const { getTopAuthors } = useTopAuthorsStore()
 
   const auth = useStore(session)
 

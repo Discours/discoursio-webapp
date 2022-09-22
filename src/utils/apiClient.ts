@@ -198,7 +198,6 @@ export const apiClient = {
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
     const response = await publicGraphQLClient.query(articleBySlug, { slug }).toPromise()
-
     return response.data?.getShoutBySlug
   },
 

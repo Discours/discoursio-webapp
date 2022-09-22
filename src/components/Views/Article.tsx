@@ -3,7 +3,6 @@ import { FullArticle } from '../Article/FullArticle'
 import { t } from '../../utils/intl'
 
 import type { Shout } from '../../graphql/types.gen'
-import { useCurrentArticleStore } from '../../stores/zine/currentArticle'
 import { loadArticleReactions, useReactionsStore } from '../../stores/zine/reactions'
 
 import '../../styles/Article.scss'
@@ -15,7 +14,6 @@ interface ArticlePageProps {
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 
 export const ArticleView = (props: ArticlePageProps) => {
-  const { getCurrentArticle } = useCurrentArticleStore({ currentArticle: props.article })
   const [getCommentsPage] = createSignal(1)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const reactionslist = useReactionsStore()
@@ -35,10 +33,10 @@ export const ArticleView = (props: ArticlePageProps) => {
 
   return (
     <div class="article-page">
-      <Show fallback={<div class="center">{t('Loading')}</div>} when={getCurrentArticle()}>
+      <Show fallback={<div class="center">{t('Loading')}</div>} when={props.article}>
         <Suspense>
           <FullArticle
-            article={getCurrentArticle()}
+            article={props.article}
             reactions={reactionslist().filter((r) => r.shout.slug === props.article.slug)}
             isCommentsLoading={getIsCommentsLoading()}
           />

@@ -19,7 +19,7 @@ let articlesByTopicsStore: ReadableAtom<{ [topicSlug: string]: Shout[] }>
 let topViewedArticlesStore: ReadableAtom<Shout[]>
 let topCommentedArticlesStore: ReadableAtom<Shout[]>
 
-const [getSortedArticles, setSortedArticled] = createSignal<Shout[]>([])
+const [getSortedArticles, setSortedArticles] = createSignal<Shout[]>([])
 
 const topArticlesStore = atom<Shout[]>()
 const topMonthArticlesStore = atom<Shout[]>()
@@ -143,7 +143,7 @@ const addArticles = (...args: Shout[][]) => {
 }
 
 const addSortedArticles = (articles: Shout[]) => {
-  setSortedArticled((prevSortedArticles) => [...prevSortedArticles, ...articles])
+  setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
 export const loadRecentArticles = async ({
@@ -200,8 +200,14 @@ export const incrementView = async ({ articleSlug }: { articleSlug: string }): P
   await apiClient.incrementView({ articleSlug })
 }
 
-export const loadArticle = async ({ slug }: { slug: string }): Promise<Shout> => {
-  return await apiClient.getArticle({ slug })
+export const loadArticle = async ({ slug }: { slug: string }): Promise<void> => {
+  const article = await apiClient.getArticle({ slug })
+
+  if (!article) {
+    throw new Error(`Can't load article, slug: "${slug}"`)
+  }
+
+  addArticles([article])
 }
 
 type InitialState = {
@@ -212,7 +218,10 @@ type InitialState = {
 
 export const useArticlesStore = ({ sortedArticles }: InitialState = {}) => {
   addArticles(sortedArticles)
-  addSortedArticles(sortedArticles)
+
+  if (sortedArticles) {
+    addSortedArticles(sortedArticles)
+  }
 
   const getArticleEntities = useStore(articleEntitiesStore)
   const getTopArticles = useStore(topArticlesStore)

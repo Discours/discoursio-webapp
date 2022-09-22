@@ -1,6 +1,6 @@
 import type { Author } from '../../graphql/types.gen'
 import Userpic from '../Author/Userpic'
-import Icon from './Icon'
+import { Icon } from './Icon'
 import './Private.scss'
 import { session as sesstore } from '../../stores/auth'
 import { useStore } from '@nanostores/solid'

@@ -1,5 +1,5 @@
 import { apiClient } from '../../utils/apiClient'
-import { map, MapStore, ReadableAtom, WritableAtom, atom, computed } from 'nanostores'
+import { map, MapStore, ReadableAtom, atom, computed } from 'nanostores'
 import type { Topic } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
 import { byCreated, byTopicStatDesc } from '../../utils/sortby'
@@ -17,7 +17,6 @@ let sortedTopicsStore: ReadableAtom<Topic[]>
 let topTopicsStore: ReadableAtom<Topic[]>
 
 const [getRandomTopics, setRandomTopics] = createSignal<Topic[]>()
-// let randomTopicsStore: WritableAtom<Topic[]>
 let topicsByAuthorStore: MapStore<Record<string, Topic[]>>
 
 const initStore = (initial?: { [topicSlug: string]: Topic }) => {
@@ -118,10 +117,6 @@ type InitialState = {
 }
 
 export const useTopicsStore = ({ topics, randomTopics, sortBy }: InitialState = {}) => {
-  log.debug(
-    'useTopicsStore',
-    randomTopics.map((topic) => topic.slug)
-  )
   if (sortBy) {
     sortAllByStore.set(sortBy)
   }

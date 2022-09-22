@@ -22,7 +22,7 @@ const astroConfig: AstroUserConfig = {
   site: 'https://new.discours.io',
   // Enable Solid to support Solid JSX components.
   // experimental: { integrations: true },
-  integrations: [solidJs()],
+  integrations: [solidJs(), mdx()],
   // sitemap({
   /*  customPages: [
       '',

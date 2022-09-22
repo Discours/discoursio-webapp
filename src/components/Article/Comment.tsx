@@ -1,5 +1,5 @@
 import './Comment.scss'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import { AuthorCard } from '../Author/Card'
 import { Show } from 'solid-js/web'
 import { clsx } from 'clsx'

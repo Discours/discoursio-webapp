@@ -1,6 +1,6 @@
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import '../../styles/Inbox.scss'
 
 // interface InboxProps {

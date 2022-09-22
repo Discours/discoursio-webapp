@@ -1,9 +1,8 @@
-import { For } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from './Card'
 import { getLogger } from '../../utils/logger'
 
-const log = getLogger('row5')
+const log = getLogger('Row5')
 
 export const Row5 = (props: { articles: Shout[] }) => {
   return (

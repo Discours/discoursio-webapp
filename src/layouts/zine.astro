@@ -1,10 +1,12 @@
 ---
+import { initRouter } from '../stores/router'
 import '../styles/app.scss'
-import { ServerRouterProvider } from '../components/Providers/ServerRouterProvider'
 import { t } from '../utils/intl'
 
 const { pathname, search, searchParams } = Astro.url
 const lang = searchParams.get('lang')
+
+initRouter(pathname, search)
 ---
 
 <!DOCTYPE html>
@@ -16,9 +18,7 @@ const lang = searchParams.get('lang')
     <title>{t('Discours')}</title>
   </head>
   <body>
-    <ServerRouterProvider pathname={pathname} search={search}>
-      <slot />
-    </ServerRouterProvider>
+    <slot />
   </body>
 </html>
 

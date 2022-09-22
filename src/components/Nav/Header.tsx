@@ -1,7 +1,7 @@
 import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup } from 'solid-js'
 import Private from './Private'
 import Notifications from './Notifications'
-import Icon from './Icon'
+import { Icon } from './Icon'
 import { Modal } from './Modal'
 import AuthModal from './AuthModal'
 import { t } from '../../utils/intl'

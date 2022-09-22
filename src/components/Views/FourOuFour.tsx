@@ -1,5 +1,5 @@
 import { t } from '../../utils/intl'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import '../../styles/FourOuFour.scss'
 
 export const FourOuFourView = (_props) => {

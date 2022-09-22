@@ -1,13 +1,13 @@
 ---
-import { SearchPage } from '../components/Views/Search'
+import { Root } from '../components/Root'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
 
 const params: URLSearchParams = Astro.url.searchParams
 const q = params.get('q')
-const results = await apiClient.getSearchResults({ query: q, limit: 50, offset: 0 })
+const searchResults = await apiClient.getSearchResults({ query: q, limit: 50 })
 ---
 
 <Zine>
-  <SearchPage results={results} query={q} client:load />
+  <Root searchResults={searchResults} client:load />
 </Zine>

@@ -154,8 +154,6 @@ export type Mutation = {
   updateReaction: Result
   updateShout: Result
   updateTopic: Result
-  viewReaction: Result
-  viewShout: Result
 }
 
 export type MutationConfirmEmailArgs = {
@@ -290,14 +288,6 @@ export type MutationUpdateTopicArgs = {
   input: TopicInput
 }
 
-export type MutationViewReactionArgs = {
-  reaction_id: Scalars['Int']
-}
-
-export type MutationViewShoutArgs = {
-  slug: Scalars['String']
-}
-
 export type Notification = {
   kind: Scalars['String']
   template: Scalars['String']
@@ -339,6 +329,7 @@ export type Query = {
   reactionsByShout: Array<Maybe<Reaction>>
   reactionsForShouts: Array<Maybe<Reaction>>
   recentAll: Array<Maybe<Shout>>
+  recentCommented: Array<Maybe<Shout>>
   recentPublished: Array<Maybe<Shout>>
   recentReacted: Array<Maybe<Shout>>
   searchQuery?: Maybe<Array<Maybe<Shout>>>
@@ -353,7 +344,7 @@ export type Query = {
   topCommented: Array<Maybe<Shout>>
   topMonth: Array<Maybe<Shout>>
   topOverall: Array<Maybe<Shout>>
-  topViewed: Array<Maybe<Shout>>
+  topPublished: Array<Maybe<Shout>>
   topicsAll: Array<Maybe<Topic>>
   topicsByAuthor: Array<Maybe<Topic>>
   topicsByCommunity: Array<Maybe<Topic>>
@@ -434,6 +425,11 @@ export type QueryRecentAllArgs = {
   offset: Scalars['Int']
 }
 
+export type QueryRecentCommentedArgs = {
+  limit: Scalars['Int']
+  offset: Scalars['Int']
+}
+
 export type QueryRecentPublishedArgs = {
   limit: Scalars['Int']
   offset: Scalars['Int']
@@ -504,7 +500,8 @@ export type QueryTopOverallArgs = {
   offset: Scalars['Int']
 }
 
-export type QueryTopViewedArgs = {
+export type QueryTopPublishedArgs = {
+  daysago: Scalars['Int']
   limit: Scalars['Int']
   offset: Scalars['Int']
 }

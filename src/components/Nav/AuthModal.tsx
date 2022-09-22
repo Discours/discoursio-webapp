@@ -1,5 +1,5 @@
 import { Show } from 'solid-js/web'
-import Icon from './Icon'
+import { Icon } from './Icon'
 import { createEffect, createSignal, onMount } from 'solid-js'
 import './AuthModal.scss'
 import { Form } from 'solid-js-form'
@@ -29,7 +29,7 @@ const titles = {
   password: t('Enter your new password')
 }
 
-const isProperEmail = (email) => email && email.length > 5 && email.includes('@') && email.includes('.')
+// const isProperEmail = (email) => email && email.length > 5 && email.includes('@') && email.includes('.')
 
 // FIXME !!!
 // eslint-disable-next-line sonarjs/cognitive-complexity

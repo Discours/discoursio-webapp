@@ -1,15 +1,11 @@
 ---
-import { FeedPage } from '../../components/Views/Feed'
+import { Root } from '../../components/Root'
 import Zine from '../../layouts/zine.astro'
 import { apiClient } from '../../utils/apiClient'
 
-const limit = 50
-const offset = 0
-const recentArticles = await apiClient.getRecentArticles({ limit, offset })
-const shoutSlugs = recentArticles.map((s) => s.slug)
-const reactions = await apiClient.getReactionsForShouts({ shoutSlugs })
+const articles = await apiClient.getRecentArticles({ limit: 50 })
 ---
 
 <Zine>
-  <FeedPage articles={recentArticles} reactions={reactions} client:load />
+  <Root articles={articles} client:load />
 </Zine>

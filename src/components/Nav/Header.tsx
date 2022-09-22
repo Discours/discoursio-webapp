@@ -1,24 +1,35 @@
 import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup } from 'solid-js'
 import Private from './Private'
 import Notifications from './Notifications'
-import Icon from './Icon'
+import { Icon } from './Icon'
 import { Modal } from './Modal'
 import AuthModal from './AuthModal'
 import { t } from '../../utils/intl'
 import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { session as ssession } from '../../stores/auth'
-import { handleClientRouteLinkClick, router } from '../../stores/router'
+import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import './Header.scss'
+import { getPagePath } from '@nanostores/router'
+import { getLogger } from '../../utils/logger'
 
-const resources = [
-  { name: t('zine'), href: '/' },
-  { name: t('feed'), href: '/feed' },
-  { name: t('topics'), href: '/topics' }
-  //{ name: t('community'), href: '/community' }
+const log = getLogger('header')
+
+const resources: { name: string; route: keyof Routes }[] = [
+  { name: t('zine'), route: 'home' },
+  { name: t('feed'), route: 'feed' },
+  { name: t('topics'), route: 'topics' }
 ]
 
-export const Header = () => {
+const handleEnterClick = () => {
+  showModal('auth')
+}
+
+type Props = {
+  title?: string
+}
+
+export const Header = (props: Props) => {
   // signals
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -28,8 +39,9 @@ export const Header = () => {
   const { getWarnings } = useWarningsStore()
   const session = useStore(ssession)
   const { getModal } = useModalStore()
-  const routing = useStore(router)
-  const subpath = createMemo(() => routing().path)
+
+  const { getPage } = useRouter()
+
   // methods
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
   const toggleFixed = () => setFixed(!fixed())
@@ -45,19 +57,13 @@ export const Header = () => {
   // derived
   const authorized = createMemo(() => session()?.user?.slug)
 
-  const handleEnterClick = (ev) => {
-    showModal('auth')
-    handleClientRouteLinkClick(ev)
-  }
-
-  const handleBellIconClick = (ev) => {
+  const handleBellIconClick = () => {
     if (!authorized()) {
-      handleEnterClick(ev)
+      showModal('auth')
       return
     }
 
     toggleWarnings()
-    handleClientRouteLinkClick(ev)
   }
 
   onMount(() => {
@@ -88,22 +94,18 @@ export const Header = () => {
       <div class="wide-container">
         <nav class="row header__inner" classList={{ fixed: fixed() }}>
           <div class="main-logo col-auto">
-            <a href="/" onClick={handleClientRouteLinkClick}>
+            <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
           <div class="col main-navigation">
-            {/*FIXME article header*/}
-            <div class="article-header">
-              Дискурс — независимый художественно-аналитический журнал с горизонтальной редакцией,
-              основанный на принципах свободы слова, прямой демократии и совместного редактирования.
-            </div>
+            <div class="article-header">{props.title}</div>
 
-            <ul class="text-xl inline-flex" classList={{ fixed: fixed() }}>
+            <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
               <For each={resources}>
-                {(r: { href: string; name: string }) => (
-                  <li classList={{ selected: r.href === subpath() }}>
-                    <a href={r.href} onClick={handleClientRouteLinkClick}>
+                {(r) => (
+                  <li classList={{ selected: r.route === getPage().route }}>
+                    <a href={getPagePath(router, r.route, null)} onClick={handleClientRouteLinkClick}>
                       {r.name}
                     </a>
                   </li>

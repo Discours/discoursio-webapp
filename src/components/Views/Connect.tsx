@@ -1,6 +1,6 @@
 import { Title } from '@solidjs/meta'
 
-export default () => (
+export const ConnectView = () => (
   <>
     <Title>Дискурс: Предложить идею</Title>
 

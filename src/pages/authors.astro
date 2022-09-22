@@ -1,15 +1,13 @@
 ---
-import { AllAuthorsPage } from '../components/Views/AllAuthors'
+import { Root } from '../components/Root'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
-import { byCreated, sortBy } from '../utils/sortby'
 
-const { by } = Object.fromEntries(Astro.url.searchParams.entries())
-let authors = await apiClient.getAllAuthors()
-authors = sortBy(authors, by || byCreated)
+const authors = await apiClient.getAllAuthors()
+
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
 <Zine>
-  <AllAuthorsPage authors={authors} client:load />
+  <Root authors={authors} client:load />
 </Zine>

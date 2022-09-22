@@ -1,15 +1,14 @@
 ---
-import { AllTopicsPage } from '../components/Views/AllTopics'
+import { Root } from '../components/Root'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
-import { sortBy } from '../utils/sortby'
 
-const { by } = Object.fromEntries(Astro.url.searchParams.entries())
-let topics = await apiClient.getAllTopics()
-topics = sortBy(topics, by || 'shouts')
+const topics = await apiClient.getAllTopics()
+
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
 <Zine>
-  <AllTopicsPage topics={topics} client:load />
+  <Root topics={topics} client:load />
 </Zine>
+

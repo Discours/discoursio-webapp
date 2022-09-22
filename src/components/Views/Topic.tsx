@@ -7,19 +7,23 @@ import { ArticleCard } from '../Feed/Card'
 import '../../styles/Topic.scss'
 import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
-import { params } from '../../stores/router'
+import { useRouter } from '../../stores/router'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { useStore } from '@nanostores/solid'
+
+type TopicsPageSearchParams = {
+  by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
+}
 
 interface TopicProps {
   topic: Topic
   topicArticles: Shout[]
 }
 
-export const TopicPage = (props: TopicProps) => {
-  const args = useStore(params)
+export const TopicView = (props: TopicProps) => {
+  const { getSearchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
+
   const { getSortedArticles: sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
   const { getTopicEntities } = useTopicsStore({ topics: [props.topic] })
 
@@ -36,10 +40,11 @@ export const TopicPage = (props: TopicProps) => {
   */
 
   const title = createMemo(() => {
-    const m = args()['by']
-    if (m === 'viewed') return t('Top viewed')
-    if (m === 'rating') return t('Top rated')
-    if (m === 'commented') return t('Top discussed')
+    // FIXME
+    // const m = getSearchParams().by
+    // if (m === 'viewed') return t('Top viewed')
+    // if (m === 'rating') return t('Top rated')
+    // if (m === 'commented') return t('Top discussed')
     return t('Top recent')
   })
 
@@ -50,23 +55,23 @@ export const TopicPage = (props: TopicProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: args()['by'] === 'recent' || !args()['by'] }}>
-                <button type="button" onClick={() => (args()['by'] = 'recent')}>
+              <li classList={{ selected: getSearchParams().by === 'recent' || !getSearchParams().by }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
                   {t('Recent')}
                 </button>
               </li>
-              <li classList={{ selected: args()['by'] === 'rating' }}>
-                <button type="button" onClick={() => (args()['by'] = 'rating')}>
+              <li classList={{ selected: getSearchParams().by === 'rating' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
                   {t('Popular')}
                 </button>
               </li>
-              <li classList={{ selected: args()['by'] === 'viewed' }}>
-                <button type="button" onClick={() => (args()['by'] = 'viewed')}>
+              <li classList={{ selected: getSearchParams().by === 'viewed' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>
                   {t('Views')}
                 </button>
               </li>
-              <li classList={{ selected: args()['by'] === 'commented' }}>
-                <button type="button" onClick={() => (args()['by'] = 'commented')}>
+              <li classList={{ selected: getSearchParams().by === 'commented' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
                   {t('Discussing')}
                 </button>
               </li>

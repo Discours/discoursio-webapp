@@ -1,31 +1,24 @@
 ---
+import { initRouter } from '../stores/router'
 import '../styles/app.scss'
-import { Suspense } from 'solid-js'
-import { Header } from '../components/Nav/Header'
-import { Footer } from '../components/Discours/Footer'
-import { ServerRouterProvider } from '../components/providers/ServerRouterProvider'
 import { t } from '../utils/intl'
 
-const { pathname, search } = Astro.url
-const lang = Astro.url.searchParams['lang']
+const { pathname, search, searchParams } = Astro.url
+const lang = searchParams.get('lang')
+
+initRouter(pathname, search)
 ---
 
-<ServerRouterProvider href={pathname + search}>
-  <html lang={lang || 'en'}>
-    <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width" />
-      <link rel="icon" type="image/png" href="/favicon.png" />
-      <title>{t('Discours')}</title>
-    </head>
-    <body>
-      <Header client:load />
-      <main class="main-content">
-        <Suspense>
-          <slot />
-        </Suspense>
-      </main>
-      <Footer />
-    </body>
-  </html>
-</ServerRouterProvider>
+<!DOCTYPE html>
+<html lang={lang || 'ru'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>{t('Discours')}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+

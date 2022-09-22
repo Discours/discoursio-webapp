@@ -1,13 +1,11 @@
 import { createClient, ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
-import { authExchanges } from './auth'
 import { baseUrl } from './publicGraphQLClient'
-
-const isDev = true
+import { isDev } from '../utils/config'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
-const exchanges: Exchange[] = [dedupExchange, ...authExchanges, fetchExchange]
+const exchanges: Exchange[] = [dedupExchange, fetchExchange]
 
 if (isDev) {
   exchanges.unshift(devtoolsExchange)

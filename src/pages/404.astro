@@ -1,10 +1,11 @@
 ---
+// TODO: sync with client router
 import About from '../layouts/about.astro'
-import { FourOuFour } from '../components/Views/FourOuFour'
+import { FourOuFourView } from '../components/Views/FourOuFour'
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
 <About>
-  <FourOuFour />
+  <FourOuFourView />
 </About>

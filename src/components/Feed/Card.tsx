@@ -1,13 +1,17 @@
 import { t } from '../../utils/intl'
-import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { createMemo } from 'solid-js'
 import { For, Show } from 'solid-js/web'
-import type { Author, Shout, Topic } from '../../graphql/types.gen'
+import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import './Card.scss'
 import { locale as localestore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
+import { handleClientRouteLinkClick } from '../../stores/router'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('card component')
 
 interface ArticleCardProps {
   settings?: {
@@ -24,45 +28,43 @@ interface ArticleCardProps {
   article: Shout
 }
 
-export const ArticleCard = (props: ArticleCardProps) => {
-  const locale = useStore(localestore)
+const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string } => {
+  let title = article.title
+  let subtitle = article.subtitle
 
-  const [title, setTitle] = createSignal<string>('')
-  const [subtitle, setSubtitle] = createSignal<string>('')
+  if (!subtitle) {
+    let tt = article.title?.split('. ') || []
 
-  const article = createMemo<Shout>(() => props.article)
-  const authors = createMemo<Author[]>(() => article().authors)
-  const mainTopic = createMemo<Topic>(() =>
-    props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic)
-  )
+    if (tt?.length === 1) {
+      tt = article.title?.split(/{!|\?|:|;}\s/) || []
+    }
 
-  const detectSubtitle = () => {
-    const a = article()
-    setTitle(a.title || '')
-    if (!a.subtitle) {
-      let tt: string[] = a.title?.split('. ') || []
-      if (tt?.length === 1) tt = a.title?.split(/{!|\?|:|;}\s/) || []
-      if (tt && tt.length > 1) {
-        const sep = a.title?.replace(tt[0], '').split(' ', 1)[0]
-        setTitle(tt[0] + (!(sep === '.' || sep === ':') ? sep : ''))
-        setSubtitle(capitalize(a.title?.replace(tt[0] + sep, ''), true))
-      }
-    } else {
-      setSubtitle(a.subtitle || '')
+    if (tt && tt.length > 1) {
+      const sep = article.title?.replace(tt[0], '').split(' ', 1)[0]
+      title = tt[0] + (!(sep === '.' || sep === ':') ? sep : '')
+      subtitle = capitalize(article.title?.replace(tt[0] + sep, ''), true)
     }
   }
 
-  // FIXME: move this to store action
-  const translateAuthors = () => {
-    const aaa = new Set(article().authors)
-    aaa.forEach((a) => {
-      a.name =
-        a.name === 'Дискурс' && locale() !== 'ru' ? 'Discours' : translit(a.name || '', locale() || 'ru')
-    })
-    return [...aaa]
-  }
-  createEffect(translateAuthors, [article(), locale()])
-  onMount(detectSubtitle)
+  return { title, subtitle }
+}
+
+export const ArticleCard = (props: ArticleCardProps) => {
+  const locale = useStore(localestore)
+
+  const mainTopic = props.article.topics.find(
+    (articleTopic) => articleTopic.slug === props.article.mainTopic
+  )
+
+  const formattedDate = createMemo<string>(() => {
+    return new Date(props.article.createdAt)
+      .toLocaleDateString(locale(), { month: 'long', day: 'numeric', year: 'numeric' })
+      .replace(' г.', '')
+  })
+
+  const { title, subtitle } = getTitleAndSubtitle(props.article)
+
+  const { cover, layout, slug, authors, stat } = props.article
 
   return (
     <section
@@ -73,49 +75,43 @@ export const ArticleCard = (props: ArticleCardProps) => {
         'shout-card--feed': props.settings?.isFeedMode
       }}
     >
-      <Show when={mainTopic()}>
-        <Show when={!props.settings?.noimage && props.article.cover}>
+      <Show when={mainTopic}>
+        <Show when={!props.settings?.noimage && cover}>
           <div class="shout-card__cover-container">
             <div class="shout-card__cover">
-              <img src={props.article.cover || ''} alt={props.article.title || ''} loading="lazy" />
+              <img src={cover || ''} alt={title || ''} loading="lazy" />
             </div>
           </div>
         </Show>
 
         <div class="shout-card__content">
           <Show
-            when={
-              props.article.layout &&
-              props.article.layout !== 'article' &&
-              !(props.settings?.noicon || props.settings?.noimage)
-            }
+            when={layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)}
           >
             <div class="shout-card__type">
-              <a href={`/topic/${props.article.mainTopic}`}>
-                <Icon name={props.article.layout} />
+              <a href={`/topic/${mainTopic.slug}`}>
+                <Icon name={layout} />
               </a>
             </div>
           </Show>
 
           <Show when={!props.settings?.isGroup}>
             <div class="shout__topic">
-              <a href={`/topic/${mainTopic().slug}`}>
-                {locale() === 'ru' && mainTopic().title
-                  ? mainTopic().title
-                  : mainTopic().slug.replace('-', ' ')}
+              <a href={`/topic/${mainTopic.slug}`}>
+                {locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic.slug.replace('-', ' ')}
               </a>
             </div>
           </Show>
 
           <div class="shout-card__titles-container">
-            <a href={`/${props.article.slug || ''}`}>
+            <a href={`/${slug || ''}`} onClick={handleClientRouteLinkClick}>
               <div class="shout-card__title">
-                <span class="shout-card__link-container">{title()}</span>
+                <span class="shout-card__link-container">{title}</span>
               </div>
 
-              <Show when={!props.settings?.nosubtitle && subtitle()}>
+              <Show when={!props.settings?.nosubtitle && subtitle}>
                 <div class="shout-card__subtitle">
-                  <span class="shout-card__link-container">{subtitle()}</span>
+                  <span class="shout-card__link-container">{subtitle}</span>
                 </div>
               </Show>
             </a>
@@ -125,23 +121,26 @@ export const ArticleCard = (props: ArticleCardProps) => {
             <div class="shout__details">
               <Show when={!props.settings?.noauthor}>
                 <div class="shout__author">
-                  <For each={authors()}>
-                    {(a: Author) => (
-                      <>
-                        <Show when={authors().indexOf(a) > 0}>, </Show>
-                        <a href={`/author/${a.slug}`}>{a.name}</a>
-                      </>
-                    )}
+                  <For each={authors}>
+                    {(author, index) => {
+                      const name =
+                        author.name === 'Дискурс' && locale() !== 'ru'
+                          ? 'Discours'
+                          : translit(author.name || '', locale() || 'ru')
+
+                      return (
+                        <>
+                          <Show when={index() > 0}>, </Show>
+                          <a href={`/author/${author.slug}`}>{name}</a>
+                        </>
+                      )
+                    }}
                   </For>
                 </div>
               </Show>
 
               <Show when={!props.settings?.nodate}>
-                <div class="shout__date">
-                  {new Date(props.article.createdAt)
-                    .toLocaleDateString(locale(), { month: 'long', day: 'numeric', year: 'numeric' })
-                    .replace(' г.', '')}
-                </div>
+                <div class="shout__date">{formattedDate()}</div>
               </Show>
             </div>
           </Show>
@@ -151,17 +150,17 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class="shout-card__details-content">
                 <div class="shout-card__details-item rating">
                   <button class="rating__control">&minus;</button>
-                  <span class="rating__value">{props.article.stat?.rating || ''}</span>
+                  <span class="rating__value">{stat?.rating || ''}</span>
                   <button class="rating__control">+</button>
                 </div>
                 <div class="shout-card__details-item shout-card__comments">
                   <Icon name="eye" />
-                  {props.article.stat?.viewed}
+                  {stat?.viewed}
                 </div>
                 <div class="shout-card__details-item shout-card__comments">
-                  <a href={`/${props.article.slug + '#comments' || ''}`}>
+                  <a href={`/${slug + '#comments' || ''}`}>
                     <Icon name="comment" />
-                    {props.article.stat?.commented || ''}
+                    {stat?.commented || ''}
                   </a>
                 </div>
 

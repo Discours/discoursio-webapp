@@ -1,8 +1,8 @@
 import { t } from '../../utils/intl'
-import Icon from '../Nav/Icon'
+import { Icon } from '../Nav/Icon'
 import '../../styles/FourOuFour.scss'
 
-export const FourOuFour = (_props) => {
+export const FourOuFourView = (_props) => {
   return (
     <div class="error-page-wrapper">
       <div class="error-page">

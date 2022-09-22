@@ -1,17 +1,16 @@
 import { Show, createMemo } from 'solid-js'
-import type { Author, Reaction, Shout } from '../../graphql/types.gen'
+import type { Author, Shout } from '../../graphql/types.gen'
 import Row2 from '../Feed/Row2'
 import Row3 from '../Feed/Row3'
-import Beside from '../Feed/Beside'
+// import Beside from '../Feed/Beside'
 import AuthorFull from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { params } from '../../stores/router'
 import { useArticlesStore } from '../../stores/zine/articles'
 
 import '../../styles/Topic.scss'
-import { useStore } from '@nanostores/solid'
-import { useTopicsStore } from '../../stores/zine/topics'
+// import { useTopicsStore } from '../../stores/zine/topics'
+import { useRouter } from '../../stores/router'
 
 // TODO: load reactions on client
 type AuthorProps = {
@@ -21,15 +20,18 @@ type AuthorProps = {
   // topics: Topic[]
 }
 
-export const AuthorPage = (props: AuthorProps) => {
+type AuthorPageSearchParams = {
+  by: '' | 'viewed' | 'rating' | 'commented' | 'recent'
+}
+
+export const AuthorView = (props: AuthorProps) => {
   const { getSortedArticles: articles } = useArticlesStore({
     sortedArticles: props.authorArticles
   })
   const { getAuthorEntities: authors } = useAuthorsStore({ authors: [props.author] })
-  const { getTopicsByAuthor } = useTopicsStore()
 
   const author = createMemo(() => authors()[props.author.slug])
-  const args = useStore(params)
+  const { getSearchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
   //const slug = createMemo(() => author().slug)
   /*
@@ -41,7 +43,7 @@ export const AuthorPage = (props: AuthorProps) => {
   */
 
   const title = createMemo(() => {
-    const m = args()['by']
+    const m = getSearchParams().by
     if (m === 'viewed') return t('Top viewed')
     if (m === 'rating') return t('Top rated')
     if (m === 'commented') return t('Top discussed')
@@ -55,23 +57,23 @@ export const AuthorPage = (props: AuthorProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: !args()['by'] || args()['by'] === 'recent' }}>
-                <button type="button" onClick={() => (args()['by'] = 'recent')}>
+              <li classList={{ selected: !getSearchParams().by || getSearchParams().by === 'recent' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
                   {t('Recent')}
                 </button>
               </li>
-              <li classList={{ selected: args()['by'] === 'rating' }}>
-                <button type="button" onClick={() => (args()['by'] = 'rating')}>
+              <li classList={{ selected: getSearchParams().by === 'rating' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
                   {t('Popular')}
                 </button>
               </li>
-              <li classList={{ selected: args()['by'] === 'viewed' }}>
-                <button type="button" onClick={() => (args()['by'] = 'viewed')}>
+              <li classList={{ selected: getSearchParams().by === 'viewed' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>
                   {t('Views')}
                 </button>
               </li>
-              <li classList={{ selected: args()['by'] === 'commented' }}>
-                <button type="button" onClick={() => (args()['by'] = 'commented')}>
+              <li classList={{ selected: getSearchParams().by === 'commented' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
                   {t('Discussing')}
                 </button>
               </li>
@@ -89,13 +91,14 @@ export const AuthorPage = (props: AuthorProps) => {
           <h3 class="col-12">{title()}</h3>
           <div class="row">
             <Show when={articles()?.length > 0}>
-              <Beside
-                title={t('Topics which supported by author')}
-                values={getTopicsByAuthor()[author().slug].slice(0, 5)}
-                beside={articles()[0]}
-                wrapper={'topic'}
-                topicShortDescription={true}
-              />
+              {/*FIXME*/}
+              {/*<Beside*/}
+              {/*  title={t('Topics which supported by author')}*/}
+              {/*  values={getTopicsByAuthor()[author().slug].slice(0, 5)}*/}
+              {/*  beside={articles()[0]}*/}
+              {/*  wrapper={'topic'}*/}
+              {/*  topicShortDescription={true}*/}
+              {/*/>*/}
               <Row3 articles={articles().slice(1, 4)} />
               <Row2 articles={articles().slice(4, 6)} />
               <Row3 articles={articles().slice(10, 13)} />

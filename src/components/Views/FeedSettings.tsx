@@ -1,18 +1,19 @@
 import '../../styles/FeedSettings.scss'
 import { t } from '../../utils/intl'
-import { params } from '../../stores/router' // global routing signals
-import { useStore } from '@nanostores/solid'
+import { handleClientRouteLinkClick } from '../../stores/router'
 
-export const FeedSettings = (props: any) => {
-  const args = useStore(params)
-  console.log('[feed-settings] setup articles by', args()['by'])
+// type FeedSettingsSearchParams = {
+//   by: '' | 'topics' | 'authors' | 'reacted'
+// }
+
+export const FeedSettingsView = () => {
   return (
     <div class="container">
       <h1>{t('Feed settings')}</h1>
 
       <ul class="view-switcher">
         <li class="selected">
-          <a href="?by=topics" onClick={() => (args()['by'] = 'topics')}>
+          <a href="?by=topics" onClick={handleClientRouteLinkClick}>
             {t('topics')}
           </a>
         </li>
@@ -22,12 +23,12 @@ export const FeedSettings = (props: any) => {
           </a>
   </li>*/}
         <li>
-          <a href="?by=authors" onClick={() => (args()['by'] = 'authors')}>
+          <a href="?by=authors" onClick={handleClientRouteLinkClick}>
             {t('authors')}
           </a>
         </li>
         <li>
-          <a href="?by=reacted" onClick={() => (args()['by'] = 'reacted')}>
+          <a href="?by=reacted" onClick={handleClientRouteLinkClick}>
             {t('reactions')}
           </a>
         </li>

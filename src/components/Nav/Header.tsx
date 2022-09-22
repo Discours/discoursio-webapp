@@ -109,8 +109,8 @@ export const Header = () => {
                   </li>
                 )}
               </For>
-              <li class="header__search">
-                <a href="#">
+              <li class="header__search" classList={{ selected: subpath() === '/search' }}>
+                <a href="/search">
                   <Icon name="search" />
                   {t('Search')}
                 </a>

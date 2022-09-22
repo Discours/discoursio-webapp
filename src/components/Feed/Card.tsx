@@ -20,6 +20,7 @@ interface ArticleCardProps {
     photoBottom?: boolean
     additionalClass?: string
     isFeedMode?: boolean
+    isSearchMode?: boolean
   }
   article: Shout
 }
@@ -70,7 +71,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
       classList={{
         'shout-card--short': props.settings?.noimage,
         'shout-card--photo-bottom': props.settings?.noimage && props.settings?.photoBottom,
-        'shout-card--feed': props.settings?.isFeedMode
+        'shout-card--feed': props.settings?.isFeedMode,
+        'shout-card--search': props.settings?.isSearchMode
       }}
     >
       <Show when={mainTopic()}>

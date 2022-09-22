@@ -89,7 +89,7 @@
 .shout__author {
   margin-right: 1.6rem;
 
-  a {
+  a:link {
     border: none;
     color: rgb(0 0 0 / 70%);
 
@@ -416,6 +416,15 @@
 
   .shout-card__content {
     margin-bottom: 0;
+  }
+}
+
+.shout-card--search {
+  flex-direction: row;
+
+  .shout-card__cover-container {
+    margin-right: 3.2rem;
+    width: 200px;
   }
 }
 

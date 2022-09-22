@@ -1,0 +1,96 @@
+.searchForm {
+  display: flex;
+  margin-bottom: 2em;
+  margin-top: 2em;
+
+  @include media-breakpoint-down(sm) {
+    margin-left: divide(-$container-padding-x, 2);
+    margin-right: divide(-$container-padding-x, 2);
+  }
+}
+
+.searchFormInput,
+.searchFormButton {
+  display: block;
+  width: 100%;
+}
+
+.searchFormInput[type='search'] {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  height: 5.2rem;
+  padding: 0;
+
+  @include font-size(3.2rem);
+
+  &::placeholder {
+    color: #858585 !important;
+  }
+}
+
+.searchFormButton {
+  @include font-size(2rem);
+
+  line-height: 4rem;
+}
+
+.searchShowMore {
+  border: 3px solid !important;
+  display: block;
+  padding-bottom: 56.2%;
+  position: relative;
+  text-align: center;
+}
+
+.searchShowMoreInner {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.radioTabs {
+  color: #808080;
+  justify-content: stretch;
+
+  @include font-size(1.2rem);
+}
+
+.searchSettings {
+  h4 {
+    @include font-size(1.7rem);
+  }
+}
+
+.searchSettingsSection {
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.2rem;
+}
+
+.exactRange {
+  color: #808080;
+  display: flex;
+  font-size: 1.2rem;
+  margin: 1.2rem 0 0 -1rem;
+}
+
+.exactRangeInput[type='number'] {
+  border: 1px solid #e8e8e8;
+  font-size: inherit;
+  flex: 1;
+  margin-bottom: 0;
+  padding: 0.6rem 1rem;
+  width: 100%;
+}
+
+.exactRangeInput[type='number'] ~ .exactRangeLabel,
+.exactRangeLabel {
+  font-size: 100% !important;
+  position: static;
+  padding: 0.6rem 1rem;
+  transform: none !important;
+}

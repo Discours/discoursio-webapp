@@ -122,9 +122,15 @@
 
     a {
       margin-right: 0.3em;
+      position: relative;
     }
 
     .icon {
+      left: 100%;
+      margin-left: 0.3em;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       width: 1em;
     }
   }

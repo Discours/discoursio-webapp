@@ -274,4 +274,8 @@ nav {
     vertical-align: middle;
     width: 1em;
   }
+
+  a:hover .icon {
+    filter: invert(1);
+  }
 }

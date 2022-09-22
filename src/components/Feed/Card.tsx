@@ -30,9 +30,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   // const article = createMemo<Shout>(() => props.article)
   // const authors = createMemo<Author[]>(() => article().authors)
-  const mainTopic = createMemo<Topic>(() =>
+  const mainTopic = () =>
     props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic)
-  )
 
   const formattedDate = createMemo<string>(() => {
     return new Date(props.article.createdAt)

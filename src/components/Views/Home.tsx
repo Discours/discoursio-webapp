@@ -1,4 +1,4 @@
-import { createEffect, createMemo, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, onMount, Show, Suspense } from 'solid-js'
 import Banner from '../Discours/Banner'
 import NavTopics from '../Nav/Topics'
 import { Row5 } from '../Feed/Row5'
@@ -36,9 +36,9 @@ const LOAD_MORE_ARTICLES_COUNT = 30
 export const HomeView = (props: HomeProps) => {
   const {
     getSortedArticles,
-    getTopArticles,
+    //getTopArticles,
     getArticlesByAuthor,
-    getTopMonthArticles,
+    //getTopMonthArticles,
     getTopViewedArticles,
     getTopCommentedArticles,
     getArticlesByLayout
@@ -133,7 +133,7 @@ export const HomeView = (props: HomeProps) => {
   )
 
   return (
-    <>
+    <Suspense>
       <NavTopics topics={getRandomTopics()} />
       <Row5 articles={getSortedArticles().slice(0, 5)} />
       {/*<Hero />*/}
@@ -178,6 +178,6 @@ export const HomeView = (props: HomeProps) => {
       {/*    {t('Load more')}*/}
       {/*  </button>*/}
       {/*</p>*/}
-    </>
+    </Suspense>
   )
 }

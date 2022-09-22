@@ -8,6 +8,18 @@ import { getLogger } from '../utils/logger'
 
 import type { PageProps } from './types'
 
+// do not remove
+// for debugging, to disable lazy loading
+// import HomePage from './Pages/HomePage'
+// import AllTopicsPage from './Pages/AllTopicsPage'
+// import TopicPage from './Pages/TopicPage'
+// import AllAuthorsPage from './Pages/AllAuthorsPage'
+// import AuthorPage from './Pages/AuthorPage'
+// import FeedPage from './Pages/FeedPage'
+// import ArticlePage from './Pages/ArticlePage'
+// import SearchPage from './Pages/SearchPage'
+// import FourOuFourPage from './Pages/FourOuFourPage'
+
 const HomePage = lazy(() => import('./Pages/HomePage'))
 const AllTopicsPage = lazy(() => import('./Pages/AllTopicsPage'))
 const TopicPage = lazy(() => import('./Pages/TopicPage'))

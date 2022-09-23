@@ -116,9 +116,12 @@ type InitialState = {
   sortBy?: TopicsSortBy
 }
 
-export const useTopicsStore = ({ topics, randomTopics, sortBy }: InitialState = {}) => {
-  if (sortBy) {
-    sortAllByStore.set(sortBy)
+export const useTopicsStore = (initialState: InitialState = {}) => {
+  const topics = [...(initialState.topics || [])]
+  const randomTopics = [...(initialState.randomTopics || [])]
+
+  if (initialState.sortBy) {
+    sortAllByStore.set(initialState.sortBy)
   }
 
   addTopics(topics, randomTopics)

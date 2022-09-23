@@ -216,7 +216,9 @@ type InitialState = {
   topRatedMonthArticles?: Shout[]
 }
 
-export const useArticlesStore = ({ sortedArticles }: InitialState = {}) => {
+export const useArticlesStore = (initialState: InitialState = {}) => {
+  const sortedArticles = [...(initialState.sortedArticles || [])]
+
   addArticles(sortedArticles)
 
   if (sortedArticles) {

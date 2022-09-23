@@ -7,6 +7,11 @@ const slug = Astro.params.slug?.toString() || ''
 const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: 50 })
 const topic = articles[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
 
+import { initRouter } from '../../stores/router'
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
+
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 

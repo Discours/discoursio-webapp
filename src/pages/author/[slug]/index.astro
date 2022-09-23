@@ -2,10 +2,14 @@
 import { Root } from '../../../components/Root'
 import Zine from '../../../layouts/zine.astro'
 import { apiClient } from '../../../utils/apiClient'
+import { initRouter } from '../../../stores/router'
 
 const slug = Astro.params.slug.toString()
 const articles = await apiClient.getArticlesForAuthors({ authorSlugs: [slug], limit: 50 })
 const author = articles[0].authors.find((a) => a.slug === slug)
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---

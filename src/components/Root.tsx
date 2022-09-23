@@ -29,6 +29,15 @@ const FeedPage = lazy(() => import('./Pages/FeedPage'))
 const ArticlePage = lazy(() => import('./Pages/ArticlePage'))
 const SearchPage = lazy(() => import('./Pages/SearchPage'))
 const FourOuFourPage = lazy(() => import('./Pages/FourOuFourPage'))
+const DogmaPage = lazy(() => import('./Pages/about/DogmaPage'))
+
+const GuidePage = lazy(() => import('./Pages/about/GuidePage'))
+const HelpPage = lazy(() => import('./Pages/about/HelpPage'))
+const ManifestPage = lazy(() => import('./Pages/about/ManifestPage'))
+const PartnersPage = lazy(() => import('./Pages/about/PartnersPage'))
+const ProjectsPage = lazy(() => import('./Pages/about/ProjectsPage'))
+const TermsOfUsePage = lazy(() => import('./Pages/about/TermsOfUsePage'))
+const ThanksPage = lazy(() => import('./Pages/about/ThanksPage'))
 
 const log = getLogger('root')
 
@@ -40,7 +49,15 @@ const pagesMap: Record<keyof Routes, Component<PageProps>> = {
   author: AuthorPage,
   feed: FeedPage,
   article: ArticlePage,
-  search: SearchPage
+  search: SearchPage,
+  dogma: DogmaPage,
+  guide: GuidePage,
+  help: HelpPage,
+  manifest: ManifestPage,
+  projects: ProjectsPage,
+  partners: PartnersPage,
+  termsOfUse: TermsOfUsePage,
+  thanks: ThanksPage
 }
 
 export const Root = (props: PageProps) => {
@@ -53,7 +70,7 @@ export const Root = (props: PageProps) => {
 
     // log.debug('page', getPage())
 
-    if (!result) {
+    if (!result || getPage().path === '/404') {
       return FourOuFourPage
     }
 

@@ -3,7 +3,7 @@ import { MainLayout } from '../Layouts/MainLayout'
 
 export const FourOuFourPage = () => {
   return (
-    <MainLayout>
+    <MainLayout isHeaderFixed={false}>
       <FourOuFourView />
     </MainLayout>
   )

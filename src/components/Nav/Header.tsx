@@ -27,6 +27,7 @@ const handleEnterClick = () => {
 
 type Props = {
   title?: string
+  isHeaderFixed?: boolean
 }
 
 export const Header = (props: Props) => {
@@ -83,7 +84,9 @@ export const Header = (props: Props) => {
 
   return (
     <header
+      class="main-header"
       classList={{
+        ['header--fixed']: props.isHeaderFixed,
         ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
         ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
       }}

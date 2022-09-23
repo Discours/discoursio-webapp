@@ -153,6 +153,9 @@ const markdownLinks = (schema: Schema) =>
         const action = tr.getMeta(this)
 
         if (action?.pos) {
+          // FIXME
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           state.pos = action.pos
         }
 

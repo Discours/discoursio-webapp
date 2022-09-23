@@ -96,8 +96,9 @@ type InitialState = {
   authors?: Author[]
 }
 
-export const useAuthorsStore = ({ authors }: InitialState = {}) => {
-  addAuthors(authors || [])
+export const useAuthorsStore = (initialState: InitialState = {}) => {
+  const authors = [...(initialState.authors || [])]
+  addAuthors(authors)
 
   const getAuthorEntities = useStore(authorEntitiesStore)
   const getSortedAuthors = useStore(sortedAuthorsStore)

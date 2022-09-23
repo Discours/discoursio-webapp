@@ -1,6 +1,11 @@
 ---
 import Zine from '../../layouts/zine.astro'
 import { FeedSettings } from '../../components/Views/FeedSettings'
+
+import { initRouter } from '../../stores/router'
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
 ---
 
 <Zine>

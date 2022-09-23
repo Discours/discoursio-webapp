@@ -2,8 +2,12 @@
 import { Root } from '../components/Root'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
+import { initRouter } from '../stores/router'
 
 const authors = await apiClient.getAllAuthors()
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---

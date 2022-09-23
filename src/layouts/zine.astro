@@ -1,15 +1,9 @@
 ---
-import { initRouter } from '../stores/router'
 import '../styles/app.scss'
 import { t } from '../utils/intl'
 
-const { pathname, search, searchParams } = Astro.url
-const lang = searchParams.get('lang')
-
-initRouter(pathname, search)
+const lang = Astro.url.searchParams.get('lang')
 ---
-
-<!DOCTYPE html>
 <html lang={lang || 'ru'}>
   <head>
     <meta charset="utf-8" />
@@ -21,4 +15,5 @@ initRouter(pathname, search)
     <slot />
   </body>
 </html>
+
 

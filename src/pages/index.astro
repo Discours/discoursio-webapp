@@ -2,9 +2,14 @@
 import Zine from '../layouts/zine.astro'
 import { Root } from '../components/Root'
 import { apiClient } from '../utils/apiClient'
+import { initRouter } from '../stores/router'
 
 const randomTopics = await apiClient.getRandomTopics({ amount: 12 })
 const articles = await apiClient.getRecentPublishedArticles({ limit: 5 })
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
+
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---

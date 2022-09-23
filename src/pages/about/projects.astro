@@ -1,18 +1,14 @@
 ---
-import About from '../../layouts/about.astro'
-import '../../styles/manifest.scss'
-import { t } from '../../utils/intl'
+import Zine from '../../layouts/zine.astro'
+import { Root } from '../../components/Root'
+import { initRouter } from '../../stores/router'
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
-<About title={t('Projects')}>
-  <article class="container">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        {t('Projects')}
-      </div>
-      <div class="col-md-8 col-lg-6 offset-md-3"></div>
-    </div>
-  </article>
-</About>
+<Zine>
+  <Root client:load />
+</Zine>

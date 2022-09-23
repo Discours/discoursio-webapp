@@ -13,6 +13,14 @@ export interface Routes {
   feed: void
   article: 'slug'
   search: 'q'
+  dogma: void
+  guide: void
+  help: void
+  manifest: void
+  partners: void
+  projects: void
+  termsOfUse: void
+  thanks: void
 }
 
 const searchParamsStore = createSearchParams()
@@ -25,7 +33,15 @@ const routerStore = createRouter<Routes>(
     author: '/author/:slug',
     feed: '/feed',
     search: '/search/:q?',
-    article: '/:slug'
+    article: '/:slug',
+    dogma: '/about/dogma',
+    guide: '/about/guide',
+    help: '/about/help',
+    manifest: '/about/manifest',
+    partners: '/about/partners',
+    projects: '/about/projects',
+    termsOfUse: '/about/terms-of-use',
+    thanks: '/about/thanks'
   },
   {
     search: false,

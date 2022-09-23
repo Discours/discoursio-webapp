@@ -2,10 +2,14 @@
 import { Root } from '../components/Root'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
+import { initRouter } from '../stores/router'
 
 const params: URLSearchParams = Astro.url.searchParams
 const q = params.get('q')
 const searchResults = await apiClient.getSearchResults({ query: q, limit: 50 })
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
 ---
 
 <Zine>

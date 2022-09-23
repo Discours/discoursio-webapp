@@ -7,14 +7,30 @@ import mdx from '@astrojs/mdx'
 import { markdownOptions as markdown } from './mdx.config'
 // import sitemap from '@astrojs/sitemap'
 import type { CSSOptions } from 'vite'
+import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
+import { isDev } from './src/utils/config'
 
-// const dev = process.env.NODE_ENV != 'production'
+const PATH_PREFIX = '/src/components/'
+
+const getDevCssClassPrefix = (filename: string): string => {
+  return filename
+    .slice(filename.indexOf(PATH_PREFIX) + PATH_PREFIX.length)
+    .replace('.module.scss', '')
+    .replace(/[/\\]/, '-')
+}
+
+const devGenerateScopedName = (name: string, filename: string, css: string) =>
+  getDevCssClassPrefix(filename) + '_' + defaultGenerateScopedName(name, filename, css)
 
 const css: CSSOptions = {
   preprocessorOptions: {
     scss: {
       additionalData: '@import "src/styles/imports";\n'
     }
+  },
+  modules: {
+    generateScopedName: isDev ? devGenerateScopedName : defaultGenerateScopedName,
+    localsConvention: null
   }
 }
 

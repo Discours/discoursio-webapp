@@ -2,6 +2,7 @@
 import { Root } from '../components/Root'
 import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
+import { initRouter } from '../stores/router'
 
 const slug = Astro.params.slug?.toString() || ''
 
@@ -14,6 +15,9 @@ const article = await apiClient.getArticle({ slug })
 if (!article) {
   return Astro.redirect('/404')
 }
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---

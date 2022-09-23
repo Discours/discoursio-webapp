@@ -5,7 +5,7 @@ import { createMemo } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-import { locale as locstore } from '../../stores/ui'
+import { locale } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { session } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
@@ -19,11 +19,8 @@ interface TopicProps {
 }
 
 export const TopicCard = (props: TopicProps) => {
-  const locale = useStore(locstore)
   const auth = useStore(session)
-
   const topic = createMemo(() => props.topic)
-
   const subscribed = createMemo(() => {
     return Boolean(auth()?.user?.slug) && topic().slug ? topic().slug in auth().info.topics : false
   })

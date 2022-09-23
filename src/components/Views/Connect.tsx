@@ -1,9 +1,5 @@
-import { Title } from '@solidjs/meta'
-
 export const ConnectView = () => (
   <>
-    <Title>Дискурс: Предложить идею</Title>
-
     <article class="container">
       <div class="row">
         <h1 class="col-md-8 offset-md-2">

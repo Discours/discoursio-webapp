@@ -3,11 +3,9 @@ import './Footer.scss'
 import { Icon } from '../Nav/Icon'
 import Subscribe from './Subscribe'
 import { t } from '../../utils/intl'
-import { locale as locstore } from '../../stores/ui'
-import { useStore } from '@nanostores/solid'
+import { locale } from '../../stores/ui'
 
 export const Footer = () => {
-  const locale = useStore(locstore)
   const locale_title = createMemo(() => (locale() === 'ru' ? 'English' : 'Русский'))
   const locale_link = createMemo(() => '?lang=' + (locale() === 'ru' ? 'en' : 'ru'))
   const links = createMemo(() => [

@@ -6,8 +6,7 @@ import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
 import { Icon } from '../Nav/Icon'
 import './Card.scss'
-import { locale as localestore } from '../../stores/ui'
-import { useStore } from '@nanostores/solid'
+import { locale } from '../../stores/ui'
 import { handleClientRouteLinkClick } from '../../stores/router'
 import { getLogger } from '../../utils/logger'
 
@@ -50,8 +49,6 @@ const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string 
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
-  const locale = useStore(localestore)
-
   const mainTopic = props.article.topics.find(
     (articleTopic) => articleTopic.slug === props.article.mainTopic
   )

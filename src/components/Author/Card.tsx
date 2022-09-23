@@ -7,7 +7,7 @@ import { createMemo } from 'solid-js'
 import { translit } from '../../utils/ru2en'
 import { t } from '../../utils/intl'
 import { session } from '../../stores/auth'
-import { locale as locstore } from '../../stores/ui'
+import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { useStore } from '@nanostores/solid'
 
@@ -21,7 +21,6 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
-  const locale = useStore(locstore)
   const auth = useStore(session)
   const subscribed = createMemo(
     () =>
@@ -30,12 +29,12 @@ export const AuthorCard = (props: AuthorCardProps) => {
         .pop()
   )
   const canFollow = createMemo(() => !props.hideFollow && auth()?.user?.slug !== props.author.slug)
-  const bio = createMemo(() => props.author.bio || t('Our regular contributor'))
-  const name = createMemo(() => {
+  const bio = () => props.author.bio || t('Our regular contributor')
+  const name = () => {
     return props.author.name === 'Дискурс' && locale() !== 'ru'
       ? 'Discours'
       : translit(props.author.name || '', locale() || 'ru')
-  })
+  }
   // TODO: reimplement AuthorCard
   return (
     <>

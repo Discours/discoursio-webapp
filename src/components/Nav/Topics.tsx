@@ -3,12 +3,9 @@ import type { Topic } from '../../graphql/types.gen'
 import { Icon } from './Icon'
 import './Topics.scss'
 import { t } from '../../utils/intl'
-import { locale as langstore } from '../../stores/ui'
-import { useStore } from '@nanostores/solid'
+import { locale } from '../../stores/ui'
 
 export const NavTopics = (props: { topics: Topic[] }) => {
-  const locale = useStore(langstore)
-
   const tag = (t: Topic) => (/[ЁА-яё]/.test(t.title || '') && locale() !== 'ru' ? t.slug : t.title)
 
   // TODO: something about subtopics

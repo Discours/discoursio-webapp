@@ -22,6 +22,7 @@ import {
   useArticlesStore
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
+import { locale } from '../../stores/ui'
 
 const log = getLogger('home view')
 
@@ -85,7 +86,7 @@ export const HomeView = (props: HomeProps) => {
   }
 
   return (
-    <>
+    <Show when={locale()}>
       <NavTopics topics={getRandomTopics()} />
 
       <Row5 articles={getSortedArticles().slice(0, 5)} />
@@ -149,6 +150,6 @@ export const HomeView = (props: HomeProps) => {
           {t('Load more')}
         </button>
       </p>
-    </>
+    </Show>
   )
 }

@@ -1,9 +1,10 @@
-import { persistentAtom } from '@nanostores/persistent'
+//import { persistentAtom } from '@nanostores/persistent'
 import { atom } from 'nanostores'
 import { useStore } from '@nanostores/solid'
+import { createSignal } from 'solid-js'
 
-export const locale = persistentAtom<string>('locale', 'ru')
-
+//export const locale = persistentAtom<string>('locale', 'ru')
+export const [locale, setLocale] = createSignal('ru')
 export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'share' | 'thank' | 'donate' | null
 type WarnKind = 'error' | 'warn' | 'info'
 

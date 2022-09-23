@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup } from 'solid-js'
+import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup, Suspense } from 'solid-js'
 import Private from './Private'
 import Notifications from './Notifications'
 import { Icon } from './Icon'
@@ -82,80 +82,82 @@ export const Header = (props: Props) => {
   })
 
   return (
-    <header
-      classList={{
-        ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
-        ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
-      }}
-    >
-      <Modal name="auth">
-        <AuthModal />
-      </Modal>
-      <div class="wide-container">
-        <nav class="row header__inner" classList={{ fixed: fixed() }}>
-          <div class="main-logo col-auto">
-            <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
-              <img src="/logo.svg" alt={t('Discours')} />
-            </a>
-          </div>
-          <div class="col main-navigation">
-            <div class="article-header">{props.title}</div>
+    <Suspense>
+      <header
+        classList={{
+          ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
+          ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
+        }}
+      >
+        <Modal name="auth">
+          <AuthModal />
+        </Modal>
+        <div class="wide-container">
+          <nav class="row header__inner" classList={{ fixed: fixed() }}>
+            <div class="main-logo col-auto">
+              <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
+                <img src="/logo.svg" alt={t('Discours')} />
+              </a>
+            </div>
+            <div class="col main-navigation">
+              <div class="article-header">{props.title}</div>
 
-            <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
-              <For each={resources}>
-                {(r) => (
-                  <li classList={{ selected: r.route === getPage().route }}>
-                    <a href={getPagePath(router, r.route, null)} onClick={handleClientRouteLinkClick}>
-                      {r.name}
-                    </a>
-                  </li>
-                )}
-              </For>
-              <li class="header__search">
-                <a href="#">
-                  <Icon name="search" />
-                  {t('Search')}
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div class="usernav">
-            <div class="usercontrol col">
-              <div class="usercontrol__item">
-                <a href="#auth" onClick={handleBellIconClick}>
-                  <div>
-                    <Icon name="bell-white" counter={authorized() ? getWarnings().length : 1} />
-                  </div>
-                </a>
-              </div>
-
-              <Show when={visibleWarnings()}>
-                <div class="usercontrol__item notifications">
-                  <Notifications />
+              <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
+                <For each={resources}>
+                  {(r) => (
+                    <li classList={{ selected: r.route === getPage().route }}>
+                      <a href={getPagePath(router, r.route, null)} onClick={handleClientRouteLinkClick}>
+                        {r.name}
+                      </a>
+                    </li>
+                  )}
+                </For>
+                <li class="header__search">
+                  <a href="#">
+                    <Icon name="search" />
+                    {t('Search')}
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="usernav">
+              <div class="usercontrol col">
+                <div class="usercontrol__item">
+                  <a href="#auth" onClick={handleBellIconClick}>
+                    <div>
+                      <Icon name="bell-white" counter={authorized() ? getWarnings().length : 1} />
+                    </div>
+                  </a>
                 </div>
-              </Show>
 
-              <Show
-                when={authorized()}
-                fallback={
-                  <div class="usercontrol__item loginbtn">
-                    <a href="#auth" onClick={handleEnterClick}>
-                      {t('enter')}
-                    </a>
+                <Show when={visibleWarnings()}>
+                  <div class="usercontrol__item notifications">
+                    <Notifications />
                   </div>
-                }
-              >
-                <Private />
-              </Show>
+                </Show>
+
+                <Show
+                  when={authorized()}
+                  fallback={
+                    <div class="usercontrol__item loginbtn">
+                      <a href="#auth" onClick={handleEnterClick}>
+                        {t('enter')}
+                      </a>
+                    </div>
+                  }
+                >
+                  <Private />
+                </Show>
+              </div>
             </div>
-          </div>
-          <div class="burger-container">
-            <div class="burger" classList={{ fixed: fixed() }} onClick={toggleFixed}>
-              <div />
+            <div class="burger-container">
+              <div class="burger" classList={{ fixed: fixed() }} onClick={toggleFixed}>
+                <div />
+              </div>
             </div>
-          </div>
-        </nav>
-      </div>
-    </header>
+          </nav>
+        </div>
+      </header>
+    </Suspense>
   )
 }

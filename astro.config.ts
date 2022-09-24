@@ -10,7 +10,7 @@ import type { CSSOptions } from 'vite'
 import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
 
-const PATH_PREFIX = '/src/components/'
+const PATH_PREFIX = '/src/'
 
 const getDevCssClassPrefix = (filename: string): string => {
   return filename

@@ -1,8 +1,6 @@
 header {
   background: #fff;
   margin-bottom: 2.2rem;
-  position: fixed;
-  top: 0;
   width: 100%;
   z-index: 10;
 
@@ -15,8 +13,10 @@ header {
   }
 }
 
-.header--scrolled-bottom,
-.header--scrolled-top {
+.header--fixed {
+  position: fixed;
+  top: 0;
+
   .main-logo {
     height: 56px;
 

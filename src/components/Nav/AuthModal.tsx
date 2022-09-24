@@ -135,9 +135,11 @@ export default (props: { code?: string; mode?: string }) => {
       // hiding itself if finished
       console.log('[auth] success, hiding modal')
       hideModal()
-    } else if (session().error) {
+    } else if (session()?.error) {
       console.log('[auth] failure, showing error')
       setError(t(statuses[session().error || 'unknown error']))
+    } else {
+      console.log('[auth] session', session())
     }
   }, [session()])
   return (

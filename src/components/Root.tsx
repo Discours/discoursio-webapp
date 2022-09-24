@@ -1,9 +1,10 @@
 // FIXME: breaks on vercel, research
 // import 'solid-devtools'
 
-import { Component, createMemo, lazy } from 'solid-js'
+import { setLocale } from '../stores/ui'
+import { Component, createEffect, createMemo, lazy } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
-import { Dynamic } from 'solid-js/web'
+import { Dynamic, isServer } from 'solid-js/web'
 import { getLogger } from '../utils/logger'
 
 import type { PageProps } from './types'
@@ -76,6 +77,14 @@ export const Root = (props: PageProps) => {
 
     return result
   })
-  // TODO: move MainLayout here
+
+  if (!isServer) {
+    createEffect(() => {
+      const lang = new URLSearchParams(window.location.search).get('lang') || 'ru'
+      console.log('[root] client locale is', lang)
+      setLocale(lang)
+    }, [window.location.search])
+  }
+
   return <Dynamic component={pageComponent()} {...props} />
 }

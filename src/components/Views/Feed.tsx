@@ -31,11 +31,11 @@ interface FeedProps {
 
 export const FeedView = (props: FeedProps) => {
   // state
-  const { getSortedArticles: articles } = useArticlesStore({ sortedArticles: props.articles })
+  const { sortedArticles } = useArticlesStore({ sortedArticles: props.articles })
   const reactions = useReactionsStore()
-  const { getSortedAuthors: authors } = useAuthorsStore()
-  const { getTopTopics } = useTopicsStore()
-  const { getTopAuthors } = useTopAuthorsStore()
+  const { sortedAuthors } = useAuthorsStore()
+  const { topTopics } = useTopicsStore()
+  const { topAuthors } = useTopAuthorsStore()
 
   const auth = useStore(session)
 
@@ -66,7 +66,7 @@ export const FeedView = (props: FeedProps) => {
       <div class="container feed">
         <div class="row">
           <div class="col-md-3 feed-navigation">
-            <FeedSidebar authors={authors()} />
+            <FeedSidebar authors={sortedAuthors()} />
           </div>
 
           <div class="col-md-6">
@@ -87,8 +87,8 @@ export const FeedView = (props: FeedProps) => {
               </li>
             </ul>
 
-            <Show when={articles().length > 0}>
-              <For each={articles().slice(0, 4)}>
+            <Show when={sortedArticles().length > 0}>
+              <For each={sortedArticles().slice(0, 4)}>
                 {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
               </For>
 
@@ -101,7 +101,7 @@ export const FeedView = (props: FeedProps) => {
               </div>
 
               <ul class="beside-column">
-                <For each={getTopAuthors().slice(0, 5)}>
+                <For each={topAuthors().slice(0, 5)}>
                   {(author) => (
                     <li>
                       <AuthorCard author={author} compact={true} hasLink={true} />
@@ -110,7 +110,7 @@ export const FeedView = (props: FeedProps) => {
                 </For>
               </ul>
 
-              <For each={articles().slice(4)}>
+              <For each={sortedArticles().slice(4)}>
                 {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
               </For>
             </Show>
@@ -127,10 +127,10 @@ export const FeedView = (props: FeedProps) => {
                 {(comment) => <CommentCard comment={comment} compact={true} />}
               </For>
             </section>
-            <Show when={getTopTopics().length > 0}>
+            <Show when={topTopics().length > 0}>
               <section class="feed-topics">
                 <h4>{t('Topics')}</h4>
-                <For each={getTopTopics().slice(0, 5)}>
+                <For each={topTopics().slice(0, 5)}>
                   {(topic) => <TopicCard topic={topic} subscribeButtonBottom={true} />}
                 </For>
               </section>

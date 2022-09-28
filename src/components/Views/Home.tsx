@@ -36,44 +36,43 @@ const LOAD_MORE_ARTICLES_COUNT = 30
 
 export const HomeView = (props: HomeProps) => {
   const {
-    getSortedArticles,
-    getTopArticles,
-    getTopMonthArticles,
-    getTopViewedArticles,
-    getTopCommentedArticles,
-    getArticlesByLayout
+    sortedArticles,
+    topArticles,
+    topMonthArticles,
+    topViewedArticles,
+    topCommentedArticles,
+    articlesByLayout
   } = useArticlesStore({
     sortedArticles: props.recentPublishedArticles
   })
-  const { getRandomTopics, getTopTopics } = useTopicsStore({
+  const { randomTopics, topTopics } = useTopicsStore({
     randomTopics: props.randomTopics
   })
 
-  const { getTopAuthors } = useTopAuthorsStore()
+  const { topAuthors } = useTopAuthorsStore()
 
   onMount(() => {
     loadTopArticles()
     loadTopMonthArticles()
-    loadPublishedArticles({ limit: CLIENT_LOAD_ARTICLES_COUNT, offset: getSortedArticles().length })
+    loadPublishedArticles({ limit: CLIENT_LOAD_ARTICLES_COUNT, offset: sortedArticles().length })
   })
 
   const randomLayout = createMemo(() => {
-    const articlesByLayout = getArticlesByLayout()
-    const filledLayouts = Object.keys(articlesByLayout).filter(
+    const filledLayouts = Object.keys(articlesByLayout()).filter(
       // FIXME: is 7 ok? or more complex logic needed?
-      (layout) => articlesByLayout[layout].length > 7
+      (layout) => articlesByLayout()[layout].length > 7
     )
 
-    const randomLayout =
+    const selectedRandomLayout =
       filledLayouts.length > 0 ? filledLayouts[Math.floor(Math.random() * filledLayouts.length)] : ''
 
     return (
-      <Show when={Boolean(randomLayout)}>
+      <Show when={Boolean(selectedRandomLayout)}>
         <Group
-          articles={articlesByLayout[randomLayout]}
+          articles={articlesByLayout()[selectedRandomLayout]}
           header={
             <div class="layout-icon">
-              <Icon name={randomLayout} />
+              <Icon name={selectedRandomLayout} />
             </div>
           }
         />
@@ -82,68 +81,70 @@ export const HomeView = (props: HomeProps) => {
   })
 
   const loadMore = () => {
-    loadPublishedArticles({ limit: LOAD_MORE_ARTICLES_COUNT, offset: getSortedArticles().length })
+    loadPublishedArticles({ limit: LOAD_MORE_ARTICLES_COUNT, offset: sortedArticles().length })
   }
 
   return (
     <Show when={locale()}>
-      <NavTopics topics={getRandomTopics()} />
+      <NavTopics topics={randomTopics()} />
 
-      <Row5 articles={getSortedArticles().slice(0, 5)} />
+      <Row5 articles={sortedArticles().slice(0, 5)} />
 
       <Hero />
 
-      <Beside
-        beside={getSortedArticles().slice(4, 5)[0]}
-        title={t('Top viewed')}
-        values={getTopViewedArticles().slice(0, 5)}
-        wrapper={'top-article'}
-      />
-
-      <Row3 articles={getSortedArticles().slice(6, 9)} />
-
-      {/*FIXME: ?*/}
-      <Show when={getTopAuthors().length === 5}>
+      <Show when={sortedArticles().length > 5}>
         <Beside
-          beside={getSortedArticles().slice(8, 9)[0]}
-          title={t('Top authors')}
-          values={getTopAuthors()}
-          wrapper={'author'}
+          beside={sortedArticles()[5]}
+          title={t('Top viewed')}
+          values={topViewedArticles().slice(0, 5)}
+          wrapper={'top-article'}
         />
+
+        <Row3 articles={sortedArticles().slice(6, 9)} />
+
+        {/*FIXME: ?*/}
+        <Show when={topAuthors().length === 5}>
+          <Beside
+            beside={sortedArticles().slice(8, 9)[0]}
+            title={t('Top authors')}
+            values={topAuthors()}
+            wrapper={'author'}
+          />
+        </Show>
+
+        <Slider title={t('Top month articles')} articles={topMonthArticles()} />
+
+        <Row2 articles={sortedArticles().slice(10, 12)} />
+
+        <RowShort articles={sortedArticles().slice(12, 16)} />
+
+        <Row1 article={sortedArticles().slice(15, 16)[0]} />
+        <Row3 articles={sortedArticles().slice(17, 20)} />
+        <Row3 articles={topCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
+
+        {randomLayout()}
+
+        <Slider title={t('Favorite')} articles={topArticles()} />
+
+        <Beside
+          beside={sortedArticles()[20]}
+          title={t('Top topics')}
+          values={topTopics().slice(0, 5)}
+          wrapper={'topic'}
+          isTopicCompact={true}
+        />
+
+        <Row3 articles={sortedArticles().slice(21, 24)} />
+
+        <Banner />
+
+        <Row2 articles={sortedArticles().slice(24, 26)} />
+        <Row3 articles={sortedArticles().slice(26, 29)} />
+        <Row2 articles={sortedArticles().slice(29, 31)} />
+        <Row3 articles={sortedArticles().slice(31, 34)} />
       </Show>
 
-      <Slider title={t('Top month articles')} articles={getTopMonthArticles()} />
-
-      <Row2 articles={getSortedArticles().slice(10, 12)} />
-
-      <RowShort articles={getSortedArticles().slice(12, 16)} />
-
-      <Row1 article={getSortedArticles().slice(15, 16)[0]} />
-      <Row3 articles={getSortedArticles().slice(17, 20)} />
-      <Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
-
-      {randomLayout()}
-
-      <Slider title={t('Favorite')} articles={getTopArticles()} />
-
-      <Beside
-        beside={getSortedArticles().slice(19, 20)[0]}
-        title={t('Top topics')}
-        values={getTopTopics().slice(0, 5)}
-        wrapper={'topic'}
-        isTopicCompact={true}
-      />
-
-      <Row3 articles={getSortedArticles().slice(21, 24)} />
-
-      <Banner />
-
-      <Row2 articles={getSortedArticles().slice(24, 26)} />
-      <Row3 articles={getSortedArticles().slice(26, 29)} />
-      <Row2 articles={getSortedArticles().slice(29, 31)} />
-      <Row3 articles={getSortedArticles().slice(31, 34)} />
-
-      <For each={getSortedArticles().slice(35)}>{(article) => <Row1 article={article} />}</For>
+      <For each={sortedArticles().slice(35)}>{(article) => <Row1 article={article} />}</For>
 
       <p class="load-more-container">
         <button class="button" onClick={loadMore}>

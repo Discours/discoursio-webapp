@@ -24,12 +24,12 @@ interface TopicProps {
 export const TopicView = (props: TopicProps) => {
   const { getSearchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
 
-  const { getSortedArticles: sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
-  const { getTopicEntities } = useTopicsStore({ topics: [props.topic] })
+  const { sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
+  const { topicEntities } = useTopicsStore({ topics: [props.topic] })
 
-  const { getAuthorsByTopic } = useAuthorsStore()
+  const { authorsByTopic } = useAuthorsStore()
 
-  const topic = createMemo(() => getTopicEntities()[props.topic.slug])
+  const topic = createMemo(() => topicEntities()[props.topic.slug])
 
   /*
   const slug = createMemo<string>(() => {
@@ -104,7 +104,7 @@ export const TopicView = (props: TopicProps) => {
           <Show when={sortedArticles().length > 5}>
             <Beside
               title={t('Topic is supported by')}
-              values={getAuthorsByTopic()[topic().slug].slice(0, 7)}
+              values={authorsByTopic()[topic().slug].slice(0, 7)}
               beside={sortedArticles()[6]}
               wrapper={'author'}
             />

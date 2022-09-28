@@ -2,7 +2,7 @@ import { createEffect, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
-import { setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
+import { setSortAllBy as setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import { session } from '../../stores/auth'
@@ -20,7 +20,7 @@ type Props = {
 export const AllTopicsView = (props: Props) => {
   const { getSearchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
 
-  const { getSortedTopics } = useTopicsStore({
+  const { sortedTopics } = useTopicsStore({
     topics: props.topics,
     sortBy: getSearchParams().by || 'shouts'
   })
@@ -34,7 +34,7 @@ export const AllTopicsView = (props: Props) => {
 
   return (
     <div class="all-topics-page">
-      <Show when={getSortedTopics().length > 0}>
+      <Show when={sortedTopics().length > 0}>
         <div class="wide-container">
           <div class="shift-content">
             <div class="row">
@@ -78,7 +78,7 @@ export const AllTopicsView = (props: Props) => {
                 </ul>
 
                 <div class="stats">
-                  <For each={getSortedTopics()}>
+                  <For each={sortedTopics()}>
                     {(topic) => (
                       <TopicCard topic={topic} compact={false} subscribed={subscribed(topic.slug)} />
                     )}

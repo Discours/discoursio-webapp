@@ -217,12 +217,10 @@ type InitialState = {
 }
 
 export const useArticlesStore = (initialState: InitialState = {}) => {
-  const sortedArticles = [...(initialState.sortedArticles || [])]
+  addArticles(initialState.sortedArticles || [])
 
-  addArticles(sortedArticles)
-
-  if (sortedArticles) {
-    addSortedArticles(sortedArticles)
+  if (initialState.sortedArticles) {
+    setSortedArticles([...initialState.sortedArticles])
   }
 
   const getArticleEntities = useStore(articleEntitiesStore)

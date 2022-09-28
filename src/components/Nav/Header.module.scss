@@ -1,4 +1,4 @@
-header {
+.mainHeader {
   background: #fff;
   margin-bottom: 2.2rem;
   width: 100%;
@@ -13,7 +13,7 @@ header {
   }
 }
 
-.header--fixed {
+.headerFixed {
   position: fixed;
   top: 0;
 
@@ -26,7 +26,7 @@ header {
   }
 }
 
-.header__inner {
+.headerInner {
   background: #fff;
   border-bottom: 4px solid #000;
   flex-wrap: nowrap;
@@ -48,7 +48,7 @@ header {
   }
 }
 
-.main-logo {
+.mainLogo {
   align-items: center;
   display: inline-flex;
   height: 70px;
@@ -101,7 +101,7 @@ nav {
   }
 }
 
-.main-navigation {
+.mainNavigation {
   position: relative;
   @include font-size(1.7rem);
 
@@ -264,7 +264,7 @@ nav {
   }
 }
 
-.header__search {
+.headerSearch {
   text-transform: lowercase;
 
   .icon {

@@ -9,9 +9,10 @@ import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useStore } from '@nanostores/solid'
 import { session as ssession } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
-import './Header.scss'
+import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { getLogger } from '../../utils/logger'
+import { clsx } from 'clsx'
 
 const log = getLogger('header')
 
@@ -84,9 +85,9 @@ export const Header = (props: Props) => {
 
   return (
     <header
-      class="main-header"
+      class={styles.mainHeader}
       classList={{
-        ['header--fixed']: props.isHeaderFixed,
+        [styles.headerFixed]: props.isHeaderFixed,
         ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
         ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
       }}
@@ -95,13 +96,13 @@ export const Header = (props: Props) => {
         <AuthModal />
       </Modal>
       <div class="wide-container">
-        <nav class="row header__inner" classList={{ fixed: fixed() }}>
-          <div class="main-logo col-auto">
+        <nav class={clsx(styles.headerInner, 'row')} classList={{ fixed: fixed() }}>
+          <div class={clsx(styles.mainLogo, 'col-auto')}>
             <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class="col main-navigation">
+          <div class={clsx(styles.mainNavigation, 'col')}>
             <div class="article-header">{props.title}</div>
 
             <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
@@ -114,7 +115,7 @@ export const Header = (props: Props) => {
                   </li>
                 )}
               </For>
-              <li class="header__search">
+              <li class={styles.headerSearch}>
                 <a href="#">
                   <Icon name="search" />
                   {t('Search')}

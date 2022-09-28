@@ -73,15 +73,15 @@ export const handleClientRouteLinkClick = (event) => {
   }
 }
 
-export const initRouter = (pathname: string, search: string) => {
+export const initRouter = (pathname: string, search: Record<string, string>) => {
   routerStore.open(pathname)
-  const params = Object.fromEntries(new URLSearchParams(search))
-  searchParamsStore.open(params)
+  searchParamsStore.open(search)
 }
 
 if (!isServer) {
   const { pathname, search } = window.location
-  initRouter(pathname, search)
+  const searchParams = Object.fromEntries(new URLSearchParams(search))
+  initRouter(pathname, searchParams)
 }
 
 export const useRouter = <TSearchParams extends Record<string, string> = Record<string, string>>() => {

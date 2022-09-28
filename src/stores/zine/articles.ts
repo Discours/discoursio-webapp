@@ -19,9 +19,9 @@ let articlesByTopicsStore: ReadableAtom<{ [topicSlug: string]: Shout[] }>
 let topViewedArticlesStore: ReadableAtom<Shout[]>
 let topCommentedArticlesStore: ReadableAtom<Shout[]>
 
-const [getSortedArticles, setSortedArticles] = createSignal<Shout[]>([])
+const [getSortedArticles, setSortedArticles] = createSignal<Shout[]>()
 
-const topArticlesStore = atom<Shout[]>()
+const topArticlesStore = atom<Shout[]>([])
 const topMonthArticlesStore = atom<Shout[]>()
 
 const initStore = (initial?: Record<string, Shout>) => {
@@ -143,6 +143,7 @@ const addArticles = (...args: Shout[][]) => {
 }
 
 const addSortedArticles = (articles: Shout[]) => {
+  log.debug('addSortedArticles')
   setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
@@ -166,19 +167,19 @@ export const loadPublishedArticles = async ({
   offset?: number
 }): Promise<void> => {
   const newArticles = await apiClient.getPublishedArticles({ limit, offset })
-  addArticles(newArticles)
+  // addArticles(newArticles)
   addSortedArticles(newArticles)
 }
 
 export const loadTopMonthArticles = async (): Promise<void> => {
   const articles = await apiClient.getTopMonthArticles()
-  addArticles(articles)
+  // addArticles(articles)
   topMonthArticlesStore.set(articles)
 }
 
 export const loadTopArticles = async (): Promise<void> => {
   const articles = await apiClient.getTopArticles()
-  addArticles(articles)
+  // addArticles(articles)
   topArticlesStore.set(articles)
 }
 
@@ -216,13 +217,13 @@ type InitialState = {
   topRatedMonthArticles?: Shout[]
 }
 
-export const useArticlesStore = (initialState: InitialState = {}) => {
-  const sortedArticles = [...(initialState.sortedArticles || [])]
-
-  addArticles(sortedArticles)
+export const useArticlesStore = ({ sortedArticles }: InitialState = {}) => {
+  addArticles(sortedArticles || [])
 
   if (sortedArticles) {
-    addSortedArticles(sortedArticles)
+    // log.debug('init sortedArticles', { sortedArticles })
+    // log.debug('init sortedArticles')
+    setSortedArticles([...sortedArticles])
   }
 
   const getArticleEntities = useStore(articleEntitiesStore)

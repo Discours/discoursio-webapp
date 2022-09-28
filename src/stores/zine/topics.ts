@@ -126,8 +126,8 @@ export const useTopicsStore = (initialState: InitialState = {}) => {
 
   addTopics(topics, randomTopics)
 
-  if (randomTopics) {
-    setRandomTopics(randomTopics)
+  if (initialState.randomTopics) {
+    setRandomTopics([...initialState.randomTopics])
   }
 
   const getTopicEntities = useStore(topicEntitiesStore)

@@ -23,6 +23,7 @@ import {
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
+import { ArticleCard } from '../Feed/Card'
 
 const log = getLogger('home view')
 
@@ -93,55 +94,45 @@ export const HomeView = (props: HomeProps) => {
 
       <Hero />
 
-      <Beside
-        beside={getSortedArticles().slice(4, 5)[0]}
-        title={t('Top viewed')}
-        values={getTopViewedArticles().slice(0, 5)}
-        wrapper={'top-article'}
-      />
-
-      <Row3 articles={getSortedArticles().slice(6, 9)} />
-
-      {/*FIXME: ?*/}
-      <Show when={getTopAuthors().length === 5}>
+      <Show when={getSortedArticles().length > 5}>
         <Beside
-          beside={getSortedArticles().slice(8, 9)[0]}
-          title={t('Top authors')}
-          values={getTopAuthors()}
-          wrapper={'author'}
+          beside={getSortedArticles()[5]}
+          title={t('Top viewed')}
+          values={getTopViewedArticles().slice(0, 5)}
+          wrapper={'top-article'}
         />
+        <Row3 articles={getSortedArticles().slice(6, 9)} />
+        {/*FIXME: ?*/}
+        <Show when={getTopAuthors().length === 5}>
+          <Beside
+            beside={getSortedArticles()[8]}
+            title={t('Top authors')}
+            values={getTopAuthors()}
+            wrapper={'author'}
+          />
+        </Show>
+        <Slider title={t('Top month articles')} articles={getTopMonthArticles()} />
+        <Row2 articles={getSortedArticles().slice(10, 12)} />
+        <RowShort articles={getSortedArticles().slice(12, 16)} />
+        <Row1 article={getSortedArticles().slice(15, 16)[0]} />
+        <Row3 articles={getSortedArticles().slice(17, 20)} />
+        <Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
+        {randomLayout()}
+        <Slider title={t('Favorite')} articles={getTopArticles()} />
+        <Beside
+          beside={getSortedArticles().slice(19, 20)[0]}
+          title={t('Top topics')}
+          values={getTopTopics().slice(0, 5)}
+          wrapper={'topic'}
+          isTopicCompact={true}
+        />
+        <Row3 articles={getSortedArticles().slice(21, 24)} />
+        <Banner />
+        <Row2 articles={getSortedArticles().slice(24, 26)} />
+        <Row3 articles={getSortedArticles().slice(26, 29)} />
+        <Row2 articles={getSortedArticles().slice(29, 31)} />
+        <Row3 articles={getSortedArticles().slice(31, 34)} />
       </Show>
-
-      <Slider title={t('Top month articles')} articles={getTopMonthArticles()} />
-
-      <Row2 articles={getSortedArticles().slice(10, 12)} />
-
-      <RowShort articles={getSortedArticles().slice(12, 16)} />
-
-      <Row1 article={getSortedArticles().slice(15, 16)[0]} />
-      <Row3 articles={getSortedArticles().slice(17, 20)} />
-      <Row3 articles={getTopCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
-
-      {randomLayout()}
-
-      <Slider title={t('Favorite')} articles={getTopArticles()} />
-
-      <Beside
-        beside={getSortedArticles().slice(19, 20)[0]}
-        title={t('Top topics')}
-        values={getTopTopics().slice(0, 5)}
-        wrapper={'topic'}
-        isTopicCompact={true}
-      />
-
-      <Row3 articles={getSortedArticles().slice(21, 24)} />
-
-      <Banner />
-
-      <Row2 articles={getSortedArticles().slice(24, 26)} />
-      <Row3 articles={getSortedArticles().slice(26, 29)} />
-      <Row2 articles={getSortedArticles().slice(29, 31)} />
-      <Row3 articles={getSortedArticles().slice(31, 34)} />
 
       <For each={getSortedArticles().slice(35)}>{(article) => <Row1 article={article} />}</For>
 

@@ -87,7 +87,7 @@ export const apiClient = {
     return response.data.recentPublished
   },
   getRandomTopics: async ({ amount }: { amount: number }) => {
-    log.debug('getRandomTopics')
+    // log.debug('getRandomTopics')
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
 
     return response.data.topicsRandom

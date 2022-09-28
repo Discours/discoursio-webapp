@@ -1,11 +1,14 @@
 import { HomeView } from '../Views/Home'
 import { MainLayout } from '../Layouts/MainLayout'
 import type { PageProps } from '../types'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('HomePage')
 
 export const HomePage = (props: PageProps) => {
   return (
     <MainLayout>
-      <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.articles || []} />
+      <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.articles} />
     </MainLayout>
   )
 }

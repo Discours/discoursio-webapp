@@ -5,6 +5,8 @@ import { getLogger } from '../../utils/logger'
 const log = getLogger('Row5')
 
 export const Row5 = (props: { articles: Shout[] }) => {
+  // log.debug(props.articles)
+
   return (
     <div class="floor floor--1">
       <div class="wide-container row">

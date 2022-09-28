@@ -1,87 +1,69 @@
-import { atom, computed, map, ReadableAtom } from 'nanostores'
 import type { Author, Shout, Topic } from '../../graphql/types.gen'
-import type { WritableAtom } from 'nanostores'
-import { useStore } from '@nanostores/solid'
 import { apiClient } from '../../utils/apiClient'
 import { addAuthorsByTopic } from './authors'
 import { addTopicsByAuthor } from './topics'
 import { byStat } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
-import { createSignal } from 'solid-js'
+import { createMemo, createSignal } from 'solid-js'
 
 const log = getLogger('articles store')
 
-let articleEntitiesStore: WritableAtom<{ [articleSlug: string]: Shout }>
-let articlesByAuthorsStore: ReadableAtom<{ [authorSlug: string]: Shout[] }>
-let articlesByLayoutStore: ReadableAtom<{ [layout: string]: Shout[] }>
-let articlesByTopicsStore: ReadableAtom<{ [topicSlug: string]: Shout[] }>
-let topViewedArticlesStore: ReadableAtom<Shout[]>
-let topCommentedArticlesStore: ReadableAtom<Shout[]>
+const [sortedArticles, setSortedArticles] = createSignal<Shout[]>([])
+const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})
 
-const [getSortedArticles, setSortedArticles] = createSignal<Shout[]>([])
+const [topArticles, setTopArticles] = createSignal<Shout[]>([])
+const [topMonthArticles, setTopMonthArticles] = createSignal<Shout[]>([])
 
-const topArticlesStore = atom<Shout[]>()
-const topMonthArticlesStore = atom<Shout[]>()
-
-const initStore = (initial?: Record<string, Shout>) => {
-  log.debug('initStore')
-  if (articleEntitiesStore) {
-    throw new Error('articles store already initialized')
-  }
-
-  articleEntitiesStore = map(initial)
-
-  articlesByAuthorsStore = computed(articleEntitiesStore, (articleEntities) => {
-    return Object.values(articleEntities).reduce((acc, article) => {
-      article.authors.forEach((author) => {
-        if (!acc[author.slug]) {
-          acc[author.slug] = []
-        }
-        acc[author.slug].push(article)
-      })
-
-      return acc
-    }, {} as { [authorSlug: string]: Shout[] })
-  })
-
-  articlesByTopicsStore = computed(articleEntitiesStore, (articleEntities) => {
-    return Object.values(articleEntities).reduce((acc, article) => {
-      article.topics.forEach((topic) => {
-        if (!acc[topic.slug]) {
-          acc[topic.slug] = []
-        }
-        acc[topic.slug].push(article)
-      })
-
-      return acc
-    }, {} as { [authorSlug: string]: Shout[] })
-  })
-
-  articlesByLayoutStore = computed(articleEntitiesStore, (articleEntities) => {
-    return Object.values(articleEntities).reduce((acc, article) => {
-      if (!acc[article.layout]) {
-        acc[article.layout] = []
+const articlesByAuthor = createMemo(() => {
+  return Object.values(articleEntities()).reduce((acc, article) => {
+    article.authors.forEach((author) => {
+      if (!acc[author.slug]) {
+        acc[author.slug] = []
       }
+      acc[author.slug].push(article)
+    })
 
-      acc[article.layout].push(article)
+    return acc
+  }, {} as { [authorSlug: string]: Shout[] })
+})
 
-      return acc
-    }, {} as { [layout: string]: Shout[] })
-  })
+const articlesByTopic = createMemo(() => {
+  return Object.values(articleEntities()).reduce((acc, article) => {
+    article.topics.forEach((topic) => {
+      if (!acc[topic.slug]) {
+        acc[topic.slug] = []
+      }
+      acc[topic.slug].push(article)
+    })
 
-  topViewedArticlesStore = computed(articleEntitiesStore, (articleEntities) => {
-    const sortedArticles = Object.values(articleEntities)
-    sortedArticles.sort(byStat('viewed'))
-    return sortedArticles
-  })
+    return acc
+  }, {} as { [authorSlug: string]: Shout[] })
+})
 
-  topCommentedArticlesStore = computed(articleEntitiesStore, (articleEntities) => {
-    const sortedArticles = Object.values(articleEntities)
-    sortedArticles.sort(byStat('commented'))
-    return sortedArticles
-  })
-}
+const articlesByLayout = createMemo(() => {
+  return Object.values(articleEntities()).reduce((acc, article) => {
+    if (!acc[article.layout]) {
+      acc[article.layout] = []
+    }
+
+    acc[article.layout].push(article)
+
+    return acc
+  }, {} as { [layout: string]: Shout[] })
+})
+
+const topViewedArticles = createMemo(() => {
+  const result = Object.values(articleEntities())
+  result.sort(byStat('viewed'))
+  return result
+})
+
+const topCommentedArticles = createMemo(() => {
+  const result = Object.values(articleEntities())
+  result.sort(byStat('commented'))
+  return result
+})
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const addArticles = (...args: Shout[][]) => {
@@ -92,14 +74,12 @@ const addArticles = (...args: Shout[][]) => {
     return acc
   }, {} as { [articleSLug: string]: Shout })
 
-  if (!articleEntitiesStore) {
-    initStore(newArticleEntities)
-  } else {
-    articleEntitiesStore.set({
-      ...articleEntitiesStore.get(),
+  setArticleEntities((prevArticleEntities) => {
+    return {
+      ...prevArticleEntities,
       ...newArticleEntities
-    })
-  }
+    }
+  })
 
   const authorsByTopic = allArticles.reduce((acc, article) => {
     const { authors, topics } = article
@@ -173,13 +153,13 @@ export const loadPublishedArticles = async ({
 export const loadTopMonthArticles = async (): Promise<void> => {
   const articles = await apiClient.getTopMonthArticles()
   addArticles(articles)
-  topMonthArticlesStore.set(articles)
+  setTopMonthArticles(articles)
 }
 
 export const loadTopArticles = async (): Promise<void> => {
   const articles = await apiClient.getTopArticles()
   addArticles(articles)
-  topArticlesStore.set(articles)
+  setTopArticles(articles)
 }
 
 export const loadSearchResults = async ({
@@ -217,34 +197,21 @@ type InitialState = {
 }
 
 export const useArticlesStore = (initialState: InitialState = {}) => {
-  const sortedArticles = [...(initialState.sortedArticles || [])]
+  addArticles([...(initialState.sortedArticles || [])])
 
-  addArticles(sortedArticles)
-
-  if (sortedArticles) {
-    addSortedArticles(sortedArticles)
+  if (initialState.sortedArticles) {
+    setSortedArticles([...initialState.sortedArticles])
   }
 
-  const getArticleEntities = useStore(articleEntitiesStore)
-  const getTopArticles = useStore(topArticlesStore)
-  const getTopMonthArticles = useStore(topMonthArticlesStore)
-  const getArticlesByAuthor = useStore(articlesByAuthorsStore)
-  const getArticlesByTopic = useStore(articlesByTopicsStore)
-  const getArticlesByLayout = useStore(articlesByLayoutStore)
-  // TODO: get from server
-  const getTopViewedArticles = useStore(topViewedArticlesStore)
-  // TODO: get from server
-  const getTopCommentedArticles = useStore(topCommentedArticlesStore)
-
   return {
-    getArticleEntities,
-    getSortedArticles,
-    getArticlesByTopic,
-    getArticlesByAuthor,
-    getTopArticles,
-    getTopMonthArticles,
-    getTopViewedArticles,
-    getTopCommentedArticles,
-    getArticlesByLayout
+    articleEntities,
+    sortedArticles,
+    articlesByTopic,
+    articlesByAuthor,
+    topArticles,
+    topMonthArticles,
+    topViewedArticles,
+    topCommentedArticles,
+    articlesByLayout
   }
 }

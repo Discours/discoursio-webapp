@@ -18,17 +18,17 @@ export const ArticlePage = (props: PageProps) => {
     throw new Error('ts guard')
   }
 
-  const { getArticleEntities } = useArticlesStore({
+  const { articleEntities } = useArticlesStore({
     sortedArticles
   })
 
-  const article = createMemo<Shout>(() => getArticleEntities()[page.params.slug])
+  const article = createMemo<Shout>(() => articleEntities()[page.params.slug])
 
   onMount(() => {
     const slug = page.params.slug
-    const article = getArticleEntities()[slug]
+    const articleValue = articleEntities()[slug]
 
-    if (!article || !article.body) {
+    if (!articleValue || !articleValue.body) {
       loadArticle({ slug })
     }
   })

@@ -25,12 +25,12 @@ type AuthorPageSearchParams = {
 }
 
 export const AuthorView = (props: AuthorProps) => {
-  const { getSortedArticles: articles } = useArticlesStore({
+  const { sortedArticles } = useArticlesStore({
     sortedArticles: props.authorArticles
   })
-  const { getAuthorEntities: authors } = useAuthorsStore({ authors: [props.author] })
+  const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
-  const author = createMemo(() => authors()[props.author.slug])
+  const author = createMemo(() => authorEntities()[props.author.slug])
   const { getSearchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
   //const slug = createMemo(() => author().slug)
@@ -90,7 +90,7 @@ export const AuthorView = (props: AuthorProps) => {
         <div class="floor">
           <h3 class="col-12">{title()}</h3>
           <div class="row">
-            <Show when={articles()?.length > 0}>
+            <Show when={sortedArticles().length > 0}>
               {/*FIXME*/}
               {/*<Beside*/}
               {/*  title={t('Topics which supported by author')}*/}
@@ -99,10 +99,10 @@ export const AuthorView = (props: AuthorProps) => {
               {/*  wrapper={'topic'}*/}
               {/*  topicShortDescription={true}*/}
               {/*/>*/}
-              <Row3 articles={articles().slice(1, 4)} />
-              <Row2 articles={articles().slice(4, 6)} />
-              <Row3 articles={articles().slice(10, 13)} />
-              <Row3 articles={articles().slice(13, 16)} />
+              <Row3 articles={sortedArticles().slice(1, 4)} />
+              <Row2 articles={sortedArticles().slice(4, 6)} />
+              <Row3 articles={sortedArticles().slice(10, 13)} />
+              <Row3 articles={sortedArticles().slice(13, 16)} />
             </Show>
           </div>
         </div>

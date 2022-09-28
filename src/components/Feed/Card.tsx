@@ -72,113 +72,109 @@ export const ArticleCard = (props: ArticleCardProps) => {
         'shout-card--feed': props.settings?.isFeedMode
       }}
     >
-      <Show when={mainTopic}>
-        <Show when={!props.settings?.noimage && cover}>
-          <div class="shout-card__cover-container">
-            <div class="shout-card__cover">
-              <img src={cover || ''} alt={title || ''} loading="lazy" />
-            </div>
+      <Show when={!props.settings?.noimage && cover}>
+        <div class="shout-card__cover-container">
+          <div class="shout-card__cover">
+            <img src={cover || ''} alt={title || ''} loading="lazy" />
+          </div>
+        </div>
+      </Show>
+
+      <div class="shout-card__content">
+        <Show when={layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)}>
+          <div class="shout-card__type">
+            <a href={`/topic/${mainTopic.slug}`}>
+              <Icon name={layout} />
+            </a>
           </div>
         </Show>
 
-        <div class="shout-card__content">
-          <Show
-            when={layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)}
-          >
-            <div class="shout-card__type">
-              <a href={`/topic/${mainTopic.slug}`}>
-                <Icon name={layout} />
-              </a>
-            </div>
-          </Show>
-
-          <Show when={!props.settings?.isGroup}>
-            <div class="shout__topic">
-              <a href={`/topic/${mainTopic.slug}`}>
-                {locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic.slug.replace('-', ' ')}
-              </a>
-            </div>
-          </Show>
-
-          <div class="shout-card__titles-container">
-            <a href={`/${slug || ''}`} onClick={handleClientRouteLinkClick}>
-              <div class="shout-card__title">
-                <span class="shout-card__link-container">{title}</span>
-              </div>
-
-              <Show when={!props.settings?.nosubtitle && subtitle}>
-                <div class="shout-card__subtitle">
-                  <span class="shout-card__link-container">{subtitle}</span>
-                </div>
-              </Show>
+        <Show when={!props.settings?.isGroup}>
+          <div class="shout__topic">
+            <a href={`/topic/${mainTopic.slug}`}>
+              {locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic.slug.replace('-', ' ')}
             </a>
           </div>
+        </Show>
 
-          <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
-            <div class="shout__details">
-              <Show when={!props.settings?.noauthor}>
-                <div class="shout__author">
-                  <For each={authors}>
-                    {(author, index) => {
-                      const name =
-                        author.name === 'Дискурс' && locale() !== 'ru'
-                          ? 'Discours'
-                          : translit(author.name || '', locale() || 'ru')
-
-                      return (
-                        <>
-                          <Show when={index() > 0}>, </Show>
-                          <a href={`/author/${author.slug}`}>{name}</a>
-                        </>
-                      )
-                    }}
-                  </For>
-                </div>
-              </Show>
-
-              <Show when={!props.settings?.nodate}>
-                <div class="shout__date">{formattedDate()}</div>
-              </Show>
+        <div class="shout-card__titles-container">
+          <a href={`/${slug || ''}`} onClick={handleClientRouteLinkClick}>
+            <div class="shout-card__title">
+              <span class="shout-card__link-container">{title}</span>
             </div>
-          </Show>
 
-          <Show when={props.settings?.isFeedMode}>
-            <section class="shout-card__details">
-              <div class="shout-card__details-content">
-                <div class="shout-card__details-item rating">
-                  <button class="rating__control">&minus;</button>
-                  <span class="rating__value">{stat?.rating || ''}</span>
-                  <button class="rating__control">+</button>
-                </div>
-                <div class="shout-card__details-item shout-card__comments">
-                  <Icon name="eye" />
-                  {stat?.viewed}
-                </div>
-                <div class="shout-card__details-item shout-card__comments">
-                  <a href={`/${slug + '#comments' || ''}`}>
-                    <Icon name="comment" />
-                    {stat?.commented || ''}
-                  </a>
-                </div>
+            <Show when={!props.settings?.nosubtitle && subtitle}>
+              <div class="shout-card__subtitle">
+                <span class="shout-card__link-container">{subtitle}</span>
+              </div>
+            </Show>
+          </a>
+        </div>
 
-                <div class="shout-card__details-item">
-                  <button>
-                    <Icon name="bookmark" />
-                  </button>
-                </div>
+        <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
+          <div class="shout__details">
+            <Show when={!props.settings?.noauthor}>
+              <div class="shout__author">
+                <For each={authors}>
+                  {(author, index) => {
+                    const name =
+                      author.name === 'Дискурс' && locale() !== 'ru'
+                        ? 'Discours'
+                        : translit(author.name || '', locale() || 'ru')
 
-                <div class="shout-card__details-item">
-                  <button>
-                    <Icon name="ellipsis" />
-                  </button>
-                </div>
+                    return (
+                      <>
+                        <Show when={index() > 0}>, </Show>
+                        <a href={`/author/${author.slug}`}>{name}</a>
+                      </>
+                    )
+                  }}
+                </For>
+              </div>
+            </Show>
+
+            <Show when={!props.settings?.nodate}>
+              <div class="shout__date">{formattedDate()}</div>
+            </Show>
+          </div>
+        </Show>
+
+        <Show when={props.settings?.isFeedMode}>
+          <section class="shout-card__details">
+            <div class="shout-card__details-content">
+              <div class="shout-card__details-item rating">
+                <button class="rating__control">&minus;</button>
+                <span class="rating__value">{stat?.rating || ''}</span>
+                <button class="rating__control">+</button>
+              </div>
+              <div class="shout-card__details-item shout-card__comments">
+                <Icon name="eye" />
+                {stat?.viewed}
+              </div>
+              <div class="shout-card__details-item shout-card__comments">
+                <a href={`/${slug + '#comments' || ''}`}>
+                  <Icon name="comment" />
+                  {stat?.commented || ''}
+                </a>
               </div>
 
-              <button class="button--light shout-card__edit-control">{t('Collaborate')}</button>
-            </section>
-          </Show>
-        </div>
-      </Show>
+              <div class="shout-card__details-item">
+                <button>
+                  <Icon name="bookmark" />
+                </button>
+              </div>
+
+              <div class="shout-card__details-item">
+                <button>
+                  <Icon name="ellipsis" />
+                </button>
+              </div>
+            </div>
+
+            <button class="button--light shout-card__edit-control">{t('Collaborate')}</button>
+          </section>
+        </Show>
+      </div>
     </section>
   )
 }

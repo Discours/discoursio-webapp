@@ -16,12 +16,12 @@ type FeedSidebarProps = {
 export const FeedSidebar = (props: FeedSidebarProps) => {
   const { getSeen: seen } = useSeenStore()
   const auth = useStore(session)
-  const { getSortedAuthors: authors } = useAuthorsStore({ authors: props.authors })
-  const { getArticlesByTopic } = useArticlesStore()
-  const { getTopicEntities } = useTopicsStore()
+  const { authorEntities } = useAuthorsStore({ authors: props.authors })
+  const { articlesByTopic } = useArticlesStore()
+  const { topicEntities } = useTopicsStore()
 
   const checkTopicIsSeen = (topicSlug: string) => {
-    return getArticlesByTopic()[topicSlug].every((article) => Boolean(seen()[article.slug]))
+    return articlesByTopic()[topicSlug].every((article) => Boolean(seen()[article.slug]))
   }
 
   const checkAuthorIsSeen = (authorSlug: string) => {
@@ -69,7 +69,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
             <li>
               <a href={`/author/${authorSlug}`} classList={{ unread: checkAuthorIsSeen(authorSlug) }}>
                 <small>@{authorSlug}</small>
-                {authors()[authorSlug].name}
+                {authorEntities()[authorSlug].name}
               </a>
             </li>
           )}
@@ -79,7 +79,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
           {(topicSlug) => (
             <li>
               <a href={`/author/${topicSlug}`} classList={{ unread: checkTopicIsSeen(topicSlug) }}>
-                {getTopicEntities()[topicSlug]?.title}
+                {topicEntities()[topicSlug]?.title}
               </a>
             </li>
           )}

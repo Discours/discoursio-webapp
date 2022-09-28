@@ -1,66 +1,51 @@
+import { createMemo, createSignal } from 'solid-js'
 import { apiClient } from '../../utils/apiClient'
-import { map, MapStore, ReadableAtom, atom, computed } from 'nanostores'
 import type { Topic } from '../../graphql/types.gen'
-import { useStore } from '@nanostores/solid'
 import { byCreated, byTopicStatDesc } from '../../utils/sortby'
 import { getLogger } from '../../utils/logger'
-import { createSignal } from 'solid-js'
 
 const log = getLogger('topics store')
 
 export type TopicsSortBy = 'created' | 'title' | 'authors' | 'shouts'
 
-const sortAllByStore = atom<TopicsSortBy>('shouts')
+const [sortAllBy, setSortAllBy] = createSignal<TopicsSortBy>('shouts')
 
-let topicEntitiesStore: MapStore<Record<string, Topic>>
-let sortedTopicsStore: ReadableAtom<Topic[]>
-let topTopicsStore: ReadableAtom<Topic[]>
+export { setSortAllBy }
 
-const [getRandomTopics, setRandomTopics] = createSignal<Topic[]>()
-let topicsByAuthorStore: MapStore<Record<string, Topic[]>>
+const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
+const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
+const [topicsByAuthor, setTopicByAuthor] = createSignal<{ [authorSlug: string]: Topic[] }>({})
 
-const initStore = (initial?: { [topicSlug: string]: Topic }) => {
-  if (topicEntitiesStore) {
-    return
-  }
+const sortedTopics = createMemo(() => {
+  const topics = Object.values(topicEntities)
+  const sortAllByValue = sortAllBy()
 
-  topicEntitiesStore = map<Record<string, Topic>>(initial)
-
-  sortedTopicsStore = computed([topicEntitiesStore, sortAllByStore], (topicEntities, sortBy) => {
-    const topics = Object.values(topicEntities)
-    switch (sortBy) {
-      case 'created': {
-        // log.debug('sorted by created')
-        topics.sort(byCreated)
-        break
-      }
-      case 'shouts':
-      case 'authors':
-        // log.debug(`sorted by ${sortBy}`)
-        topics.sort(byTopicStatDesc(sortBy))
-        break
-      case 'title':
-        // log.debug('sorted by title')
-        topics.sort((a, b) => a.title.localeCompare(b.title))
-        break
-      default:
-        log.error(`Unknown sort: ${sortBy}`)
+  switch (sortAllByValue) {
+    case 'created': {
+      // log.debug('sorted by created')
+      topics.sort(byCreated)
+      break
     }
-    return topics
-  })
-
-  topTopicsStore = computed(topicEntitiesStore, (topicEntities) => {
-    const topics = Object.values(topicEntities)
-    topics.sort(byTopicStatDesc('shouts'))
-    return topics
-  })
-}
-
-export const setSortAllTopicsBy = (sortBy: TopicsSortBy) => {
-  if (sortAllByStore.get() !== sortBy) {
-    sortAllByStore.set(sortBy)
+    case 'shouts':
+    case 'authors':
+      // log.debug(`sorted by ${sortBy}`)
+      topics.sort(byTopicStatDesc(sortAllByValue))
+      break
+    case 'title':
+      // log.debug('sorted by title')
+      topics.sort((a, b) => a.title.localeCompare(b.title))
+      break
+    default:
+      log.error(`Unknown sort: ${sortAllByValue}`)
   }
-}
+  return topics
+})
+
+const topTopics = createMemo(() => {
+  const topics = Object.values(topicEntities())
+  topics.sort(byTopicStatDesc('shouts'))
+  return topics
+})
 
 const addTopics = (...args: Topic[][]) => {
   const allTopics = args.flatMap((topics) => topics || [])
@@ -70,24 +55,20 @@ const addTopics = (...args: Topic[][]) => {
     return acc
   }, {} as Record<string, Topic>)
 
-  if (!topicEntitiesStore) {
-    initStore(newTopicEntities)
-  } else {
-    topicEntitiesStore.set({
-      ...topicEntitiesStore.get(),
+  setTopicEntities((prevTopicEntities) => {
+    return {
+      ...prevTopicEntities,
       ...newTopicEntities
-    })
-  }
+    }
+  })
 }
 
-export const addTopicsByAuthor = (topicsByAuthors: { [authorSlug: string]: Topic[] }) => {
-  const allTopics = Object.values(topicsByAuthors).flat()
+export const addTopicsByAuthor = (newTopicsByAuthors: { [authorSlug: string]: Topic[] }) => {
+  const allTopics = Object.values(newTopicsByAuthors).flat()
   addTopics(allTopics)
 
-  if (!topicsByAuthorStore) {
-    topicsByAuthorStore = map<Record<string, Topic[]>>(topicsByAuthors)
-  } else {
-    const newState = Object.entries(topicsByAuthors).reduce((acc, [authorSlug, topics]) => {
+  setTopicByAuthor((prevTopicsByAuthor) => {
+    return Object.entries(newTopicsByAuthors).reduce((acc, [authorSlug, topics]) => {
       if (!acc[authorSlug]) {
         acc[authorSlug] = []
       }
@@ -99,10 +80,8 @@ export const addTopicsByAuthor = (topicsByAuthors: { [authorSlug: string]: Topic
       })
 
       return acc
-    }, topicsByAuthorStore.get())
-
-    topicsByAuthorStore.set(newState)
-  }
+    }, prevTopicsByAuthor)
+  })
 }
 
 export const loadAllTopics = async (): Promise<void> => {
@@ -117,24 +96,15 @@ type InitialState = {
 }
 
 export const useTopicsStore = (initialState: InitialState = {}) => {
-  const topics = [...(initialState.topics || [])]
-  const randomTopics = [...(initialState.randomTopics || [])]
-
   if (initialState.sortBy) {
-    sortAllByStore.set(initialState.sortBy)
+    setSortAllBy(initialState.sortBy)
   }
 
-  addTopics(topics, randomTopics)
+  addTopics(initialState.topics, initialState.randomTopics)
 
-  if (randomTopics) {
-    setRandomTopics(randomTopics)
+  if (initialState.randomTopics) {
+    setRandomTopics(initialState.randomTopics)
   }
 
-  const getTopicEntities = useStore(topicEntitiesStore)
-
-  const getSortedTopics = useStore(sortedTopicsStore)
-
-  const getTopTopics = useStore(topTopicsStore)
-
-  return { getTopicEntities, getSortedTopics, getRandomTopics, getTopTopics }
+  return { topicEntities, sortedTopics, randomTopics, topTopics, topicsByAuthor }
 }

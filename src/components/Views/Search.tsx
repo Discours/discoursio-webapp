@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const SearchView = (props: Props) => {
-  const { getSortedArticles } = useArticlesStore({ sortedArticles: props.results })
+  const { sortedArticles } = useArticlesStore({ sortedArticles: props.results })
   const [getQuery, setQuery] = createSignal(props.query)
 
   const { getSearchParams } = useRouter<SearchPageSearchParams>()
@@ -66,12 +66,12 @@ export const SearchView = (props: Props) => {
         </li>
       </ul>
 
-      <Show when={getSortedArticles().length > 0}>
+      <Show when={sortedArticles().length > 0}>
         <h3>{t('Publications')}</h3>
 
         <div class="floor">
           <div class="row">
-            <For each={getSortedArticles()}>
+            <For each={sortedArticles()}>
               {(article) => (
                 <div class="col-md-3">
                   <ArticleCard article={article} />

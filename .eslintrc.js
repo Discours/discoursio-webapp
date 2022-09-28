@@ -77,7 +77,8 @@ module.exports = {
 
     eqeqeq: 'error',
     'no-param-reassign': 'error',
-    'no-nested-ternary': 'error'
+    'no-nested-ternary': 'error',
+    'no-shadow': 'error'
   },
   settings: {
     'import/resolver': {

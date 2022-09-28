@@ -1,50 +1,36 @@
 import { apiClient } from '../../utils/apiClient'
-import type { ReadableAtom, WritableAtom } from 'nanostores'
-import { atom, computed } from 'nanostores'
 import type { Author } from '../../graphql/types.gen'
-import { useStore } from '@nanostores/solid'
 import { byCreated } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
+import { Accessor, createMemo, createSignal } from 'solid-js'
+import type { Signal } from 'solid-js'
 
 const log = getLogger('authors store')
 
 export type AuthorsSortBy = 'created' | 'name'
 
-const sortAllByStore = atom<AuthorsSortBy>('created')
+const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('created')
 
-let authorEntitiesStore: WritableAtom<{ [authorSlug: string]: Author }>
-let authorsByTopicStore: WritableAtom<{ [topicSlug: string]: Author[] }>
-let sortedAuthorsStore: ReadableAtom<Author[]>
+const [authorEntities, setAuthorEntities] = createSignal<{ [authorSlug: string]: Author }>({})
+const [authorsByTopic, setAuthorsByTopic] = createSignal<{ [topicSlug: string]: Author[] }>({})
 
-const initStore = (initial: { [authorSlug: string]: Author }) => {
-  if (authorEntitiesStore) {
-    return
-  }
-
-  authorEntitiesStore = atom(initial)
-
-  sortedAuthorsStore = computed([authorEntitiesStore, sortAllByStore], (authorEntities, sortBy) => {
-    const authors = Object.values(authorEntities)
-    switch (sortBy) {
-      case 'created': {
-        // log.debug('sorted by created')
-        authors.sort(byCreated)
-        break
-      }
-      case 'name': {
-        // log.debug('sorted by name')
-        authors.sort((a, b) => a.name.localeCompare(b.name))
-        break
-      }
+const sortedAuthors = createMemo(() => {
+  const authors = Object.values(authorEntities())
+  switch (sortAllBy()) {
+    case 'created': {
+      // log.debug('sorted by created')
+      authors.sort(byCreated)
+      break
     }
-    return authors
-  })
-}
-
-export const setSortAllBy = (sortBy: AuthorsSortBy) => {
-  sortAllByStore.set(sortBy)
-}
+    case 'name': {
+      // log.debug('sorted by name')
+      authors.sort((a, b) => a.name.localeCompare(b.name))
+      break
+    }
+  }
+  return authors
+})
 
 const addAuthors = (authors: Author[]) => {
   const newAuthorEntities = authors.reduce((acc, author) => {
@@ -52,24 +38,20 @@ const addAuthors = (authors: Author[]) => {
     return acc
   }, {} as Record<string, Author>)
 
-  if (!authorEntitiesStore) {
-    initStore(newAuthorEntities)
-  } else {
-    authorEntitiesStore.set({
-      ...authorEntitiesStore.get(),
+  setAuthorEntities((prevAuthorEntities) => {
+    return {
+      ...prevAuthorEntities,
       ...newAuthorEntities
-    })
-  }
+    }
+  })
 }
 
-export const addAuthorsByTopic = (authorsByTopic: { [topicSlug: string]: Author[] }) => {
-  const allAuthors = Object.values(authorsByTopic).flat()
+export const addAuthorsByTopic = (newAuthorsByTopic: { [topicSlug: string]: Author[] }) => {
+  const allAuthors = Object.values(newAuthorsByTopic).flat()
   addAuthors(allAuthors)
 
-  if (!authorsByTopicStore) {
-    authorsByTopicStore = atom<{ [topicSlug: string]: Author[] }>(authorsByTopic)
-  } else {
-    const newState = Object.entries(authorsByTopic).reduce((acc, [topicSlug, authors]) => {
+  setAuthorsByTopic((prevAuthorsByTopic) => {
+    return Object.entries(newAuthorsByTopic).reduce((acc, [topicSlug, authors]) => {
       if (!acc[topicSlug]) {
         acc[topicSlug] = []
       }
@@ -81,10 +63,8 @@ export const addAuthorsByTopic = (authorsByTopic: { [topicSlug: string]: Author[
       })
 
       return acc
-    }, authorsByTopicStore.get())
-
-    authorsByTopicStore.set(newState)
-  }
+    }, prevAuthorsByTopic)
+  })
 }
 
 export const loadAllAuthors = async (): Promise<void> => {
@@ -97,12 +77,7 @@ type InitialState = {
 }
 
 export const useAuthorsStore = (initialState: InitialState = {}) => {
-  const authors = [...(initialState.authors || [])]
-  addAuthors(authors)
+  addAuthors([...(initialState.authors || [])])
 
-  const getAuthorEntities = useStore(authorEntitiesStore)
-  const getSortedAuthors = useStore(sortedAuthorsStore)
-  const getAuthorsByTopic = useStore(authorsByTopicStore)
-
-  return { getAuthorEntities, getSortedAuthors, getAuthorsByTopic }
+  return { authorEntities, sortedAuthors, authorsByTopic }
 }

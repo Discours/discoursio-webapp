@@ -75,6 +75,7 @@ export const Header = (props: Props) => {
       setIsScrollingBottom(window.scrollY > scrollTop)
       setIsScrolled(window.scrollY > 0)
       scrollTop = window.scrollY
+      window.console.log(getIsScrollingBottom() && getIsScrolled())
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -88,8 +89,8 @@ export const Header = (props: Props) => {
       class={styles.mainHeader}
       classList={{
         [styles.headerFixed]: props.isHeaderFixed,
-        ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
-        ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
+        [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
+        [styles.headerScrolledBottom]: getIsScrollingBottom() && getIsScrolled()
       }}
     >
       <Modal name="auth">

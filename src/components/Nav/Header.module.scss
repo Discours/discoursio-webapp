@@ -138,10 +138,6 @@
     @include media-breakpoint-down(sm) {
       padding: divide($container-padding-x, 2);
     }
-
-    .header--scrolled-bottom & {
-      opacity: 0;
-    }
   }
 
   &.fixed {
@@ -168,6 +164,10 @@
     cursor: default;
     pointer-events: none;
   }
+}
+
+.headerScrolledBottom .mainNavigation {
+  opacity: 0;
 }
 
 .burgerContainer {

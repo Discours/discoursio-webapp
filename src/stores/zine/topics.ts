@@ -3,6 +3,7 @@ import { apiClient } from '../../utils/apiClient'
 import type { Topic } from '../../graphql/types.gen'
 import { byCreated, byTopicStatDesc } from '../../utils/sortby'
 import { getLogger } from '../../utils/logger'
+import { createLazyMemo } from '@solid-primitives/memo'
 
 const log = getLogger('topics store')
 
@@ -16,8 +17,8 @@ const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: To
 const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
 const [topicsByAuthor, setTopicByAuthor] = createSignal<{ [authorSlug: string]: Topic[] }>({})
 
-const sortedTopics = createMemo(() => {
-  const topics = Object.values(topicEntities)
+const sortedTopics = createLazyMemo<Topic[]>(() => {
+  const topics = Object.values(topicEntities())
   const sortAllByValue = sortAllBy()
 
   switch (sortAllByValue) {
@@ -38,6 +39,7 @@ const sortedTopics = createMemo(() => {
     default:
       log.error(`Unknown sort: ${sortAllByValue}`)
   }
+
   return topics
 })
 

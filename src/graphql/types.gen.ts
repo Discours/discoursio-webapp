@@ -324,11 +324,11 @@ export type Query = {
   getUserRoles: Array<Maybe<Role>>
   getUsersBySlugs: Array<Maybe<User>>
   isEmailUsed: Scalars['Boolean']
-  myCandidates: Array<Maybe<Shout>>
   reactionsByAuthor: Array<Maybe<Reaction>>
   reactionsByShout: Array<Maybe<Reaction>>
   reactionsForShouts: Array<Maybe<Reaction>>
   recentAll: Array<Maybe<Shout>>
+  recentCandidates: Array<Maybe<Shout>>
   recentCommented: Array<Maybe<Shout>>
   recentPublished: Array<Maybe<Shout>>
   recentReacted: Array<Maybe<Shout>>
@@ -397,11 +397,6 @@ export type QueryIsEmailUsedArgs = {
   email: Scalars['String']
 }
 
-export type QueryMyCandidatesArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-}
-
 export type QueryReactionsByAuthorArgs = {
   limit: Scalars['Int']
   offset: Scalars['Int']
@@ -421,6 +416,11 @@ export type QueryReactionsForShoutsArgs = {
 }
 
 export type QueryRecentAllArgs = {
+  limit: Scalars['Int']
+  offset: Scalars['Int']
+}
+
+export type QueryRecentCandidatesArgs = {
   limit: Scalars['Int']
   offset: Scalars['Int']
 }

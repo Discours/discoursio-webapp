@@ -8,22 +8,26 @@ import { TopicCard } from '../Topic/Card'
 import { session } from '../../stores/auth'
 import { useStore } from '@nanostores/solid'
 import '../../styles/AllTopics.scss'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('AllTopicsView')
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
 }
 
-type Props = {
+type AllTopicsViewProps = {
   topics: Topic[]
 }
 
-export const AllTopicsView = (props: Props) => {
+export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { getSearchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
     sortBy: getSearchParams().by || 'shouts'
   })
+
   const auth = useStore(session)
 
   createEffect(() => {

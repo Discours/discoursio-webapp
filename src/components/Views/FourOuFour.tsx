@@ -1,7 +1,7 @@
 import { t } from '../../utils/intl'
 import { Icon } from '../Nav/Icon'
 import styles from '../../styles/FourOuFour.module.scss'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 export const FourOuFourView = (_props) => {
   return (

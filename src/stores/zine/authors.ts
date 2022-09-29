@@ -3,8 +3,8 @@ import type { Author } from '../../graphql/types.gen'
 import { byCreated } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
-import { Accessor, createMemo, createSignal } from 'solid-js'
-import type { Signal } from 'solid-js'
+import { createSignal } from 'solid-js'
+import { createLazyMemo } from '@solid-primitives/memo'
 
 const log = getLogger('authors store')
 
@@ -15,7 +15,7 @@ const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('created')
 const [authorEntities, setAuthorEntities] = createSignal<{ [authorSlug: string]: Author }>({})
 const [authorsByTopic, setAuthorsByTopic] = createSignal<{ [topicSlug: string]: Author[] }>({})
 
-const sortedAuthors = createMemo(() => {
+const sortedAuthors = createLazyMemo(() => {
   const authors = Object.values(authorEntities())
   switch (sortAllBy()) {
     case 'created': {

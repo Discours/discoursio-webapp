@@ -1,16 +1,8 @@
-.main-header {
-  position: absolute;
-}
-
-footer {
-  display: none;
-}
-
 .main-logo {
   height: 80px !important;
 }
 
-main {
+.main-content {
   padding-bottom: 0;
   padding-top: 0 !important;
 }
@@ -23,7 +15,7 @@ main {
 .errorPage {
   position: relative;
   top: 35%;
-  transform: translateY(-43%);
+  transform: translateY(-45%);
 
   .image-link:hover {
     background: none;

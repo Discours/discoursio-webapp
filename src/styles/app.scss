@@ -26,7 +26,6 @@ html {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
-  scroll-behavior: smooth;
 }
 
 body {
@@ -535,6 +534,10 @@ figcaption {
   flex: 1 100%;
   padding-top: 100px;
   transition: all 1s ease;
+}
+
+.main-content--no-padding {
+  padding-top: 0;
 }
 
 .container {

@@ -3,21 +3,27 @@ import { Header } from '../Nav/Header'
 import { Footer } from '../Discours/Footer'
 
 import '../../styles/app.scss'
+import { Show } from 'solid-js'
 
-type Props = {
+type MainLayoutProps = {
   headerTitle?: string
   children: JSX.Element
   isHeaderFixed?: boolean
+  hideFooter?: boolean
 }
 
-export const MainLayout = (props: Props) => {
+export const MainLayout = (props: MainLayoutProps) => {
   const isHeaderFixed = props.isHeaderFixed !== undefined ? props.isHeaderFixed : true
 
   return (
     <>
       <Header title={props.headerTitle} isHeaderFixed={isHeaderFixed} />
-      <main class="main-content">{props.children}</main>
-      <Footer />
+      <main class="main-content" classList={{ 'main-content--no-padding': !isHeaderFixed }}>
+        {props.children}
+      </main>
+      <Show when={props.hideFooter !== true}>
+        <Footer />
+      </Show>
     </>
   )
 }

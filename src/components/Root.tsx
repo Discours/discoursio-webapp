@@ -2,7 +2,7 @@
 // import 'solid-devtools'
 
 import { setLocale } from '../stores/ui'
-import { Component, createEffect, createMemo, lazy } from 'solid-js'
+import { Component, createEffect, createMemo } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
 import { Dynamic, isServer } from 'solid-js/web'
 import { getLogger } from '../utils/logger'

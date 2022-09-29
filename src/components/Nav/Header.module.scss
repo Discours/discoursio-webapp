@@ -1,6 +1,7 @@
 .mainHeader {
   background: #fff;
   margin-bottom: 2.2rem;
+  position: absolute;
   width: 100%;
   z-index: 10;
 
@@ -9,6 +10,12 @@
 
     @include media-breakpoint-down(sm) {
       padding: 0 divide($container-padding-x, 2);
+    }
+  }
+
+  a:hover {
+    .icon {
+      filter: invert(1);
     }
   }
 }
@@ -63,6 +70,19 @@
     height: 80px;
   }
 
+  img {
+    height: 32px;
+    object-fit: contain;
+    object-position: left;
+    transition: height 0.2s;
+    vertical-align: middle;
+    width: 100px;
+
+    @include media-breakpoint-up(lg) {
+      width: 175px;
+    }
+  }
+
   a {
     border: none;
     color: #000;
@@ -70,19 +90,6 @@
     &:hover {
       background: none;
     }
-  }
-}
-
-.searchIcon {
-  height: 32px;
-  object-fit: contain;
-  object-position: left;
-  transition: height 0.2s;
-  vertical-align: middle;
-  width: 100px;
-
-  @include media-breakpoint-up(lg) {
-    width: 175px;
   }
 }
 
@@ -268,6 +275,7 @@
     display: inline-block;
     height: 1em;
     margin-right: 0.3em;
+    transition: filter 0.3s;
     vertical-align: middle;
     width: 1em;
   }

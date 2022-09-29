@@ -6,6 +6,7 @@ import { byStat } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
 import { createMemo, createSignal } from 'solid-js'
+import { createLazyMemo } from '@solid-primitives/memo'
 
 const log = getLogger('articles store')
 
@@ -15,7 +16,7 @@ const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: strin
 const [topArticles, setTopArticles] = createSignal<Shout[]>([])
 const [topMonthArticles, setTopMonthArticles] = createSignal<Shout[]>([])
 
-const articlesByAuthor = createMemo(() => {
+const articlesByAuthor = createLazyMemo(() => {
   return Object.values(articleEntities()).reduce((acc, article) => {
     article.authors.forEach((author) => {
       if (!acc[author.slug]) {
@@ -28,7 +29,7 @@ const articlesByAuthor = createMemo(() => {
   }, {} as { [authorSlug: string]: Shout[] })
 })
 
-const articlesByTopic = createMemo(() => {
+const articlesByTopic = createLazyMemo(() => {
   return Object.values(articleEntities()).reduce((acc, article) => {
     article.topics.forEach((topic) => {
       if (!acc[topic.slug]) {
@@ -41,7 +42,7 @@ const articlesByTopic = createMemo(() => {
   }, {} as { [authorSlug: string]: Shout[] })
 })
 
-const articlesByLayout = createMemo(() => {
+const articlesByLayout = createLazyMemo(() => {
   return Object.values(articleEntities()).reduce((acc, article) => {
     if (!acc[article.layout]) {
       acc[article.layout] = []
@@ -53,13 +54,13 @@ const articlesByLayout = createMemo(() => {
   }, {} as { [layout: string]: Shout[] })
 })
 
-const topViewedArticles = createMemo(() => {
+const topViewedArticles = createLazyMemo(() => {
   const result = Object.values(articleEntities())
   result.sort(byStat('viewed'))
   return result
 })
 
-const topCommentedArticles = createMemo(() => {
+const topCommentedArticles = createLazyMemo(() => {
   const result = Object.values(articleEntities())
   result.sort(byStat('commented'))
   return result

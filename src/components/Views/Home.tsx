@@ -23,6 +23,7 @@ import {
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
+import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 
 const log = getLogger('home view')
 
@@ -30,9 +31,9 @@ type HomeProps = {
   randomTopics: Topic[]
   recentPublishedArticles: Shout[]
 }
-
-const CLIENT_LOAD_ARTICLES_COUNT = 30
-const LOAD_MORE_ARTICLES_COUNT = 30
+const PRERENDERED_ARTICLES_COUNT = 5
+const CLIENT_LOAD_ARTICLES_COUNT = 29
+const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + Row 2 + Row3
 
 export const HomeView = (props: HomeProps) => {
   const {
@@ -54,7 +55,9 @@ export const HomeView = (props: HomeProps) => {
   onMount(() => {
     loadTopArticles()
     loadTopMonthArticles()
-    loadPublishedArticles({ limit: CLIENT_LOAD_ARTICLES_COUNT, offset: sortedArticles().length })
+    if (sortedArticles().length < PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT) {
+      loadPublishedArticles({ limit: CLIENT_LOAD_ARTICLES_COUNT, offset: sortedArticles().length })
+    }
   })
 
   const randomLayout = createMemo(() => {
@@ -80,9 +83,24 @@ export const HomeView = (props: HomeProps) => {
     )
   })
 
-  const loadMore = () => {
-    loadPublishedArticles({ limit: LOAD_MORE_ARTICLES_COUNT, offset: sortedArticles().length })
+  const loadMore = async () => {
+    saveScrollPosition()
+    await loadPublishedArticles({ limit: LOAD_MORE_PAGE_SIZE, offset: sortedArticles().length })
+    restoreScrollPosition()
   }
+
+  const pages = createMemo<Shout[][]>(() => {
+    return sortedArticles()
+      .slice(PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT)
+      .reduce((acc, article, index) => {
+        if (index % LOAD_MORE_PAGE_SIZE === 0) {
+          acc.push([])
+        }
+
+        acc[acc.length - 1].push(article)
+        return acc
+      }, [] as Shout[][])
+  })
 
   return (
     <Show when={locale()}>
@@ -102,15 +120,12 @@ export const HomeView = (props: HomeProps) => {
 
         <Row3 articles={sortedArticles().slice(6, 9)} />
 
-        {/*FIXME: ?*/}
-        <Show when={topAuthors().length === 5}>
-          <Beside
-            beside={sortedArticles().slice(8, 9)[0]}
-            title={t('Top authors')}
-            values={topAuthors()}
-            wrapper={'author'}
-          />
-        </Show>
+        <Beside
+          beside={sortedArticles()[9]}
+          title={t('Top authors')}
+          values={topAuthors()}
+          wrapper={'author'}
+        />
 
         <Slider title={t('Top month articles')} articles={topMonthArticles()} />
 
@@ -118,9 +133,9 @@ export const HomeView = (props: HomeProps) => {
 
         <RowShort articles={sortedArticles().slice(12, 16)} />
 
-        <Row1 article={sortedArticles().slice(15, 16)[0]} />
+        <Row1 article={sortedArticles()[16]} />
         <Row3 articles={sortedArticles().slice(17, 20)} />
-        <Row3 articles={topCommentedArticles()} header={<h2>{t('Top commented')}</h2>} />
+        <Row3 articles={topCommentedArticles().slice(0, 3)} header={<h2>{t('Top commented')}</h2>} />
 
         {randomLayout()}
 
@@ -144,7 +159,19 @@ export const HomeView = (props: HomeProps) => {
         <Row3 articles={sortedArticles().slice(31, 34)} />
       </Show>
 
-      <For each={sortedArticles().slice(35)}>{(article) => <Row1 article={article} />}</For>
+      <For each={pages()}>
+        {(page) => (
+          <>
+            <Row1 article={page[0]} />
+            <Row3 articles={page.slice(1, 4)} />
+            <Row2 articles={page.slice(4, 6)} />
+            <Beside values={page.slice(6, 9)} beside={page[9]} wrapper="article" />
+            <Row1 article={page[10]} />
+            <Row2 articles={page.slice(11, 13)} />
+            <Row3 articles={page.slice(13, 16)} />
+          </>
+        )}
+      </For>
 
       <p class="load-more-container">
         <button class="button" onClick={loadMore}>

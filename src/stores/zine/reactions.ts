@@ -39,8 +39,8 @@ export const loadReactions = async ({
   limit: number
   offset: number
 }): Promise<void> => {
-  const reactions = await apiClient.getReactionsForShouts({ shoutSlugs, limit, offset })
-  reactionsOrdered.set(reactions)
+  const reactionsForShouts = await apiClient.getReactionsForShouts({ shoutSlugs, limit, offset })
+  reactionsOrdered.set(reactionsForShouts)
 }
 
 export const createReaction = async (reaction: Reaction) =>

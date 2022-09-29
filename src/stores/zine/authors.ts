@@ -3,8 +3,7 @@ import type { Author } from '../../graphql/types.gen'
 import { byCreated } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
-import { Accessor, createMemo, createSignal } from 'solid-js'
-import type { Signal } from 'solid-js'
+import { createMemo, createSignal } from 'solid-js'
 
 const log = getLogger('authors store')
 

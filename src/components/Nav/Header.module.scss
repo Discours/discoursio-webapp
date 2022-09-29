@@ -27,6 +27,7 @@
 }
 
 .headerInner {
+  align-items: center;
   background: #fff;
   border-bottom: 4px solid #000;
   flex-wrap: nowrap;
@@ -83,10 +84,6 @@
       background: none;
     }
   }
-}
-
-nav {
-  align-items: center;
 }
 
 .usernav {
@@ -166,7 +163,7 @@ nav {
   }
 }
 
-.burger-container {
+.burgerContainer {
   box-sizing: content-box;
   display: inline-flex;
   float: right;
@@ -243,7 +240,7 @@ nav {
   }
 }
 
-.article-header {
+.articleHeader {
   @include font-size(1.4rem);
 
   left: 0;

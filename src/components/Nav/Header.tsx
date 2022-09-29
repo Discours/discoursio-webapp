@@ -103,9 +103,12 @@ export const Header = (props: Props) => {
             </a>
           </div>
           <div class={clsx(styles.mainNavigation, 'col')}>
-            <div class="article-header">{props.title}</div>
+            <div class={styles.articleHeader}>{props.title}</div>
 
-            <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
+            <ul
+              class={clsx(styles.mainNavigation, 'col text-xl inline-flex')}
+              classList={{ fixed: fixed() }}
+            >
               <For each={resources}>
                 {(r) => (
                   <li classList={{ selected: r.route === getPage().route }}>
@@ -123,7 +126,7 @@ export const Header = (props: Props) => {
               </li>
             </ul>
           </div>
-          <div class="usernav">
+          <div class={styles.usernav}>
             <div class="usercontrol col">
               <div class="usercontrol__item">
                 <a href="#auth" onClick={handleBellIconClick}>
@@ -153,8 +156,8 @@ export const Header = (props: Props) => {
               </Show>
             </div>
           </div>
-          <div class="burger-container">
-            <div class="burger" classList={{ fixed: fixed() }} onClick={toggleFixed}>
+          <div class={styles.burgerContainer}>
+            <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
               <div />
             </div>
           </div>

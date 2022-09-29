@@ -63,19 +63,6 @@
     height: 80px;
   }
 
-  img {
-    height: 32px;
-    object-fit: contain;
-    object-position: left;
-    transition: height 0.2s;
-    vertical-align: middle;
-    width: 100px;
-
-    @include media-breakpoint-up(lg) {
-      width: 175px;
-    }
-  }
-
   a {
     border: none;
     color: #000;
@@ -83,6 +70,19 @@
     &:hover {
       background: none;
     }
+  }
+}
+
+.searchIcon {
+  height: 32px;
+  object-fit: contain;
+  object-position: left;
+  transition: height 0.2s;
+  vertical-align: middle;
+  width: 100px;
+
+  @include media-breakpoint-up(lg) {
+    width: 175px;
   }
 }
 

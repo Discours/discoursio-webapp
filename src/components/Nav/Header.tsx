@@ -120,7 +120,7 @@ export const Header = (props: Props) => {
               </For>
               <li class={styles.headerSearch}>
                 <a href="#">
-                  <Icon name="search" />
+                  <Icon name="search" iconClassName={styles.searchIcon} />
                   {t('Search')}
                 </a>
               </li>

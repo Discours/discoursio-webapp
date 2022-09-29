@@ -75,7 +75,6 @@ export const Header = (props: Props) => {
       setIsScrollingBottom(window.scrollY > scrollTop)
       setIsScrolled(window.scrollY > 0)
       scrollTop = window.scrollY
-      window.console.log(getIsScrollingBottom() && getIsScrolled())
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })

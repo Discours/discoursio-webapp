@@ -5,7 +5,7 @@ import { addTopicsByAuthor } from './topics'
 import { byStat } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
-import { createMemo, createSignal } from 'solid-js'
+import { createSignal } from 'solid-js'
 import { createLazyMemo } from '@solid-primitives/memo'
 
 const log = getLogger('articles store')

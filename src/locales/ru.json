@@ -39,7 +39,7 @@
   "Feedback": "Обратная связь",
   "Follow": "Подписаться",
   "Follow the topic": "Подписаться на тему",
-  "Forget password?": "Забыли пароль?",
+  "Forgot password?": "Забыли пароль?",
   "Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine": "Познакомитесь с выдающимися людьми нашего времени, участвуйте в редактировании и обсуждении статей, выступайте экспертом, оценивайте материалы других авторов со всего мира и определяйте, какие статьи будут опубликованы в журнале",
   "Help to edit": "Помочь редактировать",
   "Horizontal collaborative journalistic platform": "Горизонтальная платформа для коллаборативной журналистики",
@@ -141,5 +141,7 @@
   "topics": "темы",
   "user already exist": "пользователь уже существует",
   "view": "просмотр",
-  "zine": "журнал"
+  "zine": "журнал",
+  "Please, confirm email": "Пожалуйста, подтвердите электронную почту",
+  "Something went wrong, check email and password": "Что-то пошло не так. Проверьте адрес электронной почты и пароль"
 }

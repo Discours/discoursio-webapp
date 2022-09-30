@@ -3,8 +3,7 @@ import { Show } from 'solid-js/web'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import './Full.scss'
-import { session } from '../../stores/auth'
-import { useStore } from '@nanostores/solid'
+import { useAuthStore } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
 import { t } from '../../utils/intl'
 
@@ -13,8 +12,9 @@ type Props = {
 }
 
 export const FullTopic = (props: Props) => {
-  const auth = useStore(session)
-  const subscribed = createMemo(() => auth()?.info?.topics?.includes(props.topic?.slug))
+  const { session } = useAuthStore()
+
+  const subscribed = createMemo(() => session()?.info?.topics?.includes(props.topic?.slug))
   return (
     <div class="topic-full container">
       <div class="row">

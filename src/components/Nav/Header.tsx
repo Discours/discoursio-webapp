@@ -6,8 +6,7 @@ import { Modal } from './Modal'
 import AuthModal from './AuthModal'
 import { t } from '../../utils/intl'
 import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
-import { useStore } from '@nanostores/solid'
-import { session as ssession } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import './Header.scss'
 import { getPagePath } from '@nanostores/router'
@@ -38,7 +37,7 @@ export const Header = (props: Props) => {
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   // stores
   const { getWarnings } = useWarningsStore()
-  const session = useStore(ssession)
+  const { session } = useAuthStore()
   const { getModal } = useModalStore()
 
   const { getPage } = useRouter()

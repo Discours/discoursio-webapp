@@ -86,7 +86,7 @@ export const HomeView = (props: HomeProps) => {
   }
 
   return (
-    <Show when={locale()}>
+    <Show when={locale() && getSortedArticles().at(0) !== undefined}>
       <NavTopics topics={getRandomTopics()} />
 
       <Row5 articles={getSortedArticles().slice(0, 5)} />

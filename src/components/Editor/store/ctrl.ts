@@ -3,10 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { EditorState } from 'prosemirror-state'
 import { undo, redo } from 'prosemirror-history'
 import { selectAll, deleteSelection } from 'prosemirror-commands'
-import * as Y from 'yjs'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
-import { WebrtcProvider } from 'y-webrtc'
-import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import { debounce } from 'ts-debounce'
 // import * as remote from '../prosemirror/remote'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
@@ -14,8 +11,8 @@ import { State, File, Config, ServiceError, newState } from '.'
 // import { isTauri, mod } from '../env'
 import { serialize, createMarkdownParser } from '../prosemirror/markdown'
 import { isEmpty, isInitialized } from '../prosemirror/state'
-import { Awareness } from 'y-protocols/awareness'
 import { isServer } from 'solid-js/web'
+import { roomConnect } from '../../../utils/p2p'
 
 const mod = 'Ctrl'
 const isTauri = false
@@ -445,34 +442,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     const backup = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
 
-    window.history.replaceState(null, '', `/${room}`)
-
-    const ydoc = new Y.Doc()
-    const type = ydoc.getXmlFragment('prosemirror')
-    const webrtcOptions = {
-      awareness: new Awareness(ydoc),
-      filterBcConns: true,
-      maxConns: 33,
-      signaling: [
-        // 'wss://signaling.discours.io',
-        // 'wss://stun.l.google.com:19302',
-        'wss://y-webrtc-signaling-eu.herokuapp.com',
-        'wss://signaling.yjs.dev'
-      ],
-      peerOpts: {},
-      password: ''
-    }
-    const provider = new WebrtcProvider(room, ydoc, webrtcOptions)
-    const username = uniqueNamesGenerator({
-      dictionaries: [adjectives, animals],
-      style: 'capital',
-      separator: ' ',
-      length: 2
-    })
-
-    provider.awareness.setLocalStateField('user', {
-      name: username
-    })
+    const [type, provider] = roomConnect(room)
 
     const extensions = createExtensions({
       config: state.config,

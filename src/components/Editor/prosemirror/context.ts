@@ -3,6 +3,7 @@ import type { Store } from 'solid-js/store'
 import type { XmlFragment } from 'yjs'
 import type { WebrtcProvider } from 'y-webrtc'
 import type { ProseMirrorExtension, ProseMirrorState } from './state'
+import type { Reaction } from '../../../graphql/types.gen'
 
 export const isMac = true
 
@@ -41,7 +42,7 @@ export interface ErrorObject {
 }
 
 export interface YOptions {
-  type: XmlFragment
+  type: Reaction[] | XmlFragment
   provider: WebrtcProvider
 }
 

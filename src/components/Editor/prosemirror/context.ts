@@ -42,7 +42,7 @@ export interface ErrorObject {
 }
 
 export interface YOptions {
-  type: Reaction[] | XmlFragment
+  type: XmlFragment
   provider: WebrtcProvider
 }
 

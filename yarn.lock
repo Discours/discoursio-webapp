@@ -8989,11 +8989,6 @@ ora@^6.1.0:
     strip-ansi "^7.0.1"
     wcwidth "^1.0.1"
 
-orderedmap@^1.1.0:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/orderedmap/-/orderedmap-1.1.8.tgz#9652b2584f721c1032fa04cb60d442b3d4aa097c"
-  integrity sha512-eWEYOAggZZpZbJ9CTsqAKOTxlbBHdHZ8pzcfEvNTxGrjQ/m+Q25nSWUiMlT9MTbgpB6FOiBDKqsgJ2FlLDVNaw==
-
 orderedmap@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/orderedmap/-/orderedmap-2.1.0.tgz#819457082fa3a06abd316d83a281a1ca467437cd"
@@ -9528,13 +9523,6 @@ prosemirror-menu@^1.0.0, prosemirror-menu@^1.2.1:
     prosemirror-commands "^1.0.0"
     prosemirror-history "^1.0.0"
     prosemirror-state "^1.0.0"
-
-prosemirror-model@1.16.0:
-  version "1.16.0"
-  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.16.0.tgz#b10269d8e2d4715adf4b526bdc9c40abf07bee79"
-  integrity sha512-EheF1nX6gR9C/l76wGfqWujE3hc/ZgohzeFWLROOLEZtAm3qDCzju390XM65J/GQyqA1Y7ZesYOGHfVmdanm0w==
-  dependencies:
-    orderedmap "^1.1.0"
 
 prosemirror-model@^1.0.0, prosemirror-model@^1.16.0, prosemirror-model@^1.2.0:
   version "1.18.1"

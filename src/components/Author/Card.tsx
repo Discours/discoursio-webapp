@@ -6,10 +6,9 @@ import './Card.scss'
 import { createMemo } from 'solid-js'
 import { translit } from '../../utils/ru2en'
 import { t } from '../../utils/intl'
-import { session } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
-import { useStore } from '@nanostores/solid'
 
 interface AuthorCardProps {
   compact?: boolean
@@ -21,14 +20,15 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
-  const auth = useStore(session)
+  const { session } = useAuthStore()
+
   const subscribed = createMemo(
     () =>
-      !!auth()
+      !!session()
         ?.info?.authors?.filter((u) => u === props.author.slug)
         .pop()
   )
-  const canFollow = createMemo(() => !props.hideFollow && auth()?.user?.slug !== props.author.slug)
+  const canFollow = createMemo(() => !props.hideFollow && session()?.user?.slug !== props.author.slug)
   const bio = () => props.author.bio || t('Our regular contributor')
   const name = () => {
     return props.author.name === 'Дискурс' && locale() !== 'ru'

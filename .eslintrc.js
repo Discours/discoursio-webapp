@@ -34,10 +34,8 @@ module.exports = {
             varsIgnorePattern: '^log$'
           }
         ],
-        // TODO: Remove any usage and enable
-        '@typescript-eslint/no-explicit-any': 'off',
-        // TODO: Fix errors and enable this rule
-        '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/no-non-null-assertion': 'warn',
 
         // solid-js fix
         'import/no-unresolved': [2, { ignore: ['solid-js/'] }]
@@ -58,8 +56,8 @@ module.exports = {
     // FIXME
     'solid/reactivity': 'off',
 
-    // TODO: Should be enabled
-    'promise/catch-or-return': 'off',
+    // Should be enabled
+    // 'promise/catch-or-return': 'off',
 
     'solid/no-innerhtml': 'off',
 
@@ -77,7 +75,8 @@ module.exports = {
 
     eqeqeq: 'error',
     'no-param-reassign': 'error',
-    'no-nested-ternary': 'error'
+    'no-nested-ternary': 'error',
+    'no-shadow': 'error'
   },
   settings: {
     'import/resolver': {

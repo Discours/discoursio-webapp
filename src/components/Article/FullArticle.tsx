@@ -7,8 +7,7 @@ import { createEffect, createMemo, createSignal, For, onMount, Show } from 'soli
 import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
-import { useStore } from '@nanostores/solid'
-import { session } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 import { incrementView } from '../../stores/zine/articles'
 import { renderMarkdown } from '@astrojs/markdown-remark'
 import { markdownOptions } from '../../../mdx.config'
@@ -41,7 +40,7 @@ const formatDate = (date: Date) => {
 export const FullArticle = (props: ArticleProps) => {
   const [body, setBody] = createSignal(props.article.body?.startsWith('<') ? props.article.body : '')
 
-  const auth = useStore(session)
+  const { session } = useAuthStore()
 
   createEffect(() => {
     if (body() || !props.article.body) {
@@ -51,7 +50,9 @@ export const FullArticle = (props: ArticleProps) => {
     if (props.article.body.startsWith('<')) {
       setBody(props.article.body)
     } else {
-      renderMarkdown(props.article.body, markdownOptions).then(({ code }) => setBody(code))
+      renderMarkdown(props.article.body, markdownOptions)
+        .then(({ code }) => setBody(code))
+        .catch(console.error)
     }
   })
 
@@ -180,12 +181,12 @@ export const FullArticle = (props: ArticleProps) => {
               <ArticleComment
                 comment={reaction}
                 level={getCommentLevel(reaction)}
-                canEdit={reaction.createdBy?.slug === auth()?.user?.slug}
+                canEdit={reaction.createdBy?.slug === session()?.user?.slug}
               />
             )}
           </For>
         </Show>
-        <Show when={!auth()?.user?.slug}>
+        <Show when={!session()?.user?.slug}>
           <div class="comment-warning" id="comments">
             {t('To leave a comment you please')}
             <a
@@ -199,7 +200,7 @@ export const FullArticle = (props: ArticleProps) => {
             </a>
           </div>
         </Show>
-        <Show when={auth()?.user?.slug}>
+        <Show when={session()?.user?.slug}>
           <textarea class="write-comment" rows="1" placeholder={t('Write comment')} />
         </Show>
       </div>

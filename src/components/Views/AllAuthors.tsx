@@ -7,8 +7,7 @@ import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
-import { session } from '../../stores/auth'
-import { useStore } from '@nanostores/solid'
+import { useAuthStore } from '../../stores/auth'
 import '../../styles/AllTopics.scss'
 
 type AllAuthorsPageSearchParams = {
@@ -20,19 +19,21 @@ type Props = {
 }
 
 export const AllAuthorsView = (props: Props) => {
-  const { getSortedAuthors: authorslist } = useAuthorsStore({ authors: props.authors })
+  const { sortedAuthors: authorList } = useAuthorsStore({ authors: props.authors })
   const [sortedAuthors, setSortedAuthors] = createSignal<Author[]>([])
   const [sortedKeys, setSortedKeys] = createSignal<string[]>([])
   const [abc, setAbc] = createSignal([])
-  const auth = useStore(session)
-  const subscribed = (s) => Boolean(auth()?.info?.authors && auth()?.info?.authors?.includes(s || ''))
+
+  const { session } = useAuthStore()
+
+  const subscribed = (s) => Boolean(session()?.info?.authors && session()?.info?.authors?.includes(s || ''))
 
   const { getSearchParams } = useRouter<AllAuthorsPageSearchParams>()
 
   createEffect(() => {
     if ((!getSearchParams().by || getSearchParams().by === 'name') && abc().length === 0) {
       console.log('[authors] default grouping by abc')
-      const grouped = { ...groupByName(authorslist()) }
+      const grouped = { ...groupByName(authorList()) }
       grouped['A-Z'] = sortBy(grouped['A-Z'], byFirstChar)
       setAbc(grouped)
       const keys = Object.keys(abc)
@@ -40,13 +41,13 @@ export const AllAuthorsView = (props: Props) => {
       setSortedKeys(keys as string[])
     } else {
       console.log('[authors] sorting by ' + getSearchParams().by)
-      setSortedAuthors(sortBy(authorslist(), getSearchParams().by))
+      setSortedAuthors(sortBy(authorList(), getSearchParams().by))
     }
-  }, [authorslist(), getSearchParams().by])
+  }, [authorList(), getSearchParams().by])
 
   return (
     <div class="all-topics-page">
-      <Show when={sortedAuthors()}>
+      <Show when={sortedAuthors().length > 0}>
         <div class="wide-container">
           <div class="shift-content">
             <div class="row">

@@ -6,7 +6,8 @@ import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
 
 export const NavTopics = (props: { topics: Topic[] }) => {
-  const tag = (t: Topic) => (/[ЁА-яё]/.test(t.title || '') && locale() !== 'ru' ? t.slug : t.title)
+  const tag = (topic: Topic) =>
+    /[ЁА-яё]/.test(topic.title || '') && locale() !== 'ru' ? topic.slug : topic.title
 
   // TODO: something about subtopics
   return (
@@ -14,10 +15,10 @@ export const NavTopics = (props: { topics: Topic[] }) => {
       <ul class="topics">
         <Show when={props.topics.length > 0}>
           <For each={props.topics}>
-            {(t: Topic) => (
+            {(topic) => (
               <li class="item">
-                <a href={`/topic/${t.slug}`}>
-                  <span>#{tag(t)}</span>
+                <a href={`/topic/${topic.slug}`}>
+                  <span>#{tag(topic)}</span>
                 </a>
               </li>
             )}

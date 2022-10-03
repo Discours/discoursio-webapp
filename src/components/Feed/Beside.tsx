@@ -10,7 +10,7 @@ import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
 
 interface BesideProps {
-  title: string
+  title?: string
   values: any[]
   beside: Shout
   wrapper: 'topic' | 'author' | 'article' | 'top-article'

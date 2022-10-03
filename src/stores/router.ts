@@ -69,6 +69,10 @@ export const handleClientRouteLinkClick = (event) => {
       event.preventDefault()
       // TODO: search params
       routerStore.open(url.pathname)
+      window.scrollTo({
+        top: 0,
+        left: 0
+      })
     }
   }
 }

@@ -2,39 +2,42 @@ import { createEffect, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
-import { setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
+import { setSortAllBy as setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
-import { session } from '../../stores/auth'
-import { useStore } from '@nanostores/solid'
+import { useAuthStore } from '../../stores/auth'
 import '../../styles/AllTopics.scss'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('AllTopicsView')
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
 }
 
-type Props = {
+type AllTopicsViewProps = {
   topics: Topic[]
 }
 
-export const AllTopicsView = (props: Props) => {
+export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { getSearchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
 
-  const { getSortedTopics } = useTopicsStore({
+  const { sortedTopics } = useTopicsStore({
     topics: props.topics,
     sortBy: getSearchParams().by || 'shouts'
   })
-  const auth = useStore(session)
+
+  const { session } = useAuthStore()
 
   createEffect(() => {
     setSortAllTopicsBy(getSearchParams().by || 'shouts')
   })
 
-  const subscribed = (s) => Boolean(auth()?.info?.topics && auth()?.info?.topics?.includes(s || ''))
+  const subscribed = (s) => Boolean(session()?.info?.topics && session()?.info?.topics?.includes(s || ''))
 
   return (
     <div class="all-topics-page">
-      <Show when={getSortedTopics().length > 0}>
+      <Show when={sortedTopics().length > 0}>
         <div class="wide-container">
           <div class="shift-content">
             <div class="row">
@@ -78,7 +81,7 @@ export const AllTopicsView = (props: Props) => {
                 </ul>
 
                 <div class="stats">
-                  <For each={getSortedTopics()}>
+                  <For each={sortedTopics()}>
                     {(topic) => (
                       <TopicCard topic={topic} compact={false} subscribed={subscribed(topic.slug)} />
                     )}

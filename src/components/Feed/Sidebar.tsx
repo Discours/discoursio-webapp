@@ -1,7 +1,6 @@
-import { useStore } from '@nanostores/solid'
 import { For } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-import { session } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { t } from '../../utils/intl'
 import { Icon } from '../Nav/Icon'
@@ -15,13 +14,13 @@ type FeedSidebarProps = {
 
 export const FeedSidebar = (props: FeedSidebarProps) => {
   const { getSeen: seen } = useSeenStore()
-  const auth = useStore(session)
-  const { getSortedAuthors: authors } = useAuthorsStore({ authors: props.authors })
-  const { getArticlesByTopic } = useArticlesStore()
-  const { getTopicEntities } = useTopicsStore()
+  const { session } = useAuthStore()
+  const { authorEntities } = useAuthorsStore({ authors: props.authors })
+  const { articlesByTopic } = useArticlesStore()
+  const { topicEntities } = useTopicsStore()
 
   const checkTopicIsSeen = (topicSlug: string) => {
-    return getArticlesByTopic()[topicSlug].every((article) => Boolean(seen()[article.slug]))
+    return articlesByTopic()[topicSlug].every((article) => Boolean(seen()[article.slug]))
   }
 
   const checkAuthorIsSeen = (authorSlug: string) => {
@@ -64,22 +63,22 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
           </a>
         </li>
 
-        <For each={auth()?.info?.authors}>
+        <For each={session()?.info?.authors}>
           {(authorSlug) => (
             <li>
               <a href={`/author/${authorSlug}`} classList={{ unread: checkAuthorIsSeen(authorSlug) }}>
                 <small>@{authorSlug}</small>
-                {authors()[authorSlug].name}
+                {authorEntities()[authorSlug].name}
               </a>
             </li>
           )}
         </For>
 
-        <For each={auth()?.info?.topics}>
+        <For each={session()?.info?.topics}>
           {(topicSlug) => (
             <li>
               <a href={`/author/${topicSlug}`} classList={{ unread: checkTopicIsSeen(topicSlug) }}>
-                {getTopicEntities()[topicSlug]?.title}
+                {topicEntities()[topicSlug]?.title}
               </a>
             </li>
           )}

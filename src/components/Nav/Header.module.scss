@@ -169,7 +169,7 @@
   }
 }
 
-.headerScrolledBottom {
+.headerWithTitle.headerScrolledBottom {
   .mainNavigation,
   .userControl {
     opacity: 0;
@@ -296,7 +296,7 @@
   transition: opacity 0.3s;
   z-index: 1;
 
-  .headerScrolledBottom & {
+  .headerWithTitle.headerScrolledBottom & {
     transition: opacity 0.3s, z-index 0s 0.3s;
     opacity: 0;
     z-index: -1;

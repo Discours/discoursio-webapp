@@ -72,6 +72,8 @@ export const Header = (props: Props) => {
   onMount(() => {
     let scrollTop = window.scrollY
 
+    window.console.log(props.title)
+
     const handleScroll = () => {
       setIsScrollingBottom(window.scrollY > scrollTop)
       setIsScrolled(window.scrollY > 0)
@@ -90,7 +92,8 @@ export const Header = (props: Props) => {
       classList={{
         [styles.headerFixed]: props.isHeaderFixed,
         [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
-        [styles.headerScrolledBottom]: getIsScrollingBottom() && getIsScrolled()
+        [styles.headerScrolledBottom]: getIsScrollingBottom() && getIsScrolled(),
+        [styles.headerWithTitle]: props.title
       }}
     >
       <Modal name="auth">
@@ -104,7 +107,9 @@ export const Header = (props: Props) => {
             </a>
           </div>
           <div class={clsx(styles.mainNavigationWrapper, 'col')}>
-            <div class={styles.articleHeader}>{props.title}</div>
+            <Show when={props.title}>
+              <div class={styles.articleHeader}>{props.title}</div>
+            </Show>
 
             <ul
               class={clsx(styles.mainNavigation, 'col text-xl inline-flex')}
@@ -156,14 +161,16 @@ export const Header = (props: Props) => {
                 <Private />
               </Show>
             </div>
-            <div class={styles.articleControls}>
-              <Icon name="share-outline" class={styles.icon} />
-              <a href="#comments">
-                <Icon name="comments-outline" class={styles.icon} />
-              </a>
-              <Icon name="pencil-outline" class={styles.icon} />
-              <Icon name="bookmark" class={styles.icon} />
-            </div>
+            <Show when={props.title}>
+              <div class={styles.articleControls}>
+                <Icon name="share-outline" class={styles.icon} />
+                <a href="#comments">
+                  <Icon name="comments-outline" class={styles.icon} />
+                </a>
+                <Icon name="pencil-outline" class={styles.icon} />
+                <Icon name="bookmark" class={styles.icon} />
+              </div>
+            </Show>
           </div>
           <div class={styles.burgerContainer}>
             <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>

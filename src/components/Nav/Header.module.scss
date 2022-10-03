@@ -20,17 +20,20 @@
   }
 }
 
-.headerFixed {
-  position: fixed;
-  top: 0;
-
-  .main-logo {
+.headerFixed.headerScrolledBottom,
+.headerFixed.headerScrolledTop {
+  .mainLogo {
     height: 56px;
 
     img {
       height: 20px;
     }
   }
+}
+
+.headerFixed {
+  position: fixed;
+  top: 0;
 }
 
 .headerInner {
@@ -96,6 +99,7 @@
 .usernav {
   display: inline-flex;
   padding-right: 0;
+  position: relative;
   width: auto;
 
   @include media-breakpoint-down(md) {
@@ -105,48 +109,47 @@
   }
 }
 
-.mainNavigation {
+.mainNavigationWrapper {
+  padding-left: 0;
   position: relative;
   @include font-size(1.7rem);
+}
 
-  ul {
-    display: inline-flex;
-    list-style: none;
-    margin: 0;
-    opacity: 1;
-    padding: 0;
-    transition: opacity 0.3s;
+.mainNavigation {
+  display: inline-flex;
+  list-style: none;
+  margin: 0;
+  opacity: 1;
+  padding: 0;
+  transition: opacity 0.3s;
 
-    @include media-breakpoint-down(md) {
-      background: #fff;
-      bottom: 0;
-      display: none;
-      font-size: 2.6rem;
-      font-weight: bold;
-      left: 0;
-      padding: $container-padding-x;
-      position: fixed;
-      top: 74px;
-      width: 100%;
-      z-index: 1;
+  @include media-breakpoint-down(md) {
+    background: #fff;
+    bottom: 0;
+    display: none;
+    font-size: 2.6rem;
+    font-weight: bold;
+    left: 0;
+    padding: $container-padding-x;
+    position: fixed;
+    top: 74px;
+    width: 100%;
+    z-index: 1;
 
-      li {
-        margin-bottom: 2.4rem;
-      }
-    }
-
-    @include media-breakpoint-down(sm) {
-      padding: divide($container-padding-x, 2);
+    li {
+      margin-bottom: 2.4rem;
     }
   }
 
-  &.fixed {
-    ul {
-      display: inline-flex;
+  @include media-breakpoint-down(sm) {
+    padding: divide($container-padding-x, 2);
+  }
 
-      @include media-breakpoint-down(lg) {
-        display: block !important;
-      }
+  &.fixed {
+    display: inline-flex;
+
+    @include media-breakpoint-down(lg) {
+      display: block !important;
     }
   }
 
@@ -166,8 +169,11 @@
   }
 }
 
-.headerScrolledBottom .mainNavigation {
-  opacity: 0;
+.headerScrolledBottom {
+  .mainNavigation,
+  .userControl {
+    opacity: 0;
+  }
 }
 
 .burgerContainer {
@@ -247,25 +253,29 @@
   }
 }
 
+.articleHeader,
+.articleControls {
+  opacity: 0;
+  transition: opacity 0.3s, z-index 0s 0.3s;
+  z-index: -1;
+
+  .headerScrolledBottom & {
+    transition: opacity 0.3s;
+    opacity: 1;
+    z-index: 1;
+  }
+}
+
 .articleHeader {
   @include font-size(1.4rem);
 
   left: 0;
   margin: 0.2em;
-  opacity: 0;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
-  transition: opacity 0.3s, z-index 0s 0.3s;
   white-space: nowrap;
   width: 100%;
-  z-index: -1;
-
-  .header--scrolled-bottom & {
-    transition: opacity 0.3s;
-    opacity: 1;
-    z-index: 1;
-  }
 }
 
 .headerSearch {
@@ -278,5 +288,49 @@
     transition: filter 0.3s;
     vertical-align: middle;
     width: 1em;
+  }
+}
+
+.userControl {
+  opacity: 1;
+  transition: opacity 0.3s;
+  z-index: 1;
+
+  .headerScrolledBottom & {
+    transition: opacity 0.3s, z-index 0s 0.3s;
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+.articleControls {
+  display: flex;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+
+  .icon {
+    margin-left: 1.6rem;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+
+  a {
+    border: none;
+
+    &:hover {
+      background: none;
+
+      .icon {
+        filter: none;
+        opacity: 1;
+      }
+    }
   }
 }

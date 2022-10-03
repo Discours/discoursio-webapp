@@ -10,6 +10,7 @@ import { useStore } from '@nanostores/solid'
 import { session as ssession } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
+import privateStyles from './Private.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
@@ -102,7 +103,7 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx(styles.mainNavigation, 'col')}>
+          <div class={clsx(styles.mainNavigationWrapper, 'col')}>
             <div class={styles.articleHeader}>{props.title}</div>
 
             <ul
@@ -127,8 +128,8 @@ export const Header = (props: Props) => {
             </ul>
           </div>
           <div class={styles.usernav}>
-            <div class="usercontrol col">
-              <div class="usercontrol__item">
+            <div class={clsx(privateStyles.userControl, styles.userControl, 'col')}>
+              <div class={privateStyles.userControlItem}>
                 <a href="#auth" onClick={handleBellIconClick}>
                   <div>
                     <Icon name="bell-white" counter={authorized() ? getWarnings().length : 1} />
@@ -137,7 +138,7 @@ export const Header = (props: Props) => {
               </div>
 
               <Show when={visibleWarnings()}>
-                <div class="usercontrol__item notifications">
+                <div class={clsx(privateStyles.userControlItem, 'notifications')}>
                   <Notifications />
                 </div>
               </Show>
@@ -145,15 +146,23 @@ export const Header = (props: Props) => {
               <Show
                 when={authorized()}
                 fallback={
-                  <div class="usercontrol__item loginbtn">
+                  <div class={clsx(privateStyles.userControlItem, 'loginbtn')}>
                     <a href="#auth" onClick={handleEnterClick}>
-                      {t('enter')}
+                      <Icon name="user-anonymous" />
                     </a>
                   </div>
                 }
               >
                 <Private />
               </Show>
+            </div>
+            <div class={styles.articleControls}>
+              <Icon name="share-outline" class={styles.icon} />
+              <a href="#comments">
+                <Icon name="comments-outline" class={styles.icon} />
+              </a>
+              <Icon name="pencil-outline" class={styles.icon} />
+              <Icon name="bookmark" class={styles.icon} />
             </div>
           </div>
           <div class={styles.burgerContainer}>

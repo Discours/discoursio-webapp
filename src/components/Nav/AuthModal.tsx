@@ -5,11 +5,10 @@ import './AuthModal.scss'
 import { Form } from 'solid-js-form'
 import { t } from '../../utils/intl'
 import { hideModal, useModalStore } from '../../stores/ui'
-import { useStore } from '@nanostores/solid'
-import { session as sessionstore, signIn } from '../../stores/auth'
-import { apiClient } from '../../utils/apiClient'
+import { useAuthStore, signIn, register } from '../../stores/auth'
 import { useValidator } from '../../utils/validators'
 import { baseUrl } from '../../graphql/publicGraphQLClient'
+import { ApiError } from '../../utils/apiClient'
 
 type AuthMode = 'sign-in' | 'sign-up' | 'forget' | 'reset' | 'resend' | 'password'
 
@@ -23,7 +22,7 @@ const statuses: { [key: string]: string } = {
 const titles = {
   'sign-up': t('Create account'),
   'sign-in': t('Enter the Discours'),
-  forget: t('Forget password?'),
+  forget: t('Forgot password?'),
   reset: t('Please, confirm your email to finish'),
   resend: t('Resend code'),
   password: t('Enter your new password')
@@ -34,10 +33,10 @@ const titles = {
 // FIXME !!!
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default (props: { code?: string; mode?: string }) => {
-  const session = useStore(sessionstore)
+  const { session } = useAuthStore()
   const [handshaking] = createSignal(false)
   const { getModal } = useModalStore()
-  const [authError, setError] = createSignal('')
+  const [authError, setError] = createSignal<string>('')
   const [mode, setMode] = createSignal<AuthMode>('sign-in')
   const [validation, setValidation] = createSignal({})
   const [initial, setInitial] = createSignal({})
@@ -46,7 +45,7 @@ export default (props: { code?: string; mode?: string }) => {
   let passElement: HTMLInputElement | undefined
   let codeElement: HTMLInputElement | undefined
 
-  // 3rd party providier auth handler
+  // 3rd party provider auth handler
   const oauth = (provider: string): void => {
     const popup = window.open(`${baseUrl}/oauth/${provider}`, provider, 'width=740, height=420')
     popup?.focus()
@@ -85,28 +84,50 @@ export default (props: { code?: string; mode?: string }) => {
     setValidation(vs)
     setInitial(ini)
   }
+
   onMount(setupValidators)
+
+  const resetError = () => {
+    setError('')
+  }
+
+  const changeMode = (newMode: AuthMode) => {
+    setMode(newMode)
+    resetError()
+  }
 
   // local auth handler
   const localAuth = async () => {
     console.log('[auth] native account processing')
     switch (mode()) {
       case 'sign-in':
-        signIn({ email: emailElement?.value, password: passElement?.value })
+        try {
+          await signIn({ email: emailElement?.value, password: passElement?.value })
+        } catch (error) {
+          if (error instanceof ApiError) {
+            if (error.code === 'email_not_confirmed') {
+              setError(t('Please, confirm email'))
+              return
+            }
+
+            if (error.code === 'user_not_found') {
+              setError(t('Something went wrong, check email and password'))
+              return
+            }
+          }
+
+          setError(error.message)
+        }
+
         break
       case 'sign-up':
         if (pass2Element?.value !== passElement?.value) {
           setError(t('Passwords are not equal'))
         } else {
-          // FIXME use store actions
-          const r = await apiClient.authRegiser({
+          await register({
             email: emailElement?.value,
             password: passElement?.value
           })
-          if (r) {
-            console.debug('[auth] session update', r)
-            sessionstore.set(r)
-          }
         }
         break
       case 'reset':
@@ -130,6 +151,7 @@ export default (props: { code?: string; mode?: string }) => {
     }
   }
 
+  // FIXME move to handlers
   createEffect(() => {
     if (session()?.user?.slug && getModal() === 'auth') {
       // hiding itself if finished
@@ -141,7 +163,8 @@ export default (props: { code?: string; mode?: string }) => {
     } else {
       console.log('[auth] session', session())
     }
-  }, [session()])
+  })
+
   return (
     <div class="row view" classList={{ 'view--sign-up': mode() === 'sign-up' }}>
       <div class="col-sm-6 d-md-none auth-image">
@@ -174,7 +197,6 @@ export default (props: { code?: string; mode?: string }) => {
         >
           <div class="auth__inner">
             <h4>{titles[mode()]}</h4>
-
             <div class={`auth-subtitle ${mode() === 'forget' ? '' : 'hidden'}`}>
               <Show
                 when={mode() === 'forget'}
@@ -187,7 +209,6 @@ export default (props: { code?: string; mode?: string }) => {
                 {t('Everything is ok, please give us your email address')}
               </Show>
             </div>
-
             <Show when={authError()}>
               <div class={`auth-info`}>
                 <ul>
@@ -195,7 +216,6 @@ export default (props: { code?: string; mode?: string }) => {
                 </ul>
               </div>
             </Show>
-
             {/*FIXME*/}
             {/*<Show when={false && mode() === 'sign-up'}>*/}
             {/*  <div class='pretty-form__item'>*/}
@@ -223,7 +243,6 @@ export default (props: { code?: string; mode?: string }) => {
                 <label for="email">{t('Email')}</label>
               </div>
             </Show>
-
             <Show when={mode() === 'sign-up' || mode() === 'sign-in' || mode() === 'password'}>
               <div class="pretty-form__item">
                 <input
@@ -250,7 +269,6 @@ export default (props: { code?: string; mode?: string }) => {
                 <label for="resetcode">{t('Reset code')}</label>
               </div>
             </Show>
-
             <Show when={mode() === 'password' || mode() === 'sign-up'}>
               <div class="pretty-form__item">
                 <input
@@ -269,15 +287,19 @@ export default (props: { code?: string; mode?: string }) => {
                 {handshaking() ? '...' : titles[mode()]}
               </button>
             </div>
-
             <Show when={mode() === 'sign-in'}>
               <div class="auth-actions">
-                <a href={''} onClick={() => setMode('forget')}>
-                  {t('Forget password?')}
+                <a
+                  href="#"
+                  onClick={(ev) => {
+                    ev.preventDefault()
+                    changeMode('forget')
+                  }}
+                >
+                  {t('Forgot password?')}
                 </a>
               </div>
             </Show>
-
             <Show when={mode() === 'sign-in' || mode() === 'sign-up'}>
               <div class="social-provider">
                 <div class="providers-text">{t('Or continue with social network')}</div>
@@ -297,25 +319,24 @@ export default (props: { code?: string; mode?: string }) => {
                 </div>
               </div>
             </Show>
-
             <div class="auth-control">
               <div classList={{ show: mode() === 'sign-up' }}>
-                <span class="auth-link" onClick={() => setMode('sign-in')}>
+                <span class="auth-link" onClick={() => changeMode('sign-in')}>
                   {t('I have an account')}
                 </span>
               </div>
               <div classList={{ show: mode() === 'sign-in' }}>
-                <span class="auth-link" onClick={() => setMode('sign-up')}>
+                <span class="auth-link" onClick={() => changeMode('sign-up')}>
                   {t('I have no account yet')}
                 </span>
               </div>
               <div classList={{ show: mode() === 'forget' }}>
-                <span class="auth-link" onClick={() => setMode('sign-in')}>
+                <span class="auth-link" onClick={() => changeMode('sign-in')}>
                   {t('I know the password')}
                 </span>
               </div>
               <div classList={{ show: mode() === 'reset' }}>
-                <span class="auth-link" onClick={() => setMode('resend')}>
+                <span class="auth-link" onClick={() => changeMode('resend')}>
                   {t('Resend code')}
                 </span>
               </div>

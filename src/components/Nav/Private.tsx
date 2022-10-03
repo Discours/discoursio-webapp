@@ -2,12 +2,11 @@ import type { Author } from '../../graphql/types.gen'
 import Userpic from '../Author/Userpic'
 import { Icon } from './Icon'
 import './Private.scss'
-import { session as sesstore } from '../../stores/auth'
-import { useStore } from '@nanostores/solid'
+import { useAuthStore } from '../../stores/auth'
 import { useRouter } from '../../stores/router'
 
 export default () => {
-  const session = useStore(sesstore)
+  const { session } = useAuthStore()
   const { getPage } = useRouter()
 
   return (

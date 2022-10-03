@@ -6,9 +6,11 @@ import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
-import { useStore } from '@nanostores/solid'
-import { session } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('TopicCard')
 
 interface TopicProps {
   topic: Topic
@@ -19,63 +21,73 @@ interface TopicProps {
 }
 
 export const TopicCard = (props: TopicProps) => {
-  const auth = useStore(session)
-  const topic = createMemo(() => props.topic)
+  const { session } = useAuthStore()
+
   const subscribed = createMemo(() => {
-    return Boolean(auth()?.user?.slug) && topic().slug ? topic().slug in auth().info.topics : false
+    if (!session()?.user?.slug || !session()?.info?.topics) {
+      return false
+    }
+
+    return props.topic.slug in session().info.topics
   })
 
   // FIXME use store actions
   const subscribe = async (really = true) => {
     if (really) {
-      follow({ what: FollowingEntity.Topic, slug: topic().slug })
+      follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
     } else {
-      unfollow({ what: FollowingEntity.Topic, slug: topic().slug })
+      unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })
     }
   }
   return (
     <div class="topic" classList={{ row: !props.compact && !props.subscribeButtonBottom }}>
       <div classList={{ 'col-md-7': !props.compact && !props.subscribeButtonBottom }}>
-        <Show when={topic().title}>
+        <Show when={props.topic.title}>
           <div class="topic-title">
-            <a href={`/topic/${topic().slug}`}>{capitalize(topic().title || '')}</a>
+            <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
           </div>
         </Show>
-        <Show when={topic().pic}>
+        <Show when={props.topic.pic}>
           <div class="topic__avatar">
-            <a href={topic().slug}>
-              <img src={topic().pic} alt={topic().title} />
+            <a href={props.topic.slug}>
+              <img src={props.topic.pic} alt={props.topic.title} />
             </a>
           </div>
         </Show>
 
-        <Show when={!props.compact && topic()?.body}>
+        <Show when={!props.compact && props.topic?.body}>
           <div class="topic-description" classList={{ 'topic-description--short': props.shortDescription }}>
-            {topic().body}
+            {props.topic.body}
           </div>
         </Show>
 
-        <Show when={topic()?.stat}>
+        <Show when={props.topic?.stat}>
           <div class="topic-details">
             <Show when={!props.compact}>
               <span class="topic-details__item" classList={{ compact: props.compact }}>
-                {topic().stat?.shouts +
+                {props.topic.stat?.shouts +
                   ' ' +
                   t('post') +
-                  plural(topic().stat?.shouts || 0, locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's'])}
+                  plural(
+                    props.topic.stat?.shouts || 0,
+                    locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
+                  )}
               </span>
               <span class="topic-details__item" classList={{ compact: props.compact }}>
-                {topic().stat?.authors +
+                {props.topic.stat?.authors +
                   ' ' +
                   t('author') +
-                  plural(topic().stat?.authors || 0, locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's'])}
+                  plural(
+                    props.topic.stat?.authors || 0,
+                    locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
+                  )}
               </span>
               <span class="topic-details__item" classList={{ compact: props.compact }}>
-                {topic().stat?.followers +
+                {props.topic.stat?.followers +
                   ' ' +
                   t('follower') +
                   plural(
-                    topic().stat?.followers || 0,
+                    props.topic.stat?.followers || 0,
                     locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
                   )}
               </span>

@@ -1,7 +1,6 @@
-import { useStore } from '@nanostores/solid'
 import { For } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-import { session } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { t } from '../../utils/intl'
 import { Icon } from '../Nav/Icon'
@@ -15,7 +14,7 @@ type FeedSidebarProps = {
 
 export const FeedSidebar = (props: FeedSidebarProps) => {
   const { getSeen: seen } = useSeenStore()
-  const auth = useStore(session)
+  const { session } = useAuthStore()
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
   const { topicEntities } = useTopicsStore()
@@ -64,7 +63,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
           </a>
         </li>
 
-        <For each={auth()?.info?.authors}>
+        <For each={session()?.info?.authors}>
           {(authorSlug) => (
             <li>
               <a href={`/author/${authorSlug}`} classList={{ unread: checkAuthorIsSeen(authorSlug) }}>
@@ -75,7 +74,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
           )}
         </For>
 
-        <For each={auth()?.info?.topics}>
+        <For each={session()?.info?.topics}>
           {(topicSlug) => (
             <li>
               <a href={`/author/${topicSlug}`} classList={{ unread: checkTopicIsSeen(topicSlug) }}>

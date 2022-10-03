@@ -7,9 +7,8 @@ import { TopicCard } from '../Topic/Card'
 import { ArticleCard } from '../Feed/Card'
 import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
-import { useStore } from '@nanostores/solid'
 import { FeedSidebar } from '../Feed/Sidebar'
-import { session } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 import CommentCard from '../Article/Comment'
 import { loadRecentArticles, useArticlesStore } from '../../stores/zine/articles'
 import { useReactionsStore } from '../../stores/zine/reactions'
@@ -36,8 +35,7 @@ export const FeedView = (props: FeedProps) => {
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
-
-  const auth = useStore(session)
+  const { session } = useAuthStore()
 
   const topReactions = createMemo(() => sortBy(reactions(), byCreated))
 
@@ -71,7 +69,7 @@ export const FeedView = (props: FeedProps) => {
 
           <div class="col-md-6">
             <ul class="feed-filter">
-              <Show when={!!auth()?.user?.slug}>
+              <Show when={!!session()?.user?.slug}>
                 <li class="selected">
                   <a href="/feed/my">{t('My feed')}</a>
                 </li>

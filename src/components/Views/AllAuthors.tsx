@@ -26,7 +26,7 @@ export const AllAuthorsView = (props: Props) => {
 
   const { session } = useAuthStore()
 
-  const subscribed = (s) => Boolean(session()?.info?.authors && session()?.info?.authors?.includes(s || ''))
+  const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
 
   const { getSearchParams } = useRouter<AllAuthorsPageSearchParams>()
 

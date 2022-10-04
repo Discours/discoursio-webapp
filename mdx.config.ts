@@ -26,7 +26,7 @@ export const markdownOptions: AstroUserConfig['markdown'] = {
   remarkPlugins: [remarkCodeTitles],
   rehypePlugins: [
     rehypeSlug,
-    [rehypeToc as RehypePlugin<any[]>, { headings: ['h1', 'h2', 'h3'] }],
+    [rehypeToc as RehypePlugin<any>, { headings: ['h1', 'h2', 'h3'] }],
     [rehypeAutolinkHeadings, { behavior: 'prepend' }],
     [addClasses, { 'h1,h2,h3': 'title' }]
   ],

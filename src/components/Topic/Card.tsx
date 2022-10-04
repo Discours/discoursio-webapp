@@ -24,11 +24,11 @@ export const TopicCard = (props: TopicProps) => {
   const { session } = useAuthStore()
 
   const subscribed = createMemo(() => {
-    if (!session()?.user?.slug || !session()?.info?.topics) {
+    if (!session()?.user?.slug || !session()?.news?.topics) {
       return false
     }
 
-    return props.topic.slug in session().info.topics
+    return session()?.news.topics.includes(props.topic.slug)
   })
 
   // FIXME use store actions

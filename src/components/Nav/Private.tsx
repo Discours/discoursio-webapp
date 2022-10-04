@@ -26,7 +26,7 @@ export default () => {
         <a href="/inbox">
           {/*FIXME: replace with route*/}
           <div classList={{ entered: getPage().path === '/inbox' }}>
-            <Icon name="inbox-white" counter={session().info?.unread || 0} />
+            <Icon name="inbox-white" counter={session()?.news?.unread || 0} />
           </div>
         </a>
       </div>

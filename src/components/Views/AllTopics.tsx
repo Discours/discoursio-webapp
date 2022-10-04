@@ -33,7 +33,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     setSortAllTopicsBy(getSearchParams().by || 'shouts')
   })
 
-  const subscribed = (s) => Boolean(session()?.info?.topics && session()?.info?.topics?.includes(s || ''))
+  const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
 
   return (
     <div class="all-topics-page">

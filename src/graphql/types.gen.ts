@@ -16,7 +16,7 @@ export type Scalars = {
 
 export type AuthResult = {
   error?: Maybe<Scalars['String']>
-  info?: Maybe<SessionInfo>
+  news?: Maybe<UserFollowings>
   token?: Maybe<Scalars['String']>
   user?: Maybe<User>
 }
@@ -638,14 +638,6 @@ export type Role = {
   permissions: Array<Permission>
 }
 
-export type SessionInfo = {
-  authors?: Maybe<Array<Maybe<Scalars['String']>>>
-  communities?: Maybe<Array<Maybe<Scalars['String']>>>
-  reactions?: Maybe<Array<Maybe<Scalars['Int']>>>
-  topics?: Maybe<Array<Maybe<Scalars['String']>>>
-  unread?: Maybe<Scalars['Int']>
-}
-
 export type Shout = {
   authors?: Maybe<Array<Maybe<Author>>>
   body: Scalars['String']
@@ -771,6 +763,14 @@ export type User = {
   username: Scalars['String']
   userpic?: Maybe<Scalars['String']>
   wasOnlineAt?: Maybe<Scalars['DateTime']>
+}
+
+export type UserFollowings = {
+  authors?: Maybe<Array<Maybe<Scalars['String']>>>
+  communities?: Maybe<Array<Maybe<Scalars['String']>>>
+  reactions?: Maybe<Array<Maybe<Scalars['Int']>>>
+  topics?: Maybe<Array<Maybe<Scalars['String']>>>
+  unread?: Maybe<Scalars['Int']>
 }
 
 export type UserNotification = {

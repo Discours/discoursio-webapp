@@ -63,8 +63,8 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
           </a>
         </li>
 
-        <For each={session()?.info?.authors}>
-          {(authorSlug) => (
+        <For each={session()?.news?.authors}>
+          {(authorSlug: string) => (
             <li>
               <a href={`/author/${authorSlug}`} classList={{ unread: checkAuthorIsSeen(authorSlug) }}>
                 <small>@{authorSlug}</small>
@@ -74,8 +74,8 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
           )}
         </For>
 
-        <For each={session()?.info?.topics}>
-          {(topicSlug) => (
+        <For each={session()?.news?.topics}>
+          {(topicSlug: string) => (
             <li>
               <a href={`/author/${topicSlug}`} classList={{ unread: checkTopicIsSeen(topicSlug) }}>
                 {topicEntities()[topicSlug]?.title}

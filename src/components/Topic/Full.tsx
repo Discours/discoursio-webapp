@@ -14,7 +14,7 @@ type Props = {
 export const FullTopic = (props: Props) => {
   const { session } = useAuthStore()
 
-  const subscribed = createMemo(() => session()?.info?.topics?.includes(props.topic?.slug))
+  const subscribed = createMemo(() => session()?.news?.topics?.includes(props.topic?.slug))
   return (
     <div class="topic-full container">
       <div class="row">

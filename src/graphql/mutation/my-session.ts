@@ -13,7 +13,8 @@ export default gql`
         userpic
         links
       }
-      info {
+      news {
+        unread
         inbox
         topics
         authors

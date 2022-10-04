@@ -4,7 +4,11 @@ import { WebrtcProvider } from 'y-webrtc'
 import * as Y from 'yjs'
 // import type { Reaction } from '../graphql/types.gen'
 
-export const roomConnect = (room, keyname = 'reactions'): [Y.XmlFragment, WebrtcProvider] => {
+export const roomConnect = (
+  room,
+  username = '',
+  keyname = 'reactions'
+): [Y.XmlFragment, WebrtcProvider] => {
   const ydoc = new Y.Doc()
   const yxmlfrag = ydoc.getXmlFragment(keyname) // TODO: encode/decode payload to Reactions[]
   const webrtcOptions = {
@@ -21,15 +25,17 @@ export const roomConnect = (room, keyname = 'reactions'): [Y.XmlFragment, Webrtc
     password: ''
   }
   const provider = new WebrtcProvider(room, ydoc, webrtcOptions)
-  const username = uniqueNamesGenerator({
-    dictionaries: [adjectives, animals],
-    style: 'capital',
-    separator: ' ',
-    length: 2
-  })
+  let name = username
 
-  provider.awareness.setLocalStateField('user', {
-    name: username
-  })
+  if (Boolean(name) === false) {
+    name = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals],
+      style: 'capital',
+      separator: ' ',
+      length: 2
+    })
+  }
+
+  provider.awareness.setLocalStateField('user', { name })
   return [yxmlfrag, provider]
 }

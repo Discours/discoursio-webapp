@@ -27,7 +27,7 @@ export const loadArticleReactions = async ({
   offset?: number
 }): Promise<void> => {
   const data = await apiClient.getArticleReactions({ articleSlug, limit, offset })
-  // TODO: const [data, provider] = roomConnect(articleSlug)
+  // TODO: const [data, provider] = roomConnect(articleSlug, username, "reactions")
   reactionsOrdered.set(data)
 }
 

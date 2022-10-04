@@ -441,8 +441,8 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
   const doStartCollab = (state: State): State => {
     const backup = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
-
-    const [type, provider] = roomConnect(room)
+    const username = '' // FIXME: use authenticated user name
+    const [type, provider] = roomConnect(room, username)
 
     const extensions = createExtensions({
       config: state.config,

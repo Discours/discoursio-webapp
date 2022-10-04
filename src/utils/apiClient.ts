@@ -224,7 +224,7 @@ export const apiClient = {
   },
 
   getAllAuthors: async () => {
-    const response = await publicGraphQLClient.query(authorsAll, { limit: 9999, offset: 9999 }).toPromise()
+    const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
     return response.data.authorsAll
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {

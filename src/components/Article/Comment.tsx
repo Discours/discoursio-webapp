@@ -24,7 +24,9 @@ export default (props: {
     if (b?.toString().startsWith('<')) {
       setBody(b)
     } else {
-      renderMarkdown(b, markdownOptions).then(({ code }) => setBody(code))
+      renderMarkdown(b, markdownOptions)
+        .then(({ code }) => setBody(code))
+        .catch(console.error)
     }
   })
   const remove = () => {

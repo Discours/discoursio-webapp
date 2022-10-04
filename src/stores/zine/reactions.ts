@@ -3,7 +3,7 @@ import type { Reaction } from '../../graphql/types.gen'
 import { useStore } from '@nanostores/solid'
 import { apiClient } from '../../utils/apiClient'
 import { reduceBy } from '../../utils/reduce'
-
+// import { roomConnect } from '../../utils/p2p'
 // FIXME
 
 let reactionsOrdered: WritableAtom<Reaction[]>
@@ -26,8 +26,9 @@ export const loadArticleReactions = async ({
   limit?: number
   offset?: number
 }): Promise<void> => {
-  const resp = await apiClient.getArticleReactions({ articleSlug, limit, offset })
-  reactionsOrdered.set(resp)
+  const data = await apiClient.getArticleReactions({ articleSlug, limit, offset })
+  // TODO: const [data, provider] = roomConnect(articleSlug, username, "reactions")
+  reactionsOrdered.set(data)
 }
 
 export const loadReactions = async ({

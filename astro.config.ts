@@ -9,6 +9,7 @@ import { markdownOptions as markdown } from './mdx.config'
 import type { CSSOptions } from 'vite'
 import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
+import { fileURLToPath, URL } from 'url'
 
 const PATH_PREFIX = '/src/'
 
@@ -62,7 +63,8 @@ const astroConfig: AstroUserConfig = {
     },
     resolve: {
       alias: {
-        '@': './src'
+        './runtimeConfig': './runtimeConfig.browser',
+        '@': fileURLToPath(new URL('src', import.meta.url))
       }
     },
     css

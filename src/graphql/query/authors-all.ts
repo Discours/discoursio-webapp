@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query AuthorssAllQuery {
+  query AuthorsAllQuery {
     authorsAll {
       _id: slug
       slug

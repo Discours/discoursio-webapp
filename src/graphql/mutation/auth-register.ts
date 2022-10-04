@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  mutation RegisterMutation($email: String!, $password: String!) {
-    registerUser(email: $email, password: $password) {
+  mutation RegisterMutation($email: String!, $password: String, $username: String) {
+    registerUser(email: $email, password: $password, username: $username) {
       error
       token
       user {

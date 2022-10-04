@@ -3,15 +3,12 @@ import type { Store } from 'solid-js/store'
 import type { XmlFragment } from 'yjs'
 import type { WebrtcProvider } from 'y-webrtc'
 import type { ProseMirrorExtension, ProseMirrorState } from './state'
+import type { Reaction } from '../../../graphql/types.gen'
 
 export const isMac = true
 
 export const mod = isMac ? 'Cmd' : 'Ctrl'
 export const alt = isMac ? 'Cmd' : 'Alt'
-
-export const WEB_URL =
-  //'http://localhost:3000'
-  'https://discoursio-editor-app.vercel.app'
 
 export interface Args {
   cwd?: string

@@ -50,7 +50,9 @@ export const FullArticle = (props: ArticleProps) => {
     if (props.article.body.startsWith('<')) {
       setBody(props.article.body)
     } else {
-      renderMarkdown(props.article.body, markdownOptions).then(({ code }) => setBody(code))
+      renderMarkdown(props.article.body, markdownOptions)
+        .then(({ code }) => setBody(code))
+        .catch(console.error)
     }
   })
 

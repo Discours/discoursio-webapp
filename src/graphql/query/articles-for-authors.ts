@@ -26,6 +26,8 @@ export default gql`
         _id: slug
         name
         slug
+        bio
+        links
         userpic
       }
       createdAt

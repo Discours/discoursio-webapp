@@ -7,8 +7,7 @@ import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
-import { session } from '../../stores/auth'
-import { useStore } from '@nanostores/solid'
+import { useAuthStore } from '../../stores/auth'
 import '../../styles/AllTopics.scss'
 
 type AllAuthorsPageSearchParams = {
@@ -24,8 +23,10 @@ export const AllAuthorsView = (props: Props) => {
   const [sortedAuthors, setSortedAuthors] = createSignal<Author[]>([])
   const [sortedKeys, setSortedKeys] = createSignal<string[]>([])
   const [abc, setAbc] = createSignal([])
-  const auth = useStore(session)
-  const subscribed = (s) => Boolean(auth()?.info?.authors && auth()?.info?.authors?.includes(s || ''))
+
+  const { session } = useAuthStore()
+
+  const subscribed = (s) => Boolean(session()?.info?.authors && session()?.info?.authors?.includes(s || ''))
 
   const { getSearchParams } = useRouter<AllAuthorsPageSearchParams>()
 

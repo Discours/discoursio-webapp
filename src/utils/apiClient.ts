@@ -1,4 +1,4 @@
-import type { Reaction, Shout, FollowingEntity } from '../graphql/types.gen'
+import type { Reaction, Shout, FollowingEntity, AuthResult } from '../graphql/types.gen'
 
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
@@ -36,15 +36,43 @@ const log = getLogger('api-client')
 const FEED_SIZE = 50
 const REACTIONS_PAGE_SIZE = 100
 
-export const apiClient = {
-  // auth
+type ApiErrorCode = 'unknown' | 'email_not_confirmed' | 'user_not_found'
 
-  authLogin: async ({ email, password }) => {
+export class ApiError extends Error {
+  code: ApiErrorCode
+
+  constructor(code: ApiErrorCode, message?: string) {
+    super(message)
+    this.code = code
+  }
+}
+
+export const apiClient = {
+  authLogin: async ({ email, password }): Promise<AuthResult> => {
     const response = await publicGraphQLClient.query(authLoginQuery, { email, password }).toPromise()
+    // log.debug('authLogin', { response })
+    if (response.error) {
+      if (response.error.message === '[GraphQL] User not found') {
+        throw new ApiError('user_not_found')
+      }
+
+      throw new ApiError('unknown', response.error.message)
+    }
+
+    if (response.data.signIn.error) {
+      if (response.data.signIn.error === 'please, confirm email') {
+        throw new ApiError('email_not_confirmed')
+      }
+
+      throw new ApiError('unknown', response.data.signIn.error)
+    }
+
     return response.data.signIn
   },
-  authRegiser: async ({ email, password }) => {
-    const response = await publicGraphQLClient.query(authRegisterMutation, { email, password }).toPromise()
+  authRegister: async ({ email, password }): Promise<AuthResult> => {
+    const response = await publicGraphQLClient
+      .mutation(authRegisterMutation, { email, password })
+      .toPromise()
     return response.data.registerUser
   },
   authSignOut: async () => {
@@ -87,8 +115,11 @@ export const apiClient = {
     return response.data.recentPublished
   },
   getRandomTopics: async ({ amount }: { amount: number }) => {
-    log.debug('getRandomTopics')
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
+
+    if (!response.data) {
+      log.error('getRandomTopics', response.error)
+    }
 
     return response.data.topicsRandom
   },
@@ -177,7 +208,7 @@ export const apiClient = {
     return response.data.unfollow
   },
 
-  getSession: async () => {
+  getSession: async (): Promise<AuthResult> => {
     // renew session with auth token in header (!)
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
     return response.data.refreshSession
@@ -193,7 +224,7 @@ export const apiClient = {
   },
 
   getAllAuthors: async () => {
-    const response = await publicGraphQLClient.query(authorsAll, { limit: 9999, offset: 9999 }).toPromise()
+    const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
     return response.data.authorsAll
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {

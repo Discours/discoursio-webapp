@@ -3,27 +3,28 @@ import type { AuthResult } from '../graphql/types.gen'
 import { getLogger } from '../utils/logger'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { apiClient } from '../utils/apiClient'
+import { createSignal } from 'solid-js'
 
 const log = getLogger('auth-store')
 
-export const session = atom<AuthResult>()
+const [session, setSession] = createSignal<AuthResult | null>(null)
 
 export const signIn = async (params) => {
-  const s = await apiClient.authLogin(params)
-  session.set(s)
-  setToken(s.token)
+  const authResult = await apiClient.authLogin(params)
+  setSession(authResult)
+  setToken(authResult.token)
   log.debug('signed in')
 }
 
 export const signUp = async (params) => {
-  const s = await apiClient.authRegiser(params)
-  session.set(s)
-  setToken(s.token)
+  const authResult = await apiClient.authRegister(params)
+  setSession(authResult)
+  setToken(authResult.token)
   log.debug('signed up')
 }
 
 export const signOut = () => {
-  session.set(null)
+  setSession(null)
   resetToken()
   log.debug('signed out')
 }
@@ -36,6 +37,18 @@ export const signCheck = async (params) => {
 
 export const resetCode = atom<string>()
 
+export const register = async ({ email, password }: { email: string; password: string }) => {
+  const authResult = await apiClient.authRegister({
+    email,
+    password
+  })
+
+  if (authResult && !authResult.error) {
+    log.debug('register session update', authResult)
+    setSession(authResult)
+  }
+}
+
 export const signSendLink = async (params) => {
   await apiClient.authSendLink(params) // { email }
   resetToken()
@@ -44,11 +57,15 @@ export const signSendLink = async (params) => {
 export const signConfirm = async (params) => {
   const auth = await apiClient.authConfirmCode(params) // { code }
   setToken(auth.token)
-  session.set(auth)
+  setSession(auth)
 }
 
 export const renewSession = async () => {
-  const s = await apiClient.getSession() // token in header
-  setToken(s.token)
-  session.set(s)
+  const authResult = await apiClient.getSession() // token in header
+  setToken(authResult.token)
+  setSession(authResult)
+}
+
+export const useAuthStore = () => {
+  return { session }
 }

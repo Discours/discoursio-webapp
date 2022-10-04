@@ -25,7 +25,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const subscribed = createMemo(
     () =>
       !!session()
-        ?.info?.authors?.filter((u) => u === props.author.slug)
+        ?.news?.authors?.filter((u) => u === props.author.slug)
         .pop()
   )
   const canFollow = createMemo(() => !props.hideFollow && session()?.user?.slug !== props.author.slug)

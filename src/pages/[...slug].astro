@@ -4,9 +4,8 @@ import Zine from '../layouts/zine.astro'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
 
-const slug = Astro.params.slug?.toString() || ''
-
-if (slug.includes('/') || slug.includes('.map')) {
+const slug = Astro.params.slug?.toString()
+if (Boolean(slug) === false || slug.includes('/') || slug.includes('.map')) {
   return Astro.redirect('/404')
 }
 

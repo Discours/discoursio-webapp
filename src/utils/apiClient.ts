@@ -30,6 +30,7 @@ import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
+import myChats from '../graphql/query/my-chats'
 
 const log = getLogger('api-client')
 
@@ -69,9 +70,9 @@ export const apiClient = {
 
     return response.data.signIn
   },
-  authRegister: async ({ email, password }): Promise<AuthResult> => {
+  authRegister: async ({ email, password = '', username = '' }): Promise<AuthResult> => {
     const response = await publicGraphQLClient
-      .mutation(authRegisterMutation, { email, password })
+      .mutation(authRegisterMutation, { email, password, username })
       .toPromise()
     return response.data.registerUser
   },
@@ -224,7 +225,7 @@ export const apiClient = {
   },
 
   getAllAuthors: async () => {
-    const response = await publicGraphQLClient.query(authorsAll, { limit: 9999, offset: 9999 }).toPromise()
+    const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
     return response.data.authorsAll
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
@@ -293,5 +294,8 @@ export const apiClient = {
   },
   incrementView: async ({ articleSlug }) => {
     await privateGraphQLClient.mutation(incrementView, { shout: articleSlug })
+  },
+  getInboxes: async (payload = {}) => {
+    await privateGraphQLClient.query(myChats, payload)
   }
 }

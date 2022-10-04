@@ -1,0 +1,15 @@
+---
+import Zine from '../layouts/zine.astro'
+import { Root } from '../components/Root'
+import { apiClient } from '../utils/apiClient'
+import { initRouter } from '../stores/router'
+
+const chatrooms = await apiClient.getInboxes()
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
+---
+
+<Zine>
+  <Root client:load />
+</Zine>

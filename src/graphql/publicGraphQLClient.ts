@@ -2,8 +2,8 @@ import { ClientOptions, dedupExchange, fetchExchange, createClient, Exchange } f
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev } from '../utils/config'
 
-export const baseUrl = 'https://newapi.discours.io'
-//export const baseUrl = 'http://localhost:8000'
+//export const baseUrl = 'https://newapi.discours.io'
+export const baseUrl = 'http://localhost:8000'
 
 const exchanges: Exchange[] = [dedupExchange, fetchExchange]
 

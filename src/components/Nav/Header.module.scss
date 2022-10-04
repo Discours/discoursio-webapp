@@ -1,6 +1,7 @@
-header {
+.mainHeader {
   background: #fff;
   margin-bottom: 2.2rem;
+  position: absolute;
   width: 100%;
   z-index: 10;
 
@@ -11,13 +12,17 @@ header {
       padding: 0 divide($container-padding-x, 2);
     }
   }
+
+  a:hover {
+    .icon {
+      filter: invert(1);
+    }
+  }
 }
 
-.header--fixed {
-  position: fixed;
-  top: 0;
-
-  .main-logo {
+.headerFixed.headerScrolledBottom,
+.headerFixed.headerScrolledTop {
+  .mainLogo {
     height: 56px;
 
     img {
@@ -26,7 +31,13 @@ header {
   }
 }
 
-.header__inner {
+.headerFixed {
+  position: fixed;
+  top: 0;
+}
+
+.headerInner {
+  align-items: center;
   background: #fff;
   border-bottom: 4px solid #000;
   flex-wrap: nowrap;
@@ -48,7 +59,7 @@ header {
   }
 }
 
-.main-logo {
+.mainLogo {
   align-items: center;
   display: inline-flex;
   height: 70px;
@@ -85,13 +96,10 @@ header {
   }
 }
 
-nav {
-  align-items: center;
-}
-
 .usernav {
   display: inline-flex;
   padding-right: 0;
+  position: relative;
   width: auto;
 
   @include media-breakpoint-down(md) {
@@ -101,52 +109,47 @@ nav {
   }
 }
 
-.main-navigation {
+.mainNavigationWrapper {
+  padding-left: 0;
   position: relative;
   @include font-size(1.7rem);
+}
 
-  ul {
-    display: inline-flex;
-    list-style: none;
-    margin: 0;
-    opacity: 1;
-    padding: 0;
-    transition: opacity 0.3s;
+.mainNavigation {
+  display: inline-flex;
+  list-style: none;
+  margin: 0;
+  opacity: 1;
+  padding: 0;
+  transition: opacity 0.3s;
 
-    @include media-breakpoint-down(md) {
-      background: #fff;
-      bottom: 0;
-      display: none;
-      font-size: 2.6rem;
-      font-weight: bold;
-      left: 0;
-      padding: $container-padding-x;
-      position: fixed;
-      top: 74px;
-      width: 100%;
-      z-index: 1;
+  @include media-breakpoint-down(md) {
+    background: #fff;
+    bottom: 0;
+    display: none;
+    font-size: 2.6rem;
+    font-weight: bold;
+    left: 0;
+    padding: $container-padding-x;
+    position: fixed;
+    top: 74px;
+    width: 100%;
+    z-index: 1;
 
-      li {
-        margin-bottom: 2.4rem;
-      }
-    }
-
-    @include media-breakpoint-down(sm) {
-      padding: divide($container-padding-x, 2);
-    }
-
-    .header--scrolled-bottom & {
-      opacity: 0;
+    li {
+      margin-bottom: 2.4rem;
     }
   }
 
-  &.fixed {
-    ul {
-      display: inline-flex;
+  @include media-breakpoint-down(sm) {
+    padding: divide($container-padding-x, 2);
+  }
 
-      @include media-breakpoint-down(lg) {
-        display: block !important;
-      }
+  &.fixed {
+    display: inline-flex;
+
+    @include media-breakpoint-down(lg) {
+      display: block !important;
     }
   }
 
@@ -166,7 +169,14 @@ nav {
   }
 }
 
-.burger-container {
+.headerWithTitle.headerScrolledBottom {
+  .mainNavigation,
+  .userControl {
+    opacity: 0;
+  }
+}
+
+.burgerContainer {
   box-sizing: content-box;
   display: inline-flex;
   float: right;
@@ -243,35 +253,84 @@ nav {
   }
 }
 
-.article-header {
-  @include font-size(1.4rem);
-
-  left: 0;
-  margin: 0.2em;
+.articleHeader,
+.articleControls {
   opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  text-overflow: ellipsis;
   transition: opacity 0.3s, z-index 0s 0.3s;
-  white-space: nowrap;
-  width: 100%;
   z-index: -1;
 
-  .header--scrolled-bottom & {
+  .headerScrolledBottom & {
     transition: opacity 0.3s;
     opacity: 1;
     z-index: 1;
   }
 }
 
-.header__search {
+.articleHeader {
+  @include font-size(1.4rem);
+
+  left: 0;
+  margin: 0.2em;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.headerSearch {
   text-transform: lowercase;
 
   .icon {
     display: inline-block;
     height: 1em;
     margin-right: 0.3em;
+    transition: filter 0.3s;
     vertical-align: middle;
     width: 1em;
+  }
+}
+
+.userControl {
+  opacity: 1;
+  transition: opacity 0.3s;
+  z-index: 1;
+
+  .headerWithTitle.headerScrolledBottom & {
+    transition: opacity 0.3s, z-index 0s 0.3s;
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+.articleControls {
+  display: flex;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+
+  .icon {
+    margin-left: 1.6rem;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+
+  a {
+    border: none;
+
+    &:hover {
+      background: none;
+
+      .icon {
+        filter: none;
+        opacity: 1;
+      }
+    }
   }
 }

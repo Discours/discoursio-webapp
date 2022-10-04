@@ -92,7 +92,7 @@ export const Header = (props: Props) => {
         [styles.headerFixed]: props.isHeaderFixed,
         [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
         [styles.headerScrolledBottom]: getIsScrollingBottom() && getIsScrolled(),
-        [styles.headerWithTitle]: props.title
+        [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
       <Modal name="auth">

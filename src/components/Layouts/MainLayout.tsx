@@ -13,10 +13,14 @@ type MainLayoutProps = {
 }
 
 export const MainLayout = (props: MainLayoutProps) => {
+  const isHeaderFixed = props.isHeaderFixed !== undefined ? props.isHeaderFixed : true
+
   return (
     <>
-      <Header title={props.headerTitle} isHeaderFixed={props.isHeaderFixed === true} />
-      <main class="main-content">{props.children}</main>
+      <Header title={props.headerTitle} isHeaderFixed={isHeaderFixed} />
+      <main class="main-content" classList={{ 'main-content--no-padding': !isHeaderFixed }}>
+        {props.children}
+      </main>
       <Show when={props.hideFooter !== true}>
         <Footer />
       </Show>

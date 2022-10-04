@@ -8,9 +8,11 @@ import { t } from '../../utils/intl'
 import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
-import './Header.scss'
+import styles from './Header.module.scss'
+import privateStyles from './Private.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { getLogger } from '../../utils/logger'
+import { clsx } from 'clsx'
 
 const log = getLogger('header')
 
@@ -69,6 +71,8 @@ export const Header = (props: Props) => {
   onMount(() => {
     let scrollTop = window.scrollY
 
+    window.console.log(props.title)
+
     const handleScroll = () => {
       setIsScrollingBottom(window.scrollY > scrollTop)
       setIsScrolled(window.scrollY > 0)
@@ -83,27 +87,33 @@ export const Header = (props: Props) => {
 
   return (
     <header
-      class="main-header"
+      class={styles.mainHeader}
       classList={{
-        ['header--fixed']: props.isHeaderFixed,
-        ['header--scrolled-top']: !getIsScrollingBottom() && getIsScrolled(),
-        ['header--scrolled-bottom']: getIsScrollingBottom() && getIsScrolled()
+        [styles.headerFixed]: props.isHeaderFixed,
+        [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
+        [styles.headerScrolledBottom]: getIsScrollingBottom() && getIsScrolled(),
+        [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
       <Modal name="auth">
         <AuthModal />
       </Modal>
       <div class="wide-container">
-        <nav class="row header__inner" classList={{ fixed: fixed() }}>
-          <div class="main-logo col-auto">
+        <nav class={clsx(styles.headerInner, 'row')} classList={{ fixed: fixed() }}>
+          <div class={clsx(styles.mainLogo, 'col-auto')}>
             <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class="col main-navigation">
-            <div class="article-header">{props.title}</div>
+          <div class={clsx(styles.mainNavigationWrapper, 'col')}>
+            <Show when={props.title}>
+              <div class={styles.articleHeader}>{props.title}</div>
+            </Show>
 
-            <ul class="col main-navigation text-xl inline-flex" classList={{ fixed: fixed() }}>
+            <ul
+              class={clsx(styles.mainNavigation, 'col text-xl inline-flex')}
+              classList={{ fixed: fixed() }}
+            >
               <For each={resources}>
                 {(r) => (
                   <li classList={{ selected: r.route === getPage().route }}>
@@ -113,17 +123,17 @@ export const Header = (props: Props) => {
                   </li>
                 )}
               </For>
-              <li class="header__search">
+              <li class={styles.headerSearch}>
                 <a href="#">
-                  <Icon name="search" />
+                  <Icon name="search" class={styles.icon} iconClassName={styles.searchIcon} />
                   {t('Search')}
                 </a>
               </li>
             </ul>
           </div>
-          <div class="usernav">
-            <div class="usercontrol col">
-              <div class="usercontrol__item">
+          <div class={styles.usernav}>
+            <div class={clsx(privateStyles.userControl, styles.userControl, 'col')}>
+              <div class={privateStyles.userControlItem}>
                 <a href="#auth" onClick={handleBellIconClick}>
                   <div>
                     <Icon name="bell-white" counter={authorized() ? getWarnings().length : 1} />
@@ -132,7 +142,7 @@ export const Header = (props: Props) => {
               </div>
 
               <Show when={visibleWarnings()}>
-                <div class="usercontrol__item notifications">
+                <div class={clsx(privateStyles.userControlItem, 'notifications')}>
                   <Notifications />
                 </div>
               </Show>
@@ -140,9 +150,9 @@ export const Header = (props: Props) => {
               <Show
                 when={authorized()}
                 fallback={
-                  <div class="usercontrol__item loginbtn">
+                  <div class={clsx(privateStyles.userControlItem, 'loginbtn')}>
                     <a href="#auth" onClick={handleEnterClick}>
-                      {t('enter')}
+                      <Icon name="user-anonymous" />
                     </a>
                   </div>
                 }
@@ -150,9 +160,19 @@ export const Header = (props: Props) => {
                 <Private />
               </Show>
             </div>
+            <Show when={props.title}>
+              <div class={styles.articleControls}>
+                <Icon name="share-outline" class={styles.icon} />
+                <a href="#comments">
+                  <Icon name="comments-outline" class={styles.icon} />
+                </a>
+                <Icon name="pencil-outline" class={styles.icon} />
+                <Icon name="bookmark" class={styles.icon} />
+              </div>
+            </Show>
           </div>
-          <div class="burger-container">
-            <div class="burger" classList={{ fixed: fixed() }} onClick={toggleFixed}>
+          <div class={styles.burgerContainer}>
+            <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
               <div />
             </div>
           </div>

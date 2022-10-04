@@ -2,11 +2,11 @@ import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generato
 import { Awareness } from 'y-protocols/awareness'
 import { WebrtcProvider } from 'y-webrtc'
 import * as Y from 'yjs'
-import type { Reaction } from '../graphql/types.gen'
+// import type { Reaction } from '../graphql/types.gen'
 
-export const roomConnect = (room, keyname = 'reactions'): [Reaction[], WebrtcProvider] => {
+export const roomConnect = (room, keyname = 'reactions'): [Y.XmlFragment, WebrtcProvider] => {
   const ydoc = new Y.Doc()
-  const yarray = ydoc.getArray(keyname)
+  const yxmlfrag = ydoc.getXmlFragment(keyname) // TODO: encode/decode payload to Reactions[]
   const webrtcOptions = {
     awareness: new Awareness(ydoc),
     filterBcConns: true,
@@ -31,6 +31,5 @@ export const roomConnect = (room, keyname = 'reactions'): [Reaction[], WebrtcPro
   provider.awareness.setLocalStateField('user', {
     name: username
   })
-  const data = yarray.toArray() as Reaction[]
-  return [data, provider]
+  return [yxmlfrag, provider]
 }

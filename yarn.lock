@@ -68,7 +68,7 @@
     vscode-languageserver-types "^3.17.1"
     vscode-uri "^3.0.3"
 
-"@astrojs/markdown-remark@^1.1.2", "@astrojs/markdown-remark@^1.1.3":
+"@astrojs/markdown-remark@^1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@astrojs/markdown-remark/-/markdown-remark-1.1.3.tgz#9fa985a532622043f0863c20f01c6ed01eca31e2"
   integrity sha512-6MDuQXbrp2fZBYBIqD+0jvSqYAukiMTte6oLNHiEYsLf3KIMlVAZj6dDgUJakgL7cQ4fmzWb0HUqzVpxAsasLw==
@@ -2451,11 +2451,6 @@
   dependencies:
     "@motionone/dom" "^10.14.2"
     tslib "^2.3.1"
-
-"@nanostores/i18n@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@nanostores/i18n/-/i18n-0.7.0.tgz#f35137041fe4fcd08feaa3ff4a1baa8d4356457d"
-  integrity sha512-Qi/YPmj4J6oFMmqH13YyH1QV+CWemg9Z/JDBZTaCYEpiVIG+yfWs22GsW+GbHQ3eNCp5RdQ+leYN5ZI1TFyDhw==
 
 "@nanostores/persistent@^0.7.0":
   version "0.7.0"
@@ -6086,11 +6081,6 @@ globrex@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/globrex/-/globrex-0.1.2.tgz#dd5d9ec826232730cd6793a5e33a9302985e6098"
   integrity sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==
-
-google-translate-api-x@^10.4.1:
-  version "10.4.1"
-  resolved "https://registry.yarnpkg.com/google-translate-api-x/-/google-translate-api-x-10.4.1.tgz#286fc4f0a5c5155e53f8d1850b3a2659af2642e2"
-  integrity sha512-ZV6NEhh0Og4AyYobLQ+tqWMtJ7hk+cm07ecqM8knarewbey7prr3X/6vKqBPEC6XgakiHjQRgifNyEhchCoGWA==
 
 graceful-fs@^4.1.5, graceful-fs@^4.2.4, graceful-fs@^4.2.9:
   version "4.2.10"

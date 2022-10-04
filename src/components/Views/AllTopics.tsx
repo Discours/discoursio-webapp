@@ -5,8 +5,7 @@ import { t } from '../../utils/intl'
 import { setSortAllBy as setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
-import { session } from '../../stores/auth'
-import { useStore } from '@nanostores/solid'
+import { useAuthStore } from '../../stores/auth'
 import '../../styles/AllTopics.scss'
 import { getLogger } from '../../utils/logger'
 
@@ -28,13 +27,13 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     sortBy: getSearchParams().by || 'shouts'
   })
 
-  const auth = useStore(session)
+  const { session } = useAuthStore()
 
   createEffect(() => {
     setSortAllTopicsBy(getSearchParams().by || 'shouts')
   })
 
-  const subscribed = (s) => Boolean(auth()?.info?.topics && auth()?.info?.topics?.includes(s || ''))
+  const subscribed = (s) => Boolean(session()?.info?.topics && session()?.info?.topics?.includes(s || ''))
 
   return (
     <div class="all-topics-page">

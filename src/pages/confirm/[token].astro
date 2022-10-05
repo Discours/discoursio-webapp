@@ -1,10 +1,11 @@
 ---
 import { Confirmed } from '../../components/Nav/Confirmed'
+import { t } from '../../utils/intl'
 
 const token = Astro.params.token?.toString() || ''
 ---
 <html>
-<head><title>discours.io</title></head>
+<head><title>{t('Discours')}</title></head>
 <body>
   <Confirmed token={token} />
 </body>

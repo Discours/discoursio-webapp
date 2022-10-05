@@ -5,8 +5,9 @@ import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
 
 const slug = Astro.params.slug?.toString()
-const routepaths = ['craete', 'search', 'inbox', 'topics', 'authors', 'robots.txt']
-if (routepaths.includes(slug) || Boolean(slug) === false || slug.includes('.map')) return
+if (slug.endsWith('.map')) {
+  return
+}
 
 const article = await apiClient.getArticle({ slug })
 if (!article) {

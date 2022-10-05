@@ -303,6 +303,20 @@
   }
 }
 
+.userControlItemCreateArticle {
+  padding: 0 1em;
+  width: auto;
+
+  &,
+  a::before {
+    border-radius: 1.2em;
+  }
+
+  a::before {
+    z-index: -1;
+  }
+}
+
 .articleControls {
   display: flex;
   left: 0;

@@ -133,6 +133,10 @@ export const Header = (props: Props) => {
           </div>
           <div class={styles.usernav}>
             <div class={clsx(privateStyles.userControl, styles.userControl, 'col')}>
+              <div class={clsx(privateStyles.userControlItem, styles.userControlItemCreateArticle)}>
+                <a href="#">{t('Create article')}</a>
+              </div>
+
               <div class={privateStyles.userControlItem}>
                 <a href="#auth" onClick={handleBellIconClick}>
                   <div>

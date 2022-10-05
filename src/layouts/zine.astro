@@ -4,7 +4,7 @@ import '../styles/app.scss'
 import { t } from '../utils/intl'
 
 const lang = Astro.url.searchParams.get('lang') || 'ru'
-// console.log('[layout] server locale is', lang)
+console.log('[layout] server locale is', lang)
 setLocale(lang)
 
 ---

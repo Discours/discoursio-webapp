@@ -8,7 +8,10 @@ import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { useAuthStore } from '../../stores/auth'
+import { getLogger } from '../../utils/logger'
 import '../../styles/AllTopics.scss'
+
+const log = getLogger('AllAuthorsView')
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -19,8 +22,7 @@ type Props = {
 }
 
 export const AllAuthorsView = (props: Props) => {
-  const { sortedAuthors: authorList } = useAuthorsStore({ authors: props.authors })
-  const [sortedAuthors, setSortedAuthors] = createSignal<Author[]>([])
+  const { sortedAuthors } = useAuthorsStore({ authors: props.authors })
   const [sortedKeys, setSortedKeys] = createSignal<string[]>([])
   const [abc, setAbc] = createSignal([])
 
@@ -33,17 +35,19 @@ export const AllAuthorsView = (props: Props) => {
   createEffect(() => {
     if ((!getSearchParams().by || getSearchParams().by === 'name') && abc().length === 0) {
       console.log('[authors] default grouping by abc')
-      const grouped = { ...groupByName(authorList()) }
+      const grouped = { ...groupByName(sortedAuthors()) }
       grouped['A-Z'] = sortBy(grouped['A-Z'], byFirstChar)
       setAbc(grouped)
       const keys = Object.keys(abc)
       keys.sort()
-      setSortedKeys(keys as string[])
+      setSortedKeys(keys)
     } else {
       console.log('[authors] sorting by ' + getSearchParams().by)
-      setSortedAuthors(sortBy(authorList(), getSearchParams().by))
+      ///setSortedAuthors(sortBy(authorList(), getSearchParams().by))
     }
-  }, [authorList(), getSearchParams().by])
+  })
+
+  log.debug(getSearchParams())
 
   return (
     <div class="all-topics-page">
@@ -86,7 +90,7 @@ export const AllAuthorsView = (props: Props) => {
                   fallback={() => (
                     <div class="stats">
                       <For each={sortedAuthors()}>
-                        {(author: Author) => (
+                        {(author) => (
                           <AuthorCard
                             author={author}
                             compact={false}
@@ -99,7 +103,7 @@ export const AllAuthorsView = (props: Props) => {
                   )}
                 >
                   <For each={sortedKeys()}>
-                    {(letter: string) => (
+                    {(letter) => (
                       <div class="group">
                         <h2>{letter}</h2>
                         <div class="container">

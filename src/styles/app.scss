@@ -522,12 +522,13 @@ figcaption {
   }
 }
 
-#app {
-  display: flex;
+/* stylelint-disable-next-line */
+astro-island {
+  display: flex !important;
   flex-direction: column;
   align-content: space-between;
   justify-content: space-between;
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 .main-content {

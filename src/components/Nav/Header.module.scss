@@ -180,6 +180,7 @@
   box-sizing: content-box;
   display: inline-flex;
   float: right;
+  margin-left: 1em;
   padding-right: 0;
   padding-left: 0;
   width: 2.2rem;
@@ -274,6 +275,8 @@
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
+  top: 50%;
+  transform: translateY(-50%);
   white-space: nowrap;
   width: 100%;
 }
@@ -305,6 +308,8 @@
 
 .userControlItemCreateArticle {
   padding: 0 1em;
+  transition: display 0s 0.3s;
+  white-space: nowrap;
   width: auto;
 
   &,
@@ -314,6 +319,10 @@
 
   a::before {
     z-index: -1;
+  }
+
+  .headerWithTitle.headerScrolledBottom & {
+    display: none;
   }
 }
 

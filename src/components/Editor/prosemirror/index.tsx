@@ -55,60 +55,57 @@ const createEditorState = (
 }
 
 export const ProseMirror = (props: Props) => {
-  const editorRef = {} as HTMLDivElement
+  let editorRef: HTMLDivElement
   const editorView = () => untrack(() => unwrap(props.editorView))
 
   const dispatchTransaction = (tr: Transaction) => {
     if (!editorView()) return
-
     const newState = editorView().state.apply(tr)
-
     editorView().updateState(newState)
-
     if (!tr.docChanged) return
-
     props.onChange(newState)
   }
 
-  const rerender = (state: [any, ProseMirrorExtension[]]) => {
-    const [prevText, prevExtensions] = state
-    const text = unwrap(props.text) as EditorState
-    const extensions: ProseMirrorExtension[] = unwrap(props.extensions)
-
-    if (!text || !extensions?.length) return [text, extensions]
-
-    if (!props.editorView) {
-      const { editorState, nodeViews } = createEditorState(text, extensions)
-      const view = new EditorView(editorRef, {
-        state: editorState,
-        nodeViews,
-        dispatchTransaction
-      })
-
-      view.focus()
-      props.onInit(editorState, view)
-
-      return [editorState, extensions]
-    }
-
-    if (extensions !== prevExtensions || (!(text instanceof EditorState) && text !== prevText)) {
-      const { editorState, nodeViews } = createEditorState(text, extensions, prevText)
-
-      if (!editorState) return
-
-      editorView().updateState(editorState)
-      editorView().setProps({ nodeViews, dispatchTransaction })
-      props.onReconfigure(editorState)
-      editorView().focus()
-
-      return [editorState, extensions]
-    }
-
-    return [text, extensions]
-  }
-
   // eslint-disable-next-line solid/reactivity
-  createEffect(rerender as any, [props.text, props.extensions])
+  createEffect(
+    (state: [EditorState, ProseMirrorExtension[]]) => {
+      const [prevText, prevExtensions] = state
+      const text = unwrap(props.text) as EditorState
+      const extensions: ProseMirrorExtension[] = unwrap(props.extensions)
+
+      if (!text || !extensions?.length) return [text, extensions]
+
+      if (!props.editorView) {
+        const { editorState, nodeViews } = createEditorState(text, extensions)
+        const view = new EditorView(editorRef, {
+          state: editorState,
+          nodeViews,
+          dispatchTransaction
+        })
+
+        view.focus()
+        props.onInit(editorState, view)
+
+        return [editorState, extensions]
+      }
+
+      if (extensions !== prevExtensions || (!(text instanceof EditorState) && text !== prevText)) {
+        const { editorState, nodeViews } = createEditorState(text, extensions, prevText)
+
+        if (!editorState) return
+
+        editorView().updateState(editorState)
+        editorView().setProps({ nodeViews, dispatchTransaction })
+        props.onReconfigure(editorState)
+        editorView().focus()
+
+        return [editorState, extensions]
+      }
+
+      return [text, extensions]
+    },
+    [props.text, props.extensions]
+  )
 
   return (
     <div

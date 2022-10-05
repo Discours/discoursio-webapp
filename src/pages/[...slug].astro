@@ -5,12 +5,10 @@ import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
 
 const slug = Astro.params.slug?.toString()
-if (Boolean(slug) === false || slug.includes('/') || slug.includes('.map')) {
-  return Astro.redirect('/404')
-}
+const routepaths = ['craete', 'search', 'inbox', 'topics', 'authors', 'robots.txt']
+if (routepaths.includes(slug) || Boolean(slug) === false || slug.includes('.map')) return
 
 const article = await apiClient.getArticle({ slug })
-
 if (!article) {
   return Astro.redirect('/404')
 }

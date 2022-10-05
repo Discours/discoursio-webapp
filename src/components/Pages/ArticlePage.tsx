@@ -10,26 +10,29 @@ import { useRouter } from '../../stores/router'
 export const ArticlePage = (props: PageProps) => {
   const sortedArticles = props.article ? [props.article] : []
 
-  const { getPage } = useRouter()
+  const slug = createMemo(() => {
+    const { getPage } = useRouter()
 
-  const page = getPage()
+    const page = getPage()
 
-  if (page.route !== 'article') {
-    throw new Error('ts guard')
-  }
+    if (page.route !== 'article') {
+      throw new Error('ts guard')
+    }
+
+    return page.params.slug
+  })
 
   const { articleEntities } = useArticlesStore({
     sortedArticles
   })
 
-  const article = createMemo<Shout>(() => articleEntities()[page.params.slug])
+  const article = createMemo<Shout>(() => articleEntities()[slug()])
 
   onMount(() => {
-    const slug = page.params.slug
-    const articleValue = articleEntities()[slug]
+    const articleValue = articleEntities()[slug()]
 
     if (!articleValue || !articleValue.body) {
-      loadArticle({ slug })
+      loadArticle({ slug: slug() })
     }
   })
 

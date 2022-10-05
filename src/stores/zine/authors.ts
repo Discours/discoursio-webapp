@@ -46,6 +46,13 @@ const addAuthors = (authors: Author[]) => {
   })
 }
 
+export const loadAuthor = async ({ slug }: { slug: string }): Promise<void> => {
+  // TODO:
+  const articles = await apiClient.getArticlesForAuthors({ authorSlugs: [slug], limit: 1 })
+  const author = articles[0].authors.find((a) => a.slug === slug)
+  addAuthors([author])
+}
+
 export const addAuthorsByTopic = (newAuthorsByTopic: { [topicSlug: string]: Author[] }) => {
   const allAuthors = Object.values(newAuthorsByTopic).flat()
   addAuthors(allAuthors)

@@ -151,6 +151,22 @@ export const loadPublishedArticles = async ({
   addSortedArticles(newArticles)
 }
 
+export const loadArticlesForAuthors = async ({ authorSlugs }: { authorSlugs: string[] }): Promise<void> => {
+  const articles = await apiClient.getArticlesForAuthors({ authorSlugs, limit: 50 })
+  addArticles(articles)
+  setSortedArticles(articles)
+}
+
+export const loadArticlesForTopics = async ({ topicSlugs }: { topicSlugs: string[] }): Promise<void> => {
+  const articles = await apiClient.getArticlesForTopics({ topicSlugs, limit: 50 })
+  addArticles(articles)
+  setSortedArticles(articles)
+}
+
+export const resetSortedArticles = () => {
+  setSortedArticles([])
+}
+
 export const loadTopMonthArticles = async (): Promise<void> => {
   const articles = await apiClient.getTopMonthArticles()
   addArticles(articles)

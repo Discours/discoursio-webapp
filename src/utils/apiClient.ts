@@ -225,6 +225,10 @@ export const apiClient = {
   getPublishedArticles: async ({ limit = FEED_SIZE, offset }: { limit?: number; offset?: number }) => {
     const response = await publicGraphQLClient.query(articlesRecentPublished, { limit, offset }).toPromise()
 
+    if (response.error) {
+      log.error('getPublishedArticles', response.error)
+    }
+
     return response.data.recentPublished
   },
   getAllTopics: async () => {

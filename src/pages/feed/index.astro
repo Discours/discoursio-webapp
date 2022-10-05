@@ -12,5 +12,5 @@ const articles = await apiClient.getRecentArticles({ limit: 50 })
 ---
 
 <Zine>
-  <Root articles={articles} client:load />
+  <Root feedArticles={articles} client:load />
 </Zine>

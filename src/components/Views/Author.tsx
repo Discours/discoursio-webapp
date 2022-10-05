@@ -16,6 +16,7 @@ import { useRouter } from '../../stores/router'
 type AuthorProps = {
   authorArticles: Shout[]
   author: Author
+  authorSlug: string
   // FIXME author topics fro server
   // topics: Topic[]
 }
@@ -30,17 +31,8 @@ export const AuthorView = (props: AuthorProps) => {
   })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
-  const author = createMemo(() => authorEntities()[props.author.slug])
+  const author = createMemo(() => authorEntities()[props.authorSlug])
   const { getSearchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
-
-  //const slug = createMemo(() => author().slug)
-  /*
-  const slug = createMemo<string>(() => {
-    let slug = props?.slug
-    if (props?.slug.startsWith('@')) slug = slug.replace('@', '')
-    return slug
-  })
-  */
 
   const title = createMemo(() => {
     const m = getSearchParams().by
@@ -101,8 +93,8 @@ export const AuthorView = (props: AuthorProps) => {
               {/*/>*/}
               <Row3 articles={sortedArticles().slice(1, 4)} />
               <Row2 articles={sortedArticles().slice(4, 6)} />
-              <Row3 articles={sortedArticles().slice(10, 13)} />
-              <Row3 articles={sortedArticles().slice(13, 16)} />
+              <Row3 articles={sortedArticles().slice(6, 9)} />
+              <Row3 articles={sortedArticles().slice(9, 12)} />
             </Show>
           </div>
         </div>

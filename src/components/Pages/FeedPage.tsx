@@ -1,11 +1,30 @@
 import { MainLayout } from '../Layouts/MainLayout'
 import { FeedView } from '../Views/Feed'
 import type { PageProps } from '../types'
+import { createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { loadRecentArticles, resetSortedArticles } from '../../stores/zine/articles'
+import { t } from '../../utils/intl'
 
 export const FeedPage = (props: PageProps) => {
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.feedArticles))
+
+  onMount(async () => {
+    if (isLoaded()) {
+      return
+    }
+
+    await loadRecentArticles({ limit: 50, offset: 0 })
+
+    setIsLoaded(true)
+  })
+
+  onCleanup(() => resetSortedArticles())
+
   return (
     <MainLayout>
-      <FeedView articles={props.articles} />
+      <Show when={isLoaded()} fallback={t('Loading')}>
+        <FeedView articles={props.feedArticles} />
+      </Show>
     </MainLayout>
   )
 }

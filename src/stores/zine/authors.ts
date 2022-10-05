@@ -1,6 +1,6 @@
 import { apiClient } from '../../utils/apiClient'
 import type { Author } from '../../graphql/types.gen'
-import { byCreated } from '../../utils/sortby'
+import { byCreated, byStat, byTopicStatDesc } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
 import { createSignal } from 'solid-js'
@@ -8,9 +8,11 @@ import { createLazyMemo } from '@solid-primitives/memo'
 
 const log = getLogger('authors store')
 
-export type AuthorsSortBy = 'created' | 'name'
+export type AuthorsSortBy = 'shouts' | 'name' | 'rating'
 
-const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('created')
+const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('shouts')
+
+export { setSortAllBy }
 
 const [authorEntities, setAuthorEntities] = createSignal<{ [authorSlug: string]: Author }>({})
 const [authorsByTopic, setAuthorsByTopic] = createSignal<{ [topicSlug: string]: Author[] }>({})
@@ -18,16 +20,21 @@ const [authorsByTopic, setAuthorsByTopic] = createSignal<{ [topicSlug: string]: 
 const sortedAuthors = createLazyMemo(() => {
   const authors = Object.values(authorEntities())
   switch (sortAllBy()) {
-    case 'created': {
-      // log.debug('sorted by created')
-      authors.sort(byCreated)
+    // case 'created': {
+    //   log.debug('sorted by created')
+    //   authors.sort(byCreated)
+    //   break
+    // }
+    case 'rating':
+      // TODO:
       break
-    }
-    case 'name': {
-      // log.debug('sorted by name')
+    case 'shouts':
+      // TODO:
+      break
+    case 'name':
+      log.debug('sorted by name')
       authors.sort((a, b) => a.name.localeCompare(b.name))
       break
-    }
   }
   return authors
 })
@@ -44,6 +51,13 @@ const addAuthors = (authors: Author[]) => {
       ...newAuthorEntities
     }
   })
+}
+
+export const loadAuthor = async ({ slug }: { slug: string }): Promise<void> => {
+  // TODO:
+  const articles = await apiClient.getArticlesForAuthors({ authorSlugs: [slug], limit: 1 })
+  const author = articles[0].authors.find((a) => a.slug === slug)
+  addAuthors([author])
 }
 
 export const addAuthorsByTopic = (newAuthorsByTopic: { [topicSlug: string]: Author[] }) => {

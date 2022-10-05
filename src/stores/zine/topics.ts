@@ -92,6 +92,18 @@ export const loadAllTopics = async (): Promise<void> => {
   addTopics(topics)
 }
 
+export const loadRandomTopics = async (): Promise<void> => {
+  const topics = await apiClient.getRandomTopics({ amount: 12 })
+  setRandomTopics(topics)
+}
+
+export const loadTopic = async ({ slug }: { slug: string }): Promise<void> => {
+  // TODO:
+  const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: 1 })
+  const topic = articles[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
+  addTopics([topic])
+}
+
 type InitialState = {
   topics?: Topic[]
   randomTopics?: Topic[]

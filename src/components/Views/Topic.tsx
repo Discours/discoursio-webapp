@@ -19,6 +19,7 @@ type TopicsPageSearchParams = {
 interface TopicProps {
   topic: Topic
   topicArticles: Shout[]
+  topicSlug: string
 }
 
 export const TopicView = (props: TopicProps) => {
@@ -29,7 +30,7 @@ export const TopicView = (props: TopicProps) => {
 
   const { authorsByTopic } = useAuthorsStore()
 
-  const topic = createMemo(() => topicEntities()[props.topic.slug])
+  const topic = createMemo(() => topicEntities()[props.topicSlug])
 
   /*
   const slug = createMemo<string>(() => {
@@ -40,11 +41,10 @@ export const TopicView = (props: TopicProps) => {
   */
 
   const title = createMemo(() => {
-    // FIXME
-    // const m = getSearchParams().by
-    // if (m === 'viewed') return t('Top viewed')
-    // if (m === 'rating') return t('Top rated')
-    // if (m === 'commented') return t('Top discussed')
+    const m = getSearchParams().by
+    if (m === 'viewed') return t('Top viewed')
+    if (m === 'rating') return t('Top rated')
+    if (m === 'commented') return t('Top discussed')
     return t('Top recent')
   })
 

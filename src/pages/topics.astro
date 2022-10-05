@@ -6,13 +6,11 @@ import { initRouter } from '../stores/router'
 
 const topics = await apiClient.getAllTopics()
 
-Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
-
 const { pathname, search } = Astro.url
 initRouter(pathname, search)
 ---
 
 <Zine>
-  <Root topics={topics} client:load />
+  <Root allTopics={topics} client:load />
 </Zine>
 

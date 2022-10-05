@@ -71,7 +71,7 @@ export const Header = (props: Props) => {
   onMount(() => {
     let scrollTop = window.scrollY
 
-    window.console.log(props.title)
+    // window.console.log(props.title)
 
     const handleScroll = () => {
       setIsScrollingBottom(window.scrollY > scrollTop)

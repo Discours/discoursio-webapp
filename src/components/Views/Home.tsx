@@ -1,4 +1,4 @@
-import { createMemo, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, For, onMount, Show } from 'solid-js'
 import Banner from '../Discours/Banner'
 import { NavTopics } from '../Nav/Topics'
 import { Row5 } from '../Feed/Row5'
@@ -103,7 +103,7 @@ export const HomeView = (props: HomeProps) => {
   })
 
   return (
-    <Show when={locale()}>
+    <Show when={locale() && sortedArticles().length > 0}>
       <NavTopics topics={randomTopics()} />
 
       <Row5 articles={sortedArticles().slice(0, 5)} />

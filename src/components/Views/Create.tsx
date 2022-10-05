@@ -7,6 +7,9 @@ import Editor from '../Editor'
 import { Sidebar } from '../Editor/Sidebar'
 import ErrorView from '../Editor/Error'
 import { newState } from '../Editor/store'
+import { getLogger } from '../../utils/logger'
+
+const log = getLogger('CreateView')
 
 export const CreateView = () => {
   const [store, ctrl] = createCtrl(newState())

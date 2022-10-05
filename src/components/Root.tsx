@@ -26,6 +26,7 @@ import { PartnersPage } from './Pages/about/PartnersPage'
 import { ProjectsPage } from './Pages/about/ProjectsPage'
 import { TermsOfUsePage } from './Pages/about/TermsOfUsePage'
 import { ThanksPage } from './Pages/about/ThanksPage'
+import { CreatePage } from './Pages/CreatePage'
 
 // TODO: lazy load
 // const HomePage = lazy(() => import('./Pages/HomePage'))
@@ -49,6 +50,7 @@ import { ThanksPage } from './Pages/about/ThanksPage'
 const log = getLogger('root')
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
+  create: CreatePage,
   home: HomePage,
   topics: AllTopicsPage,
   topic: TopicPage,

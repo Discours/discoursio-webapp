@@ -110,7 +110,7 @@ export const HomeView = (props: HomeProps) => {
 
       <Hero />
 
-      <Show when={sortedArticles().length > 5}>
+      <Show when={sortedArticles().length > PRERENDERED_ARTICLES_COUNT}>
         <Beside
           beside={sortedArticles()[5]}
           title={t('Top viewed')}

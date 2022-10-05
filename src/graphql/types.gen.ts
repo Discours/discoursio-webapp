@@ -767,7 +767,6 @@ export type User = {
   updatedAt?: Maybe<Scalars['DateTime']>
   username: Scalars['String']
   userpic?: Maybe<Scalars['String']>
-  wasOnlineAt?: Maybe<Scalars['DateTime']>
 }
 
 export type UserFollowings = {

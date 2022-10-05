@@ -176,6 +176,10 @@ export const apiClient = {
       })
       .toPromise()
 
+    if (response.error) {
+      log.error('getArticlesForTopics', response.error)
+    }
+
     return response.data.shoutsByTopics
   },
   getArticlesForAuthors: async ({
@@ -194,6 +198,10 @@ export const apiClient = {
         offset
       })
       .toPromise()
+
+    if (response.error) {
+      log.error('getArticlesForAuthors', response.error)
+    }
 
     return response.data.shoutsByAuthors
   },

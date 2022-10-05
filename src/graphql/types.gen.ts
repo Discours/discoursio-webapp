@@ -344,6 +344,7 @@ export type Query = {
   getUsersBySlugs: Array<Maybe<User>>
   isEmailUsed: Scalars['Boolean']
   loadChat: Array<Maybe<Message>>
+  markdownBody: Scalars['String']
   myChats: Array<Maybe<ChatResult>>
   reactionsByAuthor: Array<Maybe<Reaction>>
   reactionsByShout: Array<Maybe<Reaction>>
@@ -409,6 +410,10 @@ export type QueryLoadChatArgs = {
   chatId: Scalars['String']
   page: Scalars['Int']
   size: Scalars['Int']
+}
+
+export type QueryMarkdownBodyArgs = {
+  body: Scalars['String']
 }
 
 export type QueryReactionsByAuthorArgs = {

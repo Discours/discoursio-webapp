@@ -35,7 +35,7 @@ export const AllAuthorsView = (props: Props) => {
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce((acc, author) => {
-      const letter = author.name[0]
+      const letter = author.name[0].toUpperCase()
       if (!acc[letter]) {
         acc[letter] = []
       }

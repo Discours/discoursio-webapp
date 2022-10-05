@@ -56,7 +56,7 @@ const ru2en: { [key: string]: string } = {
   ь: 'i',
   Ы: 'Y',
   ы: 'y',
-  ъ: "'",
+  ъ: 'j',
   Э: 'E',
   э: 'e',
   Ю: 'Yu',

@@ -7,7 +7,7 @@ import { reduceBy } from '../../utils/reduce'
 // FIXME
 
 let reactionsOrdered: WritableAtom<Reaction[]>
-const reactions = atom<{ [slug: string]: Reaction[] }>({}) // by shout
+export const reactions = atom<{ [slug: string]: Reaction[] }>({}) // by shout
 
 export const useReactionsStore = (initial?: Reaction[]) => {
   if (!reactionsOrdered) {

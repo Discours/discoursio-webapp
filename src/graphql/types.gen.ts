@@ -157,7 +157,7 @@ export type Mutation = {
   markAsRead: Result
   rateUser: Result
   refreshSession: AuthResult
-  registerUser: User
+  registerUser: AuthResult
   removeAuthor: Result
   sendLink: Result
   unfollow: Result

@@ -16,7 +16,7 @@ export const roomConnect = (
     filterBcConns: true,
     maxConns: 33,
     signaling: [
-      // 'wss://signaling.discours.io',
+      'wss://signaling.discours.io',
       // 'wss://stun.l.google.com:19302',
       'wss://y-webrtc-signaling-eu.herokuapp.com',
       'wss://signaling.yjs.dev'

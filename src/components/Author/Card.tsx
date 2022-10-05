@@ -22,11 +22,8 @@ interface AuthorCardProps {
 export const AuthorCard = (props: AuthorCardProps) => {
   const { session } = useAuthStore()
 
-  const subscribed = createMemo(
-    () =>
-      !!session()
-        ?.news?.authors?.filter((u) => u === props.author.slug)
-        .pop()
+  const subscribed = createMemo<boolean>(
+    () => session()?.news?.authors?.some((u) => u === props.author.slug) || false
   )
   const canFollow = createMemo(() => !props.hideFollow && session()?.user?.slug !== props.author.slug)
   const bio = () => props.author.bio || t('Our regular contributor')
@@ -37,57 +34,53 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
   // TODO: reimplement AuthorCard
   return (
-    <>
-      <Show when={props.author?.slug}>
-        <div class="author">
-          <Userpic user={props.author} hasLink={props.hasLink} />
+    <div class="author">
+      <Userpic user={props.author} hasLink={props.hasLink} />
 
-          <div class="author__details">
-            <div class="author__details-wrapper">
-              <Show when={props.hasLink}>
-                <a class="author__name text-3xl text-2xl" href={`/author/${props.author.slug}`}>
-                  {name()}
-                </a>
-              </Show>
-              <Show when={!props.hasLink}>
-                <div class="author__name text-3xl text-2xl">{name()}</div>
-              </Show>
+      <div class="author__details">
+        <div class="author__details-wrapper">
+          <Show when={props.hasLink}>
+            <a class="author__name text-3xl text-2xl" href={`/author/${props.author.slug}`}>
+              {name()}
+            </a>
+          </Show>
+          <Show when={!props.hasLink}>
+            <div class="author__name text-3xl text-2xl">{name()}</div>
+          </Show>
 
-              <Show when={!props.hideDescription}>
-                <div class="author__about">{bio()}</div>
-              </Show>
-            </div>
+          <Show when={!props.hideDescription}>
+            <div class="author__about">{bio()}</div>
+          </Show>
+        </div>
 
-            <Show when={canFollow()}>
-              <div class="author__subscribe">
-                <Show
-                  when={subscribed()}
-                  fallback={
-                    <button onClick={() => follow} class="button button--subscribe">
-                      <Icon name="author-subscribe" />
-                      <span class="button__label">+&nbsp;{t('Follow')}</span>
-                    </button>
-                  }
-                >
-                  <button onClick={() => unfollow} class="button button--subscribe">
-                    <Icon name="author-unsubscribe" />
-                    <span class="button__label">-&nbsp;{t('Unfollow')}</span>
-                  </button>
-                </Show>
+        <Show when={canFollow()}>
+          <div class="author__subscribe">
+            <Show
+              when={subscribed()}
+              fallback={
+                <button onClick={() => follow} class="button button--subscribe">
+                  <Icon name="author-subscribe" />
+                  <span class="button__label">+&nbsp;{t('Follow')}</span>
+                </button>
+              }
+            >
+              <button onClick={() => unfollow} class="button button--subscribe">
+                <Icon name="author-unsubscribe" />
+                <span class="button__label">-&nbsp;{t('Unfollow')}</span>
+              </button>
+            </Show>
 
-                <Show when={!props.compact}>
-                  <button class="button button--write">
-                    <Icon name="edit" />
-                    {t('Write')}
-                  </button>
+            <Show when={!props.compact}>
+              <button class="button button--write">
+                <Icon name="edit" />
+                {t('Write')}
+              </button>
 
-                  <For each={props.author.links}>{(link: string) => <a href={link} />}</For>
-                </Show>
-              </div>
+              <For each={props.author.links}>{(link) => <a href={link} />}</For>
             </Show>
           </div>
-        </div>
-      </Show>
-    </>
+        </Show>
+      </div>
+    </div>
   )
 }

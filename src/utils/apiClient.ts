@@ -221,12 +221,21 @@ export const apiClient = {
   },
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
+    if (response.error) {
+      log.debug('getAllTopics', response.error)
+    }
     return response.data.topicsAll
   },
-
   getAllAuthors: async () => {
     const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
+    if (response.error) {
+      log.debug('getAllAuthors', response.error)
+    }
     return response.data.authorsAll
+  },
+  getAuthor: async ({ slug }: { slug: string }) => {
+    const response = await publicGraphQLClient.query(authorsBySlugs, { slugs: [slug] }).toPromise()
+    return response.data.getUsersBySlugs
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
     const response = await publicGraphQLClient.query(articleBySlug, { slug }).toPromise()

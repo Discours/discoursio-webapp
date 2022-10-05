@@ -4,14 +4,12 @@ import './Full.scss'
 
 export default (props: { author: Author }) => {
   return (
-    <>
-      <div class="container">
-        <div class="row">
-          <div class="user-details">
-            <AuthorCard author={props.author} compact={false} />
-          </div>
+    <div class="container">
+      <div class="row">
+        <div class="user-details">
+          <AuthorCard author={props.author} compact={false} />
         </div>
       </div>
-    </>
+    </div>
   )
 }

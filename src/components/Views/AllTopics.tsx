@@ -1,4 +1,4 @@
-import { createEffect, For, Show } from 'solid-js'
+import { createEffect, createMemo, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
@@ -31,6 +31,25 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   createEffect(() => {
     setSortAllTopicsBy(getSearchParams().by || 'shouts')
+  })
+
+  const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
+    return sortedTopics().reduce((acc, topic) => {
+      const letter = topic.title[0]
+      if (!acc[letter]) {
+        acc[letter] = []
+      }
+
+      acc[letter].push(topic)
+
+      return acc
+    }, {} as { [letter: string]: Topic[] })
+  })
+
+  const sortedKeys = createMemo<string[]>(() => {
+    const keys = Object.keys(byLetter())
+    keys.sort()
+    return keys
   })
 
   const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
@@ -80,48 +99,39 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                   </li>
                 </ul>
 
-                <div class="stats">
-                  <For each={sortedTopics()}>
-                    {(topic) => (
-                      <TopicCard topic={topic} compact={false} subscribed={subscribed(topic.slug)} />
+                <Show
+                  when={getSearchParams().by === 'title'}
+                  fallback={() => (
+                    <div class="stats">
+                      <For each={sortedTopics()}>
+                        {(topic) => (
+                          <TopicCard topic={topic} compact={false} subscribed={subscribed(topic.slug)} />
+                        )}
+                      </For>
+                    </div>
+                  )}
+                >
+                  <For each={sortedKeys()}>
+                    {(letter) => (
+                      <div class="group">
+                        <h2>{letter}</h2>
+                        <div class="container">
+                          <div class="row">
+                            <For each={byLetter()[letter]}>
+                              {(topic) => (
+                                <div class="topic col-sm-6 col-md-3">
+                                  <div class="topic-title">
+                                    <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                                  </div>
+                                </div>
+                              )}
+                            </For>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </For>
-                </div>
-
-                {/*FIXME*/}
-                {/*<Show*/}
-                {/*  when={params()['by'] === 'abc'}*/}
-                {/*  fallback={() => (*/}
-                {/*    <div class="stats">*/}
-                {/*      <For each={getSortedTopics()}>*/}
-                {/*        {(topic: Topic) => (*/}
-                {/*          <TopicCard topic={topic} compact={false} subscribed={subscribed(topic.slug)} />*/}
-                {/*        )}*/}
-                {/*      </For>*/}
-                {/*    </div>*/}
-                {/*  )}*/}
-                {/*>*/}
-                {/*  <For each={sortedKeys() || []}>*/}
-                {/*    {(letter: string) => (*/}
-                {/*      <div class="group">*/}
-                {/*        <h2>{letter}</h2>*/}
-                {/*        <div class="container">*/}
-                {/*          <div class="row">*/}
-                {/*            <For each={abc()[letter]}>*/}
-                {/*              {(topic: Partial<Topic>) => (*/}
-                {/*                <div class="topic col-sm-6 col-md-3">*/}
-                {/*                  <div class="topic-title">*/}
-                {/*                    <a href={`/topic/${topic.slug}`}>{topic.title}</a>*/}
-                {/*                  </div>*/}
-                {/*                </div>*/}
-                {/*              )}*/}
-                {/*            </For>*/}
-                {/*          </div>*/}
-                {/*        </div>*/}
-                {/*      </div>*/}
-                {/*    )}*/}
-                {/*  </For>*/}
-                {/*</Show>*/}
+                </Show>
               </div>
             </div>
           </div>

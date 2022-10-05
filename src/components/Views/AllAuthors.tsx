@@ -1,15 +1,14 @@
-import { createEffect, createSignal, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
-import { byFirstChar, sortBy } from '../../utils/sortby'
-import { groupByName } from '../../utils/groupby'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
-import { useAuthorsStore } from '../../stores/zine/authors'
+import { useAuthorsStore, setSortAllBy as setSortAllAuthorsBy } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { useAuthStore } from '../../stores/auth'
 import { getLogger } from '../../utils/logger'
 import '../../styles/AllTopics.scss'
+import { Topic } from '../../graphql/types.gen'
 
 const log = getLogger('AllAuthorsView')
 
@@ -23,31 +22,37 @@ type Props = {
 
 export const AllAuthorsView = (props: Props) => {
   const { sortedAuthors } = useAuthorsStore({ authors: props.authors })
-  const [sortedKeys, setSortedKeys] = createSignal<string[]>([])
-  const [abc, setAbc] = createSignal([])
 
   const { session } = useAuthStore()
+
+  createEffect(() => {
+    setSortAllAuthorsBy(getSearchParams().by || 'shouts')
+  })
 
   const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
 
   const { getSearchParams } = useRouter<AllAuthorsPageSearchParams>()
 
-  createEffect(() => {
-    if ((!getSearchParams().by || getSearchParams().by === 'name') && abc().length === 0) {
-      console.log('[authors] default grouping by abc')
-      const grouped = { ...groupByName(sortedAuthors()) }
-      grouped['A-Z'] = sortBy(grouped['A-Z'], byFirstChar)
-      setAbc(grouped)
-      const keys = Object.keys(abc)
-      keys.sort()
-      setSortedKeys(keys)
-    } else {
-      console.log('[authors] sorting by ' + getSearchParams().by)
-      ///setSortedAuthors(sortBy(authorList(), getSearchParams().by))
-    }
+  const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
+    return sortedAuthors().reduce((acc, author) => {
+      const letter = author.name[0]
+      if (!acc[letter]) {
+        acc[letter] = []
+      }
+
+      acc[letter].push(author)
+
+      return acc
+    }, {} as { [letter: string]: Author[] })
   })
 
-  log.debug(getSearchParams())
+  const sortedKeys = createMemo<string[]>(() => {
+    const keys = Object.keys(byLetter())
+    keys.sort()
+    return keys
+  })
+
+  // log.debug(getSearchParams())
 
   return (
     <div class="all-topics-page">
@@ -108,7 +113,7 @@ export const AllAuthorsView = (props: Props) => {
                         <h2>{letter}</h2>
                         <div class="container">
                           <div class="row">
-                            <For each={abc()[letter]}>
+                            <For each={byLetter()[letter]}>
                               {(author: Author) => (
                                 <div class="topic col-sm-6 col-md-3">
                                   <div class="topic-title">

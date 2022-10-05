@@ -15,7 +15,7 @@ export const TopicPage = (props: PageProps) => {
 
     const page = getPage()
 
-    if (page.route !== 'author') {
+    if (page.route !== 'topic') {
       throw new Error('ts guard')
     }
 

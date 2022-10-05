@@ -9,7 +9,7 @@ export const FourOuFourView = (_props) => {
       <div class={styles.errorPage}>
         <div class="container">
           <div class="row">
-            <div class="col-md-7 offset-md-3">
+            <div class="col-md-7 offset-md-3 col-lg-6">
               <a href="/" class="image-link">
                 <img class={styles.errorImage} src="/error.svg" alt="error" width="auto" height="auto" />
               </a>
@@ -22,7 +22,7 @@ export const FourOuFourView = (_props) => {
                 <div class={styles.big}>404</div>
               </div>
             </div>
-            <div class={clsx(styles.searchFormContainer, 'col-sm-5 col-md-4')}>
+            <div class={clsx(styles.searchFormContainer, 'col-sm-5 col-md-4 col-lg-3')}>
               <div class={styles.errorExplain}>
                 <p>{t(`You've reached a non-existed page`)}</p>
                 <p>{t('Try to find another way')}:</p>

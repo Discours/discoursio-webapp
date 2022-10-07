@@ -1,12 +1,11 @@
 import { Show, onCleanup, createEffect, onError, onMount, untrack } from 'solid-js'
 import { createMutable, unwrap } from 'solid-js/store'
-import { State, StateContext } from '../Editor/prosemirror/context'
+import { State, StateContext, newState } from '../Editor/store'
 import { createCtrl } from '../Editor/store/ctrl'
 import { Layout } from '../Editor/Layout'
 import Editor from '../Editor'
 import { Sidebar } from '../Editor/Sidebar'
 import ErrorView from '../Editor/Error'
-import { newState } from '../Editor/store'
 import { getLogger } from '../../utils/logger'
 
 const log = getLogger('CreateView')
@@ -15,7 +14,7 @@ export const CreateView = () => {
   const [store, ctrl] = createCtrl(newState())
   const mouseEnterCoords = createMutable({ x: 0, y: 0 })
 
-  const onMouseEnter = (e: any) => {
+  const onMouseEnter = (e: MouseEvent) => {
     mouseEnterCoords.x = e.pageX
     mouseEnterCoords.y = e.pageY
   }

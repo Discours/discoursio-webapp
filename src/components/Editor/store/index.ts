@@ -3,7 +3,13 @@ import type { Store } from 'solid-js/store'
 import type { XmlFragment } from 'yjs'
 import type { WebrtcProvider } from 'y-webrtc'
 import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/state'
-import { isMac } from '../prosemirror/context'
+import type { Reaction } from '../../../graphql/types.gen'
+import type { EditorView } from 'prosemirror-view'
+
+export const isMac = true
+
+export const mod = isMac ? 'Cmd' : 'Ctrl'
+export const alt = isMac ? 'Cmd' : 'Alt'
 
 export interface Args {
   cwd?: string
@@ -32,8 +38,9 @@ export interface Config {
 }
 
 export interface ErrorObject {
+  message: string
   id: string
-  props?: unknown
+  props: unknown
 }
 
 export interface YOptions {
@@ -59,7 +66,7 @@ export interface File {
 
 export interface State {
   text?: ProseMirrorState
-  editorView?: any
+  editorView?: EditorView
   extensions?: ProseMirrorExtension[]
   markdown?: boolean
   lastModified?: Date
@@ -77,7 +84,24 @@ export class ServiceError extends Error {
   public errorObject: ErrorObject
   constructor(id: string, props: unknown) {
     super(id)
-    this.errorObject = { id, props }
+    this.errorObject = { id, props, message: '' }
+  }
+}
+
+const DEFAULT_CONFIG = {
+  theme: '',
+  // codeTheme: 'material-light',
+  font: 'muller',
+  fontSize: 24,
+  contentWidth: 800,
+  alwaysOnTop: isMac,
+  // typewriterMode: true,
+  prettier: {
+    printWidth: 80,
+    tabWidth: 2,
+    useTabs: false,
+    semi: false,
+    singleQuote: true
   }
 }
 
@@ -91,21 +115,6 @@ export const newState = (props: Partial<State> = {}): State => ({
   loading: 'loading',
   fullscreen: false,
   markdown: false,
-  config: {
-    theme: 'light',
-    // codeTheme: 'material-light',
-    font: 'muller',
-    fontSize: 24,
-    contentWidth: 800,
-    alwaysOnTop: isMac,
-    // typewriterMode: true,
-    prettier: {
-      printWidth: 80,
-      tabWidth: 2,
-      useTabs: false,
-      semi: false,
-      singleQuote: true
-    }
-  },
+  config: DEFAULT_CONFIG,
   ...props
 })

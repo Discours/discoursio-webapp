@@ -3,14 +3,13 @@ import './Full.scss'
 import { Icon } from '../Nav/Icon'
 import ArticleComment from './Comment'
 import { AuthorCard } from '../Author/Card'
-import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createMemo, For, onMount, Show } from 'solid-js'
 import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { incrementView } from '../../stores/zine/articles'
-import { renderMarkdown } from '@astrojs/markdown-remark'
-import { markdownOptions } from '../../../mdx.config'
+import MD from './MD'
 
 const MAX_COMMENT_LEVEL = 6
 
@@ -38,23 +37,8 @@ const formatDate = (date: Date) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
-  const [body, setBody] = createSignal(props.article.body?.startsWith('<') ? props.article.body : '')
-
+  const body = createMemo(() => props.article.body.toString().trim())
   const { session } = useAuthStore()
-
-  createEffect(() => {
-    if (body() || !props.article.body) {
-      return
-    }
-
-    if (props.article.body.startsWith('<')) {
-      setBody(props.article.body)
-    } else {
-      renderMarkdown(props.article.body, markdownOptions)
-        .then(({ code }) => setBody(code))
-        .catch(console.error)
-    }
-  })
 
   onMount(() => {
     incrementView({ articleSlug: props.article.slug })
@@ -110,7 +94,7 @@ export const FullArticle = (props: ArticleProps) => {
         </div>
 
         <div class="shout__body">
-          <div innerHTML={body()} />
+          <MD body={body()} />
         </div>
       </article>
 

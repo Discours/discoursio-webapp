@@ -1,15 +1,10 @@
 import { defineConfig, AstroUserConfig } from 'astro/config'
 import vercel from '@astrojs/vercel/serverless'
-// import node from '@astrojs/node'
 import solidJs from '@astrojs/solid-js'
-import mdx from '@astrojs/mdx'
-// import partytown from '@astrojs/partytown'
-import { markdownOptions as markdown } from './mdx.config'
-// import sitemap from '@astrojs/sitemap'
 import type { CSSOptions } from 'vite'
 import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
-import { fileURLToPath, URL } from 'url'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const PATH_PREFIX = '/src/'
 
@@ -37,33 +32,49 @@ const css: CSSOptions = {
 
 const astroConfig: AstroUserConfig = {
   site: 'https://new.discours.io',
-  // Enable Solid to support Solid JSX components.
-  // experimental: { integrations: true },
-  integrations: [solidJs(), mdx()],
-  // sitemap({
-  /*  customPages: [
-      '',
-      '/feed',
-      '/search',
-      'topics',
-      'authors'
-    ]
-  })],*/
-  //, partytown({})],
-  markdown,
+  integrations: [solidJs()],
   output: 'server',
   adapter: vercel(),
   vite: {
     build: {
-      chunkSizeWarningLimit: 777,
       rollupOptions: {
+        plugins: [visualizer()],
+        output: {
+          // eslint-disable-next-line sonarjs/cognitive-complexity
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              let chunkid = 'vendor'
+              if (id.includes('solid')) {
+                chunkid = 'solid'
+              }
+              if (id.includes('acorn')) {
+                chunkid = 'acorn'
+              }
+              if (id.includes('simple-peer')) {
+                chunkid = 'simple-peer'
+              }
+              if (id.includes('prosemirror')) {
+                chunkid = 'prosemirror'
+              }
+              if (id.includes('markdown') || id.includes('mdurl')) {
+                chunkid = 'markdown'
+              }
+              if (id.includes('swiper')) {
+                chunkid = 'swiper'
+              }
+              if (
+                id.includes('yjs') ||
+                id.includes('y-prosemirror') ||
+                id.includes('y-protocols') ||
+                id.includes('y-webrtc')
+              ) {
+                chunkid = 'yjs'
+              }
+              return chunkid
+            }
+          }
+        },
         external: ['@aws-sdk/clients/s3']
-      }
-    },
-    resolve: {
-      alias: {
-        './runtimeConfig': './runtimeConfig.browser',
-        '@': fileURLToPath(new URL('src', import.meta.url))
       }
     },
     css

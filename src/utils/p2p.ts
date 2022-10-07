@@ -10,7 +10,7 @@ export const roomConnect = (
   keyname = 'reactions'
 ): [Y.XmlFragment, WebrtcProvider] => {
   const ydoc = new Y.Doc()
-  const yxmlfrag = ydoc.getXmlFragment(keyname) // TODO: encode/decode payload to Reactions[]
+  const yxmlfrag = ydoc.getXmlFragment(keyname) // TODO: use ydoc.getArray(keyname) as Reactions[]
   const webrtcOptions = {
     awareness: new Awareness(ydoc),
     filterBcConns: true,

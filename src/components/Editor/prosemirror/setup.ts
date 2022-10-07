@@ -15,7 +15,7 @@ import dragHandle from './extension/drag-handle'
 import pasteMarkdown from './extension/paste-markdown'
 import table from './extension/table'
 import collab from './extension/collab'
-import type { Config, YOptions } from './context'
+import type { Config, YOptions } from '../store'
 import selectionMenu from './extension/selection'
 
 interface Opts {

@@ -26,6 +26,7 @@ const PartnersPage = lazy(() => import('./Pages/about/PartnersPage'))
 const ProjectsPage = lazy(() => import('./Pages/about/ProjectsPage'))
 const TermsOfUsePage = lazy(() => import('./Pages/about/TermsOfUsePage'))
 const ThanksPage = lazy(() => import('./Pages/about/ThanksPage'))
+const CreatePage = lazy(() => import('./Pages/CreatePage'))
 
 const log = getLogger('root')
 

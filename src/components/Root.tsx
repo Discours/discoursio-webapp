@@ -46,6 +46,7 @@ import { CreatePage } from './Pages/CreatePage'
 // const ProjectsPage = lazy(() => import('./Pages/about/ProjectsPage'))
 // const TermsOfUsePage = lazy(() => import('./Pages/about/TermsOfUsePage'))
 // const ThanksPage = lazy(() => import('./Pages/about/ThanksPage'))
+// const CreatePage = lazy(() => import('./Pages/about/CreatePage'))
 
 const log = getLogger('root')
 

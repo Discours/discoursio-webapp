@@ -1,6 +1,5 @@
-import { Switch, Match } from 'solid-js'
-import { useState } from './prosemirror/context'
-import './Button.scss'
+import { Switch, Match, createMemo } from 'solid-js'
+import { ErrorObject, useState } from './store'
 
 const InvalidState = (props: { title: string }) => {
   const [store, ctrl] = useState()
@@ -16,7 +15,7 @@ const InvalidState = (props: { title: string }) => {
           you can copy important notes from below, clean the state and paste it again.
         </p>
         <pre>
-          <code>{JSON.stringify(store.error?.props)}</code>
+          <code>{JSON.stringify(store.error)}</code>
         </pre>
         <button class="primary" onClick={onClick}>
           Clean
@@ -29,12 +28,7 @@ const InvalidState = (props: { title: string }) => {
 const Other = () => {
   const [store, ctrl] = useState()
   const onClick = () => ctrl.discard()
-
-  const getMessage = () => {
-    const err = (store.error?.props as any).error
-
-    return typeof err === 'string' ? err : err.message
-  }
+  const getMessage = createMemo<ErrorObject['message']>(() => store.error.message)
 
   return (
     <div class="error" data-tauri-drag-region="true">

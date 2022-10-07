@@ -1,6 +1,6 @@
 import { ySyncPlugin, yCursorPlugin, yUndoPlugin } from 'y-prosemirror'
 import type { ProseMirrorExtension } from '../state'
-import type { YOptions } from '../context'
+import type { YOptions } from '../../store'
 
 export const cursorBuilder = (user: any): HTMLElement => {
   const cursor = document.createElement('span')

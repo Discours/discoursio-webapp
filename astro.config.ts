@@ -44,6 +44,9 @@ const astroConfig: AstroUserConfig = {
           manualChunks(id) {
             if (id.includes('node_modules')) {
               let chunkid = 'vendor'
+              if (id.includes('solid')) {
+                chunkid = 'solid'
+              }
               if (id.includes('acorn')) {
                 chunkid = 'acorn'
               }
@@ -53,17 +56,11 @@ const astroConfig: AstroUserConfig = {
               if (id.includes('prosemirror')) {
                 chunkid = 'prosemirror'
               }
-              if (id.includes('markdown')) {
+              if (id.includes('markdown') || id.includes('mdurl')) {
                 chunkid = 'markdown'
               }
               if (id.includes('swiper')) {
                 chunkid = 'swiper'
-              }
-              if (id.includes('remark') || id.includes('rehype') || id.includes('micromark')) {
-                chunkid = 'remark'
-              }
-              if (id.includes('parse5')) {
-                chunkid = 'parse5'
               }
               if (
                 id.includes('yjs') ||

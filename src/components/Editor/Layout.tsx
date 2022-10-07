@@ -1,4 +1,4 @@
-import type { Config } from './store'
+import type { Config } from './prosemirror/context'
 import './Layout.scss'
 
 export type Styled = {

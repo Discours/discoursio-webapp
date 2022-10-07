@@ -100,7 +100,7 @@ export default (props: { code?: string; mode?: string }) => {
   const localAuth = async () => {
     console.log('[auth] native account processing')
     switch (mode()) {
-      case 'sign-in':
+      case 'sign-in': {
         try {
           await signIn({ email: emailElement?.value, password: passElement?.value })
         } catch (error) {
@@ -120,7 +120,8 @@ export default (props: { code?: string; mode?: string }) => {
         }
 
         break
-      case 'sign-up':
+      }
+      case 'sign-up': {
         if (pass2Element?.value !== passElement?.value) {
           setError(t('Passwords are not equal'))
         } else {
@@ -130,15 +131,18 @@ export default (props: { code?: string; mode?: string }) => {
           })
         }
         break
-      case 'reset':
+      }
+      case 'reset': {
         // send reset-code to login with email
         console.log('[auth] reset code: ' + codeElement?.value)
         // TODO: authReset(codeElement?.value)
         break
-      case 'resend':
+      }
+      case 'resend': {
         // TODO: authResend(emailElement?.value)
         break
-      case 'forget':
+      }
+      case 'forget': {
         // shows forget mode of auth-modal
         if (pass2Element?.value !== passElement?.value) {
           setError(t('Passwords are not equal'))
@@ -146,8 +150,10 @@ export default (props: { code?: string; mode?: string }) => {
           // TODO: authForget(passElement?.value)
         }
         break
-      default:
+      }
+      default: {
         console.log('[auth] unknown auth mode', mode())
+      }
     }
   }
 

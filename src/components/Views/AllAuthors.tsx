@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { createEffect, createMemo, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../Nav/Icon'
@@ -8,7 +8,6 @@ import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { useAuthStore } from '../../stores/auth'
 import { getLogger } from '../../utils/logger'
 import '../../styles/AllTopics.scss'
-import { Topic } from '../../graphql/types.gen'
 
 const log = getLogger('AllAuthorsView')
 

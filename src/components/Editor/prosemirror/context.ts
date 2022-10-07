@@ -1,13 +1,11 @@
 import { createContext, useContext } from 'solid-js'
 import type { Store } from 'solid-js/store'
-import type { XmlFragment } from 'yjs'
 import type { WebrtcProvider } from 'y-webrtc'
-import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/state'
-import type { Reaction } from '../../../graphql/types.gen'
+import type { ProseMirrorExtension, ProseMirrorState } from './state'
 import type { EditorView } from 'prosemirror-view'
+import type { YXmlFragment } from 'yjs/dist/src/internals'
 
-export const isMac = true
-
+export const isMac = true // FIXME
 export const mod = isMac ? 'Cmd' : 'Ctrl'
 export const alt = isMac ? 'Cmd' : 'Alt'
 
@@ -15,7 +13,7 @@ export interface Args {
   cwd?: string
   file?: string
   room?: string
-  text?: any
+  text?: string
 }
 
 export interface PrettierConfig {
@@ -43,8 +41,8 @@ export interface ErrorObject {
   props: unknown
 }
 
-export interface YOptions {
-  type: XmlFragment
+export interface PeerData {
+  payload: YXmlFragment
   provider: WebrtcProvider
 }
 
@@ -52,13 +50,13 @@ export interface Collab {
   started?: boolean
   error?: boolean
   room?: string
-  y?: YOptions
+  y?: PeerData
 }
 
 export type LoadingType = 'loading' | 'initialized'
 
 export interface File {
-  text?: { [key: string]: any }
+  text?: { [key: string]: string }
   lastModified?: string
   path?: string
   markdown?: boolean

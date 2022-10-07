@@ -21,24 +21,29 @@ const sortedTopics = createLazyMemo<Topic[]>(() => {
   const topics = Object.values(topicEntities())
 
   switch (sortAllBy()) {
-    case 'created':
+    case 'created': {
       // log.debug('sorted by created')
       topics.sort(byCreated)
       break
-    case 'shouts':
+    }
+    case 'shouts': {
       // log.debug(`sorted by shouts`)
       topics.sort(byTopicStatDesc('shouts'))
       break
-    case 'authors':
+    }
+    case 'authors': {
       // log.debug(`sorted by authors`)
       topics.sort(byTopicStatDesc('authors'))
       break
-    case 'title':
+    }
+    case 'title': {
       // log.debug('sorted by title')
       topics.sort((a, b) => a.title.localeCompare(b.title))
       break
-    default:
+    }
+    default: {
       log.error(`Unknown sort: ${sortAllBy()}`)
+    }
   }
 
   return topics

@@ -4,23 +4,20 @@ import type { EditorState } from 'prosemirror-state'
 import { undo, redo } from 'prosemirror-history'
 import { selectAll, deleteSelection } from 'prosemirror-commands'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
-import { debounce } from 'ts-debounce'
-// import * as remote from '../prosemirror/remote'
-import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
-import { State, File, Config, ServiceError, newState } from '.'
-// import { isTauri, mod } from '../env'
+import { debounce } from 'lodash'
+import { createSchema, createExtensions, createEmptyText, InitOpts } from '../prosemirror/setup'
+import { State, File, Config, ServiceError, newState, PeerData } from '../prosemirror/context'
 import { serialize, createMarkdownParser } from '../prosemirror/markdown'
-import { isEmpty, isInitialized } from '../prosemirror/state'
+import { isEmpty, isInitialized, ProseMirrorExtension } from '../prosemirror/state'
 import { isServer } from 'solid-js/web'
-import { roomConnect } from '../../../utils/p2p'
+import { roomConnect } from '../prosemirror/p2p'
 
 const mod = 'Ctrl'
-const isTauri = false
-const isText = (x: any) => x && x.doc && x.selection
-const isState = (x: any) => typeof x.lastModified !== 'string' && Array.isArray(x.files)
-const isFile = (x: any): boolean => x && (x.text || x.path)
+const isText = (x): boolean => x && x.doc && x.selection
+const isState = (x): boolean => typeof x.lastModified !== 'string' && Array.isArray(x.files)
+const isFile = (x): boolean => x && (x.text || x.path)
 
-export const createCtrl = (initial: State): [Store<State>, any] => {
+export const createCtrl = (initial: State): [Store<State>, { [key: string]: any }] => {
   const [store, setState] = createStore(initial)
 
   const discardText = async () => {
@@ -35,7 +32,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     } else {
       const extensions = createExtensions({
         config: state.config ?? store.config,
-        markdown: (state.markdown && store.markdown) as any,
+        markdown: state.markdown && store.markdown,
         keymap
       })
 
@@ -72,35 +69,6 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     ]
   }
 
-  const newFile = () => {
-    if (isEmpty(store.text) && !store.path) {
-      return
-    }
-
-    const state: State = unwrap(store)
-    let files = state.files
-
-    if (!state.error) {
-      files = addToFiles(files, state)
-    }
-
-    const extensions: any[] = createExtensions({
-      config: state.config ?? store.config,
-      markdown: state.markdown,
-      keymap
-    })
-
-    setState({
-      text: createEmptyText(),
-      extensions,
-      files,
-      lastModified: undefined,
-      path: undefined,
-      error: undefined,
-      collab: undefined
-    })
-  }
-
   const discard = async () => {
     if (store.path) {
       await discardText()
@@ -112,32 +80,8 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     }
   }
 
-  // FIXME
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const onQuit = () => {
-    if (!isTauri) {
-      console.debug('quit')
-      // return
-    }
-    // remote.quit()
-  }
-
-  const onNew = () => {
-    newFile()
-
-    return true
-  }
-
   const onDiscard = () => {
     discard()
-
-    return true
-  }
-
-  const onFullscreen = () => {
-    if (!isTauri) return
-
-    ctrl.setFullscreen(!store.fullscreen)
 
     return true
   }
@@ -173,11 +117,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
   }
 
   const keymap = {
-    [`${mod}-q`]: onQuit,
-    [`${mod}-n`]: onNew,
     [`${mod}-w`]: onDiscard,
-    'Cmd-Enter': onFullscreen,
-    'Alt-Enter': onFullscreen,
     [`${mod}-z`]: onUndo,
     [`Shift-${mod}-z`]: onRedo,
     [`${mod}-y`]: onRedo,
@@ -205,76 +145,61 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     }
   }
 
-  // FIXME
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   const fetchData = async (): Promise<State> => {
-    let args = {} // await remote.getArgs().catch(() => undefined)
     const state: State = unwrap(store)
+    const room = window.location.pathname?.slice(1).trim()
+    const args = { room: room || undefined }
+    if (isServer) return
 
-    if (!isTauri) {
-      const room = window.location.pathname?.slice(1).trim()
+    const { default: db } = await import('../db')
+    const data: string = await db.get('state')
+    let parsed
 
-      args = { room: room || undefined }
+    if (data !== undefined) {
+      try {
+        parsed = JSON.parse(data)
+        if (!parsed) return { ...state, args }
+      } catch {
+        throw new ServiceError('invalid_state', data)
+      }
     }
-    if (!isServer) {
-      const { default: db } = await import('../db')
-      const data: string = await db.get('state')
-      let parsed: any
-
-      if (data !== undefined) {
-        try {
-          parsed = JSON.parse(data)
-        } catch {
-          throw new ServiceError('invalid_state', data)
-        }
+    let text = state.text
+    if (parsed.text) {
+      if (!isText(parsed.text)) {
+        throw new ServiceError('invalid_state', parsed.text)
       }
-
-      if (!parsed) {
-        return { ...state, args }
-      }
-
-      let text = state.text
-
-      if (parsed.text) {
-        if (!isText(parsed.text)) {
-          throw new ServiceError('invalid_state', parsed.text)
-        }
-
-        text = parsed.text
-      }
-
-      const extensions = createExtensions({
-        path: parsed.path,
-        markdown: parsed.markdown,
-        keymap,
-        config: {} as Config
-      })
-
-      const nState = {
-        ...parsed,
-        text,
-        extensions,
-        // config,
-        args
-      }
-
-      if (nState.lastModified) {
-        nState.lastModified = new Date(nState.lastModified)
-      }
-
-      for (const file of parsed.files) {
-        if (!isFile(file)) {
-          throw new ServiceError('invalid_file', file)
-        }
-      }
-      if (!isState(nState)) {
-        throw new ServiceError('invalid_state', nState)
-      }
-
-      return nState
-    } else {
-      return
+      text = parsed.text
     }
+
+    const extensions = createExtensions({
+      path: parsed.path,
+      markdown: parsed.markdown,
+      keymap,
+      config: {} as Config
+    })
+
+    const nState = {
+      ...parsed,
+      text,
+      extensions,
+      // config,
+      args
+    }
+
+    if (nState.lastModified) {
+      nState.lastModified = new Date(nState.lastModified)
+    }
+
+    for (const file of parsed.files) {
+      if (!isFile(file)) {
+        throw new ServiceError('invalid_file', file)
+      }
+    }
+    if (!isState(nState)) {
+      throw new ServiceError('invalid_state', nState)
+    }
+
+    return nState
   }
 
   const getTheme = (state: State) => ({ theme: state.config.theme })
@@ -293,21 +218,12 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
 
   const init = async () => {
     let data = await fetchData()
-
     try {
       if (data.args?.room) {
         data = doStartCollab(data)
       } else if (data.args?.text) {
         data = await doOpenFile(data, { text: JSON.parse(data.args?.text) })
-      } /* else if (data.args?.file) {
-        const file = await loadFile(data.config, data.args?.file)
-
-        data = await doOpenFile(data, file)
-      } else if (data.path) {
-        const file = await loadFile(data.config, data.path)
-
-        data = await doOpenFile(data, file)
-      } */ else if (!data.text) {
+      } else if (!data.text) {
         const text = createEmptyText()
         const extensions = createExtensions({
           config: data.config,
@@ -317,54 +233,14 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
 
         data = { ...data, text, extensions }
       }
-    } catch (error: any) {
-      data = { ...data, error: error.errorObject }
+    } catch (error) {
+      data = { ...data, error }
     }
-
     setState({
       ...data,
       config: { ...data.config, ...getTheme(data) },
       loading: 'initialized'
     })
-  }
-  /*
-  const loadFile = async (config: Config, path: string): Promise<File> => {
-    try {
-      const fileContent = await remote.readFile(path)
-      const lastModified = await remote.getFileLastModified(path)
-      const schema = createSchema({
-        config,
-        markdown: false,
-        path,
-        keymap
-      })
-
-      const parser = createMarkdownParser(schema)
-      const doc = parser.parse(fileContent).toJSON()
-      const text = {
-        doc,
-        selection: {
-          type: 'text',
-          anchor: 1,
-          head: 1
-        }
-      }
-
-      return {
-        text,
-        lastModified: lastModified.toISOString(),
-        path
-      }
-    } catch (e) {
-      throw new ServiceError('file_permission_denied', { error: e })
-    }
-  }
-  */
-  const openFile = async (file: File) => {
-    const state: State = unwrap(store)
-    const update = await doOpenFile(state, file)
-
-    setState(update)
   }
 
   const doOpenFile = async (state: State, file: File): Promise<State> => {
@@ -398,9 +274,8 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     }
   }
 
-  // eslint-disable-next-line solid/reactivity
   const saveState = debounce(async (state: State) => {
-    const data: any = {
+    const data = {
       lastModified: state.lastModified,
       files: state.files,
       config: state.config,
@@ -408,28 +283,20 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       markdown: state.markdown,
       collab: {
         room: state.collab?.room
-      }
+      },
+      text: ''
     }
 
     if (isInitialized(state.text)) {
-      //if (state.path) {
-      // const text = serialize(store.editorView.state)
-      // await remote.writeFile(state.path, text)
-      //}
       data.text = store.editorView.state.toJSON()
     } else if (state.text) {
-      data.text = state.text
+      data.text = state.text as string
     }
     if (!isServer) {
       const { default: db } = await import('../db')
       db.set('state', JSON.stringify(data))
     }
   }, 200)
-
-  const setFullscreen = (fullscreen: boolean) => {
-    // remote.setFullscreen(fullscreen)
-    setState({ fullscreen })
-  }
 
   const startCollab = () => {
     const state: State = unwrap(store)
@@ -442,15 +309,15 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     const backup = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
     const username = '' // FIXME: use authenticated user name
-    const [type, provider] = roomConnect(room, username)
+    const [payload, provider] = roomConnect(room, username)
 
-    const extensions = createExtensions({
+    const extensions: ProseMirrorExtension[] = createExtensions({
       config: state.config,
       markdown: state.markdown,
       path: state.path,
       keymap,
-      y: { type, provider }
-    })
+      y: { payload, provider } as PeerData
+    } as InitOpts)
 
     let nState = state
 
@@ -473,7 +340,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     return {
       ...nState,
       extensions,
-      collab: { started: true, room, y: { type, provider } }
+      collab: { started: true, room, y: { payload, provider } }
     }
   }
 
@@ -495,7 +362,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     const editorState = store.text as EditorState
     const markdown = !state.markdown
     const selection = { type: 'text', anchor: 1, head: 1 }
-    let doc: any
+    let doc
 
     if (markdown) {
       const lines = serialize(editorState).split('\n')
@@ -570,11 +437,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     discard,
     getTheme,
     init,
-    // loadFile,
-    newFile,
-    openFile,
     saveState,
-    setFullscreen,
     setState,
     startCollab,
     stopCollab,

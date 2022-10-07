@@ -1,6 +1,6 @@
 export const reflow = () => document.body.clientWidth
 
-export const unique = (v: any[]) => {
+export const unique = (v) => {
   const s = new Set(v)
   return [...s]
 }
@@ -45,6 +45,7 @@ export const plural = (amount: number, w: string[]) => {
   return w[0]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const shuffle = (items: any[]) => {
   const cached = [...items]
   let temp

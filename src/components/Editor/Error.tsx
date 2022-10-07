@@ -1,5 +1,5 @@
 import { Switch, Match, createMemo } from 'solid-js'
-import { ErrorObject, useState } from './store'
+import { ErrorObject, useState } from './prosemirror/context'
 
 const InvalidState = (props: { title: string }) => {
   const [store, ctrl] = useState()

@@ -43,15 +43,12 @@ const astroConfig: AstroUserConfig = {
           // eslint-disable-next-line sonarjs/cognitive-complexity
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              let chunkid = 'vendor'
+              let chunkid
               if (id.includes('solid')) {
                 chunkid = 'solid'
               }
               if (id.includes('acorn')) {
                 chunkid = 'acorn'
-              }
-              if (id.includes('simple-peer')) {
-                chunkid = 'simple-peer'
               }
               if (id.includes('prosemirror')) {
                 chunkid = 'prosemirror'
@@ -66,9 +63,10 @@ const astroConfig: AstroUserConfig = {
                 id.includes('yjs') ||
                 id.includes('y-prosemirror') ||
                 id.includes('y-protocols') ||
-                id.includes('y-webrtc')
+                id.includes('y-webrtc') ||
+                id.includes('simple-peer')
               ) {
-                chunkid = 'yjs'
+                chunkid = 'p2p'
               }
               return chunkid
             }

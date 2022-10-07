@@ -5,7 +5,7 @@ import { EditorView } from 'prosemirror-view'
 import { Schema } from 'prosemirror-model'
 import type { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from './state'
 
-interface Props {
+interface ProseMirrorProps {
   style?: string
   class?: string
   text?: Store<ProseMirrorState>
@@ -54,7 +54,7 @@ const createEditorState = (
   return { editorState, nodeViews }
 }
 
-export const ProseMirror = (props: Props) => {
+export const ProseMirror = (props: ProseMirrorProps) => {
   let editorRef: HTMLDivElement
   const editorView = () => untrack(() => unwrap(props.editorView))
 

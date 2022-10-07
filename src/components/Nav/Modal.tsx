@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, JSX, onMount, Show } from 'solid-js'
 import { getLogger } from '../../utils/logger'
 import './Modal.scss'
 import { hideModal, useModalStore } from '../../stores/ui'
@@ -7,7 +7,7 @@ const log = getLogger('modal')
 
 interface ModalProps {
   name: string
-  children: any
+  children: JSX.Element
 }
 
 export const Modal = (props: ModalProps) => {

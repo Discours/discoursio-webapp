@@ -1,4 +1,6 @@
-export const groupByName = (arr: any[]) => {
+import type { Author, Shout, Topic } from '../graphql/types.gen'
+
+export const groupByName = (arr: Author[]) => {
   return arr.reduce(
     (acc, tt) => {
       let c = (tt.name || '')
@@ -18,7 +20,7 @@ export const groupByName = (arr: any[]) => {
   )
 }
 
-export const groupByTitle = (arr: any[]) => {
+export const groupByTitle = (arr: (Shout | Topic)[]) => {
   return arr.reduce(
     (acc, tt) => {
       let c = (tt.title || '')

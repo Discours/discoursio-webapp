@@ -1,29 +1,32 @@
+import '../../styles/help.scss'
 import { createSignal, onMount } from 'solid-js'
 import { showModal, warn } from '../../stores/ui'
-import '../../styles/help.scss'
+import { t } from '../../utils/intl'
 
 export const Donate = () => {
   const once = ''
   const monthly = 'Monthly'
   const cpOptions = {
     publicId: 'pk_0a37bab30ffc6b77b2f93d65f2aed',
-    description: 'Поддержка журнала и развитие Дискурса',
+    description: t('Help discours to grow'),
     currency: 'RUB'
   }
 
   let amountSwitchElement: HTMLDivElement | undefined
   let customAmountElement: HTMLInputElement | undefined
-  let CustomerReciept: any
-  let widget: any
-
+  const [widget, setWidget] = createSignal()
+  const [customerReciept, setCustomerReciept] = createSignal({})
   const [showingPayment, setShowingPayment] = createSignal<boolean>()
   const [period, setPeriod] = createSignal(monthly)
   const [amount, setAmount] = createSignal(0)
 
   onMount(() => {
-    widget = new (window as any).cp.CloudPayments() // Checkout(cpOptions)
+    const {
+      cp: { CloudPayments }
+    } = window as any // Checkout(cpOptions)
+    setWidget(new CloudPayments())
     console.log('[donate] payments initiated')
-    CustomerReciept = {
+    setCustomerReciept({
       Items: [
         //товарные позиции
         {
@@ -46,7 +49,7 @@ export const Donate = () => {
         credit: 0, // Сумма постоплатой(в кредит) (2 знака после запятой)
         provision: 0 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
       }
-    }
+    })
   })
 
   const show = () => {
@@ -57,7 +60,7 @@ export const Donate = () => {
       amountSwitchElement?.querySelector('input[type=radio]:checked')
     setAmount(Number.parseInt(customAmountElement?.value || choice?.value || '0'))
     console.log('[donate] input amount ' + amount)
-    widget.charge(
+    ;(widget() as any).charge(
       {
         // options
         ...cpOptions,
@@ -69,11 +72,11 @@ export const Donate = () => {
         // accountId: 'user@example.com', //идентификатор плательщика (обязательно для создания подписки)
         data: {
           CloudPayments: {
-            CustomerReciept,
+            CustomerReciept: customerReciept(),
             recurrent: {
               interval: period(), // local solid's signal
               period: 1, // internal widget's
-              CustomerReciept // чек для регулярных платежей
+              CustomerReciept: customerReciept() // чек для регулярных платежей
             }
           }
         }

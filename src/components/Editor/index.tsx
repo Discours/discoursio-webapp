@@ -1,7 +1,7 @@
 import './Editor.scss'
 import type { EditorView } from 'prosemirror-view'
 import type { EditorState } from 'prosemirror-state'
-import { useState } from './store'
+import { useState } from './prosemirror/context'
 import { ProseMirror } from './prosemirror'
 
 export default () => {

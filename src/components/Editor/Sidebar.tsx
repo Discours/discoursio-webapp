@@ -1,7 +1,7 @@
 import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js'
 import { unwrap } from 'solid-js/store'
 // import { undo, redo } from 'prosemirror-history'
-import { File, useState /*, Config, PrettierConfig */ } from './store'
+import { File, useState /*, Config, PrettierConfig */ } from './prosemirror/context'
 import { clsx } from 'clsx'
 import type { Styled } from './Layout'
 // import type { EditorState } from 'prosemirror-state'

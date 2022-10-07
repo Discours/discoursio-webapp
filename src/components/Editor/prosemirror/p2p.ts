@@ -2,21 +2,19 @@ import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generato
 import { Awareness } from 'y-protocols/awareness'
 import { WebrtcProvider } from 'y-webrtc'
 import * as Y from 'yjs'
-// import type { Reaction } from '../graphql/types.gen'
+import type { Reaction } from '../../../graphql/types.gen'
+import { setReactions } from '../../../stores/editor'
 
-export const roomConnect = (
-  room,
-  username = '',
-  keyname = 'reactions'
-): [Y.XmlFragment, WebrtcProvider] => {
+export const roomConnect = (room, username = '', keyname = 'collab'): [Y.XmlFragment, WebrtcProvider] => {
   const ydoc = new Y.Doc()
-  const yxmlfrag = ydoc.getXmlFragment(keyname) // TODO: use ydoc.getArray(keyname) as Reactions[]
+  const yarr = ydoc.getArray(keyname + '-reactions')
+  const yXmlFragment = ydoc.getXmlFragment(keyname)
   const webrtcOptions = {
     awareness: new Awareness(ydoc),
     filterBcConns: true,
     maxConns: 33,
     signaling: [
-      'wss://signaling.discours.io',
+      // 'wss://signaling.discours.io',
       // 'wss://stun.l.google.com:19302',
       'wss://y-webrtc-signaling-eu.herokuapp.com',
       'wss://signaling.yjs.dev'
@@ -26,6 +24,11 @@ export const roomConnect = (
   }
   const provider = new WebrtcProvider(room, ydoc, webrtcOptions)
   let name = username
+
+  yarr.observeDeep(() => {
+    console.debug('yarray updated:', yarr.toArray())
+    setReactions(yarr.toArray() as Reaction[])
+  })
 
   if (Boolean(name) === false) {
     name = uniqueNamesGenerator({
@@ -37,5 +40,5 @@ export const roomConnect = (
   }
 
   provider.awareness.setLocalStateField('user', { name })
-  return [yxmlfrag, provider]
+  return [yXmlFragment, provider]
 }

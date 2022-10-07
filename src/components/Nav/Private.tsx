@@ -4,7 +4,7 @@ import { Icon } from './Icon'
 import styles from './Private.module.scss'
 import { useAuthStore } from '../../stores/auth'
 import { useRouter } from '../../stores/router'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 export default () => {
   const { session } = useAuthStore()

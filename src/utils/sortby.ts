@@ -1,8 +1,8 @@
-import type { Stat, Topic, TopicStat } from '../graphql/types.gen'
+import type { Author, Reaction, Shout, Stat, Topic, TopicStat } from '../graphql/types.gen'
 
 export const byFirstChar = (a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || '')
 
-export const byCreated = (a: any, b: any) => {
+export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
   const x = new Date(a?.createdAt)
   const y = new Date(b?.createdAt)
 
@@ -13,7 +13,10 @@ export const byCreated = (a: any, b: any) => {
   return 0
 }
 
-export const byLength = (a: any[], b: any[]) => {
+export const byLength = (
+  a: (Shout | Reaction | Topic | Author)[],
+  b: (Shout | Reaction | Topic | Author)[]
+) => {
   const x = a.length
   const y = b.length
 

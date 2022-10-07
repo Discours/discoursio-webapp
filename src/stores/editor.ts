@@ -1,7 +1,7 @@
 import { persistentAtom } from '@nanostores/persistent'
-import { Reaction, ReactionKind } from '../graphql/types.gen'
-import { atom, computed } from 'nanostores'
-import { reactions } from './zine/reactions'
+import type { Reaction } from '../graphql/types.gen'
+import { atom } from 'nanostores'
+import { createSignal } from 'solid-js'
 
 interface Draft {
   createdAt: Date
@@ -17,13 +17,13 @@ interface Collab {
   title?: string
 }
 
-const drafts = persistentAtom<Draft[]>('drafts', [], {
+export const drafts = persistentAtom<Draft[]>('drafts', [], {
   encode: JSON.stringify,
   decode: JSON.parse
 }) // save drafts on device
 
-const collabs = atom<Collab[]>([]) // save collabs in backend or in p2p network
-
+export const collabs = atom<Collab[]>([]) // save collabs in backend or in p2p network
+export const [editorReactions, setReactions] = createSignal<Reaction[]>([])
 /*
 const approvals = computed(
   reactions,
@@ -36,4 +36,3 @@ const proposals = computed<Reaction[], typeof reactions>(
     .filter((r: Reaction) => r.kind === ReactionKind.Propose)
 )
 */
-export { drafts, collabs /* approvals, proposals */ }

@@ -1,7 +1,5 @@
 import { apiClient } from '../../utils/apiClient'
 import type { Author } from '../../graphql/types.gen'
-import { byCreated, byStat, byTopicStatDesc } from '../../utils/sortby'
-
 import { getLogger } from '../../utils/logger'
 import { createSignal } from 'solid-js'
 import { createLazyMemo } from '@solid-primitives/memo'
@@ -25,16 +23,19 @@ const sortedAuthors = createLazyMemo(() => {
     //   authors.sort(byCreated)
     //   break
     // }
-    case 'rating':
+    case 'rating': {
       // TODO:
       break
-    case 'shouts':
+    }
+    case 'shouts': {
       // TODO:
       break
-    case 'name':
+    }
+    case 'name': {
       log.debug('sorted by name')
       authors.sort((a, b) => a.name.localeCompare(b.name))
       break
+    }
   }
   return authors
 })

@@ -37,7 +37,7 @@ const formatDate = (date: Date) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
-  const body = createMemo(() => props.article.body.toString().trim())
+  const body = createMemo(() => props.article?.body?.toString().trim())
   const { session } = useAuthStore()
 
   onMount(() => {

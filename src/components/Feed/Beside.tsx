@@ -11,7 +11,7 @@ import { t } from '../../utils/intl'
 
 interface BesideProps {
   title?: string
-  values: any[]
+  values: (Shout | User | Topic | Author)[]
   beside: Shout
   wrapper: 'topic' | 'author' | 'article' | 'top-article'
   isTopicCompact?: boolean
@@ -40,7 +40,7 @@ export default (props: BesideProps) => {
               </Show>
               <ul class="beside-column">
                 <For each={[...props.values]}>
-                  {(value: Partial<Shout | User | Topic>) => (
+                  {(value: Shout | User | Topic | Author) => (
                     <li classList={{ top: props.wrapper.startsWith('top-') }}>
                       <Show when={props.wrapper === 'topic'}>
                         <TopicCard

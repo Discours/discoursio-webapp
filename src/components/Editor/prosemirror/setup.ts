@@ -15,20 +15,20 @@ import dragHandle from './extension/drag-handle'
 import pasteMarkdown from './extension/paste-markdown'
 import table from './extension/table'
 import collab from './extension/collab'
-import type { Config, YOptions } from '../store'
+import type { Config, PeerData } from './context'
 import selectionMenu from './extension/selection'
 
-interface Opts {
+export interface InitOpts {
   data?: unknown
   keymap?: any
   config: Config
   markdown: boolean
   path?: string
-  y?: YOptions
+  y?: PeerData
   schema?: Schema
 }
 
-const customKeymap = (opts: Opts): ProseMirrorExtension => ({
+const customKeymap = (opts: InitOpts): ProseMirrorExtension => ({
   plugins: (prev) => (opts.keymap ? [...prev, keymap(opts.keymap)] : prev)
 })
 
@@ -43,7 +43,7 @@ const codeMirrorKeymap = (props: Props) => {
 }
 */
 
-export const createExtensions = (opts: Opts): ProseMirrorExtension[] => {
+export const createExtensions = (opts: InitOpts): ProseMirrorExtension[] => {
   return opts.markdown
     ? [
         placeholder('Просто начните...'),
@@ -91,7 +91,7 @@ export const createEmptyText = () => ({
   }
 })
 
-export const createSchema = (opts: Opts) => {
+export const createSchema = (opts: InitOpts) => {
   const extensions = createExtensions(opts)
 
   let schemaSpec = { nodes: {} }

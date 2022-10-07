@@ -9,7 +9,7 @@ import { markdownOptions as markdown } from './mdx.config'
 import type { CSSOptions } from 'vite'
 import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
-import { fileURLToPath, URL } from 'url'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const PATH_PREFIX = '/src/'
 
@@ -37,33 +37,41 @@ const css: CSSOptions = {
 
 const astroConfig: AstroUserConfig = {
   site: 'https://new.discours.io',
-  // Enable Solid to support Solid JSX components.
-  // experimental: { integrations: true },
   integrations: [solidJs(), mdx()],
-  // sitemap({
-  /*  customPages: [
-      '',
-      '/feed',
-      '/search',
-      'topics',
-      'authors'
-    ]
-  })],*/
   //, partytown({})],
   markdown,
   output: 'server',
   adapter: vercel(),
   vite: {
     build: {
-      chunkSizeWarningLimit: 777,
       rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              let chunkid = 'vendor'
+              if (id.includes('prosemirror')) {
+                chunkid = 'prosemirror'
+              }
+              if (id.includes('markdown')) {
+                chunkid = 'markdown'
+              }
+              if (id.includes('remark') || id.includes('rehype')) {
+                chunkid = 'remark'
+              }
+              if (id.includes('yjs') || id.includes('y-')) {
+                chunkid = 'yjs'
+              }
+              if (id.includes('loglevel')) {
+                chunkid = 'loglevel'
+              }
+              if (id.includes('nanostores')) {
+                chunkid = 'nanostores'
+              }
+              return chunkid
+            }
+          }
+        },
         external: ['@aws-sdk/clients/s3']
-      }
-    },
-    resolve: {
-      alias: {
-        './runtimeConfig': './runtimeConfig.browser',
-        '@': fileURLToPath(new URL('src', import.meta.url))
       }
     },
     css

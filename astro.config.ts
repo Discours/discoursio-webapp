@@ -45,27 +45,47 @@ const astroConfig: AstroUserConfig = {
   vite: {
     build: {
       rollupOptions: {
+        plugins: [visualizer()],
         output: {
+          // eslint-disable-next-line sonarjs/cognitive-complexity
           manualChunks(id) {
             if (id.includes('node_modules')) {
               let chunkid = 'vendor'
+              if (id.includes('shiki')) {
+                chunkid = 'shiki'
+              }
+              if (id.includes('prismjs')) {
+                chunkid = 'prismjs'
+              }
+              if (id.includes('acorn')) {
+                chunkid = 'acorn'
+              }
+              if (id.includes('simple-peer')) {
+                chunkid = 'simple-peer'
+              }
               if (id.includes('prosemirror')) {
                 chunkid = 'prosemirror'
               }
               if (id.includes('markdown')) {
                 chunkid = 'markdown'
               }
-              if (id.includes('remark') || id.includes('rehype')) {
+              if (id.includes('swiper')) {
+                chunkid = 'swiper'
+              }
+              if (id.includes('remark') || id.includes('rehype') || id.includes('micromark')) {
                 chunkid = 'remark'
               }
-              if (id.includes('yjs') || id.includes('y-')) {
+              if (id.includes('parse5')) {
+                chunkid = 'parse5'
+              }
+              if (
+                id.includes('yjs') ||
+                id.includes('y-prosemirror') ||
+                id.includes('y-awareness') ||
+                id.includes('y-protocols') ||
+                id.includes('y-webrtc')
+              ) {
                 chunkid = 'yjs'
-              }
-              if (id.includes('loglevel')) {
-                chunkid = 'loglevel'
-              }
-              if (id.includes('nanostores')) {
-                chunkid = 'nanostores'
               }
               return chunkid
             }

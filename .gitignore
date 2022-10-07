@@ -13,3 +13,4 @@ pnpm-debug.log*
 .eslint/.eslintcache
 public/upload/*
 src/graphql/introspec.gen.ts
+stats.html

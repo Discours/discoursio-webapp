@@ -1,11 +1,6 @@
 import { defineConfig, AstroUserConfig } from 'astro/config'
 import vercel from '@astrojs/vercel/serverless'
-// import node from '@astrojs/node'
 import solidJs from '@astrojs/solid-js'
-import mdx from '@astrojs/mdx'
-// import partytown from '@astrojs/partytown'
-import { markdownOptions as markdown } from './mdx.config'
-// import sitemap from '@astrojs/sitemap'
 import type { CSSOptions } from 'vite'
 import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
@@ -37,9 +32,7 @@ const css: CSSOptions = {
 
 const astroConfig: AstroUserConfig = {
   site: 'https://new.discours.io',
-  integrations: [solidJs(), mdx()],
-  //, partytown({})],
-  markdown,
+  integrations: [solidJs()],
   output: 'server',
   adapter: vercel(),
   vite: {
@@ -51,12 +44,6 @@ const astroConfig: AstroUserConfig = {
           manualChunks(id) {
             if (id.includes('node_modules')) {
               let chunkid = 'vendor'
-              if (id.includes('shiki')) {
-                chunkid = 'shiki'
-              }
-              if (id.includes('prismjs')) {
-                chunkid = 'prismjs'
-              }
               if (id.includes('acorn')) {
                 chunkid = 'acorn'
               }
@@ -81,7 +68,6 @@ const astroConfig: AstroUserConfig = {
               if (
                 id.includes('yjs') ||
                 id.includes('y-prosemirror') ||
-                id.includes('y-awareness') ||
                 id.includes('y-protocols') ||
                 id.includes('y-webrtc')
               ) {

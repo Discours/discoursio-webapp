@@ -4,11 +4,10 @@ import { AuthorCard } from '../Author/Card'
 import { Show } from 'solid-js/web'
 import { clsx } from 'clsx'
 import type { Author, Reaction as Point } from '../../graphql/types.gen'
-import { createMemo, createSignal, onMount } from 'solid-js'
+import { createMemo } from 'solid-js'
 import { t } from '../../utils/intl'
 // import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
-import { renderMarkdown } from '@astrojs/markdown-remark'
-import { markdownOptions } from '../../../mdx.config'
+import MD from './MD'
 import { deleteReaction } from '../../stores/zine/reactions'
 
 export default (props: {
@@ -18,17 +17,7 @@ export default (props: {
   compact?: boolean
 }) => {
   const comment = createMemo(() => props.comment)
-  const [body, setBody] = createSignal('')
-  onMount(() => {
-    const b: string = props.comment?.body
-    if (b?.toString().startsWith('<')) {
-      setBody(b)
-    } else {
-      renderMarkdown(b, markdownOptions)
-        .then(({ code }) => setBody(code))
-        .catch(console.error)
-    }
-  })
+  const body = createMemo(() => comment().body.toString().trim())
   const remove = () => {
     if (comment()?.id) {
       console.log('[comment] removing', comment().id)
@@ -71,7 +60,7 @@ export default (props: {
           </Show>
 
           <div class="comment-body" contenteditable={props.canEdit} id={'comment-' + (comment().id || '')}>
-            <div innerHTML={body()} />
+            <MD body={body()} />
           </div>
 
           <Show when={!props.compact}>

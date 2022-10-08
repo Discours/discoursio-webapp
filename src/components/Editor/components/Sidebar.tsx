@@ -1,10 +1,10 @@
-import { Show, createEffect, createSignal, onCleanup } from 'solid-js'
+import { Show, createEffect, createSignal, onCleanup, For } from 'solid-js'
 import { unwrap } from 'solid-js/store'
-// import { undo, redo } from 'prosemirror-history'
-import { Draft, useState } from './prosemirror/context'
+import { undo, redo } from 'prosemirror-history'
+import { Draft, useState } from '../store/context'
 import { clsx } from 'clsx'
 import type { Styled } from './Layout'
-import { t } from '../../utils/intl'
+import { t } from '../../../utils/intl'
 
 // import type { EditorState } from 'prosemirror-state'
 // import { serialize } from './prosemirror/markdown'
@@ -15,7 +15,7 @@ import { t } from '../../utils/intl'
 // const copyAllAsMarkdown = async (state: EditorState): Promise<void> =>
 //  navigator.clipboard.writeText(serialize(state)) && !isServer
 
-const Off = (props: any) => <div class="sidebar-off">{props.children}</div>
+const Off = (props) => <div class="sidebar-off">{props.children}</div>
 const Label = (props: Styled) => <h3 class="sidebar-label">{props.children}</h3>
 const Link = (
   props: Styled & { withMargin?: boolean; disabled?: boolean; title?: string; className?: string }
@@ -85,13 +85,19 @@ export const Sidebar = () => {
     ctrl.updateConfig({ theme: document.body.className })
   }
 
-  // const collabText = () => (store.collab?.started ? 'Stop' : store.collab?.error ? 'Restart 🚨' : 'Start')
+  const collabText = () => {
+    if (store.collab?.started) {
+      return 'Stop'
+    } else {
+      return store.collab?.error ? 'Restart 🚨' : 'Start'
+    }
+  }
   const editorView = () => unwrap(store.editorView)
-  // const onToggleMarkdown = () => ctrl.toggleMarkdown()
+  const onToggleMarkdown = () => ctrl.toggleMarkdown()
   const onOpenDraft = (draft: Draft) => ctrl.openDraft(unwrap(draft))
-  // const collabUsers = () => store.collab?.y?.provider.awareness.meta.size ?? 0
-  // const onUndo = () => undo(editorView().state, editorView().dispatch)
-  // const onRedo = () => redo(editorView().state, editorView().dispatch)
+  const collabUsers = () => store.collab?.y?.provider.awareness.meta.size ?? 0
+  const onUndo = () => undo(editorView().state, editorView().dispatch)
+  const onRedo = () => redo(editorView().state, editorView().dispatch)
   // const onCopyAllAsMd = () => copyAllAsMarkdown(editorView().state).then(() => setLastAction('copy-md'))
   // const onToggleAlwaysOnTop = () => ctrl.updateConfig({ alwaysOnTop: !store.config.alwaysOnTop })
   // const onNew = () => ctrl.newDraft()
@@ -110,11 +116,11 @@ export const Sidebar = () => {
   //   if (path) ctrl.updatePath(path)
   // }
   //
-  // const onCollab = () => {
-  //   const state = unwrap(store)
-  //
-  //   store.collab?.started ? ctrl.stopCollab(state) : console.log(state)
-  // }
+  const onCollab = () => {
+    const state = unwrap(store)
+
+    store.collab?.started ? ctrl.stopCollab(state) : console.log(state)
+  }
   //
   // const onOpenInApp = () => {
   //   // if (isTauri) return
@@ -142,11 +148,11 @@ export const Sidebar = () => {
   //   })
   // }
 
-  // const Keys = (props: { keys: string[] }) => (
-  //   <span>
-  //     <For each={props.keys}>{(k: string) => <i>{k}</i>}</For>
-  //   </span>
-  // )
+  const Keys = (props: { keys: string[] }) => (
+    <span>
+      <For each={props.keys}>{(k: string) => <i>{k}</i>}</For>
+    </span>
+  )
 
   createEffect(() => {
     setLastAction()
@@ -165,7 +171,7 @@ export const Sidebar = () => {
   return (
     <div class={`sidebar-container${isHidden() ? ' sidebar-container--hidden' : ''}`}>
       <span class="sidebar-opener" onClick={toggleSidebar}>
-        Советы и&nbsp;предложения
+        Советы и предложения
       </span>
 
       <Off onClick={() => editorView().focus()} data-tauri-drag-region="true">

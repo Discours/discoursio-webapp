@@ -11,10 +11,7 @@ import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../sto
 import styles from './Header.module.scss'
 import privateStyles from './Private.module.scss'
 import { getPagePath } from '@nanostores/router'
-import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
-
-const log = getLogger('header')
 
 const resources: { name: string; route: keyof Routes }[] = [
   { name: t('zine'), route: 'home' },

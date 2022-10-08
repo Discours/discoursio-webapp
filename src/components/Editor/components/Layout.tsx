@@ -1,12 +1,13 @@
-import type { Config } from './prosemirror/context'
-import './Layout.scss'
+import type { JSX } from 'solid-js/jsx-runtime'
+import type { Config } from '../store/context'
+import '../styles/Layout.scss'
 
 export type Styled = {
-  children: any
+  children: JSX.Element
   config?: Config
   'data-testid'?: string
-  onClick?: () => void
-  onMouseEnter?: (e: any) => void
+  onClick?: (e: MouseEvent) => void
+  onMouseEnter?: (e: MouseEvent) => void
 }
 
 export const Layout = (props: Styled) => {

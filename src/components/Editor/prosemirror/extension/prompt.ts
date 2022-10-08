@@ -2,51 +2,42 @@ const prefix = 'ProseMirror-prompt'
 
 // FIXME !!!
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function openPrompt(options: any) {
+export function openPrompt(options) {
+  const domFields = []
+  const submitButton = document.createElement('button')
+  const cancelButton = document.createElement('button')
   const wrapper = document.body.appendChild(document.createElement('div'))
+  const form = wrapper.appendChild(document.createElement('form'))
+  const buttons = form.appendChild(document.createElement('div'))
+  const box = wrapper.getBoundingClientRect()
   wrapper.className = prefix
-
-  const mouseOutside = (e: any) => {
-    if (!wrapper.contains(e.target)) close()
+  const mouseOutside = (e: MouseEvent) => {
+    if (!wrapper.contains(e.target as Node)) close()
   }
-  setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50)
+  setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50) // FIXME
   const close = () => {
     window.removeEventListener('mousedown', mouseOutside)
     if (wrapper.parentNode) wrapper.remove()
   }
-
-  const domFields: any = []
-  options.fields.forEach((name) => {
-    domFields.push(options.fields[name].render())
-  })
-
-  const submitButton = document.createElement('button')
+  options.fields.forEach((name) => domFields.push(options.fields[name].render()))
   submitButton.type = 'submit'
   submitButton.className = prefix + '-submit'
   submitButton.textContent = 'OK'
-  const cancelButton = document.createElement('button')
   cancelButton.type = 'button'
   cancelButton.className = prefix + '-cancel'
   cancelButton.textContent = 'Cancel'
   cancelButton.addEventListener('click', close)
-
-  const form = wrapper.appendChild(document.createElement('form'))
   if (options.title) {
-    form.appendChild(document.createElement('h5')).textContent = options.title
+    const headel = form.appendChild(document.createElement('h5'))
+    headel.textContent = options.title
   }
-  domFields.forEach((field: any) => {
-    form.appendChild(document.createElement('div')).append(field)
-  })
-  const buttons = form.appendChild(document.createElement('div'))
+  domFields.forEach((fld) => form.appendChild(document.createElement('div')).append(fld))
   buttons.className = prefix + '-buttons'
   buttons.append(submitButton)
   buttons.append(document.createTextNode(' '))
   buttons.append(cancelButton)
-
-  const box = wrapper.getBoundingClientRect()
   wrapper.style.top = (window.innerHeight - box.height) / 2 + 'px'
   wrapper.style.left = (window.innerWidth - box.width) / 2 + 'px'
-
   const submit = () => {
     const params = getValues(options.fields, domFields)
     if (params) {
@@ -54,12 +45,10 @@ export function openPrompt(options: any) {
       options.callback(params)
     }
   }
-
   form.addEventListener('submit', (e) => {
     e.preventDefault()
     submit()
   })
-
   form.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       e.preventDefault()
@@ -73,12 +62,11 @@ export function openPrompt(options: any) {
       }, 500)
     }
   })
-
-  const input: any = form.elements[0]
+  const input = form.elements[0] as HTMLInputElement
   if (input) input.focus()
 }
 
-function getValues(fields: any, domFields: any) {
+function getValues(fields, domFields) {
   const result = Object.create(null)
   let i = 0
   fields.forEarch((name) => {
@@ -95,7 +83,7 @@ function getValues(fields: any, domFields: any) {
   return result
 }
 
-function reportInvalid(dom: any, message: any) {
+function reportInvalid(dom, message) {
   const parent = dom.parentNode
   const msg = parent.appendChild(document.createElement('div'))
   msg.style.left = dom.offsetLeft + dom.offsetWidth + 2 + 'px'
@@ -106,12 +94,12 @@ function reportInvalid(dom: any, message: any) {
 }
 
 export class Field {
-  options: any
-  constructor(options: any) {
+  options: { required: boolean; validate; clean; label: string; value: string }
+  constructor(options) {
     this.options = options
   }
 
-  read(dom: any) {
+  read(dom) {
     return dom.value
   }
   // :: (any) → ?string
@@ -120,13 +108,12 @@ export class Field {
     return typeof _value === typeof ''
   }
 
-  validate(value: any) {
+  validate(value) {
     if (!value && this.options.required) return 'Required field'
-
     return this.validateType(value) || (this.options.validate && this.options.validate(value))
   }
 
-  clean(value: any) {
+  clean(value) {
     return this.options.clean ? this.options.clean(value) : value
   }
 }
@@ -134,7 +121,6 @@ export class Field {
 export class TextField extends Field {
   render() {
     const input: HTMLInputElement = document.createElement('input')
-
     input.type = 'text'
     input.placeholder = this.options.label
     input.value = this.options.value || ''

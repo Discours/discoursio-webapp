@@ -6,10 +6,7 @@ import { t } from '../../utils/intl'
 import { useAuthorsStore, setSortAllBy as setSortAllAuthorsBy } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { useAuthStore } from '../../stores/auth'
-import { getLogger } from '../../utils/logger'
 import '../../styles/AllTopics.scss'
-
-const log = getLogger('AllAuthorsView')
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'

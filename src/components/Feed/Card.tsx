@@ -8,9 +8,6 @@ import { Icon } from '../Nav/Icon'
 import './Card.scss'
 import { locale } from '../../stores/ui'
 import { handleClientRouteLinkClick } from '../../stores/router'
-import { getLogger } from '../../utils/logger'
-
-const log = getLogger('card component')
 
 interface ArticleCardProps {
   settings?: {

@@ -4,7 +4,7 @@ import type { EditorState, Transaction } from 'prosemirror-state'
 import type { EditorView } from 'prosemirror-view'
 import { keymap } from 'prosemirror-keymap'
 import { markInputRule } from './mark-input-rule'
-import type { ProseMirrorExtension } from '../state'
+import type { ProseMirrorExtension } from '../../store/state'
 
 const blank = '\u00A0'
 

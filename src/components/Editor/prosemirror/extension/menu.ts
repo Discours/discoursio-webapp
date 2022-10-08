@@ -19,7 +19,7 @@ import { wrapInList } from 'prosemirror-schema-list'
 import { NodeSelection } from 'prosemirror-state'
 
 import { TextField, openPrompt } from './prompt'
-import type { ProseMirrorExtension } from '../state'
+import type { ProseMirrorExtension } from '../../store/state'
 import type { Schema } from 'prosemirror-model'
 
 // Helpers to create specific types of items

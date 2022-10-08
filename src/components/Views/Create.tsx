@@ -1,14 +1,11 @@
 import { Show, onCleanup, createEffect, onError, onMount, untrack } from 'solid-js'
 import { createMutable, unwrap } from 'solid-js/store'
-import { State, StateContext, newState } from '../Editor/prosemirror/context'
-import { createCtrl } from '../Editor/prosemirror/ctrl'
-import { Layout } from '../Editor/Layout'
+import { State, StateContext, newState } from '../Editor/store/context'
+import { createCtrl } from '../Editor/store/ctrl'
+import { Layout } from '../Editor/components/Layout'
 import Editor from '../Editor'
-import { Sidebar } from '../Editor/Sidebar'
-import ErrorView from '../Editor/Error'
-import { getLogger } from '../../utils/logger'
-
-const log = getLogger('CreateView')
+import { Sidebar } from '../Editor/components/Sidebar'
+import ErrorView from '../Editor/components/Error'
 
 export const CreateView = () => {
   const [store, ctrl] = createCtrl(newState())

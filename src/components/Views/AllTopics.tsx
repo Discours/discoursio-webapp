@@ -7,9 +7,6 @@ import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import { useAuthStore } from '../../stores/auth'
 import '../../styles/AllTopics.scss'
-import { getLogger } from '../../utils/logger'
-
-const log = getLogger('AllTopicsView')
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''

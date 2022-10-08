@@ -17,9 +17,9 @@ export interface ProseMirrorExtension {
 
 export type ProseMirrorState = EditorState | unknown
 
-export const isInitialized = (state: any) => state !== undefined && state instanceof EditorState
+export const isInitialized = (state: EditorState) => state !== undefined && state instanceof EditorState
 
-export const isEmpty = (state: any) =>
+export const isEmpty = (state: EditorState) =>
   !isInitialized(state) ||
   (state.doc.childCount === 1 &&
     !state.doc.firstChild.type.spec.code &&

@@ -1,6 +1,6 @@
 import { ySyncPlugin, yCursorPlugin, yUndoPlugin } from 'y-prosemirror'
-import type { ProseMirrorExtension } from '../state'
-import type { PeerData } from '../context'
+import type { ProseMirrorExtension } from '../../store/state'
+import type { PeerData } from '../../store/context'
 
 export const cursorBuilder = (user: {
   name: string

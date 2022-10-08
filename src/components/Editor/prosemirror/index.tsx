@@ -3,7 +3,7 @@ import { Store, unwrap } from 'solid-js/store'
 import { EditorState, Plugin, Transaction } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
 import { Schema } from 'prosemirror-model'
-import type { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from './state'
+import type { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from '../store/state'
 
 interface ProseMirrorProps {
   style?: string
@@ -38,7 +38,7 @@ const createEditorState = (
       nodeViews = { ...nodeViews, ...extension.nodeViews }
     }
   }
-
+  console.debug('[editor] create state with extensions', extensions)
   const schema = reconfigure ? prevText.schema : new Schema(schemaSpec)
 
   for (const extension of extensions) {
@@ -66,15 +66,13 @@ export const ProseMirror = (props: ProseMirrorProps) => {
     props.onChange(newState)
   }
 
-  // eslint-disable-next-line solid/reactivity
   createEffect(
     (state: [EditorState, ProseMirrorExtension[]]) => {
+      console.debug('[prosemirror] init editor with extensions', state)
       const [prevText, prevExtensions] = state
       const text = unwrap(props.text) as EditorState
       const extensions: ProseMirrorExtension[] = unwrap(props.extensions)
-
       if (!text || !extensions?.length) return [text, extensions]
-
       if (!props.editorView) {
         const { editorState, nodeViews } = createEditorState(text, extensions)
         const view = new EditorView(editorRef, {
@@ -82,26 +80,19 @@ export const ProseMirror = (props: ProseMirrorProps) => {
           nodeViews,
           dispatchTransaction
         })
-
         view.focus()
         props.onInit(editorState, view)
-
         return [editorState, extensions]
       }
-
       if (extensions !== prevExtensions || (!(text instanceof EditorState) && text !== prevText)) {
         const { editorState, nodeViews } = createEditorState(text, extensions, prevText)
-
         if (!editorState) return
-
         editorView().updateState(editorState)
         editorView().setProps({ nodeViews, dispatchTransaction })
         props.onReconfigure(editorState)
         editorView().focus()
-
         return [editorState, extensions]
       }
-
       return [text, extensions]
     },
     [props.text, props.extensions]

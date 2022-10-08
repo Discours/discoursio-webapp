@@ -1,10 +1,7 @@
 import { Plugin } from 'prosemirror-state'
 import type { Node, Schema } from 'prosemirror-model'
 import type { EditorView } from 'prosemirror-view'
-// import { convertFileSrc } from '@tauri-apps/api/tauri'
-// import { resolvePath, dirname } from '../../remote'
-// import { isTauri } from '../../env'
-import type { ProseMirrorExtension } from '../state'
+import type { ProseMirrorExtension } from '../../store/state'
 
 const REGEX = /^!\[([^[\]]*)]\((.+?)\)\s+/
 const MAX_MATCH = 500
@@ -139,8 +136,8 @@ class ImageView {
   contentDOM: Element
   container: HTMLElement
   handle: HTMLElement
-  onResizeFn: any
-  onResizeEndFn: any
+  onResizeFn: (e: Event) => void
+  onResizeEndFn: (e: Event) => void
   width: number
   updating: number
 

@@ -1,10 +1,7 @@
 import { apiClient } from '../../utils/apiClient'
 import type { Author } from '../../graphql/types.gen'
-import { getLogger } from '../../utils/logger'
 import { createSignal } from 'solid-js'
 import { createLazyMemo } from '@solid-primitives/memo'
-
-const log = getLogger('authors store')
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'rating'
 
@@ -32,7 +29,7 @@ const sortedAuthors = createLazyMemo(() => {
       break
     }
     case 'name': {
-      log.debug('sorted by name')
+      console.debug('sorted by name')
       authors.sort((a, b) => a.name.localeCompare(b.name))
       break
     }

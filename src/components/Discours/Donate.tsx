@@ -21,6 +21,7 @@ export const Donate = () => {
   const [amount, setAmount] = createSignal(0)
 
   onMount(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const {
       cp: { CloudPayments }
     } = window as any // Checkout(cpOptions)
@@ -60,6 +61,7 @@ export const Donate = () => {
       amountSwitchElement?.querySelector('input[type=radio]:checked')
     setAmount(Number.parseInt(customAmountElement?.value || choice?.value || '0'))
     console.log('[donate] input amount ' + amount)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(widget() as any).charge(
       {
         // options
@@ -81,13 +83,13 @@ export const Donate = () => {
           }
         }
       },
-      (opts: any) => {
+      (opts) => {
         // success
         // действие при успешной оплате
         console.debug('[donate] options', opts)
         showModal('thank')
       },
-      function (reason: string, options: any) {
+      function (reason: string, options) {
         // fail
         // действие при неуспешной оплате
         console.debug('[donate] options', options)

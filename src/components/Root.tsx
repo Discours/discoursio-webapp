@@ -5,7 +5,6 @@ import { setLocale } from '../stores/ui'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
 import { Dynamic, isServer } from 'solid-js/web'
-import { getLogger } from '../utils/logger'
 
 import type { PageProps } from './types'
 
@@ -47,8 +46,6 @@ import { CreatePage } from './Pages/CreatePage'
 // const TermsOfUsePage = lazy(() => import('./Pages/about/TermsOfUsePage'))
 // const ThanksPage = lazy(() => import('./Pages/about/ThanksPage'))
 // const CreatePage = lazy(() => import('./Pages/about/CreatePage'))
-
-const log = getLogger('root')
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
   create: CreatePage,

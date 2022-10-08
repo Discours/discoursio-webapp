@@ -1,4 +1,4 @@
-import './ArticlesList.scss'
+import '../styles/ArticlesList.scss'
 
 export default () => {
   return (

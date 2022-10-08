@@ -1,9 +1,6 @@
 import { createEffect, createSignal, JSX, onMount, Show } from 'solid-js'
-import { getLogger } from '../../utils/logger'
 import './Modal.scss'
 import { hideModal, useModalStore } from '../../stores/ui'
-
-const log = getLogger('modal')
 
 interface ModalProps {
   name: string
@@ -26,7 +23,7 @@ export const Modal = (props: ModalProps) => {
   const [visible, setVisible] = createSignal(false)
   createEffect(() => {
     setVisible(getModal() === props.name)
-    log.debug(`${props.name} is ${getModal() === props.name ? 'visible' : 'hidden'}`)
+    console.debug(`[modal] ${props.name} is ${getModal() === props.name ? 'visible' : 'hidden'}`)
   })
 
   return (

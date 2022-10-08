@@ -6,13 +6,11 @@ import { selectAll, deleteSelection } from 'prosemirror-commands'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
 import debounce from 'lodash/debounce'
 import { createSchema, createExtensions, createEmptyText, InitOpts } from '../prosemirror/setup'
-import { State, Config, ServiceError, newState, PeerData } from '../prosemirror/context'
+import { State, Config, ServiceError, newState, PeerData } from './context'
 import { serialize, createMarkdownParser } from '../prosemirror/markdown'
-import { isEmpty, isInitialized, ProseMirrorExtension } from '../prosemirror/state'
+import { isEmpty, isInitialized, ProseMirrorExtension } from './state'
 import { isServer } from 'solid-js/web'
 import { roomConnect } from '../prosemirror/p2p'
-
-const mod = 'Ctrl'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createCtrl = (initial: State): [Store<State>, { [key: string]: any }] => {
@@ -54,7 +52,7 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
   }
 
   const onUndo = () => {
-    if (!isInitialized(store.text)) return false
+    if (!isInitialized(store.text as EditorState)) return false
     const text = store.text as EditorState
     if (store.collab?.started) yUndo(text)
     else undo(text, store.editorView.dispatch)
@@ -62,7 +60,7 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
   }
 
   const onRedo = () => {
-    if (!isInitialized(store.text)) return false
+    if (!isInitialized(store.text as EditorState)) return false
     const text = store.text as EditorState
     if (store.collab?.started) yRedo(text)
     else redo(text, store.editorView.dispatch)
@@ -113,6 +111,7 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
     })
   }
 
+  const mod = 'Ctrl'
   const keymap = {
     [`${mod}-w`]: onDiscard,
     [`${mod}-z`]: onUndo,
@@ -123,31 +122,27 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
 
   const fetchData = async (): Promise<State> => {
     if (isServer) return
-
     const state: State = unwrap(store)
-    const room = undefined // window.location.pathname?.slice(1) + uuidv4()
-    // console.debug('[editor-ctrl] got unique room', room)
-    const args = { room }
+    console.debug('[editor] init state', state)
     const { default: db } = await import('../db')
     const data: string = await db.get('state')
-    console.debug('[editor-ctrl] got stored state from idb')
-    let parsed
-    let text = state.text
-
     if (data !== undefined) {
+      console.debug('[editor] state stored before', data)
       try {
-        parsed = JSON.parse(data)
+        const parsed = JSON.parse(data)
+        let text = state.text
+        const room = undefined // window.location.pathname?.slice(1) + uuidv4()
+        const args = { room }
         if (!parsed) return { ...state, args }
-
-        console.debug('[editor-ctrl] json state parsed successfully', parsed)
         if (parsed?.text) {
           if (!parsed.text || !parsed.text.doc || !parsed.text.selection) {
             throw new ServiceError('invalid_state', parsed.text)
           } else {
             text = parsed.text
-            console.debug('[editor-ctrl] got text from stored json', parsed)
+            console.debug('[editor] got text parsed')
           }
         }
+        console.debug('[editor] json state parsed successfully', parsed)
         return {
           ...parsed,
           text,
@@ -166,71 +161,77 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
     }
   }
 
-  const getTheme = (state: State) => ({ theme: state.config.theme })
+  const getTheme = (state: State) => ({ theme: state.config?.theme || '' })
 
   const clean = () => {
-    setState({
+    const s: State = {
       ...newState(),
       loading: 'initialized',
       lastModified: new Date(),
       error: undefined,
-      text: undefined
-    })
+      text: undefined,
+      args: {}
+    }
+    setState(s)
+    console.debug('[editor] clean state', s)
   }
 
   const init = async () => {
     let state = await fetchData()
-    console.debug('[editor-ctrl] state initiated', state)
-    try {
-      if (state.args?.room) {
-        state = doStartCollab(state)
-      } else if (!state.text) {
-        const text = createEmptyText()
-        const extensions = createExtensions({
-          config: state.config,
-          markdown: state.markdown,
-          keymap
-        })
-
-        state = { ...state, text, extensions }
+    if (state) {
+      console.debug('[editor] state initiated', state)
+      try {
+        if (state.args?.room) {
+          state = { ...doStartCollab(state) }
+        } else if (!state.text) {
+          const text = createEmptyText()
+          const extensions = createExtensions({
+            config: state?.config || ({} as Config),
+            markdown: state.markdown,
+            keymap
+          })
+          state = { ...state, text, extensions }
+        }
+      } catch (error) {
+        state = { ...state, error }
       }
-    } catch (error) {
-      state = { ...state, error }
+      setState({
+        ...state,
+        config: {
+          ...state.config,
+          ...getTheme(state)
+        },
+        loading: 'initialized'
+      })
     }
-    setState({
-      ...state,
-      config: { ...state.config, ...getTheme(state) },
-      loading: 'initialized'
-    })
   }
 
-  const saveState = debounce(async (state: State) => {
-    const data = {
-      lastModified: state.lastModified,
-      config: state.config,
-      path: state.path,
-      markdown: state.markdown,
-      collab: {
-        room: state.collab?.room
-      },
-      text: ''
-    }
-
-    if (isInitialized(state.text)) {
-      data.text = store.editorView.state.toJSON()
-    } else if (state.text) {
-      data.text = state.text as string
-    }
-    if (!isServer) {
-      const { default: db } = await import('../db')
-      db.set('state', JSON.stringify(data))
-    }
-  }, 200)
+  const saveState = () =>
+    debounce(async (state: State) => {
+      const data = {
+        lastModified: state.lastModified,
+        config: state.config,
+        path: state.path,
+        markdown: state.markdown,
+        collab: {
+          room: state.collab?.room
+        },
+        text: ''
+      }
+      if (isInitialized(state.text as EditorState)) {
+        data.text = store.editorView.state.toJSON()
+      } else if (state.text) {
+        data.text = state.text as string
+      }
+      if (!isServer) {
+        const { default: db } = await import('../db')
+        db.set('state', JSON.stringify(data))
+      }
+    }, 200)
 
   const startCollab = () => {
     const state: State = unwrap(store)
     const update = doStartCollab(state)
-
     setState(update)
   }
 
@@ -239,7 +240,6 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
     const room = state.args?.room ?? uuidv4()
     const username = '' // FIXME: use authenticated user name
     const [payload, provider] = roomConnect(room, username)
-
     const extensions: ProseMirrorExtension[] = createExtensions({
       config: state.config,
       markdown: state.markdown,
@@ -247,10 +247,8 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
       keymap,
       y: { payload, provider } as PeerData
     } as InitOpts)
-
     let nState = state
-
-    if ((backup && !isEmpty(state.text)) || state.path) {
+    if ((backup && !isEmpty(state.text as EditorState)) || state.path) {
       nState = {
         ...state,
         lastModified: undefined,
@@ -258,7 +256,6 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
         error: undefined
       }
     }
-
     return {
       ...nState,
       extensions,
@@ -274,7 +271,6 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
       path: state.path,
       keymap
     })
-
     setState({ collab: undefined, extensions })
     window.history.replaceState(null, '', '/')
   }
@@ -302,7 +298,6 @@ export const createCtrl = (initial: State): [Store<State>, { [key: string]: any 
 
   const updateTheme = () => {
     const { theme } = getTheme(unwrap(store))
-
     setState('config', { theme })
   }
 

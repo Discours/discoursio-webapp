@@ -8,9 +8,6 @@ import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
-import { getLogger } from '../../utils/logger'
-
-const log = getLogger('TopicCard')
 
 interface TopicProps {
   topic: Topic

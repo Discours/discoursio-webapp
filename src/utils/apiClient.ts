@@ -1,6 +1,4 @@
 import type { Reaction, Shout, FollowingEntity, AuthResult } from '../graphql/types.gen'
-
-import { getLogger } from './logger'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
@@ -32,8 +30,6 @@ import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 import myChats from '../graphql/query/my-chats'
 
-const log = getLogger('api-client')
-
 const FEED_SIZE = 50
 const REACTIONS_PAGE_SIZE = 100
 
@@ -51,7 +47,7 @@ export class ApiError extends Error {
 export const apiClient = {
   authLogin: async ({ email, password }): Promise<AuthResult> => {
     const response = await publicGraphQLClient.query(authLoginQuery, { email, password }).toPromise()
-    // log.debug('authLogin', { response })
+    // console.debug('[api-client] authLogin', { response })
     if (response.error) {
       if (response.error.message === '[GraphQL] User not found') {
         throw new ApiError('user_not_found')
@@ -119,7 +115,7 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
 
     if (!response.data) {
-      log.error('getRandomTopics', response.error)
+      console.error('[api-client] getRandomTopics', response.error)
     }
 
     return response.data.topicsRandom
@@ -177,7 +173,7 @@ export const apiClient = {
       .toPromise()
 
     if (response.error) {
-      log.error('getArticlesForTopics', response.error)
+      console.error('[api-client] getArticlesForTopics', response.error)
     }
 
     return response.data.shoutsByTopics
@@ -200,7 +196,7 @@ export const apiClient = {
       .toPromise()
 
     if (response.error) {
-      log.error('getArticlesForAuthors', response.error)
+      console.error('[api-client] getArticlesForAuthors', response.error)
     }
 
     return response.data.shoutsByAuthors
@@ -226,7 +222,7 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(articlesRecentPublished, { limit, offset }).toPromise()
 
     if (response.error) {
-      log.error('getPublishedArticles', response.error)
+      console.error('[api-client] getPublishedArticles', response.error)
     }
 
     return response.data.recentPublished
@@ -234,14 +230,14 @@ export const apiClient = {
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
     if (response.error) {
-      log.debug('getAllTopics', response.error)
+      console.debug('[api-client] getAllTopics', response.error)
     }
     return response.data.topicsAll
   },
   getAllAuthors: async () => {
     const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
     if (response.error) {
-      log.debug('getAllAuthors', response.error)
+      console.debug('[api-client] getAllAuthors', response.error)
     }
     return response.data.authorsAll
   },
@@ -300,7 +296,7 @@ export const apiClient = {
   },
   createReaction: async ({ reaction }) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()
-    log.debug('[api] create reaction mutation called')
+    console.debug('[api-client] [api] create reaction mutation called')
     return response.data.createReaction
   },
   updateReaction: async ({ reaction }) => {

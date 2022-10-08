@@ -55,10 +55,11 @@ export interface Collab {
 
 export type LoadingType = 'loading' | 'initialized'
 
-export interface File {
+// TODO: use this interface in prosemirror's context
+export interface Draft {
+  path?: string // used by state
   text?: { [key: string]: string }
   lastModified?: string
-  path?: string
   markdown?: boolean
 }
 
@@ -68,11 +69,9 @@ export interface State {
   extensions?: ProseMirrorExtension[]
   markdown?: boolean
   lastModified?: Date
-  files: File[]
   config: Config
   error?: ErrorObject
   loading: LoadingType
-  fullscreen: boolean
   collab?: Collab
   path?: string
   args?: Args
@@ -103,15 +102,14 @@ const DEFAULT_CONFIG = {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const StateContext = createContext<[Store<State>, any]>([{} as Store<State>, undefined])
 
 export const useState = () => useContext(StateContext)
 
 export const newState = (props: Partial<State> = {}): State => ({
   extensions: [],
-  files: [],
   loading: 'loading',
-  fullscreen: false,
   markdown: false,
   config: DEFAULT_CONFIG,
   ...props

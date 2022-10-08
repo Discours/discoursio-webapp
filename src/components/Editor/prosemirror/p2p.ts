@@ -1,12 +1,12 @@
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import { Awareness } from 'y-protocols/awareness'
 import { WebrtcProvider } from 'y-webrtc'
-import * as Y from 'yjs'
+import { Doc, XmlFragment } from 'yjs'
 import type { Reaction } from '../../../graphql/types.gen'
 import { setReactions } from '../../../stores/editor'
 
-export const roomConnect = (room, username = '', keyname = 'collab'): [Y.XmlFragment, WebrtcProvider] => {
-  const ydoc = new Y.Doc()
+export const roomConnect = (room, username = '', keyname = 'collab'): [XmlFragment, WebrtcProvider] => {
+  const ydoc = new Doc()
   const yarr = ydoc.getArray(keyname + '-reactions')
   const yXmlFragment = ydoc.getXmlFragment(keyname)
   const webrtcOptions = {

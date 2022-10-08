@@ -1,9 +1,11 @@
-import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js'
+import { Show, createEffect, createSignal, onCleanup } from 'solid-js'
 import { unwrap } from 'solid-js/store'
 // import { undo, redo } from 'prosemirror-history'
-import { File, useState /*, Config, PrettierConfig */ } from './prosemirror/context'
+import { Draft, useState } from './prosemirror/context'
 import { clsx } from 'clsx'
 import type { Styled } from './Layout'
+import { t } from '../../utils/intl'
+
 // import type { EditorState } from 'prosemirror-state'
 // import { serialize } from './prosemirror/markdown'
 // import { baseUrl } from '../../graphql/client'
@@ -11,12 +13,10 @@ import type { Styled } from './Layout'
 
 // const copy = async (text: string): Promise<void> => navigator.clipboard.writeText(text)
 // const copyAllAsMarkdown = async (state: EditorState): Promise<void> =>
-//   !isServer && navigator.clipboard.writeText(serialize(state))
+//  navigator.clipboard.writeText(serialize(state)) && !isServer
 
 const Off = (props: any) => <div class="sidebar-off">{props.children}</div>
-
 const Label = (props: Styled) => <h3 class="sidebar-label">{props.children}</h3>
-
 const Link = (
   props: Styled & { withMargin?: boolean; disabled?: boolean; title?: string; className?: string }
 ) => (
@@ -32,12 +32,12 @@ const Link = (
   </button>
 )
 
-type FileLinkProps = {
-  file: File
-  onOpenFile: (file: File) => void
+type DraftLinkProps = {
+  draft: Draft
+  onOpenDraft: (draft: Draft) => void
 }
 
-const FileLink = (props: FileLinkProps) => {
+const DraftLink = (props: DraftLinkProps) => {
   const length = 100
   let content = ''
   const getContent = (node: any) => {
@@ -65,14 +65,14 @@ const FileLink = (props: FileLinkProps) => {
   }
 
   const text = () =>
-    props.file.path
-      ? props.file.path.slice(Math.max(0, props.file.path.length - length))
-      : getContent(props.file.text?.doc)
+    props.draft.path
+      ? props.draft.path.slice(Math.max(0, props.draft.path.length - length))
+      : getContent(props.draft.text?.doc)
 
   return (
     // eslint-disable-next-line solid/no-react-specific-props
-    <Link className="file" onClick={() => props.onOpenFile(props.file)} data-testid="open">
-      {text()} {props.file.path && '📎'}
+    <Link className="draft" onClick={() => props.onOpenDraft(props.draft)} data-testid="open">
+      {text()} {props.draft.path && '📎'}
     </Link>
   )
 }
@@ -88,14 +88,13 @@ export const Sidebar = () => {
   // const collabText = () => (store.collab?.started ? 'Stop' : store.collab?.error ? 'Restart 🚨' : 'Start')
   const editorView = () => unwrap(store.editorView)
   // const onToggleMarkdown = () => ctrl.toggleMarkdown()
-  const onOpenFile = (file: File) => ctrl.openFile(unwrap(file))
+  const onOpenDraft = (draft: Draft) => ctrl.openDraft(unwrap(draft))
   // const collabUsers = () => store.collab?.y?.provider.awareness.meta.size ?? 0
   // const onUndo = () => undo(editorView().state, editorView().dispatch)
   // const onRedo = () => redo(editorView().state, editorView().dispatch)
   // const onCopyAllAsMd = () => copyAllAsMarkdown(editorView().state).then(() => setLastAction('copy-md'))
   // const onToggleAlwaysOnTop = () => ctrl.updateConfig({ alwaysOnTop: !store.config.alwaysOnTop })
-  // const onToggleFullscreen = () => ctrl.setFullscreen(!store.fullscreen)
-  // const onNew = () => ctrl.newFile()
+  // const onNew = () => ctrl.newDraft()
   // const onDiscard = () => ctrl.discard()
   const [isHidden, setIsHidden] = createSignal<boolean | false>()
 
@@ -106,7 +105,7 @@ export const Sidebar = () => {
   toggleSidebar()
 
   // const onSaveAs = async () => {
-  //   const path = 'test' // TODO: save filename await remote.save(editorView().state)
+  //   const path = 'test' // TODO: save draftname await remote.save(editorView().state)
   //
   //   if (path) ctrl.updatePath(path)
   // }
@@ -189,27 +188,17 @@ export const Sidebar = () => {
             </div>
 
             {/*
-            <Show when={isTauri && !store.path}>
-              <Link onClick={onSaveAs}>
-                Save to file <Keys keys={[mod, 's']} />
-              </Link>
-            </Show>
             <Link onClick={onNew} data-testid='new'>
               New <Keys keys={[mod, 'n']} />
             </Link>
             <Link
               onClick={onDiscard}
-              disabled={!store.path && store.files?.length === 0 && isEmpty(store.text)}
+              disabled={!store.path && store.drafts?.length === 0 && isEmpty(store.text)}
               data-testid='discard'
             >
-              {store.path ? 'Close' : store.files?.length > 0 && isEmpty(store.text) ? 'Delete ⚠️' : 'Clear'}{' '}
+              {store.path ? 'Close' : store.drafts?.length > 0 && isEmpty(store.text) ? 'Delete ⚠️' : 'Clear'}{' '}
               <Keys keys={[mod, 'w']} />
             </Link>
-            <Show when={isTauri}>
-              <Link onClick={onToggleFullscreen}>
-                Fullscreen {store.fullscreen && '✅'} <Keys keys={[alt, 'Enter']} />
-              </Link>
-            </Show>
             <Link onClick={onUndo}>
               Undo <Keys keys={[mod, 'z']} />
             </Link>
@@ -226,15 +215,15 @@ export const Sidebar = () => {
               Markdown mode {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
             </Link>
             <Link onClick={onCopyAllAsMd}>Copy all as MD {lastAction() === 'copy-md' && '📋'}</Link>
-*/}
-            <Show when={store.files?.length > 0}>
-              <h4>Files:</h4>
+
+            <Show when={store.drafts?.length > 0}>
+              <h4>t('Drafts'):</h4>
               <p>
-                <For each={store.files}>{(file) => <FileLink file={file} onOpenFile={onOpenFile} />}</For>
+                <For each={store.drafts}>{(draft) => <DraftLink draft={draft} onOpenDraft={onOpenDraft} />}</For>
               </p>
             </Show>
 
-            {/*
+
             <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>
               Collab {collabText()}
             </Link>

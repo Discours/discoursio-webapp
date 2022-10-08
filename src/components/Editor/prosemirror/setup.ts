@@ -17,10 +17,11 @@ import table from './extension/table'
 import collab from './extension/collab'
 import type { Config, PeerData } from './context'
 import selectionMenu from './extension/selection'
+import type { Command } from 'prosemirror-state'
 
 export interface InitOpts {
   data?: unknown
-  keymap?: any
+  keymap?: { [key: string]: Command }
   config: Config
   markdown: boolean
   path?: string

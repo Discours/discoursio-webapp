@@ -144,5 +144,9 @@
   "zine": "журнал",
   "Please, confirm email": "Пожалуйста, подтвердите электронную почту",
   "Something went wrong, check email and password": "Что-то пошло не так. Проверьте адрес электронной почты и пароль",
-  "You was successfully authorized": "Вы были успешно авторизованы"
+  "You was successfully authorized": "Вы были успешно авторизованы",
+  "Help discours to grow": "Поддержка дискурса",
+  "One time": "Единоразово",
+  "Every month": "Ежемесячно",
+  "Another amount": "Другая сумма"
 }

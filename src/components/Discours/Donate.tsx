@@ -127,7 +127,7 @@ export const Donate = () => {
               ref={customAmountElement}
               type="number"
               name="sum"
-              placeholder="Другая сумма"
+              placeholder={t('Another amount')}
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ export const Donate = () => {
               checked={period() === once}
             />
             <label for="once" class="btn payment-type" classList={{ active: period() === once }}>
-              Единоразово
+              {t('One time')}
             </label>
             <input
               type="radio"
@@ -154,14 +154,14 @@ export const Donate = () => {
               checked={period() === monthly}
             />
             <label for="monthly" class="btn payment-type" classList={{ active: period() === monthly }}>
-              Ежемесячно
+              {t('Every month')}
             </label>
           </div>
         </div>
 
         <div class="form-group">
           <a href={''} class="btn send-btn donate" onClick={show}>
-            Помочь журналу
+            {t('Help discours to grow')}
           </a>
         </div>
       </form>

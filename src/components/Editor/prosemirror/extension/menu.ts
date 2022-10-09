@@ -339,13 +339,9 @@ export function buildMenuItems(schema: Schema) {
       }
     }
   )
-
-  r.typeMenu = tMenu as MenuItem
-  // r.blockMenu = []
   r.listMenu = [r.wrapBulletList as MenuItem, r.wrapOrderedList as MenuItem]
   r.inlineMenu = [r.toggleStrong as MenuItem, r.toggleEm as MenuItem, r.toggleMark as MenuItem]
-  r.fullMenu = [...r.inlineMenu, r.typeMenu, ...r.listMenu]
-
+  r.fullMenu = [...r.inlineMenu, tMenu as MenuItem, ...r.listMenu]
   return r
 }
 
@@ -354,7 +350,7 @@ export default (): ProseMirrorExtension => ({
     ...prev,
     menuBar({
       floating: true,
-      content: buildMenuItems(schema).fullMenu as MenuItem | MenuItem[]
+      content: buildMenuItems(schema).fullMenu as any // NOTE: MenuItem and MenuElement are compatible
     })
   ]
 })

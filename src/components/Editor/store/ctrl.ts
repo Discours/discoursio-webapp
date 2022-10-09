@@ -13,10 +13,10 @@ import { State, Draft, Config, ServiceError, newState } from '.'
 import { serialize, createMarkdownParser } from '../prosemirror/markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
-import { Awareness } from 'y-protocols/awareness'
 import { drafts as draftsatom } from '../../../stores/editor'
 import { useStore } from '@nanostores/solid'
 import { createMemo } from 'solid-js'
+import { roomConnect } from '../prosemirror/p2p'
 
 const isText = (x) => x && x.doc && x.selection
 const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.drafts)
@@ -375,39 +375,15 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     const room = state.args?.room ?? uuidv4()
     window.history.replaceState(null, '', `/${room}`)
 
-    const ydoc = new Y.Doc()
-    const type = ydoc.getXmlFragment('prosemirror')
-    const webrtcOptions = {
-      awareness: new Awareness(ydoc),
-      filterBcConns: true,
-      maxConns: 33,
-      signaling: [
-        // 'wss://signaling.discours.io',
-        // 'wss://stun.l.google.com:19302',
-        'wss://y-webrtc-signaling-eu.herokuapp.com',
-        'wss://signaling.yjs.dev'
-      ],
-      peerOpts: {},
-      password: ''
-    }
-    const provider = new WebrtcProvider(room, ydoc, webrtcOptions)
-    const username = uniqueNamesGenerator({
-      dictionaries: [adjectives, animals],
-      style: 'capital',
-      separator: ' ',
-      length: 2
-    })
-
-    provider.awareness.setLocalStateField('user', {
-      name: username
-    })
+    const [type, provider] = roomConnect(room)
 
     const extensions = createExtensions({
       config: state.config,
       markdown: state.markdown,
       path: state.path,
       keymap,
-      y: { type, provider }
+      y: { type, provider },
+      collab: true
     })
 
     let newst = state
@@ -439,7 +415,8 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       config: state.config,
       markdown: state.markdown,
       path: state.path,
-      keymap
+      keymap,
+      collab: false
     })
 
     setState({ collab: undefined, extensions })

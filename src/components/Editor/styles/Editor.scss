@@ -2,48 +2,64 @@
 @import './Sidebar';
 
 .editor {
-  flex: 1;
-  padding-top: 1em;
+  margin: 0.5em;
+  padding: 1em;
+  min-width: 50%;
+  min-height: fit-content;
+  display: inline-block;
+  border: 1px dotted rgb(0 0 0 / 80%);
+}
 
-  label {
-    display: block;
-  }
+a {
+  color: rgb(0 100 200);
+  text-decoration: none;
+}
 
-  input,
-  button,
-  select,
-  textarea {
-    font-family: inherit;
-    font-size: inherit;
-    -webkit-padding: 0.4em 0;
-    padding: 0.4em;
-    margin: 0 0 0.5em;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-  }
+a:hover {
+  text-decoration: underline;
+}
 
-  input:disabled {
-    color: #ccc;
-  }
+a:visited {
+  color: rgb(0 100 200 / 70%);
+}
 
-  button {
-    color: #333;
-    background-color: #f4f4f4;
-    outline: none;
-  }
+label {
+  display: block;
+}
 
-  button:disabled {
-    color: #999;
-  }
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0.4em;
+  margin: 0 0 0.5em;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
 
-  button:not(:disabled):active {
-    background-color: #ddd;
-  }
+input:disabled {
+  color: #ccc;
+}
 
-  button:focus {
-    border-color: #666;
-  }
+button {
+  color: #333;
+  background-color: #f4f4f4;
+  outline: none;
+}
+
+button:disabled {
+  color: #999;
+}
+
+button:not(:disabled):active {
+  background-color: #ddd;
+}
+
+button:focus {
+  border-color: #666;
 }
 
 .ProseMirror {
@@ -104,17 +120,17 @@
   }
 
   blockquote {
-    border-left: 2px solid;
     @include font-size(1.6rem);
 
     margin: 1.5em 0;
+    border-left: 2px solid;
     padding-left: 1.6em;
   }
 }
 
 .ProseMirror-menuitem {
-  display: flex;
   font-size: small;
+  display: flex;
 
   &:hover {
     > * {
@@ -175,7 +191,7 @@
   content: '';
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 4px solid currentcolor;
+  border-top: 4px solid draftcurrentcolor;
   opacity: 0.6;
   position: absolute;
   right: 4px;
@@ -215,7 +231,7 @@
   content: '';
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  border-left: 4px solid currentcolor;
+  border-left: 4px solid draftcurrentcolor;
   opacity: 0.6;
   position: absolute;
   right: 4px;
@@ -270,7 +286,7 @@
 }
 
 .ProseMirror-icon svg {
-  fill: currentcolor;
+  fill: draftcurrentcolor;
   height: 1em;
 }
 
@@ -333,7 +349,7 @@ li.ProseMirror-selectednode::after {
 
 .ProseMirror-prompt {
   background: #fff;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+  box-shadow: 0 4px 10px rgba(0 0 0 / 25%);
   font-size: 0.7em;
   position: absolute;
 }
@@ -378,7 +394,7 @@ li.ProseMirror-selectednode::after {
 
 .tooltip {
   background: var(--background);
-  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+  box-shadow: 0 4px 10px rgba(0 0 0 / 25%);
   color: #000;
   display: flex;
   position: absolute;

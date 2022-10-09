@@ -1,6 +1,6 @@
 import { Store, createStore, unwrap } from 'solid-js/store'
 import { v4 as uuidv4 } from 'uuid'
-import type { EditorState } from 'prosemirror-state'
+import type { Command, EditorState } from 'prosemirror-state'
 import { undo, redo } from 'prosemirror-history'
 import { selectAll, deleteSelection } from 'prosemirror-commands'
 import * as Y from 'yjs'
@@ -23,7 +23,7 @@ const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.dra
 const isDraft = (x): boolean => x && (x.text || x.path)
 const mod = 'Ctrl'
 
-export const createCtrl = (initial): [Store<State>, any] => {
+export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   const [store, setState] = createStore(initial)
 
   const onNew = () => {
@@ -64,7 +64,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
     [`Shift-${mod}-z`]: onRedo,
     [`${mod}-y`]: onRedo,
     [`${mod}-m`]: onToggleMarkdown
-  }
+  } as { [key: string]: Command }
 
   const createTextFromDraft = async (d: Draft): Promise<Draft> => {
     let draft = d
@@ -83,7 +83,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
     return {
       text: draft.text,
       extensions,
-      updatedAt: draft.updatedAt ? new Date(draft.updatedAt) : undefined,
+      lastModified: draft.lastModified ? new Date(draft.lastModified) : undefined,
       path: draft.path,
       markdown: draft.markdown
     }
@@ -96,7 +96,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
       ...drafts,
       {
         body: text,
-        updatedAt: prev.updatedAt as Date,
+        lastModified: prev.lastModified as Date,
         path: prev.path,
         markdown: prev.markdown
       } as Draft
@@ -121,7 +121,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
       next = {
         text: createEmptyText(),
         extensions,
-        updatedAt: new Date(),
+        lastModified: new Date(),
         path: undefined,
         markdown: state.markdown
       }
@@ -227,7 +227,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
       } else if (data.args.text) {
         data = await doOpenDraft(data, {
           text: { ...JSON.parse(data.args.text) },
-          updatedAt: new Date()
+          lastModified: new Date()
         })
       } else if (data.args.draft) {
         const draft = await loadDraft(data.config, data.args.draft)
@@ -258,7 +258,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
   const loadDraft = async (config: Config, path: string): Promise<Draft> => {
     const draftstore = useStore(draftsatom)
     const draft = createMemo(() => draftstore()[path])
-    const lastModified = draft().updatedAt
+    const lastModified = draft().lastModified
     const draftContent = draft().body
     const schema = createSchema({
       config,
@@ -280,7 +280,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
       ...draft(),
       body: doc,
       text,
-      updatedAt: lastModified.toISOString(),
+      lastModified: lastModified.toISOString(),
       path
     }
   }
@@ -327,9 +327,9 @@ export const createCtrl = (initial): [Store<State>, any] => {
     const item = index === -1 ? draft : state.drafts[index]
     let drafts = state.drafts.filter((f) => f !== item)
     if (!isEmpty(state.text as EditorState) && state.lastModified) {
-      drafts = addToDrafts(drafts, { updatedAt: new Date(), text: state.text } as Draft)
+      drafts = addToDrafts(drafts, { lastModified: new Date(), text: state.text } as Draft)
     }
-    draft.updatedAt = item.updatedAt
+    draft.lastModified = item.lastModified
     const next = await createTextFromDraft(draft)
 
     return {
@@ -343,7 +343,8 @@ export const createCtrl = (initial): [Store<State>, any] => {
 
   const saveState = () =>
     debounce(async (state: State) => {
-      const data: any = {
+      const data: State = {
+        loading: 'initialized',
         lastModified: state.lastModified,
         drafts: state.drafts,
         config: state.config,
@@ -357,7 +358,8 @@ export const createCtrl = (initial): [Store<State>, any] => {
       if (isInitialized(state.text as EditorState)) {
         if (state.path) {
           const text = serialize(store.editorView.state)
-          // TODO: await remote.writeDraft(state.path, text)
+          // await remote.writeDraft(state.path, text)
+          draftsatom.setKey(state.path, text)
         } else {
           data.text = store.editorView.state.toJSON()
         }
@@ -418,7 +420,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
     if ((backup && !isEmpty(state.text as EditorState)) || state.path) {
       let drafts = state.drafts
       if (!state.error) {
-        drafts = addToDrafts(drafts, { updatedAt: new Date(), text: state.text } as Draft)
+        drafts = addToDrafts(drafts, { lastModified: new Date(), text: state.text } as Draft)
       }
 
       newst = {
@@ -455,7 +457,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
     const editorState = store.text as EditorState
     const markdown = !state.markdown
     const selection = { type: 'text', anchor: 1, head: 1 }
-    let doc: any
+    let doc
 
     if (markdown) {
       const lines = serialize(editorState).split('\n')
@@ -495,6 +497,7 @@ export const createCtrl = (initial): [Store<State>, any] => {
       extensions,
       markdown
     })
+    return true
   }
 
   const updateConfig = (config: Partial<Config>) => {

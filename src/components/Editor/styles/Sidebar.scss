@@ -92,10 +92,11 @@
 }
 
 .sidebar-container {
-  color: rgb(255 255 255 / 50%);
-  font-family: Muller;
   @include font-size(1.6rem);
 
+  color: rgb(255 255 255 / 50%);
+  font-family: Muller;
+  display: inline-flex;
   overflow: hidden;
   position: relative;
   top: 0;

@@ -11,7 +11,8 @@ export const Editor = () => {
   const onChange = (text: EditorState) => ctrl.setState({ text, lastModified: new Date() })
   return (
     <ProseMirror
-      class="editor"
+      // eslint-disable-next-line solid/no-react-specific-props
+      className="editor"
       style={store.markdown && `white-space: pre-wrap;`}
       editorView={store.editorView}
       text={store.text}

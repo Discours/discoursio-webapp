@@ -64,7 +64,7 @@ const pasteMarkdown = (schema: Schema) => {
         event.preventDefault()
 
         const paste = parser.parse(text)
-        const slice = paste as any
+        const slice = paste as Node & { openStart: number; openEnd: number }
         const fragment = shiftKey ? slice.content : transform(schema, slice.content)
         const tr = view.state.tr.replaceSelection(new Slice(fragment, slice.openStart, slice.openEnd))
 

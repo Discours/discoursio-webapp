@@ -1,21 +1,22 @@
 import { renderGrouped } from 'prosemirror-menu'
-import { Plugin } from 'prosemirror-state'
+import { EditorState, Plugin } from 'prosemirror-state'
+import type { EditorView } from 'prosemirror-view'
 import type { ProseMirrorExtension } from '../helpers'
 import { buildMenuItems } from './menu'
 
 export class SelectionTooltip {
-  tooltip: any
+  tooltip: HTMLElement
 
-  constructor(view: any, schema: any) {
+  constructor(view: EditorView, schema) {
     this.tooltip = document.createElement('div')
     this.tooltip.className = 'tooltip'
     view.dom.parentNode.appendChild(this.tooltip)
-    const { dom } = renderGrouped(view, (buildMenuItems(schema) as any).fullMenu)
+    const { dom } = renderGrouped(view, buildMenuItems(schema).fullMenu as any)
     this.tooltip.appendChild(dom)
     this.update(view, null)
   }
 
-  update(view: any, lastState: any) {
+  update(view: EditorView, lastState: EditorState) {
     const state = view.state
     if (lastState && lastState.doc.eq(state.doc) && lastState.selection.eq(state.selection)) {
       return
@@ -41,9 +42,9 @@ export class SelectionTooltip {
   }
 }
 
-export function toolTip(schema: any) {
+export function toolTip(schema) {
   return new Plugin({
-    view(editorView: any) {
+    view(editorView: EditorView) {
       return new SelectionTooltip(editorView, schema)
     }
   })

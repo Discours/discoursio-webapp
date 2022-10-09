@@ -5,7 +5,6 @@ import type { WebrtcProvider } from 'y-webrtc'
 import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 import type { EditorView } from 'prosemirror-view'
 import { createEmptyText } from '../prosemirror/setup'
-import type { Shout } from '../../../graphql/types.gen'
 
 export interface Args {
   draft: string // path to draft
@@ -70,7 +69,7 @@ export interface State {
 
 export interface Draft {
   extensions?: ProseMirrorExtension[]
-  updatedAt: Date
+  lastModified: Date
   body?: string
   text?: { doc: any; selection: { type: string; anchor: number; head: number } }
   path?: string

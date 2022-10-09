@@ -1,4 +1,4 @@
-import { persistentAtom } from '@nanostores/persistent'
+import { persistentAtom, persistentMap } from '@nanostores/persistent'
 import type { Reaction } from '../graphql/types.gen'
 import { atom } from 'nanostores'
 import { createSignal } from 'solid-js'
@@ -18,7 +18,7 @@ interface Collab {
   title?: string
 }
 
-export const drafts = persistentAtom<{ [key: string]: Draft }>(
+export const drafts = persistentMap<{ [key: string]: Draft }>(
   'drafts',
   {},
   {

@@ -1,12 +1,11 @@
 const prefix = 'ProseMirror-prompt'
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function openPrompt(options: any) {
+export function openPrompt(options) {
   const wrapper = document.body.appendChild(document.createElement('div'))
   wrapper.className = prefix
-
-  const mouseOutside = (e: any) => {
-    if (!wrapper.contains(e.target)) close()
+  const mouseOutside = (e: MouseEvent) => {
+    if (!wrapper.contains(e.target as Node)) close()
   }
   setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50)
   const close = () => {
@@ -14,7 +13,7 @@ export function openPrompt(options: any) {
     if (wrapper.parentNode) wrapper.remove()
   }
 
-  const domFields: any = []
+  const domFields = []
   options.fields.forEach((name) => {
     domFields.push(options.fields[name].render())
   })
@@ -33,7 +32,7 @@ export function openPrompt(options: any) {
   if (options.title) {
     form.appendChild(document.createElement('h5')).textContent = options.title
   }
-  domFields.forEach((field: any) => {
+  domFields.forEach((field) => {
     form.appendChild(document.createElement('div')).appendChild(field)
   })
   const buttons = form.appendChild(document.createElement('div'))
@@ -74,11 +73,11 @@ export function openPrompt(options: any) {
     }
   })
 
-  const input: any = form.elements[0]
-  if (input) input.focus()
+  const inpel = form.elements[0] as HTMLInputElement
+  if (inpel) inpel.focus()
 }
 
-function getValues(fields: any, domFields: any) {
+function getValues(fields, domFields) {
   const result = Object.create(null)
   let i = 0
   fields.forEarch((name) => {
@@ -95,7 +94,7 @@ function getValues(fields: any, domFields: any) {
   return result
 }
 
-function reportInvalid(dom: any, message: any) {
+function reportInvalid(dom: HTMLElement, message: string) {
   const parent = dom.parentNode
   const msg = parent.appendChild(document.createElement('div'))
   msg.style.left = dom.offsetLeft + dom.offsetWidth + 2 + 'px'
@@ -106,13 +105,24 @@ function reportInvalid(dom: any, message: any) {
   setTimeout(() => parent.removeChild(msg), 1500)
 }
 
+interface FieldOptions {
+  options: { value: string; label: string }[]
+  required: boolean
+  label: string
+  value: string
+  validateType: (v) => boolean
+  validate: (v) => boolean
+  read: (v) => string
+  clean: (v) => boolean
+}
+
 export class Field {
-  options: any
-  constructor(options: any) {
+  options: FieldOptions
+  constructor(options) {
     this.options = options
   }
 
-  read(dom: any) {
+  read(dom) {
     return dom.value
   }
   // :: (any) → ?string
@@ -121,13 +131,12 @@ export class Field {
     return typeof _value === typeof ''
   }
 
-  validate(value: any) {
+  validate(value) {
     if (!value && this.options.required) return 'Required field'
-
     return this.validateType(value) || (this.options.validate && this.options.validate(value))
   }
 
-  clean(value: any) {
+  clean(value) {
     return this.options.clean ? this.options.clean(value) : value
   }
 }
@@ -147,7 +156,7 @@ export class TextField extends Field {
 export class SelectField extends Field {
   render() {
     const select = document.createElement('select')
-    this.options.options.forEach((o: { value: string; label: string }) => {
+    this.options.options.forEach((o) => {
       const opt = select.appendChild(document.createElement('option'))
       opt.value = o.value
       opt.selected = o.value === this.options.value

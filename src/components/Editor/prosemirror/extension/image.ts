@@ -1,7 +1,8 @@
 import { Plugin } from 'prosemirror-state'
-import type { Node, Schema } from 'prosemirror-model'
+import type { Node, NodeSpec, Schema } from 'prosemirror-model'
 import type { EditorView } from 'prosemirror-view'
-import type { ProseMirrorExtension } from '../helpers'
+import type { NodeViewFn, ProseMirrorExtension } from '../helpers'
+import type OrderedMap from 'orderedmap'
 
 const REGEX = /^!\[([^[\]]*?)]\((.+?)\)\s+/
 const MAX_MATCH = 500
@@ -17,7 +18,7 @@ const isUrl = (str: string) => {
 
 const isBlank = (text: string) => text === ' ' || text === '\u00A0'
 
-const imageInput = (schema: Schema, path?: string) =>
+const imageInput = (schema: Schema, _path?: string) =>
   new Plugin({
     props: {
       handleTextInput(view, from, to, text) {
@@ -68,7 +69,7 @@ const imageSchema = {
         src: dom.getAttribute('src'),
         title: dom.getAttribute('title'),
         alt: dom.getAttribute('alt'),
-        path: (dom as any).dataset.path
+        path: (dom as NodeSpec).dataset.path
       })
     }
   ],
@@ -101,12 +102,12 @@ class ImageView {
   contentDOM: Element
   container: HTMLElement
   handle: HTMLElement
-  onResizeFn: any
-  onResizeEndFn: any
+  onResizeFn: (e: Event) => void
+  onResizeEndFn: (e: Event) => void
   width: number
   updating: number
 
-  constructor(node: Node, view: EditorView, getPos: () => number, schema: Schema, path: string) {
+  constructor(node: Node, view: EditorView, getPos: () => number, schema: Schema, _path: string) {
     this.node = node
     this.view = view
     this.getPos = getPos
@@ -161,12 +162,12 @@ class ImageView {
 export default (path?: string): ProseMirrorExtension => ({
   schema: (prev) => ({
     ...prev,
-    nodes: (prev.nodes as any).update('image', imageSchema)
+    nodes: (prev.nodes as OrderedMap<NodeSpec>).update('image', imageSchema as unknown as NodeSpec)
   }),
   plugins: (prev, schema) => [...prev, imageInput(schema, path)],
   nodeViews: {
     image: (node, view, getPos) => {
       return new ImageView(node, view, getPos, view.state.schema, path)
     }
-  } as any
+  } as unknown as { [key: string]: NodeViewFn }
 })

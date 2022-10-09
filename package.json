@@ -89,6 +89,7 @@
     "markdown-it-mark": "^3.0.1",
     "markdown-it-replace-link": "^1.1.0",
     "nanostores": "^0.7.0",
+    "orderedmap": "^2.1.0",
     "postcss": "^8.4.16",
     "postcss-modules": "^5.0.0",
     "prettier": "^2.7.1",

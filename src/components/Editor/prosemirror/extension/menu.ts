@@ -16,48 +16,34 @@ import {
 import type { MenuItemSpec, MenuElement } from 'prosemirror-menu'
 
 import { wrapInList } from 'prosemirror-schema-list'
-import { NodeSelection } from 'prosemirror-state'
+import { Command, EditorState, NodeSelection, Transaction } from 'prosemirror-state'
 
 import { TextField, openPrompt } from './prompt'
 import type { ProseMirrorExtension } from '../helpers'
-import type { Schema } from 'prosemirror-model'
+import type { Attrs, MarkType, NodeType, Schema } from 'prosemirror-model'
+import type { EditorView } from 'prosemirror-view'
 
 // Helpers to create specific types of items
 
-function canInsert(state: { selection: { $from: any } }, nodeType: any) {
+function canInsert(state: EditorState, nodeType: NodeType) {
   const $from = state.selection.$from
-
   for (let d = $from.depth; d >= 0; d--) {
     const index = $from.index(d)
-
     if ($from.node(d).canReplaceWith(index, index, nodeType)) return true
   }
-
   return false
 }
 
-function insertImageItem(nodeType: { createAndFill: (arg0: any) => any }) {
+function insertImageItem(nodeType: NodeType) {
   return new MenuItem({
     icon: icons.image,
     label: 'image',
-    enable(state: any) {
+    enable(state) {
       return canInsert(state, nodeType)
     },
-    run(
-      state: {
-        selection: { node?: any; from?: any; to?: any }
-        doc: { textBetween: (arg0: any, arg1: any, arg2: string) => any }
-      },
-      _: any,
-      view: {
-        dispatch: (arg0: any) => void
-        state: { tr: { replaceSelectionWith: (arg0: any) => any } }
-        focus: () => void
-      }
-    ) {
-      const { from, to, node } = state.selection
+    run(state: EditorState, _, view: EditorView) {
+      const { from, to, node } = state.selection as NodeSelection
       let attrs = null
-
       if (state.selection instanceof NodeSelection && node.type === nodeType) {
         attrs = node.attrs
       }
@@ -77,7 +63,7 @@ function insertImageItem(nodeType: { createAndFill: (arg0: any) => any }) {
           })
         },
         // eslint-disable-next-line no-shadow
-        callback(attrs: any) {
+        callback(attrs: Attrs) {
           view.dispatch(view.state.tr.replaceSelectionWith(nodeType.createAndFill(attrs)))
           view.focus()
         }
@@ -86,53 +72,31 @@ function insertImageItem(nodeType: { createAndFill: (arg0: any) => any }) {
   })
 }
 
-function cmdItem(
-  cmd: (arg0: any) => any,
-  options: { [x: string]: any; active?: (state: any) => any; enable?: any; title?: any; select?: any }
-) {
-  const passedOptions = {
-    label: options.title,
-    run: cmd
-  } as { [key: string]: any }
-
+function cmdItem(cmd: Command, options: MenuItemSpec) {
+  const passedOptions = { label: options.title, run: cmd } as MenuItemSpec
   Object.keys(options).forEach((prop) => (passedOptions[prop] = options[prop]))
-
-  if ((!options.enable || options.enable === true) && !options.select) {
-    passedOptions[options.enable ? 'enable' : 'select'] = (state: any) => cmd(state)
-  }
-
+  // TODO: enable/disable items logix
+  passedOptions.select = (state) => cmd(state)
   return new MenuItem(passedOptions as MenuItemSpec)
 }
 
-function markActive(
-  state: {
-    selection: { from: any; $from: any; to: any; empty: any }
-    storedMarks: any
-    doc: { rangeHasMark: (arg0: any, arg1: any, arg2: any) => any }
-  },
-  type: { isInSet: (arg0: any) => any }
-) {
+function markActive(state: EditorState, type: MarkType) {
   const { from, $from, to, empty } = state.selection
-
   if (empty) return type.isInSet(state.storedMarks || $from.marks())
-
   return state.doc.rangeHasMark(from, to, type)
 }
 
-function markItem(markType: any, options: { [x: string]: any; title?: string; icon?: any }) {
+function markItem(markType: MarkType, options: MenuItemSpec) {
   const passedOptions = {
-    active(state: any) {
+    active(state) {
       return markActive(state, markType)
-    },
-    enable: true
-  } as { [key: string]: any }
-
+    }
+  } as MenuItemSpec
   Object.keys(options).forEach((prop: string) => (passedOptions[prop] = options[prop]))
-
   return cmdItem(toggleMark(markType), passedOptions)
 }
 
-function linkItem(markType: any) {
+function linkItem(markType: MarkType) {
   return new MenuItem({
     title: 'Add or remove link',
     icon: {
@@ -140,19 +104,13 @@ function linkItem(markType: any) {
       height: 18,
       path: 'M3.27177 14.7277C2.06258 13.5186 2.06258 11.5527 3.27177 10.3435L6.10029 7.51502L4.75675 6.17148L1.92823 9C-0.0234511 10.9517 -0.0234511 14.1196 1.92823 16.0713C3.87991 18.023 7.04785 18.023 8.99952 16.0713L11.828 13.2428L10.4845 11.8992L7.65598 14.7277C6.44679 15.9369 4.48097 15.9369 3.27177 14.7277ZM6.87756 12.536L12.5346 6.87895L11.1203 5.46469L5.4633 11.1217L6.87756 12.536ZM6.17055 4.75768L8.99907 1.92916C10.9507 -0.0225206 14.1187 -0.0225201 16.0704 1.92916C18.022 3.88084 18.022 7.04878 16.0704 9.00046L13.2418 11.829L11.8983 10.4854L14.7268 7.65691C15.936 6.44772 15.936 4.4819 14.7268 3.27271C13.5176 2.06351 11.5518 2.06351 10.3426 3.2727L7.51409 6.10122L6.17055 4.75768Z'
     },
-    active(state: any) {
-      return markActive(state, markType)
-    },
-    enable(state: { selection: { empty: any } }) {
-      return !state.selection.empty
-    },
-    run(state: any, dispatch: any, view: { state: any; dispatch: any; focus: () => void }) {
+    active: (state) => Boolean(markActive(state, markType)),
+    enable: (state: EditorState) => !state.selection.empty,
+    run(state: EditorState, dispatch: (t: Transaction) => void, view: EditorView) {
       if (markActive(state, markType)) {
         toggleMark(markType)(state, dispatch)
-
         return true
       }
-
       openPrompt({
         fields: {
           href: new TextField({
@@ -160,7 +118,7 @@ function linkItem(markType: any) {
             required: true
           })
         },
-        callback(attrs: any) {
+        callback(attrs: Attrs) {
           toggleMark(markType, attrs)(view.state, view.dispatch)
           view.focus()
         }
@@ -169,14 +127,8 @@ function linkItem(markType: any) {
   })
 }
 
-function wrapListItem(
-  nodeType: any,
-  options: {
-    title?: string
-    icon?: { width: number; height: number; path: string } | { width: number; height: number; path: string }
-    attrs?: any
-  }
-) {
+function wrapListItem(nodeType: NodeType, options: MenuItemSpec & { attrs: Attrs }) {
+  options.run = (_) => true
   return cmdItem(wrapInList(nodeType, options.attrs), options)
 }
 
@@ -255,7 +207,7 @@ type BuildSchema = {
 */
 export function buildMenuItems(schema: Schema) {
   const r: { [key: string]: MenuItem | MenuItem[] } = {}
-  let type: any
+  let type: NodeType | MarkType
 
   if ((type = schema.marks.strong)) {
     r.toggleStrong = markItem(type, {
@@ -265,7 +217,7 @@ export function buildMenuItems(schema: Schema) {
         height: 16,
         path: 'M9.82857 7.76C10.9371 6.99429 11.7143 5.73714 11.7143 4.57143C11.7143 1.98857 9.71428 0 7.14286 0H0V16H8.04571C10.4343 16 12.2857 14.0571 12.2857 11.6686C12.2857 9.93143 11.3029 8.44571 9.82857 7.76ZM3.42799 2.85708H6.85656C7.80513 2.85708 8.57085 3.6228 8.57085 4.57137C8.57085 5.51994 7.80513 6.28565 6.85656 6.28565H3.42799V2.85708ZM3.42799 13.1429H7.42799C8.37656 13.1429 9.14228 12.3772 9.14228 11.4286C9.14228 10.4801 8.37656 9.71434 7.42799 9.71434H3.42799V13.1429Z'
       }
-    })
+    } as MenuItemSpec)
   }
 
   if ((type = schema.marks.em)) {
@@ -276,14 +228,14 @@ export function buildMenuItems(schema: Schema) {
         height: 16,
         path: 'M4.39216 0V3.42857H6.81882L3.06353 12.5714H0V16H8.78431V12.5714H6.35765L10.1129 3.42857H13.1765V0H4.39216Z'
       }
-    })
+    } as MenuItemSpec)
   }
 
   if ((type = schema.marks.code)) {
     r.toggleCode = markItem(type, {
       title: 'Toggle code font',
       icon: icons.code
-    })
+    } as MenuItemSpec)
   }
 
   if ((type = schema.marks.link)) r.toggleLink = linkItem(type)
@@ -298,7 +250,7 @@ export function buildMenuItems(schema: Schema) {
         height: 16,
         path: 'M0.000114441 1.6C0.000114441 0.714665 0.71478 0 1.60011 0C2.48544 0 3.20011 0.714665 3.20011 1.6C3.20011 2.48533 2.48544 3.19999 1.60011 3.19999C0.71478 3.19999 0.000114441 2.48533 0.000114441 1.6ZM0 8.00013C0 7.1148 0.714665 6.40014 1.6 6.40014C2.48533 6.40014 3.19999 7.1148 3.19999 8.00013C3.19999 8.88547 2.48533 9.60013 1.6 9.60013C0.714665 9.60013 0 8.88547 0 8.00013ZM1.6 12.8C0.714665 12.8 0 13.5254 0 14.4C0 15.2747 0.725332 16 1.6 16C2.47466 16 3.19999 15.2747 3.19999 14.4C3.19999 13.5254 2.48533 12.8 1.6 12.8ZM19.7333 15.4662H4.79999V13.3329H19.7333V15.4662ZM4.79999 9.06677H19.7333V6.93344H4.79999V9.06677ZM4.79999 2.66664V0.533307H19.7333V2.66664H4.79999Z'
       }
-    })
+    } as MenuItemSpec & { attrs: Attrs })
   }
 
   if ((type = schema.nodes.ordered_list)) {
@@ -309,7 +261,7 @@ export function buildMenuItems(schema: Schema) {
         height: 16,
         path: 'M2.00002 4.00003H1.00001V1.00001H0V0H2.00002V4.00003ZM2.00002 13.5V13H0V12H3.00003V16H0V15H2.00002V14.5H1.00001V13.5H2.00002ZM0 6.99998H1.80002L0 9.1V10H3.00003V9H1.20001L3.00003 6.89998V5.99998H0V6.99998ZM4.9987 2.99967V0.999648H18.9988V2.99967H4.9987ZM4.9987 15.0001H18.9988V13.0001H4.9987V15.0001ZM18.9988 8.99987H4.9987V6.99986H18.9988V8.99987Z'
       }
-    })
+    } as MenuItemSpec & { attrs: Attrs })
   }
 
   if ((type = schema.nodes.blockquote)) {
@@ -360,10 +312,8 @@ export function buildMenuItems(schema: Schema) {
     r.insertHorizontalRule = new MenuItem({
       label: '---',
       icon: icons.horizontal_rule,
-      enable(state: any) {
-        return canInsert(state, hr)
-      },
-      run(state: { tr: { replaceSelectionWith: (arg0: any) => any } }, dispatch: (arg0: any) => void) {
+      enable: (state) => canInsert(state, hr),
+      run(state: EditorState, dispatch: (tr: Transaction) => void) {
         dispatch(state.tr.replaceSelectionWith(hr.create()))
       }
     })
@@ -404,7 +354,7 @@ export default (): ProseMirrorExtension => ({
     ...prev,
     menuBar({
       floating: true,
-      content: buildMenuItems(schema).fullMenu as any[]
+      content: buildMenuItems(schema).fullMenu as MenuItem | MenuItem[]
     })
   ]
 })

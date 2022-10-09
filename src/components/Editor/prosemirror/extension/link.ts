@@ -31,7 +31,6 @@ const markdownLinks = (schema: Schema) =>
         if (action?.pos) {
           (state as any).pos = action.pos
         }
-
         return state
       }
     },

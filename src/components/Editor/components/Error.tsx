@@ -1,5 +1,23 @@
-import { Switch, Match, createMemo } from 'solid-js'
-import { ErrorObject, useState } from '../store/context'
+import { Switch, Match } from 'solid-js'
+import { useState } from '../store'
+import '../styles/Button.scss'
+
+export default () => {
+  const [store] = useState()
+  return (
+    <Switch fallback={<Other />}>
+      <Match when={store.error.id === 'invalid_state'}>
+        <InvalidState title="Invalid State" />
+      </Match>
+      <Match when={store.error.id === 'invalid_config'}>
+        <InvalidState title="Invalid Config" />
+      </Match>
+      <Match when={store.error.id === 'invalid_file'}>
+        <InvalidState title="Invalid File" />
+      </Match>
+    </Switch>
+  )
+}
 
 const InvalidState = (props: { title: string }) => {
   const [store, ctrl] = useState()
@@ -15,7 +33,7 @@ const InvalidState = (props: { title: string }) => {
           you can copy important notes from below, clean the state and paste it again.
         </p>
         <pre>
-          <code>{JSON.stringify(store.error)}</code>
+          <code>{JSON.stringify(store.error.props)}</code>
         </pre>
         <button class="primary" onClick={onClick}>
           Clean
@@ -28,7 +46,11 @@ const InvalidState = (props: { title: string }) => {
 const Other = () => {
   const [store, ctrl] = useState()
   const onClick = () => ctrl.discard()
-  const getMessage = createMemo<ErrorObject['message']>(() => store.error.message)
+
+  const getMessage = () => {
+    const err = (store.error.props as any).error
+    return typeof err === 'string' ? err : err.message
+  }
 
   return (
     <div class="error" data-tauri-drag-region="true">
@@ -42,23 +64,5 @@ const Other = () => {
         </button>
       </div>
     </div>
-  )
-}
-
-export default () => {
-  const [store] = useState()
-
-  return (
-    <Switch fallback={<Other />}>
-      <Match when={store.error?.id === 'invalid_state'}>
-        <InvalidState title="Invalid State" />
-      </Match>
-      <Match when={store.error?.id === 'invalid_config'}>
-        <InvalidState title="Invalid Config" />
-      </Match>
-      <Match when={store.error?.id === 'invalid_file'}>
-        <InvalidState title="Invalid File" />
-      </Match>
-    </Switch>
   )
 }

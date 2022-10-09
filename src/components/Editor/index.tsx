@@ -1,31 +1,18 @@
 import './styles/Editor.scss'
 import type { EditorView } from 'prosemirror-view'
 import type { EditorState } from 'prosemirror-state'
-import { useState } from './store/context'
-import { ProseMirror } from './prosemirror'
+import { useState } from './store'
+import { ProseMirror } from './components/ProseMirror'
 
-export default () => {
+export const Editor = () => {
   const [store, ctrl] = useState()
   const onInit = (text: EditorState, editorView: EditorView) => ctrl.setState({ editorView, text })
   const onReconfigure = (text: EditorState) => ctrl.setState({ text })
   const onChange = (text: EditorState) => ctrl.setState({ text, lastModified: new Date() })
-  // const editorCss = (config) => css``
-  const style = () => {
-    if (store.error) {
-      return `display: none;`
-    }
-
-    if (store.markdown) {
-      return `white-space: pre-wrap;`
-    }
-
-    return ''
-  }
-
   return (
     <ProseMirror
       class="editor"
-      style={style()}
+      style={store.markdown && `white-space: pre-wrap;`}
       editorView={store.editorView}
       text={store.text}
       extensions={store.extensions}

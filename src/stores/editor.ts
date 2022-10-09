@@ -4,6 +4,7 @@ import { atom } from 'nanostores'
 import { createSignal } from 'solid-js'
 
 interface Draft {
+  [x: string]: any
   createdAt: Date
   body?: string
   title?: string
@@ -17,10 +18,14 @@ interface Collab {
   title?: string
 }
 
-export const drafts = persistentAtom<Draft[]>('drafts', [], {
-  encode: JSON.stringify,
-  decode: JSON.parse
-}) // save drafts on device
+export const drafts = persistentAtom<{ [key: string]: Draft }>(
+  'drafts',
+  {},
+  {
+    encode: JSON.stringify,
+    decode: JSON.parse
+  }
+) // save drafts on device
 
 export const collabs = atom<Collab[]>([]) // save collabs in backend or in p2p network
 export const [editorReactions, setReactions] = createSignal<Reaction[]>([])

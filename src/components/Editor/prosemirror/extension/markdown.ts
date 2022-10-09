@@ -7,7 +7,7 @@ import {
   ellipsis
 } from 'prosemirror-inputrules'
 import type { NodeType, Schema } from 'prosemirror-model'
-import type { ProseMirrorExtension } from '../../store/state'
+import type { ProseMirrorExtension } from '../helpers'
 
 const blockQuoteRule = (nodeType: NodeType) => wrappingInputRule(/^\s*>\s$/, nodeType)
 
@@ -16,9 +16,7 @@ const orderedListRule = (nodeType: NodeType) =>
     /^(\d+)\.\s$/,
     nodeType,
     (match) => ({ order: +match[1] }),
-    // FIXME
-    // eslint-disable-next-line eqeqeq
-    (match, node) => node.childCount + node.attrs.order == +match[1]
+    (match, node) => node.childCount + node.attrs.order === +match[1]
   )
 
 const bulletListRule = (nodeType: NodeType) => wrappingInputRule(/^\s*([*+-])\s$/, nodeType)

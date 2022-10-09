@@ -2,7 +2,7 @@ import { EditorState, Selection } from 'prosemirror-state'
 import type { Node, Schema, ResolvedPos } from 'prosemirror-model'
 import { InputRule, inputRules } from 'prosemirror-inputrules'
 import { keymap } from 'prosemirror-keymap'
-import type { ProseMirrorExtension } from '../../store/state'
+import type { ProseMirrorExtension } from '../helpers'
 
 export const tableInputRule = (schema: Schema) =>
   new InputRule(
@@ -176,7 +176,6 @@ export default (): ProseMirrorExtension => ({
     ...prev,
     nodes: (prev.nodes as any).append(tableSchema)
   }),
-  // FIXME (extract functions)
   // eslint-disable-next-line sonarjs/cognitive-complexity
   plugins: (prev, schema) => [
     keymap({

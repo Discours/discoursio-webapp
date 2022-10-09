@@ -1,7 +1,7 @@
 import { Plugin, PluginKey, TextSelection, Transaction } from 'prosemirror-state'
 import type { EditorView } from 'prosemirror-view'
-import type { Mark, Node, ResolvedPos, Schema } from 'prosemirror-model'
-import type { ProseMirrorExtension } from '../../store/state'
+import type { Mark, Node, Schema } from 'prosemirror-model'
+import type { ProseMirrorExtension } from '../helpers'
 
 const REGEX = /(^|\s)\[(.+)]\(([^ ]+)(?: "(.+)")?\)/
 
@@ -13,14 +13,52 @@ const findMarkPosition = (mark: Mark, doc: Node, from: number, to: number) => {
       markPos = { from: pos, to: pos + Math.max(node.textContent.length, 1) }
     }
   })
+
   return markPos
 }
 
 const pluginKey = new PluginKey('markdown-links')
 
-const resolvePos = (view: EditorView, pos: number) => view.state?.doc?.resolve(pos)
+const markdownLinks = (schema: Schema) =>
+  new Plugin({
+    key: pluginKey,
+    state: {
+      init() {
+        return { schema }
+      },
+      apply(tr, state) {
+        const action = tr.getMeta(this)
+        if (action?.pos) {
+          (state as any).pos = action.pos
+        }
 
-// FIXME
+        return state
+      }
+    },
+    props: {
+      handleDOMEvents: {
+        keyup: (view) => {
+          return handleMove(view)
+        },
+        click: (view, e) => {
+          if (handleMove(view)) {
+            e.preventDefault()
+          }
+
+          return true
+        }
+      }
+    }
+  })
+
+const resolvePos = (view: EditorView, pos: number) => {
+  try {
+    return view.state.doc.resolve(pos)
+  } catch {
+    // ignore
+  }
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const toLink = (view: EditorView, tr: Transaction) => {
   const sel = view.state.selection
@@ -32,32 +70,42 @@ const toLink = (view: EditorView, tr: Transaction) => {
     if (!$from || $from.depth === 0 || $from.parent.type.spec.code) {
       return false
     }
+
     const lineFrom = $from.before()
     const lineTo = $from.after()
+
     const line = view.state.doc.textBetween(lineFrom, lineTo, '\0', '\0')
     const match = REGEX.exec(line)
+
     if (match) {
       const [full, , text, href] = match
       const spaceLeft = full.indexOf(text) - 1
       const spaceRight = full.length - text.length - href.length - spaceLeft - 4
       const start = match.index + $from.start() + spaceLeft
       const end = start + full.length - spaceLeft - spaceRight
+
       if (sel.$from.pos >= start && sel.$from.pos <= end) {
         return false
       }
+
       // Do not convert md links if content has marks
       const $startPos = resolvePos(view, start)
-      if (($startPos as ResolvedPos).marks().length > 0) {
+      if ($startPos.marks().length > 0) {
         return false
       }
+
       const textStart = start + 1
       const textEnd = textStart + text.length
+
       if (textEnd < end) tr.delete(textEnd, end)
       if (textStart > start) tr.delete(start, textStart)
+
       const to = start + text.length
       tr.addMark(start, to, state.schema.marks.link.create({ href }))
+
       const sub = end - textEnd + textStart - start
       tr.setMeta(pluginKey, { pos: sel.$head.pos - sub })
+
       return true
     }
   }
@@ -68,7 +116,10 @@ const toLink = (view: EditorView, tr: Transaction) => {
 const toMarkdown = (view: EditorView, tr: Transaction) => {
   const { schema } = pluginKey.getState(view.state)
   const sel = view.state.selection
-  if (sel.$head.depth === 0 || sel.$head.parent.type.spec.code) return false
+  if (sel.$head.depth === 0 || sel.$head.parent.type.spec.code) {
+    return false
+  }
+
   const mark = schema.marks.link.isInSet(sel.$head.marks())
   const textFrom = sel.$head.pos - sel.$head.textOffset
   const textTo = sel.$head.after()
@@ -91,51 +142,21 @@ const handleMove = (view: EditorView) => {
   if (!sel.empty || !sel.$head) return false
   const pos = sel.$head.pos
   const tr = view.state.tr
+
   if (toLink(view, tr)) {
     view.dispatch(tr)
     return true
   }
+
   if (toMarkdown(view, tr)) {
     view.dispatch(tr)
     return true
   }
+
   tr.setMeta(pluginKey, { pos })
   view.dispatch(tr)
   return false
 }
-
-const markdownLinks = (schema: Schema) =>
-  new Plugin({
-    key: pluginKey,
-    state: {
-      init() {
-        return { schema }
-      },
-      apply(tr, state) {
-        const action = tr.getMeta(this)
-        if (action?.pos) {
-          // FIXME
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          state.pos = action.pos
-        }
-        return state
-      }
-    },
-    props: {
-      handleDOMEvents: {
-        keyup: (view) => {
-          return handleMove(view)
-        },
-        click: (view, e) => {
-          if (handleMove(view)) {
-            e.preventDefault()
-          }
-          return true
-        }
-      }
-    }
-  })
 
 export default (): ProseMirrorExtension => ({
   plugins: (prev, schema) => [...prev, markdownLinks(schema)]

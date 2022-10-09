@@ -1,43 +1,51 @@
 const prefix = 'ProseMirror-prompt'
 
-// FIXME !!!
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function openPrompt(options) {
-  const domFields = []
-  const submitButton = document.createElement('button')
-  const cancelButton = document.createElement('button')
+export function openPrompt(options: any) {
   const wrapper = document.body.appendChild(document.createElement('div'))
-  const form = wrapper.appendChild(document.createElement('form'))
-  const buttons = form.appendChild(document.createElement('div'))
-  const box = wrapper.getBoundingClientRect()
   wrapper.className = prefix
-  const mouseOutside = (e: MouseEvent) => {
-    if (!wrapper.contains(e.target as Node)) close()
+
+  const mouseOutside = (e: any) => {
+    if (!wrapper.contains(e.target)) close()
   }
-  setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50) // FIXME
+  setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50)
   const close = () => {
     window.removeEventListener('mousedown', mouseOutside)
     if (wrapper.parentNode) wrapper.remove()
   }
-  options.fields.forEach((name) => domFields.push(options.fields[name].render()))
+
+  const domFields: any = []
+  options.fields.forEach((name) => {
+    domFields.push(options.fields[name].render())
+  })
+
+  const submitButton = document.createElement('button')
   submitButton.type = 'submit'
   submitButton.className = prefix + '-submit'
   submitButton.textContent = 'OK'
+  const cancelButton = document.createElement('button')
   cancelButton.type = 'button'
   cancelButton.className = prefix + '-cancel'
   cancelButton.textContent = 'Cancel'
   cancelButton.addEventListener('click', close)
+
+  const form = wrapper.appendChild(document.createElement('form'))
   if (options.title) {
-    const headel = form.appendChild(document.createElement('h5'))
-    headel.textContent = options.title
+    form.appendChild(document.createElement('h5')).textContent = options.title
   }
-  domFields.forEach((fld) => form.appendChild(document.createElement('div')).append(fld))
+  domFields.forEach((field: any) => {
+    form.appendChild(document.createElement('div')).appendChild(field)
+  })
+  const buttons = form.appendChild(document.createElement('div'))
   buttons.className = prefix + '-buttons'
-  buttons.append(submitButton)
-  buttons.append(document.createTextNode(' '))
-  buttons.append(cancelButton)
+  buttons.appendChild(submitButton)
+  buttons.appendChild(document.createTextNode(' '))
+  buttons.appendChild(cancelButton)
+
+  const box = wrapper.getBoundingClientRect()
   wrapper.style.top = (window.innerHeight - box.height) / 2 + 'px'
   wrapper.style.left = (window.innerWidth - box.width) / 2 + 'px'
+
   const submit = () => {
     const params = getValues(options.fields, domFields)
     if (params) {
@@ -45,15 +53,18 @@ export function openPrompt(options) {
       options.callback(params)
     }
   }
+
   form.addEventListener('submit', (e) => {
     e.preventDefault()
     submit()
   })
+
   form.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       e.preventDefault()
       close()
-    } else if (e.key === 'Enter' && !(e.ctrlKey || e.metaKey || e.shiftKey)) {
+      // eslint-disable-next-line unicorn/prefer-keyboard-event-key
+    } else if (e.keyCode === 13 && !(e.ctrlKey || e.metaKey || e.shiftKey)) {
       e.preventDefault()
       submit()
     } else if (e.key === 'Tab') {
@@ -62,11 +73,12 @@ export function openPrompt(options) {
       }, 500)
     }
   })
-  const input = form.elements[0] as HTMLInputElement
+
+  const input: any = form.elements[0]
   if (input) input.focus()
 }
 
-function getValues(fields, domFields) {
+function getValues(fields: any, domFields: any) {
   const result = Object.create(null)
   let i = 0
   fields.forEarch((name) => {
@@ -83,23 +95,24 @@ function getValues(fields, domFields) {
   return result
 }
 
-function reportInvalid(dom, message) {
+function reportInvalid(dom: any, message: any) {
   const parent = dom.parentNode
   const msg = parent.appendChild(document.createElement('div'))
   msg.style.left = dom.offsetLeft + dom.offsetWidth + 2 + 'px'
   msg.style.top = dom.offsetTop - 5 + 'px'
   msg.className = 'ProseMirror-invalid'
   msg.textContent = message
-  setTimeout(() => msg.remove(), 1500)
+  // eslint-disable-next-line unicorn/prefer-dom-node-remove
+  setTimeout(() => parent.removeChild(msg), 1500)
 }
 
 export class Field {
-  options: { required: boolean; validate; clean; label: string; value: string }
-  constructor(options) {
+  options: any
+  constructor(options: any) {
     this.options = options
   }
 
-  read(dom) {
+  read(dom: any) {
     return dom.value
   }
   // :: (any) → ?string
@@ -108,12 +121,13 @@ export class Field {
     return typeof _value === typeof ''
   }
 
-  validate(value) {
+  validate(value: any) {
     if (!value && this.options.required) return 'Required field'
+
     return this.validateType(value) || (this.options.validate && this.options.validate(value))
   }
 
-  clean(value) {
+  clean(value: any) {
     return this.options.clean ? this.options.clean(value) : value
   }
 }
@@ -121,10 +135,24 @@ export class Field {
 export class TextField extends Field {
   render() {
     const input: HTMLInputElement = document.createElement('input')
+
     input.type = 'text'
     input.placeholder = this.options.label
     input.value = this.options.value || ''
     input.autocomplete = 'off'
     return input
+  }
+}
+
+export class SelectField extends Field {
+  render() {
+    const select = document.createElement('select')
+    this.options.options.forEach((o: { value: string; label: string }) => {
+      const opt = select.appendChild(document.createElement('option'))
+      opt.value = o.value
+      opt.selected = o.value === this.options.value
+      opt.label = o.label
+    })
+    return select
   }
 }

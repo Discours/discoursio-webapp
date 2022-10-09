@@ -4,7 +4,7 @@ import type { EditorState, Transaction } from 'prosemirror-state'
 import type { EditorView } from 'prosemirror-view'
 import { keymap } from 'prosemirror-keymap'
 import { markInputRule } from './mark-input-rule'
-import type { ProseMirrorExtension } from '../../store/state'
+import type { ProseMirrorExtension } from '../helpers'
 
 const blank = '\u00A0'
 
@@ -12,21 +12,18 @@ const onArrow =
   (dir: 'left' | 'right') =>
   (state: EditorState, dispatch: (tr: Transaction) => void, editorView: EditorView) => {
     if (!state.selection.empty) return false
-
     const $pos = state.selection.$head
     const isCode = $pos.marks().find((m: Mark) => m.type.name === 'code')
     const tr = state.tr
 
     if (dir === 'left') {
       const up = editorView.endOfTextblock('up')
-
       if (!$pos.nodeBefore && up && isCode) {
         tr.insertText(blank, $pos.pos - 1, $pos.pos)
         dispatch(tr)
       }
     } else {
       const down = editorView.endOfTextblock('down')
-
       if (!$pos.nodeAfter && down && isCode) {
         tr.insertText(blank, $pos.pos, $pos.pos + 1)
         dispatch(tr)
@@ -39,7 +36,7 @@ const codeKeymap = {
   ArrowRight: onArrow('right')
 }
 
-const codeRule = (nodeType: MarkType) => markInputRule(/`([^`]+)`$/, nodeType)
+const codeRule = (nodeType: MarkType) => markInputRule(/`([^`]+)`$/, nodeType, null)
 
 export default (): ProseMirrorExtension => ({
   plugins: (prev, schema) => [

@@ -1,9 +1,9 @@
 import { Show, onCleanup, createEffect, onError, onMount, untrack } from 'solid-js'
 import { createMutable, unwrap } from 'solid-js/store'
-import { State, StateContext, newState } from '../Editor/store/context'
+import { State, StateContext, newState } from '../Editor/store'
 import { createCtrl } from '../Editor/store/ctrl'
 import { Layout } from '../Editor/components/Layout'
-import Editor from '../Editor'
+import { Editor } from '../Editor'
 import { Sidebar } from '../Editor/components/Sidebar'
 import ErrorView from '../Editor/components/Error'
 
@@ -17,17 +17,16 @@ export const CreateView = () => {
   }
 
   onMount(async () => {
-    if (store.error) return
+    console.debug('[create] view mounted')
+    if (store.error) {
+      console.error(store.error)
+      return
+    }
     await ctrl.init()
   })
 
   onMount(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
     const mediaQuery = '(prefers-color-scheme: dark)'
-
     window.matchMedia(mediaQuery).addEventListener('change', ctrl.updateTheme)
     onCleanup(() => window.matchMedia(mediaQuery).removeEventListener('change', ctrl.updateTheme))
   })
@@ -44,6 +43,7 @@ export const CreateView = () => {
     }
     const state: State = untrack(() => unwrap(store))
     ctrl.saveState(state)
+    console.debug('[create] status update')
     return store.loading
   }, store.loading)
 
@@ -54,13 +54,8 @@ export const CreateView = () => {
         data-testid={store.error ? 'error' : store.loading}
         onMouseEnter={onMouseEnter}
       >
-        <Show when={store.error}>
-          <ErrorView />
-        </Show>
-        <Show when={store.loading === 'initialized'}>
-          <Show when={!store.error}>
-            <Editor />
-          </Show>
+        <Show when={!store.error} fallback={<ErrorView />}>
+          <Editor />
           <Sidebar />
         </Show>
       </Layout>

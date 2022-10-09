@@ -1,15 +1,14 @@
 import { Plugin } from 'prosemirror-state'
 import type { Node, Schema } from 'prosemirror-model'
 import type { EditorView } from 'prosemirror-view'
-import type { ProseMirrorExtension } from '../../store/state'
+import type { ProseMirrorExtension } from '../helpers'
 
-const REGEX = /^!\[([^[\]]*)]\((.+?)\)\s+/
+const REGEX = /^!\[([^[\]]*?)]\((.+?)\)\s+/
 const MAX_MATCH = 500
 
 const isUrl = (str: string) => {
   try {
     const url = new URL(str)
-
     return url.protocol === 'http:' || url.protocol === 'https:'
   } catch {
     return false
@@ -17,64 +16,34 @@ const isUrl = (str: string) => {
 }
 
 const isBlank = (text: string) => text === ' ' || text === '\u00A0'
-/*
-export const getImagePath = async (src: string, path?: string) => {
-  let paths = [src]
 
-  if (path) paths = [await dirname(path), src]
-
-  const absolutePath = await resolvePath(paths)
-
-  return convertFileSrc(absolutePath)
-}
-*/
-const imageInput = (schema: Schema, _path?: string) =>
+const imageInput = (schema: Schema, path?: string) =>
   new Plugin({
     props: {
       handleTextInput(view, from, to, text) {
         if (view.composing || !isBlank(text)) return false
-
         const $from = view.state.doc.resolve(from)
-
         if ($from.parent.type.spec.code) return false
-
         const textBefore =
           $from.parent.textBetween(
             Math.max(0, $from.parentOffset - MAX_MATCH),
             $from.parentOffset,
-            undefined,
+            null,
             '\uFFFC'
           ) + text
 
         const match = REGEX.exec(textBefore)
-
         if (match) {
           const [, title, src] = match
-
           if (isUrl(src)) {
             const node = schema.node('image', { src, title })
             const start = from - (match[0].length - text.length)
             const tr = view.state.tr
-
             tr.delete(start, to)
             tr.insert(start, node)
             view.dispatch(tr)
-
             return true
           }
-
-          // if (!isTauri) return false
-          /*
-          getImagePath(src, path).then((p) => {
-            const node = schema.node('image', { src: p, title, path: src })
-            const start = from - (match[0].length - text.length)
-            const tr = view.state.tr
-
-            tr.delete(start, to)
-            tr.insert(start, node)
-            view.dispatch(tr)
-          })
-          */
           return false
         }
       }
@@ -95,11 +64,11 @@ const imageSchema = {
   parseDOM: [
     {
       tag: 'img[src]',
-      getAttrs: (dom: HTMLElement) => ({
+      getAttrs: (dom: Element) => ({
         src: dom.getAttribute('src'),
         title: dom.getAttribute('title'),
         alt: dom.getAttribute('alt'),
-        path: dom.dataset.path
+        path: (dom as any).dataset.path
       })
     }
   ],
@@ -118,13 +87,9 @@ export const insertImage = (view: EditorView, src: string, left: number, top: nu
   const state = view.state
   const tr = state.tr
   const node = state.schema.nodes.image.create({ src })
-
-  if (view) {
-    const pos = view.posAtCoords({ left, top }).pos
-
-    tr.insert(pos, node)
-    view.dispatch(tr)
-  }
+  const pos = view.posAtCoords({ left, top }).pos
+  tr.insert(pos, node)
+  view.dispatch(tr)
 }
 
 class ImageView {
@@ -136,12 +101,12 @@ class ImageView {
   contentDOM: Element
   container: HTMLElement
   handle: HTMLElement
-  onResizeFn: (e: Event) => void
-  onResizeEndFn: (e: Event) => void
+  onResizeFn: any
+  onResizeEndFn: any
   width: number
   updating: number
 
-  constructor(node: Node, view: EditorView, getPos: () => number, schema: Schema, _path: string) {
+  constructor(node: Node, view: EditorView, getPos: () => number, schema: Schema, path: string) {
     this.node = node
     this.view = view
     this.getPos = getPos
@@ -151,23 +116,11 @@ class ImageView {
 
     this.container = document.createElement('span')
     this.container.className = 'image-container'
-
     if (node.attrs.width) this.setWidth(node.attrs.width)
 
     const image = document.createElement('img')
-
     image.setAttribute('title', node.attrs.title ?? '')
-
-    if (
-      // isTauri &&
-      !node.attrs.src.startsWith('asset:') &&
-      !node.attrs.src.startsWith('data:') &&
-      !isUrl(node.attrs.src)
-    ) {
-      // getImagePath(node.attrs.src, path).then((p) => image.setAttribute('src', p))
-    } else {
-      image.setAttribute('src', node.attrs.src)
-    }
+    image.setAttribute('src', node.attrs.src)
 
     this.handle = document.createElement('span')
     this.handle.className = 'resize-handle'
@@ -177,8 +130,8 @@ class ImageView {
       window.addEventListener('mouseup', this.onResizeEndFn)
     })
 
-    this.container.append(image)
-    this.container.append(this.handle)
+    this.container.appendChild(image)
+    this.container.appendChild(this.handle)
     this.dom = this.container
   }
 
@@ -189,12 +142,9 @@ class ImageView {
 
   onResizeEnd() {
     window.removeEventListener('mousemove', this.onResizeFn)
-
     if (this.updating === this.width) return
-
     this.updating = this.width
     const tr = this.view.state.tr
-
     tr.setNodeMarkup(this.getPos(), undefined, {
       ...this.node.attrs,
       width: this.width
@@ -204,7 +154,7 @@ class ImageView {
   }
 
   setWidth(width: number) {
-    this.container.style.width = `${width}px`
+    this.container.style.width = width + 'px'
   }
 }
 
@@ -215,9 +165,6 @@ export default (path?: string): ProseMirrorExtension => ({
   }),
   plugins: (prev, schema) => [...prev, imageInput(schema, path)],
   nodeViews: {
-    // FIXME something is not right
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     image: (node, view, getPos) => {
       return new ImageView(node, view, getPos, view.state.schema, path)
     }

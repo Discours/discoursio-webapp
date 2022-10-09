@@ -1,15 +1,14 @@
 import { createContext, useContext } from 'solid-js'
 import type { Store } from 'solid-js/store'
+import type { XmlFragment } from 'yjs'
 import type { WebrtcProvider } from 'y-webrtc'
-import type { ProseMirrorExtension, ProseMirrorState } from './state'
+import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 import type { EditorView } from 'prosemirror-view'
-import type { YXmlFragment } from 'yjs/dist/src/internals'
-
-export const isMac = true // FIXME
-export const mod = isMac ? 'Cmd' : 'Ctrl'
-export const alt = isMac ? 'Cmd' : 'Alt'
+import { createEmptyText } from '../prosemirror/setup'
+import type { Shout } from '../../../graphql/types.gen'
 
 export interface Args {
+  draft: string // path to draft
   cwd?: string
   file?: string
   room?: string
@@ -36,13 +35,12 @@ export interface Config {
 }
 
 export interface ErrorObject {
-  message: string
   id: string
-  props: unknown
+  props?: unknown
 }
 
-export interface PeerData {
-  payload: YXmlFragment
+export interface YOptions {
+  type: XmlFragment
   provider: WebrtcProvider
 }
 
@@ -50,18 +48,10 @@ export interface Collab {
   started?: boolean
   error?: boolean
   room?: string
-  y?: PeerData
+  y?: YOptions
 }
 
 export type LoadingType = 'loading' | 'initialized'
-
-// TODO: use this interface in prosemirror's context
-export interface Draft {
-  path?: string // used by state
-  text?: { [key: string]: string }
-  lastModified?: string
-  markdown?: boolean
-}
 
 export interface State {
   text?: ProseMirrorState
@@ -69,6 +59,7 @@ export interface State {
   extensions?: ProseMirrorExtension[]
   markdown?: boolean
   lastModified?: Date
+  drafts: Draft[]
   config: Config
   error?: ErrorObject
   loading: LoadingType
@@ -77,40 +68,60 @@ export interface State {
   args?: Args
 }
 
+export interface Draft {
+  extensions?: ProseMirrorExtension[]
+  updatedAt: Date
+  body?: string
+  text?: { doc: any; selection: { type: string; anchor: number; head: number } }
+  path?: string
+  markdown?: boolean
+}
+
 export class ServiceError extends Error {
   public errorObject: ErrorObject
   constructor(id: string, props: unknown) {
     super(id)
-    this.errorObject = { id, props, message: '' }
+    this.errorObject = { id, props }
   }
 }
 
-const DEFAULT_CONFIG = {
-  theme: '',
-  // codeTheme: 'material-light',
-  font: 'muller',
-  fontSize: 24,
-  contentWidth: 800,
-  alwaysOnTop: isMac,
-  // typewriterMode: true,
-  prettier: {
-    printWidth: 80,
-    tabWidth: 2,
-    useTabs: false,
-    semi: false,
-    singleQuote: true
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const StateContext = createContext<[Store<State>, any]>([{} as Store<State>, undefined])
+export const StateContext = createContext<[Store<State>, any]>([undefined, undefined])
 
 export const useState = () => useContext(StateContext)
 
 export const newState = (props: Partial<State> = {}): State => ({
   extensions: [],
+  drafts: [],
   loading: 'loading',
   markdown: false,
-  config: DEFAULT_CONFIG,
+  config: {
+    theme: undefined,
+    // codeTheme: 'material-light',
+    font: 'muller',
+    fontSize: 24,
+    contentWidth: 800,
+    alwaysOnTop: false,
+    // typewriterMode: true,
+    prettier: {
+      printWidth: 80,
+      tabWidth: 2,
+      useTabs: false,
+      semi: false,
+      singleQuote: true
+    }
+  },
   ...props
 })
+
+export const addToDrafts = (drafts: Draft[], state: State): Draft[] => {
+  drafts.forEach((d) => {
+    if (!state.drafts.includes(d)) state.drafts.push(d)
+  })
+  return state.drafts
+}
+
+export const createTextFromDraft = async (draft: Draft) => {
+  const created = createEmptyText()
+  created.doc.content = Object.values(draft.text) // FIXME
+  return created
+}

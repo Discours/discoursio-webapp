@@ -1,51 +1,39 @@
-import { /*MenuItem,*/ MenuItem, renderGrouped } from 'prosemirror-menu'
-import type { Schema } from 'prosemirror-model'
-import { EditorState, Plugin } from 'prosemirror-state'
-import type { EditorView } from 'prosemirror-view'
-// import { EditorView } from 'prosemirror-view'
-import type { ProseMirrorExtension } from '../../store/state'
+import { renderGrouped } from 'prosemirror-menu'
+import { Plugin } from 'prosemirror-state'
+import type { ProseMirrorExtension } from '../helpers'
 import { buildMenuItems } from './menu'
 
-const cut = (arr) => arr.filter((a) => !!a)
-
 export class SelectionTooltip {
-  tooltip: HTMLElement
+  tooltip: any
 
-  constructor(view: EditorView, schema: Schema) {
+  constructor(view: any, schema: any) {
     this.tooltip = document.createElement('div')
     this.tooltip.className = 'tooltip'
-    view.dom.parentNode.append(this.tooltip)
-    const content = cut((buildMenuItems(schema) as { [key: string]: MenuItem })?.fullMenu)
-
-    console.debug(content)
-    const { dom } = renderGrouped(view, content)
-
-    this.tooltip.append(dom)
+    view.dom.parentNode.appendChild(this.tooltip)
+    const { dom } = renderGrouped(view, (buildMenuItems(schema) as any).fullMenu)
+    this.tooltip.appendChild(dom)
     this.update(view, null)
   }
 
-  update(view: EditorView, lastState: EditorState) {
+  update(view: any, lastState: any) {
     const state = view.state
-
     if (lastState && lastState.doc.eq(state.doc) && lastState.selection.eq(state.selection)) {
       return
     }
 
     if (state.selection.empty) {
       this.tooltip.style.display = 'none'
-
       return
     }
 
     this.tooltip.style.display = ''
     const { from, to } = state.selection
-    const start = view.coordsAtPos(from)
-    const end = view.coordsAtPos(to)
+    const start = view.coordsAtPos(from),
+      end = view.coordsAtPos(to)
     const box = this.tooltip.offsetParent.getBoundingClientRect()
     const left = Math.max((start.left + end.left) / 2, start.left + 3)
-
-    this.tooltip.style.left = `${left - box.left}px`
-    this.tooltip.style.bottom = `${box.bottom - (start.top + 15)}px`
+    this.tooltip.style.left = left - box.left + 'px'
+    this.tooltip.style.bottom = box.bottom - (start.top + 15) + 'px'
   }
 
   destroy() {
@@ -53,9 +41,9 @@ export class SelectionTooltip {
   }
 }
 
-export function toolTip(schema: Schema) {
+export function toolTip(schema: any) {
   return new Plugin({
-    view(editorView: EditorView) {
+    view(editorView: any) {
       return new SelectionTooltip(editorView, schema)
     }
   })

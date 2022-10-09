@@ -11,6 +11,8 @@ export class SelectionTooltip {
     this.tooltip = document.createElement('div')
     this.tooltip.className = 'tooltip'
     view.dom.parentNode.appendChild(this.tooltip)
+    console.debug('[prosemirror] selection view', view)
+    console.debug('[prosemirror] selection menu', buildMenuItems(schema).fullMenu)
     const { dom } = renderGrouped(view, buildMenuItems(schema).fullMenu as any)
     this.tooltip.appendChild(dom)
     this.update(view, null)

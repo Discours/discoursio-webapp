@@ -15,7 +15,6 @@ import { useStore } from '@nanostores/solid'
 import { createMemo } from 'solid-js'
 
 const isText = (x) => x && x.doc && x.selection
-const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.drafts)
 const isDraft = (x): boolean => x && (x.text || x.path)
 const mod = 'Ctrl'
 
@@ -133,7 +132,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     })
   }
 
-  const fetchData = async (): Promise<State> => {
+  const readStoredState = async (): Promise<State> => {
     const state: State = unwrap(store)
     const room = window.location.pathname?.slice(1).trim()
     const args = { room, draft: room }
@@ -168,7 +167,13 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       config: undefined
     })
 
-    const newst = {
+    for (const draft of parsed.drafts || []) {
+      if (!isDraft(draft)) {
+        throw new ServiceError('invalid_draft', draft)
+      }
+    }
+
+    return {
       ...parsed,
       text,
       extensions,
@@ -176,18 +181,6 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       args,
       lastModified: new Date(parsed.lastModified)
     }
-
-    for (const draft of parsed.drafts) {
-      if (!isDraft(draft)) {
-        throw new ServiceError('invalid_draft', draft)
-      }
-    }
-
-    if (!isState(newst)) {
-      throw new ServiceError('invalid_state', newst)
-    }
-
-    return newst
   }
 
   const getTheme = (state: State) => ({ theme: state.config.theme })
@@ -197,7 +190,6 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       ...newState(),
       loading: 'initialized',
       drafts: [],
-      fullscreen: store.fullscreen,
       lastModified: new Date(),
       error: undefined,
       text: undefined
@@ -216,37 +208,37 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   }
 
   const init = async () => {
-    let data = await fetchData()
+    let state = await readStoredState()
     try {
-      if (data.args.room) {
-        data = await doStartCollab(data)
-      } else if (data.args.text) {
-        data = await doOpenDraft(data, {
-          text: { ...JSON.parse(data.args.text) },
+      if (state.args.room) {
+        state = await doStartCollab(state)
+      } else if (state.args.text) {
+        state = await doOpenDraft(state, {
+          text: { ...JSON.parse(state.args.text) },
           lastModified: new Date()
         })
-      } else if (data.args.draft) {
-        const draft = await loadDraft(data.config, data.args.draft)
-        data = await doOpenDraft(data, draft)
-      } else if (data.path) {
-        const draft = await loadDraft(data.config, data.path)
-        data = await doOpenDraft(data, draft)
-      } else if (!data.text) {
+      } else if (state.args.draft) {
+        const draft = await loadDraft(state.config, state.args.draft)
+        state = await doOpenDraft(state, draft)
+      } else if (state.path) {
+        const draft = await loadDraft(state.config, state.path)
+        state = await doOpenDraft(state, draft)
+      } else if (!state.text) {
         const text = createEmptyText()
         const extensions = createExtensions({
-          config: data.config ?? store.config,
-          markdown: data.markdown ?? store.markdown,
+          config: state.config ?? store.config,
+          markdown: state.markdown ?? store.markdown,
           keymap: keymap
         })
-        data = { ...data, text, extensions }
+        state = { ...state, text, extensions }
       }
     } catch (error) {
-      data = { ...data, error: error.errorObject }
+      state = { ...state, error: error.errorObject }
     }
 
     setState({
-      ...data,
-      config: { ...data.config, ...getTheme(data) },
+      ...state,
+      config: { ...state.config, ...getTheme(state) },
       loading: 'initialized'
     })
   }

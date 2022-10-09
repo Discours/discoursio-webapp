@@ -341,7 +341,7 @@ export function buildMenuItems(schema: Schema) {
   )
   r.listMenu = [r.wrapBulletList as MenuItem, r.wrapOrderedList as MenuItem]
   r.inlineMenu = [r.toggleStrong as MenuItem, r.toggleEm as MenuItem, r.toggleMark as MenuItem]
-  r.fullMenu = [...r.inlineMenu, tMenu as MenuItem, ...r.listMenu]
+  r.fullMenu = [...r.inlineMenu, tMenu as MenuItem, ...r.listMenu].filter(Boolean)
   return r
 }
 

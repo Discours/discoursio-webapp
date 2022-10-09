@@ -7,62 +7,62 @@
   min-width: 50%;
   min-height: fit-content;
   display: inline-block;
-  border: 1px dotted rgb(0 0 0 / 80%);
-}
-
-a {
-  color: rgb(0 100 200);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-a:visited {
-  color: rgb(0 100 200 / 70%);
-}
-
-label {
-  display: block;
-}
-
-input,
-button,
-select,
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  padding: 0.4em;
-  margin: 0 0 0.5em;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-}
-
-input:disabled {
-  color: #ccc;
-}
-
-button {
-  color: #333;
-  background-color: #f4f4f4;
-  outline: none;
-}
-
-button:disabled {
-  color: #999;
-}
-
-button:not(:disabled):active {
-  background-color: #ddd;
-}
-
-button:focus {
-  border-color: #666;
+  border: 1px dashed rgb(0 0 0 / 80%);
 }
 
 .ProseMirror {
+  a {
+    color: rgb(0 100 200);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: rgb(0 100 200 / 70%);
+  }
+
+  label {
+    display: block;
+  }
+
+  input,
+  button,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0.4em;
+    margin: 0 0 0.5em;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+  }
+
+  input:disabled {
+    color: #ccc;
+  }
+
+  button {
+    color: #333;
+    background-color: #f4f4f4;
+    outline: none;
+  }
+
+  button:disabled {
+    color: #999;
+  }
+
+  button:not(:disabled):active {
+    background-color: #ddd;
+  }
+
+  button:focus {
+    border-color: #666;
+  }
+
   color: var(--foreground);
   background-color: var(--background);
   position: relative;

@@ -1,11 +1,12 @@
-import { persistentAtom, persistentMap } from '@nanostores/persistent'
+import { persistentMap } from '@nanostores/persistent'
 import type { Reaction } from '../graphql/types.gen'
 import { atom } from 'nanostores'
 import { createSignal } from 'solid-js'
 
 interface Draft {
-  [x: string]: any
   createdAt: Date
+  topics?: string[]
+  lastModified: Date
   body?: string
   title?: string
 }

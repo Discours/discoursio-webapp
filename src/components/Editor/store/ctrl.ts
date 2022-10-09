@@ -258,8 +258,6 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   const loadDraft = async (config: Config, path: string): Promise<Draft> => {
     const draftstore = useStore(draftsatom)
     const draft = createMemo(() => draftstore()[path])
-    const lastModified = draft().lastModified
-    const draftContent = draft().body
     const schema = createSchema({
       config,
       markdown: false,
@@ -267,20 +265,16 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       keymap
     })
     const parser = createMarkdownParser(schema)
-    const doc = parser.parse(draftContent).toJSON()
-    const text = {
-      doc,
-      selection: {
-        type: 'text',
-        anchor: 1,
-        head: 1
-      }
-    }
     return {
       ...draft(),
-      body: doc,
-      text,
-      lastModified: lastModified.toISOString(),
+      text: {
+        doc: parser.parse(draft().body).toJSON(),
+        selection: {
+          type: 'text',
+          anchor: 1,
+          head: 1
+        }
+      },
       path
     }
   }
@@ -357,9 +351,9 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
 
       if (isInitialized(state.text as EditorState)) {
         if (state.path) {
-          const text = serialize(store.editorView.state)
+          // const text = serialize(store.editorView.state)
           // await remote.writeDraft(state.path, text)
-          draftsatom.setKey(state.path, text)
+          draftsatom.setKey(state.path, store.editorView.state)
         } else {
           data.text = store.editorView.state.toJSON()
         }

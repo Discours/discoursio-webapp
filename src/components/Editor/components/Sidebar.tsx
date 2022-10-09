@@ -45,14 +45,15 @@ export const Sidebar = (_props: SidebarProps) => {
   const [store, ctrl] = useState()
   const [lastAction, setLastAction] = createSignal<string | undefined>()
   const toggleTheme = () => {
+    // TODO: use dark/light toggle somewhere
     document.body.classList.toggle('dark')
     ctrl.updateConfig({ theme: document.body.className })
   }
   const collabText = () => {
     if (store.collab?.started) {
-      return 'Stop collab'
+      return 'Stop'
     } else {
-      return store.collab?.error ? 'Error collab' : 'Start collab'
+      return store.collab?.error ? t('Restart') : t('Start')
     }
   }
   const editorView = () => unwrap(store.editorView)
@@ -89,11 +90,11 @@ export const Sidebar = (_props: SidebarProps) => {
   })
   const discardText = () => {
     if (store.path) {
-      return 'Close'
+      return t('Close')
     } else if (store.drafts.length > 0 && isEmpty(store.text as EditorState)) {
-      return 'Delete ⚠️'
+      return t('Delete')
     } else {
-      return 'Clear'
+      return t('Clear')
     }
   }
   return (
@@ -111,13 +112,10 @@ export const Sidebar = (_props: SidebarProps) => {
                 <i>({store.path.slice(Math.max(0, store.path.length - 24))})</i>
               </Label>
             )}
-            <Link onClick={onNew}>{t('Create')}</Link>
+            <Link onClick={onNew}>{t('Tabula rasa')}</Link>
             <Link onClick={onCollab}>{t('Invite coauthors')}</Link>
             <Link onClick={() => router.open('/create/settings')}>{t('Publication settings')}</Link>
-            <Link onClick={onHistory}>{t('Changes history')}</Link>
-            <div class="theme-switcher">
-              <input type="checkbox" name="theme" id="theme" onClick={toggleTheme} />
-            </div>
+            <Link onClick={onHistory}>{t('History of changes')}</Link>
             <Link
               onClick={onDiscard}
               disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text as EditorState)}
@@ -126,13 +124,13 @@ export const Sidebar = (_props: SidebarProps) => {
               {discardText()} <Keys keys={[mod, 'w']} />
             </Link>
             <Link onClick={onUndo}>
-              Undo <Keys keys={[mod, 'z']} />
+              {t('Undo')} <Keys keys={[mod, 'z']} />
             </Link>
             <Link onClick={onRedo}>
-              Redo <Keys keys={[mod, 'Shift+z']} />
+              {t('Redo')} <Keys keys={[mod, 'Shift+z']} />
             </Link>
             <Link onClick={onToggleMarkdown} data-testid="markdown">
-              Markdown mode {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
+              Markdown {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
             </Link>
             <Show when={store.drafts.length > 0}>
               <h4>{t('Drafts')}:</h4>
@@ -144,7 +142,7 @@ export const Sidebar = (_props: SidebarProps) => {
             </Show>
 
             <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>
-              Collab {collabText()}
+              {t('Collab')} {collabText()}
             </Link>
             <Show when={collabUsers() > 0}>
               <span>

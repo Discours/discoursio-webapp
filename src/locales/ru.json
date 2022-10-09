@@ -149,5 +149,18 @@
   "One time": "Единоразово",
   "Every month": "Ежемесячно",
   "Another amount": "Другая сумма",
-  "Just start typing...": "Просто начните..."
+  "Just start typing...": "Просто начните...",
+  "Tips and proposals": "Советы и предложения",
+  "Invite coauthors": "Пригласить соавторов",
+  "Tabula rasa": "С чистого листа",
+  "Publication settings": "Настройки публикации",
+  "History of changes": "История правок",
+  "Undo": "Откат",
+  "Redo": "Повторить действие",
+  "Start": "Начать",
+  "Stop": "Остановить",
+  "Restart": "Перезапустить",
+  "Clear": "Сбросить",
+  "Collab": "Совместно",
+  "Режим": "Theme"
 }

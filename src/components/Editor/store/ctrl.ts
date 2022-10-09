@@ -3,10 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { Command, EditorState } from 'prosemirror-state'
 import { undo, redo } from 'prosemirror-history'
 import { selectAll, deleteSelection } from 'prosemirror-commands'
-import * as Y from 'yjs'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
-import { WebrtcProvider } from 'y-webrtc'
-import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import debounce from 'lodash/debounce'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
 import { State, Draft, Config, ServiceError, newState } from '.'
@@ -16,7 +13,6 @@ import { isEmpty, isInitialized } from '../prosemirror/helpers'
 import { drafts as draftsatom } from '../../../stores/editor'
 import { useStore } from '@nanostores/solid'
 import { createMemo } from 'solid-js'
-import { roomConnect } from '../prosemirror/p2p'
 
 const isText = (x) => x && x.doc && x.selection
 const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.drafts)
@@ -223,7 +219,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     let data = await fetchData()
     try {
       if (data.args.room) {
-        data = doStartCollab(data)
+        data = await doStartCollab(data)
       } else if (data.args.text) {
         data = await doOpenDraft(data, {
           text: { ...JSON.parse(data.args.text) },
@@ -370,11 +366,11 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     setState(update)
   }
 
-  const doStartCollab = (state: State): State => {
+  const doStartCollab = async (state: State): Promise<State> => {
     const backup = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
     window.history.replaceState(null, '', `/${room}`)
-
+    const { roomConnect } = await import('../prosemirror/p2p')
     const [type, provider] = roomConnect(room)
 
     const extensions = createExtensions({

@@ -91,5 +91,5 @@ export default (): ProseMirrorExtension => ({
     todo_item: (node: any, view, getPos) => {
       return new TodoItemView(node, view, getPos)
     }
-  }
+  } as any
 })

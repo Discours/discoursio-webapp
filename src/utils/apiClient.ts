@@ -313,6 +313,7 @@ export const apiClient = {
     await privateGraphQLClient.mutation(incrementView, { shout: articleSlug })
   },
   getInboxes: async (payload = {}) => {
-    await privateGraphQLClient.query(myChats, payload)
+    const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
+    return resp.data.myChats
   }
 }

@@ -168,5 +168,5 @@ export default (path?: string): ProseMirrorExtension => ({
     image: (node, view, getPos) => {
       return new ImageView(node, view, getPos, view.state.schema, path)
     }
-  }
+  } as any
 })

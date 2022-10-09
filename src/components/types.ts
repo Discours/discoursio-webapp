@@ -1,5 +1,5 @@
 // in a separate file to avoid circular dependencies
-import type { Author, Shout, Topic } from '../graphql/types.gen'
+import type { Author, Chat, Shout, Topic } from '../graphql/types.gen'
 
 // all the things (she said) that could be passed from the server
 export type PageProps = {
@@ -16,4 +16,5 @@ export type PageProps = {
   searchQuery?: string
   // other types?
   searchResults?: Shout[]
+  chats?: Chat[]
 }

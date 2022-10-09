@@ -24,7 +24,7 @@ const InvalidState = (props: { title: string }) => {
   const onClick = () => ctrl.clean()
 
   return (
-    <div class="error" data-tauri-drag-region="true">
+    <div class="error">
       <div class="container">
         <h1>{props.title}</h1>
         <p>
@@ -48,12 +48,12 @@ const Other = () => {
   const onClick = () => ctrl.discard()
 
   const getMessage = () => {
-    const err = (store.error.props as any).error
-    return typeof err === 'string' ? err : err.message
+    const { error } = store.error.props as any
+    return typeof error === 'string' ? error : error.message
   }
 
   return (
-    <div class="error" data-tauri-drag-region="true">
+    <div class="error">
       <div class="container">
         <h1>An error occurred.</h1>
         <pre>

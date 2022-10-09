@@ -1,9 +1,14 @@
-import { Show, createEffect, createSignal, onCleanup } from 'solid-js'
+import { Show, createEffect, createSignal, onCleanup, For } from 'solid-js'
 import { unwrap } from 'solid-js/store'
 import { undo, redo } from 'prosemirror-history'
 import { useState } from '../store'
 import type { Styled } from './Layout'
+
 import '../styles/Sidebar.scss'
+import { router } from '../../../stores/router'
+import { t } from '../../../utils/intl'
+import { isEmpty } from '../prosemirror/helpers'
+import type { EditorState } from 'prosemirror-state'
 
 const Off = (props) => <div class="sidebar-off">{props.children}</div>
 
@@ -24,8 +29,19 @@ const Link = (
   </button>
 )
 
+const mod = 'Ctrl'
+const Keys = (props) => (
+  <span>
+    <For each={props.keys}>{(k: string) => <i>{k}</i>}</For>
+  </span>
+)
+
+interface SidebarProps {
+  error?: string
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const Sidebar = (props) => {
+export const Sidebar = (_props: SidebarProps) => {
   const [store, ctrl] = useState()
   const [lastAction, setLastAction] = createSignal<string | undefined>()
   const toggleTheme = () => {
@@ -47,7 +63,11 @@ export const Sidebar = (props) => {
   const onNew = () => ctrl.newFile()
   const onDiscard = () => ctrl.discard()
   const [isHidden, setIsHidden] = createSignal<boolean | false>()
-
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const onHistory = () => {
+    console.log('[editor.sidebar] implement history handling')
+    router.open('/create/settings')
+  }
   const toggleSidebar = () => setIsHidden(!isHidden())
   toggleSidebar()
 
@@ -67,14 +87,22 @@ export const Sidebar = (props) => {
     }, 1000)
     onCleanup(() => clearTimeout(id))
   })
-
+  const discardText = () => {
+    if (store.path) {
+      return 'Close'
+    } else if (store.drafts.length > 0 && isEmpty(store.text as EditorState)) {
+      return 'Delete ⚠️'
+    } else {
+      return 'Clear'
+    }
+  }
   return (
     <div class={'sidebar-container' + (isHidden() ? ' sidebar-container--hidden' : '')}>
       <span class="sidebar-opener" onClick={toggleSidebar}>
-        Советы и&nbsp;предложения
+        {t('Tips and proposals')}
       </span>
 
-      <Off onClick={() => editorView().focus()} data-tauri-drag-region="true">
+      <Off onClick={() => editorView().focus()}>
         <div class="sidebar-closer" onClick={toggleSidebar} />
         <Show when={true}>
           <div>
@@ -83,80 +111,46 @@ export const Sidebar = (props) => {
                 <i>({store.path.slice(Math.max(0, store.path.length - 24))})</i>
               </Label>
             )}
-            <Link>Пригласить соавторов</Link>
-            <Link>Настройки публикации</Link>
-            <Link>История правок</Link>
-
+            <Link onClick={onNew}>{t('Create')}</Link>
+            <Link onClick={onCollab}>{t('Invite coauthors')}</Link>
+            <Link onClick={() => router.open('/create/settings')}>{t('Publication settings')}</Link>
+            <Link onClick={onHistory}>{t('Changes history')}</Link>
             <div class="theme-switcher">
-              Ночная тема
               <input type="checkbox" name="theme" id="theme" onClick={toggleTheme} />
-              <label for="theme">Ночная тема</label>
             </div>
-
-            {/*
-            <Show when={isTauri && !store.path}>
-              <Link onClick={onSaveAs}>
-                Save to file <Keys keys={[mod, 's']} />
-              </Link>
-            </Show>
-            <Link onClick={onNew} data-testid='new'>
-              New <Keys keys={[mod, 'n']} />
-            </Link>
             <Link
               onClick={onDiscard}
-              disabled={!store.path && store.files.length === 0 && isEmpty(store.text)}
-              data-testid='discard'
+              disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text as EditorState)}
+              data-testid="discard"
             >
-              {store.path ? 'Close' : store.files.length > 0 && isEmpty(store.text) ? 'Delete ⚠️' : 'Clear'}{' '}
-              <Keys keys={[mod, 'w']} />
+              {discardText()} <Keys keys={[mod, 'w']} />
             </Link>
-            <Show when={isTauri}>
-              <Link onClick={onToggleFullscreen}>
-                Fullscreen {store.fullscreen && '✅'} <Keys keys={[alt, 'Enter']} />
-              </Link>
-            </Show>
             <Link onClick={onUndo}>
               Undo <Keys keys={[mod, 'z']} />
             </Link>
             <Link onClick={onRedo}>
-              Redo <Keys keys={[mod, ...(isMac ? ['Shift', 'z'] : ['y'])]} />
+              Redo <Keys keys={[mod, 'Shift+z']} />
             </Link>
-            <Show when={isTauri}>
-              <Link onClick={onToggleAlwaysOnTop}>Always on Top {store.config.alwaysOnTop && '✅'}</Link>
-            </Show>
-            <Show when={!isTauri && false}>
-              <Link onClick={onOpenInApp}>Open in App ⚡</Link>
-            </Show>
-            <Link onClick={onToggleMarkdown} data-testid='markdown'>
+            <Link onClick={onToggleMarkdown} data-testid="markdown">
               Markdown mode {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
             </Link>
-            <Link onClick={onCopyAllAsMd}>Copy all as MD {lastAction() === 'copy-md' && '📋'}</Link>
-
-            <Show when={store.files.length > 0}>
-              <h4>Files:</h4>
+            <Show when={store.drafts.length > 0}>
+              <h4>{t('Drafts')}:</h4>
               <p>
-                <For each={store.files}>{(file) => <FileLink file={file} />}</For>
+                <For each={store.drafts}>
+                  {(draft) => <Link onClick={() => router.open(draft.path)}>{draft.path}</Link>}
+                </For>
               </p>
             </Show>
-
 
             <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>
               Collab {collabText()}
             </Link>
             <Show when={collabUsers() > 0}>
-              <Link onClick={onCopyCollabLink}>
-                Copy Link {lastAction() === 'copy-collab-link' && '📋'}
-              </Link>
-              <Show when={false}>
-                <Link onClick={onCopyCollabAppLink}>
-                  Copy App Link {lastAction() === 'copy-collab-app-link' && '📋'}
-                </Link>
-              </Show>
               <span>
                 {collabUsers()} {collabUsers() === 1 ? 'user' : 'users'} connected
               </span>
             </Show>
-*/}
           </div>
         </Show>
       </Off>

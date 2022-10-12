@@ -32,14 +32,6 @@ export const TopicView = (props: TopicProps) => {
 
   const topic = createMemo(() => topicEntities()[props.topicSlug])
 
-  /*
-  const slug = createMemo<string>(() => {
-    let slug = props?.slug
-    if (props?.slug.startsWith('@')) slug = slug.replace('@', '')
-    return slug
-  })
-  */
-
   const title = createMemo(() => {
     const m = getSearchParams().by
     if (m === 'viewed') return t('Top viewed')
@@ -60,21 +52,22 @@ export const TopicView = (props: TopicProps) => {
                   {t('Recent')}
                 </button>
               </li>
-              <li classList={{ selected: getSearchParams().by === 'rating' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
-                  {t('Popular')}
-                </button>
-              </li>
-              <li classList={{ selected: getSearchParams().by === 'viewed' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>
-                  {t('Views')}
-                </button>
-              </li>
-              <li classList={{ selected: getSearchParams().by === 'commented' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
-                  {t('Discussing')}
-                </button>
-              </li>
+              {/*TODO: server sort*/}
+              {/*<li classList={{ selected: getSearchParams().by === 'rating' }}>*/}
+              {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
+              {/*    {t('Popular')}*/}
+              {/*  </button>*/}
+              {/*</li>*/}
+              {/*<li classList={{ selected: getSearchParams().by === 'viewed' }}>*/}
+              {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
+              {/*    {t('Views')}*/}
+              {/*  </button>*/}
+              {/*</li>*/}
+              {/*<li classList={{ selected: getSearchParams().by === 'commented' }}>*/}
+              {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
+              {/*    {t('Discussing')}*/}
+              {/*  </button>*/}
+              {/*</li>*/}
             </ul>
           </div>
           <div class="col-md-4">
@@ -108,11 +101,11 @@ export const TopicView = (props: TopicProps) => {
               beside={sortedArticles()[6]}
               wrapper={'author'}
             />
-            <Row3 articles={sortedArticles().slice(6, 9)} />
-            <Row2 articles={sortedArticles().slice(9, 11)} />
-            <Row3 articles={sortedArticles().slice(11, 14)} />
-            <Row3 articles={sortedArticles().slice(14, 17)} />
-            <Row3 articles={sortedArticles().slice(17, 20)} />
+            <Row3 articles={sortedArticles().slice(7, 10)} />
+            <Row2 articles={sortedArticles().slice(10, 12)} />
+            <Row3 articles={sortedArticles().slice(12, 15)} />
+            <Row3 articles={sortedArticles().slice(15, 18)} />
+            <Row3 articles={sortedArticles().slice(18, 21)} />
           </Show>
         </div>
       </Show>

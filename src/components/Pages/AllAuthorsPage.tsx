@@ -3,7 +3,7 @@ import { AllAuthorsView } from '../Views/AllAuthors'
 import type { PageProps } from '../types'
 import { createSignal, onMount, Show } from 'solid-js'
 import { loadAllAuthors } from '../../stores/zine/authors'
-import { t } from '../../utils/intl'
+import { Loading } from '../Loading'
 
 export const AllAuthorsPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors))
@@ -19,7 +19,7 @@ export const AllAuthorsPage = (props: PageProps) => {
 
   return (
     <MainLayout>
-      <Show when={isLoaded()} fallback={t('Loading')}>
+      <Show when={isLoaded()} fallback={<Loading />}>
         <AllAuthorsView authors={props.allAuthors} />
       </Show>
     </MainLayout>

@@ -9,8 +9,9 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { useArticlesStore } from '../../stores/zine/articles'
 
 import '../../styles/Topic.scss'
-// import { useTopicsStore } from '../../stores/zine/topics'
+import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
+import Beside from '../Feed/Beside'
 
 // TODO: load reactions on client
 type AuthorProps = {
@@ -30,6 +31,7 @@ export const AuthorView = (props: AuthorProps) => {
     sortedArticles: props.authorArticles
   })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
+  const { topicsByAuthor } = useTopicsStore()
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const { getSearchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
@@ -54,21 +56,22 @@ export const AuthorView = (props: AuthorProps) => {
                   {t('Recent')}
                 </button>
               </li>
-              <li classList={{ selected: getSearchParams().by === 'rating' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
-                  {t('Popular')}
-                </button>
-              </li>
-              <li classList={{ selected: getSearchParams().by === 'viewed' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>
-                  {t('Views')}
-                </button>
-              </li>
-              <li classList={{ selected: getSearchParams().by === 'commented' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
-                  {t('Discussing')}
-                </button>
-              </li>
+              {/*TODO: server sort*/}
+              {/*<li classList={{ selected: getSearchParams().by === 'rating' }}>*/}
+              {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
+              {/*    {t('Popular')}*/}
+              {/*  </button>*/}
+              {/*</li>*/}
+              {/*<li classList={{ selected: getSearchParams().by === 'viewed' }}>*/}
+              {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
+              {/*    {t('Views')}*/}
+              {/*  </button>*/}
+              {/*</li>*/}
+              {/*<li classList={{ selected: getSearchParams().by === 'commented' }}>*/}
+              {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
+              {/*    {t('Discussing')}*/}
+              {/*  </button>*/}
+              {/*</li>*/}
             </ul>
           </div>
           <div class="col-md-4">
@@ -83,14 +86,13 @@ export const AuthorView = (props: AuthorProps) => {
           <h3 class="col-12">{title()}</h3>
           <div class="row">
             <Show when={sortedArticles().length > 0}>
-              {/*FIXME*/}
-              {/*<Beside*/}
-              {/*  title={t('Topics which supported by author')}*/}
-              {/*  values={getTopicsByAuthor()[author().slug].slice(0, 5)}*/}
-              {/*  beside={articles()[0]}*/}
-              {/*  wrapper={'topic'}*/}
-              {/*  topicShortDescription={true}*/}
-              {/*/>*/}
+              <Beside
+                title={t('Topics which supported by author')}
+                values={topicsByAuthor()[author().slug].slice(0, 5)}
+                beside={sortedArticles()[0]}
+                wrapper={'topic'}
+                topicShortDescription={true}
+              />
               <Row3 articles={sortedArticles().slice(1, 4)} />
               <Row2 articles={sortedArticles().slice(4, 6)} />
               <Row3 articles={sortedArticles().slice(6, 9)} />

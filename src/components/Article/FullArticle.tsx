@@ -37,7 +37,6 @@ const formatDate = (date: Date) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
-  const body = createMemo(() => props.article.body.toString().trim())
   const { session } = useAuthStore()
 
   onMount(() => {
@@ -93,9 +92,16 @@ export const FullArticle = (props: ArticleProps) => {
           <div class="shout__cover" style={{ 'background-image': `url('${props.article.cover}')` }} />
         </div>
 
-        <div class="shout__body">
-          <MD body={body()} />
-        </div>
+        <Show when={Boolean(props.article.body)}>
+          <div class="shout__body">
+            <Show
+              when={!props.article.body.startsWith('<')}
+              fallback={<div innerHTML={props.article.body} />}
+            >
+              <MD body={props.article.body} />
+            </Show>
+          </div>
+        </Show>
       </article>
 
       <div class="col-md-8 shift-content">

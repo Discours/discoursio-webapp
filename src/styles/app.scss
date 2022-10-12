@@ -38,6 +38,7 @@ body {
   &.fixed {
     overflow: hidden;
     position: fixed;
+    width: 100%;
   }
 }
 
@@ -534,6 +535,7 @@ astro-island {
 .main-content {
   flex: 1 100%;
   padding-top: 100px;
+  position: relative;
   transition: all 1s ease;
 }
 

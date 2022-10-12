@@ -116,7 +116,7 @@ export const Header = (props: Props) => {
             >
               <For each={resources}>
                 {(r) => (
-                  <li classList={{ selected: r.route === getPage().route }}>
+                  <li classList={{ [styles.selected]: r.route === getPage().route }}>
                     <a href={getPagePath(router, r.route, null)} onClick={handleClientRouteLinkClick}>
                       {r.name}
                     </a>

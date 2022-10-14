@@ -10,14 +10,14 @@ export const Row5 = (props: { articles: Shout[] }) => {
       <div class="wide-container row">
         <div class="col-md-3">
           <ArticleCard article={props.articles[0]} />
-          <ArticleCard article={props.articles[1]} />
+          <ArticleCard article={props.articles[1]} settings={{ noimage: true, withBorder: true }} />
         </div>
         <div class="col-md-6">
-          <ArticleCard article={props.articles[2]} />
+          <ArticleCard article={props.articles[2]} settings={{ isBigTitle: true }} />
         </div>
         <div class="col-md-3">
           <ArticleCard article={props.articles[3]} />
-          <ArticleCard article={props.articles[4]} />
+          <ArticleCard article={props.articles[4]} settings={{ noimage: true, withBorder: true }} />
         </div>
       </div>
     </div>

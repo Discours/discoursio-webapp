@@ -85,7 +85,10 @@ export const TopicView = (props: TopicProps) => {
               <For each={sortedArticles().slice(0, 6)}>
                 {(article) => (
                   <div class="col-md-6">
-                    <ArticleCard article={article} />
+                    <ArticleCard
+                      article={article}
+                      settings={{ isFloorImportant: true, isBigTitle: true }}
+                    />
                   </div>
                 )}
               </For>

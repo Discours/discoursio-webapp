@@ -21,12 +21,7 @@ export default (props: { articles: Shout[] }) => {
             return (
               <Show when={!!a}>
                 <div class={`col-md-${x[y()][i()]}`}>
-                  <ArticleCard
-                    article={a}
-                    settings={{
-                      additionalClass: x[y()][i()] === '8' ? 'shout-card--with-cover' : ''
-                    }}
-                  />
+                  <ArticleCard article={a} settings={{ isWithCover: x[y()][i()] === '8' }} />
                 </div>
               </Show>
             )

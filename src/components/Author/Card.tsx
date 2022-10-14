@@ -2,13 +2,14 @@ import { For, Show } from 'solid-js/web'
 import type { Author } from '../../graphql/types.gen'
 import Userpic from './Userpic'
 import { Icon } from '../Nav/Icon'
-import './Card.scss'
+import style from './Card.module.scss'
 import { createMemo } from 'solid-js'
 import { translit } from '../../utils/ru2en'
 import { t } from '../../utils/intl'
 import { useAuthStore } from '../../stores/auth'
 import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
+import { clsx } from 'clsx'
 
 interface AuthorCardProps {
   compact?: boolean
@@ -17,6 +18,7 @@ interface AuthorCardProps {
   hasLink?: boolean
   subscribed?: boolean
   author: Author
+  isAuthorPage?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -34,45 +36,51 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
   // TODO: reimplement AuthorCard
   return (
-    <div class="author">
-      <Userpic user={props.author} hasLink={props.hasLink} />
+    <div class={style.author} classList={{ [style.authorPage]: props.isAuthorPage }}>
+      <Userpic user={props.author} hasLink={props.hasLink} isBig={props.isAuthorPage} />
 
-      <div class="author__details">
-        <div class="author__details-wrapper">
+      <div class={style.authorDetails}>
+        <div class={style.authorDetailsWrapper}>
           <Show when={props.hasLink}>
-            <a class="author__name text-3xl text-2xl" href={`/author/${props.author.slug}`}>
+            <a class={style.authorName} href={`/author/${props.author.slug}`}>
               {name()}
             </a>
           </Show>
           <Show when={!props.hasLink}>
-            <div class="author__name text-3xl text-2xl">{name()}</div>
+            <div class={style.authorName}>{name()}</div>
           </Show>
 
           <Show when={!props.hideDescription}>
-            <div class="author__about">{bio()}</div>
+            <div class={style.authorAbout}>{bio()}</div>
           </Show>
         </div>
 
         <Show when={canFollow()}>
-          <div class="author__subscribe">
+          <div class={style.authorSubscribe}>
             <Show
               when={subscribed()}
               fallback={
-                <button onClick={() => follow} class="button button--subscribe">
-                  <Icon name="author-subscribe" />
-                  <span class="button__label">+&nbsp;{t('Follow')}</span>
+                <button
+                  onClick={() => follow}
+                  class={clsx('button button--subscribe', style.button, style.buttonSubscribe)}
+                >
+                  <Icon name="author-subscribe" class={style.icon} />
+                  <span class={style.buttonLabel}>&nbsp;{t('Follow')}</span>
                 </button>
               }
             >
-              <button onClick={() => unfollow} class="button button--subscribe">
-                <Icon name="author-unsubscribe" />
-                <span class="button__label">-&nbsp;{t('Unfollow')}</span>
+              <button
+                onClick={() => unfollow}
+                class={clsx('button button--subscribe', style.button, style.buttonSubscribe)}
+              >
+                <Icon name="author-unsubscribe" class={style.icon} />
+                <span class={style.buttonLabel}>-&nbsp;{t('Unfollow')}</span>
               </button>
             </Show>
 
             <Show when={!props.compact}>
-              <button class="button button--write">
-                <Icon name="edit" />
+              <button class={clsx(style.buttonWrite, style.button, 'button')}>
+                <Icon name="edit" class={style.icon} />
                 {t('Write')}
               </button>
 

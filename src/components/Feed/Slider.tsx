@@ -60,7 +60,12 @@ export default (props: SliderProps) => {
                 {(a: Shout) => (
                   <ArticleCard
                     article={a}
-                    settings={{ additionalClass: 'shout-card--with-cover swiper-slide' }}
+                    settings={{
+                      additionalClass: 'swiper-slide',
+                      isFloorImportant: true,
+                      isWithCover: true,
+                      nodate: true
+                    }}
                   />
                 )}
               </For>

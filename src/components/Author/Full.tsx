@@ -7,7 +7,7 @@ export default (props: { author: Author }) => {
     <div class="container">
       <div class="row">
         <div class="user-details">
-          <AuthorCard author={props.author} compact={false} />
+          <AuthorCard author={props.author} compact={false} isAuthorPage={true} />
         </div>
       </div>
     </div>

@@ -82,23 +82,33 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </div>
 
-        <div class="floor">
-          <h3 class="col-12">{title()}</h3>
-          <div class="row">
-            <Show when={sortedArticles().length > 0}>
-              <Beside
-                title={t('Topics which supported by author')}
-                values={topicsByAuthor()[author().slug].slice(0, 5)}
-                beside={sortedArticles()[0]}
-                wrapper={'topic'}
-                topicShortDescription={true}
-              />
-              <Row3 articles={sortedArticles().slice(1, 4)} />
+        <h3 class="col-12">{title()}</h3>
+        <div class="row">
+          <Show when={sortedArticles().length > 0}>
+            <Beside
+              title={t('Topics which supported by author')}
+              values={topicsByAuthor()[author().slug].slice(0, 5)}
+              beside={sortedArticles()[0]}
+              wrapper={'topic'}
+              topicShortDescription={true}
+              isTopicCompact={true}
+              isTopicInRow={true}
+              iconButton={true}
+            />
+            <Row3 articles={sortedArticles().slice(1, 4)} />
+
+            <Show when={sortedArticles().length > 4}>
               <Row2 articles={sortedArticles().slice(4, 6)} />
+            </Show>
+
+            <Show when={sortedArticles().length > 6}>
               <Row3 articles={sortedArticles().slice(6, 9)} />
+            </Show>
+
+            <Show when={sortedArticles().length > 9}>
               <Row3 articles={sortedArticles().slice(9, 12)} />
             </Show>
-          </div>
+          </Show>
         </div>
       </Show>
     </div>

@@ -18,11 +18,6 @@ export default () => {
           <Icon name="pencil" />
         </a>
       </div>
-      <div class={clsx(styles.userControlItem, styles.userControlItemSearch)}>
-        <a href="/search">
-          <Icon name="search" />
-        </a>
-      </div>
       <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
         <a href="/inbox">
           {/*FIXME: replace with route*/}

@@ -17,7 +17,10 @@ export default (props: GroupProps) => {
           <div class="group__header col-12">{props.header}</div>
 
           <div class="col-lg-6">
-            <ArticleCard article={props.articles[0]} settings={{ nosubtitle: false, noicon: true }} />
+            <ArticleCard
+              article={props.articles[0]}
+              settings={{ nosubtitle: false, noicon: true, isFloorImportant: true, isBigTitle: true }}
+            />
           </div>
 
           <div class="col-lg-6">
@@ -27,7 +30,10 @@ export default (props: GroupProps) => {
                   {(a) => (
                     <div class="row">
                       <div class="col-md-8">
-                        <ArticleCard article={a} settings={{ nosubtitle: false, noicon: true }} />
+                        <ArticleCard
+                          article={a}
+                          settings={{ nosubtitle: false, noicon: true, isBigTitle: true }}
+                        />
                       </div>
                     </div>
                   )}
@@ -36,12 +42,34 @@ export default (props: GroupProps) => {
               <Show when={props.articles.length >= 4}>
                 <div class="col-md-6">
                   <For each={props.articles.slice(1, 3)}>
-                    {(a) => <ArticleCard article={a} settings={{ noicon: true, noimage: true }} />}
+                    {(a) => (
+                      <ArticleCard
+                        article={a}
+                        settings={{
+                          noicon: true,
+                          noimage: true,
+                          isBigTitle: true,
+                          isCompact: true,
+                          isFloorImportant: true
+                        }}
+                      />
+                    )}
                   </For>
                 </div>
                 <div class="col-md-6">
                   <For each={props.articles.slice(3, 5)}>
-                    {(a) => <ArticleCard article={a} settings={{ noicon: true, noimage: true }} />}
+                    {(a) => (
+                      <ArticleCard
+                        article={a}
+                        settings={{
+                          noicon: true,
+                          noimage: true,
+                          isBigTitle: true,
+                          isCompact: true,
+                          isFloorImportant: true
+                        }}
+                      />
+                    )}
                   </For>
                 </div>
               </Show>

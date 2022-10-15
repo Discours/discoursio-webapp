@@ -10,7 +10,12 @@ export default (props: { articles: Shout[] }) => (
           <div class="col-md-6 col-lg-3">
             <ArticleCard
               article={a}
-              settings={{ additionalClass: 'shout-card--with-cover shout-card--content-top' }}
+              settings={{
+                additionalClass: 'shout-card--content-top',
+                isWithCover: true,
+                isBigTitle: true,
+                isVertical: true
+              }}
             />
           </div>
         )}

@@ -135,51 +135,44 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   const readStoredState = async (): Promise<State> => {
     const state: State = unwrap(store)
     const room = window.location.pathname?.slice(1).trim()
-    const args = { room, draft: room }
+    const args = { draft: room }
     const data = await db.get('state')
-    let parsed
     if (data !== undefined) {
       try {
-        parsed = JSON.parse(data)
+        const parsed = JSON.parse(data)
+        let text = state.text
+        if (parsed.text) {
+          if (!isText(parsed.text)) {
+            throw new ServiceError('invalid_state', parsed.text)
+          }
+          text = parsed.text
+        }
+
+        const extensions = createExtensions({
+          path: parsed.path,
+          markdown: parsed.markdown,
+          keymap,
+          config: undefined
+        })
+
+        for (const draft of parsed.drafts || []) {
+          if (!isDraft(draft)) {
+            console.error('[editor] invalid draft', draft)
+          }
+        }
+
+        return {
+          ...parsed,
+          text,
+          extensions,
+          // config,
+          args,
+          lastModified: new Date(parsed.lastModified)
+        }
       } catch (error) {
         console.error(error)
-        throw new ServiceError('invalid_state', data)
+        return { ...state, args }
       }
-    }
-
-    if (!parsed) {
-      return { ...state, args }
-    }
-
-    let text = state.text
-    if (parsed.text) {
-      if (!isText(parsed.text)) {
-        throw new ServiceError('invalid_state', parsed.text)
-      }
-
-      text = parsed.text
-    }
-
-    const extensions = createExtensions({
-      path: parsed.path,
-      markdown: parsed.markdown,
-      keymap,
-      config: undefined
-    })
-
-    for (const draft of parsed.drafts || []) {
-      if (!isDraft(draft)) {
-        throw new ServiceError('invalid_draft', draft)
-      }
-    }
-
-    return {
-      ...parsed,
-      text,
-      extensions,
-      // config,
-      args,
-      lastModified: new Date(parsed.lastModified)
     }
   }
 
@@ -209,6 +202,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
 
   const init = async () => {
     let state = await readStoredState()
+    console.log('[editor] init with state', state)
     try {
       if (state.args.room) {
         state = await doStartCollab(state)
@@ -241,6 +235,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       config: { ...state.config, ...getTheme(state) },
       loading: 'initialized'
     })
+    console.log('[editor] initialized successfully', state)
   }
 
   const loadDraft = async (config: Config, path: string): Promise<Draft> => {
@@ -361,6 +356,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   const doStartCollab = async (state: State): Promise<State> => {
     const backup = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
+    state.args.room = room
     window.history.replaceState(null, '', `/${room}`)
     const { roomConnect } = await import('../prosemirror/p2p')
     const [type, provider] = roomConnect(room)

@@ -12,10 +12,6 @@ interface PopupProps {
 export const Popup = (props: PopupProps) => {
   const { getModal } = useModalStore()
 
-  const wrapClick = (ev: Event) => {
-    if ((ev.target as HTMLElement).classList.contains('popup')) hideModal()
-  }
-
   onMount(() => {
     window.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Escape') hideModal()
@@ -29,7 +25,7 @@ export const Popup = (props: PopupProps) => {
 
   return (
     <Show when={visible()}>
-      <div class={clsx(style.popup, props.class)} onClick={wrapClick}>
+      <div class={clsx(style.popup, props.class)}>
         {props.children}
       </div>
     </Show>

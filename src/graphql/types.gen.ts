@@ -347,7 +347,6 @@ export type Query = {
   markdownBody: Scalars['String']
   myChats: Array<Maybe<ChatResult>>
   reactionsByAuthor: Array<Maybe<Reaction>>
-  reactionsByShout: Array<Maybe<Reaction>>
   reactionsForShouts: Array<Maybe<Reaction>>
   recentAll: Array<Maybe<Shout>>
   recentCandidates: Array<Maybe<Shout>>
@@ -417,12 +416,6 @@ export type QueryMarkdownBodyArgs = {
 }
 
 export type QueryReactionsByAuthorArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-  slug: Scalars['String']
-}
-
-export type QueryReactionsByShoutArgs = {
   limit: Scalars['Int']
   offset: Scalars['Int']
   slug: Scalars['String']

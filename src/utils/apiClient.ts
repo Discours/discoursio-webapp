@@ -4,7 +4,6 @@ import { getLogger } from './logger'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
-import articleReactions from '../graphql/query/article-reactions'
 import articlesRecentAll from '../graphql/query/articles-recent-all'
 import articlesRecentPublished from '../graphql/query/articles-recent-published'
 import topicsAll from '../graphql/query/topics-all'
@@ -285,14 +284,14 @@ export const apiClient = {
     offset: number
   }): Promise<Reaction[]> => {
     const response = await publicGraphQLClient
-      .query(articleReactions, {
-        slug: articleSlug,
+      .query(reactionsForShouts, {
+        shouts: [articleSlug],
         limit,
         offset
       })
       .toPromise()
 
-    return response.data?.reactionsByShout
+    return response.data?.reactionsForShouts
   },
   getAuthorsBySlugs: async ({ slugs }) => {
     const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()

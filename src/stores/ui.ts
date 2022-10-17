@@ -19,8 +19,9 @@ const modal = atom<ModalType>(null)
 const warnings = atom<Warning[]>([])
 
 export const showModal = (modalType: ModalType) => modal.set(modalType)
-
 export const hideModal = () => modal.set(null)
+export const toggleModal = (modalType) => modal.get() ? hideModal() : showModal(modalType)
+
 export const clearWarns = () => warnings.set([])
 export const warn = (warning: Warning) => warnings.set([...warnings.get(), warning])
 

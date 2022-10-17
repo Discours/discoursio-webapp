@@ -20,6 +20,10 @@
   }
 }
 
+.mainHeaderInner {
+  position: relative;
+}
+
 .headerFixed.headerScrolledBottom,
 .headerFixed.headerScrolledTop {
   .mainLogo {
@@ -28,6 +32,18 @@
     img {
       height: 20px;
     }
+  }
+}
+
+.popupShare {
+  opacity: 1;
+  transition: opacity 0.3s;
+  z-index: 1;
+
+  .headerScrolledTop & {
+    opacity: 0;
+    transition: opacity 0.3s, z-index 0s 0.3s;
+    z-index: -1;
   }
 }
 

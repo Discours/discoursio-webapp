@@ -3,12 +3,14 @@ import Private from './Private'
 import Notifications from './Notifications'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
+import { Popup } from './Popup'
 import AuthModal from './AuthModal'
 import { t } from '../../utils/intl'
-import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
+import {useModalStore, showModal, useWarningsStore, toggleModal} from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
+import stylesPopup from './Popup.module.scss'
 import privateStyles from './Private.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { getLogger } from '../../utils/logger'
@@ -49,11 +51,7 @@ export const Header = (props: Props) => {
   const toggleFixed = () => setFixed(!fixed())
   // effects
   createEffect(() => {
-    if (fixed() || getModal()) {
-      document.body.classList.add('fixed')
-    } else {
-      document.body.classList.remove('fixed')
-    }
+    document.body.classList.toggle('fixed', fixed() || (getModal() && getModal() !== 'share'));
   }, [fixed(), getModal()])
 
   // derived
@@ -70,8 +68,6 @@ export const Header = (props: Props) => {
 
   onMount(() => {
     let scrollTop = window.scrollY
-
-    // window.console.log(props.title)
 
     const handleScroll = () => {
       setIsScrollingBottom(window.scrollY > scrollTop)
@@ -98,7 +94,43 @@ export const Header = (props: Props) => {
       <Modal name="auth">
         <AuthModal />
       </Modal>
-      <div class="wide-container">
+
+      <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
+        <Popup name="share" class={clsx(styles.popupShare, stylesPopup.popupShare)}>
+          <ul class="nodash">
+            <li>
+              <a href="#">
+                <Icon name="vk-white" class={stylesPopup.icon}/>
+                VK
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <Icon name="facebook-white" class={stylesPopup.icon}/>
+                Facebook
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <Icon name="twitter-white" class={stylesPopup.icon}/>
+                Twitter
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <Icon name="telegram-white" class={stylesPopup.icon}/>
+                Telegram
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <Icon name="link-white" class={stylesPopup.icon}/>
+                {t('Copy link')}
+              </a>
+            </li>
+          </ul>
+        </Popup>
+
         <nav class={clsx(styles.headerInner, 'row')} classList={{ fixed: fixed() }}>
           <div class={clsx(styles.mainLogo, 'col-auto')}>
             <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
@@ -162,7 +194,9 @@ export const Header = (props: Props) => {
             </div>
             <Show when={props.title}>
               <div class={styles.articleControls}>
-                <Icon name="share-outline" class={styles.icon} />
+                <button onClick={() => {toggleModal('share')}}>
+                  <Icon name="share-outline" class={styles.icon}/>
+                </button>
                 <a href="#comments">
                   <Icon name="comments-outline" class={styles.icon} />
                 </a>

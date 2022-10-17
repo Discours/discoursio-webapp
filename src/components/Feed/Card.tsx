@@ -32,6 +32,7 @@ interface ArticleCardProps {
     isShort?: boolean
     withBorder?: boolean
     isCompact?: boolean
+    isSingle?: boolean
   }
   article: Shout
 }
@@ -84,7 +85,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [style.shoutCardBigTitle]: props.settings?.isBigTitle,
         [style.shoutCardVertical]: props.settings?.isVertical,
         [style.shoutCardWithBorder]: props.settings?.withBorder,
-        [style.shoutCardCompact]: props.settings?.isCompact
+        [style.shoutCardCompact]: props.settings?.isCompact,
+        [style.shoutCardSingle]: props.settings?.isSingle
       }}
     >
       <Show when={!props.settings?.noimage && cover}>

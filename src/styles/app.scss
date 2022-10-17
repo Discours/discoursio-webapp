@@ -534,6 +534,7 @@ astro-island {
 
 .main-content {
   flex: 1 100%;
+  min-height: 300px;
   padding-top: 100px;
   position: relative;
   transition: all 1s ease;

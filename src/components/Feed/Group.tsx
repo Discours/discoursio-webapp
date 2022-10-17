@@ -11,7 +11,7 @@ interface GroupProps {
 export default (props: GroupProps) => {
   if (!props.articles) props.articles = []
   return (
-    <div class="floor floor--important">
+    <div class="floor floor--important floor--group">
       <Show when={props.articles.length > 4}>
         <div class="wide-container row">
           <div class="group__header col-12">{props.header}</div>

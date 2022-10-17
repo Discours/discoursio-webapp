@@ -51,7 +51,10 @@ export const Header = (props: Props) => {
   const toggleFixed = () => setFixed(!fixed())
   // effects
   createEffect(() => {
-    document.body.classList.toggle('fixed', fixed() || (getModal() && getModal() !== 'share'));
+    const isFixed = fixed() || (getModal() && getModal() !== 'share');
+
+    document.body.classList.toggle('fixed', isFixed);
+    document.body.classList.toggle(styles.fixed, isFixed);
   }, [fixed(), getModal()])
 
   // derived

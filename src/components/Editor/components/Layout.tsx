@@ -1,8 +1,9 @@
-import type { Config } from '../store'
+import type { JSX } from 'solid-js/jsx-runtime'
+import type { Config } from '../store/context'
 import '../styles/Layout.scss'
 
 export type Styled = {
-  children: any
+  children: JSX.Element
   config?: Config
   'data-testid'?: string
   onClick?: () => void

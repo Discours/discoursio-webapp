@@ -1,5 +1,5 @@
 import { Switch, Match } from 'solid-js'
-import { useState } from '../store'
+import { useState } from '../store/context'
 import '../styles/Button.scss'
 
 export default () => {
@@ -12,8 +12,8 @@ export default () => {
       <Match when={store.error.id === 'invalid_config'}>
         <InvalidState title="Invalid Config" />
       </Match>
-      <Match when={store.error.id === 'invalid_file'}>
-        <InvalidState title="Invalid File" />
+      <Match when={store.error.id === 'invalid_draft'}>
+        <InvalidState title="Invalid Draft" />
       </Match>
     </Switch>
   )
@@ -48,8 +48,8 @@ const Other = () => {
   const onClick = () => ctrl.discard()
 
   const getMessage = () => {
-    const { error } = store.error.props as any
-    return typeof error === 'string' ? error : error.message
+    const err = (store.error.props as any).error
+    return typeof err === 'string' ? err : err.message
   }
 
   return (

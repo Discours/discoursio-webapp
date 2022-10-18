@@ -1,9 +1,8 @@
 import type { EditorView } from 'prosemirror-view'
 import type { EditorState } from 'prosemirror-state'
-import { useState } from '../store'
-import { ProseMirror } from '../components/ProseMirror'
+import { useState } from '../store/context'
+import { ProseMirror } from './ProseMirror'
 import '../styles/Editor.scss'
-import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 
 export const Editor = () => {
   const [store, ctrl] = useState()
@@ -23,9 +22,9 @@ export const Editor = () => {
       // eslint-disable-next-line solid/no-react-specific-props
       className="editor"
       style={style()}
-      editorView={store.editorView as EditorView}
-      text={store.text as ProseMirrorState}
-      extensions={store.extensions as ProseMirrorExtension[]}
+      editorView={store.editorView}
+      text={store.text}
+      extensions={store.extensions}
       onInit={onInit}
       onReconfigure={onReconfigure}
       onChange={onChange}

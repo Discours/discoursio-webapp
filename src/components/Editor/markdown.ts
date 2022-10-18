@@ -1,34 +1,38 @@
 import markdownit from 'markdown-it'
-import {
-  MarkdownSerializer,
-  MarkdownParser,
-  defaultMarkdownSerializer,
-  MarkdownSerializerState
-} from 'prosemirror-markdown'
+import { MarkdownSerializer, MarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown'
 import type { Node, Schema } from 'prosemirror-model'
 import type { EditorState } from 'prosemirror-state'
 
 export const serialize = (state: EditorState) => {
   let text = markdownSerializer.serialize(state.doc)
-  if (text.charAt(text.length - 1) !== '\n') text += '\n'
+  if (text.charAt(text.length - 1) !== '\n') {
+    text += '\n'
+  }
+
   return text
 }
 
-const findAlignment = (cell: Node) => {
+const findAlignment = (cell: Node): string | null => {
   const alignment = cell.attrs.style as string
-  if (!alignment) return null
+  if (!alignment) {
+    return null
+  }
+
   const match = alignment.match(/text-align: ?(left|right|center)/)
-  if (match && match[1]) return match[1]
+  if (match && match[1]) {
+    return match[1]
+  }
+
   return null
 }
 
 export const markdownSerializer = new MarkdownSerializer(
   {
     ...defaultMarkdownSerializer.nodes,
-    image(state: MarkdownSerializerState, node) {
+    image(state, node) {
       const alt = state.esc(node.attrs.alt || '')
       const src = node.attrs.path ?? node.attrs.src
-      const title = node.attrs.title || '' // ? state.quote(node.attrs.title) : undefined
+      const title = node.attrs.title ? state.quote(node.attrs.title) : undefined
       state.write(`![${alt}](${src}${title ? ' ' + title : ''})\n`)
     },
     code_block(state, node) {
@@ -118,8 +122,8 @@ export const markdownSerializer = new MarkdownSerializer(
   }
 )
 
-function listIsTight(tokens, i: number) {
-  // eslint-disable-next-line no-param-reassign
+function listIsTight(tokens: any, idx: number) {
+  let i = idx
   while (++i < tokens.length) {
     if (tokens[i].type !== 'list_item_open') return tokens[i].hidden
   }

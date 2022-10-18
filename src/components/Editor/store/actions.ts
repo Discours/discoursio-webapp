@@ -6,8 +6,8 @@ import { selectAll, deleteSelection } from 'prosemirror-commands'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
 import debounce from 'lodash/debounce'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
-import { State, Draft, Config, ServiceError, newState } from '.'
-import { serialize, createMarkdownParser } from '../prosemirror/markdown'
+import { State, Draft, Config, ServiceError, newState } from './context'
+import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
 import { drafts as draftsatom } from '../../../stores/editor'
@@ -91,7 +91,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       ...drafts,
       {
         body: text,
-        lastModified: prev.lastModified as Date,
+        lastModified: prev.lastModified,
         path: prev.path,
         markdown: prev.markdown
       } as Draft
@@ -302,7 +302,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     }
     const index = findIndexOfDraft(draft)
     const item = index === -1 ? draft : state.drafts[index]
-    let drafts = state.drafts.filter((f) => f !== item)
+    let drafts = state.drafts.filter((d: Draft) => d !== item)
     if (!isEmpty(state.text as EditorState) && state.lastModified) {
       drafts = addToDrafts(drafts, { lastModified: new Date(), text: state.text } as Draft)
     }

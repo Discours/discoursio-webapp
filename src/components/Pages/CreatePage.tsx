@@ -1,4 +1,4 @@
-import { newState } from '../Editor/store'
+import { newState } from '../Editor/store/context'
 import { MainLayout } from '../Layouts/MainLayout'
 import { CreateView } from '../Views/Create'
 

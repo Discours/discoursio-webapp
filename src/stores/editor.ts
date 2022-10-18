@@ -2,14 +2,7 @@ import { persistentMap } from '@nanostores/persistent'
 import type { Reaction } from '../graphql/types.gen'
 import { atom } from 'nanostores'
 import { createSignal } from 'solid-js'
-
-interface Draft {
-  createdAt: Date
-  topics?: string[]
-  lastModified: Date
-  body?: string
-  title?: string
-}
+import type { Draft } from '../components/Editor/store/context'
 
 interface Collab {
   authors: string[] // slugs

@@ -17,7 +17,7 @@ import selectionMenu from './extension/selection'
 import strikethrough from './extension/strikethrough'
 import table from './extension/table'
 import todoList from './extension/todo-list'
-import type { Config, YOptions } from '../store'
+import type { Config, YOptions } from '../store/context'
 import type { ProseMirrorExtension } from './helpers'
 
 interface ExtensionsProps {

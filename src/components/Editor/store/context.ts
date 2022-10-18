@@ -4,14 +4,12 @@ import type { XmlFragment } from 'yjs'
 import type { WebrtcProvider } from 'y-webrtc'
 import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 import type { EditorView } from 'prosemirror-view'
-import { createEmptyText } from '../prosemirror/setup'
 
 export interface Args {
-  draft: string // path to draft
   cwd?: string
-  file?: string
+  draft?: string
   room?: string
-  text?: string
+  text?: any
 }
 
 export interface PrettierConfig {
@@ -28,7 +26,7 @@ export interface Config {
   font: string
   fontSize: number
   contentWidth: number
-  alwaysOnTop: boolean
+  // alwaysOnTop: boolean;
   // typewriterMode: boolean;
   prettier: PrettierConfig
 }
@@ -62,18 +60,20 @@ export interface State {
   config: Config
   error?: ErrorObject
   loading: LoadingType
+  fullscreen?: boolean
   collab?: Collab
   path?: string
   args?: Args
+  isMac?: boolean
 }
 
 export interface Draft {
-  extensions?: ProseMirrorExtension[]
-  lastModified: Date
+  text?: { [key: string]: any }
   body?: string
-  text?: { doc: any; selection: { type: string; anchor: number; head: number } }
+  lastModified?: Date
   path?: string
   markdown?: boolean
+  extensions?: ProseMirrorExtension[]
 }
 
 export class ServiceError extends Error {
@@ -92,6 +92,7 @@ export const newState = (props: Partial<State> = {}): State => ({
   extensions: [],
   drafts: [],
   loading: 'loading',
+  fullscreen: false,
   markdown: false,
   config: {
     theme: undefined,
@@ -99,7 +100,6 @@ export const newState = (props: Partial<State> = {}): State => ({
     font: 'muller',
     fontSize: 24,
     contentWidth: 800,
-    alwaysOnTop: false,
     // typewriterMode: true,
     prettier: {
       printWidth: 80,
@@ -111,16 +111,3 @@ export const newState = (props: Partial<State> = {}): State => ({
   },
   ...props
 })
-
-export const addToDrafts = (drafts: Draft[], state: State): Draft[] => {
-  drafts.forEach((d) => {
-    if (!state.drafts.includes(d)) state.drafts.push(d)
-  })
-  return state.drafts
-}
-
-export const createTextFromDraft = async (draft: Draft) => {
-  const created = createEmptyText()
-  created.doc.content = Object.values(draft.text) // FIXME
-  return created
-}

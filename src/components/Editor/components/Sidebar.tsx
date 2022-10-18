@@ -1,14 +1,12 @@
-import { Show, createEffect, createSignal, onCleanup, For } from 'solid-js'
+import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { unwrap } from 'solid-js/store'
 import { undo, redo } from 'prosemirror-history'
-import { useState } from '../store'
+import { Draft, useState /*, Config, PrettierConfig */ } from '../store/context'
+import * as remote from '../remote'
+import { isEmpty /*, isInitialized*/ } from '../prosemirror/helpers'
 import type { Styled } from './Layout'
-
 import '../styles/Sidebar.scss'
-import { router } from '../../../stores/router'
 import { t } from '../../../utils/intl'
-import { isEmpty } from '../prosemirror/helpers'
-import type { EditorState } from 'prosemirror-state'
 
 const Off = (props) => <div class="sidebar-off">{props.children}</div>
 
@@ -29,23 +27,22 @@ const Link = (
   </button>
 )
 
-const mod = 'Ctrl'
 const Keys = (props) => (
   <span>
-    <For each={props.keys}>{(k: string) => <i>{k}</i>}</For>
+    <For each={props.keys}>{(k: Element) => <i>{k}</i>}</For>
   </span>
 )
 
-interface SidebarProps {
-  error?: string
-}
-
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export const Sidebar = (_props: SidebarProps) => {
+export const Sidebar = () => {
+  const [isMac, setIsMac] = createSignal(false)
+  onMount(() => setIsMac(window?.navigator.platform.includes('Mac')))
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  // const isDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches
+  const mod = isMac() ? 'Cmd' : 'Ctrl'
+  // const alt = isMac() ? 'Cmd' : 'Alt'
   const [store, ctrl] = useState()
   const [lastAction, setLastAction] = createSignal<string | undefined>()
   const toggleTheme = () => {
-    // TODO: use dark/light toggle somewhere
     document.body.classList.toggle('dark')
     ctrl.updateConfig({ theme: document.body.className })
   }
@@ -58,19 +55,50 @@ export const Sidebar = (_props: SidebarProps) => {
   }
   const editorView = () => unwrap(store.editorView)
   const onToggleMarkdown = () => ctrl.toggleMarkdown()
+  const onOpenDraft = (draft: Draft) => ctrl.openDraft(unwrap(draft))
   const collabUsers = () => store.collab?.y?.provider.awareness.meta.size ?? 0
   const onUndo = () => undo(editorView().state, editorView().dispatch)
   const onRedo = () => redo(editorView().state, editorView().dispatch)
-  const onNew = () => ctrl.newFile()
+  const onCopyAllAsMd = () =>
+    remote.copyAllAsMarkdown(editorView().state).then(() => setLastAction('copy-md'))
   const onDiscard = () => ctrl.discard()
   const [isHidden, setIsHidden] = createSignal<boolean | false>()
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const onHistory = () => {
-    console.log('[editor.sidebar] implement history handling')
-    router.open('/create/settings')
-  }
   const toggleSidebar = () => setIsHidden(!isHidden())
   toggleSidebar()
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const DraftLink = (p: { draft: Draft }) => {
+    const length = 100
+    let content = ''
+    const getContent = (node: any) => {
+      if (node.text) content += node.text
+      if (content.length > length) {
+        content = content.slice(0, Math.max(0, length)) + '...'
+        return content
+      }
+
+      if (node.content) {
+        for (const child of node.content) {
+          if (content.length >= length) break
+          content = getContent(child)
+        }
+      }
+
+      return content
+    }
+
+    const text = () =>
+      p.draft.path
+        ? p.draft.path.slice(Math.max(0, p.draft.path.length - length))
+        : getContent(p.draft.text?.doc)
+
+    return (
+      // eslint-disable-next-line solid/no-react-specific-props
+      <Link className="draft" onClick={() => onOpenDraft(p.draft)} data-testid="open">
+        {text()} {p.draft.path && '📎'}
+      </Link>
+    )
+  }
 
   const onCollab = () => {
     const state = unwrap(store)
@@ -88,19 +116,11 @@ export const Sidebar = (_props: SidebarProps) => {
     }, 1000)
     onCleanup(() => clearTimeout(id))
   })
-  const discardText = () => {
-    if (store.path) {
-      return t('Close')
-    } else if (store.drafts.length > 0 && isEmpty(store.text as EditorState)) {
-      return t('Delete')
-    } else {
-      return t('Clear')
-    }
-  }
+
   return (
     <div class={'sidebar-container' + (isHidden() ? ' sidebar-container--hidden' : '')}>
       <span class="sidebar-opener" onClick={toggleSidebar}>
-        {t('Tips and proposals')}
+        Советы и&nbsp;предложения
       </span>
 
       <Off onClick={() => editorView().focus()}>
@@ -112,35 +132,44 @@ export const Sidebar = (_props: SidebarProps) => {
                 <i>({store.path.slice(Math.max(0, store.path.length - 24))})</i>
               </Label>
             )}
-            <Link onClick={onNew}>{t('Tabula rasa')}</Link>
-            <Link onClick={onCollab}>{t('Invite coauthors')}</Link>
-            <Link onClick={() => router.open('/create/settings')}>{t('Publication settings')}</Link>
-            <Link onClick={onHistory}>{t('History of changes')}</Link>
+            <Link>Пригласить соавторов</Link>
+            <Link>Настройки публикации</Link>
+            <Link>История правок</Link>
+
+            <div class="theme-switcher">
+              Ночная тема
+              <input type="checkbox" name="theme" id="theme" onClick={toggleTheme} />
+              <label for="theme">Ночная тема</label>
+            </div>
             <Link
               onClick={onDiscard}
-              disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text as EditorState)}
+              disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text)}
               data-testid="discard"
             >
-              {discardText()} <Keys keys={[mod, 'w']} />
+              {/* eslint-disable-next-line no-nested-ternary */}
+              {store.path
+                ? 'Close'
+                : (store.drafts.length > 0 && isEmpty(store.text)
+                ? 'Delete ⚠️'
+                : 'Clear')}{' '}
+              <Keys keys={[mod, 'w']} />
             </Link>
             <Link onClick={onUndo}>
-              {t('Undo')} <Keys keys={[mod, 'z']} />
+              Undo <Keys keys={[mod, 'z']} />
             </Link>
             <Link onClick={onRedo}>
-              {t('Redo')} <Keys keys={[mod, 'Shift+z']} />
+              Redo <Keys keys={[mod, ...(isMac() ? ['Shift', 'z'] : ['y'])]} />
             </Link>
             <Link onClick={onToggleMarkdown} data-testid="markdown">
-              Markdown {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
+              Markdown mode {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
             </Link>
+            <Link onClick={onCopyAllAsMd}>Copy all as MD {lastAction() === 'copy-md' && '📋'}</Link>
             <Show when={store.drafts.length > 0}>
-              <h4>{t('Drafts')}:</h4>
+              <h4>Drafts:</h4>
               <p>
-                <For each={store.drafts}>
-                  {(draft) => <Link onClick={() => router.open(draft.path)}>{draft.path}</Link>}
-                </For>
+                <For each={store.drafts}>{(draft: Draft) => <DraftLink draft={draft} />}</For>
               </p>
             </Show>
-
             <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>
               {collabText()}
             </Link>

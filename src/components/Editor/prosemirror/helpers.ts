@@ -17,13 +17,11 @@ export type NodeViewFn = (
   decorations: Decoration[]
 ) => NodeView
 
-export const isInitialized = (state: EditorState) => state !== undefined && state instanceof EditorState
+export const isInitialized = (state: any) => state !== undefined && state instanceof EditorState
 
-export const isEmpty = (state: EditorState) =>
+export const isEmpty = (state: any) =>
   !isInitialized(state) ||
   (state.doc.childCount === 1 &&
     !state.doc.firstChild.type.spec.code &&
     state.doc.firstChild.isTextblock &&
     state.doc.firstChild.content.size === 0)
-
-export const isText = (x) => x && x.doc && x.selection

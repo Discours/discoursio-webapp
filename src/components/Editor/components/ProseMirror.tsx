@@ -1,16 +1,16 @@
-import { EditorState, type Transaction } from 'prosemirror-state'
-import { EditorView } from 'prosemirror-view'
-import { unwrap } from 'solid-js/store'
 import { createEffect, untrack } from 'solid-js'
-import { createEditorState } from '../prosemirror'
-import type { ProseMirrorState, ProseMirrorExtension } from '../prosemirror/helpers'
+import { Store, unwrap } from 'solid-js/store'
+import { EditorState, EditorStateConfig, Transaction } from 'prosemirror-state'
+import { EditorView } from 'prosemirror-view'
+import { Schema } from 'prosemirror-model'
+import type { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 
 interface Props {
   style?: string
   className?: string
-  text?: ProseMirrorState
-  editorView?: EditorView
-  extensions?: ProseMirrorExtension[]
+  text?: Store<ProseMirrorState>
+  editorView?: Store<EditorView>
+  extensions?: Store<ProseMirrorExtension[]>
   onInit: (s: EditorState, v: EditorView) => void
   onReconfigure: (s: EditorState) => void
   onChange: (s: EditorState) => void
@@ -19,6 +19,7 @@ interface Props {
 export const ProseMirror = (props: Props) => {
   let editorRef: HTMLDivElement
   const editorView = () => untrack(() => unwrap(props.editorView))
+
   const dispatchTransaction = (tr: Transaction) => {
     if (!editorView()) return
     const newState = editorView().state.apply(tr)
@@ -28,10 +29,10 @@ export const ProseMirror = (props: Props) => {
   }
 
   createEffect(
-    (state: [EditorState, ProseMirrorExtension[]]) => {
-      const [prevText, prevExtensions] = state
+    (payload: [EditorState, ProseMirrorExtension[]]) => {
+      const [prevText, prevExtensions] = payload
       const text = unwrap(props.text)
-      const extensions = unwrap(props.extensions)
+      const extensions: ProseMirrorExtension[] = unwrap(props.extensions)
       if (!text || !extensions?.length) {
         return [text, extensions]
       }
@@ -60,4 +61,47 @@ export const ProseMirror = (props: Props) => {
   )
 
   return <div style={props.style} ref={editorRef} class={props.className} spell-check={false} />
+}
+
+const createEditorState = (
+  text: ProseMirrorState,
+  extensions: ProseMirrorExtension[],
+  prevText?: EditorState
+): {
+  editorState: EditorState
+  nodeViews: { [key: string]: NodeViewFn }
+} => {
+  const reconfigure = text instanceof EditorState && prevText?.schema
+  let schemaSpec = { nodes: {} }
+  let nodeViews = {}
+  let plugins = []
+
+  for (const extension of extensions) {
+    if (extension.schema) {
+      schemaSpec = extension.schema(schemaSpec)
+    }
+
+    if (extension.nodeViews) {
+      nodeViews = { ...nodeViews, ...extension.nodeViews }
+    }
+  }
+
+  const schema = reconfigure ? prevText.schema : new Schema(schemaSpec)
+  for (const extension of extensions) {
+    if (extension.plugins) {
+      plugins = extension.plugins(plugins, schema)
+    }
+  }
+
+  let editorState: EditorState
+  if (reconfigure) {
+    editorState = text.reconfigure({ schema, plugins } as EditorStateConfig)
+  } else if (text instanceof EditorState) {
+    editorState = EditorState.fromJSON({ schema, plugins }, text.toJSON())
+  } else if (text) {
+    console.debug(text)
+    editorState = EditorState.fromJSON({ schema, plugins }, text)
+  }
+
+  return { editorState, nodeViews }
 }

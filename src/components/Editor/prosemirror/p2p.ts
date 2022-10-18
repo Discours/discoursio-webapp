@@ -8,6 +8,10 @@ import { setReactions } from '../../../stores/editor'
 export const roomConnect = (room, username = '', keyname = 'collab'): [XmlFragment, WebrtcProvider] => {
   const ydoc = new Doc()
   const yarr = ydoc.getArray(keyname + '-reactions')
+  yarr.observeDeep(() => {
+    console.debug('[p2p] yarray updated', yarr.toArray())
+    setReactions(yarr.toArray() as Reaction[])
+  })
   const yXmlFragment = ydoc.getXmlFragment(keyname)
   const webrtcOptions = {
     awareness: new Awareness(ydoc),
@@ -22,23 +26,20 @@ export const roomConnect = (room, username = '', keyname = 'collab'): [XmlFragme
     peerOpts: {},
     password: ''
   }
+  // connect with provider
   const provider = new WebrtcProvider(room, ydoc, webrtcOptions)
-  let name = username
-
-  yarr.observeDeep(() => {
-    console.debug('yarray updated:', yarr.toArray())
-    setReactions(yarr.toArray() as Reaction[])
+  console.debug('[p2p] provider', provider)
+  // setting username
+  provider.awareness.setLocalStateField('user', {
+    name:
+      username ??
+      uniqueNamesGenerator({
+        dictionaries: [adjectives, animals],
+        style: 'capital',
+        separator: ' ',
+        length: 2
+      })
   })
 
-  if (Boolean(name) === false) {
-    name = uniqueNamesGenerator({
-      dictionaries: [adjectives, animals],
-      style: 'capital',
-      separator: ' ',
-      length: 2
-    })
-  }
-
-  provider.awareness.setLocalStateField('user', { name })
   return [yXmlFragment, provider]
 }

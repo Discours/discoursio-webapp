@@ -51,9 +51,9 @@ export const Sidebar = (_props: SidebarProps) => {
   }
   const collabText = () => {
     if (store.collab?.started) {
-      return 'Stop'
+      return t('Stop collab')
     } else {
-      return store.collab?.error ? t('Restart') : t('Start')
+      return store.collab?.error ? t('Restart collab') : t('Start collab')
     }
   }
   const editorView = () => unwrap(store.editorView)
@@ -142,7 +142,7 @@ export const Sidebar = (_props: SidebarProps) => {
             </Show>
 
             <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>
-              {t('Collab')} {collabText()}
+              {collabText()}
             </Link>
             <Show when={collabUsers() > 0}>
               <span>

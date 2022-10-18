@@ -1,10 +1,11 @@
+import { newState } from '../Editor/store'
 import { MainLayout } from '../Layouts/MainLayout'
 import { CreateView } from '../Views/Create'
 
 export const CreatePage = () => {
   return (
     <MainLayout>
-      <CreateView />
+      <CreateView state={newState()} />
     </MainLayout>
   )
 }

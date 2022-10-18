@@ -176,7 +176,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     }
   }
 
-  const getTheme = (state: State) => ({ theme: state.config.theme })
+  const getTheme = (state: State) => ({ theme: state.config?.theme || '' })
 
   const clean = () => {
     setState({
@@ -204,7 +204,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     let state = await readStoredState()
     console.log('[editor] init with state', state)
     try {
-      if (state.args.room) {
+      if (state.args?.room) {
         state = await doStartCollab(state)
       } else if (state.args.text) {
         state = await doOpenDraft(state, {
@@ -354,42 +354,50 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   }
 
   const doStartCollab = async (state: State): Promise<State> => {
-    const backup = state.args?.room && state.collab?.room !== state.args.room
+    const restoredRoom = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
-    state.args.room = room
-    window.history.replaceState(null, '', `/${room}`)
-    const { roomConnect } = await import('../prosemirror/p2p')
-    const [type, provider] = roomConnect(room)
-
-    const extensions = createExtensions({
-      config: state.config,
-      markdown: state.markdown,
-      path: state.path,
-      keymap,
-      y: { type, provider },
-      collab: true
-    })
-
+    state.args = { ...state.args, room }
     let newst = state
-    if ((backup && !isEmpty(state.text as EditorState)) || state.path) {
-      let drafts = state.drafts
-      if (!state.error) {
-        drafts = addToDrafts(drafts, { lastModified: new Date(), text: state.text } as Draft)
+    try {
+      const { roomConnect } = await import('../prosemirror/p2p')
+      const [type, provider] = roomConnect(room)
+
+      const extensions = createExtensions({
+        config: state.config,
+        markdown: state.markdown,
+        path: state.path,
+        keymap,
+        y: { type, provider },
+        collab: true
+      })
+
+      if ((restoredRoom && !isEmpty(state.text as EditorState)) || state.path) {
+        let drafts = state.drafts
+        if (!state.error) {
+          drafts = addToDrafts(drafts, { lastModified: new Date(), text: state.text } as Draft)
+        }
+
+        newst = {
+          ...state,
+          drafts,
+          lastModified: undefined,
+          path: undefined,
+          error: undefined
+        }
+        window.history.replaceState(null, '', `/${room}`)
       }
 
-      newst = {
+      return {
+        ...newst,
+        extensions,
+        collab: { started: true, room, y: { type, provider } }
+      }
+    } catch (error) {
+      console.error(error)
+      return {
         ...state,
-        drafts,
-        lastModified: undefined,
-        path: undefined,
-        error: undefined
+        collab: { error }
       }
-    }
-
-    return {
-      ...newst,
-      extensions,
-      collab: { started: true, room, y: { type, provider } }
     }
   }
 

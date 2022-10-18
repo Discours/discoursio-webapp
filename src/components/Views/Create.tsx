@@ -1,14 +1,16 @@
 import { Show, onCleanup, createEffect, onError, onMount, untrack } from 'solid-js'
 import { createMutable, unwrap } from 'solid-js/store'
-import { State, StateContext, newState } from '../Editor/store'
+import { State, StateContext } from '../Editor/store'
 import { createCtrl } from '../Editor/store/ctrl'
 import { Layout } from '../Editor/components/Layout'
-import { Editor } from '../Editor'
+import { Editor } from '../Editor/components/Editor'
 import { Sidebar } from '../Editor/components/Sidebar'
 import ErrorView from '../Editor/components/Error'
 
-export const CreateView = () => {
-  const [store, ctrl] = createCtrl(newState())
+const matchDark = () => window.matchMedia('(prefers-color-scheme: dark)')
+
+export const CreateView = (props: { state: State }) => {
+  const [store, ctrl] = createCtrl(props.state)
   const mouseEnterCoords = createMutable({ x: 0, y: 0 })
 
   const onMouseEnter = (e: MouseEvent) => {
@@ -25,10 +27,10 @@ export const CreateView = () => {
     await ctrl.init()
   })
 
+  const onChangeTheme = () => ctrl.updateTheme()
   onMount(() => {
-    const mediaQuery = '(prefers-color-scheme: dark)'
-    window.matchMedia(mediaQuery).addEventListener('change', ctrl.updateTheme)
-    onCleanup(() => window.matchMedia(mediaQuery).removeEventListener('change', ctrl.updateTheme))
+    matchDark().addEventListener('change', onChangeTheme)
+    onCleanup(() => matchDark().removeEventListener('change', onChangeTheme))
   })
 
   onError((error) => {

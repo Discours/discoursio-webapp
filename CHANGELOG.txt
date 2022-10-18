@@ -1,3 +1,6 @@
+[0.6.0]
+[+] editor enabled
+
 [0.5.1]
 [+] nanostores-base global store
 [-] Root.tsx components

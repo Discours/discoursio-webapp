@@ -5,7 +5,7 @@ import { ProseMirror } from '../components/ProseMirror'
 import '../styles/Editor.scss'
 import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 
-export default () => {
+export const Editor = () => {
   const [store, ctrl] = useState()
   const onInit = (text: EditorState, editorView: EditorView) => ctrl.setState({ editorView, text })
   const onReconfigure = (text: EditorState) => ctrl.setState({ text })

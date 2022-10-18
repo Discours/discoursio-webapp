@@ -12,6 +12,11 @@ interface PopupProps {
 export const Popup = (props: PopupProps) => {
   const { getModal } = useModalStore()
 
+  const hidePopup = () => {
+    hideModal()
+    document.removeEventListener('click', hidePopup)
+  }
+
   onMount(() => {
     window.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Escape') hideModal()
@@ -21,11 +26,12 @@ export const Popup = (props: PopupProps) => {
   const [visible, setVisible] = createSignal(false)
   createEffect(() => {
     setVisible(getModal() === props.name)
+    document.addEventListener('click', hidePopup)
   })
 
   return (
     <Show when={visible()}>
-      <div class={clsx(style.popup, props.class)}>
+      <div class={clsx(style.popup, props.class)} onClick={(evt) => {evt.stopPropagation()}}>
         {props.children}
       </div>
     </Show>

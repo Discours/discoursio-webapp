@@ -197,7 +197,10 @@ export const Header = (props: Props) => {
             </div>
             <Show when={props.title}>
               <div class={styles.articleControls}>
-                <button onClick={() => {toggleModal('share')}}>
+                <button onClick={(evt) => {
+                  evt.stopPropagation()
+                  toggleModal('share')
+                }}>
                   <Icon name="share-outline" class={styles.icon}/>
                 </button>
                 <a href="#comments">

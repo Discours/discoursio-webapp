@@ -2,7 +2,6 @@ import type { Reaction, Shout, FollowingEntity, AuthResult } from '../graphql/ty
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
-import articleReactions from '../graphql/query/article-reactions'
 import articlesRecentAll from '../graphql/query/articles-recent-all'
 import articlesRecentPublished from '../graphql/query/articles-recent-published'
 import topicsAll from '../graphql/query/topics-all'
@@ -187,13 +186,13 @@ export const apiClient = {
     limit: number
     offset?: number
   }): Promise<Shout[]> => {
-    const response = await publicGraphQLClient
-      .query(articlesForAuthors, {
-        slugs: authorSlugs,
-        limit,
-        offset
-      })
-      .toPromise()
+    const vars = {
+      slugs: authorSlugs,
+      limit,
+      offset
+    }
+    console.debug(vars)
+    const response = await publicGraphQLClient.query(articlesForAuthors, vars).toPromise()
 
     if (response.error) {
       console.error('[api-client] getArticlesForAuthors', response.error)
@@ -270,25 +269,6 @@ export const apiClient = {
       .toPromise()
 
     return response.data.reactionsForShouts
-  },
-  getArticleReactions: async ({
-    articleSlug,
-    limit = REACTIONS_PAGE_SIZE,
-    offset = 0
-  }: {
-    articleSlug: string
-    limit: number
-    offset: number
-  }): Promise<Reaction[]> => {
-    const response = await publicGraphQLClient
-      .query(articleReactions, {
-        slug: articleSlug,
-        limit,
-        offset
-      })
-      .toPromise()
-
-    return response.data?.reactionsByShout
   },
   getAuthorsBySlugs: async ({ slugs }) => {
     const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()

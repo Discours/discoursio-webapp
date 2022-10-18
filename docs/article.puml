@@ -50,7 +50,7 @@ Solid -> Store: loadArticleComments
 activate Store
 Store -> apiClient: getArticleComments
 activate apiClient
-apiClient -> DB: query: articleReactions
+apiClient -> DB: query: getReactionsForShouts
 activate DB
 DB --> apiClient: response
 deactivate DB

@@ -1,5 +1,5 @@
 import { ySyncPlugin, yCursorPlugin, yUndoPlugin } from 'y-prosemirror'
-import type { YOptions } from '../../store'
+import type { YOptions } from '../../store/context'
 import type { ProseMirrorExtension } from '../helpers'
 
 export interface EditingProps {

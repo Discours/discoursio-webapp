@@ -29,7 +29,7 @@ const findAlignment = (cell: Node): string | null => {
 export const markdownSerializer = new MarkdownSerializer(
   {
     ...defaultMarkdownSerializer.nodes,
-    image(state, node) {
+    image(state: any, node) {
       const alt = state.esc(node.attrs.alt || '')
       const src = node.attrs.path ?? node.attrs.src
       const title = node.attrs.title ? state.quote(node.attrs.title) : undefined

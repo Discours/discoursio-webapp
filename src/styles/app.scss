@@ -38,6 +38,7 @@ body {
   &.fixed {
     overflow: hidden;
     position: fixed;
+    width: 100%;
   }
 }
 
@@ -210,7 +211,7 @@ button {
 
   font-weight: 400;
   margin-top: 0.6rem;
-  padding: 0.6rem 1.2rem 1rem 1rem;
+  padding: 0.6rem 1.2rem 0.6rem 1rem;
 }
 
 form {
@@ -460,26 +461,45 @@ figcaption {
   }
 }
 
+.floor--7 {
+  @include media-breakpoint-down(md) {
+    margin-bottom: 1em;
+  }
+
+  .col-md-6 {
+    margin-bottom: 1.6em;
+
+    @include media-breakpoint-down(md) {
+      margin-right: 0;
+    }
+  }
+}
+
 .floor--important {
   background: #000;
   color: #fff;
   padding: $grid-gutter-width 0;
+  padding-bottom: $container-padding-x;
+  padding-top: $container-padding-x;
+
+  @include media-breakpoint-up(md) {
+    padding-bottom: $grid-gutter-width;
+    padding-top: $grid-gutter-width;
+  }
+
+  h2 {
+    @include font-size(4.4rem);
+
+    text-align: center;
+  }
 
   @include media-breakpoint-down(md) {
     margin-bottom: 5rem;
   }
 
-  .all-materials,
-  .shout-card__title {
+  .all-materials {
     a {
       color: #fff;
-    }
-  }
-
-  .shout__topic,
-  .shout__author {
-    a {
-      color: rgb(255 255 255 / 50%);
     }
   }
 
@@ -503,25 +523,6 @@ figcaption {
   }
 }
 
-.shout__topic {
-  font-size: 1.2rem;
-  letter-spacing: 0.08em;
-  margin-bottom: 0.8rem;
-  text-transform: uppercase;
-  transition: background-color 0.2s;
-
-  a {
-    background: transparent;
-    border: none;
-    color: $link-color;
-
-    &:hover {
-      background: $link-color;
-      color: #fff !important;
-    }
-  }
-}
-
 /* stylelint-disable-next-line */
 astro-island {
   display: flex !important;
@@ -533,7 +534,9 @@ astro-island {
 
 .main-content {
   flex: 1 100%;
+  min-height: 300px;
   padding-top: 100px;
+  position: relative;
   transition: all 1s ease;
 }
 

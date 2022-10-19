@@ -5,9 +5,11 @@ import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
 import { Icon } from '../Nav/Icon'
-import './Card.scss'
+import style from './Card.module.scss'
 import { locale } from '../../stores/ui'
 import { handleClientRouteLinkClick } from '../../stores/router'
+import { clsx } from 'clsx'
+import CardTopic from './CardTopic'
 
 interface ArticleCardProps {
   settings?: {
@@ -20,6 +22,14 @@ interface ArticleCardProps {
     photoBottom?: boolean
     additionalClass?: string
     isFeedMode?: boolean
+    isFloorImportant?: boolean
+    isWithCover?: boolean
+    isBigTitle?: boolean
+    isVertical?: boolean
+    isShort?: boolean
+    withBorder?: boolean
+    isCompact?: boolean
+    isSingle?: boolean
   }
   article: Shout
 }
@@ -62,56 +72,65 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   return (
     <section
-      class={`shout-card ${props.settings?.additionalClass || ''}`}
+      class={clsx(style.shoutCard, `${props.settings?.additionalClass || ''}`)}
       classList={{
-        'shout-card--short': props.settings?.noimage,
-        'shout-card--photo-bottom': props.settings?.noimage && props.settings?.photoBottom,
-        'shout-card--feed': props.settings?.isFeedMode
+        [style.shoutCardShort]: props.settings?.isShort,
+        [style.shoutCardPhotoBottom]: props.settings?.noimage && props.settings?.photoBottom,
+        [style.shoutCardFeed]: props.settings?.isFeedMode,
+        [style.shoutCardFloorImportant]: props.settings?.isFloorImportant,
+        [style.shoutCardWithCover]: props.settings?.isWithCover,
+        [style.shoutCardBigTitle]: props.settings?.isBigTitle,
+        [style.shoutCardVertical]: props.settings?.isVertical,
+        [style.shoutCardWithBorder]: props.settings?.withBorder,
+        [style.shoutCardCompact]: props.settings?.isCompact,
+        [style.shoutCardSingle]: props.settings?.isSingle
       }}
     >
       <Show when={!props.settings?.noimage && cover}>
-        <div class="shout-card__cover-container">
-          <div class="shout-card__cover">
+        <div class={style.shoutCardCoverContainer}>
+          <div class={style.shoutCardCover}>
             <img src={cover || ''} alt={title || ''} loading="lazy" />
           </div>
         </div>
       </Show>
 
-      <div class="shout-card__content">
+      <div class={style.shoutCardContent}>
         <Show when={layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)}>
-          <div class="shout-card__type">
+          <div class={style.shoutCardType}>
             <a href={`/topic/${mainTopic.slug}`}>
-              <Icon name={layout} />
+              <Icon name={layout} class={style.icon} />
             </a>
           </div>
         </Show>
 
         <Show when={!props.settings?.isGroup}>
-          <div class="shout__topic">
-            <a href={`/topic/${mainTopic.slug}`}>
-              {locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic.slug.replace('-', ' ')}
-            </a>
-          </div>
+          <CardTopic
+            title={
+              locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic.slug.replace('-', ' ')
+            }
+            slug={mainTopic.slug}
+            isFloorImportant={props.settings?.isFloorImportant}
+          />
         </Show>
 
-        <div class="shout-card__titles-container">
+        <div class={style.shoutCardTitlesContainer}>
           <a href={`/${slug || ''}`} onClick={handleClientRouteLinkClick}>
-            <div class="shout-card__title">
-              <span class="shout-card__link-container">{title}</span>
+            <div class={style.shoutCardTitle}>
+              <span class={style.shoutCardLinkContainer}>{title}</span>
             </div>
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
-              <div class="shout-card__subtitle">
-                <span class="shout-card__link-container">{subtitle}</span>
+              <div class={style.shoutCardSubtitle}>
+                <span class={style.shoutCardLinkContainer}>{subtitle}</span>
               </div>
             </Show>
           </a>
         </div>
 
         <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
-          <div class="shout__details">
+          <div class={style.shoutDetails}>
             <Show when={!props.settings?.noauthor}>
-              <div class="shout__author">
+              <div class={style.shoutAuthor}>
                 <For each={authors}>
                   {(author, index) => {
                     const name =
@@ -131,39 +150,39 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
 
             <Show when={!props.settings?.nodate}>
-              <div class="shout__date">{formattedDate()}</div>
+              <div class={style.shoutDate}>{formattedDate()}</div>
             </Show>
           </div>
         </Show>
 
         <Show when={props.settings?.isFeedMode}>
-          <section class="shout-card__details">
-            <div class="shout-card__details-content">
-              <div class="shout-card__details-item rating">
+          <section class={style.shoutCardDetails}>
+            <div class={style.shoutCardDetailsContent}>
+              <div class={clsx(style.shoutCardDetailsItem, 'rating')}>
                 <button class="rating__control">&minus;</button>
                 <span class="rating__value">{stat?.rating || ''}</span>
                 <button class="rating__control">+</button>
               </div>
-              <div class="shout-card__details-item shout-card__comments">
-                <Icon name="eye" />
+              <div class={clsx(style.shoutCardDetailsItem, style.shoutCardComments)}>
+                <Icon name="eye" class={style.icon} />
                 {stat?.viewed}
               </div>
-              <div class="shout-card__details-item shout-card__comments">
+              <div class={clsx(style.shoutCardDetailsTtem, style.shoutCardComments)}>
                 <a href={`/${slug + '#comments' || ''}`}>
-                  <Icon name="comment" />
+                  <Icon name="comment" class={style.icon} />
                   {stat?.commented || ''}
                 </a>
               </div>
 
-              <div class="shout-card__details-item">
+              <div class={style.shoutCardDetailsItem}>
                 <button>
-                  <Icon name="bookmark" />
+                  <Icon name="bookmark" class={style.icon} />
                 </button>
               </div>
 
-              <div class="shout-card__details-item">
+              <div class={style.shoutCardDetailsItem}>
                 <button>
-                  <Icon name="ellipsis" />
+                  <Icon name="ellipsis" class={style.icon} />
                 </button>
               </div>
             </div>

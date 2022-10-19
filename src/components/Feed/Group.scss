@@ -33,3 +33,13 @@
     transition: filter 0.2s;
   }
 }
+
+.floor--group {
+  @include media-breakpoint-down(sm) {
+    .col-lg-6 {
+      .row {
+        margin: 0 0 0 divide(-$container-padding-x, 2);
+      }
+    }
+  }
+}

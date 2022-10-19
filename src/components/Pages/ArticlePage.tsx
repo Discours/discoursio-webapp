@@ -3,9 +3,9 @@ import { ArticleView } from '../Views/Article'
 import type { PageProps } from '../types'
 import { loadArticle, useArticlesStore } from '../../stores/zine/articles'
 import { createMemo, onMount, Show } from 'solid-js'
-import { t } from '../../utils/intl'
 import type { Shout } from '../../graphql/types.gen'
 import { useRouter } from '../../stores/router'
+import { Loading } from '../Loading'
 
 export const ArticlePage = (props: PageProps) => {
   const sortedArticles = props.article ? [props.article] : []
@@ -38,7 +38,7 @@ export const ArticlePage = (props: PageProps) => {
 
   return (
     <MainLayout headerTitle={article()?.title || ''}>
-      <Show when={Boolean(article())} fallback={t('Loading')}>
+      <Show when={Boolean(article())} fallback={<Loading />}>
         <ArticleView article={article()} />
       </Show>
     </MainLayout>

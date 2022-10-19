@@ -4,8 +4,8 @@ import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadArticlesForTopics, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
-import { t } from '../../utils/intl'
 import { loadTopic } from '../../stores/zine/topics'
+import { Loading } from '../Loading'
 
 export const TopicPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.authorArticles) && Boolean(props.author))
@@ -37,7 +37,7 @@ export const TopicPage = (props: PageProps) => {
 
   return (
     <MainLayout>
-      <Show when={isLoaded()} fallback={t('Loading')}>
+      <Show when={isLoaded()} fallback={<Loading />}>
         <TopicView topic={props.topic} topicArticles={props.topicArticles} topicSlug={slug()} />
       </Show>
     </MainLayout>

@@ -20,6 +20,10 @@
   }
 }
 
+.mainHeaderInner {
+  position: relative;
+}
+
 .headerFixed.headerScrolledBottom,
 .headerFixed.headerScrolledTop {
   .mainLogo {
@@ -31,9 +35,26 @@
   }
 }
 
+.popupShare {
+  opacity: 1;
+  transition: opacity 0.3s;
+  z-index: 1;
+
+  .headerScrolledTop & {
+    opacity: 0;
+    transition: opacity 0.3s, z-index 0s 0.3s;
+    z-index: -1;
+  }
+}
+
 .headerFixed {
   position: fixed;
   top: 0;
+
+  .fixed & {
+    bottom: 0;
+    margin-bottom: 0;
+  }
 }
 
 .headerInner {
@@ -44,8 +65,7 @@
   justify-content: space-between;
   margin: 0;
 
-  &.fixed {
-    border-bottom: 4px solid #000;
+  .fixed & {
     left: 0;
     position: fixed;
     right: 0;
@@ -62,24 +82,32 @@
 .mainLogo {
   align-items: center;
   display: inline-flex;
-  height: 70px;
+  height: 56px;
   padding: 0 $container-padding-x 0 0;
   position: relative;
   transition: height 0.2s;
   text-align: center;
   z-index: 9;
 
+  @include media-breakpoint-up(md) {
+    height: 70px;
+  }
+
   @include media-breakpoint-up(lg) {
     height: 80px;
   }
 
   img {
-    height: 32px;
+    height: 20px;
     object-fit: contain;
     object-position: left;
     transition: height 0.2s;
     vertical-align: middle;
     width: 100px;
+
+    @include media-breakpoint-up(md) {
+      height: 32px;
+    }
 
     @include media-breakpoint-up(lg) {
       width: 175px;
@@ -113,6 +141,14 @@
   padding-left: 0;
   position: relative;
   @include font-size(1.7rem);
+
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
+
+  .fixed & {
+    display: block;
+  }
 }
 
 .mainNavigation {
@@ -145,7 +181,7 @@
     padding: divide($container-padding-x, 2);
   }
 
-  &.fixed {
+  .fixed & {
     display: inline-flex;
 
     @include media-breakpoint-down(lg) {
@@ -181,12 +217,8 @@
   display: inline-flex;
   float: right;
   padding-right: 0;
-  padding-left: 0;
+  padding-left: divide($container-padding-x, 2);
   width: 2.2rem;
-
-  @include media-breakpoint-up(sm) {
-    padding-left: divide($container-padding-x, 2);
-  }
 
   @include media-breakpoint-up(md) {
     display: none;
@@ -235,7 +267,7 @@
     top: 0;
   }
 
-  &.fixed {
+  .fixed & {
     > div {
       opacity: 0;
       transition: opacity 0s;
@@ -276,6 +308,10 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
 }
 
 .headerSearch {
@@ -305,6 +341,7 @@
 
 .articleControls {
   display: flex;
+  justify-content: flex-end;
   left: 0;
   position: absolute;
   top: 50%;

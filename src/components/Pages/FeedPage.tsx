@@ -3,7 +3,7 @@ import { FeedView } from '../Views/Feed'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadRecentArticles, resetSortedArticles } from '../../stores/zine/articles'
-import { t } from '../../utils/intl'
+import { Loading } from '../Loading'
 
 export const FeedPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.feedArticles))
@@ -22,7 +22,7 @@ export const FeedPage = (props: PageProps) => {
 
   return (
     <MainLayout>
-      <Show when={isLoaded()} fallback={t('Loading')}>
+      <Show when={isLoaded()} fallback={<Loading />}>
         <FeedView articles={props.feedArticles} />
       </Show>
     </MainLayout>

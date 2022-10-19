@@ -9,6 +9,7 @@ import { useAuthStore, signIn, register } from '../../stores/auth'
 import { useValidator } from '../../utils/validators'
 import { baseUrl } from '../../graphql/publicGraphQLClient'
 import { ApiError } from '../../utils/apiClient'
+import { handleClientRouteLinkClick } from '../../stores/router'
 
 type AuthMode = 'sign-in' | 'sign-up' | 'forget' | 'reset' | 'resend' | 'password'
 
@@ -30,9 +31,16 @@ const titles = {
 
 // const isProperEmail = (email) => email && email.length > 5 && email.includes('@') && email.includes('.')
 
+// 3rd party provider auth handler
+const oauth = (provider: string): void => {
+  const popup = window.open(`${baseUrl}/oauth/${provider}`, provider, 'width=740, height=420')
+  popup?.focus()
+  hideModal()
+}
+
 // FIXME !!!
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default (props: { code?: string; mode?: string }) => {
+export default (props: { code?: string; mode?: AuthMode }) => {
   const { session } = useAuthStore()
   const [handshaking] = createSignal(false)
   const { getModal } = useModalStore()
@@ -44,13 +52,6 @@ export default (props: { code?: string; mode?: string }) => {
   let pass2Element: HTMLInputElement | undefined
   let passElement: HTMLInputElement | undefined
   let codeElement: HTMLInputElement | undefined
-
-  // 3rd party provider auth handler
-  const oauth = (provider: string): void => {
-    const popup = window.open(`${baseUrl}/oauth/${provider}`, provider, 'width=740, height=420')
-    popup?.focus()
-    hideModal()
-  }
 
   // FIXME: restore logic
   // const usedEmails = {}
@@ -185,9 +186,15 @@ export default (props: { code?: string; mode?: string }) => {
             {t('New stories every day and even more!')}
           </p>
           <p class="disclamer">
-            {t('By signing up you agree with our')}
-            <a href="/about/terms-of-use" onClick={hideModal}>
-              {' ' + t('terms of use')}
+            {t('By signing up you agree with our')}{' '}
+            <a
+              href="/about/terms-of-use"
+              onClick={(event) => {
+                hideModal()
+                handleClientRouteLinkClick(event)
+              }}
+            >
+              {t('terms of use')}
             </a>
             , {t('personal data usage and email notifications')}.
           </p>

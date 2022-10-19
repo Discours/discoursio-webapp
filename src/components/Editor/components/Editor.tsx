@@ -20,7 +20,8 @@ export default () => {
   }
   return (
     <ProseMirror
-      class={'editor'}
+      // eslint-disable-next-line solid/no-react-specific-props
+      className={'editor'}
       style={style()}
       editorView={store.editorView as EditorView}
       text={store.text as ProseMirrorState}

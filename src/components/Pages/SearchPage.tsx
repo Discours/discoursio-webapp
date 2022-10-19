@@ -3,8 +3,8 @@ import { SearchView } from '../Views/Search'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadSearchResults, resetSortedArticles } from '../../stores/zine/articles'
-import { t } from '../../utils/intl'
 import { useRouter } from '../../stores/router'
+import { Loading } from '../Loading'
 
 export const SearchPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
@@ -34,7 +34,7 @@ export const SearchPage = (props: PageProps) => {
 
   return (
     <MainLayout>
-      <Show when={isLoaded()} fallback={t('Loading')}>
+      <Show when={isLoaded()} fallback={<Loading />}>
         <SearchView results={props.searchResults || []} query={props.searchQuery} />
       </Show>
     </MainLayout>

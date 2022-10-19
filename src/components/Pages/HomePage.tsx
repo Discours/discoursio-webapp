@@ -2,9 +2,9 @@ import { HomeView } from '../Views/Home'
 import { MainLayout } from '../Layouts/MainLayout'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { t } from '../../utils/intl'
 import { loadPublishedArticles, resetSortedArticles } from '../../stores/zine/articles'
 import { loadRandomTopics } from '../../stores/zine/topics'
+import { Loading } from '../Loading'
 
 export const HomePage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeArticles) && Boolean(props.randomTopics))
@@ -24,7 +24,7 @@ export const HomePage = (props: PageProps) => {
 
   return (
     <MainLayout>
-      <Show when={isLoaded()} fallback={t('Loading')}>
+      <Show when={isLoaded()} fallback={<Loading />}>
         <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.homeArticles || []} />
       </Show>
     </MainLayout>

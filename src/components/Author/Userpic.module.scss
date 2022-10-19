@@ -33,3 +33,17 @@
     }
   }
 }
+
+.big.circlewrap {
+  margin-right: 4.8rem;
+  max-width: 168px;
+  min-width: 168px;
+  height: 168px;
+  width: 168px;
+
+  .userpic {
+    font-size: 2em;
+    line-height: 168px;
+    width: 100%;
+  }
+}

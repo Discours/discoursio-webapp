@@ -1,67 +1,6 @@
 .user-details {
   margin-bottom: 4.4rem;
   padding: 0;
-
-  .author__name {
-    @include font-size(3.4rem);
-
-    font-weight: 500;
-    margin-bottom: 0.2em;
-  }
-
-  .author__about {
-    color: #696969;
-    @include font-size(1.7rem);
-  }
-
-  .circlewrap {
-    margin-right: 4.8rem;
-    max-width: 168px;
-    min-width: 168px;
-    height: 168px;
-    width: 168px;
-  }
-
-  .circlewrap .userpic {
-    font-size: 2em;
-    line-height: 168px;
-    width: 100%;
-  }
-
-  .author__subscribe {
-    margin-top: 2rem;
-  }
-
-  .author__details {
-    display: block;
-  }
-
-  .button--subscribe {
-    aspect-ratio: auto;
-    background-color: #000;
-    border-radius: 2px;
-    float: none;
-    padding-bottom: 0.6rem;
-    padding-top: 0.6rem;
-  }
-
-  .button__label {
-    display: block;
-  }
-
-  .button--subscribe .icon {
-    filter: invert(1);
-    margin-right: 0.5em;
-  }
-
-  .button--subscribe img {
-    vertical-align: text-top;
-  }
-
-  .button {
-    margin-right: 1.6rem;
-    vertical-align: middle;
-  }
 }
 
 .author-page {

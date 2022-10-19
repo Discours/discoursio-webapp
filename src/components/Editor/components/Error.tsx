@@ -24,7 +24,7 @@ const InvalidState = (props: { title: string }) => {
   const onClick = () => ctrl.clean()
 
   return (
-    <div class="error" data-tauri-drag-region="true">
+    <div class="error">
       <div class="container">
         <h1>{props.title}</h1>
         <p>
@@ -53,7 +53,7 @@ const Other = () => {
   }
 
   return (
-    <div class="error" data-tauri-drag-region="true">
+    <div class="error">
       <div class="container">
         <h1>An error occurred.</h1>
         <pre>

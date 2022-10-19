@@ -5,7 +5,7 @@ import type { WebrtcProvider } from 'y-webrtc'
 import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 import type { EditorView } from 'prosemirror-view'
 import { createEmptyText } from '../prosemirror/setup'
-import type { Shout } from '../../../graphql/types.gen'
+import type { EditorState } from 'prosemirror-state'
 
 export interface Args {
   draft: string // path to draft
@@ -72,7 +72,7 @@ export interface Draft {
   extensions?: ProseMirrorExtension[]
   updatedAt: Date
   body?: string
-  text?: { doc: any; selection: { type: string; anchor: number; head: number } }
+  text?: { doc: EditorState['doc']; selection: { type: string; anchor: number; head: number } }
   path?: string
   markdown?: boolean
 }
@@ -122,6 +122,6 @@ export const addToDrafts = (drafts: Draft[], state: State): Draft[] => {
 
 export const createTextFromDraft = async (draft: Draft) => {
   const created = createEmptyText()
-  created.doc.content = Object.values(draft.text) // FIXME
+  created.doc.content = Object.values(draft.text) as any
   return created
 }

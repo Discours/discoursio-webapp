@@ -1,4 +1,4 @@
-.beside-column {
+.besideColumn {
   counter-reset: item;
   list-style-type: none;
   padding-left: 0;
@@ -29,17 +29,6 @@
         text-align: center;
         width: 2em;
       }
-
-      .shout-card--short {
-        font-size: 1.4rem;
-        margin-bottom: 0;
-
-        .shout-card__title,
-        .shout-card__subtitle {
-          display: inline;
-          @include font-size(1.4rem);
-        }
-      }
     }
   }
 
@@ -51,7 +40,7 @@
   }
 }
 
-.beside-column-title {
+.besideColumnTitle {
   align-items: baseline;
   justify-content: space-between;
   display: flex;
@@ -87,14 +76,14 @@
   }
 }
 
-.beside-column__topic {
+.besideColumnTopic {
   font-size: 1.2rem;
   letter-spacing: 0.08em;
   margin-bottom: 0.4rem;
   text-transform: uppercase;
 }
 
-.beside-column__shout {
+.besideColumnShout {
   font-size: 1.4rem;
 
   h4 {

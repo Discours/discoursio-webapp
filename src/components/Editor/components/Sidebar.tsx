@@ -74,7 +74,7 @@ export const Sidebar = (props) => {
         Советы и&nbsp;предложения
       </span>
 
-      <Off onClick={() => editorView().focus()} data-tauri-drag-region="true">
+      <Off onClick={() => editorView().focus()}>
         <div class="sidebar-closer" onClick={toggleSidebar} />
         <Show when={true}>
           <div>

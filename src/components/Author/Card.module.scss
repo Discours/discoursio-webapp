@@ -32,6 +32,9 @@
 }
 
 .authorSubscribe {
+  align-items: center;
+  display: flex;
+
   @include media-breakpoint-down(lg) {
     padding: 0 0 0 42px;
   }
@@ -107,6 +110,10 @@
       background-image: url(/icons/instagram-white.svg);
     }
   }
+
+  button {
+    margin-right: 0.5em;
+  }
 }
 
 .buttonSubscribe {
@@ -130,8 +137,18 @@
   background: #f7f7f7;
   color: #000;
   display: inline-flex;
+  transition: background-color 0.3s, color 0.3s;
 
   @include font-size(1.5rem);
+
+  &:hover {
+    background: #000;
+    color: #fff;
+
+    img {
+      filter: invert(1);
+    }
+  }
 
   .icon {
     margin-right: 0.5em;
@@ -139,6 +156,7 @@
 
   img {
     height: 15px;
+    transition: filter 0.3s;
   }
 }
 
@@ -156,7 +174,6 @@
   }
 
   .authorSubscribe {
-    display: flex;
     margin-top: 2rem;
   }
 

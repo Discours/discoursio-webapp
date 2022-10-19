@@ -106,6 +106,7 @@ export const AllAuthorsView = (props: Props) => {
                             compact={false}
                             hasLink={true}
                             subscribed={subscribed(author.slug)}
+                            noSocialButtons={true}
                           />
                         )}
                       </For>

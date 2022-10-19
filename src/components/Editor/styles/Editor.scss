@@ -1,19 +1,23 @@
+.main-content {
+  padding-top: 80px;
+}
+
 .editor {
   flex: 1;
   padding-top: 1em;
-}
 
-a {
-  color: rgb(0, 100, 200);
-  text-decoration: none;
-}
+  a {
+    color: rgb(0, 100, 200);
+    text-decoration: none;
+  }
 
-a:hover {
-  text-decoration: underline;
-}
+  a:hover {
+    text-decoration: underline;
+  }
 
-a:visited {
-  color: rgb(0, 80, 160);
+  a:visited {
+    color: rgb(0, 80, 160);
+  }
 }
 
 label {
@@ -395,7 +399,7 @@ li.ProseMirror-selectednode:after {
 }
 
 .tooltip {
-  background: var(--background);
+  background: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   color: #000;
   display: flex;

@@ -1,7 +1,11 @@
 import { Plugin, NodeSelection } from 'prosemirror-state'
 import { DecorationSet, Decoration } from 'prosemirror-view'
-import type { ProseMirrorExtension } from '../helpers'
-import handleIcon from '../../../../assets/handle.svg'
+import { ProseMirrorExtension } from '../helpers'
+
+const handleIcon = `
+  <svg viewBox="0 0 10 10" height="14" width="14">
+  <path d="M3 2a1 1 0 110-2 1 1 0 010 2zm0 4a1 1 0 110-2 1 1 0 010 2zm0 4a1 1 0 110-2 1 1 0 010 2zm4-8a1 1 0 110-2 1 1 0 010 2zm0 4a1 1 0 110-2 1 1 0 010 2zm0 4a1 1 0 110-2 1 1 0 010 2z"/>
+  </svg>`
 
 const createDragHandle = () => {
   const handle = document.createElement('span')
@@ -18,8 +22,8 @@ const handlePlugin = new Plugin({
     decorations(state) {
       const decos = []
       state.doc.forEach((node, pos) => {
+        decos.push(Decoration.widget(pos + 1, createDragHandle))
         decos.push(
-          Decoration.widget(pos + 1, createDragHandle),
           Decoration.node(pos, pos + node.nodeSize, {
             class: 'draggable'
           })

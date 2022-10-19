@@ -1,14 +1,8 @@
 import { ySyncPlugin, yCursorPlugin, yUndoPlugin } from 'y-prosemirror'
-import type { YOptions } from '../../store/context'
-import type { ProseMirrorExtension } from '../helpers'
+import { ProseMirrorExtension } from '../helpers'
+import { YOptions } from '../../store/context'
 
-export interface EditingProps {
-  name: string
-  foreground: string
-  background: string
-}
-
-export const cursorBuilder = (user: EditingProps): HTMLElement => {
+export const cursorBuilder = (user: any): HTMLElement => {
   const cursor = document.createElement('span')
   cursor.classList.add('ProseMirror-yjs-cursor')
   cursor.setAttribute('style', `border-color: ${user.background}`)
@@ -23,10 +17,11 @@ export default (y: YOptions): ProseMirrorExtension => ({
   plugins: (prev) =>
     y
       ? [
-          ...prev,
-          ySyncPlugin(y.type),
-          yCursorPlugin(y.provider.awareness, { cursorBuilder }),
-          yUndoPlugin()
-        ]
+        ...prev,
+        ySyncPlugin(y.type),
+        // @ts-ignore
+        yCursorPlugin(y.provider.awareness, { cursorBuilder }),
+        yUndoPlugin()
+      ]
       : prev
 })

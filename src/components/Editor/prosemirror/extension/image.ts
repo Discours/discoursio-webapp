@@ -1,24 +1,23 @@
 import { Plugin } from 'prosemirror-state'
-import type { Node, NodeSpec, Schema } from 'prosemirror-model'
-import type { EditorView } from 'prosemirror-view'
-import type { NodeViewFn, ProseMirrorExtension } from '../helpers'
-import type OrderedMap from 'orderedmap'
+import { Node, Schema } from 'prosemirror-model'
+import { EditorView } from 'prosemirror-view'
+import { ProseMirrorExtension } from '../helpers'
 
-const REGEX = /^!\[([^[\]]*?)]\((.+?)\)\s+/
+const REGEX = /^!\[([^[\]]*?)\]\((.+?)\)\s+/
 const MAX_MATCH = 500
 
 const isUrl = (str: string) => {
   try {
     const url = new URL(str)
     return url.protocol === 'http:' || url.protocol === 'https:'
-  } catch {
+  } catch (_) {
     return false
   }
 }
 
-const isBlank = (text: string) => text === ' ' || text === '\u00A0'
+const isBlank = (text: string) => text === ' ' || text === '\xa0'
 
-const imageInput = (schema: Schema, _path?: string) =>
+const imageInput = (schema: Schema, path?: string) =>
   new Plugin({
     props: {
       handleTextInput(view, from, to, text) {
@@ -30,7 +29,7 @@ const imageInput = (schema: Schema, _path?: string) =>
             Math.max(0, $from.parentOffset - MAX_MATCH),
             $from.parentOffset,
             null,
-            '\uFFFC'
+            '\ufffc'
           ) + text
 
         const match = REGEX.exec(textBefore)
@@ -45,6 +44,7 @@ const imageInput = (schema: Schema, _path?: string) =>
             view.dispatch(tr)
             return true
           }
+
           return false
         }
       }
@@ -69,7 +69,7 @@ const imageSchema = {
         src: dom.getAttribute('src'),
         title: dom.getAttribute('title'),
         alt: dom.getAttribute('alt'),
-        path: (dom as NodeSpec).dataset.path
+        path: dom.getAttribute('data-path')
       })
     }
   ],
@@ -102,12 +102,12 @@ class ImageView {
   contentDOM: Element
   container: HTMLElement
   handle: HTMLElement
-  onResizeFn: (e: Event) => void
-  onResizeEndFn: (e: Event) => void
+  onResizeFn: any
+  onResizeEndFn: any
   width: number
   updating: number
 
-  constructor(node: Node, view: EditorView, getPos: () => number, schema: Schema, _path: string) {
+  constructor(node: Node, view: EditorView, getPos: () => number, schema: Schema, path: string) {
     this.node = node
     this.view = view
     this.getPos = getPos
@@ -162,12 +162,12 @@ class ImageView {
 export default (path?: string): ProseMirrorExtension => ({
   schema: (prev) => ({
     ...prev,
-    nodes: (prev.nodes as OrderedMap<NodeSpec>).update('image', imageSchema as unknown as NodeSpec)
+    nodes: (prev.nodes as any).update('image', imageSchema)
   }),
   plugins: (prev, schema) => [...prev, imageInput(schema, path)],
   nodeViews: {
     image: (node, view, getPos) => {
       return new ImageView(node, view, getPos, view.state.schema, path)
     }
-  } as unknown as { [key: string]: NodeViewFn }
+  }
 })

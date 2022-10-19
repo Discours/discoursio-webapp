@@ -1,84 +1,79 @@
 import { createContext, useContext } from 'solid-js'
-import type { Store } from 'solid-js/store'
-import type { XmlFragment } from 'yjs'
-import type { WebrtcProvider } from 'y-webrtc'
-import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
-import type { EditorView } from 'prosemirror-view'
+import { Store } from 'solid-js/store'
+import { XmlFragment } from 'yjs'
+import { WebrtcProvider } from 'y-webrtc'
+import { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 
 export interface Args {
-  cwd?: string
-  draft?: string
-  room?: string
-  text?: string
+  cwd?: string;
+  file?: string;
+  room?: string;
+  text?: any;
 }
 
 export interface PrettierConfig {
-  printWidth: number
-  tabWidth: number
-  useTabs: boolean
-  semi: boolean
-  singleQuote: boolean
+  printWidth: number;
+  tabWidth: number;
+  useTabs: boolean;
+  semi: boolean;
+  singleQuote: boolean;
 }
 
 export interface Config {
-  theme: string
+  theme: string;
   // codeTheme: string;
-  // alwaysOnTop: boolean;
-  font: string
-  fontSize: number
-  contentWidth: number
-  typewriterMode?: boolean;
-  prettier: PrettierConfig
+  font: string;
+  fontSize: number;
+  contentWidth: number;
+  typewriterMode: boolean;
+  prettier: PrettierConfig;
 }
 
 export interface ErrorObject {
-  id: string
-  props?: any
+  id: string;
+  props?: unknown;
 }
 
 export interface YOptions {
-  type: XmlFragment
-  provider: WebrtcProvider
+  type: XmlFragment;
+  provider: WebrtcProvider;
 }
 
 export interface Collab {
-  started?: boolean
-  error?: boolean
-  room?: string
-  y?: YOptions
+  started?: boolean;
+  error?: boolean;
+  room?: string;
+  y?: YOptions;
 }
 
 export type LoadingType = 'loading' | 'initialized'
 
 export interface State {
-  text?: ProseMirrorState
-  editorView?: EditorView
-  extensions?: ProseMirrorExtension[]
-  markdown?: boolean
-  lastModified?: Date
-  drafts: Draft[]
-  config: Config
-  error?: ErrorObject
-  loading: LoadingType
-  fullscreen?: boolean
-  collab?: Collab
-  path?: string
-  args?: Args
-  isMac?: boolean
+  text?: ProseMirrorState;
+  editorView?: any;
+  extensions?: ProseMirrorExtension[];
+  markdown?: boolean;
+  lastModified?: Date;
+  files: File[];
+  config: Config;
+  error?: ErrorObject;
+  loading: LoadingType;
+  fullscreen: boolean;
+  collab?: Collab;
+  path?: string;
+  args?: Args;
 }
 
-export interface Draft {
-  text?: { [key: string]: any }
-  body?: string
-  lastModified?: Date
-  path?: string
-  markdown?: boolean
-  extensions?: ProseMirrorExtension[]
+export interface File {
+  text?: { [key: string]: any };
+  lastModified?: string;
+  path?: string;
+  markdown?: boolean;
 }
 
 export class ServiceError extends Error {
   public errorObject: ErrorObject
-  constructor(id: string, props: any) {
+  constructor(id: string, props: unknown) {
     super(id)
     this.errorObject = { id, props }
   }
@@ -90,7 +85,7 @@ export const useState = () => useContext(StateContext)
 
 export const newState = (props: Partial<State> = {}): State => ({
   extensions: [],
-  drafts: [],
+  files: [],
   loading: 'loading',
   fullscreen: false,
   markdown: false,
@@ -100,7 +95,7 @@ export const newState = (props: Partial<State> = {}): State => ({
     font: 'muller',
     fontSize: 24,
     contentWidth: 800,
-    // typewriterMode: true,
+    typewriterMode: true,
     prettier: {
       printWidth: 80,
       tabWidth: 2,

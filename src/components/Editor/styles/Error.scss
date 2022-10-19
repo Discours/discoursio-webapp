@@ -5,7 +5,6 @@
   display: flex;
   font-family: 'JetBrains Mono';
   justify-content: center;
-
   ::-webkit-scrollbar {
     display: none;
   }
@@ -18,7 +17,7 @@
 }
 
 .error pre {
-  background: var(--foreground);
+  background: var(--foreground) 19;
   border: 1px solid var(--foreground);
   white-space: pre-wrap;
   word-wrap: break-word;

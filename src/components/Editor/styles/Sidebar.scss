@@ -1,3 +1,16 @@
+.sidebar-container {
+  color: rgba(255,255,255,0.5);
+  font-family: 'Muller';
+  @include font-size(1.6rem);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+
+  p {
+    color: var(--foreground);
+  }
+}
+
 .sidebar-off {
   background: #1f1f1f;
   height: 100%;
@@ -31,7 +44,7 @@
     opacity: 0.5;
   }
 
-  &::after {
+  &:after {
     background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cmask id='mask0_1090_23825' style='mask-type:alpha' maskUnits='userSpaceOnUse' x='0' y='14' width='4' height='4'%3E%3Crect y='14.8237' width='3.17647' height='3.17647' fill='%23fff'/%3E%3C/mask%3E%3Cg mask='url(%23mask0_1090_23825)'%3E%3Cpath d='M16.0941 1.05908H0.847027C0.379194 1.05908 0 1.43828 0 1.90611V18.0003L3.38824 14.612H16.0942C16.562 14.612 16.9412 14.2328 16.9412 13.765V1.90614C16.9412 1.43831 16.562 1.05912 16.0942 1.05912L16.0941 1.05908ZM15.2471 12.9179H1.69412V2.7532H15.2471V12.9179Z' fill='black'/%3E%3C/g%3E%3Crect x='1' y='1' width='16' height='12.8235' stroke='black' stroke-width='2'/%3E%3Crect x='4.23535' y='3.17627' width='9.52941' height='2.11765' fill='black'/%3E%3Crect x='4.23535' y='9.5293' width='7.41176' height='2.11765' fill='black'/%3E%3Crect x='4.23535' y='6.35303' width='5.29412' height='2.11765' fill='black'/%3E%3C/svg%3E");
     content: '';
     height: 18px;
@@ -60,8 +73,7 @@
 }
 
 .sidebar-label {
-  color: var(--foreground);
-
+  color: var(--foreground) 7f;
   > i {
     text-transform: none;
   }
@@ -71,7 +83,6 @@
   margin: 10px 0;
   margin-bottom: 30px;
 }
-
 .sidebar-container button,
 .sidebar-container a,
 .sidebar-item {
@@ -81,7 +92,8 @@
   display: flex;
   align-items: center;
   line-height: 24px;
-  font-family: Muller;
+  font-family: 'Muller';
+  text-align: left;
 }
 
 .sidebar-container a,
@@ -92,22 +104,8 @@
 }
 
 .sidebar-container {
-  @include font-size(1.6rem);
-
-  color: rgb(255 255 255 / 50%);
-  font-family: Muller;
-  display: inline-flex;
-  overflow: hidden;
-  position: relative;
-  top: 0;
-
-  p {
-    color: var(--foreground);
-  }
-
   h4 {
     @include font-size(120%);
-
     margin-left: 1rem;
   }
 
@@ -140,12 +138,12 @@
   }
 
   &[disabled] {
-    color: var(--foreground);
+    color: var(--foreground) 99;
     cursor: not-allowed;
   }
 
   &.file {
-    color: rgb(255 255 255 / 50%);
+    color: rgba(255,255,255,0.5);
     line-height: 1.4;
     margin: 0 0 1em 1.5em;
     width: calc(100% - 2rem);
@@ -178,22 +176,20 @@
 }
 
 .theme-switcher {
-  border-bottom: 1px solid rgb(255 255 255 / 30%);
-  border-top: 1px solid rgb(255 255 255 / 30%);
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  border-top: 1px solid rgba(255,255,255,0.3);
   display: flex;
   justify-content: space-between;
   margin: 1rem;
   padding: 1em 0;
 
-  input[type='checkbox'] {
+  input[type=checkbox] {
     opacity: 0;
     position: absolute;
 
     + label {
-      background: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.20869 7.73227C5.22953 7.36499 4.38795 6.70402 3.79906 5.83976C3.2103 4.97565 2.90318 3.95064 2.91979 2.90512C2.93639 1.8597 3.27597 0.844915 3.8919 0C2.82862 0.254038 1.87585 0.844877 1.17594 1.68438C0.475894 2.52388 0.0660276 3.5671 0.00731938 4.6585C-0.0513888 5.74989 0.244296 6.83095 0.850296 7.74073C1.45631 8.65037 2.34006 9.33992 3.36994 9.70637C4.39987 10.073 5.52063 10.0969 6.56523 9.77466C7.60985 9.45247 8.52223 8.80134 9.16667 7.91837C8.1842 8.15404 7.15363 8.08912 6.20869 7.73205V7.73227Z' fill='white'/%3E%3C/svg%3E%0A")
-          no-repeat 30px 9px,
-        url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.41196 0H5.58811V2.43024H6.41196V0ZM5.99988 8.96576C4.36601 8.96576 3.03419 7.63397 3.03419 6.00007C3.04792 4.3662 4.36598 3.04818 5.99988 3.03439C7.63375 3.03439 8.96557 4.3662 8.96557 6.00007C8.96557 7.63395 7.63375 8.96576 5.99988 8.96576ZM5.58811 9.56977H6.41196V12H5.58811V9.56977ZM12.0002 5.58811H9.56996V6.41196H12.0002V5.58811ZM0 5.58811H2.43024V6.41196H0V5.58811ZM8.81339 3.76727L10.5318 2.04891L9.94925 1.46641L8.23089 3.18477L8.81339 3.76727ZM3.7745 8.8129L2.05614 10.5313L1.47364 9.94877L3.192 8.2304L3.7745 8.8129ZM9.95043 10.5269L10.5329 9.94437L8.81456 8.22601L8.23207 8.80851L9.95043 10.5269ZM3.76864 3.18731L3.18614 3.76981L1.46778 2.05145L2.05028 1.46895L3.76864 3.18731Z' fill='%231F1F1F'/%3E%3C/svg%3E%0A")
-          #000 no-repeat 8px 8px;
+      background: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.20869 7.73227C5.22953 7.36499 4.38795 6.70402 3.79906 5.83976C3.2103 4.97565 2.90318 3.95064 2.91979 2.90512C2.93639 1.8597 3.27597 0.844915 3.8919 0C2.82862 0.254038 1.87585 0.844877 1.17594 1.68438C0.475894 2.52388 0.0660276 3.5671 0.00731938 4.6585C-0.0513888 5.74989 0.244296 6.83095 0.850296 7.74073C1.45631 8.65037 2.34006 9.33992 3.36994 9.70637C4.39987 10.073 5.52063 10.0969 6.56523 9.77466C7.60985 9.45247 8.52223 8.80134 9.16667 7.91837C8.1842 8.15404 7.15363 8.08912 6.20869 7.73205V7.73227Z' fill='white'/%3E%3C/svg%3E%0A")   no-repeat 30px 9px,
+      url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.41196 0H5.58811V2.43024H6.41196V0ZM5.99988 8.96576C4.36601 8.96576 3.03419 7.63397 3.03419 6.00007C3.04792 4.3662 4.36598 3.04818 5.99988 3.03439C7.63375 3.03439 8.96557 4.3662 8.96557 6.00007C8.96557 7.63395 7.63375 8.96576 5.99988 8.96576ZM5.58811 9.56977H6.41196V12H5.58811V9.56977ZM12.0002 5.58811H9.56996V6.41196H12.0002V5.58811ZM0 5.58811H2.43024V6.41196H0V5.58811ZM8.81339 3.76727L10.5318 2.04891L9.94925 1.46641L8.23089 3.18477L8.81339 3.76727ZM3.7745 8.8129L2.05614 10.5313L1.47364 9.94877L3.192 8.2304L3.7745 8.8129ZM9.95043 10.5269L10.5329 9.94437L8.81456 8.22601L8.23207 8.80851L9.95043 10.5269ZM3.76864 3.18731L3.18614 3.76981L1.46778 2.05145L2.05028 1.46895L3.76864 3.18731Z' fill='%231F1F1F'/%3E%3C/svg%3E%0A") #000 no-repeat 8px 8px;
       border-radius: 14px;
       cursor: pointer;
       display: block;
@@ -204,7 +200,7 @@
       transition: background-color 0.3s;
       width: 46px;
 
-      &::before {
+      &:before {
         background-color: #fff;
         border-radius: 100%;
         content: '';
@@ -220,7 +216,7 @@
     &:checked + label {
       background-color: #fff;
 
-      &::before {
+      &:before {
         background-color: #1f1f1f;
         left: 24px;
       }

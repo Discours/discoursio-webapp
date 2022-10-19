@@ -1,9 +1,10 @@
 import { DOMSerializer, Node as ProsemirrorNode, NodeType, Schema } from 'prosemirror-model'
-import { inputRules, wrappingInputRule } from 'prosemirror-inputrules'
+import { EditorView } from 'prosemirror-view'
+import { wrappingInputRule } from 'prosemirror-inputrules'
 import { splitListItem } from 'prosemirror-schema-list'
 import { keymap } from 'prosemirror-keymap'
-import type { EditorView } from 'prosemirror-view'
-import type { ProseMirrorExtension } from '../helpers'
+import { inputRules } from 'prosemirror-inputrules'
+import { ProseMirrorExtension } from '../helpers'
 
 const todoListRule = (nodeType: NodeType) =>
   wrappingInputRule(new RegExp('^\\[( |x)]\\s$'), nodeType, (match) => ({
@@ -59,9 +60,7 @@ class TodoItemView {
     this.contentDOM = res.contentDOM
     this.view = view
     this.getPos = getPos
-    ;(this.dom as Element)
-      .querySelector('input')
-      .addEventListener('click', () => this.handleClick.bind(this))
+    ;(this.dom as Element).querySelector('input').onclick = this.handleClick.bind(this)
   }
 
   handleClick(e: MouseEvent) {
@@ -88,8 +87,8 @@ export default (): ProseMirrorExtension => ({
     inputRules({ rules: [todoListRule(schema.nodes.todo_item)] })
   ],
   nodeViews: {
-    todo_item: (node: any, view, getPos) => {
+    todo_item: (node, view, getPos) => {
       return new TodoItemView(node, view, getPos)
     }
-  } as any
+  }
 })

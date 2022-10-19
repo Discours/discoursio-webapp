@@ -13,40 +13,38 @@ import {
   Dropdown
 } from 'prosemirror-menu'
 
-import type { MenuItemSpec, MenuElement } from 'prosemirror-menu'
-
 import { wrapInList } from 'prosemirror-schema-list'
-import { Command, EditorState, NodeSelection, Transaction } from 'prosemirror-state'
+import { NodeSelection } from 'prosemirror-state'
 
 import { TextField, openPrompt } from './prompt'
-import type { ProseMirrorExtension } from '../helpers'
-import type { Attrs, MarkType, NodeType, Schema } from 'prosemirror-model'
-import type { EditorView } from 'prosemirror-view'
+import { ProseMirrorExtension } from '../helpers'
 
 // Helpers to create specific types of items
 
-function canInsert(state: EditorState, nodeType: NodeType) {
+function canInsert(state, nodeType) {
   const $from = state.selection.$from
+
   for (let d = $from.depth; d >= 0; d--) {
     const index = $from.index(d)
+
     if ($from.node(d).canReplaceWith(index, index, nodeType)) return true
   }
+
   return false
 }
 
-function insertImageItem(nodeType: NodeType) {
+function insertImageItem(nodeType) {
   return new MenuItem({
     icon: icons.image,
     label: 'image',
     enable(state) {
       return canInsert(state, nodeType)
     },
-    run(state: EditorState, _, view: EditorView) {
-      const { from, to, node } = state.selection as NodeSelection
+    run(state, _, view) {
+      const { from, to } = state.selection
       let attrs = null
-      if (state.selection instanceof NodeSelection && node.type === nodeType) {
-        attrs = node.attrs
-      }
+
+      if (state.selection instanceof NodeSelection && state.selection.node.type == nodeType) { attrs = state.selection.node.attrs }
 
       openPrompt({
         title: 'Insert image',
@@ -62,8 +60,7 @@ function insertImageItem(nodeType: NodeType) {
             value: attrs ? attrs.alt : state.doc.textBetween(from, to, ' ')
           })
         },
-        // eslint-disable-next-line no-shadow
-        callback(attrs: Attrs) {
+        callback(attrs) {
           view.dispatch(view.state.tr.replaceSelectionWith(nodeType.createAndFill(attrs)))
           view.focus()
         }
@@ -72,31 +69,41 @@ function insertImageItem(nodeType: NodeType) {
   })
 }
 
-function cmdItem(cmd: Command, options: MenuItemSpec) {
-  const passedOptions = { label: options.title, run: cmd } as MenuItemSpec
-  Object.keys(options).forEach((prop) => (passedOptions[prop] = options[prop]))
-  // TODO: enable/disable items logix
-  passedOptions.select = (state) => cmd(state)
-  return new MenuItem(passedOptions as MenuItemSpec)
+function cmdItem(cmd, options) {
+  const passedOptions = {
+    label: options.title,
+    run: cmd
+  }
+
+  for (const prop in options) passedOptions[prop] = options[prop]
+
+  if ((!options.enable || options.enable === true) && !options.select) { passedOptions[options.enable ? 'enable' : 'select'] = (state) => cmd(state) }
+
+  return new MenuItem(passedOptions)
 }
 
-function markActive(state: EditorState, type: MarkType) {
+function markActive(state, type) {
   const { from, $from, to, empty } = state.selection
+
   if (empty) return type.isInSet(state.storedMarks || $from.marks())
+
   return state.doc.rangeHasMark(from, to, type)
 }
 
-function markItem(markType: MarkType, options: MenuItemSpec) {
+function markItem(markType, options) {
   const passedOptions = {
     active(state) {
       return markActive(state, markType)
-    }
-  } as MenuItemSpec
-  Object.keys(options).forEach((prop: string) => (passedOptions[prop] = options[prop]))
+    },
+    enable: true
+  }
+
+  for (const prop in options) passedOptions[prop] = options[prop]
+
   return cmdItem(toggleMark(markType), passedOptions)
 }
 
-function linkItem(markType: MarkType) {
+function linkItem(markType) {
   return new MenuItem({
     title: 'Add or remove link',
     icon: {
@@ -104,21 +111,27 @@ function linkItem(markType: MarkType) {
       height: 18,
       path: 'M3.27177 14.7277C2.06258 13.5186 2.06258 11.5527 3.27177 10.3435L6.10029 7.51502L4.75675 6.17148L1.92823 9C-0.0234511 10.9517 -0.0234511 14.1196 1.92823 16.0713C3.87991 18.023 7.04785 18.023 8.99952 16.0713L11.828 13.2428L10.4845 11.8992L7.65598 14.7277C6.44679 15.9369 4.48097 15.9369 3.27177 14.7277ZM6.87756 12.536L12.5346 6.87895L11.1203 5.46469L5.4633 11.1217L6.87756 12.536ZM6.17055 4.75768L8.99907 1.92916C10.9507 -0.0225206 14.1187 -0.0225201 16.0704 1.92916C18.022 3.88084 18.022 7.04878 16.0704 9.00046L13.2418 11.829L11.8983 10.4854L14.7268 7.65691C15.936 6.44772 15.936 4.4819 14.7268 3.27271C13.5176 2.06351 11.5518 2.06351 10.3426 3.2727L7.51409 6.10122L6.17055 4.75768Z'
     },
-    active: (state) => Boolean(markActive(state, markType)),
-    enable: (state: EditorState) => !state.selection.empty,
-    run(state: EditorState, dispatch: (t: Transaction) => void, view: EditorView) {
+    active(state) {
+      return markActive(state, markType)
+    },
+    enable(state) {
+      return !state.selection.empty
+    },
+    run(state, dispatch, view) {
       if (markActive(state, markType)) {
         toggleMark(markType)(state, dispatch)
+
         return true
       }
+
       openPrompt({
         fields: {
           href: new TextField({
             label: 'Link target',
             required: true
-          })
+          }),
         },
-        callback(attrs: Attrs) {
+        callback(attrs) {
           toggleMark(markType, attrs)(view.state, view.dispatch)
           view.focus()
         }
@@ -127,8 +140,7 @@ function linkItem(markType: MarkType) {
   })
 }
 
-function wrapListItem(nodeType: NodeType, options: MenuItemSpec & { attrs: Attrs }) {
-  options.run = (_) => true
+function wrapListItem(nodeType, options) {
   return cmdItem(wrapInList(nodeType, options.attrs), options)
 }
 
@@ -190,24 +202,9 @@ function wrapListItem(nodeType: NodeType, options: MenuItemSpec & { attrs: Attrs
 // **`fullMenu`**`: [[MenuElement]]`
 //   : An array of arrays of menu elements for use as the full menu
 //     for, for example the [menu bar](https://github.com/prosemirror/prosemirror-menu#user-content-menubar).
-/*
-type BuildSchema = {
-  marks: { strong: any; em: any; code: any; link: any; blockquote: any }
-  nodes: {
-    image: any
-    bullet_list: any
-    ordered_list: any
-    blockquote: any
-    paragraph: any
-    code_block: any
-    heading: any
-    horizontal_rule: any
-  }
-}
-*/
-export function buildMenuItems(schema: Schema) {
+export function buildMenuItems(schema) {
   const r: { [key: string]: MenuItem | MenuItem[] } = {}
-  let type: NodeType | MarkType
+  let type
 
   if ((type = schema.marks.strong)) {
     r.toggleStrong = markItem(type, {
@@ -215,9 +212,9 @@ export function buildMenuItems(schema: Schema) {
       icon: {
         width: 13,
         height: 16,
-        path: 'M9.82857 7.76C10.9371 6.99429 11.7143 5.73714 11.7143 4.57143C11.7143 1.98857 9.71428 0 7.14286 0H0V16H8.04571C10.4343 16 12.2857 14.0571 12.2857 11.6686C12.2857 9.93143 11.3029 8.44571 9.82857 7.76ZM3.42799 2.85708H6.85656C7.80513 2.85708 8.57085 3.6228 8.57085 4.57137C8.57085 5.51994 7.80513 6.28565 6.85656 6.28565H3.42799V2.85708ZM3.42799 13.1429H7.42799C8.37656 13.1429 9.14228 12.3772 9.14228 11.4286C9.14228 10.4801 8.37656 9.71434 7.42799 9.71434H3.42799V13.1429Z'
+        path: "M9.82857 7.76C10.9371 6.99429 11.7143 5.73714 11.7143 4.57143C11.7143 1.98857 9.71428 0 7.14286 0H0V16H8.04571C10.4343 16 12.2857 14.0571 12.2857 11.6686C12.2857 9.93143 11.3029 8.44571 9.82857 7.76ZM3.42799 2.85708H6.85656C7.80513 2.85708 8.57085 3.6228 8.57085 4.57137C8.57085 5.51994 7.80513 6.28565 6.85656 6.28565H3.42799V2.85708ZM3.42799 13.1429H7.42799C8.37656 13.1429 9.14228 12.3772 9.14228 11.4286C9.14228 10.4801 8.37656 9.71434 7.42799 9.71434H3.42799V13.1429Z"
       }
-    } as MenuItemSpec)
+    })
   }
 
   if ((type = schema.marks.em)) {
@@ -226,21 +223,21 @@ export function buildMenuItems(schema: Schema) {
       icon: {
         width: 14,
         height: 16,
-        path: 'M4.39216 0V3.42857H6.81882L3.06353 12.5714H0V16H8.78431V12.5714H6.35765L10.1129 3.42857H13.1765V0H4.39216Z'
+        path: "M4.39216 0V3.42857H6.81882L3.06353 12.5714H0V16H8.78431V12.5714H6.35765L10.1129 3.42857H13.1765V0H4.39216Z"
       }
-    } as MenuItemSpec)
+    })
   }
 
   if ((type = schema.marks.code)) {
     r.toggleCode = markItem(type, {
       title: 'Toggle code font',
       icon: icons.code
-    } as MenuItemSpec)
+    })
   }
 
   if ((type = schema.marks.link)) r.toggleLink = linkItem(type)
 
-  if ((type = schema.marks.blockquote) && (type = schema.nodes.image)) r.insertImage = insertImageItem(type)
+  if ((type = schema.marks.blockquote)) { if ((type = schema.nodes.image)) r.insertImage = insertImageItem(type) }
 
   if ((type = schema.nodes.bullet_list)) {
     r.wrapBulletList = wrapListItem(type, {
@@ -250,7 +247,7 @@ export function buildMenuItems(schema: Schema) {
         height: 16,
         path: 'M0.000114441 1.6C0.000114441 0.714665 0.71478 0 1.60011 0C2.48544 0 3.20011 0.714665 3.20011 1.6C3.20011 2.48533 2.48544 3.19999 1.60011 3.19999C0.71478 3.19999 0.000114441 2.48533 0.000114441 1.6ZM0 8.00013C0 7.1148 0.714665 6.40014 1.6 6.40014C2.48533 6.40014 3.19999 7.1148 3.19999 8.00013C3.19999 8.88547 2.48533 9.60013 1.6 9.60013C0.714665 9.60013 0 8.88547 0 8.00013ZM1.6 12.8C0.714665 12.8 0 13.5254 0 14.4C0 15.2747 0.725332 16 1.6 16C2.47466 16 3.19999 15.2747 3.19999 14.4C3.19999 13.5254 2.48533 12.8 1.6 12.8ZM19.7333 15.4662H4.79999V13.3329H19.7333V15.4662ZM4.79999 9.06677H19.7333V6.93344H4.79999V9.06677ZM4.79999 2.66664V0.533307H19.7333V2.66664H4.79999Z'
       }
-    } as MenuItemSpec & { attrs: Attrs })
+    })
   }
 
   if ((type = schema.nodes.ordered_list)) {
@@ -261,7 +258,7 @@ export function buildMenuItems(schema: Schema) {
         height: 16,
         path: 'M2.00002 4.00003H1.00001V1.00001H0V0H2.00002V4.00003ZM2.00002 13.5V13H0V12H3.00003V16H0V15H2.00002V14.5H1.00001V13.5H2.00002ZM0 6.99998H1.80002L0 9.1V10H3.00003V9H1.20001L3.00003 6.89998V5.99998H0V6.99998ZM4.9987 2.99967V0.999648H18.9988V2.99967H4.9987ZM4.9987 15.0001H18.9988V13.0001H4.9987V15.0001ZM18.9988 8.99987H4.9987V6.99986H18.9988V8.99987Z'
       }
-    } as MenuItemSpec & { attrs: Attrs })
+    })
   }
 
   if ((type = schema.nodes.blockquote)) {
@@ -312,36 +309,28 @@ export function buildMenuItems(schema: Schema) {
     r.insertHorizontalRule = new MenuItem({
       label: '---',
       icon: icons.horizontal_rule,
-      enable: (state) => canInsert(state, hr),
-      run(state: EditorState, dispatch: (tr: Transaction) => void) {
+      enable(state) {
+        return canInsert(state, hr)
+      },
+      run(state, dispatch) {
         dispatch(state.tr.replaceSelectionWith(hr.create()))
       }
     })
   }
 
-  const tMenu = new Dropdown(
-    [
-      r.makeHead1 as MenuElement,
-      r.makeHead2 as MenuElement,
-      r.makeHead3 as MenuElement,
-      r.typeMenu as MenuElement,
-      r.wrapBlockQuote as MenuElement
-    ],
-    {
-      label: 'Тт',
-      // FIXME !!!!!!!!!
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      icon: {
-        width: 12,
-        height: 12,
-        path: 'M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z'
-      }
-    }
-  )
-  r.listMenu = [r.wrapBulletList as MenuItem, r.wrapOrderedList as MenuItem]
-  r.inlineMenu = [r.toggleStrong as MenuItem, r.toggleEm as MenuItem, r.toggleMark as MenuItem]
-  r.fullMenu = [...r.inlineMenu, tMenu as MenuItem, ...r.listMenu].filter(Boolean)
+  const cut = (arr) => arr.filter((x) => x)
+  r.typeMenu = new Dropdown(
+    cut([r.makeHead1, r.makeHead2, r.makeHead3, r.typeMenu, r.wrapBlockQuote]),
+    { label: 'Тт', icon: {
+      width: 12,
+      height: 12,
+      path: "M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z"
+    } })
+  // r.blockMenu = []
+  r.listMenu = [cut([r.wrapBulletList, r.wrapOrderedList])]
+  r.inlineMenu = [cut([r.toggleStrong, r.toggleEm, r.toggleMark])]
+  r.fullMenu = r.inlineMenu.concat([cut([r.typeMenu])], r.listMenu)
+
   return r
 }
 
@@ -349,8 +338,8 @@ export default (): ProseMirrorExtension => ({
   plugins: (prev, schema) => [
     ...prev,
     menuBar({
-      floating: true,
-      content: buildMenuItems(schema).fullMenu as any // NOTE: MenuItem and MenuElement are compatible
+      floating: false,
+      content: buildMenuItems(schema).fullMenu
     })
   ]
 })

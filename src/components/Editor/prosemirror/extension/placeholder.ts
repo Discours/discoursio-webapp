@@ -1,6 +1,6 @@
 import { Plugin } from 'prosemirror-state'
 import { DecorationSet, Decoration } from 'prosemirror-view'
-import { isEmpty, ProseMirrorExtension } from '../helpers'
+import { ProseMirrorExtension, isEmpty } from '../helpers'
 
 const placeholder = (text: string) =>
   new Plugin({

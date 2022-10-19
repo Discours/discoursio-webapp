@@ -1,9 +1,9 @@
 import { Plugin, PluginKey, TextSelection, Transaction } from 'prosemirror-state'
-import type { EditorView } from 'prosemirror-view'
-import type { Mark, Node, Schema } from 'prosemirror-model'
-import type { ProseMirrorExtension } from '../helpers'
+import { EditorView } from 'prosemirror-view'
+import { Mark, Node, Schema } from 'prosemirror-model'
+import { ProseMirrorExtension } from '../helpers'
 
-const REGEX = /(^|\s)\[(.+)]\(([^ ]+)(?: "(.+)")?\)/
+const REGEX = /(^|\s)\[(.+)\]\(([^ ]+)(?: "(.+)")?\)/
 
 const findMarkPosition = (mark: Mark, doc: Node, from: number, to: number) => {
   let markPos = { from: -1, to: -1 }
@@ -29,8 +29,9 @@ const markdownLinks = (schema: Schema) =>
       apply(tr, state) {
         const action = tr.getMeta(this)
         if (action?.pos) {
-          (state as any).pos = action.pos
+          state.pos = action.pos
         }
+
         return state
       }
     },
@@ -53,12 +54,11 @@ const markdownLinks = (schema: Schema) =>
 const resolvePos = (view: EditorView, pos: number) => {
   try {
     return view.state.doc.resolve(pos)
-  } catch {
+  } catch (err) {
     // ignore
   }
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const toLink = (view: EditorView, tr: Transaction) => {
   const sel = view.state.selection
   const state = pluginKey.getState(view.state)

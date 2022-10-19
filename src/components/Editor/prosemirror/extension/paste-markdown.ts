@@ -1,16 +1,16 @@
 import { Plugin } from 'prosemirror-state'
 import { Fragment, Node, Schema, Slice } from 'prosemirror-model'
-import type { ProseMirrorExtension } from '../helpers'
+import { ProseMirrorExtension } from '../helpers'
 import { createMarkdownParser } from '../../markdown'
 
-const URL_REGEX = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:\d+)?(\/|\/([\w!#%&+./:=?@-]))?/g
+const URL_REGEX = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/g
 
 const transform = (schema: Schema, fragment: Fragment) => {
   const nodes = []
   fragment.forEach((child: Node) => {
     if (child.isText) {
       let pos = 0
-      let match
+      let match: any
 
       while ((match = URL_REGEX.exec(child.text)) !== null) {
         const start = match.index
@@ -64,7 +64,7 @@ const pasteMarkdown = (schema: Schema) => {
         event.preventDefault()
 
         const paste = parser.parse(text)
-        const slice = paste as Node & { openStart: number; openEnd: number }
+        const slice = paste.slice(0)
         const fragment = shiftKey ? slice.content : transform(schema, slice.content)
         const tr = view.state.tr.replaceSelection(new Slice(fragment, slice.openStart, slice.openEnd))
 

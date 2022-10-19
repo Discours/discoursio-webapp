@@ -1,73 +1,67 @@
-@import './Button';
-@import './Sidebar';
-
 .editor {
-  margin: 0.5em;
-  padding: 1em;
-  min-width: 50%;
-  min-height: fit-content;
-  display: inline-block;
-  border: 1px dashed rgb(0 0 0 / 80%);
+  padding-top: 1em;
+}
+
+a {
+  color: rgb(0, 100, 200);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: rgb(0, 80, 160);
+}
+
+label {
+  display: block;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  -webkit-padding: 0.4em 0;
+  padding: 0.4em;
+  margin: 0 0 0.5em 0;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+input:disabled {
+  color: #ccc;
+}
+
+button {
+  color: #333;
+  background-color: #f4f4f4;
+  outline: none;
+}
+
+button:disabled {
+  color: #999;
+}
+
+button:not(:disabled):active {
+  background-color: #ddd;
+}
+
+button:focus {
+  border-color: #666;
 }
 
 .ProseMirror {
-  a {
-    color: rgb(0 100 200);
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  a:visited {
-    color: rgb(0 100 200 / 70%);
-  }
-
-  label {
-    display: block;
-  }
-
-  input,
-  button,
-  select,
-  textarea {
-    font-family: inherit;
-    font-size: inherit;
-    padding: 0.4em;
-    margin: 0 0 0.5em;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-  }
-
-  input:disabled {
-    color: #ccc;
-  }
-
-  button {
-    color: #333;
-    background-color: #f4f4f4;
-    outline: none;
-  }
-
-  button:disabled {
-    color: #999;
-  }
-
-  button:not(:disabled):active {
-    background-color: #ddd;
-  }
-
-  button:focus {
-    border-color: #666;
-  }
-
   color: var(--foreground);
   background-color: var(--background);
   position: relative;
   word-wrap: break-word;
   white-space: pre-wrap;
+  -webkit-font-variant-ligatures: none;
   font-variant-ligatures: none;
   outline: none;
   margin: 1em 1em 1em 2em;
@@ -120,17 +114,15 @@
   }
 
   blockquote {
-    @include font-size(1.6rem);
-
-    margin: 1.5em 0;
     border-left: 2px solid;
+    @include font-size(1.6rem);
+    margin: 1.5em 0;
     padding-left: 1.6em;
   }
 }
 
 .ProseMirror-menuitem {
   font-size: small;
-  display: flex;
 
   &:hover {
     > * {
@@ -160,8 +152,13 @@
 }
 
 .ProseMirror-tooltip .ProseMirror-menu {
+  width: -webkit-fit-content;
   width: fit-content;
   white-space: pre;
+}
+
+.ProseMirror-menuitem {
+  display: flex;
 }
 
 .ProseMirror-menuseparator {
@@ -187,11 +184,11 @@
   position: relative;
 }
 
-.ProseMirror-menu-dropdown::after {
+.ProseMirror-menu-dropdown:after {
   content: '';
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 4px solid draftcurrentcolor;
+  border-top: 4px solid currentColor;
   opacity: 0.6;
   position: absolute;
   right: 4px;
@@ -209,7 +206,6 @@
 
 .ProseMirror-menu-dropdown-menu {
   z-index: 15;
-
   /* min-width: 6em; */
 }
 
@@ -227,11 +223,11 @@
   margin-right: -4px;
 }
 
-.ProseMirror-menu-submenu-label::after {
+.ProseMirror-menu-submenu-label:after {
   content: '';
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  border-left: 4px solid draftcurrentcolor;
+  border-left: 4px solid currentColor;
   opacity: 0.6;
   position: absolute;
   right: 4px;
@@ -272,6 +268,7 @@
   border-bottom: 1px solid silver;
   background: white;
   z-index: 10;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: visible;
 }
@@ -286,7 +283,7 @@
 }
 
 .ProseMirror-icon svg {
-  fill: draftcurrentcolor;
+  fill: currentColor;
   height: 1em;
 }
 
@@ -306,6 +303,10 @@
   background: transparent;
 }
 
+.ProseMirror-hideselection *::-moz-selection {
+  background: transparent;
+}
+
 .ProseMirror-hideselection {
   caret-color: transparent;
 }
@@ -319,7 +320,7 @@ li.ProseMirror-selectednode {
   outline: none;
 }
 
-li.ProseMirror-selectednode::after {
+li.ProseMirror-selectednode:after {
   content: '';
   position: absolute;
   left: -32px;
@@ -349,7 +350,7 @@ li.ProseMirror-selectednode::after {
 
 .ProseMirror-prompt {
   background: #fff;
-  box-shadow: 0 4px 10px rgba(0 0 0 / 25%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   font-size: 0.7em;
   position: absolute;
 }
@@ -394,7 +395,7 @@ li.ProseMirror-selectednode::after {
 
 .tooltip {
   background: var(--background);
-  box-shadow: 0 4px 10px rgba(0 0 0 / 25%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   color: #000;
   display: flex;
   position: absolute;

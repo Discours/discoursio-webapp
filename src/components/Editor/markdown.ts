@@ -1,7 +1,7 @@
 import markdownit from 'markdown-it'
 import { MarkdownSerializer, MarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown'
-import type { Node, Schema } from 'prosemirror-model'
-import type { EditorState } from 'prosemirror-state'
+import { Node, Schema } from 'prosemirror-model'
+import { EditorState } from 'prosemirror-state'
 
 export const serialize = (state: EditorState) => {
   let text = markdownSerializer.serialize(state.doc)
@@ -12,24 +12,10 @@ export const serialize = (state: EditorState) => {
   return text
 }
 
-const findAlignment = (cell: Node): string | null => {
-  const alignment = cell.attrs.style as string
-  if (!alignment) {
-    return null
-  }
-
-  const match = alignment.match(/text-align: ?(left|right|center)/)
-  if (match && match[1]) {
-    return match[1]
-  }
-
-  return null
-}
-
 export const markdownSerializer = new MarkdownSerializer(
   {
     ...defaultMarkdownSerializer.nodes,
-    image(state: any, node) {
+    image(state, node) {
       const alt = state.esc(node.attrs.alt || '')
       const src = node.attrs.path ?? node.attrs.src
       const title = node.attrs.title ? state.quote(node.attrs.title) : undefined
@@ -102,6 +88,20 @@ export const markdownSerializer = new MarkdownSerializer(
         return findAlignment(cell)
       }
 
+      function findAlignment(cell: Node): string | null {
+        const alignment = cell.attrs.style as string
+        if (!alignment) {
+          return null
+        }
+
+        const match = alignment.match(/text-align:[ ]?(left|right|center)/)
+        if (match && match[1]) {
+          return match[1]
+        }
+
+        return null
+      }
+
       node.forEach((table_child) => {
         if (table_child.type.name === 'table_head') serializeTableHead(table_child)
         if (table_child.type.name === 'table_body') serializeTableBody(table_child)
@@ -122,10 +122,9 @@ export const markdownSerializer = new MarkdownSerializer(
   }
 )
 
-function listIsTight(tokens: any[], idx: number) {
-  let i = idx
+function listIsTight(tokens: any, i: number) {
   while (++i < tokens.length) {
-    if (tokens[i].type !== 'list_item_open') return tokens[i].hidden
+    if (tokens[i].type != 'list_item_open') return tokens[i].hidden
   }
   return false
 }

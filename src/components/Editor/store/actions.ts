@@ -1,28 +1,27 @@
 import { Store, createStore, unwrap } from 'solid-js/store'
 import { v4 as uuidv4 } from 'uuid'
-import type { Command, EditorState } from 'prosemirror-state'
+import { EditorState } from 'prosemirror-state'
 import { undo, redo } from 'prosemirror-history'
 import { selectAll, deleteSelection } from 'prosemirror-commands'
+import * as Y from 'yjs'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
-import debounce from 'lodash/debounce'
+import { WebrtcProvider } from 'y-webrtc'
+import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
+import { debounce } from 'lodash'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
-import { State, Draft, Config, ServiceError, newState } from './context'
+import { State, File, Config, ServiceError, newState } from './context'
+import { mod } from '../env'
 import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
-import { createSignal } from 'solid-js'
+import { Awareness } from 'y-protocols/awareness'
 
-const isText = (x) => x && x.doc && x.selection
-const isDraft = (x): boolean => x && (x.text || x.path)
-const mod = 'Ctrl'
+const isText = (x: any) => x && x.doc && x.selection
+const isState = (x: any) => typeof x.lastModified !== 'string' && Array.isArray(x.files)
+const isFile = (x: any): boolean => x && (x.text || x.path)
 
-export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
+export const createCtrl = (initial: State): [Store<State>, any] => {
   const [store, setState] = createStore(initial)
-
-  const onNew = () => {
-    newDraft()
-    return true
-  }
 
   const onDiscard = () => {
     discard()
@@ -32,14 +31,19 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   const onToggleMarkdown = () => toggleMarkdown()
 
   const onUndo = () => {
-    if (!isInitialized(store.text as EditorState)) return
+    if (!isInitialized(store.text)) return
     const text = store.text as EditorState
-    store.collab?.started ? yUndo(text) : undo(text, store.editorView.dispatch)
+    if (store.collab?.started) {
+      yUndo(text)
+    } else {
+      undo(text, store.editorView.dispatch)
+    }
+
     return true
   }
 
   const onRedo = () => {
-    if (!isInitialized(store.text as EditorState)) return
+    if (!isInitialized(store.text)) return
     const text = store.text as EditorState
     if (store.collab?.started) {
       yRedo(text)
@@ -51,59 +55,53 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   }
 
   const keymap = {
-    [`${mod}-n`]: onNew,
     [`${mod}-w`]: onDiscard,
     [`${mod}-z`]: onUndo,
     [`Shift-${mod}-z`]: onRedo,
     [`${mod}-y`]: onRedo,
     [`${mod}-m`]: onToggleMarkdown
-  } as { [key: string]: Command }
+  }
 
-  const createTextFromDraft = async (d: Draft): Promise<Draft> => {
-    let draft = d
+  const createTextFromFile = async (file: File) => {
     const state = unwrap(store)
-    if (draft.path) {
-      draft = await loadDraft(state.config, draft.path)
-    }
 
     const extensions = createExtensions({
       config: state.config,
-      markdown: draft.markdown,
-      path: draft.path,
+      markdown: file.markdown,
+      path: file.path,
       keymap
     })
 
     return {
-      text: draft.text,
+      text: file.text,
       extensions,
-      lastModified: draft.lastModified ? new Date(draft.lastModified) : undefined,
-      path: draft.path,
-      markdown: draft.markdown
+      lastModified: file.lastModified ? new Date(file.lastModified) : undefined,
+      path: file.path,
+      markdown: file.markdown
     }
   }
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const addToDrafts = (drafts: Draft[], prev: Draft) => {
-    const text = prev.path ? undefined : JSON.stringify(prev.text)
+  const addToFiles = (files: File[], prev: State) => {
+    const text = prev.path ? undefined : (prev.text as EditorState).toJSON()
     return [
-      ...drafts,
+      ...files,
       {
-        body: text,
-        lastModified: prev.lastModified,
+        text,
+        lastModified: prev.lastModified?.toISOString(),
         path: prev.path,
         markdown: prev.markdown
-      } as Draft
+      }
     ]
   }
 
   const discardText = async () => {
     const state = unwrap(store)
-    const index = state.drafts.length - 1
-    const draft = index !== -1 ? state.drafts[index] : undefined
+    const index = state.files.length - 1
+    const file = index !== -1 ? state.files[index] : undefined
 
-    let next
-    if (draft) {
-      next = await createTextFromDraft(draft)
+    let next: Partial<State>
+    if (file) {
+      next = await createTextFromFile(file)
     } else {
       const extensions = createExtensions({
         config: state.config ?? store.config,
@@ -114,73 +112,89 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       next = {
         text: createEmptyText(),
         extensions,
-        lastModified: new Date(),
+        lastModified: undefined,
         path: undefined,
         markdown: state.markdown
       }
     }
 
-    const drafts = state.drafts.filter((f: Draft) => f !== draft)
+    const files = state.files.filter((f: File) => f !== file)
 
     setState({
-      drafts,
+      files,
       ...next,
-      collab: state.collab,
+      collab: file ? undefined : state.collab,
       error: undefined
     })
   }
 
-  const readStoredState = async (): Promise<State> => {
+  const fetchData = async (): Promise<State> => {
     const state: State = unwrap(store)
     const room = window.location.pathname?.slice(1).trim()
-    const args = { draft: room }
+    const args = { room: room ? room : undefined }
     const data = await db.get('state')
+    let parsed: any
     if (data !== undefined) {
       try {
-        const parsed = JSON.parse(data)
-        let text = state.text
-        if (parsed.text) {
-          if (!isText(parsed.text)) {
-            throw new ServiceError('invalid_state', parsed.text)
-          }
-          text = parsed.text
-        }
-
-        const extensions = createExtensions({
-          path: parsed.path,
-          markdown: parsed.markdown,
-          keymap,
-          config: undefined
-        })
-
-        for (const draft of parsed.drafts || []) {
-          if (!isDraft(draft)) {
-            console.error('[editor] invalid draft', draft)
-          }
-        }
-
-        return {
-          ...parsed,
-          text,
-          extensions,
-          // config,
-          args,
-          lastModified: new Date(parsed.lastModified)
-        }
-      } catch (error) {
-        console.error(error)
-        return { ...state, args }
+        parsed = JSON.parse(data)
+      } catch (err) {
+        throw new ServiceError('invalid_state', data)
       }
     }
+
+    if (!parsed) {
+      return { ...state, args }
+    }
+
+    let text = state.text
+    if (parsed.text) {
+      if (!isText(parsed.text)) {
+        throw new ServiceError('invalid_state', parsed.text)
+      }
+
+      text = parsed.text
+    }
+
+    const extensions = createExtensions({
+      path: parsed.path,
+      markdown: parsed.markdown,
+      keymap,
+      config: undefined
+    })
+
+    const newState = {
+      ...parsed,
+      text,
+      extensions,
+      // config,
+      args
+    }
+
+    if (newState.lastModified) {
+      newState.lastModified = new Date(newState.lastModified)
+    }
+
+    for (const file of parsed.files) {
+      if (!isFile(file)) {
+        throw new ServiceError('invalid_file', file)
+      }
+    }
+
+    if (!isState(newState)) {
+      throw new ServiceError('invalid_state', newState)
+    }
+
+    return newState
   }
 
-  const getTheme = (state: State) => ({ theme: state.config?.theme || '' })
+  const getTheme = (state: State) => ({ theme: state.config.theme })
 
   const clean = () => {
     setState({
       ...newState(),
       loading: 'initialized',
-      drafts: [],
+      files: [],
+      fullscreen: store.fullscreen,
       lastModified: new Date(),
       error: undefined,
       text: undefined
@@ -190,7 +204,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   const discard = async () => {
     if (store.path) {
       await discardText()
-    } else if (store.drafts.length > 0 && isEmpty(store.text as EditorState)) {
+    } else if (store.files.length > 0 && isEmpty(store.text)) {
       await discardText()
     } else {
       selectAll(store.editorView.state, store.editorView.dispatch)
@@ -199,202 +213,97 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   }
 
   const init = async () => {
-    let state = await readStoredState()
-    console.log('[editor] init with state', state)
+    let data = await fetchData()
     try {
-      if (state.args?.room) {
-        state = await doStartCollab(state)
-      } else if (state.args.text) {
-        state = await doOpenDraft(state, {
-          text: { ...JSON.parse(state.args.text) },
-          lastModified: new Date()
-        })
-      } else if (state.args.draft) {
-        const draft = await loadDraft(state.config, state.args.draft)
-        state = await doOpenDraft(state, draft)
-      } else if (state.path) {
-        const draft = await loadDraft(state.config, state.path)
-        state = await doOpenDraft(state, draft)
-      } else if (!state.text) {
+      if (data.args.room) {
+        data = await doStartCollab(data)
+      } else if (!data.text) {
         const text = createEmptyText()
         const extensions = createExtensions({
-          config: state.config ?? store.config,
-          markdown: state.markdown ?? store.markdown,
+          config: data.config ?? store.config,
+          markdown: data.markdown ?? store.markdown,
           keymap: keymap
         })
-        state = { ...state, text, extensions }
+        data = { ...data, text, extensions }
       }
     } catch (error) {
-      state = { ...state, error: error.errorObject }
+      data = { ...data, error: error.errorObject }
     }
 
     setState({
-      ...state,
-      config: { ...state.config, ...getTheme(state) },
+      ...data,
+      config: { ...data.config, ...getTheme(data) },
       loading: 'initialized'
     })
-    console.log('[editor] initialized successfully', state)
   }
 
-  const loadDraft = async (config: Config, path: string): Promise<Draft> => {
-    const [draft, setDraft] = createSignal<Draft>()
-    const schema = createSchema({
-      config,
-      markdown: false,
-      path,
-      keymap
-    })
-    const parser = createMarkdownParser(schema)
-    return {
-      ...draft(),
-      text: {
-        doc: parser.parse(draft().body).toJSON(),
-        selection: {
-          type: 'text',
-          anchor: 1,
-          head: 1
-        }
-      },
-      path
-    }
-  }
-
-  const newDraft = () => {
-    if (isEmpty(store.text as EditorState) && !store.path) return
-    const state = unwrap(store)
-    let drafts = state.drafts
-    if (!state.error) {
-      drafts = addToDrafts(drafts, state)
+  const saveState = () => debounce(async (state: State) => {
+    const data: any = {
+      lastModified: state.lastModified,
+      files: state.files,
+      config: state.config,
+      path: state.path,
+      markdown: state.markdown,
+      collab: {
+        room: state.collab?.room
+      }
     }
 
-    const extensions = createExtensions({
-      config: state.config ?? store.config,
-      markdown: state.markdown ?? store.markdown,
-      keymap
-    })
+    if (isInitialized(state.text)) {
+      data.text = store.editorView.state.toJSON()
+    } else if (state.text) {
+      data.text = state.text
+    }
 
-    setState({
-      text: createEmptyText(),
-      extensions,
-      drafts,
-      lastModified: undefined,
-      path: undefined,
-      error: undefined,
-      collab: undefined
-    })
+    db.set('state', JSON.stringify(data))
+  }, 200)
+
+  const setFullscreen = (fullscreen: boolean) => {
+    setState({ fullscreen })
   }
 
-  const openDraft = async (draft: Draft) => {
+  const startCollab = async () => {
     const state: State = unwrap(store)
-    const update = await doOpenDraft(state, draft)
-    setState(update)
-  }
-
-  const doOpenDraft = async (state: State, draft: Draft): Promise<State> => {
-    const findIndexOfDraft = (f: Draft) => {
-      for (let i = 0; i < state.drafts.length; i++) {
-        if (state.drafts[i] === f || (f.path && state.drafts[i].path === f.path)) return i
-      }
-      return -1
-    }
-    const index = findIndexOfDraft(draft)
-    const item = index === -1 ? draft : state.drafts[index]
-    let drafts = state.drafts.filter((d: Draft) => d !== item)
-    if (!isEmpty(state.text as EditorState) && state.lastModified) {
-      drafts = addToDrafts(drafts, { lastModified: new Date(), text: state.text } as Draft)
-    }
-    draft.lastModified = item.lastModified
-    const next = await createTextFromDraft(draft)
-
-    return {
-      ...state,
-      ...next,
-      drafts,
-      collab: undefined,
-      error: undefined
-    }
-  }
-
-  const saveState = () =>
-    debounce(async (state: State) => {
-      const data: State = {
-        loading: 'initialized',
-        lastModified: state.lastModified,
-        drafts: state.drafts,
-        config: state.config,
-        path: state.path,
-        markdown: state.markdown,
-        collab: {
-          room: state.collab?.room
-        }
-      }
-
-      if (isInitialized(state.text as EditorState)) {
-        if (state.path) {
-          const text = serialize(store.editorView.state)
-          // TODO: saving draft logix here
-          // await remote.writeDraft(state.path, text)
-        } else {
-          data.text = store.editorView.state.toJSON()
-        }
-      } else if (state.text) {
-        data.text = state.text
-      }
-
-      db.set('state', JSON.stringify(data))
-    }, 200)
-
-  const startCollab = () => {
-    const state: State = unwrap(store)
-    const update = doStartCollab(state)
+    const update = await doStartCollab(state)
     setState(update)
   }
 
   const doStartCollab = async (state: State): Promise<State> => {
-    const restoredRoom = state.args?.room && state.collab?.room !== state.args.room
+    const backup = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
-    state.args = { ...state.args, room }
-    let newst = state
-    try {
-      const { roomConnect } = await import('../prosemirror/p2p')
-      const [type, provider] = roomConnect(room)
+    window.history.replaceState(null, '', `/${room}`)
 
-      const extensions = createExtensions({
-        config: state.config,
-        markdown: state.markdown,
-        path: state.path,
-        keymap,
-        y: { type, provider },
-        collab: true
-      })
+    const { roomConnect } = await import('../prosemirror/p2p')
+    const [type, provider] = roomConnect(room)
 
-      if ((restoredRoom && !isEmpty(state.text as EditorState)) || state.path) {
-        let drafts = state.drafts
-        if (!state.error) {
-          drafts = addToDrafts(drafts, { lastModified: new Date(), text: state.text } as Draft)
-        }
+    const extensions = createExtensions({
+      config: state.config,
+      markdown: state.markdown,
+      path: state.path,
+      keymap,
+      y: { type, provider }
+    })
 
-        newst = {
-          ...state,
-          drafts,
-          lastModified: undefined,
-          path: undefined,
-          error: undefined
-        }
-        window.history.replaceState(null, '', `/${room}`)
+    let newState = state
+    if ((backup && !isEmpty(state.text)) || state.path) {
+      let files = state.files
+      if (!state.error) {
+        files = addToFiles(files, state)
       }
 
-      return {
-        ...newst,
-        extensions,
-        collab: { started: true, room, y: { type, provider } }
-      }
-    } catch (error) {
-      console.error(error)
-      return {
+      newState = {
         ...state,
-        collab: { error }
+        files,
+        lastModified: undefined,
+        path: undefined,
+        error: undefined
       }
+    }
+
+    return {
+      ...newState,
+      extensions,
+      collab: { started: true, room, y: { type, provider } }
     }
   }
 
@@ -404,8 +313,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       config: state.config,
       markdown: state.markdown,
       path: state.path,
-      keymap,
-      collab: false
+      keymap
     })
 
     setState({ collab: undefined, extensions })
@@ -417,7 +325,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     const editorState = store.text as EditorState
     const markdown = !state.markdown
     const selection = { type: 'text', anchor: 1, head: 1 }
-    let doc
+    let doc: any
 
     if (markdown) {
       const lines = serialize(editorState).split('\n')
@@ -457,7 +365,6 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
       extensions,
       markdown
     })
-    return true
   }
 
   const updateConfig = (config: Partial<Config>) => {
@@ -482,7 +389,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   }
 
   const updateTheme = () => {
-    const { theme } = getTheme(unwrap(store))
+    const { theme }  = getTheme(unwrap(store))
     setState('config', { theme })
   }
 
@@ -491,10 +398,8 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
     discard,
     getTheme,
     init,
-    loadDraft,
-    newDraft,
-    openDraft,
     saveState,
+    setFullscreen,
     setState,
     startCollab,
     stopCollab,

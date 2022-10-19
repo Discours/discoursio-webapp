@@ -1,28 +1,25 @@
-.error {
-  button {
-    height: 50px;
-    padding: 0 20px;
-    font-size: 18px;
-    cursor: pointer;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    outline: none;
-    text-decoration: none;
-    font-family: Muller;
-
-    &:hover {
-      opacity: 0.8;
-    }
-
-    background: none;
-    color: var(--foreground);
-    border: 1px solid var(--foreground);
+button {
+  height: 50px;
+  padding: 0 20px;
+  font-size: 18px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  text-decoration: none;
+  font-family: 'JetBrains Mono';
+  &:hover {
+    opacity: 0.8;
   }
+  background: none;
+  font-family: 'Muller';
+  color: var(--foreground);
+  border: 1px solid var(--foreground);
+}
 
-  button.primary {
-    color: var(--primary-foreground);
-    border: 0;
-    background: var(--primary-background);
-  }
+button.primary {
+  color: var(--primary-foreground);
+  border: 0;
+  background: var(--primary-background);
 }

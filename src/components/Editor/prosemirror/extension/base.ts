@@ -1,13 +1,12 @@
 import { schema as markdownSchema } from 'prosemirror-markdown'
-import type OrderedMap from 'orderedmap'
-import { NodeSpec, Schema } from 'prosemirror-model'
+import { Schema } from 'prosemirror-model'
 import { baseKeymap } from 'prosemirror-commands'
 import { sinkListItem, liftListItem } from 'prosemirror-schema-list'
 import { history } from 'prosemirror-history'
 import { dropCursor } from 'prosemirror-dropcursor'
 import { buildKeymap } from 'prosemirror-example-setup'
 import { keymap } from 'prosemirror-keymap'
-import type { ProseMirrorExtension } from '../helpers'
+import { ProseMirrorExtension } from '../helpers'
 
 const plainSchema = new Schema({
   nodes: {
@@ -36,16 +35,13 @@ export default (plain = false): ProseMirrorExtension => ({
   schema: () =>
     plain
       ? {
-          nodes: plainSchema.spec.nodes,
-          marks: plainSchema.spec.marks
-        }
+        nodes: plainSchema.spec.nodes,
+        marks: plainSchema.spec.marks
+      }
       : {
-          nodes: (markdownSchema.spec.nodes as OrderedMap<NodeSpec>).update(
-            'blockquote',
-            blockquoteSchema as unknown as NodeSpec
-          ),
-          marks: markdownSchema.spec.marks
-        },
+        nodes: (markdownSchema.spec.nodes as any).update('blockquote', blockquoteSchema),
+        marks: markdownSchema.spec.marks
+      },
   plugins: (prev, schema) => [
     ...prev,
     keymap({

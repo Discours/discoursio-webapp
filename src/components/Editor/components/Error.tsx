@@ -1,6 +1,7 @@
 import { Switch, Match } from 'solid-js'
-import { useState } from '../store/context'
 import '../styles/Button.scss'
+import { ErrorObject, useState } from '../store/context'
+import { t } from '../../../utils/intl'
 
 export default () => {
   const [store] = useState()
@@ -28,15 +29,13 @@ const InvalidState = (props: { title: string }) => {
       <div class="container">
         <h1>{props.title}</h1>
         <p>
-          There is an error with the editor state. This is probably due to an old version in which the data
-          structure has changed. Automatic data migrations may be supported in the future. To fix this now,
-          you can copy important notes from below, clean the state and paste it again.
+          {t('Editing conflict, please copy your notes and refresh page')}
         </p>
         <pre>
           <code>{JSON.stringify(store.error.props)}</code>
         </pre>
         <button class="primary" onClick={onClick}>
-          Clean
+          {t('Clean')}
         </button>
       </div>
     </div>
@@ -48,7 +47,7 @@ const Other = () => {
   const onClick = () => ctrl.discard()
 
   const getMessage = () => {
-    const err = (store.error.props as any).error
+    const err = (store.error.props as ErrorObject['props']).error
     return typeof err === 'string' ? err : err.message
   }
 

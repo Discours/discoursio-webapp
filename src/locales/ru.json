@@ -162,5 +162,6 @@
   "Restart collab": "Перезапустить коллаборацию",
   "Start collab": "Коллаборативный режим",
   "Clear": "Сбросить",
-  "Режим": "Theme"
+  "Theme": "Режим",
+  "Editing conflict, please copy your version and refresh page": "Конфликт редактирования, пожалуйста, скопируйте вашу версию текста и обновите страницу"
 }

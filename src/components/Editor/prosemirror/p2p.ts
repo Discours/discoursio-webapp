@@ -5,13 +5,16 @@ import { Doc, XmlFragment } from 'yjs'
 import type { Reaction } from '../../../graphql/types.gen'
 import { setReactions } from '../../../stores/editor'
 
-export const roomConnect = (room, username = '', keyname = 'collab'): [XmlFragment, WebrtcProvider] => {
+export const roomConnect = (room: string, username = '', keyname = 'collab'): [XmlFragment, WebrtcProvider] => {
   const ydoc = new Doc()
   const yarr = ydoc.getArray(keyname + '-reactions')
+
+  // TODO: use reactions
   yarr.observeDeep(() => {
     console.debug('[p2p] yarray updated', yarr.toArray())
     setReactions(yarr.toArray() as Reaction[])
   })
+
   const yXmlFragment = ydoc.getXmlFragment(keyname)
   const webrtcOptions = {
     awareness: new Awareness(ydoc),

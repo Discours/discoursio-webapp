@@ -11,6 +11,7 @@ const matchDark = () => window.matchMedia('(prefers-color-scheme: dark)')
 
 export const CreateView = (props: { state: State }) => {
   let isMac = false
+  const onChangeTheme = () => ctrl.updateTheme()
   onMount(() => {
     isMac = window?.navigator.platform.includes('Mac')
     matchDark().addEventListener('change', onChangeTheme)
@@ -33,8 +34,6 @@ export const CreateView = (props: { state: State }) => {
     }
     await ctrl.init()
   })
-
-  const onChangeTheme = () => ctrl.updateTheme()
 
   onError((error) => {
     console.error('[create] error:', error)

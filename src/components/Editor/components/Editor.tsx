@@ -9,7 +9,6 @@ export const Editor = () => {
   const onInit = (text: EditorState, editorView: EditorView) => ctrl.setState({ editorView, text })
   const onReconfigure = (text: EditorState) => ctrl.setState({ text })
   const onChange = (text: EditorState) => ctrl.setState({ text, lastModified: new Date() })
-  // const editorCss = (config) => css``
   const style = () => {
     if (store.error) {
       return `display: none;`

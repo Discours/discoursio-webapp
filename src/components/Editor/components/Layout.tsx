@@ -7,7 +7,7 @@ export type Styled = {
   config?: Config
   'data-testid'?: string
   onClick?: () => void
-  onMouseEnter?: (e: any) => void
+  onMouseEnter?: (ev: MouseEvent) => void
 }
 
 export const Layout = (props: Styled) => {

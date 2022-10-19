@@ -9,7 +9,7 @@ export interface Args {
   cwd?: string
   draft?: string
   room?: string
-  text?: any
+  text?: string
 }
 
 export interface PrettierConfig {
@@ -23,17 +23,17 @@ export interface PrettierConfig {
 export interface Config {
   theme: string
   // codeTheme: string;
+  // alwaysOnTop: boolean;
   font: string
   fontSize: number
   contentWidth: number
-  // alwaysOnTop: boolean;
-  // typewriterMode: boolean;
+  typewriterMode?: boolean;
   prettier: PrettierConfig
 }
 
 export interface ErrorObject {
   id: string
-  props?: unknown
+  props?: any
 }
 
 export interface YOptions {
@@ -78,7 +78,7 @@ export interface Draft {
 
 export class ServiceError extends Error {
   public errorObject: ErrorObject
-  constructor(id: string, props: unknown) {
+  constructor(id: string, props: any) {
     super(id)
     this.errorObject = { id, props }
   }

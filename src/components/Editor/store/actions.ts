@@ -10,9 +10,7 @@ import { State, Draft, Config, ServiceError, newState } from './context'
 import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
-import { drafts as draftsatom } from '../../../stores/editor'
-import { useStore } from '@nanostores/solid'
-import { createMemo } from 'solid-js'
+import { createSignal } from 'solid-js'
 
 const isText = (x) => x && x.doc && x.selection
 const isDraft = (x): boolean => x && (x.text || x.path)
@@ -239,8 +237,7 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
   }
 
   const loadDraft = async (config: Config, path: string): Promise<Draft> => {
-    const draftstore = useStore(draftsatom)
-    const draft = createMemo(() => draftstore()[path])
+    const [draft, setDraft] = createSignal<Draft>()
     const schema = createSchema({
       config,
       markdown: false,
@@ -334,9 +331,9 @@ export const createCtrl = (initial): [Store<State>, { [key: string]: any }] => {
 
       if (isInitialized(state.text as EditorState)) {
         if (state.path) {
-          // const text = serialize(store.editorView.state)
+          const text = serialize(store.editorView.state)
+          // TODO: saving draft logix here
           // await remote.writeDraft(state.path, text)
-          draftsatom.setKey(state.path, store.editorView.state)
         } else {
           data.text = store.editorView.state.toJSON()
         }

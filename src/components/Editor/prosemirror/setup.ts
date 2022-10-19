@@ -19,6 +19,7 @@ import type { Command } from 'prosemirror-state'
 import placeholder from './extension/placeholder'
 import todoList from './extension/todo-list'
 import strikethrough from './extension/strikethrough'
+import scrollPlugin from './extension/scroll'
 
 interface ExtensionsProps {
   data?: unknown
@@ -29,6 +30,7 @@ interface ExtensionsProps {
   y?: YOptions
   schema?: Schema
   collab?: boolean
+  typewriterMode?: boolean
 }
 
 const customKeymap = (props: ExtensionsProps): ProseMirrorExtension => ({
@@ -37,11 +39,11 @@ const customKeymap = (props: ExtensionsProps): ProseMirrorExtension => ({
 
 export const createExtensions = (props: ExtensionsProps): ProseMirrorExtension[] => {
   const eee = [
-    // scroll(props.config.typewriterMode),
     placeholder(t('Just start typing...')),
     customKeymap(props),
     base(props.markdown),
-    selectionMenu()
+    selectionMenu(),
+    scrollPlugin(props.config?.typewriterMode)
   ]
   if (props.markdown) {
     eee.push(

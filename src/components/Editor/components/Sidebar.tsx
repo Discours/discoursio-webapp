@@ -1,7 +1,7 @@
 import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { unwrap } from 'solid-js/store'
 import { undo, redo } from 'prosemirror-history'
-import { Draft, useState /*, Config, PrettierConfig */ } from '../store/context'
+import { Draft, useState } from '../store/context'
 import * as remote from '../remote'
 import { isEmpty /*, isInitialized*/ } from '../prosemirror/helpers'
 import type { Styled } from './Layout'

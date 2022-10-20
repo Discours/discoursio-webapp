@@ -1,9 +1,10 @@
 import { createMemo, For } from 'solid-js'
-import './Footer.scss'
+import styles from './Footer.module.scss'
 import { Icon } from '../Nav/Icon'
 import Subscribe from './Subscribe'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
+import {clsx} from "clsx";
 
 export const Footer = () => {
   const locale_title = createMemo(() => (locale() === 'ru' ? 'English' : 'Русский'))
@@ -107,12 +108,12 @@ export const Footer = () => {
     }
   ]
   return (
-    <footer class="discours-footer">
-      <div class="wide-container">
+    <footer class={styles.discoursFooter}>
+      <div class={clsx('wide-container', styles.wideContainer)}>
         <div class="row">
           <For each={links()}>
             {({ header, items }) => (
-              <div class="col-md-3">
+              <div class="col-sm-4 col-md-3">
                 <h5>{t(header)}</h5>
                 <ul>
                   <For each={items}>
@@ -134,18 +135,18 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div class="footer-copyright row">
-          <div class="col-md-10">
+        <div class={clsx(styles.footerCopyright, 'row')}>
+          <div class="col-md-9 col-lg-10">
             Независимый журнал с&nbsp;открытой горизонтальной редакцией о&nbsp;культуре, науке
             и&nbsp;обществе. Дискурс&nbsp;&copy; 2015&ndash;2022{' '}
             <a href="/about/terms-of-use">{t('Terms of use')}</a>
           </div>
-          <div class="footer-copyright__social col-md-2">
+          <div class={clsx(styles.footerCopyrightSocial, 'col-md-3 col-lg-2')}>
             <For each={[...SOCIAL]}>
               {(social) => (
-                <div class={`social__item social__item--${social.name}`}>
+                <div class={clsx(styles.socialItem, styles[`socialItem${social.name}`])}>
                   <a href={social.href}>
-                    <Icon name={`${social.name}-white`} />
+                    <Icon name={`${social.name}-white`} class={styles.icon} />
                   </a>
                 </div>
               )}

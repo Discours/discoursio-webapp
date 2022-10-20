@@ -1,5 +1,5 @@
 import { createSignal, onMount } from 'solid-js'
-import './Subscribe.scss'
+import styles from './Subscribe.module.scss'
 import { t } from '../../utils/intl'
 
 export default () => {
@@ -8,12 +8,12 @@ export default () => {
   const subscribe = async () => {
     setTitle(t('...subscribing'))
     const r = await fetch(`/maillist?email=${emailElement?.value}`)
-    setTitle(r.ok ? t('You are subscribed') : t('Subscribe'))
+    setTitle(r.ok ? t('You are subscribed') : '')
   }
-  onMount(() => setTitle(t('Subscribe')))
+
   return (
-    <div class="subscribe-form">
-      <input type="email" name="email" ref={emailElement} placeholder="email" value={title()} />
+    <div class={styles.subscribeForm}>
+      <input type="email" name="email" ref={emailElement} placeholder={t('Fill email')} value={title()} />
       <button class="button--light" onClick={() => emailElement?.value && subscribe()}>
         {t('Subscribe')}
       </button>

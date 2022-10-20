@@ -42,7 +42,7 @@ export default (props: BesideProps) => {
               </Show>
               <ul class={style.besideColumn}>
                 <For each={[...props.values]}>
-                  {(value: Shout | User | Topic | Author) => (
+                  {(value: Partial<Shout | User | Topic>) => (
                     <li classList={{ [style.top]: props.wrapper.startsWith('top-') }}>
                       <Show when={props.wrapper === 'topic'}>
                         <TopicCard

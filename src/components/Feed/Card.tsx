@@ -8,8 +8,11 @@ import { Icon } from '../Nav/Icon'
 import style from './Card.module.scss'
 import { locale } from '../../stores/ui'
 import { handleClientRouteLinkClick } from '../../stores/router'
+import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
 import CardTopic from './CardTopic'
+
+const log = getLogger('card component')
 
 interface ArticleCardProps {
   settings?: {

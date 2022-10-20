@@ -462,15 +462,19 @@ figcaption {
 }
 
 .floor--7 {
-  @include media-breakpoint-down(md) {
-    margin-bottom: 1em;
-  }
-
   .col-md-6 {
-    margin-bottom: 1.6em;
+    @include media-breakpoint-down(lg) {
+      &:nth-child(1),
+      &:nth-child(2) {
+        margin-bottom: 1.6em;
+      }
+    }
 
     @include media-breakpoint-down(md) {
-      margin-right: 0;
+      &:nth-child(3),
+      &:nth-child(4) {
+        margin-bottom: 1.6em;
+      }
     }
   }
 }

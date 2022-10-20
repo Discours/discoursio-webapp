@@ -3,6 +3,10 @@
   display: flex;
   margin-bottom: 2.4rem;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   @include media-breakpoint-down(lg) {
     flex-wrap: wrap;
   }

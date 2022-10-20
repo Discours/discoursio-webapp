@@ -270,6 +270,25 @@ export const apiClient = {
 
     return response.data.reactionsForShouts
   },
+  getArticleReactions: async ({
+    articleSlug,
+    limit = REACTIONS_PAGE_SIZE,
+    offset = 0
+  }: {
+    articleSlug: string
+    limit: number
+    offset: number
+  }): Promise<Reaction[]> => {
+    const response = await publicGraphQLClient
+      .query(reactionsForShouts, {
+        shouts: [articleSlug],
+        limit,
+        offset
+      })
+      .toPromise()
+
+    return response.data?.reactionsForShouts
+  },
   getAuthorsBySlugs: async ({ slugs }) => {
     const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()
     return response.data.getUsersBySlugs

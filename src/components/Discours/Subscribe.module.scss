@@ -1,6 +1,10 @@
-.subscribe-form {
+.subscribeForm {
   display: flex;
   width: 100%;
+
+  @include media-breakpoint-between(md, xl) {
+    flex-direction: column;
+  }
 
   input {
     background: none;
@@ -30,6 +34,7 @@
   }
 
   button {
+    margin-top: 0;
     padding-bottom: 0.8rem;
   }
 }

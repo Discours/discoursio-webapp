@@ -19,6 +19,7 @@ interface AuthorCardProps {
   subscribed?: boolean
   author: Author
   isAuthorPage?: boolean
+  noSocialButtons?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -84,7 +85,9 @@ export const AuthorCard = (props: AuthorCardProps) => {
                 {t('Write')}
               </button>
 
-              <For each={props.author.links}>{(link) => <a href={link} />}</For>
+              <Show when={!props.noSocialButtons}>
+                <For each={props.author.links}>{(link) => <a href={link} />}</For>
+              </Show>
             </Show>
           </div>
         </Show>

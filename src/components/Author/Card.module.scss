@@ -32,6 +32,9 @@
 }
 
 .authorSubscribe {
+  align-items: center;
+  display: flex;
+
   @include media-breakpoint-down(lg) {
     padding: 0 0 0 42px;
   }
@@ -48,6 +51,7 @@
     width: 32px;
 
     &::before {
+      background-image: url(/icons/user-link-default.svg);
       background-repeat: no-repeat;
       background-position: 50% 50%;
       background-size: contain;
@@ -106,6 +110,10 @@
       background-image: url(/icons/instagram-white.svg);
     }
   }
+
+  button {
+    margin-right: 0.5em;
+  }
 }
 
 .buttonSubscribe {
@@ -129,8 +137,18 @@
   background: #f7f7f7;
   color: #000;
   display: inline-flex;
+  transition: background-color 0.3s, color 0.3s;
 
   @include font-size(1.5rem);
+
+  &:hover {
+    background: #000;
+    color: #fff;
+
+    img {
+      filter: invert(1);
+    }
+  }
 
   .icon {
     margin-right: 0.5em;
@@ -138,6 +156,65 @@
 
   img {
     height: 15px;
+    transition: filter 0.3s;
+  }
+}
+
+.authorPage {
+  .authorName {
+    @include font-size(3.4rem);
+
+    font-weight: 500;
+    margin-bottom: 0.2em;
+  }
+
+  .authorAbout {
+    color: #696969;
+    @include font-size(1.7rem);
+  }
+
+  .authorSubscribe {
+    margin-top: 2rem;
+  }
+
+  .authorDetails {
+    display: block;
+  }
+
+  .buttonLabel {
+    display: block;
+  }
+
+  .buttonSubscribe {
+    aspect-ratio: auto;
+    background-color: #000;
+    border-radius: 2px;
+    float: none;
+    padding-bottom: 0.6rem;
+    padding-top: 0.6rem;
+
+    .icon {
+      margin-right: 0.5em;
+
+      img {
+        filter: invert(1);
+      }
+    }
+
+    &:hover {
+      .icon img {
+        filter: invert(0.7);
+      }
+    }
+  }
+
+  .buttonSubscribe img {
+    vertical-align: text-top;
+  }
+
+  .button {
+    margin-right: 1.6rem;
+    vertical-align: middle;
   }
 }
 

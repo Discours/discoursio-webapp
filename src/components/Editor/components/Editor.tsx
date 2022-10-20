@@ -13,7 +13,7 @@ export const Editor = () => {
   const style = () => (store.error ? `display: none;` : store.markdown ? `white-space: pre-wrap;` : '')
   return (
     <ProseMirror
-      className='editor'
+      className='editor col-md-6 shift-content'
       style={style()}
       editorView={store.editorView}
       text={store.text}

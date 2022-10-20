@@ -10,7 +10,7 @@ export type Styled = {
 }
 
 export const Layout = (props: Styled) => {
-  return (<div onMouseEnter={props.onMouseEnter} class='layout' data-testid={props['data-testid']}>
+  return (<div onMouseEnter={props.onMouseEnter} class='layout container' data-testid={props['data-testid']}>
     {props.children}
   </div>)
 }

@@ -69,7 +69,7 @@ button:focus {
   -webkit-font-variant-ligatures: none;
   font-variant-ligatures: none;
   outline: none;
-  margin: 1em 1em 1em 2em;
+  margin: 1em 1em 1em 0;
 
   .dark & {
     color: var(--background);

@@ -1,12 +1,9 @@
 import { Store, createStore, unwrap } from 'solid-js/store'
 import { v4 as uuidv4 } from 'uuid'
-import { EditorState } from 'prosemirror-state'
+import type { EditorState } from 'prosemirror-state'
 import { undo, redo } from 'prosemirror-history'
 import { selectAll, deleteSelection } from 'prosemirror-commands'
-import * as Y from 'yjs'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
-import { WebrtcProvider } from 'y-webrtc'
-import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import { debounce } from 'lodash'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
 import { State, File, Config, ServiceError, newState } from './context'
@@ -14,11 +11,10 @@ import { mod } from '../env'
 import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
-import { Awareness } from 'y-protocols/awareness'
 
-const isText = (x: any) => x && x.doc && x.selection
-const isState = (x: any) => typeof x.lastModified !== 'string' && Array.isArray(x.files)
-const isFile = (x: any): boolean => x && (x.text || x.path)
+const isText = (x) => x && x.doc && x.selection
+const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.files)
+const isFile = (x): boolean => x && (x.text || x.path)
 
 export const createCtrl = (initial: State): [Store<State>, any] => {
   const [store, setState] = createStore(initial)
@@ -131,13 +127,14 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
   const fetchData = async (): Promise<State> => {
     const state: State = unwrap(store)
     const room = window.location.pathname?.slice(1).trim()
-    const args = { room: room ? room : undefined }
+    const args = { room: room ?? undefined }
     const data = await db.get('state')
     let parsed: any
     if (data !== undefined) {
       try {
         parsed = JSON.parse(data)
-      } catch (err) {
+      } catch (error) {
+        console.error(error)
         throw new ServiceError('invalid_state', data)
       }
     }
@@ -162,7 +159,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       config: undefined
     })
 
-    const newState = {
+    const newst = {
       ...parsed,
       text,
       extensions,
@@ -170,8 +167,8 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       args
     }
 
-    if (newState.lastModified) {
-      newState.lastModified = new Date(newState.lastModified)
+    if (newst.lastModified) {
+      newst.lastModified = new Date(newst.lastModified)
     }
 
     for (const file of parsed.files) {
@@ -180,11 +177,11 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       }
     }
 
-    if (!isState(newState)) {
+    if (!isState(newst)) {
       throw new ServiceError('invalid_state', newState)
     }
 
-    return newState
+    return newst
   }
 
   const getTheme = (state: State) => ({ theme: state.config.theme })
@@ -222,7 +219,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
         const extensions = createExtensions({
           config: data.config ?? store.config,
           markdown: data.markdown ?? store.markdown,
-          keymap: keymap
+          keymap
         })
         data = { ...data, text, extensions }
       }
@@ -284,14 +281,14 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       y: { type, provider }
     })
 
-    let newState = state
+    let newst = state
     if ((backup && !isEmpty(state.text)) || state.path) {
       let files = state.files
       if (!state.error) {
         files = addToFiles(files, state)
       }
 
-      newState = {
+      newst = {
         ...state,
         files,
         lastModified: undefined,
@@ -301,7 +298,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     }
 
     return {
-      ...newState,
+      ...newst,
       extensions,
       collab: { started: true, room, y: { type, provider } }
     }
@@ -356,7 +353,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       config: state.config,
       markdown,
       path: state.path,
-      keymap: keymap,
+      keymap,
       y: state.collab?.y
     })
 

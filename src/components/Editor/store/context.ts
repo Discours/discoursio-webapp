@@ -1,8 +1,10 @@
 import { createContext, useContext } from 'solid-js'
-import { Store } from 'solid-js/store'
-import { XmlFragment } from 'yjs'
-import { WebrtcProvider } from 'y-webrtc'
-import { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
+import type { Store } from 'solid-js/store'
+import type { XmlFragment } from 'yjs'
+import type { WebrtcProvider } from 'y-webrtc'
+import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
+import type { Command, EditorState } from 'prosemirror-state'
+import type { EditorView } from 'prosemirror-view'
 
 export interface Args {
   cwd?: string;
@@ -50,7 +52,7 @@ export type LoadingType = 'loading' | 'initialized'
 
 export interface State {
   text?: ProseMirrorState;
-  editorView?: any;
+  editorView?: EditorView;
   extensions?: ProseMirrorExtension[];
   markdown?: boolean;
   lastModified?: Date;
@@ -62,6 +64,16 @@ export interface State {
   collab?: Collab;
   path?: string;
   args?: Args;
+  keymap?: { [key: string]: Command; }
+}
+
+export interface Draft {
+  body?: string
+  lastModified?: Date
+  text?: { doc: EditorState['doc']; selection: { type: string; anchor: number; head: number } }
+  path?: string
+  markdown?: boolean
+  extensions?: ProseMirrorExtension[]
 }
 
 export interface File {

@@ -54,7 +54,7 @@ export const Header = (props: Props) => {
     const isFixed = fixed() || (getModal() && getModal() !== 'share');
 
     document.body.classList.toggle('fixed', isFixed);
-    document.body.classList.toggle(styles.fixed, isFixed);
+    document.body.classList.toggle(styles.fixed, isFixed && !getModal());
   }, [fixed(), getModal()])
 
   // derived

@@ -1,19 +1,20 @@
 const prefix = 'ProseMirror-prompt'
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function openPrompt(options: any) {
   const wrapper = document.body.appendChild(document.createElement('div'))
   wrapper.className = prefix
 
-  const mouseOutside = (e: any) => {
-    if (!wrapper.contains(e.target)) close()
+  const mouseOutside = (ev: MouseEvent) => {
+    if (!wrapper.contains(ev.target as Node)) close()
   }
   setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50)
   const close = () => {
     window.removeEventListener('mousedown', mouseOutside)
-    if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper)
+    if (wrapper.parentNode) wrapper.remove()
   }
 
-  const domFields: any = []
+  const domFields: Node[] = []
   options.fields.forEach((name) => {
     domFields.push(options.fields[name].render())
   })
@@ -32,7 +33,7 @@ export function openPrompt(options: any) {
   if (options.title) {
     form.appendChild(document.createElement('h5')).textContent = options.title
   }
-  domFields.forEach((field: any) => {
+  domFields.forEach((field: Node) => {
     form.appendChild(document.createElement('div')).appendChild(field)
   })
   const buttons = form.appendChild(document.createElement('div'))
@@ -59,20 +60,20 @@ export function openPrompt(options: any) {
   })
 
   form.addEventListener('keydown', (e) => {
-    if (e.keyCode == 27) {
+    if (e.key === 'Escape') {
       e.preventDefault()
       close()
-    } else if (e.keyCode == 13 && !(e.ctrlKey || e.metaKey || e.shiftKey)) {
+    } else if (e.key === 'Enter' && !(e.ctrlKey || e.metaKey || e.shiftKey)) {
       e.preventDefault()
       submit()
-    } else if (e.keyCode == 9) {
+    } else if (e.key === 'Tab') {
       window.setTimeout(() => {
         if (!wrapper.contains(document.activeElement)) close()
       }, 500)
     }
   })
 
-  const input: any = form.elements[0]
+  const input = form.elements[0] as HTMLInputElement
   if (input) input.focus()
 }
 
@@ -93,14 +94,13 @@ function getValues(fields: any, domFields: any) {
   return result
 }
 
-function reportInvalid(dom: any, message: any) {
-  const parent = dom.parentNode
-  const msg = parent.appendChild(document.createElement('div'))
+function reportInvalid(dom: HTMLElement, message: string) {
+  const msg: HTMLElement = dom.parentNode.appendChild(document.createElement('div'))
   msg.style.left = dom.offsetLeft + dom.offsetWidth + 2 + 'px'
   msg.style.top = dom.offsetTop - 5 + 'px'
   msg.className = 'ProseMirror-invalid'
   msg.textContent = message
-  setTimeout(() => parent.removeChild(msg), 1500)
+  setTimeout(msg.remove, 1500)
 }
 
 export class Field {
@@ -147,7 +147,7 @@ export class SelectField extends Field {
     this.options.options.forEach((o: { value: string; label: string }) => {
       const opt = select.appendChild(document.createElement('option'))
       opt.value = o.value
-      opt.selected = o.value == this.options.value
+      opt.selected = o.value === this.options.value
       opt.label = o.label
     })
     return select

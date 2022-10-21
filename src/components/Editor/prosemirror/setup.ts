@@ -13,25 +13,12 @@ import markdown from './extension/markdown'
 import pasteMarkdown from './extension/paste-markdown'
 import table from './extension/table'
 import collab from './extension/collab'
-import type { Config, YOptions } from '../store/context'
+import type { Collab, Config, ExtensionsProps, YOptions } from '../store/context'
 import selectionMenu from './extension/selection'
-import type { Command } from 'prosemirror-state'
 import placeholder from './extension/placeholder'
 import todoList from './extension/todo-list'
 import strikethrough from './extension/strikethrough'
 import scrollPlugin from './extension/scroll'
-
-interface ExtensionsProps {
-  data?: unknown
-  keymap?: { [key: string]: Command }
-  config: Config
-  markdown: boolean
-  path?: string
-  y?: YOptions
-  schema?: Schema
-  collab?: any
-  typewriterMode?: boolean
-}
 
 const customKeymap = (props: ExtensionsProps): ProseMirrorExtension => ({
   plugins: (prev) => (props.keymap ? [...prev, keymap(props.keymap)] : prev)

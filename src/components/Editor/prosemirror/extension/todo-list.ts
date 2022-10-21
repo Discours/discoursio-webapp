@@ -1,10 +1,9 @@
-import { DOMSerializer, Node as ProsemirrorNode, NodeType, Schema } from 'prosemirror-model'
-import { EditorView } from 'prosemirror-view'
-import { wrappingInputRule } from 'prosemirror-inputrules'
+import { DOMOutputSpec, DOMSerializer, Node as ProsemirrorNode, NodeType, Schema } from 'prosemirror-model'
+import type { EditorView } from 'prosemirror-view'
+import { wrappingInputRule , inputRules } from 'prosemirror-inputrules'
 import { splitListItem } from 'prosemirror-schema-list'
 import { keymap } from 'prosemirror-keymap'
-import { inputRules } from 'prosemirror-inputrules'
-import { ProseMirrorExtension } from '../helpers'
+import type { NodeViewFn, ProseMirrorExtension } from '../helpers'
 
 const todoListRule = (nodeType: NodeType) =>
   wrappingInputRule(new RegExp('^\\[( |x)]\\s$'), nodeType, (match) => ({
@@ -54,13 +53,13 @@ class TodoItemView {
   getPos: () => number
 
   constructor(node: ProsemirrorNode, view: EditorView, getPos: () => number) {
-    const dom = node.type.spec.toDOM(node)
+    const dom: DOMOutputSpec = node.type.spec.toDOM(node)
     const res = DOMSerializer.renderSpec(document, dom)
     this.dom = res.dom
     this.contentDOM = res.contentDOM
     this.view = view
-    this.getPos = getPos
-    ;(this.dom as Element).querySelector('input').onclick = this.handleClick.bind(this)
+    this.getPos = getPos;
+    (this.dom as HTMLElement).querySelector('input').addEventListener('click', this.handleClick.bind(this))
   }
 
   handleClick(e: MouseEvent) {
@@ -87,8 +86,8 @@ export default (): ProseMirrorExtension => ({
     inputRules({ rules: [todoListRule(schema.nodes.todo_item)] })
   ],
   nodeViews: {
-    todo_item: (node, view, getPos) => {
+    todo_item: (node: ProsemirrorNode, view: EditorView, getPos: () => number) => {
       return new TodoItemView(node, view, getPos)
     }
-  }
+  } as unknown as { [key:string]: NodeViewFn }
 })

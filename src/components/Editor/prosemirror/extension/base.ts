@@ -6,7 +6,7 @@ import { history } from 'prosemirror-history'
 import { dropCursor } from 'prosemirror-dropcursor'
 import { buildKeymap } from 'prosemirror-example-setup'
 import { keymap } from 'prosemirror-keymap'
-import { ProseMirrorExtension } from '../helpers'
+import type { ProseMirrorExtension } from '../helpers'
 
 const plainSchema = new Schema({
   nodes: {

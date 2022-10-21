@@ -1,15 +1,15 @@
 import { EditorState, Selection } from 'prosemirror-state'
-import { Node, Schema, ResolvedPos } from 'prosemirror-model'
+import type { Node, Schema, ResolvedPos } from 'prosemirror-model'
 import { InputRule, inputRules } from 'prosemirror-inputrules'
 import { keymap } from 'prosemirror-keymap'
-import { ProseMirrorExtension } from '../helpers'
+import type { ProseMirrorExtension } from '../helpers'
 
 export const tableInputRule = (schema: Schema) =>
   new InputRule(
     new RegExp('^\\|{2,}\\s$'),
     (state: EditorState, match: string[], start: number, end: number) => {
       const tr = state.tr
-      const columns = [...Array(match[0].trim().length - 1)]
+      const columns = Array.from({length: match[0].trim().length - 1})
       const headers = columns.map(() => schema.node(schema.nodes.table_header, {}))
       const cells = columns.map(() => schema.node(schema.nodes.table_cell, {}))
       const table = schema.node(schema.nodes.table, {}, [
@@ -176,6 +176,7 @@ export default (): ProseMirrorExtension => ({
     ...prev,
     nodes: (prev.nodes as any).append(tableSchema)
   }),
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   plugins: (prev, schema) => [
     keymap({
       'Ctrl-Enter': (state, dispatch) => {

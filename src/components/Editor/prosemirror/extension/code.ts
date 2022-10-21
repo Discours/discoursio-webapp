@@ -1,12 +1,12 @@
 import { inputRules } from 'prosemirror-inputrules'
-import { Mark, MarkType } from 'prosemirror-model'
-import { EditorState, Transaction } from 'prosemirror-state'
-import { EditorView } from 'prosemirror-view'
+import type { Mark, MarkType } from 'prosemirror-model'
+import type { EditorState, Transaction } from 'prosemirror-state'
+import type { EditorView } from 'prosemirror-view'
 import { keymap } from 'prosemirror-keymap'
 import { markInputRule } from './mark-input-rule'
-import { ProseMirrorExtension } from '../helpers'
+import type { ProseMirrorExtension } from '../helpers'
 
-const blank = '\xa0'
+const blank = '\u00A0'
 
 const onArrow =
   (dir: 'left' | 'right') =>
@@ -36,7 +36,7 @@ const codeKeymap = {
   ArrowRight: onArrow('right')
 }
 
-const codeRule = (nodeType: MarkType) => markInputRule(/(?:`)([^`]+)(?:`)$/, nodeType)
+const codeRule = (nodeType: MarkType) => markInputRule(/`([^`]+)`$/, nodeType)
 
 export default (): ProseMirrorExtension => ({
   plugins: (prev, schema) => [

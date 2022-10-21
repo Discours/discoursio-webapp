@@ -1,9 +1,10 @@
-import { Plugin } from 'prosemirror-state'
+import { Plugin, Transaction } from 'prosemirror-state'
 import { Fragment, Node, Schema, Slice } from 'prosemirror-model'
-import { ProseMirrorExtension } from '../helpers'
+import type { ProseMirrorExtension } from '../helpers'
 import { createMarkdownParser } from '../../markdown'
+import { openPrompt } from './prompt'
 
-const URL_REGEX = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/g
+const URL_REGEX = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:\d+)?(\/|\/([\w!#%&+./:=?@-]))?/g
 
 const transform = (schema: Schema, fragment: Fragment) => {
   const nodes = []
@@ -57,16 +58,15 @@ const pasteMarkdown = (schema: Schema) => {
         if (!event.clipboardData) return false
         const text = event.clipboardData.getData('text/plain')
         const html = event.clipboardData.getData('text/html')
-
         // otherwise, if we have html then fallback to the default HTML
         // parser behavior that comes with Prosemirror.
         if (text.length === 0 || html) return false
         event.preventDefault()
-
-        const paste = parser.parse(text)
-        const slice = paste.slice(0)
-        const fragment = shiftKey ? slice.content : transform(schema, slice.content)
-        const tr = view.state.tr.replaceSelection(new Slice(fragment, slice.openStart, slice.openEnd))
+        const node: Node = parser.parse(text)
+        const fragment = shiftKey ? node.content : transform(schema, node.content)
+        const openStart = 0 // FIXME
+        const openEnd = text.length // FIXME: detect real start and end cursor position
+        const tr: Transaction = view.state.tr.replaceSelection(new Slice(fragment, openStart, openEnd))
 
         view.dispatch(tr)
         return true

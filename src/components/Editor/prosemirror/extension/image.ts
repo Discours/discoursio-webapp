@@ -1,21 +1,22 @@
 import { Plugin } from 'prosemirror-state'
-import { Node, Schema } from 'prosemirror-model'
-import { EditorView } from 'prosemirror-view'
-import { ProseMirrorExtension } from '../helpers'
+import type { Node, Schema } from 'prosemirror-model'
+import type { EditorView } from 'prosemirror-view'
+import type { NodeViewFn, ProseMirrorExtension } from '../helpers'
+import type OrderedMap from 'orderedmap'
 
-const REGEX = /^!\[([^[\]]*?)\]\((.+?)\)\s+/
+const REGEX = /^!\[([^[\]]*?)]\((.+?)\)\s+/
 const MAX_MATCH = 500
 
 const isUrl = (str: string) => {
   try {
     const url = new URL(str)
     return url.protocol === 'http:' || url.protocol === 'https:'
-  } catch (_) {
+  } catch {
     return false
   }
 }
 
-const isBlank = (text: string) => text === ' ' || text === '\xa0'
+const isBlank = (text: string) => text === ' ' || text === '\u00A0'
 
 const imageInput = (schema: Schema, path?: string) =>
   new Plugin({
@@ -29,7 +30,7 @@ const imageInput = (schema: Schema, path?: string) =>
             Math.max(0, $from.parentOffset - MAX_MATCH),
             $from.parentOffset,
             null,
-            '\ufffc'
+            '\uFFFC'
           ) + text
 
         const match = REGEX.exec(textBefore)
@@ -65,11 +66,11 @@ const imageSchema = {
   parseDOM: [
     {
       tag: 'img[src]',
-      getAttrs: (dom: Element) => ({
+      getAttrs: (dom: HTMLElement) => ({
         src: dom.getAttribute('src'),
         title: dom.getAttribute('title'),
         alt: dom.getAttribute('alt'),
-        path: dom.getAttribute('data-path')
+        path: dom.dataset.path
       })
     }
   ],
@@ -162,12 +163,12 @@ class ImageView {
 export default (path?: string): ProseMirrorExtension => ({
   schema: (prev) => ({
     ...prev,
-    nodes: (prev.nodes as any).update('image', imageSchema)
+    nodes: (prev.nodes as OrderedMap<any>).update('image', imageSchema)
   }),
   plugins: (prev, schema) => [...prev, imageInput(schema, path)],
   nodeViews: {
     image: (node, view, getPos) => {
       return new ImageView(node, view, getPos, view.state.schema, path)
     }
-  }
+  } as unknown as { [key: string]: NodeViewFn }
 })

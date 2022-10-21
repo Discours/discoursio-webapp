@@ -1,6 +1,6 @@
 import { Plugin } from 'prosemirror-state'
-import { EditorView } from 'prosemirror-view'
-import { ProseMirrorExtension } from '../helpers'
+import type { EditorView } from 'prosemirror-view'
+import type { ProseMirrorExtension } from '../helpers'
 
 const scroll = (view: EditorView) => {
   if (!view.state.selection.empty) return false

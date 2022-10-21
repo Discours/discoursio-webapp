@@ -14,12 +14,16 @@ import {
 } from 'prosemirror-menu'
 
 import { wrapInList } from 'prosemirror-schema-list'
-import { NodeSelection } from 'prosemirror-state'
+import type{ NodeSelection } from 'prosemirror-state'
 
 import { TextField, openPrompt } from './prompt'
-import { ProseMirrorExtension } from '../helpers'
+import type { ProseMirrorExtension } from '../helpers'
+import type { Schema } from 'prosemirror-model'
 
 // Helpers to create specific types of items
+
+
+const cut = (something) => something.filter(Boolean)
 
 function canInsert(state, nodeType) {
   const $from = state.selection.$from
@@ -41,10 +45,7 @@ function insertImageItem(nodeType) {
       return canInsert(state, nodeType)
     },
     run(state, _, view) {
-      const { from, to } = state.selection
-      let attrs = null
-
-      if (state.selection instanceof NodeSelection && state.selection.node.type == nodeType) { attrs = state.selection.node.attrs }
+      const { from, to, node: { attrs } } = state.selection as NodeSelection
 
       openPrompt({
         title: 'Insert image',
@@ -60,8 +61,8 @@ function insertImageItem(nodeType) {
             value: attrs ? attrs.alt : state.doc.textBetween(from, to, ' ')
           })
         },
-        callback(attrs) {
-          view.dispatch(view.state.tr.replaceSelectionWith(nodeType.createAndFill(attrs)))
+        callback(newAttrs) {
+          view.dispatch(view.state.tr.replaceSelectionWith(nodeType.createAndFill(newAttrs)))
           view.focus()
         }
       })
@@ -202,7 +203,8 @@ function wrapListItem(nodeType, options) {
 // **`fullMenu`**`: [[MenuElement]]`
 //   : An array of arrays of menu elements for use as the full menu
 //     for, for example the [menu bar](https://github.com/prosemirror/prosemirror-menu#user-content-menubar).
-export function buildMenuItems(schema) {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export function buildMenuItems(schema: Schema<any, any>) {
   const r: { [key: string]: MenuItem | MenuItem[] } = {}
   let type
 
@@ -237,7 +239,7 @@ export function buildMenuItems(schema) {
 
   if ((type = schema.marks.link)) r.toggleLink = linkItem(type)
 
-  if ((type = schema.marks.blockquote)) { if ((type = schema.nodes.image)) r.insertImage = insertImageItem(type) }
+  if ((type = schema.marks.blockquote) && (type = schema.nodes.image)) r.insertImage = insertImageItem(type)
 
   if ((type = schema.nodes.bullet_list)) {
     r.wrapBulletList = wrapListItem(type, {
@@ -318,15 +320,18 @@ export function buildMenuItems(schema) {
     })
   }
 
-  const cut = (arr) => arr.filter((x) => x)
   r.typeMenu = new Dropdown(
     cut([r.makeHead1, r.makeHead2, r.makeHead3, r.typeMenu, r.wrapBlockQuote]),
-    { label: 'Тт', icon: {
-      width: 12,
-      height: 12,
-      path: "M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z"
-    } })
-  // r.blockMenu = []
+    { label: 'Тт',
+      class: 'editor-dropdown' // TODO: use this class
+      // FIXME: icon svg code shouldn't be here
+      // icon: {
+      //  width: 12,
+      //  height: 12,
+      //  path: "M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z"
+      // }
+    }) as MenuItem
+  r.blockMenu = []
   r.listMenu = [cut([r.wrapBulletList, r.wrapOrderedList])]
   r.inlineMenu = [cut([r.toggleStrong, r.toggleEm, r.toggleMark])]
   r.fullMenu = r.inlineMenu.concat([cut([r.typeMenu])], r.listMenu)
@@ -339,7 +344,7 @@ export default (): ProseMirrorExtension => ({
     ...prev,
     menuBar({
       floating: false,
-      content: buildMenuItems(schema).fullMenu
+      content: buildMenuItems(schema).fullMenu as any
     })
   ]
 })

@@ -1,14 +1,14 @@
 import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js'
 import { unwrap } from 'solid-js/store'
 import { undo, redo } from 'prosemirror-history'
-import { File, useState } from '../store/context'
+import { Draft, useState } from '../store/context'
 import { mod } from '../env'
 import * as remote from '../remote'
 import { isEmpty } from '../prosemirror/helpers'
-import { Styled } from './Layout'
+import type { Styled } from './Layout'
 import '../styles/Sidebar.scss'
 
-const Off = ({ children }: Styled) => <div class='sidebar-off'>{children}</div>
+const Off = (props) => <div class='sidebar-off'>{props.children}</div>
 
 const Label = (props: Styled) => <h3 class='sidebar-label'>{props.children}</h3>
 
@@ -16,8 +16,8 @@ const Link = (
   props: Styled & { withMargin?: boolean; disabled?: boolean; title?: string; className?: string }
 ) => (
   <button
-    class={`sidebar-link${props.className ? ` ${props.className}` : ''}`}
-    style={{ marginBottom: props.withMargin ? '10px' : '' }}
+    class={`sidebar-link${props.className ? ' ' + props.className : ''}`}
+    style={{ "margin-bottom": props.withMargin ? '10px' : '' }}
     onClick={props.onClick}
     disabled={props.disabled}
     title={props.title}
@@ -34,10 +34,10 @@ export const Sidebar = () => {
     document.body.classList.toggle('dark')
     ctrl.updateConfig({ theme: document.body.className })
   }
-  const collabText = () => (store.collab?.started ? 'Stop' : store.collab?.error ? 'Restart 🚨' : 'Start')
+  const collabText = () => (store.collab?.started ? 'Stop' : (store.collab?.error ? 'Restart 🚨' : 'Start'))
   const editorView = () => unwrap(store.editorView)
   const onToggleMarkdown = () => ctrl.toggleMarkdown()
-  const onOpenFile = (file: File) => ctrl.openFile(unwrap(file))
+  const onOpenDraft = (draft: Draft) => ctrl.openDraft(unwrap(draft))
   const collabUsers = () => store.collab?.y?.provider.awareness.meta.size ?? 0
   const onUndo = () => undo(editorView().state, editorView().dispatch)
   const onRedo = () => redo(editorView().state, editorView().dispatch)
@@ -56,7 +56,8 @@ export const Sidebar = () => {
     store.collab?.started ? ctrl.stopCollab(state) : ctrl.startCollab(state)
   }
 
-  const FileLink = (p: { file: File }) => {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const DraftLink = (p: { draft: Draft }) => {
     const length = 100
     let content = ''
     const getContent = (node: any) => {
@@ -65,7 +66,7 @@ export const Sidebar = () => {
       }
 
       if (content.length > length) {
-        content = content.substring(0, length) + '...'
+        content = content.slice(0, Math.max(0, length)) + '...'
         return content
       }
 
@@ -83,46 +84,47 @@ export const Sidebar = () => {
     }
 
     const text = () =>
-      p.file.path ? p.file.path.substring(p.file.path.length - length) : getContent(p.file.text?.doc)
+      p.draft.path ? p.draft.path.slice(Math.max(0, p.draft.path.length - length)) : getContent(p.draft.text?.doc)
 
     return (
-      <Link className='file' onClick={() => onOpenFile(p.file)} data-testid='open'>
-        {text()} {p.file.path && '📎'}
+      // eslint-disable-next-line solid/no-react-specific-props
+      <Link className='draft' onClick={() => onOpenDraft(p.draft)} data-testid='open'>
+        {text()} {p.draft.path && '📎'}
       </Link>
     )
   }
 
-  const Keys = ({ keys }: { keys: string[] }) => (
+  const Keys = (props) => (
     <span>
-      {keys.map((k) => (
+      <For each={props.keys}>{(k: Element) => (
         <i>{k}</i>
-      ))}
+      )}</For>
     </span>
   )
 
   createEffect(() => {
-    setLastAction(undefined)
+    setLastAction()
   }, store.lastModified)
 
   createEffect(() => {
     if (!lastAction()) return
     const id = setTimeout(() => {
-      setLastAction(undefined)
+      setLastAction()
     }, 1000)
     onCleanup(() => clearTimeout(id))
   })
 
   return (
-    <div className={'sidebar-container' + (isHidden() ? ' sidebar-container--hidden' : '')}>
-      <span className='sidebar-opener' onClick={toggleSidebar}>Советы и&nbsp;предложения</span>
+    <div class={'sidebar-container' + (isHidden() ? ' sidebar-container--hidden' : '')}>
+      <span class='sidebar-opener' onClick={toggleSidebar}>Советы и&nbsp;предложения</span>
 
       <Off onClick={() => editorView().focus()}>
-        <div className='sidebar-closer' onClick={toggleSidebar}/>
+        <div class='sidebar-closer' onClick={toggleSidebar}/>
         <Show when={true}>
           <div>
             {store.path && (
               <Label>
-                <i>({store.path.substring(store.path.length - 24)})</i>
+                <i>({store.path.slice(Math.max(0, store.path.length - 24))})</i>
               </Label>
             )}
             <Link>
@@ -142,26 +144,26 @@ export const Sidebar = () => {
             </div>
             <Link
               onClick={onDiscard}
-              disabled={!store.path && store.files.length === 0 && isEmpty(store.text)}
+              disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text)}
               data-testid='discard'
             >
-              {store.path ? 'Close' : store.files.length > 0 && isEmpty(store.text) ? 'Delete ⚠️' : 'Clear'}{' '}
+              {store.path ? 'Close' : (store.drafts.length > 0 && isEmpty(store.text) ? 'Delete ⚠️' : 'Clear')}{' '}
               <Keys keys={[mod, 'w']} />
             </Link>
             <Link onClick={onUndo}>
               Undo <Keys keys={[mod, 'z']} />
             </Link>
             <Link onClick={onRedo}>
-              Redo <Keys keys={[mod, ...['Shift', 'z']]} />
+              Redo <Keys keys={[mod, 'Shift', 'z']} />
             </Link>
             <Link onClick={onToggleMarkdown} data-testid='markdown'>
               Markdown mode {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
             </Link>
             <Link onClick={onCopyAllAsMd}>Copy all as MD {lastAction() === 'copy-md' && '📋'}</Link>
-            <Show when={store.files.length > 0}>
+            <Show when={store.drafts.length > 0}>
               <h4>Drafts:</h4>
               <p>
-                <For each={store.files}>{(file) => <FileLink file={file} />}</For>
+                <For each={store.drafts}>{(draft) => <DraftLink draft={draft} />}</For>
               </p>
             </Show>
             <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>

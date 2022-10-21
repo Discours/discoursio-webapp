@@ -6,25 +6,18 @@ import { selectAll, deleteSelection } from 'prosemirror-commands'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
 import { debounce } from 'lodash'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
-import { State, File, Config, ServiceError, newState } from './context'
+import { State, Draft, Config, ServiceError, newState, ExtensionsProps } from './context'
 import { mod } from '../env'
 import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
 
 const isText = (x) => x && x.doc && x.selection
-const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.files)
-const isFile = (x): boolean => x && (x.text || x.path)
+const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.drafts || [])
+const isDraft = (x): boolean => x && (x.text || x.path)
 
 export const createCtrl = (initial: State): [Store<State>, any] => {
   const [store, setState] = createStore(initial)
-
-  const onDiscard = () => {
-    discard()
-    return true
-  }
-
-  const onToggleMarkdown = () => toggleMarkdown()
 
   const onUndo = () => {
     if (!isInitialized(store.text)) return
@@ -34,56 +27,112 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     } else {
       undo(text, store.editorView.dispatch)
     }
-
     return true
   }
 
   const onRedo = () => {
-    if (!isInitialized(store.text)) return
+    if (!isInitialized(store.text)) return false
     const text = store.text as EditorState
     if (store.collab?.started) {
       yRedo(text)
     } else {
       redo(text, store.editorView.dispatch)
     }
+    return true
+  }
 
+  const discard = () => {
+    if (store.path) {
+      discardText()
+    } else if (store.drafts.length > 0 && isEmpty(store.text)) {
+      discardText()
+    } else {
+      selectAll(store.editorView.state, store.editorView.dispatch)
+      deleteSelection(store.editorView.state, store.editorView.dispatch)
+    }
+    return true
+  }
+
+  const toggleMarkdown = () => {
+    const state = unwrap(store)
+    const editorState = store.text as EditorState
+    const markdown = !state.markdown
+    const selection = { type: 'text', anchor: 1, head: 1 }
+    let doc: any
+
+    if (markdown) {
+      const lines = serialize(editorState).split('\n')
+      const nodes = lines.map((text) => text ? { type: 'paragraph', content: [{ type: 'text', text }] } : { type: 'paragraph' })
+
+      doc = { type: 'doc', content: nodes }
+    } else {
+      const schema = createSchema({
+        config: state.config,
+        path: state.path,
+        y: state.collab?.y,
+        markdown,
+        keymap
+      })
+
+      const parser = createMarkdownParser(schema)
+      let textContent = ''
+      editorState.doc.forEach((node) => {
+        textContent += `${node.textContent}\n`
+      })
+      const text = parser.parse(textContent)
+      doc = text.toJSON()
+    }
+
+    const extensions = createExtensions({
+      config: state.config,
+      markdown,
+      path: state.path,
+      keymap,
+      y: state.collab?.y
+    })
+
+    setState({
+      text: { selection, doc },
+      extensions,
+      markdown
+    })
     return true
   }
 
   const keymap = {
-    [`${mod}-w`]: onDiscard,
+    [`${mod}-w`]: discard,
     [`${mod}-z`]: onUndo,
     [`Shift-${mod}-z`]: onRedo,
     [`${mod}-y`]: onRedo,
-    [`${mod}-m`]: onToggleMarkdown
-  }
+    [`${mod}-m`]: toggleMarkdown
+  } as ExtensionsProps['keymap']
 
-  const createTextFromFile = async (file: File) => {
+  const createTextFromDraft = async (draft: Draft) => {
     const state = unwrap(store)
 
     const extensions = createExtensions({
       config: state.config,
-      markdown: file.markdown,
-      path: file.path,
+      markdown: draft.markdown,
+      path: draft.path,
       keymap
     })
 
     return {
-      text: file.text,
+      text: draft.text,
       extensions,
-      lastModified: file.lastModified ? new Date(file.lastModified) : undefined,
-      path: file.path,
-      markdown: file.markdown
+      lastModified: draft.lastModified ? new Date(draft.lastModified) : undefined,
+      path: draft.path,
+      markdown: draft.markdown
     }
   }
 
-  const addToFiles = (files: File[], prev: State) => {
+  const addToDrafts = (drafts: Draft[], prev: State) => {
     const text = prev.path ? undefined : (prev.text as EditorState).toJSON()
     return [
-      ...files,
+      ...drafts,
       {
         text,
-        lastModified: prev.lastModified?.toISOString(),
+        lastModified: prev.lastModified,
         path: prev.path,
         markdown: prev.markdown
       }
@@ -92,12 +141,12 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
 
   const discardText = async () => {
     const state = unwrap(store)
-    const index = state.files.length - 1
-    const file = index !== -1 ? state.files[index] : undefined
+    const index = state.drafts.length - 1
+    const draft = index !== -1 ? state.drafts[index] : undefined
 
     let next: Partial<State>
-    if (file) {
-      next = await createTextFromFile(file)
+    if (draft) {
+      next = await createTextFromDraft(draft)
     } else {
       const extensions = createExtensions({
         config: state.config ?? store.config,
@@ -114,12 +163,12 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       }
     }
 
-    const files = state.files.filter((f: File) => f !== file)
+    const drafts = state.drafts.filter((f: Draft) => f !== draft)
 
     setState({
-      files,
+      drafts,
       ...next,
-      collab: file ? undefined : state.collab,
+      collab: draft ? undefined : state.collab,
       error: undefined
     })
   }
@@ -171,14 +220,14 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
       newst.lastModified = new Date(newst.lastModified)
     }
 
-    for (const file of parsed.files) {
-      if (!isFile(file)) {
-        throw new ServiceError('invalid_file', file)
+    for (const draft of parsed.drafts || []) {
+      if (!isDraft(draft)) {
+        throw new ServiceError('invalid_draft', draft)
       }
     }
 
     if (!isState(newst)) {
-      throw new ServiceError('invalid_state', newState)
+      throw new ServiceError('invalid_state', newst)
     }
 
     return newst
@@ -190,23 +239,12 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     setState({
       ...newState(),
       loading: 'initialized',
-      files: [],
+      drafts: [],
       fullscreen: store.fullscreen,
       lastModified: new Date(),
       error: undefined,
       text: undefined
     })
-  }
-
-  const discard = async () => {
-    if (store.path) {
-      await discardText()
-    } else if (store.files.length > 0 && isEmpty(store.text)) {
-      await discardText()
-    } else {
-      selectAll(store.editorView.state, store.editorView.dispatch)
-      deleteSelection(store.editorView.state, store.editorView.dispatch)
-    }
   }
 
   const init = async () => {
@@ -235,9 +273,9 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
   }
 
   const saveState = () => debounce(async (state: State) => {
-    const data: any = {
+    const data: State = {
       lastModified: state.lastModified,
-      files: state.files,
+      drafts: state.drafts,
       config: state.config,
       path: state.path,
       markdown: state.markdown,
@@ -283,14 +321,14 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
 
     let newst = state
     if ((backup && !isEmpty(state.text)) || state.path) {
-      let files = state.files
+      let drafts = state.drafts
       if (!state.error) {
-        files = addToFiles(files, state)
+        drafts = addToDrafts(drafts, state)
       }
 
       newst = {
         ...state,
-        files,
+        drafts,
         lastModified: undefined,
         path: undefined,
         error: undefined
@@ -315,53 +353,6 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
 
     setState({ collab: undefined, extensions })
     window.history.replaceState(null, '', '/')
-  }
-
-  const toggleMarkdown = () => {
-    const state = unwrap(store)
-    const editorState = store.text as EditorState
-    const markdown = !state.markdown
-    const selection = { type: 'text', anchor: 1, head: 1 }
-    let doc: any
-
-    if (markdown) {
-      const lines = serialize(editorState).split('\n')
-      const nodes = lines.map((text) => {
-        return text ? { type: 'paragraph', content: [{ type: 'text', text }] } : { type: 'paragraph' }
-      })
-
-      doc = { type: 'doc', content: nodes }
-    } else {
-      const schema = createSchema({
-        config: state.config,
-        path: state.path,
-        y: state.collab?.y,
-        markdown,
-        keymap
-      })
-
-      const parser = createMarkdownParser(schema)
-      let textContent = ''
-      editorState.doc.forEach((node) => {
-        textContent += `${node.textContent}\n`
-      })
-      const text = parser.parse(textContent)
-      doc = text.toJSON()
-    }
-
-    const extensions = createExtensions({
-      config: state.config,
-      markdown,
-      path: state.path,
-      keymap,
-      y: state.collab?.y
-    })
-
-    setState({
-      text: { selection, doc },
-      extensions,
-      markdown
-    })
   }
 
   const updateConfig = (config: Partial<Config>) => {

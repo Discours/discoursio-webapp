@@ -5,10 +5,22 @@ import type { WebrtcProvider } from 'y-webrtc'
 import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 import type { Command, EditorState } from 'prosemirror-state'
 import type { EditorView } from 'prosemirror-view'
+import type { Schema } from 'prosemirror-model'
 
+export interface ExtensionsProps {
+  data?: unknown
+  keymap?: { [key: string]: Command }
+  config: Config
+  markdown: boolean
+  path?: string
+  y?: YOptions
+  schema?: Schema
+  collab?: Collab
+  typewriterMode?: boolean
+}
 export interface Args {
   cwd?: string;
-  file?: string;
+  draft?: string;
   room?: string;
   text?: any;
 }
@@ -56,11 +68,11 @@ export interface State {
   extensions?: ProseMirrorExtension[];
   markdown?: boolean;
   lastModified?: Date;
-  files: File[];
+  drafts: Draft[];
   config: Config;
   error?: ErrorObject;
-  loading: LoadingType;
-  fullscreen: boolean;
+  loading?: LoadingType;
+  fullscreen?: boolean;
   collab?: Collab;
   path?: string;
   args?: Args;
@@ -74,13 +86,6 @@ export interface Draft {
   path?: string
   markdown?: boolean
   extensions?: ProseMirrorExtension[]
-}
-
-export interface File {
-  text?: { [key: string]: any };
-  lastModified?: string;
-  path?: string;
-  markdown?: boolean;
 }
 
 export class ServiceError extends Error {
@@ -97,7 +102,7 @@ export const useState = () => useContext(StateContext)
 
 export const newState = (props: Partial<State> = {}): State => ({
   extensions: [],
-  files: [],
+  drafts: [],
   loading: 'loading',
   fullscreen: false,
   markdown: false,

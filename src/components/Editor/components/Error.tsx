@@ -12,8 +12,8 @@ export default () => {
       <Match when={store.error.id === 'invalid_config'}>
         <InvalidState title='Invalid Config' />
       </Match>
-      <Match when={store.error.id === 'invalid_file'}>
-        <InvalidState title='Invalid File' />
+      <Match when={store.error.id === 'invalid_draft'}>
+        <InvalidState title='Invalid Draft' />
       </Match>
     </Switch>
   )

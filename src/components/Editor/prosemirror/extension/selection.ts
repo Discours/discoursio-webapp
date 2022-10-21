@@ -1,6 +1,6 @@
 import { renderGrouped } from "prosemirror-menu";
 import { Plugin } from "prosemirror-state";
-import { ProseMirrorExtension } from "../helpers";
+import type { ProseMirrorExtension } from "../helpers";
 import { buildMenuItems } from "./menu";
 
 export class SelectionTooltip {
@@ -10,7 +10,7 @@ export class SelectionTooltip {
     this.tooltip = document.createElement("div");
     this.tooltip.className = "tooltip";
     view.dom.parentNode.appendChild(this.tooltip);
-    const { dom } = renderGrouped(view, buildMenuItems(schema).fullMenu);
+    const { dom } = renderGrouped(view, buildMenuItems(schema).fullMenu as any);
     this.tooltip.appendChild(dom);
     this.update(view, null);
   }

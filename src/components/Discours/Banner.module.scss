@@ -1,14 +1,10 @@
-.discours-banner {
+.discoursBanner {
   background: #f8f8f8;
   margin-bottom: 6.4rem;
   padding: 0.8rem 0 0;
 
   @include media-breakpoint-down(sm) {
     font-size: 80%;
-  }
-
-  @include media-breakpoint-up(md) {
-    margin-top: -6.4rem;
   }
 
   h3 {
@@ -29,7 +25,7 @@
   }
 }
 
-.discours-banner__content {
+.discoursBannerContent {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -47,7 +43,7 @@
   }
 }
 
-.discours-banner__image {
+.discoursBannerImage {
   align-items: flex-end;
   display: flex;
 }

@@ -12,30 +12,33 @@
   }
 }
 
-.author__details {
+.authorDetails {
   display: flex;
   flex: 1;
   padding-right: 1.2rem;
   width: max-content;
 }
 
-.author__details-wrapper {
+.authorDetailsWrapper {
   flex: 1;
 }
 
-.author__name {
+.authorName {
   border: none !important;
   font-size: 1.7rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
 }
 
-.author__about {
+.authorAbout {
   font-size: 1.5rem;
   color: rgb(0 0 0 / 60%);
 }
 
-.author__subscribe {
+.authorSubscribe {
+  align-items: center;
+  display: flex;
+
   @include media-breakpoint-down(lg) {
     padding: 0 0 0 42px;
   }
@@ -47,6 +50,7 @@
     height: 32px;
     margin-right: 0.4rem;
     position: relative;
+    transition: background-color 0.2s;
     vertical-align: middle;
     width: 32px;
 
@@ -62,7 +66,16 @@
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
+      transition: filter 0.2s;
       width: 18px;
+    }
+
+    &:hover {
+      background: #000;
+
+      &::before {
+        filter: invert(0);
+      }
     }
   }
 
@@ -95,9 +108,19 @@
       background-image: url(/icons/tumblr-white.svg);
     }
   }
+
+  a[href*='instagram.com/'] {
+    &::before {
+      background-image: url(/icons/instagram-white.svg);
+    }
+  }
+
+  button {
+    margin-right: 0.5em;
+  }
 }
 
-.button--subscribe {
+.buttonSubscribe {
   align-items: center;
   aspect-ratio: 1/1;
   background: #f6f6f6;
@@ -110,14 +133,16 @@
   }
 }
 
-.button__label {
+.buttonLabel {
   display: none;
 }
 
-.button--write {
+.buttonWrite {
   background: #f7f7f7;
   color: #000;
   display: inline-flex;
+  transition: background-color 0.3s, color 0.3s;
+
   @include font-size(1.5rem);
 
   &:hover {
@@ -153,65 +178,6 @@
   }
 
   .authorSubscribe {
-    margin-top: 2rem;
-  }
-
-  .authorDetails {
-    display: block;
-  }
-
-  .buttonLabel {
-    display: block;
-  }
-
-  .buttonSubscribe {
-    aspect-ratio: auto;
-    background-color: #000;
-    border-radius: 2px;
-    float: none;
-    padding-bottom: 0.6rem;
-    padding-top: 0.6rem;
-
-    .icon {
-      margin-right: 0.5em;
-
-      img {
-        filter: invert(1);
-      }
-    }
-
-    &:hover {
-      .icon img {
-        filter: invert(0.7);
-      }
-    }
-  }
-
-  .buttonSubscribe img {
-    vertical-align: text-top;
-  }
-
-  .button {
-    margin-right: 1.6rem;
-    vertical-align: middle;
-  }
-}
-
-.authorPage {
-  .authorName {
-    @include font-size(3.4rem);
-
-    font-weight: 500;
-    margin-bottom: 0.2em;
-  }
-
-  .authorAbout {
-    color: #696969;
-    @include font-size(1.7rem);
-  }
-
-  .authorSubscribe {
-    display: flex;
     margin-top: 2rem;
   }
 

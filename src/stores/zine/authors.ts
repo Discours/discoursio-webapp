@@ -12,7 +12,7 @@ export type AuthorsSortBy = 'shouts' | 'name' | 'rating'
 
 const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('shouts')
 
-export { setSortAllBy }
+export const setAuthorsSort = (sortBy: AuthorsSortBy) => setSortAllBy(sortBy)
 
 const [authorEntities, setAuthorEntities] = createSignal<{ [authorSlug: string]: Author }>({})
 const [authorsByTopic, setAuthorsByTopic] = createSignal<{ [topicSlug: string]: Author[] }>({})

@@ -19,7 +19,7 @@ export const SearchView = (props: Props) => {
   const { sortedArticles } = useArticlesStore({ sortedArticles: props.results })
   const [getQuery, setQuery] = createSignal(props.query)
 
-  const { getSearchParams } = useRouter<SearchPageSearchParams>()
+  const { searchParams } = useRouter<SearchPageSearchParams>()
 
   const handleQueryChange = (ev) => {
     setQuery(ev.target.value)
@@ -48,7 +48,7 @@ export const SearchView = (props: Props) => {
       <ul class="view-switcher">
         <li
           classList={{
-            selected: getSearchParams().by === 'relevance'
+            selected: searchParams().by === 'relevance'
           }}
         >
           <a href="?by=relevance" onClick={handleClientRouteLinkClick}>
@@ -57,7 +57,7 @@ export const SearchView = (props: Props) => {
         </li>
         <li
           classList={{
-            selected: getSearchParams().by === 'rating'
+            selected: searchParams().by === 'rating'
           }}
         >
           <a href="?by=rating" onClick={handleClientRouteLinkClick}>

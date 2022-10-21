@@ -132,7 +132,7 @@
   "collections": "коллекции",
   "community": "сообщество",
   "email not confirmed": "email не подтвержден",
-  "enter": "войти",
+  "Enter": "Войти",
   "feed": "лента",
   "follower": "подписчик",
   "invalid password": "некорректный пароль",
@@ -146,5 +146,17 @@
   "zine": "журнал",
   "Please, confirm email": "Пожалуйста, подтвердите электронную почту",
   "Something went wrong, check email and password": "Что-то пошло не так. Проверьте адрес электронной почты и пароль",
-  "You was successfully authorized": "Вы были успешно авторизованы"
+  "You was successfully authorized": "Вы были успешно авторизованы",
+  "Invalid email": "Проверьте правильность ввода почты",
+  "Please enter email": "Пожалуйста, введите почту",
+  "Please enter password": "Пожалуйста, введите пароль",
+  "Please enter password again": "Пожалуйста, введите пароль ещё рез",
+  "Join": "Присоединиться",
+  "Please enter a name to sign your comments and publication": "Пожалуйста, введите имя, которое будет отображаться на сайте",
+  "Full name": "Имя и фамилия",
+  "Restore password": "Восстановить пароль",
+  "Hooray! Welcome!": "Ура! Добро пожаловать!",
+  "You've confirmed email": "Вы подтвердили почту",
+  "This email is already taken. If it's you": "Такой email уже зарегистрирован. Если это вы",
+  "enter": "войдите"
 }

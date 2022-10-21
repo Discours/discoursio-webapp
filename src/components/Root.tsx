@@ -1,7 +1,7 @@
 // FIXME: breaks on vercel, research
 // import 'solid-devtools'
 
-import { setLocale } from '../stores/ui'
+import { hideModal, MODALS, setLocale, showModal } from '../stores/ui'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
 import { Dynamic, isServer } from 'solid-js/web'
@@ -50,6 +50,11 @@ import { CreatePage } from './Pages/CreatePage'
 
 const log = getLogger('root')
 
+type RootSearchParams = {
+  modal: string
+  lang: string
+}
+
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
   create: CreatePage,
   home: HomePage,
@@ -71,16 +76,19 @@ const pagesMap: Record<keyof Routes, Component<PageProps>> = {
 }
 
 export const Root = (props: PageProps) => {
-  const { getPage } = useRouter()
+  const { page, searchParams } = useRouter<RootSearchParams>()
 
-  // log.debug({ route: getPage().route })
+  createEffect(() => {
+    const modal = MODALS[searchParams().modal]
+    if (modal) {
+      showModal(modal)
+    }
+  })
 
   const pageComponent = createMemo(() => {
-    const result = pagesMap[getPage().route]
+    const result = pagesMap[page().route]
 
-    // log.debug('page', getPage())
-
-    if (!result || getPage().path === '/404') {
+    if (!result || page().path === '/404') {
       return FourOuFourPage
     }
 
@@ -89,10 +97,10 @@ export const Root = (props: PageProps) => {
 
   if (!isServer) {
     createEffect(() => {
-      const lang = new URLSearchParams(window.location.search).get('lang') || 'ru'
+      const lang = searchParams().lang || 'ru'
       console.log('[root] client locale is', lang)
       setLocale(lang)
-    }, [window.location.search])
+    })
   }
 
   return <Dynamic component={pageComponent()} {...props} />

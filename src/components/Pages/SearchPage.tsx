@@ -10,7 +10,7 @@ export const SearchPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
 
   const q = createMemo(() => {
-    const { getPage } = useRouter()
+    const { page: getPage } = useRouter()
 
     const page = getPage()
 

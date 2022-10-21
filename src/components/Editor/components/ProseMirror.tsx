@@ -1,11 +1,11 @@
 import { createEffect, untrack } from 'solid-js'
 import { Store, unwrap } from 'solid-js/store'
-import { EditorState, Transaction } from 'prosemirror-state'
+import { EditorState, EditorStateConfig, Transaction } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
 import { Schema } from 'prosemirror-model'
-import { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
+import type { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 
-interface Props {
+interface ProseMirrorProps {
   style?: string;
   className?: string;
   text?: Store<ProseMirrorState>;
@@ -16,7 +16,7 @@ interface Props {
   onChange: (s: EditorState) => void;
 }
 
-export const ProseMirror = (props: Props) => {
+export const ProseMirror = (props: ProseMirrorProps) => {
   let editorRef: HTMLDivElement
   const editorView = () => untrack(() => unwrap(props.editorView))
 
@@ -30,7 +30,7 @@ export const ProseMirror = (props: Props) => {
 
   createEffect((payload: [EditorState, ProseMirrorExtension[]]) => {
     const [prevText, prevExtensions] = payload
-    const text: EditorState = unwrap(props.text)
+    const text = unwrap(props.text)
     const extensions: ProseMirrorExtension[] = unwrap(props.extensions)
     if (!text || !extensions?.length) {
       return [text, extensions]
@@ -63,7 +63,7 @@ export const ProseMirror = (props: Props) => {
     <div
       style={props.style}
       ref={editorRef}
-      className={props.className}
+      class={props.className}
       spell-check={false}
     />
   )
@@ -101,7 +101,7 @@ const createEditorState = (
 
   let editorState: EditorState
   if (reconfigure) {
-    editorState = text.reconfigure({ schema, plugins })
+    editorState = text.reconfigure({ schema, plugins } as EditorStateConfig)
   } else if (text instanceof EditorState) {
     editorState = EditorState.fromJSON({ schema, plugins }, text.toJSON())
   } else if (text){

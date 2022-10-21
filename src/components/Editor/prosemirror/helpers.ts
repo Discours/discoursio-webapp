@@ -1,6 +1,6 @@
 import { Plugin, EditorState } from 'prosemirror-state'
-import { Node, Schema, SchemaSpec } from 'prosemirror-model'
-import { Decoration, EditorView, NodeView } from 'prosemirror-view'
+import type { Node, Schema, SchemaSpec } from 'prosemirror-model'
+import type { Decoration, EditorView, NodeView } from 'prosemirror-view'
 
 export interface ProseMirrorExtension {
   schema?: (prev: SchemaSpec) => SchemaSpec;
@@ -21,7 +21,7 @@ export const isInitialized = (state: any) => state !== undefined && state instan
 
 export const isEmpty = (state: any) =>
   !isInitialized(state) ||
-  (state.doc.childCount == 1 &&
+  (state.doc.childCount === 1 &&
     !state.doc.firstChild.type.spec.code &&
     state.doc.firstChild.isTextblock &&
-    state.doc.firstChild.content.size == 0)
+    state.doc.firstChild.content.size === 0)

@@ -1,12 +1,13 @@
-import { Config } from '../store/context'
+import type { JSX } from 'solid-js/jsx-runtime';
+import type { Config } from '../store/context'
 import '../styles/Layout.scss'
 
 export type Styled = {
-  children: any;
+  children: JSX.Element;
   config?: Config;
   'data-testid'?: string;
   onClick?: () => void;
-  onMouseEnter?: (e: any) => void;
+  onMouseEnter?: (e: MouseEvent) => void;
 }
 
 export const Layout = (props: Styled) => {

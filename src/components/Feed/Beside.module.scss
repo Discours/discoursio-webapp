@@ -3,6 +3,10 @@
   list-style-type: none;
   padding-left: 0;
 
+  @include media-breakpoint-up(md) {
+    margin-bottom: 0;
+  }
+
   a {
     border: none;
   }
@@ -16,6 +20,12 @@
 
       &:last-child {
         border: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+
+        .shoutCardContent {
+          margin-bottom: 0;
+        }
       }
 
       &::before {

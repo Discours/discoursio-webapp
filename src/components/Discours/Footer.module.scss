@@ -1,4 +1,4 @@
-.discours-footer {
+.discoursFooter {
   background: #000;
   color: rgb(255 255 255 / 64%);
   @include font-size(1.7rem);
@@ -34,21 +34,21 @@
     margin-top: 0.8rem;
   }
 
-  .wide-container {
+  .wideContainer {
     @include media-breakpoint-down(sm) {
       padding: 0 $container-padding-x;
     }
   }
 }
 
-.discours-footer__content {
+.discoursFooterContent {
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding-left: $grid-gutter-width;
 }
 
-.footer-copyright {
+.footerCopyright {
   border-top: 5px solid #404040;
   color: #696969;
   @include font-size(1.5rem);
@@ -56,7 +56,7 @@
   padding-top: 1.6rem;
 }
 
-.footer-copyright__social {
+.footerCopyrightSocial {
   display: flex;
 
   .icon {
@@ -75,12 +75,19 @@
   }
 }
 
-.social__item {
-  text-align: right;
+.socialItem {
+  margin-top: 1em;
+  text-align: center;
   width: 25%;
+
+  @include media-breakpoint-up(md) {
+    margin-top: 0;
+    margin-left: 0.3em;
+    text-align: right;
+  }
 }
 
-.social__item--vk {
+.socialItemvk {
   img {
     max-width: 25px;
   }

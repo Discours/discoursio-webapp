@@ -5,6 +5,12 @@
   margin-bottom: 2.4rem;
   position: relative;
 
+  @include media-breakpoint-up(md) {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
   &:hover {
     .shoutCardCover img {
       transform: scale(1.05);
@@ -212,6 +218,10 @@
 
   @include media-breakpoint-up(md) {
     margin-bottom: 2em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -477,7 +487,7 @@
 .shoutCardVertical {
   aspect-ratio: auto;
   height: 100%;
-  margin: 1.6rem 0;
+  margin: 0;
   padding: 0 0 20%;
 
   @include media-breakpoint-up(md) {

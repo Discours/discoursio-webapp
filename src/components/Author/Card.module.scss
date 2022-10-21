@@ -3,35 +3,39 @@
   display: flex;
   margin-bottom: 2.4rem;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   @include media-breakpoint-down(lg) {
     flex-wrap: wrap;
   }
 }
 
-.authorDetails {
+.author__details {
   display: flex;
   flex: 1;
   padding-right: 1.2rem;
   width: max-content;
 }
 
-.authorDetailsWrapper {
+.author__details-wrapper {
   flex: 1;
 }
 
-.authorName {
+.author__name {
   border: none !important;
   font-size: 1.7rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
 }
 
-.authorAbout {
+.author__about {
   font-size: 1.5rem;
   color: rgb(0 0 0 / 60%);
 }
 
-.authorSubscribe {
+.author__subscribe {
   @include media-breakpoint-down(lg) {
     padding: 0 0 0 42px;
   }
@@ -43,11 +47,11 @@
     height: 32px;
     margin-right: 0.4rem;
     position: relative;
-    transition: background-color 0.2s;
     vertical-align: middle;
     width: 32px;
 
     &::before {
+      background-image: url(/icons/user-link-default.svg);
       background-repeat: no-repeat;
       background-position: 50% 50%;
       background-size: contain;
@@ -58,16 +62,7 @@
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
-      transition: filter 0.2s;
       width: 18px;
-    }
-
-    &:hover {
-      background: #000;
-
-      &::before {
-        filter: invert(0);
-      }
     }
   }
 
@@ -100,15 +95,9 @@
       background-image: url(/icons/tumblr-white.svg);
     }
   }
-
-  a[href*='instagram.com/'] {
-    &::before {
-      background-image: url(/icons/instagram-white.svg);
-    }
-  }
 }
 
-.buttonSubscribe {
+.button--subscribe {
   align-items: center;
   aspect-ratio: 1/1;
   background: #f6f6f6;
@@ -121,16 +110,24 @@
   }
 }
 
-.buttonLabel {
+.button__label {
   display: none;
 }
 
-.buttonWrite {
+.button--write {
   background: #f7f7f7;
   color: #000;
   display: inline-flex;
-
   @include font-size(1.5rem);
+
+  &:hover {
+    background: #000;
+    color: #fff;
+
+    img {
+      filter: invert(1);
+    }
+  }
 
   .icon {
     margin-right: 0.5em;
@@ -138,6 +135,65 @@
 
   img {
     height: 15px;
+    transition: filter 0.3s;
+  }
+}
+
+.authorPage {
+  .authorName {
+    @include font-size(3.4rem);
+
+    font-weight: 500;
+    margin-bottom: 0.2em;
+  }
+
+  .authorAbout {
+    color: #696969;
+    @include font-size(1.7rem);
+  }
+
+  .authorSubscribe {
+    margin-top: 2rem;
+  }
+
+  .authorDetails {
+    display: block;
+  }
+
+  .buttonLabel {
+    display: block;
+  }
+
+  .buttonSubscribe {
+    aspect-ratio: auto;
+    background-color: #000;
+    border-radius: 2px;
+    float: none;
+    padding-bottom: 0.6rem;
+    padding-top: 0.6rem;
+
+    .icon {
+      margin-right: 0.5em;
+
+      img {
+        filter: invert(1);
+      }
+    }
+
+    &:hover {
+      .icon img {
+        filter: invert(0.7);
+      }
+    }
+  }
+
+  .buttonSubscribe img {
+    vertical-align: text-top;
+  }
+
+  .button {
+    margin-right: 1.6rem;
+    vertical-align: middle;
   }
 }
 

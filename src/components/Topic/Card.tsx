@@ -8,7 +8,6 @@ import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
-
 interface TopicProps {
   topic: Topic
   compact?: boolean

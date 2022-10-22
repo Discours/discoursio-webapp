@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onMount, Show } from 'solid-js'
 import style from './Popup.module.scss'
 import { hideModal, useModalStore } from '../../stores/ui'
-import {clsx} from 'clsx';
+import { clsx } from 'clsx'
 
 interface PopupProps {
   name: string
@@ -10,7 +10,7 @@ interface PopupProps {
 }
 
 export const Popup = (props: PopupProps) => {
-  const { getModal } = useModalStore()
+  const { modal } = useModalStore()
 
   onMount(() => {
     window.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -20,14 +20,12 @@ export const Popup = (props: PopupProps) => {
 
   const [visible, setVisible] = createSignal(false)
   createEffect(() => {
-    setVisible(getModal() === props.name)
+    setVisible(modal() === props.name)
   })
 
   return (
     <Show when={visible()}>
-      <div class={clsx(style.popup, props.class)}>
-        {props.children}
-      </div>
+      <div class={clsx(style.popup, props.class)}>{props.children}</div>
     </Show>
   )
 }

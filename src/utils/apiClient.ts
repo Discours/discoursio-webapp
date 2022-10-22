@@ -11,7 +11,7 @@ import authLogoutQuery from '../graphql/mutation/auth-logout'
 import authLoginQuery from '../graphql/query/auth-login'
 import authRegisterMutation from '../graphql/mutation/auth-register'
 import authCheckEmailQuery from '../graphql/query/auth-check-email'
-import authConfirmCodeMutation from '../graphql/mutation/auth-confirm-email'
+import authConfirmEmailMutation from '../graphql/mutation/auth-confirm-email'
 import authSendLinkMutation from '../graphql/mutation/auth-send-link'
 import followMutation from '../graphql/mutation/follow'
 import unfollowMutation from '../graphql/mutation/unfollow'
@@ -32,7 +32,7 @@ import myChats from '../graphql/query/my-chats'
 const FEED_SIZE = 50
 const REACTIONS_PAGE_SIZE = 100
 
-type ApiErrorCode = 'unknown' | 'email_not_confirmed' | 'user_not_found'
+type ApiErrorCode = 'unknown' | 'email_not_confirmed' | 'user_not_found' | 'user_already_exists'
 
 export class ApiError extends Error {
   code: ApiErrorCode
@@ -65,12 +65,26 @@ export const apiClient = {
 
     return response.data.signIn
   },
-  authRegister: async ({ email, password = '', name = '' }): Promise<AuthResult> => {
-    // NOTE: name is to display
+  authRegister: async ({
+    email,
+    password,
+    name
+  }: {
+    email: string
+    password: string
+    name: string
+  }): Promise<void> => {
     const response = await publicGraphQLClient
       .mutation(authRegisterMutation, { email, password, name })
       .toPromise()
-    return response.data.registerUser
+
+    if (response.error) {
+      if (response.error.message === '[GraphQL] User already exist') {
+        throw new ApiError('user_already_exists', response.error.message)
+      }
+
+      throw new ApiError('unknown', response.error.message)
+    }
   },
   authSignOut: async () => {
     const response = await publicGraphQLClient.query(authLogoutQuery, {}).toPromise()
@@ -79,6 +93,7 @@ export const apiClient = {
   authCheckEmail: async ({ email }) => {
     // check if email is used
     const response = await publicGraphQLClient.query(authCheckEmailQuery, { email }).toPromise()
+    log.debug('authCheckEmail', response)
     return response.data.isEmailUsed
   },
   authSendLink: async ({ email }) => {
@@ -86,10 +101,21 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authSendLinkMutation, { email }).toPromise()
     return response.data.reset
   },
-  authConfirmCode: async ({ code }) => {
+  confirmEmail: async ({ token }: { token: string }) => {
     // confirm email with code from link
-    const response = await publicGraphQLClient.query(authConfirmCodeMutation, { code }).toPromise()
-    return response.data.reset
+    const response = await publicGraphQLClient
+      .mutation(authConfirmEmailMutation, { code: token })
+      .toPromise()
+
+    if (response.error) {
+      throw new ApiError('unknown', response.error.message)
+    }
+
+    if (response.data?.confirmEmail?.error) {
+      throw new ApiError('unknown', response.data?.confirmEmail?.error)
+    }
+
+    return response.data.confirmEmail
   },
 
   getTopArticles: async () => {
@@ -216,6 +242,16 @@ export const apiClient = {
   getSession: async (): Promise<AuthResult> => {
     // renew session with auth token in header (!)
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
+
+    if (response.error) {
+      // TODO
+      throw new ApiError('unknown', response.error.message)
+    }
+
+    if (response.data?.refreshSession?.error) {
+      throw new ApiError('unknown', response.data.refreshSession.error)
+    }
+
     return response.data.refreshSession
   },
   getPublishedArticles: async ({ limit = FEED_SIZE, offset }: { limit?: number; offset?: number }) => {

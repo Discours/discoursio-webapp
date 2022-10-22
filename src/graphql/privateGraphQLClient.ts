@@ -1,7 +1,6 @@
 import { createClient, ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
-import { baseUrl } from './publicGraphQLClient'
-import { isDev } from '../utils/config'
+import { isDev, apiBaseUrl } from '../utils/config'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
@@ -20,7 +19,7 @@ export const resetToken = () => {
 }
 
 const options: ClientOptions = {
-  url: baseUrl,
+  url: apiBaseUrl,
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   fetchOptions: () => {

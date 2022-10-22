@@ -15,9 +15,9 @@ export default gql`
       }
       news {
         unread
-        inbox
         topics
         authors
+        reactions
         communities
       }
     }

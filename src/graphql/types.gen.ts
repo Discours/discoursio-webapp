@@ -260,8 +260,8 @@ export type MutationRateUserArgs = {
 
 export type MutationRegisterUserArgs = {
   email: Scalars['String']
-  password?: InputMaybe<Scalars['String']>
   name?: InputMaybe<Scalars['String']>
+  password?: InputMaybe<Scalars['String']>
 }
 
 export type MutationRemoveAuthorArgs = {
@@ -271,6 +271,7 @@ export type MutationRemoveAuthorArgs = {
 
 export type MutationSendLinkArgs = {
   email: Scalars['String']
+  lang?: InputMaybe<Scalars['String']>
 }
 
 export type MutationUnfollowArgs = {
@@ -489,6 +490,7 @@ export type QueryShoutsForFeedArgs = {
 
 export type QuerySignInArgs = {
   email: Scalars['String']
+  lang?: InputMaybe<Scalars['String']>
   password?: InputMaybe<Scalars['String']>
 }
 

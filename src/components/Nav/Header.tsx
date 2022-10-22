@@ -4,9 +4,9 @@ import Notifications from './Notifications'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
 import { Popup } from './Popup'
-import AuthModal from './AuthModal'
+import { AuthModal } from './AuthModal'
 import { t } from '../../utils/intl'
-import {useModalStore, showModal, useWarningsStore, toggleModal} from '../../stores/ui'
+import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
@@ -21,10 +21,6 @@ const resources: { name: string; route: keyof Routes }[] = [
   { name: t('topics'), route: 'topics' }
 ]
 
-const handleEnterClick = () => {
-  showModal('auth')
-}
-
 type Props = {
   title?: string
   isHeaderFixed?: boolean
@@ -37,27 +33,29 @@ export const Header = (props: Props) => {
   const [fixed, setFixed] = createSignal(false)
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   // stores
-  const { getWarnings } = useWarningsStore()
+  const { warnings } = useWarningsStore()
   const { session } = useAuthStore()
-  const { getModal } = useModalStore()
+  const { modal } = useModalStore()
 
-  const { getPage } = useRouter()
+  const { page } = useRouter()
 
   // methods
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
   const toggleFixed = () => setFixed(!fixed())
   // effects
   createEffect(() => {
-    const isFixed = fixed() || (getModal() && getModal() !== 'share');
+    const isFixed = fixed() || (modal() && modal() !== 'share');
 
     document.body.classList.toggle('fixed', isFixed);
-    document.body.classList.toggle(styles.fixed, isFixed && !getModal());
-  }, [fixed(), getModal()])
+    document.body.classList.toggle(styles.fixed, isFixed && !modal());
+  })
 
   // derived
   const authorized = createMemo(() => session()?.user?.slug)
 
-  const handleBellIconClick = () => {
+  const handleBellIconClick = (event: Event) => {
+    event.preventDefault()
+
     if (!authorized()) {
       showModal('auth')
       return
@@ -100,31 +98,31 @@ export const Header = (props: Props) => {
           <ul class="nodash">
             <li>
               <a href="#">
-                <Icon name="vk-white" class={stylesPopup.icon}/>
+                <Icon name="vk-white" class={stylesPopup.icon} />
                 VK
               </a>
             </li>
             <li>
               <a href="#">
-                <Icon name="facebook-white" class={stylesPopup.icon}/>
+                <Icon name="facebook-white" class={stylesPopup.icon} />
                 Facebook
               </a>
             </li>
             <li>
               <a href="#">
-                <Icon name="twitter-white" class={stylesPopup.icon}/>
+                <Icon name="twitter-white" class={stylesPopup.icon} />
                 Twitter
               </a>
             </li>
             <li>
               <a href="#">
-                <Icon name="telegram-white" class={stylesPopup.icon}/>
+                <Icon name="telegram-white" class={stylesPopup.icon} />
                 Telegram
               </a>
             </li>
             <li>
               <a href="#">
-                <Icon name="link-white" class={stylesPopup.icon}/>
+                <Icon name="link-white" class={stylesPopup.icon} />
                 {t('Copy link')}
               </a>
             </li>
@@ -148,7 +146,7 @@ export const Header = (props: Props) => {
             >
               <For each={resources}>
                 {(r) => (
-                  <li classList={{ [styles.selected]: r.route === getPage().route }}>
+                  <li classList={{ [styles.selected]: r.route === page().route }}>
                     <a href={getPagePath(router, r.route, null)} onClick={handleClientRouteLinkClick}>
                       {r.name}
                     </a>
@@ -166,9 +164,9 @@ export const Header = (props: Props) => {
           <div class={styles.usernav}>
             <div class={clsx(privateStyles.userControl, styles.userControl, 'col')}>
               <div class={privateStyles.userControlItem}>
-                <a href="#auth" onClick={handleBellIconClick}>
+                <a href="#" onClick={handleBellIconClick}>
                   <div>
-                    <Icon name="bell-white" counter={authorized() ? getWarnings().length : 1} />
+                    <Icon name="bell-white" counter={authorized() ? warnings().length : 1} />
                   </div>
                 </a>
               </div>
@@ -183,7 +181,7 @@ export const Header = (props: Props) => {
                 when={authorized()}
                 fallback={
                   <div class={clsx(privateStyles.userControlItem, 'loginbtn')}>
-                    <a href="#auth" onClick={handleEnterClick}>
+                    <a href="?modal=auth&mode=login" onClick={handleClientRouteLinkClick}>
                       <Icon name="user-anonymous" />
                     </a>
                   </div>
@@ -194,8 +192,13 @@ export const Header = (props: Props) => {
             </div>
             <Show when={props.title}>
               <div class={styles.articleControls}>
-                <button onClick={() => {toggleModal('share')}}>
-                  <Icon name="share-outline" class={styles.icon}/>
+                <button
+                  onClick={() => {
+                    // FIXME: Popup
+                    showModal('share')
+                  }}
+                >
+                  <Icon name="share-outline" class={styles.icon} />
                 </button>
                 <a href="#comments">
                   <Icon name="comments-outline" class={styles.icon} />

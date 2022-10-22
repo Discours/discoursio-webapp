@@ -2,7 +2,7 @@ import { createEffect, createMemo, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
-import { setSortAllBy as setSortAllTopicsBy, useTopicsStore } from '../../stores/zine/topics'
+import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import { useAuthStore } from '../../stores/auth'
@@ -17,17 +17,17 @@ type AllTopicsViewProps = {
 }
 
 export const AllTopicsView = (props: AllTopicsViewProps) => {
-  const { getSearchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
+  const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
-    sortBy: getSearchParams().by || 'shouts'
+    sortBy: searchParams().by || 'shouts'
   })
 
   const { session } = useAuthStore()
 
   createEffect(() => {
-    setSortAllTopicsBy(getSearchParams().by || 'shouts')
+    setTopicsSort(searchParams().by || 'shouts')
   })
 
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
@@ -66,17 +66,17 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             <div class="row">
               <div class="col">
                 <ul class="view-switcher">
-                  <li classList={{ selected: getSearchParams().by === 'shouts' || !getSearchParams().by }}>
+                  <li classList={{ selected: searchParams().by === 'shouts' || !searchParams().by }}>
                     <a href="/topics?by=shouts" onClick={handleClientRouteLinkClick}>
                       {t('By shouts')}
                     </a>
                   </li>
-                  <li classList={{ selected: getSearchParams().by === 'authors' }}>
+                  <li classList={{ selected: searchParams().by === 'authors' }}>
                     <a href="/topics?by=authors" onClick={handleClientRouteLinkClick}>
                       {t('By authors')}
                     </a>
                   </li>
-                  <li classList={{ selected: getSearchParams().by === 'title' }}>
+                  <li classList={{ selected: searchParams().by === 'title' }}>
                     <a
                       href="/topics?by=title"
                       onClick={(ev) => {
@@ -97,7 +97,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                 </ul>
 
                 <Show
-                  when={getSearchParams().by === 'title'}
+                  when={searchParams().by === 'title'}
                   fallback={() => (
                     <div class="stats">
                       <For each={sortedTopics()}>

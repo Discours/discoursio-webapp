@@ -93,7 +93,7 @@ export const apiClient = {
   authCheckEmail: async ({ email }) => {
     // check if email is used
     const response = await publicGraphQLClient.query(authCheckEmailQuery, { email }).toPromise()
-    log.debug('authCheckEmail', response)
+    console.debug('[api-client] authCheckEmail', response)
     return response.data.isEmailUsed
   },
   authSendLink: async ({ email }) => {

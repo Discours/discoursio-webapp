@@ -65,9 +65,10 @@ export const apiClient = {
 
     return response.data.signIn
   },
-  authRegister: async ({ email, password = '', username = '' }): Promise<AuthResult> => {
+  authRegister: async ({ email, password = '', name = '' }): Promise<AuthResult> => {
+    // NOTE: name is to display
     const response = await publicGraphQLClient
-      .mutation(authRegisterMutation, { email, password, username })
+      .mutation(authRegisterMutation, { email, password, name })
       .toPromise()
     return response.data.registerUser
   },

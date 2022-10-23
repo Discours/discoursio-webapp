@@ -1,10 +1,11 @@
 import { createReadStream } from 'fs'
-import { S3Client, type S3ClientConfig, PutObjectCommand } from '@aws-sdk/client-s3'
+// import { S3Client, type S3ClientConfig, PutObjectCommand } from '@aws-sdk/client-s3'
+import S3Client, { ClientConfiguration } from 'aws-sdk/clients/s3'
 
 // const accessKeyId = process.env.ACCESS_KEY
 // const secretAccessKey = process.env.SECRET_KEY
 
-const config: S3ClientConfig = {
+const config: ClientConfiguration = {
   apiVersion: '2006-03-01',
   region: 'eu-east-1'
 }
@@ -16,6 +17,6 @@ export default async function handler(req, res) {
     Key: 'file-name', // FIXME
     Body: createReadStream('file-path') // FIXME
   }
-  await s3.send(new PutObjectCommand(params))
+  // FIXME await s3.send(new PutObjectCommand(params))
   res.status(200).json() // FIXME
 }

@@ -41,6 +41,7 @@ const astroConfig: AstroUserConfig = {
         plugins: [visualizer()],
         output: {
           // eslint-disable-next-line sonarjs/cognitive-complexity
+          /*
           manualChunks(id) {
             if (id.includes('p2p')) return 'p2p'
             if (id.includes('editor') || id.includes('Editor')) return 'editor'
@@ -64,6 +65,7 @@ const astroConfig: AstroUserConfig = {
               return chunkid
             }
           }
+          */
         },
         external: ['@aws-sdk/clients/s3']
       }

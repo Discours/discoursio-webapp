@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  mutation ArticleMutation($article: Shout!) {
-    updateArticle(article: $article) {
+  mutation UpdateShoutMutation($shout: Shout!) {
+    updateShout(input: $shout) {
       error
       shout {
         _id: slug

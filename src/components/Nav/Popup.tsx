@@ -1,11 +1,11 @@
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, JSX, onMount, Show } from 'solid-js'
 import style from './Popup.module.scss'
 import { hideModal, useModalStore } from '../../stores/ui'
 import { clsx } from 'clsx'
 
 interface PopupProps {
   name: string
-  children: any
+  children: JSX.Element
   class?: string
 }
 

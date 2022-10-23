@@ -1,7 +1,7 @@
 const prefix = 'ProseMirror-prompt'
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function openPrompt(options: any) {
+export function openPrompt(options) {
   const wrapper = document.body.appendChild(document.createElement('div'))
   wrapper.className = prefix
 
@@ -14,7 +14,7 @@ export function openPrompt(options: any) {
     if (wrapper.parentNode) wrapper.remove()
   }
 
-  const domFields: Node[] = []
+  const domFields: HTMLElement[] = []
   options.fields.forEach((name) => {
     domFields.push(options.fields[name].render())
   })
@@ -33,7 +33,7 @@ export function openPrompt(options: any) {
   if (options.title) {
     form.appendChild(document.createElement('h5')).textContent = options.title
   }
-  domFields.forEach((field: Node) => {
+  domFields.forEach((field: HTMLElement) => {
     form.appendChild(document.createElement('div')).appendChild(field)
   })
   const buttons = form.appendChild(document.createElement('div'))
@@ -77,7 +77,7 @@ export function openPrompt(options: any) {
   if (input) input.focus()
 }
 
-function getValues(fields: any, domFields: any) {
+function getValues(fields: any, domFields: HTMLElement[]) {
   const result = Object.create(null)
   let i = 0
   fields.forEarch((name) => {

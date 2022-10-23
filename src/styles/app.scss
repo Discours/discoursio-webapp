@@ -308,7 +308,7 @@ input[type='checkbox'] {
     position: relative;
 
     &::before {
-      background: url('/icons/checkbox.svg') no-repeat;
+      // background: url('/icons/checkbox.svg') no-repeat;
       content: '';
       height: 2rem;
       left: 0;
@@ -320,7 +320,8 @@ input[type='checkbox'] {
 
   &:checked + label {
     &::before {
-      background-image: url('/icons/checkbox-checked.svg');
+      // background-image: url('/icons/checkbox-checked.svg');
+      position: relative;
     }
   }
 }

@@ -2,7 +2,7 @@ import { Plugin, Transaction } from 'prosemirror-state'
 import { Fragment, Node, Schema, Slice } from 'prosemirror-model'
 import type { ProseMirrorExtension } from '../helpers'
 import { createMarkdownParser } from '../../markdown'
-import { openPrompt } from './prompt'
+// import { openPrompt } from './prompt'
 
 const URL_REGEX = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:\d+)?(\/|\/([\w!#%&+./:=?@-]))?/g
 
@@ -11,7 +11,7 @@ const transform = (schema: Schema, fragment: Fragment) => {
   fragment.forEach((child: Node) => {
     if (child.isText) {
       let pos = 0
-      let match: any
+      let match: RegExpExecArray
 
       while ((match = URL_REGEX.exec(child.text)) !== null) {
         const start = match.index

@@ -89,6 +89,11 @@ export interface Draft {
   extensions?: ProseMirrorExtension[]
 }
 
+export interface EditorActions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key:string]: any
+}
+
 export class ServiceError extends Error {
   public errorObject: ErrorObject
   constructor(id: string, props: unknown) {
@@ -97,7 +102,7 @@ export class ServiceError extends Error {
   }
 }
 
-export const StateContext = createContext<[Store<State>, any]>([undefined, undefined])
+export const StateContext = createContext<[Store<State>, EditorActions]>([undefined, undefined])
 
 export const useState = () => useContext(StateContext)
 

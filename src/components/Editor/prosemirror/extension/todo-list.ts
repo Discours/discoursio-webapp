@@ -1,9 +1,10 @@
-import { DOMOutputSpec, DOMSerializer, Node as ProsemirrorNode, NodeType, Schema } from 'prosemirror-model'
+import { DOMOutputSpec, DOMSerializer, Node as ProsemirrorNode, NodeSpec, NodeType, Schema } from 'prosemirror-model'
 import type { EditorView } from 'prosemirror-view'
 import { wrappingInputRule , inputRules } from 'prosemirror-inputrules'
 import { splitListItem } from 'prosemirror-schema-list'
 import { keymap } from 'prosemirror-keymap'
 import type { NodeViewFn, ProseMirrorExtension } from '../helpers'
+import type OrderedMap from 'orderedmap'
 
 const todoListRule = (nodeType: NodeType) =>
   wrappingInputRule(new RegExp('^\\[( |x)]\\s$'), nodeType, (match) => ({
@@ -44,7 +45,7 @@ const todoListSchema = {
       ['div', 0]
     ]
   }
-}
+} as NodeSpec
 
 class TodoItemView {
   contentDOM: Node
@@ -78,7 +79,7 @@ const todoListKeymap = (schema: Schema) => ({
 export default (): ProseMirrorExtension => ({
   schema: (prev) => ({
     ...prev,
-    nodes: (prev.nodes as any).append(todoListSchema)
+    nodes: (prev.nodes as OrderedMap<NodeSpec>).append(todoListSchema)
   }),
   plugins: (prev, schema) => [
     keymap(todoListKeymap(schema)),

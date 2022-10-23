@@ -6,7 +6,7 @@ import { selectAll, deleteSelection } from 'prosemirror-commands'
 import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
 import debounce from 'lodash/debounce'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
-import { State, Draft, Config, ServiceError, newState, ExtensionsProps } from './context'
+import { State, Draft, Config, ServiceError, newState, ExtensionsProps, EditorActions } from './context'
 import { mod } from '../env'
 import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
@@ -16,11 +16,12 @@ const isText = (x) => x && x.doc && x.selection
 const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.drafts || [])
 const isDraft = (x): boolean => x && (x.text || x.path)
 
-export const createCtrl = (initial: State): [Store<State>, any] => {
+
+export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
   const [store, setState] = createStore(initial)
 
   const onUndo = () => {
-    if (!isInitialized(store.text)) return
+    if (!isInitialized(store.text)) return false
     const text = store.text as EditorState
     if (store.collab?.started) {
       yUndo(text)
@@ -53,12 +54,14 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     return true
   }
 
+
+
   const toggleMarkdown = () => {
     const state = unwrap(store)
     const editorState = store.text as EditorState
     const markdown = !state.markdown
     const selection = { type: 'text', anchor: 1, head: 1 }
-    let doc: any
+    let doc
 
     if (markdown) {
       const lines = serialize(editorState).split('\n')
@@ -178,7 +181,7 @@ export const createCtrl = (initial: State): [Store<State>, any] => {
     const room = window.location.pathname?.slice(1).trim()
     const args = { room: room ?? undefined }
     const data = await db.get('state')
-    let parsed: any
+    let parsed: State
     if (data !== undefined) {
       try {
         parsed = JSON.parse(data)

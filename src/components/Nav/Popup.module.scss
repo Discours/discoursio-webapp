@@ -1,6 +1,13 @@
+.container {
+  position: relative;
+}
+
 .popup {
   background: #fff;
   border: 2px solid #000;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  opacity: 1;
 
   @include font-size(1.6rem);
 
@@ -24,6 +31,7 @@
 
   a {
     border: none;
+    white-space: nowrap;
   }
 
   img {
@@ -40,7 +48,14 @@
   }
 }
 
-.popupShare {
-  right: 1em;
-  top: 4.5rem;
-}
+// TODO: animation
+// .popup {
+//  opacity: 1;
+//  transition: opacity 0.3s;
+//  z-index: 1;
+//  &.visible {
+//    opacity: 0;
+//    transition: opacity 0.3s, z-index 0s 0.3s;
+//    z-index: -1;
+//  }
+// }

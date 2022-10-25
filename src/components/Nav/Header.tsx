@@ -3,18 +3,17 @@ import Private from './Private'
 import Notifications from './Notifications'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
-import { Popup } from './Popup'
 import AuthModal from './AuthModal'
 import { t } from '../../utils/intl'
-import {useModalStore, showModal, useWarningsStore, toggleModal} from '../../stores/ui'
+import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
-import stylesPopup from './Popup.module.scss'
 import privateStyles from './Private.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
+import { SharePopup } from '../Article/SharePopup'
 
 const log = getLogger('header')
 
@@ -39,6 +38,7 @@ export const Header = (props: Props) => {
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
+  const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   // stores
   const { getWarnings } = useWarningsStore()
   const { session } = useAuthStore()
@@ -48,14 +48,11 @@ export const Header = (props: Props) => {
 
   // methods
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
-  const toggleFixed = () => setFixed(!fixed())
+  const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
   // effects
   createEffect(() => {
-    const isFixed = fixed() || (getModal() && getModal() !== 'share');
-
-    document.body.classList.toggle('fixed', isFixed);
-    document.body.classList.toggle(styles.fixed, isFixed && !getModal());
-  }, [fixed(), getModal()])
+    document.body.classList.toggle('fixed', fixed() || getModal() !== null)
+  })
 
   // derived
   const authorized = createMemo(() => session()?.user?.slug)
@@ -90,7 +87,7 @@ export const Header = (props: Props) => {
       classList={{
         [styles.headerFixed]: props.isHeaderFixed,
         [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
-        [styles.headerScrolledBottom]: getIsScrollingBottom() && getIsScrolled(),
+        [styles.headerScrolledBottom]: (getIsScrollingBottom() && getIsScrolled()) || isSharePopupVisible(),
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
@@ -99,41 +96,6 @@ export const Header = (props: Props) => {
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
-        <Popup name="share" class={clsx(styles.popupShare, stylesPopup.popupShare)}>
-          <ul class="nodash">
-            <li>
-              <a href="#">
-                <Icon name="vk-white" class={stylesPopup.icon}/>
-                VK
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Icon name="facebook-white" class={stylesPopup.icon}/>
-                Facebook
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Icon name="twitter-white" class={stylesPopup.icon}/>
-                Twitter
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Icon name="telegram-white" class={stylesPopup.icon}/>
-                Telegram
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Icon name="link-white" class={stylesPopup.icon}/>
-                {t('Copy link')}
-              </a>
-            </li>
-          </ul>
-        </Popup>
-
         <nav class={clsx(styles.headerInner, 'row')} classList={{ fixed: fixed() }}>
           <div class={clsx(styles.mainLogo, 'col-auto')}>
             <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
@@ -197,14 +159,23 @@ export const Header = (props: Props) => {
             </div>
             <Show when={props.title}>
               <div class={styles.articleControls}>
-                <button onClick={() => {toggleModal('share')}}>
-                  <Icon name="share-outline" class={styles.icon}/>
-                </button>
-                <a href="#comments">
+                <SharePopup
+                  onVisibilityChange={(isVisible) => {
+                    console.log({ isVisible })
+                    setIsSharePopupVisible(isVisible)
+                  }}
+                  containerCssClass={styles.control}
+                  trigger={<Icon name="share-outline" class={styles.icon} />}
+                />
+                <a href="#comments" class={styles.control}>
                   <Icon name="comments-outline" class={styles.icon} />
                 </a>
-                <Icon name="pencil-outline" class={styles.icon} />
-                <Icon name="bookmark" class={styles.icon} />
+                <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
+                  <Icon name="pencil-outline" class={styles.icon} />
+                </a>
+                <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
+                  <Icon name="bookmark" class={styles.icon} />
+                </a>
               </div>
             </Show>
           </div>

@@ -5,7 +5,7 @@ import { createSignal } from 'solid-js'
 
 //export const locale = persistentAtom<string>('locale', 'ru')
 export const [locale, setLocale] = createSignal('ru')
-export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'share' | 'thank' | 'donate' | null
+export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate' | null
 type WarnKind = 'error' | 'warn' | 'info'
 
 export interface Warning {
@@ -20,7 +20,6 @@ const warnings = atom<Warning[]>([])
 
 export const showModal = (modalType: ModalType) => modal.set(modalType)
 export const hideModal = () => modal.set(null)
-export const toggleModal = (modalType) => modal.get() ? hideModal() : showModal(modalType)
 
 export const clearWarns = () => warnings.set([])
 export const warn = (warning: Warning) => warnings.set([...warnings.get(), warning])

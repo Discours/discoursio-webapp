@@ -35,18 +35,6 @@
   }
 }
 
-.popupShare {
-  opacity: 1;
-  transition: opacity 0.3s;
-  z-index: 1;
-
-  .headerScrolledTop & {
-    opacity: 0;
-    transition: opacity 0.3s, z-index 0s 0.3s;
-    z-index: -1;
-  }
-}
-
 .headerFixed {
   position: fixed;
   top: 0;
@@ -348,18 +336,16 @@
   transform: translateY(-50%);
   width: 100%;
 
-  .icon {
+  .control {
+    cursor: pointer;
     margin-left: 1.6rem;
-    opacity: 0.6;
-    transition: opacity 0.3s;
-  }
+    border: 0;
 
-  img {
-    vertical-align: middle;
-  }
+    .icon {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
 
-  a {
-    border: none;
 
     &:hover {
       background: none;
@@ -369,5 +355,9 @@
         opacity: 1;
       }
     }
+  }
+
+  img {
+    vertical-align: middle;
   }
 }

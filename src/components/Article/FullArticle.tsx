@@ -10,6 +10,7 @@ import { showModal } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { incrementView } from '../../stores/zine/articles'
 import MD from './MD'
+import { SharePopup } from './SharePopup'
 
 const MAX_COMMENT_LEVEL = 6
 
@@ -126,9 +127,13 @@ export const FullArticle = (props: ArticleProps) => {
           {/*  </a>*/}
           {/*</div>*/}
           <div class="shout-stats__item">
-            <a href="#share" onClick={() => showModal('share')}>
-              <Icon name="share" />
-            </a>
+            <SharePopup
+              trigger={
+                <a href="#" onClick={(event) => event.preventDefault()}>
+                  <Icon name="share" />
+                </a>
+              }
+            />
           </div>
           {/*FIXME*/}
           {/*<Show when={canEdit()}>*/}

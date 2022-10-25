@@ -10,8 +10,13 @@
     padding: divide($container-padding-x, 2);
   }
 
-  .circlewrap {
+  .userpic {
     margin-right: 0;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
   }
 }
 
@@ -81,6 +86,8 @@
 }
 
 .userControlItemWritePost {
+  width: auto;
+
   @include media-breakpoint-up(lg) {
     .icon {
       display: none;
@@ -88,7 +95,15 @@
 
     .textLabel {
       display: inline;
+      padding: 0 1.2rem;
+      position: relative;
+      z-index: 1;
     }
+  }
+
+  &,
+  a::before {
+    border-radius: 1.2em;
   }
 }
 

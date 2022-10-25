@@ -15,7 +15,7 @@ export default () => {
       <div class={clsx(styles.userControlItem, styles.userControlItemWritePost)}>
         <a href="/create">
           <span class={styles.textLabel}>опубликовать материал</span>
-          <Icon name="pencil" />
+          <Icon name="pencil" class={styles.icon} />
         </a>
       </div>
       <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
@@ -30,7 +30,7 @@ export default () => {
         <a href={`/${session().user?.slug}`}>
           {/*FIXME: replace with route*/}
           <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
-            <Userpic user={session().user as Author} />
+            <Userpic user={session().user as Author} class={styles.userpic} />
           </div>
         </a>
       </div>

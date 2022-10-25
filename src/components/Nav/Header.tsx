@@ -48,6 +48,7 @@ export const Header = (props: Props) => {
   // effects
   createEffect(() => {
     document.body.classList.toggle('fixed', fixed() || modal() !== null)
+    document.body.classList.toggle(styles.fixed, fixed() && !modal())
   })
 
   // derived

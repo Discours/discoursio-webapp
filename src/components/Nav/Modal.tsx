@@ -1,4 +1,5 @@
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import type { JSX } from 'solid-js'
 import { getLogger } from '../../utils/logger'
 import './Modal.scss'
 import { hideModal, useModalStore } from '../../stores/ui'
@@ -7,26 +8,33 @@ const log = getLogger('modal')
 
 interface ModalProps {
   name: string
-  children: any
+  children: JSX.Element
+}
+
+const keydownHandler = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') hideModal()
 }
 
 export const Modal = (props: ModalProps) => {
-  const { getModal } = useModalStore()
+  const { modal } = useModalStore()
 
-  const wrapClick = (ev: Event) => {
-    if ((ev.target as HTMLElement).classList.contains('modalwrap')) hideModal()
+  const wrapClick = (event: { target: Element }) => {
+    if (event.target.classList.contains('modalwrap')) hideModal()
   }
 
   onMount(() => {
-    window.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Escape') hideModal()
+    window.addEventListener('keydown', keydownHandler)
+
+    onCleanup(() => {
+      window.removeEventListener('keydown', keydownHandler)
     })
   })
 
   const [visible, setVisible] = createSignal(false)
+
   createEffect(() => {
-    setVisible(getModal() === props.name)
-    log.debug(`${props.name} is ${getModal() === props.name ? 'visible' : 'hidden'}`)
+    setVisible(modal() === props.name)
+    log.debug(`${props.name} is ${modal() === props.name ? 'visible' : 'hidden'}`)
   })
 
   return (

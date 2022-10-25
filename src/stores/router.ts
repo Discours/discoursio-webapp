@@ -69,8 +69,11 @@ export const handleClientRouteLinkClick = (event) => {
     const url = new URL(link.href)
     if (url.origin === location.origin) {
       event.preventDefault()
-      // TODO: search params
+
       routerStore.open(url.pathname)
+      const params = Object.fromEntries(new URLSearchParams(url.search))
+      searchParamsStore.open(params)
+
       window.scrollTo({
         top: 0,
         left: 0
@@ -91,16 +94,27 @@ if (!isServer) {
 }
 
 export const useRouter = <TSearchParams extends Record<string, string> = Record<string, string>>() => {
-  const getPage = useStore(routerStore)
-  const getSearchParams = useStore(searchParamsStore) as unknown as Accessor<TSearchParams>
+  const page = useStore(routerStore)
+  const searchParams = useStore(searchParamsStore) as unknown as Accessor<TSearchParams>
 
-  const changeSearchParam = <TKey extends keyof TSearchParams>(key: TKey, value: TSearchParams[TKey]) => {
-    searchParamsStore.open({ ...searchParamsStore.get(), [key]: value })
+  const changeSearchParam = <TKey extends keyof TSearchParams>(
+    key: TKey,
+    value: TSearchParams[TKey],
+    replace = false
+  ) => {
+    const newSearchParams = { ...searchParamsStore.get() }
+    if (value === null) {
+      delete newSearchParams[key.toString()]
+    } else {
+      newSearchParams[key.toString()] = value
+    }
+
+    searchParamsStore.open(newSearchParams, replace)
   }
 
   return {
-    getPage,
-    getSearchParams,
+    page,
+    searchParams,
     changeSearchParam
   }
 }

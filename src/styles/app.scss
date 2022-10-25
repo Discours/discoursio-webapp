@@ -277,6 +277,7 @@ form {
   select,
   textarea {
     &:focus,
+    &:-webkit-autofill,
     &:not(:placeholder-shown) {
       & ~ label {
         font-size: 60%;

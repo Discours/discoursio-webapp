@@ -23,7 +23,7 @@ interface TopicProps {
 }
 
 export const TopicView = (props: TopicProps) => {
-  const { getSearchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
+  const { searchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
 
   const { sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
   const { topicEntities } = useTopicsStore({ topics: [props.topic] })
@@ -33,7 +33,7 @@ export const TopicView = (props: TopicProps) => {
   const topic = createMemo(() => topicEntities()[props.topicSlug])
 
   const title = createMemo(() => {
-    const m = getSearchParams().by
+    const m = searchParams().by
     if (m === 'viewed') return t('Top viewed')
     if (m === 'rating') return t('Top rated')
     if (m === 'commented') return t('Top discussed')
@@ -47,7 +47,7 @@ export const TopicView = (props: TopicProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: getSearchParams().by === 'recent' || !getSearchParams().by }}>
+              <li classList={{ selected: searchParams().by === 'recent' || !searchParams().by }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
                   {t('Recent')}
                 </button>

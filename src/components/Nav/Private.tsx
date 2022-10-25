@@ -4,11 +4,11 @@ import { Icon } from './Icon'
 import styles from './Private.module.scss'
 import { useAuthStore } from '../../stores/auth'
 import { useRouter } from '../../stores/router'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 export default () => {
   const { session } = useAuthStore()
-  const { getPage } = useRouter()
+  const { page } = useRouter()
 
   return (
     <div class={clsx(styles.userControl, 'col')}>
@@ -21,7 +21,7 @@ export default () => {
       <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
         <a href="/inbox">
           {/*FIXME: replace with route*/}
-          <div classList={{ entered: getPage().path === '/inbox' }}>
+          <div classList={{ entered: page().path === '/inbox' }}>
             <Icon name="inbox-white" counter={session()?.news?.unread || 0} />
           </div>
         </a>
@@ -29,7 +29,7 @@ export default () => {
       <div class={styles.userControlItem}>
         <a href={`/${session().user?.slug}`}>
           {/*FIXME: replace with route*/}
-          <div classList={{ entered: getPage().path === `/${session().user?.slug}` }}>
+          <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
             <Userpic user={session().user as Author} />
           </div>
         </a>

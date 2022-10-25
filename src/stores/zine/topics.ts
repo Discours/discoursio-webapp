@@ -11,7 +11,7 @@ export type TopicsSortBy = 'created' | 'title' | 'authors' | 'shouts'
 
 const [sortAllBy, setSortAllBy] = createSignal<TopicsSortBy>('shouts')
 
-export { setSortAllBy }
+export const setTopicsSort = (sortBy: TopicsSortBy) => setSortAllBy(sortBy)
 
 const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
 const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])

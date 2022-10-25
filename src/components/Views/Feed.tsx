@@ -1,6 +1,7 @@
 import { createMemo, For, Show } from 'solid-js'
 import type { Shout, Reaction } from '../../graphql/types.gen'
 import '../../styles/Feed.scss'
+import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { Icon } from '../Nav/Icon'
 import { byCreated, sortBy } from '../../utils/sortby'
 import { TopicCard } from '../Topic/Card'
@@ -90,7 +91,7 @@ export const FeedView = (props: FeedProps) => {
                 {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
               </For>
 
-              <div class="beside-column-title">
+              <div class={stylesBeside.besideColumnTitle}>
                 <h4>{t('Popular authors')}</h4>
                 <a href="/user/list">
                   {t('All authors')}
@@ -98,7 +99,7 @@ export const FeedView = (props: FeedProps) => {
                 </a>
               </div>
 
-              <ul class="beside-column">
+              <ul class={stylesBeside.besideColumn}>
                 <For each={topAuthors().slice(0, 5)}>
                   {(author) => (
                     <li>

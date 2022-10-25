@@ -418,7 +418,7 @@
   display: flex;
 }
 
-.shoutCardDetailsTtem {
+.shoutCardDetailsItem {
   align-items: center;
   display: flex;
   margin-right: 1.7em;
@@ -451,6 +451,12 @@
       background: none;
       color: rgb(0 0 0 / 60%);
     }
+  }
+}
+
+.shoutCardDetailsViewed {
+  .icon {
+    margin-top: -0.1em;
   }
 }
 

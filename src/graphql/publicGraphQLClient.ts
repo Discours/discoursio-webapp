@@ -1,9 +1,6 @@
 import { ClientOptions, dedupExchange, fetchExchange, createClient, Exchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
-import { isDev } from '../utils/config'
-
-export const baseUrl = 'https://newapi.discours.io'
-// export const baseUrl = 'http://localhost:8000'
+import { isDev, apiBaseUrl } from '../utils/config'
 
 const exchanges: Exchange[] = [dedupExchange, fetchExchange]
 
@@ -12,7 +9,7 @@ if (isDev) {
 }
 
 const options: ClientOptions = {
-  url: baseUrl,
+  url: apiBaseUrl,
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   exchanges

@@ -34,10 +34,10 @@ export const AuthorView = (props: AuthorProps) => {
   const { topicsByAuthor } = useTopicsStore()
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
-  const { getSearchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
+  const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
   const title = createMemo(() => {
-    const m = getSearchParams().by
+    const m = searchParams().by
     if (m === 'viewed') return t('Top viewed')
     if (m === 'rating') return t('Top rated')
     if (m === 'commented') return t('Top discussed')
@@ -51,7 +51,7 @@ export const AuthorView = (props: AuthorProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: !getSearchParams().by || getSearchParams().by === 'recent' }}>
+              <li classList={{ selected: !searchParams().by || searchParams().by === 'recent' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
                   {t('Recent')}
                 </button>

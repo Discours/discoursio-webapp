@@ -1,4 +1,3 @@
-import { atom } from 'nanostores'
 import type { AuthResult } from '../graphql/types.gen'
 import { getLogger } from '../utils/logger'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
@@ -16,48 +15,50 @@ export const signIn = async (params) => {
   log.debug('signed in')
 }
 
-export const signUp = async (params) => {
-  const authResult = await apiClient.authRegister(params)
-  setSession(authResult)
-  setToken(authResult.token)
-  log.debug('signed up')
-}
-
 export const signOut = () => {
+  // TODO: call backend to revoke token
   setSession(null)
   resetToken()
   log.debug('signed out')
 }
 
-export const emailChecks = atom<{ [email: string]: boolean }>({})
+export const [emailChecks, setEmailChecks] = createSignal<{ [email: string]: boolean }>({})
 
-export const signCheck = async (params) => {
-  emailChecks.set(await apiClient.authCheckEmail(params))
+export const checkEmail = async (email: string): Promise<boolean> => {
+  if (emailChecks()[email]) {
+    return true
+  }
+
+  const checkResult = await apiClient.authCheckEmail({ email })
+
+  if (checkResult) {
+    setEmailChecks((oldEmailChecks) => ({ ...oldEmailChecks, [email]: true }))
+    return true
+  }
+
+  return false
 }
 
-export const resetCode = atom<string>()
+export const [resetCode, setResetCode] = createSignal('')
 
-export const register = async ({ email, password }: { email: string; password: string }) => {
-  const authResult = await apiClient.authRegister({
+export const register = async ({
+  name,
+  email,
+  password
+}: {
+  name: string
+  email: string
+  password: string
+}) => {
+  await apiClient.authRegister({
+    name,
     email,
     password
   })
-
-  if (authResult && !authResult.error) {
-    log.debug('register session update', authResult)
-    setSession(authResult)
-  }
 }
 
-export const signSendLink = async (params) => {
-  await apiClient.authSendLink(params) // { email }
-  resetToken()
-}
-
-export const signConfirm = async (params) => {
-  const auth = await apiClient.authConfirmCode(params) // { code }
-  setToken(auth.token)
-  setSession(auth)
+export const signSendLink = async ({ email }: { email: string }) => {
+  await apiClient.authSendLink({ email })
 }
 
 export const renewSession = async () => {
@@ -66,6 +67,12 @@ export const renewSession = async () => {
   setSession(authResult)
 }
 
+export const confirmEmail = async (token: string) => {
+  const authResult = await apiClient.confirmEmail({ token })
+  setToken(authResult.token)
+  setSession(authResult)
+}
+
 export const useAuthStore = () => {
-  return { session }
+  return { session, emailChecks }
 }

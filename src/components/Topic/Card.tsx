@@ -9,7 +9,6 @@ import { locale } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
 import { getLogger } from '../../utils/logger'
-import { Icon } from '../Nav/Icon'
 
 const log = getLogger('TopicCard')
 

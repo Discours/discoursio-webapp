@@ -1,9 +1,26 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ConfirmEmailQuery($code: String!) {
-    confirmEmail(code: $code) {
+  mutation ConfirmEmailMutation($token: String!) {
+    confirmEmail(token: $token) {
       error
+      token
+      user {
+        _id: slug
+        email
+        name
+        slug
+        bio
+        userpic
+        links
+      }
+      news {
+        unread
+        topics
+        authors
+        reactions
+        communities
+      }
     }
   }
 `

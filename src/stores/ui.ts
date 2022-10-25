@@ -1,11 +1,10 @@
 //import { persistentAtom } from '@nanostores/persistent'
-import { atom } from 'nanostores'
-import { useStore } from '@nanostores/solid'
 import { createSignal } from 'solid-js'
+import { useRouter } from './router'
 
 //export const locale = persistentAtom<string>('locale', 'ru')
 export const [locale, setLocale] = createSignal('ru')
-export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate' | null
+export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate'
 type WarnKind = 'error' | 'warn' | 'info'
 
 export interface Warning {
@@ -14,27 +13,37 @@ export interface Warning {
   seen?: boolean
 }
 
-const modal = atom<ModalType>(null)
+export const MODALS: Record<ModalType, ModalType> = {
+  auth: 'auth',
+  subscribe: 'subscribe',
+  feedback: 'feedback',
+  thank: 'thank',
+  donate: 'donate'
+}
 
-const warnings = atom<Warning[]>([])
+const [modal, setModal] = createSignal<ModalType | null>(null)
 
-export const showModal = (modalType: ModalType) => modal.set(modalType)
-export const hideModal = () => modal.set(null)
+const [warnings, setWarnings] = createSignal<Warning[]>([])
 
-export const clearWarns = () => warnings.set([])
-export const warn = (warning: Warning) => warnings.set([...warnings.get(), warning])
+export const showModal = (modalType: ModalType) => setModal(modalType)
+export const hideModal = () => {
+  const { changeSearchParam } = useRouter()
+  changeSearchParam('modal', null, true)
+  changeSearchParam('mode', null, true)
+  setModal(null)
+}
+
+export const clearWarns = () => setWarnings([])
+export const warn = (warning: Warning) => setWarnings([...warnings(), warning])
 
 export const useWarningsStore = () => {
-  const getWarnings = useStore(warnings)
   return {
-    getWarnings
+    warnings
   }
 }
 
 export const useModalStore = () => {
-  const getModal = useStore(modal)
-
   return {
-    getModal
+    modal
   }
 }

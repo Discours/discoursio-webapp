@@ -3,7 +3,7 @@ import Private from './Private'
 import Notifications from './Notifications'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
-import AuthModal from './AuthModal'
+import { AuthModal } from './AuthModal'
 import { t } from '../../utils/intl'
 import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
@@ -23,10 +23,6 @@ const resources: { name: string; route: keyof Routes }[] = [
   { name: t('topics'), route: 'topics' }
 ]
 
-const handleEnterClick = () => {
-  showModal('auth')
-}
-
 type Props = {
   title?: string
   isHeaderFixed?: boolean
@@ -40,24 +36,26 @@ export const Header = (props: Props) => {
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   // stores
-  const { getWarnings } = useWarningsStore()
+  const { warnings } = useWarningsStore()
   const { session } = useAuthStore()
-  const { getModal } = useModalStore()
+  const { modal } = useModalStore()
 
-  const { getPage } = useRouter()
+  const { page } = useRouter()
 
   // methods
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
   // effects
   createEffect(() => {
-    document.body.classList.toggle('fixed', fixed() || getModal() !== null)
+    document.body.classList.toggle('fixed', fixed() || modal() !== null)
   })
 
   // derived
   const authorized = createMemo(() => session()?.user?.slug)
 
-  const handleBellIconClick = () => {
+  const handleBellIconClick = (event: Event) => {
+    event.preventDefault()
+
     if (!authorized()) {
       showModal('auth')
       return
@@ -113,7 +111,7 @@ export const Header = (props: Props) => {
             >
               <For each={resources}>
                 {(r) => (
-                  <li classList={{ [styles.selected]: r.route === getPage().route }}>
+                  <li classList={{ [styles.selected]: r.route === page().route }}>
                     <a href={getPagePath(router, r.route, null)} onClick={handleClientRouteLinkClick}>
                       {r.name}
                     </a>
@@ -131,9 +129,9 @@ export const Header = (props: Props) => {
           <div class={styles.usernav}>
             <div class={clsx(privateStyles.userControl, styles.userControl, 'col')}>
               <div class={privateStyles.userControlItem}>
-                <a href="#auth" onClick={handleBellIconClick}>
+                <a href="#" onClick={handleBellIconClick}>
                   <div>
-                    <Icon name="bell-white" counter={authorized() ? getWarnings().length : 1} />
+                    <Icon name="bell-white" counter={authorized() ? warnings().length : 1} />
                   </div>
                 </a>
               </div>
@@ -148,7 +146,7 @@ export const Header = (props: Props) => {
                 when={authorized()}
                 fallback={
                   <div class={clsx(privateStyles.userControlItem, 'loginbtn')}>
-                    <a href="#auth" onClick={handleEnterClick}>
+                    <a href="?modal=auth&mode=login" onClick={handleClientRouteLinkClick}>
                       <Icon name="user-anonymous" />
                     </a>
                   </div>

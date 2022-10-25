@@ -11,7 +11,7 @@ export const AuthorPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.authorArticles) && Boolean(props.author))
 
   const slug = createMemo(() => {
-    const { getPage } = useRouter()
+    const { page: getPage } = useRouter()
 
     const page = getPage()
 

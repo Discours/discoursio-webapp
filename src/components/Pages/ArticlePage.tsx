@@ -11,7 +11,7 @@ export const ArticlePage = (props: PageProps) => {
   const sortedArticles = props.article ? [props.article] : []
 
   const slug = createMemo(() => {
-    const { getPage } = useRouter()
+    const { page: getPage } = useRouter()
 
     const page = getPage()
 

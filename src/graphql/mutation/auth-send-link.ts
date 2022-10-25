@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query SendLinkQuery($email: String!) {
+  mutation SendLinkQuery($email: String!) {
     sendLink(email: $email) {
       error
     }

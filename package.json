@@ -17,7 +17,7 @@
     "lint:code:fix": "eslint . --fix",
     "lint:styles": "stylelint **/*.{scss,css}",
     "lint:styles:fix": "stylelint **/*.{scss,css} --fix",
-    "pre-commit": "",
+    "pre-commit": "lint-staged",
     "pre-push": "",
     "pre-commit-old": "lint-staged",
     "pre-push-old": "npm run typecheck",

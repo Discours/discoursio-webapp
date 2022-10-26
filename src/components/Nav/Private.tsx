@@ -1,14 +1,17 @@
 import type { Author } from '../../graphql/types.gen'
 import Userpic from '../Author/Userpic'
+import { ProfilePopup } from './ProfilePopup'
 import { Icon } from './Icon'
 import styles from './Private.module.scss'
 import { useAuthStore } from '../../stores/auth'
 import { useRouter } from '../../stores/router'
 import { clsx } from 'clsx'
+import { createSignal } from 'solid-js'
 
 export default () => {
   const { session } = useAuthStore()
   const { page } = useRouter()
+  const [isProfilePopupVisible, setIsProfilePopupVisible] = createSignal(false)
 
   return (
     <div class={clsx(styles.userControl, 'col')}>
@@ -26,14 +29,21 @@ export default () => {
           </div>
         </a>
       </div>
-      <div class={styles.userControlItem}>
-        <a href={`/${session().user?.slug}`}>
-          {/*FIXME: replace with route*/}
-          <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
-            <Userpic user={session().user as Author} class={styles.userpic} />
+      <ProfilePopup
+        onVisibilityChange={(isVisible) => {
+          setIsProfilePopupVisible(isVisible)
+        }}
+        containerCssClass={styles.control}
+        trigger={
+          <div class={styles.userControlItem}>
+            <button class={styles.button}>
+              <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
+                <Userpic user={session().user as Author} class={styles.userpic} />
+              </div>
+            </button>
           </div>
-        </a>
-      </div>
+        }
+      />
     </div>
   )
 }

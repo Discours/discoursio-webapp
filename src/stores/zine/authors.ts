@@ -1,6 +1,5 @@
 import { apiClient } from '../../utils/apiClient'
 import type { Author } from '../../graphql/types.gen'
-import { byCreated, byStat, byTopicStatDesc } from '../../utils/sortby'
 
 import { getLogger } from '../../utils/logger'
 import { createSignal } from 'solid-js'

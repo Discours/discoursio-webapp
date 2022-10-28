@@ -1,17 +1,18 @@
-import { Show, createMemo } from 'solid-js'
+import { Show, createMemo, createSignal, For, onMount } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
-import Row2 from '../Feed/Row2'
-import Row3 from '../Feed/Row3'
-// import Beside from '../Feed/Beside'
-import AuthorFull from '../Author/Full'
+import { Row2 } from '../Feed/Row2'
+import { Row3 } from '../Feed/Row3'
+import { AuthorFull } from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { useArticlesStore } from '../../stores/zine/articles'
+import { loadAuthorArticles, useArticlesStore } from '../../stores/zine/articles'
 
 import '../../styles/Topic.scss'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
-import Beside from '../Feed/Beside'
+import { Beside } from '../Feed/Beside'
+import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
+import { splitToPages } from '../../utils/splitToPages'
 
 // TODO: load reactions on client
 type AuthorProps = {
@@ -26,15 +27,36 @@ type AuthorPageSearchParams = {
   by: '' | 'viewed' | 'rating' | 'commented' | 'recent'
 }
 
+export const PRERENDERED_ARTICLES_COUNT = 12
+const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
+
 export const AuthorView = (props: AuthorProps) => {
   const { sortedArticles } = useArticlesStore({
     sortedArticles: props.authorArticles
   })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { topicsByAuthor } = useTopicsStore()
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
+
+  const loadMore = async () => {
+    saveScrollPosition()
+    const { hasMore } = await loadAuthorArticles({
+      authorSlug: author().slug,
+      limit: LOAD_MORE_PAGE_SIZE,
+      offset: sortedArticles().length
+    })
+    setIsLoadMoreButtonVisible(hasMore)
+    restoreScrollPosition()
+  }
+
+  onMount(async () => {
+    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
+      loadMore()
+    }
+  })
 
   const title = createMemo(() => {
     const m = searchParams().by
@@ -43,6 +65,10 @@ export const AuthorView = (props: AuthorProps) => {
     if (m === 'commented') return t('Top discussed')
     return t('Top recent')
   })
+
+  const pages = createMemo<Shout[][]>(() =>
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+  )
 
   return (
     <div class="container author-page">
@@ -83,31 +109,39 @@ export const AuthorView = (props: AuthorProps) => {
         </div>
 
         <h3 class="col-12">{title()}</h3>
+
         <div class="row">
-          <Show when={sortedArticles().length > 0}>
-            <Beside
-              title={t('Topics which supported by author')}
-              values={topicsByAuthor()[author().slug].slice(0, 5)}
-              beside={sortedArticles()[0]}
-              wrapper={'topic'}
-              topicShortDescription={true}
-              isTopicCompact={true}
-              isTopicInRow={true}
-              iconButton={true}
-            />
-            <Row3 articles={sortedArticles().slice(1, 4)} />
+          <Beside
+            title={t('Topics which supported by author')}
+            values={topicsByAuthor()[author().slug].slice(0, 5)}
+            beside={sortedArticles()[0]}
+            wrapper={'topic'}
+            topicShortDescription={true}
+            isTopicCompact={true}
+            isTopicInRow={true}
+            iconButton={true}
+          />
+          <Row3 articles={sortedArticles().slice(1, 4)} />
+          <Row2 articles={sortedArticles().slice(4, 6)} />
+          <Row3 articles={sortedArticles().slice(6, 9)} />
+          <Row3 articles={sortedArticles().slice(9, 12)} />
 
-            <Show when={sortedArticles().length > 4}>
-              <Row2 articles={sortedArticles().slice(4, 6)} />
-            </Show>
+          <For each={pages()}>
+            {(page) => (
+              <>
+                <Row3 articles={page.slice(0, 3)} />
+                <Row3 articles={page.slice(3, 6)} />
+                <Row3 articles={page.slice(6, 9)} />
+              </>
+            )}
+          </For>
 
-            <Show when={sortedArticles().length > 6}>
-              <Row3 articles={sortedArticles().slice(6, 9)} />
-            </Show>
-
-            <Show when={sortedArticles().length > 9}>
-              <Row3 articles={sortedArticles().slice(9, 12)} />
-            </Show>
+          <Show when={isLoadMoreButtonVisible()}>
+            <p class="load-more-container">
+              <button class="button" onClick={loadMore}>
+                {t('Load more')}
+              </button>
+            </p>
           </Show>
         </div>
       </Show>

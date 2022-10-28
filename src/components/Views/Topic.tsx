@@ -1,16 +1,18 @@
-import { For, Show, createMemo } from 'solid-js'
+import { For, Show, createMemo, onMount, createSignal } from 'solid-js'
 import type { Shout, Topic } from '../../graphql/types.gen'
-import Row3 from '../Feed/Row3'
-import Row2 from '../Feed/Row2'
-import Beside from '../Feed/Beside'
+import { Row3 } from '../Feed/Row3'
+import { Row2 } from '../Feed/Row2'
+import { Beside } from '../Feed/Beside'
 import { ArticleCard } from '../Feed/Card'
 import '../../styles/Topic.scss'
 import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
 import { useRouter } from '../../stores/router'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { useArticlesStore } from '../../stores/zine/articles'
+import { loadPublishedArticles, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
+import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
+import { splitToPages } from '../../utils/splitToPages'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
@@ -22,8 +24,13 @@ interface TopicProps {
   topicSlug: string
 }
 
+export const PRERENDERED_ARTICLES_COUNT = 21
+const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
+
 export const TopicView = (props: TopicProps) => {
   const { searchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
+
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const { sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
   const { topicEntities } = useTopicsStore({ topics: [props.topic] })
@@ -32,6 +39,24 @@ export const TopicView = (props: TopicProps) => {
 
   const topic = createMemo(() => topicEntities()[props.topicSlug])
 
+  const loadMore = async () => {
+    saveScrollPosition()
+
+    const { hasMore } = await loadPublishedArticles({
+      limit: LOAD_MORE_PAGE_SIZE,
+      offset: sortedArticles().length
+    })
+    setIsLoadMoreButtonVisible(hasMore)
+
+    restoreScrollPosition()
+  }
+
+  onMount(async () => {
+    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
+      loadMore()
+    }
+  })
+
   const title = createMemo(() => {
     const m = searchParams().by
     if (m === 'viewed') return t('Top viewed')
@@ -39,6 +64,10 @@ export const TopicView = (props: TopicProps) => {
     if (m === 'commented') return t('Top discussed')
     return t('Top recent')
   })
+
+  const pages = createMemo<Shout[][]>(() =>
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+  )
 
   return (
     <div class="topic-page container">
@@ -109,6 +138,24 @@ export const TopicView = (props: TopicProps) => {
             <Row3 articles={sortedArticles().slice(12, 15)} />
             <Row3 articles={sortedArticles().slice(15, 18)} />
             <Row3 articles={sortedArticles().slice(18, 21)} />
+          </Show>
+
+          <For each={pages()}>
+            {(page) => (
+              <>
+                <Row3 articles={page.slice(0, 3)} />
+                <Row3 articles={page.slice(3, 6)} />
+                <Row3 articles={page.slice(6, 9)} />
+              </>
+            )}
+          </For>
+
+          <Show when={isLoadMoreButtonVisible()}>
+            <p class="load-more-container">
+              <button class="button" onClick={loadMore}>
+                {t('Load more')}
+              </button>
+            </p>
           </Show>
         </div>
       </Show>

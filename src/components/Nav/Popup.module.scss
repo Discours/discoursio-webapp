@@ -6,12 +6,20 @@
   background: #fff;
   border: 2px solid #000;
   top: calc(100% + 8px);
-  transform: translateX(-50%);
   opacity: 1;
+
+  &.horizontalAnchorCenter {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.horizontalAnchorRight {
+    right: 0;
+  }
 
   @include font-size(1.6rem);
 
-  padding: 2.4rem 2.4rem 2.4rem 1.6rem;
+  padding: 2.4rem;
   position: absolute;
   z-index: 10;
 
@@ -21,7 +29,6 @@
 
   li {
     margin-bottom: 1.6rem;
-    padding-left: 3.6rem;
     position: relative;
 
     &:last-child {
@@ -32,19 +39,24 @@
   a {
     border: none;
     white-space: nowrap;
+
+    &:hover {
+      img {
+        filter: invert(0);
+      }
+    }
   }
 
   img {
     filter: invert(1);
     max-height: 2rem;
     max-width: 2rem;
+    transition: filter 0.3s;
   }
 
   .icon {
-    left: 1.5rem;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    display: inline-block;
+    width: 3.6rem;
   }
 }
 

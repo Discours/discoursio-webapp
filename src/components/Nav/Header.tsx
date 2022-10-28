@@ -1,5 +1,4 @@
 import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup } from 'solid-js'
-import Private from './Private'
 import Notifications from './Notifications'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
@@ -9,11 +8,13 @@ import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
-import privateStyles from './Private.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
 import { SharePopup } from '../Article/SharePopup'
+import { ProfilePopup } from './ProfilePopup'
+import Userpic from '../Author/Userpic'
+import type { Author } from '../../graphql/types.gen'
 
 const log = getLogger('header')
 
@@ -35,6 +36,8 @@ export const Header = (props: Props) => {
   const [fixed, setFixed] = createSignal(false)
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
+  const [isProfilePopupVisible, setIsProfilePopupVisible] = createSignal(false)
+
   // stores
   const { warnings } = useWarningsStore()
   const { session } = useAuthStore()
@@ -86,7 +89,8 @@ export const Header = (props: Props) => {
       classList={{
         [styles.headerFixed]: props.isHeaderFixed,
         [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
-        [styles.headerScrolledBottom]: (getIsScrollingBottom() && getIsScrolled()) || isSharePopupVisible(),
+        [styles.headerScrolledBottom]:
+          (getIsScrollingBottom() && getIsScrolled() && !isProfilePopupVisible()) || isSharePopupVisible(),
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
@@ -128,8 +132,15 @@ export const Header = (props: Props) => {
             </ul>
           </div>
           <div class={styles.usernav}>
-            <div class={clsx(privateStyles.userControl, styles.userControl, 'col')}>
-              <div class={privateStyles.userControlItem}>
+            <div class={clsx(styles.userControl, styles.userControl, 'col')}>
+              <div class={clsx(styles.userControlItem, styles.userControlItemWritePost)}>
+                <a href="/create">
+                  <span class={styles.textLabel}>{t('Create post')}</span>
+                  <Icon name="pencil" class={styles.icon} />
+                </a>
+              </div>
+
+              <div class={styles.userControlItem}>
                 <a href="#" onClick={handleBellIconClick}>
                   <div>
                     <Icon name="bell-white" counter={authorized() ? warnings().length : 1} />
@@ -138,7 +149,7 @@ export const Header = (props: Props) => {
               </div>
 
               <Show when={visibleWarnings()}>
-                <div class={clsx(privateStyles.userControlItem, 'notifications')}>
+                <div class={clsx(styles.userControlItem, 'notifications')}>
                   <Notifications />
                 </div>
               </Show>
@@ -146,21 +157,42 @@ export const Header = (props: Props) => {
               <Show
                 when={authorized()}
                 fallback={
-                  <div class={clsx(privateStyles.userControlItem, 'loginbtn')}>
+                  <div class={clsx(styles.userControlItem, 'loginbtn')}>
                     <a href="?modal=auth&mode=login" onClick={handleClientRouteLinkClick}>
                       <Icon name="user-anonymous" />
                     </a>
                   </div>
                 }
               >
-                <Private />
+                <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
+                  <a href="/inbox">
+                    {/*FIXME: replace with route*/}
+                    <div classList={{ entered: page().path === '/inbox' }}>
+                      <Icon name="inbox-white" counter={session()?.news?.unread || 0} />
+                    </div>
+                  </a>
+                </div>
+                <ProfilePopup
+                  onVisibilityChange={(isVisible) => {
+                    setIsProfilePopupVisible(isVisible)
+                  }}
+                  containerCssClass={styles.control}
+                  trigger={
+                    <div class={styles.userControlItem}>
+                      <button class={styles.button}>
+                        <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
+                          <Userpic user={session().user as Author} class={styles.userpic} />
+                        </div>
+                      </button>
+                    </div>
+                  }
+                />
               </Show>
             </div>
             <Show when={props.title}>
               <div class={styles.articleControls}>
                 <SharePopup
                   onVisibilityChange={(isVisible) => {
-                    console.log({ isVisible })
                     setIsSharePopupVisible(isVisible)
                   }}
                   containerCssClass={styles.control}

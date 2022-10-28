@@ -2,15 +2,19 @@ import { createEffect, createSignal, JSX, onCleanup, onMount, Show } from 'solid
 import styles from './Popup.module.scss'
 import { clsx } from 'clsx'
 
+type HorizontalAnchor = 'center' | 'right'
+
 export type PopupProps = {
   containerCssClass?: string
   trigger: JSX.Element
   children: JSX.Element
   onVisibilityChange?: (isVisible) => void
+  horizontalAnchor?: HorizontalAnchor
 }
 
 export const Popup = (props: PopupProps) => {
   const [isVisible, setIsVisible] = createSignal(false)
+  const horizontalAnchor: HorizontalAnchor = props.horizontalAnchor || 'center'
 
   createEffect(() => {
     if (props.onVisibilityChange) {
@@ -38,12 +42,19 @@ export const Popup = (props: PopupProps) => {
   })
 
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
-  // class={clsx(styles.popupShare, stylesPopup.popupShare)}
+
   return (
     <span class={clsx(styles.container, props.containerCssClass)} ref={container}>
       <span onClick={toggle}>{props.trigger}</span>
       <Show when={isVisible()}>
-        <div class={clsx(styles.popup)}>{props.children}</div>
+        <div
+          class={clsx(styles.popup, {
+            [styles.horizontalAnchorCenter]: horizontalAnchor === 'center',
+            [styles.horizontalAnchorRight]: horizontalAnchor === 'right'
+          })}
+        >
+          {props.children}
+        </div>
       </Show>
     </span>
   )

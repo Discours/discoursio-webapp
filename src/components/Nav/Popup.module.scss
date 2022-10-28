@@ -6,8 +6,16 @@
   background: #fff;
   border: 2px solid #000;
   top: calc(100% + 8px);
-  transform: translateX(-50%);
   opacity: 1;
+
+  &.horizontalAnchorCenter {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.horizontalAnchorRight {
+    right: 0;
+  }
 
   @include font-size(1.6rem);
 

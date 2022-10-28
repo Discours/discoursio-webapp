@@ -315,18 +315,6 @@
   }
 }
 
-.userControl {
-  opacity: 1;
-  transition: opacity 0.3s;
-  z-index: 1;
-
-  .headerWithTitle.headerScrolledBottom & {
-    transition: opacity 0.3s, z-index 0s 0.3s;
-    opacity: 0;
-    z-index: -1;
-  }
-}
-
 .articleControls {
   display: flex;
   justify-content: flex-end;
@@ -367,6 +355,15 @@
 .userControl {
   align-items: baseline;
   display: flex;
+  opacity: 1;
+  transition: opacity 0.3s;
+  z-index: 1;
+
+  .headerWithTitle.headerScrolledBottom & {
+    transition: opacity 0.3s, z-index 0s 0.3s;
+    opacity: 0;
+    z-index: -1;
+  }
 
   @include font-size(1.7rem);
 

@@ -184,7 +184,7 @@ export const apiClient = {
   },
   getArticlesForTopics: async ({
     topicSlugs,
-    limit = FEED_SIZE,
+    limit,
     offset = 0
   }: {
     topicSlugs: string[]
@@ -207,7 +207,7 @@ export const apiClient = {
   },
   getArticlesForAuthors: async ({
     authorSlugs,
-    limit = FEED_SIZE,
+    limit,
     offset = 0
   }: {
     authorSlugs: string[]

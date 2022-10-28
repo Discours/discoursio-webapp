@@ -127,40 +127,109 @@ const addSortedArticles = (articles: Shout[]) => {
   setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
+export const loadFeed = async ({
+  limit,
+  offset
+}: {
+  limit: number
+  offset?: number
+}): Promise<{ hasMore: boolean }> => {
+  // TODO: load actual feed
+  return await loadRecentArticles({ limit, offset })
+}
+
 export const loadRecentArticles = async ({
   limit,
   offset
 }: {
-  limit?: number
+  limit: number
   offset?: number
-}): Promise<void> => {
-  const newArticles = await apiClient.getRecentArticles({ limit, offset })
+}): Promise<{ hasMore: boolean }> => {
+  const newArticles = await apiClient.getRecentArticles({ limit: limit + 1, offset })
+  const hasMore = newArticles.length === limit + 1
+
+  if (hasMore) {
+    newArticles.splice(-1)
+  }
+
   addArticles(newArticles)
   addSortedArticles(newArticles)
+
+  return { hasMore }
 }
 
 export const loadPublishedArticles = async ({
   limit,
-  offset
+  offset = 0
 }: {
-  limit?: number
+  limit: number
   offset?: number
-}): Promise<void> => {
-  const newArticles = await apiClient.getPublishedArticles({ limit, offset })
+}): Promise<{ hasMore: boolean }> => {
+  const newArticles = await apiClient.getPublishedArticles({ limit: limit + 1, offset })
+  const hasMore = newArticles.length === limit + 1
+
+  if (hasMore) {
+    newArticles.splice(-1)
+  }
+
   addArticles(newArticles)
   addSortedArticles(newArticles)
+
+  return { hasMore }
 }
 
-export const loadArticlesForAuthors = async ({ authorSlugs }: { authorSlugs: string[] }): Promise<void> => {
-  const articles = await apiClient.getArticlesForAuthors({ authorSlugs, limit: 50 })
-  addArticles(articles)
-  setSortedArticles(articles)
+export const loadAuthorArticles = async ({
+  authorSlug,
+  limit,
+  offset = 0
+}: {
+  authorSlug: string
+  limit: number
+  offset?: number
+}): Promise<{ hasMore: boolean }> => {
+  const newArticles = await apiClient.getArticlesForAuthors({
+    authorSlugs: [authorSlug],
+    limit: limit + 1,
+    offset
+  })
+
+  const hasMore = newArticles.length === limit + 1
+
+  if (hasMore) {
+    newArticles.splice(-1)
+  }
+
+  addArticles(newArticles)
+  addSortedArticles(newArticles)
+
+  return { hasMore }
 }
 
-export const loadArticlesForTopics = async ({ topicSlugs }: { topicSlugs: string[] }): Promise<void> => {
-  const articles = await apiClient.getArticlesForTopics({ topicSlugs, limit: 50 })
-  addArticles(articles)
-  setSortedArticles(articles)
+export const loadTopicArticles = async ({
+  topicSlug,
+  limit,
+  offset
+}: {
+  topicSlug: string
+  limit: number
+  offset: number
+}): Promise<{ hasMore: boolean }> => {
+  const newArticles = await apiClient.getArticlesForTopics({
+    topicSlugs: [topicSlug],
+    limit: limit + 1,
+    offset
+  })
+
+  const hasMore = newArticles.length === limit + 1
+
+  if (hasMore) {
+    newArticles.splice(-1)
+  }
+
+  addArticles(newArticles)
+  addSortedArticles(newArticles)
+
+  return { hasMore }
 }
 
 export const resetSortedArticles = () => {

@@ -8,7 +8,6 @@ export type PageProps = {
   authorArticles?: Shout[]
   topicArticles?: Shout[]
   homeArticles?: Shout[]
-  feedArticles?: Shout[]
   author?: Author
   allAuthors?: Author[]
   topic?: Topic

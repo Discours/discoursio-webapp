@@ -1,7 +1,7 @@
 import { For, Suspense } from 'solid-js/web'
-import OneWide from './Row1'
-import Row2 from './Row2'
-import Row3 from './Row3'
+import { Row1 } from './Row1'
+import { Row2 } from './Row2'
+import { Row3 } from './Row3'
 import { shuffle } from '../../utils'
 import { createMemo, createSignal } from 'solid-js'
 import type { JSX } from 'solid-js'
@@ -10,7 +10,7 @@ import './List.scss'
 import { t } from '../../utils/intl'
 
 export const Block6 = (props: { articles: Shout[] }) => {
-  const dice = createMemo(() => shuffle([OneWide, Row2, Row3]))
+  const dice = createMemo(() => shuffle([Row1, Row2, Row3]))
 
   return (
     <>

@@ -11,6 +11,7 @@ import { mod } from '../env'
 import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
+import { useRouter } from '../../../stores/router'
 
 const isText = (x) => x && x.doc && x.selection
 const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.drafts || [])
@@ -177,7 +178,8 @@ export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
 
   const fetchData = async (): Promise<State> => {
     const state: State = unwrap(store)
-    const room = window.location.pathname?.slice(1).trim()
+    const { searchParams } = useRouter<{ room: string }>()
+    const room = searchParams().room
     const args = { room: room ?? undefined }
     const data = await db.get('state')
     let parsed: State
@@ -309,7 +311,8 @@ export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
   const doStartCollab = async (state: State): Promise<State> => {
     const backup = state.args?.room && state.collab?.room !== state.args.room
     const room = state.args?.room ?? uuidv4()
-    window.history.replaceState(null, '', `/${room}`)
+    const { changeSearchParam } = useRouter<{ room: string }>()
+    changeSearchParam('room', room, true)
 
     const { roomConnect } = await import('../prosemirror/p2p')
     const [type, provider] = roomConnect(room)

@@ -25,15 +25,16 @@ const customKeymap = (props: ExtensionsProps): ProseMirrorExtension => ({
 })
 
 export const createExtensions = (props: ExtensionsProps): ProseMirrorExtension[] => {
-  const eee = [
+  const extensions = [
     placeholder(t('Just start typing...')),
     customKeymap(props),
     base(props.markdown),
     selectionMenu(),
     scrollPlugin(props.config?.typewriterMode)
   ]
+
   if (props.markdown) {
-    eee.push(
+    extensions.push(
       markdown(),
       todoList(),
       dragHandle(),
@@ -54,8 +55,12 @@ export const createExtensions = (props: ExtensionsProps): ProseMirrorExtension[]
         */
     )
   }
-  if (props.collab?.room) eee.push(collab(props.y))
-  return eee
+
+  if (props.collab?.room) {
+    extensions.push(collab(props.y))
+  }
+
+  return extensions
 }
 
 export const createEmptyText = () => ({

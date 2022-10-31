@@ -2,7 +2,11 @@ import { ySyncPlugin, yCursorPlugin, yUndoPlugin } from 'y-prosemirror'
 import type { ProseMirrorExtension } from '../helpers'
 import type { YOptions } from '../../store/context'
 
-interface YUser { background: string, foreground: string, name: string }
+interface YUser {
+  background: string
+  foreground: string
+  name: string
+}
 
 export const cursorBuilder = (user: YUser): HTMLElement => {
   const cursor = document.createElement('span')
@@ -19,10 +23,10 @@ export default (y: YOptions): ProseMirrorExtension => ({
   plugins: (prev) =>
     y
       ? [
-        ...prev,
-        ySyncPlugin(y.type),
-        yCursorPlugin(y.provider.awareness, { cursorBuilder }),
-        yUndoPlugin()
-      ]
+          ...prev,
+          ySyncPlugin(y.type),
+          yCursorPlugin(y.provider.awareness, { cursorBuilder }),
+          yUndoPlugin()
+        ]
       : prev
 })

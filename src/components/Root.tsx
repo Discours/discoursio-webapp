@@ -47,7 +47,6 @@ import { CreatePage } from './Pages/CreatePage'
 // const ThanksPage = lazy(() => import('./Pages/about/ThanksPage'))
 // const CreatePage = lazy(() => import('./Pages/about/CreatePage'))
 
-
 type RootSearchParams = {
   modal: string
   lang: string

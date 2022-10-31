@@ -1,7 +1,7 @@
 import styles from './Banner.module.scss'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
-import {clsx} from "clsx";
+import { clsx } from 'clsx'
 
 export default () => {
   return (

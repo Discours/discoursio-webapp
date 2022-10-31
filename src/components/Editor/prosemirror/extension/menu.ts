@@ -14,14 +14,13 @@ import {
 } from 'prosemirror-menu'
 
 import { wrapInList } from 'prosemirror-schema-list'
-import type{ NodeSelection } from 'prosemirror-state'
+import type { NodeSelection } from 'prosemirror-state'
 
 import { TextField, openPrompt } from './prompt'
 import type { ProseMirrorExtension } from '../helpers'
 import type { Schema } from 'prosemirror-model'
 
 // Helpers to create specific types of items
-
 
 const cut = (something) => something.filter(Boolean)
 
@@ -45,7 +44,11 @@ function insertImageItem(nodeType) {
       return canInsert(state, nodeType)
     },
     run(state, _, view) {
-      const { from, to, node: { attrs } } = state.selection as NodeSelection
+      const {
+        from,
+        to,
+        node: { attrs }
+      } = state.selection as NodeSelection
 
       openPrompt({
         title: 'Insert image',
@@ -78,7 +81,9 @@ function cmdItem(cmd, options) {
 
   for (const prop in options) passedOptions[prop] = options[prop]
 
-  if ((!options.enable || options.enable === true) && !options.select) { passedOptions[options.enable ? 'enable' : 'select'] = (state) => cmd(state) }
+  if ((!options.enable || options.enable === true) && !options.select) {
+    passedOptions[options.enable ? 'enable' : 'select'] = (state) => cmd(state)
+  }
 
   return new MenuItem(passedOptions)
 }
@@ -130,7 +135,7 @@ function linkItem(markType) {
           href: new TextField({
             label: 'Link target',
             required: true
-          }),
+          })
         },
         callback(attrs) {
           toggleMark(markType, attrs)(view.state, view.dispatch)
@@ -214,7 +219,7 @@ export function buildMenuItems(schema: Schema<any, any>) {
       icon: {
         width: 13,
         height: 16,
-        path: "M9.82857 7.76C10.9371 6.99429 11.7143 5.73714 11.7143 4.57143C11.7143 1.98857 9.71428 0 7.14286 0H0V16H8.04571C10.4343 16 12.2857 14.0571 12.2857 11.6686C12.2857 9.93143 11.3029 8.44571 9.82857 7.76ZM3.42799 2.85708H6.85656C7.80513 2.85708 8.57085 3.6228 8.57085 4.57137C8.57085 5.51994 7.80513 6.28565 6.85656 6.28565H3.42799V2.85708ZM3.42799 13.1429H7.42799C8.37656 13.1429 9.14228 12.3772 9.14228 11.4286C9.14228 10.4801 8.37656 9.71434 7.42799 9.71434H3.42799V13.1429Z"
+        path: 'M9.82857 7.76C10.9371 6.99429 11.7143 5.73714 11.7143 4.57143C11.7143 1.98857 9.71428 0 7.14286 0H0V16H8.04571C10.4343 16 12.2857 14.0571 12.2857 11.6686C12.2857 9.93143 11.3029 8.44571 9.82857 7.76ZM3.42799 2.85708H6.85656C7.80513 2.85708 8.57085 3.6228 8.57085 4.57137C8.57085 5.51994 7.80513 6.28565 6.85656 6.28565H3.42799V2.85708ZM3.42799 13.1429H7.42799C8.37656 13.1429 9.14228 12.3772 9.14228 11.4286C9.14228 10.4801 8.37656 9.71434 7.42799 9.71434H3.42799V13.1429Z'
       }
     })
   }
@@ -225,7 +230,7 @@ export function buildMenuItems(schema: Schema<any, any>) {
       icon: {
         width: 14,
         height: 16,
-        path: "M4.39216 0V3.42857H6.81882L3.06353 12.5714H0V16H8.78431V12.5714H6.35765L10.1129 3.42857H13.1765V0H4.39216Z"
+        path: 'M4.39216 0V3.42857H6.81882L3.06353 12.5714H0V16H8.78431V12.5714H6.35765L10.1129 3.42857H13.1765V0H4.39216Z'
       }
     })
   }
@@ -320,17 +325,16 @@ export function buildMenuItems(schema: Schema<any, any>) {
     })
   }
 
-  r.typeMenu = new Dropdown(
-    cut([r.makeHead1, r.makeHead2, r.makeHead3, r.typeMenu, r.wrapBlockQuote]),
-    { label: 'Тт',
-      class: 'editor-dropdown' // TODO: use this class
-      // FIXME: icon svg code shouldn't be here
-      // icon: {
-      //  width: 12,
-      //  height: 12,
-      //  path: "M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z"
-      // }
-    }) as MenuItem
+  r.typeMenu = new Dropdown(cut([r.makeHead1, r.makeHead2, r.makeHead3, r.typeMenu, r.wrapBlockQuote]), {
+    label: 'Тт',
+    class: 'editor-dropdown' // TODO: use this class
+    // FIXME: icon svg code shouldn't be here
+    // icon: {
+    //  width: 12,
+    //  height: 12,
+    //  path: "M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z"
+    // }
+  }) as MenuItem
   r.blockMenu = []
   r.listMenu = [cut([r.wrapBulletList, r.wrapOrderedList])]
   r.inlineMenu = [cut([r.toggleStrong, r.toggleEm, r.toggleMark])]

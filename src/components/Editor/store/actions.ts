@@ -16,7 +16,6 @@ const isText = (x) => x && x.doc && x.selection
 const isState = (x) => typeof x.lastModified !== 'string' && Array.isArray(x.drafts || [])
 const isDraft = (x): boolean => x && (x.text || x.path)
 
-
 export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
   const [store, setState] = createStore(initial)
 
@@ -54,8 +53,6 @@ export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
     return true
   }
 
-
-
   const toggleMarkdown = () => {
     const state = unwrap(store)
     const editorState = store.text as EditorState
@@ -65,7 +62,9 @@ export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
 
     if (markdown) {
       const lines = serialize(editorState).split('\n')
-      const nodes = lines.map((text) => text ? { type: 'paragraph', content: [{ type: 'text', text }] } : { type: 'paragraph' })
+      const nodes = lines.map((text) =>
+        text ? { type: 'paragraph', content: [{ type: 'text', text }] } : { type: 'paragraph' }
+      )
 
       doc = { type: 'doc', content: nodes }
     } else {
@@ -275,26 +274,27 @@ export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
     })
   }
 
-  const saveState = () => debounce(async (state: State) => {
-    const data: State = {
-      lastModified: state.lastModified,
-      drafts: state.drafts,
-      config: state.config,
-      path: state.path,
-      markdown: state.markdown,
-      collab: {
-        room: state.collab?.room
+  const saveState = () =>
+    debounce(async (state: State) => {
+      const data: State = {
+        lastModified: state.lastModified,
+        drafts: state.drafts,
+        config: state.config,
+        path: state.path,
+        markdown: state.markdown,
+        collab: {
+          room: state.collab?.room
+        }
       }
-    }
 
-    if (isInitialized(state.text)) {
-      data.text = store.editorView.state.toJSON()
-    } else if (state.text) {
-      data.text = state.text
-    }
+      if (isInitialized(state.text)) {
+        data.text = store.editorView.state.toJSON()
+      } else if (state.text) {
+        data.text = state.text
+      }
 
-    db.set('state', JSON.stringify(data))
-  }, 200)
+      db.set('state', JSON.stringify(data))
+    }, 200)
 
   const setFullscreen = (fullscreen: boolean) => {
     setState({ fullscreen })
@@ -380,7 +380,7 @@ export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
   }
 
   const updateTheme = () => {
-    const { theme }  = getTheme(unwrap(store))
+    const { theme } = getTheme(unwrap(store))
     setState('config', { theme })
   }
 

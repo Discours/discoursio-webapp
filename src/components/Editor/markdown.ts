@@ -1,5 +1,10 @@
 import markdownit from 'markdown-it'
-import { MarkdownSerializer, MarkdownParser, defaultMarkdownSerializer, MarkdownSerializerState } from 'prosemirror-markdown'
+import {
+  MarkdownSerializer,
+  MarkdownParser,
+  defaultMarkdownSerializer,
+  MarkdownSerializerState
+} from 'prosemirror-markdown'
 import type { Node, Schema } from 'prosemirror-model'
 import type { EditorState } from 'prosemirror-state'
 
@@ -11,7 +16,6 @@ export const serialize = (state: EditorState) => {
 
   return text
 }
-
 
 function findAlignment(cell: Node): string | null {
   const alignment = cell.attrs.style as string

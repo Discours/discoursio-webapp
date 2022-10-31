@@ -1,6 +1,13 @@
-import { DOMOutputSpec, DOMSerializer, Node as ProsemirrorNode, NodeSpec, NodeType, Schema } from 'prosemirror-model'
+import {
+  DOMOutputSpec,
+  DOMSerializer,
+  Node as ProsemirrorNode,
+  NodeSpec,
+  NodeType,
+  Schema
+} from 'prosemirror-model'
 import type { EditorView } from 'prosemirror-view'
-import { wrappingInputRule , inputRules } from 'prosemirror-inputrules'
+import { wrappingInputRule, inputRules } from 'prosemirror-inputrules'
 import { splitListItem } from 'prosemirror-schema-list'
 import { keymap } from 'prosemirror-keymap'
 import type { NodeViewFn, ProseMirrorExtension } from '../helpers'
@@ -59,8 +66,8 @@ class TodoItemView {
     this.dom = res.dom
     this.contentDOM = res.contentDOM
     this.view = view
-    this.getPos = getPos;
-    (this.dom as HTMLElement).querySelector('input').addEventListener('click', this.handleClick.bind(this))
+    this.getPos = getPos
+    ;(this.dom as HTMLElement).querySelector('input').addEventListener('click', this.handleClick.bind(this))
   }
 
   handleClick(e: MouseEvent) {
@@ -90,5 +97,5 @@ export default (): ProseMirrorExtension => ({
     todo_item: (node: ProsemirrorNode, view: EditorView, getPos: () => number) => {
       return new TodoItemView(node, view, getPos)
     }
-  } as unknown as { [key:string]: NodeViewFn }
+  } as unknown as { [key: string]: NodeViewFn }
 })

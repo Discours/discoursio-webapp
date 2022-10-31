@@ -10,10 +10,10 @@ export const Editor = () => {
   const onReconfigure = (text: EditorState) => ctrl.setState({ text })
   const onChange = (text: EditorState) => ctrl.setState({ text, lastModified: new Date() })
   // const editorCss = (config) => css``
-  const style = () => (store.error ? `display: none;` : (store.markdown ? `white-space: pre-wrap;` : ''))
+  const style = () => (store.error ? `display: none;` : store.markdown ? `white-space: pre-wrap;` : '')
   return (
     <ProseMirror
-      className='editor col-md-6 shift-content'
+      className="editor col-md-6 shift-content"
       style={style()}
       editorView={store.editorView}
       text={store.text}

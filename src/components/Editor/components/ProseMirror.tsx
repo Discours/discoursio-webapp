@@ -6,8 +6,7 @@ import { Schema } from 'prosemirror-model'
 import type { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
 
 interface ProseMirrorProps {
-  style?: string
-  className?: string
+  cssClass?: string
   text?: Store<ProseMirrorState>
   editorView?: Store<EditorView>
   extensions?: Store<ProseMirrorExtension[]>
@@ -60,7 +59,7 @@ export const ProseMirror = (props: ProseMirrorProps) => {
     [props.text, props.extensions]
   )
 
-  return <div style={props.style} ref={editorRef} class={props.className} spell-check={false} />
+  return <div ref={editorRef} class={props.cssClass} spell-check={false} />
 }
 
 const createEditorState = (

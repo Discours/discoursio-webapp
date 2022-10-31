@@ -34,7 +34,30 @@ export const Sidebar = () => {
     document.body.classList.toggle('dark')
     ctrl.updateConfig({ theme: document.body.className })
   }
-  const collabText = () => (store.collab?.started ? 'Stop' : store.collab?.error ? 'Restart 🚨' : 'Start')
+  const collabText = () => {
+    if (store.collab?.started) {
+      return 'Stop'
+    }
+
+    if (store.collab?.error) {
+      return 'Restart 🚨'
+    }
+
+    return 'Start'
+  }
+
+  const discardText = () => {
+    if (store.path) {
+      return 'Close'
+    }
+
+    if (store.drafts.length > 0 && isEmpty(store.text)) {
+      return 'Delete ⚠️'
+    }
+
+    return 'Clear'
+  }
+
   const editorView = () => unwrap(store.editorView)
   const onToggleMarkdown = () => ctrl.toggleMarkdown()
   const onOpenDraft = (draft: Draft) => ctrl.openDraft(unwrap(draft))
@@ -144,12 +167,7 @@ export const Sidebar = () => {
               disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text)}
               data-testid="discard"
             >
-              {store.path
-                ? 'Close'
-                : store.drafts.length > 0 && isEmpty(store.text)
-                ? 'Delete ⚠️'
-                : 'Clear'}{' '}
-              <Keys keys={[mod, 'w']} />
+              {discardText()} <Keys keys={[mod, 'w']} />
             </Link>
             <Link onClick={onUndo}>
               Undo <Keys keys={[mod, 'z']} />

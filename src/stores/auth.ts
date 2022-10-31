@@ -69,12 +69,6 @@ export const confirmEmail = async (token: string) => {
   setSession(authResult)
 }
 
-export const confirmEmail = async (token: string) => {
-  const authResult = await apiClient.confirmEmail({ token })
-  setToken(authResult.token)
-  setSession(authResult)
-}
-
 export const useAuthStore = () => {
   return { session, emailChecks }
 }

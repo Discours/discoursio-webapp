@@ -8,14 +8,14 @@ button {
   align-items: center;
   outline: none;
   text-decoration: none;
-  font-family: 'JetBrains Mono';
+  background: none;
+  font-family: Muller, Arial, Helvetica, sans-serif;
+  color: var(--foreground);
+  border: 1px solid var(--foreground);
+
   &:hover {
     opacity: 0.8;
   }
-  background: none;
-  font-family: 'Muller';
-  color: var(--foreground);
-  border: 1px solid var(--foreground);
 }
 
 button.primary {

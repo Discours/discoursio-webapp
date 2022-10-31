@@ -7,6 +7,8 @@ import * as remote from '../remote'
 import { isEmpty } from '../prosemirror/helpers'
 import type { Styled } from './Layout'
 import '../styles/Sidebar.scss'
+import { clsx } from 'clsx'
+import styles from './Sidebar.module.scss'
 
 const Off = (props) => <div class="sidebar-off">{props.children}</div>
 
@@ -16,8 +18,9 @@ const Link = (
   props: Styled & { withMargin?: boolean; disabled?: boolean; title?: string; className?: string }
 ) => (
   <button
-    class={`sidebar-link${props.className ? ' ' + props.className : ''}`}
-    style={{ 'margin-bottom': props.withMargin ? '10px' : '' }}
+    class={clsx('sidebar-link', props.className, {
+      [styles.withMargin]: props.withMargin
+    })}
     onClick={props.onClick}
     disabled={props.disabled}
     title={props.title}

@@ -86,7 +86,7 @@
 }
 
 .sidebar-label {
-  color: var(--foreground) #7f7f7f;
+  color: var(--foreground);
 
   > i {
     text-transform: none;
@@ -137,7 +137,7 @@
   }
 
   &[disabled] {
-    color: var(--foreground) 99;
+    color: var(--foreground);
     cursor: not-allowed;
   }
 

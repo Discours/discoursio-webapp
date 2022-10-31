@@ -27,7 +27,6 @@ module.exports = {
         // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
       rules: {
-        'no-nested-ternary': 'off',
         '@typescript-eslint/no-unused-vars': [
           'warn',
           {

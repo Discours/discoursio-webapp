@@ -3,7 +3,7 @@ import { For } from 'solid-js/web'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from './Card'
 
-export default (props: { articles: Shout[]; header?: JSX.Element }) => {
+export const Row3 = (props: { articles: Shout[]; header?: JSX.Element }) => {
   return (
     <div class="floor">
       <div class="wide-container row">

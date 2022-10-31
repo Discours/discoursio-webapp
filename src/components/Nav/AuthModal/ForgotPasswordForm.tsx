@@ -7,8 +7,6 @@ import { useRouter } from '../../../stores/router'
 import { email, setEmail } from './sharedLogic'
 import type { AuthModalSearchParams } from './types'
 import { isValidEmail } from './validators'
-import { checkEmail, register } from '../../../stores/auth'
-import { ApiError } from '../../../utils/apiClient'
 
 type FormFields = {
   email: string
@@ -61,9 +59,9 @@ export const ForgotPasswordForm = () => {
   }
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <h4>{t('Forgot password?')}</h4>
-      {t('Everything is ok, please give us your email address')}
+      <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
       <Show when={submitError()}>
         <div class={styles.authInfo}>
           <ul>

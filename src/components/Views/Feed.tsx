@@ -1,6 +1,6 @@
-import { createMemo, For, Show } from 'solid-js'
-import type { Shout, Reaction } from '../../graphql/types.gen'
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import '../../styles/Feed.scss'
+import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { Icon } from '../Nav/Icon'
 import { byCreated, sortBy } from '../../utils/sortby'
 import { TopicCard } from '../Topic/Card'
@@ -16,11 +16,6 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 
-interface FeedProps {
-  articles: Shout[]
-  reactions?: Reaction[]
-}
-
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,
 //   ReactionKind.Reject,
@@ -28,9 +23,11 @@ interface FeedProps {
 //   ReactionKind.Ask
 // ]
 
-export const FeedView = (props: FeedProps) => {
+export const FEED_PAGE_SIZE = 20
+
+export const FeedView = () => {
   // state
-  const { sortedArticles } = useArticlesStore({ sortedArticles: props.articles })
+  const { sortedArticles } = useArticlesStore()
   const reactions = useReactionsStore()
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
@@ -38,6 +35,8 @@ export const FeedView = (props: FeedProps) => {
   const { session } = useAuthStore()
 
   const topReactions = createMemo(() => sortBy(reactions(), byCreated))
+
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   // const expectingFocus = createMemo<Shout[]>(() => {
   //   // 1 co-author notifications needs
@@ -52,13 +51,15 @@ export const FeedView = (props: FeedProps) => {
   //   return []
   // })
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const loadMore = () => {
-    // const limit = props.limit || 50
-    // const offset = props.offset || 0
-    // FIXME
-    loadRecentArticles({ limit: 50, offset: 0 })
+  const loadMore = async () => {
+    const { hasMore } = await loadRecentArticles({ limit: FEED_PAGE_SIZE, offset: sortedArticles().length })
+    setIsLoadMoreButtonVisible(hasMore)
   }
+
+  onMount(() => {
+    loadMore()
+  })
+
   return (
     <>
       <div class="container feed">
@@ -90,7 +91,7 @@ export const FeedView = (props: FeedProps) => {
                 {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
               </For>
 
-              <div class="beside-column-title">
+              <div class={stylesBeside.besideColumnTitle}>
                 <h4>{t('Popular authors')}</h4>
                 <a href="/user/list">
                   {t('All authors')}
@@ -98,7 +99,7 @@ export const FeedView = (props: FeedProps) => {
                 </a>
               </div>
 
-              <ul class="beside-column">
+              <ul class={stylesBeside.besideColumn}>
                 <For each={topAuthors().slice(0, 5)}>
                   {(author) => (
                     <li>
@@ -112,10 +113,6 @@ export const FeedView = (props: FeedProps) => {
                 {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
               </For>
             </Show>
-
-            <p class="load-more-container">
-              <button class="button">{t('Load more')}</button>
-            </p>
           </div>
 
           <aside class="col-md-3">
@@ -135,12 +132,13 @@ export const FeedView = (props: FeedProps) => {
             </Show>
           </aside>
         </div>
-
-        <p class="load-more-container">
-          <button class="button" onClick={loadMore}>
-            {t('Load more')}
-          </button>
-        </p>
+        <Show when={isLoadMoreButtonVisible()}>
+          <p class="load-more-container">
+            <button class="button" onClick={loadMore}>
+              {t('Load more')}
+            </button>
+          </p>
+        </Show>
       </div>
     </>
   )

@@ -11,7 +11,6 @@ export const signIn = async (params) => {
   setToken(authResult.token)
   console.debug('signed in')
 }
-
 export const signOut = () => {
   // TODO: call backend to revoke token
   setSession(null)
@@ -54,13 +53,18 @@ export const register = async ({
   })
 }
 
-export const signSendLink = async (params) => {
-  await apiClient.authSendLink(params) // { email }
-  resetToken()
+export const signSendLink = async ({ email }: { email: string }) => {
+  await apiClient.authSendLink({ email })
 }
 
 export const renewSession = async () => {
   const authResult = await apiClient.getSession() // token in header
+  setToken(authResult.token)
+  setSession(authResult)
+}
+
+export const confirmEmail = async (token: string) => {
+  const authResult = await apiClient.confirmEmail({ token })
   setToken(authResult.token)
   setSession(authResult)
 }

@@ -158,5 +158,12 @@
   "Hooray! Welcome!": "Ура! Добро пожаловать!",
   "You've confirmed email": "Вы подтвердили почту",
   "This email is already taken. If it's you": "Такой email уже зарегистрирован. Если это вы",
-  "enter": "войдите"
+  "enter": "войдите",
+  "Go to main page": "Перейти на главную",
+  "Back to main page": "Вернуться на главную",
+  "Almost done! Check your email.": "Почти готово! Осталось подтвердить вашу почту.",
+  "We've sent you a message with a link to enter our website.": "Мы выслали вам письмо с ссылкой на почту. Перейдите по ссылке в письме, чтобы войти на сайт.",
+  "Send link again": "Прислать ссылку ещё раз",
+  "Link sent, check your email": "Ссылка отправлена, проверьте почту",
+  "Create post": "Создать публикацию"
 }

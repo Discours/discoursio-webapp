@@ -98,14 +98,12 @@ export const apiClient = {
   },
   authSendLink: async ({ email }) => {
     // send link with code on email
-    const response = await publicGraphQLClient.query(authSendLinkMutation, { email }).toPromise()
+    const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email }).toPromise()
     return response.data.reset
   },
   confirmEmail: async ({ token }: { token: string }) => {
     // confirm email with code from link
-    const response = await publicGraphQLClient
-      .mutation(authConfirmEmailMutation, { code: token })
-      .toPromise()
+    const response = await publicGraphQLClient.mutation(authConfirmEmailMutation, { token }).toPromise()
 
     if (response.error) {
       throw new ApiError('unknown', response.error.message)
@@ -183,7 +181,7 @@ export const apiClient = {
   },
   getArticlesForTopics: async ({
     topicSlugs,
-    limit = FEED_SIZE,
+    limit,
     offset = 0
   }: {
     topicSlugs: string[]
@@ -206,7 +204,7 @@ export const apiClient = {
   },
   getArticlesForAuthors: async ({
     authorSlugs,
-    limit = FEED_SIZE,
+    limit,
     offset = 0
   }: {
     authorSlugs: string[]

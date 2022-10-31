@@ -1,5 +1,5 @@
-import { Show } from 'solid-js/web'
-import { createEffect, createMemo, onMount } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
+import { Component, createEffect, createMemo } from 'solid-js'
 import { t } from '../../../utils/intl'
 import { hideModal } from '../../../stores/ui'
 import { handleClientRouteLinkClick, useRouter } from '../../../stores/router'
@@ -11,12 +11,11 @@ import { ForgotPasswordForm } from './ForgotPasswordForm'
 import { EmailConfirm } from './EmailConfirm'
 import type { AuthModalMode, AuthModalSearchParams } from './types'
 
-const AUTH_MODAL_MODES: Record<AuthModalMode, AuthModalMode> = {
-  login: 'login',
-  register: 'register',
-  'forgot-password': 'forgot-password',
-  // eslint-disable-next-line sonarjs/no-duplicate-string
-  'confirm-email': 'confirm-email'
+const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
+  login: LoginForm,
+  register: RegisterForm,
+  'forgot-password': ForgotPasswordForm,
+  'confirm-email': EmailConfirm
 }
 
 export const AuthModal = () => {
@@ -25,7 +24,7 @@ export const AuthModal = () => {
   const { searchParams } = useRouter<AuthModalSearchParams>()
 
   const mode = createMemo<AuthModalMode>(() => {
-    return AUTH_MODAL_MODES[searchParams().mode] || 'login'
+    return AUTH_MODAL_MODES[searchParams().mode] ? searchParams().mode : 'login'
   })
 
   createEffect((oldMode) => {
@@ -70,18 +69,7 @@ export const AuthModal = () => {
         </div>
       </div>
       <div class={clsx('col-sm-6', styles.auth)}>
-        <Show when={mode() === 'login'}>
-          <LoginForm />
-        </Show>
-        <Show when={mode() === 'register'}>
-          <RegisterForm />
-        </Show>
-        <Show when={mode() === 'forgot-password'}>
-          <ForgotPasswordForm />
-        </Show>
-        <Show when={mode() === 'confirm-email'}>
-          <EmailConfirm />
-        </Show>
+        <Dynamic component={AUTH_MODAL_MODES[mode()]} />
       </div>
     </div>
   )

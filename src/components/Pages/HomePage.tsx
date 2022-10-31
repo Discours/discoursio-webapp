@@ -1,4 +1,4 @@
-import { HomeView } from '../Views/Home'
+import { HomeView, PRERENDERED_ARTICLES_COUNT } from '../Views/Home'
 import { MainLayout } from '../Layouts/MainLayout'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -14,7 +14,7 @@ export const HomePage = (props: PageProps) => {
       return
     }
 
-    await loadPublishedArticles({ limit: 5, offset: 0 })
+    await loadPublishedArticles({ limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
     await loadRandomTopics()
 
     setIsLoaded(true)

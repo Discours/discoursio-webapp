@@ -1,8 +1,8 @@
 import { MainLayout } from '../Layouts/MainLayout'
-import { TopicView } from '../Views/Topic'
+import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../Views/Topic'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { loadArticlesForTopics, resetSortedArticles } from '../../stores/zine/articles'
+import { loadTopicArticles, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 import { loadTopic } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
@@ -27,7 +27,7 @@ export const TopicPage = (props: PageProps) => {
       return
     }
 
-    await loadArticlesForTopics({ topicSlugs: [slug()] })
+    await loadTopicArticles({ topicSlug: slug(), limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
     await loadTopic({ slug: slug() })
 
     setIsLoaded(true)

@@ -21,7 +21,7 @@ interface BesideProps {
   iconButton?: boolean
 }
 
-export default (props: BesideProps) => {
+export const Beside = (props: BesideProps) => {
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
       <div class="floor floor--9">

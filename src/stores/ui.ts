@@ -4,7 +4,7 @@ import { useRouter } from './router'
 
 //export const locale = persistentAtom<string>('locale', 'ru')
 export const [locale, setLocale] = createSignal('ru')
-export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'share' | 'thank' | 'donate'
+export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate'
 type WarnKind = 'error' | 'warn' | 'info'
 
 export interface Warning {
@@ -17,7 +17,6 @@ export const MODALS: Record<ModalType, ModalType> = {
   auth: 'auth',
   subscribe: 'subscribe',
   feedback: 'feedback',
-  share: 'share',
   thank: 'thank',
   donate: 'donate'
 }

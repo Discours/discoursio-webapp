@@ -19,6 +19,7 @@ export interface Routes {
   help: void
   manifest: void
   partners: void
+  principles: void
   projects: void
   termsOfUse: void
   thanks: void
@@ -41,6 +42,7 @@ const routerStore = createRouter<Routes>(
     help: '/about/help',
     manifest: '/about/manifest',
     partners: '/about/partners',
+    principles: '/about/principles',
     projects: '/about/projects',
     termsOfUse: '/about/terms-of-use',
     thanks: '/about/thanks'

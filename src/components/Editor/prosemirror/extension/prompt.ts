@@ -1,13 +1,12 @@
 const prefix = 'ProseMirror-prompt'
 
-// FIXME !!!
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function openPrompt(options: any) {
+export function openPrompt(options) {
   const wrapper = document.body.appendChild(document.createElement('div'))
   wrapper.className = prefix
 
-  const mouseOutside = (e: any) => {
-    if (!wrapper.contains(e.target)) close()
+  const mouseOutside = (ev: MouseEvent) => {
+    if (!wrapper.contains(ev.target as Node)) close()
   }
   setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50)
   const close = () => {
@@ -15,7 +14,7 @@ export function openPrompt(options: any) {
     if (wrapper.parentNode) wrapper.remove()
   }
 
-  const domFields: any = []
+  const domFields: HTMLElement[] = []
   options.fields.forEach((name) => {
     domFields.push(options.fields[name].render())
   })
@@ -34,14 +33,14 @@ export function openPrompt(options: any) {
   if (options.title) {
     form.appendChild(document.createElement('h5')).textContent = options.title
   }
-  domFields.forEach((field: any) => {
-    form.appendChild(document.createElement('div')).append(field)
+  domFields.forEach((field: HTMLElement) => {
+    form.appendChild(document.createElement('div')).appendChild(field)
   })
   const buttons = form.appendChild(document.createElement('div'))
   buttons.className = prefix + '-buttons'
-  buttons.append(submitButton)
-  buttons.append(document.createTextNode(' '))
-  buttons.append(cancelButton)
+  buttons.appendChild(submitButton)
+  buttons.appendChild(document.createTextNode(' '))
+  buttons.appendChild(cancelButton)
 
   const box = wrapper.getBoundingClientRect()
   wrapper.style.top = (window.innerHeight - box.height) / 2 + 'px'
@@ -74,11 +73,11 @@ export function openPrompt(options: any) {
     }
   })
 
-  const input: any = form.elements[0]
+  const input = form.elements[0] as HTMLInputElement
   if (input) input.focus()
 }
 
-function getValues(fields: any, domFields: any) {
+function getValues(fields: any, domFields: HTMLElement[]) {
   const result = Object.create(null)
   let i = 0
   fields.forEarch((name) => {
@@ -95,14 +94,13 @@ function getValues(fields: any, domFields: any) {
   return result
 }
 
-function reportInvalid(dom: any, message: any) {
-  const parent = dom.parentNode
-  const msg = parent.appendChild(document.createElement('div'))
+function reportInvalid(dom: HTMLElement, message: string) {
+  const msg: HTMLElement = dom.parentNode.appendChild(document.createElement('div'))
   msg.style.left = dom.offsetLeft + dom.offsetWidth + 2 + 'px'
   msg.style.top = dom.offsetTop - 5 + 'px'
   msg.className = 'ProseMirror-invalid'
   msg.textContent = message
-  setTimeout(() => msg.remove(), 1500)
+  setTimeout(msg.remove, 1500)
 }
 
 export class Field {
@@ -140,5 +138,18 @@ export class TextField extends Field {
     input.value = this.options.value || ''
     input.autocomplete = 'off'
     return input
+  }
+}
+
+export class SelectField extends Field {
+  render() {
+    const select = document.createElement('select')
+    this.options.options.forEach((o: { value: string; label: string }) => {
+      const opt = select.appendChild(document.createElement('option'))
+      opt.value = o.value
+      opt.selected = o.value === this.options.value
+      opt.label = o.label
+    })
+    return select
   }
 }

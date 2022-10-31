@@ -1,17 +1,24 @@
 import { Show, onCleanup, createEffect, onError, onMount, untrack } from 'solid-js'
 import { createMutable, unwrap } from 'solid-js/store'
-import { State, StateContext, newState } from '../Editor/store'
-import { createCtrl } from '../Editor/store/ctrl'
-import { Layout } from '../Editor/Layout'
-import Editor from '../Editor'
-import { Sidebar } from '../Editor/Sidebar'
-import ErrorView from '../Editor/Error'
-import { getLogger } from '../../utils/logger'
+import { State, StateContext } from '../Editor/store/context'
+import { createCtrl } from '../Editor/store/actions'
+import { Layout } from '../Editor/components/Layout'
+import { Editor } from '../Editor/components/Editor'
+import { Sidebar } from '../Editor/components/Sidebar'
+import ErrorView from '../Editor/components/Error'
 
-const log = getLogger('CreateView')
+const matchDark = () => window.matchMedia('(prefers-color-scheme: dark)')
 
-export const CreateView = () => {
-  const [store, ctrl] = createCtrl(newState())
+export const CreateView = (props: { state: State }) => {
+  let isMac = false
+  const onChangeTheme = () => ctrl.updateTheme()
+  onMount(() => {
+    isMac = window?.navigator.platform.includes('Mac')
+    matchDark().addEventListener('change', onChangeTheme)
+    onCleanup(() => matchDark().removeEventListener('change', onChangeTheme))
+  })
+
+  const [store, ctrl] = createCtrl({ ...props.state, isMac })
   const mouseEnterCoords = createMutable({ x: 0, y: 0 })
 
   const onMouseEnter = (e: MouseEvent) => {
@@ -20,19 +27,12 @@ export const CreateView = () => {
   }
 
   onMount(async () => {
-    if (store.error) return
-    await ctrl.init()
-  })
-
-  onMount(() => {
-    if (typeof window === 'undefined') {
+    console.debug('[create] view mounted')
+    if (store.error) {
+      console.error(store.error)
       return
     }
-
-    const mediaQuery = '(prefers-color-scheme: dark)'
-
-    window.matchMedia(mediaQuery).addEventListener('change', ctrl.updateTheme)
-    onCleanup(() => window.matchMedia(mediaQuery).removeEventListener('change', ctrl.updateTheme))
+    await ctrl.init()
   })
 
   onError((error) => {
@@ -47,6 +47,7 @@ export const CreateView = () => {
     }
     const state: State = untrack(() => unwrap(store))
     ctrl.saveState(state)
+    console.debug('[create] status update')
     return store.loading
   }, store.loading)
 
@@ -57,13 +58,8 @@ export const CreateView = () => {
         data-testid={store.error ? 'error' : store.loading}
         onMouseEnter={onMouseEnter}
       >
-        <Show when={store.error}>
-          <ErrorView />
-        </Show>
-        <Show when={store.loading === 'initialized'}>
-          <Show when={!store.error}>
-            <Editor />
-          </Show>
+        <Show when={!store.error} fallback={<ErrorView />}>
+          <Editor />
           <Sidebar />
         </Show>
       </Layout>

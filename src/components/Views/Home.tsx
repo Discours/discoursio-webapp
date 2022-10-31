@@ -10,7 +10,6 @@ import { Beside } from '../Feed/Beside'
 import RowShort from '../Feed/RowShort'
 import Slider from '../Feed/Slider'
 import Group from '../Feed/Group'
-import { getLogger } from '../../utils/logger'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
@@ -25,8 +24,6 @@ import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-
-const log = getLogger('home view')
 
 type HomeProps = {
   randomTopics: Topic[]

@@ -3,12 +3,8 @@ import { apiClient } from '../../utils/apiClient'
 import { addAuthorsByTopic } from './authors'
 import { addTopicsByAuthor } from './topics'
 import { byStat } from '../../utils/sortby'
-
-import { getLogger } from '../../utils/logger'
 import { createSignal } from 'solid-js'
 import { createLazyMemo } from '@solid-primitives/memo'
-
-const log = getLogger('articles store')
 
 const [sortedArticles, setSortedArticles] = createSignal<Shout[]>([])
 const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})

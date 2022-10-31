@@ -1,6 +1,6 @@
 import { Plugin } from 'prosemirror-state'
 import { DecorationSet, Decoration } from 'prosemirror-view'
-import { ProseMirrorExtension, isEmpty } from '../state'
+import { ProseMirrorExtension, isEmpty } from '../helpers'
 
 const placeholder = (text: string) =>
   new Plugin({
@@ -8,7 +8,6 @@ const placeholder = (text: string) =>
       decorations(state) {
         if (isEmpty(state)) {
           const div = document.createElement('div')
-
           div.setAttribute('contenteditable', 'false')
           div.classList.add('placeholder')
           div.textContent = text

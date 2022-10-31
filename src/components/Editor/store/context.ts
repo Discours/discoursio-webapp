@@ -2,18 +2,25 @@ import { createContext, useContext } from 'solid-js'
 import type { Store } from 'solid-js/store'
 import type { XmlFragment } from 'yjs'
 import type { WebrtcProvider } from 'y-webrtc'
-import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/state'
-import type { Reaction } from '../../../graphql/types.gen'
+import type { ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
+import type { Command, EditorState } from 'prosemirror-state'
 import type { EditorView } from 'prosemirror-view'
+import type { Schema } from 'prosemirror-model'
 
-export const isMac = true
-
-export const mod = isMac ? 'Cmd' : 'Ctrl'
-export const alt = isMac ? 'Cmd' : 'Alt'
-
+export interface ExtensionsProps {
+  data?: unknown
+  keymap?: { [key: string]: Command }
+  config: Config
+  markdown: boolean
+  path?: string
+  y?: YOptions
+  schema?: Schema
+  collab?: Collab
+  typewriterMode?: boolean
+}
 export interface Args {
   cwd?: string
-  file?: string
+  draft?: string
   room?: string
   text?: any
 }
@@ -32,15 +39,13 @@ export interface Config {
   font: string
   fontSize: number
   contentWidth: number
-  alwaysOnTop: boolean
-  // typewriterMode: boolean;
+  typewriterMode: boolean
   prettier: PrettierConfig
 }
 
 export interface ErrorObject {
-  message: string
   id: string
-  props: unknown
+  props?: unknown
 }
 
 export interface YOptions {
@@ -57,64 +62,70 @@ export interface Collab {
 
 export type LoadingType = 'loading' | 'initialized'
 
-export interface File {
-  text?: { [key: string]: any }
-  lastModified?: string
-  path?: string
-  markdown?: boolean
-}
-
 export interface State {
+  isMac?: boolean
   text?: ProseMirrorState
   editorView?: EditorView
   extensions?: ProseMirrorExtension[]
   markdown?: boolean
   lastModified?: Date
-  files: File[]
+  drafts: Draft[]
   config: Config
   error?: ErrorObject
-  loading: LoadingType
-  fullscreen: boolean
+  loading?: LoadingType
+  fullscreen?: boolean
   collab?: Collab
   path?: string
   args?: Args
+  keymap?: { [key: string]: Command }
+}
+
+export interface Draft {
+  body?: string
+  lastModified?: Date
+  text?: { doc: EditorState['doc']; selection: { type: string; anchor: number; head: number } }
+  path?: string
+  markdown?: boolean
+  extensions?: ProseMirrorExtension[]
+}
+
+export interface EditorActions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
 
 export class ServiceError extends Error {
   public errorObject: ErrorObject
   constructor(id: string, props: unknown) {
     super(id)
-    this.errorObject = { id, props, message: '' }
+    this.errorObject = { id, props }
   }
 }
 
-const DEFAULT_CONFIG = {
-  theme: '',
-  // codeTheme: 'material-light',
-  font: 'muller',
-  fontSize: 24,
-  contentWidth: 800,
-  alwaysOnTop: isMac,
-  // typewriterMode: true,
-  prettier: {
-    printWidth: 80,
-    tabWidth: 2,
-    useTabs: false,
-    semi: false,
-    singleQuote: true
-  }
-}
-
-export const StateContext = createContext<[Store<State>, any]>([{} as Store<State>, undefined])
+export const StateContext = createContext<[Store<State>, EditorActions]>([undefined, undefined])
 
 export const useState = () => useContext(StateContext)
 
 export const newState = (props: Partial<State> = {}): State => ({
   extensions: [],
-  files: [],
+  drafts: [],
   loading: 'loading',
   fullscreen: false,
   markdown: false,
-  config: DEFAULT_CONFIG,
+  config: {
+    theme: undefined,
+    // codeTheme: 'material-light',
+    font: 'muller',
+    fontSize: 24,
+    contentWidth: 800,
+    typewriterMode: true,
+    prettier: {
+      printWidth: 80,
+      tabWidth: 2,
+      useTabs: false,
+      semi: false,
+      singleQuote: true
+    }
+  },
   ...props
 })

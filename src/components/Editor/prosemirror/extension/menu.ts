@@ -13,18 +13,18 @@ import {
   Dropdown
 } from 'prosemirror-menu'
 
-import type { MenuItemSpec, MenuElement } from 'prosemirror-menu'
-
 import { wrapInList } from 'prosemirror-schema-list'
-import { NodeSelection } from 'prosemirror-state'
+import type { NodeSelection } from 'prosemirror-state'
 
 import { TextField, openPrompt } from './prompt'
-import type { ProseMirrorExtension } from '../state'
+import type { ProseMirrorExtension } from '../helpers'
 import type { Schema } from 'prosemirror-model'
 
 // Helpers to create specific types of items
 
-function canInsert(state: { selection: { $from: any } }, nodeType: any) {
+const cut = (something) => something.filter(Boolean)
+
+function canInsert(state, nodeType) {
   const $from = state.selection.$from
 
   for (let d = $from.depth; d >= 0; d--) {
@@ -36,31 +36,19 @@ function canInsert(state: { selection: { $from: any } }, nodeType: any) {
   return false
 }
 
-function insertImageItem(nodeType: { createAndFill: (arg0: any) => any }) {
+function insertImageItem(nodeType) {
   return new MenuItem({
     icon: icons.image,
     label: 'image',
-    enable(state: any) {
+    enable(state) {
       return canInsert(state, nodeType)
     },
-    run(
-      state: {
-        selection: { node?: any; from?: any; to?: any }
-        doc: { textBetween: (arg0: any, arg1: any, arg2: string) => any }
-      },
-      _: any,
-      view: {
-        dispatch: (arg0: any) => void
-        state: { tr: { replaceSelectionWith: (arg0: any) => any } }
-        focus: () => void
-      }
-    ) {
-      const { from, to, node } = state.selection
-      let attrs = null
-
-      if (state.selection instanceof NodeSelection && node.type === nodeType) {
-        attrs = node.attrs
-      }
+    run(state, _, view) {
+      const {
+        from,
+        to,
+        node: { attrs }
+      } = state.selection as NodeSelection
 
       openPrompt({
         title: 'Insert image',
@@ -76,9 +64,8 @@ function insertImageItem(nodeType: { createAndFill: (arg0: any) => any }) {
             value: attrs ? attrs.alt : state.doc.textBetween(from, to, ' ')
           })
         },
-        // eslint-disable-next-line no-shadow
-        callback(attrs: any) {
-          view.dispatch(view.state.tr.replaceSelectionWith(nodeType.createAndFill(attrs)))
+        callback(newAttrs) {
+          view.dispatch(view.state.tr.replaceSelectionWith(nodeType.createAndFill(newAttrs)))
           view.focus()
         }
       })
@@ -86,32 +73,22 @@ function insertImageItem(nodeType: { createAndFill: (arg0: any) => any }) {
   })
 }
 
-function cmdItem(
-  cmd: (arg0: any) => any,
-  options: { [x: string]: any; active?: (state: any) => any; enable?: any; title?: any; select?: any }
-) {
+function cmdItem(cmd, options) {
   const passedOptions = {
     label: options.title,
     run: cmd
-  } as { [key: string]: any }
-
-  Object.keys(options).forEach((prop) => (passedOptions[prop] = options[prop]))
-
-  if ((!options.enable || options.enable === true) && !options.select) {
-    passedOptions[options.enable ? 'enable' : 'select'] = (state: any) => cmd(state)
   }
 
-  return new MenuItem(passedOptions as MenuItemSpec)
+  for (const prop in options) passedOptions[prop] = options[prop]
+
+  if ((!options.enable || options.enable === true) && !options.select) {
+    passedOptions[options.enable ? 'enable' : 'select'] = (state) => cmd(state)
+  }
+
+  return new MenuItem(passedOptions)
 }
 
-function markActive(
-  state: {
-    selection: { from: any; $from: any; to: any; empty: any }
-    storedMarks: any
-    doc: { rangeHasMark: (arg0: any, arg1: any, arg2: any) => any }
-  },
-  type: { isInSet: (arg0: any) => any }
-) {
+function markActive(state, type) {
   const { from, $from, to, empty } = state.selection
 
   if (empty) return type.isInSet(state.storedMarks || $from.marks())
@@ -119,20 +96,20 @@ function markActive(
   return state.doc.rangeHasMark(from, to, type)
 }
 
-function markItem(markType: any, options: { [x: string]: any; title?: string; icon?: any }) {
+function markItem(markType, options) {
   const passedOptions = {
-    active(state: any) {
+    active(state) {
       return markActive(state, markType)
     },
     enable: true
-  } as { [key: string]: any }
+  }
 
-  Object.keys(options).forEach((prop: string) => (passedOptions[prop] = options[prop]))
+  for (const prop in options) passedOptions[prop] = options[prop]
 
   return cmdItem(toggleMark(markType), passedOptions)
 }
 
-function linkItem(markType: any) {
+function linkItem(markType) {
   return new MenuItem({
     title: 'Add or remove link',
     icon: {
@@ -140,13 +117,13 @@ function linkItem(markType: any) {
       height: 18,
       path: 'M3.27177 14.7277C2.06258 13.5186 2.06258 11.5527 3.27177 10.3435L6.10029 7.51502L4.75675 6.17148L1.92823 9C-0.0234511 10.9517 -0.0234511 14.1196 1.92823 16.0713C3.87991 18.023 7.04785 18.023 8.99952 16.0713L11.828 13.2428L10.4845 11.8992L7.65598 14.7277C6.44679 15.9369 4.48097 15.9369 3.27177 14.7277ZM6.87756 12.536L12.5346 6.87895L11.1203 5.46469L5.4633 11.1217L6.87756 12.536ZM6.17055 4.75768L8.99907 1.92916C10.9507 -0.0225206 14.1187 -0.0225201 16.0704 1.92916C18.022 3.88084 18.022 7.04878 16.0704 9.00046L13.2418 11.829L11.8983 10.4854L14.7268 7.65691C15.936 6.44772 15.936 4.4819 14.7268 3.27271C13.5176 2.06351 11.5518 2.06351 10.3426 3.2727L7.51409 6.10122L6.17055 4.75768Z'
     },
-    active(state: any) {
+    active(state) {
       return markActive(state, markType)
     },
-    enable(state: { selection: { empty: any } }) {
+    enable(state) {
       return !state.selection.empty
     },
-    run(state: any, dispatch: any, view: { state: any; dispatch: any; focus: () => void }) {
+    run(state, dispatch, view) {
       if (markActive(state, markType)) {
         toggleMark(markType)(state, dispatch)
 
@@ -160,7 +137,7 @@ function linkItem(markType: any) {
             required: true
           })
         },
-        callback(attrs: any) {
+        callback(attrs) {
           toggleMark(markType, attrs)(view.state, view.dispatch)
           view.focus()
         }
@@ -169,14 +146,7 @@ function linkItem(markType: any) {
   })
 }
 
-function wrapListItem(
-  nodeType: any,
-  options: {
-    title?: string
-    icon?: { width: number; height: number; path: string } | { width: number; height: number; path: string }
-    attrs?: any
-  }
-) {
+function wrapListItem(nodeType, options) {
   return cmdItem(wrapInList(nodeType, options.attrs), options)
 }
 
@@ -238,24 +208,10 @@ function wrapListItem(
 // **`fullMenu`**`: [[MenuElement]]`
 //   : An array of arrays of menu elements for use as the full menu
 //     for, for example the [menu bar](https://github.com/prosemirror/prosemirror-menu#user-content-menubar).
-/*
-type BuildSchema = {
-  marks: { strong: any; em: any; code: any; link: any; blockquote: any }
-  nodes: {
-    image: any
-    bullet_list: any
-    ordered_list: any
-    blockquote: any
-    paragraph: any
-    code_block: any
-    heading: any
-    horizontal_rule: any
-  }
-}
-*/
-export function buildMenuItems(schema: Schema) {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export function buildMenuItems(schema: Schema<any, any>) {
   const r: { [key: string]: MenuItem | MenuItem[] } = {}
-  let type: any
+  let type
 
   if ((type = schema.marks.strong)) {
     r.toggleStrong = markItem(type, {
@@ -360,41 +316,29 @@ export function buildMenuItems(schema: Schema) {
     r.insertHorizontalRule = new MenuItem({
       label: '---',
       icon: icons.horizontal_rule,
-      enable(state: any) {
+      enable(state) {
         return canInsert(state, hr)
       },
-      run(state: { tr: { replaceSelectionWith: (arg0: any) => any } }, dispatch: (arg0: any) => void) {
+      run(state, dispatch) {
         dispatch(state.tr.replaceSelectionWith(hr.create()))
       }
     })
   }
 
-  const tMenu = new Dropdown(
-    [
-      r.makeHead1 as MenuElement,
-      r.makeHead2 as MenuElement,
-      r.makeHead3 as MenuElement,
-      r.typeMenu as MenuElement,
-      r.wrapBlockQuote as MenuElement
-    ],
-    {
-      label: 'Тт',
-      // FIXME !!!!!!!!!
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      icon: {
-        width: 12,
-        height: 12,
-        path: 'M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z'
-      }
-    }
-  )
-
-  r.typeMenu = tMenu as MenuItem
-  // r.blockMenu = []
-  r.listMenu = [r.wrapBulletList as MenuItem, r.wrapOrderedList as MenuItem]
-  r.inlineMenu = [r.toggleStrong as MenuItem, r.toggleEm as MenuItem, r.toggleMark as MenuItem]
-  r.fullMenu = [...r.inlineMenu, r.typeMenu, ...r.listMenu]
+  r.typeMenu = new Dropdown(cut([r.makeHead1, r.makeHead2, r.makeHead3, r.typeMenu, r.wrapBlockQuote]), {
+    label: 'Тт',
+    class: 'editor-dropdown' // TODO: use this class
+    // FIXME: icon svg code shouldn't be here
+    // icon: {
+    //  width: 12,
+    //  height: 12,
+    //  path: "M6.39999 3.19998V0H20.2666V3.19998H14.9333V15.9999H11.7333V3.19998H6.39999ZM3.19998 8.5334H0V5.33342H9.59994V8.5334H6.39996V16H3.19998V8.5334Z"
+    // }
+  }) as MenuItem
+  r.blockMenu = []
+  r.listMenu = [cut([r.wrapBulletList, r.wrapOrderedList])]
+  r.inlineMenu = [cut([r.toggleStrong, r.toggleEm, r.toggleMark])]
+  r.fullMenu = r.inlineMenu.concat([cut([r.typeMenu])], r.listMenu)
 
   return r
 }
@@ -403,8 +347,8 @@ export default (): ProseMirrorExtension => ({
   plugins: (prev, schema) => [
     ...prev,
     menuBar({
-      floating: true,
-      content: buildMenuItems(schema).fullMenu as any[]
+      floating: false,
+      content: buildMenuItems(schema).fullMenu as any
     })
   ]
 })

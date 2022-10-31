@@ -1,3 +1,29 @@
+.sidebar-container {
+  color: rgb(255 255 255 / 50%);
+  @include font-size(1.6rem);
+
+  overflow: hidden;
+  position: relative;
+  top: 0;
+
+  p {
+    color: var(--foreground);
+  }
+
+  h4 {
+    @include font-size(120%);
+
+    margin-left: 1rem;
+  }
+
+  button {
+    height: auto;
+    min-height: 50px;
+    padding: 0 1rem;
+    width: 100%;
+  }
+}
+
 .sidebar-off {
   background: #1f1f1f;
   height: 100%;
@@ -75,13 +101,12 @@
 .sidebar-container button,
 .sidebar-container a,
 .sidebar-item {
-  text-align: left;
   margin: 0;
   outline: none;
   display: flex;
   align-items: center;
   line-height: 24px;
-  font-family: Muller;
+  text-align: left;
 }
 
 .sidebar-container a,
@@ -89,33 +114,6 @@
   font-size: 18px;
   padding: 2px 0;
   width: 100%;
-}
-
-.sidebar-container {
-  color: rgb(255 255 255 / 50%);
-  font-family: Muller;
-  @include font-size(1.6rem);
-
-  overflow: hidden;
-  position: relative;
-  top: 0;
-
-  p {
-    color: var(--foreground);
-  }
-
-  h4 {
-    @include font-size(120%);
-
-    margin-left: 1rem;
-  }
-
-  button {
-    height: auto;
-    min-height: 50px;
-    padding: 0 1rem;
-    width: 100%;
-  }
 }
 
 .sidebar-link {
@@ -143,7 +141,7 @@
     cursor: not-allowed;
   }
 
-  &.file {
+  &.draft {
     color: rgb(255 255 255 / 50%);
     line-height: 1.4;
     margin: 0 0 1em 1.5em;

@@ -1,10 +1,8 @@
 import { gql } from '@urql/core'
 
-// TODO: sync with backend
-
 export default gql`
-  mutation ArticleMutation($article: Shout!) {
-    createArticle(article: $article) {
+  mutation CreateShoutMutation($shout: ShoutInput!) {
+    createShout(input: $shout) {
       error
       shout {
         _id: slug

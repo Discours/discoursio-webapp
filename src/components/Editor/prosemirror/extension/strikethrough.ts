@@ -1,7 +1,8 @@
 import { inputRules } from 'prosemirror-inputrules'
-import type { MarkType } from 'prosemirror-model'
+import type { MarkSpec, MarkType } from 'prosemirror-model'
 import { markInputRule } from './mark-input-rule'
-import type { ProseMirrorExtension } from '../state'
+import type { ProseMirrorExtension } from '../helpers'
+import type OrderedMap from 'orderedmap'
 
 const strikethroughRule = (nodeType: MarkType) => markInputRule(/~{2}(.+)~{2}$/, nodeType)
 
@@ -10,12 +11,12 @@ const strikethroughSchema = {
     parseDOM: [{ tag: 'del' }],
     toDOM: () => ['del']
   }
-}
+} as MarkSpec
 
 export default (): ProseMirrorExtension => ({
   schema: (prev) => ({
     ...prev,
-    marks: (prev.marks as any).append(strikethroughSchema)
+    marks: (prev.marks as OrderedMap<MarkSpec>).append(strikethroughSchema)
   }),
   plugins: (prev, schema) => [
     ...prev,

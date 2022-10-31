@@ -1,10 +1,7 @@
 import type { AuthResult } from '../graphql/types.gen'
-import { getLogger } from '../utils/logger'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { apiClient } from '../utils/apiClient'
 import { createSignal } from 'solid-js'
-
-const log = getLogger('auth-store')
 
 const [session, setSession] = createSignal<AuthResult | null>(null)
 
@@ -12,14 +9,13 @@ export const signIn = async (params) => {
   const authResult = await apiClient.authLogin(params)
   setSession(authResult)
   setToken(authResult.token)
-  log.debug('signed in')
+  console.debug('signed in')
 }
-
 export const signOut = () => {
   // TODO: call backend to revoke token
   setSession(null)
   resetToken()
-  log.debug('signed out')
+  console.debug('signed out')
 }
 
 export const [emailChecks, setEmailChecks] = createSignal<{ [email: string]: boolean }>({})

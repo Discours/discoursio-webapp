@@ -1,9 +1,17 @@
-import { DOMSerializer, Node as ProsemirrorNode, NodeType, Schema } from 'prosemirror-model'
+import {
+  DOMOutputSpec,
+  DOMSerializer,
+  Node as ProsemirrorNode,
+  NodeSpec,
+  NodeType,
+  Schema
+} from 'prosemirror-model'
 import type { EditorView } from 'prosemirror-view'
 import { wrappingInputRule, inputRules } from 'prosemirror-inputrules'
 import { splitListItem } from 'prosemirror-schema-list'
 import { keymap } from 'prosemirror-keymap'
-import type { ProseMirrorExtension } from '../state'
+import type { NodeViewFn, ProseMirrorExtension } from '../helpers'
+import type OrderedMap from 'orderedmap'
 
 const todoListRule = (nodeType: NodeType) =>
   wrappingInputRule(new RegExp('^\\[( |x)]\\s$'), nodeType, (match) => ({
@@ -44,22 +52,22 @@ const todoListSchema = {
       ['div', 0]
     ]
   }
-}
+} as NodeSpec
 
 class TodoItemView {
-  contentDOM: HTMLElement
+  contentDOM: Node
   dom: Node
   view: EditorView
   getPos: () => number
 
   constructor(node: ProsemirrorNode, view: EditorView, getPos: () => number) {
-    const dom = node.type.spec.toDOM(node)
+    const dom: DOMOutputSpec = node.type.spec.toDOM(node)
     const res = DOMSerializer.renderSpec(document, dom)
     this.dom = res.dom
     this.contentDOM = res.contentDOM
     this.view = view
     this.getPos = getPos
-    ;(this.dom as Element).querySelector('input').addEventListener('click', this.handleClick.bind(this))
+    ;(this.dom as HTMLElement).querySelector('input').addEventListener('click', this.handleClick.bind(this))
   }
 
   handleClick(e: MouseEvent) {
@@ -78,7 +86,7 @@ const todoListKeymap = (schema: Schema) => ({
 export default (): ProseMirrorExtension => ({
   schema: (prev) => ({
     ...prev,
-    nodes: (prev.nodes as any).append(todoListSchema)
+    nodes: (prev.nodes as OrderedMap<NodeSpec>).append(todoListSchema)
   }),
   plugins: (prev, schema) => [
     keymap(todoListKeymap(schema)),
@@ -86,8 +94,8 @@ export default (): ProseMirrorExtension => ({
     inputRules({ rules: [todoListRule(schema.nodes.todo_item)] })
   ],
   nodeViews: {
-    todo_item: (node, view, getPos) => {
+    todo_item: (node: ProsemirrorNode, view: EditorView, getPos: () => number) => {
       return new TodoItemView(node, view, getPos)
     }
-  }
+  } as unknown as { [key: string]: NodeViewFn }
 })

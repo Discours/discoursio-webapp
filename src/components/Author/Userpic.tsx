@@ -1,4 +1,4 @@
-import { Show } from 'solid-js/web'
+import { Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import style from './Userpic.module.scss'
 import { clsx } from 'clsx'

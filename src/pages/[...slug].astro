@@ -6,7 +6,7 @@ import { initRouter } from '../stores/router'
 
 const slug = Astro.params.slug?.toString()
 if (slug.endsWith('.map')) {
-  return
+  return Astro.redirect('/404')
 }
 
 const article = await apiClient.getArticle({ slug })

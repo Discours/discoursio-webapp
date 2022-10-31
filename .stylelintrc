@@ -18,5 +18,6 @@
       "custom-properties",
       "declarations"
     ]
-  }
+  },
+  "defaultSeverity": "warning"
 }

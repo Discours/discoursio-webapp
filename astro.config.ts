@@ -39,41 +39,31 @@ const astroConfig: AstroUserConfig = {
     build: {
       rollupOptions: {
         plugins: [visualizer()],
-        output: {
-          // eslint-disable-next-line sonarjs/cognitive-complexity
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              // FIXME: doesn't work in production
-              // if (id.includes('solid')) {
-              //   chunkid = 'solid'
-              // }
-              // if (id.includes('acorn')) {
-              //   chunkid = 'acorn'
-              // }
-              // if (id.includes('simple-peer')) {
-              //   chunkid = 'simple-peer'
-              // }
-              // if (id.includes('prosemirror')) {
-              //   chunkid = 'prosemirror'
-              // }
-              // if (id.includes('markdown') || id.includes('mdurl')) {
-              //   chunkid = 'markdown'
-              // }
-              // if (id.includes('swiper')) {
-              //   chunkid = 'swiper'
-              // }
-              // if (
-              //   id.includes('yjs') ||
-              //   id.includes('y-prosemirror') ||
-              //   id.includes('y-protocols') ||
-              //   id.includes('y-webrtc')
-              // ) {
-              //   chunkid = 'yjs'
-              // }
-              return 'vendor'
-            }
-          }
-        },
+        // output: {
+        //   manualChunks(id) {
+        //     if (id.includes('p2p')) return 'p2p'
+        //     if (id.includes('editor') || id.includes('Editor')) return 'editor'
+        //     if (id.includes('node_modules')) {
+        //       let chunkid
+        //       if (id.includes('solid')) chunkid = 'solid'
+        //       if (id.includes('swiper')) chunkid = 'swiper'
+        //       if (id.includes('acorn')) chunkid = 'acorn'
+        //       if (id.includes('prosemirror')) chunkid = 'editor'
+        //       if (id.includes('markdown') || id.includes('mdurl') || id.includes('yjs')) {
+        //         chunkid = 'codecs'
+        //       }
+        //       if (
+        //         id.includes('p2p') ||
+        //         id.includes('y-protocols') ||
+        //         id.includes('y-webrtc') ||
+        //         id.includes('simple-peer')
+        //       ) {
+        //         chunkid = 'p2p'
+        //       }
+        //       return chunkid
+        //     }
+        //   }
+        // },
         external: ['@aws-sdk/clients/s3']
       }
     },

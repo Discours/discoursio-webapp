@@ -1,15 +1,16 @@
 import { EditorState, Selection } from 'prosemirror-state'
-import type { Node, Schema, ResolvedPos } from 'prosemirror-model'
+import type { Node, Schema, ResolvedPos, NodeSpec } from 'prosemirror-model'
 import { InputRule, inputRules } from 'prosemirror-inputrules'
 import { keymap } from 'prosemirror-keymap'
-import type { ProseMirrorExtension } from '../state'
+import type { ProseMirrorExtension } from '../helpers'
+import type OrderedMap from 'orderedmap'
 
 export const tableInputRule = (schema: Schema) =>
   new InputRule(
     new RegExp('^\\|{2,}\\s$'),
     (state: EditorState, match: string[], start: number, end: number) => {
       const tr = state.tr
-      const columns = [...Array.from({ length: match[0].trim().length - 1 })]
+      const columns = Array.from({ length: match[0].trim().length - 1 })
       const headers = columns.map(() => schema.node(schema.nodes.table_header, {}))
       const cells = columns.map(() => schema.node(schema.nodes.table_cell, {}))
       const table = schema.node(schema.nodes.table, {}, [
@@ -95,7 +96,7 @@ const tableSchema = {
     ],
     toDOM: (node: Node) => ['th', node.attrs, 0]
   }
-}
+} as NodeSpec
 
 const findParentPos = ($pos: ResolvedPos, fn: (n: Node) => boolean) => {
   for (let d = $pos.depth; d > 0; d--) {
@@ -174,9 +175,8 @@ const getTextSize = (n: Node) => {
 export default (): ProseMirrorExtension => ({
   schema: (prev) => ({
     ...prev,
-    nodes: (prev.nodes as any).append(tableSchema)
+    nodes: (prev.nodes as OrderedMap<NodeSpec>).append(tableSchema)
   }),
-  // FIXME (extract functions)
   // eslint-disable-next-line sonarjs/cognitive-complexity
   plugins: (prev, schema) => [
     keymap({

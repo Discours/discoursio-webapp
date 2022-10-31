@@ -1,13 +1,10 @@
 import { createMemo, createSignal } from 'solid-js'
 import { apiClient } from '../../utils/apiClient'
 import type { Topic } from '../../graphql/types.gen'
-import { byCreated, byTopicStatDesc } from '../../utils/sortby'
-import { getLogger } from '../../utils/logger'
+import { byTopicStatDesc } from '../../utils/sortby'
 import { createLazyMemo } from '@solid-primitives/memo'
 
-const log = getLogger('topics store')
-
-export type TopicsSortBy = 'created' | 'title' | 'authors' | 'shouts'
+export type TopicsSortBy = 'followers' | 'title' | 'authors' | 'shouts'
 
 const [sortAllBy, setSortAllBy] = createSignal<TopicsSortBy>('shouts')
 
@@ -21,24 +18,29 @@ const sortedTopics = createLazyMemo<Topic[]>(() => {
   const topics = Object.values(topicEntities())
 
   switch (sortAllBy()) {
-    case 'created':
-      // log.debug('sorted by created')
-      topics.sort(byCreated)
+    case 'followers': {
+      // console.debug('[store.topics] sorted by followers')
+      topics.sort(byTopicStatDesc('followers'))
       break
-    case 'shouts':
+    }
+    case 'shouts': {
       // log.debug(`sorted by shouts`)
       topics.sort(byTopicStatDesc('shouts'))
       break
-    case 'authors':
+    }
+    case 'authors': {
       // log.debug(`sorted by authors`)
       topics.sort(byTopicStatDesc('authors'))
       break
-    case 'title':
-      // log.debug('sorted by title')
+    }
+    case 'title': {
+      // console.debug('[store.topics] sorted by title')
       topics.sort((a, b) => a.title.localeCompare(b.title))
       break
-    default:
-      log.error(`Unknown sort: ${sortAllBy()}`)
+    }
+    default: {
+      console.error(`Unknown sort: ${sortAllBy()}`)
+    }
   }
 
   return topics

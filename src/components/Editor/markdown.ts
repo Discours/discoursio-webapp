@@ -1,18 +1,29 @@
 import markdownit from 'markdown-it'
-import type Token from 'markdown-it/lib/token'
-import { MarkdownSerializer, MarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown'
+import {
+  MarkdownSerializer,
+  MarkdownParser,
+  defaultMarkdownSerializer,
+  MarkdownSerializerState
+} from 'prosemirror-markdown'
 import type { Node, Schema } from 'prosemirror-model'
 import type { EditorState } from 'prosemirror-state'
 
+export const serialize = (state: EditorState) => {
+  let text = markdownSerializer.serialize(state.doc)
+  if (text.charAt(text.length - 1) !== '\n') {
+    text += '\n'
+  }
+
+  return text
+}
+
 function findAlignment(cell: Node): string | null {
   const alignment = cell.attrs.style as string
-
   if (!alignment) {
     return null
   }
 
   const match = alignment.match(/text-align: ?(left|right|center)/)
-
   if (match && match[1]) {
     return match[1]
   }
@@ -23,41 +34,34 @@ function findAlignment(cell: Node): string | null {
 export const markdownSerializer = new MarkdownSerializer(
   {
     ...defaultMarkdownSerializer.nodes,
-    image(state, node) {
+    image(state: MarkdownSerializerState, node: Node) {
       const alt = state.esc(node.attrs.alt || '')
       const src = node.attrs.path ?? node.attrs.src
-
-      // FIXME !!!!!!!!!
-      // const title = node.attrs.title ? state.quote(node.attrs.title) : undefined
-      const title = node.attrs.title
-
-      state.write(`![${alt}](${src}${title || ''})\n`)
+      const title = node.attrs.title ? `"${node.attrs.title}"` : undefined
+      state.write(`![${alt}](${src}${title ? ' ' + title : ''})\n`)
+      /* ![<alt-text>](<src-url> "<title>") */
     },
     code_block(state, node) {
       const src = node.attrs.params.src
-
       if (src) {
         const title = state.esc(node.attrs.params.title || '')
-
         state.write(`![${title}](${src})\n`)
-
         return
       }
 
-      state.write(`\`\`\`${node.attrs.params.lang || ''}\n`)
+      state.write('```' + (node.attrs.params.lang || '') + '\n')
       state.text(node.textContent, false)
       state.ensureNewLine()
       state.write('```')
       state.closeBlock(node)
     },
     todo_item(state, node) {
-      state.write(`${node.attrs.done ? '[x]' : '[ ]'} `)
+      state.write((node.attrs.done ? '[x]' : '[ ]') + ' ')
       state.renderContent(node)
     },
     table(state, node) {
       function serializeTableHead(head: Node) {
         let columnAlignments: string[] = []
-
         head.forEach((headRow) => {
           if (headRow.type.name === 'table_row') {
             columnAlignments = serializeTableRow(headRow)
@@ -71,7 +75,6 @@ export const markdownSerializer = new MarkdownSerializer(
           state.write('---')
           state.write(alignment === 'right' || alignment === 'center' ? ':' : ' ')
         }
-
         state.write('|')
         state.ensureNewLine()
       }
@@ -87,17 +90,14 @@ export const markdownSerializer = new MarkdownSerializer(
 
       function serializeTableRow(row: Node): string[] {
         const columnAlignment: string[] = []
-
         row.forEach((cell) => {
           if (cell.type.name === 'table_header' || cell.type.name === 'table_cell') {
             const alignment = serializeTableCell(cell)
-
             columnAlignment.push(alignment)
           }
         })
         state.write('|')
         state.ensureNewLine()
-
         return columnAlignment
       }
 
@@ -105,13 +105,11 @@ export const markdownSerializer = new MarkdownSerializer(
         state.write('| ')
         state.renderInline(cell)
         state.write(' ')
-
         return findAlignment(cell)
       }
 
       node.forEach((table_child) => {
         if (table_child.type.name === 'table_head') serializeTableHead(table_child)
-
         if (table_child.type.name === 'table_body') serializeTableBody(table_child)
       })
 
@@ -130,24 +128,11 @@ export const markdownSerializer = new MarkdownSerializer(
   }
 )
 
-export const serialize = (state: EditorState) => {
-  // eslint-disable-next-line no-use-before-define
-  let text = markdownSerializer.serialize(state.doc)
-
-  if (text.charAt(text.length - 1) !== '\n') {
-    text += '\n'
+function listIsTight(tokens: any, idx: number) {
+  let i = idx
+  while (++i < tokens.length) {
+    if (tokens[i].type !== 'list_item_open') return tokens[i].hidden
   }
-
-  return text
-}
-
-function listIsTight(tokens: any[], i: number) {
-  for (let index = i + 1; i < tokens.length; index++) {
-    if (tokens[index].type !== 'list_item_open') {
-      return tokens[i].hidden
-    }
-  }
-
   return false
 }
 
@@ -176,20 +161,18 @@ export const createMarkdownParser = (schema: Schema) =>
     list_item: { block: 'list_item' },
     bullet_list: {
       block: 'bullet_list',
-      getAttrs: (_: Token, tokens: Token[], i: number): Record<string, any> => ({
-        tight: listIsTight(tokens, i)
-      })
+      getAttrs: (_, tokens, i) => ({ tight: listIsTight(tokens, i) })
     },
     ordered_list: {
       block: 'ordered_list',
-      getAttrs: (tok: Token, tokens: Token[], i: number): Record<string, any> => ({
-        order: Number(tok.attrGet('start')) || 1,
+      getAttrs: (tok, tokens, i) => ({
+        order: +tok.attrGet('start') || 1,
         tight: listIsTight(tokens, i)
       })
     },
     heading: {
       block: 'heading',
-      getAttrs: (tok) => ({ level: Number(tok.tag.slice(1)) })
+      getAttrs: (tok) => ({ level: +tok.tag.slice(1) })
     },
     code_block: {
       block: 'code_block',
@@ -203,7 +186,7 @@ export const createMarkdownParser = (schema: Schema) =>
     hr: { node: 'horizontal_rule' },
     image: {
       node: 'image',
-      getAttrs: (tok: any) => ({
+      getAttrs: (tok) => ({
         src: tok.attrGet('src'),
         title: tok.attrGet('title') || null,
         alt: (tok.children[0] && tok.children[0].content) || null

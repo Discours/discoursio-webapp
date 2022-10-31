@@ -26,7 +26,7 @@ export const loadArticleReactions = async ({
   limit?: number
   offset?: number
 }): Promise<void> => {
-  const data = await apiClient.getArticleReactions({ articleSlug, limit, offset })
+  const data = await apiClient.getReactionsForShouts({ shoutSlugs: [articleSlug], limit, offset })
   // TODO: const [data, provider] = roomConnect(articleSlug, username, "reactions")
   reactionsOrdered.set(data)
 }

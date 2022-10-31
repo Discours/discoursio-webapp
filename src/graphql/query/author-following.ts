@@ -11,7 +11,7 @@ export default gql`
       communities
       links
       createdAt
-      wasOnlineAt
+      lastSeen
       ratings {
         _id: rater
         rater

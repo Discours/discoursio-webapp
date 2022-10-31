@@ -1,6 +1,6 @@
 // TODO: additional entities list column + article
 
-import { For, Show } from 'solid-js/web'
+import { For, Show } from 'solid-js'
 import { ArticleCard } from './Card'
 import { AuthorCard } from '../Author/Card'
 import { TopicCard } from '../Topic/Card'
@@ -11,7 +11,7 @@ import { t } from '../../utils/intl'
 
 interface BesideProps {
   title?: string
-  values: any[]
+  values: (Shout | User | Topic | Author)[]
   beside: Shout
   wrapper: 'topic' | 'author' | 'article' | 'top-article'
   isTopicCompact?: boolean

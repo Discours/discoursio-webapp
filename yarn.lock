@@ -832,6 +832,14 @@
     "@aws-sdk/types" "3.193.0"
     tslib "^2.3.1"
 
+"@aws-sdk/querystring-parser@3.198.0":
+  version "3.198.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/querystring-parser/-/querystring-parser-3.198.0.tgz#1c7d15ad0a74c86513fc80322f2e9cd7d9c5bfcf"
+  integrity sha512-oMybZYINxNiwSELR7tOwqu+1S7CeEC3g5L4IQXk2wvVx96HEf3sQgLr1wbmV1b7lEnTuH9OrgI5RgDUBVqipdw==
+  dependencies:
+    "@aws-sdk/types" "3.198.0"
+    tslib "^2.3.1"
+
 "@aws-sdk/service-error-classification@3.193.0":
   version "3.193.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/service-error-classification/-/service-error-classification-3.193.0.tgz#35f1f5c8351f59d937b904ba5d7d144f65fb9e83"
@@ -843,6 +851,20 @@
   integrity sha512-hnvZup8RSpFXfah7Rrn6+lQJnAOCO+OiDJ2R/iMgZQh475GRQpLbu3cPhCOkjB14vVLygJtW8trK/0+zKq93bQ==
   dependencies:
     "@aws-sdk/types" "3.193.0"
+    tslib "^2.3.1"
+
+"@aws-sdk/signature-v4-crt@^3.198.0":
+  version "3.198.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/signature-v4-crt/-/signature-v4-crt-3.198.0.tgz#387547e19e3c840a869ed02ef46e0660ab5777ba"
+  integrity sha512-L1AmHo7dYMQNTmOFylmxSo0kRCAdt9Cc+e76STGbTk/o5dmPjFlzYr5B1iGAyOo6g4UcTvY4gtsgDjclBoVT3w==
+  dependencies:
+    "@aws-sdk/is-array-buffer" "3.188.0"
+    "@aws-sdk/querystring-parser" "3.198.0"
+    "@aws-sdk/signature-v4" "3.198.0"
+    "@aws-sdk/util-hex-encoding" "3.188.0"
+    "@aws-sdk/util-middleware" "3.198.0"
+    "@aws-sdk/util-uri-escape" "3.188.0"
+    aws-crt "^1.13.2"
     tslib "^2.3.1"
 
 "@aws-sdk/signature-v4-multi-region@3.193.0":
@@ -868,6 +890,18 @@
     "@aws-sdk/util-uri-escape" "3.188.0"
     tslib "^2.3.1"
 
+"@aws-sdk/signature-v4@3.198.0":
+  version "3.198.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/signature-v4/-/signature-v4-3.198.0.tgz#73dae5de7328d0e334f57627e9d84cb5a978c9ab"
+  integrity sha512-8EIyEt7ElTK/tQamYyB16IGwc7EwtLlSVcksaiII780ZtYULnOjogi/UImCYqSejQw+EHhXfbj14HRQT56rqEQ==
+  dependencies:
+    "@aws-sdk/is-array-buffer" "3.188.0"
+    "@aws-sdk/types" "3.198.0"
+    "@aws-sdk/util-hex-encoding" "3.188.0"
+    "@aws-sdk/util-middleware" "3.198.0"
+    "@aws-sdk/util-uri-escape" "3.188.0"
+    tslib "^2.3.1"
+
 "@aws-sdk/smithy-client@3.193.0":
   version "3.193.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/smithy-client/-/smithy-client-3.193.0.tgz#0c89a5531652aca09ebca957d049b8b4c08745f1"
@@ -881,6 +915,11 @@
   version "3.193.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.193.0.tgz#a2079ccda7312c7ba535b4379c97980141948fd9"
   integrity sha512-LV/wcPolRZKORrcHwkH59QMCkiDR5sM+9ZtuTxvyUGG2QFW/kjoxs08fUF10OWNJMrotBI+czDc5QJRgN8BlAw==
+
+"@aws-sdk/types@3.198.0":
+  version "3.198.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.198.0.tgz#4e4f5df1bf362dfe64e7bdaf37ba614c61618356"
+  integrity sha512-ljgY9Pgb2CSRrf4IeaNy5gkhTsBae9STKc/mqfScSzvZOvRHu+BOIAGM33fDoCwxD1viKNVJvU1KemiI57Gbvw==
 
 "@aws-sdk/url-parser@3.193.0":
   version "3.193.0"
@@ -990,6 +1029,13 @@
   version "3.193.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/util-middleware/-/util-middleware-3.193.0.tgz#ea1e30491c824c99748814d837ef4c484afc374f"
   integrity sha512-+aC6pmkcGgpxaMWCH/FXTsGWl2W342oQGs1OYKGi+W8z9UguXrqamWjdkdMqgunvj9qOEG2KBMKz1FWFFZlUyA==
+  dependencies:
+    tslib "^2.3.1"
+
+"@aws-sdk/util-middleware@3.198.0":
+  version "3.198.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/util-middleware/-/util-middleware-3.198.0.tgz#95edefd4b9c8427f671379cf8527de0c31990f5a"
+  integrity sha512-hEdkuGRWhZdEb1plzkGCN2kT8SqiPrEQHngB+1q7pjFJcKWkYkmaLHGw2zhbg1EVNpcGmj5DzCSWzwoPkpDRsw==
   dependencies:
     tslib "^2.3.1"
 
@@ -3481,7 +3527,7 @@ auto-bind@~4.0.0:
   resolved "https://registry.yarnpkg.com/auto-bind/-/auto-bind-4.0.0.tgz#e3589fc6c2da8f7ca43ba9f84fa52a744fc997fb"
   integrity sha512-Hdw8qdNiqdJ8LqT0iK0sVzkFbzg6fhnQqqfWhBDxcHZvU75+B+ayzTy8x+k5Ix0Y92XOhOUlx74ps+bA6BeYMQ==
 
-aws-crt@^1.14.5:
+aws-crt@^1.13.2, aws-crt@^1.14.5:
   version "1.14.5"
   resolved "https://registry.yarnpkg.com/aws-crt/-/aws-crt-1.14.5.tgz#332aa2f6c2f96a91fb44b0d3de1202eb35829abd"
   integrity sha512-fxjTfNzFaG+cqpPSUDOKWtkufsQV7nq1COHIFcaomgSidbEg129kA+Ses0bJyoe6fKI7aMNIfzT9kDt7+KRn2g==

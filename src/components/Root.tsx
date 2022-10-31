@@ -18,11 +18,13 @@ import { FeedPage } from './Pages/FeedPage'
 import { ArticlePage } from './Pages/ArticlePage'
 import { SearchPage } from './Pages/SearchPage'
 import { FourOuFourPage } from './Pages/FourOuFourPage'
+import { DiscussionRulesPage } from './Pages/about/DiscussionRulesPage'
 import { DogmaPage } from './Pages/about/DogmaPage'
 import { GuidePage } from './Pages/about/GuidePage'
 import { HelpPage } from './Pages/about/HelpPage'
 import { ManifestPage } from './Pages/about/ManifestPage'
 import { PartnersPage } from './Pages/about/PartnersPage'
+import { PrinciplesPage } from './Pages/about/PrinciplesPage'
 import { ProjectsPage } from './Pages/about/ProjectsPage'
 import { TermsOfUsePage } from './Pages/about/TermsOfUsePage'
 import { ThanksPage } from './Pages/about/ThanksPage'
@@ -66,12 +68,14 @@ const pagesMap: Record<keyof Routes, Component<PageProps>> = {
   feed: FeedPage,
   article: ArticlePage,
   search: SearchPage,
+  discussionRules: DiscussionRulesPage,
   dogma: DogmaPage,
   guide: GuidePage,
   help: HelpPage,
   manifest: ManifestPage,
   projects: ProjectsPage,
   partners: PartnersPage,
+  principles: PrinciplesPage,
   termsOfUse: TermsOfUsePage,
   thanks: ThanksPage
 }

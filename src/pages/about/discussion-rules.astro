@@ -1,0 +1,14 @@
+---
+import Zine from '../../layouts/zine.astro'
+import { Root } from '../../components/Root'
+import { initRouter } from '../../stores/router'
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+---
+
+<Zine>
+  <Root client:load />
+</Zine>

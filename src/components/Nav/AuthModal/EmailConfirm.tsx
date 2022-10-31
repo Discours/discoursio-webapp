@@ -1,4 +1,4 @@
-import styles from './ConfirmEmail.module.scss'
+import styles from './EmailConfirm.module.scss'
 import authModalStyles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { t } from '../../../utils/intl'
@@ -11,7 +11,7 @@ type ConfirmEmailSearchParams = {
   token: string
 }
 
-export const ConfirmEmail = () => {
+export const EmailConfirm = () => {
   const confirmedEmail = 'test@test.com'
 
   const { searchParams } = useRouter<ConfirmEmailSearchParams>()

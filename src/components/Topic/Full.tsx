@@ -1,5 +1,4 @@
-import { createMemo } from 'solid-js'
-import { Show } from 'solid-js/web'
+import { createMemo, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import './Full.scss'

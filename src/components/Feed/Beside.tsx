@@ -1,6 +1,6 @@
 // TODO: additional entities list column + article
 
-import { For, Show } from 'solid-js/web'
+import { For, Show } from 'solid-js'
 import { ArticleCard } from './Card'
 import { AuthorCard } from '../Author/Card'
 import { TopicCard } from '../Topic/Card'

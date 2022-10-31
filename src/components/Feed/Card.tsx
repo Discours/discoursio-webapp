@@ -1,6 +1,5 @@
 import { t } from '../../utils/intl'
-import { createMemo } from 'solid-js'
-import { For, Show } from 'solid-js/web'
+import { createMemo, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'

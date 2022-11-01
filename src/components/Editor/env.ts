@@ -1,3 +1,2 @@
-export const isDark = () => (window as any).matchMedia('(prefers-color-scheme: dark)').matches
-export const mod = 'Ctrl'
-export const alt = 'Alt'
+export const isDark = () =>
+  typeof window !== undefined && window.matchMedia('(prefers-color-scheme: dark)').matches

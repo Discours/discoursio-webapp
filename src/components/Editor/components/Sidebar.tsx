@@ -1,14 +1,14 @@
-import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js'
+import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { unwrap } from 'solid-js/store'
 import { undo, redo } from 'prosemirror-history'
 import { Draft, useState } from '../store/context'
-import { mod } from '../env'
 import * as remote from '../remote'
 import { isEmpty } from '../prosemirror/helpers'
 import type { Styled } from './Layout'
 import '../styles/Sidebar.scss'
 import { clsx } from 'clsx'
 import styles from './Sidebar.module.scss'
+import { isServer } from 'solid-js/web'
 
 const Off = (props) => <div class="sidebar-off">{props.children}</div>
 
@@ -141,6 +141,12 @@ export const Sidebar = () => {
     onCleanup(() => clearTimeout(id))
   })
 
+  const [mod, setMod] = createSignal<'Ctrl' | 'Cmd'>('Ctrl')
+
+  onMount(() => {
+    setMod(navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl')
+  })
+
   return (
     <div class={'sidebar-container' + (isHidden() ? ' sidebar-container--hidden' : '')}>
       <span class="sidebar-opener" onClick={toggleSidebar}>
@@ -149,55 +155,54 @@ export const Sidebar = () => {
 
       <Off onClick={() => editorView().focus()}>
         <div class="sidebar-closer" onClick={toggleSidebar} />
-        <Show when={true}>
-          <div>
-            {store.path && (
-              <Label>
-                <i>({store.path.slice(Math.max(0, store.path.length - 24))})</i>
-              </Label>
-            )}
-            <Link>Пригласить соавторов</Link>
-            <Link>Настройки публикации</Link>
-            <Link>История правок</Link>
 
-            <div class="theme-switcher">
-              Ночная тема
-              <input type="checkbox" name="theme" id="theme" onClick={toggleTheme} />
-              <label for="theme">Ночная тема</label>
-            </div>
-            <Link
-              onClick={onDiscard}
-              disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text)}
-              data-testid="discard"
-            >
-              {discardText()} <Keys keys={[mod, 'w']} />
-            </Link>
-            <Link onClick={onUndo}>
-              Undo <Keys keys={[mod, 'z']} />
-            </Link>
-            <Link onClick={onRedo}>
-              Redo <Keys keys={[mod, 'Shift', 'z']} />
-            </Link>
-            <Link onClick={onToggleMarkdown} data-testid="markdown">
-              Markdown mode {store.markdown && '✅'} <Keys keys={[mod, 'm']} />
-            </Link>
-            <Link onClick={onCopyAllAsMd}>Copy all as MD {lastAction() === 'copy-md' && '📋'}</Link>
-            <Show when={store.drafts.length > 0}>
-              <h4>Drafts:</h4>
-              <p>
-                <For each={store.drafts}>{(draft) => <DraftLink draft={draft} />}</For>
-              </p>
-            </Show>
-            <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>
-              Collab {collabText()}
-            </Link>
-            <Show when={collabUsers() > 0}>
-              <span>
-                {collabUsers()} {collabUsers() === 1 ? 'user' : 'users'} connected
-              </span>
-            </Show>
+        <div>
+          {store.path && (
+            <Label>
+              <i>({store.path.slice(Math.max(0, store.path.length - 24))})</i>
+            </Label>
+          )}
+          <Link>Пригласить соавторов</Link>
+          <Link>Настройки публикации</Link>
+          <Link>История правок</Link>
+
+          <div class="theme-switcher">
+            Ночная тема
+            <input type="checkbox" name="theme" id="theme" onClick={toggleTheme} />
+            <label for="theme">Ночная тема</label>
           </div>
-        </Show>
+          <Link
+            onClick={onDiscard}
+            disabled={!store.path && store.drafts.length === 0 && isEmpty(store.text)}
+            data-testid="discard"
+          >
+            {discardText()} <Keys keys={[mod(), 'w']} />
+          </Link>
+          <Link onClick={onUndo}>
+            Undo <Keys keys={[mod(), 'z']} />
+          </Link>
+          <Link onClick={onRedo}>
+            Redo <Keys keys={[mod(), 'Shift', 'z']} />
+          </Link>
+          <Link onClick={onToggleMarkdown} data-testid="markdown">
+            Markdown mode {store.markdown && '✅'} <Keys keys={[mod(), 'm']} />
+          </Link>
+          <Link onClick={onCopyAllAsMd}>Copy all as MD {lastAction() === 'copy-md' && '📋'}</Link>
+          <Show when={store.drafts.length > 0}>
+            <h4>Drafts:</h4>
+            <p>
+              <For each={store.drafts}>{(draft) => <DraftLink draft={draft} />}</For>
+            </p>
+          </Show>
+          <Link onClick={onCollab} title={store.collab?.error ? 'Connection error' : ''}>
+            Collab {collabText()}
+          </Link>
+          <Show when={collabUsers() > 0}>
+            <span>
+              {collabUsers()} {collabUsers() === 1 ? 'user' : 'users'} connected
+            </span>
+          </Show>
+        </div>
       </Off>
     </div>
   )

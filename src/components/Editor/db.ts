@@ -1,5 +1,6 @@
-const dbPromise = async () => {
-  const { openDB } = await import('idb')
+import { openDB } from 'idb'
+
+const dbPromise = () => {
   return openDB('discours.io', 2, {
     upgrade(db) {
       db.createObjectStore('keyval')

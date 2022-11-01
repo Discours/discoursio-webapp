@@ -1,6 +1,6 @@
 // TODO: additional entities list column + article
 
-import { For, Show } from 'solid-js/web'
+import { For, Show } from 'solid-js'
 import { ArticleCard } from './Card'
 import { AuthorCard } from '../Author/Card'
 import { TopicCard } from '../Topic/Card'
@@ -21,7 +21,7 @@ interface BesideProps {
   iconButton?: boolean
 }
 
-export default (props: BesideProps) => {
+export const Beside = (props: BesideProps) => {
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
       <div class="floor floor--9">

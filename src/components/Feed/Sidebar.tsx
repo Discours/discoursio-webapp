@@ -85,12 +85,12 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
         </For>
       </ul>
 
-      <p class="settings">
+      <div class="settings">
         <a href="/feed/settings">
           <strong>{t('Feed settings')}</strong>
+          <Icon name="settings" />
         </a>
-        <Icon name="settings" />
-      </p>
+      </div>
     </>
   )
 }

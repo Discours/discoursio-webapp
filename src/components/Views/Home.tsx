@@ -1,12 +1,12 @@
-import { createMemo, For, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import Banner from '../Discours/Banner'
 import { NavTopics } from '../Nav/Topics'
 import { Row5 } from '../Feed/Row5'
-import Row3 from '../Feed/Row3'
-import Row2 from '../Feed/Row2'
-import Row1 from '../Feed/Row1'
+import { Row3 } from '../Feed/Row3'
+import { Row2 } from '../Feed/Row2'
+import { Row1 } from '../Feed/Row1'
 import Hero from '../Discours/Hero'
-import Beside from '../Feed/Beside'
+import { Beside } from '../Feed/Beside'
 import RowShort from '../Feed/RowShort'
 import Slider from '../Feed/Slider'
 import Group from '../Feed/Group'
@@ -23,12 +23,14 @@ import {
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
+import { splitToPages } from '../../utils/splitToPages'
 
 type HomeProps = {
   randomTopics: Topic[]
   recentPublishedArticles: Shout[]
 }
-const PRERENDERED_ARTICLES_COUNT = 5
+
+export const PRERENDERED_ARTICLES_COUNT = 5
 const CLIENT_LOAD_ARTICLES_COUNT = 29
 const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + Row 2 + Row3
 
@@ -46,14 +48,20 @@ export const HomeView = (props: HomeProps) => {
   const { randomTopics, topTopics } = useTopicsStore({
     randomTopics: props.randomTopics
   })
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const { topAuthors } = useTopAuthorsStore()
 
-  onMount(() => {
+  onMount(async () => {
     loadTopArticles()
     loadTopMonthArticles()
     if (sortedArticles().length < PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT) {
-      loadPublishedArticles({ limit: CLIENT_LOAD_ARTICLES_COUNT, offset: sortedArticles().length })
+      const { hasMore } = await loadPublishedArticles({
+        limit: CLIENT_LOAD_ARTICLES_COUNT,
+        offset: sortedArticles().length
+      })
+
+      setIsLoadMoreButtonVisible(hasMore)
     }
   })
 
@@ -82,22 +90,23 @@ export const HomeView = (props: HomeProps) => {
 
   const loadMore = async () => {
     saveScrollPosition()
-    await loadPublishedArticles({ limit: LOAD_MORE_PAGE_SIZE, offset: sortedArticles().length })
+
+    const { hasMore } = await loadPublishedArticles({
+      limit: LOAD_MORE_PAGE_SIZE,
+      offset: sortedArticles().length
+    })
+    setIsLoadMoreButtonVisible(hasMore)
+
     restoreScrollPosition()
   }
 
-  const pages = createMemo<Shout[][]>(() => {
-    return sortedArticles()
-      .slice(PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT)
-      .reduce((acc, article, index) => {
-        if (index % LOAD_MORE_PAGE_SIZE === 0) {
-          acc.push([])
-        }
-
-        acc[acc.length - 1].push(article)
-        return acc
-      }, [] as Shout[][])
-  })
+  const pages = createMemo<Shout[][]>(() =>
+    splitToPages(
+      sortedArticles(),
+      PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT,
+      LOAD_MORE_PAGE_SIZE
+    )
+  )
 
   return (
     <Show when={locale() && sortedArticles().length > 0}>
@@ -170,11 +179,13 @@ export const HomeView = (props: HomeProps) => {
         )}
       </For>
 
-      <p class="load-more-container">
-        <button class="button" onClick={loadMore}>
-          {t('Load more')}
-        </button>
-      </p>
+      <Show when={isLoadMoreButtonVisible()}>
+        <p class="load-more-container">
+          <button class="button" onClick={loadMore}>
+            {t('Load more')}
+          </button>
+        </p>
+      </Show>
     </Show>
   )
 }

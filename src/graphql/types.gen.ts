@@ -171,7 +171,7 @@ export type Mutation = {
 }
 
 export type MutationConfirmEmailArgs = {
-  token: Scalars['String']
+  code: Scalars['String']
 }
 
 export type MutationCreateChatArgs = {

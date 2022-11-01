@@ -3,8 +3,8 @@
   overflow: y-auto;
   padding: 50px;
   display: flex;
-  font-family: 'JetBrains Mono';
   justify-content: center;
+
   ::-webkit-scrollbar {
     display: none;
   }
@@ -17,7 +17,7 @@
 }
 
 .error pre {
-  background: var(--foreground) 19;
+  background: var(--foreground);
   border: 1px solid var(--foreground);
   white-space: pre-wrap;
   word-wrap: break-word;

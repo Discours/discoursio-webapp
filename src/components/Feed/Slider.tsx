@@ -1,4 +1,3 @@
-import { For } from 'solid-js/web'
 import { ArticleCard } from './Card'
 import { Swiper, Navigation, Pagination } from 'swiper'
 import type { SwiperOptions } from 'swiper'
@@ -7,7 +6,7 @@ import 'swiper/scss/navigation'
 import 'swiper/scss/pagination'
 import './Slider.scss'
 import type { Shout } from '../../graphql/types.gen'
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, Show, For } from 'solid-js'
 import { Icon } from '../Nav/Icon'
 
 interface SliderProps {

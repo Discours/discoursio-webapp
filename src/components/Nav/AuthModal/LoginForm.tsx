@@ -1,11 +1,10 @@
-import { Show } from 'solid-js/web'
 import { t } from '../../../utils/intl'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { SocialProviders } from './SocialProviders'
-import { signIn } from '../../../stores/auth'
+import { signIn, signSendLink } from '../../../stores/auth'
 import { ApiError } from '../../../utils/apiClient'
-import { createSignal } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 import { isValidEmail } from './validators'
 import { email, setEmail } from './sharedLogic'
 import { useRouter } from '../../../stores/router'
@@ -23,6 +22,9 @@ export const LoginForm = () => {
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
+  // TODO: better solution for interactive error messages
+  const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
+  const [isLinkSent, setIsLinkSent] = createSignal(false)
 
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
 
@@ -49,6 +51,7 @@ export const LoginForm = () => {
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
 
+    setIsLinkSent(false)
     setSubmitError('')
 
     const newValidationErrors: ValidationErrors = {}
@@ -72,10 +75,12 @@ export const LoginForm = () => {
 
     try {
       await signIn({ email: email(), password: password() })
+      hideModal()
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.code === 'email_not_confirmed') {
           setSubmitError(t('Please, confirm email'))
+          setIsEmailNotConfirmed(true)
           return
         }
 
@@ -96,10 +101,16 @@ export const LoginForm = () => {
       <h4>{t('Enter the Discours')}</h4>
       <Show when={submitError()}>
         <div class={styles.authInfo}>
-          <ul>
-            <li class={styles.warn}>{submitError()}</li>
-          </ul>
+          <div class={styles.warn}>{submitError()}</div>
+          <Show when={isEmailNotConfirmed()}>
+            <a href="#" class={styles.sendLink} onClick={handleSendLinkAgainClick}>
+              {t('Send link again')}
+            </a>
+          </Show>
         </div>
+      </Show>
+      <Show when={isLinkSent()}>
+        <div class={styles.authInfo}>{t('Link sent, check your email')}</div>
       </Show>
       <div class="pretty-form__item">
         <input

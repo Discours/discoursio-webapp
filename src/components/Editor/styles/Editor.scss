@@ -1,13 +1,9 @@
-.main-content {
-  padding-top: 80px;
-}
-
 .editor {
   flex: 1;
   padding-top: 1em;
 
   a {
-    color: rgb(0, 100, 200);
+    color: rgb(0 100 200);
     text-decoration: none;
   }
 
@@ -16,7 +12,7 @@
   }
 
   a:visited {
-    color: rgb(0, 80, 160);
+    color: rgb(0 80 160);
   }
 }
 
@@ -32,7 +28,7 @@ textarea {
   font-size: inherit;
   -webkit-padding: 0.4em 0;
   padding: 0.4em;
-  margin: 0 0 0.5em 0;
+  margin: 0 0 0.5em;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -66,7 +62,6 @@ button:focus {
   position: relative;
   word-wrap: break-word;
   white-space: pre-wrap;
-  -webkit-font-variant-ligatures: none;
   font-variant-ligatures: none;
   outline: none;
   margin: 1em 1em 1em 0;
@@ -121,12 +116,14 @@ button:focus {
   blockquote {
     border-left: 2px solid;
     @include font-size(1.6rem);
+
     margin: 1.5em 0;
     padding-left: 1.6em;
   }
 }
 
 .ProseMirror-menuitem {
+  display: flex;
   font-size: small;
 
   &:hover {
@@ -157,13 +154,8 @@ button:focus {
 }
 
 .ProseMirror-tooltip .ProseMirror-menu {
-  width: -webkit-fit-content;
   width: fit-content;
   white-space: pre;
-}
-
-.ProseMirror-menuitem {
-  display: flex;
 }
 
 .ProseMirror-menuseparator {
@@ -189,11 +181,11 @@ button:focus {
   position: relative;
 }
 
-.ProseMirror-menu-dropdown:after {
+.ProseMirror-menu-dropdown::after {
   content: '';
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 4px solid currentColor;
+  border-top: 4px solid currentcolor;
   opacity: 0.6;
   position: absolute;
   right: 4px;
@@ -211,6 +203,7 @@ button:focus {
 
 .ProseMirror-menu-dropdown-menu {
   z-index: 15;
+
   /* min-width: 6em; */
 }
 
@@ -228,11 +221,11 @@ button:focus {
   margin-right: -4px;
 }
 
-.ProseMirror-menu-submenu-label:after {
+.ProseMirror-menu-submenu-label::after {
   content: '';
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  border-left: 4px solid currentColor;
+  border-left: 4px solid currentcolor;
   opacity: 0.6;
   position: absolute;
   right: 4px;
@@ -273,7 +266,6 @@ button:focus {
   border-bottom: 1px solid silver;
   background: white;
   z-index: 10;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: visible;
 }
@@ -288,7 +280,7 @@ button:focus {
 }
 
 .ProseMirror-icon svg {
-  fill: currentColor;
+  fill: currentcolor;
   height: 1em;
 }
 
@@ -308,10 +300,6 @@ button:focus {
   background: transparent;
 }
 
-.ProseMirror-hideselection *::-moz-selection {
-  background: transparent;
-}
-
 .ProseMirror-hideselection {
   caret-color: transparent;
 }
@@ -325,7 +313,7 @@ li.ProseMirror-selectednode {
   outline: none;
 }
 
-li.ProseMirror-selectednode:after {
+li.ProseMirror-selectednode::after {
   content: '';
   position: absolute;
   left: -32px;
@@ -355,7 +343,7 @@ li.ProseMirror-selectednode:after {
 
 .ProseMirror-prompt {
   background: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
   font-size: 0.7em;
   position: absolute;
 }
@@ -400,7 +388,7 @@ li.ProseMirror-selectednode:after {
 
 .tooltip {
   background: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
   color: #000;
   display: flex;
   position: absolute;

@@ -3,18 +3,21 @@ import type { EditorState } from 'prosemirror-state'
 import { useState } from '../store/context'
 import { ProseMirror } from './ProseMirror'
 import '../styles/Editor.scss'
+import styles from './Editor.module.scss'
+import { clsx } from 'clsx'
 
 export const Editor = () => {
   const [store, ctrl] = useState()
   const onInit = (text: EditorState, editorView: EditorView) => ctrl.setState({ editorView, text })
   const onReconfigure = (text: EditorState) => ctrl.setState({ text })
   const onChange = (text: EditorState) => ctrl.setState({ text, lastModified: new Date() })
-  // const editorCss = (config) => css``
-  const style = () => (store.error ? `display: none;` : (store.markdown ? `white-space: pre-wrap;` : ''))
+
   return (
     <ProseMirror
-      className='editor col-md-6 shift-content'
-      style={style()}
+      cssClass={clsx('editor', 'col-md-6', 'shift-content', {
+        [styles.error]: store.error,
+        [styles.markdown]: store.markdown
+      })}
       editorView={store.editorView}
       text={store.text}
       extensions={store.extensions}

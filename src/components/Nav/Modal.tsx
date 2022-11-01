@@ -1,7 +1,10 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import type { JSX } from 'solid-js'
+import { getLogger } from '../../utils/logger'
 import './Modal.scss'
 import { hideModal, useModalStore } from '../../stores/ui'
+
+const log = getLogger('modal')
 
 interface ModalProps {
   name: string
@@ -31,7 +34,7 @@ export const Modal = (props: ModalProps) => {
 
   createEffect(() => {
     setVisible(modal() === props.name)
-    console.debug(`[auth.modal] ${props.name} is ${modal() === props.name ? 'visible' : 'hidden'}`)
+    log.debug(`${props.name} is ${modal() === props.name ? 'visible' : 'hidden'}`)
   })
 
   return (

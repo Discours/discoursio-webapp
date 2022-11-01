@@ -4,7 +4,7 @@ import { Icon } from '../Nav/Icon'
 import Subscribe from './Subscribe'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
-import {clsx} from "clsx";
+import { clsx } from 'clsx'
 
 export const Footer = () => {
   const locale_title = createMemo(() => (locale() === 'ru' ? 'English' : 'Русский'))

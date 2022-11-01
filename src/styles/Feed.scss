@@ -120,11 +120,25 @@
     display: flex;
     justify-content: space-between;
 
+    img {
+      transition: filter 0.3s;
+    }
+
     a {
       margin-right: 0.3em;
+
+      &:hover {
+        img {
+          filter: invert(1);
+        }
+      }
     }
 
     .icon {
+      display: inline-block;
+      line-height: 1;
+      margin-left: 0.3em;
+      vertical-align: middle;
       width: 1em;
     }
   }

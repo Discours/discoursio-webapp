@@ -19,65 +19,65 @@ export interface ExtensionsProps {
   typewriterMode?: boolean
 }
 export interface Args {
-  cwd?: string;
-  draft?: string;
-  room?: string;
-  text?: any;
+  cwd?: string
+  draft?: string
+  room?: string
+  text?: any
 }
 
 export interface PrettierConfig {
-  printWidth: number;
-  tabWidth: number;
-  useTabs: boolean;
-  semi: boolean;
-  singleQuote: boolean;
+  printWidth: number
+  tabWidth: number
+  useTabs: boolean
+  semi: boolean
+  singleQuote: boolean
 }
 
 export interface Config {
-  theme: string;
+  theme: string
   // codeTheme: string;
-  font: string;
-  fontSize: number;
-  contentWidth: number;
-  typewriterMode: boolean;
-  prettier: PrettierConfig;
+  font: string
+  fontSize: number
+  contentWidth: number
+  typewriterMode: boolean
+  prettier: PrettierConfig
 }
 
 export interface ErrorObject {
-  id: string;
-  props?: unknown;
+  id: string
+  props?: unknown
 }
 
 export interface YOptions {
-  type: XmlFragment;
-  provider: WebrtcProvider;
+  type: XmlFragment
+  provider: WebrtcProvider
 }
 
 export interface Collab {
-  started?: boolean;
-  error?: boolean;
-  room?: string;
-  y?: YOptions;
+  started?: boolean
+  error?: boolean
+  room?: string
+  y?: YOptions
 }
 
 export type LoadingType = 'loading' | 'initialized'
 
 export interface State {
   isMac?: boolean
-  text?: ProseMirrorState;
-  editorView?: EditorView;
-  extensions?: ProseMirrorExtension[];
-  markdown?: boolean;
-  lastModified?: Date;
-  drafts: Draft[];
-  config: Config;
-  error?: ErrorObject;
-  loading?: LoadingType;
-  fullscreen?: boolean;
-  collab?: Collab;
-  path?: string;
-  args?: Args;
-  keymap?: { [key: string]: Command; }
+  text?: ProseMirrorState
+  editorView?: EditorView
+  extensions?: ProseMirrorExtension[]
+  markdown?: boolean
+  lastModified?: Date
+  drafts: Draft[]
+  config: Config
+  error?: ErrorObject
+  loading?: LoadingType
+  fullscreen?: boolean
+  collab?: Collab
+  path?: string
+  args?: Args
+  keymap?: { [key: string]: Command }
 }
 
 export interface Draft {
@@ -91,7 +91,7 @@ export interface Draft {
 
 export interface EditorActions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key:string]: any
+  [key: string]: any
 }
 
 export class ServiceError extends Error {

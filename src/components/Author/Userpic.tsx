@@ -1,11 +1,13 @@
-import { Show } from 'solid-js/web'
+import { Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import style from './Userpic.module.scss'
+import { clsx } from 'clsx'
 
 interface UserpicProps {
   user: Author
   hasLink?: boolean
   isBig?: boolean
+  class?: string
 }
 
 export default (props: UserpicProps) => {
@@ -16,7 +18,7 @@ export default (props: UserpicProps) => {
   }
 
   return (
-    <div class={style.circlewrap} classList={{ [style.big]: props.isBig }}>
+    <div class={clsx(style.circlewrap, props.class)} classList={{ [style.big]: props.isBig }}>
       <Show when={props.hasLink}>
         <a href={`/author/${props.user.slug}`}>
           <Show

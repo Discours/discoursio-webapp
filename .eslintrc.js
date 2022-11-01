@@ -27,7 +27,6 @@ module.exports = {
         // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
       rules: {
-        'no-nested-ternary': 'off',
         '@typescript-eslint/no-unused-vars': [
           'warn',
           {
@@ -35,8 +34,9 @@ module.exports = {
             varsIgnorePattern: '^log$'
           }
         ],
-        '@typescript-eslint/no-explicit-any': 'warn',
-        '@typescript-eslint/no-non-null-assertion': 'warn',
+        // TODO: Remove any usage and enable
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'error',
 
         // solid-js fix
         'import/no-unresolved': [2, { ignore: ['solid-js/'] }]

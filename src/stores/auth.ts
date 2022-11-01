@@ -11,7 +11,6 @@ export const signIn = async (params) => {
   setToken(authResult.token)
   console.debug('signed in')
 }
-
 export const signOut = () => {
   // TODO: call backend to revoke token
   setSession(null)
@@ -54,7 +53,7 @@ export const register = async ({
   })
 }
 
-export const signSendLink = async ({ email, lang }: { email: string, lang: string }) => {
+export const signSendLink = async ({ email, lang }: { email: string; lang: string }) => {
   await apiClient.authSendLink({ email, lang })
 }
 

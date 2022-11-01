@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js/jsx-runtime'
-import { For, Show } from 'solid-js/web'
+import { For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from './Card'
 import './Group.scss'

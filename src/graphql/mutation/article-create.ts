@@ -1,8 +1,7 @@
 import { gql } from '@urql/core'
 
-
 export default gql`
-  mutation CreateShoutMutations($shout: ShoutInput!) {
+  mutation CreateShoutMutation($shout: ShoutInput!) {
     createShout(input: $shout) {
       error
       shout {

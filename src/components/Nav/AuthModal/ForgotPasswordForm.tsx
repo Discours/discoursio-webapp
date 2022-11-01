@@ -1,8 +1,7 @@
-import { Show } from 'solid-js/web'
 import { t } from '../../../utils/intl'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
-import { createSignal, JSX } from 'solid-js'
+import { createSignal, JSX, Show } from 'solid-js'
 import { useRouter } from '../../../stores/router'
 import { email, setEmail } from './sharedLogic'
 import type { AuthModalSearchParams } from './types'
@@ -64,7 +63,7 @@ export const ForgotPasswordForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <h4>{t('Forgot password?')}</h4>
-      {t('Everything is ok, please give us your email address')}
+      <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
       <Show when={submitError()}>
         <div class={styles.authInfo}>
           <ul>

@@ -3,9 +3,9 @@ import type { Node, Schema, SchemaSpec } from 'prosemirror-model'
 import type { Decoration, EditorView, NodeView } from 'prosemirror-view'
 
 export interface ProseMirrorExtension {
-  schema?: (prev: SchemaSpec) => SchemaSpec;
-  plugins?: (prev: Plugin[], schema: Schema) => Plugin[];
-  nodeViews?: { [key: string]: NodeViewFn };
+  schema?: (prev: SchemaSpec) => SchemaSpec
+  plugins?: (prev: Plugin[], schema: Schema) => Plugin[]
+  nodeViews?: { [key: string]: NodeViewFn }
 }
 
 export type ProseMirrorState = EditorState | unknown

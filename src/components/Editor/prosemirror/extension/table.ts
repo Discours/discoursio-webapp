@@ -10,7 +10,7 @@ export const tableInputRule = (schema: Schema) =>
     new RegExp('^\\|{2,}\\s$'),
     (state: EditorState, match: string[], start: number, end: number) => {
       const tr = state.tr
-      const columns = Array.from({length: match[0].trim().length - 1})
+      const columns = Array.from({ length: match[0].trim().length - 1 })
       const headers = columns.map(() => schema.node(schema.nodes.table_header, {}))
       const cells = columns.map(() => schema.node(schema.nodes.table_cell, {}))
       const table = schema.node(schema.nodes.table, {}, [

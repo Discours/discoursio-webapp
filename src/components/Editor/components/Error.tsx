@@ -7,13 +7,13 @@ export default () => {
   return (
     <Switch fallback={<Other />}>
       <Match when={store.error.id === 'invalid_state'}>
-        <InvalidState title='Invalid State' />
+        <InvalidState title="Invalid State" />
       </Match>
       <Match when={store.error.id === 'invalid_config'}>
-        <InvalidState title='Invalid Config' />
+        <InvalidState title="Invalid Config" />
       </Match>
       <Match when={store.error.id === 'invalid_draft'}>
-        <InvalidState title='Invalid Draft' />
+        <InvalidState title="Invalid Draft" />
       </Match>
     </Switch>
   )
@@ -24,8 +24,8 @@ const InvalidState = (props: { title: string }) => {
   const onClick = () => ctrl.clean()
 
   return (
-    <div class='error'>
-      <div class='container'>
+    <div class="error">
+      <div class="container">
         <h1>{props.title}</h1>
         <p>
           There is an error with the editor state. This is probably due to an old version in which the data
@@ -35,7 +35,7 @@ const InvalidState = (props: { title: string }) => {
         <pre>
           <code>{JSON.stringify(store.error.props)}</code>
         </pre>
-        <button class='primary' onClick={onClick}>
+        <button class="primary" onClick={onClick}>
           Clean
         </button>
       </div>
@@ -53,13 +53,13 @@ const Other = () => {
   }
 
   return (
-    <div class='error'>
-      <div class='container'>
+    <div class="error">
+      <div class="container">
         <h1>An error occurred.</h1>
         <pre>
           <code>{getMessage()}</code>
         </pre>
-        <button class='primary' onClick={onClick}>
+        <button class="primary" onClick={onClick}>
           Close
         </button>
       </div>

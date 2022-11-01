@@ -1,6 +1,6 @@
-import { For, Portal, Show } from 'solid-js/web'
+import { Portal } from 'solid-js/web'
 import { useWarningsStore } from '../../stores/ui'
-import { createMemo } from 'solid-js'
+import { createMemo, For, Show } from 'solid-js'
 
 export default () => {
   const { warnings } = useWarningsStore()

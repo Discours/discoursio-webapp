@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  mutation ConfirmEmailMutation($code: String!) {
-    confirmEmail(code: $code) {
+  mutation ConfirmEmailMutation($token: String!) {
+    confirmEmail(token: $token) {
       error
       token
       user {

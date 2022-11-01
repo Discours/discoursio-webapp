@@ -2,7 +2,7 @@ import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from './Card'
 import './Full.scss'
 
-export default (props: { author: Author }) => {
+export const AuthorFull = (props: { author: Author }) => {
   return (
     <div class="container">
       <div class="row">

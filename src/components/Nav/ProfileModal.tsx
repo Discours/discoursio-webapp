@@ -1,10 +1,9 @@
-import { For } from 'solid-js/web'
 import { AuthorCard } from '../Author/Card'
 import type { Author } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { hideModal } from '../../stores/ui'
 import { useAuthStore, signOut } from '../../stores/auth'
-import { createMemo } from 'solid-js'
+import { createMemo, For } from 'solid-js'
 
 const quit = () => {
   signOut()

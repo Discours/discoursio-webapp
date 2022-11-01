@@ -10,6 +10,7 @@
 
 .article__title {
   @include font-size(2.4rem);
+
   line-height: 1.25;
 }
 
@@ -31,10 +32,11 @@
 }
 
 .article__controls {
+  @include font-size(1.4rem);
+
   align-content: baseline;
   display: flex;
   flex-wrap: wrap;
-  @include font-size(1.4rem);
   padding-top: 2em;
 }
 

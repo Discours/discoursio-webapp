@@ -9,6 +9,8 @@ import { keymap } from 'prosemirror-keymap'
 import type { ProseMirrorExtension } from '../helpers'
 import type OrderedMap from 'orderedmap'
 
+import layoutStyles from '../../components/Layout.module.scss'
+
 const plainSchema = new Schema({
   nodes: {
     doc: {
@@ -53,6 +55,6 @@ export default (plain = false): ProseMirrorExtension => ({
     keymap(buildKeymap(schema)),
     keymap(baseKeymap),
     history(),
-    dropCursor({ class: 'drop-cursor' })
+    dropCursor({ class: layoutStyles.dropCursor })
   ]
 })

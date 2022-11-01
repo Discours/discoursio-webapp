@@ -1,7 +1,73 @@
+.editor {
+  flex: 1;
+  padding-top: 1em;
+
+  a {
+    color: rgb(0 100 200);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: rgb(0 80 160);
+  }
+
+  label {
+    display: block;
+  }
+
+  input,
+  button,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: inherit;
+    -webkit-padding: 0.4em 0;
+    padding: 0.4em;
+    margin: 0 0 0.5em;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+  }
+
+  input:disabled {
+    color: #ccc;
+  }
+
+  button {
+    color: #333;
+    background-color: #f4f4f4;
+    outline: none;
+  }
+
+  button:disabled {
+    color: #999;
+  }
+
+  button:not(:disabled):active {
+    background-color: #ddd;
+  }
+
+  button:focus {
+    border-color: #666;
+  }
+}
+
 .error {
   display: none;
 }
 
 .markdown {
   white-space: pre-wrap;
+}
+
+.tooltip {
+  background: #fff;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+  color: #000;
+  display: flex;
+  position: absolute;
 }

@@ -1,4 +1,4 @@
-import { Show, onCleanup, createEffect, onError, onMount, untrack } from 'solid-js'
+import { Show, onCleanup, createEffect, onError, onMount, untrack, createSignal } from 'solid-js'
 import { createMutable, unwrap } from 'solid-js/store'
 import { State, StateContext, newState } from '../Editor/store/context'
 import { createCtrl } from '../Editor/store/actions'
@@ -10,6 +10,10 @@ import ErrorView from '../Editor/components/Error'
 const matchDark = () => window.matchMedia('(prefers-color-scheme: dark)')
 
 export const CreateView = () => {
+  const [isMounted, setIsMounted] = createSignal(false)
+
+  onMount(() => setIsMounted(true))
+
   const onChangeTheme = () => ctrl.updateTheme()
   onMount(() => {
     matchDark().addEventListener('change', onChangeTheme)
@@ -50,18 +54,20 @@ export const CreateView = () => {
   }, store.loading)
 
   return (
-    <StateContext.Provider value={[store, ctrl]}>
-      <Layout
-        config={store.config}
-        data-testid={store.error ? 'error' : store.loading}
-        onMouseEnter={onMouseEnter}
-      >
-        <Show when={!store.error} fallback={<ErrorView />}>
-          <Editor />
-          <Sidebar />
-        </Show>
-      </Layout>
-    </StateContext.Provider>
+    <Show when={isMounted()}>
+      <StateContext.Provider value={[store, ctrl]}>
+        <Layout
+          config={store.config}
+          data-testid={store.error ? 'error' : store.loading}
+          onMouseEnter={onMouseEnter}
+        >
+          <Show when={!store.error} fallback={<ErrorView />}>
+            <Editor />
+            <Sidebar />
+          </Show>
+        </Layout>
+      </StateContext.Provider>
+    </Show>
   )
 }
 

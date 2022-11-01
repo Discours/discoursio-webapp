@@ -4,6 +4,7 @@ import { EditorState, EditorStateConfig, Transaction } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
 import { Schema } from 'prosemirror-model'
 import type { NodeViewFn, ProseMirrorExtension, ProseMirrorState } from '../prosemirror/helpers'
+import '../styles/ProseMirror.scss'
 
 interface ProseMirrorProps {
   cssClass?: string

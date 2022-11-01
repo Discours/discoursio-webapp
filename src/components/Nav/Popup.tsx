@@ -1,6 +1,7 @@
 import { createEffect, createSignal, JSX, onCleanup, onMount, Show } from 'solid-js'
 import styles from './Popup.module.scss'
 import { clsx } from 'clsx'
+import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 
 type HorizontalAnchor = 'center' | 'right'
 
@@ -22,29 +23,18 @@ export const Popup = (props: PopupProps) => {
     }
   })
 
-  let container: HTMLDivElement | undefined
+  const containerRef: { current: HTMLElement } = { current: null }
 
-  const handleClickOutside = (event: MouseEvent & { target: Element }) => {
-    if (!isVisible()) {
-      return
-    }
-
-    if (event.target === container || container?.contains(event.target)) {
-      return
-    }
-
-    setIsVisible(false)
-  }
-
-  onMount(() => {
-    document.addEventListener('click', handleClickOutside, { capture: true })
-    onCleanup(() => document.removeEventListener('click', handleClickOutside, { capture: true }))
+  useOutsideClickHandler({
+    containerRef,
+    predicate: () => isVisible(),
+    handler: () => setIsVisible(false)
   })
 
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
 
   return (
-    <span class={clsx(styles.container, props.containerCssClass)} ref={container}>
+    <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>
       <span onClick={toggle}>{props.trigger}</span>
       <Show when={isVisible()}>
         <div

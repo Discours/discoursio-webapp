@@ -5,20 +5,21 @@ import { Draft, useState } from '../store/context'
 import * as remote from '../remote'
 import { isEmpty } from '../prosemirror/helpers'
 import type { Styled } from './Layout'
-import '../styles/Sidebar.scss'
 import { clsx } from 'clsx'
 import styles from './Sidebar.module.scss'
-import { isServer } from 'solid-js/web'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { hideModal } from '../../../stores/ui'
 
-const Off = (props) => <div class="sidebar-off">{props.children}</div>
+const Off = (props) => <div class={styles.sidebarOff}>{props.children}</div>
 
-const Label = (props: Styled) => <h3 class="sidebar-label">{props.children}</h3>
+const Label = (props: Styled) => <h3 class={styles.sidebarLabel}>{props.children}</h3>
 
 const Link = (
   props: Styled & { withMargin?: boolean; disabled?: boolean; title?: string; className?: string }
 ) => (
   <button
-    class={clsx('sidebar-link', props.className, {
+    class={clsx(styles.sidebarLink, props.className, {
       [styles.withMargin]: props.withMargin
     })}
     onClick={props.onClick}
@@ -33,10 +34,12 @@ const Link = (
 export const Sidebar = () => {
   const [store, ctrl] = useState()
   const [lastAction, setLastAction] = createSignal<string | undefined>()
+
   const toggleTheme = () => {
     document.body.classList.toggle('dark')
     ctrl.updateConfig({ theme: document.body.className })
   }
+
   const collabText = () => {
     if (store.collab?.started) {
       return 'Stop'
@@ -70,13 +73,11 @@ export const Sidebar = () => {
   const onCopyAllAsMd = () =>
     remote.copyAllAsMarkdown(editorView().state).then(() => setLastAction('copy-md'))
   const onDiscard = () => ctrl.discard()
-  const [isHidden, setIsHidden] = createSignal<boolean | false>()
+  const [isHidden, setIsHidden] = createSignal(true)
 
   const toggleSidebar = () => {
-    setIsHidden(!isHidden())
+    setIsHidden((oldIsHidden) => !oldIsHidden)
   }
-
-  toggleSidebar()
 
   const onCollab = () => {
     const state = unwrap(store)
@@ -117,7 +118,7 @@ export const Sidebar = () => {
 
     return (
       // eslint-disable-next-line solid/no-react-specific-props
-      <Link className="draft" onClick={() => onOpenDraft(p.draft)} data-testid="open">
+      <Link className={styles.draft} onClick={() => onOpenDraft(p.draft)} data-testid="open">
         {text()} {p.draft.path && '📎'}
       </Link>
     )
@@ -131,7 +132,7 @@ export const Sidebar = () => {
 
   createEffect(() => {
     setLastAction()
-  }, store.lastModified)
+  })
 
   createEffect(() => {
     if (!lastAction()) return
@@ -147,14 +148,30 @@ export const Sidebar = () => {
     setMod(navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl')
   })
 
+  const containerRef: { current: HTMLElement } = {
+    current: null
+  }
+
+  useEscKeyDownHandler(() => setIsHidden(true))
+  useOutsideClickHandler({
+    containerRef,
+    predicate: () => !isHidden(),
+    handler: () => setIsHidden(true)
+  })
+
   return (
-    <div class={'sidebar-container' + (isHidden() ? ' sidebar-container--hidden' : '')}>
-      <span class="sidebar-opener" onClick={toggleSidebar}>
+    <div
+      class={clsx(styles.sidebarContainer, {
+        [styles.sidebarContainerHidden]: isHidden()
+      })}
+      ref={(el) => (containerRef.current = el)}
+    >
+      <span class={styles.sidebarOpener} onClick={toggleSidebar}>
         Советы и&nbsp;предложения
       </span>
 
       <Off onClick={() => editorView().focus()}>
-        <div class="sidebar-closer" onClick={toggleSidebar} />
+        <div class={styles.sidebarCloser} onClick={toggleSidebar} />
 
         <div>
           {store.path && (
@@ -166,7 +183,7 @@ export const Sidebar = () => {
           <Link>Настройки публикации</Link>
           <Link>История правок</Link>
 
-          <div class="theme-switcher">
+          <div class={styles.themeSwitcher}>
             Ночная тема
             <input type="checkbox" name="theme" id="theme" onClick={toggleTheme} />
             <label for="theme">Ночная тема</label>

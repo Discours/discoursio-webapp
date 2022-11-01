@@ -2,13 +2,14 @@ import { renderGrouped } from 'prosemirror-menu'
 import { Plugin } from 'prosemirror-state'
 import type { ProseMirrorExtension } from '../helpers'
 import { buildMenuItems } from './menu'
+import editorStyles from '../../components/Editor.module.scss'
 
 export class SelectionTooltip {
   tooltip: any
 
   constructor(view: any, schema: any) {
     this.tooltip = document.createElement('div')
-    this.tooltip.className = 'tooltip'
+    this.tooltip.className = editorStyles.tooltip
     view.dom.parentNode.appendChild(this.tooltip)
     const { dom } = renderGrouped(view, buildMenuItems(schema).fullMenu as any)
     this.tooltip.appendChild(dom)

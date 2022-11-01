@@ -10,6 +10,7 @@ import { isValidEmail } from './validators'
 import { email, setEmail } from './sharedLogic'
 import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
+import { hideModal, locale } from '../../../stores/ui'
 
 type FormFields = {
   email: string
@@ -35,6 +36,14 @@ export const LoginForm = () => {
   const handlePasswordInput = (newPassword: string) => {
     setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
     setPassword(newPassword)
+  }
+
+  const handleSendLinkAgainClick = (event: Event) => {
+    event.preventDefault()
+    setIsEmailNotConfirmed(false)
+    setSubmitError('')
+    setIsLinkSent(true)
+    signSendLink({ email: email(), lang: locale() })
   }
 
   const handleSubmit = async (event: Event) => {

@@ -1,11 +1,15 @@
-import { newState } from '../Editor/store/context'
+import { lazy, Suspense } from 'solid-js'
 import { MainLayout } from '../Layouts/MainLayout'
-import { CreateView } from '../Views/Create'
+import { Loading } from '../Loading'
+
+const CreateView = lazy(() => import('../Views/Create'))
 
 export const CreatePage = () => {
   return (
     <MainLayout>
-      <CreateView state={newState()} />
+      <Suspense fallback={<Loading />}>
+        <CreateView />
+      </Suspense>
     </MainLayout>
   )
 }

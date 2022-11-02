@@ -6,7 +6,7 @@
   border-color: var(--background);
   min-height: 100vh;
 
-  &.dark {
+  .dark & {
     background: var(--foreground);
     color: var(--background);
     border-color: var(--foreground);

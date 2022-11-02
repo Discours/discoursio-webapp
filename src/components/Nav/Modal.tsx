@@ -3,16 +3,13 @@ import type { JSX } from 'solid-js'
 import { getLogger } from '../../utils/logger'
 import './Modal.scss'
 import { hideModal, useModalStore } from '../../stores/ui'
+import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 
 const log = getLogger('modal')
 
 interface ModalProps {
   name: string
   children: JSX.Element
-}
-
-const keydownHandler = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') hideModal()
 }
 
 export const Modal = (props: ModalProps) => {
@@ -22,13 +19,7 @@ export const Modal = (props: ModalProps) => {
     if (event.target.classList.contains('modalwrap')) hideModal()
   }
 
-  onMount(() => {
-    window.addEventListener('keydown', keydownHandler)
-
-    onCleanup(() => {
-      window.removeEventListener('keydown', keydownHandler)
-    })
-  })
+  useEscKeyDownHandler(() => hideModal())
 
   const [visible, setVisible] = createSignal(false)
 

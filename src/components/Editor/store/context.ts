@@ -63,7 +63,6 @@ export interface Collab {
 export type LoadingType = 'loading' | 'initialized'
 
 export interface State {
-  isMac?: boolean
   text?: ProseMirrorState
   editorView?: EditorView
   extensions?: ProseMirrorExtension[]

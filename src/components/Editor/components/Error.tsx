@@ -1,6 +1,6 @@
 import { Switch, Match } from 'solid-js'
 import { useState } from '../store/context'
-import '../styles/Button.scss'
+import styles from './Error.module.scss'
 
 export default () => {
   const [store] = useState()
@@ -24,8 +24,8 @@ const InvalidState = (props: { title: string }) => {
   const onClick = () => ctrl.clean()
 
   return (
-    <div class="error">
-      <div class="container">
+    <div class={styles.error}>
+      <div class={styles.container}>
         <h1>{props.title}</h1>
         <p>
           There is an error with the editor state. This is probably due to an old version in which the data
@@ -35,7 +35,7 @@ const InvalidState = (props: { title: string }) => {
         <pre>
           <code>{JSON.stringify(store.error.props)}</code>
         </pre>
-        <button class="primary" onClick={onClick}>
+        <button class={styles.primary} onClick={onClick}>
           Clean
         </button>
       </div>
@@ -53,13 +53,13 @@ const Other = () => {
   }
 
   return (
-    <div class="error">
-      <div class="container">
+    <div class={styles.error}>
+      <div class={styles.container}>
         <h1>An error occurred.</h1>
         <pre>
           <code>{getMessage()}</code>
         </pre>
-        <button class="primary" onClick={onClick}>
+        <button class={styles.primary} onClick={onClick}>
           Close
         </button>
       </div>

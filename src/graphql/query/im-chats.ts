@@ -13,7 +13,7 @@ export default gql`
       users {
         slug
         name
-        pic
+        userpic
       }
       title
       createdAt

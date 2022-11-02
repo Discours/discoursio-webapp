@@ -31,15 +31,21 @@ export type Author = {
 }
 
 export type Chat = {
-  createdAt: Scalars['DateTime']
+  createdAt: Scalars['Int']
   createdBy: User
   description?: Maybe<Scalars['String']>
   id: Scalars['Int']
   messages: Array<Maybe<Message>>
   title?: Maybe<Scalars['String']>
   unread?: Maybe<Scalars['Int']>
-  updatedAt: Scalars['DateTime']
+  updatedAt: Scalars['Int']
   users: Array<Maybe<User>>
+}
+
+export type ChatInput = {
+  description?: InputMaybe<Scalars['String']>
+  id: Scalars['String']
+  title?: InputMaybe<Scalars['String']>
 }
 
 export type ChatMember = {
@@ -99,12 +105,11 @@ export enum FollowingEntity {
 export type Message = {
   author: Scalars['String']
   body: Scalars['String']
-  chatId: Scalars['Int']
-  createdAt: Scalars['DateTime']
+  chatId: Scalars['String']
+  createdAt: Scalars['Int']
   id: Scalars['Int']
   replyTo?: Maybe<Scalars['Int']>
-  updatedAt: Scalars['DateTime']
-  visibleForUsers?: Maybe<Array<Maybe<Scalars['Int']>>>
+  updatedAt?: Maybe<Scalars['Int']>
 }
 
 export enum MessageStatus {
@@ -115,7 +120,7 @@ export enum MessageStatus {
 
 export type Mutation = {
   confirmEmail: AuthResult
-  createChat: Chat
+  createChat: Result
   createCollection: Result
   createCommunity: Result
   createMessage: Result
@@ -128,6 +133,7 @@ export type Mutation = {
   deleteReaction: Result
   deleteShout: Result
   destroyTopic: Result
+  enterChat: Result
   follow: Result
   incrementView: Result
   inviteAuthor: Result
@@ -139,6 +145,7 @@ export type Mutation = {
   removeAuthor: Result
   sendLink: Result
   unfollow: Result
+  updateChat: Result
   updateCollection: Result
   updateCommunity: Result
   updateMessage: Result
@@ -153,7 +160,8 @@ export type MutationConfirmEmailArgs = {
 }
 
 export type MutationCreateChatArgs = {
-  description?: InputMaybe<Scalars['String']>
+  members: Array<InputMaybe<Scalars['String']>>
+  title?: InputMaybe<Scalars['String']>
 }
 
 export type MutationCreateCollectionArgs = {
@@ -207,6 +215,10 @@ export type MutationDestroyTopicArgs = {
   slug: Scalars['String']
 }
 
+export type MutationEnterChatArgs = {
+  chatId: Scalars['String']
+}
+
 export type MutationFollowArgs = {
   slug: Scalars['String']
   what: FollowingEntity
@@ -255,6 +267,10 @@ export type MutationSendLinkArgs = {
 export type MutationUnfollowArgs = {
   slug: Scalars['String']
   what: FollowingEntity
+}
+
+export type MutationUpdateChatArgs = {
+  chat: ChatInput
 }
 
 export type MutationUpdateCollectionArgs = {
@@ -313,7 +329,6 @@ export type ProfileInput = {
 export type Query = {
   authorsAll: Array<Maybe<User>>
   collectionsAll: Array<Maybe<Collection>>
-  enterChat: Chat
   getCollabs: Array<Maybe<Collab>>
   getCommunities: Array<Maybe<Community>>
   getCommunity: Community
@@ -356,10 +371,6 @@ export type Query = {
   userReactedShouts: Array<Maybe<Shout>>
 }
 
-export type QueryEnterChatArgs = {
-  chatId: Scalars['String']
-}
-
 export type QueryGetCommunityArgs = {
   slug?: InputMaybe<Scalars['String']>
 }
@@ -385,9 +396,9 @@ export type QueryIsEmailUsedArgs = {
 }
 
 export type QueryLoadChatArgs = {
+  amount?: InputMaybe<Scalars['Int']>
   chatId: Scalars['String']
-  page: Scalars['Int']
-  size: Scalars['Int']
+  offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryMarkdownBodyArgs = {
@@ -657,7 +668,7 @@ export type ShoutInput = {
   topic_slugs?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   versionOf?: InputMaybe<Scalars['String']>
   visibleForRoles?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-  visibleForUsers?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>
+  visibleForUsers?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
 }
 
 export type Stat = {
@@ -669,15 +680,15 @@ export type Stat = {
 }
 
 export type Subscription = {
-  chatUpdated: Result
+  newMessage: Message
   onlineUpdated: Array<User>
   reactionUpdated: ReactionUpdating
   shoutUpdated: Shout
   userUpdated: User
 }
 
-export type SubscriptionChatUpdatedArgs = {
-  chatId: Scalars['String']
+export type SubscriptionNewMessageArgs = {
+  chats?: InputMaybe<Array<Scalars['Int']>>
 }
 
 export type SubscriptionReactionUpdatedArgs = {

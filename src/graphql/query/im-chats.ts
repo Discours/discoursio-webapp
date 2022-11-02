@@ -4,7 +4,6 @@ export default gql`
   query GetChatsQuery {
     myChats {
       messages {
-        chatId
         id
         author
         body

@@ -27,7 +27,8 @@ import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
-import myChats from '../graphql/query/my-chats'
+import myChats from '../graphql/query/im-chats'
+import loadChat from '../graphql/query/im-load-messages'
 
 const FEED_SIZE = 50
 
@@ -325,8 +326,20 @@ export const apiClient = {
   incrementView: async ({ articleSlug }) => {
     await privateGraphQLClient.mutation(incrementView, { shout: articleSlug })
   },
-  getInboxes: async (payload = {}) => {
+  getChats: async (payload = {}) => {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats
+  },
+  getChatMessages: async ({
+    chatId,
+    offset = 0,
+    amount = 50
+  }: {
+    chatId: string
+    offset?: number
+    amount?: number
+  }) => {
+    const resp = await privateGraphQLClient.query(loadChat, { chatId, offset, amount }).toPromise()
+    return resp.data.loadChat
   }
 }

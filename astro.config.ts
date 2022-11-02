@@ -67,7 +67,7 @@ const astroConfig: AstroUserConfig = {
           }
           */
         },
-        external: ['@aws-sdk/clients/s3']
+        external: []
       }
     },
     css

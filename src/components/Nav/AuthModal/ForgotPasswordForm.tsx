@@ -6,6 +6,8 @@ import { useRouter } from '../../../stores/router'
 import { email, setEmail } from './sharedLogic'
 import type { AuthModalSearchParams } from './types'
 import { isValidEmail } from './validators'
+import { signSendLink } from '../../../stores/auth'
+import { locale } from '../../../stores/ui'
 
 type FormFields = {
   email: string
@@ -49,7 +51,8 @@ export const ForgotPasswordForm = () => {
     setIsSubmitting(true)
 
     try {
-      // TODO: send mail with link to new password form
+      const result = await signSendLink({ email: email(), lang: locale() })
+      if (result.error) setSubmitError(result.error)
     } catch (error) {
       setSubmitError(error.message)
     } finally {
@@ -67,6 +70,9 @@ export const ForgotPasswordForm = () => {
             <li class={styles.warn}>{submitError()}</li>
           </ul>
         </div>
+      </Show>
+      <Show when={validationErrors().email}>
+        <div class={styles.validationError}>{validationErrors().email}</div>
       </Show>
       <div class="pretty-form__item">
         <input

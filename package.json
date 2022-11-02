@@ -30,7 +30,6 @@
     "vercel-build": "astro build"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.178.0",
     "mailgun.js": "^8.0.1"
   },
   "devDependencies": {

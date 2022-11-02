@@ -53,8 +53,8 @@ export const register = async ({
   })
 }
 
-export const signSendLink = async ({ email }: { email: string }) => {
-  await apiClient.authSendLink({ email })
+export const signSendLink = async ({ email, lang }: { email: string; lang: string }) => {
+  return await apiClient.authSendLink({ email, lang })
 }
 
 export const renewSession = async () => {

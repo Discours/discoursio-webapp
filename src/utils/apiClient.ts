@@ -30,7 +30,6 @@ import incrementView from '../graphql/mutation/increment-view'
 import myChats from '../graphql/query/my-chats'
 
 const FEED_SIZE = 50
-const REACTIONS_PAGE_SIZE = 100
 
 type ApiErrorCode = 'unknown' | 'email_not_confirmed' | 'user_not_found' | 'user_already_exists'
 
@@ -93,13 +92,12 @@ export const apiClient = {
   authCheckEmail: async ({ email }) => {
     // check if email is used
     const response = await publicGraphQLClient.query(authCheckEmailQuery, { email }).toPromise()
-    console.debug('[api-client] authCheckEmail', response)
     return response.data.isEmailUsed
   },
-  authSendLink: async ({ email }) => {
+  authSendLink: async ({ email, lang }) => {
     // send link with code on email
-    const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email }).toPromise()
-    return response.data.reset
+    const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email, lang }).toPromise()
+    return response.data.sendLink
   },
   confirmEmail: async ({ token }: { token: string }) => {
     // confirm email with code from link

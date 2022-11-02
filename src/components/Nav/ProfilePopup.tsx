@@ -1,5 +1,6 @@
 import { Popup, PopupProps } from './Popup'
 import { signOut, useAuthStore } from '../../stores/auth'
+import styles from './Popup.module.scss'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
@@ -27,7 +28,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
         <li>
           <a href="#">Настройки</a>
         </li>
-        <li>
+        <li class={styles.topBorderItem}>
           <a
             href="#"
             onClick={(event) => {

@@ -6,6 +6,7 @@ import { useStore } from '@nanostores/solid'
 // TODO: more
 export interface Routes {
   home: void
+  connect: void
   create: void
   topics: void
   topic: 'slug'
@@ -30,6 +31,7 @@ const searchParamsStore = createSearchParams()
 const routerStore = createRouter<Routes>(
   {
     home: '/',
+    connect: '/connect',
     create: '/create',
     topics: '/topics',
     topic: '/topic/:slug',

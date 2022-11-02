@@ -98,7 +98,7 @@ export const apiClient = {
   authSendLink: async ({ email, lang }) => {
     // send link with code on email
     const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email, lang }).toPromise()
-    return response.data.reset
+    return response.data.sendLink
   },
   confirmEmail: async ({ token }: { token: string }) => {
     // confirm email with code from link

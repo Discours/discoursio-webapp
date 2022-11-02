@@ -40,12 +40,13 @@ export const LoginForm = () => {
     setPassword(newPassword)
   }
 
-  const handleSendLinkAgainClick = (event: Event) => {
+  const handleSendLinkAgainClick = async (event: Event) => {
     event.preventDefault()
     setIsEmailNotConfirmed(false)
     setSubmitError('')
     setIsLinkSent(true)
-    signSendLink({ email: email(), lang: locale() })
+    const result = await signSendLink({ email: email(), lang: locale() })
+    if (result.error) setSubmitError(result.error)
   }
 
   const handleSubmit = async (event: Event) => {

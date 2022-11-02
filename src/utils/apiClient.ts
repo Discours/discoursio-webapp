@@ -30,7 +30,6 @@ import incrementView from '../graphql/mutation/increment-view'
 import myChats from '../graphql/query/my-chats'
 
 const FEED_SIZE = 50
-const REACTIONS_PAGE_SIZE = 100
 
 type ApiErrorCode = 'unknown' | 'email_not_confirmed' | 'user_not_found' | 'user_already_exists'
 

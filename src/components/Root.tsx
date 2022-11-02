@@ -29,6 +29,7 @@ import { ProjectsPage } from './Pages/about/ProjectsPage'
 import { TermsOfUsePage } from './Pages/about/TermsOfUsePage'
 import { ThanksPage } from './Pages/about/ThanksPage'
 import { CreatePage } from './Pages/CreatePage'
+import { ConnectPage } from './Pages/ConnectPage'
 import { renewSession } from '../stores/auth'
 
 // TODO: lazy load
@@ -59,6 +60,7 @@ type RootSearchParams = {
 }
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
+  connect: ConnectPage,
   create: CreatePage,
   home: HomePage,
   topics: AllTopicsPage,

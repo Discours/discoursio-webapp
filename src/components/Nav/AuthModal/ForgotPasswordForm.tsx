@@ -51,7 +51,6 @@ export const ForgotPasswordForm = () => {
     setIsSubmitting(true)
 
     try {
-      setSubmitError('')
       signSendLink({ email: email(), lang: locale() })
     } catch (error) {
       setSubmitError(error.message)

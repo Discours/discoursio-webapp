@@ -11,7 +11,7 @@ export const HelpPage = () => {
 
       {/*<Modal name="thank">Благодарим!</Modal>*/}
 
-      <article class="container discours-help">
+      <article class="container container--static-page discours-help">
         <div class="row">
           <div class="col-md-2">
             <nav class="content-index">

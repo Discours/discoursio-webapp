@@ -26,8 +26,8 @@ export const Footer = () => {
           slug: '/about/dogma'
         },
         {
-          title: 'Terms of use',
-          slug: '/about/terms-of-use'
+          title: 'Principles',
+          slug: '/about/principles'
         },
         {
           title: 'How to write an article',

@@ -124,7 +124,6 @@
 .buttonSubscribe {
   align-items: center;
   aspect-ratio: 1/1;
-  background: #f6f6f6;
   border-radius: 100%;
   display: inline-flex;
   float: right;
@@ -139,7 +138,6 @@
 }
 
 .buttonWrite {
-  background: #f7f7f7;
   color: #000;
   display: inline-flex;
   transition: background-color 0.3s, color 0.3s;
@@ -193,7 +191,8 @@
   .buttonSubscribe {
     aspect-ratio: auto;
     background-color: #000;
-    border-radius: 2px;
+    border-color: #000;
+    border-radius: 0.8rem;
     float: none;
     padding-bottom: 0.6rem;
     padding-top: 0.6rem;

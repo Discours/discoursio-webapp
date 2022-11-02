@@ -5,7 +5,7 @@ export const PrinciplesPage = () => {
   const title = t('Principles')
   return (
     <MainLayout>
-      <article class="container">
+      <article class="container container--static-page">
         <div class="row">
           <div class="col-md-8 offset-md-2">
             <h1>

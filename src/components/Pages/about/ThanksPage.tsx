@@ -10,7 +10,7 @@ export const ThanksPage = () => {
       {/*<Meta property="og:title" content={title} />*/}
       {/*<Meta property="og:description" content={title} />*/}
 
-      <article class="container">
+      <article class="container container--static-page">
         <div class="row">
           <div class="col-md-8 offset-md-2">
             <h1>

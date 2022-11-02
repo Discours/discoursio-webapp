@@ -54,6 +54,14 @@
   @include font-size(1.5rem);
 
   padding-top: 1.6rem;
+
+  a {
+    color: rgba(255, 255, 255, 0.7);
+
+    &:hover {
+      color: #fff;
+    }
+  }
 }
 
 .footerCopyrightSocial {

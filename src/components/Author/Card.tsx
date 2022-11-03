@@ -79,7 +79,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
             </Show>
 
             <Show when={!props.compact}>
-              <button class={clsx(style.buttonWrite, style.button, 'button')}>
+              <button class={clsx(style.buttonWrite, style.button, 'button button--subscribe-topic')}>
                 <Icon name="edit" class={style.icon} />
                 {t('Write')}
               </button>

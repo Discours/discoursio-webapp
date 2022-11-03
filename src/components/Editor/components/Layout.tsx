@@ -1,6 +1,7 @@
 import type { JSX } from 'solid-js/jsx-runtime'
 import type { Config } from '../store/context'
-import '../styles/Layout.scss'
+import { clsx } from 'clsx'
+import styles from './Layout.module.scss'
 
 export type Styled = {
   children: JSX.Element
@@ -12,7 +13,11 @@ export type Styled = {
 
 export const Layout = (props: Styled) => {
   return (
-    <div onMouseEnter={props.onMouseEnter} class="layout container" data-testid={props['data-testid']}>
+    <div
+      onMouseEnter={props.onMouseEnter}
+      class={clsx(styles.layout, 'container')}
+      data-testid={props['data-testid']}
+    >
       {props.children}
     </div>
   )

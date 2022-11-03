@@ -6,6 +6,7 @@ import { useStore } from '@nanostores/solid'
 // TODO: more
 export interface Routes {
   home: void
+  connect: void
   create: void
   topics: void
   topic: 'slug'
@@ -15,10 +16,12 @@ export interface Routes {
   article: 'slug'
   search: 'q'
   dogma: void
+  discussionRules: void
   guide: void
   help: void
   manifest: void
   partners: void
+  principles: void
   projects: void
   termsOfUse: void
   thanks: void
@@ -28,6 +31,7 @@ const searchParamsStore = createSearchParams()
 const routerStore = createRouter<Routes>(
   {
     home: '/',
+    connect: '/connect',
     create: '/create',
     topics: '/topics',
     topic: '/topic/:slug',
@@ -37,10 +41,12 @@ const routerStore = createRouter<Routes>(
     search: '/search/:q?',
     article: '/:slug',
     dogma: '/about/dogma',
+    discussionRules: '/about/discussion-rules',
     guide: '/about/guide',
     help: '/about/help',
     manifest: '/about/manifest',
     partners: '/about/partners',
+    principles: '/about/principles',
     projects: '/about/projects',
     termsOfUse: '/about/terms-of-use',
     thanks: '/about/thanks'

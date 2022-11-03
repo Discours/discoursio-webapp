@@ -7,7 +7,6 @@ import { undo as yUndo, redo as yRedo } from 'y-prosemirror'
 import debounce from 'lodash/debounce'
 import { createSchema, createExtensions, createEmptyText } from '../prosemirror/setup'
 import { State, Draft, Config, ServiceError, newState, ExtensionsProps, EditorActions } from './context'
-import { mod } from '../env'
 import { serialize, createMarkdownParser } from '../markdown'
 import db from '../db'
 import { isEmpty, isInitialized } from '../prosemirror/helpers'
@@ -102,13 +101,13 @@ export const createCtrl = (initial: State): [Store<State>, EditorActions] => {
     return true
   }
 
-  const keymap = {
-    [`${mod}-w`]: discard,
-    [`${mod}-z`]: onUndo,
-    [`Shift-${mod}-z`]: onRedo,
-    [`${mod}-y`]: onRedo,
-    [`${mod}-m`]: toggleMarkdown
-  } as ExtensionsProps['keymap']
+  const keymap: ExtensionsProps['keymap'] = {
+    [`Mod-w`]: discard,
+    [`Mod-z`]: onUndo,
+    [`Shift-Mod-z`]: onRedo,
+    [`Mod-y`]: onRedo,
+    [`Mod-m`]: toggleMarkdown
+  }
 
   const createTextFromDraft = async (draft: Draft) => {
     const state = unwrap(store)

@@ -1,6 +1,7 @@
 import { createSignal, onMount } from 'solid-js'
 import styles from './Subscribe.module.scss'
 import { t } from '../../utils/intl'
+import { clsx } from 'clsx'
 
 export default () => {
   let emailElement: HTMLInputElement | undefined
@@ -14,7 +15,10 @@ export default () => {
   return (
     <div class={styles.subscribeForm}>
       <input type="email" name="email" ref={emailElement} placeholder={t('Fill email')} value={title()} />
-      <button class="button--light" onClick={() => emailElement?.value && subscribe()}>
+      <button
+        class={clsx(styles.button, 'button--light')}
+        onClick={() => emailElement?.value && subscribe()}
+      >
         {t('Subscribe')}
       </button>
     </div>

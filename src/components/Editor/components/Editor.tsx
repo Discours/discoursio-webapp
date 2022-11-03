@@ -2,7 +2,6 @@ import type { EditorView } from 'prosemirror-view'
 import type { EditorState } from 'prosemirror-state'
 import { useState } from '../store/context'
 import { ProseMirror } from './ProseMirror'
-import '../styles/Editor.scss'
 import styles from './Editor.module.scss'
 import { clsx } from 'clsx'
 
@@ -14,7 +13,7 @@ export const Editor = () => {
 
   return (
     <ProseMirror
-      cssClass={clsx('editor', 'col-md-6', 'shift-content', {
+      cssClass={clsx(styles.editor, 'col-md-6', 'shift-content', {
         [styles.error]: store.error,
         [styles.markdown]: store.markdown
       })}

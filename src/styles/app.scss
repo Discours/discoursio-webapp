@@ -26,6 +26,7 @@ html {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  overflow-y: scroll;
 }
 
 body {
@@ -69,10 +70,14 @@ section {
 
 h1,
 h2 {
+  line-height: 1.3;
+
   .wrapped {
     background: #000;
     color: #fff;
     padding: 0 0.15em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 }
 
@@ -171,6 +176,7 @@ button {
 
 .button {
   background: #000;
+  box-sizing: border-box;
   color: #fff;
   font-size: 100%;
   font-weight: 500;
@@ -179,6 +185,7 @@ button {
 
   &:hover {
     color: #ccc;
+    opacity: 1;
   }
 
   &:active {
@@ -187,8 +194,10 @@ button {
 }
 
 .button--subscribe {
-  padding: 0.6rem 1.2rem;
+  background: #fff;
+  border: 2px solid #f6f6f6;
   font-size: 1.5rem;
+  padding: 0.6rem 1.2rem;
   transition: background-color 0.2s;
 
   img {
@@ -210,8 +219,21 @@ button {
   @include font-size(1.5rem);
 
   font-weight: 400;
+  height: auto;
   margin-top: 0.6rem;
   padding: 0.6rem 1.2rem 0.6rem 1rem;
+}
+
+.button--subscribe-topic {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0.8rem;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+    opacity: 1;
+  }
 }
 
 form {
@@ -560,6 +582,10 @@ astro-island {
   @include media-breakpoint-up(md) {
     // padding-left: 227px;
   }
+}
+
+.container--static-page {
+  padding-top: 1.5em;
 }
 
 .shift-content {

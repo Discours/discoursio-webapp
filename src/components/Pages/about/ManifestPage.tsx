@@ -15,7 +15,7 @@ export const ManifestPage = () => {
       <Modal name="subscribe">
         <Subscribe />
       </Modal>
-      <article class="container">
+      <article class="container container--static-page">
         <div class="row">
           <div class="col-md-2">
             <nav class="content-index">

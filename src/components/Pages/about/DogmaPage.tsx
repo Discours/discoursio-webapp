@@ -5,7 +5,7 @@ import { MainLayout } from '../../Layouts/MainLayout'
 export const DogmaPage = () => {
   return (
     <MainLayout>
-      <article class="container">
+      <article class="container container--static-page">
         <div class="row">
           <h4 class="col-md-8 offset-md-2">Редакционные принципы</h4>
           <div class="col-md-8 col-lg-6 offset-md-3">

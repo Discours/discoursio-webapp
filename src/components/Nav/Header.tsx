@@ -134,7 +134,7 @@ export const Header = (props: Props) => {
           <div class={styles.usernav}>
             <div class={clsx(styles.userControl, styles.userControl, 'col')}>
               <div class={clsx(styles.userControlItem, styles.userControlItemWritePost)}>
-                <a href="/create">
+                <a href="/create" onClick={handleClientRouteLinkClick}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil" class={styles.icon} />
                 </a>

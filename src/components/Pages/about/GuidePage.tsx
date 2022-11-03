@@ -14,7 +14,7 @@ export const GuidePage = () => {
       {/*<Meta property="og:image:width" content="1200" />*/}
       {/*<Meta property="og:image:height" content="630" />*/}
 
-      <article class="container">
+      <article class="container container--static-page">
         <div class="row">
           <div class="col-md-2">
             <nav class="content-index">

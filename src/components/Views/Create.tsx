@@ -1,6 +1,6 @@
-import { Show, onCleanup, createEffect, onError, onMount, untrack } from 'solid-js'
+import { Show, onCleanup, createEffect, onError, onMount, untrack, createSignal } from 'solid-js'
 import { createMutable, unwrap } from 'solid-js/store'
-import { State, StateContext } from '../Editor/store/context'
+import { State, StateContext, newState } from '../Editor/store/context'
 import { createCtrl } from '../Editor/store/actions'
 import { Layout } from '../Editor/components/Layout'
 import { Editor } from '../Editor/components/Editor'
@@ -9,16 +9,18 @@ import ErrorView from '../Editor/components/Error'
 
 const matchDark = () => window.matchMedia('(prefers-color-scheme: dark)')
 
-export const CreateView = (props: { state: State }) => {
-  let isMac = false
+export const CreateView = () => {
+  const [isMounted, setIsMounted] = createSignal(false)
+
+  onMount(() => setIsMounted(true))
+
   const onChangeTheme = () => ctrl.updateTheme()
   onMount(() => {
-    isMac = window?.navigator.platform.includes('Mac')
     matchDark().addEventListener('change', onChangeTheme)
     onCleanup(() => matchDark().removeEventListener('change', onChangeTheme))
   })
 
-  const [store, ctrl] = createCtrl({ ...props.state, isMac })
+  const [store, ctrl] = createCtrl(newState())
   const mouseEnterCoords = createMutable({ x: 0, y: 0 })
 
   const onMouseEnter = (e: MouseEvent) => {
@@ -52,17 +54,21 @@ export const CreateView = (props: { state: State }) => {
   }, store.loading)
 
   return (
-    <StateContext.Provider value={[store, ctrl]}>
-      <Layout
-        config={store.config}
-        data-testid={store.error ? 'error' : store.loading}
-        onMouseEnter={onMouseEnter}
-      >
-        <Show when={!store.error} fallback={<ErrorView />}>
-          <Editor />
-          <Sidebar />
-        </Show>
-      </Layout>
-    </StateContext.Provider>
+    <Show when={isMounted()}>
+      <StateContext.Provider value={[store, ctrl]}>
+        <Layout
+          config={store.config}
+          data-testid={store.error ? 'error' : store.loading}
+          onMouseEnter={onMouseEnter}
+        >
+          <Show when={!store.error} fallback={<ErrorView />}>
+            <Editor />
+            <Sidebar />
+          </Show>
+        </Layout>
+      </StateContext.Provider>
+    </Show>
   )
 }
+
+export default CreateView

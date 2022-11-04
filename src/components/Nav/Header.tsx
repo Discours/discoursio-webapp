@@ -53,7 +53,7 @@ export const Header = (props: Props) => {
   let windowScrollTop = 0
 
   createEffect(() => {
-    const mainContent = document.querySelector('.main-content')
+    const mainContent = document.querySelector('.main-content') as HTMLDivElement
 
     if (fixed() || modal() !== null) {
       windowScrollTop = window.scrollY

@@ -20,6 +20,7 @@ export default (props: SliderProps) => {
   let nextEl: HTMLDivElement | undefined
   let prevEl: HTMLDivElement | undefined
   const opts: SwiperOptions = {
+    roundLengths: true,
     loop: true,
     centeredSlides: true,
     slidesPerView: 1,

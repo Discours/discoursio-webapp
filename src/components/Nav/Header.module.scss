@@ -460,9 +460,9 @@
 }
 
 .userControlItemWritePost {
-  width: auto;
-
   @include media-breakpoint-up(lg) {
+    width: auto;
+
     .icon {
       display: none;
     }

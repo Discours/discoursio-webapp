@@ -49,9 +49,24 @@ export const Header = (props: Props) => {
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
   // effects
+
+  let windowScrollTop = 0
+
   createEffect(() => {
+    const mainContent = document.querySelector('.main-content') as HTMLDivElement
+
+    if (fixed() || modal() !== null) {
+      windowScrollTop = window.scrollY
+      mainContent.style.marginTop = `-${windowScrollTop}px`
+    }
+
     document.body.classList.toggle('fixed', fixed() || modal() !== null)
     document.body.classList.toggle(styles.fixed, fixed() && !modal())
+
+    if (!fixed() && !modal()) {
+      mainContent.style.marginTop = ''
+      window.scrollTo(0, windowScrollTop)
+    }
   })
 
   // derived

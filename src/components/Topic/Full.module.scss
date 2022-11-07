@@ -1,11 +1,19 @@
-.topic__header {
+.topicHeader {
   @include font-size(1.7rem);
 
   padding-top: 5.8rem;
   text-align: center;
+
+  h1 {
+    color: #2638d9;
+    font-weight: 500;
+    text-transform: uppercase;
+
+    @include font-size(2rem);
+  }
 }
 
-.topic__actions {
+.topicActions {
   margin-top: 2.8rem;
 
   button,

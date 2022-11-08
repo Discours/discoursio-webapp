@@ -16,7 +16,7 @@ export const TermsOfUsePage = () => {
       {/*<Meta property="og:description" content={title} />*/}
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-2 col-lg-3 col-xl-2 order-md-last">
+          <div class="col-md-3 col-lg-2 col-xl-3 order-md-last">
             <p>
               <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
                 {indexExpanded() ? 'Свернуть' : 'Оглавление'}
@@ -49,7 +49,7 @@ export const TermsOfUsePage = () => {
             </Show>
           </div>
 
-          <div class="col-md-8 col-lg-7 col-xl-8 shift-content order-md-first">
+          <div class="col-md-7 shift-content order-md-first">
             <h1 id="terms-of-use">
               <span class="wrapped">Пользовательское соглашение</span>
             </h1>

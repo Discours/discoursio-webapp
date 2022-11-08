@@ -75,6 +75,7 @@ h2 {
   .wrapped {
     background: #000;
     color: #fff;
+    margin-left: -0.15em;
     padding: 0 0.15em;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
@@ -650,9 +651,37 @@ astro-island {
 details {
   margin-bottom: 1.5em;
 
-  summary h3 {
-    display: inline-block;
-    cursor: pointer;
-    margin-bottom: 0;
+  summary {
+    display: block;
+    position: relative;
+
+    &::marker {
+      display: none;
+    }
+
+    h3 {
+      display: inline-block;
+      cursor: pointer;
+      margin-bottom: 0;
+
+      &:before {
+        content: '';
+        background: url(/icons/expand.svg) no-repeat;
+        background-size: contain;
+        height: 1.3rem;
+        margin-right: 0.5em;
+        position: absolute;
+        right: 100%;
+        top: 0.35em;
+        transition: transform 0.3s;
+        width: 2rem;
+      }
+    }
+  }
+
+  &[open] {
+    h3:before {
+      transform: rotate(180deg);
+    }
   }
 }

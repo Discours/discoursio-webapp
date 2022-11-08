@@ -7,8 +7,8 @@ export const DogmaPage = () => {
     <MainLayout>
       <article class="container container--static-page">
         <div class="row">
-          <h4 class="col-md-8 offset-md-2">Редакционные принципы</h4>
-          <div class="col-md-8 col-lg-6 offset-md-3">
+          <div class="col-md-8 shift-content">
+            <h4>Редакционные принципы</h4>
             <p>
               Дискурс - журнал с открытой горизонтальной редакцией. Содержание журнала определяется прямым
               голосованием его авторов. Мы нередко занимаем различные позиции по разным проблемам, но

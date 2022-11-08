@@ -18,7 +18,34 @@ export const HelpPage = () => {
 
       <article class="container container--static-page discours-help">
         <div class="row">
-          <div class="col-md-8 shift-content">
+          <div class="col-md-2 col-lg-3 col-xl-2 order-md-last">
+            <p>
+              <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
+                {indexExpanded() ? 'Свернуть' : 'Оглавление'}
+              </button>
+            </p>
+
+            <Show when={indexExpanded()}>
+              <nav class="content-index">
+                <ul class="nodash">
+                  <li>
+                    <a href="#help-us">Как вы&nbsp;можете поддержать Дискурс?</a>
+                  </li>
+                  <li>
+                    <a href="#financial-report">На&nbsp;что пойдут деньги?</a>
+                  </li>
+                  <li>
+                    <a href="#trustee">Войдите в&nbsp;попечительский совет Дискурса</a>
+                  </li>
+                  <li>
+                    <a href="#other">Как ещё можно поддержать Дискурс?</a>
+                  </li>
+                </ul>
+              </nav>
+            </Show>
+          </div>
+
+          <div class="col-md-8 col-lg-7 col-xl-8 shift-content order-md-first">
             <h1 id="help-us">
               <span class="wrapped">Как вы&nbsp;можете поддержать Дискурс?</span>
             </h1>
@@ -125,33 +152,6 @@ export const HelpPage = () => {
               </a>
               .
             </p>
-          </div>
-
-          <div class="col-md-2">
-            <p>
-              <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
-                {indexExpanded() ? 'Свернуть' : 'Оглавление'}
-              </button>
-            </p>
-
-            <Show when={indexExpanded()}>
-              <nav class="content-index">
-                <ul class="nodash">
-                  <li>
-                    <a href="#help-us">Как вы&nbsp;можете поддержать Дискурс?</a>
-                  </li>
-                  <li>
-                    <a href="#financial-report">На&nbsp;что пойдут деньги?</a>
-                  </li>
-                  <li>
-                    <a href="#trustee">Войдите в&nbsp;попечительский совет Дискурса</a>
-                  </li>
-                  <li>
-                    <a href="#other">Как ещё можно поддержать Дискурс?</a>
-                  </li>
-                </ul>
-              </nav>
-            </Show>
           </div>
         </div>
       </article>

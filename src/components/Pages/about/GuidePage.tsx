@@ -21,7 +21,40 @@ export const GuidePage = () => {
 
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-8 shift-content">
+          <div class="col-md-2 col-lg-3 col-xl-2 order-md-last">
+            <p>
+              <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
+                {indexExpanded() ? 'Свернуть' : 'Оглавление'}
+              </button>
+            </p>
+
+            <Show when={indexExpanded()}>
+              <nav class="content-index">
+                <ul class="nodash">
+                  <li>
+                    <a href="#how-it-works">{title}</a>
+                  </li>
+                  <li>
+                    <a href="#become-author">Как стать автором журнала</a>
+                  </li>
+                  <li>
+                    <a href="#voting">Как проходит голосование</a>
+                  </li>
+                  <li>
+                    <a href="#editing">Как мы делаем тексты друг друга лучше</a>
+                  </li>
+                  <li>
+                    <a href="#perks">Что сообщество дает авторам</a>
+                  </li>
+                  <li>
+                    <a href="#contacts">Как быть в курсе</a>
+                  </li>
+                </ul>
+              </nav>
+            </Show>
+          </div>
+
+          <div class="col-md-8 col-lg-7 col-xl-8 shift-content order-md-first">
             <h1 id="about">
               <span class="wrapped">Как устроен Дискурс</span>
             </h1>
@@ -241,39 +274,6 @@ export const GuidePage = () => {
               </a>
               . Мы&nbsp;обязательно ответим.
             </p>
-          </div>
-
-          <div class="col-md-2">
-            <p>
-              <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
-                {indexExpanded() ? 'Свернуть' : 'Оглавление'}
-              </button>
-            </p>
-
-            <Show when={indexExpanded()}>
-              <nav class="content-index">
-                <ul class="nodash">
-                  <li>
-                    <a href="#how-it-works">{title}</a>
-                  </li>
-                  <li>
-                    <a href="#become-author">Как стать автором журнала</a>
-                  </li>
-                  <li>
-                    <a href="#voting">Как проходит голосование</a>
-                  </li>
-                  <li>
-                    <a href="#editing">Как мы делаем тексты друг друга лучше</a>
-                  </li>
-                  <li>
-                    <a href="#perks">Что сообщество дает авторам</a>
-                  </li>
-                  <li>
-                    <a href="#contacts">Как быть в курсе</a>
-                  </li>
-                </ul>
-              </nav>
-            </Show>
           </div>
         </div>
       </article>

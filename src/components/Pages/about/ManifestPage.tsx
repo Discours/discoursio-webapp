@@ -22,7 +22,45 @@ export const ManifestPage = () => {
       </Modal>
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-8 shift-content">
+          <div class="col-md-2 col-lg-3 col-xl-2 order-md-last">
+            <p>
+              <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
+                {indexExpanded() ? 'Свернуть' : 'Оглавление'}
+              </button>
+            </p>
+
+            <Show when={indexExpanded()}>
+              <nav class="content-index">
+                <ul class="nodash">
+                  <li>
+                    <a href="#manifest">Манифест</a>
+                  </li>
+                  <li>
+                    <a href="#participation">Как участвовать в&nbsp;самиздате</a>
+                    <ul class="nodash">
+                      <li>
+                        <a href="#contribute">Предлагать материалы</a>
+                      </li>
+                      <li>
+                        <a href="#donate">Поддерживать проект</a>
+                      </li>
+                      <li>
+                        <a href="#cooperation">Сотрудничать с&nbsp;журналом</a>
+                      </li>
+                      <li>
+                        <a href="#follow">Как еще можно помочь</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="#connection">Будем на&nbsp;связи</a>
+                  </li>
+                </ul>
+              </nav>
+            </Show>
+          </div>
+
+          <div class="col-md-8 col-lg-7 col-xl-8 shift-content order-md-first">
             <h1 id="manifest">
               <span class="wrapped">Манифест</span>
             </h1>
@@ -144,44 +182,6 @@ export const ManifestPage = () => {
               <a href="mailto:welcome@discours.io">welcome@discours.io</a>. Мы обязательно ответим
               и&nbsp;постараемся реализовать все хорошие задумки.
             </p>
-          </div>
-
-          <div class="col-md-2">
-            <p>
-              <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
-                {indexExpanded() ? 'Свернуть' : 'Оглавление'}
-              </button>
-            </p>
-
-            <Show when={indexExpanded()}>
-              <nav class="content-index">
-                <ul class="nodash">
-                  <li>
-                    <a href="#manifest">Манифест</a>
-                  </li>
-                  <li>
-                    <a href="#participation">Как участвовать в&nbsp;самиздате</a>
-                    <ul class="nodash">
-                      <li>
-                        <a href="#contribute">Предлагать материалы</a>
-                      </li>
-                      <li>
-                        <a href="#donate">Поддерживать проект</a>
-                      </li>
-                      <li>
-                        <a href="#cooperation">Сотрудничать с&nbsp;журналом</a>
-                      </li>
-                      <li>
-                        <a href="#follow">Как еще можно помочь</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#connection">Будем на&nbsp;связи</a>
-                  </li>
-                </ul>
-              </nav>
-            </Show>
           </div>
         </div>
       </article>

@@ -5,7 +5,7 @@ import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadPublishedArticles, resetSortedArticles } from '../../stores/zine/articles'
 import { loadRandomTopics } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
-
+import { InboxView } from '../Views/Inbox'
 export const HomePage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeArticles) && Boolean(props.randomTopics))
 
@@ -25,6 +25,7 @@ export const HomePage = (props: PageProps) => {
   return (
     <MainLayout>
       <Show when={isLoaded()} fallback={<Loading />}>
+        <InboxView />
         <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.homeArticles || []} />
       </Show>
     </MainLayout>

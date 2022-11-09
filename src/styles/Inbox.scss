@@ -1,16 +1,22 @@
 main {
   display: flex;
-  height: 100%;
+  height: 100vh;
   flex-direction: column;
   position: relative;
 }
 
 .messages {
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100%;
-  position: relative;
+  height: 100vh;
+  position: fixed;
+  //position: relative;
+  z-index: 100000;
 
   > .row {
     flex: 1;
@@ -226,14 +232,19 @@ main {
 .conversation__message-form {
   border-top: 1px solid #141414;
   display: flex;
+  flex-direction: row;
+  align-items: center;
   padding: 1em 1em 1em 0;
 
-  input {
-    border: none;
+  textarea {
     @include font-size(2rem);
 
-    height: 5.6rem;
+    font-family: inherit;
+    height: 4.4em;
     width: 100%;
+    padding: 1em;
+    margin-bottom: 0;
+    min-height: unset;
   }
 
   button {
@@ -266,6 +277,7 @@ main {
   position: absolute;
   top: 0;
   width: 100%;
+  scroll-behavior: smooth;
 }
 
 .conversation__date {

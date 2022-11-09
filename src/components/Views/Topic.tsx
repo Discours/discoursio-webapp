@@ -4,7 +4,7 @@ import { Row3 } from '../Feed/Row3'
 import { Row2 } from '../Feed/Row2'
 import { Beside } from '../Feed/Beside'
 import { ArticleCard } from '../Feed/Card'
-import '../../styles/Topic.scss'
+import styles from '../../styles/Topic.module.scss'
 import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
 import { useRouter } from '../../stores/router'
@@ -13,6 +13,9 @@ import { loadPublishedArticles, useArticlesStore } from '../../stores/zine/artic
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
+import { clsx } from 'clsx'
+import Slider from '../Feed/Slider'
+import { Row1 } from '../Feed/Row1'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
@@ -70,94 +73,111 @@ export const TopicView = (props: TopicProps) => {
   )
 
   return (
-    <div class="topic-page container">
+    <div class={styles.topicPage}>
       <Show when={topic()}>
         <FullTopic topic={topic()} />
-        <div class="row group__controls">
-          <div class="col-md-8">
-            <ul class="view-switcher">
-              <li classList={{ selected: searchParams().by === 'recent' || !searchParams().by }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
-                  {t('Recent')}
-                </button>
-              </li>
-              {/*TODO: server sort*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'rating' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
-              {/*    {t('Popular')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'viewed' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
-              {/*    {t('Views')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'commented' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
-              {/*    {t('Discussing')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <div class="mode-switcher">
-              {`${t('Show')} `}
-              <span class="mode-switcher__control">{t('All posts')}</span>
+        <div class="container">
+          <div class={clsx(styles.groupControls, 'row group__controls')}>
+            <div class="col-md-8">
+              <ul class="view-switcher">
+                <li classList={{ selected: searchParams().by === 'recent' || !searchParams().by }}>
+                  <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
+                    {t('Recent')}
+                  </button>
+                </li>
+                {/*TODO: server sort*/}
+                {/*<li classList={{ selected: getSearchParams().by === 'rating' }}>*/}
+                {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
+                {/*    {t('Popular')}*/}
+                {/*  </button>*/}
+                {/*</li>*/}
+                {/*<li classList={{ selected: getSearchParams().by === 'viewed' }}>*/}
+                {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
+                {/*    {t('Views')}*/}
+                {/*  </button>*/}
+                {/*</li>*/}
+                {/*<li classList={{ selected: getSearchParams().by === 'commented' }}>*/}
+                {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
+                {/*    {t('Discussing')}*/}
+                {/*  </button>*/}
+                {/*</li>*/}
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <div class="mode-switcher">
+                {`${t('Show')} `}
+                <span class="mode-switcher__control">{t('All posts')}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="row floor floor--important">
-          <div class="container">
-            <div class="row">
-              <h3 class="col-12">{title()}</h3>
-              <For each={sortedArticles().slice(0, 6)}>
-                {(article) => (
-                  <div class="col-md-6">
-                    <ArticleCard
-                      article={article}
-                      settings={{ isFloorImportant: true, isBigTitle: true }}
-                    />
-                  </div>
-                )}
-              </For>
+        <Row1 article={sortedArticles()[0]} />
+        <Row2 articles={sortedArticles().slice(1, 3)} />
+
+        <Beside
+          title={t('Topic is supported by')}
+          values={authorsByTopic()[topic().slug].slice(0, 6)}
+          beside={sortedArticles()[4]}
+          wrapper={'author'}
+        />
+
+        <Show when={searchParams().by === 'recent'}>
+          <Slider title={title()} articles={sortedArticles().slice(5, 11)} />
+        </Show>
+
+        <Beside
+          beside={sortedArticles()[12]}
+          title={t('Top viewed')}
+          values={sortedArticles().slice(0, 5)}
+          wrapper={'top-article'}
+        />
+
+        <Show when={searchParams().by !== 'recent'}>
+          <div class={clsx(styles.floorImportant, 'row floor floor--important')}>
+            <div class="container">
+              <div class="row">
+                <h3 class="col-12">{title()}</h3>
+                <For each={sortedArticles().slice(0, 6)}>
+                  {(article) => (
+                    <div class="col-md-6">
+                      <ArticleCard
+                        article={article}
+                        settings={{ isFloorImportant: true, isBigTitle: true }}
+                      />
+                    </div>
+                  )}
+                </For>
+              </div>
             </div>
           </div>
-        </div>
+        </Show>
 
-        <div class="row">
-          <Show when={sortedArticles().length > 5}>
-            <Beside
-              title={t('Topic is supported by')}
-              values={authorsByTopic()[topic().slug].slice(0, 7)}
-              beside={sortedArticles()[6]}
-              wrapper={'author'}
-            />
-            <Row3 articles={sortedArticles().slice(7, 10)} />
-            <Row2 articles={sortedArticles().slice(10, 12)} />
-            <Row3 articles={sortedArticles().slice(12, 15)} />
-            <Row3 articles={sortedArticles().slice(15, 18)} />
-            <Row3 articles={sortedArticles().slice(18, 21)} />
-          </Show>
+        <Show when={sortedArticles().length > 5}>
+          <Row3 articles={sortedArticles().slice(13, 16)} />
+          <Row2 articles={sortedArticles().slice(16, 18)} />
+          <Row3 articles={sortedArticles().slice(18, 21)} />
+          <Row3 articles={sortedArticles().slice(21, 24)} />
+          <Row3 articles={sortedArticles().slice(24, 27)} />
+        </Show>
 
-          <For each={pages()}>
-            {(page) => (
-              <>
-                <Row3 articles={page.slice(0, 3)} />
-                <Row3 articles={page.slice(3, 6)} />
-                <Row3 articles={page.slice(6, 9)} />
-              </>
-            )}
-          </For>
+        <For each={pages()}>
+          {(page) => (
+            <>
+              <Row3 articles={page.slice(0, 3)} />
+              <Row3 articles={page.slice(3, 6)} />
+              <Row3 articles={page.slice(6, 9)} />
+            </>
+          )}
+        </For>
 
-          <Show when={isLoadMoreButtonVisible()}>
-            <p class="load-more-container">
-              <button class="button" onClick={loadMore}>
-                {t('Load more')}
-              </button>
-            </p>
-          </Show>
-        </div>
+        <Show when={isLoadMoreButtonVisible()}>
+          <p class="load-more-container">
+            <button class="button" onClick={loadMore}>
+              {t('Load more')}
+            </button>
+          </p>
+        </Show>
       </Show>
     </div>
   )

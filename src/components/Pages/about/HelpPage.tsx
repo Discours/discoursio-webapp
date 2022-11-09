@@ -1,6 +1,7 @@
 import { createSignal, Show } from 'solid-js'
 import { MainLayout } from '../../Layouts/MainLayout'
 import { Donate } from '../../Discours/Donate'
+import { Icon } from '../../Nav/Icon'
 
 // const title = t('Support us')
 
@@ -19,9 +20,14 @@ export const HelpPage = () => {
       <article class="container container--static-page discours-help">
         <div class="row">
           <div class="col-md-3 col-lg-2 col-xl-3 order-md-last">
-            <p>
-              <button class="button button--light button--subscribe-topic" onClick={toggleIndexExpanded}>
-                {indexExpanded() ? 'Свернуть' : 'Оглавление'}
+            <p class="content-index-control-container">
+              <button class="button button--content-index" onClick={toggleIndexExpanded}>
+                <Show when={!indexExpanded()}>
+                  <Icon name="content-index-control" />
+                </Show>
+                <Show when={indexExpanded()}>
+                  <Icon name="content-index-control-expanded" />
+                </Show>
               </button>
             </p>
 

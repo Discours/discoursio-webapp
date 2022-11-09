@@ -32,7 +32,7 @@ html {
 body {
   font-family: Muller, Arial, Helvetica, sans-serif;
   font-size: 2rem;
-  line-height: 1.4;
+  line-height: 1.6;
   min-height: 100%;
   text-size-adjust: 100%;
 
@@ -237,6 +237,30 @@ button {
     color: #fff;
     opacity: 1;
   }
+}
+
+.button--content-index {
+  border: 2px solid #fff;
+  background: none;
+  height: 3.2rem;
+  padding: 0;
+  width: 3.2rem;
+
+  .icon,
+  img {
+    vertical-align: middle;
+    width: auto;
+  }
+
+  &:hover {
+    .icon {
+      opacity: 0.5;
+    }
+  }
+}
+
+.content-index-control-container {
+  text-align: right;
 }
 
 form {
@@ -653,6 +677,10 @@ astro-island {
 
   li {
     margin-bottom: 1em;
+  }
+
+  a {
+    border: none;
   }
 }
 

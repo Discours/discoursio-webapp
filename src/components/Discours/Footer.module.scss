@@ -39,6 +39,11 @@
       padding: 0 $container-padding-x;
     }
   }
+
+  ::selection {
+    background: #fff;
+    color: #000;
+  }
 }
 
 .discoursFooterContent {

@@ -20,6 +20,11 @@
   box-sizing: border-box;
 }
 
+::selection {
+  background: #000;
+  color: #fff;
+}
+
 html {
   color: $default-color;
   font-size: 62.5%;
@@ -79,6 +84,11 @@ h2 {
     padding: 0 0.15em;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
+
+    &::selection {
+      background: #fff;
+      color: #000;
+    }
   }
 }
 
@@ -567,6 +577,11 @@ figcaption {
   @include media-breakpoint-up(md) {
     padding-bottom: $grid-gutter-width;
     padding-top: $grid-gutter-width;
+  }
+
+  ::selection {
+    background: #fff;
+    color: #000;
   }
 
   h2 {

@@ -1,12 +1,11 @@
 .modalwrap {
+  pointer-events: all;
   align-items: center;
   background: rgb(20 20 20 / 70%);
   display: flex;
   justify-content: center;
   height: 100%;
   left: 0;
-  overflow: auto;
-  pointer-events: all;
   position: fixed;
   top: 0;
   width: 100%;

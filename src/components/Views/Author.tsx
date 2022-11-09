@@ -7,6 +7,7 @@ import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { loadAuthorArticles, useArticlesStore } from '../../stores/zine/articles'
 
+import '../../styles/Topic.scss'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
 import { Beside } from '../Feed/Beside'

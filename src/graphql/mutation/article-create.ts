@@ -9,13 +9,11 @@ export default gql`
         slug
         title
         subtitle
-        image
         body
         topics {
           _id: slug
           title
           slug
-          image
         }
         authors {
           _id: slug

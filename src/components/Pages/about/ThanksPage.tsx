@@ -12,12 +12,10 @@ export const ThanksPage = () => {
 
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-8 offset-md-2">
+          <div class="col-md-7 shift-content order-md-first">
             <h1>
               <span class="wrapped">{title}</span>
             </h1>
-          </div>
-          <div class="col-md-8 col-lg-6 offset-md-3">
             {/*
                 <h3><b>Команда</b></h3>
                   <p>

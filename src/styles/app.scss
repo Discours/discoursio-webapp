@@ -3,7 +3,7 @@
 @import 'bootstrap/scss/mixins/utilities';
 @import 'bootstrap/scss/containers';
 @import 'bootstrap/scss/grid';
-@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/bootstrap-utilities';
 
 :root {
   --background-color: #fff;
@@ -75,6 +75,7 @@ h2 {
   .wrapped {
     background: #000;
     color: #fff;
+    margin-left: -0.15em;
     padding: 0 0.15em;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
@@ -92,6 +93,7 @@ h2 {
 
   line-height: 1.1;
   margin-bottom: 0.5em;
+  margin-top: 1.5em;
 }
 
 h3 {
@@ -228,6 +230,7 @@ button {
   background: #fff;
   border: 2px solid #000;
   border-radius: 0.8rem;
+  color: #000;
 
   &:hover {
     background: #000;
@@ -584,7 +587,9 @@ astro-island {
 }
 
 .container--static-page {
-  padding-top: 1.5em;
+  @include media-breakpoint-up(md) {
+    padding-top: 1.5em;
+  }
 }
 
 .shift-content {
@@ -640,5 +645,43 @@ astro-island {
 
   button {
     padding: 0.6em 1.5em;
+  }
+}
+
+details {
+  margin-bottom: 1.5em;
+
+  summary {
+    display: block;
+    position: relative;
+
+    &::marker {
+      display: none;
+    }
+
+    h3 {
+      display: inline-block;
+      cursor: pointer;
+      margin-bottom: 0;
+
+      &:before {
+        content: '';
+        background: url(/icons/expand.svg) no-repeat;
+        background-size: contain;
+        height: 1.3rem;
+        margin-right: 0.5em;
+        position: absolute;
+        right: 100%;
+        top: 0.35em;
+        transition: transform 0.3s;
+        width: 2rem;
+      }
+    }
+  }
+
+  &[open] {
+    h3:before {
+      transform: rotate(180deg);
+    }
   }
 }

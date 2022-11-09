@@ -243,8 +243,23 @@ button {
   border: 2px solid #fff;
   background: none;
   height: 3.2rem;
+  float: right;
   padding: 0;
+  position: absolute;
+  right: $container-padding-x * 0.5;
+  top: -0.5rem;
   width: 3.2rem;
+  z-index: 1;
+
+  @include media-breakpoint-up(md) {
+    margin-top: -0.5rem;
+    position: sticky;
+    top: 90px;
+  }
+
+  @include media-breakpoint-up(sm) {
+    right: $container-padding-x;
+  }
 
   .icon,
   img {
@@ -257,10 +272,6 @@ button {
       opacity: 0.5;
     }
   }
-}
-
-.content-index-control-container {
-  text-align: right;
 }
 
 form {
@@ -617,18 +628,26 @@ astro-island {
 
 .container {
   max-width: 1400px;
-
-  // margin-left: 201px;
-  // width: auto;
-
-  @include media-breakpoint-up(md) {
-    // padding-left: 227px;
-  }
 }
 
 .container--static-page {
+  @include font-size(1.7rem);
+
+  color: #404040;
+  position: relative;
+
   @include media-breakpoint-up(md) {
     padding-top: 1.5em;
+
+    > .row {
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      margin-right: 0;
+    }
+  }
+
+  .order-md-last {
+    padding-right: 0;
   }
 }
 
@@ -664,7 +683,7 @@ astro-island {
 .content-index {
   @include font-size(1.4rem);
 
-  margin-bottom: 2em;
+  margin: 0 3.6rem 2em 0;
 
   @include media-breakpoint-up(md) {
     position: sticky;
@@ -694,6 +713,10 @@ astro-island {
 
 details {
   margin-bottom: 1.5em;
+
+  @include media-breakpoint-down(md) {
+    padding-left: 3rem;
+  }
 
   summary {
     display: block;

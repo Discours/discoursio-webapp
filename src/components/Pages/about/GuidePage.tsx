@@ -22,17 +22,15 @@ export const GuidePage = () => {
 
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-3 col-lg-2 col-xl-3 order-md-last">
-            <p class="content-index-control-container">
-              <button class="button button--content-index" onClick={toggleIndexExpanded}>
-                <Show when={!indexExpanded()}>
-                  <Icon name="content-index-control" />
-                </Show>
-                <Show when={indexExpanded()}>
-                  <Icon name="content-index-control-expanded" />
-                </Show>
-              </button>
-            </p>
+          <div class="col-md-4 col-lg-3 order-md-last">
+            <button class="button button--content-index" onClick={toggleIndexExpanded}>
+              <Show when={!indexExpanded()}>
+                <Icon name="content-index-control" />
+              </Show>
+              <Show when={indexExpanded()}>
+                <Icon name="content-index-control-expanded" />
+              </Show>
+            </button>
 
             <Show when={indexExpanded()}>
               <nav class="content-index">
@@ -60,7 +58,7 @@ export const GuidePage = () => {
             </Show>
           </div>
 
-          <div class="col-md-7 shift-content order-md-first">
+          <div class="col-md-6 col-xl-7 shift-content order-md-first">
             <h1 id="about">
               <span class="wrapped">Как устроен Дискурс</span>
             </h1>

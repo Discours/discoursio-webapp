@@ -7,7 +7,7 @@ export const PrinciplesPage = () => {
     <MainLayout>
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-7 shift-content order-md-first">
+          <div class="col-md-6 col-xl-7 shift-content order-md-first">
             <h1>
               <span class="wrapped">{title}</span>
             </h1>

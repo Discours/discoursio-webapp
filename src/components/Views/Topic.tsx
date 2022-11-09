@@ -122,9 +122,7 @@ export const TopicView = (props: TopicProps) => {
           wrapper={'author'}
         />
 
-        <Show when={searchParams().by === 'recent'}>
-          <Slider title={title()} articles={sortedArticles().slice(5, 11)} />
-        </Show>
+        <Slider title={title()} articles={sortedArticles().slice(5, 11)} />
 
         <Beside
           beside={sortedArticles()[12]}
@@ -132,26 +130,6 @@ export const TopicView = (props: TopicProps) => {
           values={sortedArticles().slice(0, 5)}
           wrapper={'top-article'}
         />
-
-        <Show when={searchParams().by !== 'recent'}>
-          <div class={clsx(styles.floorImportant, 'row floor floor--important')}>
-            <div class="container">
-              <div class="row">
-                <h3 class="col-12">{title()}</h3>
-                <For each={sortedArticles().slice(0, 6)}>
-                  {(article) => (
-                    <div class="col-md-6">
-                      <ArticleCard
-                        article={article}
-                        settings={{ isFloorImportant: true, isBigTitle: true }}
-                      />
-                    </div>
-                  )}
-                </For>
-              </div>
-            </div>
-          </div>
-        </Show>
 
         <Show when={sortedArticles().length > 5}>
           <Row3 articles={sortedArticles().slice(13, 16)} />

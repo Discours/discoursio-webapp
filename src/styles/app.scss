@@ -456,7 +456,7 @@ figcaption {
   font-weight: bold;
   list-style: none;
   margin: 2.4rem 0 0;
-  //padding: 0;
+  padding: 0;
 
   .all-topics-page & {
     @include media-breakpoint-down(sm) {

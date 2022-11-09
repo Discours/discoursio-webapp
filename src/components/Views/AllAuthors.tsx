@@ -6,7 +6,8 @@ import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { useAuthStore } from '../../stores/auth'
-import '../../styles/AllTopics.scss'
+import styles from '../../styles/AllTopics.module.scss'
+import { clsx } from 'clsx'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -56,19 +57,19 @@ export const AllAuthorsView = (props: Props) => {
   // log.debug(getSearchParams())
 
   return (
-    <div class="all-topics-page">
+    <div class={styles.allTopicsPage}>
       <Show when={sortedAuthors().length > 0}>
         <div class="wide-container">
           <div class="shift-content">
             <div class="row">
-              <div class="col-md-9 page-header">
+              <div class={clsx(styles.pageHeader, 'col-lg-9')}>
                 <h1>{t('Authors')}</h1>
                 <p>{t('Subscribe who you like to tune your personal feed')}</p>
               </div>
             </div>
             <div class="row">
               <div class="col">
-                <ul class="view-switcher">
+                <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                   <li classList={{ selected: searchParams().by === 'shouts' }}>
                     <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
                       {t('By shouts')}
@@ -111,13 +112,13 @@ export const AllAuthorsView = (props: Props) => {
                 >
                   <For each={sortedKeys()}>
                     {(letter) => (
-                      <div class="group">
+                      <div class={clsx(styles.group, 'group')}>
                         <h2>{letter}</h2>
                         <div class="container">
                           <div class="row">
                             <For each={byLetter()[letter]}>
                               {(author: Author) => (
-                                <div class="topic col-sm-6 col-md-3">
+                                <div class={clsx(styles.topic, 'topic col-sm-6 col-md-3')}>
                                   <div class="topic-title">
                                     <a href={`/author/${author.slug}`}>{author.name}</a>
                                   </div>

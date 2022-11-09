@@ -8,6 +8,7 @@ import { locale } from '../../stores/ui'
 import { useAuthStore } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
 import { getLogger } from '../../utils/logger'
+import { clsx } from 'clsx'
 
 const log = getLogger('TopicCard')
 
@@ -49,11 +50,11 @@ export const TopicCard = (props: TopicProps) => {
         [styles.topicInRow]: props.isTopicInRow
       }}
     >
-      <div classList={{ 'col-md-7': !props.compact && !props.subscribeButtonBottom }}>
+      <div classList={{ 'col-md-9 col-lg-7': !props.compact && !props.subscribeButtonBottom }}>
         <Show when={props.topic.title}>
-          <div class={styles.topicTitle}>
+          <h3 class={styles.topicTitle}>
             <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
-          </div>
+          </h3>
         </Show>
         <Show when={props.topic.pic}>
           <div class={styles.topicAvatar}>
@@ -65,7 +66,7 @@ export const TopicCard = (props: TopicProps) => {
 
         <Show when={!props.compact && props.topic?.body}>
           <div
-            class={styles.topicDescription}
+            class={clsx(styles.topicDescription, 'text-truncate')}
             classList={{ 'topic-description--short': props.shortDescription }}
           >
             {props.topic.body}
@@ -75,7 +76,7 @@ export const TopicCard = (props: TopicProps) => {
         <Show when={props.topic?.stat}>
           <div class={styles.topicDetails}>
             <Show when={!props.compact}>
-              <span class={styles.topicDetailsTtem} classList={{ compact: props.compact }}>
+              <span class={styles.topicDetailsItem} classList={{ compact: props.compact }}>
                 {props.topic.stat?.shouts +
                   ' ' +
                   t('post') +
@@ -84,7 +85,7 @@ export const TopicCard = (props: TopicProps) => {
                     locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
                   )}
               </span>
-              <span class={styles.topicDetailsTtem} classList={{ compact: props.compact }}>
+              <span class={styles.topicDetailsItem} classList={{ compact: props.compact }}>
                 {props.topic.stat?.authors +
                   ' ' +
                   t('author') +
@@ -127,21 +128,24 @@ export const TopicCard = (props: TopicProps) => {
           </div>
         </Show>
       </div>
-      <div classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}>
+      <div
+        class={styles.controlContainer}
+        classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}
+      >
         <Show
           when={subscribed()}
           fallback={
             <button onClick={() => subscribe(true)} class="button--light button--subscribe-topic">
               <Show when={props.iconButton}>+</Show>
 
-              <Show when={!props.iconButton}>+&nbsp;{t('Follow')}</Show>
+              <Show when={!props.iconButton}>{t('Follow')}</Show>
             </button>
           }
         >
           <button onClick={() => subscribe(false)} class="button--light button--subscribe-topic">
             <Show when={props.iconButton}>-</Show>
 
-            <Show when={!props.iconButton}>-&nbsp;{t('Unfollow')}</Show>
+            <Show when={!props.iconButton}>{t('Unfollow')}</Show>
           </button>
         </Show>
       </div>

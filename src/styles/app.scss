@@ -404,12 +404,14 @@ figcaption {
 }
 
 .view-switcher {
-  @include font-size(2.2rem);
+  @include font-size(1.7rem);
 
+  display: flex;
+  flex-wrap: wrap;
   font-weight: bold;
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin: 2.4rem 0 0;
+  //padding: 0;
 
   .all-topics-page & {
     @include media-breakpoint-down(sm) {
@@ -420,7 +422,11 @@ figcaption {
   li {
     display: inline-block;
     margin-right: 1em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.6em;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   button {
@@ -436,6 +442,11 @@ figcaption {
 
   a {
     border-bottom: 2px solid #fff;
+    color: rgba(0, 0, 0, 0.5);
+
+    &:hover {
+      color: #fff;
+    }
   }
 
   .selected {
@@ -458,7 +469,12 @@ figcaption {
 }
 
 .view-switcher__search {
-  margin-left: 2em;
+  text-align: right;
+
+  @include media-breakpoint-up(sm) {
+    flex: 1;
+    margin-left: 2em;
+  }
 
   .icon {
     display: inline-block;
@@ -684,4 +700,12 @@ details {
       transform: rotate(180deg);
     }
   }
+}
+
+.text-truncate {
+  display: -webkit-box !important;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
 }

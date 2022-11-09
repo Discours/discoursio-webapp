@@ -9,10 +9,6 @@
 
     .topicDetailsItem {
       margin-bottom: 1.2rem;
-
-      @include media-breakpoint-up(md) {
-        margin-bottom: 3.2rem;
-      }
     }
   }
 }
@@ -33,9 +29,9 @@
 
 .topicTitle {
   font-weight: bold;
-  @include font-size(1.7rem);
+  @include font-size(2.2rem);
 
-  margin-bottom: 0.8rem;
+  margin-bottom: 1.2rem;
 }
 
 .topicAvatar {
@@ -56,10 +52,10 @@
 }
 
 .topicDescription {
-  @include font-size(1.5rem);
+  @include font-size(1.6rem);
 
   color: #696969;
-  margin: 0 0 0.8rem;
+  margin: 0 0 1.6rem;
 
   &.compact {
     font-size: medium;
@@ -85,6 +81,7 @@
 }
 
 .topicDetailsItem {
+  @include font-size(1.5rem);
   margin-right: 1.6rem;
   white-space: nowrap;
 
@@ -102,5 +99,11 @@
 
   &.button {
     float: right;
+  }
+}
+
+.controlContainer {
+  @include media-breakpoint-up(md) {
+    text-align: right;
   }
 }

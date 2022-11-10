@@ -20,7 +20,7 @@ export const Donate = () => {
   const [period, setPeriod] = createSignal(monthly)
   const [amount, setAmount] = createSignal(0)
 
-  onMount(() => {
+  const initiated = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const {
       cp: { CloudPayments }
@@ -51,6 +51,16 @@ export const Donate = () => {
         provision: 0 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
       }
     })
+  }
+
+  onMount(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js'
+    script.async = true
+    script.onload = initiated
+    document.head.appendChild(script)
   })
 
   const show = () => {
@@ -103,70 +113,68 @@ export const Donate = () => {
   }
 
   return (
-    <>
-      <form class="discours-form donate-form" action="" method="post">
-        <input type="hidden" name="shopId" value="156465" />
-        <input value="148805" name="scid" type="hidden" />
-        <input value="0" name="customerNumber" type="hidden" />
+    <form class="discours-form donate-form" action="" method="post">
+      <input type="hidden" name="shopId" value="156465" />
+      <input value="148805" name="scid" type="hidden" />
+      <input value="0" name="customerNumber" type="hidden" />
 
-        <div class="form-group">
-          <div class="donate-buttons-container" ref={amountSwitchElement}>
-            <input type="radio" name="amount" id="fix250" value="250" />
-            <label for="fix250" class="btn donate-value-radio">
-              250&thinsp;₽
-            </label>
-            <input type="radio" name="amount" id="fix500" value="500" checked />
-            <label for="fix500" class="btn donate-value-radio">
-              500&thinsp;₽
-            </label>
-            <input type="radio" name="amount" id="fix1000" value="1000" />
-            <label for="fix1000" class="btn donate-value-radio">
-              1000&thinsp;₽
-            </label>
-            <input
-              class="form-control donate-input"
-              required
-              ref={customAmountElement}
-              type="number"
-              name="sum"
-              placeholder={t('Another amount')}
-            />
-          </div>
+      <div class="form-group">
+        <div class="donate-buttons-container" ref={amountSwitchElement}>
+          <input type="radio" name="amount" id="fix250" value="250" />
+          <label for="fix250" class="btn donate-value-radio">
+            250&thinsp;₽
+          </label>
+          <input type="radio" name="amount" id="fix500" value="500" checked />
+          <label for="fix500" class="btn donate-value-radio">
+            500&thinsp;₽
+          </label>
+          <input type="radio" name="amount" id="fix1000" value="1000" />
+          <label for="fix1000" class="btn donate-value-radio">
+            1000&thinsp;₽
+          </label>
+          <input
+            class="form-control donate-input"
+            required
+            ref={customAmountElement}
+            type="number"
+            name="sum"
+            placeholder={t('Another amount')}
+          />
         </div>
+      </div>
 
-        <div class="form-group" id="payment-type" classList={{ showing: showingPayment() }}>
-          <div class="btn-group payment-choose" data-toggle="buttons">
-            <input
-              type="radio"
-              autocomplete="off"
-              id="once"
-              name="once"
-              onClick={() => setPeriod(once)}
-              checked={period() === once}
-            />
-            <label for="once" class="btn payment-type" classList={{ active: period() === once }}>
-              {t('One time')}
-            </label>
-            <input
-              type="radio"
-              autocomplete="off"
-              id="monthly"
-              name="monthly"
-              onClick={() => setPeriod(monthly)}
-              checked={period() === monthly}
-            />
-            <label for="monthly" class="btn payment-type" classList={{ active: period() === monthly }}>
-              {t('Every month')}
-            </label>
-          </div>
+      <div class="form-group" id="payment-type" classList={{ showing: showingPayment() }}>
+        <div class="btn-group payment-choose" data-toggle="buttons">
+          <input
+            type="radio"
+            autocomplete="off"
+            id="once"
+            name="once"
+            onClick={() => setPeriod(once)}
+            checked={period() === once}
+          />
+          <label for="once" class="btn payment-type" classList={{ active: period() === once }}>
+            {t('One time')}
+          </label>
+          <input
+            type="radio"
+            autocomplete="off"
+            id="monthly"
+            name="monthly"
+            onClick={() => setPeriod(monthly)}
+            checked={period() === monthly}
+          />
+          <label for="monthly" class="btn payment-type" classList={{ active: period() === monthly }}>
+            {t('Every month')}
+          </label>
         </div>
+      </div>
 
-        <div class="form-group">
-          <a href={''} class="btn send-btn donate" onClick={show}>
-            {t('Help discours to grow')}
-          </a>
-        </div>
-      </form>
-    </>
+      <div class="form-group">
+        <a href={''} class="btn send-btn donate" onClick={show}>
+          {t('Help discours to grow')}
+        </a>
+      </div>
+    </form>
   )
 }

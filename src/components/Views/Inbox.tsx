@@ -64,7 +64,7 @@ export const InboxView = () => {
   })
 
   const getQuery = (query) => {
-    if (query().length > 2) {
+    if (query().length >= 2) {
       const match = userSearch(authors(), query())
       setAuthors(match)
     } else {
@@ -131,7 +131,6 @@ export const InboxView = () => {
               </li>
             </ul>
           </div>
-
           <div class="dialogs">
             <For each={authors()}>
               {(author) => <DialogCard name={author.name} slug={author.slug} online={true} />}

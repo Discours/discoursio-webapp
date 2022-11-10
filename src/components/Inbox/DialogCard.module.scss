@@ -17,20 +17,22 @@
     margin-right: 12px;
   }
 
-  .body {
+  .row {
     flex-basis: 0;
     flex-grow: 1;
     min-width: 0;
 
-    .name {
-      color: #141414;
-      font-weight: 500;
-    }
-
+    .name,
     .message {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    .name {
+      color: #141414;
+      font-weight: 500;
+    }
+    .message {
       color: #9fa1a7;
     }
   }

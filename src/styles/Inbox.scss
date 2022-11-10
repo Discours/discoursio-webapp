@@ -34,7 +34,7 @@ main {
 .chat-list {
   display: flex;
   flex-direction: column;
-  padding: 0 10px;
+  padding: 10px;
   height: 100vh;
 
   .dialogs {
@@ -44,22 +44,6 @@ main {
     height: 100%;
     box-sizing: border-box;
     position: relative;
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      height: 10px;
-      width: 100%;
-    }
-    &::before {
-      top: 0;
-      background: linear-gradient(to bottom, #fff, transparent 70%);
-    }
-    &::after {
-      bottom: 0;
-      background: linear-gradient(to top, #fff, transparent 70%);
-    }
   }
 }
 

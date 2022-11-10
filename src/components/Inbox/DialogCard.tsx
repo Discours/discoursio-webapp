@@ -15,7 +15,7 @@ const DialogCard = (props: Props) => {
       <div class={styles.avatar}>
         <DialogAvatar name={props.name} url={props.userpic} online={props.online} />
       </div>
-      <div class={styles.body}>
+      <div class={styles.row}>
         <div class={styles.name}>{props.name}</div>
         <div class={styles.message}>
           Указать предпочтительные языки для результатов поиска можно в разделе

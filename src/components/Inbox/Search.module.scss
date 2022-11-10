@@ -1,0 +1,44 @@
+.Search {
+  .field {
+    position: relative;
+    background: #ffffff;
+    border: 2px solid #e8e8e8;
+    border-radius: 2px;
+    overflow: hidden;
+
+    input {
+      display: block;
+      height: 40px;
+      border: none;
+      box-shadow: none;
+      padding: 10px 36px 10px 12px;
+      width: 100%;
+      font-family: Muller, Arial, Helvetica, sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 15px;
+
+      &::placeholder {
+        color: #858585;
+        font-family: inherit;
+      }
+      &:focus {
+        outline: none;
+        & + .icon {
+          opacity: 0;
+          right: -30px;
+        }
+      }
+    }
+
+    .icon {
+      transition: 0.3s ease-in-out;
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 12px;
+      right: 12px;
+      opacity: 0.5;
+    }
+  }
+}

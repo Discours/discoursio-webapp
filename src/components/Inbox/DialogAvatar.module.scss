@@ -1,0 +1,35 @@
+.DialogAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &.online::before {
+    content: '';
+    position: absolute;
+    background: #2bb452;
+    width: 8px;
+    height: 8px;
+    top: -2px;
+    right: -2px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+  }
+
+  > img,
+  > .letter {
+    display: block;
+    border-radius: 100%;
+  }
+
+  > .letter {
+    margin-bottom: -2px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 10px;
+    color: #fff;
+  }
+}

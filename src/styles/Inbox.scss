@@ -29,34 +29,37 @@ main {
   .author {
     position: relative;
   }
-
-  .user--online .author {
-    &::before {
-      background: #2bb452;
-      border: 5px solid #fff;
-      border-radius: 100%;
-      content: '';
-      height: 5px;
-      left: 20px;
-      position: absolute;
-      top: 0;
-      width: 5px;
-      z-index: 1;
-    }
-  }
-
-  .circlewrap {
-    position: absolute;
-  }
 }
 
 .chat-list {
-  border-right: 1px solid #141414;
   display: flex;
   flex-direction: column;
+  padding: 0 10px;
+  height: 100vh;
 
-  .author__name {
-    @include font-size(1.5rem);
+  .dialogs {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      height: 10px;
+      width: 100%;
+    }
+    &::before {
+      top: 0;
+      background: linear-gradient(to bottom, #fff, transparent 70%);
+    }
+    &::after {
+      bottom: 0;
+      background: linear-gradient(to top, #fff, transparent 70%);
+    }
   }
 }
 
@@ -64,35 +67,6 @@ main {
 .interlocutor {
   border-bottom: 3px solid #141414;
   padding: 1em 0;
-}
-
-.chat-list__search {
-  display: flex;
-
-  input,
-  .button {
-    border-radius: 2px;
-    height: 5.6rem;
-    line-height: 5.6rem;
-    vertical-align: bottom;
-  }
-
-  input {
-    border: 2px solid #e8e8e8;
-    flex: 1;
-    @include font-size(1.7rem);
-
-    margin-right: 1.6rem;
-    padding: 1.6rem 1.2rem;
-  }
-
-  .button {
-    @include font-size(4rem);
-
-    font-weight: 100;
-    padding: 0;
-    width: 5.6rem;
-  }
 }
 
 .chat-list__types {
@@ -116,66 +90,6 @@ main {
   strong {
     border-bottom: 3px solid;
     font-weight: normal;
-  }
-}
-
-.chat-list__users {
-  flex: 1;
-  position: relative;
-
-  ul {
-    height: 100%;
-    list-style: none;
-    margin: 0;
-    overflow: auto;
-    padding: 0;
-    position: absolute;
-    width: 100%;
-  }
-
-  li {
-    align-items: baseline;
-    background: #fff;
-    cursor: pointer;
-    display: flex;
-    flex-wrap: wrap;
-    @include font-size(1.5rem);
-
-    padding: 2.4rem 0.8rem;
-    position: relative;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background: #f6f6f6;
-    }
-  }
-
-  .chat-list__user--current {
-    background: #f6f6f6;
-    cursor: default;
-  }
-
-  .author {
-    flex: 1;
-    margin-bottom: 0;
-  }
-
-  .author__details {
-    margin-left: 4.2rem;
-  }
-
-  .last-message-date {
-    color: rgb(0 0 0 / 30%);
-    @include font-size(1rem);
-  }
-
-  .last-message-text {
-    color: rgb(0 0 0 / 30%);
-    flex: 1 100%;
-    margin-left: 4.2rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 

@@ -1,8 +1,12 @@
-import { For, createSignal, Show, onMount } from 'solid-js'
+import { For, createSignal, Show, onMount, createEffect } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../Nav/Icon'
 import { Loading } from '../Loading'
+import DialogCard from '../Inbox/DialogCard'
+import Search from '../Inbox/Search'
+import { useAuthorsStore } from '../../stores/zine/authors'
+
 import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
@@ -16,9 +20,6 @@ const client = createClient({
 //   chats?: Chat[]
 //   messages?: Message[]
 // }
-const [messages, setMessages] = createSignal([])
-const [postMessageText, setPostMessageText] = createSignal('')
-const [loading, setLoading] = createSignal<boolean>(false)
 
 const messageQuery = `
 query Comments ($options: PageQueryOptions) {
@@ -31,7 +32,6 @@ query Comments ($options: PageQueryOptions) {
   }
 }
 `
-
 const newMessageQuery = `
 mutation postComment($messageBody: String!) {
   createComment(
@@ -44,33 +44,57 @@ mutation postComment($messageBody: String!) {
   }
 }
 `
-const fetchMessages = async (query) => {
-  const response = await client
-    .query(query, {
-      options: { slice: { start: 0, end: 3 } }
-    })
-    .toPromise()
-  if (response.error) console.debug('getMessages', response.error)
-  setMessages(response.data.comments.data)
-}
 
-const postMessage = async (msg: string) => {
-  const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
-  return response.data.createComment
+const userSearch = (array: Author[], keyword: string) => {
+  const searchTerm = keyword.toLowerCase()
+  return array.filter((value) => {
+    return value.name.toLowerCase().match(new RegExp(searchTerm, 'g'))
+  })
 }
-
-let chatWindow
-onMount(() => {
-  setLoading(true)
-  fetchMessages(messageQuery)
-    .then(() => {
-      setLoading(false)
-      chatWindow.scrollTop = chatWindow.scrollHeight
-    })
-    .catch(() => setLoading(false))
-})
 
 export const InboxView = () => {
+  const [messages, setMessages] = createSignal([])
+  const [authors, setAuthors] = createSignal<Author[]>([])
+  const [postMessageText, setPostMessageText] = createSignal('')
+  const [loading, setLoading] = createSignal<boolean>(false)
+  const { sortedAuthors } = useAuthorsStore()
+
+  createEffect(() => {
+    setAuthors(sortedAuthors())
+  })
+
+  const getQuery = (query) => {
+    if (query().length > 2) {
+      const match = userSearch(authors(), query())
+      setAuthors(match)
+    } else {
+      setAuthors(sortedAuthors())
+    }
+  }
+
+  const fetchMessages = async (query) => {
+    const response = await client
+      .query(query, {
+        options: { slice: { start: 0, end: 3 } }
+      })
+      .toPromise()
+    if (response.error) console.debug('getMessages', response.error)
+    setMessages(response.data.comments.data)
+  }
+  const postMessage = async (msg: string) => {
+    const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
+    return response.data.createComment
+  }
+  let chatWindow // for scrolling
+  onMount(async () => {
+    setLoading(true)
+    await fetchMessages(messageQuery)
+      .then(() => {
+        setLoading(false)
+        chatWindow.scrollTop = chatWindow.scrollHeight
+      })
+      .catch(() => setLoading(false))
+  })
   const handleSubmit = async () => {
     postMessage(postMessageText())
       .then((result) => {
@@ -82,10 +106,8 @@ export const InboxView = () => {
         console.log('!!! msg:', messages())
       })
   }
-
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
-    console.log('!!! asd:', postMessageText().trim().length)
   }
 
   // TODO: get user session
@@ -93,11 +115,7 @@ export const InboxView = () => {
     <div class="messages container">
       <div class="row">
         <div class="chat-list col-md-4">
-          <form class="chat-list__search">
-            <input type="search" placeholder="Поиск" />
-            <button class="button">+</button>
-          </form>
-
+          <Search placeholder="Поиск" onChange={getQuery} />
           <div class="chat-list__types">
             <ul>
               <li>
@@ -114,18 +132,10 @@ export const InboxView = () => {
             </ul>
           </div>
 
-          <div class="chat-list__users">
-            <ul>
-              <li class="user--online chat-list__user--current">
-                <AuthorCard author={{} as Author} hideFollow={true} />
-                <div class="last-message-date">19:48</div>
-                <div class="last-message-text">
-                  Assumenda delectus deleniti dolores doloribus ducimus, et expedita facere iste laborum,
-                  nihil similique suscipit, ut voluptatem. Accusantium consequuntur doloremque ex molestiae
-                  nemo.
-                </div>
-              </li>
-            </ul>
+          <div class="dialogs">
+            <For each={authors()}>
+              {(author) => <DialogCard name={author.name} slug={author.slug} online={true} />}
+            </For>
           </div>
         </div>
 

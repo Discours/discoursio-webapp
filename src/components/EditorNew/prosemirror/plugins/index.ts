@@ -1,5 +1,3 @@
-import { keymap } from 'prosemirror-keymap'
-import { baseKeymap } from 'prosemirror-commands'
 import { history } from 'prosemirror-history'
 import { dropCursor } from 'prosemirror-dropcursor'
 import { placeholder } from './placeholder'

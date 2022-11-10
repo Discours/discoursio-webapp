@@ -1,4 +1,4 @@
-import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import { For, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import type { JSX } from 'solid-js'
 import { undo, redo } from 'prosemirror-history'
 import { clsx } from 'clsx'

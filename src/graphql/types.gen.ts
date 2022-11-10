@@ -24,6 +24,7 @@ export type AuthResult = {
 export type Author = {
   bio?: Maybe<Scalars['String']>
   caption?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   links?: Maybe<Array<Maybe<Scalars['String']>>>
   name: Scalars['String']
   slug: Scalars['String']
@@ -69,6 +70,7 @@ export type Collection = {
   createdAt: Scalars['DateTime']
   createdBy: User
   desc?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   publishedAt?: Maybe<Scalars['DateTime']>
   slug: Scalars['String']
   title: Scalars['String']
@@ -84,6 +86,7 @@ export type Community = {
   createdAt: Scalars['DateTime']
   createdBy: User
   desc?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   name: Scalars['String']
   pic: Scalars['String']
   slug: Scalars['String']
@@ -329,10 +332,12 @@ export type ProfileInput = {
 export type Query = {
   authorsAll: Array<Maybe<User>>
   collectionsAll: Array<Maybe<Collection>>
+  getAuthor: User
   getCollabs: Array<Maybe<Collab>>
   getCommunities: Array<Maybe<Community>>
   getCommunity: Community
   getShoutBySlug: Shout
+  getTopic: Topic
   getUserCollections: Array<Maybe<Collection>>
   getUserRoles: Array<Maybe<Role>>
   getUsersBySlugs: Array<Maybe<User>>
@@ -371,11 +376,19 @@ export type Query = {
   userReactedShouts: Array<Maybe<Shout>>
 }
 
+export type QueryGetAuthorArgs = {
+  slug: Scalars['String']
+}
+
 export type QueryGetCommunityArgs = {
   slug?: InputMaybe<Scalars['String']>
 }
 
 export type QueryGetShoutBySlugArgs = {
+  slug: Scalars['String']
+}
+
+export type QueryGetTopicArgs = {
   slug: Scalars['String']
 }
 

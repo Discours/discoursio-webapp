@@ -9,7 +9,6 @@ import { clsx } from 'clsx'
 import styles from './Sidebar.module.scss'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
-import { hideModal } from '../../../stores/ui'
 
 const Off = (props) => <div class={styles.sidebarOff}>{props.children}</div>
 

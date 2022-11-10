@@ -15,6 +15,7 @@ export default () => {
 
   const author = createMemo<Author>(() => {
     const a: Author = {
+      id: null,
       name: 'anonymous',
       userpic: '',
       slug: ''

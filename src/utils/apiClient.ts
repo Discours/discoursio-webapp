@@ -1,4 +1,4 @@
-import type { Reaction, Shout, FollowingEntity, AuthResult } from '../graphql/types.gen'
+import type { Reaction, Shout, FollowingEntity, AuthResult, ShoutInput } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
@@ -27,6 +27,7 @@ import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
+import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/my-chats'
 
 const FEED_SIZE = 50
@@ -306,6 +307,11 @@ export const apiClient = {
   getAuthorsBySlugs: async ({ slugs }) => {
     const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()
     return response.data.getUsersBySlugs
+  },
+  createArticle: async ({ article }: { article: ShoutInput }) => {
+    const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()
+    console.debug('createArticle response:', response)
+    return response.data.createShout
   },
   createReaction: async ({ reaction }) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()

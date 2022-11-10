@@ -24,6 +24,7 @@ export type AuthResult = {
 export type Author = {
   bio?: Maybe<Scalars['String']>
   caption?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   links?: Maybe<Array<Maybe<Scalars['String']>>>
   name: Scalars['String']
   slug: Scalars['String']
@@ -31,29 +32,29 @@ export type Author = {
 }
 
 export type Chat = {
-  createdAt: Scalars['DateTime']
+  createdAt: Scalars['Int']
   createdBy: User
   description?: Maybe<Scalars['String']>
-  id: Scalars['Int']
-  messages?: Maybe<Array<Maybe<Message>>>
+  id: Scalars['String']
+  messages: Array<Maybe<Message>>
   title?: Maybe<Scalars['String']>
-  updatedAt: Scalars['DateTime']
+  unread?: Maybe<Scalars['Int']>
+  updatedAt: Scalars['Int']
   users: Array<Maybe<User>>
 }
 
-export type ChatResult = {
-  createdAt: Scalars['DateTime']
-  createdBy?: Maybe<User>
-  error?: Maybe<Scalars['String']>
-  members: Array<Maybe<User>>
-  messages?: Maybe<Array<Maybe<Message>>>
-  title?: Maybe<Scalars['String']>
+export type ChatInput = {
+  description?: InputMaybe<Scalars['String']>
+  id: Scalars['String']
+  title?: InputMaybe<Scalars['String']>
 }
 
-export type ChatUpdatedResult = {
-  error?: Maybe<Scalars['String']>
-  message?: Maybe<Message>
-  status?: Maybe<MessageStatus>
+export type ChatMember = {
+  invitedAt?: Maybe<Scalars['DateTime']>
+  invitedBy?: Maybe<Scalars['String']>
+  name: Scalars['String']
+  pic?: Maybe<Scalars['String']>
+  slug: Scalars['String']
 }
 
 export type Collab = {
@@ -69,6 +70,7 @@ export type Collection = {
   createdAt: Scalars['DateTime']
   createdBy: User
   desc?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   publishedAt?: Maybe<Scalars['DateTime']>
   slug: Scalars['String']
   title: Scalars['String']
@@ -84,6 +86,7 @@ export type Community = {
   createdAt: Scalars['DateTime']
   createdBy: User
   desc?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   name: Scalars['String']
   pic: Scalars['String']
   slug: Scalars['String']
@@ -93,17 +96,6 @@ export type CommunityInput = {
   desc?: InputMaybe<Scalars['String']>
   pic?: InputMaybe<Scalars['String']>
   title: Scalars['String']
-}
-
-export type CreateChatResult = {
-  chatId?: Maybe<Scalars['String']>
-  error?: Maybe<Scalars['String']>
-}
-
-export type EnterChatResult = {
-  chat?: Maybe<Chat>
-  error?: Maybe<Scalars['String']>
-  messages?: Maybe<Array<Maybe<Message>>>
 }
 
 export enum FollowingEntity {
@@ -116,17 +108,11 @@ export enum FollowingEntity {
 export type Message = {
   author: Scalars['String']
   body: Scalars['String']
-  chatRoom: Scalars['Int']
-  createdAt: Scalars['DateTime']
+  chatId: Scalars['String']
+  createdAt: Scalars['Int']
   id: Scalars['Int']
-  replyTo?: Maybe<Scalars['Int']>
-  updatedAt: Scalars['DateTime']
-  visibleForUsers: Array<Maybe<Scalars['Int']>>
-}
-
-export type MessageResult = {
-  error?: Maybe<Scalars['String']>
-  message?: Maybe<Message>
+  replyTo?: Maybe<Scalars['String']>
+  updatedAt?: Maybe<Scalars['Int']>
 }
 
 export enum MessageStatus {
@@ -137,10 +123,10 @@ export enum MessageStatus {
 
 export type Mutation = {
   confirmEmail: AuthResult
-  createChat: CreateChatResult
+  createChat: Result
   createCollection: Result
   createCommunity: Result
-  createMessage: MessageResult
+  createMessage: Result
   createReaction: Result
   createShout: Result
   createTopic: Result
@@ -150,6 +136,7 @@ export type Mutation = {
   deleteReaction: Result
   deleteShout: Result
   destroyTopic: Result
+  enterChat: Result
   follow: Result
   incrementView: Result
   inviteAuthor: Result
@@ -161,9 +148,10 @@ export type Mutation = {
   removeAuthor: Result
   sendLink: Result
   unfollow: Result
+  updateChat: Result
   updateCollection: Result
   updateCommunity: Result
-  updateMessage: MessageResult
+  updateMessage: Result
   updateProfile: Result
   updateReaction: Result
   updateShout: Result
@@ -171,11 +159,12 @@ export type Mutation = {
 }
 
 export type MutationConfirmEmailArgs = {
-  code: Scalars['String']
+  token: Scalars['String']
 }
 
 export type MutationCreateChatArgs = {
-  description?: InputMaybe<Scalars['String']>
+  members: Array<InputMaybe<Scalars['String']>>
+  title?: InputMaybe<Scalars['String']>
 }
 
 export type MutationCreateCollectionArgs = {
@@ -189,7 +178,7 @@ export type MutationCreateCommunityArgs = {
 export type MutationCreateMessageArgs = {
   body: Scalars['String']
   chatId: Scalars['String']
-  replyTo?: InputMaybe<Scalars['Int']>
+  replyTo?: InputMaybe<Scalars['String']>
 }
 
 export type MutationCreateReactionArgs = {
@@ -227,6 +216,10 @@ export type MutationDeleteShoutArgs = {
 
 export type MutationDestroyTopicArgs = {
   slug: Scalars['String']
+}
+
+export type MutationEnterChatArgs = {
+  chatId: Scalars['String']
 }
 
 export type MutationFollowArgs = {
@@ -277,6 +270,10 @@ export type MutationSendLinkArgs = {
 export type MutationUnfollowArgs = {
   slug: Scalars['String']
   what: FollowingEntity
+}
+
+export type MutationUpdateChatArgs = {
+  chat: ChatInput
 }
 
 export type MutationUpdateCollectionArgs = {
@@ -335,18 +332,19 @@ export type ProfileInput = {
 export type Query = {
   authorsAll: Array<Maybe<User>>
   collectionsAll: Array<Maybe<Collection>>
-  enterChat: ChatResult
+  getAuthor: User
   getCollabs: Array<Maybe<Collab>>
   getCommunities: Array<Maybe<Community>>
   getCommunity: Community
   getShoutBySlug: Shout
+  getTopic: Topic
   getUserCollections: Array<Maybe<Collection>>
   getUserRoles: Array<Maybe<Role>>
   getUsersBySlugs: Array<Maybe<User>>
   isEmailUsed: Scalars['Boolean']
-  loadChat: Array<Maybe<Message>>
+  loadChat: Result
   markdownBody: Scalars['String']
-  myChats: Array<Maybe<ChatResult>>
+  myChats: Result
   reactionsByAuthor: Array<Maybe<Reaction>>
   reactionsForShouts: Array<Maybe<Reaction>>
   recentAll: Array<Maybe<Shout>>
@@ -378,8 +376,8 @@ export type Query = {
   userReactedShouts: Array<Maybe<Shout>>
 }
 
-export type QueryEnterChatArgs = {
-  chatId: Scalars['String']
+export type QueryGetAuthorArgs = {
+  slug: Scalars['String']
 }
 
 export type QueryGetCommunityArgs = {
@@ -387,6 +385,10 @@ export type QueryGetCommunityArgs = {
 }
 
 export type QueryGetShoutBySlugArgs = {
+  slug: Scalars['String']
+}
+
+export type QueryGetTopicArgs = {
   slug: Scalars['String']
 }
 
@@ -407,9 +409,9 @@ export type QueryIsEmailUsedArgs = {
 }
 
 export type QueryLoadChatArgs = {
+  amount?: InputMaybe<Scalars['Int']>
   chatId: Scalars['String']
-  page: Scalars['Int']
-  size: Scalars['Int']
+  offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryMarkdownBodyArgs = {
@@ -619,9 +621,14 @@ export type Resource = {
 export type Result = {
   author?: Maybe<User>
   authors?: Maybe<Array<Maybe<User>>>
+  chat?: Maybe<Chat>
+  chats?: Maybe<Array<Maybe<Chat>>>
   communities?: Maybe<Array<Maybe<Community>>>
   community?: Maybe<Community>
   error?: Maybe<Scalars['String']>
+  members?: Maybe<Array<Maybe<ChatMember>>>
+  message?: Maybe<Message>
+  messages?: Maybe<Array<Maybe<Message>>>
   reaction?: Maybe<Reaction>
   reactions?: Maybe<Array<Maybe<Reaction>>>
   shout?: Maybe<Shout>
@@ -674,7 +681,7 @@ export type ShoutInput = {
   topic_slugs?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   versionOf?: InputMaybe<Scalars['String']>
   visibleForRoles?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-  visibleForUsers?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>
+  visibleForUsers?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
 }
 
 export type Stat = {
@@ -686,15 +693,15 @@ export type Stat = {
 }
 
 export type Subscription = {
-  chatUpdated: ChatUpdatedResult
+  newMessage: Message
   onlineUpdated: Array<User>
   reactionUpdated: ReactionUpdating
   shoutUpdated: Shout
   userUpdated: User
 }
 
-export type SubscriptionChatUpdatedArgs = {
-  chatId: Scalars['String']
+export type SubscriptionNewMessageArgs = {
+  chats?: InputMaybe<Array<Scalars['Int']>>
 }
 
 export type SubscriptionReactionUpdatedArgs = {

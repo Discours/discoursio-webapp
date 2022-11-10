@@ -7928,19 +7928,12 @@ prosemirror-menu@^1.0.0, prosemirror-menu@^1.2.1:
     prosemirror-history "^1.0.0"
     prosemirror-state "^1.0.0"
 
-prosemirror-model@^1.0.0, prosemirror-model@^1.16.0, prosemirror-model@^1.2.0:
+prosemirror-model@^1.0.0, prosemirror-model@^1.16.0:
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.18.1.tgz#1d5d6b6de7b983ee67a479dc607165fdef3935bd"
   integrity sha512-IxSVBKAEMjD7s3n8cgtwMlxAXZrC7Mlag7zYsAKDndAqnDScvSmp/UdnRTV/B33lTCVU3CCm7dyAn/rVVD0mcw==
   dependencies:
     orderedmap "^2.0.0"
-
-prosemirror-schema-basic@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/prosemirror-schema-basic/-/prosemirror-schema-basic-1.2.0.tgz#c33ad74426efae1d41e2260371866f623e8eb10e"
-  integrity sha512-JMN/ammP94ObOUS6cpIy121r0MEDN9V95mAxFVALwC4bbmhpWXGjBGHTA5LHPPdbqZKyR6Jar1Akv4Z5k9CNLw==
-  dependencies:
-    prosemirror-model "^1.2.0"
 
 prosemirror-schema-list@^1.0.0, prosemirror-schema-list@^1.2.2:
   version "1.2.2"

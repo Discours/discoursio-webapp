@@ -1,0 +1,21 @@
+.dropCursor {
+  // TODO check why important
+  height: 2px !important;
+  opacity: 0.5;
+}
+
+.selectionMenu {
+  background: #fff;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+  color: #000;
+  display: flex;
+  position: absolute;
+  z-index: 100;
+}
+
+.placeholder {
+  opacity: 0.3;
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}

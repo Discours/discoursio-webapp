@@ -2,7 +2,8 @@ import { persistentMap } from '@nanostores/persistent'
 import type { Reaction } from '../graphql/types.gen'
 import { atom } from 'nanostores'
 import { createSignal } from 'solid-js'
-import type { Draft } from '../components/Editor/store/context'
+
+// import type { Draft } from '../components/EditorExample/store/context'
 
 interface Collab {
   authors: string[] // slugs
@@ -12,7 +13,7 @@ interface Collab {
   title?: string
 }
 
-export const drafts = persistentMap<{ [key: string]: Draft }>(
+export const drafts = persistentMap<{ [key: string]: string }>(
   'drafts',
   {},
   {

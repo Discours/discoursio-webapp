@@ -250,8 +250,8 @@ button {
 }
 
 .button--content-index {
-  border: 2px solid #fff;
   background: none;
+  border: 2px solid #fff;
   height: 3.2rem;
   float: right;
   padding: 0;
@@ -271,15 +271,31 @@ button {
     right: $container-padding-x;
   }
 
+  .icon {
+    background: #fff;
+    transition: filter 0.3s;
+  }
+
   .icon,
   img {
+    height: 100%;
     vertical-align: middle;
     width: auto;
   }
 
   &:hover {
     .icon {
-      opacity: 0.5;
+      filter: invert(1);
+    }
+  }
+
+  .expanded {
+    border-radius: 100%;
+    overflow: hidden;
+
+    img {
+      height: auto;
+      margin-top: 0.8rem;
     }
   }
 }
@@ -722,6 +738,10 @@ astro-island {
 
   a {
     border: none;
+  }
+
+  h4 {
+    @include font-size(1.6rem);
   }
 }
 

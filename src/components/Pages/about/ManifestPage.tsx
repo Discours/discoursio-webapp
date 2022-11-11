@@ -9,7 +9,7 @@ import { Icon } from '../../Nav/Icon'
 // title={t('Manifest')}
 
 export const ManifestPage = () => {
-  const [indexExpanded, setIndexExpanded] = createSignal(false)
+  const [indexExpanded, setIndexExpanded] = createSignal(true)
 
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
@@ -29,12 +29,14 @@ export const ManifestPage = () => {
                 <Icon name="content-index-control" />
               </Show>
               <Show when={indexExpanded()}>
-                <Icon name="content-index-control-expanded" />
+                <Icon name="content-index-control-expanded" class={'expanded'} />
               </Show>
             </button>
 
             <Show when={indexExpanded()}>
               <nav class="content-index">
+                <h4>Оглавление</h4>
+
                 <ul class="nodash">
                   <li>
                     <a href="#manifest">Манифест</a>
@@ -104,7 +106,7 @@ export const ManifestPage = () => {
               независимой журналистики. Участвовать в&nbsp;открытой редакции и&nbsp;помогать журналу можно
               следующими способами:
             </p>
-            <details>
+            <details open>
               <summary>
                 <h3 id="contribute">Предлагать материалы</h3>
               </summary>

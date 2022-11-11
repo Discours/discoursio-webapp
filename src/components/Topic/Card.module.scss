@@ -3,10 +3,6 @@
   margin-top: 3.2rem;
 
   .stats & {
-    @include media-breakpoint-down(sm) {
-      margin-left: 0;
-    }
-
     .topicDetailsItem {
       margin-bottom: 1.2rem;
     }

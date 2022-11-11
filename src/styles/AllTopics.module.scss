@@ -1,11 +1,4 @@
 .allTopicsPage {
-  .pageHeader,
-  .group h2 {
-    @include media-breakpoint-down(sm) {
-      margin-left: 1.3rem;
-    }
-  }
-
   .group {
     font-weight: bold;
     margin: 3em 0 9.6rem;
@@ -39,8 +32,6 @@
   }
 }
 
-.viewSwitcher {
-  @include media-breakpoint-down(sm) {
-    margin: 0 2.6rem;
-  }
+.stats {
+  margin-top: 2.4rem;
 }

@@ -515,6 +515,7 @@ figcaption {
 
 .view-switcher__search {
   text-align: right;
+  white-space: nowrap;
 
   @include media-breakpoint-up(sm) {
     flex: 1;
@@ -643,6 +644,12 @@ astro-island {
 
 .container {
   max-width: 1400px;
+  padding: 0;
+  width: auto;
+
+  @include media-breakpoint-down(sm) {
+    padding: 0 $container-padding-x * 0.5;
+  }
 }
 
 .container--static-page {

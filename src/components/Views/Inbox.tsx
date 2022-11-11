@@ -10,6 +10,7 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
+import { findAndLoadGraphQLConfig } from '@graphql-codegen/cli'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -63,9 +64,11 @@ export const InboxView = () => {
     setAuthors(sortedAuthors())
   })
 
+  // Поиск по диалогам
   const getQuery = (query) => {
     if (query().length >= 2) {
       const match = userSearch(authors(), query())
+      console.log('!!! match:', match)
       setAuthors(match)
     } else {
       setAuthors(sortedAuthors())
@@ -85,7 +88,8 @@ export const InboxView = () => {
     const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
     return response.data.createComment
   }
-  let chatWindow // for scrolling
+
+  let chatWindow
   onMount(async () => {
     setLoading(true)
     await fetchMessages(messageQuery)
@@ -95,6 +99,7 @@ export const InboxView = () => {
       })
       .catch(() => setLoading(false))
   })
+
   const handleSubmit = async () => {
     postMessage(postMessageText())
       .then((result) => {
@@ -103,7 +108,6 @@ export const InboxView = () => {
       .then(() => {
         setPostMessageText('')
         chatWindow.scrollTop = chatWindow.scrollHeight
-        console.log('!!! msg:', messages())
       })
   }
   const handleChangeMessage = (event) => {
@@ -119,22 +123,18 @@ export const InboxView = () => {
           <div class="chat-list__types">
             <ul>
               <li>
-                <strong>
-                  <a href="/">Все</a>
-                </strong>
+                <strong>Все</strong>
               </li>
-              <li>
-                <a href="/">Переписки</a>
-              </li>
-              <li>
-                <a href="/">Группы</a>
-              </li>
+              <li>Переписки</li>
+              <li>Группы</li>
             </ul>
           </div>
-          <div class="dialogs">
-            <For each={authors()}>
-              {(author) => <DialogCard name={author.name} slug={author.slug} online={true} />}
-            </For>
+          <div class="holder">
+            <div class="dialogs">
+              <For each={authors()}>
+                {(author) => <DialogCard name={author.name} slug={author.slug} online={true} />}
+              </For>
+            </div>
           </div>
         </div>
 

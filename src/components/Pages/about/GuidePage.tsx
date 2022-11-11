@@ -6,7 +6,7 @@ import { Icon } from '../../Nav/Icon'
 export const GuidePage = () => {
   const title = t('How it works')
 
-  const [indexExpanded, setIndexExpanded] = createSignal(false)
+  const [indexExpanded, setIndexExpanded] = createSignal(true)
 
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
@@ -28,12 +28,14 @@ export const GuidePage = () => {
                 <Icon name="content-index-control" />
               </Show>
               <Show when={indexExpanded()}>
-                <Icon name="content-index-control-expanded" />
+                <Icon name="content-index-control-expanded" class={'expanded'} />
               </Show>
             </button>
 
             <Show when={indexExpanded()}>
               <nav class="content-index">
+                <h4>Оглавление</h4>
+
                 <ul class="nodash">
                   <li>
                     <a href="#how-it-works">{title}</a>

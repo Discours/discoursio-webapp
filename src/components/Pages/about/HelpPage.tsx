@@ -6,7 +6,7 @@ import { Icon } from '../../Nav/Icon'
 // const title = t('Support us')
 
 export const HelpPage = () => {
-  const [indexExpanded, setIndexExpanded] = createSignal(false)
+  const [indexExpanded, setIndexExpanded] = createSignal(true)
 
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
@@ -25,12 +25,14 @@ export const HelpPage = () => {
                 <Icon name="content-index-control" />
               </Show>
               <Show when={indexExpanded()}>
-                <Icon name="content-index-control-expanded" />
+                <Icon name="content-index-control-expanded" class={'expanded'} />
               </Show>
             </button>
 
             <Show when={indexExpanded()}>
               <nav class="content-index">
+                <h4>Оглавление</h4>
+
                 <ul class="nodash">
                   <li>
                     <a href="#help-us">Как вы&nbsp;можете поддержать Дискурс?</a>

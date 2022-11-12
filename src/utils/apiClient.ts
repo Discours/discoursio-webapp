@@ -29,6 +29,7 @@ import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/my-chats'
+import getLayout from '../graphql/query/articles-for-layout'
 
 const FEED_SIZE = 50
 
@@ -334,5 +335,8 @@ export const apiClient = {
   getInboxes: async (payload = {}) => {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats
+  },
+  getLayoutShouts: async (layout = 'article', amount = 50, offset = 0) => {
+    const resp = await publicGraphQLClient.query(getLayout, { amount, offset, layout })
   }
 }

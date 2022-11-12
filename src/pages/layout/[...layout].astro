@@ -1,0 +1,23 @@
+---
+import { Root } from '../../components/Root'
+import Zine from '../../layouts/zine.astro'
+import { apiClient } from '../../utils/apiClient'
+import { initRouter } from '../../stores/router'
+
+const layout = Astro.params.layout?.toString()
+if (layout.endsWith('.map')) {
+  return Astro.redirect('/404')
+}
+const LAYOUTS = ['literature', 'audio', 'video', 'artworks']
+if (!LAYOUTS.includes(layout)) {
+  return Astro.redirect('/404')
+}
+const shouts = await apiClient.getRecentByLayout(layout)
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
+---
+
+<Zine>
+  <Root shouts={shouts} layout={layout} client:load />
+</Zine>
+

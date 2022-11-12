@@ -1,4 +1,4 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { MainWrap } from '../Wrap/MainWrap'
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../Views/Author'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -36,11 +36,11 @@ export const AuthorPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainLayout>
+    <MainWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <AuthorView author={props.author} authorArticles={props.authorArticles} authorSlug={slug()} />
       </Show>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

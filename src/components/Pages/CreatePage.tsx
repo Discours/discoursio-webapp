@@ -1,16 +1,16 @@
 import { lazy, Suspense } from 'solid-js'
-import { MainLayout } from '../Layouts/MainLayout'
+import { MainWrap } from '../Wrap/MainWrap'
 import { Loading } from '../Loading'
 
 const CreateView = lazy(() => import('../Views/Create'))
 
 export const CreatePage = () => {
   return (
-    <MainLayout>
+    <MainWrap>
       <Suspense fallback={<Loading />}>
         <CreateView />
       </Suspense>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

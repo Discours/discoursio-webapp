@@ -31,10 +31,7 @@ import { ThanksPage } from './Pages/about/ThanksPage'
 import { CreatePage } from './Pages/CreatePage'
 import { ConnectPage } from './Pages/ConnectPage'
 import { renewSession } from '../stores/auth'
-import { AudioPage } from './Pages/AudioPage'
-import { VideoPage } from './Pages/VideoPage'
-import { ReadingPage } from './Pages/ReadingPage'
-import { ArtworksPage } from './Pages/ArtworksPage'
+import { LayoutShoutsPage } from './Pages/LayoutShoutsPage'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -47,10 +44,7 @@ type RootSearchParams = {
 }
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
-  audio: AudioPage,
-  video: VideoPage,
-  literature: ReadingPage,
-  artworks: ArtworksPage,
+  layout: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
   home: HomePage,

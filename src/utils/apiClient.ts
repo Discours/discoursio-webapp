@@ -336,7 +336,8 @@ export const apiClient = {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats
   },
-  getLayoutShouts: async (layout = 'article', amount = 50, offset = 0) => {
-    const resp = await publicGraphQLClient.query(getLayout, { amount, offset, layout })
+  getLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(getLayout, { amount, offset, layout }).toPromise()
+    return resp.data.shoutsByLayout
   }
 }

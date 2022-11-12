@@ -99,22 +99,22 @@ const addSortedArticles = (articles: Shout[]) => {
 
 export const loadLayoutShouts = async ({
   layout,
-  limit,
+  amount,
   offset
 }: {
   layout: string
-  limit: number
+  amount: number
   offset?: number
 }): Promise<{ hasMore: boolean }> => {
-  const newArticles = await apiClient.getLayoutShouts({ layout, limit: limit + 1, offset })
-  const hasMore = newArticles.length === limit + 1
+  const layoutShouts: Shout[] = await apiClient.getLayoutShouts({ layout, amount, offset })
+  const hasMore = layoutShouts.length > amount
 
   if (hasMore) {
-    newArticles.splice(-1)
+    layoutShouts.splice(-1)
   }
 
-  addArticles(newArticles)
-  addSortedArticles(newArticles)
+  addArticles(layoutShouts)
+  addSortedArticles(layoutShouts)
 
   return { hasMore }
 }

@@ -1,11 +1,11 @@
 import { FourOuFourView } from '../Views/FourOuFour'
-import { MainLayout } from '../Layouts/MainLayout'
+import { MainWrap } from '../Wrap/MainWrap'
 
 export const FourOuFourPage = () => {
   return (
-    <MainLayout isHeaderFixed={false} hideFooter={true}>
+    <MainWrap isHeaderFixed={false} hideFooter={true}>
       <FourOuFourView />
-    </MainLayout>
+    </MainWrap>
   )
 }
 

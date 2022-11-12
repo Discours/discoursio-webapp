@@ -1,4 +1,4 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { MainWrap } from '../Wrap/MainWrap'
 import { ArticleView } from '../Views/Article'
 import type { PageProps } from '../types'
 import { loadArticle, useArticlesStore } from '../../stores/zine/articles'
@@ -37,11 +37,11 @@ export const ArticlePage = (props: PageProps) => {
   })
 
   return (
-    <MainLayout headerTitle={article()?.title || ''}>
+    <MainWrap headerTitle={article()?.title || ''}>
       <Show when={Boolean(article())} fallback={<Loading />}>
         <ArticleView article={article()} />
       </Show>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

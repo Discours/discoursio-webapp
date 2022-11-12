@@ -1,24 +1,27 @@
 import { MainWrap } from '../Wrap/MainWrap'
-import { SearchView } from '../Views/Search'
+import { LayoutView } from '../Views/LayoutView'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { loadSearchResults, resetSortedArticles } from '../../stores/zine/articles'
+import { resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
+import { loadLayoutShouts } from '../../stores/zine/layouts'
 import { Loading } from '../Loading'
 
-export const SearchPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
+const PER_PAGE = 50
 
-  const q = createMemo(() => {
+export const LayoutShoutsPage = (props: PageProps) => {
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts))
+
+  const layout = createMemo(() => {
     const { page: getPage } = useRouter()
 
     const page = getPage()
 
-    if (page.route !== 'search') {
+    if (page.route !== 'layout') {
       throw new Error('ts guard')
     }
 
-    return page.params.q
+    return page.params.layout
   })
 
   onMount(async () => {
@@ -26,7 +29,8 @@ export const SearchPage = (props: PageProps) => {
       return
     }
 
-    await loadSearchResults({ query: q(), limit: 50, offset: 0 })
+    await loadLayoutShouts({ layout: layout(), amount: PER_PAGE, offset: 0 })
+
     setIsLoaded(true)
   })
 
@@ -35,11 +39,11 @@ export const SearchPage = (props: PageProps) => {
   return (
     <MainWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <SearchView results={props.searchResults || []} query={props.searchQuery} />
+        <LayoutView layout={layout()} shouts={props.shouts} />
       </Show>
     </MainWrap>
   )
 }
 
 // for lazy loading
-export default SearchPage
+export default LayoutShoutsPage

@@ -1,5 +1,5 @@
 import { HomeView, PRERENDERED_ARTICLES_COUNT } from '../Views/Home'
-import { MainLayout } from '../Layouts/MainLayout'
+import { MainWrap } from '../Wrap/MainWrap'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadPublishedArticles, resetSortedArticles } from '../../stores/zine/articles'
@@ -23,11 +23,11 @@ export const HomePage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainLayout>
+    <MainWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.homeArticles || []} />
       </Show>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

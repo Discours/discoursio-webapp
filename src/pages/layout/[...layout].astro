@@ -12,7 +12,7 @@ const LAYOUTS = ['literature', 'audio', 'video', 'artworks']
 if (!LAYOUTS.includes(layout)) {
   return Astro.redirect('/404')
 }
-const shouts = await apiClient.getRecentByLayout(layout)
+const shouts = await apiClient.getLayoutShouts({ layout })
 const { pathname, search } = Astro.url
 initRouter(pathname, search)
 ---

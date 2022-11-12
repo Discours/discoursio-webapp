@@ -1,10 +1,10 @@
-import { MainLayout } from '../../Layouts/MainLayout'
+import { MainWrap } from '../../Wrap/MainWrap'
 import { t } from '../../../utils/intl'
 
 export const ThanksPage = () => {
   const title = t('Thank you')
   return (
-    <MainLayout>
+    <MainWrap>
       {/*<Meta name="description" content={title} />*/}
       {/*<Meta name="keywords" content={`Discours.io, ${title}, ${t('Thank you', 'en')}`} />*/}
       {/*<Meta property="og:title" content={title} />*/}
@@ -85,7 +85,7 @@ export const ThanksPage = () => {
           </div>
         </div>
       </article>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

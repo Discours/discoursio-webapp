@@ -5,14 +5,13 @@ import type { Author, Chat, Shout, Topic } from '../graphql/types.gen'
 export type PageProps = {
   randomTopics?: Topic[]
   article?: Shout
-  authorArticles?: Shout[]
-  topicArticles?: Shout[]
-  homeArticles?: Shout[]
+  shouts?: Shout[]
   author?: Author
   allAuthors?: Author[]
   topic?: Topic
   allTopics?: Topic[]
   searchQuery?: string
+  layout?: string
   // other types?
   searchResults?: Shout[]
   chats?: Chat[]

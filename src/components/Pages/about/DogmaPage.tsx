@@ -1,10 +1,10 @@
-import { MainLayout } from '../../Layouts/MainLayout'
+import { MainWrap } from '../../Wrap/MainWrap'
 
 // const title = t('Dogma')
 
 export const DogmaPage = () => {
   return (
-    <MainLayout>
+    <MainWrap>
       <article class="container container--static-page">
         <div class="row">
           <div class="col-md-6 col-xl-7 shift-content order-md-first">
@@ -53,7 +53,7 @@ export const DogmaPage = () => {
           </div>
         </div>
       </article>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

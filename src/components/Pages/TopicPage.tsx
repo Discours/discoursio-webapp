@@ -1,4 +1,4 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { MainWrap } from '../Wrap/MainWrap'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../Views/Topic'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -36,11 +36,11 @@ export const TopicPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainLayout>
+    <MainWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <TopicView topic={props.topic} topicArticles={props.topicArticles} topicSlug={slug()} />
       </Show>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

@@ -1,8 +1,8 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { MainWrap } from '../Wrap/MainWrap'
 
 export const ConnectPage = () => {
   return (
-    <MainLayout>
+    <MainWrap>
       <article class="container container--static-page">
         <div class="row">
           <h1 class="col-md-8 offset-md-2">
@@ -38,7 +38,7 @@ export const ConnectPage = () => {
           </div>
         </div>
       </article>
-    </MainLayout>
+    </MainWrap>
   )
 }
 

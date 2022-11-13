@@ -12,6 +12,8 @@ import { Icon } from '../Nav/Icon'
 interface SliderProps {
   title?: string
   articles: Shout[]
+  slidesPerView?: number
+  isCardsWithCover?: boolean
 }
 
 export default (props: SliderProps) => {
@@ -19,12 +21,14 @@ export default (props: SliderProps) => {
   let pagEl: HTMLDivElement | undefined
   let nextEl: HTMLDivElement | undefined
   let prevEl: HTMLDivElement | undefined
+
+  const isCardsWithCover = typeof props.isCardsWithCover === 'boolean' ? props.isCardsWithCover : true
+
   const opts: SwiperOptions = {
     roundLengths: true,
     loop: true,
     centeredSlides: true,
     slidesPerView: 1,
-    spaceBetween: 8,
     modules: [Navigation, Pagination],
     speed: 500,
     navigation: { nextEl, prevEl },
@@ -35,7 +39,12 @@ export default (props: SliderProps) => {
     },
     breakpoints: {
       768: {
-        slidesPerView: 1.66666
+        slidesPerView: props.slidesPerView > 0 ? props.slidesPerView : 1.66666,
+        spaceBetween: isCardsWithCover ? 8 : 26
+      },
+      992: {
+        slidesPerView: props.slidesPerView > 0 ? props.slidesPerView : 1.66666,
+        spaceBetween: isCardsWithCover ? 8 : 52
       }
     }
   }
@@ -49,12 +58,13 @@ export default (props: SliderProps) => {
     }
   })
   const articles = createMemo(() => props.articles)
+
   return (
     <div class="floor floor--important">
       <div class="wide-container row">
         <h2 class="col-12">{props.title}</h2>
         <Show when={!!articles()}>
-          <div class="swiper" ref={el}>
+          <div class="swiper" classList={{ 'cards-with-cover': isCardsWithCover }} ref={el}>
             <div class="swiper-wrapper">
               <For each={articles()}>
                 {(a: Shout) => (
@@ -63,7 +73,7 @@ export default (props: SliderProps) => {
                     settings={{
                       additionalClass: 'swiper-slide',
                       isFloorImportant: true,
-                      isWithCover: true,
+                      isWithCover: isCardsWithCover,
                       nodate: true
                     }}
                   />

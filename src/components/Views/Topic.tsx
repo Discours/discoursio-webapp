@@ -26,7 +26,7 @@ interface TopicProps {
   topicSlug: string
 }
 
-export const PRERENDERED_ARTICLES_COUNT = 21
+export const PRERENDERED_ARTICLES_COUNT = 28
 const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: TopicProps) => {
@@ -112,7 +112,7 @@ export const TopicView = (props: TopicProps) => {
         </div>
 
         <Row1 article={sortedArticles()[0]} />
-        <Row2 articles={sortedArticles().slice(1, 3)} />
+        <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} />
 
         <Beside
           title={t('Topic is supported by')}
@@ -131,11 +131,18 @@ export const TopicView = (props: TopicProps) => {
         />
 
         <Show when={sortedArticles().length > 5}>
-          <Row3 articles={sortedArticles().slice(13, 16)} />
-          <Row2 articles={sortedArticles().slice(16, 18)} />
-          <Row3 articles={sortedArticles().slice(18, 21)} />
-          <Row3 articles={sortedArticles().slice(21, 24)} />
-          <Row3 articles={sortedArticles().slice(24, 27)} />
+          <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
+          <Row1 article={sortedArticles()[15]} />
+
+          <Slider
+            title={title()}
+            articles={sortedArticles().slice(16, 22)}
+            slidesPerView={3}
+            isCardsWithCover={false}
+          />
+
+          <Row3 articles={sortedArticles().slice(23, 26)} />
+          <Row2 articles={sortedArticles().slice(26, 28)} />
         </Show>
 
         <For each={pages()}>

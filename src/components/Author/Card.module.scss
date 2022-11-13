@@ -15,7 +15,7 @@
 .authorDetails {
   display: flex;
   flex: 1;
-  //padding-right: 1.2rem;
+  // padding-right: 1.2rem;
   width: max-content;
 
   @include media-breakpoint-down(sm) {
@@ -242,6 +242,7 @@
 .authorsListItem {
   .authorName {
     @include font-size(2.2rem);
+
     font-weight: bold;
   }
 

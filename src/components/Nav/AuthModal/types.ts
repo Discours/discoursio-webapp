@@ -3,3 +3,7 @@ export type AuthModalMode = 'login' | 'register' | 'confirm-email' | 'forgot-pas
 export type AuthModalSearchParams = {
   mode: AuthModalMode
 }
+
+export type ConfirmEmailSearchParams = {
+  token: string
+}

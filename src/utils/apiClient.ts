@@ -1,4 +1,12 @@
-import type { Reaction, Shout, FollowingEntity, AuthResult, ShoutInput } from '../graphql/types.gen'
+import type {
+  Reaction,
+  Shout,
+  FollowingEntity,
+  AuthResult,
+  ShoutInput,
+  Topic,
+  Author
+} from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
@@ -25,10 +33,11 @@ import authorsAll from '../graphql/query/authors-all'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
-import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/my-chats'
+import authorBySlug from '../graphql/query/author-by-slug'
+import topicBySlug from '../graphql/query/topic-by-slug'
 
 const FEED_SIZE = 50
 
@@ -44,7 +53,7 @@ export class ApiError extends Error {
 }
 
 export const apiClient = {
-  authLogin: async ({ email, password }): Promise<AuthResult> => {
+  authLogin: async ({ email, password }: { email: string; password: string }): Promise<AuthResult> => {
     const response = await publicGraphQLClient.query(authLoginQuery, { email, password }).toPromise()
     // console.debug('[api-client] authLogin', { response })
     if (response.error) {
@@ -98,6 +107,11 @@ export const apiClient = {
   authSendLink: async ({ email, lang }) => {
     // send link with code on email
     const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email, lang }).toPromise()
+
+    if (response.error) {
+      throw new ApiError('unknown', response.error.message)
+    }
+
     return response.data.sendLink
   },
   confirmEmail: async ({ token }: { token: string }) => {
@@ -241,7 +255,6 @@ export const apiClient = {
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
 
     if (response.error) {
-      // TODO
       throw new ApiError('unknown', response.error.message)
     }
 
@@ -274,9 +287,13 @@ export const apiClient = {
     }
     return response.data.authorsAll
   },
-  getAuthor: async ({ slug }: { slug: string }) => {
-    const response = await publicGraphQLClient.query(authorsBySlugs, { slugs: [slug] }).toPromise()
-    return response.data.getUsersBySlugs
+  getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
+    const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
+    return response.data.getAuthor
+  },
+  getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
+    const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
+    return response.data.getTopic
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
     const response = await publicGraphQLClient.query(articleBySlug, { slug }).toPromise()
@@ -303,10 +320,6 @@ export const apiClient = {
       .toPromise()
 
     return response.data.reactionsForShouts
-  },
-  getAuthorsBySlugs: async ({ slugs }) => {
-    const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()
-    return response.data.getUsersBySlugs
   },
   createArticle: async ({ article }: { article: ShoutInput }) => {
     const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()

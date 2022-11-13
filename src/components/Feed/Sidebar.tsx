@@ -1,12 +1,12 @@
 import { For } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-import { useAuthStore } from '../../stores/auth'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { t } from '../../utils/intl'
 import { Icon } from '../Nav/Icon'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useArticlesStore } from '../../stores/zine/articles'
 import { useSeenStore } from '../../stores/zine/seen'
+import { useAuth } from '../../context/auth'
 
 type FeedSidebarProps = {
   authors: Author[]
@@ -14,7 +14,7 @@ type FeedSidebarProps = {
 
 export const FeedSidebar = (props: FeedSidebarProps) => {
   const { getSeen: seen } = useSeenStore()
-  const { session } = useAuthStore()
+  const { session } = useAuth()
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
   const { topicEntities } = useTopicsStore()

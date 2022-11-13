@@ -5,10 +5,10 @@ import styles from './Card.module.scss'
 import { createMemo, For, Show } from 'solid-js'
 import { translit } from '../../utils/ru2en'
 import { t } from '../../utils/intl'
-import { useAuthStore } from '../../stores/auth'
 import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
+import { useAuth } from '../../context/auth'
 
 interface AuthorCardProps {
   compact?: boolean
@@ -23,7 +23,7 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
-  const { session } = useAuthStore()
+  const { session } = useAuth()
 
   const subscribed = createMemo<boolean>(
     () => session()?.news?.authors?.some((u) => u === props.author.slug) || false

@@ -27,7 +27,6 @@ const options: ClientOptions = {
     // меняем через setToken, например при получении значения с сервера
     // скорее всего придумаем что-нибудь получше со временем
     const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
-
     const headers = { Auth: token }
     return { headers }
   },

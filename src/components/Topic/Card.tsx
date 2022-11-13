@@ -5,10 +5,10 @@ import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
-import { useAuthStore } from '../../stores/auth'
 import { follow, unfollow } from '../../stores/zine/common'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
+import { useAuth } from '../../context/auth'
 
 const log = getLogger('TopicCard')
 
@@ -24,7 +24,7 @@ interface TopicProps {
 }
 
 export const TopicCard = (props: TopicProps) => {
-  const { session } = useAuthStore()
+  const { session } = useAuth()
 
   const subscribed = createMemo(() => {
     if (!session()?.user?.slug || !session()?.news?.topics) {

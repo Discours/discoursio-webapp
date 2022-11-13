@@ -6,8 +6,8 @@ import { useRouter } from '../../../stores/router'
 import { email, setEmail } from './sharedLogic'
 import type { AuthModalSearchParams } from './types'
 import { isValidEmail } from './validators'
-import { signSendLink } from '../../../stores/auth'
 import { locale } from '../../../stores/ui'
+import { signSendLink } from '../../../context/auth'
 
 type FormFields = {
   email: string

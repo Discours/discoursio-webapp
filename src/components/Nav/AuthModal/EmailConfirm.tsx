@@ -4,14 +4,14 @@ import { t } from '../../../utils/intl'
 import { hideModal } from '../../../stores/ui'
 import { createMemo, onMount, Show } from 'solid-js'
 import { useRouter } from '../../../stores/router'
-import { confirmEmail, useAuthStore } from '../../../stores/auth'
-
-type ConfirmEmailSearchParams = {
-  token: string
-}
+import type { ConfirmEmailSearchParams } from './types'
+import { useAuth } from '../../../context/auth'
 
 export const EmailConfirm = () => {
-  const { session } = useAuthStore()
+  const {
+    session,
+    actions: { confirmEmail }
+  } = useAuth()
 
   const confirmedEmail = createMemo(() => session()?.user?.email || '')
 

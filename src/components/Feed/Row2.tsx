@@ -8,7 +8,7 @@ const x = [
   ['8', '4']
 ]
 
-export const Row2 = (props: { articles: Shout[] }) => {
+export const Row2 = (props: { articles: Shout[]; isEqual?: boolean }) => {
   const [y, setY] = createSignal(0)
 
   createComputed(() => setY(Math.floor(Math.random() * x.length)))
@@ -20,8 +20,11 @@ export const Row2 = (props: { articles: Shout[] }) => {
           {(a, i) => {
             return (
               <Show when={!!a}>
-                <div class={`col-md-${x[y()][i()]}`}>
-                  <ArticleCard article={a} settings={{ isWithCover: x[y()][i()] === '8' }} />
+                <div class={`col-md-${props.isEqual ? '6' : x[y()][i()]}`}>
+                  <ArticleCard
+                    article={a}
+                    settings={{ isWithCover: props.isEqual || x[y()][i()] === '8' }}
+                  />
                 </div>
               </Show>
             )

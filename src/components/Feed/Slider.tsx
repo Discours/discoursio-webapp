@@ -71,10 +71,10 @@ export default (props: SliderProps) => {
               </For>
             </div>
             <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
-              <Icon name="slider-arrow" />
+              <Icon name="slider-arrow" class={'icon'} />
             </div>
             <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
-              <Icon name="slider-arrow" />
+              <Icon name="slider-arrow" class={'icon'} />
             </div>
             <div class="slider-pagination" ref={pagEl} />
           </div>

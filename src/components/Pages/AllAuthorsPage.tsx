@@ -1,4 +1,4 @@
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 import { AllAuthorsView } from '../Views/AllAuthors'
 import type { PageProps } from '../types'
 import { createSignal, onMount, Show } from 'solid-js'
@@ -18,11 +18,11 @@ export const AllAuthorsPage = (props: PageProps) => {
   })
 
   return (
-    <MainWrap>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <AllAuthorsView authors={props.allAuthors} />
       </Show>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

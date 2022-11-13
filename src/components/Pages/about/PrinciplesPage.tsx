@@ -1,10 +1,10 @@
-import { MainWrap } from '../../Wrap/MainWrap'
+import { PageWrap } from '../../Wraps/PageWrap'
 import { t } from '../../../utils/intl'
 
 export const PrinciplesPage = () => {
   const title = t('Principles')
   return (
-    <MainWrap>
+    <PageWrap>
       <article class="container container--static-page">
         <div class="row">
           <div class="col-md-6 col-xl-7 shift-content order-md-first">
@@ -172,7 +172,7 @@ export const PrinciplesPage = () => {
           </div>
         </div>
       </article>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

@@ -1,4 +1,4 @@
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 import { FeedView } from '../Views/Feed'
 import { onCleanup } from 'solid-js'
 import { resetSortedArticles } from '../../stores/zine/articles'
@@ -7,9 +7,9 @@ export const FeedPage = () => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainWrap>
+    <PageWrap>
       <FeedView />
-    </MainWrap>
+    </PageWrap>
   )
 }
 

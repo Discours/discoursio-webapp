@@ -1,5 +1,5 @@
 import { HomeView, PRERENDERED_ARTICLES_COUNT } from '../Views/Home'
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadPublishedArticles, resetSortedArticles } from '../../stores/zine/articles'
@@ -7,7 +7,7 @@ import { loadRandomTopics } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
 
 export const HomePage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeArticles) && Boolean(props.randomTopics))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.randomTopics))
 
   onMount(async () => {
     if (isLoaded()) {
@@ -23,11 +23,11 @@ export const HomePage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainWrap>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.homeArticles || []} />
+        <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.shouts || []} />
       </Show>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

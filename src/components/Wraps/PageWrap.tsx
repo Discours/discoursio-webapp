@@ -5,14 +5,14 @@ import { Footer } from '../Discours/Footer'
 import '../../styles/app.scss'
 import { Show } from 'solid-js'
 
-type MainWrapProps = {
+type PageWrapProps = {
   headerTitle?: string
   children: JSX.Element
   isHeaderFixed?: boolean
   hideFooter?: boolean
 }
 
-export const MainWrap = (props: MainWrapProps) => {
+export const PageWrap = (props: PageWrapProps) => {
   const isHeaderFixed = props.isHeaderFixed !== undefined ? props.isHeaderFixed : true
 
   return (

@@ -71,16 +71,16 @@ export const LayoutView = (props: LayoutProps) => {
         <div class="col-md-8">
           <ul class="view-switcher">
             <li classList={{ selected: searchParams().layout === 'audio' }}>
-              <a href="/layout/audio">{t('Audio')}</a>
+              <a href="/expo/audio">{t('Audio')}</a>
             </li>
             <li classList={{ selected: searchParams().layout === 'video' }}>
-              <a href="/layout/video">{t('Video')}</a>
+              <a href="/expo/video">{t('Video')}</a>
             </li>
             <li classList={{ selected: searchParams().layout === 'artworks' }}>
-              <a href="/layout/artworks">{t('Artworks')}</a>
+              <a href="/expo/artworks">{t('Artworks')}</a>
             </li>
             <li classList={{ selected: searchParams().layout === 'literature' || !searchParams().layout }}>
-              <a href="/layout/literature">{t('Literature')}</a>
+              <a href="/expo/literature">{t('Literature')}</a>
             </li>
           </ul>
         </div>

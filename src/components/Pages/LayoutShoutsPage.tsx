@@ -1,4 +1,4 @@
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 import { LayoutView } from '../Views/LayoutView'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -37,11 +37,11 @@ export const LayoutShoutsPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainWrap>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <LayoutView layout={layout()} shouts={props.shouts} />
       </Show>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

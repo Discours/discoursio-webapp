@@ -1,4 +1,4 @@
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../Views/Author'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -8,7 +8,7 @@ import { loadAuthor } from '../../stores/zine/authors'
 import { Loading } from '../Loading'
 
 export const AuthorPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.authorArticles) && Boolean(props.author))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.author))
 
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()
@@ -36,11 +36,11 @@ export const AuthorPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainWrap>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <AuthorView author={props.author} authorArticles={props.authorArticles} authorSlug={slug()} />
+        <AuthorView author={props.author} authorArticles={props.shouts} authorSlug={slug()} />
       </Show>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

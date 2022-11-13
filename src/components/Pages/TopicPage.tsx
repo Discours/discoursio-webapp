@@ -1,4 +1,4 @@
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../Views/Topic'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -8,7 +8,7 @@ import { loadTopic } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
 
 export const TopicPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.authorArticles) && Boolean(props.author))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.author))
 
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()
@@ -36,11 +36,11 @@ export const TopicPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainWrap>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <TopicView topic={props.topic} topicArticles={props.topicArticles} topicSlug={slug()} />
+        <TopicView topic={props.topic} topicArticles={props.shouts} topicSlug={slug()} />
       </Show>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

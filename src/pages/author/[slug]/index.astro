@@ -1,13 +1,13 @@
 ---
 import { Root } from '../../../components/Root'
-import Zine from '../../../layouts/zine.astro'
+import Zine from '../../../main.astro'
 import { apiClient } from '../../../utils/apiClient'
 import { initRouter } from '../../../stores/router'
 import { PRERENDERED_ARTICLES_COUNT } from '../../../components/Views/Author'
 
 const slug = Astro.params.slug.toString()
-const articles = await apiClient.getArticlesForAuthors({ authorSlugs: [slug], limit: PRERENDERED_ARTICLES_COUNT })
-const author = articles[0].authors.find((a) => a.slug === slug)
+const shouts = await apiClient.getArticlesForAuthors({ authorSlugs: [slug], limit: PRERENDERED_ARTICLES_COUNT })
+const author = shouts[0].authors.find((a) => a.slug === slug)
 
 const { pathname, search } = Astro.url
 initRouter(pathname, search)
@@ -16,5 +16,5 @@ Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate'
 ---
 
 <Zine>
-  <Root authorArticles={articles} author={author} client:load />
+  <Root shouts={shouts} author={author} client:load />
 </Zine>

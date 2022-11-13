@@ -1,5 +1,5 @@
 ---
-import Zine from '../layouts/zine.astro'
+import Zine from '../main.astro'
 import { Root } from '../components/Root'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
@@ -15,6 +15,6 @@ Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate'
 ---
 
 <Zine>
-  <Root randomTopics={randomTopics} homeArticles={articles} client:load />
+  <Root randomTopics={randomTopics} shouts={articles} client:load />
 </Zine>
 

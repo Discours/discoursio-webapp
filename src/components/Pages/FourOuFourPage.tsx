@@ -1,11 +1,11 @@
 import { FourOuFourView } from '../Views/FourOuFour'
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 
 export const FourOuFourPage = () => {
   return (
-    <MainWrap isHeaderFixed={false} hideFooter={true}>
+    <PageWrap isHeaderFixed={false} hideFooter={true}>
       <FourOuFourView />
-    </MainWrap>
+    </PageWrap>
   )
 }
 

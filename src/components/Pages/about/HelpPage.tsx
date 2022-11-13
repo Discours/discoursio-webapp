@@ -1,5 +1,5 @@
 import { createSignal, Show } from 'solid-js'
-import { MainWrap } from '../../Wrap/MainWrap'
+import { PageWrap } from '../../Wraps/PageWrap'
 import { Donate } from '../../Discours/Donate'
 import { Icon } from '../../Nav/Icon'
 
@@ -11,7 +11,7 @@ export const HelpPage = () => {
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
-    <MainWrap>
+    <PageWrap>
       {/*<Meta name="description">Здесь можно поддержать Дискурс материально.</Meta>*/}
       {/*<Meta name="keywords">Discours.io, помощь, благотворительность</Meta>*/}
 
@@ -161,7 +161,7 @@ export const HelpPage = () => {
           </div>
         </div>
       </article>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

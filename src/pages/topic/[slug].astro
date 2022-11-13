@@ -1,12 +1,12 @@
 ---
 import { Root } from '../../components/Root'
-import Zine from '../../layouts/zine.astro'
+import Zine from '../../main.astro'
 import { apiClient } from '../../utils/apiClient'
 import { PRERENDERED_ARTICLES_COUNT } from '../../components/Views/Topic'
 
 const slug = Astro.params.slug?.toString() || ''
-const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: PRERENDERED_ARTICLES_COUNT })
-const topic = articles[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
+const shouts = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: PRERENDERED_ARTICLES_COUNT })
+const topic = shouts[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
 
 import { initRouter } from '../../stores/router'
 
@@ -17,5 +17,5 @@ Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate'
 ---
 
 <Zine>
-  <Root topicArticles={articles} topic={topic} client:load />
+  <Root shouts={shouts} topic={topic} client:load />
 </Zine>

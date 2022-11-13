@@ -1,6 +1,7 @@
 [0.6.0]
 [+] hybrid routing ssr/spa
-[+] layout pages
+[+] 'expo' pages
+[-] layout term usage with an exception
 [-] nanostores
 [+] inbox
 [+] css modules

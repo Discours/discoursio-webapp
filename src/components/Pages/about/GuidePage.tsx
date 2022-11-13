@@ -1,5 +1,5 @@
 import { createSignal, Show } from 'solid-js'
-import { MainWrap } from '../../Wrap/MainWrap'
+import { PageWrap } from '../../Wraps/PageWrap'
 import { t } from '../../../utils/intl'
 import { Icon } from '../../Nav/Icon'
 
@@ -11,7 +11,7 @@ export const GuidePage = () => {
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
-    <MainWrap>
+    <PageWrap>
       {/*<Meta name="description" content={title} />*/}
       {/*<Meta name="keywords" content={t('Discours') + ',' + title} />*/}
       {/*<Meta property="og:title" content={title} />*/}
@@ -283,7 +283,7 @@ export const GuidePage = () => {
           </div>
         </div>
       </article>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

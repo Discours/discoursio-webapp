@@ -1,5 +1,5 @@
 import { createSignal, Show } from 'solid-js'
-import { MainWrap } from '../../Wrap/MainWrap'
+import { PageWrap } from '../../Wraps/PageWrap'
 import { Modal } from '../../Nav/Modal'
 import { Feedback } from '../../Discours/Feedback'
 import Subscribe from '../../Discours/Subscribe'
@@ -14,7 +14,7 @@ export const ManifestPage = () => {
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
-    <MainWrap>
+    <PageWrap>
       <Modal name="feedback">
         <Feedback />
       </Modal>
@@ -191,7 +191,7 @@ export const ManifestPage = () => {
           </div>
         </div>
       </article>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

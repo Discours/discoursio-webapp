@@ -1,4 +1,4 @@
-import { MainWrap } from '../Wrap/MainWrap'
+import { PageWrap } from '../Wraps/PageWrap'
 import { SearchView } from '../Views/Search'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -33,11 +33,11 @@ export const SearchPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainWrap>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <SearchView results={props.searchResults || []} query={props.searchQuery} />
       </Show>
-    </MainWrap>
+    </PageWrap>
   )
 }
 

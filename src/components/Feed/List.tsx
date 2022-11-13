@@ -42,7 +42,7 @@ export default (props: ArticleListProps) => {
 
   return (
     <Suspense fallback={<div class="article-preview">{t('Loading')}</div>}>
-      <For each={[...Array.from({ length: Math.floor(articles().length / 6) }).keys()]}>
+      <For each={[...Array(Math.floor(articles().length / 6)).keys()]}>
         {() => <Block6 articles={articles().slice(0, Math.min(6, articles().length))} />}
       </For>
       <a href={''} onClick={handleMore} classList={{ disabled: loadingMore() }}>

@@ -10,8 +10,8 @@ const [sortedLayoutShouts, setSortedLayoutShouts] = createSignal<Map<LayoutType,
 const addLayoutShouts = (layout: LayoutType, shouts: Shout[]) => {
   setSortedLayoutShouts((prevSorted: Map<LayoutType, Shout[]>) => {
     const siblings = prevSorted.get(layout)
-    if (Boolean(siblings)) {
-      const uniqued = Array.from(new Set([...siblings, ...shouts]))
+    if (siblings) {
+      const uniqued = [...new Set([...siblings, ...shouts])]
       prevSorted.set(layout, uniqued)
     }
     return prevSorted

@@ -1,10 +1,10 @@
 import { PageWrap } from '../Wraps/PageWrap'
-import { LayoutView } from '../Views/LayoutView'
+import { LayoutType, LayoutView } from '../Views/LayoutView'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
-import { loadLayoutShouts } from '../../stores/zine/layouts'
+import { loadRecentLayoutShouts } from '../../stores/zine/layouts'
 import { Loading } from '../Loading'
 
 const PER_PAGE = 50
@@ -12,7 +12,7 @@ const PER_PAGE = 50
 export const LayoutShoutsPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts))
 
-  const layout = createMemo(() => {
+  const layout = createMemo<LayoutType>(() => {
     const { page: getPage } = useRouter()
 
     const page = getPage()
@@ -21,7 +21,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
       throw new Error('ts guard')
     }
 
-    return page.params.layout
+    return page.params.layout as LayoutType
   })
 
   onMount(async () => {
@@ -29,7 +29,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
       return
     }
 
-    await loadLayoutShouts({ layout: layout(), amount: PER_PAGE, offset: 0 })
+    await loadRecentLayoutShouts({ layout: layout(), amount: PER_PAGE, offset: 0 })
 
     setIsLoaded(true)
   })
@@ -39,7 +39,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
   return (
     <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <LayoutView layout={layout()} shouts={props.shouts} />
+        <LayoutView layout={layout() as LayoutType} shouts={props.shouts} />
       </Show>
     </PageWrap>
   )

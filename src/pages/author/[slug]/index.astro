@@ -1,6 +1,6 @@
 ---
 import { Root } from '../../../components/Root'
-import Zine from '../../../main.astro'
+import Prerendered from '../../../main.astro'
 import { apiClient } from '../../../utils/apiClient'
 import { initRouter } from '../../../stores/router'
 import { PRERENDERED_ARTICLES_COUNT } from '../../../components/Views/Author'
@@ -15,6 +15,6 @@ initRouter(pathname, search)
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
-<Zine>
+<Prerendered>
   <Root shouts={shouts} author={author} client:load />
-</Zine>
+</Prerendered>

@@ -1,5 +1,5 @@
 ---
-import Zine from '../main.astro'
+import Prerendered from '../main.astro'
 import { Root } from '../components/Root'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
@@ -10,6 +10,6 @@ const { pathname, search } = Astro.url
 initRouter(pathname, search)
 ---
 
-<Zine>
+<Prerendered>
   <Root chats={chatrooms} client:load />
-</Zine>
+</Prerendered>

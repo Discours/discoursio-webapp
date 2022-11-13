@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsForLayoutQuery($amount: Int, $offset: Int, $layout: String) {
-    shoutsByLayout(amount: $amount, offset: $offset, layout: $layout) {
+  query TopMonthShoutsForLayout($layout: String!, $amount: Int, $offset: Int) {
+    topMonthLayoutShouts(layout: $layout, amount: $amount, offset: $offset) {
       _id: slug
       title
       subtitle

@@ -6,7 +6,7 @@ import { handleClientRouteLinkClick } from '../../stores/router'
 //   by: '' | 'topics' | 'authors' | 'reacted'
 // }
 
-export const FeedSettingsView = () => {
+export const FeedSettingsView = (_props) => {
   return (
     <div class="container">
       <h1>{t('Feed settings')}</h1>

@@ -1,5 +1,5 @@
 ---
-import Zine from '../../main.astro'
+import Prerendered from '../../main.astro'
 import { Root } from '../../components/Root'
 import { initRouter } from '../../stores/router'
 
@@ -13,6 +13,6 @@ Astro.response.headers.set(
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
-<Zine>
+<Prerendered>
   <Root client:load />
-</Zine>
+</Prerendered>

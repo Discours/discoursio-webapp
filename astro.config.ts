@@ -2,7 +2,7 @@ import { defineConfig, AstroUserConfig } from 'astro/config'
 import vercel from '@astrojs/vercel/serverless'
 import solidJs from '@astrojs/solid-js'
 import type { CSSOptions } from 'vite'
-import { generateScopedNameDefault } from 'postcss-modules/build/scoping'
+import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
 import { visualizer } from 'rollup-plugin-visualizer'
 
@@ -16,7 +16,7 @@ const getDevCssClassPrefix = (filename: string): string => {
 }
 
 const devGenerateScopedName = (name: string, filename: string, css: string) =>
-  getDevCssClassPrefix(filename) + '_' + generateScopedNameDefault(name, filename, css)
+  getDevCssClassPrefix(filename) + '_' + defaultGenerateScopedName(name, filename, css)
 
 const css: CSSOptions = {
   preprocessorOptions: {
@@ -25,7 +25,7 @@ const css: CSSOptions = {
     }
   },
   modules: {
-    generateScopedName: isDev ? devGenerateScopedName : generateScopedNameDefault,
+    generateScopedName: isDev ? devGenerateScopedName : defaultGenerateScopedName,
     localsConvention: null
   }
 }
@@ -67,7 +67,7 @@ const astroConfig: AstroUserConfig = {
           }
           */
         },
-        external: ['@aws-sdk/clients/s3']
+        external: []
       }
     },
     css

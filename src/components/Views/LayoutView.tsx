@@ -5,21 +5,18 @@ import { Row2 } from '../Feed/Row2'
 import { Beside } from '../Feed/Beside'
 import styles from '../../styles/Topic.module.scss'
 import { t } from '../../utils/intl'
-import { useRouter } from '../../stores/router'
-import { useArticlesStore } from '../../stores/zine/articles'
+import { useLayoutsStore } from '../../stores/zine/layouts'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { clsx } from 'clsx'
 import Slider from '../Feed/Slider'
 import { Row1 } from '../Feed/Row1'
-import { loadLayoutShouts } from '../../stores/zine/layouts'
+import { loadRecentLayoutShouts } from '../../stores/zine/layouts'
 
-type LayoutPageSearchParams = {
-  layout: 'audio' | 'video' | 'image' | 'literature'
-}
+export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
 interface LayoutProps {
-  layout: string
+  layout: LayoutType
   shouts: Shout[]
 }
 
@@ -27,34 +24,30 @@ export const PRERENDERED_ARTICLES_COUNT = 21
 const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const LayoutView = (props: LayoutProps) => {
-  const { searchParams, changeSearchParam } = useRouter<LayoutPageSearchParams>()
-
+  const layout = createMemo<LayoutType>(() => props.layout)
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
-  const { sortedArticles } = useArticlesStore({ sortedArticles: props.shouts })
-  const layout = createMemo(() => props.layout)
-
-  const loadMoreLayout = async (kind: string) => {
+  const { sortedLayoutShouts } = useLayoutsStore(layout(), props.shouts)
+  const sortedArticles = createMemo(() => sortedLayoutShouts().get(layout()))
+  const loadMoreLayout = async (kind: LayoutType) => {
     saveScrollPosition()
 
-    const { hasMore } = await loadLayoutShouts({
+    const { hasMore } = await loadRecentLayoutShouts({
       layout: kind,
       amount: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })
     setIsLoadMoreButtonVisible(hasMore)
-
     restoreScrollPosition()
   }
 
   onMount(async () => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMoreLayout(searchParams().layout)
+      loadMoreLayout(layout())
     }
   })
 
   const title = createMemo(() => {
-    const l = searchParams().layout
+    const l = layout()
     if (l === 'audio') return t('Audio')
     if (l === 'video') return t('Video')
     if (l === 'image') return t('Artworks')
@@ -70,16 +63,16 @@ export const LayoutView = (props: LayoutProps) => {
       <div class={clsx(styles.groupControls, 'row group__controls')}>
         <div class="col-md-8">
           <ul class="view-switcher">
-            <li classList={{ selected: searchParams().layout === 'audio' }}>
+            <li classList={{ selected: layout() === 'audio' }}>
               <a href="/expo/audio">{t('Audio')}</a>
             </li>
-            <li classList={{ selected: searchParams().layout === 'video' }}>
+            <li classList={{ selected: layout() === 'video' }}>
               <a href="/expo/video">{t('Video')}</a>
             </li>
-            <li classList={{ selected: searchParams().layout === 'image' }}>
+            <li classList={{ selected: layout() === 'image' }}>
               <a href="/expo/image">{t('Artworks')}</a>
             </li>
-            <li classList={{ selected: searchParams().layout === 'literature' || !searchParams().layout }}>
+            <li classList={{ selected: layout() === 'literature' }}>
               <a href="/expo/literature">{t('Literature')}</a>
             </li>
           </ul>
@@ -129,7 +122,7 @@ export const LayoutView = (props: LayoutProps) => {
 
         <Show when={isLoadMoreButtonVisible()}>
           <p class="load-more-container">
-            <button class="button" onClick={() => loadMoreLayout(searchParams().layout)}>
+            <button class="button" onClick={() => loadMoreLayout(layout())}>
               {t('Load more')}
             </button>
           </p>

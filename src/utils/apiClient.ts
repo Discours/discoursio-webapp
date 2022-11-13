@@ -29,7 +29,10 @@ import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/my-chats'
-import getLayout from '../graphql/query/articles-for-layout'
+import getRecentByLayout from '../graphql/query/layout-recent'
+import getTopByLayout from '../graphql/query/layout-top'
+import getTopMonthByLayout from '../graphql/query/layout-top-month'
+import type { LayoutType } from '../components/Views/LayoutView'
 
 const FEED_SIZE = 50
 
@@ -147,11 +150,13 @@ export const apiClient = {
   getSearchResults: async ({
     query,
     limit = FEED_SIZE,
-    offset = 0
+    offset = 0,
+    layout = 'literature'
   }: {
     query: string
     limit: number
     offset?: number
+    layout?: LayoutType
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
       .query(searchResults, {
@@ -336,8 +341,18 @@ export const apiClient = {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats
   },
-  getLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
-    const resp = await publicGraphQLClient.query(getLayout, { amount, offset, layout }).toPromise()
-    return resp.data.shoutsByLayout
+  getRecentLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(getRecentByLayout, { amount, offset, layout }).toPromise()
+    return resp.data.recentLayoutShouts
+  },
+  getTopLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(getTopByLayout, { amount, offset, layout }).toPromise()
+    return resp.data.topLayoutShouts
+  },
+  getTopMonthLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
+    const resp = await publicGraphQLClient
+      .query(getTopMonthByLayout, { amount, offset, layout })
+      .toPromise()
+    return resp.data.topMonthLayoutShouts
   }
 }

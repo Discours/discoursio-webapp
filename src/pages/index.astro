@@ -1,5 +1,5 @@
 ---
-import Zine from '../main.astro'
+import Prerendered from '../main.astro'
 import { Root } from '../components/Root'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
@@ -14,7 +14,7 @@ initRouter(pathname, search)
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
-<Zine>
+<Prerendered>
   <Root randomTopics={randomTopics} shouts={articles} client:load />
-</Zine>
+</Prerendered>
 

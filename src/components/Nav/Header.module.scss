@@ -118,6 +118,7 @@
 
 .usernav {
   display: inline-flex;
+  font-weight: 500;
   padding-right: 0;
   position: relative;
   width: auto;
@@ -484,7 +485,7 @@
   }
 }
 
-.userControlItemWritePost {
+.userControlItemVerbose {
   @include media-breakpoint-up(lg) {
     width: auto;
 

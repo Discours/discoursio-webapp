@@ -148,20 +148,22 @@ export const Header = (props: Props) => {
           </div>
           <div class={styles.usernav}>
             <div class={clsx(styles.userControl, styles.userControl, 'col')}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemWritePost)}>
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <a href="/create" onClick={handleClientRouteLinkClick}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil" class={styles.icon} />
                 </a>
               </div>
 
-              <div class={styles.userControlItem}>
-                <a href="#" onClick={handleBellIconClick}>
-                  <div>
-                    <Icon name="bell-white" counter={authorized() ? warnings().length : 1} />
-                  </div>
-                </a>
-              </div>
+              <Show when={authorized()}>
+                <div class={styles.userControlItem}>
+                  <a href="#" onClick={handleBellIconClick}>
+                    <div>
+                      <Icon name="bell-white" counter={authorized() ? warnings().length : 1} />
+                    </div>
+                  </a>
+                </div>
+              </Show>
 
               <Show when={visibleWarnings()}>
                 <div class={clsx(styles.userControlItem, 'notifications')}>
@@ -172,9 +174,11 @@ export const Header = (props: Props) => {
               <Show
                 when={authorized()}
                 fallback={
-                  <div class={clsx(styles.userControlItem, 'loginbtn')}>
+                  <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                     <a href="?modal=auth&mode=login" onClick={handleClientRouteLinkClick}>
-                      <Icon name="user-anonymous" />
+                      <span class={styles.textLabel}>{t('Enter')}</span>
+                      {/* TODO: заменить иконку */}
+                      <Icon name="inbox-white" class={styles.icon} counter={session()?.news?.unread || 0} />
                     </a>
                   </div>
                 }

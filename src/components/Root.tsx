@@ -44,7 +44,7 @@ type RootSearchParams = {
 }
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
-  layout: LayoutShoutsPage,
+  expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
   home: HomePage,

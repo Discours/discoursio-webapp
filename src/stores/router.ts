@@ -25,7 +25,7 @@ export interface Routes {
   projects: void
   termsOfUse: void
   thanks: void
-  layout: 'layout'
+  expo: 'layout'
 }
 
 const searchParamsStore = createSearchParams()
@@ -51,7 +51,7 @@ const routerStore = createRouter<Routes>(
     projects: '/about/projects',
     termsOfUse: '/about/terms-of-use',
     thanks: '/about/thanks',
-    layout: 'layout/:layout'
+    expo: '/expo/:layout'
   },
   {
     search: false,

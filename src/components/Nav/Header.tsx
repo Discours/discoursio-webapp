@@ -177,8 +177,7 @@ export const Header = (props: Props) => {
                   <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                     <a href="?modal=auth&mode=login" onClick={handleClientRouteLinkClick}>
                       <span class={styles.textLabel}>{t('Enter')}</span>
-                      {/* TODO: заменить иконку */}
-                      <Icon name="inbox-white" class={styles.icon} counter={session()?.news?.unread || 0} />
+                      <Icon name="user-anonymous" class={styles.icon} />
                     </a>
                   </div>
                 }

@@ -6,14 +6,14 @@ import { t } from '../../utils/intl'
 import { Icon } from '../Nav/Icon'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useArticlesStore } from '../../stores/zine/articles'
-import { useSeenStore } from '../../stores/zine/seen'
+import { seen } from '../../stores/zine/seen'
 
 type FeedSidebarProps = {
   authors: Author[]
 }
 
 export const FeedSidebar = (props: FeedSidebarProps) => {
-  const { getSeen: seen } = useSeenStore()
+  const getSeen = seen
   const { session } = useAuthStore()
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()

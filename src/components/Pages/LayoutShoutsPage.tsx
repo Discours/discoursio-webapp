@@ -17,7 +17,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
 
     const page = getPage()
 
-    if (page.route !== 'layout') {
+    if (page.route !== 'expo') {
       throw new Error('ts guard')
     }
 

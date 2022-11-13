@@ -3,16 +3,14 @@ import { Root } from '../../components/Root'
 import Prerendered from '../../main.astro'
 import { apiClient } from '../../utils/apiClient'
 import { initRouter } from '../../stores/router'
+import type { LayoutType } from '../../stores/zine/layouts'
+import { Layout } from '../../components/EditorExample/components/Layout'
 
-const layout = Astro.params.layout?.toString()
-if (layout.endsWith('.map')) {
+const layout = (Astro.params.layout?.toString() || 'article') as LayoutType
+if (!layout || layout.endsWith('.map')) {
   return Astro.redirect('/404')
 }
-const LAYOUTS = ['literature', 'audio', 'video', 'artworks']
-if (!LAYOUTS.includes(layout)) {
-  return Astro.redirect('/404')
-}
-const shouts = await apiClient.getLayoutShouts({ layout })
+const shouts = await apiClient.getRecentLayoutShouts({ layout })
 const { pathname, search } = Astro.url
 initRouter(pathname, search)
 ---

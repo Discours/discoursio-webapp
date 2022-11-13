@@ -32,7 +32,7 @@ import myChats from '../graphql/query/my-chats'
 import getRecentByLayout from '../graphql/query/layout-recent'
 import getTopByLayout from '../graphql/query/layout-top'
 import getTopMonthByLayout from '../graphql/query/layout-top-month'
-import type { LayoutType } from '../components/Views/LayoutView'
+import type { LayoutType } from '../stores/zine/layouts'
 
 const FEED_SIZE = 50
 

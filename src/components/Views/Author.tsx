@@ -23,7 +23,7 @@ type AuthorProps = {
 }
 
 type AuthorPageSearchParams = {
-  by: '' | 'viewed' | 'rating' | 'commented' | 'recent'
+  by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'followed'
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -76,27 +76,21 @@ export const AuthorView = (props: AuthorProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: !searchParams().by || searchParams().by === 'recent' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
-                  {t('Recent')}
+              <li classList={{ selected: searchParams().by === 'rating' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
+                  {t('Popular')}
                 </button>
               </li>
-              {/*TODO: server sort*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'rating' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
-              {/*    {t('Popular')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'viewed' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
-              {/*    {t('Views')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'commented' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
-              {/*    {t('Discussing')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
+              <li classList={{ selected: searchParams().by === 'followed' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
+                  {t('Followers')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'commented' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
+                  {t('Discussing')}
+                </button>
+              </li>
             </ul>
           </div>
           <div class="col-md-4">

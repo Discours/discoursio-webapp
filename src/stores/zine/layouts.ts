@@ -2,8 +2,9 @@ import type { Shout } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { useArticlesStore } from './articles'
 import { createSignal } from 'solid-js'
-import type { LayoutType } from '../../components/Views/LayoutView'
 import { byCreated } from '../../utils/sortby'
+
+export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
 const [sortedLayoutShouts, setSortedLayoutShouts] = createSignal<Map<LayoutType, Shout[]>>(new Map())
 

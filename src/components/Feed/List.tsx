@@ -39,10 +39,12 @@ export default (props: ArticleListProps) => {
       setLoadingMore(false)
     }
   }
-
+  const x: number = Math.floor(articles().length / 6)
+  // eslint-disable-next-line unicorn/new-for-builtins
+  const numbers: number[] = [...Array(x).keys()]
   return (
     <Suspense fallback={<div class="article-preview">{t('Loading')}</div>}>
-      <For each={[...new Array(Math.floor(articles().length / 6)).keys()]}>
+      <For each={numbers}>
         {() => <Block6 articles={articles().slice(0, Math.min(6, articles().length))} />}
       </For>
       <a href={''} onClick={handleMore} classList={{ disabled: loadingMore() }}>

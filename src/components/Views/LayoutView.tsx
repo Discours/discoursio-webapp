@@ -15,7 +15,7 @@ import { Row1 } from '../Feed/Row1'
 import { loadLayoutShouts } from '../../stores/zine/layouts'
 
 type LayoutPageSearchParams = {
-  layout: 'audio' | 'video' | 'artworks' | 'literature'
+  layout: 'audio' | 'video' | 'image' | 'literature'
 }
 
 interface LayoutProps {
@@ -57,7 +57,7 @@ export const LayoutView = (props: LayoutProps) => {
     const l = searchParams().layout
     if (l === 'audio') return t('Audio')
     if (l === 'video') return t('Video')
-    if (l === 'artworks') return t('Artworks')
+    if (l === 'image') return t('Artworks')
     return t('Literature')
   })
 
@@ -76,8 +76,8 @@ export const LayoutView = (props: LayoutProps) => {
             <li classList={{ selected: searchParams().layout === 'video' }}>
               <a href="/expo/video">{t('Video')}</a>
             </li>
-            <li classList={{ selected: searchParams().layout === 'artworks' }}>
-              <a href="/expo/artworks">{t('Artworks')}</a>
+            <li classList={{ selected: searchParams().layout === 'image' }}>
+              <a href="/expo/image">{t('Artworks')}</a>
             </li>
             <li classList={{ selected: searchParams().layout === 'literature' || !searchParams().layout }}>
               <a href="/expo/literature">{t('Literature')}</a>

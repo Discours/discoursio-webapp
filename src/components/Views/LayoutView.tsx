@@ -34,11 +34,11 @@ export const LayoutView = (props: LayoutProps) => {
   const { sortedArticles } = useArticlesStore({ sortedArticles: props.shouts })
   const layout = createMemo(() => props.layout)
 
-  const loadMoreLayout = async (layout: string) => {
+  const loadMoreLayout = async (kind: string) => {
     saveScrollPosition()
 
     const { hasMore } = await loadLayoutShouts({
-      layout,
+      layout: kind,
       amount: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

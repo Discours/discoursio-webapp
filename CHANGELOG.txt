@@ -2,7 +2,7 @@
 [+] hybrid routing ssr/spa
 [+] 'expo' pages
 [-] layout term usage with an exception
-[-] nanostores
+[-] less nanostores
 [+] inbox
 [+] css modules
 [+] draft editor

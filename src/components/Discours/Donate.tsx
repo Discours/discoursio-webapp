@@ -59,7 +59,7 @@ export const Donate = () => {
     script.type = 'text/javascript'
     script.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js'
     script.async = true
-    script.onload = initiated
+    script.addEventListener('load', initiated)
     document.head.appendChild(script)
   })
 

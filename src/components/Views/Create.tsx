@@ -1,17 +1,11 @@
-import { Show, onMount, createSignal } from 'solid-js'
 import { Editor } from '../EditorNew/Editor'
+import { ClientContainer } from '../_shared/ClientContainer'
 
 export const CreateView = () => {
-  // don't render anything on server
-  // usage of isServer causing hydration errors
-  const [isMounted, setIsMounted] = createSignal(false)
-
-  onMount(() => setIsMounted(true))
-
   return (
-    <Show when={isMounted()}>
+    <ClientContainer>
       <Editor />
-    </Show>
+    </ClientContainer>
   )
 }
 

@@ -9,7 +9,8 @@ import { email, setEmail } from './sharedLogic'
 import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
 import { hideModal, locale } from '../../../stores/ui'
-import { signSendLink, useAuth } from '../../../context/auth'
+import { useSession } from '../../../context/session'
+import { signSendLink } from '../../../stores/auth'
 
 type FormFields = {
   email: string
@@ -28,7 +29,7 @@ export const LoginForm = () => {
 
   const {
     actions: { signIn }
-  } = useAuth()
+  } = useSession()
 
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
 

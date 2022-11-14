@@ -10,7 +10,7 @@ import { showModal } from '../../stores/ui'
 import { incrementView } from '../../stores/zine/articles'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 const MAX_COMMENT_LEVEL = 6
 
@@ -38,7 +38,7 @@ const formatDate = (date: Date) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
-  const { session } = useAuth()
+  const { session } = useSession()
 
   onMount(() => {
     incrementView({ articleSlug: props.article.slug })

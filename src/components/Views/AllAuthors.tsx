@@ -7,7 +7,7 @@ import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -23,7 +23,7 @@ export const AllAuthorsView = (props: Props) => {
   const { sortedAuthors } = useAuthorsStore({ authors: props.authors })
   const [limit, setLimit] = createSignal(PAGE_SIZE)
 
-  const { session } = useAuth()
+  const { session } = useSession()
 
   createEffect(() => {
     setAuthorsSort(searchParams().by || 'shouts')

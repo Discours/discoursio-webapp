@@ -1,6 +1,7 @@
-import { Popup, PopupProps } from './Popup'
-import styles from './Popup.module.scss'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
+import type { PopupProps } from '../_shared/Popup'
+import { Popup } from '../_shared/Popup'
+import styles from '../_shared/Popup.module.scss'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
@@ -8,7 +9,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
   const {
     session,
     actions: { signOut }
-  } = useAuth()
+  } = useSession()
 
   return (
     <Popup {...props} horizontalAnchor="right">

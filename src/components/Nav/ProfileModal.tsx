@@ -3,13 +3,13 @@ import type { Author } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { hideModal } from '../../stores/ui'
 import { createMemo, For } from 'solid-js'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 export const ProfileModal = () => {
   const {
     session,
     actions: { signOut }
-  } = useAuth()
+  } = useSession()
 
   const quit = () => {
     signOut()

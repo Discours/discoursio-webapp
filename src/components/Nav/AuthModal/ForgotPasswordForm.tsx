@@ -7,8 +7,8 @@ import { email, setEmail } from './sharedLogic'
 import type { AuthModalSearchParams } from './types'
 import { isValidEmail } from './validators'
 import { locale } from '../../../stores/ui'
-import { signSendLink } from '../../../context/auth'
 import { ApiError } from '../../../utils/apiClient'
+import { signSendLink } from '../../../stores/auth'
 
 type FormFields = {
   email: string

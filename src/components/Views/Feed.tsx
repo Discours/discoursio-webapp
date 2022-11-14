@@ -14,7 +14,7 @@ import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,
@@ -32,7 +32,7 @@ export const FeedView = () => {
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
-  const { session } = useAuth()
+  const { session } = useSession()
 
   const topReactions = createMemo(() => sortBy(reactions(), byCreated))
 

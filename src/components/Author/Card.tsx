@@ -8,7 +8,7 @@ import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 interface AuthorCardProps {
   compact?: boolean
@@ -23,7 +23,7 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
-  const { session } = useAuth()
+  const { session } = useSession()
 
   const subscribed = createMemo<boolean>(
     () => session()?.news?.authors?.some((u) => u === props.author.slug) || false

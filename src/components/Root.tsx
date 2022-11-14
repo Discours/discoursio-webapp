@@ -29,7 +29,7 @@ import { TermsOfUsePage } from './Pages/about/TermsOfUsePage'
 import { ThanksPage } from './Pages/about/ThanksPage'
 import { CreatePage } from './Pages/CreatePage'
 import { ConnectPage } from './Pages/ConnectPage'
-import { AuthProvider } from '../context/auth'
+import { SessionProvider } from '../context/session'
 
 // TODO: lazy load
 // const HomePage = lazy(() => import('./Pages/HomePage'))
@@ -103,8 +103,8 @@ export const Root = (props: PageProps) => {
   }
 
   return (
-    <AuthProvider>
+    <SessionProvider>
       <Dynamic component={pageComponent()} {...props} />
-    </AuthProvider>
+    </SessionProvider>
   )
 }

@@ -11,7 +11,7 @@ import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
 import { hideModal } from '../../../stores/ui'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
-import { register } from '../../../context/auth'
+import { register } from '../../../stores/auth'
 
 type FormFields = {
   name: string

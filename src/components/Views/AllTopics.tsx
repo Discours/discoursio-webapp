@@ -7,7 +7,7 @@ import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -28,7 +28,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     sortBy: searchParams().by || 'shouts'
   })
 
-  const { session } = useAuth()
+  const { session } = useSession()
 
   createEffect(() => {
     setTopicsSort(searchParams().by || 'shouts')

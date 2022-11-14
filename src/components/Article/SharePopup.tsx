@@ -1,7 +1,9 @@
 import { Icon } from '../Nav/Icon'
-import styles from '../Nav/Popup.module.scss'
 import { t } from '../../utils/intl'
-import { Popup, PopupProps } from '../Nav/Popup'
+
+import styles from '../_shared/Popup.module.scss'
+import type { PopupProps } from '../_shared/Popup'
+import { Popup } from '../_shared/Popup'
 
 type SharePopupProps = Omit<PopupProps, 'children'>
 

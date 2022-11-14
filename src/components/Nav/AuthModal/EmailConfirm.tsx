@@ -5,14 +5,14 @@ import { hideModal } from '../../../stores/ui'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { handleClientRouteLinkClick, useRouter } from '../../../stores/router'
 import type { ConfirmEmailSearchParams } from './types'
-import { useAuth } from '../../../context/auth'
 import { ApiError } from '../../../utils/apiClient'
+import { useSession } from '../../../context/session'
 
 export const EmailConfirm = () => {
   const {
     session,
     actions: { confirmEmail }
-  } = useAuth()
+  } = useSession()
 
   const [isTokenExpired, setIsTokenExpired] = createSignal(false)
   const [isTokenInvalid, setIsTokenInvalid] = createSignal(false)

@@ -9,19 +9,19 @@ import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
 import type { Author } from '../../graphql/types.gen'
 import { showModal, useWarningsStore } from '../../stores/ui'
-import { useAuth } from '../../context/auth'
+import { ClientContainer } from '../_shared/ClientContainer'
+import { useSession } from '../../context/session'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
 }
 
 export const HeaderAuth = (props: HeaderAuthProps) => {
-  const [isMounted, setIsMounted] = createSignal(false)
   const { page } = useRouter()
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   const { warnings } = useWarningsStore()
 
-  const { session, isAuthenticated } = useAuth()
+  const { session, isAuthenticated } = useSession()
 
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
 
@@ -36,12 +36,8 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     toggleWarnings()
   }
 
-  onMount(() => {
-    setIsMounted(true)
-  })
-
   return (
-    <Show when={isMounted()}>
+    <ClientContainer>
       <Show when={!session.loading}>
         <div class={styles.usernav}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
@@ -106,6 +102,6 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
           </div>
         </div>
       </Show>
-    </Show>
+    </ClientContainer>
   )
 }

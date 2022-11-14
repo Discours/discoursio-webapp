@@ -6,7 +6,7 @@ import { Icon } from '../Nav/Icon'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useArticlesStore } from '../../stores/zine/articles'
 import { useSeenStore } from '../../stores/zine/seen'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 type FeedSidebarProps = {
   authors: Author[]
@@ -14,7 +14,7 @@ type FeedSidebarProps = {
 
 export const FeedSidebar = (props: FeedSidebarProps) => {
   const { getSeen: seen } = useSeenStore()
-  const { session } = useAuth()
+  const { session } = useSession()
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
   const { topicEntities } = useTopicsStore()

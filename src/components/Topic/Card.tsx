@@ -8,7 +8,7 @@ import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 const log = getLogger('TopicCard')
 
@@ -24,7 +24,7 @@ interface TopicProps {
 }
 
 export const TopicCard = (props: TopicProps) => {
-  const { session } = useAuth()
+  const { session } = useSession()
 
   const subscribed = createMemo(() => {
     if (!session()?.user?.slug || !session()?.news?.topics) {

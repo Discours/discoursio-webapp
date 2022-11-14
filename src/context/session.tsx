@@ -4,7 +4,7 @@ import type { AuthResult } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 
-type AuthContextType = {
+type SessionContextType = {
   session: InitializedResource<AuthResult>
   isAuthenticated: Accessor<boolean>
   actions: {
@@ -15,7 +15,7 @@ type AuthContextType = {
   }
 }
 
-const AuthContext = createContext<AuthContextType>()
+const SessionContext = createContext<SessionContextType>()
 
 const refreshSession = async (): Promise<AuthResult> => {
   try {
@@ -32,31 +32,11 @@ const refreshSession = async (): Promise<AuthResult> => {
   }
 }
 
-export const register = async ({
-  name,
-  email,
-  password
-}: {
-  name: string
-  email: string
-  password: string
-}) => {
-  await apiClient.authRegister({
-    name,
-    email,
-    password
-  })
+export function useSession() {
+  return useContext(SessionContext)
 }
 
-export const signSendLink = async ({ email, lang }: { email: string; lang: string }) => {
-  return await apiClient.authSendLink({ email, lang })
-}
-
-export function useAuth() {
-  return useContext(AuthContext)
-}
-
-export const AuthProvider = (props: { children: JSX.Element }) => {
+export const SessionProvider = (props: { children: JSX.Element }) => {
   const [session, { refetch: refetchRefreshSession, mutate }] = createResource<AuthResult>(refreshSession, {
     ssrLoadFrom: 'initial',
     initialValue: null
@@ -91,11 +71,11 @@ export const AuthProvider = (props: { children: JSX.Element }) => {
     confirmEmail
   }
 
-  const value: AuthContextType = { session, isAuthenticated, actions }
+  const value: SessionContextType = { session, isAuthenticated, actions }
 
   onMount(() => {
     refetchRefreshSession()
   })
 
-  return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
+  return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>
 }

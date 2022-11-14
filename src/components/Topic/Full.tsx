@@ -5,14 +5,14 @@ import styles from './Full.module.scss'
 import { follow, unfollow } from '../../stores/zine/common'
 import { t } from '../../utils/intl'
 import { clsx } from 'clsx'
-import { useAuth } from '../../context/auth'
+import { useSession } from '../../context/session'
 
 type Props = {
   topic: Topic
 }
 
 export const FullTopic = (props: Props) => {
-  const { session } = useAuth()
+  const { session } = useSession()
 
   const subscribed = createMemo(() => session()?.news?.topics?.includes(props.topic?.slug))
   return (

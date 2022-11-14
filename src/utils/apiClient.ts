@@ -8,7 +8,7 @@ import type {
   Author
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
-import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
+import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
 import articlesRecentAll from '../graphql/query/articles-recent-all'
 import articlesRecentPublished from '../graphql/query/articles-recent-published'
@@ -41,7 +41,13 @@ import topicBySlug from '../graphql/query/topic-by-slug'
 
 const FEED_SIZE = 50
 
-type ApiErrorCode = 'unknown' | 'email_not_confirmed' | 'user_not_found' | 'user_already_exists'
+type ApiErrorCode =
+  | 'unknown'
+  | 'email_not_confirmed'
+  | 'user_not_found'
+  | 'user_already_exists'
+  | 'token_expired'
+  | 'token_invalid'
 
 export class ApiError extends Error {
   code: ApiErrorCode
@@ -109,7 +115,15 @@ export const apiClient = {
     const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email, lang }).toPromise()
 
     if (response.error) {
+      if (response.error.message === '[GraphQL] User not found') {
+        throw new ApiError('user_not_found', response.error.message)
+      }
+
       throw new ApiError('unknown', response.error.message)
+    }
+
+    if (response.data.sendLink.error) {
+      throw new ApiError('unknown', response.data.sendLink.message)
     }
 
     return response.data.sendLink
@@ -117,8 +131,16 @@ export const apiClient = {
   confirmEmail: async ({ token }: { token: string }) => {
     // confirm email with code from link
     const response = await publicGraphQLClient.mutation(authConfirmEmailMutation, { token }).toPromise()
-
     if (response.error) {
+      // TODO: better error communication
+      if (response.error.message === '[GraphQL] check token lifetime') {
+        throw new ApiError('token_expired', response.error.message)
+      }
+
+      if (response.error.message === '[GraphQL] token is not valid') {
+        throw new ApiError('token_invalid', response.error.message)
+      }
+
       throw new ApiError('unknown', response.error.message)
     }
 
@@ -251,6 +273,10 @@ export const apiClient = {
   },
 
   getSession: async (): Promise<AuthResult> => {
+    if (!getToken()) {
+      return null
+    }
+
     // renew session with auth token in header (!)
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
 

@@ -10,6 +10,10 @@ if (isDev) {
   exchanges.unshift(devtoolsExchange)
 }
 
+export const getToken = (): string => {
+  return localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
+}
+
 export const setToken = (token: string) => {
   localStorage.setItem(TOKEN_LOCAL_STORAGE_KEY, token)
 }

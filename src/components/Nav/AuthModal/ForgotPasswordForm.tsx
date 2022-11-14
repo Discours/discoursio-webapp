@@ -8,6 +8,7 @@ import type { AuthModalSearchParams } from './types'
 import { isValidEmail } from './validators'
 import { locale } from '../../../stores/ui'
 import { signSendLink } from '../../../context/auth'
+import { ApiError } from '../../../utils/apiClient'
 
 type FormFields = {
   email: string
@@ -26,11 +27,13 @@ export const ForgotPasswordForm = () => {
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
+  const [isUserNotFount, setIsUserNotFound] = createSignal(false)
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
 
     setSubmitError('')
+    setIsUserNotFound(false)
 
     const newValidationErrors: ValidationErrors = {}
 
@@ -51,9 +54,12 @@ export const ForgotPasswordForm = () => {
     setIsSubmitting(true)
 
     try {
-      const result = await signSendLink({ email: email(), lang: locale() })
-      if (result.error) setSubmitError(result.error)
+      await signSendLink({ email: email(), lang: locale() })
     } catch (error) {
+      if (error instanceof ApiError && error.code === 'user_not_found') {
+        setIsUserNotFound(true)
+        return
+      }
       setSubmitError(error.message)
     } finally {
       setIsSubmitting(false)
@@ -69,6 +75,21 @@ export const ForgotPasswordForm = () => {
           <ul>
             <li class={styles.warn}>{submitError()}</li>
           </ul>
+        </div>
+      </Show>
+      <Show when={isUserNotFount()}>
+        <div class={styles.authSubtitle}>
+          {/*TODO: text*/}
+          {t("We can't find you, check email or")}{' '}
+          <a
+            href="#"
+            onClick={(event) => {
+              event.preventDefault()
+              changeSearchParam('mode', 'register')
+            }}
+          >
+            {t('register')}
+          </a>
         </div>
       </Show>
       <Show when={validationErrors().email}>

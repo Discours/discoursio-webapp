@@ -20,6 +20,9 @@ const AuthContext = createContext<AuthContextType>()
 const refreshSession = async (): Promise<AuthResult> => {
   try {
     const authResult = await apiClient.getSession()
+    if (!authResult) {
+      return null
+    }
     setToken(authResult.token)
     return authResult
   } catch (error) {

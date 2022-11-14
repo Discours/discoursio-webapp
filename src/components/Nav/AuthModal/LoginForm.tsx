@@ -57,6 +57,7 @@ export const LoginForm = () => {
     event.preventDefault()
 
     setIsLinkSent(false)
+    setIsEmailNotConfirmed(false)
     setSubmitError('')
 
     const newValidationErrors: ValidationErrors = {}

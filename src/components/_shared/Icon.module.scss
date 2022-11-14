@@ -8,17 +8,19 @@ img {
   height: 100%;
 }
 
-.notifications-counter {
-  background-color: red;
-  border-radius: 1rem;
+.notificationsCounter {
+  background-color: #d00820;
+  border: 2px solid #fff;
+  border-radius: 2em;
   color: #fff;
   font-size: 1rem;
   font-weight: 700;
-  height: 1.5em;
-  line-height: 1.5em;
+  height: 1.6em;
+  left: 1.1em;
+  line-height: 1.25em;
+  padding: 0 0.25em;
   position: absolute;
-  right: -0.5rem;
   text-align: center;
   top: -0.5rem;
-  width: 1.5em;
+  min-width: 1.5em;
 }

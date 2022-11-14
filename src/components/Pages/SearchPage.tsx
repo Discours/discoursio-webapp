@@ -1,4 +1,4 @@
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import { SearchView } from '../Views/Search'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'

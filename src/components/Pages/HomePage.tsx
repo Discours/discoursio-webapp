@@ -1,5 +1,5 @@
 import { HomeView, PRERENDERED_ARTICLES_COUNT } from '../Views/Home'
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadPublishedArticles, resetSortedArticles } from '../../stores/zine/articles'

@@ -1,7 +1,7 @@
 import { createSignal, Show } from 'solid-js'
-import { PageWrap } from '../../Wraps/PageWrap'
+import { PageWrap } from '../../_shared/PageWrap'
 import { Donate } from '../../Discours/Donate'
-import { Icon } from '../../Nav/Icon'
+import { Icon } from '../../_shared/Icon'
 
 // const title = t('Support us')
 

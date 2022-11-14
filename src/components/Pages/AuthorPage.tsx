@@ -1,4 +1,4 @@
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../Views/Author'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'

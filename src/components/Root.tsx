@@ -2,12 +2,11 @@
 // import 'solid-devtools'
 
 import { MODALS, setLocale, showModal } from '../stores/ui'
-import { Component, createEffect, createMemo, onMount } from 'solid-js'
+import { Component, createEffect, createMemo } from 'solid-js'
 import { Routes, useRouter } from '../stores/router'
 import { Dynamic, isServer } from 'solid-js/web'
-import { getLogger } from '../utils/logger'
 
-import type { PageProps } from './types'
+import type { PageProps, RootSearchParams } from './types'
 
 import { HomePage } from './Pages/HomePage'
 import { AllTopicsPage } from './Pages/AllTopicsPage'
@@ -30,18 +29,11 @@ import { TermsOfUsePage } from './Pages/about/TermsOfUsePage'
 import { ThanksPage } from './Pages/about/ThanksPage'
 import { CreatePage } from './Pages/CreatePage'
 import { ConnectPage } from './Pages/ConnectPage'
-import { renewSession } from '../stores/auth'
 import { LayoutShoutsPage } from './Pages/LayoutShoutsPage'
+import { SessionProvider } from '../context/session'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
-
-const log = getLogger('root')
-
-type RootSearchParams = {
-  modal: string
-  lang: string
-}
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
   expo: LayoutShoutsPage,
@@ -77,10 +69,6 @@ export const Root = (props: PageProps) => {
     }
   })
 
-  onMount(() => {
-    renewSession()
-  })
-
   const pageComponent = createMemo(() => {
     const result = pagesMap[page().route]
 
@@ -99,5 +87,9 @@ export const Root = (props: PageProps) => {
     })
   }
 
-  return <Dynamic component={pageComponent()} {...props} />
+  return (
+    <SessionProvider>
+      <Dynamic component={pageComponent()} {...props} />
+    </SessionProvider>
+  )
 }

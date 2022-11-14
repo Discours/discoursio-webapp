@@ -1,7 +1,7 @@
 import { createSignal, Show } from 'solid-js'
-import { PageWrap } from '../../Wraps/PageWrap'
+import { PageWrap } from '../../_shared/PageWrap'
 import { t } from '../../../utils/intl'
-import { Icon } from '../../Nav/Icon'
+import { Icon } from '../../_shared/Icon'
 
 export const GuidePage = () => {
   const title = t('How it works')

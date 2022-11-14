@@ -1,4 +1,4 @@
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import { FeedView } from '../Views/Feed'
 import { onCleanup } from 'solid-js'
 import { resetSortedArticles } from '../../stores/zine/articles'

@@ -1,15 +1,18 @@
 .swiper-slide {
-  height: 0 !important;
   min-height: 0 !important;
   margin-bottom: 0 !important;
-  padding-top: 100%;
 
-  @include media-breakpoint-up(sm) {
-    padding-top: 56.2% !important;
-  }
+  .cards-with-cover & {
+    height: 0 !important;
+    padding-top: 100%;
 
-  @include media-breakpoint-up(md) {
-    padding-top: 35% !important;
+    @include media-breakpoint-up(sm) {
+      padding-top: 56.2% !important;
+    }
+
+    @include media-breakpoint-up(md) {
+      padding-top: 35% !important;
+    }
   }
 }
 

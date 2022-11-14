@@ -1,4 +1,4 @@
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { resetSortedArticles } from '../../stores/zine/articles'

@@ -6,7 +6,7 @@ import { AuthorCard } from '../Author/Card'
 import { TopicCard } from '../Topic/Card'
 import style from './Beside.module.scss'
 import type { Author, Shout, Topic, User } from '../../graphql/types.gen'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 
 interface BesideProps {

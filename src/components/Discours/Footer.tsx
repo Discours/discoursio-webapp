@@ -1,6 +1,6 @@
 import { createMemo, For } from 'solid-js'
 import styles from './Footer.module.scss'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import Subscribe from './Subscribe'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'

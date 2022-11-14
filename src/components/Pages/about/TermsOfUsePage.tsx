@@ -1,6 +1,6 @@
 import { createSignal, Show } from 'solid-js'
-import { PageWrap } from '../../Wraps/PageWrap'
-import { Icon } from '../../Nav/Icon'
+import { PageWrap } from '../../_shared/PageWrap'
+import { Icon } from '../../_shared/Icon'
 
 // const title = t('Terms of use')
 

@@ -15,9 +15,9 @@
 .authorDetails {
   display: flex;
   flex: 1;
-
-  //padding-right: 1.2rem;
   width: max-content;
+
+  // padding-right: 1.2rem;
 
   @include media-breakpoint-down(sm) {
     flex-wrap: wrap;

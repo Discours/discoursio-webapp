@@ -1,5 +1,5 @@
 import { t } from '../../../utils/intl'
-import { Icon } from '../Icon'
+import { Icon } from '../../_shared/Icon'
 import { hideModal } from '../../../stores/ui'
 
 import styles from './SocialProviders.module.scss'

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'solid-js'
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import { Loading } from '../Loading'
 
 const CreateView = lazy(() => import('../Views/Create'))

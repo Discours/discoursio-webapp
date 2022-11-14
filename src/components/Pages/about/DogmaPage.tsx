@@ -1,4 +1,4 @@
-import { PageWrap } from '../../Wraps/PageWrap'
+import { PageWrap } from '../../_shared/PageWrap'
 
 // const title = t('Dogma')
 

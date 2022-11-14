@@ -1,5 +1,5 @@
 import { FourOuFourView } from '../Views/FourOuFour'
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 
 export const FourOuFourPage = () => {
   return (

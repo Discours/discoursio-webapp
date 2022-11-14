@@ -1,10 +1,10 @@
 import { createSignal, Show } from 'solid-js'
-import { PageWrap } from '../../Wraps/PageWrap'
+import { PageWrap } from '../../_shared/PageWrap'
 import { Modal } from '../../Nav/Modal'
 import { Feedback } from '../../Discours/Feedback'
 import Subscribe from '../../Discours/Subscribe'
 import Opener from '../../Nav/Opener'
-import { Icon } from '../../Nav/Icon'
+import { Icon } from '../../_shared/Icon'
 
 // title={t('Manifest')}
 

@@ -1,4 +1,4 @@
-import { PageWrap } from '../../Wraps/PageWrap'
+import { PageWrap } from '../../_shared/PageWrap'
 import { t } from '../../../utils/intl'
 
 export const DiscussionRulesPage = () => {

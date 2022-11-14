@@ -1,4 +1,4 @@
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import { ArticleView } from '../Views/Article'
 import type { PageProps } from '../types'
 import { loadArticle, useArticlesStore } from '../../stores/zine/articles'

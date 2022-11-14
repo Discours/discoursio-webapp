@@ -1,4 +1,4 @@
-import { PageWrap } from '../Wraps/PageWrap'
+import { PageWrap } from '../_shared/PageWrap'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../Views/Topic'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -8,7 +8,7 @@ import { loadTopic } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
 
 export const TopicPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.author))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.topic))
 
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()

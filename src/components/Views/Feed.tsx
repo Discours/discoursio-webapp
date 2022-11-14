@@ -1,20 +1,20 @@
 import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import '../../styles/Feed.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import { byCreated, sortBy } from '../../utils/sortby'
 import { TopicCard } from '../Topic/Card'
 import { ArticleCard } from '../Feed/Card'
 import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
 import { FeedSidebar } from '../Feed/Sidebar'
-import { useAuthStore } from '../../stores/auth'
 import CommentCard from '../Article/Comment'
 import { loadRecentArticles, useArticlesStore } from '../../stores/zine/articles'
 import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
+import { useSession } from '../../context/session'
 
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,
@@ -32,7 +32,7 @@ export const FeedView = () => {
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
-  const { session } = useAuthStore()
+  const { session } = useSession()
 
   const topReactions = createMemo(() => sortBy(reactions(), byCreated))
 

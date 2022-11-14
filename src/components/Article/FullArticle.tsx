@@ -67,18 +67,8 @@ export const FullArticle = (props: ArticleProps) => {
     }
   })
 
-  //<script async
-  // src="https://ackee.discours.io/tracker.js"
-  // data-ackee-server="https://ackee.discours.io"
-  // data-ackee-domain-id="dfaf6bc4-163c-4885-9d8b-1e72f7064d42"
   return (
     <div class="shout wide-container">
-      <script
-        async
-        src="https://ackee.discours.io/increment.js"
-        data-ackee-server="https://ackee.discours.io"
-        data-ackee-domain-id="dfaf6bc4-163c-4885-9d8b-1e72f7064d42"
-      ></script>
       <article class="col-md-6 shift-content">
         <div class="shout__header">
           <div class="shout__topic">

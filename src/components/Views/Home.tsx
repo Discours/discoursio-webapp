@@ -110,12 +110,6 @@ export const HomeView = (props: HomeProps) => {
 
   return (
     <Show when={locale() && sortedArticles().length > 0}>
-      <script
-        async
-        src="https://ackee.discours.io/increment.js"
-        data-ackee-server="https://ackee.discours.io"
-        data-ackee-domain-id="1004abeb-89b2-4e85-ad97-74f8d2c8ed2d"
-      ></script>
       <NavTopics topics={randomTopics()} />
 
       <Row5 articles={sortedArticles().slice(0, 5)} />

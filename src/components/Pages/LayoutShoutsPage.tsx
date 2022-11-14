@@ -29,7 +29,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
   })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { sortedLayoutShouts } = useLayoutsStore(layout(), props.shouts)
-  const sortedArticles = createMemo(() => sortedLayoutShouts().get(layout()))
+  const sortedArticles = createMemo<Shout[]>(() => sortedLayoutShouts().get(layout()) || [])
   const loadMoreLayout = async (kind: LayoutType) => {
     saveScrollPosition()
 
@@ -59,12 +59,11 @@ export const LayoutShoutsPage = (props: PageProps) => {
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts))
+  const isLoaded = createMemo(() => Boolean(sortedArticles()))
 
   onMount(async () => {
     if (!isLoaded()) {
       await loadRecentLayoutShouts({ layout: layout(), amount: PRERENDERED_ARTICLES_COUNT, offset: 0 })
-      setIsLoaded(true)
     }
   })
 
@@ -102,9 +101,8 @@ export const LayoutShoutsPage = (props: PageProps) => {
     <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <div class={styles.topicPage}>
-          <Show when={layout()}>
+          <Show when={layout() && Boolean(sortedArticles())}>
             <h1>{title()}</h1>
-
             <ModeSwitcher />
             <Row1 article={sortedArticles()[0]} />
             <Row2 articles={sortedArticles().slice(1, 3)} />

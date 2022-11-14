@@ -53,6 +53,11 @@ const userSearch = (array: Author[], keyword: string) => {
   })
 }
 
+const postMessage = async (msg: string) => {
+  const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
+  return response.data.createComment
+}
+
 export const InboxView = () => {
   const [messages, setMessages] = createSignal([])
   const [authors, setAuthors] = createSignal<Author[]>([])
@@ -84,10 +89,6 @@ export const InboxView = () => {
     if (response.error) console.debug('getMessages', response.error)
     setMessages(response.data.comments.data)
   }
-  const postMessage = async (msg: string) => {
-    const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
-    return response.data.createComment
-  }
 
   let chatWindow
   onMount(async () => {
@@ -109,6 +110,7 @@ export const InboxView = () => {
         setPostMessageText('')
         chatWindow.scrollTop = chatWindow.scrollHeight
       })
+      .catch(console.error)
   }
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
@@ -131,9 +133,7 @@ export const InboxView = () => {
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={authors()}>
-                {(author) => <DialogCard name={author.name} slug={author.slug} online={true} />}
-              </For>
+              <For each={authors()}>{(author: Author) => <DialogCard author={author} online={true} />}</For>
             </div>
           </div>
         </div>

@@ -7,16 +7,17 @@ type Props = {
   online?: boolean
   message?: string
   counter?: number
-} & Author
+  author?: Author
+}
 
 const DialogCard = (props: Props) => {
   return (
     <div class={styles.DialogCard}>
       <div class={styles.avatar}>
-        <DialogAvatar name={props.name} url={props.userpic} online={props.online} />
+        <DialogAvatar name={props.author.name} url={props.author.userpic} online={props.online} />
       </div>
       <div class={styles.row}>
-        <div class={styles.name}>{props.name}</div>
+        <div class={styles.name}>{props.author.name}</div>
         <div class={styles.message}>
           Указать предпочтительные языки для результатов поиска можно в разделе
         </div>

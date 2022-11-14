@@ -4,6 +4,10 @@ main {
   flex-direction: column;
   position: relative;
 }
+// TODO: добавлять когда открыт чат
+body {
+  overflow: hidden;
+}
 
 .messages {
   top: 74px;
@@ -17,7 +21,7 @@ main {
   flex: 1;
   flex-direction: column;
   position: fixed;
-  z-index: 1;
+  z-index: 9;
 
   > .row {
     flex: 1;

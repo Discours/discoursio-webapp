@@ -1,7 +1,8 @@
-import { createMemo, createSignal, onMount } from 'solid-js'
+import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
 import { For } from 'solid-js/web'
 import type { Shout } from '../../graphql/types.gen'
-import { drawAudio } from '../../utils/soundwave'
+import { Soundwave } from './Soundwave'
+
 type MediaItem = any
 
 export default (props: { shout: Shout }) => {
@@ -12,23 +13,17 @@ export default (props: { shout: Shout }) => {
     }
     return []
   })
+  let audioRef: HTMLAudioElement
   const [currentTrack, setCurrentTrack] = createSignal(media()[0])
   const [paused, setPaused] = createSignal(true)
   const togglePlayPause = () => setPaused(!paused())
-  const playMedia = (m: MediaItem) => {}
+  const playMedia = (m: MediaItem) => {
+    audioRef.src = m.get('src')
+    audioRef.play()
+  }
   const [audioContext, setAudioContext] = createSignal<AudioContext>()
-  const currentTimer = createMemo(() => {
-    // TODO: return current audio player track position
-    return 1
-  })
-
-  onMount(() => {
-    const actx = new AudioContext()
-    setAudioContext(actx)
-    drawAudio(actx, currentTrack().src)
-  })
-
-  const SoundWave = () => <canvas></canvas>
+  onMount(() => setAudioContext(new AudioContext()))
+  createEffect(() => (paused() ? audioRef.play : audioRef.pause)())
   return (
     <div class="audio-container">
       <div class="audio-img">
@@ -43,27 +38,24 @@ export default (props: { shout: Shout }) => {
       </div>
 
       <div class="audio-player-list">
-        <div class="player ng-scope">
-          <div class="player-title ng-binding ng-scope">{currentTrack().title}</div>
-          <i class="fas fa-pause fa-3x fa-fw ng-scope" onClick={togglePlayPause} style=""></i>
+        <div class="player current-track">
+          <div class="player-title">{currentTrack().title}</div>
+          <i class="fas fa-pause fa-3x fa-fw" onClick={togglePlayPause}></i>
           <div class="player-progress">
-            <SoundWave />
-            <span class="position ng-binding">{currentTimer() / currentTrack().length}</span>
+            <Soundwave context={audioContext()} url={currentTrack().src} />
+            <span class="track-position">{`${audioRef.currentTime} / ${audioRef.duration}`}</span>
           </div>
+          <audio ref={audioRef} />
         </div>
 
-        <ul
-          class="other-songs ng-scope is-playing"
-          ng-class="{ 'is-playing': post._id === $root.currentMusicPostId }"
-          style=""
-        >
+        <ul class="all-tracks">
           <For each={media()}>
             {(m: MediaItem) => (
-              <li ng-repeat="mediaItem in post.media" class="ng-scope">
+              <li>
                 <div class="player-status">
-                  <i class="fas fa-play fa-fw ng-scope" onClick={() => playMedia(m)}></i>
+                  <i class="fas fa-play fa-fw" onClick={() => playMedia(m)}></i>
                 </div>
-                <span class="track-title ng-binding">{m.title}</span>
+                <span class="track-title">{m.title}</span>
               </li>
             )}
           </For>

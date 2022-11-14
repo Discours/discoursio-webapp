@@ -35,10 +35,10 @@ export type Author = {
 }
 
 export type AuthorStat = {
+  commented?: Maybe<Scalars['Int']>
   followers?: Maybe<Scalars['Int']>
   followings?: Maybe<Scalars['Int']>
   rating?: Maybe<Scalars['Int']>
-  commented?: Maybe<Scalars['Int']>
 }
 
 export type Chat = {
@@ -730,6 +730,7 @@ export type Shout = {
   lang?: Maybe<Scalars['String']>
   layout?: Maybe<Scalars['String']>
   mainTopic?: Maybe<Scalars['String']>
+  media?: Maybe<Scalars['String']>
   publishedAt?: Maybe<Scalars['DateTime']>
   publishedBy?: Maybe<User>
   slug: Scalars['String']

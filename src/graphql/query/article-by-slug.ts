@@ -33,6 +33,8 @@ export default gql`
       createdAt
       updatedAt
       publishedAt
+      visibility
+      media
       stat {
         _id: viewed
         viewed

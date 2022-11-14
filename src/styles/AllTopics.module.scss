@@ -17,9 +17,7 @@
     }
 
     .topic {
-      @include media-breakpoint-down(md) {
-        margin-top: 1.6rem;
-      }
+      margin-bottom: 1.6rem;
 
       @include media-breakpoint-down(sm) {
         margin-left: 2.6rem;

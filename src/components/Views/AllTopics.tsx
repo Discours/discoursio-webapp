@@ -127,15 +127,19 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                   <h2>{letter}</h2>
                   <div class="container">
                     <div class="row">
-                      <For each={byLetter()[letter]}>
-                        {(topic) => (
-                          <div class={clsx(styles.topic, 'topic col-sm-6 col-md-3')}>
-                            <div class="topic-title">
-                              <a href={`/topic/${topic.slug}`}>{topic.title}</a>
-                            </div>
-                          </div>
-                        )}
-                      </For>
+                      <div class="col-lg-10">
+                        <div class="row">
+                          <For each={byLetter()[letter]}>
+                            {(topic) => (
+                              <div class={clsx(styles.topic, 'topic col-sm-6 col-md-4')}>
+                                <div class="topic-title">
+                                  <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                                </div>
+                              </div>
+                            )}
+                          </For>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

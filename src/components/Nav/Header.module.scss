@@ -136,7 +136,7 @@
   @include font-size(1.7rem);
 
   @include media-breakpoint-down(lg) {
-    margin-right: 5rem;
+    margin-right: 7rem;
   }
 
   @include media-breakpoint-down(md) {
@@ -333,13 +333,21 @@
   display: flex;
   justify-content: flex-end;
   position: absolute;
-  right: 4rem;
+  right: 5rem;
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
 
+  @include media-breakpoint-up(sm) {
+    right: 6rem;
+  }
+
   @include media-breakpoint-up(md) {
-    right: 0;
+    right: 1.5rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    right: 1.5rem;
   }
 
   .control {

@@ -28,7 +28,8 @@ import reactionUpdate from '../graphql/mutation/reaction-update'
 import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
-import myChats from '../graphql/query/my-chats'
+import myChats from '../graphql/query/im-chats'
+import loadChat from '../graphql/query/im-load-messages'
 import getRecentByLayout from '../graphql/query/layout-recent'
 import getTopByLayout from '../graphql/query/layout-top'
 import getTopMonthByLayout from '../graphql/query/layout-top-month'
@@ -337,7 +338,7 @@ export const apiClient = {
   incrementView: async ({ articleSlug }) => {
     await privateGraphQLClient.mutation(incrementView, { shout: articleSlug })
   },
-  getInboxes: async (payload = {}) => {
+  getChats: async (payload = {}) => {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats
   },
@@ -354,5 +355,17 @@ export const apiClient = {
       .query(getTopMonthByLayout, { amount, offset, layout })
       .toPromise()
     return resp.data.topMonthLayoutShouts
+  },
+  getChatMessages: async ({
+    chatId,
+    offset = 0,
+    amount = 50
+  }: {
+    chatId: string
+    offset?: number
+    amount?: number
+  }) => {
+    const resp = await privateGraphQLClient.query(loadChat, { chatId, offset, amount }).toPromise()
+    return resp.data.loadChat
   }
 }

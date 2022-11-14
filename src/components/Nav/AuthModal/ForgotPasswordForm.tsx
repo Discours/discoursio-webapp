@@ -22,7 +22,7 @@ export const ForgotPasswordForm = () => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail)
   }
-
+  const [sended, setSended] = createSignal(false)
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
@@ -53,6 +53,7 @@ export const ForgotPasswordForm = () => {
     try {
       const result = await signSendLink({ email: email(), lang: locale() })
       if (result.error) setSubmitError(result.error)
+      else setSended(true)
     } catch (error) {
       setSubmitError(error.message)
     } finally {
@@ -63,7 +64,12 @@ export const ForgotPasswordForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <h4>{t('Forgot password?')}</h4>
-      <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
+      <Show
+        when={!sended()}
+        fallback={<div class={styles.authInfo}>{t('Link sent, check your email')}</div>}
+      >
+        <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
+      </Show>
       <Show when={submitError()}>
         <div class={styles.authInfo}>
           <ul>

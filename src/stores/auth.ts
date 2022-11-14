@@ -11,11 +11,15 @@ export const signIn = async (params) => {
   setToken(authResult.token)
   console.debug('signed in')
 }
-export const signOut = () => {
-  // TODO: call backend to revoke token
-  setSession(null)
-  resetToken()
-  console.debug('signed out')
+export const signOut = async () => {
+  const result = await apiClient.authSignOut()
+  if (result.error) {
+    console.error('[auth] sign out error', result.error)
+  } else {
+    setSession(null)
+    resetToken()
+    console.debug('signed out')
+  }
 }
 
 export const [emailChecks, setEmailChecks] = createSignal<{ [email: string]: boolean }>({})

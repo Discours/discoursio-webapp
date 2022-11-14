@@ -1,16 +1,23 @@
 main {
   display: flex;
-  height: 100%;
+  height: 100vh;
   flex-direction: column;
   position: relative;
 }
 
 .messages {
+  top: 74px;
+  height: calc(100% - 74px);
+  left: 0;
+  right: 0;
+  padding-left: 42px;
+  padding-right: 26px;
+  background: #fff;
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100%;
-  position: relative;
+  position: fixed;
+  z-index: 1;
 
   > .row {
     flex: 1;
@@ -23,34 +30,53 @@ main {
   .author {
     position: relative;
   }
-
-  .user--online .author {
-    &::before {
-      background: #2bb452;
-      border: 5px solid #fff;
-      border-radius: 100%;
-      content: '';
-      height: 5px;
-      left: 20px;
-      position: absolute;
-      top: 0;
-      width: 5px;
-      z-index: 1;
-    }
-  }
-
-  .circlewrap {
-    position: absolute;
-  }
 }
-
+// список диалогов и юзеров
 .chat-list {
-  border-right: 1px solid #141414;
   display: flex;
   flex-direction: column;
+  padding: 10px;
+  height: calc(100% - 10px);
 
-  .author__name {
-    @include font-size(1.5rem);
+  $fade-height: 10px;
+  .holder {
+    overflow: hidden;
+    flex: 1;
+    position: relative;
+    padding: $fade-height 0;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      right: 10px;
+      z-index: 1;
+      height: $fade-height;
+    }
+
+    &::before {
+      top: 0;
+      background: linear-gradient(white, transparent $fade-height);
+    }
+    &::after {
+      bottom: 0;
+      background: linear-gradient(transparent, white $fade-height);
+    }
+
+    .dialogs {
+      scroll-behavior: smooth;
+      display: flex;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      overflow: auto;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
   }
 }
 
@@ -60,41 +86,10 @@ main {
   padding: 1em 0;
 }
 
-.chat-list__search {
-  display: flex;
-
-  input,
-  .button {
-    border-radius: 2px;
-    height: 5.6rem;
-    line-height: 5.6rem;
-    vertical-align: bottom;
-  }
-
-  input {
-    border: 2px solid #e8e8e8;
-    flex: 1;
-    @include font-size(1.7rem);
-
-    margin-right: 1.6rem;
-    padding: 1.6rem 1.2rem;
-  }
-
-  .button {
-    @include font-size(4rem);
-
-    font-weight: 100;
-    padding: 0;
-    width: 5.6rem;
-  }
-}
-
+// табы выбора списка
 .chat-list__types {
   @include font-size(1.7rem);
-
-  margin-bottom: 1.5em;
-  padding-top: 1em;
-
+  margin: 16px 0;
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -110,66 +105,6 @@ main {
   strong {
     border-bottom: 3px solid;
     font-weight: normal;
-  }
-}
-
-.chat-list__users {
-  flex: 1;
-  position: relative;
-
-  ul {
-    height: 100%;
-    list-style: none;
-    margin: 0;
-    overflow: auto;
-    padding: 0;
-    position: absolute;
-    width: 100%;
-  }
-
-  li {
-    align-items: baseline;
-    background: #fff;
-    cursor: pointer;
-    display: flex;
-    flex-wrap: wrap;
-    @include font-size(1.5rem);
-
-    padding: 2.4rem 0.8rem;
-    position: relative;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background: #f6f6f6;
-    }
-  }
-
-  .chat-list__user--current {
-    background: #f6f6f6;
-    cursor: default;
-  }
-
-  .author {
-    flex: 1;
-    margin-bottom: 0;
-  }
-
-  .author__details {
-    margin-left: 4.2rem;
-  }
-
-  .last-message-date {
-    color: rgb(0 0 0 / 30%);
-    @include font-size(1rem);
-  }
-
-  .last-message-text {
-    color: rgb(0 0 0 / 30%);
-    flex: 1 100%;
-    margin-left: 4.2rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 
@@ -218,7 +153,6 @@ main {
 
 .conversation__messages {
   flex: 1;
-  min-height: 20em;
   overflow: auto;
   position: relative;
 }
@@ -226,14 +160,19 @@ main {
 .conversation__message-form {
   border-top: 1px solid #141414;
   display: flex;
+  flex-direction: row;
+  align-items: center;
   padding: 1em 1em 1em 0;
 
-  input {
-    border: none;
+  textarea {
     @include font-size(2rem);
 
-    height: 5.6rem;
+    font-family: inherit;
+    height: 4.4em;
     width: 100%;
+    padding: 1em;
+    margin-bottom: 0;
+    min-height: unset;
   }
 
   button {
@@ -266,6 +205,7 @@ main {
   position: absolute;
   top: 0;
   width: 100%;
+  scroll-behavior: smooth;
 }
 
 .conversation__date {
@@ -298,10 +238,11 @@ main {
 }
 
 .conversation__message {
-  @include font-size(1.5rem);
+  font-size: 14px;
 
   max-width: 60%;
-  padding: 1.6rem 2.4rem;
+  border-radius: 16px;
+  padding: 12px 16px;
   position: relative;
 
   &:hover {

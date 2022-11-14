@@ -131,20 +131,18 @@ export const TopicView = (props: TopicProps) => {
           wrapper={'top-article'}
         />
 
+        <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
+        <Row1 article={sortedArticles()[15]} />
 
-          <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
-          <Row1 article={sortedArticles()[15]} />
+        <Slider
+          title={title()}
+          articles={sortedArticles().slice(16, 22)}
+          slidesPerView={3}
+          isCardsWithCover={false}
+        />
 
-          <Slider
-            title={title()}
-            articles={sortedArticles().slice(16, 22)}
-            slidesPerView={3}
-            isCardsWithCover={false}
-          />
-
-          <Row3 articles={sortedArticles().slice(23, 26)} />
-          <Row2 articles={sortedArticles().slice(26, 28)} />
-
+        <Row3 articles={sortedArticles().slice(23, 26)} />
+        <Row2 articles={sortedArticles().slice(26, 28)} />
 
         <For each={pages()}>
           {(page) => (

@@ -65,14 +65,6 @@ export const FullArticle = (props: ArticleProps) => {
         })
       }
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = 'https://ackee.discours.io/tracker.js'
-    script.setAttribute('data-ackee-domain-id', 'dfaf6bc4-163c-4885-9d8b-1e72f7064d42')
-    script.setAttribute('data-ackee-server', 'https://ackee.discours.io')
-    script.async = true
-    document.head.appendChild(script)
   })
 
   //<script async
@@ -81,6 +73,12 @@ export const FullArticle = (props: ArticleProps) => {
   // data-ackee-domain-id="dfaf6bc4-163c-4885-9d8b-1e72f7064d42"
   return (
     <div class="shout wide-container">
+      <script
+        async
+        src="https://ackee.discours.io/increment.js"
+        data-ackee-server="https://ackee.discours.io"
+        data-ackee-domain-id="dfaf6bc4-163c-4885-9d8b-1e72f7064d42"
+      ></script>
       <article class="col-md-6 shift-content">
         <div class="shout__header">
           <div class="shout__topic">

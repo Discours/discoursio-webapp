@@ -96,7 +96,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       <div class={styles.shoutCardContent}>
         <Show when={layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)}>
           <div class={styles.shoutCardType}>
-            <a href={`/topic/${mainTopic.slug}`}>
+            <a href={`/expo/${layout}`}>
               <Icon name={layout} class={styles.icon} />
             </a>
           </div>

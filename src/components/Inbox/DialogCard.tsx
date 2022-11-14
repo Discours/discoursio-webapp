@@ -11,7 +11,7 @@ type Props = {
 
 const DialogCard = (props: Props) => {
   return (
-    <div class={styles.DialogCard}>
+    <div class={styles.DialogCard} onClick={handleGoToChat}>
       <div class={styles.avatar}>
         <DialogAvatar name={props.name} url={props.userpic} online={props.online} />
       </div>

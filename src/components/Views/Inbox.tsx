@@ -132,7 +132,9 @@ export const InboxView = () => {
           <div class="holder">
             <div class="dialogs">
               <For each={authors()}>
-                {(author) => <DialogCard name={author.name} slug={author.slug} online={true} />}
+                {(author) => (
+                  <DialogCard id={author.id} name={author.name} slug={author.slug} online={true} />
+                )}
               </For>
             </div>
           </div>

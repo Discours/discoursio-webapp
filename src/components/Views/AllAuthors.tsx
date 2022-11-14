@@ -111,10 +111,12 @@ export const AllAuthorsView = (props: Props) => {
                       )}
                     </For>
                     <Show when={sortedAuthors().length > limit()}>
-                      <div class={styles.loadMoreContainer}>
-                        <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                          {t('More')}
-                        </button>
+                      <div class="row">
+                        <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
+                          <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                            {t('More')}
+                          </button>
+                        </div>
                       </div>
                     </Show>
                   </div>

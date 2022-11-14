@@ -63,15 +63,11 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       <Show when={sortedTopics().length > 0}>
         <div class="shift-content">
           <div class="row">
-            <div class={clsx(styles.pageHeader, 'col-lg-9')}>
+            <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
               <h1>{t('Topics')}</h1>
-              <div class="col-lg-10">
-                <p>{t('Subscribe what you like to tune your personal feed')}</p>
-              </div>
-            </div>
+              <p>{t('Subscribe what you like to tune your personal feed')}</p>
 
-            <div class="col-12">
-              <ul class={clsx(styles.viewSwitcher, 'view-switcher col-lg-10')}>
+              <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                 <li classList={{ selected: searchParams().by === 'shouts' || !searchParams().by }}>
                   <a href="/topics?by=shouts" onClick={handleClientRouteLinkClick}>
                     {t('By shouts')}
@@ -114,10 +110,12 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                   )}
                 </For>
                 <Show when={sortedTopics().length > limit()}>
-                  <div class={styles.loadMoreContainer}>
-                    <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                      {t('More')}
-                    </button>
+                  <div class="row">
+                    <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
+                      <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                        {t('More')}
+                      </button>
+                    </div>
                   </div>
                 </Show>
               </>

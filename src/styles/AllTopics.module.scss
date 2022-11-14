@@ -41,6 +41,11 @@
   text-align: center;
 
   .loadMoreButton {
-    padding: 0.6em 1.5em;
+    padding: 0.6em 5em;
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: auto;
+    }
   }
 }

@@ -5,10 +5,11 @@ export const ConnectPage = () => {
     <MainLayout>
       <article class="container container--static-page">
         <div class="row">
-          <h1 class="col-md-8 offset-md-2">
-            <span class="wrapped">Предложить идею</span>
-          </h1>
-          <div class="col-md-8 col-lg-6 offset-md-3">
+          <div class="col-sm-10 col-md-8 col-lg-7 col-xl-6 shift-content">
+            <h1>
+              <span class="wrapped">Предложить идею</span>
+            </h1>
+
             <p>
               Хотите что-то предложить, обсудить или посоветовать? Поделиться темой или идеей? Напишите нам
               скорее! Если укажете свою почту, мы&nbsp;обязательно ответим.

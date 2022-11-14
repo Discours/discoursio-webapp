@@ -1,13 +1,12 @@
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { t } from '../../../utils/intl'
-import { hideModal, locale } from '../../../stores/ui'
+import { hideModal } from '../../../stores/ui'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { handleClientRouteLinkClick, useRouter } from '../../../stores/router'
 import type { ConfirmEmailSearchParams } from './types'
-import { signSendLink, useAuth } from '../../../context/auth'
+import { useAuth } from '../../../context/auth'
 import { ApiError } from '../../../utils/apiClient'
-import { email } from './sharedLogic'
 
 export const EmailConfirm = () => {
   const {

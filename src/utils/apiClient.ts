@@ -1,6 +1,14 @@
-import type { Reaction, Shout, FollowingEntity, AuthResult, ShoutInput } from '../graphql/types.gen'
+import type {
+  Reaction,
+  Shout,
+  FollowingEntity,
+  AuthResult,
+  ShoutInput,
+  Topic,
+  Author
+} from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
-import { privateGraphQLClient } from '../graphql/privateGraphQLClient'
+import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import articleBySlug from '../graphql/query/article-by-slug'
 import articlesRecentAll from '../graphql/query/articles-recent-all'
 import articlesRecentPublished from '../graphql/query/articles-recent-published'
@@ -25,14 +33,21 @@ import authorsAll from '../graphql/query/authors-all'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
-import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/my-chats'
+import authorBySlug from '../graphql/query/author-by-slug'
+import topicBySlug from '../graphql/query/topic-by-slug'
 
 const FEED_SIZE = 50
 
-type ApiErrorCode = 'unknown' | 'email_not_confirmed' | 'user_not_found' | 'user_already_exists'
+type ApiErrorCode =
+  | 'unknown'
+  | 'email_not_confirmed'
+  | 'user_not_found'
+  | 'user_already_exists'
+  | 'token_expired'
+  | 'token_invalid'
 
 export class ApiError extends Error {
   code: ApiErrorCode
@@ -44,7 +59,7 @@ export class ApiError extends Error {
 }
 
 export const apiClient = {
-  authLogin: async ({ email, password }): Promise<AuthResult> => {
+  authLogin: async ({ email, password }: { email: string; password: string }): Promise<AuthResult> => {
     const response = await publicGraphQLClient.query(authLoginQuery, { email, password }).toPromise()
     // console.debug('[api-client] authLogin', { response })
     if (response.error) {
@@ -98,13 +113,34 @@ export const apiClient = {
   authSendLink: async ({ email, lang }) => {
     // send link with code on email
     const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email, lang }).toPromise()
+
+    if (response.error) {
+      if (response.error.message === '[GraphQL] User not found') {
+        throw new ApiError('user_not_found', response.error.message)
+      }
+
+      throw new ApiError('unknown', response.error.message)
+    }
+
+    if (response.data.sendLink.error) {
+      throw new ApiError('unknown', response.data.sendLink.message)
+    }
+
     return response.data.sendLink
   },
   confirmEmail: async ({ token }: { token: string }) => {
     // confirm email with code from link
     const response = await publicGraphQLClient.mutation(authConfirmEmailMutation, { token }).toPromise()
-
     if (response.error) {
+      // TODO: better error communication
+      if (response.error.message === '[GraphQL] check token lifetime') {
+        throw new ApiError('token_expired', response.error.message)
+      }
+
+      if (response.error.message === '[GraphQL] token is not valid') {
+        throw new ApiError('token_invalid', response.error.message)
+      }
+
       throw new ApiError('unknown', response.error.message)
     }
 
@@ -237,11 +273,14 @@ export const apiClient = {
   },
 
   getSession: async (): Promise<AuthResult> => {
+    if (!getToken()) {
+      return null
+    }
+
     // renew session with auth token in header (!)
     const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
 
     if (response.error) {
-      // TODO
       throw new ApiError('unknown', response.error.message)
     }
 
@@ -274,9 +313,13 @@ export const apiClient = {
     }
     return response.data.authorsAll
   },
-  getAuthor: async ({ slug }: { slug: string }) => {
-    const response = await publicGraphQLClient.query(authorsBySlugs, { slugs: [slug] }).toPromise()
-    return response.data.getUsersBySlugs
+  getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
+    const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
+    return response.data.getAuthor
+  },
+  getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
+    const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
+    return response.data.getTopic
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
     const response = await publicGraphQLClient.query(articleBySlug, { slug }).toPromise()
@@ -303,10 +346,6 @@ export const apiClient = {
       .toPromise()
 
     return response.data.reactionsForShouts
-  },
-  getAuthorsBySlugs: async ({ slugs }) => {
-    const response = await publicGraphQLClient.query(authorsBySlugs, { slugs }).toPromise()
-    return response.data.getUsersBySlugs
   },
   createArticle: async ({ article }: { article: ShoutInput }) => {
     const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()

@@ -1,13 +1,13 @@
-import { createEffect, createMemo, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
-import { useAuthStore } from '../../stores/auth'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
+import { useSession } from '../../context/session'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -17,10 +17,13 @@ type Props = {
   authors: Author[]
 }
 
+const PAGE_SIZE = 20
+
 export const AllAuthorsView = (props: Props) => {
   const { sortedAuthors } = useAuthorsStore({ authors: props.authors })
+  const [limit, setLimit] = createSignal(PAGE_SIZE)
 
-  const { session } = useAuthStore()
+  const { session } = useSession()
 
   createEffect(() => {
     setAuthorsSort(searchParams().by || 'shouts')
@@ -54,7 +57,7 @@ export const AllAuthorsView = (props: Props) => {
     return keys
   })
 
-  // log.debug(getSearchParams())
+  const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
 
   return (
     <div class={clsx(styles.allTopicsPage, 'container')}>
@@ -95,7 +98,7 @@ export const AllAuthorsView = (props: Props) => {
                 when={!searchParams().by || searchParams().by === 'name'}
                 fallback={() => (
                   <div class={styles.stats}>
-                    <For each={sortedAuthors()}>
+                    <For each={sortedAuthors().slice(0, limit())}>
                       {(author) => (
                         <AuthorCard
                           author={author}
@@ -107,6 +110,13 @@ export const AllAuthorsView = (props: Props) => {
                         />
                       )}
                     </For>
+                    <Show when={sortedAuthors().length > limit()}>
+                      <div class={styles.loadMoreContainer}>
+                        <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                          {t('More')}
+                        </button>
+                      </div>
+                    </Show>
                   </div>
                 )}
               >

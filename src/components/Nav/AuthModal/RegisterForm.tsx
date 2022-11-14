@@ -4,13 +4,14 @@ import { t } from '../../../utils/intl'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { SocialProviders } from './SocialProviders'
-import { checkEmail, register, useAuthStore } from '../../../stores/auth'
 import { isValidEmail } from './validators'
 import { ApiError } from '../../../utils/apiClient'
 import { email, setEmail } from './sharedLogic'
 import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
 import { hideModal } from '../../../stores/ui'
+import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
+import { register } from '../../../stores/auth'
 
 type FormFields = {
   name: string
@@ -23,7 +24,7 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 export const RegisterForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
 
-  const { emailChecks } = useAuthStore()
+  const { emailChecks } = useEmailChecks()
 
   const [submitError, setSubmitError] = createSignal('')
   const [name, setName] = createSignal('')
@@ -60,11 +61,14 @@ export const RegisterForm = () => {
 
     const newValidationErrors: ValidationErrors = {}
 
-    if (!name()) {
+    const clearName = name().trim()
+    const clearEmail = email().trim()
+
+    if (!clearName) {
       newValidationErrors.name = t('Please enter a name to sign your comments and publication')
     }
 
-    if (!email()) {
+    if (!clearEmail) {
       newValidationErrors.email = t('Please enter email')
     } else if (!isValidEmail(email())) {
       newValidationErrors.email = t('Invalid email')
@@ -76,7 +80,7 @@ export const RegisterForm = () => {
 
     setValidationErrors(newValidationErrors)
 
-    const emailCheckResult = await checkEmail(email())
+    const emailCheckResult = await checkEmail(clearEmail)
 
     const isValid = Object.keys(newValidationErrors).length === 0 && !emailCheckResult
 
@@ -88,8 +92,8 @@ export const RegisterForm = () => {
 
     try {
       await register({
-        name: name(),
-        email: email(),
+        name: clearName,
+        email: clearEmail,
         password: password()
       })
 

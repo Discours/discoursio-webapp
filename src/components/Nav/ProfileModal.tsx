@@ -2,16 +2,19 @@ import { AuthorCard } from '../Author/Card'
 import type { Author } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { hideModal } from '../../stores/ui'
-import { useAuthStore, signOut } from '../../stores/auth'
 import { createMemo, For } from 'solid-js'
+import { useSession } from '../../context/session'
 
-const quit = () => {
-  signOut()
-  hideModal()
-}
+export const ProfileModal = () => {
+  const {
+    session,
+    actions: { signOut }
+  } = useSession()
 
-export default () => {
-  const { session } = useAuthStore()
+  const quit = () => {
+    signOut()
+    hideModal()
+  }
 
   const author = createMemo<Author>(() => {
     const a: Author = {

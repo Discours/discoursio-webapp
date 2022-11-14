@@ -2,7 +2,6 @@ import { t } from '../../../utils/intl'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { SocialProviders } from './SocialProviders'
-import { signIn, signSendLink } from '../../../stores/auth'
 import { ApiError } from '../../../utils/apiClient'
 import { createSignal, Show } from 'solid-js'
 import { isValidEmail } from './validators'
@@ -10,6 +9,8 @@ import { email, setEmail } from './sharedLogic'
 import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
 import { hideModal, locale } from '../../../stores/ui'
+import { useSession } from '../../../context/session'
+import { signSendLink } from '../../../stores/auth'
 
 type FormFields = {
   email: string
@@ -25,6 +26,10 @@ export const LoginForm = () => {
   // TODO: better solution for interactive error messages
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
+
+  const {
+    actions: { signIn }
+  } = useSession()
 
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
 
@@ -53,6 +58,7 @@ export const LoginForm = () => {
     event.preventDefault()
 
     setIsLinkSent(false)
+    setIsEmailNotConfirmed(false)
     setSubmitError('')
 
     const newValidationErrors: ValidationErrors = {}

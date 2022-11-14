@@ -8,7 +8,7 @@ import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
 import { useRouter } from '../../stores/router'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { loadPublishedArticles, useArticlesStore } from '../../stores/zine/articles'
+import { loadTopicArticles, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
@@ -44,7 +44,8 @@ export const TopicView = (props: TopicProps) => {
   const loadMore = async () => {
     saveScrollPosition()
 
-    const { hasMore } = await loadPublishedArticles({
+    const { hasMore } = await loadTopicArticles({
+      topicSlug: topic().slug,
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })
@@ -130,20 +131,18 @@ export const TopicView = (props: TopicProps) => {
           wrapper={'top-article'}
         />
 
-        <Show when={sortedArticles().length > 5}>
-          <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
-          <Row1 article={sortedArticles()[15]} />
+        <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
+        <Row1 article={sortedArticles()[15]} />
 
-          <Slider
-            title={title()}
-            articles={sortedArticles().slice(16, 22)}
-            slidesPerView={3}
-            isCardsWithCover={false}
-          />
+        <Slider
+          title={title()}
+          articles={sortedArticles().slice(16, 22)}
+          slidesPerView={3}
+          isCardsWithCover={false}
+        />
 
-          <Row3 articles={sortedArticles().slice(23, 26)} />
-          <Row2 articles={sortedArticles().slice(26, 28)} />
-        </Show>
+        <Row3 articles={sortedArticles().slice(23, 26)} />
+        <Row2 articles={sortedArticles().slice(26, 28)} />
 
         <For each={pages()}>
           {(page) => (

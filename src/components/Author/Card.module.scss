@@ -52,10 +52,7 @@
 .authorSubscribe {
   align-items: center;
   display: flex;
-
-  @include media-breakpoint-down(lg) {
-    padding: 0 0 0 42px;
-  }
+  padding: 0 0 0 42px;
 
   a {
     background: #f7f7f7;

@@ -15,7 +15,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     <Popup {...props} horizontalAnchor="right">
       <ul class="nodash">
         <li>
-          <a href={`/${session().user?.slug}`}>Профиль</a>
+          <a href={`/author/${session().user?.slug}`}>Профиль</a>
         </li>
         <li>
           <a href="#">Черновики</a>

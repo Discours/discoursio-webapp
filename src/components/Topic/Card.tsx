@@ -50,7 +50,7 @@ export const TopicCard = (props: TopicProps) => {
         [styles.topicInRow]: props.isTopicInRow
       }}
     >
-      <div classList={{ 'col-md-9 col-lg-7': !props.compact && !props.subscribeButtonBottom }}>
+      <div classList={{ 'col-md-9 col-lg-7 col-xl-6': !props.compact && !props.subscribeButtonBottom }}>
         <Show when={props.topic.title}>
           <h3 class={styles.topicTitle}>
             <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>

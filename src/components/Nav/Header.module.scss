@@ -135,6 +135,10 @@
   position: relative;
   @include font-size(1.7rem);
 
+  @include media-breakpoint-down(lg) {
+    margin-right: 7rem;
+  }
+
   @include media-breakpoint-down(md) {
     display: none;
   }
@@ -300,7 +304,7 @@
   @include font-size(1.4rem);
 
   left: 0;
-  margin: 0.2em;
+  margin: 0.2em 0;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
@@ -329,13 +333,21 @@
   display: flex;
   justify-content: flex-end;
   position: absolute;
-  right: 2rem;
+  right: 5rem;
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
 
+  @include media-breakpoint-up(sm) {
+    right: 6rem;
+  }
+
   @include media-breakpoint-up(md) {
-    right: 0;
+    right: 1.5rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    right: 1.5rem;
   }
 
   .control {
@@ -403,12 +415,10 @@
 
 .userControlItem {
   align-items: center;
-  border: 2px solid #f6f6f6;
   border-radius: 100%;
   display: flex;
   height: 2.4em;
   justify-content: center;
-  margin-left: divide($container-padding-x, 4);
   position: relative;
   transition: margin-left 0.3s;
   width: 2.4em;
@@ -419,8 +429,6 @@
 
   .headerScrolledTop &,
   .headerScrolledBottom & {
-    border-color: transparent;
-    margin-left: 0;
     transition: none;
   }
 

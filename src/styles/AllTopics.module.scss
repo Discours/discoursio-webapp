@@ -17,9 +17,7 @@
     }
 
     .topic {
-      @include media-breakpoint-down(md) {
-        margin-top: 1.6rem;
-      }
+      margin-bottom: 1.6rem;
 
       @include media-breakpoint-down(sm) {
         margin-left: 2.6rem;
@@ -41,6 +39,11 @@
   text-align: center;
 
   .loadMoreButton {
-    padding: 0.6em 1.5em;
+    padding: 0.6em 5em;
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: auto;
+    }
   }
 }

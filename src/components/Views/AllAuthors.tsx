@@ -64,13 +64,10 @@ export const AllAuthorsView = (props: Props) => {
       <Show when={sortedAuthors().length > 0}>
         <div class="shift-content">
           <div class="row">
-            <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-8')}>
+            <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
               <h1>{t('Authors')}</h1>
               <p>{t('Subscribe who you like to tune your personal feed')}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-10 col-xl-8">
+
               <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                 <li classList={{ selected: searchParams().by === 'shouts' }}>
                   <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
@@ -94,10 +91,15 @@ export const AllAuthorsView = (props: Props) => {
                   </a>
                 </li>
               </ul>
-              <Show
-                when={!searchParams().by || searchParams().by === 'name'}
-                fallback={() => (
-                  <div class={styles.stats}>
+            </div>
+          </div>
+
+          <Show
+            when={!searchParams().by || searchParams().by === 'name'}
+            fallback={() => (
+              <div class={styles.stats}>
+                <div class="row">
+                  <div class="col-lg-10 col-xl-9">
                     <For each={sortedAuthors().slice(0, limit())}>
                       {(author) => (
                         <AuthorCard
@@ -110,25 +112,31 @@ export const AllAuthorsView = (props: Props) => {
                         />
                       )}
                     </For>
-                    <Show when={sortedAuthors().length > limit()}>
-                      <div class={styles.loadMoreContainer}>
-                        <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                          {t('More')}
-                        </button>
-                      </div>
-                    </Show>
                   </div>
-                )}
-              >
-                <For each={sortedKeys()}>
-                  {(letter) => (
-                    <div class={clsx(styles.group, 'group')}>
-                      <h2>{letter}</h2>
-                      <div class="container">
+                </div>
+                <Show when={sortedAuthors().length > limit()}>
+                  <div class="row">
+                    <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
+                      <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                        {t('More')}
+                      </button>
+                    </div>
+                  </div>
+                </Show>
+              </div>
+            )}
+          >
+            <For each={sortedKeys()}>
+              {(letter) => (
+                <div class={clsx(styles.group, 'group')}>
+                  <h2>{letter}</h2>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-lg-10">
                         <div class="row">
                           <For each={byLetter()[letter]}>
                             {(author: Author) => (
-                              <div class={clsx(styles.topic, 'topic col-sm-6 col-md-3')}>
+                              <div class={clsx(styles.topic, 'topic col-sm-6 col-md-4')}>
                                 <div class="topic-title">
                                   <a href={`/author/${author.slug}`}>{author.name}</a>
                                 </div>
@@ -138,11 +146,11 @@ export const AllAuthorsView = (props: Props) => {
                         </div>
                       </div>
                     </div>
-                  )}
-                </For>
-              </Show>
-            </div>
-          </div>
+                  </div>
+                </div>
+              )}
+            </For>
+          </Show>
         </div>
       </Show>
     </div>

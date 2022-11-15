@@ -7,7 +7,7 @@ import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Home'
 
 const randomTopics = await apiClient.getRandomTopics({ amount: 12 })
 const articles = await apiClient.loadShoutsBy(
-  { by: { visibility: "public" }, amount: PRERENDERED_ARTICLES_COUNT, offset: 0 })
+  { by: { visibility: "public" }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
 
 const { pathname, search } = Astro.url
 initRouter(pathname, search)

@@ -230,16 +230,18 @@ export const apiClient = {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats
   },
-  loadAuthorsBy: async ({ by, amount = 50, offset = 0 }) => {
-    const resp = await publicGraphQLClient.query(authorsLoadBy, { by, amount, offset }).toPromise()
+  loadAuthorsBy: async ({ by, limit = 50, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(authorsLoadBy, { by, limit, offset }).toPromise()
+    console.debug(resp)
     return resp.data.loadShoutsBy
   },
-  loadShoutsBy: async ({ by, amount = 50, offset = 0 }) => {
-    const resp = await publicGraphQLClient.query(shoutsLoadBy, { by, amount, offset }).toPromise()
+  loadShoutsBy: async ({ by, limit = 50, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(shoutsLoadBy, { by, limit, offset }).toPromise()
+    console.debug(resp)
     return resp.data.loadShoutsBy
   },
-  loadReactionsBy: async ({ by, amount = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
-    const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, amount, offset }).toPromise()
+  loadReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
     return resp.data.loadReactionsBy
   },
   getChatMessages: async ({

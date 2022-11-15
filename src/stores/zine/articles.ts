@@ -134,7 +134,7 @@ export const loadShoutsBy = async ({
 }): Promise<{ hasMore: boolean }> => {
   const newArticles = await apiClient.loadShoutsBy({
     by,
-    amount: limit + 1,
+    limit: limit + 1,
     offset
   })
 

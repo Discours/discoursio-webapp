@@ -1,17 +1,21 @@
-import { Popup, PopupProps } from './Popup'
-import { signOut, useAuthStore } from '../../stores/auth'
-import styles from './Popup.module.scss'
+import { useSession } from '../../context/session'
+import type { PopupProps } from '../_shared/Popup'
+import { Popup } from '../_shared/Popup'
+import styles from '../_shared/Popup.module.scss'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
 export const ProfilePopup = (props: ProfilePopupProps) => {
-  const { session } = useAuthStore()
+  const {
+    session,
+    actions: { signOut }
+  } = useSession()
 
   return (
     <Popup {...props} horizontalAnchor="right">
       <ul class="nodash">
         <li>
-          <a href={`/${session().user?.slug}`}>Профиль</a>
+          <a href={`/author/${session().user?.slug}`}>Профиль</a>
         </li>
         <li>
           <a href="#">Черновики</a>

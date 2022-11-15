@@ -1,4 +1,4 @@
-import { createSignal, onMount } from 'solid-js'
+import { createSignal } from 'solid-js'
 import styles from './Subscribe.module.scss'
 import { t } from '../../utils/intl'
 import { clsx } from 'clsx'

@@ -15,12 +15,25 @@
 .authorDetails {
   display: flex;
   flex: 1;
-  padding-right: 1.2rem;
   width: max-content;
+
+  // padding-right: 1.2rem;
+
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+  }
 }
 
 .authorDetailsWrapper {
-  flex: 1;
+  flex: 1 100%;
+
+  @include media-breakpoint-up(sm) {
+    flex: 1;
+  }
+
+  @include media-breakpoint-up(md) {
+    padding-right: 1.2rem;
+  }
 }
 
 .authorName {
@@ -33,15 +46,13 @@
 .authorAbout {
   font-size: 1.5rem;
   color: rgb(0 0 0 / 60%);
+  word-break: break-word;
 }
 
 .authorSubscribe {
   align-items: center;
   display: flex;
-
-  @include media-breakpoint-down(lg) {
-    padding: 0 0 0 42px;
-  }
+  padding: 0 0 0 42px;
 
   a {
     background: #f7f7f7;
@@ -118,6 +129,10 @@
 
   button {
     margin-right: 0.5em;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 
@@ -219,5 +234,25 @@
   .button {
     margin-right: 1.6rem;
     vertical-align: middle;
+  }
+}
+
+.authorsListItem {
+  .authorName {
+    @include font-size(2.2rem);
+
+    font-weight: bold;
+  }
+
+  .authorSubscribe {
+    align-items: baseline;
+
+    @include media-breakpoint-down(sm) {
+      padding: 1rem 0 0;
+    }
+  }
+
+  .buttonLabel {
+    display: block;
   }
 }

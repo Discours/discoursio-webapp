@@ -1,14 +1,14 @@
 import type { Author } from '../../graphql/types.gen'
 import Userpic from './Userpic'
 import { Icon } from '../Nav/Icon'
-import style from './Card.module.scss'
+import styles from './Card.module.scss'
 import { createMemo, For, Show } from 'solid-js'
 import { translit } from '../../utils/ru2en'
 import { t } from '../../utils/intl'
-import { useAuthStore } from '../../stores/auth'
 import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
+import { useSession } from '../../context/session'
 
 interface AuthorCardProps {
   compact?: boolean
@@ -19,10 +19,11 @@ interface AuthorCardProps {
   author: Author
   isAuthorPage?: boolean
   noSocialButtons?: boolean
+  isAuthorsList?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
-  const { session } = useAuthStore()
+  const { session } = useSession()
 
   const subscribed = createMemo<boolean>(
     () => session()?.news?.authors?.some((u) => u === props.author.slug) || false
@@ -36,51 +37,81 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
   // TODO: reimplement AuthorCard
   return (
-    <div class={style.author} classList={{ [style.authorPage]: props.isAuthorPage }}>
-      <Userpic user={props.author} hasLink={props.hasLink} isBig={props.isAuthorPage} />
+    <div
+      class={clsx(styles.author)}
+      classList={{
+        [styles.authorPage]: props.isAuthorPage,
+        [styles.authorsListItem]: props.isAuthorsList
+      }}
+    >
+      <Userpic
+        user={props.author}
+        hasLink={props.hasLink}
+        isBig={props.isAuthorPage}
+        isAuthorsList={props.isAuthorsList}
+      />
 
-      <div class={style.authorDetails}>
-        <div class={style.authorDetailsWrapper}>
+      <div class={styles.authorDetails}>
+        <div class={styles.authorDetailsWrapper}>
           <Show when={props.hasLink}>
-            <a class={style.authorName} href={`/author/${props.author.slug}`}>
+            <a class={styles.authorName} href={`/author/${props.author.slug}`}>
               {name()}
             </a>
           </Show>
           <Show when={!props.hasLink}>
-            <div class={style.authorName}>{name()}</div>
+            <div class={styles.authorName}>{name()}</div>
           </Show>
 
           <Show when={!props.hideDescription}>
-            <div class={style.authorAbout}>{bio()}</div>
+            <div class={styles.authorAbout} classList={{ 'text-truncate': props.isAuthorsList }}>
+              {bio()}
+            </div>
           </Show>
         </div>
 
         <Show when={canFollow()}>
-          <div class={style.authorSubscribe}>
+          <div class={styles.authorSubscribe}>
             <Show
               when={subscribed()}
               fallback={
                 <button
                   onClick={() => follow}
-                  class={clsx('button button--subscribe', style.button, style.buttonSubscribe)}
+                  class={clsx('button', styles.button)}
+                  classList={{
+                    [styles.buttonSubscribe]: !props.isAuthorsList,
+                    'button--subscribe': !props.isAuthorsList,
+                    'button--subscribe-topic': props.isAuthorsList,
+                    [styles.buttonWrite]: props.isAuthorsList
+                  }}
                 >
-                  <Icon name="author-subscribe" class={style.icon} />
-                  <span class={style.buttonLabel}>&nbsp;{t('Follow')}</span>
+                  <Show when={!props.isAuthorsList}>
+                    <Icon name="author-subscribe" class={styles.icon} />
+                    &nbsp;
+                  </Show>
+                  <span class={styles.buttonLabel}>{t('Follow')}</span>
                 </button>
               }
             >
               <button
                 onClick={() => unfollow}
-                class={clsx('button button--subscribe', style.button, style.buttonSubscribe)}
+                classList={{
+                  [styles.buttonSubscribe]: !props.isAuthorsList,
+                  'button--subscribe': !props.isAuthorsList,
+                  'button--subscribe-topic': props.isAuthorsList,
+                  [styles.buttonWrite]: props.isAuthorsList
+                }}
               >
-                <Icon name="author-unsubscribe" class={style.icon} />
-                <span class={style.buttonLabel}>-&nbsp;{t('Unfollow')}</span>
+                <Show when={!props.isAuthorsList}>
+                  <Icon name="author-unsubscribe" class={styles.icon} />
+                  &nbsp;
+                </Show>
+                <span class={styles.buttonLabel}>{t('Unfollow')}</span>
               </button>
             </Show>
 
-            <Show when={!props.compact}>
-              <button class={clsx(style.buttonWrite, style.button, 'button button--subscribe-topic')}>
-                <Icon name="edit" class={style.icon} />
+            <Show when={!props.compact && !props.isAuthorsList}>
+              <button class={clsx(styles.buttonWrite, styles.button, 'button button--subscribe-topic')}>
+                <Icon name="edit" class={styles.icon} />
                 {t('Write')}
               </button>
 

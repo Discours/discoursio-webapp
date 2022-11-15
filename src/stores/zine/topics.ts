@@ -100,9 +100,7 @@ export const loadRandomTopics = async (): Promise<void> => {
 }
 
 export const loadTopic = async ({ slug }: { slug: string }): Promise<void> => {
-  // TODO:
-  const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: 1 })
-  const topic = articles[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
+  const topic = await apiClient.getTopic({ slug })
   addTopics([topic])
 }
 

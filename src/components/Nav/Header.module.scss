@@ -71,11 +71,15 @@
   align-items: center;
   display: inline-flex;
   height: 56px;
-  padding: 0 $container-padding-x 0 0;
+  padding: 0;
   position: relative;
   transition: height 0.2s;
   text-align: center;
   z-index: 9;
+
+  @include media-breakpoint-up(sm) {
+    padding: 0 6rem 0 0;
+  }
 
   @include media-breakpoint-up(md) {
     height: 70px;
@@ -114,6 +118,7 @@
 
 .usernav {
   display: inline-flex;
+  font-weight: 500;
   padding-right: 0;
   position: relative;
   width: auto;
@@ -130,6 +135,10 @@
   position: relative;
   @include font-size(1.7rem);
 
+  @include media-breakpoint-down(lg) {
+    margin-right: 7rem;
+  }
+
   @include media-breakpoint-down(md) {
     display: none;
   }
@@ -141,6 +150,7 @@
 
 .mainNavigation {
   display: inline-flex;
+  font-weight: 500;
   list-style: none;
   margin: 0;
   opacity: 1;
@@ -204,9 +214,13 @@
   box-sizing: content-box;
   display: inline-flex;
   float: right;
+  padding-left: 0;
   padding-right: 0;
-  padding-left: divide($container-padding-x, 2);
   width: 2.2rem;
+
+  @include media-breakpoint-up(sm) {
+    padding-left: divide($container-padding-x, 2);
+  }
 
   @include media-breakpoint-up(md) {
     display: none;
@@ -290,7 +304,7 @@
   @include font-size(1.4rem);
 
   left: 0;
-  margin: 0.2em;
+  margin: 0.2em 0;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
@@ -318,11 +332,23 @@
 .articleControls {
   display: flex;
   justify-content: flex-end;
-  left: 0;
   position: absolute;
+  right: 5rem;
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
+
+  @include media-breakpoint-up(sm) {
+    right: 6rem;
+  }
+
+  @include media-breakpoint-up(md) {
+    right: 1.5rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    right: 1.5rem;
+  }
 
   .control {
     cursor: pointer;
@@ -344,7 +370,11 @@
   }
 
   .control + .control {
-    margin-left: 1.6rem;
+    margin-left: 1.2rem;
+
+    @include media-breakpoint-up(sm) {
+      margin-left: 2rem;
+    }
   }
 
   img {
@@ -385,17 +415,21 @@
 
 .userControlItem {
   align-items: center;
-  border: 2px solid #f6f6f6;
   border-radius: 100%;
   display: flex;
   height: 2.4em;
   justify-content: center;
-  margin-left: divide($container-padding-x, 2);
   position: relative;
+  transition: margin-left 0.3s;
   width: 2.4em;
 
-  @include media-breakpoint-up(sm) {
-    margin-left: 1.2rem;
+  @include media-breakpoint-down(sm) {
+    margin-left: 0.4rem !important;
+  }
+
+  .headerScrolledTop &,
+  .headerScrolledBottom & {
+    transition: none;
   }
 
   .circlewrap {
@@ -459,10 +493,10 @@
   }
 }
 
-.userControlItemWritePost {
-  width: auto;
-
+.userControlItemVerbose {
   @include media-breakpoint-up(lg) {
+    width: auto;
+
     .icon {
       display: none;
     }

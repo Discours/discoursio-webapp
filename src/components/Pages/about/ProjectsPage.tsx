@@ -8,8 +8,9 @@ export const ProjectsPage = () => {
     <MainLayout>
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-8 offset-md-2">{t('Projects')}</div>
-          <div class="col-md-8 col-lg-6 offset-md-3" />
+          <div class="col-md-6 col-xl-7 shift-content order-md-first">
+            <h1>{t('Projects')}</h1>
+          </div>
         </div>
       </article>
     </MainLayout>

@@ -1,12 +1,13 @@
-import { createEffect, createMemo, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../Nav/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
-import { useAuthStore } from '../../stores/auth'
-import '../../styles/AllTopics.scss'
+import styles from '../../styles/AllTopics.module.scss'
+import { clsx } from 'clsx'
+import { useSession } from '../../context/session'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -16,10 +17,13 @@ type Props = {
   authors: Author[]
 }
 
+const PAGE_SIZE = 20
+
 export const AllAuthorsView = (props: Props) => {
   const { sortedAuthors } = useAuthorsStore({ authors: props.authors })
+  const [limit, setLimit] = createSignal(PAGE_SIZE)
 
-  const { session } = useAuthStore()
+  const { session } = useSession()
 
   createEffect(() => {
     setAuthorsSort(searchParams().by || 'shouts')
@@ -53,86 +57,100 @@ export const AllAuthorsView = (props: Props) => {
     return keys
   })
 
-  // log.debug(getSearchParams())
+  const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
 
   return (
-    <div class="all-topics-page">
+    <div class={clsx(styles.allTopicsPage, 'container')}>
       <Show when={sortedAuthors().length > 0}>
-        <div class="wide-container">
-          <div class="shift-content">
-            <div class="row">
-              <div class="col-md-9 page-header">
-                <h1>{t('Authors')}</h1>
-                <p>{t('Subscribe who you like to tune your personal feed')}</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <ul class="view-switcher">
-                  <li classList={{ selected: searchParams().by === 'shouts' }}>
-                    <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
-                      {t('By shouts')}
-                    </a>
-                  </li>
-                  <li classList={{ selected: searchParams().by === 'rating' }}>
-                    <a href="/authors?by=rating" onClick={handleClientRouteLinkClick}>
-                      {t('By rating')}
-                    </a>
-                  </li>
-                  <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
-                    <a href="/authors" onClick={handleClientRouteLinkClick}>
-                      {t('By alphabet')}
-                    </a>
-                  </li>
-                  <li class="view-switcher__search">
-                    <a href="/authors/search">
-                      <Icon name="search" />
-                      {t('Search author')}
-                    </a>
-                  </li>
-                </ul>
-                <Show
-                  when={!searchParams().by || searchParams().by === 'name'}
-                  fallback={() => (
-                    <div class="stats">
-                      <For each={sortedAuthors()}>
-                        {(author) => (
-                          <AuthorCard
-                            author={author}
-                            compact={false}
-                            hasLink={true}
-                            subscribed={subscribed(author.slug)}
-                            noSocialButtons={true}
-                          />
-                        )}
-                      </For>
-                    </div>
-                  )}
-                >
-                  <For each={sortedKeys()}>
-                    {(letter) => (
-                      <div class="group">
-                        <h2>{letter}</h2>
-                        <div class="container">
-                          <div class="row">
-                            <For each={byLetter()[letter]}>
-                              {(author: Author) => (
-                                <div class="topic col-sm-6 col-md-3">
-                                  <div class="topic-title">
-                                    <a href={`/author/${author.slug}`}>{author.name}</a>
-                                  </div>
-                                </div>
-                              )}
-                            </For>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </For>
-                </Show>
-              </div>
+        <div class="shift-content">
+          <div class="row">
+            <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
+              <h1>{t('Authors')}</h1>
+              <p>{t('Subscribe who you like to tune your personal feed')}</p>
+
+              <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
+                <li classList={{ selected: searchParams().by === 'shouts' }}>
+                  <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
+                    {t('By shouts')}
+                  </a>
+                </li>
+                <li classList={{ selected: searchParams().by === 'rating' }}>
+                  <a href="/authors?by=rating" onClick={handleClientRouteLinkClick}>
+                    {t('By rating')}
+                  </a>
+                </li>
+                <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
+                  <a href="/authors" onClick={handleClientRouteLinkClick}>
+                    {t('By alphabet')}
+                  </a>
+                </li>
+                <li class="view-switcher__search">
+                  <a href="/authors/search">
+                    <Icon name="search" />
+                    {t('Search author')}
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
+
+          <Show
+            when={!searchParams().by || searchParams().by === 'name'}
+            fallback={() => (
+              <div class={styles.stats}>
+                <div class="row">
+                  <div class="col-lg-10 col-xl-9">
+                    <For each={sortedAuthors().slice(0, limit())}>
+                      {(author) => (
+                        <AuthorCard
+                          author={author}
+                          compact={false}
+                          hasLink={true}
+                          subscribed={subscribed(author.slug)}
+                          noSocialButtons={true}
+                          isAuthorsList={true}
+                        />
+                      )}
+                    </For>
+                  </div>
+                </div>
+                <Show when={sortedAuthors().length > limit()}>
+                  <div class="row">
+                    <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
+                      <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                        {t('More')}
+                      </button>
+                    </div>
+                  </div>
+                </Show>
+              </div>
+            )}
+          >
+            <For each={sortedKeys()}>
+              {(letter) => (
+                <div class={clsx(styles.group, 'group')}>
+                  <h2>{letter}</h2>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-lg-10">
+                        <div class="row">
+                          <For each={byLetter()[letter]}>
+                            {(author: Author) => (
+                              <div class={clsx(styles.topic, 'topic col-sm-6 col-md-4')}>
+                                <div class="topic-title">
+                                  <a href={`/author/${author.slug}`}>{author.name}</a>
+                                </div>
+                              </div>
+                            )}
+                          </For>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </For>
+          </Show>
         </div>
       </Show>
     </div>

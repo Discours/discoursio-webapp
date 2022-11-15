@@ -17,3 +17,8 @@ export type PageProps = {
   searchResults?: Shout[]
   chats?: Chat[]
 }
+
+export type RootSearchParams = {
+  modal: string
+  lang: string
+}

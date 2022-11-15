@@ -19,6 +19,11 @@
   .wide-container {
     padding: 0;
   }
+
+  ::selection {
+    background: #fff;
+    color: #000;
+  }
 }
 
 .about-discours__actions {

@@ -6,7 +6,7 @@ import { PRERENDERED_ARTICLES_COUNT } from '../../components/Views/Topic'
 
 const slug = Astro.params.slug?.toString() || ''
 const articles = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: PRERENDERED_ARTICLES_COUNT })
-const topic = articles[0].topics.find(({ slug: topicSlug }) => topicSlug === slug)
+const topic = await apiClient.getTopic({ slug })
 
 import { initRouter } from '../../stores/router'
 

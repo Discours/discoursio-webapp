@@ -1,4 +1,4 @@
-import type { Author, Shout, Topic } from '../../graphql/types.gen'
+import type { Author, Shout, ShoutInput, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { addAuthorsByTopic } from './authors'
 import { addTopicsByAuthor } from './topics'
@@ -270,6 +270,14 @@ export const loadArticle = async ({ slug }: { slug: string }): Promise<void> => 
   }
 
   addArticles([article])
+}
+
+export const createArticle = async ({ article }: { article: ShoutInput }) => {
+  try {
+    await apiClient.createArticle({ article })
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 type InitialState = {

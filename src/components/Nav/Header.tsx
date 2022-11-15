@@ -1,22 +1,15 @@
-import { For, Show, createSignal, createMemo, createEffect, onMount, onCleanup } from 'solid-js'
-import Notifications from './Notifications'
+import { For, Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
 import { AuthModal } from './AuthModal'
 import { t } from '../../utils/intl'
-import { useModalStore, showModal, useWarningsStore } from '../../stores/ui'
-import { useAuthStore } from '../../stores/auth'
+import { useModalStore } from '../../stores/ui'
 import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
-import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
+import { HeaderAuth } from './HeaderAuth'
 import { SharePopup } from '../Article/SharePopup'
-import { ProfilePopup } from './ProfilePopup'
-import Userpic from '../Author/Userpic'
-import type { Author } from '../../graphql/types.gen'
-
-const log = getLogger('header')
 
 const resources: { name: string; route: keyof Routes }[] = [
   { name: t('zine'), route: 'home' },
@@ -34,39 +27,36 @@ export const Header = (props: Props) => {
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
-  const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   const [isProfilePopupVisible, setIsProfilePopupVisible] = createSignal(false)
 
-  // stores
-  const { warnings } = useWarningsStore()
-  const { session } = useAuthStore()
   const { modal } = useModalStore()
 
   const { page } = useRouter()
 
   // methods
-  const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
+
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
   // effects
+
+  let windowScrollTop = 0
+
   createEffect(() => {
-    document.body.classList.toggle('fixed', fixed() || modal() !== null)
-    document.body.classList.toggle(styles.fixed, fixed() && !modal())
-  })
+    const mainContent = document.querySelector('.main-content') as HTMLDivElement
 
-  // derived
-  const authorized = createMemo(() => session()?.user?.slug)
-
-  const handleBellIconClick = (event: Event) => {
-    event.preventDefault()
-
-    if (!authorized()) {
-      showModal('auth')
-      return
+    if (fixed() || modal() !== null) {
+      windowScrollTop = window.scrollY
+      mainContent.style.marginTop = `-${windowScrollTop}px`
     }
 
-    toggleWarnings()
-  }
+    document.body.classList.toggle('fixed', fixed() || modal() !== null)
+    document.body.classList.toggle(styles.fixed, fixed() && !modal())
+
+    if (!fixed() && !modal()) {
+      mainContent.style.marginTop = ''
+      window.scrollTo(0, windowScrollTop)
+    }
+  })
 
   onMount(() => {
     let scrollTop = window.scrollY
@@ -131,85 +121,27 @@ export const Header = (props: Props) => {
               </li>
             </ul>
           </div>
-          <div class={styles.usernav}>
-            <div class={clsx(styles.userControl, styles.userControl, 'col')}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemWritePost)}>
-                <a href="/create" onClick={handleClientRouteLinkClick}>
-                  <span class={styles.textLabel}>{t('Create post')}</span>
-                  <Icon name="pencil" class={styles.icon} />
-                </a>
-              </div>
-
-              <div class={styles.userControlItem}>
-                <a href="#" onClick={handleBellIconClick}>
-                  <div>
-                    <Icon name="bell-white" counter={authorized() ? warnings().length : 1} />
-                  </div>
-                </a>
-              </div>
-
-              <Show when={visibleWarnings()}>
-                <div class={clsx(styles.userControlItem, 'notifications')}>
-                  <Notifications />
-                </div>
-              </Show>
-
-              <Show
-                when={authorized()}
-                fallback={
-                  <div class={clsx(styles.userControlItem, 'loginbtn')}>
-                    <a href="?modal=auth&mode=login" onClick={handleClientRouteLinkClick}>
-                      <Icon name="user-anonymous" />
-                    </a>
-                  </div>
-                }
-              >
-                <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
-                  <a href="/inbox">
-                    {/*FIXME: replace with route*/}
-                    <div classList={{ entered: page().path === '/inbox' }}>
-                      <Icon name="inbox-white" counter={session()?.news?.unread || 0} />
-                    </div>
-                  </a>
-                </div>
-                <ProfilePopup
-                  onVisibilityChange={(isVisible) => {
-                    setIsProfilePopupVisible(isVisible)
-                  }}
-                  containerCssClass={styles.control}
-                  trigger={
-                    <div class={styles.userControlItem}>
-                      <button class={styles.button}>
-                        <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
-                          <Userpic user={session().user as Author} class={styles.userpic} />
-                        </div>
-                      </button>
-                    </div>
-                  }
-                />
-              </Show>
+          <HeaderAuth setIsProfilePopupVisible={setIsProfilePopupVisible} />
+          <Show when={props.title}>
+            <div class={styles.articleControls}>
+              <SharePopup
+                onVisibilityChange={(isVisible) => {
+                  setIsSharePopupVisible(isVisible)
+                }}
+                containerCssClass={styles.control}
+                trigger={<Icon name="share-outline" class={styles.icon} />}
+              />
+              <a href="#comments" class={styles.control}>
+                <Icon name="comments-outline" class={styles.icon} />
+              </a>
+              <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
+                <Icon name="pencil-outline" class={styles.icon} />
+              </a>
+              <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
+                <Icon name="bookmark" class={styles.icon} />
+              </a>
             </div>
-            <Show when={props.title}>
-              <div class={styles.articleControls}>
-                <SharePopup
-                  onVisibilityChange={(isVisible) => {
-                    setIsSharePopupVisible(isVisible)
-                  }}
-                  containerCssClass={styles.control}
-                  trigger={<Icon name="share-outline" class={styles.icon} />}
-                />
-                <a href="#comments" class={styles.control}>
-                  <Icon name="comments-outline" class={styles.icon} />
-                </a>
-                <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
-                  <Icon name="pencil-outline" class={styles.icon} />
-                </a>
-                <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
-                  <Icon name="bookmark" class={styles.icon} />
-                </a>
-              </div>
-            </Show>
-          </div>
+          </Show>
           <div class={styles.burgerContainer}>
             <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
               <div />

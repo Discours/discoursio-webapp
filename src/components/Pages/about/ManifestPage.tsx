@@ -1,12 +1,18 @@
+import { createSignal, Show } from 'solid-js'
 import { MainLayout } from '../../Layouts/MainLayout'
 import { Modal } from '../../Nav/Modal'
 import { Feedback } from '../../Discours/Feedback'
 import Subscribe from '../../Discours/Subscribe'
 import Opener from '../../Nav/Opener'
+import { Icon } from '../../Nav/Icon'
 
 // title={t('Manifest')}
 
 export const ManifestPage = () => {
+  const [indexExpanded, setIndexExpanded] = createSignal(true)
+
+  const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
+
   return (
     <MainLayout>
       <Modal name="feedback">
@@ -17,80 +23,93 @@ export const ManifestPage = () => {
       </Modal>
       <article class="container container--static-page">
         <div class="row">
-          <div class="col-md-2">
-            <nav class="content-index">
-              <ul class="nodash">
-                <li>
-                  <a href="#manifest">Манифест</a>
-                </li>
-                <li>
-                  <a href="#participation">Как участвовать в&nbsp;самиздате</a>
-                  <ul class="nodash">
-                    <li>
-                      <a href="#contribute">Предлагать материалы</a>
-                    </li>
-                    <li>
-                      <a href="#donate">Поддерживать проект</a>
-                    </li>
-                    <li>
-                      <a href="#cooperation">Сотрудничать с&nbsp;журналом</a>
-                    </li>
-                    <li>
-                      <a href="#follow">Как еще можно помочь</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="#connection">Будем на&nbsp;связи</a>
-                </li>
-              </ul>
-            </nav>
+          <div class="col-md-4 col-lg-3 order-md-last">
+            <button class="button button--content-index" onClick={toggleIndexExpanded}>
+              <Show when={!indexExpanded()}>
+                <Icon name="content-index-control" />
+              </Show>
+              <Show when={indexExpanded()}>
+                <Icon name="content-index-control-expanded" class={'expanded'} />
+              </Show>
+            </button>
+
+            <Show when={indexExpanded()}>
+              <nav class="content-index">
+                <h4>Оглавление</h4>
+
+                <ul class="nodash">
+                  <li>
+                    <a href="#manifest">Манифест</a>
+                  </li>
+                  <li>
+                    <a href="#participation">Как участвовать в&nbsp;самиздате</a>
+                    <ul class="nodash">
+                      <li>
+                        <a href="#contribute">Предлагать материалы</a>
+                      </li>
+                      <li>
+                        <a href="#donate">Поддерживать проект</a>
+                      </li>
+                      <li>
+                        <a href="#cooperation">Сотрудничать с&nbsp;журналом</a>
+                      </li>
+                      <li>
+                        <a href="#follow">Как еще можно помочь</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="#connection">Будем на&nbsp;связи</a>
+                  </li>
+                </ul>
+              </nav>
+            </Show>
           </div>
 
-          <div class="col-md-8">
+          <div class="col-md-6 col-xl-7 shift-content order-md-first">
             <h1 id="manifest">
               <span class="wrapped">Манифест</span>
             </h1>
 
-            <div class="col-lg-10 offset-md-1">
-              <p>
-                Дискурс&nbsp;&mdash; независимый художественно-аналитический журнал с&nbsp;горизонтальной
-                редакцией, основанный на&nbsp;принципах свободы слова, прямой демократии и&nbsp;совместного
-                редактирования. Дискурс создаётся открытым медиасообществом ученых, журналистов, музыкантов,
-                писателей, предпринимателей, философов, инженеров, художников и&nbsp;специалистов
-                со&nbsp;всего мира, объединившихся, чтобы вместе делать общий журнал и&nbsp;объяснять
-                с&nbsp;разных точек зрения мозаичную картину современности.
-              </p>
-              <p>
-                Мы&nbsp;пишем о&nbsp;культуре, науке и&nbsp;обществе, рассказываем о&nbsp;новых идеях
-                и&nbsp;современном искусстве, публикуем статьи, исследования, репортажи, интервью людей, чью
-                прямую речь стоит услышать, и&nbsp;работы художников из&nbsp;разных стран&nbsp;&mdash;
-                от&nbsp;фильмов и&nbsp;музыки до&nbsp;живописи и&nbsp;фотографии. Помогая друг другу делать
-                публикации качественнее и&nbsp;общим голосованием выбирая лучшие материалы для журнала,
-                мы&nbsp;создаём новую горизонтальную журналистику, чтобы честно рассказывать о&nbsp;важном
-                и&nbsp;интересном.
-              </p>
-              <p>
-                Редакция Дискурса открыта для всех: у&nbsp;нас нет цензуры, запретных тем
-                и&nbsp;идеологических рамок. Каждый может <a href="/create">прислать материал</a>{' '}
-                в&nbsp;журнал и&nbsp;<a href="/about/guide">присоединиться к&nbsp;редакции</a>. Предоставляя
-                трибуну для независимой журналистики и&nbsp;художественных проектов, мы&nbsp;помогаем людям
-                рассказывать свои истории так, чтобы они были услышаны. Мы&nbsp;убеждены: чем больше голосов
-                будет звучать на&nbsp;Дискурсе, тем громче в&nbsp;полифонии мнений будет слышна истина.
-              </p>
-            </div>
+            <p>
+              Дискурс&nbsp;&mdash; независимый художественно-аналитический журнал с&nbsp;горизонтальной
+              редакцией, основанный на&nbsp;принципах свободы слова, прямой демократии и&nbsp;совместного
+              редактирования. Дискурс создаётся открытым медиасообществом ученых, журналистов, музыкантов,
+              писателей, предпринимателей, философов, инженеров, художников и&nbsp;специалистов
+              со&nbsp;всего мира, объединившихся, чтобы вместе делать общий журнал и&nbsp;объяснять
+              с&nbsp;разных точек зрения мозаичную картину современности.
+            </p>
+            <p>
+              Мы&nbsp;пишем о&nbsp;культуре, науке и&nbsp;обществе, рассказываем о&nbsp;новых идеях
+              и&nbsp;современном искусстве, публикуем статьи, исследования, репортажи, интервью людей, чью
+              прямую речь стоит услышать, и&nbsp;работы художников из&nbsp;разных стран&nbsp;&mdash;
+              от&nbsp;фильмов и&nbsp;музыки до&nbsp;живописи и&nbsp;фотографии. Помогая друг другу делать
+              публикации качественнее и&nbsp;общим голосованием выбирая лучшие материалы для журнала,
+              мы&nbsp;создаём новую горизонтальную журналистику, чтобы честно рассказывать о&nbsp;важном
+              и&nbsp;интересном.
+            </p>
+            <p>
+              Редакция Дискурса открыта для всех: у&nbsp;нас нет цензуры, запретных тем
+              и&nbsp;идеологических рамок. Каждый может <a href="/create">прислать материал</a>{' '}
+              в&nbsp;журнал и&nbsp;<a href="/about/guide">присоединиться к&nbsp;редакции</a>. Предоставляя
+              трибуну для независимой журналистики и&nbsp;художественных проектов, мы&nbsp;помогаем людям
+              рассказывать свои истории так, чтобы они были услышаны. Мы&nbsp;убеждены: чем больше голосов
+              будет звучать на&nbsp;Дискурсе, тем громче в&nbsp;полифонии мнений будет слышна истина.
+            </p>
 
             <h2 class="h2" id="participation">
               <span class="wrapped">Как участвовать в&nbsp;самиздате</span>
             </h2>
 
-            <div class="col-lg-10 offset-md-1">
-              <p>
-                Дискурс создается <a href="/about/guide">открытым сообществом</a> энтузиастов новой
-                независимой журналистики. Участвовать в&nbsp;открытой редакции и&nbsp;помогать журналу можно
-                следующими способами:
-              </p>
-              <h3 id="contribute">Предлагать материалы</h3>
+            <p>
+              Дискурс создается <a href="/about/guide">открытым сообществом</a> энтузиастов новой
+              независимой журналистики. Участвовать в&nbsp;открытой редакции и&nbsp;помогать журналу можно
+              следующими способами:
+            </p>
+            <details open>
+              <summary>
+                <h3 id="contribute">Предлагать материалы</h3>
+              </summary>
               <p>
                 <a href="/create">Создавайте</a> свои статьи и&nbsp;художественные работы&nbsp;&mdash;
                 лучшие из них будут опубликованы в&nbsp;журнале. Дискурс&nbsp;&mdash; некоммерческое
@@ -98,7 +117,12 @@ export const ManifestPage = () => {
                 <a href="/create?collab=true">поддержку</a> редакции, право голоса, множество других
                 возможностей и&nbsp;читателей по&nbsp;всему миру.
               </p>
-              <h3 id="donate">Поддерживать проект</h3>
+            </details>
+
+            <details>
+              <summary>
+                <h3 id="donate">Поддерживать проект</h3>
+              </summary>
               <p>
                 Дискурс существует на&nbsp;пожертвования читателей. Если вам нравится журнал, пожалуйста,
               </p>
@@ -106,7 +130,12 @@ export const ManifestPage = () => {
                 <a href="/about/help">поддержите</a> нашу работу. Ваши пожертвования пойдут на&nbsp;выпуск
                 новых материалов, оплату серверов, труда программистов, дизайнеров и&nbsp;редакторов.
               </p>
-              <h3 id="cooperation">Сотрудничать с&nbsp;журналом</h3>
+            </details>
+
+            <details>
+              <summary>
+                <h3 id="cooperation">Сотрудничать с&nbsp;журналом</h3>
+              </summary>
               <p>
                 Мы всегда открыты для сотрудничества и&nbsp;рады единомышленникам. Если вы хотите помогать
                 журналу с&nbsp;редактурой, корректурой, иллюстрациями, переводами, версткой, подкастами,
@@ -125,7 +154,12 @@ export const ManifestPage = () => {
                 и&nbsp;медиаинструментов находится{' '}
                 <a href="https://github.com/Discours">в&nbsp;свободном доступе на&nbsp;GitHub</a>.
               </p>
-              <h3 id="follow">Как еще можно помочь</h3>
+            </details>
+
+            <details>
+              <summary>
+                <h3 id="follow">Как еще можно помочь</h3>
+              </summary>
               <p>
                 Советуйте Дискурс друзьям и&nbsp;знакомым. Обсуждайте и&nbsp;распространяйте наши
                 публикации&nbsp;&mdash; все материалы открытой редакции можно читать и&nbsp;перепечатывать
@@ -141,19 +175,19 @@ export const ManifestPage = () => {
                 интересными темами, о&nbsp;которых хотели бы узнать больше, и&nbsp;историями, которые нужно
                 рассказать.
               </p>
-            </div>
+            </details>
 
             <h2 class="h2" id="connection">
               <span class="wrapped">Будем на&nbsp;связи</span>
             </h2>
 
-            <div class="col-lg-10 offset-md-1">
+            <p>
               Если вы хотите предложить материал, сотрудничать, рассказать о&nbsp;проблеме, которую нужно
               осветить, сообщить об&nbsp;ошибке или баге, что-то обсудить, уточнить или посоветовать,
               пожалуйста, <Opener name="feedback">напишите нам здесь</Opener> или на&nbsp;почту{' '}
               <a href="mailto:welcome@discours.io">welcome@discours.io</a>. Мы обязательно ответим
               и&nbsp;постараемся реализовать все хорошие задумки.
-            </div>
+            </p>
           </div>
         </div>
       </article>

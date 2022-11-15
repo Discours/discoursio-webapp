@@ -17,7 +17,7 @@ export const useOutsideClickHandler = (options: Options) => {
       return
     }
 
-    options.handler()
+    handler()
   }
 
   onMount(() => {

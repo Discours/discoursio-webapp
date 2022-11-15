@@ -8,14 +8,11 @@ export default gql`
       name
       bio
       userpic
-      communities
       links
-      createdAt
       lastSeen
-      ratings {
-        _id: rater
-        rater
-        value
+      stat {
+        followers
+        followings
       }
     }
   }

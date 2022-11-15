@@ -494,6 +494,7 @@ export type ReactionBy = {
   days?: InputMaybe<Scalars['Int']>
   order?: InputMaybe<Scalars['String']>
   shout?: InputMaybe<Scalars['String']>
+  shouts?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   stat?: InputMaybe<Scalars['String']>
   topic?: InputMaybe<Scalars['String']>
 }
@@ -618,6 +619,7 @@ export type ShoutsBy = {
   stat?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>
   topic?: InputMaybe<Scalars['String']>
+  topics?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   visibility?: InputMaybe<Scalars['String']>
 }
 

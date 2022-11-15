@@ -10,7 +10,6 @@ import type {
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import topicsAll from '../graphql/query/topics-all'
-import reactionsForShouts from '../graphql/query/reactions-load-by'
 import mySession from '../graphql/mutation/my-session'
 import authLogoutQuery from '../graphql/mutation/auth-logout'
 import authLoginQuery from '../graphql/query/auth-login'
@@ -25,7 +24,6 @@ import authorsAll from '../graphql/query/authors-all'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
-import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/chats-load'
 import loadChat from '../graphql/query/chat-messages-load-by'
@@ -35,6 +33,7 @@ import shoutsLoadBy from '../graphql/query/articles-load-by'
 import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import createChatQuery from '../graphql/mutation/create-chat'
+import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 
 const FEED_SIZE = 50
 
@@ -148,37 +147,6 @@ export const apiClient = {
     return response.data.confirmEmail
   },
 
-  getTopArticles: async () => {
-    const by = {
-      stat: 'rating',
-      visibility: 'public'
-    }
-    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit: 10, offset: 0 }).toPromise()
-    return response.data.loadShoutsBy
-  },
-  getTopMonthArticles: async () => {
-    const by = {
-      stat: 'rating',
-      visibility: 'public',
-      days: 30
-    }
-    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit: 10, offset: 0 }).toPromise()
-    return response.data.loadShoutsBy
-  },
-  getRecentPublishedArticles: async ({
-    limit = FEED_SIZE,
-    offset = 0
-  }: {
-    limit?: number
-    offset?: number
-  }) => {
-    const by = {
-      visibility: 'public'
-    }
-    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit, offset }).toPromise()
-
-    return response.data.loadShoutsBy
-  },
   getRandomTopics: async ({ amount }: { amount: number }) => {
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
 
@@ -187,100 +155,6 @@ export const apiClient = {
     }
 
     return response.data.topicsRandom
-  },
-  getSearchResults: async ({
-    query,
-    limit = FEED_SIZE,
-    offset = 0
-  }: {
-    query: string
-    limit: number
-    offset?: number
-  }): Promise<Shout[]> => {
-    const by = {
-      title: query,
-      body: query
-    }
-    const response = await publicGraphQLClient
-      .query(shoutsLoadBy, {
-        by,
-        limit,
-        offset
-      })
-      .toPromise()
-
-    return response.data?.searchQuery || []
-  },
-  getRecentArticles: async ({
-    limit = FEED_SIZE,
-    offset = 0
-  }: {
-    limit: number
-    offset?: number
-  }): Promise<Shout[]> => {
-    const response = await publicGraphQLClient
-      .query(shoutsLoadBy, {
-        by: {},
-        limit,
-        offset
-      })
-      .toPromise()
-
-    return response.data.recentAll
-  },
-  getArticlesForTopics: async ({
-    topicSlugs,
-    limit,
-    offset = 0
-  }: {
-    topicSlugs: string[]
-    limit: number
-    offset?: number
-  }): Promise<Shout[]> => {
-    const by = {
-      topics: topicSlugs,
-      visibility: 'public'
-    }
-    const response = await publicGraphQLClient
-      .query(shoutsLoadBy, {
-        by,
-        limit,
-        offset
-      })
-      .toPromise()
-
-    if (response.error) {
-      console.error('[api-client] getArticlesForTopics', response.error)
-    }
-
-    return response.data.shoutsByTopics
-  },
-  getArticlesForAuthors: async ({
-    authorSlugs,
-    limit,
-    offset = 0
-  }: {
-    authorSlugs: string[]
-    limit: number
-    offset?: number
-  }): Promise<Shout[]> => {
-    const by = {
-      authors: authorSlugs,
-      visibility: 'public'
-    }
-    const vars = {
-      by,
-      limit,
-      offset
-    }
-    // console.debug(vars)
-    const response = await publicGraphQLClient.query(shoutsLoadBy, vars).toPromise()
-
-    if (response.error) {
-      console.error('[api-client] getArticlesForAuthors', response.error)
-    }
-
-    return response.data.shoutsByAuthors
   },
 
   // subscribe
@@ -312,18 +186,6 @@ export const apiClient = {
 
     return response.data.refreshSession
   },
-  getPublishedArticles: async ({ limit = FEED_SIZE, offset }: { limit?: number; offset?: number }) => {
-    const by = {
-      visibility: 'public'
-    }
-    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit, offset }).toPromise()
-
-    if (response.error) {
-      console.error('[api-client] getPublishedArticles', response.error)
-    }
-
-    return response.data.recentPublished
-  },
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
     if (response.error) {
@@ -346,34 +208,6 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
     return response.data.getTopic
   },
-  getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
-    const response = await publicGraphQLClient
-      .query(shoutsLoadBy, { by: { slug }, amount: 1, offset: 0 })
-      .toPromise()
-    return response.data?.getShoutBySlug
-  },
-
-  // reactions
-
-  getReactionsForShouts: async ({
-    shoutSlugs,
-    limit = FEED_SIZE,
-    offset = 0
-  }: {
-    shoutSlugs: string[]
-    limit?: number
-    offset?: number
-  }): Promise<Reaction[]> => {
-    const response = await publicGraphQLClient
-      .query(reactionsForShouts, {
-        shouts: shoutSlugs,
-        limit,
-        offset
-      })
-      .toPromise()
-
-    return response.data.reactionsForShouts
-  },
   createArticle: async ({ article }: { article: ShoutInput }) => {
     const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()
     console.debug('createArticle response:', response)
@@ -394,9 +228,6 @@ export const apiClient = {
 
     return response.data.deleteReaction
   },
-  incrementView: async ({ articleSlug }) => {
-    await privateGraphQLClient.mutation(incrementView, { shout: articleSlug })
-  },
   createChat: async ({ title, members }) => {
     return await privateGraphQLClient
       .mutation(createChatQuery, { title: title, members: members })
@@ -407,31 +238,17 @@ export const apiClient = {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats
   },
-  getRecentLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
-    const by = {
-      layout
-    }
-    const resp = await publicGraphQLClient.query(shoutsLoadBy, { by, amount, offset }).toPromise()
-    return resp.data.recentLayoutShouts
+  loadAuthorsBy: async ({ by, amount = 50, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(authorsLoadBy, { by, amount, offset }).toPromise()
+    return resp.data.loadShoutsBy
   },
-  getTopLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
-    const by = {
-      layout,
-      stat: 'rating',
-      order: 'rating'
-    }
+  loadShoutsBy: async ({ by, amount = 50, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(shoutsLoadBy, { by, amount, offset }).toPromise()
-    return resp.data.topLayoutShouts
+    return resp.data.loadShoutsBy
   },
-  getTopMonthLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
-    const by = {
-      layout,
-      stat: 'rating',
-      order: 'rating',
-      days: 30
-    }
-    const resp = await publicGraphQLClient.query(shoutsLoadBy, { amount, offset, layout }).toPromise()
-    return resp.data.topMonthLayoutShouts
+  loadReactionsBy: async ({ by, amount = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
+    const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, amount, offset }).toPromise()
+    return resp.data.loadReactionsBy
   },
   getChatMessages: async ({
     chat,

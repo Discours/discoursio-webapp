@@ -10,7 +10,7 @@ const layout = (Astro.params.layout?.toString() || 'article') as LayoutType
 if (!layout || layout.endsWith('.map')) {
   return Astro.redirect('/404')
 }
-const shouts = await apiClient.getRecentLayoutShouts({ layout })
+const shouts = await apiClient.loadShoutsBy({ by: { layout } })
 const { pathname, search } = Astro.url
 initRouter(pathname, search)
 ---

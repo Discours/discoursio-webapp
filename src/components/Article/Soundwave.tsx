@@ -105,5 +105,5 @@ export const Soundwave = (props: SoundwaveProps) => {
   onMount(() => {
     drawAudio(props.context, props.url)
   })
-  return <canvas ref={canvasRef}></canvas>
+  return <canvas ref={canvasRef} />
 }

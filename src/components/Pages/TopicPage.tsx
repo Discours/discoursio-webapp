@@ -2,7 +2,7 @@ import { PageWrap } from '../_shared/PageWrap'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../Views/Topic'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { loadTopicArticles, resetSortedArticles } from '../../stores/zine/articles'
+import { loadShoutsBy, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 import { loadTopic } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
@@ -27,7 +27,7 @@ export const TopicPage = (props: PageProps) => {
       return
     }
 
-    await loadTopicArticles({ topicSlug: slug(), limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
+    await loadShoutsBy({ by: { topics: [slug()] }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
     await loadTopic({ slug: slug() })
 
     setIsLoaded(true)
@@ -38,7 +38,7 @@ export const TopicPage = (props: PageProps) => {
   return (
     <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <TopicView topic={props.topic} topicArticles={props.shouts} topicSlug={slug()} />
+        <TopicView topic={props.topic} shouts={props.shouts} topicSlug={slug()} />
       </Show>
     </PageWrap>
   )

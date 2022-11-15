@@ -5,7 +5,7 @@ import { Row3 } from '../Feed/Row3'
 import { AuthorFull } from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { loadAuthorArticles, useArticlesStore } from '../../stores/zine/articles'
+import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
 
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
@@ -15,7 +15,7 @@ import { splitToPages } from '../../utils/splitToPages'
 
 // TODO: load reactions on client
 type AuthorProps = {
-  authorArticles: Shout[]
+  shouts: Shout[]
   author: Author
   authorSlug: string
   // FIXME author topics fro server
@@ -31,7 +31,7 @@ const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const AuthorView = (props: AuthorProps) => {
   const { sortedArticles } = useArticlesStore({
-    sortedArticles: props.authorArticles
+    shouts: props.shouts
   })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { topicsByAuthor } = useTopicsStore()
@@ -42,8 +42,8 @@ export const AuthorView = (props: AuthorProps) => {
 
   const loadMore = async () => {
     saveScrollPosition()
-    const { hasMore } = await loadAuthorArticles({
-      authorSlug: author().slug,
+    const { hasMore } = await loadShoutsBy({
+      by: { author: author().slug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

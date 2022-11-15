@@ -9,7 +9,7 @@ if (slug.endsWith('.map')) {
   return Astro.redirect('/404')
 }
 
-const article = await apiClient.getArticle({ slug })
+const article = await apiClient.loadShoutsBy({ by: { slug }, amount: 1})
 if (!article) {
   return Astro.redirect('/404')
 }
@@ -21,5 +21,5 @@ Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate'
 ---
 
 <Prerendered>
-  <Root article={article} client:load />
+  <Root article={article.at(0)} client:load />
 </Prerendered>

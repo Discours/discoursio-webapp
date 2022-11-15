@@ -1,12 +1,9 @@
-import './DialogCard.module.scss'
 import styles from './DialogCard.module.scss'
 import DialogAvatar from './DialogAvatar'
-import type { Author } from '../../graphql/types.gen'
-// import { useAuthStore } from '../../stores/auth'
-import { createEffect, createSignal } from 'solid-js'
+import type { Author, AuthResult } from '../../graphql/types.gen'
+import { useSession } from '../../context/session'
+import { createMemo, InitializedResource } from 'solid-js'
 import { apiClient } from '../../utils/apiClient'
-
-const { session } = useAuthStore()
 
 type DialogProps = {
   online?: boolean
@@ -20,20 +17,18 @@ const createChat = async ({ title, members }: { title?: string; members?: string
 }
 
 const DialogCard = (props: DialogProps) => {
-  const [currentUser, setCurrentUser] = createSignal(undefined)
-  createEffect(() => {
-    setCurrentUser(session()?.user?.slug)
-  })
+  const { session } = useSession()
+  const currentSession = createMemo<AuthResult>(() => session)
 
   const handleOpenChat = async () => {
     try {
       const test = await apiClient.createChat({
         title: 'test chat',
-        members: [props.author.slug, currentUser()]
+        members: [props.author.slug, currentSession().user.slug]
       })
       console.log('!!! test:', test)
-    } catch (err) {
-      console.log('!!! errr:', err)
+    } catch (error) {
+      console.log('!!! errr:', error)
     }
   }
 

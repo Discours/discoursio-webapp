@@ -2,7 +2,7 @@ import { PageWrap } from '../_shared/PageWrap'
 import { SearchView } from '../Views/Search'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { loadSearchResults, resetSortedArticles } from '../../stores/zine/articles'
+import { loadShoutsBy, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 import { Loading } from '../Loading'
 
@@ -26,7 +26,7 @@ export const SearchPage = (props: PageProps) => {
       return
     }
 
-    await loadSearchResults({ query: q(), limit: 50, offset: 0 })
+    await loadShoutsBy({ by: { title: q(), body: q() }, limit: 50, offset: 0 })
     setIsLoaded(true)
   })
 

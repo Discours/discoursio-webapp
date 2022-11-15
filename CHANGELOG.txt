@@ -1,3 +1,9 @@
+[0.6.1]
+[+] auth ver. 0.9
+[+] load-by interfaces for shouts, authors and messages
+[+] inbox logix and markup
+[-] old views counting
+
 [0.6.0]
 [+] hybrid routing ssr/spa
 [+] 'expo' pages

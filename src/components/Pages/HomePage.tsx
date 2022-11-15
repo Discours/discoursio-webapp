@@ -2,7 +2,7 @@ import { HomeView, PRERENDERED_ARTICLES_COUNT } from '../Views/Home'
 import { PageWrap } from '../_shared/PageWrap'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { loadPublishedArticles, resetSortedArticles } from '../../stores/zine/articles'
+import { loadShoutsBy, resetSortedArticles } from '../../stores/zine/articles'
 import { loadRandomTopics } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
 
@@ -14,7 +14,7 @@ export const HomePage = (props: PageProps) => {
       return
     }
 
-    await loadPublishedArticles({ limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
+    await loadShoutsBy({ by: { visibility: 'public' }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
     await loadRandomTopics()
 
     setIsLoaded(true)
@@ -25,7 +25,7 @@ export const HomePage = (props: PageProps) => {
   return (
     <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.shouts || []} />
+        <HomeView randomTopics={props.randomTopics} shouts={props.shouts || []} />
       </Show>
     </PageWrap>
   )

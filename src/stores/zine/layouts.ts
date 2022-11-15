@@ -32,11 +32,11 @@ export const loadRecentLayoutShouts = async ({
   amount: number
   offset?: number
 }): Promise<{ hasMore: boolean }> => {
-  const layoutShouts: Shout[] = await apiClient.getRecentLayoutShouts({ layout, amount, offset })
+  const layoutShouts: Shout[] = await apiClient.loadShoutsBy({ by: { layout }, amount, offset })
   const hasMore = layoutShouts.length < amount
   if (hasMore) layoutShouts.splice(-1)
-  const sortedArticles = layoutShouts.sort(byCreated)
-  const { articlesByLayout } = useArticlesStore({ sortedArticles })
+  const shouts = layoutShouts.sort(byCreated)
+  const { articlesByLayout } = useArticlesStore({ shouts })
   addLayoutShouts(layout, articlesByLayout()[layout])
   return { hasMore }
 }
@@ -46,7 +46,7 @@ export const loadTopMonthLayoutShouts = async (
   amount: number,
   offset: number
 ): Promise<{ hasMore: boolean }> => {
-  const shouts = await apiClient.getTopMonthLayoutShouts({ layout })
+  const shouts = await apiClient.loadShoutsBy({ by: { layout, stat: 'rating', days: 30 } })
   const hasMore = shouts.length < amount
   if (hasMore) shouts.splice(-1)
   addLayoutShouts(layout, shouts)
@@ -58,14 +58,14 @@ export const loadTopLayoutShouts = async (
   amount,
   offset
 ): Promise<{ hasMore: boolean }> => {
-  const shouts = await apiClient.getTopLayoutShouts({ layout })
+  const shouts = await apiClient.loadShoutsBy({ by: { layout, stat: 'rating' } })
   const hasMore = shouts.length < amount
   if (hasMore) shouts.splice(-1)
   addLayoutShouts(layout, shouts)
   return { hasMore }
 }
 
-export const loadSearchResults = async ({
+export const loadShoutsSearch = async ({
   layout,
   query,
   limit,
@@ -76,14 +76,13 @@ export const loadSearchResults = async ({
   limit?: number
   offset?: number
 }): Promise<void> => {
-  const newLayoutShouts = await apiClient.getSearchResults({ layout, query, limit, offset })
+  const by = {
+    layout: layout,
+    query: query
+  }
+  const amount = limit
+  const newLayoutShouts = await apiClient.loadShoutsBy({ by, amount, offset })
   addLayoutShouts(layout, newLayoutShouts)
-}
-
-type InitialState = {
-  sortedLayoutShouts?: Shout[]
-  topRatedLayoutShouts?: Shout[]
-  topRatedMonthLayoutShouts?: Shout[]
 }
 
 export const useLayoutsStore = (layout: LayoutType, initialData: Shout[]) => {
@@ -92,9 +91,6 @@ export const useLayoutsStore = (layout: LayoutType, initialData: Shout[]) => {
   return {
     addLayoutShouts,
     sortedLayoutShouts,
-    loadSearchResults,
-    loadRecentLayoutShouts,
-    loadTopMonthLayoutShouts,
-    loadTopLayoutShouts
+    loadShoutsSearch
   }
 }

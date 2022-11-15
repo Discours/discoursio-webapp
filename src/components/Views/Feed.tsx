@@ -9,7 +9,7 @@ import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
 import { FeedSidebar } from '../Feed/Sidebar'
 import CommentCard from '../Article/Comment'
-import { loadRecentArticles, useArticlesStore } from '../../stores/zine/articles'
+import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
 import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
@@ -52,7 +52,11 @@ export const FeedView = () => {
   // })
 
   const loadMore = async () => {
-    const { hasMore } = await loadRecentArticles({ limit: FEED_PAGE_SIZE, offset: sortedArticles().length })
+    const { hasMore } = await loadShoutsBy({
+      by: { visibility: 'community' },
+      limit: FEED_PAGE_SIZE,
+      offset: sortedArticles().length
+    })
     setIsLoadMoreButtonVisible(hasMore)
   }
 

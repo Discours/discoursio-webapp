@@ -6,7 +6,7 @@ import { initRouter } from '../stores/router'
 
 const params: URLSearchParams = Astro.url.searchParams
 const q = params.get('q')
-const searchResults = await apiClient.getSearchResults({ query: q, limit: 50 })
+const searchResults = await apiClient.loadShoutsBy({ by: { title: q, body: q }, amount: 50 })
 
 const { pathname, search } = Astro.url
 initRouter(pathname, search)

@@ -1,14 +1,14 @@
 import { PageWrap } from '../_shared/PageWrap'
 import { ArticleView } from '../Views/Article'
 import type { PageProps } from '../types'
-import { loadArticle, useArticlesStore } from '../../stores/zine/articles'
+import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
 import { createMemo, onMount, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { useRouter } from '../../stores/router'
 import { Loading } from '../Loading'
 
 export const ArticlePage = (props: PageProps) => {
-  const sortedArticles = props.article ? [props.article] : []
+  const shouts = props.article ? [props.article] : []
 
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()
@@ -23,16 +23,16 @@ export const ArticlePage = (props: PageProps) => {
   })
 
   const { articleEntities } = useArticlesStore({
-    sortedArticles
+    shouts
   })
 
   const article = createMemo<Shout>(() => articleEntities()[slug()])
 
-  onMount(() => {
+  onMount(async () => {
     const articleValue = articleEntities()[slug()]
 
     if (!articleValue || !articleValue.body) {
-      loadArticle({ slug: slug() })
+      await loadShoutsBy({ by: { slug: slug() }, limit: 1, offset: 0 })
     }
   })
 

@@ -6,6 +6,8 @@ import { reduceBy } from '../../utils/reduce'
 // import { roomConnect } from '../../utils/p2p'
 // FIXME
 
+export const REACTIONS_AMOUNT_PER_PAGE = 100
+
 let reactionsOrdered: WritableAtom<Reaction[]>
 export const reactions = atom<{ [slug: string]: Reaction[] }>({}) // by shout
 
@@ -19,14 +21,14 @@ export const useReactionsStore = (initial?: Reaction[]) => {
 
 export const loadArticleReactions = async ({
   articleSlug,
-  limit = 100,
+  limit = REACTIONS_AMOUNT_PER_PAGE,
   offset = 0
 }: {
   articleSlug: string
   limit?: number
   offset?: number
 }): Promise<void> => {
-  const data = await apiClient.getReactionsForShouts({ shoutSlugs: [articleSlug], limit, offset })
+  const data = await apiClient.loadReactionsBy({ by: { shout: articleSlug }, amount: limit, offset })
   // TODO: const [data, provider] = roomConnect(articleSlug, username, "reactions")
   reactionsOrdered.set(data)
 }
@@ -40,7 +42,11 @@ export const loadReactions = async ({
   limit: number
   offset: number
 }): Promise<void> => {
-  const reactionsForShouts = await apiClient.getReactionsForShouts({ shoutSlugs, limit, offset })
+  const reactionsForShouts = await apiClient.loadReactionsBy({
+    by: { shouts: shoutSlugs },
+    amount: limit,
+    offset
+  })
   reactionsOrdered.set(reactionsForShouts)
 }
 

@@ -1,4 +1,4 @@
-import type { Author, Shout, ShoutInput, Topic } from '../../graphql/types.gen'
+import type { Author, Shout, ShoutInput, ShoutsBy, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { addAuthorsByTopic } from './authors'
 import { addTopicsByAuthor } from './topics'
@@ -123,96 +123,18 @@ const addSortedArticles = (articles: Shout[]) => {
   setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
-export const loadFeed = async ({
-  limit,
-  offset
-}: {
-  limit: number
-  offset?: number
-}): Promise<{ hasMore: boolean }> => {
-  // TODO: load actual feed
-  return await loadRecentArticles({ limit, offset })
-}
-
-export const loadRecentArticles = async ({
-  limit,
-  offset
-}: {
-  limit: number
-  offset?: number
-}): Promise<{ hasMore: boolean }> => {
-  const newArticles = await apiClient.getRecentArticles({ limit: limit + 1, offset })
-  const hasMore = newArticles.length === limit + 1
-
-  if (hasMore) {
-    newArticles.splice(-1)
-  }
-
-  addArticles(newArticles)
-  addSortedArticles(newArticles)
-
-  return { hasMore }
-}
-
-export const loadPublishedArticles = async ({
+export const loadShoutsBy = async ({
+  by,
   limit,
   offset = 0
 }: {
+  by: ShoutsBy
   limit: number
   offset?: number
 }): Promise<{ hasMore: boolean }> => {
-  const newArticles = await apiClient.getPublishedArticles({ limit: limit + 1, offset })
-  const hasMore = newArticles.length === limit + 1
-
-  if (hasMore) {
-    newArticles.splice(-1)
-  }
-
-  addArticles(newArticles)
-  addSortedArticles(newArticles)
-
-  return { hasMore }
-}
-
-export const loadAuthorArticles = async ({
-  authorSlug,
-  limit,
-  offset = 0
-}: {
-  authorSlug: string
-  limit: number
-  offset?: number
-}): Promise<{ hasMore: boolean }> => {
-  const newArticles = await apiClient.getArticlesForAuthors({
-    authorSlugs: [authorSlug],
-    limit: limit + 1,
-    offset
-  })
-
-  const hasMore = newArticles.length === limit + 1
-
-  if (hasMore) {
-    newArticles.splice(-1)
-  }
-
-  addArticles(newArticles)
-  addSortedArticles(newArticles)
-
-  return { hasMore }
-}
-
-export const loadTopicArticles = async ({
-  topicSlug,
-  limit,
-  offset
-}: {
-  topicSlug: string
-  limit: number
-  offset: number
-}): Promise<{ hasMore: boolean }> => {
-  const newArticles = await apiClient.getArticlesForTopics({
-    topicSlugs: [topicSlug],
-    limit: limit + 1,
+  const newArticles = await apiClient.loadShoutsBy({
+    by,
+    amount: limit + 1,
     offset
   })
 
@@ -232,46 +154,6 @@ export const resetSortedArticles = () => {
   setSortedArticles([])
 }
 
-export const loadTopMonthArticles = async (): Promise<void> => {
-  const articles = await apiClient.getTopMonthArticles()
-  addArticles(articles)
-  setTopMonthArticles(articles)
-}
-
-export const loadTopArticles = async (): Promise<void> => {
-  const articles = await apiClient.getTopArticles()
-  addArticles(articles)
-  setTopArticles(articles)
-}
-
-export const loadSearchResults = async ({
-  query,
-  limit,
-  offset
-}: {
-  query: string
-  limit?: number
-  offset?: number
-}): Promise<void> => {
-  const newArticles = await apiClient.getSearchResults({ query, limit, offset })
-  addArticles(newArticles)
-  addSortedArticles(newArticles)
-}
-
-export const incrementView = async ({ articleSlug }: { articleSlug: string }): Promise<void> => {
-  await apiClient.incrementView({ articleSlug })
-}
-
-export const loadArticle = async ({ slug }: { slug: string }): Promise<void> => {
-  const article = await apiClient.getArticle({ slug })
-
-  if (!article) {
-    throw new Error(`Can't load article, slug: "${slug}"`)
-  }
-
-  addArticles([article])
-}
-
 export const createArticle = async ({ article }: { article: ShoutInput }) => {
   try {
     await apiClient.createArticle({ article })
@@ -281,27 +163,26 @@ export const createArticle = async ({ article }: { article: ShoutInput }) => {
 }
 
 type InitialState = {
-  sortedArticles?: Shout[]
-  topRatedArticles?: Shout[]
-  topRatedMonthArticles?: Shout[]
+  shouts?: Shout[]
 }
 
 export const useArticlesStore = (initialState: InitialState = {}) => {
-  addArticles([...(initialState.sortedArticles || [])])
+  addArticles([...(initialState.shouts || [])])
 
-  if (initialState.sortedArticles) {
-    setSortedArticles([...initialState.sortedArticles])
+  if (initialState.shouts) {
+    setSortedArticles([...initialState.shouts])
   }
 
   return {
     articleEntities,
     sortedArticles,
-    articlesByTopic,
+    loadShoutsBy,
     articlesByAuthor,
-    topArticles,
+    articlesByLayout,
+    articlesByTopic,
     topMonthArticles,
-    topViewedArticles,
+    topArticles,
     topCommentedArticles,
-    articlesByLayout
+    topViewedArticles
   }
 }

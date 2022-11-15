@@ -14,12 +14,7 @@ import type { Shout, Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
-import {
-  loadPublishedArticles,
-  loadTopArticles,
-  loadTopMonthArticles,
-  useArticlesStore
-} from '../../stores/zine/articles'
+import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
@@ -27,7 +22,7 @@ import { splitToPages } from '../../utils/splitToPages'
 
 type HomeProps = {
   randomTopics: Topic[]
-  recentPublishedArticles: Shout[]
+  shouts: Shout[]
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 5
@@ -37,26 +32,24 @@ const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + R
 export const HomeView = (props: HomeProps) => {
   const {
     sortedArticles,
+    articlesByLayout,
     topArticles,
-    topMonthArticles,
-    topViewedArticles,
     topCommentedArticles,
-    articlesByLayout
+    topMonthArticles,
+    topViewedArticles
   } = useArticlesStore({
-    sortedArticles: props.recentPublishedArticles
+    shouts: props.shouts
   })
   const { randomTopics, topTopics } = useTopicsStore({
     randomTopics: props.randomTopics
   })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
   const { topAuthors } = useTopAuthorsStore()
 
   onMount(async () => {
-    loadTopArticles()
-    loadTopMonthArticles()
     if (sortedArticles().length < PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT) {
-      const { hasMore } = await loadPublishedArticles({
+      const { hasMore } = await loadShoutsBy({
+        by: {},
         limit: CLIENT_LOAD_ARTICLES_COUNT,
         offset: sortedArticles().length
       })
@@ -91,7 +84,8 @@ export const HomeView = (props: HomeProps) => {
   const loadMore = async () => {
     saveScrollPosition()
 
-    const { hasMore } = await loadPublishedArticles({
+    const { hasMore } = await loadShoutsBy({
+      by: { visibility: 'public' },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

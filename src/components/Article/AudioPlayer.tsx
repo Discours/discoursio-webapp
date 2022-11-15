@@ -1,5 +1,5 @@
-import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
-import { For } from 'solid-js/web'
+import { createEffect, createMemo, createSignal, onMount, For } from 'solid-js'
+
 import type { Shout } from '../../graphql/types.gen'
 import { Soundwave } from './Soundwave'
 
@@ -40,7 +40,7 @@ export default (props: { shout: Shout }) => {
       <div class="audio-player-list">
         <div class="player current-track">
           <div class="player-title">{currentTrack().title}</div>
-          <i class="fas fa-pause fa-3x fa-fw" onClick={togglePlayPause}></i>
+          <i class="fas fa-pause fa-3x fa-fw" onClick={togglePlayPause} />
           <div class="player-progress">
             <Soundwave context={audioContext()} url={currentTrack().src} />
             <span class="track-position">{`${audioRef.currentTime} / ${audioRef.duration}`}</span>
@@ -53,7 +53,7 @@ export default (props: { shout: Shout }) => {
             {(m: MediaItem) => (
               <li>
                 <div class="player-status">
-                  <i class="fas fa-play fa-fw" onClick={() => playMedia(m)}></i>
+                  <i class="fas fa-play fa-fw" onClick={() => playMedia(m)} />
                 </div>
                 <span class="track-title">{m.title}</span>
               </li>

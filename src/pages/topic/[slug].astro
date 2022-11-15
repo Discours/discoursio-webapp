@@ -5,7 +5,7 @@ import { apiClient } from '../../utils/apiClient'
 import { PRERENDERED_ARTICLES_COUNT } from '../../components/Views/Topic'
 
 const slug = Astro.params.slug?.toString() || ''
-const shouts = await apiClient.getArticlesForTopics({ topicSlugs: [slug], limit: PRERENDERED_ARTICLES_COUNT })
+const shouts = await apiClient.loadShoutsBy({ by: { topics: [slug] }, amount: PRERENDERED_ARTICLES_COUNT })
 const topic = await apiClient.getTopic({ slug })
 
 import { initRouter } from '../../stores/router'

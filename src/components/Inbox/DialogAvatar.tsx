@@ -18,10 +18,10 @@ const colors = [
   '#ca6702',
   '#ae2012',
   '#9b2226',
-  '#668CFF',
-  '#C34CFE',
-  '#E699FF',
-  '#6633FF'
+  '#668cff',
+  '#c34cfe',
+  '#e699ff',
+  '#6633ff'
 ]
 
 const getById = (letter: string) =>

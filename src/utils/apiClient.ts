@@ -29,6 +29,7 @@ import authorsBySlugs from '../graphql/query/authors-by-slugs'
 import incrementView from '../graphql/mutation/increment-view'
 import myChats from '../graphql/query/im-chats'
 import loadChat from '../graphql/query/im-load-messages'
+import CreateChat from '../graphql/mutation/create-chat'
 
 const FEED_SIZE = 50
 
@@ -326,6 +327,10 @@ export const apiClient = {
   incrementView: async ({ articleSlug }) => {
     await privateGraphQLClient.mutation(incrementView, { shout: articleSlug })
   },
+  createChat: async ({ title, members }) => {
+    return await privateGraphQLClient.mutation(CreateChat, { title: title, members: members }).toPromise()
+  },
+
   getChats: async (payload = {}) => {
     const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
     return resp.data.myChats

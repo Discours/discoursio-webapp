@@ -1,14 +1,27 @@
 import { PageWrap } from '../_shared/PageWrap'
 import { AllAuthorsView } from '../Views/AllAuthors'
 import type { PageProps } from '../types'
-import { ClientContainer } from '../_shared/ClientContainer'
+import { createSignal, onMount, Show } from 'solid-js'
+import { loadAllAuthors } from '../../stores/zine/authors'
+import { Loading } from '../Loading'
 
 export const AllAuthorsPage = (props: PageProps) => {
+  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors))
+
+  onMount(async () => {
+    if (isLoaded()) {
+      return
+    }
+
+    await loadAllAuthors()
+    setIsLoaded(true)
+  })
+
   return (
     <PageWrap>
-      <ClientContainer>
+      <Show when={isLoaded()} fallback={<Loading />}>
         <AllAuthorsView authors={props.allAuthors} />
-      </ClientContainer>
+      </Show>
     </PageWrap>
   )
 }

@@ -1,11 +1,11 @@
 import { Editor } from '../EditorNew/Editor'
-import { ClientContainer } from '../_shared/ClientContainer'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 export const CreateView = () => {
   return (
-    <ClientContainer>
+    <ShowOnlyOnClient>
       <Editor />
-    </ClientContainer>
+    </ShowOnlyOnClient>
   )
 }
 

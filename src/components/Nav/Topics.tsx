@@ -4,7 +4,6 @@ import { Icon } from './Icon'
 import './Topics.scss'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
-import { handleClientRouteLinkClick } from '../../stores/router'
 
 export const NavTopics = (props: { topics: Topic[] }) => {
   const tag = (topic: Topic) =>
@@ -18,7 +17,7 @@ export const NavTopics = (props: { topics: Topic[] }) => {
           <For each={props.topics}>
             {(topic) => (
               <li class="item">
-                <a href={`/topic/${topic.slug}`} onClick={handleClientRouteLinkClick}>
+                <a href={`/topic/${topic.slug}`}>
                   <span>#{tag(topic)}</span>
                 </a>
               </li>

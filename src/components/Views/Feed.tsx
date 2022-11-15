@@ -76,13 +76,13 @@ export const FeedView = () => {
                 </li>
               </Show>
               <li>
-                <a href="?by=views">{t('Most read')}</a>
+                <a href="/feed/?by=views">{t('Most read')}</a>
               </li>
               <li>
-                <a href="?by=rating">{t('Top rated')}</a>
+                <a href="/feed/?by=rating">{t('Top rated')}</a>
               </li>
               <li>
-                <a href="?by=comments">{t('Most commented')}</a>
+                <a href="/feed/?by=comments">{t('Most commented')}</a>
               </li>
             </ul>
 
@@ -93,7 +93,7 @@ export const FeedView = () => {
 
               <div class={stylesBeside.besideColumnTitle}>
                 <h4>{t('Popular authors')}</h4>
-                <a href="/user/list">
+                <a href="/authors">
                   {t('All authors')}
                   <Icon name="arrow-right" />
                 </a>

@@ -4,7 +4,7 @@ import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
 import { useArticlesStore, loadSearchResults } from '../../stores/zine/articles'
-import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
+import { useRouter } from '../../stores/router'
 
 type SearchPageSearchParams = {
   by: '' | 'relevance' | 'rating'
@@ -51,18 +51,14 @@ export const SearchView = (props: Props) => {
             selected: searchParams().by === 'relevance'
           }}
         >
-          <a href="?by=relevance" onClick={handleClientRouteLinkClick}>
-            {t('By relevance')}
-          </a>
+          <a href="?by=relevance">{t('By relevance')}</a>
         </li>
         <li
           classList={{
             selected: searchParams().by === 'rating'
           }}
         >
-          <a href="?by=rating" onClick={handleClientRouteLinkClick}>
-            {t('Top rated')}
-          </a>
+          <a href="?by=rating">{t('Top rated')}</a>
         </li>
       </ul>
 

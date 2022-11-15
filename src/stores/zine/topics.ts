@@ -53,7 +53,7 @@ const topTopics = createMemo(() => {
 })
 
 const addTopics = (...args: Topic[][]) => {
-  const allTopics = args.flatMap((topics) => topics || [])
+  const allTopics = args.flatMap((topics) => (topics || []).filter(Boolean))
 
   const newTopicEntities = allTopics.reduce((acc, topic) => {
     acc[topic.slug] = topic

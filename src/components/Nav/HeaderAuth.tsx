@@ -1,6 +1,6 @@
 import styles from './Header.module.scss'
 import { clsx } from 'clsx'
-import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
+import { useRouter } from '../../stores/router'
 import { t } from '../../utils/intl'
 import { Icon } from './Icon'
 import { createSignal, onMount, Show } from 'solid-js'
@@ -9,7 +9,7 @@ import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
 import type { Author } from '../../graphql/types.gen'
 import { showModal, useWarningsStore } from '../../stores/ui'
-import { ClientContainer } from '../_shared/ClientContainer'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
 
 type HeaderAuthProps = {
@@ -37,12 +37,12 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   }
 
   return (
-    <ClientContainer>
+    <ShowOnlyOnClient>
       <Show when={!session.loading}>
         <div class={styles.usernav}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
             <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-              <a href="/create" onClick={handleClientRouteLinkClick}>
+              <a href="/create">
                 <span class={styles.textLabel}>{t('Create post')}</span>
                 <Icon name="pencil" class={styles.icon} />
               </a>
@@ -68,7 +68,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               when={isAuthenticated()}
               fallback={
                 <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
-                  <a href="?modal=auth&mode=login" onClick={handleClientRouteLinkClick}>
+                  <a href="?modal=auth&mode=login">
                     <span class={styles.textLabel}>{t('Enter')}</span>
                     <Icon name="user-anonymous" class={styles.icon} />
                   </a>
@@ -102,6 +102,6 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
           </div>
         </div>
       </Show>
-    </ClientContainer>
+    </ShowOnlyOnClient>
   )
 }

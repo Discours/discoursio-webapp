@@ -8,8 +8,6 @@ import { loadAuthor } from '../../stores/zine/authors'
 import { Loading } from '../Loading'
 
 export const AuthorPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.authorArticles) && Boolean(props.author))
-
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()
 
@@ -21,6 +19,10 @@ export const AuthorPage = (props: PageProps) => {
 
     return page.params.slug
   })
+
+  const [isLoaded, setIsLoaded] = createSignal(
+    Boolean(props.authorArticles) && props?.author?.slug === slug()
+  )
 
   onMount(async () => {
     if (isLoaded()) {

@@ -6,7 +6,6 @@ import { translit } from '../../utils/ru2en'
 import { Icon } from '../Nav/Icon'
 import styles from './Card.module.scss'
 import { locale } from '../../stores/ui'
-import { handleClientRouteLinkClick } from '../../stores/router'
 import { clsx } from 'clsx'
 import CardTopic from './CardTopic'
 
@@ -113,7 +112,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
 
         <div class={styles.shoutCardTitlesContainer}>
-          <a href={`/${slug || ''}`} onClick={handleClientRouteLinkClick}>
+          <a href={`/${slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkContainer}>{title}</span>
             </div>

@@ -1,6 +1,6 @@
-export const isDev = import.meta.env.VERCEL_ENV !== 'production'
-export const apiBaseUrl =
-  import.meta.env.PUBLIC_API_URL ||
-  import.meta.env.API_URL ||
-  import.meta.env.VITE_API_URL ||
-  'http://localhost:8080'
+export const isDev = import.meta.env.MODE === 'development'
+
+export const apiBaseUrl = 'https://testapi.discours.io'
+// export const apiBaseUrl = 'https://newapi.discours.io'
+// testapi.discours.io
+// export const apiBaseUrl = 'http://localhost:8080'

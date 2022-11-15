@@ -6,17 +6,20 @@ import { Loading } from '../Loading'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
 import { useAuthorsStore } from '../../stores/zine/authors'
+// const { session } = useAuthStore()
 
 import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
 import { findAndLoadGraphQLConfig } from '@graphql-codegen/cli'
+// import { useAuthStore } from '../../stores/auth'
 
 const OWNER_ID = '501'
 const client = createClient({
   url: 'https://graphqlzero.almansi.me/api'
 })
 
+// console.log('!!! session:', session)
 // interface InboxProps {
 //   chats?: Chat[]
 //   messages?: Message[]
@@ -63,6 +66,7 @@ export const InboxView = () => {
   const [authors, setAuthors] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
+
   const { sortedAuthors } = useAuthorsStore()
 
   createEffect(() => {
@@ -133,7 +137,7 @@ export const InboxView = () => {
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={authors()}>{(author: Author) => <DialogCard author={author} online={true} />}</For>
+              <For each={authors()}>{(author) => <DialogCard author={author} online={true} />}</For>
             </div>
           </div>
         </div>

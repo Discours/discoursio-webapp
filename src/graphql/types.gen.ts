@@ -572,6 +572,7 @@ export type ShoutsBy = {
   stat?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>
   topic?: InputMaybe<Scalars['String']>
+  topics?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   visibility?: InputMaybe<Scalars['String']>
 }
 

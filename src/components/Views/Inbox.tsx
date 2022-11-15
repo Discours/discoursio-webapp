@@ -55,12 +55,17 @@ const userSearch = (array: Author[], keyword: string) => {
   })
 }
 
+const postMessage = async (msg: string) => {
+  const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
+  return response.data.createComment
+}
+
 export const InboxView = () => {
   const [messages, setMessages] = createSignal([])
   const [authors, setAuthors] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | undefined>(undefined)
+  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
   const { session } = useSession()
   const { sortedAuthors } = useAuthorsStore()
@@ -91,31 +96,30 @@ export const InboxView = () => {
     if (response.error) console.debug('getMessages', response.error)
     setMessages(response.data.comments.data)
   }
-  const postMessage = async (msg: string) => {
-    const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
-    return response.data.createComment
-  }
 
   let chatWindow
   onMount(async () => {
     setLoading(true)
-    await fetchMessages(messageQuery)
-      .then(() => {
-        setLoading(false)
-        chatWindow.scrollTop = chatWindow.scrollHeight
-      })
-      .catch(() => setLoading(false))
+    try {
+      await fetchMessages(messageQuery)
+    } catch (error) {
+      setLoading(false)
+      console.error([fetchMessages], error)
+    } finally {
+      setLoading(false)
+      chatWindow.scrollTop = chatWindow.scrollHeight
+    }
   })
 
   const handleSubmit = async () => {
-    postMessage(postMessageText())
-      .then((result) => {
-        setMessages((prev) => [...prev, result])
-      })
-      .then(() => {
-        setPostMessageText('')
-        chatWindow.scrollTop = chatWindow.scrollHeight
-      })
+    try {
+      const post = await postMessage(postMessageText())
+      setMessages((prev) => [...prev, post])
+      setPostMessageText('')
+      chatWindow.scrollTop = chatWindow.scrollHeight
+    } catch (error) {
+      console.error('[post message error]:', error)
+    }
   }
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)

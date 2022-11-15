@@ -14,13 +14,13 @@ type Props = {
 const DialogCard = (props: Props) => {
   const handleOpenChat = async () => {
     try {
-      const test = await apiClient.createChat({
+      const initChat = await apiClient.createChat({
         title: 'test chat',
         members: [props.slug, props.ownerSlug]
       })
-      console.log('!!! test:', test.data)
-    } catch (err) {
-      console.log('!!! errr:', err)
+      console.log('!!! test:', initChat.data)
+    } catch (error) {
+      console.log('!!! errr:', error)
     }
   }
 

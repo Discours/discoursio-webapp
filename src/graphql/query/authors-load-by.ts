@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query GetAuthorsBySlugsQuery($slugs: [String]!) {
-    getUsersBySlugs(slugs: $slugs) {
+  query AuthorLoadByQuery($by: AuthorsBy, $limit: Int, $offset: Int) {
+    loadAuthorsBy(by: $by, amount: $limit, offset: $offset) {
       _id: slug
       slug
       name

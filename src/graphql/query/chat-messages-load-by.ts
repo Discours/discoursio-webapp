@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadMessagesQuery($chatId: String!, $offset: Int, $amount: Int) {
-    loadChat(chatId: $chatId, offset: $offset, amount: $amount) {
+  query LoadMessagesQuery($by: MessagesBy!, $amount: Int, $offset: Int) {
+    loadMessagesBy(by: $by, amount: $amount, offset: $offset) {
       error
       messages {
         author

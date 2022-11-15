@@ -9,11 +9,8 @@ import type {
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
-import articleBySlug from '../graphql/query/article-by-slug'
-import articlesRecentAll from '../graphql/query/articles-recent-all'
-import articlesRecentPublished from '../graphql/query/articles-recent-published'
 import topicsAll from '../graphql/query/topics-all'
-import reactionsForShouts from '../graphql/query/reactions-for-shouts'
+import reactionsForShouts from '../graphql/query/reactions-load-by'
 import mySession from '../graphql/mutation/my-session'
 import authLogoutQuery from '../graphql/mutation/auth-logout'
 import authLoginQuery from '../graphql/query/auth-login'
@@ -23,26 +20,20 @@ import authConfirmEmailMutation from '../graphql/mutation/auth-confirm-email'
 import authSendLinkMutation from '../graphql/mutation/auth-send-link'
 import followMutation from '../graphql/mutation/follow'
 import unfollowMutation from '../graphql/mutation/unfollow'
-import articlesForAuthors from '../graphql/query/articles-for-authors'
-import articlesForTopics from '../graphql/query/articles-for-topics'
-import searchResults from '../graphql/query/search-results'
 import topicsRandomQuery from '../graphql/query/topics-random'
-import articlesTopMonth from '../graphql/query/articles-top-month'
-import articlesTopRated from '../graphql/query/articles-top-rated'
 import authorsAll from '../graphql/query/authors-all'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
-import myChats from '../graphql/query/im-chats'
-import loadChat from '../graphql/query/im-load-messages'
-import getRecentByLayout from '../graphql/query/layout-recent'
-import getTopByLayout from '../graphql/query/layout-top'
-import getTopMonthByLayout from '../graphql/query/layout-top-month'
-import type { LayoutType } from '../stores/zine/layouts'
+import myChats from '../graphql/query/chats-load'
+import loadChat from '../graphql/query/chat-messages-load-by'
 import topicBySlug from '../graphql/query/topic-by-slug'
 import authorBySlug from '../graphql/query/author-by-slug'
+import shoutsLoadBy from '../graphql/query/articles-load-by'
+import reactionsLoadBy from '../graphql/query/reactions-load-by'
+import authorsLoadBy from '../graphql/query/authors-load-by'
 
 const FEED_SIZE = 50
 
@@ -157,12 +148,21 @@ export const apiClient = {
   },
 
   getTopArticles: async () => {
-    const response = await publicGraphQLClient.query(articlesTopRated, { limit: 10, offset: 0 }).toPromise()
-    return response.data.topOverall
+    const by = {
+      stat: 'rating',
+      visibility: 'public'
+    }
+    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit: 10, offset: 0 }).toPromise()
+    return response.data.loadShoutsBy
   },
   getTopMonthArticles: async () => {
-    const response = await publicGraphQLClient.query(articlesTopMonth, { limit: 10, offset: 0 }).toPromise()
-    return response.data.topMonth
+    const by = {
+      stat: 'rating',
+      visibility: 'public',
+      days: 30
+    }
+    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit: 10, offset: 0 }).toPromise()
+    return response.data.loadShoutsBy
   },
   getRecentPublishedArticles: async ({
     limit = FEED_SIZE,
@@ -171,9 +171,12 @@ export const apiClient = {
     limit?: number
     offset?: number
   }) => {
-    const response = await publicGraphQLClient.query(articlesRecentPublished, { limit, offset }).toPromise()
+    const by = {
+      visibility: 'public'
+    }
+    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit, offset }).toPromise()
 
-    return response.data.recentPublished
+    return response.data.loadShoutsBy
   },
   getRandomTopics: async ({ amount }: { amount: number }) => {
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
@@ -187,17 +190,19 @@ export const apiClient = {
   getSearchResults: async ({
     query,
     limit = FEED_SIZE,
-    offset = 0,
-    layout = 'literature'
+    offset = 0
   }: {
     query: string
     limit: number
     offset?: number
-    layout?: LayoutType
   }): Promise<Shout[]> => {
+    const by = {
+      title: query,
+      body: query
+    }
     const response = await publicGraphQLClient
-      .query(searchResults, {
-        q: query,
+      .query(shoutsLoadBy, {
+        by,
         limit,
         offset
       })
@@ -213,7 +218,8 @@ export const apiClient = {
     offset?: number
   }): Promise<Shout[]> => {
     const response = await publicGraphQLClient
-      .query(articlesRecentAll, {
+      .query(shoutsLoadBy, {
+        by: {},
         limit,
         offset
       })
@@ -230,9 +236,13 @@ export const apiClient = {
     limit: number
     offset?: number
   }): Promise<Shout[]> => {
+    const by = {
+      topics: topicSlugs,
+      visibility: 'public'
+    }
     const response = await publicGraphQLClient
-      .query(articlesForTopics, {
-        slugs: topicSlugs,
+      .query(shoutsLoadBy, {
+        by,
         limit,
         offset
       })
@@ -253,13 +263,17 @@ export const apiClient = {
     limit: number
     offset?: number
   }): Promise<Shout[]> => {
+    const by = {
+      authors: authorSlugs,
+      visibility: 'public'
+    }
     const vars = {
-      slugs: authorSlugs,
+      by,
       limit,
       offset
     }
-    console.debug(vars)
-    const response = await publicGraphQLClient.query(articlesForAuthors, vars).toPromise()
+    // console.debug(vars)
+    const response = await publicGraphQLClient.query(shoutsLoadBy, vars).toPromise()
 
     if (response.error) {
       console.error('[api-client] getArticlesForAuthors', response.error)
@@ -298,7 +312,10 @@ export const apiClient = {
     return response.data.refreshSession
   },
   getPublishedArticles: async ({ limit = FEED_SIZE, offset }: { limit?: number; offset?: number }) => {
-    const response = await publicGraphQLClient.query(articlesRecentPublished, { limit, offset }).toPromise()
+    const by = {
+      visibility: 'public'
+    }
+    const response = await publicGraphQLClient.query(shoutsLoadBy, { by, limit, offset }).toPromise()
 
     if (response.error) {
       console.error('[api-client] getPublishedArticles', response.error)
@@ -329,7 +346,9 @@ export const apiClient = {
     return response.data.getTopic
   },
   getArticle: async ({ slug }: { slug: string }): Promise<Shout> => {
-    const response = await publicGraphQLClient.query(articleBySlug, { slug }).toPromise()
+    const response = await publicGraphQLClient
+      .query(shoutsLoadBy, { by: { slug }, amount: 1, offset: 0 })
+      .toPromise()
     return response.data?.getShoutBySlug
   },
 
@@ -382,29 +401,44 @@ export const apiClient = {
     return resp.data.myChats
   },
   getRecentLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
-    const resp = await publicGraphQLClient.query(getRecentByLayout, { amount, offset, layout }).toPromise()
+    const by = {
+      layout
+    }
+    const resp = await publicGraphQLClient.query(shoutsLoadBy, { by, amount, offset }).toPromise()
     return resp.data.recentLayoutShouts
   },
   getTopLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
-    const resp = await publicGraphQLClient.query(getTopByLayout, { amount, offset, layout }).toPromise()
+    const by = {
+      layout,
+      stat: 'rating',
+      order: 'rating'
+    }
+    const resp = await publicGraphQLClient.query(shoutsLoadBy, { by, amount, offset }).toPromise()
     return resp.data.topLayoutShouts
   },
   getTopMonthLayoutShouts: async ({ layout = 'article', amount = 50, offset = 0 }) => {
-    const resp = await publicGraphQLClient
-      .query(getTopMonthByLayout, { amount, offset, layout })
-      .toPromise()
+    const by = {
+      layout,
+      stat: 'rating',
+      order: 'rating',
+      days: 30
+    }
+    const resp = await publicGraphQLClient.query(shoutsLoadBy, { amount, offset, layout }).toPromise()
     return resp.data.topMonthLayoutShouts
   },
   getChatMessages: async ({
-    chatId,
-    offset = 0,
-    amount = 50
+    chat,
+    amount = 50,
+    offset = 0
   }: {
-    chatId: string
-    offset?: number
+    chat: string
     amount?: number
+    offset?: number
   }) => {
-    const resp = await privateGraphQLClient.query(loadChat, { chatId, offset, amount }).toPromise()
+    const by = {
+      chat
+    }
+    const resp = await privateGraphQLClient.query(loadChat, { by, offset, amount }).toPromise()
     return resp.data.loadChat
   }
 }

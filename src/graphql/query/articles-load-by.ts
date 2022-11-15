@@ -1,23 +1,15 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query GetShoutBySlugQuery($slug: String!) {
-    getShoutBySlug(slug: $slug) {
+  query LoadShoutsByQuery($by: ShoutsBy, $limit: Int!, $offset: Int!) {
+    loadShoutsBy(by: $by, amount: $limit, offset: $offset) {
       _id: slug
-      slug
       title
       subtitle
+      slug
       layout
       cover
       # community
-      body
-      authors {
-        _id: slug
-        name
-        slug
-        userpic
-        caption
-      }
       mainTopic
       topics {
         title
@@ -30,17 +22,19 @@ export default gql`
           followers
         }
       }
+      authors {
+        _id: slug
+        name
+        slug
+        userpic
+      }
       createdAt
-      updatedAt
       publishedAt
-      visibility
-      media
       stat {
         _id: viewed
         viewed
         reacted
         rating
-        commented
       }
     }
   }

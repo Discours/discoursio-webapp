@@ -24,18 +24,42 @@ export type AuthResult = {
 export type Author = {
   bio?: Maybe<Scalars['String']>
   caption?: Maybe<Scalars['String']>
+  id: Scalars['Int']
+  lastSeen?: Maybe<Scalars['DateTime']>
   links?: Maybe<Array<Maybe<Scalars['String']>>>
   name: Scalars['String']
+  roles?: Maybe<Array<Maybe<Role>>>
   slug: Scalars['String']
+  stat?: Maybe<AuthorStat>
   userpic?: Maybe<Scalars['String']>
 }
 
+export type AuthorStat = {
+  commented?: Maybe<Scalars['Int']>
+  followers?: Maybe<Scalars['Int']>
+  followings?: Maybe<Scalars['Int']>
+  rating?: Maybe<Scalars['Int']>
+}
+
+export type AuthorsBy = {
+  createdAt?: InputMaybe<Scalars['DateTime']>
+  days?: InputMaybe<Scalars['Int']>
+  lastSeen?: InputMaybe<Scalars['DateTime']>
+  name?: InputMaybe<Scalars['String']>
+  order?: InputMaybe<Scalars['String']>
+  slug?: InputMaybe<Scalars['String']>
+  stat?: InputMaybe<Scalars['String']>
+  topic?: InputMaybe<Scalars['String']>
+}
+
 export type Chat = {
+  admins?: Maybe<Array<Maybe<User>>>
   createdAt: Scalars['Int']
   createdBy: User
   description?: Maybe<Scalars['String']>
-  id: Scalars['Int']
+  id: Scalars['String']
   messages: Array<Maybe<Message>>
+  private?: Maybe<Scalars['Boolean']>
   title?: Maybe<Scalars['String']>
   unread?: Maybe<Scalars['Int']>
   updatedAt: Scalars['Int']
@@ -52,8 +76,8 @@ export type ChatMember = {
   invitedAt?: Maybe<Scalars['DateTime']>
   invitedBy?: Maybe<Scalars['String']>
   name: Scalars['String']
-  pic?: Maybe<Scalars['String']>
   slug: Scalars['String']
+  userpic?: Maybe<Scalars['String']>
 }
 
 export type Collab = {
@@ -69,6 +93,7 @@ export type Collection = {
   createdAt: Scalars['DateTime']
   createdBy: User
   desc?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   publishedAt?: Maybe<Scalars['DateTime']>
   slug: Scalars['String']
   title: Scalars['String']
@@ -78,6 +103,7 @@ export type Community = {
   createdAt: Scalars['DateTime']
   createdBy: User
   desc?: Maybe<Scalars['String']>
+  id: Scalars['Int']
   name: Scalars['String']
   pic: Scalars['String']
   slug: Scalars['String']
@@ -96,7 +122,7 @@ export type Message = {
   chatId: Scalars['String']
   createdAt: Scalars['Int']
   id: Scalars['Int']
-  replyTo?: Maybe<Scalars['Int']>
+  replyTo?: Maybe<Scalars['String']>
   updatedAt?: Maybe<Scalars['Int']>
 }
 
@@ -122,8 +148,7 @@ export type Mutation = {
   createReaction: Result
   createShout: Result
   createTopic: Result
-  deleteCollection: Result
-  deleteCommunity: Result
+  deleteChat: Result
   deleteMessage: Result
   deleteReaction: Result
   deleteShout: Result
@@ -159,7 +184,7 @@ export type MutationCreateChatArgs = {
 export type MutationCreateMessageArgs = {
   body: Scalars['String']
   chatId: Scalars['String']
-  replyTo?: InputMaybe<Scalars['Int']>
+  replyTo?: InputMaybe<Scalars['String']>
 }
 
 export type MutationCreateReactionArgs = {
@@ -174,12 +199,8 @@ export type MutationCreateTopicArgs = {
   input: TopicInput
 }
 
-export type MutationDeleteCollectionArgs = {
-  slug: Scalars['String']
-}
-
-export type MutationDeleteCommunityArgs = {
-  slug: Scalars['String']
+export type MutationDeleteChatArgs = {
+  chatId: Scalars['String']
 }
 
 export type MutationDeleteMessageArgs = {
@@ -295,58 +316,34 @@ export type ProfileInput = {
 }
 
 export type Query = {
-  authorsAll: Array<Maybe<User>>
-  collectionsAll: Array<Maybe<Collection>>
+  authorsAll: Array<Maybe<Author>>
+  getAuthor: User
   getCollabs: Array<Maybe<Collab>>
-  getCommunities: Array<Maybe<Community>>
-  getCommunity: Community
-  getShoutBySlug: Shout
-  getUserCollections: Array<Maybe<Collection>>
-  getUserRoles: Array<Maybe<Role>>
-  getUsersBySlugs: Array<Maybe<User>>
+  getTopic: Topic
   isEmailUsed: Scalars['Boolean']
-  loadChat: Array<Maybe<Message>>
+  loadAuthorsBy: Array<Maybe<Author>>
+  loadChats: Result
+  loadMessagesBy: Result
+  loadReactionsBy: Array<Maybe<Reaction>>
+  loadShoutsBy: Array<Maybe<Shout>>
   markdownBody: Scalars['String']
-  myChats: Array<Maybe<Chat>>
-  reactionsByAuthor: Array<Maybe<Reaction>>
-  reactionsForShouts: Array<Maybe<Reaction>>
-  recentAll: Array<Maybe<Shout>>
-  recentCandidates: Array<Maybe<Shout>>
-  recentCommented: Array<Maybe<Shout>>
-  recentPublished: Array<Maybe<Shout>>
-  recentReacted: Array<Maybe<Shout>>
-  searchQuery?: Maybe<Array<Maybe<Shout>>>
-  shoutsByAuthors: Array<Maybe<Shout>>
-  shoutsByCollection: Array<Maybe<Shout>>
-  shoutsByCommunities: Array<Maybe<Shout>>
-  shoutsByTopics: Array<Maybe<Shout>>
-  shoutsForFeed: Array<Maybe<Shout>>
+  searchUsers: Result
   signIn: AuthResult
   signOut: AuthResult
   topicsAll: Array<Maybe<Topic>>
   topicsByAuthor: Array<Maybe<Topic>>
   topicsByCommunity: Array<Maybe<Topic>>
   topicsRandom: Array<Maybe<Topic>>
-  userFollowedAuthors: Array<Maybe<User>>
-  userFollowedCommunities: Array<Maybe<Community>>
+  userFollowedAuthors: Array<Maybe<Author>>
   userFollowedTopics: Array<Maybe<Topic>>
-  userFollowers: Array<Maybe<User>>
-  userReactedShouts: Array<Maybe<Shout>>
+  userFollowers: Array<Maybe<Author>>
 }
 
-export type QueryGetCommunityArgs = {
-  slug?: InputMaybe<Scalars['String']>
-}
-
-export type QueryGetShoutBySlugArgs = {
+export type QueryGetAuthorArgs = {
   slug: Scalars['String']
 }
 
-export type QueryGetUserCollectionsArgs = {
-  author: Scalars['String']
-}
-
-export type QueryGetUserRolesArgs = {
+export type QueryGetTopicArgs = {
   slug: Scalars['String']
 }
 
@@ -354,7 +351,30 @@ export type QueryIsEmailUsedArgs = {
   email: Scalars['String']
 }
 
-export type QueryLoadChatArgs = {
+export type QueryLoadAuthorsByArgs = {
+  amount?: InputMaybe<Scalars['Int']>
+  by?: InputMaybe<AuthorsBy>
+  offset?: InputMaybe<Scalars['Int']>
+}
+
+export type QueryLoadChatsArgs = {
+  amount?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+}
+
+export type QueryLoadMessagesByArgs = {
+  amount?: InputMaybe<Scalars['Int']>
+  by: MessagesBy
+  offset?: InputMaybe<Scalars['Int']>
+}
+
+export type QueryLoadReactionsByArgs = {
+  amount?: InputMaybe<Scalars['Int']>
+  by: ReactionBy
+  limit?: InputMaybe<Scalars['Int']>
+}
+
+export type QueryLoadShoutsByArgs = {
   amount?: InputMaybe<Scalars['Int']>
   by?: InputMaybe<ShoutsBy>
   offset?: InputMaybe<Scalars['Int']>
@@ -364,76 +384,10 @@ export type QueryMarkdownBodyArgs = {
   body: Scalars['String']
 }
 
-export type QueryReactionsByAuthorArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-  slug: Scalars['String']
-}
-
-export type QueryReactionsForShoutsArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-  shouts: Array<InputMaybe<Scalars['String']>>
-}
-
-export type QueryRecentAllArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-}
-
-export type QueryRecentCandidatesArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-}
-
-export type QueryRecentCommentedArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-}
-
-export type QueryRecentPublishedArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-}
-
-export type QueryRecentReactedArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-}
-
-export type QuerySearchQueryArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-  q?: InputMaybe<Scalars['String']>
-}
-
-export type QueryShoutsByAuthorsArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-  slugs: Array<InputMaybe<Scalars['String']>>
-}
-
-export type QueryShoutsByCollectionArgs = {
-  collection: Scalars['String']
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-}
-
-export type QueryShoutsByCommunitiesArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-  slugs: Array<InputMaybe<Scalars['String']>>
-}
-
-export type QueryShoutsByTopicsArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
-  slugs: Array<InputMaybe<Scalars['String']>>
-}
-
-export type QueryShoutsForFeedArgs = {
-  limit: Scalars['Int']
-  offset: Scalars['Int']
+export type QuerySearchUsersArgs = {
+  amount?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+  query: Scalars['String']
 }
 
 export type QuerySignInArgs = {
@@ -494,7 +448,6 @@ export type ReactionBy = {
   days?: InputMaybe<Scalars['Int']>
   order?: InputMaybe<Scalars['String']>
   shout?: InputMaybe<Scalars['String']>
-  shouts?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   stat?: InputMaybe<Scalars['String']>
   topic?: InputMaybe<Scalars['String']>
 }
@@ -542,8 +495,8 @@ export type Resource = {
 }
 
 export type Result = {
-  author?: Maybe<User>
-  authors?: Maybe<Array<Maybe<User>>>
+  author?: Maybe<Author>
+  authors?: Maybe<Array<Maybe<Author>>>
   chat?: Maybe<Chat>
   chats?: Maybe<Array<Maybe<Chat>>>
   communities?: Maybe<Array<Maybe<Community>>>
@@ -556,8 +509,10 @@ export type Result = {
   reactions?: Maybe<Array<Maybe<Reaction>>>
   shout?: Maybe<Shout>
   shouts?: Maybe<Array<Maybe<Shout>>>
+  slugs?: Maybe<Array<Maybe<Scalars['String']>>>
   topic?: Maybe<Topic>
   topics?: Maybe<Array<Maybe<Topic>>>
+  uids?: Maybe<Array<Maybe<Scalars['String']>>>
 }
 
 export type Role = {
@@ -576,7 +531,6 @@ export type Shout = {
   createdAt: Scalars['DateTime']
   deletedAt?: Maybe<Scalars['DateTime']>
   deletedBy?: Maybe<User>
-  draft?: Maybe<Scalars['Boolean']>
   id: Scalars['Int']
   lang?: Maybe<Scalars['String']>
   layout?: Maybe<Scalars['String']>
@@ -591,8 +545,8 @@ export type Shout = {
   topics?: Maybe<Array<Maybe<Topic>>>
   updatedAt?: Maybe<Scalars['DateTime']>
   updatedBy?: Maybe<User>
-  versionOf?: Maybe<Shout>
-  visibleFor?: Maybe<Array<Maybe<User>>>
+  versionOf?: Maybe<Scalars['String']>
+  visibility?: Maybe<Scalars['String']>
 }
 
 export type ShoutInput = {
@@ -614,12 +568,10 @@ export type ShoutsBy = {
   days?: InputMaybe<Scalars['Int']>
   layout?: InputMaybe<Scalars['String']>
   order?: InputMaybe<Scalars['String']>
-  published?: InputMaybe<Scalars['Boolean']>
   slug?: InputMaybe<Scalars['String']>
   stat?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>
   topic?: InputMaybe<Scalars['String']>
-  topics?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   visibility?: InputMaybe<Scalars['String']>
 }
 

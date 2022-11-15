@@ -1,12 +1,4 @@
-import type {
-  Reaction,
-  Shout,
-  FollowingEntity,
-  AuthResult,
-  ShoutInput,
-  Topic,
-  Author
-} from '../graphql/types.gen'
+import type { FollowingEntity, AuthResult, ShoutInput, Topic, Author } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import topicsAll from '../graphql/query/topics-all'
@@ -26,14 +18,14 @@ import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/chats-load'
-import loadChat from '../graphql/query/chat-messages-load-by'
-import topicBySlug from '../graphql/query/topic-by-slug'
+import chatMessagesLoadBy from '../graphql/query/chat-messages-load-by'
 import authorBySlug from '../graphql/query/author-by-slug'
-import shoutsLoadBy from '../graphql/query/articles-load-by'
-import reactionsLoadBy from '../graphql/query/reactions-load-by'
-import authorsLoadBy from '../graphql/query/authors-load-by'
+import topicBySlug from '../graphql/query/topic-by-slug'
 import createChatQuery from '../graphql/mutation/create-chat'
+import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
+import authorsLoadBy from '../graphql/query/authors-load-by'
+import shoutsLoadBy from '../graphql/query/articles-load-by'
 
 const FEED_SIZE = 50
 
@@ -262,7 +254,7 @@ export const apiClient = {
     const by = {
       chat
     }
-    const resp = await privateGraphQLClient.query(loadChat, { by, offset, amount }).toPromise()
+    const resp = await privateGraphQLClient.query(chatMessagesLoadBy, { by, offset, amount }).toPromise()
     return resp.data.loadChat
   }
 }

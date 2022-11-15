@@ -13,6 +13,7 @@ import '../../styles/Inbox.scss'
 import { createClient } from '@urql/core'
 import { findAndLoadGraphQLConfig } from '@graphql-codegen/cli'
 // import { useAuthStore } from '../../stores/auth'
+import { useSession } from '../../context/session'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -66,11 +67,15 @@ export const InboxView = () => {
   const [authors, setAuthors] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
+  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
+  const { session } = useSession()
   const { sortedAuthors } = useAuthorsStore()
 
   createEffect(() => {
     setAuthors(sortedAuthors())
+    console.log('!!! session():', session())
+    setCurrentSlug(session()?.user?.slug)
   })
 
   // Поиск по диалогам
@@ -97,30 +102,31 @@ export const InboxView = () => {
   let chatWindow
   onMount(async () => {
     setLoading(true)
-    await fetchMessages(messageQuery)
-      .then(() => {
-        setLoading(false)
-        chatWindow.scrollTop = chatWindow.scrollHeight
-      })
-      .catch(() => setLoading(false))
+    try {
+      await fetchMessages(messageQuery)
+    } catch (error) {
+      setLoading(false)
+      console.error([fetchMessages], error)
+    } finally {
+      setLoading(false)
+      chatWindow.scrollTop = chatWindow.scrollHeight
+    }
   })
 
   const handleSubmit = async () => {
-    postMessage(postMessageText())
-      .then((result) => {
-        setMessages((prev) => [...prev, result])
-      })
-      .then(() => {
-        setPostMessageText('')
-        chatWindow.scrollTop = chatWindow.scrollHeight
-      })
-      .catch(console.error)
+    try {
+      const post = await postMessage(postMessageText())
+      setMessages((prev) => [...prev, post])
+      setPostMessageText('')
+      chatWindow.scrollTop = chatWindow.scrollHeight
+    } catch (error) {
+      console.error('[post message error]:', error)
+    }
   }
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
   }
 
-  // TODO: get user session
   return (
     <div class="messages container">
       <div class="row">

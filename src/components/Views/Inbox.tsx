@@ -11,8 +11,7 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
-import { findAndLoadGraphQLConfig } from '@graphql-codegen/cli'
-import { useAuthStore } from '../../stores/auth'
+import { useSession } from '../../context/session'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -61,11 +60,15 @@ export const InboxView = () => {
   const [authors, setAuthors] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
+  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | undefined>(undefined)
 
+  const { session } = useSession()
   const { sortedAuthors } = useAuthorsStore()
 
   createEffect(() => {
     setAuthors(sortedAuthors())
+    console.log('!!! session():', session())
+    setCurrentSlug(session()?.user?.slug)
   })
 
   // Поиск по диалогам
@@ -118,7 +121,6 @@ export const InboxView = () => {
     setPostMessageText(event.target.value)
   }
 
-  // TODO: get user session
   return (
     <div class="messages container">
       <div class="row">
@@ -137,7 +139,13 @@ export const InboxView = () => {
             <div class="dialogs">
               <For each={authors()}>
                 {(author) => (
-                  <DialogCard id={author.id} name={author.name} slug={author.slug} online={true} />
+                  <DialogCard
+                    ownerSlug={currentSlug()}
+                    id={author.id}
+                    name={author.name}
+                    slug={author.slug}
+                    online={true}
+                  />
                 )}
               </For>
             </div>

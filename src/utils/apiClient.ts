@@ -35,7 +35,8 @@ import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import incrementView from '../graphql/mutation/increment-view'
 import createArticle from '../graphql/mutation/article-create'
-import myChats from '../graphql/query/my-chats'
+import CreateChat from '../graphql/mutation/create-chat'
+// import myChats from '../graphql/query/my-chats'
 import authorBySlug from '../graphql/query/author-by-slug'
 import topicBySlug from '../graphql/query/topic-by-slug'
 
@@ -372,22 +373,22 @@ export const apiClient = {
   },
   createChat: async ({ title, members }) => {
     return await privateGraphQLClient.mutation(CreateChat, { title: title, members: members }).toPromise()
-  },
-
-  getChats: async (payload = {}) => {
-    const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
-    return resp.data.myChats
-  },
-  getChatMessages: async ({
-    chatId,
-    offset = 0,
-    amount = 50
-  }: {
-    chatId: string
-    offset?: number
-    amount?: number
-  }) => {
-    const resp = await privateGraphQLClient.query(loadChat, { chatId, offset, amount }).toPromise()
-    return resp.data.loadChat
   }
+
+  // getChats: async (payload = {}) => {
+  //   const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
+  //   return resp.data.myChats
+  // },
+  // getChatMessages: async ({
+  //   chatId,
+  //   offset = 0,
+  //   amount = 50
+  // }: {
+  //   chatId: string
+  //   offset?: number
+  //   amount?: number
+  // }) => {
+  //   const resp = await privateGraphQLClient.query(loadChat, { chatId, offset, amount }).toPromise()
+  //   return resp.data.loadChat
+  // }
 }

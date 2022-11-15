@@ -2,35 +2,23 @@ import './DialogCard.module.scss'
 import styles from './DialogCard.module.scss'
 import DialogAvatar from './DialogAvatar'
 import type { Author } from '../../graphql/types.gen'
-import { useAuthStore } from '../../stores/auth'
-import { createEffect, createSignal } from 'solid-js'
 import { apiClient } from '../../utils/apiClient'
-
-const { session } = useAuthStore()
 
 type Props = {
   online?: boolean
   message?: string
   counter?: number
+  ownerSlug: Author['slug']
 } & Author
 
-const createChat = async ({ title, members }: { title?: string; members?: string[] }): Promise<void> => {
-  await apiClient.createChat({ title, members })
-}
-
 const DialogCard = (props: Props) => {
-  const [currentUser, setCurrentUser] = createSignal(undefined)
-  createEffect(() => {
-    setCurrentUser(session()?.user?.slug)
-  })
-
   const handleOpenChat = async () => {
     try {
       const test = await apiClient.createChat({
         title: 'test chat',
-        members: [props.slug, currentUser()]
+        members: [props.slug, props.ownerSlug]
       })
-      console.log('!!! test:', test)
+      console.log('!!! test:', test.data)
     } catch (err) {
       console.log('!!! errr:', err)
     }

@@ -35,7 +35,6 @@ export type Author = {
 }
 
 export type AuthorStat = {
-  commented?: Maybe<Scalars['Int']>
   followers?: Maybe<Scalars['Int']>
   followings?: Maybe<Scalars['Int']>
   rating?: Maybe<Scalars['Int']>
@@ -367,7 +366,6 @@ export type Query = {
   recentAll: Array<Maybe<Shout>>
   recentCandidates: Array<Maybe<Shout>>
   recentCommented: Array<Maybe<Shout>>
-  recentLayoutShouts: Array<Maybe<Shout>>
   recentPublished: Array<Maybe<Shout>>
   recentReacted: Array<Maybe<Shout>>
   searchChats: Result
@@ -384,9 +382,7 @@ export type Query = {
   signOut: AuthResult
   topAuthors: Array<Maybe<Author>>
   topCommented: Array<Maybe<Shout>>
-  topLayoutShouts: Array<Maybe<Shout>>
   topMonth: Array<Maybe<Shout>>
-  topMonthLayoutShouts: Array<Maybe<Shout>>
   topOverall: Array<Maybe<Shout>>
   topPublished: Array<Maybe<Shout>>
   topicsAll: Array<Maybe<Topic>>
@@ -474,12 +470,6 @@ export type QueryRecentCommentedArgs = {
   offset: Scalars['Int']
 }
 
-export type QueryRecentLayoutShoutsArgs = {
-  amount?: InputMaybe<Scalars['Int']>
-  layout: Scalars['String']
-  offset?: InputMaybe<Scalars['Int']>
-}
-
 export type QueryRecentPublishedArgs = {
   limit: Scalars['Int']
   offset: Scalars['Int']
@@ -565,21 +555,9 @@ export type QueryTopCommentedArgs = {
   offset: Scalars['Int']
 }
 
-export type QueryTopLayoutShoutsArgs = {
-  amount?: InputMaybe<Scalars['Int']>
-  layout: Scalars['String']
-  offset?: InputMaybe<Scalars['Int']>
-}
-
 export type QueryTopMonthArgs = {
   limit: Scalars['Int']
   offset: Scalars['Int']
-}
-
-export type QueryTopMonthLayoutShoutsArgs = {
-  amount?: InputMaybe<Scalars['Int']>
-  layout: Scalars['String']
-  offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryTopOverallArgs = {
@@ -730,7 +708,6 @@ export type Shout = {
   lang?: Maybe<Scalars['String']>
   layout?: Maybe<Scalars['String']>
   mainTopic?: Maybe<Scalars['String']>
-  media?: Maybe<Scalars['String']>
   publishedAt?: Maybe<Scalars['DateTime']>
   publishedBy?: Maybe<User>
   slug: Scalars['String']

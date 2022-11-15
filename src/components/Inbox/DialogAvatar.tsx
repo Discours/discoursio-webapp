@@ -25,10 +25,10 @@ const colors = [
 ]
 
 const getById = (letter: string) =>
-  colors[Math.abs(Number(BigInt(letter.toLowerCase().charCodeAt(0) - 97) % BigInt(colors.length)))]
+  colors[Math.abs(Number(BigInt(letter.toLowerCase().codePointAt(0) - 97) % BigInt(colors.length)))]
 
 const DialogAvatar = (props: Props) => {
-  const nameFirstLetter = props.name.substring(0, 1)
+  const nameFirstLetter = props.name.slice(0, 1)
   const randomBg = createMemo(() => {
     return getById(nameFirstLetter)
   })

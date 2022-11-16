@@ -29,29 +29,14 @@ import { TermsOfUsePage } from './Pages/about/TermsOfUsePage'
 import { ThanksPage } from './Pages/about/ThanksPage'
 import { CreatePage } from './Pages/CreatePage'
 import { ConnectPage } from './Pages/ConnectPage'
+import { LayoutShoutsPage } from './Pages/LayoutShoutsPage'
 import { SessionProvider } from '../context/session'
 
 // TODO: lazy load
-// const HomePage = lazy(() => import('./Pages/HomePage'))
-// const AllTopicsPage = lazy(() => import('./Pages/AllTopicsPage'))
-// const TopicPage = lazy(() => import('./Pages/TopicPage'))
-// const AllAuthorsPage = lazy(() => import('./Pages/AllAuthorsPage'))
-// const AuthorPage = lazy(() => import('./Pages/AuthorPage'))
-// const FeedPage = lazy(() => import('./Pages/FeedPage'))
-// const ArticlePage = lazy(() => import('./Pages/ArticlePage'))
-// const SearchPage = lazy(() => import('./Pages/SearchPage'))
-// const FourOuFourPage = lazy(() => import('./Pages/FourOuFourPage'))
-// const DogmaPage = lazy(() => import('./Pages/about/DogmaPage'))
-// const GuidePage = lazy(() => import('./Pages/about/GuidePage'))
-// const HelpPage = lazy(() => import('./Pages/about/HelpPage'))
-// const ManifestPage = lazy(() => import('./Pages/about/ManifestPage'))
-// const PartnersPage = lazy(() => import('./Pages/about/PartnersPage'))
-// const ProjectsPage = lazy(() => import('./Pages/about/ProjectsPage'))
-// const TermsOfUsePage = lazy(() => import('./Pages/about/TermsOfUsePage'))
-// const ThanksPage = lazy(() => import('./Pages/about/ThanksPage'))
-// const CreatePage = lazy(() => import('./Pages/about/CreatePage'))
+// const SomePage = lazy(() => import('./Pages/SomePage'))
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
+  expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
   home: HomePage,

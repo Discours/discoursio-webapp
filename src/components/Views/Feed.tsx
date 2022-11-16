@@ -1,63 +1,71 @@
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import '../../styles/Feed.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
-import { Icon } from '../Nav/Icon'
-import { byCreated, sortBy } from '../../utils/sortby'
+import { Icon } from '../_shared/Icon'
 import { TopicCard } from '../Topic/Card'
 import { ArticleCard } from '../Feed/Card'
 import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
 import { FeedSidebar } from '../Feed/Sidebar'
 import CommentCard from '../Article/Comment'
-import { loadRecentArticles, useArticlesStore } from '../../stores/zine/articles'
+import { useArticlesStore } from '../../stores/zine/articles'
 import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useSession } from '../../context/session'
+import { Collab, ReactionKind, Shout } from '../../graphql/types.gen'
+import { collabs, setCollabs } from '../../stores/editor'
 
-// const AUTHORSHIP_REACTIONS = [
-//   ReactionKind.Accept,
-//   ReactionKind.Reject,
-//   ReactionKind.Propose,
-//   ReactionKind.Ask
-// ]
+const AUTHORSHIP_REACTIONS = [
+  ReactionKind.Accept,
+  ReactionKind.Reject,
+  ReactionKind.Propose,
+  ReactionKind.Ask
+]
 
 export const FEED_PAGE_SIZE = 20
 
 export const FeedView = () => {
   // state
-  const { sortedArticles } = useArticlesStore()
-  const reactions = useReactionsStore()
+  const { sortedArticles, loadShoutsBy } = useArticlesStore()
+  const { sortedReactions: topComments, loadReactionsBy } = useReactionsStore({})
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
   const { session } = useSession()
-
-  const topReactions = createMemo(() => sortBy(reactions(), byCreated))
-
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
-  // const expectingFocus = createMemo<Shout[]>(() => {
-  //   // 1 co-author notifications needs
-  //   // TODO: list of articles where you are co-author
-  //   // TODO: preload proposals
-  //   // TODO: (maybe?) and changes history
-  //   console.debug(reactions().filter((r) => r.kind in AUTHORSHIP_REACTIONS))
-  //
-  //   // 2 community self-regulating mechanics
-  //   // TODO: query all new posts to be rated for publishing
-  //   // TODO: query all reactions where user is in authors list
-  //   return []
-  // })
-
   const loadMore = async () => {
-    const { hasMore } = await loadRecentArticles({ limit: FEED_PAGE_SIZE, offset: sortedArticles().length })
+    const { hasMore } = await loadShoutsBy({
+      by: { visibility: 'community' },
+      limit: FEED_PAGE_SIZE,
+      offset: sortedArticles().length
+    })
     setIsLoadMoreButtonVisible(hasMore)
   }
 
-  onMount(() => {
-    loadMore()
+  onMount(async () => {
+    // load 5 recent comments overall
+    await loadReactionsBy({ by: {}, limit: 5, offset: 0 })
+
+    // load recent shouts not only published ( visibility = community )
+    await loadMore()
+
+    // TODO: load collabs
+    // await loadCollabs()
+
+    // load recent editing shouts ( visibility = authors )
+    const userslug = session().user.slug
+    await loadShoutsBy({ by: { author: userslug, visibility: 'authors' }, limit: 15, offset: 0 })
+    const collaborativeShouts = sortedArticles().filter((s: Shout, n: number, arr: Shout[]) => {
+      if (s.visibility !== 'authors') {
+        arr.splice(n, 1)
+        return arr
+      }
+    })
+    // load recent reactions on collabs
+    await loadReactionsBy({ by: { shouts: [...collaborativeShouts], body: true }, limit: 5, offset: 0 })
   })
 
   return (
@@ -118,7 +126,7 @@ export const FeedView = () => {
           <aside class="col-md-3">
             <section class="feed-comments">
               <h4>{t('Comments')}</h4>
-              <For each={topReactions()}>
+              <For each={topComments()}>
                 {(comment) => <CommentCard comment={comment} compact={true} />}
               </For>
             </section>

@@ -8,7 +8,7 @@ import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
 import { useRouter } from '../../stores/router'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { loadTopicArticles, useArticlesStore } from '../../stores/zine/articles'
+import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
@@ -22,7 +22,7 @@ type TopicsPageSearchParams = {
 
 interface TopicProps {
   topic: Topic
-  topicArticles: Shout[]
+  shouts: Shout[]
   topicSlug: string
 }
 
@@ -34,7 +34,7 @@ export const TopicView = (props: TopicProps) => {
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
-  const { sortedArticles } = useArticlesStore({ sortedArticles: props.topicArticles })
+  const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { topicEntities } = useTopicsStore({ topics: [props.topic] })
 
   const { authorsByTopic } = useAuthorsStore()
@@ -44,8 +44,8 @@ export const TopicView = (props: TopicProps) => {
   const loadMore = async () => {
     saveScrollPosition()
 
-    const { hasMore } = await loadTopicArticles({
-      topicSlug: topic().slug,
+    const { hasMore } = await loadShoutsBy({
+      by: { topic: topic().slug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

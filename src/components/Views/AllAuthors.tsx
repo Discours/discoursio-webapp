@@ -1,7 +1,7 @@
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'

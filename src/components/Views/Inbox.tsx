@@ -1,7 +1,7 @@
 import { For, createSignal, Show, onMount, createEffect } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import { Loading } from '../Loading'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
@@ -12,6 +12,8 @@ import MarkdownIt from 'markdown-it'
 import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
+import { findAndLoadGraphQLConfig } from '@graphql-codegen/cli'
+// import { useAuthStore } from '../../stores/auth'
 import { useSession } from '../../context/session'
 
 const md = new MarkdownIt({
@@ -150,17 +152,7 @@ export const InboxView = () => {
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={authors()}>
-                {(author) => (
-                  <DialogCard
-                    ownerSlug={currentSlug()}
-                    id={author.id}
-                    name={author.name}
-                    slug={author.slug}
-                    online={true}
-                  />
-                )}
-              </For>
+              <For each={authors()}>{(author) => <DialogCard author={author} online={true} />}</For>
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query GetChatsQuery {
-    myChats {
+  query GetChatsQuery($limit: Int, $offset: Int) {
+    loadChats(limit: $limit, offset: $offset) {
       error
       chats {
         title

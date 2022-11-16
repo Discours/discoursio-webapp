@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'https://newapi.discours.io/graphql'
+schema: 'https://testapi.discours.io/graphql'
 generates:
   src/graphql/introspec.gen.ts:
     plugins:

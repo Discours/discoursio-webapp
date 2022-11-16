@@ -5,7 +5,7 @@ import { Row3 } from '../Feed/Row3'
 import { AuthorFull } from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { loadAuthorArticles, useArticlesStore } from '../../stores/zine/articles'
+import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
 
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
@@ -15,7 +15,7 @@ import { splitToPages } from '../../utils/splitToPages'
 
 // TODO: load reactions on client
 type AuthorProps = {
-  authorArticles: Shout[]
+  shouts: Shout[]
   author: Author
   authorSlug: string
   // FIXME author topics fro server
@@ -23,7 +23,7 @@ type AuthorProps = {
 }
 
 type AuthorPageSearchParams = {
-  by: '' | 'viewed' | 'rating' | 'commented' | 'recent'
+  by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'followed'
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -31,7 +31,7 @@ const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const AuthorView = (props: AuthorProps) => {
   const { sortedArticles } = useArticlesStore({
-    sortedArticles: props.authorArticles
+    shouts: props.shouts
   })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { topicsByAuthor } = useTopicsStore()
@@ -42,8 +42,8 @@ export const AuthorView = (props: AuthorProps) => {
 
   const loadMore = async () => {
     saveScrollPosition()
-    const { hasMore } = await loadAuthorArticles({
-      authorSlug: author().slug,
+    const { hasMore } = await loadShoutsBy({
+      by: { author: author().slug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })
@@ -76,27 +76,21 @@ export const AuthorView = (props: AuthorProps) => {
         <div class="row group__controls">
           <div class="col-md-8">
             <ul class="view-switcher">
-              <li classList={{ selected: !searchParams().by || searchParams().by === 'recent' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
-                  {t('Recent')}
+              <li classList={{ selected: searchParams().by === 'rating' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
+                  {t('Popular')}
                 </button>
               </li>
-              {/*TODO: server sort*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'rating' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
-              {/*    {t('Popular')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'viewed' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
-              {/*    {t('Views')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
-              {/*<li classList={{ selected: getSearchParams().by === 'commented' }}>*/}
-              {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
-              {/*    {t('Discussing')}*/}
-              {/*  </button>*/}
-              {/*</li>*/}
+              <li classList={{ selected: searchParams().by === 'followed' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
+                  {t('Followers')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'commented' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
+                  {t('Discussing')}
+                </button>
+              </li>
             </ul>
           </div>
           <div class="col-md-4">

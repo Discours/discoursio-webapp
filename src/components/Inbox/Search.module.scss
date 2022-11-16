@@ -1,7 +1,7 @@
 .Search {
   .field {
     position: relative;
-    background: #ffffff;
+    background: #fff;
     border: 2px solid #e8e8e8;
     border-radius: 2px;
     overflow: hidden;
@@ -22,8 +22,10 @@
         color: #858585;
         font-family: inherit;
       }
+
       &:focus {
         outline: none;
+
         & + .icon {
           opacity: 0;
           right: -30px;

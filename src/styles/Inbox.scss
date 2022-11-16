@@ -4,6 +4,7 @@ main {
   flex-direction: column;
   position: relative;
 }
+
 // TODO: добавлять когда открыт чат
 body {
   overflow: hidden;
@@ -35,6 +36,7 @@ body {
     position: relative;
   }
 }
+
 // список диалогов и юзеров
 .chat-list {
   display: flex;
@@ -43,6 +45,7 @@ body {
   height: calc(100% - 10px);
 
   $fade-height: 10px;
+
   .holder {
     overflow: hidden;
     flex: 1;
@@ -63,6 +66,7 @@ body {
       top: 0;
       background: linear-gradient(white, transparent $fade-height);
     }
+
     &::after {
       bottom: 0;
       background: linear-gradient(transparent, white $fade-height);
@@ -93,7 +97,9 @@ body {
 // табы выбора списка
 .chat-list__types {
   @include font-size(1.7rem);
+
   margin: 16px 0;
+
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -277,7 +283,6 @@ body {
 
 .conversation__message {
   font-size: 14px;
-
   max-width: 60%;
   border-radius: 16px;
   padding: 12px 16px;

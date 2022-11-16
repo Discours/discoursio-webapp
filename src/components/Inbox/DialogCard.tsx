@@ -1,24 +1,32 @@
-import './DialogCard.module.scss'
-import DialogAvatar from './DialogAvatar'
-import type { Author } from '../../graphql/types.gen'
-import { apiClient } from '../../utils/apiClient'
 import styles from './DialogCard.module.scss'
+import DialogAvatar from './DialogAvatar'
+import type { Author, AuthResult } from '../../graphql/types.gen'
+import { useSession } from '../../context/session'
+import { createMemo } from 'solid-js'
+import { apiClient } from '../../utils/apiClient'
 
-type Props = {
+type DialogProps = {
   online?: boolean
   message?: string
   counter?: number
-  ownerSlug: Author['slug']
-} & Author
+  author?: Author
+}
 
-const DialogCard = (props: Props) => {
+const createChat = async ({ title, members }: { title?: string; members?: string[] }): Promise<void> => {
+  await apiClient.createChat({ title, members })
+}
+
+const DialogCard = (props: DialogProps) => {
+  const { session } = useSession()
+  const currentSession = createMemo<AuthResult>(() => session)
+
   const handleOpenChat = async () => {
     try {
       const initChat = await apiClient.createChat({
         title: 'test chat',
-        members: [props.slug, props.ownerSlug]
+        members: [props.author.slug, currentSession().user.slug]
       })
-      console.log('!!! test:', initChat.data)
+      // console.log('!!! test:', test)
     } catch (error) {
       console.log('!!! errr:', error)
     }
@@ -27,10 +35,10 @@ const DialogCard = (props: Props) => {
   return (
     <div class={styles.DialogCard} onClick={handleOpenChat}>
       <div class={styles.avatar}>
-        <DialogAvatar name={props.name} url={props.userpic} online={props.online} />
+        <DialogAvatar name={props.author.name} url={props.author.userpic} online={props.online} />
       </div>
       <div class={styles.row}>
-        <div class={styles.name}>{props.name}</div>
+        <div class={styles.name}>{props.author.name}</div>
         <div class={styles.message}>
           Указать предпочтительные языки для результатов поиска можно в разделе
         </div>

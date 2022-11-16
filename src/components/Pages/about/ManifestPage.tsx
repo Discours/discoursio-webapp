@@ -1,10 +1,10 @@
 import { createSignal, Show } from 'solid-js'
-import { MainLayout } from '../../Layouts/MainLayout'
+import { PageWrap } from '../../_shared/PageWrap'
 import { Modal } from '../../Nav/Modal'
 import { Feedback } from '../../Discours/Feedback'
 import Subscribe from '../../Discours/Subscribe'
 import Opener from '../../Nav/Opener'
-import { Icon } from '../../Nav/Icon'
+import { Icon } from '../../_shared/Icon'
 
 // title={t('Manifest')}
 
@@ -14,7 +14,7 @@ export const ManifestPage = () => {
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
-    <MainLayout>
+    <PageWrap>
       <Modal name="feedback">
         <Feedback />
       </Modal>
@@ -191,7 +191,7 @@ export const ManifestPage = () => {
           </div>
         </div>
       </article>
-    </MainLayout>
+    </PageWrap>
   )
 }
 

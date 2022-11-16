@@ -1,6 +1,6 @@
 import type { Author } from '../../graphql/types.gen'
 import Userpic from './Userpic'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
 import { createMemo, For, Show } from 'solid-js'
 import { translit } from '../../utils/ru2en'

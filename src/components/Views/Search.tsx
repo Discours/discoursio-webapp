@@ -3,7 +3,7 @@ import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
-import { useArticlesStore, loadSearchResults } from '../../stores/zine/articles'
+import { useArticlesStore, loadShoutsBy } from '../../stores/zine/articles'
 import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
 
 type SearchPageSearchParams = {
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const SearchView = (props: Props) => {
-  const { sortedArticles } = useArticlesStore({ sortedArticles: props.results })
+  const { sortedArticles } = useArticlesStore({ shouts: props.results })
   const [getQuery, setQuery] = createSignal(props.query)
 
   const { searchParams } = useRouter<SearchPageSearchParams>()
@@ -28,7 +28,7 @@ export const SearchView = (props: Props) => {
   const handleSubmit = (_ev) => {
     // TODO page
     // TODO sort
-    loadSearchResults({ query: getQuery() })
+    loadShoutsBy({ by: { title: getQuery(), body: getQuery() }, limit: 50 })
   }
 
   return (

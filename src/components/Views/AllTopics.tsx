@@ -113,7 +113,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                   <div class="row">
                     <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
                       <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                        {t('More')}
+                        {t('Load more')}
                       </button>
                     </div>
                   </div>

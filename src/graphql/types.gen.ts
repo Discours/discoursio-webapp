@@ -352,8 +352,8 @@ export type QueryIsEmailUsedArgs = {
 }
 
 export type QueryLoadAuthorsByArgs = {
-  limit?: InputMaybe<Scalars['Int']>
   by?: InputMaybe<AuthorsBy>
+  limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
 }
 
@@ -363,20 +363,20 @@ export type QueryLoadChatsArgs = {
 }
 
 export type QueryLoadMessagesByArgs = {
-  limit?: InputMaybe<Scalars['Int']>
   by: MessagesBy
+  limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryLoadReactionsByArgs = {
-  offset?: InputMaybe<Scalars['Int']>
   by: ReactionBy
   limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryLoadShoutsByArgs = {
-  limit?: InputMaybe<Scalars['Int']>
   by?: InputMaybe<ShoutsBy>
+  limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
 }
 

@@ -352,30 +352,30 @@ export type QueryIsEmailUsedArgs = {
 }
 
 export type QueryLoadAuthorsByArgs = {
-  amount?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
   by?: InputMaybe<AuthorsBy>
   offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryLoadChatsArgs = {
-  amount?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryLoadMessagesByArgs = {
-  amount?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
   by: MessagesBy
   offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryLoadReactionsByArgs = {
-  amount?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
   by: ReactionBy
   limit?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryLoadShoutsByArgs = {
-  amount?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
   by?: InputMaybe<ShoutsBy>
   offset?: InputMaybe<Scalars['Int']>
 }
@@ -385,7 +385,7 @@ export type QueryMarkdownBodyArgs = {
 }
 
 export type QuerySearchUsersArgs = {
-  amount?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
   query: Scalars['String']
 }

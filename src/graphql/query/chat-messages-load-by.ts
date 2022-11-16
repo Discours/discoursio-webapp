@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadMessagesQuery($by: MessagesBy!, $amount: Int, $offset: Int) {
-    loadMessagesBy(by: $by, amount: $amount, offset: $offset) {
+  query LoadMessagesQuery($by: MessagesBy!, $limit: Int, $offset: Int) {
+    loadMessagesBy(by: $by, limit: $limit, offset: $offset) {
       error
       messages {
         author

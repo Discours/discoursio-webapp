@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   query LoadShoutsByQuery($by: ShoutsBy, $limit: Int!, $offset: Int!) {
-    loadShoutsBy(by: $by, amount: $limit, offset: $offset) {
+    loadShoutsBy(by: $by, limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle

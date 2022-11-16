@@ -255,17 +255,17 @@ export const apiClient = {
 
   getChatMessages: async ({
     chat,
-    amount = 50,
+    limit = 50,
     offset = 0
   }: {
     chat: string
-    amount?: number
+    limit?: number
     offset?: number
   }) => {
     const by = {
       chat
     }
-    const resp = await privateGraphQLClient.query(chatMessagesLoadBy, { by, offset, amount }).toPromise()
+    const resp = await privateGraphQLClient.query(chatMessagesLoadBy, { by, offset, limit }).toPromise()
     return resp.data.loadChat
   }
 }

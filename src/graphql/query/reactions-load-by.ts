@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   query LoadReactionsByQuery($by: ReactionsBy, $limit: Int!, $offset: Int!) {
-    loadReactionsBy(by: $by, amount: $limit, offset: $offset) {
+    loadReactionsBy(by: $by, limit: $limit, offset: $offset) {
       id
       createdBy {
         slug

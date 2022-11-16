@@ -4,12 +4,10 @@ import { Root } from '../components/Root'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
 
-const chatrooms = await apiClient.getChats()
-
 const { pathname, search } = Astro.url
 initRouter(pathname, search)
 ---
 
 <Prerendered>
-  <Root chats={chatrooms} client:load />
+  <Root client:load />
 </Prerendered>

@@ -1,8 +1,8 @@
 import './DialogCard.module.scss'
-import styles from './DialogCard.module.scss'
 import DialogAvatar from './DialogAvatar'
 import type { Author } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
+import styles from './DialogCard.module.scss'
 
 type Props = {
   online?: boolean

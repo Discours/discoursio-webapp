@@ -26,8 +26,7 @@ import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
-
-const FEED_SIZE = 50
+import chatUsersAll from '../graphql/query/chat-users-all'
 
 type ApiErrorCode =
   | 'unknown'
@@ -192,6 +191,14 @@ export const apiClient = {
     }
     return response.data.authorsAll
   },
+  getAllChatUsers: async () => {
+    const response = await privateGraphQLClient.query(chatUsersAll, {}).toPromise()
+    if (response.error) {
+      console.debug('[api-client] getAllChatUsers', response.error)
+    }
+    return response.data.chatUsersAll
+  },
+
   getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
     return response.data.getAuthor

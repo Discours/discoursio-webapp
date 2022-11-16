@@ -5,24 +5,20 @@ main {
   position: relative;
 }
 
-// TODO: добавлять когда открыт чат
-body {
-  overflow: hidden;
-}
-
 .messages {
-  top: 74px;
-  height: calc(100% - 74px);
-  left: 0;
-  right: 0;
-  padding-left: 42px;
-  padding-right: 26px;
-  background: #fff;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  position: fixed;
-  z-index: 9;
+  display: none;
+  //top: 74px;
+  //height: calc(100% - 74px);
+  //left: 0;
+  //right: 0;
+  //padding-left: 42px;
+  //padding-right: 26px;
+  //background: #fff;
+  //display: flex;
+  //flex: 1;
+  //flex-direction: column;
+  //position: fixed;
+  //z-index: 9;
 
   > .row {
     flex: 1;

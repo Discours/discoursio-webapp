@@ -78,7 +78,6 @@ export const InboxView = () => {
 
   createEffect(() => {
     setAuthors(sortedAuthors())
-    console.log('!!! session():', session())
     setCurrentSlug(session()?.user?.slug)
   })
 

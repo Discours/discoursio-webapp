@@ -123,9 +123,14 @@ export const InboxView = () => {
       console.error('[post message error]:', error)
     }
   }
+
+  let formParent // autoresize ghost element
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
   }
+  createEffect(() => {
+    formParent.dataset.replicatedValue = postMessageText()
+  })
 
   return (
     <div class="messages container">
@@ -189,15 +194,20 @@ export const InboxView = () => {
             </div>
           </div>
 
-          <div class="conversation__message-form">
-            <textarea
-              value={postMessageText()}
-              onInput={(event) => handleChangeMessage(event)}
-              placeholder="Написать сообщение"
-            />
-            <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>
-              <Icon name="send-message" />
-            </button>
+          <div class="message-form">
+            <div class="wrapper">
+              <div class="grow-wrap" ref={formParent}>
+                <textarea
+                  value={postMessageText()}
+                  rows={1}
+                  onInput={(event) => handleChangeMessage(event)}
+                  placeholder="Написать сообщение"
+                />
+              </div>
+              <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>
+                <Icon name="send-message" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

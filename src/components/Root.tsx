@@ -29,6 +29,7 @@ import { TermsOfUsePage } from './Pages/about/TermsOfUsePage'
 import { ThanksPage } from './Pages/about/ThanksPage'
 import { CreatePage } from './Pages/CreatePage'
 import { ConnectPage } from './Pages/ConnectPage'
+import { InboxPage } from './Pages/InboxPage'
 import { LayoutShoutsPage } from './Pages/LayoutShoutsPage'
 import { SessionProvider } from '../context/session'
 
@@ -36,6 +37,7 @@ import { SessionProvider } from '../context/session'
 // const SomePage = lazy(() => import('./Pages/SomePage'))
 
 const pagesMap: Record<keyof Routes, Component<PageProps>> = {
+  inbox: InboxPage,
   expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,

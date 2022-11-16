@@ -26,12 +26,14 @@ export interface Routes {
   termsOfUse: void
   thanks: void
   expo: 'layout'
+  inbox: void // TODO: добавить ID текущего юзера
 }
 
 const searchParamsStore = createSearchParams()
 const routerStore = createRouter<Routes>(
   {
     home: '/',
+    inbox: '/inbox',
     connect: '/connect',
     create: '/create',
     topics: '/topics',

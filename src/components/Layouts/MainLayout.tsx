@@ -4,12 +4,14 @@ import { Footer } from '../Discours/Footer'
 
 import '../../styles/app.scss'
 import { Show } from 'solid-js'
+import { clsx } from 'clsx'
 
 type MainLayoutProps = {
   headerTitle?: string
   children: JSX.Element
   isHeaderFixed?: boolean
   hideFooter?: boolean
+  class?: string
 }
 
 export const MainLayout = (props: MainLayoutProps) => {
@@ -18,7 +20,10 @@ export const MainLayout = (props: MainLayoutProps) => {
   return (
     <>
       <Header title={props.headerTitle} isHeaderFixed={isHeaderFixed} />
-      <main class="main-content" classList={{ 'main-content--no-padding': !isHeaderFixed }}>
+      <main
+        class={clsx('main-content', props.class)}
+        classList={{ 'main-content--no-padding': !isHeaderFixed }}
+      >
         {props.children}
       </main>
       <Show when={props.hideFooter !== true}>

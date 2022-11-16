@@ -5,6 +5,7 @@ import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { loadPublishedArticles, resetSortedArticles } from '../../stores/zine/articles'
 import { loadRandomTopics } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
+import styles from './HomePage.module.scss'
 
 export const HomePage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeArticles) && Boolean(props.randomTopics))
@@ -23,7 +24,7 @@ export const HomePage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainLayout>
+    <MainLayout class={styles.mainContent}>
       <Show when={isLoaded()} fallback={<Loading />}>
         <HomeView randomTopics={props.randomTopics} recentPublishedArticles={props.homeArticles || []} />
       </Show>

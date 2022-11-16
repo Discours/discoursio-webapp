@@ -109,6 +109,7 @@ export const AllAuthorsView = (props: Props) => {
                           subscribed={subscribed(author.slug)}
                           noSocialButtons={true}
                           isAuthorsList={true}
+                          truncateBio={true}
                         />
                       )}
                     </For>

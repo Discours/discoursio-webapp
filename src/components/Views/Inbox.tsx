@@ -6,6 +6,7 @@ import { Loading } from '../Loading'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
 import { useAuthorsStore } from '../../stores/zine/authors'
+import MarkdownIt from 'markdown-it'
 // const { session } = useAuthStore()
 
 import '../../styles/Inbox.scss'
@@ -13,6 +14,9 @@ import '../../styles/Inbox.scss'
 import { createClient } from '@urql/core'
 import { useSession } from '../../context/session'
 
+const md = new MarkdownIt({
+  linkify: true
+})
 const OWNER_ID = '501'
 const client = createClient({
   url: 'https://graphqlzero.almansi.me/api'
@@ -183,7 +187,7 @@ export const InboxView = () => {
                   }`}
                   >
                     <div class="conversation__message">
-                      {comment.body}
+                      <div innerHTML={md.render(comment.body)} />
                       <div class="conversation__message-details">
                         <time>14:26</time>
                         {comment.email} id: {comment.id}

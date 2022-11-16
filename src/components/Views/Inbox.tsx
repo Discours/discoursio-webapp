@@ -74,10 +74,11 @@ export const InboxView = () => {
   const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
   const { session } = useSession()
-  const { sortedAuthors } = useAuthorsStore()
+  const { authorEntities } = useAuthorsStore()
+  console.log('!!! loadAllAuthors:', authorEntities())
 
   createEffect(() => {
-    setAuthors(sortedAuthors())
+    // setAuthors(authorEntities())
     console.log('!!! session():', session())
     setCurrentSlug(session()?.user?.slug)
   })
@@ -89,7 +90,7 @@ export const InboxView = () => {
       console.log('!!! match:', match)
       setAuthors(match)
     } else {
-      setAuthors(sortedAuthors())
+      // setAuthors(sortedAuthors())
     }
   }
 

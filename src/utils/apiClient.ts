@@ -190,6 +190,7 @@ export const apiClient = {
     if (response.error) {
       console.debug('[api-client] getAllAuthors', response.error)
     }
+    console.log('!!! getAllAuthors:', response.data)
     return response.data.authorsAll
   },
   getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {

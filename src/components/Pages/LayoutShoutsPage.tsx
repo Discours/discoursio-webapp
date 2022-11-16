@@ -1,9 +1,9 @@
 import { PageWrap } from '../_shared/PageWrap'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
-import { resetSortedArticles } from '../../stores/zine/articles'
+import { loadShoutsBy, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
-import { LayoutType, loadRecentLayoutShouts, useLayoutsStore } from '../../stores/zine/layouts'
+import { LayoutType, useLayoutsStore } from '../../stores/zine/layouts'
 import { Loading } from '../Loading'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import type { Shout } from '../../graphql/types.gen'
@@ -28,14 +28,13 @@ export const LayoutShoutsPage = (props: PageProps) => {
     return page.params.layout as LayoutType
   })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const { sortedLayoutShouts } = useLayoutsStore(layout(), props.shouts)
+  const { sortedLayoutShouts, loadLayoutShoutsBy } = useLayoutsStore(layout(), props.shouts)
   const sortedArticles = createMemo<Shout[]>(() => sortedLayoutShouts().get(layout()) || [])
   const loadMoreLayout = async (kind: LayoutType) => {
     saveScrollPosition()
-
-    const { hasMore } = await loadRecentLayoutShouts({
-      layout: kind,
-      amount: LOAD_MORE_PAGE_SIZE,
+    const { hasMore } = await loadLayoutShoutsBy({
+      by: { layout: kind },
+      limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })
     setIsLoadMoreButtonVisible(hasMore)
@@ -63,7 +62,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
 
   onMount(async () => {
     if (!isLoaded()) {
-      await loadRecentLayoutShouts({ layout: layout(), amount: PRERENDERED_ARTICLES_COUNT, offset: 0 })
+      await loadShoutsBy({ by: { layout: layout() }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
     }
   })
 

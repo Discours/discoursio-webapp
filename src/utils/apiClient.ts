@@ -210,6 +210,14 @@ export const apiClient = {
     console.debug('[api-client] [api] create reaction mutation called')
     return response.data.createReaction
   },
+
+  // CUDL
+
+  createChat: async ({ title, members }) => {
+    return await privateGraphQLClient
+      .mutation(createChatQuery, { title: title, members: members })
+      .toPromise()
+  },
   updateReaction: async ({ reaction }) => {
     const response = await privateGraphQLClient.mutation(reactionUpdate, { reaction }).toPromise()
 
@@ -220,16 +228,9 @@ export const apiClient = {
 
     return response.data.deleteReaction
   },
-  createChat: async ({ title, members }) => {
-    return await privateGraphQLClient
-      .mutation(createChatQuery, { title: title, members: members })
-      .toPromise()
-  },
 
-  getChats: async (payload = {}) => {
-    const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
-    return resp.data.myChats
-  },
+  // LOAD BY
+
   loadAuthorsBy: async ({ by, limit = 50, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, { by, limit, offset }).toPromise()
     console.debug(resp)
@@ -244,6 +245,14 @@ export const apiClient = {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
     return resp.data.loadReactionsBy
   },
+
+  // inbox
+
+  getChats: async (payload = {}) => {
+    const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
+    return resp.data.myChats
+  },
+
   getChatMessages: async ({
     chat,
     amount = 50,

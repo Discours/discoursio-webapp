@@ -1,13 +1,14 @@
 import { createEffect, createSignal, Show, Suspense } from 'solid-js'
 import { FullArticle } from '../Article/FullArticle'
 import { t } from '../../utils/intl'
-import type { Shout } from '../../graphql/types.gen'
-import { loadArticleReactions, useReactionsStore } from '../../stores/zine/reactions'
+import type { Shout, Reaction } from '../../graphql/types.gen'
+import { useReactionsStore } from '../../stores/zine/reactions'
 
 import '../../styles/Article.scss'
 
 interface ArticlePageProps {
   article: Shout
+  reactions?: Reaction[]
 }
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
@@ -15,13 +16,20 @@ const ARTICLE_COMMENTS_PAGE_SIZE = 50
 export const ArticleView = (props: ArticlePageProps) => {
   const [getCommentsPage] = createSignal(1)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
-  const reactionslist = useReactionsStore()
+  const {
+    reactionsByShout,
+    sortedReactions,
+    createReaction,
+    updateReaction,
+    deleteReaction,
+    loadReactionsBy
+  } = useReactionsStore({ reactions: props.reactions })
 
   createEffect(async () => {
     try {
       setIsCommentsLoading(true)
-      await loadArticleReactions({
-        articleSlug: props.article.slug,
+      await loadReactionsBy({
+        by: { shout: props.article.slug },
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
         offset: getCommentsPage() * ARTICLE_COMMENTS_PAGE_SIZE
       })
@@ -36,7 +44,7 @@ export const ArticleView = (props: ArticlePageProps) => {
         <Suspense>
           <FullArticle
             article={props.article}
-            reactions={reactionslist().filter((r) => r.shout.slug === props.article.slug)}
+            reactions={reactionsByShout()[props.article.slug]}
             isCommentsLoading={getIsCommentsLoading()}
           />
         </Suspense>

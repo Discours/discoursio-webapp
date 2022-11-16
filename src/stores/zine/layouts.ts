@@ -1,8 +1,7 @@
-import type { Shout } from '../../graphql/types.gen'
+import type { Shout, ShoutsBy } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { useArticlesStore } from './articles'
 import { createSignal } from 'solid-js'
-import { byCreated } from '../../utils/sortby'
 
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
@@ -23,66 +22,29 @@ export const resetSortedLayoutShouts = () => {
   setSortedLayoutShouts(new Map())
 }
 
-export const loadRecentLayoutShouts = async ({
-  layout,
-  amount,
-  offset
-}: {
-  layout: LayoutType
-  amount: number
-  offset?: number
-}): Promise<{ hasMore: boolean }> => {
-  const layoutShouts: Shout[] = await apiClient.loadShoutsBy({ by: { layout }, amount, offset })
-  const hasMore = layoutShouts.length < amount
-  if (hasMore) layoutShouts.splice(-1)
-  const shouts = layoutShouts.sort(byCreated)
-  const { articlesByLayout } = useArticlesStore({ shouts })
-  addLayoutShouts(layout, articlesByLayout()[layout])
-  return { hasMore }
-}
-
-export const loadTopMonthLayoutShouts = async (
-  layout: LayoutType,
-  amount: number,
-  offset: number
-): Promise<{ hasMore: boolean }> => {
-  const shouts = await apiClient.loadShoutsBy({ by: { layout, stat: 'rating', days: 30 } })
-  const hasMore = shouts.length < amount
-  if (hasMore) shouts.splice(-1)
-  addLayoutShouts(layout, shouts)
-  return { hasMore }
-}
-
-export const loadTopLayoutShouts = async (
-  layout: LayoutType,
-  amount,
-  offset
-): Promise<{ hasMore: boolean }> => {
-  const shouts = await apiClient.loadShoutsBy({ by: { layout, stat: 'rating' } })
-  const hasMore = shouts.length < amount
-  if (hasMore) shouts.splice(-1)
-  addLayoutShouts(layout, shouts)
-  return { hasMore }
-}
-
-export const loadShoutsSearch = async ({
-  layout,
-  query,
+export const loadLayoutShoutsBy = async ({
+  by,
   limit,
   offset
 }: {
-  layout: LayoutType
-  query: string
+  by: ShoutsBy
   limit?: number
   offset?: number
-}): Promise<void> => {
-  const by = {
-    layout: layout,
-    query: query
+}): Promise<{ hasMore: boolean }> => {
+  const newLayoutShouts = await apiClient.loadShoutsBy({
+    by,
+    limit: limit + 1,
+    offset
+  })
+
+  const hasMore = newLayoutShouts.length === limit + 1
+
+  if (hasMore) {
+    newLayoutShouts.splice(-1)
   }
-  const amount = limit
-  const newLayoutShouts = await apiClient.loadShoutsBy({ by, amount, offset })
-  addLayoutShouts(layout, newLayoutShouts)
+  addLayoutShouts(by.layout as LayoutType, newLayoutShouts)
+
+  return { hasMore }
 }
 
 export const useLayoutsStore = (layout: LayoutType, initialData: Shout[]) => {
@@ -91,6 +53,6 @@ export const useLayoutsStore = (layout: LayoutType, initialData: Shout[]) => {
   return {
     addLayoutShouts,
     sortedLayoutShouts,
-    loadShoutsSearch
+    loadLayoutShoutsBy
   }
 }

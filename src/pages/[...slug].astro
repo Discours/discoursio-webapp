@@ -9,7 +9,7 @@ if (slug.endsWith('.map')) {
   return Astro.redirect('/404')
 }
 
-const article = await apiClient.loadShoutsBy({ by: { slug }, amount: 1})
+const article = await apiClient.loadShoutsBy({ by: { slug }, limit: 1})
 if (!article) {
   return Astro.redirect('/404')
 }

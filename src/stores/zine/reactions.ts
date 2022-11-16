@@ -1,63 +1,52 @@
-import { atom, WritableAtom } from 'nanostores'
-import type { Reaction } from '../../graphql/types.gen'
-import { useStore } from '@nanostores/solid'
+import type { Reaction, Shout } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
-import { reduceBy } from '../../utils/reduce'
-// import { roomConnect } from '../../utils/p2p'
-// FIXME
+import { createSignal } from 'solid-js'
+// TODO: import { roomConnect } from '../../utils/p2p'
 
 export const REACTIONS_AMOUNT_PER_PAGE = 100
+const [sortedReactions, setSortedReactions] = createSignal<Reaction[]>([])
+const [reactionsByShout, setReactionsByShout] = createSignal<{ [articleSlug: string]: Reaction[] }>({})
 
-let reactionsOrdered: WritableAtom<Reaction[]>
-export const reactions = atom<{ [slug: string]: Reaction[] }>({}) // by shout
-
-export const useReactionsStore = (initial?: Reaction[]) => {
-  if (!reactionsOrdered) {
-    reactionsOrdered = atom(initial || [])
-    reactionsOrdered.listen((rrr: Reaction[]) => reactions.set(reduceBy(rrr, 'shout')))
-  }
-  return useStore(reactionsOrdered)
-}
-
-export const loadArticleReactions = async ({
-  articleSlug,
+export const loadReactionsBy = async ({
+  by,
   limit = REACTIONS_AMOUNT_PER_PAGE,
   offset = 0
 }: {
-  articleSlug: string
+  by
   limit?: number
   offset?: number
-}): Promise<void> => {
-  const data = await apiClient.loadReactionsBy({ by: { shout: articleSlug }, amount: limit, offset })
+}): Promise<{ hasMore: boolean }> => {
+  const data = await apiClient.loadReactionsBy({ by, limit: limit + 1, offset })
+  const hasMore = data.length === limit + 1
+  if (hasMore) data.splice(-1)
   // TODO: const [data, provider] = roomConnect(articleSlug, username, "reactions")
-  reactionsOrdered.set(data)
+  setSortedReactions(data)
+  return { hasMore }
+}
+export const createReaction = async (reaction: Reaction) => {
+  const { reaction: r } = await apiClient.createReaction({ reaction })
+  return r
+}
+export const updateReaction = async (reaction: Reaction) => {
+  const { reaction: r } = await apiClient.updateReaction({ reaction })
+  return r
 }
 
-export const loadReactions = async ({
-  shoutSlugs,
-  limit = 100,
-  offset = 0
-}: {
-  shoutSlugs: string[]
-  limit: number
-  offset: number
-}): Promise<void> => {
-  const reactionsForShouts = await apiClient.loadReactionsBy({
-    by: { shouts: shoutSlugs },
-    amount: limit,
-    offset
-  })
-  reactionsOrdered.set(reactionsForShouts)
+export const deleteReaction = async (reactionId: number) => {
+  const resp = await apiClient.destroyReaction({ id: reactionId })
+  return resp
 }
+export const useReactionsStore = (initialState: { reactions?: Reaction[] }) => {
+  if (initialState.reactions) {
+    setSortedReactions([...initialState.reactions])
+  }
 
-export const createReaction = async (reaction: Reaction) =>
-  // FIXME
-  reactionsOrdered.set(await apiClient.createReaction({ reaction }))
-
-export const updateReaction = async (reaction: Reaction) =>
-  // FIXME
-  reactionsOrdered.set(await apiClient.updateReaction({ reaction }))
-
-export const deleteReaction = async (reactionId: number) =>
-  // FIXME
-  reactionsOrdered.set(await apiClient.destroyReaction({ id: reactionId }))
+  return {
+    reactionsByShout,
+    sortedReactions,
+    createReaction,
+    updateReaction,
+    deleteReaction,
+    loadReactionsBy
+  }
+}

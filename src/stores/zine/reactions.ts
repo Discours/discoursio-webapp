@@ -34,6 +34,7 @@ export const updateReaction = async (reaction: Reaction) => {
 
 export const deleteReaction = async (reactionId: number) => {
   const resp = await apiClient.destroyReaction({ id: reactionId })
+  console.debug(resp)
   return resp
 }
 export const useReactionsStore = (initialState: { reactions?: Reaction[] }) => {

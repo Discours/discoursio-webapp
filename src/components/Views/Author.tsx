@@ -18,7 +18,7 @@ type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  // FIXME author topics fro server
+  // FIXME author topics from server
   // topics: Topic[]
 }
 

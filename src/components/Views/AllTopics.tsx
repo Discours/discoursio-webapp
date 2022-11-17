@@ -3,7 +3,7 @@ import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
-import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
+import { useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
@@ -69,14 +69,10 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
               <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                 <li classList={{ selected: searchParams().by === 'shouts' || !searchParams().by }}>
-                  <a href="/topics?by=shouts" onClick={handleClientRouteLinkClick}>
-                    {t('By shouts')}
-                  </a>
+                  <a href="/topics?by=shouts">{t('By shouts')}</a>
                 </li>
                 <li classList={{ selected: searchParams().by === 'authors' }}>
-                  <a href="/topics?by=authors" onClick={handleClientRouteLinkClick}>
-                    {t('By authors')}
-                  </a>
+                  <a href="/topics?by=authors">{t('By authors')}</a>
                 </li>
                 <li classList={{ selected: searchParams().by === 'title' }}>
                   <a

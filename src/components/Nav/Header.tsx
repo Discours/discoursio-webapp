@@ -4,7 +4,7 @@ import { Modal } from './Modal'
 import { AuthModal } from './AuthModal'
 import { t } from '../../utils/intl'
 import { useModalStore } from '../../stores/ui'
-import { handleClientRouteLinkClick, router, Routes, useRouter } from '../../stores/router'
+import { router, Routes, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -91,7 +91,7 @@ export const Header = (props: Props) => {
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
         <nav class={clsx(styles.headerInner, 'row')} classList={{ fixed: fixed() }}>
           <div class={clsx(styles.mainLogo, 'col-auto')}>
-            <a href={getPagePath(router, 'home')} onClick={handleClientRouteLinkClick}>
+            <a href={getPagePath(router, 'home')}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
@@ -107,9 +107,7 @@ export const Header = (props: Props) => {
               <For each={resources}>
                 {(r) => (
                   <li classList={{ [styles.selected]: r.route === page().route }}>
-                    <a href={getPagePath(router, r.route, null)} onClick={handleClientRouteLinkClick}>
-                      {r.name}
-                    </a>
+                    <a href={getPagePath(router, r.route, null)}>{r.name}</a>
                   </li>
                 )}
               </For>

@@ -269,7 +269,7 @@ export const TermsOfUsePage = () => {
               <a href="mailto:welcome@discours.io" target="_blank">
                 welcome@discours.io
               </a>{' '}
-              или через форму <a href="/feedback-idea">&laquo;предложить идею&raquo;</a>.
+              или через форму <a href="/connect">&laquo;предложить идею&raquo;</a>.
             </p>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
-import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
+import { useRouter } from '../../stores/router'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
@@ -70,19 +70,13 @@ export const AllAuthorsView = (props: Props) => {
 
               <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                 <li classList={{ selected: searchParams().by === 'shouts' }}>
-                  <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
-                    {t('By shouts')}
-                  </a>
+                  <a href="/authors?by=shouts">{t('By shouts')}</a>
                 </li>
                 <li classList={{ selected: searchParams().by === 'rating' }}>
-                  <a href="/authors?by=rating" onClick={handleClientRouteLinkClick}>
-                    {t('By rating')}
-                  </a>
+                  <a href="/authors?by=rating">{t('By rating')}</a>
                 </li>
                 <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
-                  <a href="/authors" onClick={handleClientRouteLinkClick}>
-                    {t('By alphabet')}
-                  </a>
+                  <a href="/authors">{t('By alphabet')}</a>
                 </li>
                 <li class="view-switcher__search">
                   <a href="/authors/search">

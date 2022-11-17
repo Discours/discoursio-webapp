@@ -1,6 +1,6 @@
 ---
 import { Root } from '../components/Root'
-import Zine from '../layouts/zine.astro'
+import Prerendered from '../main.astro'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
 
@@ -9,7 +9,7 @@ if (slug.endsWith('.map')) {
   return Astro.redirect('/404')
 }
 
-const article = await apiClient.getArticle({ slug })
+const article = await apiClient.loadShoutsBy({ by: { slug }, limit: 1})
 if (!article) {
   return Astro.redirect('/404')
 }
@@ -20,6 +20,6 @@ initRouter(pathname, search)
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
-<Zine>
-  <Root article={article} client:load />
-</Zine>
+<Prerendered>
+  <Root article={article.at(0)} client:load />
+</Prerendered>

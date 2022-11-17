@@ -6,7 +6,7 @@ import '../../styles/app.scss'
 import { Show } from 'solid-js'
 import { clsx } from 'clsx'
 
-type MainLayoutProps = {
+type PageWrapProps = {
   headerTitle?: string
   children: JSX.Element
   isHeaderFixed?: boolean
@@ -14,7 +14,7 @@ type MainLayoutProps = {
   class?: string
 }
 
-export const MainLayout = (props: MainLayoutProps) => {
+export const PageWrap = (props: PageWrapProps) => {
   const isHeaderFixed = props.isHeaderFixed !== undefined ? props.isHeaderFixed : true
 
   return (

@@ -74,6 +74,8 @@ module.exports = {
     'unicorn/numeric-separators-style': 'off',
     'unicorn/prefer-node-protocol': 'off',
 
+    'promise/always-return': 'off',
+
     eqeqeq: 'error',
     'no-param-reassign': 'error',
     'no-nested-ternary': 'error',

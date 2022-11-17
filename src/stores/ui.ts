@@ -1,10 +1,8 @@
-//import { persistentAtom } from '@nanostores/persistent'
 import { createSignal } from 'solid-js'
 import { useRouter } from './router'
 import type { AuthModalSearchParams, ConfirmEmailSearchParams } from '../components/Nav/AuthModal/types'
 import type { RootSearchParams } from '../components/types'
 
-//export const locale = persistentAtom<string>('locale', 'ru')
 export const [locale, setLocale] = createSignal('ru')
 export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate'
 type WarnKind = 'error' | 'warn' | 'info'

@@ -1,14 +1,18 @@
 ---
-import Zine from '../../layouts/zine.astro'
+import Prerendered from '../../main.astro'
 import { Root } from '../../components/Root'
 import { initRouter } from '../../stores/router'
 
 const { pathname, search } = Astro.url
 initRouter(pathname, search)
 
+Astro.response.headers.set(
+  "Content-Security-Policy",
+  "frame-src 'self' https://*.discours.io https://widget.cloudpayments.ru; frame-ancestors 'self' https://*.discours.io https://widget.cloudpayments.ru;"
+)
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 ---
 
-<Zine>
+<Prerendered>
   <Root client:load />
-</Zine>
+</Prerendered>

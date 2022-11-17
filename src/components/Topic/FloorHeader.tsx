@@ -1,5 +1,5 @@
 import type { Topic } from '../../graphql/types.gen'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import './FloorHeader.scss'
 import { t } from '../../utils/intl'
 

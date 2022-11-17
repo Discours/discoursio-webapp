@@ -1,8 +1,8 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { PageWrap } from '../_shared/PageWrap'
 
 export const ConnectPage = () => {
   return (
-    <MainLayout>
+    <PageWrap>
       <article class="container container--static-page">
         <div class="row">
           <div class="col-sm-10 col-md-8 col-lg-7 col-xl-6 shift-content">
@@ -39,7 +39,7 @@ export const ConnectPage = () => {
           </div>
         </div>
       </article>
-    </MainLayout>
+    </PageWrap>
   )
 }
 

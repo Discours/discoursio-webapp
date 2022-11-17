@@ -4,6 +4,7 @@ import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
 import { useArticlesStore, loadShoutsBy } from '../../stores/zine/articles'
+import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { useRouter } from '../../stores/router'
 
 type SearchPageSearchParams = {
@@ -15,31 +16,49 @@ type Props = {
   results: Shout[]
 }
 
+const LOAD_MORE_PAGE_SIZE = 50
+
 export const SearchView = (props: Props) => {
   const { sortedArticles } = useArticlesStore({ shouts: props.results })
-  const [getQuery, setQuery] = createSignal(props.query)
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [query, setQuery] = createSignal(props.query)
+  const [offset, setOffset] = createSignal(0)
 
   const { searchParams, handleClientRouteLinkClick } = useRouter<SearchPageSearchParams>()
-
-  const handleQueryChange = (ev) => {
-    setQuery(ev.target.value)
+  let searchEl: HTMLInputElement
+  const handleQueryChange = (_ev) => {
+    setQuery(searchEl.value)
   }
 
-  const handleSubmit = (_ev) => {
-    // TODO page
-    // TODO sort
-    loadShoutsBy({ by: { title: getQuery(), body: getQuery() }, limit: 50 })
+  const loadMore = async () => {
+    saveScrollPosition()
+    const { hasMore } = await loadShoutsBy({
+      by: {
+        title: query(),
+        body: query()
+      },
+      offset: offset(),
+      limit: LOAD_MORE_PAGE_SIZE
+    })
+    setIsLoadMoreButtonVisible(hasMore)
+    setOffset(offset() + LOAD_MORE_PAGE_SIZE)
+    restoreScrollPosition()
   }
 
   return (
     <div class="search-page wide-container">
       <form action="/search" class="search-form row">
         <div class="col-sm-9">
-          {/*FIXME t*/}
-          <input type="search" name="q" onChange={handleQueryChange} placeholder="Введите текст..." />
+          <input
+            type="search"
+            name="q"
+            ref={searchEl}
+            onInput={handleQueryChange}
+            placeholder={t('Enter text') + '...'}
+          />
         </div>
         <div class="col-sm-3">
-          <button class="button" type="submit" onClick={handleSubmit}>
+          <button class="button" type="submit" onClick={loadMore}>
             {t('Search')}
           </button>
         </div>
@@ -51,14 +70,18 @@ export const SearchView = (props: Props) => {
             selected: searchParams().by === 'relevance'
           }}
         >
-          <a href="?by=relevance">{t('By relevance')}</a>
+          <a href="?by=relevance" onClick={handleClientRouteLinkClick}>
+            {t('By relevance')}
+          </a>
         </li>
         <li
           classList={{
             selected: searchParams().by === 'rating'
           }}
         >
-          <a href="?by=rating">{t('Top rated')}</a>
+          <a href="?by=rating" onClick={handleClientRouteLinkClick}>
+            {t('Top rated')}
+          </a>
         </li>
       </ul>
 
@@ -83,9 +106,13 @@ export const SearchView = (props: Props) => {
           </div>
         </div>
 
-        <h3>{t('Topics')}</h3>
-
-        <h3>{t('Authors')}</h3>
+        <Show when={isLoadMoreButtonVisible()}>
+          <p class="load-more-container">
+            <button class="button" onClick={loadMore}>
+              {t('Load more')}
+            </button>
+          </p>
+        </Show>
       </Show>
     </div>
   )

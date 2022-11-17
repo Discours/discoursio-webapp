@@ -69,14 +69,7 @@ export const HomeView = (props: HomeProps) => {
 
     return (
       <Show when={Boolean(selectedRandomLayout)}>
-        <Group
-          articles={articlesByLayout()[selectedRandomLayout]}
-          header={
-            <div class="layout-icon">
-              <Icon name={selectedRandomLayout} />
-            </div>
-          }
-        />
+        <Group articles={articlesByLayout()[selectedRandomLayout]} header={''} />
       </Show>
     )
   })

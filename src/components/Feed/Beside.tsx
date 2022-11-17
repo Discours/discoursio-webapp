@@ -4,10 +4,11 @@ import { For, Show } from 'solid-js'
 import { ArticleCard } from './Card'
 import { AuthorCard } from '../Author/Card'
 import { TopicCard } from '../Topic/Card'
-import style from './Beside.module.scss'
+import styles from './Beside.module.scss'
 import type { Author, Shout, Topic, User } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
+import { clsx } from 'clsx'
 
 interface BesideProps {
   title?: string
@@ -29,21 +30,28 @@ export const Beside = (props: BesideProps) => {
           <Show when={!!props.values}>
             <div class="col-md-4">
               <Show when={!!props.title}>
-                <div class={style.besideColumnTitle}>
+                <div class={styles.besideColumnTitle}>
                   <h4>{props.title}</h4>
 
                   <Show when={props.wrapper === 'author'}>
                     <a href="/user/list">
                       {t('All authors')}
-                      <Icon name="arrow-right" />
+                      <Icon name="arrow-right" class={styles.icon} />
+                    </a>
+                  </Show>
+
+                  <Show when={props.wrapper === 'topic'}>
+                    <a href="/topics">
+                      {t('All topics')}
+                      <Icon name="arrow-right" class={styles.icon} />
                     </a>
                   </Show>
                 </div>
               </Show>
-              <ul class={style.besideColumn}>
+              <ul class={styles.besideColumn}>
                 <For each={[...props.values]}>
                   {(value: Partial<Shout | User | Topic>) => (
-                    <li classList={{ [style.top]: props.wrapper.startsWith('top-') }}>
+                    <li classList={{ [styles.top]: props.wrapper.startsWith('top-') }}>
                       <Show when={props.wrapper === 'topic'}>
                         <TopicCard
                           topic={value as Topic}
@@ -51,10 +59,16 @@ export const Beside = (props: BesideProps) => {
                           shortDescription={props.topicShortDescription}
                           isTopicInRow={props.isTopicInRow}
                           iconButton={props.iconButton}
+                          showPublications={true}
                         />
                       </Show>
                       <Show when={props.wrapper === 'author'}>
-                        <AuthorCard author={value as Author} compact={true} hasLink={true} />
+                        <AuthorCard
+                          author={value as Author}
+                          compact={true}
+                          hasLink={true}
+                          truncateBio={true}
+                        />
                       </Show>
                       <Show when={props.wrapper === 'article' && value?.slug}>
                         <ArticleCard article={value as Shout} settings={{ noimage: true }} />
@@ -71,8 +85,8 @@ export const Beside = (props: BesideProps) => {
               </ul>
             </div>
           </Show>
-          <div class="col-md-8">
-            <ArticleCard article={props.beside} settings={{ isBigTitle: true }} />
+          <div class={clsx('col-md-8', styles.shoutCardContainer)}>
+            <ArticleCard article={props.beside} settings={{ isBigTitle: true, isBeside: true }} />
           </div>
         </div>
       </div>

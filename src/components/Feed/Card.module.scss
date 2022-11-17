@@ -675,3 +675,19 @@
     @include font-size(2.4rem);
   }
 }
+
+.shoutCardBeside {
+  &,
+  .shoutCardCoverContainer {
+    flex: 1;
+  }
+
+  .shoutCardCover {
+    height: 100%;
+    padding: 0;
+  }
+
+  .shoutCardContent {
+    padding-top: 1.6rem;
+  }
+}

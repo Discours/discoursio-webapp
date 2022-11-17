@@ -39,7 +39,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
     return sortedTopics().reduce((acc, topic) => {
       let letter = topic.title[0].toUpperCase()
-      if (!/[а-яА-Я]/i.test(letter) && locale() == 'ru') letter = '#'
+      if (!/[а-яА-Я]/i.test(letter) && locale() === 'ru') letter = '#'
       if (!acc[letter]) acc[letter] = []
       acc[letter].push(topic)
       return acc

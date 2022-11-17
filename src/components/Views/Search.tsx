@@ -4,7 +4,7 @@ import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
 import { useArticlesStore, loadShoutsBy } from '../../stores/zine/articles'
-import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
+import { useRouter } from '../../stores/router'
 
 type SearchPageSearchParams = {
   by: '' | 'relevance' | 'rating'
@@ -19,7 +19,7 @@ export const SearchView = (props: Props) => {
   const { sortedArticles } = useArticlesStore({ shouts: props.results })
   const [getQuery, setQuery] = createSignal(props.query)
 
-  const { searchParams } = useRouter<SearchPageSearchParams>()
+  const { searchParams, handleClientRouteLinkClick } = useRouter<SearchPageSearchParams>()
 
   const handleQueryChange = (ev) => {
     setQuery(ev.target.value)

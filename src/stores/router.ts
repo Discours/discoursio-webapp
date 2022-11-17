@@ -129,6 +129,7 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   return {
     page,
     searchParams,
-    changeSearchParam
+    changeSearchParam,
+    handleClientRouteLinkClick
   }
 }

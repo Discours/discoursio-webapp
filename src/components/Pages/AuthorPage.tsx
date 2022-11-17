@@ -22,10 +22,6 @@ export const AuthorPage = (props: PageProps) => {
     return page.params.slug
   })
 
-  const [isLoaded, setIsLoaded] = createSignal(
-    Boolean(props.authorArticles) && props?.author?.slug === slug()
-  )
-
   onMount(async () => {
     if (isLoaded()) {
       return

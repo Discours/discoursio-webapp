@@ -8,6 +8,7 @@ import { TopicCard } from '../Topic/Card'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
+import { locale } from '../../stores/ui'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -37,13 +38,10 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
     return sortedTopics().reduce((acc, topic) => {
-      const letter = topic.title[0].toUpperCase()
-      if (!acc[letter]) {
-        acc[letter] = []
-      }
-
+      let letter = topic.title[0].toUpperCase()
+      if (!/[а-яА-Я]/i.test(letter) && locale() == 'ru') letter = '#'
+      if (!acc[letter]) acc[letter] = []
       acc[letter].push(topic)
-
       return acc
     }, {} as { [letter: string]: Topic[] })
   })

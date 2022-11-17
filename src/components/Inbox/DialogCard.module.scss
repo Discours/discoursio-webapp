@@ -1,0 +1,70 @@
+.DialogCard {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 14px;
+  padding: 12px;
+  transition: background 0.3s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background: #f7f7f7;
+  }
+
+  .avatar {
+    flex-basis: 40px;
+    margin-right: 12px;
+  }
+
+  .row {
+    flex-basis: 0;
+    flex-grow: 1;
+    min-width: 0;
+
+    .name,
+    .message {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .name {
+      color: #141414;
+      font-weight: 500;
+    }
+
+    .message {
+      color: #9fa1a7;
+    }
+  }
+
+  .activity {
+    font-size: 12px;
+    margin-left: 12px;
+
+    .time {
+      text-align: right;
+      color: #ccc;
+    }
+
+    .counter {
+      display: flex;
+      margin-left: auto;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      padding: 0 8px;
+      background: #d00820;
+      font-weight: 400;
+      color: #fff;
+      width: 22px;
+      height: 22px;
+      line-height: 6px;
+
+      > span {
+        margin-bottom: -2px;
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { createMemo, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
 import { locale } from '../../stores/ui'
 import { clsx } from 'clsx'
@@ -28,6 +28,7 @@ interface ArticleCardProps {
     withBorder?: boolean
     isCompact?: boolean
     isSingle?: boolean
+    isBeside?: boolean
   }
   article: Shout
 }
@@ -81,7 +82,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardVertical]: props.settings?.isVertical,
         [styles.shoutCardWithBorder]: props.settings?.withBorder,
         [styles.shoutCardCompact]: props.settings?.isCompact,
-        [styles.shoutCardSingle]: props.settings?.isSingle
+        [styles.shoutCardSingle]: props.settings?.isSingle,
+        [styles.shoutCardBeside]: props.settings?.isBeside
       }}
     >
       <Show when={!props.settings?.noimage && cover}>
@@ -95,7 +97,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       <div class={styles.shoutCardContent}>
         <Show when={layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)}>
           <div class={styles.shoutCardType}>
-            <a href={`/topic/${mainTopic.slug}`}>
+            <a href={`/expo/${layout}`}>
               <Icon name={layout} class={styles.icon} />
             </a>
           </div>

@@ -1,13 +1,13 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsForAuthorsQuery($slugs: [String]!, $limit: Int!, $offset: Int!) {
-    shoutsByAuthors(slugs: $slugs, limit: $limit, offset: $offset) {
+  query LoadShoutsByQuery($by: ShoutsBy, $limit: Int!, $offset: Int!) {
+    loadShoutsBy(by: $by, limit: $limit, offset: $offset) {
       _id: slug
       title
       subtitle
-      layout
       slug
+      layout
       cover
       # community
       mainTopic
@@ -26,8 +26,6 @@ export default gql`
         _id: slug
         name
         slug
-        bio
-        links
         userpic
       }
       createdAt
@@ -36,6 +34,7 @@ export default gql`
         _id: viewed
         viewed
         reacted
+        rating
       }
     }
   }

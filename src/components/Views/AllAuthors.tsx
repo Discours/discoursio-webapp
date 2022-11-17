@@ -1,7 +1,7 @@
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { useRouter } from '../../stores/router'
@@ -103,6 +103,7 @@ export const AllAuthorsView = (props: Props) => {
                           subscribed={subscribed(author.slug)}
                           noSocialButtons={true}
                           isAuthorsList={true}
+                          truncateBio={true}
                         />
                       )}
                     </For>
@@ -112,7 +113,7 @@ export const AllAuthorsView = (props: Props) => {
                   <div class="row">
                     <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
                       <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                        {t('More')}
+                        {t('Load more')}
                       </button>
                     </div>
                   </div>

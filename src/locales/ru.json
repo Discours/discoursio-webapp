@@ -4,6 +4,7 @@
   "All": "Все",
   "All posts": "Все публикации",
   "All topics": "Все темы",
+  "All authors": "Все авторы",
   "Authors": "Авторы",
   "Back to mainpage": "Вернуться на главную",
   "Become an author": "Стать автором",
@@ -170,6 +171,10 @@
   "Link sent, check your email": "Ссылка отправлена, проверьте почту",
   "Create post": "Создать публикацию",
   "Just start typing...": "Просто начните печатать...",
+  "Artworks": "Артворки",
+  "Audio": "Аудио",
+  "Video": "Видео",
+  "Literature": "Литература",
   "We can't find you, check email or": "Не можем вас найти, проверьте адрес электронной почты или",
   "register": "зарегистрируйтесь"
 }

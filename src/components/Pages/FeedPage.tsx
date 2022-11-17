@@ -1,4 +1,4 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { PageWrap } from '../_shared/PageWrap'
 import { FeedView } from '../Views/Feed'
 import { onCleanup } from 'solid-js'
 import { resetSortedArticles } from '../../stores/zine/articles'
@@ -7,9 +7,9 @@ export const FeedPage = () => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainLayout>
+    <PageWrap>
       <FeedView />
-    </MainLayout>
+    </PageWrap>
   )
 }
 

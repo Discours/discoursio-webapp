@@ -1,13 +1,12 @@
 import { capitalize } from '../../utils'
 import './Full.scss'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import ArticleComment from './Comment'
 import { AuthorCard } from '../Author/Card'
 import { createMemo, For, onMount, Show } from 'solid-js'
 import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
-import { incrementView } from '../../stores/zine/articles'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
 import { useSession } from '../../context/session'
@@ -39,11 +38,6 @@ const formatDate = (date: Date) => {
 
 export const FullArticle = (props: ArticleProps) => {
   const { session } = useSession()
-
-  onMount(() => {
-    incrementView({ articleSlug: props.article.slug })
-  })
-
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
   const mainTopic = () =>

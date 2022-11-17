@@ -1,6 +1,6 @@
 import { createSignal, Show } from 'solid-js'
-import { MainLayout } from '../../Layouts/MainLayout'
-import { Icon } from '../../Nav/Icon'
+import { PageWrap } from '../../_shared/PageWrap'
+import { Icon } from '../../_shared/Icon'
 
 // const title = t('Terms of use')
 
@@ -10,7 +10,7 @@ export const TermsOfUsePage = () => {
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
-    <MainLayout>
+    <PageWrap>
       {/*<Meta name="description" content={title} />*/}
       {/*<Meta name="keywords" content={`Discours.io, ${t('Terms of use')}, ${t('Terms of use', 'en')}`} />*/}
       {/*<Meta property="og:title" content={title} />*/}
@@ -274,7 +274,7 @@ export const TermsOfUsePage = () => {
           </div>
         </div>
       </article>
-    </MainLayout>
+    </PageWrap>
   )
 }
 

@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
@@ -109,7 +109,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                   <div class="row">
                     <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
                       <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                        {t('More')}
+                        {t('Load more')}
                       </button>
                     </div>
                   </div>

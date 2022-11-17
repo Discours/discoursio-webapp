@@ -1,0 +1,21 @@
+---
+import { Root } from '../../components/Root'
+import Prerendered from '../../main.astro'
+import { apiClient } from '../../utils/apiClient'
+import { initRouter } from '../../stores/router'
+import type { LayoutType } from '../../stores/zine/layouts'
+import { Layout } from '../../components/EditorExample/components/Layout'
+
+const layout = (Astro.params.layout?.toString() || 'article') as LayoutType
+if (!layout || layout.endsWith('.map')) {
+  return Astro.redirect('/404')
+}
+const shouts = await apiClient.loadShoutsBy({ by: { layout } })
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
+---
+
+<Prerendered>
+  <Root shouts={shouts} layout={layout} client:load />
+</Prerendered>
+

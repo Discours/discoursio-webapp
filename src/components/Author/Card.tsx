@@ -1,6 +1,6 @@
 import type { Author } from '../../graphql/types.gen'
 import Userpic from './Userpic'
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
 import { createMemo, For, Show } from 'solid-js'
 import { translit } from '../../utils/ru2en'
@@ -20,6 +20,7 @@ interface AuthorCardProps {
   isAuthorPage?: boolean
   noSocialButtons?: boolean
   isAuthorsList?: boolean
+  truncateBio?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -63,7 +64,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
           </Show>
 
           <Show when={!props.hideDescription}>
-            <div class={styles.authorAbout} classList={{ 'text-truncate': props.isAuthorsList }}>
+            {props.isAuthorsList}
+            <div class={styles.authorAbout} classList={{ 'text-truncate': props.truncateBio }}>
               {bio()}
             </div>
           </Show>
@@ -86,7 +88,6 @@ export const AuthorCard = (props: AuthorCardProps) => {
                 >
                   <Show when={!props.isAuthorsList}>
                     <Icon name="author-subscribe" class={styles.icon} />
-                    &nbsp;
                   </Show>
                   <span class={styles.buttonLabel}>{t('Follow')}</span>
                 </button>
@@ -103,7 +104,6 @@ export const AuthorCard = (props: AuthorCardProps) => {
               >
                 <Show when={!props.isAuthorsList}>
                   <Icon name="author-unsubscribe" class={styles.icon} />
-                  &nbsp;
                 </Show>
                 <span class={styles.buttonLabel}>{t('Unfollow')}</span>
               </button>

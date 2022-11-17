@@ -1,4 +1,4 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { PageWrap } from '../_shared/PageWrap'
 import { AllTopicsView } from '../Views/AllTopics'
 import type { PageProps } from '../types'
 import { createSignal, onMount, Show } from 'solid-js'
@@ -18,11 +18,11 @@ export const AllTopicsPage = (props: PageProps) => {
   })
 
   return (
-    <MainLayout>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
         <AllTopicsView topics={props.allTopics} />
       </Show>
-    </MainLayout>
+    </PageWrap>
   )
 }
 

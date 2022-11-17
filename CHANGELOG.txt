@@ -1,5 +1,18 @@
+[0.6.1]
+[+] auth ver. 0.9
+[+] load-by interfaces for shouts, authors and messages
+[+] inbox logix and markup
+[-] old views counting
+
 [0.6.0]
-[+] editor enabled
+[+] hybrid routing ssr/spa
+[+] 'expo' pages
+[-] layout term usage with an exception
+[-] less nanostores
+[+] inbox
+[+] css modules
+[+] draft editor
+[+] solid-driven storages
 
 [0.5.1]
 [+] nanostores-base global store

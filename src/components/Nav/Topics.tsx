@@ -1,6 +1,6 @@
 import { For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { Icon } from './Icon'
+import { Icon } from '../_shared/Icon'
 import './Topics.scss'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'

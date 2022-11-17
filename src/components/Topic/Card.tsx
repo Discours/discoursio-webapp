@@ -21,6 +21,7 @@ interface TopicProps {
   additionalClass?: string
   isTopicInRow?: boolean
   iconButton?: boolean
+  showPublications?: boolean
 }
 
 export const TopicCard = (props: TopicProps) => {
@@ -47,6 +48,7 @@ export const TopicCard = (props: TopicProps) => {
       class={styles.topic}
       classList={{
         row: !props.compact && !props.subscribeButtonBottom,
+        [styles.topicCompact]: props.compact,
         [styles.topicInRow]: props.isTopicInRow
       }}
     >
@@ -75,7 +77,7 @@ export const TopicCard = (props: TopicProps) => {
 
         <Show when={props.topic?.stat}>
           <div class={styles.topicDetails}>
-            <Show when={!props.compact}>
+            <Show when={props.showPublications}>
               <span class={styles.topicDetailsItem} classList={{ compact: props.compact }}>
                 {props.topic.stat?.shouts +
                   ' ' +
@@ -85,6 +87,8 @@ export const TopicCard = (props: TopicProps) => {
                     locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
                   )}
               </span>
+            </Show>
+            <Show when={!props.compact}>
               <span class={styles.topicDetailsItem} classList={{ compact: props.compact }}>
                 {props.topic.stat?.authors +
                   ' ' +
@@ -132,19 +136,30 @@ export const TopicCard = (props: TopicProps) => {
         class={styles.controlContainer}
         classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}
       >
+        {}
         <Show
           when={subscribed()}
           fallback={
-            <button onClick={() => subscribe(true)} class="button--light button--subscribe-topic">
+            <button
+              onClick={() => subscribe(true)}
+              class="button--light button--subscribe-topic"
+              classList={{
+                [styles.buttonCompact]: props.compact
+              }}
+            >
               <Show when={props.iconButton}>+</Show>
-
               <Show when={!props.iconButton}>{t('Follow')}</Show>
             </button>
           }
         >
-          <button onClick={() => subscribe(false)} class="button--light button--subscribe-topic">
+          <button
+            onClick={() => subscribe(false)}
+            class="button--light button--subscribe-topic"
+            classList={{
+              [styles.buttonCompact]: props.compact
+            }}
+          >
             <Show when={props.iconButton}>-</Show>
-
             <Show when={!props.iconButton}>{t('Unfollow')}</Show>
           </button>
         </Show>

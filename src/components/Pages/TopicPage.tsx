@@ -1,13 +1,15 @@
-import { MainLayout } from '../Layouts/MainLayout'
+import { PageWrap } from '../_shared/PageWrap'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../Views/Topic'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { loadTopicArticles, resetSortedArticles } from '../../stores/zine/articles'
+import { loadShoutsBy, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 import { loadTopic } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
 
 export const TopicPage = (props: PageProps) => {
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.topic))
+
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()
 
@@ -20,14 +22,12 @@ export const TopicPage = (props: PageProps) => {
     return page.params.slug
   })
 
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.topicArticles) && props?.topic.slug === slug())
-
   onMount(async () => {
     if (isLoaded()) {
       return
     }
 
-    await loadTopicArticles({ topicSlug: slug(), limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
+    await loadShoutsBy({ by: { topics: [slug()] }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
     await loadTopic({ slug: slug() })
 
     setIsLoaded(true)
@@ -36,11 +36,11 @@ export const TopicPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <MainLayout>
+    <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <TopicView topic={props.topic} topicArticles={props.topicArticles} topicSlug={slug()} />
+        <TopicView topic={props.topic} shouts={props.shouts} topicSlug={slug()} />
       </Show>
-    </MainLayout>
+    </PageWrap>
   )
 }
 

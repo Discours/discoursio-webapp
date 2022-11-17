@@ -1,8 +1,8 @@
-import { persistentMap } from '@nanostores/persistent'
+import { createStorageSignal } from '@solid-primitives/storage'
 import type { Reaction } from '../graphql/types.gen'
-import { atom } from 'nanostores'
 import { createSignal } from 'solid-js'
 
+// TODO: store drafts
 // import type { Draft } from '../components/EditorExample/store/context'
 
 interface Collab {
@@ -13,18 +13,13 @@ interface Collab {
   title?: string
 }
 
-export const drafts = persistentMap<{ [key: string]: string }>(
-  'drafts',
-  {},
-  {
-    encode: JSON.stringify,
-    decode: JSON.parse
-  }
-) // save drafts on device
-
-export const collabs = atom<Collab[]>([]) // save collabs in backend or in p2p network
+export const drafts = createStorageSignal<{ [key: string]: string }>('drafts', {}) // save drafts on device
+export const [collabs, setCollabs] = createSignal<Collab[]>([]) // save collabs in backend or in p2p network
 export const [editorReactions, setReactions] = createSignal<Reaction[]>([])
 /*
+
+TODO: approvals and proposals derived stores
+
 const approvals = computed(
   reactions,
   (rdict) => Object.values(rdict)

@@ -1,4 +1,4 @@
-import { Icon } from '../Nav/Icon'
+import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 
 import styles from '../_shared/Popup.module.scss'

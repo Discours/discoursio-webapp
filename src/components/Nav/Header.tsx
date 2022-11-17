@@ -1,5 +1,5 @@
 import { For, Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
-import { Icon } from './Icon'
+import { Icon } from '../_shared/Icon'
 import { Modal } from './Modal'
 import { AuthModal } from './AuthModal'
 import { t } from '../../utils/intl'

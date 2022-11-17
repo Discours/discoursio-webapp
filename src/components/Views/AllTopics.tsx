@@ -1,14 +1,15 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
-import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { locale } from '../../stores/ui'
+import { translit } from '../../utils/ru2en'
+import styles from '../../styles/AllTopics.module.scss'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -55,66 +56,77 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
+  let searchEl: HTMLInputElement
+  const [searchResults, setSearchResults] = createSignal<Topic[]>([])
+  const searchTopics = (ev) => {
+    /* very stupid search algorithm with no deps */
+    let q = searchEl.value.toLowerCase()
+    if (q.length > 0) {
+      console.debug(q)
+      setSearchResults([])
 
+      if (locale() === 'ru') q = translit(q, 'ru')
+      let ttt: Topic[] = []
+      sortedTopics().forEach((t: Topic) => {
+        let flag = false
+        t.slug.split('-').forEach((w) => {
+          if (w.startsWith(q)) flag = true
+        })
+
+        if (!flag) {
+          let wrds: string = t.title.toLowerCase()
+          if (locale() === 'ru') wrds = translit(wrds, 'ru')
+          wrds.split(' ').forEach((w: string) => {
+            if (w.startsWith(q)) flag = true
+          })
+        }
+
+        if (flag && !ttt.includes(t)) ttt.push(t)
+      })
+
+      setSearchResults((sr: Topic[]) => [...sr, ...ttt])
+      changeSearchParam('by', '')
+    }
+  }
+  createEffect(() => {})
+  const AllTopicsHead = () => (
+    <div class="row">
+      <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
+        <h1>{t('Topics')}</h1>
+        <p>{t('Subscribe what you like to tune your personal feed')}</p>
+
+        <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
+          <li classList={{ selected: searchParams().by === 'shouts' }}>
+            <a href="/topics?by=shouts">{t('By shouts')}</a>
+          </li>
+          <li classList={{ selected: searchParams().by === 'authors' }}>
+            <a href="/topics?by=authors">{t('By authors')}</a>
+          </li>
+          <li classList={{ selected: searchParams().by === 'title' }}>
+            <a href="/topics?by=title">{t('By alphabet')}</a>
+          </li>
+          <li class="search-switcher">
+            <Icon name="search" />
+            <input
+              class="search-input"
+              ref={searchEl}
+              onChange={searchTopics}
+              onInput={searchTopics}
+              onFocus={() => (searchEl.innerHTML = '')}
+              placeholder={t('Search')}
+            />
+          </li>
+        </ul>
+      </div>
+    </div>
+  )
   return (
     <div class={clsx(styles.allTopicsPage, 'container')}>
-      <Show when={sortedTopics().length > 0}>
-        <div class="shift-content">
-          <div class="row">
-            <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
-              <h1>{t('Topics')}</h1>
-              <p>{t('Subscribe what you like to tune your personal feed')}</p>
+      <AllTopicsHead />
 
-              <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
-                <li classList={{ selected: searchParams().by === 'shouts' || !searchParams().by }}>
-                  <a href="/topics?by=shouts">{t('By shouts')}</a>
-                </li>
-                <li classList={{ selected: searchParams().by === 'authors' }}>
-                  <a href="/topics?by=authors">{t('By authors')}</a>
-                </li>
-                <li classList={{ selected: searchParams().by === 'title' }}>
-                  <a
-                    href="/topics?by=title"
-                    onClick={(ev) => {
-                      // just an example
-                      ev.preventDefault()
-                      changeSearchParam('by', 'title')
-                    }}
-                  >
-                    {t('By alphabet')}
-                  </a>
-                </li>
-                <li class="view-switcher__search">
-                  <a href="/topic/search">
-                    <Icon name="search" />
-                    {t('Search topic')}
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <Show
-            when={searchParams().by === 'title'}
-            fallback={() => (
-              <>
-                <For each={sortedTopics().slice(0, limit())}>
-                  {(topic) => (
-                    <TopicCard topic={topic} compact={false} subscribed={subscribed(topic.slug)} />
-                  )}
-                </For>
-                <Show when={sortedTopics().length > limit()}>
-                  <div class="row">
-                    <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
-                      <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                        {t('Load more')}
-                      </button>
-                    </div>
-                  </div>
-                </Show>
-              </>
-            )}
-          >
+      <div class="shift-content">
+        <Show when={sortedTopics().length > 0 || searchResults().length > 0}>
+          <Show when={searchParams().by === 'title'}>
             <For each={sortedKeys()}>
               {(letter) => (
                 <div class={clsx(styles.group, 'group')}>
@@ -140,8 +152,57 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
               )}
             </For>
           </Show>
-        </div>
-      </Show>
+
+          <Show when={searchResults().length > 1}>
+            <For each={searchResults().slice(0, limit())}>
+              {(topic) => (
+                <TopicCard
+                  topic={topic}
+                  compact={false}
+                  subscribed={subscribed(topic.slug)}
+                  showPublications={true}
+                />
+              )}
+            </For>
+          </Show>
+
+          <Show when={searchParams().by === 'authors'}>
+            <For each={sortedTopics().slice(0, limit())}>
+              {(topic) => (
+                <TopicCard
+                  topic={topic}
+                  compact={false}
+                  subscribed={subscribed(topic.slug)}
+                  showPublications={true}
+                />
+              )}
+            </For>
+          </Show>
+
+          <Show when={searchParams().by === 'shouts'}>
+            <For each={sortedTopics().slice(0, limit())}>
+              {(topic) => (
+                <TopicCard
+                  topic={topic}
+                  compact={false}
+                  subscribed={subscribed(topic.slug)}
+                  showPublications={true}
+                />
+              )}
+            </For>
+          </Show>
+
+          <Show when={sortedTopics().length > limit()}>
+            <div class="row">
+              <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
+                <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                  {t('Load more')}
+                </button>
+              </div>
+            </div>
+          </Show>
+        </Show>
+      </div>
     </div>
   )
 }

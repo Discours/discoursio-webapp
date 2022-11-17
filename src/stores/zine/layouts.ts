@@ -1,6 +1,5 @@
 import type { Shout, ShoutsBy } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
-import { useArticlesStore } from './articles'
 import { createSignal } from 'solid-js'
 
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'

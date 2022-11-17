@@ -1,4 +1,4 @@
-import type { Reaction, Shout } from '../../graphql/types.gen'
+import type { Reaction } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { createSignal } from 'solid-js'
 // TODO: import { roomConnect } from '../../utils/p2p'

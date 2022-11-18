@@ -120,15 +120,6 @@ export const TopicCard = (props: TopicProps) => {
               {/*  </span>*/}
               {/*</Show>*/}
             </Show>
-
-            {/*
-              <span class='topic-details__item'>
-                {subscribers().toString() + ' ' + t('follower') + plural(
-                  subscribers(),
-                  locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
-                )}
-              </span>
-*/}
           </div>
         </Show>
       </div>
@@ -136,7 +127,6 @@ export const TopicCard = (props: TopicProps) => {
         class={styles.controlContainer}
         classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}
       >
-        {}
         <Show
           when={subscribed()}
           fallback={

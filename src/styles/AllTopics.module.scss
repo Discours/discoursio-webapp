@@ -27,6 +27,11 @@
 
   .container {
     width: auto;
+
+    .search-input {
+      display: inline-block;
+      width: 100px !important;
+    }
   }
 }
 

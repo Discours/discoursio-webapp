@@ -30,7 +30,11 @@ export const AuthorCard = (props: AuthorCardProps) => {
     () => session()?.news?.authors?.some((u) => u === props.author.slug) || false
   )
   const canFollow = createMemo(() => !props.hideFollow && session()?.user?.slug !== props.author.slug)
-  const bio = () => props.author.bio || t('Our regular contributor')
+  const bio = () => {
+    const d = document.createElement('div')
+    d.innerHTML = props.author.bio
+    return d.textContent || t('Our regular contributor')
+  }
   const name = () => {
     return props.author.name === 'Дискурс' && locale() !== 'ru'
       ? 'Discours'

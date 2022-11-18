@@ -8,6 +8,7 @@ import { useRouter } from '../../stores/router'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
+import { locale } from '../../stores/ui'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -35,18 +36,10 @@ export const AllAuthorsView = (props: Props) => {
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce((acc, author) => {
-      if (!author.name) {
-        // name === null for new users
-        return acc
-      }
-
-      const letter = author.name[0].toUpperCase()
-      if (!acc[letter]) {
-        acc[letter] = []
-      }
-
+      let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
+      if (!/[А-я]/i.test(letter) && locale() === 'ru') letter = '@'
+      if (!acc[letter]) acc[letter] = []
       acc[letter].push(author)
-
       return acc
     }, {} as { [letter: string]: Author[] })
   })

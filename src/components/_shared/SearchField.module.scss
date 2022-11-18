@@ -1,0 +1,22 @@
+.searchField {
+  display: flex;
+  justify-content: flex-end;
+
+  input {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+  }
+
+  label {
+    @include media-breakpoint-up(md) {
+      flex: 1 60%;
+    }
+  }
+
+  .icon {
+    width: 2rem;
+  }
+}

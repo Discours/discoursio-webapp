@@ -52,3 +52,17 @@
     }
   }
 }
+
+.alphabet {
+  display: flex;
+  flex-wrap: wrap;
+  font-weight: 700;
+  margin: 1.5em -3% 0 0;
+
+  @include font-size(1.5rem);
+
+  li {
+    min-width: 1.5em;
+    margin-right: 3%;
+  }
+}

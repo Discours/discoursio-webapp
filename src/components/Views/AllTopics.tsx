@@ -1,6 +1,5 @@
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
@@ -10,6 +9,7 @@ import { useSession } from '../../context/session'
 import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
 import styles from '../../styles/AllTopics.module.scss'
+import { SearchField } from '../_shared/SearchField'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -24,6 +24,42 @@ const PAGE_SIZE = 20
 export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
+  const ALPHABET = [
+    '#',
+    'А',
+    'Б',
+    'В',
+    'Г',
+    'Д',
+    'Е',
+    'Ё',
+    'Ж',
+    'З',
+    'И',
+    'Й',
+    'К',
+    'Л',
+    'М',
+    'Н',
+    'О',
+    'П',
+    'Р',
+    'С',
+    'Т',
+    'У',
+    'Ф',
+    'Х',
+    'Ц',
+    'Ч',
+    'Ш',
+    'Щ',
+    'Ъ',
+    'Ы',
+    'Ь',
+    'Э',
+    'Ю',
+    'Я'
+  ]
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
@@ -56,12 +92,11 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
-  let searchEl: HTMLInputElement
   const [searchResults, setSearchResults] = createSignal<Topic[]>([])
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const searchTopics = () => {
+  const searchTopics = (value) => {
     /* very stupid search algorithm with no deps */
-    let q = searchEl.value.toLowerCase()
+    let q = value.toLowerCase()
     if (q.length > 0) {
       console.debug(q)
       setSearchResults([])
@@ -106,16 +141,8 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           <li classList={{ selected: searchParams().by === 'title' }}>
             <a href="/topics?by=title">{t('By alphabet')}</a>
           </li>
-          <li class="search-switcher">
-            <Icon name="search" />
-            <input
-              class="search-input"
-              ref={searchEl}
-              onChange={searchTopics}
-              onInput={searchTopics}
-              onFocus={() => (searchEl.innerHTML = '')}
-              placeholder={t('Search')}
-            />
+          <li class="view-switcher__search">
+            <SearchField onChange={searchTopics} />
           </li>
         </ul>
       </div>
@@ -123,15 +150,32 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   )
   return (
     <div class={clsx(styles.allTopicsPage, 'container')}>
-      <AllTopicsHead />
-
       <div class="shift-content">
+        <AllTopicsHead />
+
         <Show when={sortedTopics().length > 0 || searchResults().length > 0}>
           <Show when={searchParams().by === 'title'}>
+            <div class="row">
+              <div class="col-lg-10 col-xl-9">
+                <ul class={clsx('nodash', styles.alphabet)}>
+                  <For each={ALPHABET}>
+                    {(letter, index) => (
+                      <li>
+                        <Show when={sortedKeys().includes(letter)}>
+                          <a href={`#letter-${index()}`}>{letter}</a>
+                        </Show>
+                        <Show when={!sortedKeys().includes(letter)}>{letter}</Show>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
+            </div>
+
             <For each={sortedKeys()}>
-              {(letter) => (
+              {(letter, index) => (
                 <div class={clsx(styles.group, 'group')}>
-                  <h2>{letter}</h2>
+                  <h2 id={`letter-${index()}`}>{letter}</h2>
                   <div class="container">
                     <div class="row">
                       <div class="col-lg-10">

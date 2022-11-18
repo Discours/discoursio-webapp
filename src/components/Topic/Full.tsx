@@ -18,7 +18,7 @@ export const FullTopic = (props: Props) => {
   return (
     <div class={styles.topicFull}>
       <Show when={!!props.topic?.slug}>
-        <div class={clsx(styles.topicHeader, 'col-md-8 offset-md-2')}>
+        <div class={clsx(styles.topicHeader, 'col-md-8 col-lg-6 offset-md-2 offset-lg-3')}>
           <h1>#{props.topic.title}</h1>
           <p>{props.topic.body}</p>
           <div class={clsx(styles.topicActions)}>

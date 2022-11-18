@@ -8,15 +8,15 @@ export default gql`
       name
       bio
       userpic
-      communities
+      # communities
       links
-      createdAt
+      # createdAt
       lastSeen
-      ratings {
-        _id: rater
-        rater
-        value
-      }
+      # ratings {
+      #  _id: rater
+      #  rater
+      #  value
+      # }
     }
   }
 `

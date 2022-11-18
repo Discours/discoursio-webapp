@@ -3,7 +3,7 @@ import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
-import { useArticlesStore, loadShoutsBy } from '../../stores/zine/articles'
+import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { useRouter } from '../../stores/router'
 
@@ -32,8 +32,8 @@ export const SearchView = (props: Props) => {
 
   const loadMore = async () => {
     saveScrollPosition()
-    const { hasMore } = await loadShoutsBy({
-      by: {
+    const { hasMore } = await loadShouts({
+      filters: {
         title: query(),
         body: query()
       },

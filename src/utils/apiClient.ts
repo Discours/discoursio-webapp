@@ -1,4 +1,11 @@
-import type { FollowingEntity, AuthResult, ShoutInput, Topic, Author } from '../graphql/types.gen'
+import type {
+  FollowingEntity,
+  AuthResult,
+  ShoutInput,
+  Topic,
+  Author,
+  LoadShoutsOptions
+} from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import topicsAll from '../graphql/query/topics-all'
@@ -26,8 +33,7 @@ import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
-
-const FEED_SIZE = 50
+import shoutLoad from '../graphql/query/articles-load'
 
 type ApiErrorCode =
   | 'unknown'
@@ -194,6 +200,7 @@ export const apiClient = {
   },
   getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
+    console.error('getAuthor', response)
     return response.data.getAuthor
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
@@ -229,20 +236,33 @@ export const apiClient = {
     return response.data.deleteReaction
   },
 
-  // LOAD BY
-
-  loadAuthorsBy: async ({ by, limit = 50, offset = 0 }) => {
+  getAuthorsBy: async ({ by, limit = 50, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, { by, limit, offset }).toPromise()
     console.debug(resp)
-    return resp.data.loadShoutsBy
+    return resp.data.loadAuthorsBy
   },
-  loadShoutsBy: async ({ by, limit = 50, offset = 0 }) => {
-    const resp = await publicGraphQLClient.query(shoutsLoadBy, { by, limit, offset }).toPromise()
-    console.debug(resp)
-    return resp.data.loadShoutsBy
+  getShout: async (slug: string) => {
+    const resp = await publicGraphQLClient
+      .query(shoutLoad, {
+        slug
+      })
+      .toPromise()
+    return resp.data.loadShout
   },
-  loadReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
+  getShouts: async (options: LoadShoutsOptions) => {
+    const resp = await publicGraphQLClient
+      .query(shoutsLoadBy, {
+        options
+      })
+      .toPromise()
+    // console.debug(resp)
+    return resp.data.loadShouts
+  },
+  getReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
+
+    console.log('resactions response', resp)
+
     return resp.data.loadReactionsBy
   },
 

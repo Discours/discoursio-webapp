@@ -1,7 +1,7 @@
 import { PageWrap } from '../_shared/PageWrap'
 import { ArticleView } from '../Views/Article'
 import type { PageProps } from '../types'
-import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
+import { loadShout, useArticlesStore } from '../../stores/zine/articles'
 import { createMemo, onMount, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { useRouter } from '../../stores/router'
@@ -32,7 +32,7 @@ export const ArticlePage = (props: PageProps) => {
     const articleValue = articleEntities()[slug()]
 
     if (!articleValue || !articleValue.body) {
-      await loadShoutsBy({ by: { slug: slug() }, limit: 1, offset: 0 })
+      await loadShout(slug())
     }
   })
 

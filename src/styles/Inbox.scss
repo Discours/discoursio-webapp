@@ -7,18 +7,19 @@ main {
 
 .messages {
   display: none;
-  //top: 74px;
-  //height: calc(100% - 74px);
-  //left: 0;
-  //right: 0;
-  //padding-left: 42px;
-  //padding-right: 26px;
-  //background: #fff;
-  //display: flex;
-  //flex: 1;
-  //flex-direction: column;
-  //position: fixed;
-  //z-index: 9;
+
+  // top: 74px;
+  // height: calc(100% - 74px);
+  // left: 0;
+  // right: 0;
+  // padding-left: 42px;
+  // padding-right: 26px;
+  // background: #fff;
+  // display: flex;
+  // flex: 1;
+  // flex-direction: column;
+  // position: fixed;
+  // z-index: 9;
 
   > .row {
     flex: 1;
@@ -165,10 +166,10 @@ main {
 
 .message-form {
   background: #fff;
-  padding: 2px 0 12px 0;
+  padding: 2px 0 12px;
 
   > .wrapper {
-    border: 2px solid #cccccc;
+    border: 2px solid #ccc;
     border-radius: 16px;
     padding: 4px;
     display: flex;
@@ -291,6 +292,7 @@ main {
   a {
     color: inherit;
     text-decoration: underline;
+
     &:hover {
       color: inherit;
     }

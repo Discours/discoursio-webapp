@@ -3,7 +3,7 @@ import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
 import { t } from '../../utils/intl'
-import { useArticlesStore, loadShoutsBy } from '../../stores/zine/articles'
+import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 
 type SearchPageSearchParams = {
@@ -28,7 +28,7 @@ export const SearchView = (props: Props) => {
   const handleSubmit = (_ev) => {
     // TODO page
     // TODO sort
-    loadShoutsBy({ by: { title: getQuery(), body: getQuery() }, limit: 50 })
+    loadShouts({ filters: { title: getQuery(), body: getQuery() }, limit: 50 })
   }
 
   return (

@@ -9,6 +9,7 @@ import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { locale } from '../../stores/ui'
+import { SearchField } from '../_shared/SearchField'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -50,6 +51,11 @@ export const AllAuthorsView = (props: Props) => {
     return keys
   })
 
+  // TODO make search
+  const searchAuthors = (value) => {
+    let q = value.toLowerCase()
+  }
+
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
 
   return (
@@ -72,10 +78,7 @@ export const AllAuthorsView = (props: Props) => {
                   <a href="/authors">{t('By alphabet')}</a>
                 </li>
                 <li class="view-switcher__search">
-                  <a href="/authors/search">
-                    <Icon name="search" />
-                    {t('Search author')}
-                  </a>
+                  <SearchField onChange={searchAuthors} />
                 </li>
               </ul>
             </div>

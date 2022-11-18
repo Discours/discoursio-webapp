@@ -38,7 +38,7 @@ const sortedAuthors = createLazyMemo(() => {
 })
 
 const addAuthors = (authors: Author[]) => {
-  const newAuthorEntities = authors.reduce((acc, author) => {
+  const newAuthorEntities = authors.filter(Boolean).reduce((acc, author) => {
     acc[author.slug] = author
     return acc
   }, {} as Record<string, Author>)

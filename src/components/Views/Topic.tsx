@@ -8,7 +8,7 @@ import { FullTopic } from '../Topic/Full'
 import { t } from '../../utils/intl'
 import { useRouter } from '../../stores/router'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
+import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
@@ -44,8 +44,8 @@ export const TopicView = (props: TopicProps) => {
   const loadMore = async () => {
     saveScrollPosition()
 
-    const { hasMore } = await loadShoutsBy({
-      by: { topic: topic().slug },
+    const { hasMore } = await loadShouts({
+      filters: { topic: topic().slug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

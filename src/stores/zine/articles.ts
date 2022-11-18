@@ -1,4 +1,4 @@
-import type { Author, Shout, ShoutInput, ShoutsBy, Topic } from '../../graphql/types.gen'
+import type { Author, Shout, ShoutInput, Topic, LoadShoutsOptions } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { addAuthorsByTopic } from './authors'
 import { addTopicsByAuthor } from './topics'
@@ -123,22 +123,18 @@ const addSortedArticles = (articles: Shout[]) => {
   setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
-export const loadShoutsBy = async ({
-  by,
-  limit,
-  offset = 0
-}: {
-  by: ShoutsBy
-  limit: number
-  offset?: number
-}): Promise<{ hasMore: boolean }> => {
-  const newArticles = await apiClient.loadShoutsBy({
-    by,
-    limit: limit + 1,
-    offset
+export const loadShout = async (slug: string): Promise<void> => {
+  const newArticle = await apiClient.getShout(slug)
+  addArticles([newArticle])
+}
+
+export const loadShouts = async (options: LoadShoutsOptions): Promise<{ hasMore: boolean }> => {
+  const newArticles = await apiClient.getShouts({
+    ...options,
+    limit: options.limit + 1
   })
 
-  const hasMore = newArticles.length === limit + 1
+  const hasMore = newArticles.length === options.limit + 1
 
   if (hasMore) {
     newArticles.splice(-1)
@@ -176,7 +172,6 @@ export const useArticlesStore = (initialState: InitialState = {}) => {
   return {
     articleEntities,
     sortedArticles,
-    loadShoutsBy,
     articlesByAuthor,
     articlesByLayout,
     articlesByTopic,

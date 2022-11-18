@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
@@ -40,7 +40,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
     return sortedTopics().reduce((acc, topic) => {
       let letter = topic.title[0].toUpperCase()
-      if (!/[а-яА-Я]/i.test(letter) && locale() === 'ru') letter = '#'
+      if (!/[А-я]/i.test(letter) && locale() === 'ru') letter = '#'
       if (!acc[letter]) acc[letter] = []
       acc[letter].push(topic)
       return acc
@@ -58,7 +58,8 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   let searchEl: HTMLInputElement
   const [searchResults, setSearchResults] = createSignal<Topic[]>([])
-  const searchTopics = (ev) => {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const searchTopics = () => {
     /* very stupid search algorithm with no deps */
     let q = searchEl.value.toLowerCase()
     if (q.length > 0) {
@@ -66,29 +67,29 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       setSearchResults([])
 
       if (locale() === 'ru') q = translit(q, 'ru')
-      let ttt: Topic[] = []
-      sortedTopics().forEach((t: Topic) => {
+      const ttt: Topic[] = []
+      sortedTopics().forEach((topic) => {
         let flag = false
-        t.slug.split('-').forEach((w) => {
+        topic.slug.split('-').forEach((w) => {
           if (w.startsWith(q)) flag = true
         })
 
         if (!flag) {
-          let wrds: string = t.title.toLowerCase()
+          let wrds: string = topic.title.toLowerCase()
           if (locale() === 'ru') wrds = translit(wrds, 'ru')
           wrds.split(' ').forEach((w: string) => {
             if (w.startsWith(q)) flag = true
           })
         }
 
-        if (flag && !ttt.includes(t)) ttt.push(t)
+        if (flag && !ttt.includes(topic)) ttt.push(topic)
       })
 
       setSearchResults((sr: Topic[]) => [...sr, ...ttt])
       changeSearchParam('by', '')
     }
   }
-  createEffect(() => {})
+
   const AllTopicsHead = () => (
     <div class="row">
       <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>

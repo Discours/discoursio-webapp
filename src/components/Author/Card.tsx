@@ -33,7 +33,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const bio = () => {
     const d = document.createElement('div')
     d.innerHTML = props.author.bio
-    return d.innerText || t('Our regular contributor')
+    return d.textContent || t('Our regular contributor')
   }
   const name = () => {
     return props.author.name === 'Дискурс' && locale() !== 'ru'

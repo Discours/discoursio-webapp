@@ -37,7 +37,7 @@ export const AllAuthorsView = (props: Props) => {
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce((acc, author) => {
       let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
-      if (!/[а-яА-Я]/i.test(letter) && locale() === 'ru') letter = '@'
+      if (!/[А-я]/i.test(letter) && locale() === 'ru') letter = '@'
       if (!acc[letter]) acc[letter] = []
       acc[letter].push(author)
       return acc

@@ -1,14 +1,14 @@
 import { PageWrap } from '../_shared/PageWrap'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
-import { loadShoutsBy, resetSortedArticles } from '../../stores/zine/articles'
+import { loadShouts, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 import { LayoutType, useLayoutsStore } from '../../stores/zine/layouts'
 import { Loading } from '../Loading'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import type { Shout } from '../../graphql/types.gen'
 import { splitToPages } from '../../utils/splitToPages'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { t } from '../../utils/intl'
 import { Row3 } from '../Feed/Row3'
 import { Row2 } from '../Feed/Row2'
@@ -33,7 +33,8 @@ export const LayoutShoutsPage = (props: PageProps) => {
   const loadMoreLayout = async (kind: LayoutType) => {
     saveScrollPosition()
     const { hasMore } = await loadLayoutShoutsBy({
-      by: { layout: kind },
+      // filters: { layout: kind },
+
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })
@@ -62,7 +63,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
 
   onMount(async () => {
     if (!isLoaded()) {
-      await loadShoutsBy({ by: { layout: layout() }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
+      await loadShouts({ filters: { layout: layout() }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
     }
   })
 

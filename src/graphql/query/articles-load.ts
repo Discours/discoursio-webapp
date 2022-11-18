@@ -1,14 +1,15 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadShoutsQuery($options: LoadShoutsOptions) {
-    loadShouts(options: $options) {
+  query LoadShoutQuery($slug: String!) {
+    loadShout(slug: $slug) {
       _id: slug
       title
       subtitle
       slug
       layout
       cover
+      body
       # community
       mainTopic
       topics {

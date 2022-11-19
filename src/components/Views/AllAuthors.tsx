@@ -11,6 +11,7 @@ import { useSession } from '../../context/session'
 import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
 import { SearchField } from '../_shared/SearchField'
+import { scrollHandler } from '../../utils/scroll'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -21,7 +22,7 @@ type Props = {
 }
 
 const PAGE_SIZE = 20
-const ALPHABET = Array.from('@АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ')
+const ALPHABET = [...'@АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ']
 
 export const AllAuthorsView = (props: Props) => {
   const { sortedAuthors } = useAuthorsStore({ authors: props.authors })
@@ -77,16 +78,6 @@ export const AllAuthorsView = (props: Props) => {
       </div>
     </div>
   )
-  const scrollHandler = (elemId) => {
-    const anchor = document.querySelector('#' + elemId)
-    // console.debug(elemId)
-    if (anchor) {
-      window.scrollTo({
-        top: anchor.getBoundingClientRect().top - 100,
-        behavior: 'smooth'
-      })
-    }
-  }
   const [searchResults, setSearchResults] = createSignal<Author[]>([])
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const searchAuthors = (value) => {

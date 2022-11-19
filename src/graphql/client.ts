@@ -13,8 +13,8 @@ export const initClient = (options) => {
       console.info('[graphql] devmode detected')
       return localClient(options)
     } else return createClient(options)
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    console.error(error)
     return localClient(options)
   }
 }

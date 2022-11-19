@@ -10,6 +10,7 @@ import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
 import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
+import { scrollHandler } from '../../utils/scroll'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -20,7 +21,7 @@ type AllTopicsViewProps = {
 }
 
 const PAGE_SIZE = 20
-const ALPHABET = Array.from('#АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ')
+const ALPHABET = [...'#АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ']
 
 export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
@@ -114,16 +115,6 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     </div>
   )
 
-  const scrollHandler = (elemId) => {
-    const anchor = document.querySelector('#' + elemId)
-    // console.debug(elemId)
-    if (anchor) {
-      window.scrollTo({
-        top: anchor.getBoundingClientRect().top - 100,
-        behavior: 'smooth'
-      })
-    }
-  }
   return (
     <div class={clsx(styles.allTopicsPage, 'container')}>
       <div class="shift-content">

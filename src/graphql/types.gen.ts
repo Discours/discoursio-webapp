@@ -644,10 +644,8 @@ export type Token = {
 
 export type Topic = {
   body?: Maybe<Scalars['String']>
-  children?: Maybe<Array<Maybe<Scalars['String']>>>
   community: Community
   oid?: Maybe<Scalars['String']>
-  parents?: Maybe<Array<Maybe<Scalars['String']>>>
   pic?: Maybe<Scalars['String']>
   slug: Scalars['String']
   stat?: Maybe<TopicStat>
@@ -656,9 +654,7 @@ export type Topic = {
 
 export type TopicInput = {
   body?: InputMaybe<Scalars['String']>
-  children?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   community: Scalars['String']
-  parents?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   pic?: InputMaybe<Scalars['String']>
   slug: Scalars['String']
   title?: InputMaybe<Scalars['String']>

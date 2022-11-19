@@ -3,8 +3,8 @@ import { isDev } from '../utils/config'
 
 const localClient = (options) => {
   console.info('[graphql] using local client')
-  const url = 'http://localhost:8080'
-  return createClient({ ...options, url })
+  options.url = 'http://localhost:8080'
+  return createClient(options)
 }
 
 export const initClient = (options) => {

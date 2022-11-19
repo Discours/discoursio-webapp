@@ -4,10 +4,10 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "astro build",
+    "build": "astro telemetry disable && astro build",
     "check": "npm run lint && npm run typecheck",
     "codegen": "graphql-codegen",
-    "deploy": "graphql-codegen && npm run typecheck && astro build && vercel",
+    "deploy": "graphql-codegen && npm run typecheck && astro telemetry disable && astro build && vercel",
     "dev": "astro dev",
     "ffix": "npm run fix && npm run format",
     "fix": "npm run lint:code:fix && npm run lint:styles:fix",
@@ -22,12 +22,12 @@
     "pre-push": "",
     "pre-push-old": "npm run typecheck",
     "prepare": "husky install",
-    "preview": "astro preview",
+    "preview": "astro telemetry disable && astro preview",
     "server": "node server/server.mjs",
-    "start": "astro dev",
-    "typecheck": "astro check && tsc --noEmit",
+    "start": "astro telemetry disable && astro dev",
+    "typecheck": "astro telemetry disable && astro check && tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
-    "vercel-build": "astro build"
+    "vercel-build": "astro telemetry disable && astro build"
   },
   "dependencies": {
     "mailgun.js": "^8.0.2"

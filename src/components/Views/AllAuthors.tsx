@@ -59,29 +59,27 @@ export const AllAuthorsView = (props: Props) => {
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
 
   return (
-    <div class={clsx(styles.allTopicsPage, 'container')}>
+    <div class={clsx(styles.allTopicsPage, 'wide-container')}>
       <Show when={sortedAuthors().length > 0}>
         <div class="shift-content">
-          <div class="row">
-            <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
-              <h1>{t('Authors')}</h1>
-              <p>{t('Subscribe who you like to tune your personal feed')}</p>
+          <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
+            <h1>{t('Authors')}</h1>
+            <p>{t('Subscribe who you like to tune your personal feed')}</p>
 
-              <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
-                <li classList={{ selected: searchParams().by === 'shouts' }}>
-                  <a href="/authors?by=shouts">{t('By shouts')}</a>
-                </li>
-                <li classList={{ selected: searchParams().by === 'rating' }}>
-                  <a href="/authors?by=rating">{t('By rating')}</a>
-                </li>
-                <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
-                  <a href="/authors">{t('By alphabet')}</a>
-                </li>
-                <li class="view-switcher__search">
-                  <SearchField onChange={searchAuthors} />
-                </li>
-              </ul>
-            </div>
+            <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
+              <li classList={{ selected: searchParams().by === 'shouts' }}>
+                <a href="/authors?by=shouts">{t('By shouts')}</a>
+              </li>
+              <li classList={{ selected: searchParams().by === 'rating' }}>
+                <a href="/authors?by=rating">{t('By rating')}</a>
+              </li>
+              <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
+                <a href="/authors">{t('By alphabet')}</a>
+              </li>
+              <li class="view-switcher__search">
+                <SearchField onChange={searchAuthors} />
+              </li>
+            </ul>
           </div>
 
           <Show

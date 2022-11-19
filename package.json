@@ -8,7 +8,7 @@
     "check": "npm run lint && npm run typecheck",
     "codegen": "graphql-codegen",
     "deploy": "graphql-codegen && npm run typecheck && astro telemetry disable && astro build && vercel",
-    "dev": "astro dev",
+    "dev": "astro telemetry disable && astro dev",
     "ffix": "npm run fix && npm run format",
     "fix": "npm run lint:code:fix && npm run lint:styles:fix",
     "format": "npx prettier \"{,!(node_modules)/**/}*.{js,ts,tsx,json,scss,css}\" --write --ignore-path .gitignore",

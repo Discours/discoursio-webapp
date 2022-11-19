@@ -4,7 +4,7 @@ import { isDev, apiBaseUrl } from '../utils/config'
 import { initClient } from './client'
 import { cache } from './cache'
 
-const exchanges: Exchange[] = [dedupExchange, fetchExchange, cache]
+const exchanges: Exchange[] = [dedupExchange, fetchExchange] //, cache]
 
 if (isDev) {
   exchanges.unshift(devtoolsExchange)

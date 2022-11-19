@@ -2,6 +2,7 @@ import { ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/cor
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
 import { initClient } from './client'
+// import { cache } from './cache'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 

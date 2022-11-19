@@ -1,10 +1,11 @@
 import { defineConfig, AstroUserConfig } from 'astro/config'
 import vercel from '@astrojs/vercel/serverless'
 import solidJs from '@astrojs/solid-js'
-import type { CSSOptions } from 'vite'
+import type { CSSOptions, PluginOption } from 'vite'
 import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
 import { visualizer } from 'rollup-plugin-visualizer'
+import htmlPurge from 'vite-plugin-html-purgecss'
 
 const PATH_PREFIX = '/src/'
 
@@ -36,6 +37,7 @@ const astroConfig: AstroUserConfig = {
   output: 'server',
   adapter: vercel(),
   vite: {
+    plugins: [htmlPurge() as PluginOption],
     build: {
       chunkSizeWarningLimit: 777,
       rollupOptions: {

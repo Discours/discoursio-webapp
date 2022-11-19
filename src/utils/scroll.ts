@@ -14,3 +14,14 @@ export const restoreScrollPosition = () => {
     left: scrollPosition.left
   })
 }
+
+export const scrollHandler = (elemId) => {
+  const anchor = document.querySelector('#' + elemId)
+  // console.debug(elemId)
+  if (anchor) {
+    window.scrollTo({
+      top: anchor.getBoundingClientRect().top - 100,
+      behavior: 'smooth'
+    })
+  }
+}

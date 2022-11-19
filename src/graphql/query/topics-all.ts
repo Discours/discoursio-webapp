@@ -8,8 +8,6 @@ export default gql`
       body
       slug
       pic
-      parents
-      children
       # community
       stat {
         _id: shouts

@@ -20,46 +20,11 @@ type AllTopicsViewProps = {
 }
 
 const PAGE_SIZE = 20
+const ALPHABET = Array.from('#АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ')
 
 export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
-  const ALPHABET = [
-    '#',
-    'А',
-    'Б',
-    'В',
-    'Г',
-    'Д',
-    'Е',
-    'Ё',
-    'Ж',
-    'З',
-    'И',
-    'Й',
-    'К',
-    'Л',
-    'М',
-    'Н',
-    'О',
-    'П',
-    'Р',
-    'С',
-    'Т',
-    'У',
-    'Ф',
-    'Х',
-    'Ц',
-    'Ч',
-    'Ш',
-    'Щ',
-    'Ъ',
-    'Ы',
-    'Ь',
-    'Э',
-    'Ю',
-    'Я'
-  ]
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
@@ -139,7 +104,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             <a href="/topics?by=authors">{t('By authors')}</a>
           </li>
           <li classList={{ selected: searchParams().by === 'title' }}>
-            <a href="/topics?by=title">{t('By alphabet')}</a>
+            <a href="/topics?by=title">{t('By title')}</a>
           </li>
           <li class="view-switcher__search">
             <SearchField onChange={searchTopics} />
@@ -148,6 +113,17 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       </div>
     </div>
   )
+
+  const scrollHandler = (elemId) => {
+    const anchor = document.querySelector('#' + elemId)
+    // console.debug(elemId)
+    if (anchor) {
+      window.scrollTo({
+        top: anchor.getBoundingClientRect().top - 100,
+        behavior: 'smooth'
+      })
+    }
+  }
   return (
     <div class={clsx(styles.allTopicsPage, 'container')}>
       <div class="shift-content">
@@ -161,10 +137,14 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                   <For each={ALPHABET}>
                     {(letter, index) => (
                       <li>
-                        <Show when={sortedKeys().includes(letter)}>
-                          <a href={`#letter-${index()}`}>{letter}</a>
+                        <Show when={letter in byLetter()} fallback={letter}>
+                          <a
+                            href={`/topics?by=title#letter-${index()}`}
+                            onClick={() => scrollHandler(`letter-${index()}`)}
+                          >
+                            {letter}
+                          </a>
                         </Show>
-                        <Show when={!sortedKeys().includes(letter)}>{letter}</Show>
                       </li>
                     )}
                   </For>
@@ -211,20 +191,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </For>
           </Show>
 
-          <Show when={searchParams().by === 'authors'}>
-            <For each={sortedTopics().slice(0, limit())}>
-              {(topic) => (
-                <TopicCard
-                  topic={topic}
-                  compact={false}
-                  subscribed={subscribed(topic.slug)}
-                  showPublications={true}
-                />
-              )}
-            </For>
-          </Show>
-
-          <Show when={searchParams().by === 'shouts'}>
+          <Show when={searchParams().by && searchParams().by !== 'title'}>
             <For each={sortedTopics().slice(0, limit())}>
               {(topic) => (
                 <TopicCard

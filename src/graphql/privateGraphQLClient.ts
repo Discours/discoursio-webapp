@@ -1,6 +1,7 @@
-import { createClient, ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/core'
+import { ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
+import { initClient } from './client'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
@@ -37,4 +38,4 @@ const options: ClientOptions = {
   exchanges
 }
 
-export const privateGraphQLClient = createClient(options)
+export const privateGraphQLClient = initClient(options)

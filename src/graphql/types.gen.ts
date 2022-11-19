@@ -39,6 +39,7 @@ export type AuthorStat = {
   followers?: Maybe<Scalars['Int']>
   followings?: Maybe<Scalars['Int']>
   rating?: Maybe<Scalars['Int']>
+  shouts?: Maybe<Scalars['Int']>
 }
 
 export type AuthorsBy = {

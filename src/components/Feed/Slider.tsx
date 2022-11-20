@@ -61,34 +61,36 @@ export default (props: SliderProps) => {
 
   return (
     <div class="floor floor--important">
-      <div class="wide-container row">
-        <h2 class="col-12">{props.title}</h2>
-        <Show when={!!articles()}>
-          <div class="swiper" classList={{ 'cards-with-cover': isCardsWithCover }} ref={el}>
-            <div class="swiper-wrapper">
-              <For each={articles()}>
-                {(a: Shout) => (
-                  <ArticleCard
-                    article={a}
-                    settings={{
-                      additionalClass: 'swiper-slide',
-                      isFloorImportant: true,
-                      isWithCover: isCardsWithCover,
-                      nodate: true
-                    }}
-                  />
-                )}
-              </For>
+      <div class="wide-container">
+        <div class="row">
+          <h2 class="col-12">{props.title}</h2>
+          <Show when={!!articles()}>
+            <div class="swiper" classList={{ 'cards-with-cover': isCardsWithCover }} ref={el}>
+              <div class="swiper-wrapper">
+                <For each={articles()}>
+                  {(a: Shout) => (
+                    <ArticleCard
+                      article={a}
+                      settings={{
+                        additionalClass: 'swiper-slide',
+                        isFloorImportant: true,
+                        isWithCover: isCardsWithCover,
+                        nodate: true
+                      }}
+                    />
+                  )}
+                </For>
+              </div>
+              <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
+                <Icon name="slider-arrow" class={'icon'} />
+              </div>
+              <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
+                <Icon name="slider-arrow" class={'icon'} />
+              </div>
+              <div class="slider-pagination" ref={pagEl} />
             </div>
-            <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
-              <Icon name="slider-arrow" class={'icon'} />
-            </div>
-            <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
-              <Icon name="slider-arrow" class={'icon'} />
-            </div>
-            <div class="slider-pagination" ref={pagEl} />
-          </div>
-        </Show>
+          </Show>
+        </div>
       </div>
     </div>
   )

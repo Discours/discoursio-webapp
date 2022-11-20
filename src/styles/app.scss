@@ -550,10 +550,6 @@ figcaption {
     margin-bottom: 6.4rem;
   }
 
-  .wide-container {
-    padding: 0;
-  }
-
   .container {
     padding-left: $container-padding-x;
     padding-right: $container-padding-x;
@@ -617,14 +613,14 @@ figcaption {
   }
 }
 
-.row > * {
+.row {
   @include media-breakpoint-down(sm) {
-    padding-left: divide($container-padding-x, 2);
-    padding-right: divide($container-padding-x, 2);
+    margin-left: divide(-$container-padding-x, 2);
+    margin-right: divide(-$container-padding-x, 2);
 
-    > .row {
-      margin-left: divide(-$container-padding-x, 2);
-      margin-right: divide(-$container-padding-x, 2);
+    > * {
+      padding-left: divide($container-padding-x, 2);
+      padding-right: divide($container-padding-x, 2);
     }
   }
 }
@@ -789,6 +785,7 @@ details {
 .text-truncate {
   display: -webkit-box !important;
   overflow: hidden;
+  position: relative;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   white-space: normal;

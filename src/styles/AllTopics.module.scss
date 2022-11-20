@@ -1,6 +1,6 @@
 .allTopicsPage {
   .group {
-    font-weight: bold;
+    @include font-size(1.6rem);
     margin: 3em 0 9.6rem;
 
     @include media-breakpoint-down(sm) {
@@ -17,11 +17,7 @@
     }
 
     .topic {
-      margin-bottom: 1.6rem;
-
-      @include media-breakpoint-down(sm) {
-        margin-left: 2.6rem;
-      }
+      margin-bottom: 2.4rem;
     }
   }
 
@@ -54,6 +50,7 @@
 }
 
 .alphabet {
+  color: rgba(0, 0, 0, 0.2);
   display: flex;
   flex-wrap: wrap;
   font-weight: 700;
@@ -66,4 +63,11 @@
     margin-right: 3%;
     color: gray;
   }
+}
+
+.articlesCounter {
+  @include font-size(1.2rem);
+
+  margin-left: 0.5em;
+  vertical-align: super;
 }

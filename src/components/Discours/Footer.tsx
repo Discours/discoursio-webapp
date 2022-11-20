@@ -109,7 +109,7 @@ export const Footer = () => {
   ]
   return (
     <footer class={styles.discoursFooter}>
-      <div class={clsx('wide-container', styles.wideContainer)}>
+      <div class="wide-container">
         <div class="row">
           <For each={links()}>
             {({ header, items }) => (

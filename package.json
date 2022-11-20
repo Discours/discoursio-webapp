@@ -112,7 +112,7 @@
     "prosemirror-view": "^1.29.1",
     "rollup": "^2.79.1",
     "rollup-plugin-visualizer": "^5.8.3",
-    "sass": "^1.56.1",
+    "sass": "1.32.13",
     "solid-devtools": "^0.22.0",
     "solid-js": "^1.6.2",
     "solid-js-form": "^0.1.5",

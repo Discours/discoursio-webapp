@@ -15,9 +15,6 @@
 .authorDetails {
   display: flex;
   flex: 1;
-  width: max-content;
-
-  // padding-right: 1.2rem;
 
   @include media-breakpoint-down(sm) {
     flex-wrap: wrap;
@@ -193,6 +190,7 @@
 
   .authorSubscribe {
     margin-top: 2rem;
+    padding-left: 0;
   }
 
   .authorDetails {

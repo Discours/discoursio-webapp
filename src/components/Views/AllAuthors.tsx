@@ -182,7 +182,7 @@ export const AllAuthorsView = (props: Props) => {
           </Show>
 
           <Show when={searchParams().by && searchParams().by !== 'name'}>
-            <div class="row">
+            <div class={clsx(styles.stats, 'row')}>
               <div class="col-lg-10 col-xl-9">
                 <For each={sortedAuthors().slice(0, limit())}>
                   {(author) => (

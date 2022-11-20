@@ -123,7 +123,6 @@ export const RegisterForm = () => {
           </Show>
           <div class="pretty-form__item">
             <input
-              id="name"
               name="name"
               type="text"
               placeholder={t('Full name')}
@@ -140,7 +139,7 @@ export const RegisterForm = () => {
               id="email"
               name="email"
               autocomplete="email"
-              type="text"
+              type="email"
               value={email()}
               placeholder={t('Email')}
               onInput={(event) => handleEmailInput(event.currentTarget.value)}

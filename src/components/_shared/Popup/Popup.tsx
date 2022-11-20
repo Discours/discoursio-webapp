@@ -1,7 +1,7 @@
 import { createEffect, createSignal, JSX, Show } from 'solid-js'
 import styles from './Popup.module.scss'
 import { clsx } from 'clsx'
-import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 
 type HorizontalAnchor = 'center' | 'right'
 

@@ -7,7 +7,7 @@ type SearchFieldProps = {
 }
 
 export const SearchField = (props: SearchFieldProps) => {
-  const handleInputChange = (event) => props.onChange(event.target.value)
+  const handleInputChange = (event) => props.onChange(event.target.value.trim())
 
   return (
     <div class={styles.searchField}>

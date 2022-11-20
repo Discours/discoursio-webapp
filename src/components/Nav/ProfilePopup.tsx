@@ -1,7 +1,7 @@
 import { useSession } from '../../context/session'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
-import styles from '../_shared/Popup.module.scss'
+import styles from '../_shared/Popup/Popup.module.scss'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 

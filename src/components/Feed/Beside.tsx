@@ -26,67 +26,69 @@ export const Beside = (props: BesideProps) => {
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
       <div class="floor floor--9">
-        <div class="wide-container row">
-          <Show when={!!props.values}>
-            <div class="col-md-4">
-              <Show when={!!props.title}>
-                <div class={styles.besideColumnTitle}>
-                  <h4>{props.title}</h4>
+        <div class="wide-container">
+          <div class="row">
+            <Show when={!!props.values}>
+              <div class="col-md-4">
+                <Show when={!!props.title}>
+                  <div class={styles.besideColumnTitle}>
+                    <h4>{props.title}</h4>
 
-                  <Show when={props.wrapper === 'author'}>
-                    <a href="/authors">
-                      {t('All authors')}
-                      <Icon name="arrow-right" class={styles.icon} />
-                    </a>
-                  </Show>
+                    <Show when={props.wrapper === 'author'}>
+                      <a href="/authors">
+                        {t('All authors')}
+                        <Icon name="arrow-right" class={styles.icon} />
+                      </a>
+                    </Show>
 
-                  <Show when={props.wrapper === 'topic'}>
-                    <a href="/topics">
-                      {t('All topics')}
-                      <Icon name="arrow-right" class={styles.icon} />
-                    </a>
-                  </Show>
-                </div>
-              </Show>
-              <ul class={styles.besideColumn}>
-                <For each={[...props.values]}>
-                  {(value: Partial<Shout | User | Topic>) => (
-                    <li classList={{ [styles.top]: props.wrapper.startsWith('top-') }}>
-                      <Show when={props.wrapper === 'topic'}>
-                        <TopicCard
-                          topic={value as Topic}
-                          compact={props.isTopicCompact}
-                          shortDescription={props.topicShortDescription}
-                          isTopicInRow={props.isTopicInRow}
-                          iconButton={props.iconButton}
-                          showPublications={true}
-                        />
-                      </Show>
-                      <Show when={props.wrapper === 'author'}>
-                        <AuthorCard
-                          author={value as Author}
-                          compact={true}
-                          hasLink={true}
-                          truncateBio={true}
-                        />
-                      </Show>
-                      <Show when={props.wrapper === 'article' && value?.slug}>
-                        <ArticleCard article={value as Shout} settings={{ noimage: true }} />
-                      </Show>
-                      <Show when={props.wrapper === 'top-article' && value?.slug}>
-                        <ArticleCard
-                          article={value as Shout}
-                          settings={{ noimage: true, noauthor: true, nodate: true, isShort: true }}
-                        />
-                      </Show>
-                    </li>
-                  )}
-                </For>
-              </ul>
+                    <Show when={props.wrapper === 'topic'}>
+                      <a href="/topics">
+                        {t('All topics')}
+                        <Icon name="arrow-right" class={styles.icon} />
+                      </a>
+                    </Show>
+                  </div>
+                </Show>
+                <ul class={styles.besideColumn}>
+                  <For each={[...props.values]}>
+                    {(value: Partial<Shout | User | Topic>) => (
+                      <li classList={{ [styles.top]: props.wrapper.startsWith('top-') }}>
+                        <Show when={props.wrapper === 'topic'}>
+                          <TopicCard
+                            topic={value as Topic}
+                            compact={props.isTopicCompact}
+                            shortDescription={props.topicShortDescription}
+                            isTopicInRow={props.isTopicInRow}
+                            iconButton={props.iconButton}
+                            showPublications={true}
+                          />
+                        </Show>
+                        <Show when={props.wrapper === 'author'}>
+                          <AuthorCard
+                            author={value as Author}
+                            compact={true}
+                            hasLink={true}
+                            truncateBio={true}
+                          />
+                        </Show>
+                        <Show when={props.wrapper === 'article' && value?.slug}>
+                          <ArticleCard article={value as Shout} settings={{ noimage: true }} />
+                        </Show>
+                        <Show when={props.wrapper === 'top-article' && value?.slug}>
+                          <ArticleCard
+                            article={value as Shout}
+                            settings={{ noimage: true, noauthor: true, nodate: true, isShort: true }}
+                          />
+                        </Show>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
+            </Show>
+            <div class={clsx('col-md-8', styles.shoutCardContainer)}>
+              <ArticleCard article={props.beside} settings={{ isBigTitle: true, isBeside: true }} />
             </div>
-          </Show>
-          <div class={clsx('col-md-8', styles.shoutCardContainer)}>
-            <ArticleCard article={props.beside} settings={{ isBigTitle: true, isBeside: true }} />
           </div>
         </div>
       </div>

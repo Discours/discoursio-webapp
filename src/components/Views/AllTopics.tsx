@@ -92,24 +92,26 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   }
 
   const AllTopicsHead = () => (
-    <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
-      <h1>{t('Topics')}</h1>
-      <p>{t('Subscribe what you like to tune your personal feed')}</p>
+    <div class="row">
+      <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
+        <h1>{t('Topics')}</h1>
+        <p>{t('Subscribe what you like to tune your personal feed')}</p>
 
-      <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
-        <li classList={{ selected: searchParams().by === 'shouts' }}>
-          <a href="/topics?by=shouts">{t('By shouts')}</a>
-        </li>
-        <li classList={{ selected: searchParams().by === 'authors' }}>
-          <a href="/topics?by=authors">{t('By authors')}</a>
-        </li>
-        <li classList={{ selected: searchParams().by === 'title' }}>
-          <a href="/topics?by=title">{t('By title')}</a>
-        </li>
-        <li class="view-switcher__search">
-          <SearchField onChange={searchTopics} />
-        </li>
-      </ul>
+        <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
+          <li classList={{ selected: searchParams().by === 'shouts' }}>
+            <a href="/topics?by=shouts">{t('By shouts')}</a>
+          </li>
+          <li classList={{ selected: searchParams().by === 'authors' }}>
+            <a href="/topics?by=authors">{t('By authors')}</a>
+          </li>
+          <li classList={{ selected: searchParams().by === 'title' }}>
+            <a href="/topics?by=title">{t('By title')}</a>
+          </li>
+          <li class="view-switcher__search">
+            <SearchField onChange={searchTopics} />
+          </li>
+        </ul>
+      </div>
     </div>
   )
 

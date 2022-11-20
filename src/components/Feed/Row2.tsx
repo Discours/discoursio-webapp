@@ -15,21 +15,26 @@ export const Row2 = (props: { articles: Shout[]; isEqual?: boolean }) => {
 
   return (
     <div class="floor">
-      <div class="wide-container row">
-        <For each={props.articles}>
-          {(a, i) => {
-            return (
-              <Show when={!!a}>
-                <div class={`col-md-${props.isEqual ? '6' : x[y()][i()]}`}>
-                  <ArticleCard
-                    article={a}
-                    settings={{ isWithCover: props.isEqual || x[y()][i()] === '8', nodate: props.isEqual }}
-                  />
-                </div>
-              </Show>
-            )
-          }}
-        </For>
+      <div class="wide-container">
+        <div class="row">
+          <For each={props.articles}>
+            {(a, i) => {
+              return (
+                <Show when={!!a}>
+                  <div class={`col-md-${props.isEqual ? '6' : x[y()][i()]}`}>
+                    <ArticleCard
+                      article={a}
+                      settings={{
+                        isWithCover: props.isEqual || x[y()][i()] === '8',
+                        nodate: props.isEqual
+                      }}
+                    />
+                  </div>
+                </Show>
+              )
+            }}
+          </For>
+        </div>
       </div>
     </div>
   )

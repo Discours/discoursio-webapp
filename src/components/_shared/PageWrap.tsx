@@ -15,7 +15,7 @@ type PageWrapProps = {
 }
 
 export const PageWrap = (props: PageWrapProps) => {
-  const isHeaderFixed = props.isHeaderFixed !== undefined ? props.isHeaderFixed : true
+  const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed
 
   return (
     <>

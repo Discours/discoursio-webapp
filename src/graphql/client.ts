@@ -7,7 +7,8 @@ const localClient = (options) => {
   try {
     c = createClient({ ...options, url })
     console.info('[graphql] using local client')
-  } catch (e) {
+  } catch (error) {
+    console.error(error)
     c = createClient(options)
     console.info(
       `[graphql] using ${options.url.replace('https://', '').replace('/graphql', '').replace('/', '')}`

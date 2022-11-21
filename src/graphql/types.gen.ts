@@ -667,7 +667,7 @@ export type TopicStat = {
   rating?: Maybe<Scalars['Int']>
   reacted: Scalars['Int']
   shouts: Scalars['Int']
-  viewed: Scalars['Int']
+  viewed?: Maybe<Scalars['Int']>
 }
 
 export type User = {

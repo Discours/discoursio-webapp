@@ -2,9 +2,18 @@ import { createClient } from '@urql/core'
 import { isDev } from '../utils/config'
 
 const localClient = (options) => {
-  console.info('[graphql] using local client')
-  options.url = 'http://localhost:8080'
-  return createClient(options)
+  const url = 'http://localhost:8080'
+  let c
+  try {
+    c = createClient({ ...options, url })
+    console.info('[graphql] using local client')
+  } catch (e) {
+    c = createClient(options)
+    console.info(
+      `[graphql] using ${options.url.replace('https://', '').replace('/graphql', '').replace('/', '')}`
+    )
+  }
+  return c
 }
 
 export const initClient = (options) => {

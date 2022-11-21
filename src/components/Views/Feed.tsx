@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { createSignal, For, onMount, Show } from 'solid-js'
 import '../../styles/Feed.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { Icon } from '../_shared/Icon'
@@ -14,15 +14,14 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useSession } from '../../context/session'
-import { Collab, ReactionKind, Shout } from '../../graphql/types.gen'
-import { collabs, setCollabs } from '../../stores/editor'
+import type { Shout } from '../../graphql/types.gen'
 
-const AUTHORSHIP_REACTIONS = [
-  ReactionKind.Accept,
-  ReactionKind.Reject,
-  ReactionKind.Propose,
-  ReactionKind.Ask
-]
+// const AUTHORSHIP_REACTIONS = [
+//   ReactionKind.Accept,
+//   ReactionKind.Reject,
+//   ReactionKind.Propose,
+//   ReactionKind.Ask
+// ]
 
 export const FEED_PAGE_SIZE = 20
 
@@ -57,15 +56,10 @@ export const FeedView = () => {
 
     // load recent editing shouts ( visibility = authors )
     const userslug = session().user.slug
-    await loadShouts({ filters: { author: userslug, visibility: 'authors' }, limit: 15, offset: 0 })
-    const collaborativeShouts = sortedArticles().filter((s: Shout, n: number, arr: Shout[]) => {
-      if (s.visibility !== 'authors') {
-        arr.splice(n, 1)
-        return arr
-      }
-    })
+    await loadShouts({ filters: { author: userslug, visibility: 'authors' }, limit: 15 })
+    const collaborativeShouts = sortedArticles().filter((shout) => shout.visibility === 'authors')
     // load recent reactions on collabs
-    await loadReactionsBy({ by: { shouts: [...collaborativeShouts], body: true }, limit: 5, offset: 0 })
+    await loadReactionsBy({ by: { shouts: [...collaborativeShouts], body: true }, limit: 5 })
   })
 
   return (

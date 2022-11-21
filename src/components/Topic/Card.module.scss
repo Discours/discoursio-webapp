@@ -71,6 +71,7 @@
 
   color: #9fa1a7;
   display: flex;
+  margin-bottom: 1em;
 
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;

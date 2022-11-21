@@ -4,11 +4,9 @@ import './Full.scss'
 
 export const AuthorFull = (props: { author: Author }) => {
   return (
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8 offset-md-2 user-details">
-          <AuthorCard author={props.author} compact={false} isAuthorPage={true} />
-        </div>
+    <div class="row">
+      <div class="col-md-8 offset-md-2 user-details">
+        <AuthorCard author={props.author} compact={false} isAuthorPage={true} />
       </div>
     </div>
   )

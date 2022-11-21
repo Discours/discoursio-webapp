@@ -1,6 +1,7 @@
-import { createClient, ClientOptions, dedupExchange, fetchExchange, Exchange } from '@urql/core'
+import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
+// import { cache } from './cache'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 

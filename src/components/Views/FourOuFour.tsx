@@ -36,7 +36,7 @@ export const FourOuFourView = (_props) => {
                   </div>
                 </form>
                 <p class={styles.textCenter}>
-                  <a href="/">{t('Back to mainpage')}</a>
+                  <a href="/">{t('Back to main page')}</a>
                 </p>
               </div>
             </div>

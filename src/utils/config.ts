@@ -1,4 +1,4 @@
 export const isDev = import.meta.env.MODE === 'development'
 
-const defaultApiUrl = 'https://testapi.discours.io'
+const defaultApiUrl = 'https://v2.discours.io'
 export const apiBaseUrl = import.meta.env.PUBLIC_API_URL || defaultApiUrl

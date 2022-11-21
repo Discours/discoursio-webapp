@@ -14,7 +14,7 @@ export default gql`
         shouts
         authors
         followers
-        viewed
+        # viewed
       }
     }
   }

@@ -46,7 +46,7 @@ const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string 
 
     if (tt && tt.length > 1) {
       const sep = article.title?.replace(tt[0], '').split(' ', 1)[0]
-      title = tt[0] + (!(sep === '.' || sep === ':') ? sep : '')
+      title = tt[0] + (sep === '.' || sep === ':' ? '' : sep)
       subtitle = capitalize(article.title?.replace(tt[0] + sep, ''), true)
     }
   }

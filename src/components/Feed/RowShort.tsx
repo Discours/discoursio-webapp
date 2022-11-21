@@ -4,22 +4,24 @@ import { ArticleCard } from './Card'
 
 export default (props: { articles: Shout[] }) => (
   <div class="floor floor--7">
-    <div class="wide-container row">
-      <For each={props.articles}>
-        {(a) => (
-          <div class="col-md-6 col-lg-3">
-            <ArticleCard
-              article={a}
-              settings={{
-                additionalClass: 'shout-card--content-top',
-                isWithCover: true,
-                isBigTitle: true,
-                isVertical: true
-              }}
-            />
-          </div>
-        )}
-      </For>
+    <div class="wide-container">
+      <div class="row">
+        <For each={props.articles}>
+          {(a) => (
+            <div class="col-md-6 col-lg-3">
+              <ArticleCard
+                article={a}
+                settings={{
+                  additionalClass: 'shout-card--content-top',
+                  isWithCover: true,
+                  isBigTitle: true,
+                  isVertical: true
+                }}
+              />
+            </div>
+          )}
+        </For>
+      </div>
     </div>
   </div>
 )

@@ -70,73 +70,73 @@ export const AuthorView = (props: AuthorProps) => {
   )
 
   return (
-    <div class="container author-page">
+    <div class="author-page">
       <Show when={author()} fallback={<div class="center">{t('Loading')}</div>}>
-        <AuthorFull author={author()} />
-        <div class="row group__controls">
-          <div class="col-md-8">
-            <ul class="view-switcher">
-              <li classList={{ selected: searchParams().by === 'rating' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
-                  {t('Popular')}
-                </button>
-              </li>
-              <li classList={{ selected: searchParams().by === 'followed' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
-                  {t('Followers')}
-                </button>
-              </li>
-              <li classList={{ selected: searchParams().by === 'commented' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
-                  {t('Discussing')}
-                </button>
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <div class="mode-switcher">
-              {`${t('Show')} `}
-              <span class="mode-switcher__control">{t('All posts')}</span>
+        <div class="wide-container">
+          <AuthorFull author={author()} />
+          <div class="row group__controls">
+            <div class="col-md-8">
+              <ul class="view-switcher">
+                <li classList={{ selected: searchParams().by === 'rating' }}>
+                  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
+                    {t('Popular')}
+                  </button>
+                </li>
+                <li classList={{ selected: searchParams().by === 'followed' }}>
+                  <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
+                    {t('Followers')}
+                  </button>
+                </li>
+                <li classList={{ selected: searchParams().by === 'commented' }}>
+                  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
+                    {t('Discussing')}
+                  </button>
+                </li>
+              </ul>
             </div>
+            <div class="col-md-4">
+              <div class="mode-switcher">
+                {`${t('Show')} `}
+                <span class="mode-switcher__control">{t('All posts')}</span>
+              </div>
+            </div>
+
+            <h3 class="col-12">{title()}</h3>
           </div>
         </div>
 
-        <h3 class="col-12">{title()}</h3>
+        <Beside
+          title={t('Topics which supported by author')}
+          values={topicsByAuthor()[author().slug].slice(0, 5)}
+          beside={sortedArticles()[0]}
+          wrapper={'topic'}
+          topicShortDescription={true}
+          isTopicCompact={true}
+          isTopicInRow={true}
+          iconButton={true}
+        />
+        <Row3 articles={sortedArticles().slice(1, 4)} />
+        <Row2 articles={sortedArticles().slice(4, 6)} />
+        <Row3 articles={sortedArticles().slice(6, 9)} />
+        <Row3 articles={sortedArticles().slice(9, 12)} />
 
-        <div class="row">
-          <Beside
-            title={t('Topics which supported by author')}
-            values={topicsByAuthor()[author().slug].slice(0, 5)}
-            beside={sortedArticles()[0]}
-            wrapper={'topic'}
-            topicShortDescription={true}
-            isTopicCompact={true}
-            isTopicInRow={true}
-            iconButton={true}
-          />
-          <Row3 articles={sortedArticles().slice(1, 4)} />
-          <Row2 articles={sortedArticles().slice(4, 6)} />
-          <Row3 articles={sortedArticles().slice(6, 9)} />
-          <Row3 articles={sortedArticles().slice(9, 12)} />
+        <For each={pages()}>
+          {(page) => (
+            <>
+              <Row3 articles={page.slice(0, 3)} />
+              <Row3 articles={page.slice(3, 6)} />
+              <Row3 articles={page.slice(6, 9)} />
+            </>
+          )}
+        </For>
 
-          <For each={pages()}>
-            {(page) => (
-              <>
-                <Row3 articles={page.slice(0, 3)} />
-                <Row3 articles={page.slice(3, 6)} />
-                <Row3 articles={page.slice(6, 9)} />
-              </>
-            )}
-          </For>
-
-          <Show when={isLoadMoreButtonVisible()}>
-            <p class="load-more-container">
-              <button class="button" onClick={loadMore}>
-                {t('Load more')}
-              </button>
-            </p>
-          </Show>
-        </div>
+        <Show when={isLoadMoreButtonVisible()}>
+          <p class="load-more-container">
+            <button class="button" onClick={loadMore}>
+              {t('Load more')}
+            </button>
+          </p>
+        </Show>
       </Show>
     </div>
   )

@@ -1,7 +1,7 @@
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 
-import styles from '../_shared/Popup.module.scss'
+import styles from '../_shared/Popup/Popup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 

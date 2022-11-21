@@ -116,31 +116,29 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   )
 
   return (
-    <div class={clsx(styles.allTopicsPage, 'container')}>
+    <div class={clsx(styles.allTopicsPage, 'wide-container')}>
       <div class="shift-content">
         <AllTopicsHead />
 
         <Show when={sortedTopics().length > 0 || searchResults().length > 0}>
           <Show when={searchParams().by === 'title'}>
-            <div class="row">
-              <div class="col-lg-10 col-xl-9">
-                <ul class={clsx('nodash', styles.alphabet)}>
-                  <For each={ALPHABET}>
-                    {(letter, index) => (
-                      <li>
-                        <Show when={letter in byLetter()} fallback={letter}>
-                          <a
-                            href={`/topics?by=title#letter-${index()}`}
-                            onClick={() => scrollHandler(`letter-${index()}`)}
-                          >
-                            {letter}
-                          </a>
-                        </Show>
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </div>
+            <div class="col-lg-10 col-xl-9">
+              <ul class={clsx('nodash', styles.alphabet)}>
+                <For each={ALPHABET}>
+                  {(letter, index) => (
+                    <li>
+                      <Show when={letter in byLetter()} fallback={letter}>
+                        <a
+                          href={`/topics?by=title#letter-${index()}`}
+                          onClick={() => scrollHandler(`letter-${index()}`)}
+                        >
+                          {letter}
+                        </a>
+                      </Show>
+                    </li>
+                  )}
+                </For>
+              </ul>
             </div>
 
             <For each={sortedKeys()}>
@@ -154,9 +152,8 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                           <For each={byLetter()[letter]}>
                             {(topic) => (
                               <div class={clsx(styles.topic, 'topic col-sm-6 col-md-4')}>
-                                <div class="topic-title">
-                                  <a href={`/topic/${topic.slug}`}>{topic.title}</a>
-                                </div>
+                                <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                                <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
                               </div>
                             )}
                           </For>
@@ -196,12 +193,10 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           </Show>
 
           <Show when={sortedTopics().length > limit()}>
-            <div class="row">
-              <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
-                <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                  {t('Load more')}
-                </button>
-              </div>
+            <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10 offset-md-1')}>
+              <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                {t('Load more')}
+              </button>
             </div>
           </Show>
         </Show>

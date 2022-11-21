@@ -1,7 +1,6 @@
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
-import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { useRouter } from '../../stores/router'
@@ -41,7 +40,7 @@ export const AllAuthorsView = (props: Props) => {
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce((acc, author) => {
       let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
-      if (!/[А-я]/i.test(letter) && locale() === 'ru') letter = '@'
+      if (!/[А-Я]/i.test(letter) && locale() === 'ru') letter = '@'
       if (!acc[letter]) acc[letter] = []
       acc[letter].push(author)
       return acc
@@ -111,7 +110,7 @@ export const AllAuthorsView = (props: Props) => {
     }
   }
   return (
-    <div class={clsx(styles.allTopicsPage, 'container')}>
+    <div class={clsx(styles.allTopicsPage, 'wide-container')}>
       <Show when={sortedAuthors().length > 0 || searchResults().length > 0}>
         <div class="shift-content">
           <AllAuthorsHead />
@@ -151,7 +150,7 @@ export const AllAuthorsView = (props: Props) => {
                               <div class={clsx(styles.topic, 'topic col-sm-6 col-md-4')}>
                                 <div class="topic-title">
                                   <a href={`/author/${author.slug}`}>{author.name}</a>
-                                  <sup>{author.stat.shouts}</sup>
+                                  <span class={styles.articlesCounter}>{author.stat.shouts}</span>
                                 </div>
                               </div>
                             )}
@@ -165,53 +164,51 @@ export const AllAuthorsView = (props: Props) => {
             </For>
           </Show>
 
-          <div class={styles.stats}>
-            <Show when={searchResults().length > 0}>
-              <For each={searchResults().slice(0, limit())}>
-                {(author) => (
-                  <AuthorCard
-                    author={author}
-                    compact={false}
-                    hasLink={true}
-                    subscribed={subscribed(author.slug)}
-                    noSocialButtons={true}
-                    isAuthorsList={true}
-                    truncateBio={true}
-                  />
-                )}
-              </For>
-            </Show>
+          <Show when={searchResults().length > 0}>
+            <For each={searchResults().slice(0, limit())}>
+              {(author) => (
+                <AuthorCard
+                  author={author}
+                  compact={false}
+                  hasLink={true}
+                  subscribed={subscribed(author.slug)}
+                  noSocialButtons={true}
+                  isAuthorsList={true}
+                  truncateBio={true}
+                />
+              )}
+            </For>
+          </Show>
 
-            <Show when={searchParams().by && searchParams().by !== 'name'}>
-              <div class="row">
-                <div class="col-lg-10 col-xl-9">
-                  <For each={sortedAuthors().slice(0, limit())}>
-                    {(author) => (
-                      <AuthorCard
-                        author={author}
-                        compact={false}
-                        hasLink={true}
-                        subscribed={subscribed(author.slug)}
-                        noSocialButtons={true}
-                        isAuthorsList={true}
-                        truncateBio={true}
-                      />
-                    )}
-                  </For>
-                </div>
+          <Show when={searchParams().by && searchParams().by !== 'name'}>
+            <div class={clsx(styles.stats, 'row')}>
+              <div class="col-lg-10 col-xl-9">
+                <For each={sortedAuthors().slice(0, limit())}>
+                  {(author) => (
+                    <AuthorCard
+                      author={author}
+                      compact={false}
+                      hasLink={true}
+                      subscribed={subscribed(author.slug)}
+                      noSocialButtons={true}
+                      isAuthorsList={true}
+                      truncateBio={true}
+                    />
+                  )}
+                </For>
               </div>
-            </Show>
+            </div>
+          </Show>
 
-            <Show when={sortedAuthors().length > limit()}>
-              <div class="row">
-                <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
-                  <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                    {t('Load more')}
-                  </button>
-                </div>
+          <Show when={sortedAuthors().length > limit()}>
+            <div class="row">
+              <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
+                <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                  {t('Load more')}
+                </button>
               </div>
-            </Show>
-          </div>
+            </div>
+          </Show>
         </div>
       </Show>
     </div>

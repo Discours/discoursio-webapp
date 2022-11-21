@@ -63,7 +63,7 @@ const routerStore = createRouter<Routes>(
 
 export const router = routerStore
 
-export const handleClientRouteLinkClick = (event) => {
+const handleClientRouteLinkClick = (event) => {
   const link = event.target.closest('a')
   if (
     link &&
@@ -96,6 +96,10 @@ export const initRouter = (pathname: string, search: string) => {
   routerStore.open(pathname)
   const params = Object.fromEntries(new URLSearchParams(search))
   searchParamsStore.open(params)
+
+  if (!isServer) {
+    document.addEventListener('click', handleClientRouteLinkClick)
+  }
 }
 
 if (!isServer) {
@@ -125,6 +129,7 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   return {
     page,
     searchParams,
-    changeSearchParam
+    changeSearchParam,
+    handleClientRouteLinkClick
   }
 }

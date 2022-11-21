@@ -2,7 +2,7 @@ import { PageWrap } from '../_shared/PageWrap'
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../Views/Author'
 import type { PageProps } from '../types'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { loadShoutsBy, resetSortedArticles } from '../../stores/zine/articles'
+import { loadShouts, resetSortedArticles } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 import { loadAuthor } from '../../stores/zine/authors'
 import { Loading } from '../Loading'
@@ -27,7 +27,7 @@ export const AuthorPage = (props: PageProps) => {
       return
     }
 
-    await loadShoutsBy({ by: { author: slug() }, limit: PRERENDERED_ARTICLES_COUNT })
+    await loadShouts({ filters: { author: slug() }, limit: PRERENDERED_ARTICLES_COUNT })
     await loadAuthor({ slug: slug() })
 
     setIsLoaded(true)

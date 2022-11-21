@@ -1,6 +1,5 @@
 import '../../styles/FeedSettings.scss'
 import { t } from '../../utils/intl'
-import { handleClientRouteLinkClick } from '../../stores/router'
 
 // type FeedSettingsSearchParams = {
 //   by: '' | 'topics' | 'authors' | 'reacted'
@@ -13,9 +12,7 @@ export const FeedSettingsView = (_props) => {
 
       <ul class="view-switcher">
         <li class="selected">
-          <a href="?by=topics" onClick={handleClientRouteLinkClick}>
-            {t('topics')}
-          </a>
+          <a href="?by=topics">{t('topics')}</a>
         </li>
         {/*<li>
           <a href="?by=collections" onClick={() => setBy('collections')}>
@@ -23,14 +20,10 @@ export const FeedSettingsView = (_props) => {
           </a>
   </li>*/}
         <li>
-          <a href="?by=authors" onClick={handleClientRouteLinkClick}>
-            {t('authors')}
-          </a>
+          <a href="?by=authors">{t('authors')}</a>
         </li>
         <li>
-          <a href="?by=reacted" onClick={handleClientRouteLinkClick}>
-            {t('reactions')}
-          </a>
+          <a href="?by=reacted">{t('reactions')}</a>
         </li>
       </ul>
 

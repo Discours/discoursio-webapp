@@ -12,11 +12,11 @@ export default gql`
       links
       createdAt
       lastSeen
-      ratings {
-        _id: rater
-        rater
-        value
-      }
+      # ratings {
+      #  _id: rater
+      #  rater
+      #  value
+      # }
     }
   }
 `

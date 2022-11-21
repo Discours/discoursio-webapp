@@ -4,10 +4,11 @@ import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
-import { handleClientRouteLinkClick, useRouter } from '../../stores/router'
+import { useRouter } from '../../stores/router'
 import styles from '../../styles/AllTopics.module.scss'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
+import { locale } from '../../stores/ui'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'rating'
@@ -35,18 +36,10 @@ export const AllAuthorsView = (props: Props) => {
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce((acc, author) => {
-      if (!author.name) {
-        // name === null for new users
-        return acc
-      }
-
-      const letter = author.name[0].toUpperCase()
-      if (!acc[letter]) {
-        acc[letter] = []
-      }
-
+      let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
+      if (!/[А-я]/i.test(letter) && locale() === 'ru') letter = '@'
+      if (!acc[letter]) acc[letter] = []
       acc[letter].push(author)
-
       return acc
     }, {} as { [letter: string]: Author[] })
   })
@@ -70,19 +63,13 @@ export const AllAuthorsView = (props: Props) => {
 
               <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                 <li classList={{ selected: searchParams().by === 'shouts' }}>
-                  <a href="/authors?by=shouts" onClick={handleClientRouteLinkClick}>
-                    {t('By shouts')}
-                  </a>
+                  <a href="/authors?by=shouts">{t('By shouts')}</a>
                 </li>
                 <li classList={{ selected: searchParams().by === 'rating' }}>
-                  <a href="/authors?by=rating" onClick={handleClientRouteLinkClick}>
-                    {t('By rating')}
-                  </a>
+                  <a href="/authors?by=rating">{t('By rating')}</a>
                 </li>
                 <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
-                  <a href="/authors" onClick={handleClientRouteLinkClick}>
-                    {t('By alphabet')}
-                  </a>
+                  <a href="/authors">{t('By alphabet')}</a>
                 </li>
                 <li class="view-switcher__search">
                   <a href="/authors/search">
@@ -109,6 +96,7 @@ export const AllAuthorsView = (props: Props) => {
                           subscribed={subscribed(author.slug)}
                           noSocialButtons={true}
                           isAuthorsList={true}
+                          truncateBio={true}
                         />
                       )}
                     </For>
@@ -118,7 +106,7 @@ export const AllAuthorsView = (props: Props) => {
                   <div class="row">
                     <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
                       <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                        {t('More')}
+                        {t('Load more')}
                       </button>
                     </div>
                   </div>

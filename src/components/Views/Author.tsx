@@ -5,7 +5,7 @@ import { Row3 } from '../Feed/Row3'
 import { AuthorFull } from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
+import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
@@ -18,7 +18,7 @@ type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  // FIXME author topics fro server
+  // FIXME author topics from server
   // topics: Topic[]
 }
 
@@ -42,8 +42,8 @@ export const AuthorView = (props: AuthorProps) => {
 
   const loadMore = async () => {
     saveScrollPosition()
-    const { hasMore } = await loadShoutsBy({
-      by: { author: author().slug },
+    const { hasMore } = await loadShouts({
+      filters: { author: author().slug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

@@ -2,7 +2,7 @@ import { Dynamic } from 'solid-js/web'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { t } from '../../../utils/intl'
 import { hideModal } from '../../../stores/ui'
-import { handleClientRouteLinkClick, useRouter } from '../../../stores/router'
+import { useRouter } from '../../../stores/router'
 import { clsx } from 'clsx'
 import styles from './AuthModal.module.scss'
 import { LoginForm } from './LoginForm'
@@ -57,9 +57,8 @@ export const AuthModal = () => {
             {t('By signing up you agree with our')}{' '}
             <a
               href="/about/terms-of-use"
-              onClick={(event) => {
+              onClick={() => {
                 hideModal()
-                handleClientRouteLinkClick(event)
               }}
             >
               {t('terms of use')}

@@ -11,10 +11,9 @@ import RowShort from '../Feed/RowShort'
 import Slider from '../Feed/Slider'
 import Group from '../Feed/Group'
 import type { Shout, Topic } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { loadShoutsBy, useArticlesStore } from '../../stores/zine/articles'
+import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
@@ -48,8 +47,7 @@ export const HomeView = (props: HomeProps) => {
 
   onMount(async () => {
     if (sortedArticles().length < PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT) {
-      const { hasMore } = await loadShoutsBy({
-        by: {},
+      const { hasMore } = await loadShouts({
         limit: CLIENT_LOAD_ARTICLES_COUNT,
         offset: sortedArticles().length
       })
@@ -69,14 +67,7 @@ export const HomeView = (props: HomeProps) => {
 
     return (
       <Show when={Boolean(selectedRandomLayout)}>
-        <Group
-          articles={articlesByLayout()[selectedRandomLayout]}
-          header={
-            <div class="layout-icon">
-              <Icon name={selectedRandomLayout} />
-            </div>
-          }
-        />
+        <Group articles={articlesByLayout()[selectedRandomLayout]} header={''} />
       </Show>
     )
   })
@@ -84,8 +75,8 @@ export const HomeView = (props: HomeProps) => {
   const loadMore = async () => {
     saveScrollPosition()
 
-    const { hasMore } = await loadShoutsBy({
-      by: { visibility: 'public' },
+    const { hasMore } = await loadShouts({
+      filters: { visibility: 'public' },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

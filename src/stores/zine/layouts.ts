@@ -1,6 +1,5 @@
-import type { Shout, ShoutsBy } from '../../graphql/types.gen'
+import type { Shout, LoadShoutsOptions } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
-import { useArticlesStore } from './articles'
 import { createSignal } from 'solid-js'
 
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
@@ -22,27 +21,18 @@ export const resetSortedLayoutShouts = () => {
   setSortedLayoutShouts(new Map())
 }
 
-export const loadLayoutShoutsBy = async ({
-  by,
-  limit,
-  offset
-}: {
-  by: ShoutsBy
-  limit?: number
-  offset?: number
-}): Promise<{ hasMore: boolean }> => {
-  const newLayoutShouts = await apiClient.loadShoutsBy({
-    by,
-    limit: limit + 1,
-    offset
+export const loadLayoutShoutsBy = async (options: LoadShoutsOptions): Promise<{ hasMore: boolean }> => {
+  const newLayoutShouts = await apiClient.getShouts({
+    ...options,
+    limit: options.limit + 1
   })
 
-  const hasMore = newLayoutShouts.length === limit + 1
+  const hasMore = newLayoutShouts.length === options.limit + 1
 
   if (hasMore) {
     newLayoutShouts.splice(-1)
   }
-  addLayoutShouts(by.layout as LayoutType, newLayoutShouts)
+  addLayoutShouts(options.filters.layout as LayoutType, newLayoutShouts)
 
   return { hasMore }
 }

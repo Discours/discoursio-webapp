@@ -80,6 +80,14 @@ export type ChatMember = {
   userpic?: Maybe<Scalars['String']>
 }
 
+export type ChatUser = {
+  id: Scalars['Int']
+  lastSeen?: Maybe<Scalars['DateTime']>
+  name: Scalars['String']
+  slug: Scalars['String']
+  userpic?: Maybe<Scalars['String']>
+}
+
 export type Collab = {
   authors: Array<Maybe<Scalars['String']>>
   body?: Maybe<Scalars['String']>
@@ -114,6 +122,25 @@ export enum FollowingEntity {
   Community = 'COMMUNITY',
   Reactions = 'REACTIONS',
   Topic = 'TOPIC'
+}
+
+export type LoadShoutsFilters = {
+  author?: InputMaybe<Scalars['String']>
+  body?: InputMaybe<Scalars['String']>
+  days?: InputMaybe<Scalars['Int']>
+  layout?: InputMaybe<Scalars['String']>
+  reacted?: InputMaybe<Scalars['Boolean']>
+  title?: InputMaybe<Scalars['String']>
+  topic?: InputMaybe<Scalars['String']>
+  visibility?: InputMaybe<Scalars['String']>
+}
+
+export type LoadShoutsOptions = {
+  filters?: InputMaybe<LoadShoutsFilters>
+  limit: Scalars['Int']
+  offset?: InputMaybe<Scalars['Int']>
+  order_by?: InputMaybe<Scalars['String']>
+  order_by_desc?: InputMaybe<Scalars['Boolean']>
 }
 
 export type Message = {
@@ -183,7 +210,7 @@ export type MutationCreateChatArgs = {
 
 export type MutationCreateMessageArgs = {
   body: Scalars['String']
-  chatId: Scalars['String']
+  chat: Scalars['String']
   replyTo?: InputMaybe<Scalars['String']>
 }
 
@@ -317,15 +344,17 @@ export type ProfileInput = {
 
 export type Query = {
   authorsAll: Array<Maybe<Author>>
-  getAuthor: User
+  chatUsersAll: Array<Maybe<ChatUser>>
+  getAuthor?: Maybe<User>
   getCollabs: Array<Maybe<Collab>>
-  getTopic: Topic
+  getTopic?: Maybe<Topic>
   isEmailUsed: Scalars['Boolean']
   loadAuthorsBy: Array<Maybe<Author>>
   loadChats: Result
   loadMessagesBy: Result
   loadReactionsBy: Array<Maybe<Reaction>>
-  loadShoutsBy: Array<Maybe<Shout>>
+  loadShout?: Maybe<Shout>
+  loadShouts: Array<Maybe<Shout>>
   markdownBody: Scalars['String']
   searchUsers: Result
   signIn: AuthResult
@@ -352,8 +381,8 @@ export type QueryIsEmailUsedArgs = {
 }
 
 export type QueryLoadAuthorsByArgs = {
-  limit?: InputMaybe<Scalars['Int']>
   by?: InputMaybe<AuthorsBy>
+  limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
 }
 
@@ -363,21 +392,23 @@ export type QueryLoadChatsArgs = {
 }
 
 export type QueryLoadMessagesByArgs = {
-  limit?: InputMaybe<Scalars['Int']>
   by: MessagesBy
+  limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QueryLoadReactionsByArgs = {
-  offset?: InputMaybe<Scalars['Int']>
   by: ReactionBy
   limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
 }
 
-export type QueryLoadShoutsByArgs = {
-  limit?: InputMaybe<Scalars['Int']>
-  by?: InputMaybe<ShoutsBy>
-  offset?: InputMaybe<Scalars['Int']>
+export type QueryLoadShoutArgs = {
+  slug: Scalars['String']
+}
+
+export type QueryLoadShoutsArgs = {
+  options?: InputMaybe<LoadShoutsOptions>
 }
 
 export type QueryMarkdownBodyArgs = {
@@ -563,12 +594,12 @@ export type ShoutInput = {
   visibleForUsers?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
 }
 
-export type ShoutsBy = {
+export type ShoutsFilterBy = {
   author?: InputMaybe<Scalars['String']>
+  authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   body?: InputMaybe<Scalars['String']>
   days?: InputMaybe<Scalars['Int']>
   layout?: InputMaybe<Scalars['String']>
-  order?: InputMaybe<Scalars['String']>
   slug?: InputMaybe<Scalars['String']>
   stat?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>

@@ -6,8 +6,8 @@ import { initRouter } from '../../../stores/router'
 import { PRERENDERED_ARTICLES_COUNT } from '../../../components/Views/Author'
 
 const slug = Astro.params.slug.toString()
-const shouts = await apiClient.loadShoutsBy({ by: { authors: [slug] } , limit: PRERENDERED_ARTICLES_COUNT })
-const author = await apiClient.loadAuthorsBy({ by: { slug } })
+const shouts = await apiClient.getShouts({ filters: { author: slug }, limit: PRERENDERED_ARTICLES_COUNT })
+const author = await apiClient.getAuthorsBy({ by: { slug } })
 
 const { pathname, search } = Astro.url
 initRouter(pathname, search)

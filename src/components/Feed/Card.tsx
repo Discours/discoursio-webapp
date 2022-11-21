@@ -6,7 +6,6 @@ import { translit } from '../../utils/ru2en'
 import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
 import { locale } from '../../stores/ui'
-import { handleClientRouteLinkClick } from '../../stores/router'
 import { clsx } from 'clsx'
 import CardTopic from './CardTopic'
 
@@ -29,6 +28,7 @@ interface ArticleCardProps {
     withBorder?: boolean
     isCompact?: boolean
     isSingle?: boolean
+    isBeside?: boolean
   }
   article: Shout
 }
@@ -82,7 +82,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardVertical]: props.settings?.isVertical,
         [styles.shoutCardWithBorder]: props.settings?.withBorder,
         [styles.shoutCardCompact]: props.settings?.isCompact,
-        [styles.shoutCardSingle]: props.settings?.isSingle
+        [styles.shoutCardSingle]: props.settings?.isSingle,
+        [styles.shoutCardBeside]: props.settings?.isBeside
       }}
     >
       <Show when={!props.settings?.noimage && cover}>
@@ -113,7 +114,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
 
         <div class={styles.shoutCardTitlesContainer}>
-          <a href={`/${slug || ''}`} onClick={handleClientRouteLinkClick}>
+          <a href={`/${slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkContainer}>{title}</span>
             </div>

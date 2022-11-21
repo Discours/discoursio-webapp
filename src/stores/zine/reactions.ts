@@ -16,7 +16,7 @@ export const loadReactionsBy = async ({
   limit?: number
   offset?: number
 }): Promise<{ hasMore: boolean }> => {
-  const data = await apiClient.loadReactionsBy({ by, limit: limit + 1, offset })
+  const data = await apiClient.getReactionsBy({ by, limit: limit + 1, offset })
   const hasMore = data.length === limit + 1
   if (hasMore) data.splice(-1)
   // TODO: const [data, provider] = roomConnect(articleSlug, username, "reactions")

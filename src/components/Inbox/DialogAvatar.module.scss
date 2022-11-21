@@ -32,4 +32,13 @@
     line-height: 10px;
     color: #fff;
   }
+
+  &.small {
+    width: 24px;
+    height: 24px;
+
+    > .letter {
+      font-size: 14px;
+    }
+  }
 }

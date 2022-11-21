@@ -4,9 +4,10 @@ import styles from './DialogAvatar.module.scss'
 import { clsx } from 'clsx'
 
 type Props = {
-  url: string
   name: string
+  url?: string
   online?: boolean
+  size?: 'small'
 }
 
 const colors = [
@@ -35,7 +36,7 @@ const DialogAvatar = (props: Props) => {
 
   return (
     <div
-      class={clsx(styles.DialogAvatar, props.online && styles.online)}
+      class={clsx(styles.DialogAvatar, props.online && styles.online, `${styles[props.size]}`)}
       style={{ 'background-color': `${randomBg()}` }}
     >
       <Show when={props.url} fallback={() => <div class={styles.letter}>{nameFirstLetter}</div>}>

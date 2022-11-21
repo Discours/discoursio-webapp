@@ -15,6 +15,8 @@ import { createClient } from '@urql/core'
 import { findAndLoadGraphQLConfig } from '@graphql-codegen/cli'
 // import { useAuthStore } from '../../stores/auth'
 import { useSession } from '../../context/session'
+import { SVGNamespace } from 'solid-js/web'
+import Message from '../Inbox/Message'
 
 const md = new MarkdownIt({
   linkify: true
@@ -171,25 +173,7 @@ export const InboxView = () => {
               </Show>
               <For each={messages()}>
                 {(comment: { body: string; id: string; email: string }) => (
-                  <div
-                    class={`conversation__message-container
-                  ${
-                    OWNER_ID === comment.id
-                      ? 'conversation__message-container--own'
-                      : 'conversation__message-container--other'
-                  }`}
-                  >
-                    <div class="conversation__message">
-                      <div innerHTML={md.render(comment.body)} />
-                      <div class="conversation__message-details">
-                        <time>14:26</time>
-                        {comment.email} id: {comment.id}
-                      </div>
-                      <button class="conversation__context-popup-control">
-                        <Icon name="ellipsis" />
-                      </button>
-                    </div>
-                  </div>
+                  <Message body={comment.body} isOwn={OWNER_ID === comment.id} />
                 )}
               </For>
 

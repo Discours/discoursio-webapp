@@ -1,6 +1,5 @@
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
@@ -10,6 +9,8 @@ import { useSession } from '../../context/session'
 import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
 import styles from '../../styles/AllTopics.module.scss'
+import { SearchField } from '../_shared/SearchField'
+import { scrollHandler } from '../../utils/scroll'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -20,6 +21,7 @@ type AllTopicsViewProps = {
 }
 
 const PAGE_SIZE = 20
+const ALPHABET = [...'#АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ']
 
 export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
@@ -56,12 +58,11 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
-  let searchEl: HTMLInputElement
   const [searchResults, setSearchResults] = createSignal<Topic[]>([])
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const searchTopics = () => {
+  const searchTopics = (value) => {
     /* very stupid search algorithm with no deps */
-    let q = searchEl.value.toLowerCase()
+    let q = value.toLowerCase()
     if (q.length > 0) {
       console.debug(q)
       setSearchResults([])
@@ -104,34 +105,46 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             <a href="/topics?by=authors">{t('By authors')}</a>
           </li>
           <li classList={{ selected: searchParams().by === 'title' }}>
-            <a href="/topics?by=title">{t('By alphabet')}</a>
+            <a href="/topics?by=title">{t('By title')}</a>
           </li>
-          <li class="search-switcher">
-            <Icon name="search" />
-            <input
-              class="search-input"
-              ref={searchEl}
-              onChange={searchTopics}
-              onInput={searchTopics}
-              onFocus={() => (searchEl.innerHTML = '')}
-              placeholder={t('Search')}
-            />
+          <li class="view-switcher__search">
+            <SearchField onChange={searchTopics} />
           </li>
         </ul>
       </div>
     </div>
   )
-  return (
-    <div class={clsx(styles.allTopicsPage, 'container')}>
-      <AllTopicsHead />
 
+  return (
+    <div class={clsx(styles.allTopicsPage, 'wide-container')}>
       <div class="shift-content">
+        <AllTopicsHead />
+
         <Show when={sortedTopics().length > 0 || searchResults().length > 0}>
           <Show when={searchParams().by === 'title'}>
+            <div class="col-lg-10 col-xl-9">
+              <ul class={clsx('nodash', styles.alphabet)}>
+                <For each={ALPHABET}>
+                  {(letter, index) => (
+                    <li>
+                      <Show when={letter in byLetter()} fallback={letter}>
+                        <a
+                          href={`/topics?by=title#letter-${index()}`}
+                          onClick={() => scrollHandler(`letter-${index()}`)}
+                        >
+                          {letter}
+                        </a>
+                      </Show>
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </div>
+
             <For each={sortedKeys()}>
-              {(letter) => (
+              {(letter, index) => (
                 <div class={clsx(styles.group, 'group')}>
-                  <h2>{letter}</h2>
+                  <h2 id={`letter-${index()}`}>{letter}</h2>
                   <div class="container">
                     <div class="row">
                       <div class="col-lg-10">
@@ -139,9 +152,8 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                           <For each={byLetter()[letter]}>
                             {(topic) => (
                               <div class={clsx(styles.topic, 'topic col-sm-6 col-md-4')}>
-                                <div class="topic-title">
-                                  <a href={`/topic/${topic.slug}`}>{topic.title}</a>
-                                </div>
+                                <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                                <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
                               </div>
                             )}
                           </For>
@@ -167,20 +179,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </For>
           </Show>
 
-          <Show when={searchParams().by === 'authors'}>
-            <For each={sortedTopics().slice(0, limit())}>
-              {(topic) => (
-                <TopicCard
-                  topic={topic}
-                  compact={false}
-                  subscribed={subscribed(topic.slug)}
-                  showPublications={true}
-                />
-              )}
-            </For>
-          </Show>
-
-          <Show when={searchParams().by === 'shouts'}>
+          <Show when={searchParams().by && searchParams().by !== 'title'}>
             <For each={sortedTopics().slice(0, limit())}>
               {(topic) => (
                 <TopicCard
@@ -194,12 +193,10 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           </Show>
 
           <Show when={sortedTopics().length > limit()}>
-            <div class="row">
-              <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
-                <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                  {t('Load more')}
-                </button>
-              </div>
+            <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10 offset-md-1')}>
+              <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                {t('Load more')}
+              </button>
             </div>
           </Show>
         </Show>

@@ -11,8 +11,8 @@ export default gql`
       links
       lastSeen
       stat {
+        shouts
         followers
-        followings
       }
     }
   }

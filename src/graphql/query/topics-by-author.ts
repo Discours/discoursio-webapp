@@ -12,7 +12,6 @@ export default gql`
         _id: shouts
         shouts
         authors
-        # viewed
         followers
       }
     }

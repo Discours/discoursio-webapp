@@ -1,8 +1,10 @@
 import { cacheExchange, CacheExchangeOpts } from '@urql/exchange-graphcache'
-// import schema from './introspec.gen'
 
+// import schema from './introspec.gen'
+// NOTE: include codegened introspection schema when needed
+
+// TODO: use urql-provided caching
 export const cache = cacheExchange({
-  // TODO: include introspection schema when needed
   keys: {
     Shout: (data) => data.slug,
     Author: (data) => data.slug,

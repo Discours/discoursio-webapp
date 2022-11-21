@@ -1,6 +1,7 @@
 .allTopicsPage {
   .group {
     @include font-size(1.6rem);
+
     margin: 3em 0 9.6rem;
 
     @include media-breakpoint-down(sm) {
@@ -50,7 +51,7 @@
 }
 
 .alphabet {
-  color: rgba(0, 0, 0, 0.2);
+  color: rgba(0 0 0 / 20%);
   display: flex;
   flex-wrap: wrap;
   font-weight: 700;

@@ -1,7 +1,6 @@
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
-import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
 import { useRouter } from '../../stores/router'

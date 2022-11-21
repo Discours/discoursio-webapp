@@ -16,14 +16,7 @@ const ARTICLE_COMMENTS_PAGE_SIZE = 50
 export const ArticleView = (props: ArticlePageProps) => {
   const [getCommentsPage] = createSignal(1)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
-  const {
-    reactionsByShout,
-    sortedReactions,
-    createReaction,
-    updateReaction,
-    deleteReaction,
-    loadReactionsBy
-  } = useReactionsStore({ reactions: props.reactions })
+  const { reactionsByShout, loadReactionsBy } = useReactionsStore({ reactions: props.reactions })
 
   createEffect(async () => {
     try {

@@ -22,7 +22,7 @@ export const ArticleView = (props: ArticlePageProps) => {
     try {
       setIsCommentsLoading(true)
       await loadReactionsBy({
-        by: { shout: props.article.slug },
+        by: { shout: props.article.slug, comment: true },
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
         offset: getCommentsPage() * ARTICLE_COMMENTS_PAGE_SIZE
       })

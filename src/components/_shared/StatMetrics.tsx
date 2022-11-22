@@ -15,7 +15,7 @@ const pseudonames = {
   comments: 'discussions'
 }
 
-const nos = (s) => s.slice(0, s.length - 1)
+const nos = (s) => s.slice(0, -1)
 
 export const StatMetrics = (props: StatMetricsProps) => {
   return (

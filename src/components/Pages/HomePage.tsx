@@ -1,4 +1,4 @@
-import { HomeView, PRERENDERED_ARTICLES_COUNT } from '../Views/Home'
+import { HomeView, PRERENDERED_ARTICLES_COUNT, RANDOM_TOPICS_COUNT } from '../Views/Home'
 import { PageWrap } from '../_shared/PageWrap'
 import type { PageProps } from '../types'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
@@ -15,8 +15,8 @@ export const HomePage = (props: PageProps) => {
       return
     }
 
-    await loadShouts({ filters: { visibility: 'public' }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 })
-    await loadRandomTopics()
+    await loadShouts({ filters: { visibility: 'public' }, limit: PRERENDERED_ARTICLES_COUNT })
+    await loadRandomTopics({ amount: RANDOM_TOPICS_COUNT })
 
     setIsLoaded(true)
   })

@@ -32,8 +32,8 @@ export default gql`
       createdAt
       publishedAt
       stat {
-        _id: viewed
-        viewed
+        # _id: viewed
+        # viewed
         reacted
         rating
       }

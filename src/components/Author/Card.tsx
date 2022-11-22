@@ -9,6 +9,7 @@ import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
+import { StatMetrics } from '../_shared/StatMetrics'
 
 interface AuthorCardProps {
   caption?: string
@@ -69,9 +70,11 @@ export const AuthorCard = (props: AuthorCardProps) => {
 
           <Show when={!props.hideDescription}>
             {props.isAuthorsList}
-            <div class={styles.authorAbout} classList={{ 'text-truncate': props.truncateBio }}>
-              {bio()}
-            </div>
+            <div
+              class={styles.authorAbout}
+              classList={{ 'text-truncate': props.truncateBio }}
+              innerHTML={props.caption || bio()}
+            ></div>
           </Show>
         </div>
 

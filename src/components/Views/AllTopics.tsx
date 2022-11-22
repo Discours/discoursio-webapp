@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
@@ -11,6 +11,7 @@ import { translit } from '../../utils/ru2en'
 import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
+import { StatMetrics } from '../_shared/StatMetrics'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -34,6 +35,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const { session } = useSession()
 
+  onMount(() => changeSearchParam('by', 'shouts'))
   createEffect(() => {
     setTopicsSort(searchParams().by || 'shouts')
     setLimit(PAGE_SIZE)
@@ -182,12 +184,15 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           <Show when={searchParams().by && searchParams().by !== 'title'}>
             <For each={sortedTopics().slice(0, limit())}>
               {(topic) => (
-                <TopicCard
-                  topic={topic}
-                  compact={false}
-                  subscribed={subscribed(topic.slug)}
-                  showPublications={true}
-                />
+                <>
+                  <TopicCard
+                    topic={topic}
+                    compact={false}
+                    subscribed={subscribed(topic.slug)}
+                    showPublications={true}
+                  />
+                  <StatMetrics fields={['shouts', 'authors', 'followers']} stat={topic.stat} />
+                </>
               )}
             </For>
           </Show>

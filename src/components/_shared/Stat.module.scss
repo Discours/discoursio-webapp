@@ -1,0 +1,34 @@
+.statMetrics {
+  @include font-size(1.7rem);
+
+  color: #9fa1a7;
+  display: flex;
+  margin-bottom: 1em;
+
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+  }
+}
+
+.statMetricsItem {
+  @include font-size(1.5rem);
+
+  margin-right: 1.6rem;
+  white-space: nowrap;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &.compact {
+    font-size: small;
+  }
+
+  &.followers {
+    word-break: keep-all;
+  }
+
+  &.button {
+    float: right;
+  }
+}

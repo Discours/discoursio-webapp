@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
@@ -11,9 +11,10 @@ import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
+import { StatMetrics } from '../_shared/StatMetrics'
 
 type AllAuthorsPageSearchParams = {
-  by: '' | 'name' | 'shouts' | 'rating'
+  by: '' | 'name' | 'shouts' | 'followers'
 }
 
 type Props = {
@@ -24,23 +25,27 @@ const PAGE_SIZE = 20
 const ALPHABET = [...'@АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ']
 
 export const AllAuthorsView = (props: Props) => {
-  const { sortedAuthors } = useAuthorsStore({ authors: props.authors })
   const [limit, setLimit] = createSignal(PAGE_SIZE)
+  const { searchParams, changeSearchParam } = useRouter<AllAuthorsPageSearchParams>()
+  const { sortedAuthors } = useAuthorsStore({
+    authors: props.authors,
+    sortBy: searchParams().by || 'shouts'
+  })
 
   const { session } = useSession()
 
+  onMount(() => changeSearchParam('by', 'shouts'))
   createEffect(() => {
     setAuthorsSort(searchParams().by || 'shouts')
+    setLimit(PAGE_SIZE)
   })
 
   const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
 
-  const { searchParams, changeSearchParam } = useRouter<AllAuthorsPageSearchParams>()
-
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce((acc, author) => {
       let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
-      if (!/[А-Я]/i.test(letter) && locale() === 'ru') letter = '@'
+      if (!/[А-я]/i.test(letter) && locale() === 'ru') letter = '@'
       if (!acc[letter]) acc[letter] = []
       acc[letter].push(author)
       return acc
@@ -64,8 +69,8 @@ export const AllAuthorsView = (props: Props) => {
           <li classList={{ selected: searchParams().by === 'shouts' }}>
             <a href="/authors?by=shouts">{t('By shouts')}</a>
           </li>
-          <li classList={{ selected: searchParams().by === 'rating' }}>
-            <a href="/authors?by=rating">{t('By rating')}</a>
+          <li classList={{ selected: searchParams().by === 'followers' }}>
+            <a href="/authors?by=followers">{t('By rating')}</a>
           </li>
           <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
             <a href="/authors?by=name">{t('By name')}</a>
@@ -167,15 +172,18 @@ export const AllAuthorsView = (props: Props) => {
           <Show when={searchResults().length > 0}>
             <For each={searchResults().slice(0, limit())}>
               {(author) => (
-                <AuthorCard
-                  author={author}
-                  compact={false}
-                  hasLink={true}
-                  subscribed={subscribed(author.slug)}
-                  noSocialButtons={true}
-                  isAuthorsList={true}
-                  truncateBio={true}
-                />
+                <>
+                  <AuthorCard
+                    author={author}
+                    compact={false}
+                    hasLink={true}
+                    subscribed={subscribed(author.slug)}
+                    noSocialButtons={true}
+                    isAuthorsList={true}
+                    truncateBio={true}
+                  />
+                  <StatMetrics fields={['shouts', 'followers', 'comments']} stat={author.stat} />
+                </>
               )}
             </For>
           </Show>
@@ -185,15 +193,18 @@ export const AllAuthorsView = (props: Props) => {
               <div class="col-lg-10 col-xl-9">
                 <For each={sortedAuthors().slice(0, limit())}>
                   {(author) => (
-                    <AuthorCard
-                      author={author}
-                      compact={false}
-                      hasLink={true}
-                      subscribed={subscribed(author.slug)}
-                      noSocialButtons={true}
-                      isAuthorsList={true}
-                      truncateBio={true}
-                    />
+                    <>
+                      <AuthorCard
+                        author={author}
+                        compact={false}
+                        hasLink={true}
+                        subscribed={subscribed(author.slug)}
+                        noSocialButtons={true}
+                        isAuthorsList={true}
+                        truncateBio={true}
+                      />
+                      <StatMetrics fields={['shouts', 'followers', 'comments']} stat={author.stat} />
+                    </>
                   )}
                 </For>
               </div>

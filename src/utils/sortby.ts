@@ -27,7 +27,6 @@ export const byLength = (
   return 0
 }
 
-// TODO more typing
 export const byStat = (metric: keyof Stat) => {
   return (a, b) => {
     const x = (a?.stat && a.stat[metric]) || 0

@@ -2,8 +2,9 @@ import { apiClient } from '../../utils/apiClient'
 import type { Author } from '../../graphql/types.gen'
 import { createSignal } from 'solid-js'
 import { createLazyMemo } from '@solid-primitives/memo'
+import { byStat } from '../../utils/sortby'
 
-export type AuthorsSortBy = 'shouts' | 'name' | 'rating'
+export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
 
 const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('shouts')
 
@@ -15,21 +16,15 @@ const [authorsByTopic, setAuthorsByTopic] = createSignal<{ [topicSlug: string]: 
 const sortedAuthors = createLazyMemo(() => {
   const authors = Object.values(authorEntities())
   switch (sortAllBy()) {
-    // case 'created': {
-    //   log.debug('sorted by created')
-    //   authors.sort(byCreated)
-    //   break
-    // }
-    case 'rating': {
-      // TODO:
+    case 'followers': {
+      authors.sort(byStat('followers'))
       break
     }
     case 'shouts': {
-      // TODO:
+      authors.sort(byStat('shouts'))
       break
     }
     case 'name': {
-      console.debug('sorted by name')
       authors.sort((a, b) => a.name.localeCompare(b.name))
       break
     }
@@ -84,9 +79,13 @@ export const loadAllAuthors = async (): Promise<void> => {
 
 type InitialState = {
   authors?: Author[]
+  sortBy?: AuthorsSortBy
 }
 
 export const useAuthorsStore = (initialState: InitialState = {}) => {
+  if (initialState.sortBy) {
+    setSortAllBy(initialState.sortBy)
+  }
   addAuthors([...(initialState.authors || [])])
 
   return { authorEntities, sortedAuthors, authorsByTopic }

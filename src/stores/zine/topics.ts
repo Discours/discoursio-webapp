@@ -94,8 +94,8 @@ export const loadAllTopics = async (): Promise<void> => {
   addTopics(topics)
 }
 
-export const loadRandomTopics = async (): Promise<void> => {
-  const topics = await apiClient.getRandomTopics({ amount: 12 })
+export const loadRandomTopics = async ({ amount }: { amount: number }): Promise<void> => {
+  const topics = await apiClient.getRandomTopics({ amount })
   setRandomTopics(topics)
 }
 

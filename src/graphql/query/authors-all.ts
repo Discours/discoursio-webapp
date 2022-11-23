@@ -13,6 +13,7 @@ export default gql`
       stat {
         shouts
         followers
+        comments: commented
       }
     }
   }

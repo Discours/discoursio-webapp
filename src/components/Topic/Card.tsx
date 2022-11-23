@@ -1,14 +1,14 @@
-import { capitalize, plural } from '../../utils'
+import { capitalize } from '../../utils'
 import styles from './Card.module.scss'
 import { createMemo, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
+import { StatMetrics } from '../_shared/StatMetrics'
 
 const log = getLogger('TopicCard')
 
@@ -72,54 +72,6 @@ export const TopicCard = (props: TopicProps) => {
             classList={{ 'topic-description--short': props.shortDescription }}
           >
             {props.topic.body}
-          </div>
-        </Show>
-
-        <Show when={props.topic?.stat}>
-          <div class={styles.topicDetails}>
-            <Show when={props.showPublications}>
-              <span class={styles.topicDetailsItem} classList={{ compact: props.compact }}>
-                {props.topic.stat?.shouts +
-                  ' ' +
-                  t('post') +
-                  plural(
-                    props.topic.stat?.shouts || 0,
-                    locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
-                  )}
-              </span>
-            </Show>
-            <Show when={!props.compact}>
-              <span class={styles.topicDetailsItem} classList={{ compact: props.compact }}>
-                {props.topic.stat?.authors +
-                  ' ' +
-                  t('author') +
-                  plural(
-                    props.topic.stat?.authors || 0,
-                    locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
-                  )}
-              </span>
-              <span class={styles.topicDetailsItem} classList={{ compact: props.compact }}>
-                {props.topic.stat?.followers +
-                  ' ' +
-                  t('follower') +
-                  plural(
-                    props.topic.stat?.followers || 0,
-                    locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']
-                  )}
-              </span>
-              {/*FIXME*/}
-              {/*<Show when={false && !props.subscribeButtonBottom}>*/}
-              {/*  <span class='topic-details__item'>*/}
-              {/*    {topic().stat?.viewed +*/}
-              {/*      ' ' +*/}
-              {/*      t('view') +*/}
-              {/*      plural(*/}
-              {/*        topic().stat?.viewed || 0,*/}
-              {/*        locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's']*/}
-              {/*      )}*/}
-              {/*  </span>*/}
-              {/*</Show>*/}
-            </Show>
           </div>
         </Show>
       </div>

@@ -166,6 +166,7 @@
   }
 
   .icon {
+    display: inline-block;
     margin-right: 0.5em;
   }
 
@@ -206,6 +207,7 @@
     background-color: #000;
     border-color: #000;
     border-radius: 0.8rem;
+    color: #fff;
     float: none;
     padding-bottom: 0.6rem;
     padding-top: 0.6rem;

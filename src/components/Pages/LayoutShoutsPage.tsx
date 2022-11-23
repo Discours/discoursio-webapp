@@ -70,7 +70,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   const ModeSwitcher = () => (
-    <div class="container">
+    <div class="wide-container">
       <div class={clsx(styles.groupControls, 'row group__controls')}>
         <div class="col-md-8">
           <ul class="view-switcher">

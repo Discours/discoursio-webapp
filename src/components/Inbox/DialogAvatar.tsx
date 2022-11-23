@@ -40,7 +40,7 @@ const DialogAvatar = (props: Props) => {
       style={{ 'background-color': `${randomBg()}` }}
     >
       <Show when={props.url} fallback={() => <div class={styles.letter}>{nameFirstLetter}</div>}>
-        <img src={props.url} alt={props.name} />
+        <div class={styles.imageHolder} style={{ 'background-image': `url(${props.url})` }} />
       </Show>
     </div>
   )

@@ -4,7 +4,7 @@ import type { PageProps } from '../types'
 
 export const InboxPage = (props: PageProps) => {
   return (
-    <PageWrap>
+    <PageWrap hideFooter={true}>
       <InboxView />
     </PageWrap>
   )

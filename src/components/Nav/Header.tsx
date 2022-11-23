@@ -129,7 +129,7 @@ export const Header = (props: Props) => {
                 containerCssClass={styles.control}
                 trigger={<Icon name="share-outline" class={styles.icon} />}
               />
-              <a href="#comments" class={styles.control}>
+              <a href={'/inbox'} class={styles.control}>
                 <Icon name="comments-outline" class={styles.icon} />
               </a>
               <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>

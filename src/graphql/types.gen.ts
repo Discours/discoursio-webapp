@@ -35,10 +35,10 @@ export type Author = {
 }
 
 export type AuthorStat = {
-  rating?: Maybe<Scalars['Int']>
   commented?: Maybe<Scalars['Int']>
   followers?: Maybe<Scalars['Int']>
   followings?: Maybe<Scalars['Int']>
+  rating?: Maybe<Scalars['Int']>
   shouts?: Maybe<Scalars['Int']>
 }
 
@@ -74,15 +74,9 @@ export type ChatInput = {
 }
 
 export type ChatMember = {
+  id: Scalars['Int']
   invitedAt?: Maybe<Scalars['DateTime']>
   invitedBy?: Maybe<Scalars['String']>
-  name: Scalars['String']
-  slug: Scalars['String']
-  userpic?: Maybe<Scalars['String']>
-}
-
-export type ChatUser = {
-  id: Scalars['Int']
   lastSeen?: Maybe<Scalars['DateTime']>
   name: Scalars['String']
   slug: Scalars['String']
@@ -345,7 +339,6 @@ export type ProfileInput = {
 
 export type Query = {
   authorsAll: Array<Maybe<Author>>
-  chatUsersAll: Array<Maybe<ChatUser>>
   getAuthor?: Maybe<User>
   getCollabs: Array<Maybe<Collab>>
   getTopic?: Maybe<Topic>
@@ -354,10 +347,11 @@ export type Query = {
   loadChats: Result
   loadMessagesBy: Result
   loadReactionsBy: Array<Maybe<Reaction>>
+  loadRecipients: Result
   loadShout?: Maybe<Shout>
   loadShouts: Array<Maybe<Shout>>
   markdownBody: Scalars['String']
-  searchUsers: Result
+  searchRecipients: Result
   signIn: AuthResult
   signOut: AuthResult
   topicsAll: Array<Maybe<Topic>>
@@ -404,6 +398,11 @@ export type QueryLoadReactionsByArgs = {
   offset?: InputMaybe<Scalars['Int']>
 }
 
+export type QueryLoadRecipientsArgs = {
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+}
+
 export type QueryLoadShoutArgs = {
   slug: Scalars['String']
 }
@@ -416,7 +415,7 @@ export type QueryMarkdownBodyArgs = {
   body: Scalars['String']
 }
 
-export type QuerySearchUsersArgs = {
+export type QuerySearchRecipientsArgs = {
   limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
   query: Scalars['String']
@@ -475,13 +474,13 @@ export type Reaction = {
 }
 
 export type ReactionBy = {
-  author?: InputMaybe<Scalars['String']>
-  body?: InputMaybe<Scalars['String']>
+  comment?: InputMaybe<Scalars['Boolean']>
+  createdBy?: InputMaybe<Scalars['String']>
   days?: InputMaybe<Scalars['Int']>
-  order?: InputMaybe<Scalars['String']>
+  search?: InputMaybe<Scalars['String']>
   shout?: InputMaybe<Scalars['String']>
   shouts?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-  stat?: InputMaybe<Scalars['String']>
+  sort?: InputMaybe<Scalars['String']>
   topic?: InputMaybe<Scalars['String']>
 }
 
@@ -615,8 +614,6 @@ export type Stat = {
   rating?: Maybe<Scalars['Int']>
   reacted?: Maybe<Scalars['Int']>
   viewed?: Maybe<Scalars['Int']>
-  shouts?: Maybe<Scalars['Int']>
-  followers?: Maybe<Scalars['Int']>
 }
 
 export type Subscription = {
@@ -669,7 +666,6 @@ export type TopicStat = {
   rating?: Maybe<Scalars['Int']>
   reacted: Scalars['Int']
   shouts: Scalars['Int']
-  viewed?: Maybe<Scalars['Int']>
 }
 
 export type User = {

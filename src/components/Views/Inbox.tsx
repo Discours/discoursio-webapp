@@ -14,7 +14,7 @@ import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
 import Message from '../Inbox/Message'
-import { loadAuthorsBy, loadChats, setChats } from '../../stores/inbox'
+import { loadAuthorsBy, loadChats, chats, setChats } from '../../stores/inbox'
 
 const md = new MarkdownIt({
   linkify: true
@@ -67,7 +67,6 @@ export const InboxView = () => {
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
   const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
-  const [chats, setChats] = createSignal<Chat[] | []>([])
 
   const { session } = useSession()
   createEffect(() => {

@@ -60,6 +60,15 @@ const postMessage = async (msg: string) => {
   return response.data.createComment
 }
 
+const handleGetChats = async () => {
+  try {
+    const response = await loadChats()
+    setChats(response as unknown as Chat[])
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const InboxView = () => {
   const [messages, setMessages] = createSignal([])
   const [authors, setAuthors] = createSignal<Author[]>([])
@@ -135,15 +144,6 @@ export const InboxView = () => {
   createEffect(() => {
     formParent.dataset.replicatedValue = postMessageText()
   })
-
-  const handleGetChats = async () => {
-    try {
-      const response = await loadChats()
-      setChats(response as unknown as Chat[])
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   return (
     <div class="messages container">

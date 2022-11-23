@@ -9,5 +9,5 @@ export const loadAuthorsBy = async (by?: any): Promise<void> => {
 }
 
 export const loadChats = async (): Promise<void> => {
-  return await apiClient.getChats({ limit: 0, offset: 50 })
+  return await apiClient.getChats({ limit: 50, offset: 0 })
 }

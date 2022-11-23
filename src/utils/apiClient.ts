@@ -249,6 +249,7 @@ export const apiClient = {
         slug
       })
       .toPromise()
+    if (resp.error) console.debug(resp)
     return resp.data.loadShout
   },
   getShouts: async (options: LoadShoutsOptions) => {
@@ -257,12 +258,12 @@ export const apiClient = {
         options
       })
       .toPromise()
-    // console.debug(resp)
+    if (resp.error) console.debug(resp)
     return resp.data.loadShouts
   },
   getReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
-    resp.error ?? console.error(resp.error)
+    console.error(resp)
     return resp.data.loadReactionsBy
   },
 

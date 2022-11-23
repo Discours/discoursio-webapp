@@ -8,6 +8,7 @@ import styles from './Card.module.scss'
 import { locale } from '../../stores/ui'
 import { clsx } from 'clsx'
 import CardTopic from './CardTopic'
+import RatingControl from '../Article/RatingControl'
 
 interface ArticleCardProps {
   settings?: {
@@ -158,11 +159,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <Show when={props.settings?.isFeedMode}>
           <section class={styles.shoutCardDetails}>
             <div class={styles.shoutCardDetailsContent}>
-              <div class={clsx(styles.shoutCardDetailsItem, styles.rating)}>
-                <button class={styles.ratingControl}>&minus;</button>
-                <span class={styles.ratingValue}>{stat?.rating || ''}</span>
-                <button class={styles.ratingControl}>+</button>
-              </div>
+              <RatingControl rating={stat?.rating} class={styles.shoutCardDetailsItem} />
               <div
                 class={clsx(
                   styles.shoutCardDetailsItem,

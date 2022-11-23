@@ -9,7 +9,6 @@ import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import { StatMetrics } from '../_shared/StatMetrics'
 
 interface AuthorCardProps {
   caption?: string
@@ -23,6 +22,7 @@ interface AuthorCardProps {
   noSocialButtons?: boolean
   isAuthorsList?: boolean
   truncateBio?: boolean
+  liteButtons?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -117,9 +117,17 @@ export const AuthorCard = (props: AuthorCardProps) => {
             </Show>
 
             <Show when={!props.compact && !props.isAuthorsList}>
-              <button class={clsx(styles.buttonWrite, styles.button, 'button button--subscribe-topic')}>
-                <Icon name="edit" class={styles.icon} />
-                {t('Write')}
+              <button
+                class={styles.button}
+                classList={{
+                  [styles.buttonSubscribe]: props.liteButtons && !props.isAuthorsList,
+                  'button--subscribe': props.liteButtons && !props.isAuthorsList,
+                  'button--subscribe-topic': props.liteButtons && props.isAuthorsList,
+                  [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
+                }}
+              >
+                <Icon name="comment" class={styles.icon} />
+                <Show when={!props.liteButtons}>{t('Write')}</Show>
               </button>
 
               <Show when={!props.noSocialButtons}>

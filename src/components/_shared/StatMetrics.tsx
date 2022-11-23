@@ -23,7 +23,7 @@ const pseudonames = {
   authors: 'authors'
 }
 
-const nos = (s) => s.slice(0, -1)
+const nos = (s) => s.slice(-1)
 
 export const StatMetrics = (props: StatMetricsProps) => {
   return (

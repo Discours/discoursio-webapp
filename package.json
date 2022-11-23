@@ -25,7 +25,7 @@
     "preview": "astro preview",
     "server": "node server/server.mjs",
     "start": "astro dev",
-    "start:local": "cross-env PUBLIC_API_URL=http://localhost:8080 astro dev",
+    "start:local": "cross-env PUBLIC_API_URL=http://127.0.0.1:8080 astro dev",
     "start:staging": "cross-env PUBLIC_API_URL=https://testapi.discours.io astro dev",
     "typecheck": "astro check && tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",

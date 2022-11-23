@@ -100,8 +100,6 @@ export const AuthorView = (props: AuthorProps) => {
                 <span class="mode-switcher__control">{t('All posts')}</span>
               </div>
             </div>
-
-            <h3 class="col-12">{title()}</h3>
           </div>
         </div>
 

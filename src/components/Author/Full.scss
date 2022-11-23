@@ -1,10 +1,12 @@
 .user-details {
-  margin-bottom: 4.4rem;
+  margin-bottom: 5.4rem;
 }
 
 .author-page {
   .view-switcher {
     @include font-size(1.5rem);
+
+    margin-top: 0;
 
     button {
       font-size: 100%;

@@ -12,7 +12,15 @@ interface StatMetricsProps {
 }
 
 const pseudonames = {
-  comments: 'discussions'
+  // topics: 'topics'  # amount of topics for community💥
+  followed: 'followers',
+  followers: 'followers',
+  reacted: 'involvings',
+  reactions: 'involvings',
+  commented: 'discoussions',
+  comments: 'discussions',
+  shouts: 'posts',
+  authors: 'authors'
 }
 
 const nos = (s) => s.slice(0, -1)

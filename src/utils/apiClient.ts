@@ -7,7 +7,9 @@ import type {
   LoadShoutsOptions,
   QueryLoadChatsArgs,
   QueryLoadAuthorsByArgs,
-  QueryLoadMessagesByArgs
+  QueryLoadMessagesByArgs,
+  MutationCreateChatArgs,
+  MutationCreateMessageArgs
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -223,12 +225,12 @@ export const apiClient = {
 
   // CUDL
 
-  createChat: async ({ title, members }) => {
-    return await privateGraphQLClient.mutation(createChat, { title: title, members: members }).toPromise()
+  createChat: async (options: MutationCreateChatArgs) => {
+    return await privateGraphQLClient.mutation(createChat, options).toPromise()
   },
 
-  createMessage: async ({ chat, body }) => {
-    return await privateGraphQLClient.mutation(createChat, { chat: chat, body: body }).toPromise()
+  createMessage: async (options: MutationCreateMessageArgs) => {
+    return await privateGraphQLClient.mutation(createChat, options).toPromise()
   },
 
   updateReaction: async ({ reaction }) => {

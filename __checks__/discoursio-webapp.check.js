@@ -22,4 +22,4 @@ async function run() {
   await browser.close()
 }
 
-run()
+await run()

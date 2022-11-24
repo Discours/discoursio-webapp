@@ -1,4 +1,4 @@
-import { For, createSignal, Show, onMount, createEffect } from 'solid-js'
+import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
@@ -70,12 +70,10 @@ export const InboxView = () => {
   const [cashedAuthors, setCashedAuthors] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
+  // const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
   const { session } = useSession()
-  createEffect(() => {
-    setCurrentSlug(session()?.user?.slug)
-  })
+  const currentSlug = createMemo(() => session()?.user?.slug)
 
   // Поиск по диалогам
   const getQuery = (query) => {

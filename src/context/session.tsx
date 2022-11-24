@@ -8,7 +8,7 @@ type SessionContextType = {
   session: InitializedResource<AuthResult>
   isAuthenticated: Accessor<boolean>
   actions: {
-    refreshSession: () => AuthResult | Promise<AuthResult>
+    getSession: () => AuthResult | Promise<AuthResult>
     signIn: ({ email, password }: { email: string; password: string }) => Promise<void>
     signOut: () => Promise<void>
     confirmEmail: (token: string) => Promise<void>
@@ -17,7 +17,7 @@ type SessionContextType = {
 
 const SessionContext = createContext<SessionContextType>()
 
-const refreshSession = async (): Promise<AuthResult> => {
+const getSession = async (): Promise<AuthResult> => {
   try {
     const authResult = await apiClient.getSession()
     if (!authResult) {
@@ -37,7 +37,7 @@ export function useSession() {
 }
 
 export const SessionProvider = (props: { children: JSX.Element }) => {
-  const [session, { refetch: refetchRefreshSession, mutate }] = createResource<AuthResult>(refreshSession, {
+  const [session, { refetch: refetchSession, mutate }] = createResource<AuthResult>(getSession, {
     ssrLoadFrom: 'initial',
     initialValue: null
   })
@@ -65,7 +65,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   }
 
   const actions = {
-    refreshSession: refetchRefreshSession,
+    getSession: refetchSession,
     signIn,
     signOut,
     confirmEmail
@@ -74,7 +74,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const value: SessionContextType = { session, isAuthenticated, actions }
 
   onMount(() => {
-    refetchRefreshSession()
+    refetchSession()
   })
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

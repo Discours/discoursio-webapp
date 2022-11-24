@@ -185,11 +185,11 @@ export const apiClient = {
       throw new ApiError('unknown', response.error.message)
     }
 
-    if (response.data?.refreshSession?.error) {
-      throw new ApiError('unknown', response.data.refreshSession.error)
+    if (response.data?.getSession?.error) {
+      throw new ApiError('unknown', response.data.getSession.error)
     }
 
-    return response.data.refreshSession
+    return response.data.getSession
   },
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()

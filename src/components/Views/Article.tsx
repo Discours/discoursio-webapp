@@ -14,7 +14,7 @@ interface ArticlePageProps {
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 
 export const ArticleView = (props: ArticlePageProps) => {
-  const [getCommentsPage] = createSignal(1)
+  const [getCommentsPage] = createSignal(0)
   const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const { reactionsByShout, loadReactionsBy } = useReactionsStore({ reactions: props.reactions })
 

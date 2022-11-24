@@ -33,7 +33,7 @@ export const StatMetrics = (props: StatMetricsProps) => {
           <span class={styles.statMetricsItem} classList={{ compact: props.compact }}>
             {props.stat[entity] +
               ' ' +
-              t(nos(pseudonames[entity] || entity)) +
+              t((pseudonames[entity] || entity).slice(-1)) +
               plural(props.stat[entity] || 0, locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's'])}
           </span>
         )}

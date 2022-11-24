@@ -27,7 +27,7 @@ export const byLength = (
   return 0
 }
 
-export const byStat = (metric: keyof Stat) => {
+export const byStat = (metric: keyof Stat | keyof TopicStat) => {
   return (a, b) => {
     const x = (a?.stat && a.stat[metric]) || 0
     const y = (b?.stat && b.stat[metric]) || 0

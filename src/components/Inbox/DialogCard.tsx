@@ -25,6 +25,7 @@ const DialogCard = (props: DialogProps) => {
   }
 
   return (
+    //DialogCardView - подумать
     <div class={styles.DialogCard} onClick={handleOpenChat}>
       <div class={styles.avatar}>
         <DialogAvatar name={props.author.name} url={props.author.userpic} online={props.online} />

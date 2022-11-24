@@ -11,6 +11,7 @@ import Message from '../Inbox/Message'
 import { loadRecipients, loadChats } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import '../../styles/Inbox.scss'
+import { useInbox } from '../../context/inbox'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -56,7 +57,7 @@ const postMessage = async (msg: string) => {
 const handleGetChats = async () => {
   try {
     const response = await loadChats()
-    console.log('!!! response:', response)
+    console.log('!!! handleGetChats:', response)
   } catch (error) {
     console.log(error)
   }
@@ -68,14 +69,8 @@ export const InboxView = () => {
   const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
-
   const { session } = useSession()
-  createEffect(() => {
-    console.log('!!! session:', session())
-    setCurrentSlug(session()?.user?.slug)
-  })
-  console.log('!!! currentSlug:', currentSlug())
+  const currentSlug = createMemo(() => session()?.user?.slug)
 
   // Поиск по диалогам
   const getQuery = (query) => {
@@ -112,7 +107,6 @@ export const InboxView = () => {
 
     try {
       const response = await loadRecipients({ days: 365 })
-      console.log('!!! response:', response)
       setRecipients(response as unknown as Author[])
       setCashedRecipients(response as unknown as Author[])
     } catch (error) {
@@ -138,6 +132,10 @@ export const InboxView = () => {
   createEffect(() => {
     formParent.dataset.replicatedValue = postMessageText()
   })
+
+  // FIXME: прописать типы
+  // const { chatEntitieies, actions: { createCaht }} = useInbox()
+  // const { actions: { createCaht }} = useInbox()
 
   return (
     <div class="messages container">

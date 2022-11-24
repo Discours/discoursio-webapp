@@ -5,7 +5,7 @@ import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
 export default async function handler(req, res) {
   const s3Client = new S3Client({
-    region: process.env.S3_REGION,
+    // region: process.env.S3_REGION,
     credentials: {
       accessKeyId: process.env.S3_ACCESS_KEY,
       secretAccessKey: process.env.S3_SECRET_KEY
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   })
 
   const post = await createPresignedPost(s3Client, {
-    Bucket: process.env.S3_BUCKET_NAME,
+    Bucket: process.env.S3_BUCKET_NAME || 'discours.io',
     Key: req.query.file,
     Fields: {
       acl: 'public-read',

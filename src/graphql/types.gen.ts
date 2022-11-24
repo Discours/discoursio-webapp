@@ -214,7 +214,7 @@ export type MutationCreateReactionArgs = {
 }
 
 export type MutationCreateShoutArgs = {
-  input: ShoutInput
+  inp: ShoutInput
 }
 
 export type MutationCreateTopicArgs = {

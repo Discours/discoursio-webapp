@@ -176,11 +176,11 @@ export type Mutation = {
   deleteShout: Result
   destroyTopic: Result
   follow: Result
+  getSession: AuthResult
   inviteAuthor: Result
   inviteChat: Result
   markAsRead: Result
   rateUser: Result
-  refreshSession: AuthResult
   registerUser: AuthResult
   removeAuthor: Result
   sendLink: Result
@@ -661,10 +661,7 @@ export type TopicInput = {
 
 export type TopicStat = {
   authors: Scalars['Int']
-  commented?: Maybe<Scalars['Int']>
   followers: Scalars['Int']
-  rating?: Maybe<Scalars['Int']>
-  reacted: Scalars['Int']
   shouts: Scalars['Int']
 }
 

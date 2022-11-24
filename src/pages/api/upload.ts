@@ -5,7 +5,7 @@ import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
 export default async function handler(req, res) {
   const s3Client = new S3Client({
-    region: process.env.S3_REGION || 'eu-east-1',
+    region: process.env.S3_REGION || 'eu-west-1',
     credentials: {
       accessKeyId: process.env.S3_ACCESS_KEY,
       secretAccessKey: process.env.S3_SECRET_KEY

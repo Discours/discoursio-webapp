@@ -1,7 +1,7 @@
 import { apiClient } from '../utils/apiClient'
 
-export const loadAuthorsBy = async (by?: any): Promise<void> => {
-  return await apiClient.getAuthorsBy({ by })
+export const loadRecipients = async (by = {}): Promise<void> => {
+  return await apiClient.getRecipients(by)
 }
 
 export const loadChats = async (): Promise<void> => {

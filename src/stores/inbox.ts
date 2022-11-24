@@ -1,8 +1,7 @@
 import { apiClient } from '../utils/apiClient'
-import type { AuthorsBy } from '../graphql/types.gen'
 
-export const loadAuthorsBy = async (by: AuthorsBy): Promise<void> => {
-  return await apiClient.getAuthorsBy({ by })
+export const loadRecipients = async (by = {}): Promise<void> => {
+  return await apiClient.getRecipients(by)
 }
 
 export const loadChats = async (): Promise<void> => {

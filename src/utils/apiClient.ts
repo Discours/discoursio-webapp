@@ -39,6 +39,7 @@ import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
 import shoutLoad from '../graphql/query/articles-load'
+import loadRecipients from '../graphql/query/chat-recipients'
 
 type ApiErrorCode =
   | 'unknown'
@@ -284,5 +285,8 @@ export const apiClient = {
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {
     const resp = await privateGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
     return resp.data.loadChat
+  },
+  getRecipients: async ({ limit = 50, offset = 0 }) => {
+    const resp = await privateGraphQLClient.query(loadRecipients, { limit, offset })
   }
 }

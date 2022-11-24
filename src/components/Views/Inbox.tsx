@@ -8,7 +8,7 @@ import Search from '../Inbox/Search'
 import { useSession } from '../../context/session'
 import { createClient } from '@urql/core'
 import Message from '../Inbox/Message'
-import { loadAuthorsBy, loadChats } from '../../stores/inbox'
+import { loadRecipients, loadChats } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import '../../styles/Inbox.scss'
 
@@ -108,7 +108,7 @@ export const InboxView = () => {
     }
 
     try {
-      const response = await loadAuthorsBy({ days: 365 })
+      const response = await loadRecipients({ days: 365 })
       setAuthors(response as unknown as Author[])
       setCashedAuthors(response as unknown as Author[])
     } catch (error) {

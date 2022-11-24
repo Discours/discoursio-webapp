@@ -28,7 +28,8 @@ import myChats from '../graphql/query/chats-load'
 import chatMessagesLoadBy from '../graphql/query/chat-messages-load-by'
 import authorBySlug from '../graphql/query/author-by-slug'
 import topicBySlug from '../graphql/query/topic-by-slug'
-import createChatQuery from '../graphql/mutation/create-chat'
+import createChat from '../graphql/mutation/create-chat'
+import createMessage from '../graphql/mutation/create-chat-message'
 import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 import authorsLoadBy from '../graphql/query/authors-load-by'
@@ -221,10 +222,13 @@ export const apiClient = {
   // CUDL
 
   createChat: async ({ title, members }) => {
-    return await privateGraphQLClient
-      .mutation(createChatQuery, { title: title, members: members })
-      .toPromise()
+    return await privateGraphQLClient.mutation(createChat, { title: title, members: members }).toPromise()
   },
+
+  createMessage: async ({ chat, body }) => {
+    return await privateGraphQLClient.mutation(createChat, { chat: chat, body: body }).toPromise()
+  },
+
   updateReaction: async ({ reaction }) => {
     const response = await privateGraphQLClient.mutation(reactionUpdate, { reaction }).toPromise()
 
@@ -235,10 +239,8 @@ export const apiClient = {
 
     return response.data.deleteReaction
   },
-
   getAuthorsBy: async ({ by, limit = 50, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, { by, limit, offset }).toPromise()
-    console.debug(resp)
     return resp.data.loadAuthorsBy
   },
   getShout: async (slug: string) => {
@@ -247,6 +249,7 @@ export const apiClient = {
         slug
       })
       .toPromise()
+    if (resp.error) console.debug(resp)
     return resp.data.loadShout
   },
   getShouts: async (options: LoadShoutsOptions) => {
@@ -255,19 +258,19 @@ export const apiClient = {
         options
       })
       .toPromise()
-    // console.debug(resp)
+    if (resp.error) console.debug(resp)
     return resp.data.loadShouts
   },
   getReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
-    resp.error ?? console.error(resp.error)
+    console.error(resp)
     return resp.data.loadReactionsBy
   },
 
   // inbox
-
-  getChats: async (payload = {}) => {
-    const resp = await privateGraphQLClient.query(myChats, payload).toPromise()
+  getChats: async ({ limit, offset }) => {
+    const resp = await privateGraphQLClient.query(myChats, { limit, offset }).toPromise()
+    console.log('!!! resp.data.myChats:', resp)
     return resp.data.myChats
   },
 

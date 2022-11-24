@@ -2,7 +2,7 @@ import styles from './DialogCard.module.scss'
 import DialogAvatar from './DialogAvatar'
 import type { Author, AuthResult } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
-import { createMemo } from 'solid-js'
+import { createEffect, createMemo, createSignal } from 'solid-js'
 import { apiClient } from '../../utils/apiClient'
 
 type DialogProps = {
@@ -10,25 +10,19 @@ type DialogProps = {
   message?: string
   counter?: number
   author?: Author
-}
-
-const createChat = async ({ title, members }: { title?: string; members?: string[] }): Promise<void> => {
-  await apiClient.createChat({ title, members })
+  ownSlug: Author['slug']
 }
 
 const DialogCard = (props: DialogProps) => {
-  const { session } = useSession()
-  const currentSession = createMemo<AuthResult>(() => session)
-
   const handleOpenChat = async () => {
     try {
       const initChat = await apiClient.createChat({
         title: 'test chat',
-        members: [props.author.slug, currentSession().user.slug]
+        members: [props.author.slug, props.ownSlug]
       })
-      // console.log('!!! test:', test)
+      console.debug('[initChat]', initChat.data)
     } catch (error) {
-      console.log('!!! errr:', error)
+      console.error(error)
     }
   }
 

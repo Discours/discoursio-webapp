@@ -1,20 +1,20 @@
 import { For, createSignal, Show, onMount, createEffect } from 'solid-js'
-import type { Author } from '../../graphql/types.gen'
+import { PageWrap } from '../_shared/PageWrap'
+import type { Author, Chat } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../Loading'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
-import { useAuthorsStore } from '../../stores/zine/authors'
+import { loadAllAuthors, useAuthorsStore } from '../../stores/zine/authors'
 import MarkdownIt from 'markdown-it'
-// const { session } = useAuthStore()
+import { useSession } from '../../context/session'
 
 import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
-import { findAndLoadGraphQLConfig } from '@graphql-codegen/cli'
-// import { useAuthStore } from '../../stores/auth'
-import { useSession } from '../../context/session'
+import Message from '../Inbox/Message'
+import { loadAuthorsBy, loadChats, chats, setChats } from '../../stores/inbox'
 
 const md = new MarkdownIt({
   linkify: true
@@ -23,12 +23,6 @@ const OWNER_ID = '501'
 const client = createClient({
   url: 'https://graphqlzero.almansi.me/api'
 })
-
-// console.log('!!! session:', session)
-// interface InboxProps {
-//   chats?: Chat[]
-//   messages?: Message[]
-// }
 
 const messageQuery = `
 query Comments ($options: PageQueryOptions) {
@@ -66,29 +60,37 @@ const postMessage = async (msg: string) => {
   return response.data.createComment
 }
 
+const handleGetChats = async () => {
+  try {
+    const response = await loadChats()
+    setChats(response as unknown as Chat[])
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const InboxView = () => {
   const [messages, setMessages] = createSignal([])
   const [authors, setAuthors] = createSignal<Author[]>([])
+  const [cashedAuthors, setCashedAuthors] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
   const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
   const { session } = useSession()
-  const { sortedAuthors } = useAuthorsStore()
-
   createEffect(() => {
-    setAuthors(sortedAuthors())
+    console.log('!!! session():', session())
     setCurrentSlug(session()?.user?.slug)
+    console.log('!!! chats:', chats())
   })
 
   // Поиск по диалогам
   const getQuery = (query) => {
     if (query().length >= 2) {
       const match = userSearch(authors(), query())
-      console.log('!!! match:', match)
       setAuthors(match)
     } else {
-      setAuthors(sortedAuthors())
+      setAuthors(cashedAuthors)
     }
   }
 
@@ -113,6 +115,14 @@ export const InboxView = () => {
     } finally {
       setLoading(false)
       chatWindow.scrollTop = chatWindow.scrollHeight
+    }
+
+    try {
+      const response = await loadAuthorsBy({ days: 365 })
+      setAuthors(response as unknown as Author[])
+      setCashedAuthors(response as unknown as Author[])
+    } catch (error) {
+      console.log(error)
     }
   })
 
@@ -145,13 +155,15 @@ export const InboxView = () => {
               <li>
                 <strong>Все</strong>
               </li>
-              <li>Переписки</li>
+              <li onClick={handleGetChats}>Переписки</li>
               <li>Группы</li>
             </ul>
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={authors()}>{(author) => <DialogCard author={author} online={true} />}</For>
+              <For each={authors()}>
+                {(author) => <DialogCard ownSlug={currentSlug()} author={author} online={true} />}
+              </For>
             </div>
           </div>
         </div>
@@ -169,25 +181,7 @@ export const InboxView = () => {
               </Show>
               <For each={messages()}>
                 {(comment: { body: string; id: string; email: string }) => (
-                  <div
-                    class={`conversation__message-container
-                  ${
-                    OWNER_ID === comment.id
-                      ? 'conversation__message-container--own'
-                      : 'conversation__message-container--other'
-                  }`}
-                  >
-                    <div class="conversation__message">
-                      <div innerHTML={md.render(comment.body)} />
-                      <div class="conversation__message-details">
-                        <time>14:26</time>
-                        {comment.email} id: {comment.id}
-                      </div>
-                      <button class="conversation__context-popup-control">
-                        <Icon name="ellipsis" />
-                      </button>
-                    </div>
-                  </div>
+                  <Message body={comment.body} isOwn={OWNER_ID === comment.id} />
                 )}
               </For>
 

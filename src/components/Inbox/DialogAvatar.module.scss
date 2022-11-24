@@ -18,8 +18,14 @@
     border-radius: 50%;
     border: 3px solid #fff;
   }
+  > .imageHolder {
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    border-radius: 100%;
+  }
 
-  > img,
   > .letter {
     display: block;
     border-radius: 100%;
@@ -31,5 +37,14 @@
     font-size: 18px;
     line-height: 10px;
     color: #fff;
+  }
+
+  &.small {
+    width: 24px;
+    height: 24px;
+
+    > .letter {
+      font-size: 14px;
+    }
   }
 }

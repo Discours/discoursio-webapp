@@ -6,13 +6,11 @@ import { Loading } from '../Loading'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
 import { useSession } from '../../context/session'
-
-import '../../styles/Inbox.scss'
-// Для моков
 import { createClient } from '@urql/core'
 import Message from '../Inbox/Message'
 import { loadAuthorsBy, loadChats } from '../../stores/inbox'
 import { t } from '../../utils/intl'
+import '../../styles/Inbox.scss'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -73,6 +71,7 @@ export const InboxView = () => {
   // const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
   const { session } = useSession()
+  console.log('!!! session:', session())
   const currentSlug = createMemo(() => session()?.user?.slug)
 
   // Поиск по диалогам

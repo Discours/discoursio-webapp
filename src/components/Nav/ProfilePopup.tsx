@@ -30,7 +30,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           <a href="#">Закладки</a>
         </li>
         <li>
-          <a href="#">Настройки</a>
+          <a href="/profile/settings/">Настройки</a>
         </li>
         <li class={styles.topBorderItem}>
           <a

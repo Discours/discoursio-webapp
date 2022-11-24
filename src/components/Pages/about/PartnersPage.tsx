@@ -6,7 +6,7 @@ import { t } from '../../../utils/intl'
 export const PartnersPage = () => {
   return (
     <PageWrap>
-      <article class="container container--static-page">
+      <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-6 col-xl-7 shift-content order-md-first">
             <h1>{t('Partners')}</h1>

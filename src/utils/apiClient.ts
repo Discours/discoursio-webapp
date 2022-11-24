@@ -9,7 +9,8 @@ import type {
   QueryLoadAuthorsByArgs,
   QueryLoadMessagesByArgs,
   MutationCreateChatArgs,
-  MutationCreateMessageArgs
+  MutationCreateMessageArgs,
+  QueryLoadRecipientsArgs
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -286,7 +287,8 @@ export const apiClient = {
     const resp = await privateGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
     return resp.data.loadChat
   },
-  getRecipients: async ({ limit = 50, offset = 0 }) => {
-    const resp = await privateGraphQLClient.query(loadRecipients, { limit, offset })
+  getRecipients: async (options: QueryLoadRecipientsArgs) => {
+    const resp = await privateGraphQLClient.query(loadRecipients, options).toPromise()
+    return resp.data.loadRecipients.members
   }
 }

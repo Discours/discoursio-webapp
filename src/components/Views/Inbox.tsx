@@ -64,23 +64,26 @@ const handleGetChats = async () => {
 
 export const InboxView = () => {
   const [messages, setMessages] = createSignal([])
-  const [authors, setAuthors] = createSignal<Author[]>([])
-  const [cashedAuthors, setCashedAuthors] = createSignal<Author[]>([])
+  const [recipients, setRecipients] = createSignal<Author[]>([])
+  const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
-  // const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
+  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
   const { session } = useSession()
-  console.log('!!! session:', session())
-  const currentSlug = createMemo(() => session()?.user?.slug)
+  createEffect(() => {
+    console.log('!!! session:', session())
+    setCurrentSlug(session()?.user?.slug)
+  })
+  console.log('!!! currentSlug:', currentSlug())
 
   // Поиск по диалогам
   const getQuery = (query) => {
     if (query().length >= 2) {
-      const match = userSearch(authors(), query())
-      setAuthors(match)
+      const match = userSearch(recipients(), query())
+      setRecipients(match)
     } else {
-      setAuthors(cashedAuthors())
+      setRecipients(cashedRecipients())
     }
   }
 
@@ -109,8 +112,9 @@ export const InboxView = () => {
 
     try {
       const response = await loadRecipients({ days: 365 })
-      setAuthors(response as unknown as Author[])
-      setCashedAuthors(response as unknown as Author[])
+      console.log('!!! response:', response)
+      setRecipients(response as unknown as Author[])
+      setCashedRecipients(response as unknown as Author[])
     } catch (error) {
       console.log(error)
     }
@@ -151,7 +155,7 @@ export const InboxView = () => {
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={authors()}>
+              <For each={recipients()}>
                 {(author) => <DialogCard ownSlug={currentSlug()} author={author} online={true} />}
               </For>
             </div>

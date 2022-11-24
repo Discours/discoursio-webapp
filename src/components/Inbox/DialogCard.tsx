@@ -18,7 +18,7 @@ const DialogCard = (props: DialogProps) => {
         title: 'test chat',
         members: [props.author.slug, props.ownSlug]
       })
-      console.debug('[initChat]', initChat.data)
+      console.debug('[initChat]', initChat.data.createChat)
     } catch (error) {
       console.error(error)
     }

@@ -180,5 +180,8 @@
   "view": "просмотр",
   "zine": "журнал",
   "shout": "пост",
-  "discussion": "дискурс"
+  "discussion": "дискурс",
+  "Conversations": "Переписки",
+  "Groups": "Группы",
+  "All": "Все"
 }

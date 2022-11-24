@@ -460,36 +460,6 @@
   }
 }
 
-.rating {
-  align-items: center;
-  display: flex;
-}
-
-.ratingValue {
-  font-weight: bold;
-  margin: 0 0.5em;
-}
-
-.ratingControl {
-  align-items: center;
-  border: 2px solid;
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-  height: 0.9em;
-  line-height: 0;
-  @include font-size(3.6rem);
-
-  padding: 0;
-  width: 0.9em;
-
-  &:hover {
-    background: #000;
-    border-color: #000;
-    color: #fff;
-  }
-}
-
 .shoutCardVertical {
   aspect-ratio: auto;
   height: 100%;

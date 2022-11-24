@@ -73,6 +73,7 @@ module.exports = {
     'unicorn/import-style': 'off',
     'unicorn/numeric-separators-style': 'off',
     'unicorn/prefer-node-protocol': 'off',
+    'unicorn/consistent-function-scoping': 'warn',
 
     'promise/always-return': 'off',
 

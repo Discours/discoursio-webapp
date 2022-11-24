@@ -5,21 +5,23 @@ export default gql`
     loadChats(limit: $limit, offset: $offset) {
       error
       chats {
-        title
-        description
-        updatedAt
+        id
         messages {
           id
-          author
           body
-          replyTo
-          createdAt
+          author
+        }
+        admins {
+          slug
+          name
         }
         users {
           slug
           name
-          userpic
         }
+        unread
+        description
+        updatedAt
       }
     }
   }

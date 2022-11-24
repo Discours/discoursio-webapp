@@ -36,7 +36,10 @@ const DialogAvatar = (props: Props) => {
 
   return (
     <div
-      class={clsx(styles.DialogAvatar, props.online && styles.online, `${styles[props.size]}`)}
+      class={clsx(styles.DialogAvatar, {
+        [styles.online]: props.online,
+        [styles.small]: props.size === 'small'
+      })}
       style={{ 'background-color': `${randomBg()}` }}
     >
       <Show when={props.url} fallback={() => <div class={styles.letter}>{nameFirstLetter}</div>}>

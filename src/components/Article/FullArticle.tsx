@@ -3,13 +3,17 @@ import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import ArticleComment from './Comment'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, For, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
 import { useSession } from '../../context/session'
+import stylesHeader from '../Nav/Header.module.scss'
+import styles from '../../styles/Article.module.scss'
+import RatingControl from './RatingControl'
+import { clsx } from 'clsx'
 
 const MAX_COMMENT_LEVEL = 6
 
@@ -39,6 +43,7 @@ const formatDate = (date: Date) => {
 export const FullArticle = (props: ArticleProps) => {
   const { session } = useSession()
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
+  const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
 
   const mainTopic = () =>
     (props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic)?.title || '').replace(
@@ -64,8 +69,8 @@ export const FullArticle = (props: ArticleProps) => {
   return (
     <div class="shout wide-container">
       <article class="col-md-6 shift-content">
-        <div class="shout__header">
-          <div class="shout__topic">
+        <div class={styles.shoutHeader}>
+          <div class={styles.shoutTopic}>
             <a href={`/topic/${props.article.mainTopic}`} innerHTML={mainTopic() || ''} />
           </div>
 
@@ -74,7 +79,7 @@ export const FullArticle = (props: ArticleProps) => {
             <h4>{capitalize(props.article.subtitle, false)}</h4>
           </Show>
 
-          <div class="shout__author">
+          <div class={styles.shoutAuthor}>
             <For each={props.article.authors}>
               {(a: Author, index) => (
                 <>
@@ -84,11 +89,11 @@ export const FullArticle = (props: ArticleProps) => {
               )}
             </For>
           </div>
-          <div class="shout__cover" style={{ 'background-image': `url('${props.article.cover}')` }} />
+          <div class={styles.shoutCover} style={{ 'background-image': `url('${props.article.cover}')` }} />
         </div>
 
         <Show when={Boolean(props.article.body)}>
-          <div class="shout__body">
+          <div class={styles.shoutBody}>
             <Show
               when={!props.article.body.startsWith('<')}
               fallback={<div innerHTML={props.article.body} />}
@@ -100,63 +105,82 @@ export const FullArticle = (props: ArticleProps) => {
       </article>
 
       <div class="col-md-8 shift-content">
-        <div class="shout-stats">
-          <div class="shout-stats__item shout-stats__item--likes">
-            <Icon name="like" />
+        <div class={styles.shoutStats}>
+          <div class={styles.shoutStatsItem}>
+            <RatingControl rating={props.article.stat?.rating} />
+          </div>
+
+          <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemLikes)}>
+            <Icon name="like" class={styles.icon} />
             {props.article.stat?.rating || ''}
           </div>
 
-          <div class="shout-stats__item">
-            <Icon name="comment" />
+          <div class={styles.shoutStatsItem}>
+            <Icon name="comment" class={styles.icon} />
             {props.article.stat?.commented || ''}
           </div>
-          <div class="shout-stats__item">
-            <Icon name="view" />
-            {props.article.stat?.viewed}
-          </div>
           {/*FIXME*/}
-          {/*<div class="shout-stats__item">*/}
+          {/*<div class={styles.shoutStatsItem}>*/}
           {/*  <a href="#bookmark" onClick={() => console.log(props.article.slug, 'articles')}>*/}
           {/*    <Icon name={'bookmark' + (bookmarked() ? '' : '-x')} />*/}
           {/*  </a>*/}
           {/*</div>*/}
-          <div class="shout-stats__item">
+          <div class={styles.shoutStatsItem}>
             <SharePopup
-              trigger={
-                <a href="#" onClick={(event) => event.preventDefault()}>
-                  <Icon name="share" />
-                </a>
-              }
+              onVisibilityChange={(isVisible) => {
+                setIsSharePopupVisible(isVisible)
+              }}
+              containerCssClass={stylesHeader.control}
+              trigger={<Icon name="share" class={styles.icon} />}
             />
           </div>
+          <div class={styles.shoutStatsItem}>
+            <Icon name="bookmark" class={styles.icon} />
+          </div>
+
           {/*FIXME*/}
           {/*<Show when={canEdit()}>*/}
-          {/*  <div class="shout-stats__item">*/}
+          {/*  <div class={styles.shoutStatsItem}>*/}
           {/*    <a href="/edit">*/}
           {/*      <Icon name="edit" />*/}
           {/*      {t('Edit')}*/}
           {/*    </a>*/}
           {/*  </div>*/}
           {/*</Show>*/}
-          <div class="shout-stats__item shout-stats__item--date">{formattedDate}</div>
+          <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
+            <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
+              {formattedDate}
+            </div>
+
+            <Show when={props.article.stat?.viewed}>
+              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
+                <Icon name="view" class={styles.icon} />
+                {props.article.stat?.viewed}
+              </div>
+            </Show>
+          </div>
         </div>
 
-        <div class="topics-list">
+        <div class={styles.topicsList}>
           <For each={props.article.topics}>
             {(topic) => (
-              <div class="shout__topic">
+              <div class={styles.shoutTopic}>
                 <a href={`/topic/${topic.slug}`}>{topic.title}</a>
               </div>
             )}
           </For>
         </div>
 
-        <div class="shout__authors-list">
+        <div class={styles.shoutAuthorsList}>
           <Show when={props.article?.authors?.length > 1}>
             <h4>{t('Authors')}</h4>
           </Show>
           <For each={props.article?.authors}>
-            {(a: Author) => <AuthorCard author={a} compact={false} hasLink={true} />}
+            {(a: Author) => (
+              <div class="col-md-6">
+                <AuthorCard author={a} compact={false} hasLink={true} liteButtons={true} />
+              </div>
+            )}
           </For>
         </div>
 
@@ -176,7 +200,7 @@ export const FullArticle = (props: ArticleProps) => {
           </For>
         </Show>
         <Show when={!session()?.user?.slug}>
-          <div class="comment-warning" id="comments">
+          <div class={styles.commentWarning} id="comments">
             {t('To leave a comment you please')}
             <a
               href={''}
@@ -190,7 +214,7 @@ export const FullArticle = (props: ArticleProps) => {
           </div>
         </Show>
         <Show when={session()?.user?.slug}>
-          <textarea class="write-comment" rows="1" placeholder={t('Write comment')} />
+          <textarea class={styles.writeComment} rows="1" placeholder={t('Write comment')} />
         </Show>
       </div>
     </div>

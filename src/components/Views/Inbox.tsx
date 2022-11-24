@@ -1,24 +1,19 @@
-import { For, createSignal, Show, onMount, createEffect } from 'solid-js'
-import { PageWrap } from '../_shared/PageWrap'
-import type { Author, Chat } from '../../graphql/types.gen'
+import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
+import type { Author } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../Loading'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
-import { loadAllAuthors, useAuthorsStore } from '../../stores/zine/authors'
-import MarkdownIt from 'markdown-it'
 import { useSession } from '../../context/session'
 
 import '../../styles/Inbox.scss'
 // Для моков
 import { createClient } from '@urql/core'
 import Message from '../Inbox/Message'
-import { loadAuthorsBy, loadChats, chats, setChats } from '../../stores/inbox'
+import { loadAuthorsBy, loadChats } from '../../stores/inbox'
+import { t } from '../../utils/intl'
 
-const md = new MarkdownIt({
-  linkify: true
-})
 const OWNER_ID = '501'
 const client = createClient({
   url: 'https://graphqlzero.almansi.me/api'
@@ -63,7 +58,7 @@ const postMessage = async (msg: string) => {
 const handleGetChats = async () => {
   try {
     const response = await loadChats()
-    setChats(response as unknown as Chat[])
+    console.log('!!! response:', response)
   } catch (error) {
     console.log(error)
   }
@@ -75,14 +70,10 @@ export const InboxView = () => {
   const [cashedAuthors, setCashedAuthors] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
+  // const [currentSlug, setCurrentSlug] = createSignal<Author['slug'] | null>()
 
   const { session } = useSession()
-  createEffect(() => {
-    console.log('!!! session():', session())
-    setCurrentSlug(session()?.user?.slug)
-    console.log('!!! chats:', chats())
-  })
+  const currentSlug = createMemo(() => session()?.user?.slug)
 
   // Поиск по диалогам
   const getQuery = (query) => {
@@ -90,7 +81,7 @@ export const InboxView = () => {
       const match = userSearch(authors(), query())
       setAuthors(match)
     } else {
-      setAuthors(cashedAuthors)
+      setAuthors(cashedAuthors())
     }
   }
 
@@ -153,10 +144,10 @@ export const InboxView = () => {
           <div class="chat-list__types">
             <ul>
               <li>
-                <strong>Все</strong>
+                <strong>{t('All')}</strong>
               </li>
-              <li onClick={handleGetChats}>Переписки</li>
-              <li>Группы</li>
+              <li onClick={handleGetChats}>{t('Conversations')}</li>
+              <li>{t('Groups')}</li>
             </ul>
           </div>
           <div class="holder">

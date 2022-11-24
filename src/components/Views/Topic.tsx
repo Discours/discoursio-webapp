@@ -76,7 +76,7 @@ export const TopicView = (props: TopicProps) => {
     <div class={styles.topicPage}>
       <Show when={topic()}>
         <FullTopic topic={topic()} />
-        <div class="container">
+        <div class="wide-container">
           <div class={clsx(styles.groupControls, 'row group__controls')}>
             <div class="col-md-8">
               <ul class="view-switcher">

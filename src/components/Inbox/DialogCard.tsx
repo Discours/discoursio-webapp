@@ -1,8 +1,6 @@
 import styles from './DialogCard.module.scss'
 import DialogAvatar from './DialogAvatar'
-import type { Author, AuthResult } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
-import { createEffect, createMemo, createSignal } from 'solid-js'
+import type { Author } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 
 type DialogProps = {

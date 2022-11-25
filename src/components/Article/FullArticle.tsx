@@ -43,7 +43,6 @@ const formatDate = (date: Date) => {
 export const FullArticle = (props: ArticleProps) => {
   const { session } = useSession()
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
-  const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
 
   const mainTopic = () =>
     (props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic)?.title || '').replace(
@@ -127,9 +126,6 @@ export const FullArticle = (props: ArticleProps) => {
           {/*</div>*/}
           <div class={styles.shoutStatsItem}>
             <SharePopup
-              onVisibilityChange={(isVisible) => {
-                setIsSharePopupVisible(isVisible)
-              }}
               containerCssClass={stylesHeader.control}
               trigger={<Icon name="share" class={styles.icon} />}
             />

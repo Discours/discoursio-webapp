@@ -1,7 +1,5 @@
 import { PageWrap } from '../../_shared/PageWrap'
 import type { PageProps } from '../../types'
-import { createSignal, onMount, Show } from 'solid-js'
-import { Loading } from '../../Loading'
 import styles from './Settings.module.scss'
 import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
@@ -12,7 +10,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
       <div class="wide-container">
         <div class="shift-content">
           <div class="left-col">
-            <div class="left-navigation">zhopa</div>
+            <div class="left-navigation">WIP</div>
           </div>
 
           <div class="row">
@@ -59,13 +57,13 @@ export const ProfileSettingsPage = (props: PageProps) => {
 
                 <h4>Представление</h4>
                 <div class="pretty-form__item">
-                  <textarea name="presentation" id="presentation" placeholder="Представление"></textarea>
+                  <textarea name="presentation" id="presentation" placeholder="Представление" />
                   <label for="presentation">Представление</label>
                 </div>
 
                 <h4>О себе</h4>
                 <div class="pretty-form__item">
-                  <textarea name="about" id="about" placeholder="О себе"></textarea>
+                  <textarea name="about" id="about" placeholder="О себе" />
                   <label for="about">О себе</label>
                 </div>
 

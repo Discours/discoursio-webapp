@@ -6,6 +6,7 @@ import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 
 type SessionContextType = {
   session: InitializedResource<AuthResult>
+  userSlug: Accessor<string>
   isAuthenticated: Accessor<boolean>
   actions: {
     refreshSession: () => AuthResult | Promise<AuthResult>
@@ -42,6 +43,8 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     initialValue: null
   })
 
+  const userSlug = createMemo(() => session()?.user?.slug)
+
   const isAuthenticated = createMemo(() => Boolean(session()?.user?.slug))
 
   const signIn = async ({ email, password }: { email: string; password: string }) => {
@@ -71,7 +74,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     confirmEmail
   }
 
-  const value: SessionContextType = { session, isAuthenticated, actions }
+  const value: SessionContextType = { session, userSlug, isAuthenticated, actions }
 
   onMount(() => {
     refetchRefreshSession()

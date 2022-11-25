@@ -27,7 +27,6 @@ export interface Routes {
   thanks: void
   expo: 'layout'
   inbox: void // TODO: добавить ID текущего юзера
-  profile: void
   profileSettings: void
 }
 
@@ -56,7 +55,6 @@ const routerStore = createRouter<Routes>(
     termsOfUse: '/about/terms-of-use',
     thanks: '/about/thanks',
     expo: '/expo/:layout',
-    profile: '/profile',
     profileSettings: '/profile/settings'
   },
   {

@@ -13,17 +13,18 @@ interface StatMetricsProps {
 
 const pseudonames = {
   // topics: 'topics'  # amount of topics for community💥
-  followed: 'followers',
-  followers: 'followers',
-  reacted: 'involvings',
-  reactions: 'involvings',
-  commented: 'discoussions',
-  comments: 'discussions',
-  shouts: 'posts',
-  authors: 'authors'
+  followed: 'follower',
+  followers: 'follower',
+  rating: 'like',
+  viewed: 'view',
+  views: 'view',
+  reacted: 'involving',
+  reactions: 'involving',
+  commented: 'discussion',
+  comments: 'discussion',
+  shouts: 'post',
+  authors: 'author'
 }
-
-const nos = (s) => s.slice(-1)
 
 export const StatMetrics = (props: StatMetricsProps) => {
   return (
@@ -33,7 +34,7 @@ export const StatMetrics = (props: StatMetricsProps) => {
           <span class={styles.statMetricsItem} classList={{ compact: props.compact }}>
             {props.stat[entity] +
               ' ' +
-              t((pseudonames[entity] || entity).slice(-1)) +
+              t(pseudonames[entity] || entity.slice(-1)) +
               plural(props.stat[entity] || 0, locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's'])}
           </span>
         )}

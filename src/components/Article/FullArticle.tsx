@@ -52,11 +52,15 @@ export const FullArticle = (props: ArticleProps) => {
     )
 
   onMount(() => {
+    const script = document.createElement('script')
+    script.async = true
+    script.src = 'https://ackee.discours.io/increment.js'
+    script.setAttribute('data-ackee-server', 'https://ackee.discours.io')
+    script.setAttribute('data-ackee-domain-id', '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d')
+    document.body.appendChild(script)
     const windowHash = window.location.hash
-
     if (windowHash?.length > 0) {
       const comments = document.querySelector(windowHash)
-
       if (comments) {
         window.scrollTo({
           top: comments.getBoundingClientRect().top,

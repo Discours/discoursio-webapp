@@ -29,14 +29,19 @@ export const AllAuthorsView = (props: Props) => {
   const { searchParams, changeSearchParam } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
-    sortBy: searchParams().by || 'shouts'
+    sortBy: searchParams().by || 'name'
   })
 
   const { session } = useSession()
 
-  onMount(() => changeSearchParam('by', 'shouts'))
+  onMount(() => {
+    if (!searchParams().by) {
+      setAuthorsSort('name')
+      changeSearchParam('by', 'name')
+    }
+  })
   createEffect(() => {
-    setAuthorsSort(searchParams().by || 'shouts')
+    setAuthorsSort(searchParams().by || 'name')
     setLimit(PAGE_SIZE)
   })
 
@@ -211,7 +216,7 @@ export const AllAuthorsView = (props: Props) => {
             </div>
           </Show>
 
-          <Show when={sortedAuthors().length > limit()}>
+          <Show when={searchParams().by !== 'name' && sortedAuthors().length > limit()}>
             <div class="row">
               <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
                 <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>

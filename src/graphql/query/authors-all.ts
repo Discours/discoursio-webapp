@@ -8,8 +8,6 @@ export default gql`
       name
       bio
       userpic
-      links
-      lastSeen
       stat {
         shouts
         followers

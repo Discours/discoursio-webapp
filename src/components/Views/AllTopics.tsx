@@ -35,7 +35,12 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const { session } = useSession()
 
-  onMount(() => changeSearchParam('by', 'shouts'))
+  onMount(() => {
+    if (!searchParams().by) {
+      setTopicsSort('shouts')
+      changeSearchParam('by', 'shouts')
+    }
+  })
   createEffect(() => {
     setTopicsSort(searchParams().by || 'shouts')
     setLimit(PAGE_SIZE)

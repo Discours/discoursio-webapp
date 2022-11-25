@@ -9,17 +9,13 @@ const checkUrl = async (page, targetUrl, pageName) => {
   await page.screenshot({ path: `${pageName}.jpg` })
 }
 
-async function run() {
-  const browser = await chromium.launch()
-  const page = await browser.newPage()
+const browser = await chromium.launch()
+const page = await browser.newPage()
 
-  const targetUrl = process.env.ENVIRONMENT_URL || 'https://testing.discours.io'
+const targetUrl = process.env.ENVIRONMENT_URL || 'https://testing.discours.io'
 
-  await checkUrl(page, targetUrl, 'main')
-  await checkUrl(page, `${targetUrl}/authors`, 'authors')
-  await checkUrl(page, `${targetUrl}/topics`, 'topics')
-  await page.close()
-  await browser.close()
-}
-
-await run()
+await checkUrl(page, targetUrl, 'main')
+await checkUrl(page, `${targetUrl}/authors`, 'authors')
+await checkUrl(page, `${targetUrl}/topics`, 'topics')
+await page.close()
+await browser.close()

@@ -33,6 +33,7 @@ import { InboxPage } from './Pages/InboxPage'
 import { LayoutShoutsPage } from './Pages/LayoutShoutsPage'
 import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from './Pages/profile/ProfileSettingsPage'
+import { ProfilePage } from './Pages/profile/ProfilePage'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -60,7 +61,8 @@ const pagesMap: Record<keyof Routes, Component<PageProps>> = {
   principles: PrinciplesPage,
   termsOfUse: TermsOfUsePage,
   thanks: ThanksPage,
-  profileSettings: ProfileSettingsPage
+  profileSettings: ProfileSettingsPage,
+  profile: ProfilePage
 }
 
 export const Root = (props: PageProps) => {

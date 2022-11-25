@@ -17,7 +17,6 @@ import { splitToPages } from '../../utils/splitToPages'
 type AuthorProps = {
   shouts: Shout[]
   author: Author
-  authorSlug: string
   // FIXME author topics from server
   // topics: Topic[]
 }
@@ -37,7 +36,7 @@ export const AuthorView = (props: AuthorProps) => {
   const { topicsByAuthor } = useTopicsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
-  const author = createMemo(() => authorEntities()[props.authorSlug])
+  const author = createMemo(() => authorEntities()[props.author.slug])
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
   const loadMore = async () => {

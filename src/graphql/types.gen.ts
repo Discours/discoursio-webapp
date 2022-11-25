@@ -186,7 +186,7 @@ export type Mutation = {
   inviteChat: Result
   markAsRead: Result
   rateUser: Result
-  refreshSession: AuthResult
+  getSession: AuthResult
   registerUser: AuthResult
   removeAuthor: Result
   sendLink: Result

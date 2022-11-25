@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   mutation RefreshSessionMutation {
-    refreshSession {
+    getSession {
       error
       token
       user {

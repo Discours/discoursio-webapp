@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js'
 import { createContext, useContext } from 'solid-js'
-import type { Message, Chat } from '../graphql/types.gen'
+import type { Message } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { createStore } from 'solid-js/store'
 
@@ -20,12 +20,12 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chatEntities, setChatEntities] = createStore({})
 
-  const createChat = async (memberSlugs: string[], title?: string) => {
-    // @ts-ignore FIXME: вывести типы
-    const chat = await apiClient.createChat({ string, title })
+  const createChat = async (members: string[], title?: string) => {
+    const chat = await apiClient.createChat({ members, title })
 
-    // @ts-ignore FIXME: вывести типы
-    setChatEntities(chat.id, chat)
+    setChatEntities((s) => {
+      s[chat.id] = chat
+    })
   }
 
   const actions = {

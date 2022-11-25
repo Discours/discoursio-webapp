@@ -41,6 +41,7 @@ import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
 import shoutLoad from '../graphql/query/articles-load'
 import loadRecipients from '../graphql/query/chat-recipients'
+import createMessage from '../graphql/mutation/create-chat-message'
 
 type ApiErrorCode =
   | 'unknown'
@@ -227,14 +228,6 @@ export const apiClient = {
 
   // CUDL
 
-  createChat: async (options: MutationCreateChatArgs) => {
-    return await privateGraphQLClient.mutation(createChat, options).toPromise()
-  },
-
-  createMessage: async (options: MutationCreateMessageArgs) => {
-    return await privateGraphQLClient.mutation(createChat, options).toPromise()
-  },
-
   updateReaction: async ({ reaction }) => {
     const response = await privateGraphQLClient.mutation(reactionUpdate, { reaction }).toPromise()
 
@@ -281,6 +274,16 @@ export const apiClient = {
     const resp = await privateGraphQLClient.query(myChats, options).toPromise()
     console.debug('[getChats]', resp)
     return resp.data.myChats
+  },
+
+  createChat: async (options: MutationCreateChatArgs) => {
+    const resp = await privateGraphQLClient.mutation(createChat, options).toPromise()
+    return resp.data.createChat
+  },
+
+  createMessage: async (options: MutationCreateMessageArgs) => {
+    const resp = await privateGraphQLClient.mutation(createMessage, options).toPromise()
+    return resp.data.createMessage
   },
 
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {

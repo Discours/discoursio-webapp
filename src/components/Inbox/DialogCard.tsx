@@ -2,6 +2,8 @@ import styles from './DialogCard.module.scss'
 import DialogAvatar from './DialogAvatar'
 import type { Author } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
+import { t } from '../../utils/intl'
+import { useInbox } from '../../context/inbox'
 
 type DialogProps = {
   online?: boolean
@@ -12,13 +14,11 @@ type DialogProps = {
 }
 
 const DialogCard = (props: DialogProps) => {
+  const { chatEntities, actions } = useInbox()
   const handleOpenChat = async () => {
     try {
-      const initChat = await apiClient.createChat({
-        title: 'test chat',
-        members: [props.author.slug, props.ownSlug]
-      })
-      console.debug('[initChat]', initChat.data.createChat)
+      const initChat = await actions.createChat([props.author.slug, props.ownSlug])
+      console.debug('[initChat]', initChat)
     } catch (error) {
       console.error(error)
     }

@@ -6,22 +6,16 @@ export default gql`
       error
       chats {
         id
+        admins
+        users
+        unread
+        description
+        updatedAt
         messages {
           id
           body
           author
         }
-        admins {
-          slug
-          name
-        }
-        users {
-          slug
-          name
-        }
-        unread
-        description
-        updatedAt
       }
     }
   }

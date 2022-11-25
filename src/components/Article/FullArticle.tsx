@@ -55,8 +55,8 @@ export const FullArticle = (props: ArticleProps) => {
     const script = document.createElement('script')
     script.async = true
     script.src = 'https://ackee.discours.io/increment.js'
-    script.setAttribute('data-ackee-server', 'https://ackee.discours.io')
-    script.setAttribute('data-ackee-domain-id', '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d')
+    script.dataset.ackeeServer = 'https://ackee.discours.io'
+    script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
     document.body.appendChild(script)
     const windowHash = window.location.hash
     if (windowHash?.length > 0) {

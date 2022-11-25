@@ -38,7 +38,7 @@ export const AuthorPage = (props: PageProps) => {
   return (
     <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <AuthorView author={props.author} shouts={props.shouts} authorSlug={slug()} />
+        <AuthorView author={props.author} shouts={props.shouts} />
       </Show>
     </PageWrap>
   )

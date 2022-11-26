@@ -32,7 +32,7 @@ export default (props: UserpicProps) => {
             when={props.user && props.user.userpic === ''}
             fallback={
               <img
-                src={props.user.userpic || '/icons/user-anonymous.svg'}
+                src={props.user.userpic || '/icons/user-default.svg'}
                 alt={props.user.name || ''}
                 classList={{ anonymous: !props.user.userpic }}
               />
@@ -48,7 +48,7 @@ export default (props: UserpicProps) => {
           when={props.user && props.user.userpic === ''}
           fallback={
             <img
-              src={props.user.userpic || '/icons/user-anonymous.svg'}
+              src={props.user.userpic || '/icons/user-default.svg'}
               alt={props.user.name || ''}
               classList={{ anonymous: !props.user.userpic }}
             />

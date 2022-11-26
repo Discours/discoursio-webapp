@@ -54,17 +54,17 @@ export type AuthorsBy = {
 }
 
 export type Chat = {
-  admins?: Maybe<Array<Maybe<User>>>
+  admins?: Maybe<Array<Maybe<Scalars['String']>>>
   createdAt: Scalars['Int']
-  createdBy: User
+  createdBy: Scalars['String']
   description?: Maybe<Scalars['String']>
   id: Scalars['String']
-  messages: Array<Maybe<Message>>
+  messages?: Maybe<Array<Maybe<Message>>>
   private?: Maybe<Scalars['Boolean']>
   title?: Maybe<Scalars['String']>
   unread?: Maybe<Scalars['Int']>
   updatedAt: Scalars['Int']
-  users: Array<Maybe<User>>
+  users: Array<Maybe<Scalars['String']>>
 }
 
 export type ChatInput = {
@@ -136,6 +136,7 @@ export type LoadShoutsOptions = {
   offset?: InputMaybe<Scalars['Int']>
   order_by?: InputMaybe<Scalars['String']>
   order_by_desc?: InputMaybe<Scalars['Boolean']>
+  with_author_captions?: InputMaybe<Scalars['Boolean']>
 }
 
 export type Message = {
@@ -178,7 +179,6 @@ export type Mutation = {
   follow: Result
   getSession: AuthResult
   inviteAuthor: Result
-  inviteChat: Result
   markAsRead: Result
   rateUser: Result
   registerUser: AuthResult
@@ -214,7 +214,7 @@ export type MutationCreateReactionArgs = {
 }
 
 export type MutationCreateShoutArgs = {
-  inp: ShoutInput
+  input: ShoutInput
 }
 
 export type MutationCreateTopicArgs = {
@@ -250,11 +250,6 @@ export type MutationFollowArgs = {
 export type MutationInviteAuthorArgs = {
   author: Scalars['String']
   shout: Scalars['String']
-}
-
-export type MutationInviteChatArgs = {
-  chatId: Scalars['String']
-  userslug: Scalars['String']
 }
 
 export type MutationMarkAsReadArgs = {

@@ -70,7 +70,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                 <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                   <a href="?modal=auth&mode=login">
                     <span class={styles.textLabel}>{t('Enter')}</span>
-                    <Icon name="user-anonymous" class={styles.icon} />
+                    <Icon name="user-default" class={styles.icon} />
                   </a>
                 </div>
               }

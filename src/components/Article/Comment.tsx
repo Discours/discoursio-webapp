@@ -54,7 +54,7 @@ export default (props: {
               </div>
 
               <div class="comment-date">{comment()?.createdAt}</div>
-              <div class="comment-rating">{comment().stat.rating}</div>
+              <div class="comment-rating">{comment().stat?.rating || 0}</div>
             </div>
           </Show>
 

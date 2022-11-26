@@ -1,33 +1,19 @@
 import { capitalize } from '../../utils'
 import './Full.scss'
 import { Icon } from '../_shared/Icon'
-import ArticleComment from './Comment'
 import { AuthorCard } from '../Author/Card'
 import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-import { showModal } from '../../stores/ui'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
-import { useSession } from '../../context/session'
 import stylesHeader from '../Nav/Header.module.scss'
 import styles from '../../styles/Article.module.scss'
 import RatingControl from './RatingControl'
 import { clsx } from 'clsx'
-
-const MAX_COMMENT_LEVEL = 6
-
-const getCommentLevel = (comment: Reaction, level = 0) => {
-  if (comment && comment.replyTo && level < MAX_COMMENT_LEVEL) {
-    return 0 // FIXME: getCommentLevel(commentsById[c.replyTo], level + 1)
-  }
-  return level
-}
-
+import { CommentsTree } from './CommentsTree'
 interface ArticleProps {
   article: Shout
-  reactions: Reaction[]
-  isCommentsLoading: boolean
 }
 
 const formatDate = (date: Date) => {
@@ -41,7 +27,6 @@ const formatDate = (date: Date) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
-  const { session } = useSession()
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
 
@@ -52,12 +37,6 @@ export const FullArticle = (props: ArticleProps) => {
     )
 
   onMount(() => {
-    const script = document.createElement('script')
-    script.async = true
-    script.src = 'https://ackee.discours.io/increment.js'
-    script.dataset.ackeeServer = 'https://ackee.discours.io'
-    script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
-    document.body.appendChild(script)
     const windowHash = window.location.hash
     if (windowHash?.length > 0) {
       const comments = document.querySelector(windowHash)
@@ -114,11 +93,6 @@ export const FullArticle = (props: ArticleProps) => {
             <RatingControl rating={props.article.stat?.rating} />
           </div>
 
-          <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemLikes)}>
-            <Icon name="like" class={styles.icon} />
-            {props.article.stat?.rating || ''}
-          </div>
-
           <div class={styles.shoutStatsItem}>
             <Icon name="comment" class={styles.icon} />
             {props.article.stat?.commented || ''}
@@ -153,7 +127,7 @@ export const FullArticle = (props: ArticleProps) => {
           {/*</Show>*/}
           <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
             <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
-              {formattedDate}
+              {formattedDate()}
             </div>
 
             <Show when={props.article.stat?.viewed}>
@@ -187,39 +161,7 @@ export const FullArticle = (props: ArticleProps) => {
             )}
           </For>
         </div>
-
-        <Show when={props.reactions?.length}>
-          <h2 id="comments">
-            {t('Comments')} {props.reactions?.length.toString() || ''}
-          </h2>
-
-          <For each={props.reactions?.filter((r) => r.body)}>
-            {(reaction) => (
-              <ArticleComment
-                comment={reaction}
-                level={getCommentLevel(reaction)}
-                canEdit={reaction.createdBy?.slug === session()?.user?.slug}
-              />
-            )}
-          </For>
-        </Show>
-        <Show when={!session()?.user?.slug}>
-          <div class={styles.commentWarning} id="comments">
-            {t('To leave a comment you please')}
-            <a
-              href={''}
-              onClick={(evt) => {
-                evt.preventDefault()
-                showModal('auth')
-              }}
-            >
-              <i>{t('sign up or sign in')}</i>
-            </a>
-          </div>
-        </Show>
-        <Show when={session()?.user?.slug}>
-          <textarea class={styles.writeComment} rows="1" placeholder={t('Write comment')} />
-        </Show>
+        <CommentsTree shout={props.article?.slug} />
       </div>
     </div>
   )

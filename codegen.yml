@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'http://localhost:8080'
+schema: 'https://testapi.discours.io'
 generates:
   src/graphql/introspec.gen.ts:
     plugins:

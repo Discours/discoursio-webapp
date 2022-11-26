@@ -208,7 +208,7 @@ export const apiClient = {
   },
   getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
-    console.error('getAuthor', response)
+    console.debug('getAuthor', response)
     return response.data.getAuthor
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {

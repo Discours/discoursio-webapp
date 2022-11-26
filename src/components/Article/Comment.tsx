@@ -16,7 +16,7 @@ export default (props: {
   compact?: boolean
 }) => {
   const comment = createMemo(() => props.comment)
-  const body = createMemo(() => comment().body.toString().trim())
+  const body = createMemo(() => (comment().body || '').trim())
   const remove = () => {
     if (comment()?.id) {
       console.log('[comment] removing', comment().id)

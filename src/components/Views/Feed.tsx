@@ -46,7 +46,7 @@ export const FeedView = () => {
 
   onMount(async () => {
     // load 5 recent comments overall
-    await loadReactionsBy({ by: {}, limit: 5, offset: 0 })
+    await loadReactionsBy({ by: { comment: true }, limit: 5, offset: 0 })
 
     // load recent shouts not only published ( visibility = community )
     await loadMore()
@@ -58,8 +58,8 @@ export const FeedView = () => {
     const userslug = session().user.slug
     await loadShouts({ filters: { author: userslug, visibility: 'authors' }, limit: 15 })
     const collaborativeShouts = sortedArticles().filter((shout) => shout.visibility === 'authors')
-    // load recent reactions on collabs
-    await loadReactionsBy({ by: { shouts: [...collaborativeShouts], body: true }, limit: 5 })
+    // load reactions on collaborativeShouts
+    await loadReactionsBy({ by: { shouts: [...collaborativeShouts] }, limit: 5 })
   })
 
   return (

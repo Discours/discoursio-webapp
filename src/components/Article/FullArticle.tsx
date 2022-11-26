@@ -1,4 +1,4 @@
-import { capitalize } from '../../utils'
+import { capitalize, formatDate } from '../../utils'
 import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
@@ -14,16 +14,6 @@ import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 interface ArticleProps {
   article: Shout
-}
-
-const formatDate = (date: Date) => {
-  return date
-    .toLocaleDateString('ru', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    })
-    .replace(' г.', '')
 }
 
 export const FullArticle = (props: ArticleProps) => {
@@ -90,7 +80,7 @@ export const FullArticle = (props: ArticleProps) => {
       <div class="col-md-8 shift-content">
         <div class={styles.shoutStats}>
           <div class={styles.shoutStatsItem}>
-            <RatingControl rating={props.article.stat?.rating} />
+            <RatingControl rating={props.article.stat?.rating} class={styles.ratingControl} />
           </div>
 
           <div class={styles.shoutStatsItem}>
@@ -139,6 +129,11 @@ export const FullArticle = (props: ArticleProps) => {
           </div>
         </div>
 
+        <div class={styles.help}>
+          <button class="button">Соучаствовать</button>
+          <button class="button button--light">Пригласить к участию</button>
+        </div>
+
         <div class={styles.topicsList}>
           <For each={props.article.topics}>
             {(topic) => (
@@ -155,7 +150,7 @@ export const FullArticle = (props: ArticleProps) => {
           </Show>
           <For each={props.article?.authors}>
             {(a: Author) => (
-              <div class="col-md-6">
+              <div class="col-xl-6">
                 <AuthorCard author={a} compact={false} hasLink={true} liteButtons={true} />
               </div>
             )}

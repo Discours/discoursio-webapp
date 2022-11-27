@@ -13,8 +13,9 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { clsx } from 'clsx'
-import Slider from '../Feed/Slider'
+import Slider from '../_shared/Slider'
 import { Row1 } from '../Feed/Row1'
+import { ArticleCard } from '../Feed/Card'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
@@ -122,7 +123,21 @@ export const TopicView = (props: TopicProps) => {
           wrapper={'author'}
         />
 
-        <Slider title={title()} articles={sortedArticles().slice(5, 11)} />
+        <Slider title={title()}>
+          <For each={sortedArticles().slice(5, 11)}>
+            {(a: Shout) => (
+              <ArticleCard
+                article={a}
+                settings={{
+                  additionalClass: 'swiper-slide',
+                  isFloorImportant: true,
+                  isWithCover: true,
+                  nodate: true
+                }}
+              />
+            )}
+          </For>
+        </Slider>
 
         <Beside
           beside={sortedArticles()[12]}
@@ -134,12 +149,21 @@ export const TopicView = (props: TopicProps) => {
         <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
         <Row1 article={sortedArticles()[15]} />
 
-        <Slider
-          title={title()}
-          articles={sortedArticles().slice(16, 22)}
-          slidesPerView={3}
-          isCardsWithCover={false}
-        />
+        <Slider slidesPerView={3} title={title()}>
+          <For each={sortedArticles().slice(16, 22)}>
+            {(a: Shout) => (
+              <ArticleCard
+                article={a}
+                settings={{
+                  additionalClass: 'swiper-slide',
+                  isFloorImportant: true,
+                  isWithCover: false,
+                  nodate: true
+                }}
+              />
+            )}
+          </For>
+        </Slider>
 
         <Row3 articles={sortedArticles().slice(23, 26)} />
         <Row2 articles={sortedArticles().slice(26, 28)} />

@@ -51,6 +51,7 @@ export default (props: UserpicProps) => {
               src={props.user.userpic || '/icons/user-default.svg'}
               alt={props.user.name || ''}
               classList={{ anonymous: !props.user.userpic }}
+              loading="lazy"
             />
           }
         >

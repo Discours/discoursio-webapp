@@ -8,7 +8,7 @@ import { Row1 } from '../Feed/Row1'
 import Hero from '../Discours/Hero'
 import { Beside } from '../Feed/Beside'
 import RowShort from '../Feed/RowShort'
-import Slider from '../Feed/Slider'
+import Slider from '../_shared/Slider'
 import Group from '../Feed/Group'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
@@ -18,6 +18,7 @@ import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
+import { ArticleCard } from '../Feed/Card'
 
 type HomeProps = {
   randomTopics: Topic[]
@@ -120,7 +121,21 @@ export const HomeView = (props: HomeProps) => {
           wrapper={'author'}
         />
 
-        <Slider title={t('Top month articles')} articles={topMonthArticles()} />
+        <Slider title={t('Top month articles')}>
+          <For each={topMonthArticles()}>
+            {(a: Shout) => (
+              <ArticleCard
+                article={a}
+                settings={{
+                  additionalClass: 'swiper-slide',
+                  isFloorImportant: true,
+                  isWithCover: true,
+                  nodate: true
+                }}
+              />
+            )}
+          </For>
+        </Slider>
 
         <Row2 articles={sortedArticles().slice(10, 12)} />
 
@@ -132,7 +147,21 @@ export const HomeView = (props: HomeProps) => {
 
         {randomLayout()}
 
-        <Slider title={t('Favorite')} articles={topArticles()} />
+        <Slider title={t('Favorite')}>
+          <For each={topArticles()}>
+            {(a: Shout) => (
+              <ArticleCard
+                article={a}
+                settings={{
+                  additionalClass: 'swiper-slide',
+                  isFloorImportant: true,
+                  isWithCover: true,
+                  nodate: true
+                }}
+              />
+            )}
+          </For>
+        </Slider>
 
         <Beside
           beside={sortedArticles()[20]}

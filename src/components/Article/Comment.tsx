@@ -11,6 +11,7 @@ import { deleteReaction } from '../../stores/zine/reactions'
 import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
+import Userpic from '../Author/Userpic'
 
 export default (props: {
   level?: number
@@ -40,16 +41,11 @@ export default (props: {
           <Show
             when={!props.compact}
             fallback={
-              <div class={styles.commentDetails}>
-                <a href={`/author/${comment()?.createdBy?.slug}`}>
-                  @{(comment()?.createdBy || { name: 'anonymous' }).name}
-                </a>
-                <div class={styles.commentArticle}>
-                  <Icon name="reply-arrow" />
-                  <a href={`#comment-${comment()?.id}`}>
-                    #{(comment()?.shout || { title: 'Lorem ipsum titled' }).title}
-                  </a>
-                </div>
+              <div>
+                <Userpic user={comment().createdBy as Author} isBig={false} isAuthorsList={false} />
+                <small class={styles.commentArticle}>
+                  <a href={`#comment-${comment()?.id}`}>{comment()?.shout.title || ''}</a>
+                </small>
               </div>
             }
           >
@@ -141,9 +137,9 @@ export default (props: {
                 <textarea name="reply" id="reply" rows="5"></textarea>
                 <div class={styles.replyFormControls}>
                   <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
-                    Отмена
+                    {t('Cancel')}
                   </button>
-                  <button class="button">Отправить</button>
+                  <button class="button">{t('Send')}</button>
                 </div>
               </form>
             </Show>

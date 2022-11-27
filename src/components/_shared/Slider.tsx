@@ -1,4 +1,3 @@
-import { ArticleCard } from './Card'
 import { Swiper, Navigation, Pagination } from 'swiper'
 import type { SwiperOptions } from 'swiper'
 import 'swiper/scss'
@@ -6,14 +5,15 @@ import 'swiper/scss/navigation'
 import 'swiper/scss/pagination'
 import './Slider.scss'
 import type { Shout } from '../../graphql/types.gen'
-import { createEffect, createMemo, createSignal, Show, For } from 'solid-js'
-import { Icon } from '../_shared/Icon'
+import { createEffect, createMemo, createSignal, Show, For, JSX } from 'solid-js'
+import { Icon } from './Icon'
 
 interface SliderProps {
   title?: string
-  articles: Shout[]
+  articles?: Shout[]
   slidesPerView?: number
   isCardsWithCover?: boolean
+  children?: JSX.Element
 }
 
 export default (props: SliderProps) => {
@@ -66,21 +66,7 @@ export default (props: SliderProps) => {
           <h2 class="col-12">{props.title}</h2>
           <Show when={!!articles()}>
             <div class="swiper" classList={{ 'cards-with-cover': isCardsWithCover }} ref={el}>
-              <div class="swiper-wrapper">
-                <For each={articles()}>
-                  {(a: Shout) => (
-                    <ArticleCard
-                      article={a}
-                      settings={{
-                        additionalClass: 'swiper-slide',
-                        isFloorImportant: true,
-                        isWithCover: isCardsWithCover,
-                        nodate: true
-                      }}
-                    />
-                  )}
-                </For>
-              </div>
+              <div class="swiper-wrapper">{props.children}</div>
               <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
                 <Icon name="slider-arrow" class={'icon'} />
               </div>

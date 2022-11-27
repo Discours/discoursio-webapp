@@ -1,14 +1,14 @@
 import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
-import { useAuthorsStore, setAuthorsSort } from '../../stores/zine/authors'
+import { AuthorsSortBy, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { useRouter } from '../../stores/router'
-import styles from '../../styles/AllTopics.module.scss'
+import { AuthorCard } from '../Author/Card'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
+import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { StatMetrics } from '../_shared/StatMetrics'
@@ -17,19 +17,20 @@ type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
 }
 
-type Props = {
+type AllAuthorsViewProps = {
   authors: Author[]
 }
 
 const PAGE_SIZE = 20
 const ALPHABET = [...'@АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ']
 
-export const AllAuthorsView = (props: Props) => {
+export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   const [limit, setLimit] = createSignal(PAGE_SIZE)
-  const { searchParams, changeSearchParam } = useRouter<AllAuthorsPageSearchParams>()
+  const { searchParams, changeSearchParam } = useRouter()
+  const [filterResults, setFilterResults] = createSignal<Author[]>([])
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
-    sortBy: searchParams().by || 'name'
+    sortBy: (searchParams().by || 'shouts') as AuthorsSortBy
   })
 
   const { session } = useSession()
@@ -41,12 +42,10 @@ export const AllAuthorsView = (props: Props) => {
     }
   })
   createEffect(() => {
-    setAuthorsSort(searchParams().by || 'shouts')
-    setFilteredAuthors(sortedAuthors())
+    setAuthorsSort((searchParams().by || 'shouts') as AuthorsSortBy)
+    setFilterResults(sortedAuthors())
     setLimit(PAGE_SIZE)
   })
-
-  const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce((acc, author) => {
@@ -64,6 +63,39 @@ export const AllAuthorsView = (props: Props) => {
     return keys
   })
 
+  const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const filterAuthors = (value) => {
+    /* very stupid filter by string algorithm with no deps */
+    let q = value.toLowerCase()
+    if (q.length > 0) {
+      setFilterResults([])
+      if (locale() === 'ru') q = translit(q, 'ru')
+      const aaa: Author[] = sortedAuthors()
+      sortedAuthors().forEach((author) => {
+        let flag = false
+        author.slug.split('-').forEach((w) => {
+          if (w.startsWith(q)) flag = true
+        })
+
+        if (!flag) {
+          let wrds: string = author.name.toLowerCase()
+          if (locale() === 'ru') wrds = translit(wrds, 'ru')
+          wrds.split(' ').forEach((w: string) => {
+            if (w.startsWith(q)) flag = true
+          })
+        }
+
+        if (!flag && aaa.includes(author)) {
+          const idx = aaa.indexOf(author)
+          aaa.splice(idx, 1)
+        }
+      })
+      setFilterResults(aaa)
+    }
+  }
+
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const AllAuthorsHead = () => (
     <div class="row">
@@ -76,54 +108,24 @@ export const AllAuthorsView = (props: Props) => {
             <a href="/authors?by=shouts">{t('By shouts')}</a>
           </li>
           <li classList={{ selected: searchParams().by === 'followers' }}>
-            <a href="/authors?by=followers">{t('By rating')}</a>
+            <a href="/authors?by=followers">{t('By popularity')}</a>
           </li>
-          <li classList={{ selected: !searchParams().by || searchParams().by === 'name' }}>
+          <li classList={{ selected: searchParams().by === 'name' }}>
             <a href="/authors?by=name">{t('By name')}</a>
           </li>
-          <li class="view-switcher__search">
+          <Show when={searchParams().by !== 'name'}>
             <li class="view-switcher__search">
               <SearchField onChange={filterAuthors} />
             </li>
-          </li>
+          </Show>
         </ul>
       </div>
     </div>
   )
-  const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  const filterAuthors = (value) => {
-    /* very stupid search algorithm with no deps */
-    let q = value.toLowerCase()
-    if (q.length > 0) {
-      setFilteredAuthors([])
-      if (locale() === 'ru') q = translit(q, 'ru')
-      const aaa: Author[] = sortedAuthors()
-      sortedAuthors().forEach((a) => {
-        let flag = false
-        a.slug.split('-').forEach((w) => {
-          if (w.startsWith(q)) flag = true
-        })
 
-        if (!flag) {
-          let wrds: string = a.name.toLowerCase()
-          if (locale() === 'ru') wrds = translit(wrds, 'ru')
-          wrds.split(' ').forEach((w: string) => {
-            if (w.startsWith(q)) flag = true
-          })
-        }
-
-        if (!flag && aaa.includes(a)) {
-          const idx = aaa.indexOf(a)
-          aaa.splice(idx, 1)
-        }
-      })
-      setFilteredAuthors(aaa)
-    }
-  }
   return (
     <div class={clsx(styles.allTopicsPage, 'wide-container')}>
-      <Show when={sortedAuthors().length > 0 || filteredAuthors().length > 0}>
+      <Show when={sortedAuthors().length > 0}>
         <div class="shift-content">
           <AllAuthorsHead />
 
@@ -132,7 +134,7 @@ export const AllAuthorsView = (props: Props) => {
               <div class="col-lg-10 col-xl-9">
                 <ul class={clsx('nodash', styles.alphabet)}>
                   <For each={ALPHABET}>
-                    {(letter: string, index) => (
+                    {(letter, index) => (
                       <li>
                         <Show when={letter in byLetter()} fallback={letter}>
                           <a
@@ -176,27 +178,22 @@ export const AllAuthorsView = (props: Props) => {
             </For>
           </Show>
 
-          <Show when={searchParams().by && searchParams().by !== 'name'}>
-            <div class={clsx(styles.stats, 'row')}>
-              <div class="col-lg-10 col-xl-9">
-                <For each={filteredAuthors().slice(0, limit())}>
-                  {(author) => (
-                    <>
-                      <AuthorCard
-                        author={author}
-                        compact={false}
-                        hasLink={true}
-                        subscribed={subscribed(author.slug)}
-                        noSocialButtons={true}
-                        isAuthorsList={true}
-                        truncateBio={true}
-                      />
-                      <StatMetrics fields={['shouts', 'followers', 'comments']} stat={author.stat} />
-                    </>
-                  )}
-                </For>
-              </div>
-            </div>
+          <Show when={searchParams().by && searchParams().by !== 'title'}>
+            <For each={filterResults().slice(0, limit())}>
+              {(author) => (
+                <>
+                  <AuthorCard
+                    author={author}
+                    hasLink={true}
+                    subscribed={subscribed(author.slug)}
+                    noSocialButtons={true}
+                    isAuthorsList={true}
+                    truncateBio={true}
+                  />
+                  <StatMetrics fields={['shouts', 'followers', 'comments']} stat={author.stat} />
+                </>
+              )}
+            </For>
           </Show>
 
           <Show when={sortedAuthors().length > limit() && searchParams().by !== 'name'}>

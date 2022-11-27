@@ -14,6 +14,7 @@ import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
 import VideoPlayer from './VideoPlayer'
+import Slider from '../_shared/Slider'
 
 interface ArticleProps {
   article: Shout
@@ -29,13 +30,7 @@ interface MediaItem {
 const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
   return (
     <>
-      <Switch
-        fallback={
-          <picture>
-            <source src={props.media.url} />
-          </picture>
-        }
-      >
+      <Switch fallback={<a href={props.media.url}>{t('Cannot show this media type')}</a>}>
         <Match when={props.kind === 'audio'}>
           <div>
             <h5>{props.media.title}</h5>
@@ -116,7 +111,21 @@ export const FullArticle = (props: ArticleProps) => {
           <div class={styles.shoutCover} style={{ 'background-image': `url('${props.article.cover}')` }} />
         </div>
 
-        <Show when={media()}>
+        <Show
+          when={media() && props.article.layout !== 'image'}
+          fallback={
+            <Slider>
+              <For each={media() || []}>
+                {(m: MediaItem) => (
+                  <>
+                    <img src={m.url || m.pic} alt={m.title} />
+                    <div innerHTML={m.body} />
+                  </>
+                )}
+              </For>
+            </Slider>
+          }
+        >
           <div class="media-items">
             <For each={media() || []}>
               {(m: MediaItem) => (
@@ -148,7 +157,7 @@ export const FullArticle = (props: ArticleProps) => {
           <Show when={props.article.stat?.viewed}>
             <div class={clsx(styles.shoutStatsItem)}>
               <Icon name="eye" class={styles.icon} />
-              <sup>{props.article.stat?.viewed}</sup>
+              {props.article.stat?.viewed}
             </div>
           </Show>
 

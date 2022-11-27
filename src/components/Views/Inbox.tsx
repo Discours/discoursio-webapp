@@ -1,5 +1,5 @@
 import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
-import type { Author } from '../../graphql/types.gen'
+import type { Author, Chat } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../Loading'
@@ -58,18 +58,10 @@ const postMessage = async (msg: string) => {
   return response.data.createComment
 }
 
-const handleGetChats = async () => {
-  try {
-    const response = await loadChats()
-    console.log('!!! handleGetChats:', response)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const InboxView = () => {
   const [messages, setMessages] = createSignal([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
+  const [chats, setChats] = createSignal<Chat[]>([])
   const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
@@ -116,6 +108,13 @@ export const InboxView = () => {
     } catch (error) {
       console.log(error)
     }
+
+    try {
+      const response = await loadChats()
+      setChats(response as unknown as Chat[])
+    } catch (error) {
+      console.log(error)
+    }
   })
 
   const handleSubmit = async () => {
@@ -129,18 +128,19 @@ export const InboxView = () => {
     }
   }
 
-  let formParent // autoresize ghost element
+  let textareaParent // textarea autoresize ghost element
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
   }
   createEffect(() => {
-    formParent.dataset.replicatedValue = postMessageText()
+    textareaParent.dataset.replicatedValue = postMessageText()
   })
 
   const handleOpenInviteModal = (event: Event) => {
     event.preventDefault()
     showModal('inviteToChat')
   }
+
   return (
     <div class="messages container">
       <Modal variant="narrow" name="inviteToChat">
@@ -160,14 +160,14 @@ export const InboxView = () => {
               <li>
                 <strong>{t('All')}</strong>
               </li>
-              <li onClick={handleGetChats}>{t('Personal')}</li>
+              <li>{t('Personal')}</li>
               <li>{t('Groups')}</li>
             </ul>
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={recipients()}>
-                {(author) => <DialogCard ownSlug={currentSlug()} author={author} online={true} />}
+              <For each={chats()}>
+                {(chat) => <DialogCard users={chat.users} ownSlug={currentSlug()} />}
               </For>
             </div>
           </div>
@@ -198,7 +198,7 @@ export const InboxView = () => {
 
           <div class="message-form">
             <div class="wrapper">
-              <div class="grow-wrap" ref={formParent}>
+              <div class="grow-wrap" ref={textareaParent}>
                 <textarea
                   value={postMessageText()}
                   rows={1}

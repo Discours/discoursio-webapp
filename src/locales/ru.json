@@ -181,7 +181,12 @@
   "zine": "журнал",
   "shout": "пост",
   "discussion": "дискурс",
-  "Conversations": "Переписки",
+  "Personal": "Личные",
   "Groups": "Группы",
-  "All": "Все"
+  "All": "Все",
+  "create_chat": "Создать чат",
+  "create_group": "Создать группу",
+  "discourse_theme": "Тема дискурса",
+  "cancel": "Отмена",
+  "group_chat": "Общий чат"
 }

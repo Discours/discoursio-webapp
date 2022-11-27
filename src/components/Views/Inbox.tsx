@@ -1,5 +1,5 @@
 import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
-import type { Author } from '../../graphql/types.gen'
+import type { Author, Chat } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../Loading'
@@ -12,6 +12,10 @@ import { loadRecipients, loadChats } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import '../../styles/Inbox.scss'
 import { useInbox } from '../../context/inbox'
+import { Modal } from '../Nav/Modal'
+import { showModal } from '../../stores/ui'
+import InviteUser from '../Inbox/InviteUser'
+import CreateModalContent from '../Inbox/CreateModalContent'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -54,18 +58,10 @@ const postMessage = async (msg: string) => {
   return response.data.createComment
 }
 
-const handleGetChats = async () => {
-  try {
-    const response = await loadChats()
-    console.log('!!! handleGetChats:', response)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const InboxView = () => {
   const [messages, setMessages] = createSignal([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
+  const [chats, setChats] = createSignal<Chat[]>([])
   const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
@@ -112,6 +108,13 @@ export const InboxView = () => {
     } catch (error) {
       console.log(error)
     }
+
+    try {
+      const response = await loadChats()
+      setChats(response as unknown as Chat[])
+    } catch (error) {
+      console.log(error)
+    }
   })
 
   const handleSubmit = async () => {
@@ -125,36 +128,46 @@ export const InboxView = () => {
     }
   }
 
-  let formParent // autoresize ghost element
+  let textareaParent // textarea autoresize ghost element
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
   }
   createEffect(() => {
-    formParent.dataset.replicatedValue = postMessageText()
+    textareaParent.dataset.replicatedValue = postMessageText()
   })
 
-  // FIXME: прописать типы
-  // const { chatEntitieies, actions: { createCaht }} = useInbox()
-  // const { actions: { createCaht }} = useInbox()
+  const handleOpenInviteModal = (event: Event) => {
+    event.preventDefault()
+    showModal('inviteToChat')
+  }
 
   return (
     <div class="messages container">
+      <Modal variant="narrow" name="inviteToChat">
+        <CreateModalContent users={recipients()} />
+      </Modal>
       <div class="row">
         <div class="chat-list col-md-4">
-          <Search placeholder="Поиск" onChange={getQuery} />
+          <div class="sidebar-header">
+            <Search placeholder="Поиск" onChange={getQuery} />
+            <div onClick={handleOpenInviteModal}>
+              <Icon name="plus-button" style={{ width: '40px', height: '40px' }} />
+            </div>
+          </div>
+
           <div class="chat-list__types">
             <ul>
               <li>
                 <strong>{t('All')}</strong>
               </li>
-              <li onClick={handleGetChats}>{t('Conversations')}</li>
+              <li>{t('Personal')}</li>
               <li>{t('Groups')}</li>
             </ul>
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={recipients()}>
-                {(author) => <DialogCard ownSlug={currentSlug()} author={author} online={true} />}
+              <For each={chats()}>
+                {(chat) => <DialogCard users={chat.users} ownSlug={currentSlug()} />}
               </For>
             </div>
           </div>
@@ -185,7 +198,7 @@ export const InboxView = () => {
 
           <div class="message-form">
             <div class="wrapper">
-              <div class="grow-wrap" ref={formParent}>
+              <div class="grow-wrap" ref={textareaParent}>
                 <textarea
                   value={postMessageText()}
                   rows={1}

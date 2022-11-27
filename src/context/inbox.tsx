@@ -7,7 +7,7 @@ import { createStore } from 'solid-js/store'
 type InboxContextType = {
   chatEntities: { [chatId: string]: Message[] }
   actions: {
-    createChat: (members: string[], title?: string) => Promise<void>
+    createChat: (members: string[], title: string) => Promise<void>
   }
 }
 
@@ -20,8 +20,8 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chatEntities, setChatEntities] = createStore({})
 
-  const createChat = async (members: string[]) => {
-    const chat = await apiClient.createChat({ members })
+  const createChat = async (members: string[], title: string) => {
+    const chat = await apiClient.createChat({ members, title })
     setChatEntities((s) => {
       s[chat.id] = chat
     })
@@ -31,6 +31,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const actions = {
     createChat
   }
+
   const value: InboxContextType = { chatEntities, actions }
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>
 }

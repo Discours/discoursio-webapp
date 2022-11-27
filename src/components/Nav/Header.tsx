@@ -84,7 +84,7 @@ export const Header = (props: Props) => {
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
-      <Modal name="auth">
+      <Modal variant="wide" name="auth">
         <AuthModal />
       </Modal>
 

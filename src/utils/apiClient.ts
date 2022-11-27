@@ -272,8 +272,7 @@ export const apiClient = {
   // inbox
   getChats: async (options: QueryLoadChatsArgs) => {
     const resp = await privateGraphQLClient.query(myChats, options).toPromise()
-    console.debug('[loadChats]', resp)
-    return resp.data.loadChats
+    return resp.data.loadChats.chats
   },
 
   createChat: async (options: MutationCreateChatArgs) => {

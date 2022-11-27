@@ -17,7 +17,7 @@ main {
   flex: 1;
   flex-direction: column;
   position: fixed;
-  z-index: 9;
+  z-index: 900;
 
   .row {
     flex: 1;
@@ -40,6 +40,12 @@ main {
   height: calc(100% - 10px);
 
   $fade-height: 10px;
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
   .holder {
     overflow: hidden;
@@ -105,11 +111,13 @@ main {
 
   li {
     margin-right: 1em;
+    color: #696969;
   }
 
   strong {
     border-bottom: 3px solid;
     font-weight: normal;
+    color: #000;
   }
 }
 

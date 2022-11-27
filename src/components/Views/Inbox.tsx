@@ -112,6 +112,7 @@ export const InboxView = () => {
     try {
       const response = await loadChats()
       setChats(response as unknown as Chat[])
+      console.log('!!! response:', response)
     } catch (error) {
       console.log(error)
     }

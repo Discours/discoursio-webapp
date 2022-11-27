@@ -112,7 +112,7 @@ export const InboxView = () => {
     try {
       const response = await loadChats()
       setChats(response as unknown as Chat[])
-      console.log('!!! response:', response)
+      console.log('!!! chats:', response)
     } catch (error) {
       console.log(error)
     }
@@ -168,7 +168,7 @@ export const InboxView = () => {
           <div class="holder">
             <div class="dialogs">
               <For each={chats()}>
-                {(chat) => <DialogCard users={chat.users} ownSlug={currentSlug()} />}
+                {(chat) => <DialogCard theme={chat.title} members={chat.members} ownSlug={currentSlug()} />}
               </For>
             </div>
           </div>

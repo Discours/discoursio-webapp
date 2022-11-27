@@ -12,9 +12,9 @@ export default gql`
       # id
       # kind
       #}
-      #shout {
-      #  slug
-      #}
+      shout {
+        slug
+      }
       createdBy {
         name
         slug

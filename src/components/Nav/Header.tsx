@@ -127,7 +127,7 @@ export const Header = (props: Props) => {
                   setIsSharePopupVisible(isVisible)
                 }}
                 containerCssClass={styles.control}
-                trigger={<Icon name="share-outline" class={styles.icon} />}
+                trigger={<Icon name="share-new" class={styles.icon} />}
               />
               <a href={getPagePath(router, 'inbox')} class={styles.control}>
                 <Icon name="comments-outline" class={styles.icon} />

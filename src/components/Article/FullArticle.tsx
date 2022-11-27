@@ -99,7 +99,7 @@ export const FullArticle = (props: ArticleProps) => {
                 setIsSharePopupVisible(isVisible)
               }}
               containerCssClass={stylesHeader.control}
-              trigger={<Icon name="share" class={styles.icon} />}
+              trigger={<Icon name="share-new" class={styles.icon} />}
             />
           </div>
           <div class={styles.shoutStatsItem}>

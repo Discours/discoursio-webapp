@@ -139,6 +139,7 @@ img {
   vertical-align: baseline;
 
   .icon {
+    height: 1.5em;
     display: inline-block;
     margin-right: 0.2em;
     transition: filter 0.2s;
@@ -183,6 +184,7 @@ img {
 
   .icon {
     opacity: 0.4;
+    height: 2rem;
   }
 
   @include media-breakpoint-down(sm) {

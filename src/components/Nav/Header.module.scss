@@ -12,7 +12,10 @@
       padding: 0 divide($container-padding-x, 2);
     }
   }
-
+  .icon {
+    height: 1.2em;
+    width: 1.2em;
+  }
   a:hover {
     .icon {
       filter: invert(1);

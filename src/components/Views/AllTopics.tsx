@@ -43,6 +43,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   })
   createEffect(() => {
     setTopicsSort(searchParams().by || 'shouts')
+    setFilterResults(sortedTopics())
     setLimit(PAGE_SIZE)
   })
 
@@ -65,17 +66,16 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
-  const [searchResults, setSearchResults] = createSignal<Topic[]>([])
+
+  const [filterResults, setFilterResults] = createSignal<Topic[]>([])
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const searchTopics = (value) => {
-    /* very stupid search algorithm with no deps */
+  const filterTopics = (value) => {
+    /* very stupid filter by string algorithm with no deps */
     let q = value.toLowerCase()
     if (q.length > 0) {
-      console.debug(q)
-      setSearchResults([])
-
+      setFilterResults([])
       if (locale() === 'ru') q = translit(q, 'ru')
-      const ttt: Topic[] = []
+      const ttt: Topic[] = sortedTopics()
       sortedTopics().forEach((topic) => {
         let flag = false
         topic.slug.split('-').forEach((w) => {
@@ -90,11 +90,12 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           })
         }
 
-        if (flag && !ttt.includes(topic)) ttt.push(topic)
+        if (!flag && ttt.includes(topic)) {
+          const idx = ttt.indexOf(topic)
+          ttt.splice(idx, 1)
+        }
       })
-
-      setSearchResults((sr: Topic[]) => [...sr, ...ttt])
-      changeSearchParam('by', '')
+      setFilterResults(ttt)
     }
   }
 
@@ -114,9 +115,11 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           <li classList={{ selected: searchParams().by === 'title' }}>
             <a href="/topics?by=title">{t('By title')}</a>
           </li>
-          <li class="view-switcher__search">
-            <SearchField onChange={searchTopics} />
-          </li>
+          <Show when={searchParams().by !== 'title'}>
+            <li class="view-switcher__search">
+              <SearchField onChange={filterTopics} />
+            </li>
+          </Show>
         </ul>
       </div>
     </div>
@@ -127,7 +130,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       <div class="shift-content">
         <AllTopicsHead />
 
-        <Show when={sortedTopics().length > 0 || searchResults().length > 0}>
+        <Show when={filterResults().length > 0}>
           <Show when={searchParams().by === 'title'}>
             <div class="col-lg-10 col-xl-9">
               <ul class={clsx('nodash', styles.alphabet)}>
@@ -173,21 +176,8 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </For>
           </Show>
 
-          <Show when={searchResults().length > 1}>
-            <For each={searchResults().slice(0, limit())}>
-              {(topic) => (
-                <TopicCard
-                  topic={topic}
-                  compact={false}
-                  subscribed={subscribed(topic.slug)}
-                  showPublications={true}
-                />
-              )}
-            </For>
-          </Show>
-
           <Show when={searchParams().by && searchParams().by !== 'title'}>
-            <For each={sortedTopics().slice(0, limit())}>
+            <For each={filterResults().slice(0, limit())}>
               {(topic) => (
                 <>
                   <TopicCard
@@ -202,7 +192,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </For>
           </Show>
 
-          <Show when={sortedTopics().length > limit()}>
+          <Show when={sortedTopics().length > limit() && searchParams().by !== 'title'}>
             <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10 offset-md-1')}>
               <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
                 {t('Load more')}

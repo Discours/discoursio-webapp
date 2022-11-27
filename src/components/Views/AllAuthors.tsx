@@ -41,7 +41,8 @@ export const AllAuthorsView = (props: Props) => {
     }
   })
   createEffect(() => {
-    setAuthorsSort(searchParams().by || 'name')
+    setAuthorsSort(searchParams().by || 'shouts')
+    setFilteredAuthors(sortedAuthors())
     setLimit(PAGE_SIZE)
   })
 
@@ -81,23 +82,23 @@ export const AllAuthorsView = (props: Props) => {
             <a href="/authors?by=name">{t('By name')}</a>
           </li>
           <li class="view-switcher__search">
-            <SearchField onChange={searchAuthors} />
+            <li class="view-switcher__search">
+              <SearchField onChange={filterAuthors} />
+            </li>
           </li>
         </ul>
       </div>
     </div>
   )
-  const [searchResults, setSearchResults] = createSignal<Author[]>([])
+  const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const searchAuthors = (value) => {
+  const filterAuthors = (value) => {
     /* very stupid search algorithm with no deps */
     let q = value.toLowerCase()
     if (q.length > 0) {
-      console.debug(q)
-      setSearchResults([])
-
+      setFilteredAuthors([])
       if (locale() === 'ru') q = translit(q, 'ru')
-      const aaa: Author[] = []
+      const aaa: Author[] = sortedAuthors()
       sortedAuthors().forEach((a) => {
         let flag = false
         a.slug.split('-').forEach((w) => {
@@ -112,16 +113,17 @@ export const AllAuthorsView = (props: Props) => {
           })
         }
 
-        if (flag && !aaa.includes(a)) aaa.push(a)
+        if (!flag && aaa.includes(a)) {
+          const idx = aaa.indexOf(a)
+          aaa.splice(idx, 1)
+        }
       })
-
-      setSearchResults((sr: Author[]) => [...sr, ...aaa])
-      changeSearchParam('by', '')
+      setFilteredAuthors(aaa)
     }
   }
   return (
     <div class={clsx(styles.allTopicsPage, 'wide-container')}>
-      <Show when={sortedAuthors().length > 0 || searchResults().length > 0}>
+      <Show when={sortedAuthors().length > 0 || filteredAuthors().length > 0}>
         <div class="shift-content">
           <AllAuthorsHead />
 
@@ -174,29 +176,10 @@ export const AllAuthorsView = (props: Props) => {
             </For>
           </Show>
 
-          <Show when={searchResults().length > 0}>
-            <For each={searchResults().slice(0, limit())}>
-              {(author) => (
-                <>
-                  <AuthorCard
-                    author={author}
-                    compact={false}
-                    hasLink={true}
-                    subscribed={subscribed(author.slug)}
-                    noSocialButtons={true}
-                    isAuthorsList={true}
-                    truncateBio={true}
-                  />
-                  <StatMetrics fields={['shouts', 'followers', 'comments']} stat={author.stat} />
-                </>
-              )}
-            </For>
-          </Show>
-
           <Show when={searchParams().by && searchParams().by !== 'name'}>
             <div class={clsx(styles.stats, 'row')}>
               <div class="col-lg-10 col-xl-9">
-                <For each={sortedAuthors().slice(0, limit())}>
+                <For each={filteredAuthors().slice(0, limit())}>
                   {(author) => (
                     <>
                       <AuthorCard
@@ -216,7 +199,7 @@ export const AllAuthorsView = (props: Props) => {
             </div>
           </Show>
 
-          <Show when={searchParams().by !== 'name' && sortedAuthors().length > limit()}>
+          <Show when={sortedAuthors().length > limit() && searchParams().by !== 'name'}>
             <div class="row">
               <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
                 <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>

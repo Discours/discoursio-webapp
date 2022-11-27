@@ -37,14 +37,14 @@ export const Beside = (props: BesideProps) => {
                     <Show when={props.wrapper === 'author'}>
                       <a href="/authors">
                         {t('All authors')}
-                        <Icon name="arrow-right" class={styles.icon} />
+                        <Icon name="arrow-circle-right" class={styles.icon} />
                       </a>
                     </Show>
 
                     <Show when={props.wrapper === 'topic'}>
                       <a href="/topics">
                         {t('All topics')}
-                        <Icon name="arrow-right" class={styles.icon} />
+                        <Icon name="arrow-circle-right" class={styles.icon} />
                       </a>
                     </Show>
                   </div>

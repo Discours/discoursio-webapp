@@ -67,3 +67,17 @@ export const snake2camel = (s: string) =>
     .split(/(?=[A-Z])/)
     .join('-')
     .toLowerCase()
+
+export const formatDate = (date: Date, options: Intl.DateTimeFormatOptions = {}) => {
+  const opts = Object.assign(
+    {},
+    {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    },
+    options
+  )
+
+  return date.toLocaleDateString('ru', opts).replace(' г.', '')
+}

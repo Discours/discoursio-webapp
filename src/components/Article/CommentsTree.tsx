@@ -7,6 +7,7 @@ import styles from '../../styles/Article.module.scss'
 import { useReactionsStore } from '../../stores/zine/reactions'
 import { createEffect, createMemo, createSignal, onMount, Suspense } from 'solid-js'
 import type { Reaction } from '../../graphql/types.gen'
+import { clsx } from 'clsx'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
@@ -44,9 +45,27 @@ export const CommentsTree = (props: { shout: string; reactions?: Reaction[] }) =
   return (
     <>
       <Show when={reactions()}>
-        <h2 id="comments">
-          {t('Comments')} {reactions().length.toString() || ''}
-        </h2>
+        <div class={styles.commentsHeaderWrapper}>
+          <h2 id="comments" class={styles.commentsHeader}>
+            {t('Comments')} {reactions().length.toString() || ''}
+          </h2>
+
+          <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
+            <li class="selected">
+              <a href="#">По порядку</a>
+            </li>
+            <li>
+              <a href="#">По рейтингу</a>
+            </li>
+          </ul>
+        </div>
+
+        <form class={styles.commentForm}>
+          <div class="pretty-form__item">
+            <input type="text" id="new-comment" placeholder="Коментарий" />
+            <label for="new-comment">Коментарий</label>
+          </div>
+        </form>
 
         <For each={reactions()}>
           {(reaction: Reaction) => (

@@ -77,7 +77,9 @@ img {
 }
 
 .shoutAuthorsList {
-  margin-top: 2em;
+  border-bottom: 1px solid #e8e8e8;
+  margin: 2em 0;
+  padding-bottom: 2em;
 
   h4 {
     color: #696969;
@@ -118,15 +120,18 @@ img {
 }
 
 .shoutStats {
-  border-bottom: 1px solid #e8e8e8;
   border-top: 4px solid #000;
   display: flex;
   justify-content: flex-start;
-  padding: 3.2rem 0;
+  padding: 3rem 0 0;
+
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+  }
 }
 
 .shoutStatsItem {
-  @include font-size(1.7rem);
+  @include font-size(1.5rem);
 
   font-weight: 500;
   display: inline-block;
@@ -179,18 +184,32 @@ img {
   .icon {
     opacity: 0.4;
   }
+
+  @include media-breakpoint-down(sm) {
+    flex: 1 100%;
+  }
 }
 
 .shoutStatsItemAdditionalDataItem {
+  font-weight: normal;
   display: inline-block;
   margin-left: 2rem;
+  margin-right: 0;
+
+  @include media-breakpoint-down(sm) {
+    &:first-child {
+      margin-left: 0;
+    }
+  }
 }
 
 .topicsList {
   @include font-size(1.2rem);
 
+  border-bottom: 1px solid #e8e8e8;
   letter-spacing: 0.08em;
-  margin: 1.6rem 0;
+  margin-top: 1.6rem;
+  padding-bottom: 1.6rem;
 
   .shoutTopic {
     display: inline-block;
@@ -208,5 +227,47 @@ img {
         background-color: rgb(0 0 0 / 20%);
       }
     }
+  }
+}
+
+.commentsHeaderWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.commentsHeader {
+  @include font-size(2.4rem);
+  margin-bottom: 1em;
+}
+
+.ratingControl {
+  button {
+    font-size: 2.225rem;
+  }
+}
+
+.commentForm {
+  margin-bottom: 2.4rem;
+
+  input,
+  textarea {
+    border-radius: 0.8rem !important;
+  }
+}
+
+.commentsViewSwitcher {
+  margin-top: 0;
+}
+
+.help {
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 1.6rem;
+  padding-bottom: 3.2rem;
+
+  button {
+    @include font-size(1.5rem);
+    border-radius: 0.8rem;
+    margin-right: 1.2rem;
+    padding: 1.1rem 1.2rem 0.9rem;
   }
 }

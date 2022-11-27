@@ -23,6 +23,7 @@ interface AuthorCardProps {
   isAuthorsList?: boolean
   truncateBio?: boolean
   liteButtons?: boolean
+  isComments?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -47,6 +48,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
       class={clsx(styles.author)}
       classList={{
         [styles.authorPage]: props.isAuthorPage,
+        [styles.authorComments]: props.isComments,
         [styles.authorsListItem]: props.isAuthorsList
       }}
     >
@@ -55,6 +57,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
         hasLink={props.hasLink}
         isBig={props.isAuthorPage}
         isAuthorsList={props.isAuthorsList}
+        class={styles.circlewrap}
       />
 
       <div class={styles.authorDetails}>

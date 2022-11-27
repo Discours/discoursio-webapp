@@ -54,7 +54,10 @@
 .authorSubscribe {
   align-items: center;
   display: flex;
-  padding: 0 0 0 42px;
+
+  @include media-breakpoint-up(sm) {
+    padding: 0 0 0 42px;
+  }
 
   a {
     background: #f7f7f7;
@@ -259,5 +262,16 @@
 
   .buttonLabel {
     display: block;
+  }
+}
+
+.authorComments {
+  .authorName {
+    @include font-size(1.2rem);
+    margin-bottom: 0;
+  }
+
+  .circlewrap {
+    margin-top: -0.6em;
   }
 }

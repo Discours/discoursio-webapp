@@ -94,7 +94,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   }}
                 >
                   <Show when={!props.isAuthorsList}>
-                    <Icon name="author-subscribe" class={styles.icon} />
+                    <Icon name="circle-plus" iconClassName={styles.s24} class={styles.icon} />
                   </Show>
                   <span class={styles.buttonLabel}>{t('Follow')}</span>
                 </button>

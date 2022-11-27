@@ -10,20 +10,16 @@
 
 .ratingControl {
   align-items: center;
-  border: 2px solid;
-  border-radius: 100%;
   display: flex;
   justify-content: center;
   height: 0.9em;
   line-height: 0;
   @include font-size(3.6rem);
-
+  color: #777;
   padding: 0;
   width: 0.9em;
-
+  transition: 0.15s all linear;
   &:hover {
-    background: #000;
-    border-color: #000;
-    color: #fff;
+    transform: scale(1.2);
   }
 }

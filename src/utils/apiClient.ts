@@ -112,9 +112,11 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authCheckEmailQuery, { email }).toPromise()
     return response.data.isEmailUsed
   },
-  authSendLink: async ({ email, lang }) => {
+  authSendLink: async ({ email, lang, template }) => {
     // send link with code on email
-    const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email, lang }).toPromise()
+    const response = await publicGraphQLClient
+      .mutation(authSendLinkMutation, { email, lang, template })
+      .toPromise()
 
     if (response.error) {
       if (response.error.message === '[GraphQL] User not found') {

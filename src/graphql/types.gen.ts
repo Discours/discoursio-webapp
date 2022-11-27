@@ -59,12 +59,13 @@ export type Chat = {
   createdBy: Scalars['String']
   description?: Maybe<Scalars['String']>
   id: Scalars['String']
+  members?: Maybe<Array<Maybe<ChatMember>>>
   messages?: Maybe<Array<Maybe<Message>>>
   private?: Maybe<Scalars['Boolean']>
   title?: Maybe<Scalars['String']>
   unread?: Maybe<Scalars['Int']>
   updatedAt: Scalars['Int']
-  users: Array<Maybe<Scalars['String']>>
+  users?: Maybe<Array<Maybe<Scalars['String']>>>
 }
 
 export type ChatInput = {
@@ -75,8 +76,6 @@ export type ChatInput = {
 
 export type ChatMember = {
   id: Scalars['Int']
-  invitedAt?: Maybe<Scalars['DateTime']>
-  invitedBy?: Maybe<Scalars['String']>
   lastSeen?: Maybe<Scalars['DateTime']>
   name: Scalars['String']
   slug: Scalars['String']

@@ -13,6 +13,7 @@ import RatingControl from './RatingControl'
 import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
+import VideoPlayer from './VideoPlayer'
 
 interface ArticleProps {
   article: Shout
@@ -45,9 +46,7 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
           </div>
         </Match>
         <Match when={props.kind === 'video'}>
-          <video controls>
-            <source src={props.media.url} />
-          </video>
+          <VideoPlayer url={props.media.url} />
         </Match>
       </Switch>
     </>

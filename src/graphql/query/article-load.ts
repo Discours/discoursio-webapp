@@ -10,6 +10,7 @@ export default gql`
       layout
       cover
       body
+      media
       # community
       mainTopic
       topics {

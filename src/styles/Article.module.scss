@@ -58,6 +58,17 @@ img {
   }
 }
 
+.shoutMediaBody {
+  display: block;
+  audio {
+    display: inline-block;
+  }
+
+  video {
+    display: block;
+  }
+}
+
 .shoutAuthor,
 .shoutDate {
   @include font-size(1.5rem);

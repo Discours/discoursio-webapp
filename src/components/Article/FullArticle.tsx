@@ -2,8 +2,8 @@ import { capitalize, formatDate } from '../../utils'
 import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
-import type { Author, Reaction, Shout } from '../../graphql/types.gen'
+import { createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import type { Author, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -12,11 +12,50 @@ import styles from '../../styles/Article.module.scss'
 import RatingControl from './RatingControl'
 import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
+import { useSession } from '../../context/session'
+
 interface ArticleProps {
   article: Shout
 }
 
+interface MediaItem {
+  url?: string
+  pic?: string
+  title?: string
+  body?: string
+}
+
+const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
+  return (
+    <>
+      <Switch
+        fallback={
+          <picture>
+            <source src={props.media.url} />
+          </picture>
+        }
+      >
+        <Match when={props.kind === 'audio'}>
+          <div>
+            <h5>{props.media.title}</h5>
+            <audio controls>
+              <source src={props.media.url} />
+            </audio>
+            <hr />
+          </div>
+        </Match>
+        <Match when={props.kind === 'video'}>
+          <video controls>
+            <source src={props.media.url} />
+          </video>
+        </Match>
+      </Switch>
+    </>
+  )
+}
+
 export const FullArticle = (props: ArticleProps) => {
+  const { session } = useSession()
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
 
@@ -37,6 +76,20 @@ export const FullArticle = (props: ArticleProps) => {
         })
       }
     }
+  })
+
+  const canEdit = () => props.article.authors?.some((a) => a.slug === session()?.user?.slug)
+
+  const bookmark = (ev) => {
+    // TODO: implement bookmark clicked
+    ev.preventDefault()
+  }
+
+  const body = createMemo(() => props.article.body)
+  const media = createMemo(() => {
+    const mi = JSON.parse(props.article.media || '[]')
+    console.debug(mi)
+    return mi
   })
 
   return (
@@ -65,13 +118,24 @@ export const FullArticle = (props: ArticleProps) => {
           <div class={styles.shoutCover} style={{ 'background-image': `url('${props.article.cover}')` }} />
         </div>
 
-        <Show when={Boolean(props.article.body)}>
+        <Show when={media()}>
+          <div class="media-items">
+            <For each={media() || []}>
+              {(m: MediaItem) => (
+                <div class={styles.shoutMediaBody}>
+                  <MediaView media={m} kind={props.article.layout} />
+                  <Show when={m?.body}>
+                    <div innerHTML={m.body} />
+                  </Show>
+                </div>
+              )}
+            </For>
+          </div>
+        </Show>
+        <Show when={body()}>
           <div class={styles.shoutBody}>
-            <Show
-              when={!props.article.body.startsWith('<')}
-              fallback={<div innerHTML={props.article.body} />}
-            >
-              <MD body={props.article.body} />
+            <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
+              <MD body={body()} />
             </Show>
           </div>
         </Show>
@@ -83,16 +147,18 @@ export const FullArticle = (props: ArticleProps) => {
             <RatingControl rating={props.article.stat?.rating} class={styles.ratingControl} />
           </div>
 
+          <Show when={props.article.stat?.viewed}>
+            <div class={clsx(styles.shoutStatsItem)}>
+              <Icon name="eye" class={styles.icon} />
+              <sup>{props.article.stat?.viewed}</sup>
+            </div>
+          </Show>
+
           <div class={styles.shoutStatsItem}>
             <Icon name="comment" class={styles.icon} />
             {props.article.stat?.commented || ''}
           </div>
-          {/*FIXME*/}
-          {/*<div class={styles.shoutStatsItem}>*/}
-          {/*  <a href="#bookmark" onClick={() => console.log(props.article.slug, 'articles')}>*/}
-          {/*    <Icon name={'bookmark' + (bookmarked() ? '' : '-x')} />*/}
-          {/*  </a>*/}
-          {/*</div>*/}
+
           <div class={styles.shoutStatsItem}>
             <SharePopup
               onVisibilityChange={(isVisible) => {
@@ -102,36 +168,32 @@ export const FullArticle = (props: ArticleProps) => {
               trigger={<Icon name="share-new" class={styles.icon} />}
             />
           </div>
-          <div class={styles.shoutStatsItem}>
+
+          <div class={styles.shoutStatsItem} onClick={bookmark}>
             <Icon name="bookmark" class={styles.icon} />
           </div>
 
-          {/*FIXME*/}
-          {/*<Show when={canEdit()}>*/}
-          {/*  <div class={styles.shoutStatsItem}>*/}
-          {/*    <a href="/edit">*/}
-          {/*      <Icon name="edit" />*/}
-          {/*      {t('Edit')}*/}
-          {/*    </a>*/}
-          {/*  </div>*/}
-          {/*</Show>*/}
+          <Show when={canEdit()}>
+            <div class={styles.shoutStatsItem}>
+              <a href="/edit">
+                <Icon name="edit" />
+                {t('Edit')}
+              </a>
+            </div>
+          </Show>
           <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
             <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
               {formattedDate()}
             </div>
-
-            <Show when={props.article.stat?.viewed}>
-              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
-                <Icon name="view" class={styles.icon} />
-                {props.article.stat?.viewed}
-              </div>
-            </Show>
           </div>
         </div>
-
         <div class={styles.help}>
-          <button class="button">Соучаствовать</button>
-          <button class="button button--light">Пригласить к участию</button>
+          <Show when={session()?.token}>
+            <button class="button">{t('Cooperate')}</button>
+          </Show>
+          <Show when={canEdit()}>
+            <button class="button button--light">{t('Invite to collab')}</button>
+          </Show>
         </div>
 
         <div class={styles.topicsList}>

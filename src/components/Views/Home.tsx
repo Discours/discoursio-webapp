@@ -49,6 +49,7 @@ export const HomeView = (props: HomeProps) => {
   onMount(async () => {
     if (sortedArticles().length < PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT) {
       const { hasMore } = await loadShouts({
+        filters: { visibility: 'public' },
         limit: CLIENT_LOAD_ARTICLES_COUNT,
         offset: sortedArticles().length
       })

@@ -39,7 +39,7 @@ import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
-import shoutLoad from '../graphql/query/articles-load'
+import shoutLoad from '../graphql/query/article-load'
 import loadRecipients from '../graphql/query/chat-recipients'
 import createMessage from '../graphql/mutation/create-chat-message'
 

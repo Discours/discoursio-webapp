@@ -1,0 +1,105 @@
+h4 {
+  font-weight: 500;
+}
+
+.avatarContainer {
+  border-radius: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 18rem;
+  width: 18rem;
+}
+
+.avatar,
+.avatarInput {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.avatar {
+  background: #ccc;
+  border: none;
+  object-fit: cover;
+  object-position: center;
+}
+
+.avatarInput {
+  border-radius: 100%;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 1;
+}
+
+.multipleControls {
+  margin-top: 3rem;
+}
+
+.multipleControlsItem {
+  position: relative;
+
+  button {
+    background-color: #fff;
+    padding: 0.5em;
+    position: absolute;
+    right: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #000;
+
+      .icon {
+        filter: invert(1);
+      }
+    }
+
+    .icon {
+      filter: invert(0);
+      transition: filter 0.3s;
+    }
+  }
+
+  form & input {
+    padding-right: 5rem;
+  }
+}
+
+.multipleControlsHeader {
+  display: flex;
+  margin-bottom: 0.5em;
+
+  h4 {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  button {
+    margin-left: 1em;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+}
+
+.discoursName {
+  display: flex;
+
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+
+    input {
+      min-width: 250px;
+    }
+  }
+
+  label {
+    margin: 0.6em 0.5em 0 0;
+  }
+}
+
+.discoursNameField {
+  flex: 1;
+}

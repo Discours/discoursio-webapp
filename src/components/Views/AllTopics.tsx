@@ -198,7 +198,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           </Show>
 
           <Show when={sortedTopics().length > limit()}>
-            <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10 offset-md-1')}>
+            <div class={clsx(styles.loadMoreContainer, 'col-12 col-lg-10 col-xl-9')}>
               <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
                 {t('Load more')}
               </button>

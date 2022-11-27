@@ -1,4 +1,4 @@
-import { For, Show } from 'solid-js/web'
+import { For, Show } from 'solid-js'
 import { useSession } from '../../context/session'
 import Comment from './Comment'
 import { t } from '../../utils/intl'

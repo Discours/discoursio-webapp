@@ -167,7 +167,7 @@ export const InboxView = () => {
           <div class="holder">
             <div class="dialogs">
               <For each={chats()}>
-                {(chat) => <DialogCard users={chat.users} ownSlug={currentSlug()} />}
+                {(chat) => <DialogCard members={chat.members} ownSlug={currentSlug()} />}
               </For>
             </div>
           </div>

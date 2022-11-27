@@ -14,19 +14,9 @@ type DialogProps = {
 }
 
 const DialogCard = (props: DialogProps) => {
-  const { chatEntities, actions } = useInbox()
-  const handleOpenChat = async () => {
-    try {
-      const initChat = await actions.createChat([props.author.slug, props.ownSlug])
-      console.debug('[initChat]', initChat)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   return (
     //DialogCardView - подумать
-    <div class={styles.DialogCard} onClick={handleOpenChat}>
+    <div class={styles.DialogCard}>
       <div class={styles.avatar}>
         <DialogAvatar name={props.author.name} url={props.author.userpic} online={props.online} />
       </div>

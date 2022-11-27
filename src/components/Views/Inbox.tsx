@@ -12,6 +12,10 @@ import { loadRecipients, loadChats } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import '../../styles/Inbox.scss'
 import { useInbox } from '../../context/inbox'
+import { Modal } from '../Nav/Modal'
+import { showModal } from '../../stores/ui'
+import InviteUser from '../Inbox/InviteUser'
+import CreateModalContent from '../Inbox/CreateModalContent'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -133,21 +137,30 @@ export const InboxView = () => {
     formParent.dataset.replicatedValue = postMessageText()
   })
 
-  // FIXME: прописать типы
-  // const { chatEntitieies, actions: { createCaht }} = useInbox()
-  // const { actions: { createCaht }} = useInbox()
-
+  const handleOpenInviteModal = (event: Event) => {
+    event.preventDefault()
+    showModal('inviteToChat')
+  }
   return (
     <div class="messages container">
+      <Modal variant="narrow" name="inviteToChat">
+        <CreateModalContent users={recipients()} />
+      </Modal>
       <div class="row">
         <div class="chat-list col-md-4">
-          <Search placeholder="Поиск" onChange={getQuery} />
+          <div class="sidebar-header">
+            <Search placeholder="Поиск" onChange={getQuery} />
+            <div onClick={handleOpenInviteModal}>
+              <Icon name="plus-button" style={{ width: '40px', height: '40px' }} />
+            </div>
+          </div>
+
           <div class="chat-list__types">
             <ul>
               <li>
                 <strong>{t('All')}</strong>
               </li>
-              <li onClick={handleGetChats}>{t('Conversations')}</li>
+              <li onClick={handleGetChats}>{t('Personal')}</li>
               <li>{t('Groups')}</li>
             </ul>
           </div>

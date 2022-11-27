@@ -4,7 +4,7 @@ import type { AuthModalSearchParams, ConfirmEmailSearchParams } from '../compone
 import type { RootSearchParams } from '../components/types'
 
 export const [locale, setLocale] = createSignal('ru')
-export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate'
+export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate' | 'inviteToChat'
 type WarnKind = 'error' | 'warn' | 'info'
 
 export interface Warning {
@@ -18,7 +18,8 @@ export const MODALS: Record<ModalType, ModalType> = {
   subscribe: 'subscribe',
   feedback: 'feedback',
   thank: 'thank',
-  donate: 'donate'
+  donate: 'donate',
+  inviteToChat: 'inviteToChat'
 }
 
 const [modal, setModal] = createSignal<ModalType | null>(null)

@@ -15,10 +15,10 @@ export const ManifestPage = () => {
 
   return (
     <PageWrap>
-      <Modal name="feedback">
+      <Modal variant="wide" name="feedback">
         <Feedback />
       </Modal>
-      <Modal name="subscribe">
+      <Modal variant="wide" name="subscribe">
         <Subscribe />
       </Modal>
       <article class="container container--static-page">

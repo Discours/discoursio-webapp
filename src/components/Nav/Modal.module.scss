@@ -1,4 +1,4 @@
-.modalwrap {
+.backdrop {
   align-items: center;
   background: rgb(20 20 20 / 70%);
   display: flex;
@@ -10,9 +10,16 @@
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 100;
+}
 
-  .close-control {
+.modal {
+  background: #fff;
+  max-width: 1000px;
+  position: relative;
+  width: 80%;
+
+  .close {
     position: absolute;
     top: 1em;
     cursor: pointer;
@@ -41,19 +48,16 @@
       // top: 11em;
     }
   }
-}
 
-.modalwrap__inner {
-  background: #fff;
-  max-width: 1000px;
-  position: relative;
-  width: 80%;
-}
-
-.modalwrap__content {
-  padding: $container-padding-x;
-
-  @media (min-width: 800px) and (max-width: 991px) {
-    padding: 10rem 6rem;
+  &.narrow {
+    max-width: 460px;
+    width: 50%;
+    @media (min-width: 800px) and (max-width: 991px) {
+      width: 80%;
+    }
+    .close {
+      right: 12px;
+      top: 12px;
+    }
   }
 }

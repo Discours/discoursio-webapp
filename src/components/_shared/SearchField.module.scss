@@ -8,6 +8,10 @@
     font-family: inherit;
     font-size: inherit;
     width: 100%;
+
+    + label {
+      display: none;
+    }
   }
 
   label {

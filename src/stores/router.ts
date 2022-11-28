@@ -28,6 +28,8 @@ export interface Routes {
   expo: 'layout'
   inbox: void // TODO: добавить ID текущего юзера
   profileSettings: void
+  profileSecurity: void
+  profileSubscriptions: void
 }
 
 const searchParamsStore = createSearchParams()
@@ -55,7 +57,9 @@ const routerStore = createRouter<Routes>(
     termsOfUse: '/about/terms-of-use',
     thanks: '/about/thanks',
     expo: '/expo/:layout',
-    profileSettings: '/profile/settings'
+    profileSettings: '/profile/settings',
+    profileSecurity: '/profile/security',
+    profileSubscriptions: '/profile/subscriptions'
   },
   {
     search: false,

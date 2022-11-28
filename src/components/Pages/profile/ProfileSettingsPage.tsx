@@ -3,6 +3,7 @@ import type { PageProps } from '../../types'
 import styles from './Settings.module.scss'
 import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
+import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
 
 export const ProfileSettingsPage = (props: PageProps) => {
   return (
@@ -10,7 +11,9 @@ export const ProfileSettingsPage = (props: PageProps) => {
       <div class="wide-container">
         <div class="shift-content">
           <div class="left-col">
-            <div class="left-navigation">WIP</div>
+            <div class={clsx('left-navigation', styles.leftNavigation)}>
+              <ProfileSettingsNavigation />
+            </div>
           </div>
 
           <div class="row">

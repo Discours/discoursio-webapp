@@ -59,12 +59,11 @@ const CreateModalContent = (props: Props) => {
 
   const { chatEntities, actions } = useInbox()
 
-  console.log('!!! chatEntities:', chatEntities)
-
   const handleCreate = async () => {
     try {
       const initChat = await actions.createChat(slugs(), theme())
       console.debug('[initChat]', initChat)
+      hideModal()
     } catch (error) {
       console.error(error)
     }

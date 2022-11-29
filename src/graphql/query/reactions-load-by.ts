@@ -1,17 +1,12 @@
 import { gql } from '@urql/core'
 
-// FIXME: backend query
-
 export default gql`
   query LoadReactions($by: ReactionBy!, $limit: Int, $offset: Int) {
     loadReactionsBy(by: $by, limit: $limit, offset: $offset) {
       id
       body
       range
-      #replyTo {
-      # id
-      # kind
-      #}
+      replyTo
       shout {
         slug
       }

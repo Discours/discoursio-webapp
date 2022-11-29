@@ -42,7 +42,7 @@ export const CommentsTree = (props: { shout: string; reactions?: Reaction[] }) =
       setIsCommentsLoading(false)
     }
   }
-  const getCommentById = (cid) => reactions().find((r) => r.id === cid)
+  const getCommentById = (cid: number) => reactions().find((r: Reaction) => r.id === cid)
   const getCommentLevel = (c: Reaction, level = 0) => {
     if (c && c.replyTo && level < MAX_COMMENT_LEVEL) {
       return getCommentLevel(getCommentById(c.replyTo), level + 1)
@@ -67,7 +67,7 @@ export const CommentsTree = (props: { shout: string; reactions?: Reaction[] }) =
                   setCommentsOrder('createdAt')
                 }}
               >
-                По порядку
+                {t('By time')}
               </a>
             </li>
             <li classList={{ selected: commentsOrder() === 'rating' }}>
@@ -78,13 +78,13 @@ export const CommentsTree = (props: { shout: string; reactions?: Reaction[] }) =
                   setCommentsOrder('rating')
                 }}
               >
-                По рейтингу
+                {t('By rating')}
               </a>
             </li>
           </ul>
         </div>
 
-        <For each={reactions()}>
+        <For each={reactions().reverse()}>
           {(reaction: Reaction) => (
             <Comment
               comment={reaction}

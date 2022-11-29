@@ -1,4 +1,4 @@
-import { createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import '../../styles/Feed.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { Icon } from '../_shared/Icon'
@@ -14,7 +14,6 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useSession } from '../../context/session'
-import type { Shout } from '../../graphql/types.gen'
 
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,
@@ -35,6 +34,24 @@ export const FeedView = () => {
   const { session } = useSession()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
+  const collaborativeShouts = createMemo(() =>
+    sortedArticles().filter((shout) => shout.visibility === 'authors')
+  )
+  createEffect(async () => {
+    if (collaborativeShouts()) {
+      // load reactions on collaborativeShouts
+      await loadReactionsBy({ by: { shouts: [...collaborativeShouts()] }, limit: 5 })
+    }
+  })
+
+  const userslug = createMemo(() => session()?.user?.slug)
+  createEffect(async () => {
+    if (userslug()) {
+      // load recent editing shouts ( visibility = authors )
+      await loadShouts({ filters: { author: userslug(), visibility: 'authors' }, limit: 15 })
+    }
+  })
+
   const loadMore = async () => {
     const { hasMore } = await loadShouts({
       filters: { visibility: 'community' },
@@ -50,16 +67,6 @@ export const FeedView = () => {
 
     // load recent shouts not only published ( visibility = community )
     await loadMore()
-
-    // TODO: load collabs
-    // await loadCollabs()
-
-    // load recent editing shouts ( visibility = authors )
-    const userslug = session().user.slug
-    await loadShouts({ filters: { author: userslug, visibility: 'authors' }, limit: 15 })
-    const collaborativeShouts = sortedArticles().filter((shout) => shout.visibility === 'authors')
-    // load reactions on collaborativeShouts
-    await loadReactionsBy({ by: { shouts: [...collaborativeShouts] }, limit: 5 })
   })
 
   return (

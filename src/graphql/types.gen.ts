@@ -205,7 +205,7 @@ export type MutationCreateChatArgs = {
 export type MutationCreateMessageArgs = {
   body: Scalars['String']
   chat: Scalars['String']
-  replyTo?: InputMaybe<Scalars['String']>
+  replyTo?: InputMaybe<Scalars['Int']>
 }
 
 export type MutationCreateReactionArgs = {
@@ -275,6 +275,7 @@ export type MutationRemoveAuthorArgs = {
 export type MutationSendLinkArgs = {
   email: Scalars['String']
   lang?: InputMaybe<Scalars['String']>
+  template?: InputMaybe<Scalars['String']>
 }
 
 export type MutationUnfollowArgs = {
@@ -461,7 +462,7 @@ export type Reaction = {
   old_id?: Maybe<Scalars['String']>
   old_thread?: Maybe<Scalars['String']>
   range?: Maybe<Scalars['String']>
-  replyTo?: Maybe<Reaction>
+  replyTo?: Maybe<Scalars['Int']>
   shout: Shout
   stat?: Maybe<Stat>
   updatedAt?: Maybe<Scalars['DateTime']>

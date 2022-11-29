@@ -8,6 +8,8 @@ type Props = {
   url?: string
   online?: boolean
   size?: 'small'
+  bordered?: boolean
+  className: string
 }
 
 const colors = [
@@ -36,8 +38,9 @@ const DialogAvatar = (props: Props) => {
 
   return (
     <div
-      class={clsx(styles.DialogAvatar, {
+      class={clsx(styles.DialogAvatar, props.className, {
         [styles.online]: props.online,
+        [styles.bordered]: props.bordered,
         [styles.small]: props.size === 'small'
       })}
       style={{ 'background-color': `${randomBg()}` }}

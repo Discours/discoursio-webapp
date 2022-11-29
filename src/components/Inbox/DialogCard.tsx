@@ -4,6 +4,7 @@ import type { Author, Chat, ChatMember, User } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { t } from '../../utils/intl'
 import { useInbox } from '../../context/inbox'
+import GroupDialogAvatar from './GroupDialogAvatar'
 
 type DialogProps = {
   online?: boolean
@@ -16,11 +17,14 @@ type DialogProps = {
 
 const DialogCard = (props: DialogProps) => {
   const companions = props.members.filter((member) => member.slug !== props.ownSlug)
-  console.log('!!! companions:', companions)
   return (
     <div class={styles.DialogCard}>
       <div class={styles.avatar}>
-        <DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />
+        {companions.length > 1 ? (
+          <GroupDialogAvatar users={companions} />
+        ) : (
+          <DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />
+        )}
       </div>
 
       <div class={styles.row}>

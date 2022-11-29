@@ -10,12 +10,11 @@ import { createClient } from '@urql/core'
 import Message from '../Inbox/Message'
 import { loadRecipients, loadChats } from '../../stores/inbox'
 import { t } from '../../utils/intl'
-import '../../styles/Inbox.scss'
-import { useInbox } from '../../context/inbox'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
-import InviteUser from '../Inbox/InviteUser'
 import CreateModalContent from '../Inbox/CreateModalContent'
+import { clsx } from 'clsx'
+import '../../styles/Inbox.scss'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -65,6 +64,8 @@ export const InboxView = () => {
   const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
+  const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
+  const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
   const { session } = useSession()
   const currentSlug = createMemo(() => session()?.user?.slug)
 
@@ -112,7 +113,6 @@ export const InboxView = () => {
     try {
       const response = await loadChats()
       setChats(response as unknown as Chat[])
-      console.log('!!! chats:', response)
     } catch (error) {
       console.log(error)
     }
@@ -158,16 +158,46 @@ export const InboxView = () => {
 
           <div class="chat-list__types">
             <ul>
-              <li>
-                <strong>{t('All')}</strong>
+              <li
+                class={clsx({ ['selected']: !sortByPerToPer() && !sortByGroup() })}
+                onClick={() => {
+                  setSortByPerToPer(false)
+                  setSortByGroup(false)
+                }}
+              >
+                <span>{t('All')}</span>
               </li>
-              <li>{t('Personal')}</li>
-              <li>{t('Groups')}</li>
+              <li
+                class={clsx({ ['selected']: sortByPerToPer() })}
+                onClick={() => {
+                  setSortByPerToPer(true)
+                  setSortByGroup(false)
+                }}
+              >
+                <span>{t('Personal')}</span>
+              </li>
+              <li
+                class={clsx({ ['selected']: sortByGroup() })}
+                onClick={() => {
+                  setSortByGroup(true)
+                  setSortByPerToPer(false)
+                }}
+              >
+                <span>{t('Groups')}</span>
+              </li>
             </ul>
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={chats()}>
+              <For
+                each={
+                  sortByPerToPer()
+                    ? chats().filter((chat) => chat.title.length === 0)
+                    : sortByGroup()
+                    ? chats().filter((chat) => chat.title.length > 0)
+                    : chats()
+                }
+              >
                 {(chat) => <DialogCard title={chat.title} members={chat.members} ownSlug={currentSlug()} />}
               </For>
             </div>

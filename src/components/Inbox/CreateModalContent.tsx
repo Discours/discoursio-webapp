@@ -7,12 +7,6 @@ import { hideModal } from '../../stores/ui'
 import { useInbox } from '../../context/inbox'
 
 type inviteUser = Author & { selected: boolean }
-type query =
-  | {
-      theme: string
-      members: string[]
-    }
-  | undefined
 type Props = {
   users: Author[]
 }

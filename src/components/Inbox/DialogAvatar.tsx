@@ -9,7 +9,7 @@ type Props = {
   online?: boolean
   size?: 'small'
   bordered?: boolean
-  className: string
+  className?: string
 }
 
 const colors = [

@@ -1,9 +1,6 @@
 import styles from './DialogCard.module.scss'
 import DialogAvatar from './DialogAvatar'
-import type { Author, Chat, ChatMember, User } from '../../graphql/types.gen'
-import { apiClient } from '../../utils/apiClient'
-import { t } from '../../utils/intl'
-import { useInbox } from '../../context/inbox'
+import type { ChatMember } from '../../graphql/types.gen'
 import GroupDialogAvatar from './GroupDialogAvatar'
 
 type DialogProps = {
@@ -20,13 +17,12 @@ const DialogCard = (props: DialogProps) => {
   return (
     <div class={styles.DialogCard}>
       <div class={styles.avatar}>
-        {companions.length > 1 ? (
+        {companions.length > 2 ? (
           <GroupDialogAvatar users={companions} />
         ) : (
           <DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />
         )}
       </div>
-
       <div class={styles.row}>
         {companions.length > 1 ? (
           <div class={styles.name}>{props.title}</div>

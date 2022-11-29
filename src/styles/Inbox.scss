@@ -111,12 +111,14 @@ main {
   li {
     margin-right: 1em;
     color: #696969;
-  }
-
-  strong {
-    border-bottom: 3px solid;
-    font-weight: normal;
-    color: #000;
+    cursor: pointer;
+    &.selected {
+      span {
+        border-bottom: 3px solid;
+        font-weight: normal;
+        color: #000;
+      }
+    }
   }
 }
 

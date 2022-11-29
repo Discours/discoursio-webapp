@@ -1,3 +1,4 @@
+import { For } from 'solid-js'
 import './DialogCard.module.scss'
 import styles from './GroupDialogAvatar.module.scss'
 import { clsx } from 'clsx'
@@ -17,15 +18,17 @@ const GroupDialogAvatar = (props: Props) => {
   }
   return (
     <div class={styles.GroupDialogAvatar}>
-      {slicedUsers().map((user) => (
-        <DialogAvatar
-          className={styles.grouped}
-          bordered={true}
-          size="small"
-          name={user.name}
-          url={user.userpic}
-        />
-      ))}
+      <For each={slicedUsers()}>
+        {(user) => (
+          <DialogAvatar
+            className={styles.grouped}
+            bordered={true}
+            size="small"
+            name={user.name}
+            url={user.userpic}
+          />
+        )}
+      </For>
       {props.users.length > 3 && (
         <div class={clsx(styles.counter, { [styles.hundred]: props.users.length >= 100 })}>
           {++props.users.length}

@@ -181,17 +181,18 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
           <Show when={searchParams().by && searchParams().by !== 'title'}>
             <For each={filterResults().slice(0, limit())}>
               {(author) => (
-                <>
-                  <AuthorCard
-                    author={author}
-                    hasLink={true}
-                    subscribed={subscribed(author.slug)}
-                    noSocialButtons={true}
-                    isAuthorsList={true}
-                    truncateBio={true}
-                  />
-                  <StatMetrics fields={['shouts', 'followers', 'comments']} stat={author.stat} />
-                </>
+                <div class="row">
+                  <div class="col-lg-10 col-xl-9">
+                    <AuthorCard
+                      author={author}
+                      hasLink={true}
+                      subscribed={subscribed(author.slug)}
+                      noSocialButtons={true}
+                      isAuthorsList={true}
+                      truncateBio={true}
+                    />
+                  </div>
+                </div>
               )}
             </For>
           </Show>

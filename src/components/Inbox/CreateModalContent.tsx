@@ -13,7 +13,7 @@ type Props = {
 
 const CreateModalContent = (props: Props) => {
   const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
-  const [theme, setTheme] = createSignal<string>('')
+  const [theme, setTheme] = createSignal<string>(' ')
   const [slugs, setSlugs] = createSignal<string[]>([])
   const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
   let textInput: HTMLInputElement
@@ -34,7 +34,8 @@ const CreateModalContent = (props: Props) => {
           return user['slug']
         })
     })
-    if (slugs().length > 2 && theme().length === 0) {
+
+    if (slugs().length > 1 && theme().length === 1) {
       setTheme(t('group_chat'))
     }
   })
@@ -51,13 +52,14 @@ const CreateModalContent = (props: Props) => {
     })
   }
 
-  const { chatEntities, actions } = useInbox()
+  const { actions } = useInbox()
 
   const handleCreate = async () => {
     try {
       const initChat = await actions.createChat(slugs(), theme())
       console.debug('[initChat]', initChat)
       hideModal()
+      await actions.loadChats()
     } catch (error) {
       console.error(error)
     }
@@ -66,7 +68,7 @@ const CreateModalContent = (props: Props) => {
   return (
     <div class={styles.CreateModalContent}>
       <h4>{t('create_chat')}</h4>
-      {slugs().length > 2 && (
+      {slugs().length > 1 && (
         <input
           ref={textInput}
           onInput={handleSetTheme}
@@ -95,7 +97,7 @@ const CreateModalContent = (props: Props) => {
           onClick={handleCreate}
           disabled={slugs().length === 0}
         >
-          {slugs().length > 2 ? t('create_group') : t('create_chat')}
+          {slugs().length > 1 ? t('create_group') : t('create_chat')}
         </button>
       </div>
     </div>

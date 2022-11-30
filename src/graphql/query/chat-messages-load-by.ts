@@ -8,8 +8,8 @@ export default gql`
         author
         body
         createdAt
+        id
         updatedAt
-        seen
       }
     }
   }

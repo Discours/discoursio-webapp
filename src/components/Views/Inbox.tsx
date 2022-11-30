@@ -8,13 +8,14 @@ import Search from '../Inbox/Search'
 import { useSession } from '../../context/session'
 import { createClient } from '@urql/core'
 import Message from '../Inbox/Message'
-import { loadRecipients, loadChats } from '../../stores/inbox'
+import { loadRecipients, loadMessages } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
 import CreateModalContent from '../Inbox/CreateModalContent'
 import { clsx } from 'clsx'
 import '../../styles/Inbox.scss'
+import { useInbox } from '../../context/inbox'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -58,9 +59,12 @@ const postMessage = async (msg: string) => {
 }
 
 export const InboxView = () => {
+  const {
+    chats,
+    actions: { loadChats }
+  } = useInbox()
   const [messages, setMessages] = createSignal([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
-  const [chats, setChats] = createSignal<Chat[]>([])
   const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
@@ -79,29 +83,21 @@ export const InboxView = () => {
     }
   }
 
-  const fetchMessages = async (query) => {
-    const response = await client
-      .query(query, {
-        options: { slice: { start: 0, end: 3 } }
-      })
-      .toPromise()
-    if (response.error) console.debug('getMessages', response.error)
-    setMessages(response.data.comments.data)
-  }
-
   let chatWindow
-  onMount(async () => {
+  const handleOpenChat = async (chatId) => {
     setLoading(true)
     try {
-      await fetchMessages(messageQuery)
+      await loadMessages({ chat: chatId })
     } catch (error) {
       setLoading(false)
-      console.error([fetchMessages], error)
+      console.error('[loadMessages]', error)
     } finally {
       setLoading(false)
       chatWindow.scrollTop = chatWindow.scrollHeight
     }
-
+  }
+  onMount(async () => {
+    setLoading(true)
     try {
       const response = await loadRecipients({ days: 365 })
       setRecipients(response as unknown as Author[])
@@ -110,12 +106,8 @@ export const InboxView = () => {
       console.log(error)
     }
 
-    try {
-      const response = await loadChats()
-      setChats(response as unknown as Chat[])
-    } catch (error) {
-      console.log(error)
-    }
+    await loadChats()
+    console.log('!!! chats:', chats())
   })
 
   const handleSubmit = async () => {
@@ -198,7 +190,14 @@ export const InboxView = () => {
                     : chats()
                 }
               >
-                {(chat) => <DialogCard title={chat.title} members={chat.members} ownSlug={currentSlug()} />}
+                {(chat) => (
+                  <DialogCard
+                    onClick={() => handleOpenChat(chat.id)}
+                    title={chat.title}
+                    members={chat.members}
+                    ownSlug={currentSlug()}
+                  />
+                )}
               </For>
             </div>
           </div>

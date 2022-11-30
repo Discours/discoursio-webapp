@@ -10,12 +10,14 @@ type DialogProps = {
   title?: string
   ownSlug: string
   members: ChatMember[]
+  onClick: () => void
 }
 
 const DialogCard = (props: DialogProps) => {
+  if (!props.members) return
   const companions = props.members.filter((member) => member.slug !== props.ownSlug)
   return (
-    <div class={styles.DialogCard}>
+    <div class={styles.DialogCard} onClick={props.onClick}>
       <div class={styles.avatar}>
         {companions.length > 2 ? (
           <GroupDialogAvatar users={companions} />

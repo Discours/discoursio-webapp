@@ -154,3 +154,36 @@ h5 {
 .topicsListItem {
   padding-right: 1.5rem !important;
 }
+
+.socialButton {
+  color: #000;
+  display: flex;
+  padding: 0.8em 1em;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+
+  .icon {
+    margin-right: 1em;
+  }
+}
+
+.socialButtonApple {
+  &:hover {
+    .icon {
+      filter: invert(1);
+    }
+  }
+
+  .icon {
+    filter: invert(0);
+    transition: filter 0.3s;
+  }
+}

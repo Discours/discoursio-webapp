@@ -32,17 +32,17 @@ export const ProfileSecurityPage = (props: PageProps) => {
                 <h5>Текущий пароль</h5>
                 <div class="pretty-form__item">
                   <input
-                    type="password"
+                    type="text"
                     name="password-current"
                     id="password-current"
                     class={clsx(styles.passwordInput, 'nolabel')}
                   />
-                  <button class={styles.passwordToggleControl}>
-                    <Icon name="password-open" />
+                  <button type="button" class={styles.passwordToggleControl}>
+                    <Icon name="password-hide" />
                   </button>
                 </div>
 
-                <h5>Текущий пароль</h5>
+                <h5>Новый пароль</h5>
                 <div class="pretty-form__item">
                   <input
                     type="password"
@@ -50,7 +50,7 @@ export const ProfileSecurityPage = (props: PageProps) => {
                     id="password-new"
                     class={clsx(styles.passwordInput, 'nolabel')}
                   />
-                  <button class={styles.passwordToggleControl}>
+                  <button type="button" class={styles.passwordToggleControl}>
                     <Icon name="password-open" />
                   </button>
                 </div>
@@ -63,33 +63,64 @@ export const ProfileSecurityPage = (props: PageProps) => {
                     id="password-new-confirm"
                     class={clsx(styles.passwordInput, 'nolabel')}
                   />
-                  <button class={styles.passwordToggleControl}>
+                  <button type="button" class={styles.passwordToggleControl}>
                     <Icon name="password-open" />
                   </button>
                 </div>
 
-                <div class={clsx(styles.multipleControls, 'pretty-form__item')}>
-                  <div class={styles.multipleControlsHeader}>
-                    <h4>Социальные сети</h4>
-                    <button class="button">+</button>
-                  </div>
-                  <div class={styles.multipleControlsItem}>
-                    <input type="text" name="social1" class="nolabel" />
-                    <button>
-                      <Icon name="remove" class={styles.icon} />
+                <h4>Социальные сети</h4>
+                <h5>Google</h5>
+                <div class="pretty-form__item">
+                  <p>
+                    <button class={clsx(styles.socialButton, 'button button--light')} type="button">
+                      <Icon name="google" class={styles.icon} />
+                      Привязать
                     </button>
-                  </div>
-                  <div class={styles.multipleControlsItem}>
-                    <input type="text" name="social1" class="nolabel" />
-                    <button>
-                      <Icon name="remove" class={styles.icon} />
+                  </p>
+                </div>
+
+                <h5>VK</h5>
+                <div class="pretty-form__item">
+                  <p>
+                    <button class={clsx(styles.socialButton, 'button button--light')} type="button">
+                      <Icon name="vk" class={styles.icon} />
+                      Привязать
                     </button>
-                  </div>
+                  </p>
+                </div>
+
+                <h5>Facebook</h5>
+                <div class="pretty-form__item">
+                  <p>
+                    <button class={clsx(styles.socialButton, 'button button--light')} type="button">
+                      <Icon name="facebook" class={styles.icon} />
+                      Привязать
+                    </button>
+                  </p>
+                </div>
+
+                <h5>Apple</h5>
+                <div class="pretty-form__item">
+                  <p>
+                    <button
+                      class={clsx(
+                        styles.socialButton,
+                        styles.socialButtonApple,
+                        'button' + ' button--light'
+                      )}
+                      type="button"
+                    >
+                      <Icon name="apple" class={styles.icon} />
+                      Привязать
+                    </button>
+                  </p>
                 </div>
 
                 <br />
                 <p>
-                  <button class="button button--submit">Сохранить настройки</button>
+                  <button class="button button--submit" type="submit">
+                    Сохранить настройки
+                  </button>
                 </p>
               </form>
             </div>

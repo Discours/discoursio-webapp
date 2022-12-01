@@ -16,6 +16,7 @@ import CreateModalContent from '../Inbox/CreateModalContent'
 import { clsx } from 'clsx'
 import '../../styles/Inbox.scss'
 import { useInbox } from '../../context/inbox'
+import DialogHeader from '../Inbox/DialogHeader'
 
 const OWNER_ID = '501'
 const client = createClient({
@@ -70,6 +71,7 @@ export const InboxView = () => {
   const [loading, setLoading] = createSignal<boolean>(false)
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
+  const [selectedChat, setSelectedChat] = createSignal<Chat | undefined>(undefined)
   const { session } = useSession()
   const currentSlug = createMemo(() => session()?.user?.slug)
 
@@ -84,10 +86,11 @@ export const InboxView = () => {
   }
 
   let chatWindow
-  const handleOpenChat = async (chatId) => {
+  const handleOpenChat = async (chat) => {
     setLoading(true)
+    setSelectedChat(chat)
     try {
-      await loadMessages({ chat: chatId })
+      await loadMessages({ chat: chat.id })
     } catch (error) {
       setLoading(false)
       console.error('[loadMessages]', error)
@@ -193,7 +196,7 @@ export const InboxView = () => {
               <For each={chatsToShow()}>
                 {(chat) => (
                   <DialogCard
-                    onClick={() => handleOpenChat(chat.id)}
+                    onClick={() => handleOpenChat(chat)}
                     title={chat.title}
                     members={chat.members}
                     ownSlug={currentSlug()}
@@ -205,10 +208,9 @@ export const InboxView = () => {
         </div>
 
         <div class="col-md-8 conversation">
-          <div class="interlocutor user--online">
-            <AuthorCard author={{} as Author} hideFollow={true} />
-            <div class="user-status">Online</div>
-          </div>
+          <Show when={selectedChat()}>
+            <DialogHeader currentSlug={currentSlug()} chat={selectedChat()} />
+          </Show>
 
           <div class="conversation__messages">
             <div class="conversation__messages-container" ref={chatWindow}>

@@ -88,8 +88,7 @@ main {
   }
 }
 
-.chat-list__search,
-.interlocutor {
+.chat-list__search {
   border-bottom: 3px solid #141414;
   padding: 1em 0;
 }
@@ -119,44 +118,6 @@ main {
         color: #000;
       }
     }
-  }
-}
-
-.interlocutor {
-  height: 56px;
-  box-sizing: content-box;
-
-  .circlewrap {
-    height: 56px;
-    max-width: 56px;
-    width: 56px;
-  }
-
-  .author {
-    margin-bottom: 0;
-
-    &::before {
-      left: 40px !important;
-      height: 8px !important;
-      width: 8px !important;
-    }
-  }
-
-  .author__name {
-    @include font-size(1.7rem);
-
-    margin: 0.4em 0 0;
-  }
-
-  .author__details,
-  .user-status {
-    margin-left: 6.8rem;
-  }
-
-  .user-status {
-    @include font-size(1.2rem);
-
-    color: #ccc;
   }
 }
 

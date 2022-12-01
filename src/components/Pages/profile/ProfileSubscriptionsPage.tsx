@@ -2,7 +2,6 @@ import { PageWrap } from '../../_shared/PageWrap'
 import type { PageProps } from '../../types'
 import styles from './Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
-import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
 import { SearchField } from '../../_shared/SearchField'
@@ -43,7 +42,7 @@ export const ProfileSubscriptionsPage = (props: PageProps) => {
                 </ul>
 
                 <div class={clsx('pretty-form__item', styles.searchContainer)}>
-                  <SearchField onChange={() => {}} class={styles.searchField} />
+                  <SearchField onChange={() => console.log('nothing')} class={styles.searchField} />
                 </div>
 
                 <div class={clsx(stylesSettings.settingsList, styles.topicsList)}>

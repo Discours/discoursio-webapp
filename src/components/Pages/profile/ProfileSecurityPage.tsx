@@ -72,7 +72,7 @@ export const ProfileSecurityPage = (props: PageProps) => {
                 <h5>Google</h5>
                 <div class="pretty-form__item">
                   <p>
-                    <button class={clsx(styles.socialButton, 'button button--light')} type="button">
+                    <button class={clsx('button button--light', styles.socialButton)} type="button">
                       <Icon name="google" class={styles.icon} />
                       Привязать
                     </button>

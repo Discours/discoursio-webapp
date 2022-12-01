@@ -45,9 +45,9 @@ const useProfileForm = () => {
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
     if (fieldName === 'links') {
       if (remove) {
-        setForm((prev) => ({ ...prev, links: [...prev?.links.filter((item) => item !== value)] }))
+        setForm((prev) => ({ ...prev, links: [...prev.links.filter((item) => item !== value)] }))
       } else {
-        setForm((prev) => ({ ...prev, links: [...prev?.links, value] }))
+        setForm((prev) => ({ ...prev, links: [...prev.links, value] }))
       }
     } else {
       setForm({

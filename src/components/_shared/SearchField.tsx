@@ -14,13 +14,7 @@ export const SearchField = (props: SearchFieldProps) => {
       <label for="search-field">
         <Icon name="search" class={styles.icon} />
       </label>
-      <input
-        id="search-field"
-        type="text"
-        class="search-input"
-        onInput={handleInputChange}
-        placeholder={t('Search')}
-      />
+      <input id="search-field" type="text" onInput={handleInputChange} placeholder={t('Search')} />
     </div>
   )
 }

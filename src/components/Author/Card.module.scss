@@ -246,6 +246,8 @@
 }
 
 .authorsListItem {
+  margin-bottom: 1em !important;
+
   .authorName {
     @include font-size(2.2rem);
 

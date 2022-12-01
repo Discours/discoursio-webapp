@@ -9,6 +9,7 @@ import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
+import { StatMetrics } from '../_shared/StatMetrics'
 
 interface AuthorCardProps {
   caption?: string
@@ -68,13 +69,17 @@ export const AuthorCard = (props: AuthorCardProps) => {
             <div class={styles.authorName}>{name()}</div>
           </Show>
 
-          <Show when={!props.hideDescription}>
+          <Show when={!props.hideDescription && props.author.bio}>
             {props.isAuthorsList}
             <div
               class={styles.authorAbout}
               classList={{ 'text-truncate': props.truncateBio }}
               innerHTML={props.author.bio}
             ></div>
+          </Show>
+
+          <Show when={props.author.stat}>
+            <StatMetrics fields={['shouts', 'followers', 'comments']} stat={props.author.stat} />
           </Show>
         </div>
 

@@ -105,7 +105,6 @@ export const InboxView = () => {
     } catch (error) {
       console.log(error)
     }
-
     await loadChats()
     console.log('!!! chats:', chats())
   })
@@ -132,6 +131,16 @@ export const InboxView = () => {
   const handleOpenInviteModal = (event: Event) => {
     event.preventDefault()
     showModal('inviteToChat')
+  }
+
+  const chatsToShow = () => {
+    if (sortByPerToPer()) {
+      return chats().filter((chat) => chat.title.trim().length === 0)
+    } else if (sortByGroup()) {
+      return chats().filter((chat) => chat.title.trim().length > 0)
+    } else {
+      return chats()
+    }
   }
 
   return (
@@ -181,15 +190,7 @@ export const InboxView = () => {
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For
-                each={
-                  sortByPerToPer()
-                    ? chats().filter((chat) => chat.title.length === 0)
-                    : sortByGroup()
-                    ? chats().filter((chat) => chat.title.length > 0)
-                    : chats()
-                }
-              >
+              <For each={chatsToShow()}>
                 {(chat) => (
                   <DialogCard
                     onClick={() => handleOpenChat(chat.id)}

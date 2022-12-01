@@ -22,9 +22,9 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const loadChats = async () => {
     try {
-      const chats = await apiClient.getChats({ limit: 50, offset: 0 })
+      const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
       setChats(
-        chats.sort((x, y) => {
+        newChats.sort((x, y) => {
           return x.updatedAt < y.updatedAt ? 1 : -1
         })
       )

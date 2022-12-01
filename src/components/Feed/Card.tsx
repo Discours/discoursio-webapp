@@ -7,8 +7,8 @@ import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
 import { locale } from '../../stores/ui'
 import { clsx } from 'clsx'
-import CardTopic from './CardTopic'
-import RatingControl from '../Article/RatingControl'
+import { CardTopic } from './CardTopic'
+import { RatingControl } from '../Article/RatingControl'
 
 interface ArticleCardProps {
   settings?: {
@@ -107,7 +107,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <Show when={!props.settings?.isGroup}>
           <CardTopic
             title={
-              locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic.slug.replace('-', ' ')
+              locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic?.slug?.replace('-', ' ')
             }
             slug={mainTopic.slug}
             isFloorImportant={props.settings?.isFloorImportant}
@@ -135,9 +135,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <For each={authors}>
                   {(author, index) => {
                     const name =
-                      author.name === 'Дискурс' && locale() !== 'ru'
-                        ? 'Discours'
-                        : translit(author.name || '', locale() || 'ru')
+                      author.name === 'Дискурс' && locale() !== 'ru' ? 'Discours' : translit(author.name)
 
                     return (
                       <>

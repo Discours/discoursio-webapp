@@ -14,6 +14,7 @@ export default gql`
       # community
       mainTopic
       topics {
+        id
         title
         body
         slug
@@ -25,7 +26,7 @@ export default gql`
         }
       }
       authors {
-        _id: slug
+        id
         name
         slug
         userpic

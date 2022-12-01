@@ -13,7 +13,12 @@ import Group from '../Feed/Group'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { useTopicsStore } from '../../stores/zine/topics'
-import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
+import {
+  loadShouts,
+  loadTopArticles,
+  loadTopMonthArticles,
+  useArticlesStore
+} from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { locale } from '../../stores/ui'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
@@ -48,6 +53,8 @@ export const HomeView = (props: HomeProps) => {
   const { topAuthors } = useTopAuthorsStore()
 
   onMount(async () => {
+    loadTopArticles()
+    loadTopMonthArticles()
     if (sortedArticles().length < PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT) {
       const { hasMore } = await loadShouts({
         filters: { visibility: 'public' },

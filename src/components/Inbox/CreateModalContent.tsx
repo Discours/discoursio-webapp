@@ -20,7 +20,7 @@ type Props = {
 const CreateModalContent = (props: Props) => {
   const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
   const [theme, setTheme] = createSignal<string>('')
-  const [slugs, setSlugs] = createSignal<string[]>([])
+  const [slugs, setSlugs] = createSignal<number[]>([])
   const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
   let textInput: HTMLInputElement
 
@@ -37,7 +37,7 @@ const CreateModalContent = (props: Props) => {
           return user.selected === true
         })
         .map((user) => {
-          return user['slug']
+          return user.id
         })
     })
     if (slugs().length > 2 && theme().length === 0) {

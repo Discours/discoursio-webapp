@@ -16,6 +16,10 @@ export const getToken = (): string => {
 }
 
 export const setToken = (token: string) => {
+  if (!token) {
+    console.error('[privateGraphQLClient] setToken: token is null!')
+  }
+
   localStorage.setItem(TOKEN_LOCAL_STORAGE_KEY, token)
 }
 
@@ -28,11 +32,12 @@ const options: ClientOptions = {
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   fetchOptions: () => {
-    // пока источником правды для значения токена будет локальное хранилище
-    // меняем через setToken, например при получении значения с сервера
-    // скорее всего придумаем что-нибудь получше со временем
+    // localStorage is the source of truth for now
+    // to change token call setToken, for example after login
     const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
-    if (token === null) alert('token is null')
+    if (!token) {
+      console.error('[privateGraphQLClient] fetchOptions: token is null!')
+    }
     const headers = { Authorization: token }
     return { headers }
   },

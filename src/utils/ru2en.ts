@@ -65,13 +65,16 @@ const ru2en: { [key: string]: string } = {
   я: 'ya'
 }
 
-export const translit = (x: string, l?: string) => {
-  let n
+export const translit = (str: string) => {
+  if (!str) {
+    return ''
+  }
 
-  n = [...(x || '')]
-  const isCyrillic = /[ЁА-яё]/.test(x || '')
+  const isCyrillic = /[ЁА-яё]/.test(str)
 
-  if (l !== 'ru' && isCyrillic) n = n.map((c: string) => ru2en[c] || c)
+  if (!isCyrillic) {
+    return str
+  }
 
-  return n.join('')
+  return [...str].map((c) => ru2en[c] || c).join('')
 }

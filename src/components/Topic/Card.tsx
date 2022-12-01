@@ -1,6 +1,6 @@
 import { capitalize } from '../../utils'
 import styles from './Card.module.scss'
-import { createMemo, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
@@ -9,6 +9,7 @@ import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { StatMetrics } from '../_shared/StatMetrics'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 const log = getLogger('TopicCard')
 
@@ -25,7 +26,12 @@ interface TopicProps {
 }
 
 export const TopicCard = (props: TopicProps) => {
-  const { session } = useSession()
+  const {
+    session,
+    actions: { loadSession }
+  } = useSession()
+
+  const [isSubscribing, setIsSubscribing] = createSignal(false)
 
   const subscribed = createMemo(() => {
     if (!session()?.user?.slug || !session()?.news?.topics) {
@@ -35,14 +41,17 @@ export const TopicCard = (props: TopicProps) => {
     return session()?.news.topics.includes(props.topic.slug)
   })
 
-  // FIXME use store actions
   const subscribe = async (really = true) => {
-    if (really) {
-      follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-    } else {
-      unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-    }
+    setIsSubscribing(true)
+
+    await (really
+      ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
+      : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
+
+    await loadSession()
+    setIsSubscribing(false)
   }
+
   return (
     <div
       class={styles.topic}
@@ -79,32 +88,30 @@ export const TopicCard = (props: TopicProps) => {
         class={styles.controlContainer}
         classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}
       >
-        <Show
-          when={subscribed()}
-          fallback={
+        <ShowOnlyOnClient>
+          <Show when={session.state !== 'pending'}>
             <button
-              onClick={() => subscribe(true)}
+              onClick={() => subscribe(!subscribed())}
               class="button--light button--subscribe-topic"
               classList={{
-                [styles.buttonCompact]: props.compact
+                [styles.buttonCompact]: props.compact,
+                [styles.isSubscribing]: isSubscribing()
               }}
+              disabled={isSubscribing()}
             >
-              <Show when={props.iconButton}>+</Show>
-              <Show when={!props.iconButton}>{t('Follow')}</Show>
+              <Show when={props.iconButton}>
+                <Show when={subscribed()} fallback="+">
+                  -
+                </Show>
+              </Show>
+              <Show when={!props.iconButton}>
+                <Show when={subscribed()} fallback={t('Follow')}>
+                  {t('Unfollow')}
+                </Show>
+              </Show>
             </button>
-          }
-        >
-          <button
-            onClick={() => subscribe(false)}
-            class="button--light button--subscribe-topic"
-            classList={{
-              [styles.buttonCompact]: props.compact
-            }}
-          >
-            <Show when={props.iconButton}>-</Show>
-            <Show when={!props.iconButton}>{t('Unfollow')}</Show>
-          </button>
-        </Show>
+          </Show>
+        </ShowOnlyOnClient>
       </div>
     </div>
   )

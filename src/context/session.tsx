@@ -1,15 +1,15 @@
-import type { Accessor, InitializedResource, JSX } from 'solid-js'
+import type { Accessor, JSX, Resource } from 'solid-js'
 import { createContext, createMemo, createResource, onMount, useContext } from 'solid-js'
 import type { AuthResult } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 
 type SessionContextType = {
-  session: InitializedResource<AuthResult>
+  session: Resource<AuthResult>
   userSlug: Accessor<string>
   isAuthenticated: Accessor<boolean>
   actions: {
-    getSession: () => AuthResult | Promise<AuthResult>
+    loadSession: () => AuthResult | Promise<AuthResult>
     signIn: ({ email, password }: { email: string; password: string }) => Promise<void>
     signOut: () => Promise<void>
     confirmEmail: (token: string) => Promise<void>
@@ -27,7 +27,7 @@ const getSession = async (): Promise<AuthResult> => {
     setToken(authResult.token)
     return authResult
   } catch (error) {
-    console.error('renewSession error:', error)
+    console.error('getSession error:', error)
     resetToken()
     return null
   }
@@ -38,10 +38,7 @@ export function useSession() {
 }
 
 export const SessionProvider = (props: { children: JSX.Element }) => {
-  const [session, { refetch: refetchSession, mutate }] = createResource<AuthResult>(getSession, {
-    ssrLoadFrom: 'initial',
-    initialValue: null
-  })
+  const [session, { refetch: loadSession, mutate }] = createResource<AuthResult>(getSession)
 
   const userSlug = createMemo(() => session()?.user?.slug)
 
@@ -68,7 +65,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   }
 
   const actions = {
-    getSession: refetchSession,
+    loadSession,
     signIn,
     signOut,
     confirmEmail
@@ -77,7 +74,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const value: SessionContextType = { session, userSlug, isAuthenticated, actions }
 
   onMount(() => {
-    refetchSession()
+    loadSession()
   })
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

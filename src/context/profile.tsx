@@ -45,6 +45,7 @@ const useProfileForm = () => {
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
     if (fieldName === 'links') {
       if (remove) {
+        //FIXME: TS Error: error  Unnecessarily cloning an array  unicorn/no-useless-spread
         setForm((prev) => ({ ...prev, links: [...prev.links.filter((item) => item !== value)] }))
       } else {
         setForm((prev) => ({ ...prev, links: [...prev.links, value] }))

@@ -189,5 +189,19 @@
   "create_group": "Создать группу",
   "discourse_theme": "Тема дискурса",
   "cancel": "Отмена",
-  "group_chat": "Общий чат"
+  "group_chat": "Общий чат",
+  "Profile settings": "Настройки профиля",
+  "Here you can customize your profile the way you want.": "Здесь можно настроить свой профиль так, как вы хотите.",
+  "Userpic": "Аватар",
+  "Name": "Имя",
+  "Your name will appear on your profile page and as your signature in publications, comments and responses.": "Ваше имя появится на странице вашего профиля и как ваша подпись в публикациях, комментариях и откликах",
+  "Address on Discourse": "Адрес на Дискурсе",
+  "Sorry, this address is already taken, please choose another one.": "Увы, этот адрес уже занят, выберите другой",
+  "Introduce": "Представление",
+  "About myself": "О себе",
+  "How can I help/skills": "Чем могу помочь/навыки",
+  "Where": "Откуда",
+  "Date of Birth": "Дата рождения",
+  "Social networks": "Социальные сети",
+  "Save settings": "Сохранить настройки"
 }

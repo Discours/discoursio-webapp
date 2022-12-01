@@ -25,7 +25,6 @@ const DialogCard = (props: DialogProps) => {
       .map((companion) => companion.name)
       .join(', ')
   )
-  console.log('!!! names:', names())
   return (
     <Show when={props.members}>
       <div class={clsx(styles.DialogCard, { [styles.header]: props.isChatHeader })} onClick={props.onClick}>

@@ -71,7 +71,7 @@ export const InboxView = () => {
   const [loading, setLoading] = createSignal<boolean>(false)
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
-  const [selectedChat, setSelectedChat] = createSignal<Chat | undefined>(undefined)
+  const [selectedChat, setSelectedChat] = createSignal<Chat>()
   const { session } = useSession()
   const currentSlug = createMemo(() => session()?.user?.slug)
 

@@ -3,34 +3,25 @@ import { t } from '../../../utils/intl'
 import type { PageProps } from '../../types'
 import { Icon } from '../../_shared/Icon'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
-import { useSession } from '../../../context/session'
-import { createMemo, For, createSignal, Show, createEffect } from 'solid-js'
-import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
-import type { Author } from '../../../graphql/types.gen'
+import { For, createSignal, Show } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
+import { useProfileForm } from '../../../context/profile'
 
 export const ProfileSettingsPage = (props: PageProps) => {
-  const [author, setAuthor] = createSignal<Author>(null)
-  const { session } = useSession()
-  const currentSlug = createMemo(() => session()?.user?.slug)
-  const { authorEntities } = useAuthorsStore({ authors: [] })
-  const currentAuthor = createMemo(() => authorEntities()[currentSlug()])
-
-  createEffect(async () => {
-    if (!currentSlug()) return
-    try {
-      await loadAuthor({ slug: currentSlug() })
-      setAuthor(currentAuthor())
-      console.log('!!! currentAuthor:', currentAuthor())
-    } catch (error) {
-      console.error(error)
-    }
-  })
-
+  const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
+  const { form, updateFormField, submit } = useProfileForm()
+  const handleChangeSocial = (value) => {
+    updateFormField('links', value)
+    setAddLinkForm(false)
+  }
+  const handleSubmit = (event: Event): void => {
+    event.preventDefault()
+    submit(form)
+  }
   return (
     <PageWrap>
-      <Show when={author()}>
+      <Show when={form}>
         <div class="wide-container">
           <div class="shift-content">
             <div class="left-col">
@@ -42,11 +33,11 @@ export const ProfileSettingsPage = (props: PageProps) => {
               <div class="col-md-10 col-lg-9 col-xl-8">
                 <h1>{t('Profile settings')}</h1>
                 <p class="description">{t('Here you can customize your profile the way you want.')}</p>
-                <form>
+                <form onSubmit={handleSubmit}>
                   <h4>{t('Userpic')}</h4>
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
-                      <img class={styles.avatar} src={author().userpic} />
+                      <img class={styles.avatar} src={form.userpic} alt={form.name} />
                       <input
                         type="file"
                         name="avatar"
@@ -55,7 +46,6 @@ export const ProfileSettingsPage = (props: PageProps) => {
                       />
                     </div>
                   </div>
-
                   <h4>{t('Name')}</h4>
                   <p class="description">
                     {t(
@@ -67,8 +57,9 @@ export const ProfileSettingsPage = (props: PageProps) => {
                       type="text"
                       name="username"
                       id="username"
-                      placeholder="Имя"
-                      value={author().name}
+                      placeholder={t('Name')}
+                      onChange={(event) => updateFormField('name', event.currentTarget.value)}
+                      value={form.name}
                     />
                     <label for="username">Имя</label>
                   </div>
@@ -82,7 +73,8 @@ export const ProfileSettingsPage = (props: PageProps) => {
                           type="text"
                           name="user-address"
                           id="user-address"
-                          value={currentSlug()}
+                          onChange={(event) => updateFormField('slug', event.currentTarget.value)}
+                          value={form.slug}
                           class="nolabel"
                         />
                         <p class="form-message form-message--error">
@@ -92,52 +84,70 @@ export const ProfileSettingsPage = (props: PageProps) => {
                     </div>
                   </div>
 
-                  <h4>{t('Introduce')}</h4>
-                  <div class="pretty-form__item">
-                    <textarea name="presentation" id="presentation" placeholder="Представление" />
-                    <label for="presentation">{t('Introduce')}</label>
-                  </div>
+                  {/*Нет реализации полей на бэке*/}
+                  {/*<h4>{t('Introduce')}</h4>*/}
+                  {/*<div class="pretty-form__item">*/}
+                  {/*  <textarea name="presentation" id="presentation" placeholder={t('Introduce')} />*/}
+                  {/*  <label for="presentation">{t('Introduce')}</label>*/}
+                  {/*</div>*/}
 
                   <h4>{t('About myself')}</h4>
                   <div class="pretty-form__item">
-                    <textarea name="about" id="about" placeholder="О себе">
-                      {author().bio}
-                    </textarea>
+                    <textarea
+                      name="about"
+                      id="about"
+                      placeholder={t('About myself')}
+                      value={form.bio}
+                      onChange={(event) => updateFormField('bio', event.currentTarget.value)}
+                    />
                     <label for="about">{t('About myself')}</label>
                   </div>
 
-                  <h4>{t('How can I help/skills')}</h4>
-                  <div class="pretty-form__item">
-                    <input type="text" name="skills" id="skills" />
-                  </div>
+                  {/*Нет реализации полей на бэке*/}
+                  {/*<h4>{t('How can I help/skills')}</h4>*/}
+                  {/*<div class="pretty-form__item">*/}
+                  {/*  <input type="text" name="skills" id="skills" />*/}
+                  {/*</div>*/}
+                  {/*<h4>{t('Where')}</h4>*/}
+                  {/*<div class="pretty-form__item">*/}
+                  {/*  <input type="text" name="location" id="location" placeholder="Откуда" />*/}
+                  {/*  <label for="location">{t('Where')}</label>*/}
+                  {/*</div>*/}
 
-                  <h4>{t('Where')}</h4>
-                  <div class="pretty-form__item">
-                    <input type="text" name="location" id="location" placeholder="Откуда" />
-                    <label for="location">{t('Where')}</label>
-                  </div>
-
-                  <h4>{t('Date of Birth')}</h4>
-                  <div class="pretty-form__item">
-                    <input
-                      type="date"
-                      name="birthdate"
-                      id="birthdate"
-                      placeholder="Дата рождения"
-                      class="nolabel"
-                    />
-                  </div>
+                  {/*<h4>{t('Date of Birth')}</h4>*/}
+                  {/*<div class="pretty-form__item">*/}
+                  {/*  <input*/}
+                  {/*    type="date"*/}
+                  {/*    name="birthdate"*/}
+                  {/*    id="birthdate"*/}
+                  {/*    placeholder="Дата рождения"*/}
+                  {/*    class="nolabel"*/}
+                  {/*  />*/}
+                  {/*</div>*/}
 
                   <div class={clsx(styles.multipleControls, 'pretty-form__item')}>
                     <div class={styles.multipleControlsHeader}>
                       <h4>{t('Social networks')}</h4>
-                      <button class="button">+</button>
+                      <button type="button" class="button" onClick={() => setAddLinkForm(!addLinkForm())}>
+                        +
+                      </button>
                     </div>
-                    <For each={author().links}>
+                    <Show when={addLinkForm()}>
+                      <div class={styles.multipleControlsItem}>
+                        <input
+                          autofocus={true}
+                          type="text"
+                          name="link"
+                          class="nolabel"
+                          onChange={(event) => handleChangeSocial(event.currentTarget.value)}
+                        />
+                      </div>
+                    </Show>
+                    <For each={form.links}>
                       {(link) => (
                         <div class={styles.multipleControlsItem}>
-                          <input type="text" value={link} name="social1" class="nolabel" />
-                          <button>
+                          <input type="text" value={link} readonly={true} name="link" class="nolabel" />
+                          <button type="button" onClick={() => updateFormField('links', link, true)}>
                             <Icon name="remove" class={styles.icon} />
                           </button>
                         </div>
@@ -147,12 +157,15 @@ export const ProfileSettingsPage = (props: PageProps) => {
 
                   <br />
                   <p>
-                    <button class="button button--submit">{t('Save settings')}</button>
+                    <button type="submit" class="button button--submit">
+                      {t('Save settings')}
+                    </button>
                   </p>
                 </form>
               </div>
             </div>
           </div>
+          <pre>{JSON.stringify(form, null, 2)}</pre>
         </div>
       </Show>
     </PageWrap>

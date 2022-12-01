@@ -7,10 +7,6 @@ export default gql`
       error
       author {
         name
-        slug
-        userpic
-        bio
-        links
       }
     }
   }

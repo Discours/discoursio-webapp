@@ -63,26 +63,26 @@ export const ProfileSettingsPage = (props: PageProps) => {
                     />
                     <label for="username">Имя</label>
                   </div>
-
-                  <h4>{t('Address on Discourse')}</h4>
-                  <div class="pretty-form__item">
-                    <div class={styles.discoursName}>
-                      <label for="user-address">https://discours.io/user/</label>
-                      <div class={styles.discoursNameField}>
-                        <input
-                          type="text"
-                          name="user-address"
-                          id="user-address"
-                          onChange={(event) => updateFormField('slug', event.currentTarget.value)}
-                          value={form.slug}
-                          class="nolabel"
-                        />
-                        <p class="form-message form-message--error">
-                          {t('Sorry, this address is already taken, please choose another one.')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  {/*Не готов бекенд*/}
+                  {/*<h4>{t('Address on Discourse')}</h4>*/}
+                  {/*<div class="pretty-form__item">*/}
+                  {/*  <div class={styles.discoursName}>*/}
+                  {/*    <label for="user-address">https://discours.io/user/</label>*/}
+                  {/*    <div class={styles.discoursNameField}>*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        name="user-address"*/}
+                  {/*        id="user-address"*/}
+                  {/*        onChange={(event) => updateFormField('slug', event.currentTarget.value)}*/}
+                  {/*        value={form.slug}*/}
+                  {/*        class="nolabel"*/}
+                  {/*      />*/}
+                  {/*      <p class="form-message form-message--error">*/}
+                  {/*        {t('Sorry, this address is already taken, please choose another one.')}*/}
+                  {/*      </p>*/}
+                  {/*    </div>*/}
+                  {/*  </div>*/}
+                  {/*</div>*/}
 
                   {/*Нет реализации полей на бэке*/}
                   {/*<h4>{t('Introduce')}</h4>*/}

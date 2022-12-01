@@ -216,8 +216,8 @@ export const apiClient = {
     console.debug('getAuthor', response)
     return response.data.getAuthor
   },
-  updateProfile: async (options: ProfileInput) => {
-    const response = await privateGraphQLClient.mutation(updateProfile, options).toPromise()
+  updateProfile: async (input: ProfileInput) => {
+    const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
     console.debug('updateProfile', response)
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {

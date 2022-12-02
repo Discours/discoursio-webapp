@@ -22,3 +22,10 @@ export type RootSearchParams = {
   modal: string
   lang: string
 }
+
+export type UploadFile = {
+  source: string
+  name: string
+  size: number
+  file: File
+}

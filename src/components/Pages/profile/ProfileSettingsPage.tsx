@@ -7,6 +7,7 @@ import { For, createSignal, Show } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
+import { createFileUploader } from '@solid-primitives/upload'
 
 export const ProfileSettingsPage = (props: PageProps) => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
@@ -19,6 +20,19 @@ export const ProfileSettingsPage = (props: PageProps) => {
     event.preventDefault()
     submit(form)
   }
+  const { selectFiles: selectFilesAsync } = createFileUploader({ accept: 'image/*' })
+
+  const handleUpload = () => {
+    selectFilesAsync(async ([{ source, name, size, file }]) => {
+      try {
+        console.log({ source, name, size, file })
+        // DO UPLOAD STUFF HERE AND RETURN URL
+      } catch (error) {
+        console.log(error)
+      }
+    })
+  }
+
   return (
     <PageWrap>
       <Show when={form}>
@@ -38,12 +52,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
                       <img class={styles.avatar} src={form.userpic} alt={form.name} />
-                      <input
-                        type="file"
-                        name="avatar"
-                        class={styles.avatarInput}
-                        accept="image/jpeg,image/png,image/gif,image/webp"
-                      />
+                      <button type="button" class={styles.avatarInput} onClick={handleUpload} />
                     </div>
                   </div>
                   <h4>{t('Name')}</h4>

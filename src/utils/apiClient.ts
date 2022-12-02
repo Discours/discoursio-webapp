@@ -10,7 +10,9 @@ import type {
   QueryLoadMessagesByArgs,
   MutationCreateChatArgs,
   MutationCreateMessageArgs,
-  QueryLoadRecipientsArgs
+  QueryLoadRecipientsArgs,
+  User,
+  ProfileInput
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -42,6 +44,7 @@ import shoutsLoadBy from '../graphql/query/articles-load-by'
 import shoutLoad from '../graphql/query/article-load'
 import loadRecipients from '../graphql/query/chat-recipients'
 import createMessage from '../graphql/mutation/create-chat-message'
+import updateProfile from '../graphql/mutation/update-profile'
 
 type ApiErrorCode =
   | 'unknown'
@@ -212,6 +215,10 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
     console.debug('getAuthor', response)
     return response.data.getAuthor
+  },
+  updateProfile: async (input: ProfileInput) => {
+    const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
+    console.debug('updateProfile', response)
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
     const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()

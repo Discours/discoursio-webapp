@@ -2818,6 +2818,13 @@
   dependencies:
     "@solid-primitives/rootless" "^1.2.0"
 
+"@solid-primitives/upload@^0.0.105":
+  version "0.0.105"
+  resolved "https://registry.yarnpkg.com/@solid-primitives/upload/-/upload-0.0.105.tgz#cf415667c0fae842dbf2470554dc0c28e8ba4fac"
+  integrity sha512-991xLetzr25NIeuAtWpYmJSA7lJ0HSOJT9sl3sRtgpR4+QJEDIsM4lw2iYYpw7XUFGBqqX2CHI5TitvYzy/Maw==
+  dependencies:
+    "@solid-primitives/utils" "^4.0.0"
+
 "@solid-primitives/utils@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@solid-primitives/utils/-/utils-3.1.0.tgz#52edf36dabe62eba94f8356c3b9b788234d088a8"

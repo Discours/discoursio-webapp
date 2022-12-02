@@ -12,8 +12,8 @@
     transition: box-shadow 0.3s;
     width: 100%;
 
-    &:focus {
-      box-shadow: 0 3px 0 #ccc;
+    + label {
+      display: none;
     }
   }
 

@@ -1,5 +1,5 @@
 import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
-import type { Author, Chat } from '../../graphql/types.gen'
+import type { Author, Chat, ChatMember } from '../../graphql/types.gen'
 import { AuthorCard } from '../Author/Card'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../Loading'
@@ -165,9 +165,7 @@ export const InboxView = () => {
           </div>
           <div class="holder">
             <div class="dialogs">
-              <For each={chats()}>
-                {(chat) => <DialogCard members={[...chat.members, session().user.id]} />}
-              </For>
+              <For each={chats()}>{(chat: Chat) => <DialogCard members={chat.members} />}</For>
             </div>
           </div>
         </div>

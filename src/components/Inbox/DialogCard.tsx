@@ -13,18 +13,16 @@ type DialogProps = {
 }
 
 const DialogCard = (props: DialogProps) => {
-  const { session } = useSession()
-  const participants = props.members?.filter((m) => m?.id !== session().user.id) || []
-  console.log('!!! participants:', participants)
+  console.log('!!! participants:', props.members)
   return (
     //DialogCardView - подумать
-    <Show when={participants?.length > 0}>
+    <Show when={props.members?.length > 0}>
       <div class={styles.DialogCard}>
         <div class={styles.avatar}>
-          <DialogAvatar name={participants[0].name} online={props.online} />
+          <DialogAvatar name={props.members[0].name} online={props.online} />
         </div>
         <div class={styles.row}>
-          <div class={styles.name}>{participants[0].name}</div>
+          <div class={styles.name}>{props.members[0].name}</div>
           <div class={styles.message}>{t('You can announce your languages in profile')}</div>
         </div>
         <div class={styles.activity}>

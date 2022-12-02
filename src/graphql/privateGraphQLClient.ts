@@ -32,7 +32,7 @@ const options: ClientOptions = {
     // меняем через setToken, например при получении значения с сервера
     // скорее всего придумаем что-нибудь получше со временем
     const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
-    if (token === null) alert('token is null')
+    if (token === null) console.error('[ERROR] token is null')
     const headers = { Authorization: token }
     return { headers }
   },

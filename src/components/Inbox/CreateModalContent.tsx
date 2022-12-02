@@ -6,7 +6,10 @@ import type { Author } from '../../graphql/types.gen'
 import { hideModal } from '../../stores/ui'
 import { useInbox } from '../../context/inbox'
 
-type inviteUser = Author & { selected: boolean }
+type InvitingUser = Author & {
+  selected: boolean
+}
+
 type query =
   | {
       theme: string
@@ -18,40 +21,41 @@ type Props = {
 }
 
 const CreateModalContent = (props: Props) => {
-  const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
-  const [theme, setTheme] = createSignal<string>('')
-  const [slugs, setSlugs] = createSignal<string[]>([])
-  const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
+  const inviteUsers: InvitingUser[] = props.users.map((user) => ({ ...user, selected: false }))
+  const [title, setTitle] = createSignal<string>('')
+  const [uids, setUids] = createSignal<number[]>([])
+  const [collectionToInvite, setCollectionToInvite] = createSignal<InvitingUser[]>(inviteUsers)
   let textInput: HTMLInputElement
 
   const reset = () => {
-    setTheme('')
-    setSlugs([])
+    setTitle('')
+    setUids([])
     hideModal()
   }
 
   createEffect(() => {
-    setSlugs(() => {
+    console.log(collectionToInvite())
+    setUids(() => {
       return collectionToInvite()
-        .filter((user) => {
+        .filter((user: InvitingUser) => {
           return user.selected === true
         })
-        .map((user) => {
-          return user['slug']
+        .map((user: InvitingUser) => {
+          return user.id
         })
     })
-    if (slugs().length > 2 && theme().length === 0) {
-      setTheme(t('group_chat'))
+    if (uids().length > 1 && title().length === 0) {
+      setTitle(t('group_chat'))
     }
   })
 
   const handleSetTheme = () => {
-    setTheme(textInput.value.length > 0 && textInput.value)
+    setTitle(textInput.value.length > 0 && textInput.value)
   }
 
   const handleClick = (user) => {
-    setCollectionToInvite((userCollection) => {
-      return userCollection.map((clickedUser) =>
+    setCollectionToInvite((userCollection: InvitingUser[]) => {
+      return userCollection.map((clickedUser: InvitingUser) =>
         user.slug === clickedUser.slug ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser
       )
     })
@@ -63,7 +67,7 @@ const CreateModalContent = (props: Props) => {
 
   const handleCreate = async () => {
     try {
-      const initChat = await actions.createChat(slugs(), theme())
+      const initChat = await actions.createChat(uids(), title())
       console.debug('[initChat]', initChat)
     } catch (error) {
       console.error(error)
@@ -73,7 +77,7 @@ const CreateModalContent = (props: Props) => {
   return (
     <div class={styles.CreateModalContent}>
       <h4>{t('create_chat')}</h4>
-      {slugs().length > 2 && (
+      {uids().length > 1 && (
         <input
           ref={textInput}
           onInput={handleSetTheme}
@@ -86,7 +90,7 @@ const CreateModalContent = (props: Props) => {
 
       <div class="invite-recipients" style={{ height: '400px', overflow: 'auto' }}>
         <For each={collectionToInvite()}>
-          {(author) => (
+          {(author: InvitingUser) => (
             <InviteUser onClick={() => handleClick(author)} author={author} selected={author.selected} />
           )}
         </For>
@@ -100,9 +104,9 @@ const CreateModalContent = (props: Props) => {
           type="button"
           class="btn btn-lg fs-3 btn-outline-primary"
           onClick={handleCreate}
-          disabled={slugs().length === 0}
+          disabled={uids().length === 0}
         >
-          {slugs().length > 2 ? t('create_group') : t('create_chat')}
+          {uids().length > 1 ? t('create_group') : t('create_chat')}
         </button>
       </div>
     </div>

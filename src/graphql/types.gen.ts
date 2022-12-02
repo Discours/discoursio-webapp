@@ -199,7 +199,7 @@ export type MutationConfirmEmailArgs = {
 }
 
 export type MutationCreateChatArgs = {
-  members: Array<InputMaybe<Scalars['String']>>
+  members: Array<InputMaybe<Scalars['Int']>>
   title?: InputMaybe<Scalars['String']>
 }
 

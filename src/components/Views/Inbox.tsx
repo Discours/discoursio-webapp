@@ -66,7 +66,6 @@ export const InboxView = () => {
   const [postMessageText, setPostMessageText] = createSignal('')
   const [loading, setLoading] = createSignal<boolean>(false)
   const { session } = useSession()
-  const currentSlug = createMemo(() => session()?.user?.slug)
 
   // Поиск по диалогам
   const getQuery = (query) => {
@@ -167,7 +166,7 @@ export const InboxView = () => {
           <div class="holder">
             <div class="dialogs">
               <For each={chats()}>
-                {(chat) => <DialogCard members={chat.members} ownSlug={currentSlug()} />}
+                {(chat) => <DialogCard members={[...chat.members, session().user.id]} />}
               </For>
             </div>
           </div>

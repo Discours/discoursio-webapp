@@ -22,6 +22,8 @@ const useProfileForm = () => {
   const [form, setForm] = createStore<ProfileInput>({
     name: '',
     bio: '',
+    about: '',
+    slug: '',
     userpic: '',
     links: []
   })
@@ -34,6 +36,7 @@ const useProfileForm = () => {
       setForm({
         name: currentAuthor()?.name,
         bio: currentAuthor()?.bio,
+        about: currentAuthor()?.about,
         userpic: currentAuthor()?.userpic,
         links: currentAuthor()?.links
       })

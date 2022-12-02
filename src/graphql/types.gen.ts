@@ -23,6 +23,7 @@ export type AuthResult = {
 
 export type Author = {
   bio?: Maybe<Scalars['String']>
+  about?: Maybe<Scalars['String']>
   caption?: Maybe<Scalars['String']>
   id: Scalars['Int']
   lastSeen?: Maybe<Scalars['DateTime']>
@@ -327,6 +328,8 @@ export type Permission = {
 
 export type ProfileInput = {
   bio?: InputMaybe<Scalars['String']>
+  slug?: InputMaybe<Scalars['String']>
+  about?: InputMaybe<Scalars['String']>
   links?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   name?: InputMaybe<Scalars['String']>
   userpic?: InputMaybe<Scalars['String']>

@@ -70,35 +70,36 @@ export const ProfileSettingsPage = (props: PageProps) => {
                       onChange={(event) => updateFormField('name', event.currentTarget.value)}
                       value={form.name}
                     />
-                    <label for="username">Имя</label>
+                    <label for="username">{t('Name')}</label>
                   </div>
-                  {/*Не готов бекенд*/}
-                  {/*<h4>{t('Address on Discourse')}</h4>*/}
-                  {/*<div class="pretty-form__item">*/}
-                  {/*  <div class={styles.discoursName}>*/}
-                  {/*    <label for="user-address">https://discours.io/user/</label>*/}
-                  {/*    <div class={styles.discoursNameField}>*/}
-                  {/*      <input*/}
-                  {/*        type="text"*/}
-                  {/*        name="user-address"*/}
-                  {/*        id="user-address"*/}
-                  {/*        onChange={(event) => updateFormField('slug', event.currentTarget.value)}*/}
-                  {/*        value={form.slug}*/}
-                  {/*        class="nolabel"*/}
-                  {/*      />*/}
-                  {/*      <p class="form-message form-message--error">*/}
-                  {/*        {t('Sorry, this address is already taken, please choose another one.')}*/}
-                  {/*      </p>*/}
-                  {/*    </div>*/}
-                  {/*  </div>*/}
-                  {/*</div>*/}
 
-                  {/*Нет реализации полей на бэке*/}
-                  {/*<h4>{t('Introduce')}</h4>*/}
-                  {/*<div class="pretty-form__item">*/}
-                  {/*  <textarea name="presentation" id="presentation" placeholder={t('Introduce')} />*/}
-                  {/*  <label for="presentation">{t('Introduce')}</label>*/}
-                  {/*</div>*/}
+                  <h4>{t('Address on Discourse')}</h4>
+                  <div class="pretty-form__item">
+                    <div class={styles.discoursName}>
+                      <label for="user-address">https://new.discours.io/author/</label>
+                      <div class={styles.discoursNameField}>
+                        <input
+                          type="text"
+                          name="user-address"
+                          id="user-address"
+                          onChange={(event) => updateFormField('slug', event.currentTarget.value)}
+                          value={form.slug}
+                          class="nolabel"
+                        />
+                        <p class="form-message form-message--error">
+                          {t('Sorry, this address is already taken, please choose another one.')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h4>{t('Introduce')}</h4>
+                  <div class="pretty-form__item">
+                    <textarea name="presentation" id="presentation" placeholder={t('Introduce')}>
+                      {form.bio}
+                    </textarea>
+                    <label for="presentation">{t('Introduce')}</label>
+                  </div>
 
                   <h4>{t('About myself')}</h4>
                   <div class="pretty-form__item">
@@ -106,8 +107,8 @@ export const ProfileSettingsPage = (props: PageProps) => {
                       name="about"
                       id="about"
                       placeholder={t('About myself')}
-                      value={form.bio}
-                      onChange={(event) => updateFormField('bio', event.currentTarget.value)}
+                      value={form.about}
+                      onChange={(event) => updateFormField('about', event.currentTarget.value)}
                     />
                     <label for="about">{t('About myself')}</label>
                   </div>

@@ -54,7 +54,7 @@ export async function handler(req, res) {
   })
 
   if (req.method === 'POST') {
-    const data: any = await parseFormData(req)
+    const data = await parseFormData(req)
     const files = data?.files
     const image = files.image
     const body = fs.readFileSync(image.path)

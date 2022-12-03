@@ -10,7 +10,7 @@ type DialogProps = {
   message?: string
   counter?: number
   title?: string
-  ownSlug: string
+  ownId: number
   members: ChatMember[]
   onClick?: () => void
   isChatHeader?: boolean
@@ -18,13 +18,12 @@ type DialogProps = {
 
 const DialogCard = (props: DialogProps) => {
   const companions = createMemo(
-    () => props.members && props.members.filter((member) => member.slug !== props.ownSlug)
+    () => props.members && props.members.filter((member) => member.id !== props.ownId)
   )
-  const names = createMemo(() =>
-    companions()
-      .map((companion) => companion.name)
-      .join(', ')
-  )
+  const names = companions()
+    ?.map((companion) => companion.name)
+    .join(', ')
+
   return (
     <Show when={props.members}>
       <div class={clsx(styles.DialogCard, { [styles.header]: props.isChatHeader })} onClick={props.onClick}>
@@ -37,7 +36,7 @@ const DialogCard = (props: DialogProps) => {
         </div>
         <div class={styles.row}>
           <Switch fallback={<div class={styles.name}>{companions()[0].name}</div>}>
-            <Match when={companions().length > 1}>
+            <Match when={companions().length > 2}>
               <div class={styles.name}>{props.title}</div>
             </Match>
           </Switch>

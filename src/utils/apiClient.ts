@@ -289,7 +289,7 @@ export const apiClient = {
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {
     const resp = await privateGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
     console.log('!!! resp:', resp)
-    // return resp.data.loadChat
+    return resp.data.loadChat
   },
 
   getRecipients: async (options: QueryLoadRecipientsArgs) => {

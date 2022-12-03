@@ -73,16 +73,16 @@ export const InboxView = () => {
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
   const [selectedChat, setSelectedChat] = createSignal<Chat>()
   const { session } = useSession()
-  const currentSlug = createMemo(() => session()?.user?.slug)
+  const currentUserId = createMemo(() => session()?.user?.id)
 
   // Поиск по диалогам
   const getQuery = (query) => {
-    if (query().length >= 2) {
-      const match = userSearch(recipients(), query())
-      setRecipients(match)
-    } else {
-      setRecipients(cashedRecipients())
-    }
+    // if (query().length >= 2) {
+    //   const match = userSearch(recipients(), query())
+    //   setRecipients(match)
+    // } else {
+    //   setRecipients(cashedRecipients())
+    // }
   }
 
   let chatWindow
@@ -109,7 +109,6 @@ export const InboxView = () => {
       console.log(error)
     }
     await loadChats()
-    console.log('!!! chats:', chats())
   })
 
   const handleSubmit = async () => {
@@ -135,6 +134,10 @@ export const InboxView = () => {
     event.preventDefault()
     showModal('inviteToChat')
   }
+
+  createEffect(() => {
+    console.log('!!! chats():', chats())
+  })
 
   const chatsToShow = () => {
     if (sortByPerToPer()) {
@@ -199,7 +202,7 @@ export const InboxView = () => {
                     onClick={() => handleOpenChat(chat)}
                     title={chat.title}
                     members={chat.members}
-                    ownSlug={currentSlug()}
+                    ownId={currentUserId()}
                   />
                 )}
               </For>
@@ -209,7 +212,7 @@ export const InboxView = () => {
 
         <div class="col-md-8 conversation">
           <Show when={selectedChat()}>
-            <DialogHeader currentSlug={currentSlug()} chat={selectedChat()} />
+            <DialogHeader ownId={currentUserId()} chat={selectedChat()} />
           </Show>
 
           <div class="conversation__messages">

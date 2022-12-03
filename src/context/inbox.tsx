@@ -2,12 +2,11 @@ import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
 import type { Chat } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
-import { createStore } from 'solid-js/store'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
   actions: {
-    createChat: (members: string[], title: string) => Promise<void>
+    createChat: (members: number[], title: string) => Promise<void>
     loadChats: () => Promise<void>
   }
 }
@@ -33,7 +32,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const createChat = async (members: string[], title: string) => {
+  const createChat = async (members: number[], title: string) => {
     const chat = await apiClient.createChat({ members, title })
     setChats((prevChats) => {
       return [chat, ...prevChats]

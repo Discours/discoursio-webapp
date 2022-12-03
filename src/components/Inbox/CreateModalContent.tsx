@@ -14,28 +14,27 @@ type Props = {
 const CreateModalContent = (props: Props) => {
   const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
   const [theme, setTheme] = createSignal<string>(' ')
-  const [slugs, setSlugs] = createSignal<string[]>([])
+  const [usersId, setUsersId] = createSignal<number[]>([])
   const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
   let textInput: HTMLInputElement
 
   const reset = () => {
     setTheme('')
-    setSlugs([])
+    setUsersId([])
     hideModal()
   }
 
   createEffect(() => {
-    setSlugs(() => {
+    setUsersId(() => {
       return collectionToInvite()
         .filter((user) => {
           return user.selected === true
         })
         .map((user) => {
-          return user['slug']
+          return user['id']
         })
     })
-
-    if (slugs().length > 1 && theme().length === 1) {
+    if (usersId().length > 1 && theme().length === 1) {
       setTheme(t('group_chat'))
     }
   })
@@ -47,7 +46,7 @@ const CreateModalContent = (props: Props) => {
   const handleClick = (user) => {
     setCollectionToInvite((userCollection) => {
       return userCollection.map((clickedUser) =>
-        user.slug === clickedUser.slug ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser
+        user.id === clickedUser.id ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser
       )
     })
   }
@@ -56,7 +55,7 @@ const CreateModalContent = (props: Props) => {
 
   const handleCreate = async () => {
     try {
-      const initChat = await actions.createChat(slugs(), theme())
+      const initChat = await actions.createChat(usersId(), theme())
       console.debug('[initChat]', initChat)
       hideModal()
       await actions.loadChats()
@@ -68,7 +67,7 @@ const CreateModalContent = (props: Props) => {
   return (
     <div class={styles.CreateModalContent}>
       <h4>{t('create_chat')}</h4>
-      {slugs().length > 1 && (
+      {usersId().length > 1 && (
         <input
           ref={textInput}
           onInput={handleSetTheme}
@@ -95,9 +94,9 @@ const CreateModalContent = (props: Props) => {
           type="button"
           class="btn btn-lg fs-3 btn-outline-primary"
           onClick={handleCreate}
-          disabled={slugs().length === 0}
+          disabled={usersId().length === 0}
         >
-          {slugs().length > 1 ? t('create_group') : t('create_chat')}
+          {usersId().length > 1 ? t('create_group') : t('create_chat')}
         </button>
       </div>
     </div>

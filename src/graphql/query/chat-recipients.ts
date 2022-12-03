@@ -5,6 +5,7 @@ export default gql`
     loadRecipients(limit: $limit, offset: $offset) {
       members {
         name
+        id
         slug
         userpic
       }

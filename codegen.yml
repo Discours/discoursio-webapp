@@ -1,5 +1,6 @@
 overwrite: true
-schema: 'http://localhost:8080'
+#schema: 'http://localhost:8080'
+schema: 'https://v2.discours.io'
 generates:
   src/graphql/introspec.gen.ts:
     plugins:

@@ -9,6 +9,7 @@ export default gql`
         title
         admins
         members {
+          id
           slug
           name
           userpic

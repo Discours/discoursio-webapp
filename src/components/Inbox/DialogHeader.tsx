@@ -4,7 +4,7 @@ import DialogCard from './DialogCard'
 
 type DialogHeader = {
   chat: Chat
-  currentSlug: string
+  ownId: number
 }
 
 const DialogHeader = (props: DialogHeader) => {
@@ -14,7 +14,7 @@ const DialogHeader = (props: DialogHeader) => {
         isChatHeader={true}
         title={props.chat.title}
         members={props.chat.members}
-        ownSlug={props.currentSlug}
+        ownId={props.ownId}
       />
     </header>
   )

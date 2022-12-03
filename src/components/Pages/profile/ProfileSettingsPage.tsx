@@ -26,9 +26,23 @@ export const ProfileSettingsPage = (props: PageProps) => {
     selectFilesAsync(async ([{ source, name, size, file }]) => {
       try {
         console.log({ source, name, size, file })
-        // DO UPLOAD STUFF HERE AND RETURN URL
+        const res = await fetch(`/api/upload?file=${name}&fileType=${file.type}`)
+
+        const { url, fields } = await res.json()
+        const formData = new FormData()
+
+        Object.entries({ ...fields, file }).forEach(([key, value]) => {
+          formData.append(key, value as string)
+        })
+
+        await fetch(url, {
+          method: 'POST',
+          body: formData
+        }).then((response) => {
+          console.log('!!! response:', response)
+        })
       } catch (error) {
-        console.log(error)
+        console.log('[upload Error]', error)
       }
     })
   }

@@ -36,6 +36,7 @@
     "@aws-sdk/s3-presigned-post": "^3.216.0",
     "@aws-sdk/signature-v4-multi-region": "^3.215.0",
     "@aws-sdk/util-user-agent-node": "^3.215.0",
+    "formidable": "^2.1.1",
     "mailgun.js": "^8.0.2"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@ main {
 }
 
 .messages {
+  display: none;
   top: 74px;
   height: calc(100% - 74px);
   left: 0;
@@ -13,11 +14,8 @@ main {
   padding-left: 42px;
   padding-right: 26px;
   background: #fff;
-  display: flex;
   flex: 1;
   flex-direction: column;
-  position: fixed;
-  z-index: 900;
 
   .row {
     flex: 1;

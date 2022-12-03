@@ -24,25 +24,18 @@ export const ProfileSettingsPage = (props: PageProps) => {
 
   const handleUpload = () => {
     selectFilesAsync(async ([{ source, name, size, file }]) => {
+      const image = { source, name, size, file }
       try {
-        console.log({ source, name, size, file })
-        const res = await fetch(`/api/upload?file=${name}&fileType=${file.type}`)
-
-        const { url, fields } = await res.json()
-        const formData = new FormData()
-
-        Object.entries({ ...fields, file }).forEach(([key, value]) => {
-          formData.append(key, value as string)
-        })
-
-        await fetch(url, {
+        let formData = new FormData()
+        formData.append('image', image.source)
+        const resp = await fetch('/api/upload?mime=' + image.file.type, {
           method: 'POST',
           body: formData
-        }).then((response) => {
-          console.log('!!! response:', response)
         })
-      } catch (error) {
-        console.log('[upload Error]', error)
+
+        console.log('!!! resp:', resp)
+      } catch (e) {
+        const resp = e.response
       }
     })
   }

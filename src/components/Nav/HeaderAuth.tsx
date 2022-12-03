@@ -3,7 +3,7 @@ import { clsx } from 'clsx'
 import { useRouter } from '../../stores/router'
 import { t } from '../../utils/intl'
 import { Icon } from '../_shared/Icon'
-import { createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -38,7 +38,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
   return (
     <ShowOnlyOnClient>
-      <Show when={!session.loading}>
+      <Show when={session.state !== 'pending'}>
         <div class={styles.usernav}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
             <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

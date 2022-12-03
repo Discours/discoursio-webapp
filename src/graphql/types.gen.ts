@@ -85,10 +85,10 @@ export type ChatMember = {
 
 export type Collab = {
   authors: Array<Maybe<Scalars['String']>>
-  body?: Maybe<Scalars['String']>
-  createdAt: Scalars['DateTime']
+  chat?: Maybe<Chat>
+  createdAt: Scalars['Int']
   invites?: Maybe<Array<Maybe<Scalars['String']>>>
-  title?: Maybe<Scalars['String']>
+  shout?: Maybe<Shout>
 }
 
 export type Collection = {
@@ -165,6 +165,7 @@ export type MessagesBy = {
 }
 
 export type Mutation = {
+  acceptCoauthor: Result
   confirmEmail: AuthResult
   createChat: Result
   createMessage: Result
@@ -178,11 +179,11 @@ export type Mutation = {
   destroyTopic: Result
   follow: Result
   getSession: AuthResult
-  inviteAuthor: Result
+  inviteCoauthor: Result
   markAsRead: Result
   rateUser: Result
   registerUser: AuthResult
-  removeAuthor: Result
+  removeCoauthor: Result
   sendLink: Result
   unfollow: Result
   updateChat: Result
@@ -192,6 +193,10 @@ export type Mutation = {
   updateReaction: Result
   updateShout: Result
   updateTopic: Result
+}
+
+export type MutationAcceptCoauthorArgs = {
+  shout: Scalars['Int']
 }
 
 export type MutationConfirmEmailArgs = {
@@ -214,7 +219,7 @@ export type MutationCreateReactionArgs = {
 }
 
 export type MutationCreateShoutArgs = {
-  input: ShoutInput
+  inp: ShoutInput
 }
 
 export type MutationCreateTopicArgs = {
@@ -247,9 +252,9 @@ export type MutationFollowArgs = {
   what: FollowingEntity
 }
 
-export type MutationInviteAuthorArgs = {
+export type MutationInviteCoauthorArgs = {
   author: Scalars['String']
-  shout: Scalars['String']
+  shout: Scalars['Int']
 }
 
 export type MutationMarkAsReadArgs = {
@@ -268,9 +273,9 @@ export type MutationRegisterUserArgs = {
   password?: InputMaybe<Scalars['String']>
 }
 
-export type MutationRemoveAuthorArgs = {
+export type MutationRemoveCoauthorArgs = {
   author: Scalars['String']
-  shout: Scalars['String']
+  shout: Scalars['Int']
 }
 
 export type MutationSendLinkArgs = {
@@ -303,7 +308,7 @@ export type MutationUpdateReactionArgs = {
 }
 
 export type MutationUpdateShoutArgs = {
-  input: ShoutInput
+  inp: ShoutInput
 }
 
 export type MutationUpdateTopicArgs = {
@@ -322,16 +327,18 @@ export type Operation = {
 }
 
 export type Permission = {
-  operation_id: Scalars['Int']
-  resource_id: Scalars['Int']
+  operation: Scalars['Int']
+  resource: Scalars['Int']
 }
 
 export type ProfileInput = {
+  about?: InputMaybe<Scalars['String']>
   bio?: InputMaybe<Scalars['String']>
   slug?: InputMaybe<Scalars['String']>
   about?: InputMaybe<Scalars['String']>
   links?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   name?: InputMaybe<Scalars['String']>
+  slug?: InputMaybe<Scalars['String']>
   userpic?: InputMaybe<Scalars['String']>
 }
 
@@ -580,13 +587,14 @@ export type Shout = {
 }
 
 export type ShoutInput = {
+  authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   body: Scalars['String']
-  community: Scalars['String']
+  community?: InputMaybe<Scalars['Int']>
   mainTopic?: InputMaybe<Scalars['String']>
-  slug: Scalars['String']
+  slug?: InputMaybe<Scalars['String']>
   subtitle?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>
-  topic_slugs?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
+  topics?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   versionOf?: InputMaybe<Scalars['String']>
   visibleForRoles?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   visibleForUsers?: InputMaybe<Array<InputMaybe<Scalars['String']>>>

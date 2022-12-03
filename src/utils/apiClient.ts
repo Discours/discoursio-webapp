@@ -171,11 +171,11 @@ export const apiClient = {
   // subscribe
 
   follow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
-    const response = await privateGraphQLClient.query(followMutation, { what, slug }).toPromise()
+    const response = await privateGraphQLClient.mutation(followMutation, { what, slug }).toPromise()
     return response.data.follow
   },
   unfollow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
-    const response = await privateGraphQLClient.query(unfollowMutation, { what, slug }).toPromise()
+    const response = await privateGraphQLClient.mutation(unfollowMutation, { what, slug }).toPromise()
     return response.data.unfollow
   },
 
@@ -213,7 +213,7 @@ export const apiClient = {
   },
   getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
-    console.debug('getAuthor', response)
+    // console.debug('getAuthor', response)
     return response.data.getAuthor
   },
   updateProfile: async (input: ProfileInput) => {

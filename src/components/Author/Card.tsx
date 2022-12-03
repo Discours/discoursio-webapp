@@ -2,7 +2,7 @@ import type { Author } from '../../graphql/types.gen'
 import Userpic from './Userpic'
 import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
-import { createMemo, For, Show } from 'solid-js'
+import { createMemo, createSignal, For, Show } from 'solid-js'
 import { translit } from '../../utils/ru2en'
 import { t } from '../../utils/intl'
 import { locale } from '../../stores/ui'
@@ -10,6 +10,8 @@ import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { StatMetrics } from '../_shared/StatMetrics'
+import { FollowingEntity } from '../../graphql/types.gen'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 interface AuthorCardProps {
   caption?: string
@@ -28,17 +30,32 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
-  const { session } = useSession()
+  const {
+    session,
+    actions: { loadSession }
+  } = useSession()
+
+  const [isSubscribing, setIsSubscribing] = createSignal(false)
 
   const subscribed = createMemo<boolean>(
     () => session()?.news?.authors?.some((u) => u === props.author.slug) || false
   )
+
+  const subscribe = async (really = true) => {
+    setIsSubscribing(true)
+
+    await (really
+      ? follow({ what: FollowingEntity.Author, slug: props.author.slug })
+      : unfollow({ what: FollowingEntity.Author, slug: props.author.slug }))
+
+    await loadSession()
+    setIsSubscribing(false)
+  }
+
   const canFollow = createMemo(() => !props.hideFollow && session()?.user?.slug !== props.author.slug)
 
   const name = () => {
-    return props.author.name === 'Дискурс' && locale() !== 'ru'
-      ? 'Discours'
-      : translit(props.author.name || '', locale() || 'ru')
+    return props.author.name === 'Дискурс' && locale() !== 'ru' ? 'Discours' : translit(props.author.name)
   }
   // TODO: reimplement AuthorCard
   return (
@@ -75,72 +92,80 @@ export const AuthorCard = (props: AuthorCardProps) => {
               class={styles.authorAbout}
               classList={{ 'text-truncate': props.truncateBio }}
               innerHTML={props.author.bio}
-            ></div>
+            />
           </Show>
 
           <Show when={props.author.stat}>
             <StatMetrics fields={['shouts', 'followers', 'comments']} stat={props.author.stat} />
           </Show>
         </div>
-
-        <Show when={canFollow()}>
-          <div class={styles.authorSubscribe}>
-            <Show
-              when={subscribed()}
-              fallback={
-                <button
-                  onClick={() => follow}
-                  class={clsx('button', styles.button)}
-                  classList={{
-                    [styles.buttonSubscribe]: !props.isAuthorsList,
-                    'button--subscribe': !props.isAuthorsList,
-                    'button--subscribe-topic': props.isAuthorsList,
-                    [styles.buttonWrite]: props.isAuthorsList
-                  }}
+        <ShowOnlyOnClient>
+          <Show when={session.state !== 'pending'}>
+            <Show when={canFollow()}>
+              <div class={styles.authorSubscribe}>
+                <Show
+                  when={subscribed()}
+                  fallback={
+                    <button
+                      onClick={() => subscribe(true)}
+                      class={clsx('button', styles.button)}
+                      classList={{
+                        [styles.buttonSubscribe]: !props.isAuthorsList,
+                        'button--subscribe': !props.isAuthorsList,
+                        'button--subscribe-topic': props.isAuthorsList,
+                        [styles.buttonWrite]: props.isAuthorsList,
+                        [styles.isSubscribing]: isSubscribing()
+                      }}
+                      disabled={isSubscribing()}
+                    >
+                      <Show when={!props.isAuthorsList}>
+                        <Icon name="circle-plus" iconClassName={styles.s24} class={styles.icon} />
+                      </Show>
+                      <span class={styles.buttonLabel}>{t('Follow')}</span>
+                    </button>
+                  }
                 >
-                  <Show when={!props.isAuthorsList}>
-                    <Icon name="circle-plus" iconClassName={styles.s24} class={styles.icon} />
-                  </Show>
-                  <span class={styles.buttonLabel}>{t('Follow')}</span>
-                </button>
-              }
-            >
-              <button
-                onClick={() => unfollow}
-                classList={{
-                  [styles.buttonSubscribe]: !props.isAuthorsList,
-                  'button--subscribe': !props.isAuthorsList,
-                  'button--subscribe-topic': props.isAuthorsList,
-                  [styles.buttonWrite]: props.isAuthorsList
-                }}
-              >
-                <Show when={!props.isAuthorsList}>
-                  <Icon name="author-unsubscribe" class={styles.icon} />
+                  <button
+                    onClick={() => subscribe(false)}
+                    class={clsx('button', styles.button)}
+                    classList={{
+                      [styles.buttonSubscribe]: !props.isAuthorsList,
+                      'button--subscribe': !props.isAuthorsList,
+                      'button--subscribe-topic': props.isAuthorsList,
+                      [styles.buttonWrite]: props.isAuthorsList,
+                      [styles.isSubscribing]: isSubscribing()
+                    }}
+                    disabled={isSubscribing()}
+                  >
+                    <Show when={!props.isAuthorsList}>
+                      <Icon name="author-unsubscribe" class={styles.icon} />
+                    </Show>
+                    <span class={styles.buttonLabel}>{t('Unfollow')}</span>
+                  </button>
                 </Show>
-                <span class={styles.buttonLabel}>{t('Unfollow')}</span>
-              </button>
-            </Show>
 
-            <Show when={!props.compact && !props.isAuthorsList}>
-              <button
-                class={styles.button}
-                classList={{
-                  [styles.buttonSubscribe]: !props.isAuthorsList,
-                  'button--subscribe': !props.isAuthorsList,
-                  'button--subscribe-topic': props.isAuthorsList,
-                  [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
-                }}
-              >
-                <Icon name="comment" class={styles.icon} />
-                <Show when={!props.liteButtons}>{t('Write')}</Show>
-              </button>
+                <Show when={!props.compact && !props.isAuthorsList}>
+                  <button
+                    class={styles.button}
+                    classList={{
+                      [styles.buttonSubscribe]: !props.isAuthorsList,
+                      'button--subscribe': !props.isAuthorsList,
+                      'button--subscribe-topic': props.isAuthorsList,
+                      [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
+                    }}
+                  >
+                    <Icon name="comment" class={styles.icon} />
+                    <Show when={!props.liteButtons}>{t('Write')}</Show>
+                  </button>
 
-              <Show when={!props.noSocialButtons}>
-                <For each={props.author.links}>{(link) => <a href={link} />}</For>
-              </Show>
+                  <Show when={!props.noSocialButtons}>
+                    <For each={props.author.links}>{(link) => <a href={link} />}</For>
+                  </Show>
+                </Show>
+              </div>
             </Show>
-          </div>
-        </Show>
+          </Show>
+        </ShowOnlyOnClient>
       </div>
     </div>
   )

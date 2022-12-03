@@ -95,7 +95,7 @@ export const CommentsTree = (props: { shout: string; reactions?: Reaction[] }) =
         </For>
 
         <Show when={isLoadMoreButtonVisible()}>
-          <button onClick={loadMore}>Load more</button>
+          <button onClick={loadMore}>{t('Load more')}</button>
         </Show>
       </Show>
 

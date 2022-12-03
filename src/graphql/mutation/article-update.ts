@@ -12,13 +12,13 @@ export default gql`
         image
         body
         topics {
-          _id: slug
+          # id
           title
           slug
           image
         }
         authors {
-          _id: slug
+          id
           name
           slug
           userpic

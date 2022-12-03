@@ -162,6 +162,36 @@ type InitialState = {
   shouts?: Shout[]
 }
 
+const TOP_MONTH_ARTICLES_COUNT = 10
+
+export const loadTopMonthArticles = async (): Promise<void> => {
+  const articles = await apiClient.getShouts({
+    filters: {
+      visibility: 'public',
+      // TODO: replace with from, to
+      days: 30
+    },
+    order_by: 'rating_stat',
+    limit: TOP_MONTH_ARTICLES_COUNT
+  })
+  addArticles(articles)
+  setTopMonthArticles(articles)
+}
+
+const TOP_ARTICLES_COUNT = 10
+
+export const loadTopArticles = async (): Promise<void> => {
+  const articles = await apiClient.getShouts({
+    filters: {
+      visibility: 'public'
+    },
+    order_by: 'rating_stat',
+    limit: TOP_ARTICLES_COUNT
+  })
+  addArticles(articles)
+  setTopArticles(articles)
+}
+
 export const useArticlesStore = (initialState: InitialState = {}) => {
   addArticles([...(initialState.shouts || [])])
 

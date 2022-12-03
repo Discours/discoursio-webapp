@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query TopicsRandomQuery {
-    topicsRandom {
+  query TopicsRandomQuery($amount: Int) {
+    topicsRandom(amount: $amount) {
       _id: slug
       title
       body

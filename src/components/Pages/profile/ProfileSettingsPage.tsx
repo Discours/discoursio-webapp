@@ -32,10 +32,9 @@ export const ProfileSettingsPage = (props: PageProps) => {
           method: 'POST',
           body: formData
         })
-
         console.log('!!! resp:', resp)
-      } catch (e) {
-        const resp = e.response
+      } catch (error) {
+        console.log('!!! error', error)
       }
     })
   }
@@ -182,7 +181,6 @@ export const ProfileSettingsPage = (props: PageProps) => {
               </div>
             </div>
           </div>
-          <pre>{JSON.stringify(form, null, 2)}</pre>
         </div>
       </Show>
     </PageWrap>

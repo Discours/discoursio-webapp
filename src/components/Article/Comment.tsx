@@ -118,7 +118,7 @@ export default (props: {
                 containerCssClass={stylesHeader.control}
                 trigger={
                   <button class={clsx(styles.commentControl, styles.commentControlShare)}>
-                    <Icon name="share-new" class={styles.icon} />
+                    <Icon name="share" class={styles.icon} />
                     {t('Share')}
                   </button>
                 }

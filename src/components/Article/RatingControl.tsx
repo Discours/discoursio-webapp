@@ -10,13 +10,9 @@ interface RatingControlProps {
 export const RatingControl = (props: RatingControlProps) => {
   return (
     <div class={clsx(props.class, styles.rating)}>
-      <button class={styles.ratingControl}>
-        <Icon name="dislike" />
-      </button>
+      <button class={styles.ratingControl}>&minus;</button>
       <span class={styles.ratingValue}>{props?.rating || ''}</span>
-      <button class={styles.ratingControl}>
-        <Icon name="like" />
-      </button>
+      <button class={styles.ratingControl}>+</button>
     </div>
   )
 }

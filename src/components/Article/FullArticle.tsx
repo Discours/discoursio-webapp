@@ -156,7 +156,7 @@ export const FullArticle = (props: ArticleProps) => {
 
           <Show when={props.article.stat?.viewed}>
             <div class={clsx(styles.shoutStatsItem)}>
-              <Icon name="eye" class={styles.icon} />
+              <Icon name="eye" class={clsx(styles.icon, styles.iconEye)} />
               {props.article.stat?.viewed}
             </div>
           </Show>
@@ -169,7 +169,7 @@ export const FullArticle = (props: ArticleProps) => {
           <div class={styles.shoutStatsItem}>
             <SharePopup
               containerCssClass={stylesHeader.control}
-              trigger={<Icon name="share-new" class={styles.icon} />}
+              trigger={<Icon name="share-outline" class={styles.icon} />}
             />
           </div>
 

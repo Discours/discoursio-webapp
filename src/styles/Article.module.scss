@@ -150,11 +150,19 @@ img {
   vertical-align: baseline;
 
   .icon {
-    height: 1.5em;
+    height: 1.6em;
     display: inline-block;
     margin-right: 0.2em;
+    max-width: 1.4em;
+    max-height: 1.4em;
     transition: filter 0.2s;
     vertical-align: middle;
+  }
+
+  .iconEye {
+    height: 1.8em;
+    max-width: 1.8em;
+    max-height: 1.8em;
   }
 
   img {

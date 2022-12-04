@@ -44,7 +44,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
             <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
               <a href="/create">
                 <span class={styles.textLabel}>{t('Create post')}</span>
-                <Icon name="feather" class={styles.icon} />
+                <Icon name="pencil" class={styles.icon} />
               </a>
             </div>
 

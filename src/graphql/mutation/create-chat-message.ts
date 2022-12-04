@@ -7,6 +7,7 @@ export default gql`
       author {
         slug
         id
+        chat
       }
     }
   }

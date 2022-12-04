@@ -1,6 +1,10 @@
 {
   "functions": {
-    "src/pages/api/*.js": {
+    "api/upload.ts": {
+      "memory": 3008,
+      "maxDuration": 30
+    },
+    "api/feedback.js": {
       "memory": 3008,
       "maxDuration": 30
     }

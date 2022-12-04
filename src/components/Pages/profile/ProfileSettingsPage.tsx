@@ -3,7 +3,7 @@ import { t } from '../../../utils/intl'
 import type { PageProps } from '../../types'
 import { Icon } from '../../_shared/Icon'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show } from 'solid-js'
+import { For, createSignal, Show, onMount } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
@@ -20,24 +20,30 @@ export const ProfileSettingsPage = (props: PageProps) => {
     event.preventDefault()
     submit(form)
   }
-  const { selectFiles: selectFilesAsync } = createFileUploader({ accept: 'image/*' })
+
+  const { files, selectFiles: selectFilesAsync } = createFileUploader({ accept: 'image/*' })
 
   const handleUpload = () => {
     selectFilesAsync(async ([{ source, name, size, file }]) => {
       const image = { source, name, size, file }
       try {
         let formData = new FormData()
-        formData.append('image', image.source)
-        const resp = await fetch('/api/upload?mime=' + image.file.type, {
+        formData.append('type', file.type)
+        formData.append('name', image.source.split('/').pop())
+        formData.append('ext', image.name.split('.').pop())
+        const resp = await fetch('/api/upload', {
           method: 'POST',
           body: formData
         })
-        console.log('!!! resp:', resp)
+        const url = await resp.json()
+        updateFormField('userpic', url)
       } catch (error) {
-        console.log('!!! error', error)
+        console.error('[upload] error', error)
       }
     })
   }
+  const [hostname, setHostname] = createSignal('new.discours.io')
+  onMount(() => setHostname(window?.location.host))
 
   return (
     <PageWrap>
@@ -58,7 +64,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
                       <img class={styles.avatar} src={form.userpic} alt={form.name} />
-                      <button type="button" class={styles.avatarInput} onClick={handleUpload} />
+                      <input type="button" class={styles.avatarInput} onClick={handleUpload} />
                     </div>
                   </div>
                   <h4>{t('Name')}</h4>
@@ -82,7 +88,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                   <h4>{t('Address on Discourse')}</h4>
                   <div class="pretty-form__item">
                     <div class={styles.discoursName}>
-                      <label for="user-address">https://new.discours.io/author/</label>
+                      <label for="user-address">https://{hostname()}/author/</label>
                       <div class={styles.discoursNameField}>
                         <input
                           type="text"

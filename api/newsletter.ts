@@ -22,6 +22,6 @@ export default async function handler(req, res) {
 }
 */
 
-export const handler = () => {
+export const handler = (req, res) => {
   return 'WIP'
 }

@@ -16,6 +16,7 @@ import '../../styles/Inbox.scss'
 import { useInbox } from '../../context/inbox'
 import DialogHeader from '../Inbox/DialogHeader'
 import { apiClient } from '../../utils/apiClient'
+import MessagesFallback from '../Inbox/MessagesFallback'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -88,11 +89,11 @@ export const InboxView = () => {
     setPostMessageText(event.target.value)
   }
   createEffect(() => {
+    if (!textareaParent) return
     textareaParent.dataset.replicatedValue = postMessageText()
   })
 
-  const handleOpenInviteModal = (event: Event) => {
-    event.preventDefault()
+  const handleOpenInviteModal = () => {
     showModal('inviteToChat')
   }
 
@@ -120,9 +121,9 @@ export const InboxView = () => {
         <div class="chat-list col-md-4">
           <div class="sidebar-header">
             <Search placeholder="Поиск" onChange={getQuery} />
-            <div onClick={handleOpenInviteModal}>
+            <button type="button" onClick={handleOpenInviteModal}>
               <Icon name="plus-button" style={{ width: '40px', height: '40px' }} />
-            </div>
+            </button>
           </div>
 
           <div class="chat-list__types">
@@ -173,40 +174,47 @@ export const InboxView = () => {
         </div>
 
         <div class="col-md-8 conversation">
-          <Show when={currentDialog()}>
+          <Show
+            when={currentDialog()}
+            fallback={
+              <MessagesFallback
+                message={t('Choose who you want to write to')}
+                onClick={handleOpenInviteModal}
+                actionText={t('Start conversation')}
+              />
+            }
+          >
             <DialogHeader ownId={currentUserId()} chat={currentDialog()} />
-          </Show>
+            <div class="conversation__messages">
+              <div class="conversation__messages-container" ref={chatWindow}>
+                <For each={messages()}>
+                  {(message) => (
+                    <Message content={message} ownId={currentUserId()} members={currentDialog().members} />
+                  )}
+                </For>
 
-          <div class="conversation__messages">
-            <div class="conversation__messages-container" ref={chatWindow}>
-              <For each={messages()}>
-                {(message) => (
-                  <Message content={message} ownId={currentUserId()} members={currentDialog().members} />
-                )}
-              </For>
-
-              {/*<div class="conversation__date">*/}
-              {/*  <time>12 сентября</time>*/}
-              {/*</div>*/}
-            </div>
-          </div>
-
-          <div class="message-form">
-            <div class="wrapper">
-              <div class="grow-wrap" ref={textareaParent}>
-                <textarea
-                  value={postMessageText()}
-                  rows={1}
-                  onInput={(event) => handleChangeMessage(event)}
-                  placeholder="Написать сообщение"
-                  disabled={!currentDialog()?.id}
-                />
+                {/*<div class="conversation__date">*/}
+                {/*  <time>12 сентября</time>*/}
+                {/*</div>*/}
               </div>
-              <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>
-                <Icon name="send-message" />
-              </button>
             </div>
-          </div>
+
+            <div class="message-form">
+              <div class="wrapper">
+                <div class="grow-wrap" ref={textareaParent}>
+                  <textarea
+                    value={postMessageText()}
+                    rows={1}
+                    onInput={(event) => handleChangeMessage(event)}
+                    placeholder="Написать сообщение"
+                  />
+                </div>
+                <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>
+                  <Icon name="send-message" />
+                </button>
+              </div>
+            </div>
+          </Show>
         </div>
       </div>
     </div>

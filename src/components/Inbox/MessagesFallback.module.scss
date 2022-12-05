@@ -1,0 +1,26 @@
+.MessagesFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+
+  $width: 10.5em;
+
+  .text {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    width: $width;
+  }
+
+  .button {
+    background: #141414;
+    border-radius: 12px;
+    width: 100%;
+    max-width: $width;
+    text-align: center;
+    color: #fff;
+    height: 48px;
+    text-transform: none;
+  }
+}

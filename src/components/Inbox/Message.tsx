@@ -24,7 +24,6 @@ const Message = (props: Props) => {
     })
   })
 
-  console.log('!!! props.ownId:', props.ownId)
   // возвращать ID автора
   const isOwn = props.ownId === Number(props.content.author)
 

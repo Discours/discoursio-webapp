@@ -53,13 +53,15 @@ export const InboxView = () => {
   const handleOpenChat = async (chat) => {
     setCurrentDialog(chat)
     try {
-      await loadMessages({ chat: chat.id })
+      const response = await loadMessages({ chat: chat.id })
+      setMessages(response as unknown as MessageType[])
     } catch (error) {
       console.error('[loadMessages]', error)
     } finally {
       chatWindow.scrollTop = chatWindow.scrollHeight
     }
   }
+
   onMount(async () => {
     try {
       const response = await loadRecipients({ days: 365 })
@@ -108,7 +110,6 @@ export const InboxView = () => {
   }
 
   createEffect(() => {
-    console.log('!!! messages():', messages())
     console.log('!!! currentDialog():', currentDialog())
   })
 

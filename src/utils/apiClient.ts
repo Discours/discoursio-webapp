@@ -283,7 +283,6 @@ export const apiClient = {
 
   createMessage: async (options: MutationCreateMessageArgs) => {
     const resp = await privateGraphQLClient.mutation(createMessage, options).toPromise()
-    console.log('!!! resp:', resp)
     return resp.data.createMessage
   },
 

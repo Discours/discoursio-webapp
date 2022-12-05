@@ -1,12 +1,15 @@
-import { Show } from 'solid-js'
+import { createMemo, Show } from 'solid-js'
 import MarkdownIt from 'markdown-it'
 import { clsx } from 'clsx'
 import styles from './Message.module.scss'
 import DialogAvatar from './DialogAvatar'
+import { locale } from '../../stores/ui'
+import type { Message, ChatMember } from '../../graphql/types.gen'
 
 type Props = {
-  body: string
-  isOwn: boolean
+  content: Message
+  ownId: number
+  members: ChatMember[]
 }
 
 const md = new MarkdownIt({
@@ -14,18 +17,29 @@ const md = new MarkdownIt({
 })
 
 const Message = (props: Props) => {
+  const formattedTime = createMemo<string>(() => {
+    return new Date(props.content.createdAt * 1000).toLocaleTimeString(locale(), {
+      hour: 'numeric',
+      minute: 'numeric'
+    })
+  })
+
+  console.log('!!! props.ownId:', props.ownId)
+  // возвращать ID автора
+  const isOwn = props.ownId === Number(props.content.author)
+
   return (
-    <div class={clsx(styles.Message, props.isOwn && styles.own)}>
-      <Show when={!props.isOwn}>
+    <div class={clsx(styles.Message, isOwn && styles.own)}>
+      <Show when={!isOwn}>
         <div class={styles.author}>
           <DialogAvatar size="small" name={'Message Author'} />
           <div class={styles.name}>Message Author</div>
         </div>
       </Show>
       <div class={styles.body}>
-        <div innerHTML={md.render(props.body)} />
+        <div innerHTML={md.render(props.content.body)} />
       </div>
-      <div class={styles.time}>12:24</div>
+      <div class={styles.time}>{formattedTime()}</div>
     </div>
   )
 }

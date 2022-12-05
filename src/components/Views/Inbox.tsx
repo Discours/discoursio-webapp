@@ -1,8 +1,6 @@
 import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
-import type { Author, Chat } from '../../graphql/types.gen'
-import { AuthorCard } from '../Author/Card'
+import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
-import { Loading } from '../Loading'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
 import { useSession } from '../../context/session'
@@ -17,35 +15,7 @@ import { clsx } from 'clsx'
 import '../../styles/Inbox.scss'
 import { useInbox } from '../../context/inbox'
 import DialogHeader from '../Inbox/DialogHeader'
-
-const OWNER_ID = '501'
-const client = createClient({
-  url: 'https://graphqlzero.almansi.me/api'
-})
-
-const messageQuery = `
-query Comments ($options: PageQueryOptions) {
-  comments(options: $options) {
-    data {
-      id
-      body
-      email
-    }
-  }
-}
-`
-const newMessageQuery = `
-mutation postComment($messageBody: String!) {
-  createComment(
-    input: { body: $messageBody, email: "test@test.com", name: "User" }
-  ) {
-    id
-    body
-    name
-    email
-  }
-}
-`
+import { apiClient } from '../../utils/apiClient'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -54,24 +24,17 @@ const userSearch = (array: Author[], keyword: string) => {
   })
 }
 
-const postMessage = async (msg: string) => {
-  const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
-  return response.data.createComment
-}
-
 export const InboxView = () => {
   const {
     chats,
     actions: { loadChats }
   } = useInbox()
-  const [messages, setMessages] = createSignal([])
+  const [messages, setMessages] = createSignal<MessageType[]>([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
-  const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
-  const [loading, setLoading] = createSignal<boolean>(false)
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
-  const [selectedChat, setSelectedChat] = createSignal<Chat>()
+  const [currentDialog, setCurrentDialog] = createSignal<Chat>()
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user?.id)
 
@@ -87,24 +50,19 @@ export const InboxView = () => {
 
   let chatWindow
   const handleOpenChat = async (chat) => {
-    setLoading(true)
-    setSelectedChat(chat)
+    setCurrentDialog(chat)
     try {
       await loadMessages({ chat: chat.id })
     } catch (error) {
-      setLoading(false)
       console.error('[loadMessages]', error)
     } finally {
-      setLoading(false)
       chatWindow.scrollTop = chatWindow.scrollHeight
     }
   }
   onMount(async () => {
-    setLoading(true)
     try {
       const response = await loadRecipients({ days: 365 })
       setRecipients(response as unknown as Author[])
-      setCashedRecipients(response as unknown as Author[])
     } catch (error) {
       console.log(error)
     }
@@ -113,8 +71,11 @@ export const InboxView = () => {
 
   const handleSubmit = async () => {
     try {
-      const post = await postMessage(postMessageText())
-      setMessages((prev) => [...prev, post])
+      const post = await apiClient.createMessage({
+        body: postMessageText().toString(),
+        chat: currentDialog().id.toString()
+      })
+      setMessages((prev) => [...prev, post.message])
       setPostMessageText('')
       chatWindow.scrollTop = chatWindow.scrollHeight
     } catch (error) {
@@ -135,10 +96,6 @@ export const InboxView = () => {
     showModal('inviteToChat')
   }
 
-  createEffect(() => {
-    console.log('!!! chats():', chats())
-  })
-
   const chatsToShow = () => {
     if (sortByPerToPer()) {
       return chats().filter((chat) => chat.title.trim().length === 0)
@@ -148,6 +105,11 @@ export const InboxView = () => {
       return chats()
     }
   }
+
+  createEffect(() => {
+    console.log('!!! messages():', messages())
+    console.log('!!! currentDialog():', currentDialog())
+  })
 
   return (
     <div class="messages container">
@@ -211,18 +173,15 @@ export const InboxView = () => {
         </div>
 
         <div class="col-md-8 conversation">
-          <Show when={selectedChat()}>
-            <DialogHeader ownId={currentUserId()} chat={selectedChat()} />
+          <Show when={currentDialog()}>
+            <DialogHeader ownId={currentUserId()} chat={currentDialog()} />
           </Show>
 
           <div class="conversation__messages">
             <div class="conversation__messages-container" ref={chatWindow}>
-              <Show when={loading()}>
-                <Loading />
-              </Show>
               <For each={messages()}>
-                {(comment: { body: string; id: string; email: string }) => (
-                  <Message body={comment.body} isOwn={OWNER_ID === comment.id} />
+                {(message) => (
+                  <Message content={message} ownId={currentUserId()} members={currentDialog().members} />
                 )}
               </For>
 
@@ -240,6 +199,7 @@ export const InboxView = () => {
                   rows={1}
                   onInput={(event) => handleChangeMessage(event)}
                   placeholder="Написать сообщение"
+                  disabled={!currentDialog()?.id}
                 />
               </div>
               <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>

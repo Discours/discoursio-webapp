@@ -78,6 +78,7 @@ export type ChatMember = {
   id: Scalars['Int']
   lastSeen?: Maybe<Scalars['DateTime']>
   name: Scalars['String']
+  online?: Maybe<Scalars['Boolean']>
   slug: Scalars['String']
   userpic?: Maybe<Scalars['String']>
 }
@@ -139,7 +140,7 @@ export type LoadShoutsOptions = {
 }
 
 export type Message = {
-  author: Scalars['String']
+  author: Scalars['Int']
   body: Scalars['String']
   chatId: Scalars['String']
   createdAt: Scalars['Int']

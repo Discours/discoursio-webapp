@@ -9,6 +9,7 @@ import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
+import { FollowingEntity } from '../../graphql/types.gen'
 
 interface AuthorCardProps {
   caption?: string
@@ -84,7 +85,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
               when={subscribed()}
               fallback={
                 <button
-                  onClick={() => follow}
+                  // TODO: change button view reactivity
+                  onclick={() => follow({ what: FollowingEntity.Author, slug: props.author.slug })}
                   class={clsx('button', styles.button)}
                   classList={{
                     [styles.buttonSubscribe]: !props.isAuthorsList,
@@ -101,7 +103,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
               }
             >
               <button
-                onClick={() => unfollow}
+                onclick={() => follow({ what: FollowingEntity.Author, slug: props.author.slug })}
                 classList={{
                   [styles.buttonSubscribe]: !props.isAuthorsList,
                   'button--subscribe': !props.isAuthorsList,

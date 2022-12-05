@@ -23,6 +23,7 @@ const getSession = async (): Promise<AuthResult> => {
     if (!authResult) {
       return null
     }
+    console.log('!!! authResult:', authResult)
     setToken(authResult.token)
     return authResult
   } catch (error) {

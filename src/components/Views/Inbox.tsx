@@ -37,7 +37,7 @@ export const InboxView = () => {
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
   const { session } = useSession()
-  const currentUserId = createMemo(() => session()?.user?.id)
+  const currentUserId = createMemo(() => session()?.user.id)
 
   // Поиск по диалогам
   const getQuery = (query) => {

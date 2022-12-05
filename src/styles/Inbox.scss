@@ -16,7 +16,7 @@ main {
   display: flex;
   flex: 1;
   flex-direction: column;
-  position: fixed;
+  position: absolute;
 
   .row {
     flex: 1;

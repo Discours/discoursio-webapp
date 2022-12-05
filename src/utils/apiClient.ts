@@ -167,11 +167,12 @@ export const apiClient = {
   // subscribe
 
   follow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
-    const response = await privateGraphQLClient.query(followMutation, { what, slug }).toPromise()
+    const response = await privateGraphQLClient.mutation(followMutation, { what, slug }).toPromise()
+    console.debug('!!! [follow]:', response)
     return response.data.follow
   },
   unfollow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
-    const response = await privateGraphQLClient.query(unfollowMutation, { what, slug }).toPromise()
+    const response = await privateGraphQLClient.mutation(unfollowMutation, { what, slug }).toPromise()
     return response.data.unfollow
   },
 

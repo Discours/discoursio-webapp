@@ -10,6 +10,8 @@ import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { FollowingEntity } from '../../graphql/types.gen'
+import { router, useRouter } from '../../stores/router'
+import { openPage } from '@nanostores/router'
 
 interface AuthorCardProps {
   caption?: string
@@ -43,6 +45,11 @@ export const AuthorCard = (props: AuthorCardProps) => {
       : translit(props.author.name || '', locale() || 'ru')
   }
   // TODO: reimplement AuthorCard
+  const { changeSearchParam } = useRouter()
+  const handleInitChat = () => {
+    openPage(router, 'inbox')
+    changeSearchParam('openChat', `${props.author.id}`)
+  }
   return (
     <div
       class={clsx(styles.author)}
@@ -127,6 +134,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   'button--subscribe-topic': props.isAuthorsList,
                   [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
                 }}
+                onClick={handleInitChat}
               >
                 <Icon name="comment" class={styles.icon} />
                 <Show when={!props.liteButtons}>{t('Write')}</Show>

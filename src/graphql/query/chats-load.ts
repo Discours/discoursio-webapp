@@ -8,6 +8,7 @@ export default gql`
         id
         title
         admins
+        users
         members {
           id
           slug
@@ -17,6 +18,7 @@ export default gql`
         unread
         description
         updatedAt
+        private
         messages {
           id
           body

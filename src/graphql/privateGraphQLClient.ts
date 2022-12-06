@@ -1,4 +1,12 @@
-import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
+import {
+  ClientOptions,
+  dedupExchange,
+  fetchExchange,
+  Exchange,
+  subscriptionExchange,
+  createClient
+} from '@urql/core'
+import { createClient as createSSEClient } from 'graphql-sse'
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
 // import { cache } from './cache'
@@ -40,3 +48,25 @@ const options: ClientOptions = {
 }
 
 export const privateGraphQLClient = createClient(options)
+
+export const createChatClient = (onMessage) => {
+  const sseClient = createSSEClient({
+    url: apiBaseUrl + '/messages',
+    onMessage
+  })
+
+  const sseExchange = subscriptionExchange({
+    forwardSubscription(operation) {
+      return {
+        subscribe: (sink) => {
+          const dispose = sseClient.subscribe(operation, sink)
+          return {
+            unsubscribe: dispose
+          }
+        }
+      }
+    }
+  })
+  options.exchanges.unshift(sseExchange)
+  return createClient(options)
+}

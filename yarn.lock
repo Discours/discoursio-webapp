@@ -5974,6 +5974,11 @@ graphql-request@^5.0.0:
     extract-files "^9.0.0"
     form-data "^3.0.0"
 
+graphql-sse@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/graphql-sse/-/graphql-sse-1.3.1.tgz#74304c6754702431a62f576a67969bc2ca5c7d7f"
+  integrity sha512-JIeBJsk1kGQQjfrDu0KWy5UBMvDHwcHYBmKb+4ZPZHaws/j00H7fw5CH5Vb077D7LCta+KNQA0xcGGPmIHzu4A==
+
 graphql-tag@^2.11.0, graphql-tag@^2.12.6:
   version "2.12.6"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.12.6.tgz#d441a569c1d2537ef10ca3d1633b48725329b5f1"

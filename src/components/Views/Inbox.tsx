@@ -4,7 +4,7 @@ import { Icon } from '../_shared/Icon'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
 import { useSession } from '../../context/session'
-import { createClient } from '@urql/core'
+import type { Client } from '@urql/core'
 import Message from '../Inbox/Message'
 import { loadRecipients, loadMessages } from '../../stores/inbox'
 import { t } from '../../utils/intl'
@@ -16,6 +16,7 @@ import '../../styles/Inbox.scss'
 import { useInbox } from '../../context/inbox'
 import DialogHeader from '../Inbox/DialogHeader'
 import { apiClient } from '../../utils/apiClient'
+import { createChatClient } from '../../graphql/privateGraphQLClient'
 import MessagesFallback from '../Inbox/MessagesFallback'
 
 const userSearch = (array: Author[], keyword: string) => {
@@ -38,7 +39,7 @@ export const InboxView = () => {
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user.id)
-
+  const [subClient, setSubClient] = createSignal<Client>()
   // Поиск по диалогам
   const getQuery = (query) => {
     // if (query().length >= 2) {
@@ -50,11 +51,16 @@ export const InboxView = () => {
   }
 
   let chatWindow
-  const handleOpenChat = async (chat) => {
+
+  const onMessage = (payload) => console.log(payload)
+
+  const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     try {
       const response = await loadMessages({ chat: chat.id })
       setMessages(response as unknown as MessageType[])
+      setSubClient((_) => createChatClient(onMessage))
+      // TODO: one client recreating
     } catch (error) {
       console.error('[loadMessages]', error)
     } finally {
@@ -164,7 +170,7 @@ export const InboxView = () => {
                 {(chat) => (
                   <DialogCard
                     onClick={() => handleOpenChat(chat)}
-                    title={chat.title}
+                    title={chat.title || chat.members[0].name}
                     members={chat.members}
                     ownId={currentUserId()}
                   />

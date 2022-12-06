@@ -27,7 +27,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
     selectFilesAsync(async ([{ source, name, size, file }]) => {
       const image = { source, name, size, file }
       try {
-        let formData = new FormData()
+        const formData = new FormData()
         formData.append('type', file.type)
         formData.append('name', image.source.split('/').pop())
         formData.append('ext', image.name.split('.').pop())

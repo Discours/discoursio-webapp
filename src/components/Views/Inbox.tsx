@@ -100,12 +100,16 @@ export const InboxView = () => {
   }
 
   const chatsToShow = () => {
+    const sorted = chats().sort((a, b) => {
+      return a.updatedAt - b.updatedAt
+    })
+    console.log('!!! sorted:', sorted)
     if (sortByPerToPer()) {
-      return chats().filter((chat) => chat.title.trim().length === 0)
+      return sorted.filter((chat) => chat.title.trim().length === 0)
     } else if (sortByGroup()) {
-      return chats().filter((chat) => chat.title.trim().length > 0)
+      return sorted.filter((chat) => chat.title.trim().length > 0)
     } else {
-      return chats()
+      return sorted
     }
   }
 
@@ -167,6 +171,9 @@ export const InboxView = () => {
                     title={chat.title}
                     members={chat.members}
                     ownId={currentUserId()}
+                    lastUpdate={chat.updatedAt}
+                    counter={chat.unread}
+                    message={chat.messages.pop()?.body}
                   />
                 )}
               </For>

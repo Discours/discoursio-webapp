@@ -2,6 +2,7 @@ import { Show, Switch, Match, createMemo, For } from 'solid-js'
 import DialogAvatar from './DialogAvatar'
 import type { ChatMember } from '../../graphql/types.gen'
 import GroupDialogAvatar from './GroupDialogAvatar'
+import formattedTime from '../../utils/formatDateTime'
 import { clsx } from 'clsx'
 import styles from './DialogCard.module.scss'
 
@@ -14,6 +15,7 @@ type DialogProps = {
   members: ChatMember[]
   onClick?: () => void
   isChatHeader?: boolean
+  lastUpdate?: number
 }
 
 const DialogCard = (props: DialogProps) => {
@@ -41,17 +43,22 @@ const DialogCard = (props: DialogProps) => {
             </Match>
           </Switch>
           <div class={styles.message}>
-            <Switch fallback={'Chat last message'}>
+            <Switch>
+              <Match when={props.message && !props.isChatHeader}>{props.message}</Match>
               <Match when={props.isChatHeader && companions().length > 1}>{names}</Match>
             </Switch>
           </div>
         </div>
         <Show when={!props.isChatHeader}>
           <div class={styles.activity}>
-            <div class={styles.time}>22:22</div>
-            <div class={styles.counter}>
-              <span>12</span>
-            </div>
+            <Show when={props.lastUpdate}>
+              <div class={styles.time}>{formattedTime(props.lastUpdate)}</div>
+            </Show>
+            <Show when={props.counter > 0}>
+              <div class={styles.counter}>
+                <span>{props.counter}</span>
+              </div>
+            </Show>
           </div>
         </Show>
       </div>

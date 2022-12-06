@@ -27,7 +27,7 @@ export const FEED_PAGE_SIZE = 20
 export const FeedView = () => {
   // state
   const { sortedArticles } = useArticlesStore()
-  const { sortedReactions: topComments, loadReactionsBy } = useReactionsStore({})
+  const { sortedReactions: topComments, loadReactionsBy } = useReactionsStore()
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()

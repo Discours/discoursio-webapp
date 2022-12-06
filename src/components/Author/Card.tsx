@@ -32,6 +32,7 @@ interface AuthorCardProps {
 export const AuthorCard = (props: AuthorCardProps) => {
   const {
     session,
+    isSessionLoaded,
     actions: { loadSession }
   } = useSession()
 
@@ -100,7 +101,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
           </Show>
         </div>
         <ShowOnlyOnClient>
-          <Show when={session.state !== 'pending'}>
+          <Show when={isSessionLoaded()}>
             <Show when={canFollow()}>
               <div class={styles.authorSubscribe}>
                 <Show

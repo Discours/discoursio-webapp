@@ -37,11 +37,7 @@ export const deleteReaction = async (reactionId: number) => {
   console.debug(resp)
   return resp
 }
-export const useReactionsStore = (initialState: { reactions?: Reaction[] }) => {
-  if (initialState.reactions) {
-    setSortedReactions([...initialState.reactions])
-  }
-
+export const useReactionsStore = () => {
   return {
     reactionsByShout,
     sortedReactions,

@@ -222,7 +222,7 @@ export const FullArticle = (props: ArticleProps) => {
             )}
           </For>
         </div>
-        <CommentsTree shout={props.article?.slug} />
+        <CommentsTree shoutSlug={props.article?.slug} />
       </div>
     </div>
   )

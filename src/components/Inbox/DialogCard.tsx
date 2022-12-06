@@ -37,11 +37,7 @@ const DialogCard = (props: DialogProps) => {
           </Switch>
         </div>
         <div class={styles.row}>
-          <Switch fallback={<div class={styles.name}>{companions()[0].name}</div>}>
-            <Match when={companions().length > 2}>
-              <div class={styles.name}>{props.title}</div>
-            </Match>
-          </Switch>
+          <div class={styles.name}>{props.title}</div>
           <div class={styles.message}>
             <Switch>
               <Match when={props.message && !props.isChatHeader}>{props.message}</Match>

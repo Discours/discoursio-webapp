@@ -13,7 +13,7 @@ import validateUrl from '../../../utils/validateUrl'
 export const ProfileSettingsPage = (props: PageProps) => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
-  const { form, updateFormField, submit, error } = useProfileForm()
+  const { form, updateFormField, submit, slugError } = useProfileForm()
   const handleChangeSocial = (value) => {
     if (validateUrl(value)) {
       updateFormField('links', value)
@@ -104,7 +104,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                           value={form.slug}
                           class="nolabel"
                         />
-                        <p class="form-message form-message--error">{t(`error()`)}</p>
+                        <p class="form-message form-message--error">{t(`${slugError()}`)}</p>
                       </div>
                     </div>
                   </div>

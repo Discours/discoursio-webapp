@@ -10,13 +10,13 @@ const useProfileForm = () => {
   const currentSlug = createMemo(() => session()?.user?.slug)
   const { authorEntities } = useAuthorsStore({ authors: [] })
   const currentAuthor = createMemo(() => authorEntities()[currentSlug()])
-  const [error, setError] = createSignal<string>()
+  const [slugError, setSlugError] = createSignal<string>()
 
   const submit = async (profile: ProfileInput) => {
     try {
       const response = await apiClient.updateProfile(profile)
       if (response.error) {
-        setError(response.error)
+        setSlugError(response.error)
         return response.error
       }
       return response
@@ -65,7 +65,7 @@ const useProfileForm = () => {
       })
     }
   }
-  return { form, submit, updateFormField, error }
+  return { form, submit, updateFormField, slugError }
 }
 
 export { useProfileForm }

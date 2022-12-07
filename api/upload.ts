@@ -41,14 +41,12 @@ const formidablePromise = async (req, opts) => {
 }
 
 const fileConsumer = (acc) => {
-  const writable = new Writable({
+  return new Writable({
     write: (chunk, _enc, next) => {
       acc.push(chunk)
       next()
     }
   })
-
-  return writable
 }
 
 async function handler(req, res) {

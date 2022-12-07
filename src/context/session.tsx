@@ -33,12 +33,13 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
         return null
       }
       setToken(authResult.token)
-      setIsSessionLoaded(true)
       return authResult
     } catch (error) {
       console.error('getSession error:', error)
       resetToken()
       return null
+    } finally {
+      setIsSessionLoaded(true)
     }
   }
 

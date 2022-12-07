@@ -185,7 +185,7 @@ export const InboxView = () => {
                 {(chat) => (
                   <DialogCard
                     onClick={() => handleOpenChat(chat)}
-                    title={chat.title}
+                    title={chat.title || chat.members[0].name}
                     members={chat.members}
                     ownId={currentUserId()}
                     lastUpdate={chat.updatedAt}

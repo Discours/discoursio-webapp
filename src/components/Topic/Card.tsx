@@ -28,6 +28,7 @@ interface TopicProps {
 export const TopicCard = (props: TopicProps) => {
   const {
     session,
+    isSessionLoaded,
     actions: { loadSession }
   } = useSession()
 
@@ -89,7 +90,7 @@ export const TopicCard = (props: TopicProps) => {
         classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}
       >
         <ShowOnlyOnClient>
-          <Show when={session.state !== 'pending'}>
+          <Show when={isSessionLoaded()}>
             <button
               onClick={() => subscribe(!subscribed())}
               class="button--light button--subscribe-topic"

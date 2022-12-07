@@ -1,11 +1,10 @@
-import { For, Show } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
 import { useSession } from '../../context/session'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
 import styles from '../../styles/Article.module.scss'
 import { useReactionsStore } from '../../stores/zine/reactions'
-import { createMemo, createSignal, onMount } from 'solid-js'
 import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
@@ -14,17 +13,17 @@ import { Loading } from '../Loading'
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
 
-export const CommentsTree = (props: { shout: string; reactions?: Reaction[] }) => {
+export const CommentsTree = (props: { shoutSlug: string }) => {
   const [getCommentsPage, setCommentsPage] = createSignal(0)
   const [commentsOrder, setCommentsOrder] = createSignal<'rating' | 'createdAt'>('createdAt')
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { session } = useSession()
-  const { sortedReactions, loadReactionsBy } = useReactionsStore({ reactions: props.reactions })
+  const { sortedReactions, loadReactionsBy } = useReactionsStore()
   const reactions = createMemo<Reaction[]>(() =>
     sortedReactions()
       .sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
-      .filter((r) => r.shout.slug === props.shout)
+      .filter((r) => r.shout.slug === props.shoutSlug)
   )
 
   const loadMore = async () => {
@@ -33,7 +32,7 @@ export const CommentsTree = (props: { shout: string; reactions?: Reaction[] }) =
       setIsCommentsLoading(true)
 
       const { hasMore } = await loadReactionsBy({
-        by: { shout: props.shout, comment: true },
+        by: { shout: props.shoutSlug, comment: true },
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
         offset: page * ARTICLE_COMMENTS_PAGE_SIZE
       })

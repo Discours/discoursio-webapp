@@ -1,11 +1,12 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
-import { createContext, createMemo, createResource, onMount, useContext } from 'solid-js'
+import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 import type { AuthResult } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 
 type SessionContextType = {
   session: Resource<AuthResult>
+  isSessionLoaded: Accessor<boolean>
   userSlug: Accessor<string>
   isAuthenticated: Accessor<boolean>
   actions: {
@@ -18,27 +19,33 @@ type SessionContextType = {
 
 const SessionContext = createContext<SessionContextType>()
 
-const getSession = async (): Promise<AuthResult> => {
-  try {
-    const authResult = await apiClient.getSession()
-    if (!authResult) {
-      return null
-    }
-    setToken(authResult.token)
-    return authResult
-  } catch (error) {
-    console.error('getSession error:', error)
-    resetToken()
-    return null
-  }
-}
-
 export function useSession() {
   return useContext(SessionContext)
 }
 
 export const SessionProvider = (props: { children: JSX.Element }) => {
-  const [session, { refetch: loadSession, mutate }] = createResource<AuthResult>(getSession)
+  const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
+
+  const getSession = async (): Promise<AuthResult> => {
+    try {
+      const authResult = await apiClient.getSession()
+      if (!authResult) {
+        return null
+      }
+      setToken(authResult.token)
+      setIsSessionLoaded(true)
+      return authResult
+    } catch (error) {
+      console.error('getSession error:', error)
+      resetToken()
+      return null
+    }
+  }
+
+  const [session, { refetch: loadSession, mutate }] = createResource<AuthResult>(getSession, {
+    ssrLoadFrom: 'initial',
+    initialValue: null
+  })
 
   const userSlug = createMemo(() => session()?.user?.slug)
 
@@ -71,7 +78,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     confirmEmail
   }
 
-  const value: SessionContextType = { session, userSlug, isAuthenticated, actions }
+  const value: SessionContextType = { session, isSessionLoaded, userSlug, isAuthenticated, actions }
 
   onMount(() => {
     loadSession()

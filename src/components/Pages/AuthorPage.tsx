@@ -8,7 +8,7 @@ import { loadAuthor } from '../../stores/zine/authors'
 import { Loading } from '../Loading'
 
 export const AuthorPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.author))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.authorShouts) && Boolean(props.author))
 
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()
@@ -38,7 +38,7 @@ export const AuthorPage = (props: PageProps) => {
   return (
     <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <AuthorView author={props.author} shouts={props.shouts} authorSlug={slug()} />
+        <AuthorView author={props.author} shouts={props.authorShouts} authorSlug={slug()} />
       </Show>
     </PageWrap>
   )

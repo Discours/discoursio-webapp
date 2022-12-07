@@ -8,7 +8,7 @@ import { loadTopic } from '../../stores/zine/topics'
 import { Loading } from '../Loading'
 
 export const TopicPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.topic))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.topicShouts) && Boolean(props.topic))
 
   const slug = createMemo(() => {
     const { page: getPage } = useRouter()
@@ -38,7 +38,7 @@ export const TopicPage = (props: PageProps) => {
   return (
     <PageWrap>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <TopicView topic={props.topic} shouts={props.shouts} topicSlug={slug()} />
+        <TopicView topic={props.topic} shouts={props.topicShouts} topicSlug={slug()} />
       </Show>
     </PageWrap>
   )

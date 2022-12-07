@@ -29,7 +29,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
     return page.params.layout as LayoutType
   })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const { sortedLayoutShouts, loadLayoutShoutsBy } = useLayoutsStore(layout(), props.shouts)
+  const { sortedLayoutShouts, loadLayoutShoutsBy } = useLayoutsStore(layout(), props.layoutShouts)
   const sortedArticles = createMemo<Shout[]>(() => sortedLayoutShouts().get(layout()) || [])
   const loadMoreLayout = async (kind: LayoutType) => {
     saveScrollPosition()

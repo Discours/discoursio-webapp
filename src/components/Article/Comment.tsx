@@ -19,7 +19,6 @@ export default (props: {
   canEdit?: boolean
   compact?: boolean
 }) => {
-  const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
 
   const comment = createMemo(() => props.comment)
@@ -68,9 +67,9 @@ export default (props: {
                   [styles.commentRatingNegative]: comment().stat?.rating < 0
                 }}
               >
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlUp)}></button>
+                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlUp)} />
                 <div class={styles.commentRatingValue}>{comment().stat?.rating || 0}</div>
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlDown)}></button>
+                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlDown)} />
               </div>
             </div>
           </Show>
@@ -112,9 +111,6 @@ export default (props: {
               </Show>
 
               <SharePopup
-                onVisibilityChange={(isVisible) => {
-                  setIsSharePopupVisible(isVisible)
-                }}
                 containerCssClass={stylesHeader.control}
                 trigger={
                   <button class={clsx(styles.commentControl, styles.commentControlShare)}>
@@ -134,7 +130,7 @@ export default (props: {
 
             <Show when={isReplyVisible()}>
               <form class={styles.replyForm}>
-                <textarea name="reply" id="reply" rows="5"></textarea>
+                <textarea name="reply" id="reply" rows="5" />
                 <div class={styles.replyFormControls}>
                   <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
                     {t('Cancel')}

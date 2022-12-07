@@ -134,8 +134,11 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutAuthor}>
                 <For each={authors}>
                   {(author, index) => {
-                    const name =
-                      author.name === 'Дискурс' && locale() !== 'ru' ? 'Discours' : translit(author.name)
+                    let name = author.name
+
+                    if (locale() !== 'ru') {
+                      name = name === 'Дискурс' ? 'Discours' : translit(name)
+                    }
 
                     return (
                       <>

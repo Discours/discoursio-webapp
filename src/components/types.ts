@@ -6,7 +6,10 @@ import type { LayoutType } from '../stores/zine/layouts'
 export type PageProps = {
   randomTopics?: Topic[]
   article?: Shout
-  shouts?: Shout[]
+  layoutShouts?: Shout[]
+  authorShouts?: Shout[]
+  topicShouts?: Shout[]
+  homeShouts?: Shout[]
   author?: Author
   allAuthors?: Author[]
   topic?: Topic

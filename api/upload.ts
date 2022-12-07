@@ -28,14 +28,14 @@ const formidableConfig = {
 }
 
 const formidablePromise = async (req, opts) => {
-  return new Promise((accept, reject) => {
+  return new Promise((resolve, reject) => {
     const form = formidable(opts)
 
     form.parse(req, (err, fields, files) => {
       if (err) {
         return reject(err)
       }
-      return accept({ fields, files })
+      return resolve({ fields, files })
     })
   })
 }

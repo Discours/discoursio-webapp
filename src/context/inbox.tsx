@@ -4,6 +4,8 @@ import { createChatClient } from '../graphql/privateGraphQLClient'
 import type { Chat } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import newMessages from '../graphql/subs/new-messages'
+import type { Client } from '@urql/core'
+import { pipe, subscribe } from 'wonka'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -23,7 +25,7 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [listener, setListener] = createSignal(console.debug)
-  const subclient = createMemo(() => createChatClient(listener()))
+  const subclient = createMemo<Client>(() => createChatClient(listener()))
   const loadChats = async () => {
     try {
       const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
@@ -50,9 +52,15 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     loadChats,
     setListener // setting listening handler
   }
-  onMount(() => {
-    const resp = subclient().subscription(newMessages, {})
-    console.debug(resp)
+
+  onMount(async () => {
+    const { unsubscribe } = pipe(
+      subclient().subscription(newMessages, {}),
+      subscribe((result) => {
+        console.debug(result) // { data: ... }
+        // TODO: handle data result
+      })
+    )
   })
   const value: InboxContextType = { chats, actions }
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>

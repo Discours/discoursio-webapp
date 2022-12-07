@@ -51,8 +51,8 @@ export const InboxView = () => {
 
   let chatWindow
 
-  const onMessage = (payload) => console.log(payload)
-
+  const onMessage = (payload) => console.log('!!! payload', payload)
+  // const listener = setListener
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     try {
@@ -99,18 +99,16 @@ export const InboxView = () => {
   const { actions } = useInbox()
   const urlParams = new URLSearchParams(window.location.search)
   const params = Object.fromEntries(urlParams)
-  console.log('!!! params:', params)
-
   createEffect(async () => {
     if (textareaParent) {
       textareaParent.dataset.replicatedValue = postMessageText()
     }
     if (params['openChat']) {
       try {
-        const newChat = await actions.createChat([Number(params['chat'])], '')
-        console.log('!!! newChat:', newChat)
-        await handleOpenChat(newChat.chat)
+        const newChat = await actions.createChat([Number(params['openChat'])], '')
         await loadChats()
+        const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
+        await handleOpenChat(chatToOpen)
       } catch (error) {
         console.error(error)
       }

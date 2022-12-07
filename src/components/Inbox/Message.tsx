@@ -19,7 +19,7 @@ const md = new MarkdownIt({
 const Message = (props: Props) => {
   // возвращать ID автора
   const isOwn = props.ownId === Number(props.content.author)
-  const user = props.members.find((m) => m.id === Number(props.content.author))
+  const user = props.members?.find((m) => m.id === Number(props.content.author))
   return (
     <div class={clsx(styles.Message, isOwn && styles.own)}>
       <Show when={!isOwn}>

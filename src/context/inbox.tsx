@@ -6,7 +6,7 @@ import { apiClient } from '../utils/apiClient'
 type InboxContextType = {
   chats: Accessor<Chat[]>
   actions: {
-    createChat: (members: number[], title: string) => Promise<void>
+    createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
     loadChats: () => Promise<void>
   }
 }

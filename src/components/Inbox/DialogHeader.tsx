@@ -6,7 +6,6 @@ type DialogHeader = {
   chat: Chat
   ownId: number
 }
-
 const DialogHeader = (props: DialogHeader) => {
   return (
     <header class={styles.DialogHeader}>

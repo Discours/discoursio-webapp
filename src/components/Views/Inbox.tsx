@@ -18,6 +18,8 @@ import DialogHeader from '../Inbox/DialogHeader'
 import { apiClient } from '../../utils/apiClient'
 import { createChatClient } from '../../graphql/privateGraphQLClient'
 import MessagesFallback from '../Inbox/MessagesFallback'
+import { useRouter } from '../../stores/router'
+import createChat from '../../graphql/mutation/create-chat'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -96,9 +98,26 @@ export const InboxView = () => {
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
   }
-  createEffect(() => {
-    if (!textareaParent) return
-    textareaParent.dataset.replicatedValue = postMessageText()
+
+  const { actions } = useInbox()
+  const urlParams = new URLSearchParams(window.location.search)
+  const params = Object.fromEntries(urlParams)
+  console.log('!!! params:', params)
+
+  createEffect(async () => {
+    if (textareaParent) {
+      textareaParent.dataset.replicatedValue = postMessageText()
+    }
+    if (params['openChat']) {
+      try {
+        const newChat = await actions.createChat([Number(params['chat'])], '')
+        console.log('!!! newChat:', newChat)
+        await handleOpenChat(newChat.chat)
+        await loadChats()
+      } catch (error) {
+        console.error(error)
+      }
+    }
   })
 
   const handleOpenInviteModal = () => {
@@ -109,7 +128,6 @@ export const InboxView = () => {
     const sorted = chats().sort((a, b) => {
       return a.updatedAt - b.updatedAt
     })
-    console.log('!!! sorted:', sorted)
     if (sortByPerToPer()) {
       return sorted.filter((chat) => chat.title.trim().length === 0)
     } else if (sortByGroup()) {
@@ -118,10 +136,6 @@ export const InboxView = () => {
       return sorted
     }
   }
-
-  createEffect(() => {
-    console.log('!!! currentDialog():', currentDialog())
-  })
 
   return (
     <div class="messages container">
@@ -174,7 +188,7 @@ export const InboxView = () => {
                 {(chat) => (
                   <DialogCard
                     onClick={() => handleOpenChat(chat)}
-                    title={chat.title || chat.members[0].name}
+                    title={chat.title}
                     members={chat.members}
                     ownId={currentUserId()}
                     lastUpdate={chat.updatedAt}

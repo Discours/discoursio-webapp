@@ -1,13 +1,16 @@
-import type { Accessor, JSX } from 'solid-js'
+import { Accessor, createMemo, JSX, onMount } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
+import { createChatClient } from '../graphql/privateGraphQLClient'
 import type { Chat } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
+import newMessages from '../graphql/subs/new-messages'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
   actions: {
     createChat: (members: number[], title: string) => Promise<void>
     loadChats: () => Promise<void>
+    setListener: (listener: (ev) => void) => void
   }
 }
 
@@ -19,6 +22,8 @@ export function useInbox() {
 
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
+  const [listener, setListener] = createSignal(console.debug)
+  const subclient = createMemo(() => createChatClient(listener()))
   const loadChats = async () => {
     try {
       const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
@@ -42,9 +47,13 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
 
   const actions = {
     createChat,
-    loadChats
+    loadChats,
+    setListener // setting listening handler
   }
-
+  onMount(() => {
+    const resp = subclient().subscription(newMessages, {})
+    console.debug(resp)
+  })
   const value: InboxContextType = { chats, actions }
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>
 }

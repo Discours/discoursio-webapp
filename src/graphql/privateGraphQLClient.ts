@@ -67,6 +67,7 @@ export const createChatClient = (onMessage) => {
       }
     }
   })
+
   options.exchanges.unshift(sseExchange)
   return createClient(options)
 }

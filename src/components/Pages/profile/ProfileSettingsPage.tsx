@@ -8,13 +8,19 @@ import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
 import { createFileUploader } from '@solid-primitives/upload'
+import validateUrl from '../../../utils/validateUrl'
 
 export const ProfileSettingsPage = (props: PageProps) => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
-  const { form, updateFormField, submit } = useProfileForm()
+  const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
+  const { form, updateFormField, submit, error } = useProfileForm()
   const handleChangeSocial = (value) => {
-    updateFormField('links', value)
-    setAddLinkForm(false)
+    if (validateUrl(value)) {
+      updateFormField('links', value)
+      setAddLinkForm(false)
+    } else {
+      setIncorrectUrl(true)
+    }
   }
   const handleSubmit = (event: Event): void => {
     event.preventDefault()
@@ -98,9 +104,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                           value={form.slug}
                           class="nolabel"
                         />
-                        <p class="form-message form-message--error">
-                          {t('Sorry, this address is already taken, please choose another one.')}
-                        </p>
+                        <p class="form-message form-message--error">{t(`error()`)}</p>
                       </div>
                     </div>
                   </div>
@@ -164,6 +168,9 @@ export const ProfileSettingsPage = (props: PageProps) => {
                           onChange={(event) => handleChangeSocial(event.currentTarget.value)}
                         />
                       </div>
+                      <Show when={incorrectUrl()}>
+                        <p class="form-message form-message--error">{t('It does not look like url')}</p>
+                      </Show>
                     </Show>
                     <For each={form.links}>
                       {(link) => (

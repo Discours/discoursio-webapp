@@ -203,5 +203,7 @@
   "Where": "Откуда",
   "Date of Birth": "Дата рождения",
   "Social networks": "Социальные сети",
-  "Save settings": "Сохранить настройки"
+  "Save settings": "Сохранить настройки",
+  "slug is used by another user": "Имя уже занято другим пользователем",
+  "It does not look like url": "Это не похоже на ссылку"
 }

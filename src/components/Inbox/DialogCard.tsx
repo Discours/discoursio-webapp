@@ -22,9 +22,11 @@ const DialogCard = (props: DialogProps) => {
   const companions = createMemo(
     () => props.members && props.members.filter((member) => member.id !== props.ownId)
   )
-  const names = companions()
-    ?.map((companion) => companion.name)
-    .join(', ')
+  const names = createMemo(() =>
+    companions()
+      ?.map((companion) => companion.name)
+      .join(', ')
+  )
 
   return (
     <Show when={props.members}>
@@ -37,11 +39,15 @@ const DialogCard = (props: DialogProps) => {
           </Switch>
         </div>
         <div class={styles.row}>
-          <div class={styles.name}>{props.title}</div>
+          <div class={styles.name}>
+            <Switch fallback={names()}>
+              <Match when={companions().length > 1}>{props.title}</Match>
+            </Switch>
+          </div>
           <div class={styles.message}>
             <Switch>
               <Match when={props.message && !props.isChatHeader}>{props.message}</Match>
-              <Match when={props.isChatHeader && companions().length > 1}>{names}</Match>
+              <Match when={props.isChatHeader && companions().length > 1}>{names()}</Match>
             </Switch>
           </div>
         </div>

@@ -8,7 +8,7 @@ import newMessages from '../graphql/subs/new-messages'
 type InboxContextType = {
   chats: Accessor<Chat[]>
   actions: {
-    createChat: (members: number[], title: string) => Promise<void>
+    createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
     loadChats: () => Promise<void>
     setListener: (listener: (ev) => void) => void
   }

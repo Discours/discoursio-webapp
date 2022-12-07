@@ -46,8 +46,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
   // TODO: reimplement AuthorCard
   const { changeSearchParam } = useRouter()
-  const handleInitChat = () => {
-    openPage(router, 'inbox')
+  const initChat = () => {
+    openPage(router, `inbox`)
     changeSearchParam('openChat', `${props.author.id}`)
   }
   return (
@@ -134,7 +134,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   'button--subscribe-topic': props.isAuthorsList,
                   [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
                 }}
-                onClick={handleInitChat}
+                onClick={initChat}
               >
                 <Icon name="comment" class={styles.icon} />
                 <Show when={!props.liteButtons}>{t('Write')}</Show>

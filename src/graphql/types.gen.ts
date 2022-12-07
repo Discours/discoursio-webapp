@@ -629,11 +629,8 @@ export type Stat = {
 }
 
 export type Subscription = {
-  newMessages: Message
-  onlineUpdated: Array<User>
-  reactionUpdated: ReactionUpdating
-  shoutUpdated: Shout
-  userUpdated: User
+  newMessage: Message
+  collabUpdate: Reaction
 }
 
 export type SubscriptionReactionUpdatedArgs = {

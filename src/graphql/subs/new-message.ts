@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   subscription {
-    newMessages {
+    newMessage {
       id
       chatId
       author

@@ -6,19 +6,20 @@ import {
   subscriptionExchange,
   createClient
 } from '@urql/core'
-import { createClient as createSSEClient } from 'graphql-sse'
-import { devtoolsExchange } from '@urql/devtools'
+// import { createClient as createSSEClient } from 'graphql-sse'
+import { createClient as createWSClient } from 'graphql-ws'
+// import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
 // import { cache } from './cache'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
 const exchanges: Exchange[] = [dedupExchange, fetchExchange]
-
-if (isDev) {
+/*
+ if (isDev) {
   exchanges.unshift(devtoolsExchange)
 }
-
+*/
 export const getToken = (): string => {
   return localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
 }
@@ -50,11 +51,11 @@ const options: ClientOptions = {
 export const privateGraphQLClient = createClient(options)
 
 export const createChatClient = () => {
-  const sseClient = createSSEClient({
-    url: apiBaseUrl + '/messages'
+  const sseClient = createWSClient({
+    url: apiBaseUrl.replace('http', 'ws')
   })
 
-  const sseExchange = subscriptionExchange({
+  const subExchange = subscriptionExchange({
     forwardSubscription(operation) {
       return {
         subscribe: (sink) => {
@@ -67,6 +68,6 @@ export const createChatClient = () => {
     }
   })
 
-  options.exchanges.unshift(sseExchange)
+  options.exchanges.unshift(subExchange)
   return createClient(options)
 }

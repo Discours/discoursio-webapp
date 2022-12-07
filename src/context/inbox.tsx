@@ -25,7 +25,7 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [listener, setListener] = createSignal(console.debug)
-  const subclient = createMemo<Client>(() => createChatClient(listener()))
+  const subclient = createMemo<Client>(() => createChatClient())
   const loadChats = async () => {
     try {
       const newChats = await apiClient.getChats({ limit: 50, offset: 0 })

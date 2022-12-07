@@ -49,10 +49,9 @@ const options: ClientOptions = {
 
 export const privateGraphQLClient = createClient(options)
 
-export const createChatClient = (onMessage) => {
+export const createChatClient = () => {
   const sseClient = createSSEClient({
-    url: apiBaseUrl + '/messages',
-    onMessage
+    url: apiBaseUrl + '/messages'
   })
 
   const sseExchange = subscriptionExchange({

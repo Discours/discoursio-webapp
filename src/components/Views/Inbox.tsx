@@ -51,8 +51,6 @@ export const InboxView = () => {
 
   let chatWindow
 
-  const onMessage = (payload) => console.log('!!! payload', payload)
-  // const listener = setListener
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     try {
@@ -70,7 +68,6 @@ export const InboxView = () => {
     try {
       const response = await loadRecipients({ days: 365 })
       setRecipients(response as unknown as Author[])
-      setListener(onMessage)
     } catch (error) {
       console.log(error)
     }

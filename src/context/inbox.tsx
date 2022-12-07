@@ -22,7 +22,7 @@ export function useInbox() {
 
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
-  const [listener, setListener] = createSignal(console.debug)
+  const [listener, setListener] = createSignal()
   const subclient = createMemo(() => createChatClient(listener()))
   const loadChats = async () => {
     try {
@@ -52,7 +52,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   }
   onMount(() => {
     const resp = subclient().subscription(newMessages, {})
-    console.debug(resp)
+    console.log(resp) // onMount
   })
   const value: InboxContextType = { chats, actions }
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>

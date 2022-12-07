@@ -86,6 +86,20 @@ const handleClientRouteLinkClick = (event) => {
     if (url.origin === location.origin) {
       event.preventDefault()
 
+      if (url.hash) {
+        const anchor = document.querySelector(url.hash)
+        const headerOffset = 80 // 100px for header
+        const elementPosition = anchor.getBoundingClientRect().top
+        const newScrollTop = elementPosition + window.scrollY - headerOffset
+
+        window.scrollTo({
+          top: newScrollTop,
+          behavior: 'smooth'
+        })
+
+        return
+      }
+
       routerStore.open(url.pathname)
       const params = Object.fromEntries(new URLSearchParams(url.search))
       searchParamsStore.open(params)

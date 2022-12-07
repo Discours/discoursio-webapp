@@ -52,11 +52,13 @@ export const FullArticle = (props: ArticleProps) => {
   const { session } = useSession()
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
-  const mainTopic = () =>
-    (props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic)?.title || '').replace(
-      ' ',
-      '&nbsp;'
-    )
+  const mainTopic = createMemo(
+    () =>
+      props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
+      props.article.topics[0]
+  )
+
+  const mainTopicTitle = createMemo(() => mainTopic().title.replace(' ', '&nbsp;'))
 
   onMount(() => {
     const windowHash = window.location.hash
@@ -90,7 +92,7 @@ export const FullArticle = (props: ArticleProps) => {
       <article class="col-md-6 shift-content">
         <div class={styles.shoutHeader}>
           <div class={styles.shoutTopic}>
-            <a href={`/topic/${props.article.mainTopic}`} innerHTML={mainTopic() || ''} />
+            <a href={`/topic/${props.article.mainTopic}`} innerHTML={mainTopicTitle() || ''} />
           </div>
 
           <h1>{props.article.title}</h1>

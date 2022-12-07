@@ -56,9 +56,9 @@ const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string 
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
-  const mainTopic = props.article.topics.find(
-    (articleTopic) => articleTopic.slug === props.article.mainTopic
-  )
+  const mainTopic =
+    props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic) ||
+    props.article.topics[0]
 
   const formattedDate = createMemo<string>(() => {
     return new Date(props.article.createdAt)

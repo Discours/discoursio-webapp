@@ -29,7 +29,7 @@ const userSearch = (array: Author[], keyword: string) => {
 export const InboxView = () => {
   const {
     chats,
-    actions: { loadChats, setListener }
+    actions: { loadChats } // setListener
   } = useInbox()
   const [messages, setMessages] = createSignal<MessageType[]>([])
   const [recipients, setRecipients] = createSignal<Author[]>([])

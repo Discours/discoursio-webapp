@@ -1,6 +1,6 @@
 import { capitalize } from '../../utils'
 import styles from './Card.module.scss'
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+import { createMemo, createSignal, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
@@ -8,7 +8,6 @@ import { follow, unfollow } from '../../stores/zine/common'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import { StatMetrics } from '../_shared/StatMetrics'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 const log = getLogger('TopicCard')

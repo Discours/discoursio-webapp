@@ -1,4 +1,4 @@
-import { Show, Switch, Match, createMemo, For } from 'solid-js'
+import { Show, Switch, Match, createMemo } from 'solid-js'
 import DialogAvatar from './DialogAvatar'
 import type { ChatMember } from '../../graphql/types.gen'
 import GroupDialogAvatar from './GroupDialogAvatar'

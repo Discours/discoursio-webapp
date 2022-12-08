@@ -12,7 +12,6 @@ import type {
   MutationCreateMessageArgs,
   Chat,
   QueryLoadRecipientsArgs,
-  User,
   ProfileInput
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'

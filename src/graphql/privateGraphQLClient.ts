@@ -8,18 +8,18 @@ import {
 } from '@urql/core'
 // import { createClient as createSSEClient } from 'graphql-sse'
 import { createClient as createWSClient } from 'graphql-ws'
-// import { devtoolsExchange } from '@urql/devtools'
+import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
 // import { cache } from './cache'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
 const exchanges: Exchange[] = [dedupExchange, fetchExchange]
-/*
- if (isDev) {
+
+if (isDev) {
   exchanges.unshift(devtoolsExchange)
 }
-*/
+
 export const getToken = (): string => {
   return localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
 }

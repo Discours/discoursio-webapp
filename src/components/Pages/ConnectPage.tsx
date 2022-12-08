@@ -3,7 +3,7 @@ import { PageWrap } from '../_shared/PageWrap'
 export const ConnectPage = () => {
   return (
     <PageWrap>
-      <article class="container container--static-page">
+      <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-sm-10 col-md-8 col-lg-7 col-xl-6 shift-content">
             <h1>

@@ -13,6 +13,11 @@
     }
   }
 
+  .icon {
+    height: 1em;
+    width: 1em;
+  }
+
   a:hover {
     .icon {
       filter: invert(1);

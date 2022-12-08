@@ -1,5 +1,6 @@
 import styles from './RatingControl.module.scss'
 import { clsx } from 'clsx'
+import { Icon } from '../_shared/Icon'
 
 interface RatingControlProps {
   rating?: number
@@ -15,5 +16,3 @@ export const RatingControl = (props: RatingControlProps) => {
     </div>
   )
 }
-
-export default RatingControl

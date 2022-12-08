@@ -15,12 +15,12 @@ export const restoreScrollPosition = () => {
   })
 }
 
-export const scrollHandler = (elemId) => {
+export const scrollHandler = (elemId: string, offset = -100) => {
   const anchor = document.querySelector('#' + elemId)
-  // console.debug(elemId)
+
   if (anchor) {
     window.scrollTo({
-      top: anchor.getBoundingClientRect().top - 100,
+      top: anchor.getBoundingClientRect().top + offset,
       behavior: 'smooth'
     })
   }

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show, Suspense } from 'solid-js'
+import { createEffect, createMemo, createSignal, onMount, Show, Suspense } from 'solid-js'
 import { FullArticle } from '../Article/FullArticle'
 import { t } from '../../utils/intl'
 import type { Shout, Reaction } from '../../graphql/types.gen'
@@ -9,34 +9,20 @@ interface ArticlePageProps {
   reactions?: Reaction[]
 }
 
-const ARTICLE_COMMENTS_PAGE_SIZE = 50
-
 export const ArticleView = (props: ArticlePageProps) => {
-  const [getCommentsPage] = createSignal(0)
-  const [getIsCommentsLoading, setIsCommentsLoading] = createSignal(false)
-  const { reactionsByShout, loadReactionsBy } = useReactionsStore({ reactions: props.reactions })
-
-  createEffect(async () => {
-    try {
-      setIsCommentsLoading(true)
-      await loadReactionsBy({
-        by: { shout: props.article.slug, comment: true },
-        limit: ARTICLE_COMMENTS_PAGE_SIZE,
-        offset: getCommentsPage() * ARTICLE_COMMENTS_PAGE_SIZE
-      })
-    } finally {
-      setIsCommentsLoading(false)
-    }
+  onMount(() => {
+    const script = document.createElement('script')
+    script.async = true
+    script.src = 'https://ackee.discours.io/increment.js'
+    script.dataset.ackeeServer = 'https://ackee.discours.io'
+    script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
+    document.body.appendChild(script)
   })
 
   return (
     <Show fallback={<div class="center">{t('Loading')}</div>} when={props.article}>
       <Suspense>
-        <FullArticle
-          article={props.article}
-          reactions={reactionsByShout()[props.article.slug]}
-          isCommentsLoading={getIsCommentsLoading()}
-        />
+        <FullArticle article={props.article} />
       </Suspense>
     </Show>
   )

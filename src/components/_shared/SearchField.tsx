@@ -1,16 +1,18 @@
 import styles from './SearchField.module.scss'
 import { Icon } from './Icon'
 import { t } from '../../utils/intl'
+import clsx from 'clsx'
 
 type SearchFieldProps = {
   onChange: (value: string) => void
+  class?: string
 }
 
 export const SearchField = (props: SearchFieldProps) => {
   const handleInputChange = (event) => props.onChange(event.target.value.trim())
 
   return (
-    <div class={styles.searchField}>
+    <div class={clsx(styles.searchField, props.class)}>
       <label for="search-field">
         <Icon name="search" class={styles.icon} />
       </label>
@@ -21,6 +23,7 @@ export const SearchField = (props: SearchFieldProps) => {
         onInput={handleInputChange}
         placeholder={t('Search')}
       />
+      <label for="search-field">Поиск</label>
     </div>
   )
 }

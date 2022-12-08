@@ -10,7 +10,7 @@ export const ThanksPage = () => {
       {/*<Meta property="og:title" content={title} />*/}
       {/*<Meta property="og:description" content={title} />*/}
 
-      <article class="container container--static-page">
+      <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-6 col-xl-7 shift-content order-md-first">
             <h1>

@@ -61,14 +61,14 @@ export const RegisterForm = () => {
 
     const newValidationErrors: ValidationErrors = {}
 
-    const clearName = name().trim()
-    const clearEmail = email().trim()
+    const cleanName = name().trim()
+    const cleanEmail = email().trim()
 
-    if (!clearName) {
+    if (!cleanName) {
       newValidationErrors.name = t('Please enter a name to sign your comments and publication')
     }
 
-    if (!clearEmail) {
+    if (!cleanEmail) {
       newValidationErrors.email = t('Please enter email')
     } else if (!isValidEmail(email())) {
       newValidationErrors.email = t('Invalid email')
@@ -80,7 +80,7 @@ export const RegisterForm = () => {
 
     setValidationErrors(newValidationErrors)
 
-    const emailCheckResult = await checkEmail(clearEmail)
+    const emailCheckResult = await checkEmail(cleanEmail)
 
     const isValid = Object.keys(newValidationErrors).length === 0 && !emailCheckResult
 
@@ -92,8 +92,8 @@ export const RegisterForm = () => {
 
     try {
       await register({
-        name: clearName,
-        email: clearEmail,
+        name: cleanName,
+        email: cleanEmail,
         password: password()
       })
 
@@ -123,13 +123,13 @@ export const RegisterForm = () => {
           </Show>
           <div class="pretty-form__item">
             <input
-              name="name"
+              name="fullName"
               type="text"
               placeholder={t('Full name')}
               autocomplete=""
               onInput={(event) => handleNameInput(event.currentTarget.value)}
             />
-            <label for="name">{t('Full name')}</label>
+            <label for="fullName">{t('Full name')}</label>
           </div>
           <Show when={validationErrors().name}>
             <div class={styles.validationError}>{validationErrors().name}</div>

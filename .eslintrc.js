@@ -50,16 +50,8 @@ module.exports = {
   },
   globals: {},
   rules: {
-    // FIXME
-    'unicorn/prefer-dom-node-append': 'off',
-
-    // TEMP
-    // FIXME
-    'solid/reactivity': 'off',
-
-    // Should be enabled
-    // 'promise/catch-or-return': 'off',
-
+    // Solid
+    'solid/reactivity': 'off', // FIXME
     'solid/no-innerhtml': 'off',
 
     /** Unicorn **/
@@ -73,8 +65,13 @@ module.exports = {
     'unicorn/import-style': 'off',
     'unicorn/numeric-separators-style': 'off',
     'unicorn/prefer-node-protocol': 'off',
+    'unicorn/prefer-dom-node-append': 'off', // FIXME
+    'unicorn/prefer-top-level-await': 'warn',
     'unicorn/consistent-function-scoping': 'warn',
+    'sonarjs/no-duplicate-string': 'warn',
 
+    // Promise
+    // 'promise/catch-or-return': 'off',  // Should be enabled
     'promise/always-return': 'off',
 
     eqeqeq: 'error',

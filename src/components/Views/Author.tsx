@@ -105,7 +105,7 @@ export const AuthorView = (props: AuthorProps) => {
 
         <Beside
           title={t('Topics which supported by author')}
-          values={topicsByAuthor()[author().slug].slice(0, 5)}
+          values={topicsByAuthor()[author().slug]?.slice(0, 5)}
           beside={sortedArticles()[0]}
           wrapper={'topic'}
           topicShortDescription={true}

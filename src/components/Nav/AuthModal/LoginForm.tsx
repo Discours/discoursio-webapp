@@ -50,7 +50,7 @@ export const LoginForm = () => {
     setIsEmailNotConfirmed(false)
     setSubmitError('')
     setIsLinkSent(true)
-    const result = await signSendLink({ email: email(), lang: locale() })
+    const result = await signSendLink({ email: email(), lang: locale(), template: 'email_confirmation' })
     if (result.error) setSubmitError(result.error)
   }
 

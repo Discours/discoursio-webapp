@@ -6,7 +6,7 @@ interface CardTopicProps {
   isFloorImportant?: boolean
 }
 
-export default (props: CardTopicProps) => {
+export const CardTopic = (props: CardTopicProps) => {
   return (
     <div
       class={style.shoutTopic}

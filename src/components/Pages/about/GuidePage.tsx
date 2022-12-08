@@ -20,9 +20,9 @@ export const GuidePage = () => {
       {/*<Meta property="og:image:width" content="1200" />*/}
       {/*<Meta property="og:image:height" content="630" />*/}
 
-      <article class="container container--static-page">
+      <article class="wide-container container--static-page">
         <div class="row">
-          <div class="col-md-4 col-lg-3 order-md-last">
+          <div class="col-md-3 col-lg-2 order-md-last">
             <button class="button button--content-index" onClick={toggleIndexExpanded}>
               <Show when={!indexExpanded()}>
                 <Icon name="content-index-control" />

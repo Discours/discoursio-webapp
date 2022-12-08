@@ -8,7 +8,7 @@ import { Loading } from '../Loading'
 import styles from './HomePage.module.scss'
 
 export const HomePage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.shouts) && Boolean(props.randomTopics))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts) && Boolean(props.randomTopics))
 
   onMount(async () => {
     if (isLoaded()) {
@@ -26,7 +26,7 @@ export const HomePage = (props: PageProps) => {
   return (
     <PageWrap class={styles.mainContent}>
       <Show when={isLoaded()} fallback={<Loading />}>
-        <HomeView randomTopics={props.randomTopics} shouts={props.shouts || []} />
+        <HomeView randomTopics={props.randomTopics} shouts={props.homeShouts || []} />
       </Show>
     </PageWrap>
   )

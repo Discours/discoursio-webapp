@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  mutation UnfollowQuery($what: FollowingEntity!, $slug: String!) {
+  mutation UnfollowMutation($what: FollowingEntity!, $slug: String!) {
     unfollow(what: $what, slug: $slug) {
       error
     }

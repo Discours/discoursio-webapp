@@ -16,6 +16,14 @@ export const register = async ({
   })
 }
 
-export const signSendLink = async ({ email, lang }: { email: string; lang: string }) => {
-  return await apiClient.authSendLink({ email, lang })
+export const signSendLink = async ({
+  email,
+  lang,
+  template
+}: {
+  email: string
+  lang: string
+  template: string
+}) => {
+  return await apiClient.authSendLink({ email, lang, template })
 }

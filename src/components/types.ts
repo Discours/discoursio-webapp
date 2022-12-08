@@ -6,7 +6,10 @@ import type { LayoutType } from '../stores/zine/layouts'
 export type PageProps = {
   randomTopics?: Topic[]
   article?: Shout
-  shouts?: Shout[]
+  layoutShouts?: Shout[]
+  authorShouts?: Shout[]
+  topicShouts?: Shout[]
+  homeShouts?: Shout[]
   author?: Author
   allAuthors?: Author[]
   topic?: Topic
@@ -21,4 +24,11 @@ export type PageProps = {
 export type RootSearchParams = {
   modal: string
   lang: string
+}
+
+export type UploadFile = {
+  source: string
+  name: string
+  size: number
+  file: File
 }

@@ -59,7 +59,7 @@ export const Editor = () => {
   const handleSaveButtonClick = () => {
     const article: ShoutInput = {
       body: getHtml(editorViewRef.current.state),
-      // community: 'discours', // ? Type 'string' is not assignable to type 'number'.
+      community: 1, // 'discours' ?
       slug: 'new-' + Math.floor(Math.random() * 1000000)
     }
     createArticle({ article })

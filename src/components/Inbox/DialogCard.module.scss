@@ -9,7 +9,7 @@
   cursor: pointer;
   width: 100%;
 
-  &:hover {
+  &.hovered:hover {
     background: #f7f7f7;
   }
 
@@ -67,6 +67,16 @@
       span {
         margin-bottom: -2px;
       }
+    }
+  }
+
+  &.opened,
+  &.opened:hover {
+    background: #000;
+    .name,
+    .message,
+    .time {
+      color: #fff !important;
     }
   }
 }

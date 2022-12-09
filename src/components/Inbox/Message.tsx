@@ -5,6 +5,7 @@ import styles from './Message.module.scss'
 import DialogAvatar from './DialogAvatar'
 import type { Message, ChatMember } from '../../graphql/types.gen'
 import formattedTime from '../../utils/formatDateTime'
+import { Icon } from '../_shared/Icon'
 
 type Props = {
   content: Message
@@ -17,11 +18,13 @@ const md = new MarkdownIt({
 })
 
 const Message = (props: Props) => {
-  // возвращать ID автора
   const isOwn = props.ownId === Number(props.content.author)
   const user = props.members?.find((m) => m.id === Number(props.content.author))
   return (
     <div class={clsx(styles.Message, isOwn && styles.own)}>
+      {/*<div class={styles.actions}>*/}
+      {/*  /!*<Icon name={}></Icon>*!/*/}
+      {/*</div>*/}
       <Show when={!isOwn}>
         <div class={styles.author}>
           <DialogAvatar size="small" name={user.name} url={user.userpic} />

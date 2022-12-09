@@ -17,7 +17,6 @@ import DialogHeader from '../Inbox/DialogHeader'
 import { apiClient } from '../../utils/apiClient'
 import MessagesFallback from '../Inbox/MessagesFallback'
 import { useRouter } from '../../stores/router'
-import createChat from '../../graphql/mutation/create-chat'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -144,43 +143,46 @@ export const InboxView = () => {
             </button>
           </div>
 
-          <div class="chat-list__types">
-            <ul>
-              <li
-                class={clsx({ ['selected']: !sortByPerToPer() && !sortByGroup() })}
-                onClick={() => {
-                  setSortByPerToPer(false)
-                  setSortByGroup(false)
-                }}
-              >
-                <span>{t('All')}</span>
-              </li>
-              <li
-                class={clsx({ ['selected']: sortByPerToPer() })}
-                onClick={() => {
-                  setSortByPerToPer(true)
-                  setSortByGroup(false)
-                }}
-              >
-                <span>{t('Personal')}</span>
-              </li>
-              <li
-                class={clsx({ ['selected']: sortByGroup() })}
-                onClick={() => {
-                  setSortByGroup(true)
-                  setSortByPerToPer(false)
-                }}
-              >
-                <span>{t('Groups')}</span>
-              </li>
-            </ul>
-          </div>
+          <Show when={chatsToShow}>
+            <div class="chat-list__types">
+              <ul>
+                <li
+                  class={clsx({ ['selected']: !sortByPerToPer() && !sortByGroup() })}
+                  onClick={() => {
+                    setSortByPerToPer(false)
+                    setSortByGroup(false)
+                  }}
+                >
+                  <span>{t('All')}</span>
+                </li>
+                <li
+                  class={clsx({ ['selected']: sortByPerToPer() })}
+                  onClick={() => {
+                    setSortByPerToPer(true)
+                    setSortByGroup(false)
+                  }}
+                >
+                  <span>{t('Personal')}</span>
+                </li>
+                <li
+                  class={clsx({ ['selected']: sortByGroup() })}
+                  onClick={() => {
+                    setSortByGroup(true)
+                    setSortByPerToPer(false)
+                  }}
+                >
+                  <span>{t('Groups')}</span>
+                </li>
+              </ul>
+            </div>
+          </Show>
           <div class="holder">
             <div class="dialogs">
               <For each={chatsToShow()}>
                 {(chat) => (
                   <DialogCard
                     onClick={() => handleOpenChat(chat)}
+                    isOpened={chat.id === currentDialog()?.id}
                     title={chat.title || chat.members[0].name}
                     members={chat.members}
                     ownId={currentUserId()}

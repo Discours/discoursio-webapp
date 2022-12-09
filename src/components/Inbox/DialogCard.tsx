@@ -16,6 +16,7 @@ type DialogProps = {
   onClick?: () => void
   isChatHeader?: boolean
   lastUpdate?: number
+  isOpened?: boolean
 }
 
 const DialogCard = (props: DialogProps) => {
@@ -27,10 +28,16 @@ const DialogCard = (props: DialogProps) => {
       ?.map((companion) => companion.name)
       .join(', ')
   )
-
   return (
     <Show when={props.members}>
-      <div class={clsx(styles.DialogCard, { [styles.header]: props.isChatHeader })} onClick={props.onClick}>
+      <div
+        class={clsx(styles.DialogCard, {
+          [styles.header]: props.isChatHeader,
+          [styles.opened]: props.isOpened,
+          [styles.hovered]: !props.isChatHeader
+        })}
+        onClick={props.onClick}
+      >
         <div class={styles.avatar}>
           <Switch fallback={<DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />}>
             <Match when={companions().length > 2}>

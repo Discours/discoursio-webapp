@@ -1,63 +1,66 @@
-import { capitalize } from '../../utils'
+import { capitalize, formatDate } from '../../utils'
 import './Full.scss'
 import { Icon } from '../_shared/Icon'
-import ArticleComment from './Comment'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
-import type { Author, Reaction, Shout } from '../../graphql/types.gen'
+import { createMemo, For, Match, onMount, Show, Switch } from 'solid-js'
+import type { Author, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-import { showModal } from '../../stores/ui'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
-import { useSession } from '../../context/session'
 import stylesHeader from '../Nav/Header.module.scss'
 import styles from '../../styles/Article.module.scss'
-import RatingControl from './RatingControl'
+import { RatingControl } from './RatingControl'
 import { clsx } from 'clsx'
-
-const MAX_COMMENT_LEVEL = 6
-
-const getCommentLevel = (comment: Reaction, level = 0) => {
-  if (comment && comment.replyTo && level < MAX_COMMENT_LEVEL) {
-    return 0 // FIXME: getCommentLevel(commentsById[c.replyTo], level + 1)
-  }
-  return level
-}
+import { CommentsTree } from './CommentsTree'
+import { useSession } from '../../context/session'
+import VideoPlayer from './VideoPlayer'
+import Slider from '../_shared/Slider'
 
 interface ArticleProps {
   article: Shout
-  reactions: Reaction[]
-  isCommentsLoading: boolean
 }
 
-const formatDate = (date: Date) => {
-  return date
-    .toLocaleDateString('ru', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    })
-    .replace(' г.', '')
+interface MediaItem {
+  url?: string
+  pic?: string
+  title?: string
+  body?: string
+}
+
+const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
+  return (
+    <>
+      <Switch fallback={<a href={props.media.url}>{t('Cannot show this media type')}</a>}>
+        <Match when={props.kind === 'audio'}>
+          <div>
+            <h5>{props.media.title}</h5>
+            <audio controls>
+              <source src={props.media.url} />
+            </audio>
+            <hr />
+          </div>
+        </Match>
+        <Match when={props.kind === 'video'}>
+          <VideoPlayer url={props.media.url} />
+        </Match>
+      </Switch>
+    </>
+  )
 }
 
 export const FullArticle = (props: ArticleProps) => {
   const { session } = useSession()
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
-  const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
 
-  const mainTopic = () =>
-    (props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic)?.title || '').replace(
-      ' ',
-      '&nbsp;'
-    )
+  const mainTopic = createMemo(
+    () =>
+      props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
+      props.article.topics[0]
+  )
+
+  const mainTopicTitle = createMemo(() => mainTopic().title.replace(' ', '&nbsp;'))
 
   onMount(() => {
-    const script = document.createElement('script')
-    script.async = true
-    script.src = 'https://ackee.discours.io/increment.js'
-    script.dataset.ackeeServer = 'https://ackee.discours.io'
-    script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
-    document.body.appendChild(script)
     const windowHash = window.location.hash
     if (windowHash?.length > 0) {
       const comments = document.querySelector(windowHash)
@@ -70,12 +73,26 @@ export const FullArticle = (props: ArticleProps) => {
     }
   })
 
+  const canEdit = () => props.article.authors?.some((a) => a.slug === session()?.user?.slug)
+
+  const bookmark = (ev) => {
+    // TODO: implement bookmark clicked
+    ev.preventDefault()
+  }
+
+  const body = createMemo(() => props.article.body)
+  const media = createMemo(() => {
+    const mi = JSON.parse(props.article.media || '[]')
+    console.debug(mi)
+    return mi
+  })
+
   return (
     <div class="shout wide-container">
       <article class="col-md-6 shift-content">
         <div class={styles.shoutHeader}>
           <div class={styles.shoutTopic}>
-            <a href={`/topic/${props.article.mainTopic}`} innerHTML={mainTopic() || ''} />
+            <a href={`/topic/${props.article.mainTopic}`} innerHTML={mainTopicTitle() || ''} />
           </div>
 
           <h1>{props.article.title}</h1>
@@ -96,13 +113,38 @@ export const FullArticle = (props: ArticleProps) => {
           <div class={styles.shoutCover} style={{ 'background-image': `url('${props.article.cover}')` }} />
         </div>
 
-        <Show when={Boolean(props.article.body)}>
+        <Show
+          when={media() && props.article.layout !== 'image'}
+          fallback={
+            <Slider>
+              <For each={media() || []}>
+                {(m: MediaItem) => (
+                  <>
+                    <img src={m.url || m.pic} alt={m.title} />
+                    <div innerHTML={m.body} />
+                  </>
+                )}
+              </For>
+            </Slider>
+          }
+        >
+          <div class="media-items">
+            <For each={media() || []}>
+              {(m: MediaItem) => (
+                <div class={styles.shoutMediaBody}>
+                  <MediaView media={m} kind={props.article.layout} />
+                  <Show when={m?.body}>
+                    <div innerHTML={m.body} />
+                  </Show>
+                </div>
+              )}
+            </For>
+          </div>
+        </Show>
+        <Show when={body()}>
           <div class={styles.shoutBody}>
-            <Show
-              when={!props.article.body.startsWith('<')}
-              fallback={<div innerHTML={props.article.body} />}
-            >
-              <MD body={props.article.body} />
+            <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
+              <MD body={body()} />
             </Show>
           </div>
         </Show>
@@ -111,58 +153,53 @@ export const FullArticle = (props: ArticleProps) => {
       <div class="col-md-8 shift-content">
         <div class={styles.shoutStats}>
           <div class={styles.shoutStatsItem}>
-            <RatingControl rating={props.article.stat?.rating} />
+            <RatingControl rating={props.article.stat?.rating} class={styles.ratingControl} />
           </div>
 
-          <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemLikes)}>
-            <Icon name="like" class={styles.icon} />
-            {props.article.stat?.rating || ''}
-          </div>
+          <Show when={props.article.stat?.viewed}>
+            <div class={clsx(styles.shoutStatsItem)}>
+              <Icon name="eye" class={clsx(styles.icon, styles.iconEye)} />
+              {props.article.stat?.viewed}
+            </div>
+          </Show>
 
           <div class={styles.shoutStatsItem}>
             <Icon name="comment" class={styles.icon} />
             {props.article.stat?.commented || ''}
           </div>
-          {/*FIXME*/}
-          {/*<div class={styles.shoutStatsItem}>*/}
-          {/*  <a href="#bookmark" onClick={() => console.log(props.article.slug, 'articles')}>*/}
-          {/*    <Icon name={'bookmark' + (bookmarked() ? '' : '-x')} />*/}
-          {/*  </a>*/}
-          {/*</div>*/}
+
           <div class={styles.shoutStatsItem}>
             <SharePopup
-              onVisibilityChange={(isVisible) => {
-                setIsSharePopupVisible(isVisible)
-              }}
               containerCssClass={stylesHeader.control}
-              trigger={<Icon name="share" class={styles.icon} />}
+              trigger={<Icon name="share-outline" class={styles.icon} />}
             />
           </div>
-          <div class={styles.shoutStatsItem}>
+
+          <div class={styles.shoutStatsItem} onClick={bookmark}>
             <Icon name="bookmark" class={styles.icon} />
           </div>
 
-          {/*FIXME*/}
-          {/*<Show when={canEdit()}>*/}
-          {/*  <div class={styles.shoutStatsItem}>*/}
-          {/*    <a href="/edit">*/}
-          {/*      <Icon name="edit" />*/}
-          {/*      {t('Edit')}*/}
-          {/*    </a>*/}
-          {/*  </div>*/}
-          {/*</Show>*/}
+          <Show when={canEdit()}>
+            <div class={styles.shoutStatsItem}>
+              <a href="/edit">
+                <Icon name="edit" />
+                {t('Edit')}
+              </a>
+            </div>
+          </Show>
           <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
             <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
-              {formattedDate}
+              {formattedDate()}
             </div>
-
-            <Show when={props.article.stat?.viewed}>
-              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
-                <Icon name="view" class={styles.icon} />
-                {props.article.stat?.viewed}
-              </div>
-            </Show>
           </div>
+        </div>
+        <div class={styles.help}>
+          <Show when={session()?.token}>
+            <button class="button">{t('Cooperate')}</button>
+          </Show>
+          <Show when={canEdit()}>
+            <button class="button button--light">{t('Invite to collab')}</button>
+          </Show>
         </div>
 
         <div class={styles.topicsList}>
@@ -181,45 +218,13 @@ export const FullArticle = (props: ArticleProps) => {
           </Show>
           <For each={props.article?.authors}>
             {(a: Author) => (
-              <div class="col-md-6">
+              <div class="col-xl-6">
                 <AuthorCard author={a} compact={false} hasLink={true} liteButtons={true} />
               </div>
             )}
           </For>
         </div>
-
-        <Show when={props.reactions?.length}>
-          <h2 id="comments">
-            {t('Comments')} {props.reactions?.length.toString() || ''}
-          </h2>
-
-          <For each={props.reactions?.filter((r) => r.body)}>
-            {(reaction) => (
-              <ArticleComment
-                comment={reaction}
-                level={getCommentLevel(reaction)}
-                canEdit={reaction.createdBy?.slug === session()?.user?.slug}
-              />
-            )}
-          </For>
-        </Show>
-        <Show when={!session()?.user?.slug}>
-          <div class={styles.commentWarning} id="comments">
-            {t('To leave a comment you please')}
-            <a
-              href={''}
-              onClick={(evt) => {
-                evt.preventDefault()
-                showModal('auth')
-              }}
-            >
-              <i>{t('sign up or sign in')}</i>
-            </a>
-          </div>
-        </Show>
-        <Show when={session()?.user?.slug}>
-          <textarea class={styles.writeComment} rows="1" placeholder={t('Write comment')} />
-        </Show>
+        <CommentsTree shoutSlug={props.article?.slug} />
       </div>
     </div>
   )

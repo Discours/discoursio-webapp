@@ -2,20 +2,23 @@ import { useSession } from '../../context/session'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 import styles from '../_shared/Popup/Popup.module.scss'
+import { getPagePath } from '@nanostores/router'
+import { router } from '../../stores/router'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
 export const ProfilePopup = (props: ProfilePopupProps) => {
   const {
-    session,
+    userSlug,
     actions: { signOut }
   } = useSession()
 
   return (
     <Popup {...props} horizontalAnchor="right">
+      {/*TODO: l10n*/}
       <ul class="nodash">
         <li>
-          <a href={`/author/${session().user?.slug}`}>Профиль</a>
+          <a href={getPagePath(router, 'author', { slug: userSlug() })}>Профиль</a>
         </li>
         <li>
           <a href="#">Черновики</a>
@@ -30,7 +33,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           <a href="#">Закладки</a>
         </li>
         <li>
-          <a href="#">Настройки</a>
+          <a href={getPagePath(router, 'profileSettings')}>Настройки</a>
         </li>
         <li class={styles.topBorderItem}>
           <a

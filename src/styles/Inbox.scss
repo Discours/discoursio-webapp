@@ -111,6 +111,7 @@ main {
     margin-right: 1em;
     color: #696969;
     cursor: pointer;
+
     &.selected {
       span {
         border-bottom: 3px solid;
@@ -134,10 +135,10 @@ main {
 
 .message-form {
   background: #fff;
-  padding: 2px 0 12px 0;
+  padding: 2px 0 12px;
 
   .wrapper {
-    border: 2px solid #cccccc;
+    border: 2px solid #ccc;
     border-radius: 16px;
     padding: 4px;
     display: flex;
@@ -233,9 +234,9 @@ main {
   }
 
   time {
-    background: #fff;
     @include font-size(1.5rem);
 
+    background: #fff;
     color: #9fa1a7;
     padding: 0 0.5em;
   }

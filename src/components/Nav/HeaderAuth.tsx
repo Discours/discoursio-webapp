@@ -21,7 +21,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   const { warnings } = useWarningsStore()
 
-  const { session, isAuthenticated } = useSession()
+  const { session, isSessionLoaded, isAuthenticated } = useSession()
 
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
 
@@ -38,7 +38,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
   return (
     <ShowOnlyOnClient>
-      <Show when={!session.loading}>
+      <Show when={isSessionLoaded()}>
         <div class={styles.usernav}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
             <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
@@ -70,7 +70,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                 <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                   <a href="?modal=auth&mode=login">
                     <span class={styles.textLabel}>{t('Enter')}</span>
-                    <Icon name="user-anonymous" class={styles.icon} />
+                    <Icon name="user-default" class={styles.icon} />
                   </a>
                 </div>
               }

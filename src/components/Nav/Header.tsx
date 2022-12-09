@@ -132,7 +132,7 @@ export const Header = (props: Props) => {
               <a href={getPagePath(router, 'inbox')} class={styles.control}>
                 <Icon name="comments-outline" class={styles.icon} />
               </a>
-              <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
+              <a href={getPagePath(router, 'create')} class={styles.control}>
                 <Icon name="pencil-outline" class={styles.icon} />
               </a>
               <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>

@@ -6,7 +6,8 @@ import {
   subscriptionExchange,
   createClient
 } from '@urql/core'
-import { createClient as createSSEClient } from 'graphql-sse'
+// import { createClient as createSSEClient } from 'graphql-sse'
+import { createClient as createWSClient } from 'graphql-ws'
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
 // import { cache } from './cache'
@@ -24,6 +25,10 @@ export const getToken = (): string => {
 }
 
 export const setToken = (token: string) => {
+  if (!token) {
+    console.error('[privateGraphQLClient] setToken: token is null!')
+  }
+
   localStorage.setItem(TOKEN_LOCAL_STORAGE_KEY, token)
 }
 
@@ -36,11 +41,12 @@ const options: ClientOptions = {
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   fetchOptions: () => {
-    // пока источником правды для значения токена будет локальное хранилище
-    // меняем через setToken, например при получении значения с сервера
-    // скорее всего придумаем что-нибудь получше со временем
+    // localStorage is the source of truth for now
+    // to change token call setToken, for example after login
     const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
-    if (token === null) alert('token is null')
+    if (!token) {
+      console.error('[privateGraphQLClient] fetchOptions: token is null!')
+    }
     const headers = { Authorization: token }
     return { headers }
   },
@@ -49,13 +55,12 @@ const options: ClientOptions = {
 
 export const privateGraphQLClient = createClient(options)
 
-export const createChatClient = (onMessage) => {
-  const sseClient = createSSEClient({
-    url: apiBaseUrl + '/messages',
-    onMessage
+export const createChatClient = () => {
+  const sseClient = createWSClient({
+    url: apiBaseUrl.replace('http', 'ws')
   })
 
-  const sseExchange = subscriptionExchange({
+  const subExchange = subscriptionExchange({
     forwardSubscription(operation) {
       return {
         subscribe: (sink) => {
@@ -68,6 +73,6 @@ export const createChatClient = (onMessage) => {
     }
   })
 
-  options.exchanges.unshift(sseExchange)
+  options.exchanges.unshift(subExchange)
   return createClient(options)
 }

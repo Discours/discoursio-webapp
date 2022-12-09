@@ -10,9 +10,11 @@ export default gql`
       layout
       cover
       body
+      media
       # community
       mainTopic
       topics {
+        # id
         title
         body
         slug
@@ -24,7 +26,7 @@ export default gql`
         }
       }
       authors {
-        _id: slug
+        id
         name
         slug
         userpic

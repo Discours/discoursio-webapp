@@ -17,7 +17,7 @@ interface ModalProps {
 export const Modal = (props: ModalProps) => {
   const { modal } = useModalStore()
 
-  const backdropClick = (event: Event) => {
+  const backdropClick = () => {
     hideModal()
   }
 

@@ -69,6 +69,7 @@ section {
   margin: 0 auto;
   max-width: 1400px;
   padding: 0 divide($container-padding-x, 2);
+  width: 100%;
 
   @include media-breakpoint-up(sm) {
     padding: 0 $container-padding-x;
@@ -84,8 +85,8 @@ h2 {
     color: #fff;
     margin-left: -0.15em;
     padding: 0 0.15em;
-    box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
 
     &::selection {
       background: #fff;
@@ -301,6 +302,12 @@ button {
   }
 }
 
+.button--submit {
+  @include font-size(2rem);
+
+  padding: 1.6rem 2rem;
+}
+
 form {
   .pretty-form__item {
     position: relative;
@@ -319,6 +326,7 @@ form {
   input[type='password'],
   input[type='search'],
   input[type='tel'],
+  input[type='date'],
   textarea,
   select {
     border: 2px solid #e8e8e8;
@@ -353,6 +361,19 @@ form {
       transition-timing-function: cubic-bezier(0, 0.25, 0.5, 1);
       user-select: none;
     }
+
+    & + .form-message {
+      margin-top: -1.2rem;
+    }
+
+    &.nolabel {
+      padding-bottom: 1.8rem;
+      padding-top: 1.7rem;
+    }
+  }
+
+  .form-message--error {
+    color: #d00820;
   }
 
   select {
@@ -379,6 +400,10 @@ form {
     & ~ label {
       top: 3rem;
     }
+  }
+
+  .form-message {
+    @include font-size(1.2rem);
   }
 }
 
@@ -415,45 +440,6 @@ input[type='checkbox'] {
 
 .hidden {
   display: none !important;
-}
-
-.article__author {
-  font-size: 1.5rem;
-  font-weight: 400;
-
-  &,
-  a {
-    color: #9fa1a7;
-  }
-
-  a {
-    background: transparent;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background: #000;
-      color: #fff;
-    }
-  }
-}
-
-.article__topic {
-  font-size: 1.2rem;
-  letter-spacing: 0.08em;
-  margin-bottom: 0.8rem;
-  text-transform: uppercase;
-  transition: background-color 0.2s;
-
-  a {
-    background: transparent;
-    border: none;
-    color: $link-color;
-
-    &:hover {
-      background: $link-color;
-      color: #fff;
-    }
-  }
 }
 
 figure {
@@ -679,12 +665,35 @@ astro-island {
 }
 
 .shift-content {
+  position: relative;
+
   @include media-breakpoint-up(md) {
     margin-left: 161px;
   }
 
   @include media-breakpoint-up(lg) {
     margin-left: 235px;
+  }
+
+  .left-col {
+    height: 100%;
+    padding-right: 2rem;
+    position: absolute;
+    right: 100%;
+    top: 0;
+
+    @include media-breakpoint-up(md) {
+      width: 161px;
+    }
+
+    @include media-breakpoint-up(lg) {
+      width: 235px;
+    }
+  }
+
+  .left-navigation {
+    position: sticky;
+    top: 0;
   }
 }
 
@@ -791,4 +800,10 @@ details {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   white-space: normal;
+}
+
+.description {
+  @include font-size(1.4rem);
+
+  color: rgba(0 0 0 / 40%);
 }

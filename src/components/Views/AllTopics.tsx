@@ -22,7 +22,7 @@ type AllTopicsViewProps = {
 }
 
 const PAGE_SIZE = 20
-const ALPHABET = [...'#АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ']
+const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#']
 
 export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
@@ -37,19 +37,18 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   onMount(() => {
     if (!searchParams().by) {
-      setTopicsSort('shouts')
       changeSearchParam('by', 'shouts')
     }
   })
+
   createEffect(() => {
     setTopicsSort(searchParams().by || 'shouts')
-    setLimit(PAGE_SIZE)
   })
 
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
     return sortedTopics().reduce((acc, topic) => {
       let letter = topic.title[0].toUpperCase()
-      if (!/[А-я]/i.test(letter) && locale() === 'ru') letter = '#'
+      if (/[^ËА-яё]/.test(letter) && locale() === 'ru') letter = '#'
       if (!acc[letter]) acc[letter] = []
       acc[letter].push(topic)
       return acc
@@ -59,44 +58,40 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const sortedKeys = createMemo<string[]>(() => {
     const keys = Object.keys(byLetter())
     keys.sort()
+    keys.push(keys.shift())
     return keys
   })
 
   const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
-  const [searchResults, setSearchResults] = createSignal<Topic[]>([])
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  const searchTopics = (value) => {
-    /* very stupid search algorithm with no deps */
-    let q = value.toLowerCase()
-    if (q.length > 0) {
-      console.debug(q)
-      setSearchResults([])
 
-      if (locale() === 'ru') q = translit(q, 'ru')
-      const ttt: Topic[] = []
-      sortedTopics().forEach((topic) => {
-        let flag = false
-        topic.slug.split('-').forEach((w) => {
-          if (w.startsWith(q)) flag = true
-        })
+  const [searchQuery, setSearchQuery] = createSignal('')
 
-        if (!flag) {
-          let wrds: string = topic.title.toLowerCase()
-          if (locale() === 'ru') wrds = translit(wrds, 'ru')
-          wrds.split(' ').forEach((w: string) => {
-            if (w.startsWith(q)) flag = true
-          })
-        }
-
-        if (flag && !ttt.includes(topic)) ttt.push(topic)
-      })
-
-      setSearchResults((sr: Topic[]) => [...sr, ...ttt])
-      changeSearchParam('by', '')
+  const filteredResults = createMemo(() => {
+    /* very stupid filter by string algorithm with no deps */
+    let q = searchQuery().toLowerCase()
+    if (q.length === 0) {
+      return sortedTopics()
     }
-  }
+
+    if (locale() === 'ru') {
+      q = translit(q)
+    }
+
+    return sortedTopics().filter((topic) => {
+      if (topic.slug.split('-').some((w) => w.startsWith(q))) {
+        return true
+      }
+
+      let title = topic.title.toLowerCase()
+      if (locale() === 'ru') {
+        title = translit(title)
+      }
+
+      return title.split(' ').some((word) => word.startsWith(q))
+    })
+  })
 
   const AllTopicsHead = () => (
     <div class="row">
@@ -114,9 +109,11 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
           <li classList={{ selected: searchParams().by === 'title' }}>
             <a href="/topics?by=title">{t('By title')}</a>
           </li>
-          <li class="view-switcher__search">
-            <SearchField onChange={searchTopics} />
-          </li>
+          <Show when={searchParams().by !== 'title'}>
+            <li class="view-switcher__search">
+              <SearchField onChange={(value) => setSearchQuery(value)} />
+            </li>
+          </Show>
         </ul>
       </div>
     </div>
@@ -127,7 +124,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       <div class="shift-content">
         <AllTopicsHead />
 
-        <Show when={sortedTopics().length > 0 || searchResults().length > 0}>
+        <Show when={filteredResults().length > 0}>
           <Show when={searchParams().by === 'title'}>
             <div class="col-lg-10 col-xl-9">
               <ul class={clsx('nodash', styles.alphabet)}>
@@ -137,7 +134,10 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                       <Show when={letter in byLetter()} fallback={letter}>
                         <a
                           href={`/topics?by=title#letter-${index()}`}
-                          onClick={() => scrollHandler(`letter-${index()}`)}
+                          onClick={(event) => {
+                            event.preventDefault()
+                            scrollHandler(`letter-${index()}`)
+                          }}
                         >
                           {letter}
                         </a>
@@ -149,9 +149,9 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </div>
 
             <For each={sortedKeys()}>
-              {(letter, index) => (
+              {(letter) => (
                 <div class={clsx(styles.group, 'group')}>
-                  <h2 id={`letter-${index()}`}>{letter}</h2>
+                  <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
                   <div class="container">
                     <div class="row">
                       <div class="col-lg-10">
@@ -173,21 +173,8 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </For>
           </Show>
 
-          <Show when={searchResults().length > 1}>
-            <For each={searchResults().slice(0, limit())}>
-              {(topic) => (
-                <TopicCard
-                  topic={topic}
-                  compact={false}
-                  subscribed={subscribed(topic.slug)}
-                  showPublications={true}
-                />
-              )}
-            </For>
-          </Show>
-
           <Show when={searchParams().by && searchParams().by !== 'title'}>
-            <For each={sortedTopics().slice(0, limit())}>
+            <For each={filteredResults().slice(0, limit())}>
               {(topic) => (
                 <>
                   <TopicCard
@@ -202,7 +189,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </For>
           </Show>
 
-          <Show when={sortedTopics().length > limit()}>
+          <Show when={filteredResults().length > limit() && searchParams().by !== 'title'}>
             <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10 offset-md-1')}>
               <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
                 {t('Load more')}

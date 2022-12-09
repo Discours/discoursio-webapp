@@ -887,7 +887,7 @@
     "@aws-sdk/types" "3.215.0"
     tslib "^2.3.1"
 
-"@aws-sdk/signature-v4-multi-region@3.215.0":
+"@aws-sdk/signature-v4-multi-region@3.215.0", "@aws-sdk/signature-v4-multi-region@^3.215.0":
   version "3.215.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/signature-v4-multi-region/-/signature-v4-multi-region-3.215.0.tgz#20349ce6f1fe3a8f4597db230c76afe82ab079b2"
   integrity sha512-XOUUNWs6I4vAa+Byj6qL/+DCWA5CjcRyA9sitYy8sNqhLcet8WoYf7vJL2LW1nvdzRb/pGBNWLiQOZ+9sadYeg==
@@ -1086,7 +1086,7 @@
     bowser "^2.11.0"
     tslib "^2.3.1"
 
-"@aws-sdk/util-user-agent-node@3.215.0":
+"@aws-sdk/util-user-agent-node@3.215.0", "@aws-sdk/util-user-agent-node@^3.215.0":
   version "3.215.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/util-user-agent-node/-/util-user-agent-node-3.215.0.tgz#620beb9ba2b2775cdf51e39789ea919b10b4d903"
   integrity sha512-4lrdd1oGRwJEwfvgvg1jcJ2O0bwElsvtiqZfTRHN6MNTFUqsKl0xHlgFChQsz3Hfrc1niWtZCmbqQKGdO5ARpw==
@@ -2817,6 +2817,13 @@
   integrity sha512-tHkeUMntlS/w+/zDzXJv82hhMy3J3q7tVV3ZTbahRo0hZienAM8ZJrCYZNK/fu2px8NHVSZFRufxv9qhIclPTw==
   dependencies:
     "@solid-primitives/rootless" "^1.2.0"
+
+"@solid-primitives/upload@^0.0.105":
+  version "0.0.105"
+  resolved "https://registry.yarnpkg.com/@solid-primitives/upload/-/upload-0.0.105.tgz#cf415667c0fae842dbf2470554dc0c28e8ba4fac"
+  integrity sha512-991xLetzr25NIeuAtWpYmJSA7lJ0HSOJT9sl3sRtgpR4+QJEDIsM4lw2iYYpw7XUFGBqqX2CHI5TitvYzy/Maw==
+  dependencies:
+    "@solid-primitives/utils" "^4.0.0"
 
 "@solid-primitives/utils@^3.1.0":
   version "3.1.0"

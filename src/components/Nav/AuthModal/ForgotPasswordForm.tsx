@@ -54,7 +54,7 @@ export const ForgotPasswordForm = () => {
     setIsSubmitting(true)
 
     try {
-      await signSendLink({ email: email(), lang: locale() })
+      await signSendLink({ email: email(), lang: locale(), template: 'forgot_password' })
     } catch (error) {
       if (error instanceof ApiError && error.code === 'user_not_found') {
         setIsUserNotFound(true)

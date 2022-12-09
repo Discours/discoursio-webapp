@@ -1,3 +1,9 @@
+[0.7.0]
+[+] inbox: context provider, chats
+[+] comments: show
+[+] session: context provider
+[+] views tracker: counting for shouts
+
 [0.6.1]
 [+] auth ver. 0.9
 [+] load-by interfaces for shouts, authors and messages

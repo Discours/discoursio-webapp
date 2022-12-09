@@ -10,8 +10,9 @@ import type {
   QueryLoadMessagesByArgs,
   MutationCreateChatArgs,
   MutationCreateMessageArgs,
+  Chat,
   QueryLoadRecipientsArgs,
-  Chat
+  ProfileInput
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -40,9 +41,10 @@ import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
-import shoutLoad from '../graphql/query/articles-load'
+import shoutLoad from '../graphql/query/article-load'
 import loadRecipients from '../graphql/query/chat-recipients'
 import createMessage from '../graphql/mutation/create-chat-message'
+import updateProfile from '../graphql/mutation/update-profile'
 
 type ApiErrorCode =
   | 'unknown'
@@ -113,9 +115,11 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authCheckEmailQuery, { email }).toPromise()
     return response.data.isEmailUsed
   },
-  authSendLink: async ({ email, lang }) => {
+  authSendLink: async ({ email, lang, template }) => {
     // send link with code on email
-    const response = await publicGraphQLClient.mutation(authSendLinkMutation, { email, lang }).toPromise()
+    const response = await publicGraphQLClient
+      .mutation(authSendLinkMutation, { email, lang, template })
+      .toPromise()
 
     if (response.error) {
       if (response.error.message === '[GraphQL] User not found') {
@@ -168,7 +172,6 @@ export const apiClient = {
 
   follow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
     const response = await privateGraphQLClient.mutation(followMutation, { what, slug }).toPromise()
-    console.debug('!!! [follow]:', response)
     return response.data.follow
   },
   unfollow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
@@ -210,8 +213,12 @@ export const apiClient = {
   },
   getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
-    console.debug('getAuthor', response)
+    // console.debug('getAuthor', response)
     return response.data.getAuthor
+  },
+  updateProfile: async (input: ProfileInput) => {
+    const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
+    console.debug('updateProfile', response)
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
     const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
@@ -264,10 +271,7 @@ export const apiClient = {
   },
   getReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
-    if (resp.error) {
-      console.error(resp.error)
-      return
-    }
+    console.debug(resp)
     return resp.data.loadReactionsBy
   },
 

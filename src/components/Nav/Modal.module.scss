@@ -23,15 +23,16 @@
     position: absolute;
     top: 1em;
     cursor: pointer;
-    height: 0.8em;
+    height: 18px;
+    width: 16px;
     opacity: 1;
     padding: 0;
     right: 0;
     transition: opacity 0.3s;
-    width: 0.8em;
     z-index: 1;
 
     svg {
+      display: block;
       pointer-events: none;
     }
 
@@ -55,6 +56,7 @@
     @media (min-width: 800px) and (max-width: 991px) {
       width: 80%;
     }
+
     .close {
       right: 12px;
       top: 12px;

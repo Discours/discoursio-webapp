@@ -15,5 +15,3 @@ export const RatingControl = (props: RatingControlProps) => {
     </div>
   )
 }
-
-export default RatingControl

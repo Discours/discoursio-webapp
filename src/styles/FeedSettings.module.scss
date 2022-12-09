@@ -1,4 +1,4 @@
-.settings-list {
+.settingsList {
   display: table;
 
   h2 {
@@ -20,7 +20,7 @@
         height: 2.8rem;
         position: static;
         width: 2.8rem;
-        vertical-align: middle;
+        vertical-align: bottom;
       }
     }
 
@@ -46,11 +46,11 @@
   }
 }
 
-.settings-list__row {
+.settingsListRow {
   display: table-row;
 }
 
-.settings-list__cell {
+.settingsListCell {
   display: table-cell;
   padding: 0 0.5em 1em 0;
 

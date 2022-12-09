@@ -12,7 +12,7 @@ const getDevCssClassPrefix = (filename: string): string => {
   return filename
     .slice(filename.indexOf(PATH_PREFIX) + PATH_PREFIX.length)
     .replace('.module.scss', '')
-    .replace(/[/?\\]/g, '-')
+    .replaceAll(/[/?\\]/g, '-')
 }
 
 const devGenerateScopedName = (name: string, filename: string, css: string) =>

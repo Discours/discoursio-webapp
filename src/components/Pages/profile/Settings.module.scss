@@ -1,0 +1,190 @@
+h4,
+h5 {
+  font-weight: 500;
+}
+
+h4 {
+  @include font-size(2.4rem);
+}
+
+h5 {
+  @include font-size(1.7rem);
+
+  margin: 0 0 0.8rem;
+}
+
+.avatarContainer {
+  border-radius: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 18rem;
+  width: 18rem;
+}
+
+.avatar,
+.avatarInput {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.avatar {
+  background: #ccc;
+  border: none;
+  object-fit: cover;
+  object-position: center;
+}
+
+.avatarInput {
+  border-radius: 100%;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 1;
+}
+
+.multipleControls {
+  margin-top: 3rem;
+}
+
+.multipleControlsItem {
+  position: relative;
+
+  button {
+    background-color: #fff;
+    padding: 0.5em;
+    position: absolute;
+    right: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #000;
+
+      .icon {
+        filter: invert(1);
+      }
+    }
+
+    .icon {
+      filter: invert(0);
+      transition: filter 0.3s;
+    }
+  }
+
+  form & input {
+    padding-right: 5rem;
+  }
+}
+
+.multipleControlsHeader {
+  display: flex;
+  margin-bottom: 0.5em;
+
+  h4 {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  button {
+    margin-left: 1em;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+}
+
+.discoursName {
+  display: flex;
+
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+
+    input {
+      min-width: 250px;
+    }
+  }
+
+  label {
+    margin: 0.6em 0.5em 0 0;
+  }
+}
+
+.discoursNameField {
+  flex: 1;
+}
+
+.leftNavigation {
+  top: 9rem !important;
+}
+
+.passwordToggleControl {
+  position: absolute;
+  right: 1em;
+  transform: translateY(-50%);
+  top: 50%;
+}
+
+.passwordInput {
+  padding-right: 3em !important;
+}
+
+.searchContainer {
+  margin-top: 2.4rem;
+}
+
+.searchField {
+  display: block;
+
+  label:first-child {
+    opacity: 0.5;
+    position: absolute;
+    right: 1em;
+    transform: translateY(-50%);
+    top: 50%;
+  }
+}
+
+.topicsList {
+  label {
+    @include font-size(1.7rem);
+  }
+}
+
+.topicsListItem {
+  padding-right: 1.5rem !important;
+}
+
+.socialButton {
+  color: #000;
+  display: flex;
+  padding: 0.8em 1em;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+
+  .icon {
+    margin-right: 1em;
+  }
+}
+
+.socialButtonApple {
+  &:hover {
+    .icon {
+      filter: invert(1);
+    }
+  }
+
+  .icon {
+    filter: invert(0);
+    transition: filter 0.3s;
+  }
+}

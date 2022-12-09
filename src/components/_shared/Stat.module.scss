@@ -3,7 +3,7 @@
 
   color: #9fa1a7;
   display: flex;
-  margin-bottom: 1em;
+  margin: 0.5em 0 1em;
 
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;

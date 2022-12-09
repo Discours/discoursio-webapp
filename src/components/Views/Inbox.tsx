@@ -29,7 +29,7 @@ const { changeSearchParam } = useRouter()
 export const InboxView = () => {
   const {
     chats,
-    actions: { loadChats, setListener }
+    actions: { loadChats } // setListener
   } = useInbox()
   const [messages, setMessages] = createSignal<MessageType[]>([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
@@ -51,8 +51,6 @@ export const InboxView = () => {
 
   let chatWindow
 
-  const onMessage = (payload) => console.log('!!! payload', payload)
-  // const listener = setListener
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParam('chat', `${chat.id}`)
@@ -71,7 +69,6 @@ export const InboxView = () => {
     try {
       const response = await loadRecipients({ days: 365 })
       setRecipients(response as unknown as Author[])
-      setListener(onMessage)
     } catch (error) {
       console.log(error)
     }
@@ -184,7 +181,7 @@ export const InboxView = () => {
                 {(chat) => (
                   <DialogCard
                     onClick={() => handleOpenChat(chat)}
-                    title={chat.title}
+                    title={chat.title || chat.members[0].name}
                     members={chat.members}
                     ownId={currentUserId()}
                     lastUpdate={chat.updatedAt}

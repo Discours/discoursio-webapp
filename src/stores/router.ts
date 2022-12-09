@@ -27,6 +27,9 @@ export interface Routes {
   thanks: void
   expo: 'layout'
   inbox: void // TODO: добавить ID текущего юзера
+  profileSettings: void
+  profileSecurity: void
+  profileSubscriptions: void
 }
 
 const searchParamsStore = createSearchParams()
@@ -53,7 +56,10 @@ const routerStore = createRouter<Routes>(
     projects: '/about/projects',
     termsOfUse: '/about/terms-of-use',
     thanks: '/about/thanks',
-    expo: '/expo/:layout'
+    expo: '/expo/:layout',
+    profileSettings: '/profile/settings',
+    profileSecurity: '/profile/security',
+    profileSubscriptions: '/profile/subscriptions'
   },
   {
     search: false,
@@ -79,6 +85,20 @@ const handleClientRouteLinkClick = (event) => {
     const url = new URL(link.href)
     if (url.origin === location.origin) {
       event.preventDefault()
+
+      if (url.hash) {
+        const anchor = document.querySelector(url.hash)
+        const headerOffset = 80 // 100px for header
+        const elementPosition = anchor.getBoundingClientRect().top
+        const newScrollTop = elementPosition + window.scrollY - headerOffset
+
+        window.scrollTo({
+          top: newScrollTop,
+          behavior: 'smooth'
+        })
+
+        return
+      }
 
       routerStore.open(url.pathname)
       const params = Object.fromEntries(new URLSearchParams(url.search))

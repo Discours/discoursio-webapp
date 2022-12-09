@@ -22,6 +22,7 @@ export type AuthResult = {
 }
 
 export type Author = {
+  about?: Maybe<Scalars['String']>
   bio?: Maybe<Scalars['String']>
   caption?: Maybe<Scalars['String']>
   id: Scalars['Int']

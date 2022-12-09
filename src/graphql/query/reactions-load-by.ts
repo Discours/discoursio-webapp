@@ -6,10 +6,10 @@ export default gql`
       id
       body
       range
-      #replyTo {
-      # id
-      # kind
-      #}
+      replyTo
+      shout {
+        slug
+      }
       createdBy {
         name
         slug

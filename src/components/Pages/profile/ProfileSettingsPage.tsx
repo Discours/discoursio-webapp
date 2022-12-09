@@ -117,19 +117,19 @@ export const ProfileSettingsPage = (props: PageProps) => {
                     <label for="presentation">{t('Introduce')}</label>
                   </div>
 
-                  {/*Нет реализации полей на бэке*/}
-                  {/*<h4>{t('About myself')}</h4>*/}
-                  {/*<div class="pretty-form__item">*/}
-                  {/*  <textarea*/}
-                  {/*    name="about"*/}
-                  {/*    id="about"*/}
-                  {/*    placeholder={t('About myself')}*/}
-                  {/*    value={form.about}*/}
-                  {/*    onChange={(event) => updateFormField('about', event.currentTarget.value)}*/}
-                  {/*  />*/}
-                  {/*  <label for="about">{t('About myself')}</label>*/}
-                  {/*</div>*/}
+                  <h4>{t('About myself')}</h4>
+                  <div class="pretty-form__item">
+                    <textarea
+                      name="about"
+                      id="about"
+                      placeholder={t('About myself')}
+                      value={form.about}
+                      onChange={(event) => updateFormField('about', event.currentTarget.value)}
+                    />
+                    <label for="about">{t('About myself')}</label>
+                  </div>
 
+                  {/*Нет реализации полей на бэке*/}
                   {/*<h4>{t('How can I help/skills')}</h4>*/}
                   {/*<div class="pretty-form__item">*/}
                   {/*  <input type="text" name="skills" id="skills" />*/}

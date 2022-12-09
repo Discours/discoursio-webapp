@@ -22,9 +22,6 @@ const Message = (props: Props) => {
   const user = props.members?.find((m) => m.id === Number(props.content.author))
   return (
     <div class={clsx(styles.Message, isOwn && styles.own)}>
-      {/*<div class={styles.actions}>*/}
-      {/*  /!*<Icon name={}></Icon>*!/*/}
-      {/*</div>*/}
       <Show when={!isOwn}>
         <div class={styles.author}>
           <DialogAvatar size="small" name={user.name} url={user.userpic} />
@@ -32,7 +29,13 @@ const Message = (props: Props) => {
         </div>
       </Show>
       <div class={styles.body}>
-        <div innerHTML={md.render(props.content.body)} />
+        <div class={styles.text}>
+          <div class={styles.actions}>
+            <Icon name="chat-reply" class={styles.reply} />
+            <Icon name="menu" />
+          </div>
+          <div innerHTML={md.render(props.content.body)} />
+        </div>
       </div>
       <div class={styles.time}>{formattedTime(props.content.createdAt)}</div>
     </div>

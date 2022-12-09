@@ -11,6 +11,7 @@ type Props = {
   content: Message
   ownId: number
   members: ChatMember[]
+  replyClick?: () => void
 }
 
 const md = new MarkdownIt({
@@ -31,7 +32,9 @@ const Message = (props: Props) => {
       <div class={styles.body}>
         <div class={styles.text}>
           <div class={styles.actions}>
-            <Icon name="chat-reply" class={styles.reply} />
+            <div onClick={props.replyClick}>
+              <Icon name="chat-reply" class={styles.reply} />
+            </div>
             <Icon name="menu" />
           </div>
           <div innerHTML={md.render(props.content.body)} />

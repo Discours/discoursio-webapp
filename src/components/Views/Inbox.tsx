@@ -17,6 +17,7 @@ import DialogHeader from '../Inbox/DialogHeader'
 import { apiClient } from '../../utils/apiClient'
 import MessagesFallback from '../Inbox/MessagesFallback'
 import { useRouter } from '../../stores/router'
+import styles from '../Inbox/Message.module.scss'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -36,6 +37,7 @@ export const InboxView = () => {
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
+  const [messageToReply, setMessageToReply] = createSignal<MessageType | null>(null)
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user.id)
   // Поиск по диалогам
@@ -97,6 +99,7 @@ export const InboxView = () => {
   const urlParams = new URLSearchParams(window.location.search)
   const params = Object.fromEntries(urlParams)
   createEffect(async () => {
+    console.log('!!! postMessageText:', postMessageText())
     if (textareaParent) {
       textareaParent.dataset.replicatedValue = postMessageText()
     }
@@ -212,7 +215,12 @@ export const InboxView = () => {
               <div class="conversation__messages-container" ref={chatWindow}>
                 <For each={messages()}>
                   {(message) => (
-                    <Message content={message} ownId={currentUserId()} members={currentDialog().members} />
+                    <Message
+                      content={message}
+                      ownId={currentUserId()}
+                      members={currentDialog().members}
+                      replyClick={() => setMessageToReply(message)}
+                    />
                   )}
                 </For>
 
@@ -223,6 +231,26 @@ export const InboxView = () => {
             </div>
 
             <div class="message-form">
+              <Show when={messageToReply()}>
+                <div class="reply">
+                  <div class="icon">
+                    <Icon name="chat-reply" class={styles.reply} />
+                  </div>
+                  <div class="body">
+                    <div class="author">
+                      {
+                        currentDialog().members.find(
+                          (member) => member.id === Number(messageToReply().author)
+                        ).name
+                      }
+                    </div>
+                    <div class="quote">{messageToReply().body}</div>
+                  </div>
+                  <div class="cancel icon" onClick={() => setMessageToReply(null)}>
+                    <Icon name="close-gray" />
+                  </div>
+                </div>
+              </Show>
               <div class="wrapper">
                 <div class="grow-wrap" ref={textareaParent}>
                   <textarea

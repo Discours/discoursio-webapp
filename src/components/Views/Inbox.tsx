@@ -25,7 +25,7 @@ const userSearch = (array: Author[], keyword: string) => {
     return value.name.toLowerCase().match(new RegExp(searchTerm, 'g'))
   })
 }
-
+const { changeSearchParam } = useRouter()
 export const InboxView = () => {
   const {
     chats,
@@ -55,6 +55,7 @@ export const InboxView = () => {
   // const listener = setListener
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
+    changeSearchParam('chat', `${chat.id}`)
     try {
       const response = await loadMessages({ chat: chat.id })
       setMessages(response as unknown as MessageType[])
@@ -103,9 +104,9 @@ export const InboxView = () => {
     if (textareaParent) {
       textareaParent.dataset.replicatedValue = postMessageText()
     }
-    if (params['openChat']) {
+    if (params['initChat']) {
       try {
-        const newChat = await actions.createChat([Number(params['openChat'])], '')
+        const newChat = await actions.createChat([Number(params['initChat'])], '')
         await loadChats()
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen)

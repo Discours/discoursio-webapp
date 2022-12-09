@@ -48,7 +48,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const { changeSearchParam } = useRouter()
   const initChat = () => {
     openPage(router, `inbox`)
-    changeSearchParam('openChat', `${props.author.id}`)
+    changeSearchParam('initChat', `${props.author.id}`)
   }
   return (
     <div

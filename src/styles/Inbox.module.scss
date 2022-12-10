@@ -5,7 +5,7 @@ main {
   position: relative;
 }
 
-.messages {
+.Inbox {
   top: 74px;
   height: calc(100% - 74px);
   left: 0;
@@ -32,7 +32,7 @@ main {
 }
 
 // список диалогов и юзеров
-.chat-list {
+.chatList {
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -40,7 +40,7 @@ main {
 
   $fade-height: 10px;
 
-  .sidebar-header {
+  .sidebarHeader {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -94,7 +94,7 @@ main {
 }
 
 // табы выбора списка
-.chat-list__types {
+.chatListTypes {
   @include font-size(1.7rem);
 
   margin: 16px 0;
@@ -127,13 +127,7 @@ main {
   flex-direction: column;
 }
 
-.conversation__messages {
-  flex: 1;
-  overflow: auto;
-  position: relative;
-}
-
-.message-form {
+.messageForm {
   background: #fff;
   padding: 2px 0 12px;
 
@@ -150,7 +144,7 @@ main {
       width: 40px;
       height: 40px;
 
-      .cancel {
+      &.cancel {
         cursor: pointer;
       }
     }
@@ -179,7 +173,7 @@ main {
     flex-direction: row;
     align-items: center;
 
-    .grow-wrap {
+    .growWrap {
       display: grid;
       width: 100%;
 
@@ -191,7 +185,7 @@ main {
         transition: height 1.3s ease-in-out;
       }
 
-      & textarea {
+      .textInput {
         margin-bottom: 0;
         font-family: inherit;
         border: none;
@@ -243,36 +237,40 @@ main {
   }
 }
 
-.conversation__messages-container {
-  left: 0;
-  height: 100%;
+.conversationMessages {
+  flex: 1;
   overflow: auto;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  scroll-behavior: smooth;
-}
-
-.conversation__date {
   position: relative;
-  text-align: center;
-
-  &::before {
-    background: #141414;
-    content: '';
-    height: 1px;
+  .messagesContainer {
     left: 0;
+    height: 100%;
+    overflow: auto;
     position: absolute;
-    top: 0.8em;
+    top: 0;
     width: 100%;
-    z-index: -1;
+    scroll-behavior: smooth;
   }
+  .conversation__date {
+    position: relative;
+    text-align: center;
 
-  time {
-    @include font-size(1.5rem);
+    &::before {
+      background: #141414;
+      content: '';
+      height: 1px;
+      left: 0;
+      position: absolute;
+      top: 0.8em;
+      width: 100%;
+      z-index: -1;
+    }
 
-    background: #fff;
-    color: #9fa1a7;
-    padding: 0 0.5em;
+    time {
+      @include font-size(1.5rem);
+
+      background: #fff;
+      color: #9fa1a7;
+      padding: 0 0.5em;
+    }
   }
 }

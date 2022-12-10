@@ -10,14 +10,13 @@ import { t } from '../../utils/intl'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
 import CreateModalContent from '../Inbox/CreateModalContent'
-import { clsx } from 'clsx'
-import '../../styles/Inbox.scss'
 import { useInbox } from '../../context/inbox'
 import DialogHeader from '../Inbox/DialogHeader'
 import { apiClient } from '../../utils/apiClient'
 import MessagesFallback from '../Inbox/MessagesFallback'
 import { useRouter } from '../../stores/router'
-import styles from '../Inbox/Message.module.scss'
+import { clsx } from 'clsx'
+import styles from '../../styles/Inbox.module.scss'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -133,13 +132,13 @@ export const InboxView = () => {
   }
 
   return (
-    <div class="messages container">
+    <div class={clsx('container', styles.Inbox)}>
       <Modal variant="narrow" name="inviteToChat">
         <CreateModalContent users={recipients()} />
       </Modal>
-      <div class="row">
-        <div class="chat-list col-md-4">
-          <div class="sidebar-header">
+      <div class={clsx('row', styles.row)}>
+        <div class={clsx(styles.chatList, 'col-md-4')}>
+          <div class={styles.sidebarHeader}>
             <Search placeholder="Поиск" onChange={getQuery} />
             <button type="button" onClick={handleOpenInviteModal}>
               <Icon name="plus-button" style={{ width: '40px', height: '40px' }} />
@@ -147,10 +146,10 @@ export const InboxView = () => {
           </div>
 
           <Show when={chatsToShow}>
-            <div class="chat-list__types">
+            <div class={styles.chatListTypes}>
               <ul>
                 <li
-                  class={clsx({ ['selected']: !sortByPerToPer() && !sortByGroup() })}
+                  class={clsx({ [styles.selected]: !sortByPerToPer() && !sortByGroup() })}
                   onClick={() => {
                     setSortByPerToPer(false)
                     setSortByGroup(false)
@@ -159,7 +158,7 @@ export const InboxView = () => {
                   <span>{t('All')}</span>
                 </li>
                 <li
-                  class={clsx({ ['selected']: sortByPerToPer() })}
+                  class={clsx({ [styles.selected]: sortByPerToPer() })}
                   onClick={() => {
                     setSortByPerToPer(true)
                     setSortByGroup(false)
@@ -168,7 +167,7 @@ export const InboxView = () => {
                   <span>{t('Personal')}</span>
                 </li>
                 <li
-                  class={clsx({ ['selected']: sortByGroup() })}
+                  class={clsx({ [styles.selected]: sortByGroup() })}
                   onClick={() => {
                     setSortByGroup(true)
                     setSortByPerToPer(false)
@@ -179,8 +178,8 @@ export const InboxView = () => {
               </ul>
             </div>
           </Show>
-          <div class="holder">
-            <div class="dialogs">
+          <div class={styles.holder}>
+            <div class={styles.dialogs}>
               <For each={chatsToShow()}>
                 {(chat) => (
                   <DialogCard
@@ -199,7 +198,7 @@ export const InboxView = () => {
           </div>
         </div>
 
-        <div class="col-md-8 conversation">
+        <div class={clsx('col-md-8', styles.conversation)}>
           <Show
             when={currentDialog()}
             fallback={
@@ -211,8 +210,8 @@ export const InboxView = () => {
             }
           >
             <DialogHeader ownId={currentUserId()} chat={currentDialog()} />
-            <div class="conversation__messages">
-              <div class="conversation__messages-container" ref={chatWindow}>
+            <div class={styles.conversationMessages}>
+              <div class={styles.messagesContainer} ref={chatWindow}>
                 <For each={messages()}>
                   {(message) => (
                     <Message
@@ -224,36 +223,37 @@ export const InboxView = () => {
                   )}
                 </For>
 
-                {/*<div class="conversation__date">*/}
+                {/*<div class={styles.conversationDate}>*/}
                 {/*  <time>12 сентября</time>*/}
                 {/*</div>*/}
               </div>
             </div>
 
-            <div class="message-form">
+            <div class={styles.messageForm}>
               <Show when={messageToReply()}>
-                <div class="reply">
-                  <div class="icon">
-                    <Icon name="chat-reply" class={styles.reply} />
+                <div class={styles.reply}>
+                  <div class={styles.icon}>
+                    <Icon name="chat-reply" />
                   </div>
-                  <div class="body">
-                    <div class="author">
+                  <div class={styles.body}>
+                    <div class={styles.author}>
                       {
                         currentDialog().members.find(
                           (member) => member.id === Number(messageToReply().author)
                         ).name
                       }
                     </div>
-                    <div class="quote">{messageToReply().body}</div>
+                    <div class={styles.quote}>{messageToReply().body}</div>
                   </div>
-                  <div class="cancel icon" onClick={() => setMessageToReply(null)}>
+                  <div class={clsx(styles.cancel, styles.icon)} onClick={() => setMessageToReply(null)}>
                     <Icon name="close-gray" />
                   </div>
                 </div>
               </Show>
-              <div class="wrapper">
-                <div class="grow-wrap" ref={textareaParent}>
+              <div class={styles.wrapper}>
+                <div class={styles.growWrap} ref={textareaParent}>
                   <textarea
+                    class={styles.textInput}
                     value={postMessageText()}
                     rows={1}
                     onInput={(event) => handleChangeMessage(event)}

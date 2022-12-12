@@ -10,6 +10,7 @@ export default gql`
         createdAt
         id
         updatedAt
+        replyTo
       }
     }
   }

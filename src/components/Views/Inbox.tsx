@@ -134,6 +134,10 @@ export const InboxView = () => {
     }
   }
 
+  const findToReply = (messageId) => {
+    return messages().find((message) => message.id === messageId)
+  }
+
   return (
     <div class={clsx('container', styles.Inbox)}>
       <Modal variant="narrow" name="inviteToChat">
@@ -221,11 +225,11 @@ export const InboxView = () => {
                       content={message}
                       ownId={currentUserId()}
                       members={currentDialog().members}
+                      replyBody={message.replyTo && findToReply(message.replyTo).body}
                       replyClick={() => setMessageToReply(message)}
                     />
                   )}
                 </For>
-
                 {/*<div class={styles.conversationDate}>*/}
                 {/*  <time>12 сентября</time>*/}
                 {/*</div>*/}
@@ -235,6 +239,7 @@ export const InboxView = () => {
             <div class={styles.messageForm}>
               <Show when={messageToReply()}>
                 <QuotedMessage
+                  variant="reply"
                   author={
                     currentDialog().members.find((member) => member.id === Number(messageToReply().author))
                       .name

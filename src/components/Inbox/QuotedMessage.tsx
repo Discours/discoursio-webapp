@@ -7,6 +7,7 @@ type QuotedMessage = {
   body: string
   cancel?: () => void
   author?: string
+  variant: 'inline' | 'reply'
 }
 
 const QuotedMessage = (props: QuotedMessage) => {
@@ -21,7 +22,7 @@ const QuotedMessage = (props: QuotedMessage) => {
         </Show>
         <div class={styles.quote}>{props.body}</div>
       </div>
-      <Show when={props.cancel}>
+      <Show when={props.cancel && props.variant !== 'inline'}>
         <div class={clsx(styles.cancel, styles.icon)} onClick={props.cancel}>
           <Icon name="close-gray" />
         </div>

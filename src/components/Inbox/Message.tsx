@@ -7,12 +7,15 @@ import type { Message, ChatMember } from '../../graphql/types.gen'
 import formattedTime from '../../utils/formatDateTime'
 import { Icon } from '../_shared/Icon'
 import { MessageActionsPopup } from './MessageActionsPopup'
+import QuotedMessage from './QuotedMessage'
 
 type Props = {
   content: Message
   ownId: number
   members: ChatMember[]
   replyClick?: () => void
+  replyBody?: string
+  replyAuthor?: string
 }
 
 const md = new MarkdownIt({
@@ -38,6 +41,9 @@ const Message = (props: Props) => {
             </div>
             <MessageActionsPopup trigger={<Icon name="menu" />} />
           </div>
+          <Show when={props.replyBody}>
+            <QuotedMessage body={props.replyBody} variant="inline" />
+          </Show>
           <div innerHTML={md.render(props.content.body)} />
         </div>
       </div>

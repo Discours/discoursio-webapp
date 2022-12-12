@@ -37,7 +37,7 @@ export const resetToken = () => {
 }
 
 const options: ClientOptions = {
-  url: apiBaseUrl,
+  url: apiBaseUrl + '/graphql',
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   fetchOptions: () => {

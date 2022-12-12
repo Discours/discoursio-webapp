@@ -87,6 +87,7 @@ export const InboxView = () => {
       setPostMessageText('')
       setMessageToReply(null)
       chatWindow.scrollTop = chatWindow.scrollHeight
+      console.log('!!! messages:', messages())
     } catch (error) {
       console.error('[post message error]:', error)
     }
@@ -104,7 +105,6 @@ export const InboxView = () => {
     if (textareaParent) {
       textareaParent.dataset.replicatedValue = postMessageText()
     }
-    console.log('!!! messages:', messages())
     if (params['initChat']) {
       try {
         const newChat = await actions.createChat([Number(params['initChat'])], '')

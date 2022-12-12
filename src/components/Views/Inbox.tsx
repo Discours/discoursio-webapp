@@ -240,7 +240,7 @@ export const InboxView = () => {
                       .name
                   }
                   body={messageToReply().body}
-                  cancel={() => setMessageToReply(undefined)}
+                  cancel={() => setMessageToReply(null)}
                 />
               </Show>
               <div class={styles.wrapper}>

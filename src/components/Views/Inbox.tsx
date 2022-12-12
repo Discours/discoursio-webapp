@@ -17,6 +17,7 @@ import MessagesFallback from '../Inbox/MessagesFallback'
 import { useRouter } from '../../stores/router'
 import { clsx } from 'clsx'
 import styles from '../../styles/Inbox.module.scss'
+import QuotedMessage from '../Inbox/QuotedMessage'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -79,10 +80,12 @@ export const InboxView = () => {
     try {
       const post = await apiClient.createMessage({
         body: postMessageText().toString(),
-        chat: currentDialog().id.toString()
+        chat: currentDialog().id.toString(),
+        replyTo: messageToReply()?.id
       })
       setMessages((prev) => [...prev, post.message])
       setPostMessageText('')
+      setMessageToReply(null)
       chatWindow.scrollTop = chatWindow.scrollHeight
     } catch (error) {
       console.error('[post message error]:', error)
@@ -98,10 +101,10 @@ export const InboxView = () => {
   const urlParams = new URLSearchParams(window.location.search)
   const params = Object.fromEntries(urlParams)
   createEffect(async () => {
-    console.log('!!! postMessageText:', postMessageText())
     if (textareaParent) {
       textareaParent.dataset.replicatedValue = postMessageText()
     }
+    console.log('!!! messages:', messages())
     if (params['initChat']) {
       try {
         const newChat = await actions.createChat([Number(params['initChat'])], '')
@@ -231,24 +234,14 @@ export const InboxView = () => {
 
             <div class={styles.messageForm}>
               <Show when={messageToReply()}>
-                <div class={styles.reply}>
-                  <div class={styles.icon}>
-                    <Icon name="chat-reply" />
-                  </div>
-                  <div class={styles.body}>
-                    <div class={styles.author}>
-                      {
-                        currentDialog().members.find(
-                          (member) => member.id === Number(messageToReply().author)
-                        ).name
-                      }
-                    </div>
-                    <div class={styles.quote}>{messageToReply().body}</div>
-                  </div>
-                  <div class={clsx(styles.cancel, styles.icon)} onClick={() => setMessageToReply(null)}>
-                    <Icon name="close-gray" />
-                  </div>
-                </div>
+                <QuotedMessage
+                  author={
+                    currentDialog().members.find((member) => member.id === Number(messageToReply().author))
+                      .name
+                  }
+                  body={messageToReply().body}
+                  cancel={() => setMessageToReply(undefined)}
+                />
               </Show>
               <div class={styles.wrapper}>
                 <div class={styles.growWrap} ref={textareaParent}>

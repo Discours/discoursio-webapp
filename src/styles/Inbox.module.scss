@@ -131,40 +131,6 @@ main {
   background: #fff;
   padding: 2px 0 12px;
 
-  .reply {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-top: 2px solid #ccc;
-    padding: 12px 0;
-    gap: 12px;
-    font-size: 14px;
-
-    .icon {
-      width: 40px;
-      height: 40px;
-
-      &.cancel {
-        cursor: pointer;
-      }
-    }
-
-    .body {
-      flex-grow: 1;
-      overflow: hidden;
-
-      .author {
-        font-weight: 600;
-      }
-
-      .quote {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-
   .wrapper {
     border: 2px solid #ccc;
     border-radius: 16px;

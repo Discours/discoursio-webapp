@@ -40,6 +40,9 @@ const Message = (props: Props) => {
           <div innerHTML={md.render(props.content.body)} />
         </div>
       </div>
+      <Show when={props.content.replyTo}>
+        <small>Repl to {props.content.replyTo}</small>
+      </Show>
       <div class={styles.time}>{formattedTime(props.content.createdAt)}</div>
     </div>
   )

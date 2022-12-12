@@ -28,6 +28,8 @@ const DialogCard = (props: DialogProps) => {
       ?.map((companion) => companion.name)
       .join(', ')
   )
+
+  console.log('!!! companions:', companions())
   return (
     <Show when={props.members}>
       <div
@@ -40,8 +42,8 @@ const DialogCard = (props: DialogProps) => {
       >
         <div class={styles.avatar}>
           <Switch fallback={<DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />}>
-            <Match when={companions().length > 2}>
-              <GroupDialogAvatar users={companions()} />
+            <Match when={props.members.length >= 2}>
+              <GroupDialogAvatar users={props.members} />
             </Match>
           </Switch>
         </div>

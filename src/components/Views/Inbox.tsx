@@ -57,6 +57,7 @@ export const InboxView = () => {
     changeSearchParam('chat', `${chat.id}`)
     try {
       const response = await loadMessages({ chat: chat.id })
+      console.log('!!! response:', response)
       setMessages(response as unknown as MessageType[])
       // TODO: one client recreating
     } catch (error) {

@@ -6,6 +6,7 @@ import DialogAvatar from './DialogAvatar'
 import type { Message, ChatMember } from '../../graphql/types.gen'
 import formattedTime from '../../utils/formatDateTime'
 import { Icon } from '../_shared/Icon'
+import { MessageActionsPopup } from './MessageActionsPopup'
 
 type Props = {
   content: Message
@@ -35,14 +36,11 @@ const Message = (props: Props) => {
             <div onClick={props.replyClick}>
               <Icon name="chat-reply" class={styles.reply} />
             </div>
-            <Icon name="menu" />
+            <MessageActionsPopup trigger={<Icon name="menu" />} />
           </div>
           <div innerHTML={md.render(props.content.body)} />
         </div>
       </div>
-      <Show when={props.content.replyTo}>
-        <small>Repl to {props.content.replyTo}</small>
-      </Show>
       <div class={styles.time}>{formattedTime(props.content.createdAt)}</div>
     </div>
   )

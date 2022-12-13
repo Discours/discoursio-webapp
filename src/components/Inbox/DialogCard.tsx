@@ -29,7 +29,6 @@ const DialogCard = (props: DialogProps) => {
       .join(', ')
   )
 
-  console.log('!!! companions:', companions())
   return (
     <Show when={props.members}>
       <div
@@ -42,7 +41,7 @@ const DialogCard = (props: DialogProps) => {
       >
         <div class={styles.avatar}>
           <Switch fallback={<DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />}>
-            <Match when={props.members.length >= 2}>
+            <Match when={props.members.length >= 3}>
               <GroupDialogAvatar users={props.members} />
             </Match>
           </Switch>

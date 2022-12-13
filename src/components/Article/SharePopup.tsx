@@ -9,7 +9,7 @@ type SharePopupProps = Omit<PopupProps, 'children'>
 
 export const SharePopup = (props: SharePopupProps) => {
   return (
-    <Popup {...props}>
+    <Popup {...props} variant="bordered">
       <ul class="nodash">
         <li>
           <a href="#">

@@ -1,4 +1,4 @@
-import { Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 import MarkdownIt from 'markdown-it'
 import { clsx } from 'clsx'
 import styles from './Message.module.scss'
@@ -25,6 +25,12 @@ const md = new MarkdownIt({
 const Message = (props: Props) => {
   const isOwn = props.ownId === Number(props.content.author)
   const user = props.members?.find((m) => m.id === Number(props.content.author))
+  const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
+
+  const handleMouseLeave = () => {
+    if (isPopupVisible()) setIsPopupVisible(false)
+  }
+
   return (
     <div class={clsx(styles.Message, isOwn && styles.own)}>
       <Show when={!isOwn}>
@@ -33,13 +39,17 @@ const Message = (props: Props) => {
           <div class={styles.name}>{user.name}</div>
         </div>
       </Show>
-      <div class={styles.body}>
+      <div class={styles.body} onMouseLeave={handleMouseLeave}>
         <div class={styles.text}>
           <div class={styles.actions}>
             <div onClick={props.replyClick}>
               <Icon name="chat-reply" class={styles.reply} />
             </div>
-            <MessageActionsPopup trigger={<Icon name="menu" />} />
+            <MessageActionsPopup
+              forceHide={!isPopupVisible()}
+              onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
+              trigger={<Icon name="menu" />}
+            />
           </div>
           <Show when={props.replyBody}>
             <QuotedMessage body={props.replyBody} variant="inline" />

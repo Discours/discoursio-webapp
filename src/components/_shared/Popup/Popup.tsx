@@ -2,6 +2,7 @@ import { createEffect, createSignal, JSX, Show } from 'solid-js'
 import styles from './Popup.module.scss'
 import { clsx } from 'clsx'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { set } from 'husky'
 
 type HorizontalAnchor = 'center' | 'right'
 
@@ -11,6 +12,8 @@ export type PopupProps = {
   children: JSX.Element
   onVisibilityChange?: (isVisible) => void
   horizontalAnchor?: HorizontalAnchor
+  variant?: 'bordered' | 'tiny'
+  forceHide?: boolean
 }
 
 export const Popup = (props: PopupProps) => {
@@ -31,6 +34,9 @@ export const Popup = (props: PopupProps) => {
     handler: () => setIsVisible(false)
   })
 
+  createEffect(() => {
+    if (props.forceHide) setIsVisible(false)
+  })
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
 
   return (
@@ -40,7 +46,9 @@ export const Popup = (props: PopupProps) => {
         <div
           class={clsx(styles.popup, {
             [styles.horizontalAnchorCenter]: horizontalAnchor === 'center',
-            [styles.horizontalAnchorRight]: horizontalAnchor === 'right'
+            [styles.horizontalAnchorRight]: horizontalAnchor === 'right',
+            [styles.bordered]: props.variant === 'bordered',
+            [styles.tiny]: props.variant === 'tiny'
           })}
         >
           {props.children}

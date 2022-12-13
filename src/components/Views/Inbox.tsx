@@ -255,7 +255,7 @@ export const InboxView = () => {
                     value={postMessageText()}
                     rows={1}
                     onInput={(event) => handleChangeMessage(event)}
-                    placeholder="Написать сообщение"
+                    placeholder={t('Write message')}
                   />
                 </div>
                 <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>

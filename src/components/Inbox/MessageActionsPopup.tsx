@@ -5,14 +5,14 @@ type MessageActionsPopup = Omit<PopupProps, 'children'>
 
 export const MessageActionsPopup = (props: MessageActionsPopup) => {
   return (
-    <Popup {...props}>
+    <Popup {...props} variant="tiny">
       <ul class="nodash">
         <li>Ответить</li>
         <li>Скопировать</li>
         <li>Закрепить</li>
         <li>Переслать</li>
         <li>Выбрать</li>
-        <li>Удалить</li>
+        <li style={{ color: 'red' }}>Удалить</li>
       </ul>
     </Popup>
   )

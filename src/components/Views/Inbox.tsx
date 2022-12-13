@@ -105,6 +105,11 @@ export const InboxView = () => {
     if (textareaParent) {
       textareaParent.dataset.replicatedValue = postMessageText()
     }
+    if (params['chat']) {
+      if (chats().length === 0) return
+      const chatToOpen = chats()?.find((chat) => chat.id === params['chat'])
+      await handleOpenChat(chatToOpen)
+    }
     if (params['initChat']) {
       try {
         const newChat = await actions.createChat([Number(params['initChat'])], '')

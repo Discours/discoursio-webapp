@@ -29,9 +29,11 @@ const { changeSearchParam } = useRouter()
 export const InboxView = () => {
   const {
     chats,
-    actions: { loadChats } // setListener
+    messages,
+    actions: { loadChats, getMessages } // setListener
   } = useInbox()
-  const [messages, setMessages] = createSignal<MessageType[]>([])
+
+  // const [messages, setMessages] = createSignal<MessageType[]>([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
@@ -56,14 +58,25 @@ export const InboxView = () => {
     setCurrentDialog(chat)
     changeSearchParam('chat', `${chat.id}`)
     try {
-      const response = await loadMessages({ chat: chat.id })
-      setMessages(response as unknown as MessageType[])
+      await getMessages(chat.id)
     } catch (error) {
-      console.error('[loadMessages]', error)
+      console.error('[getMessages]', error)
     } finally {
       chatWindow.scrollTop = chatWindow.scrollHeight
     }
+    // try {
+    //   const response = await loadMessages({ chat: chat.id })
+    //   setMessages(response as unknown as MessageType[])
+    // } catch (error) {
+    //   console.error('[loadMessages]', error)
+    // } finally {
+    //   chatWindow.scrollTop = chatWindow.scrollHeight
+    // }
   }
+
+  createEffect(() => {
+    console.log('!!! messages:', messages())
+  })
 
   onMount(async () => {
     try {
@@ -77,12 +90,13 @@ export const InboxView = () => {
 
   const handleSubmit = async () => {
     try {
+      console.log('!!! post:')
       const post = await apiClient.createMessage({
         body: postMessageText().toString(),
         chat: currentDialog().id.toString(),
         replyTo: messageToReply()?.id
       })
-      setMessages((prev) => [...prev, post.message])
+      // setMessages((prev) => [...prev, post.message])
       setPostMessageText('')
       setMessageToReply(null)
       chatWindow.scrollTop = chatWindow.scrollHeight

@@ -2,18 +2,33 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-top: 2px solid #ccc;
-  padding: 12px 0;
-  gap: 12px;
   font-size: 14px;
 
-  .icon {
-    width: 40px;
-    height: 40px;
-    flex-basis: 40px;
+  &.inline {
+    color: #696969;
+    border-left: 2px solid #404040;
+    padding-left: 12px;
+    margin-bottom: 8px;
 
-    &.cancel {
-      cursor: pointer;
+    &.own {
+      color: #9fa1a7;
+      border-color: #fff;
+    }
+  }
+
+  &.reply {
+    border-top: 2px solid #ccc;
+    padding: 12px 0;
+    gap: 12px;
+
+    .icon {
+      width: 40px;
+      height: 40px;
+      flex-basis: 40px;
+
+      &.cancel {
+        cursor: pointer;
+      }
     }
   }
 

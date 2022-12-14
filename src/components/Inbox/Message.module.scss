@@ -12,6 +12,7 @@ $actionsWidth: 32px * 2;
 
     .text {
       display: inline-flex;
+      flex-direction: column;
       max-width: 60%;
       margin-right: auto;
       background: #f6f6f6;

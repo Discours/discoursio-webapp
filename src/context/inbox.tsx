@@ -6,12 +6,15 @@ import { apiClient } from '../utils/apiClient'
 import newMessage from '../graphql/subs/new-message'
 import type { Client } from '@urql/core'
 import { pipe, subscribe } from 'wonka'
+import { loadMessages } from '../stores/inbox'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
+  messages?: Accessor<Message[]>
   actions: {
     createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
     loadChats: () => Promise<void>
+    getMessages?: (chatId: string) => Promise<void>
     unsubscribe: () => void
   }
 }
@@ -24,6 +27,7 @@ export function useInbox() {
 
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
+  const [messages, setMessages] = createSignal<Message[]>([])
   const subclient = createMemo<Client>(() => createChatClient())
   const loadChats = async () => {
     try {
@@ -35,6 +39,15 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       )
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  const getMessages = async (chatId: string) => {
+    try {
+      const response = await loadMessages({ chat: chatId })
+      setMessages(response as unknown as Message[])
+    } catch (error) {
+      console.log('[loadMessages]', error)
     }
   }
 
@@ -57,9 +70,10 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const actions = {
     createChat,
     loadChats,
+    getMessages,
     unsubscribe // TODO: call unsubscribe some time!
   }
 
-  const value: InboxContextType = { chats, actions }
+  const value: InboxContextType = { chats, messages, actions }
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>
 }

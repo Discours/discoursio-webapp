@@ -55,7 +55,7 @@ const Message = (props: Props) => {
             />
           </div>
           <Show when={props.replyBody}>
-            <QuotedMessage body={props.replyBody} variant="inline" />
+            <QuotedMessage body={props.replyBody} variant="inline" isOwn={isOwn} />
           </Show>
           <div innerHTML={md.render(props.content.body)} />
         </div>

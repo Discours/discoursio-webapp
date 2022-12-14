@@ -55,9 +55,9 @@ export type AuthorsBy = {
 }
 
 export type Chat = {
-  admins?: Maybe<Array<Maybe<Scalars['String']>>>
+  admins?: Maybe<Array<Maybe<Scalars['Int']>>>
   createdAt: Scalars['Int']
-  createdBy: Scalars['String']
+  createdBy: Scalars['Int']
   description?: Maybe<Scalars['String']>
   id: Scalars['String']
   members?: Maybe<Array<Maybe<ChatMember>>>
@@ -66,7 +66,7 @@ export type Chat = {
   title?: Maybe<Scalars['String']>
   unread?: Maybe<Scalars['Int']>
   updatedAt: Scalars['Int']
-  users?: Maybe<Array<Maybe<Scalars['String']>>>
+  users?: Maybe<Array<Maybe<Scalars['Int']>>>
 }
 
 export type ChatInput = {
@@ -79,6 +79,7 @@ export type ChatMember = {
   id: Scalars['Int']
   lastSeen?: Maybe<Scalars['DateTime']>
   name: Scalars['String']
+  online?: Maybe<Scalars['Boolean']>
   slug: Scalars['String']
   userpic?: Maybe<Scalars['String']>
 }
@@ -140,12 +141,13 @@ export type LoadShoutsOptions = {
 }
 
 export type Message = {
-  author: Scalars['String']
+  author: Scalars['Int']
   body: Scalars['String']
   chatId: Scalars['String']
   createdAt: Scalars['Int']
   id: Scalars['Int']
-  replyTo?: Maybe<Scalars['String']>
+  replyTo?: Maybe<Scalars['Int']>
+  seen?: Maybe<Scalars['Boolean']>
   updatedAt?: Maybe<Scalars['Int']>
 }
 
@@ -354,6 +356,7 @@ export type Query = {
   loadShout?: Maybe<Shout>
   loadShouts: Array<Maybe<Shout>>
   markdownBody: Scalars['String']
+  searchMessages: Result
   searchRecipients: Result
   signIn: AuthResult
   signOut: AuthResult
@@ -416,6 +419,12 @@ export type QueryLoadShoutsArgs = {
 
 export type QueryMarkdownBodyArgs = {
   body: Scalars['String']
+}
+
+export type QuerySearchMessagesArgs = {
+  by: MessagesBy
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
 }
 
 export type QuerySearchRecipientsArgs = {
@@ -621,19 +630,12 @@ export type Stat = {
 }
 
 export type Subscription = {
-  newMessage: Message
-  onlineUpdated: Array<User>
-  reactionUpdated: ReactionUpdating
-  shoutUpdated: Shout
-  userUpdated: User
+  collabUpdate?: Maybe<Reaction>
+  newMessage?: Maybe<Message>
 }
 
-export type SubscriptionNewMessageArgs = {
-  chats?: InputMaybe<Array<Scalars['Int']>>
-}
-
-export type SubscriptionReactionUpdatedArgs = {
-  shout: Scalars['String']
+export type SubscriptionCollabUpdateArgs = {
+  collab: Scalars['Int']
 }
 
 export type Token = {
@@ -670,6 +672,7 @@ export type TopicStat = {
 }
 
 export type User = {
+  about?: Maybe<Scalars['String']>
   bio?: Maybe<Scalars['String']>
   communities?: Maybe<Array<Maybe<Scalars['Int']>>>
   createdAt: Scalars['DateTime']

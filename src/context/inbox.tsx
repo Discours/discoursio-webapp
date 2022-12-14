@@ -1,7 +1,7 @@
 import { Accessor, createMemo, JSX, onMount } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
 import { createChatClient } from '../graphql/privateGraphQLClient'
-import type { Chat } from '../graphql/types.gen'
+import type { Chat, Message } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import newMessage from '../graphql/subs/new-message'
 import type { Client } from '@urql/core'

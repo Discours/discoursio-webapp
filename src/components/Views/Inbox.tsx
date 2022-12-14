@@ -58,7 +58,6 @@ export const InboxView = () => {
     try {
       const response = await loadMessages({ chat: chat.id })
       setMessages(response as unknown as MessageType[])
-      // TODO: one client recreating
     } catch (error) {
       console.error('[loadMessages]', error)
     } finally {
@@ -141,6 +140,13 @@ export const InboxView = () => {
 
   const findToReply = (messageId) => {
     return messages().find((message) => message.id === messageId)
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13 && !event.shiftKey && postMessageText().trim().length > 0) {
+      event.preventDefault()
+      handleSubmit()
+    }
   }
 
   return (
@@ -259,6 +265,7 @@ export const InboxView = () => {
                     class={styles.textInput}
                     value={postMessageText()}
                     rows={1}
+                    onKeyDown={handleKeyDown}
                     onInput={(event) => handleChangeMessage(event)}
                     placeholder={t('Write message')}
                   />

@@ -143,6 +143,7 @@ export const InboxView = () => {
   }
 
   const handleKeyDown = (event) => {
+    if (event.keyCode === 13 && event.shiftKey) return
     if (event.keyCode === 13 && !event.shiftKey && postMessageText().trim().length > 0) {
       event.preventDefault()
       handleSubmit()

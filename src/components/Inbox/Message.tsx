@@ -19,7 +19,8 @@ type Props = {
 }
 
 const md = new MarkdownIt({
-  linkify: true
+  linkify: true,
+  breaks: true
 })
 
 const Message = (props: Props) => {

@@ -33,7 +33,7 @@ export const InboxView = () => {
   } = useInbox()
   const [messages, setMessages] = createSignal<MessageType[]>([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
-  const [postMessageText, setPostMessageText] = createSignal('')
+  const [postMessageText, setPostMessageText] = createSignal<string>('')
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
@@ -130,9 +130,9 @@ export const InboxView = () => {
       return a.updatedAt - b.updatedAt
     })
     if (sortByPerToPer()) {
-      return sorted.filter((chat) => chat.title.trim().length === 0)
+      return sorted.filter((chat) => (chat.title || '').trim().length === 0)
     } else if (sortByGroup()) {
-      return sorted.filter((chat) => chat.title.trim().length > 0)
+      return sorted.filter((chat) => (chat.title || '').trim().length > 0)
     } else {
       return sorted
     }
@@ -144,7 +144,7 @@ export const InboxView = () => {
 
   const handleKeyDown = (event) => {
     if (event.keyCode === 13 && event.shiftKey) return
-    if (event.keyCode === 13 && !event.shiftKey && postMessageText().trim().length > 0) {
+    if (event.keyCode === 13 && !event.shiftKey && postMessageText()?.trim().length > 0) {
       event.preventDefault()
       handleSubmit()
     }

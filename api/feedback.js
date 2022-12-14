@@ -1,6 +1,5 @@
 import MG from 'mailgun.js'
 import fd from 'form-data'
-import type Options from 'mailgun.js/interfaces/Options'
 
 const mgOptions = {
   key: process.env.MAILGUN_API_KEY,
@@ -25,7 +24,7 @@ export default async function handler(req, res) {
       key: mgOptions.key
       //url?: string;
       //public_key?: string;
-    } as Options)
+    })
     const data = messageData(`${contact}: ${subject}`, message)
     client.messages.create(mgOptions.domain, data).then(console.log).catch(console.error)
   } catch (error) {

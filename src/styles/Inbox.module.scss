@@ -5,7 +5,8 @@ main {
   position: relative;
 }
 
-.Inbox {
+.messages {
+  display: none;
   top: 74px;
   height: calc(100% - 74px);
   left: 0;
@@ -13,10 +14,8 @@ main {
   padding-left: 42px;
   padding-right: 26px;
   background: #fff;
-  display: flex;
   flex: 1;
   flex-direction: column;
-  position: absolute;
 
   .row {
     flex: 1;

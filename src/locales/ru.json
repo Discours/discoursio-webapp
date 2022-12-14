@@ -206,10 +206,10 @@
   "Social networks": "Социальные сети",
   "Save settings": "Сохранить настройки",
   "Write message": "Написать сообщение",
-  "Reply": "Ответить",
   "Copy": "Скопировать",
   "Pin": "Закрепить",
   "Forward": "Переслать",
   "Select": "Выбрать",
-  "Delete": "Удалить"
+  "slug is used by another user": "Имя уже занято другим пользователем",
+  "It does not look like url": "Это не похоже на ссылку"
 }

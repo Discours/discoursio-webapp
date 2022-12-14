@@ -52,7 +52,7 @@ $actionsWidth: 32px * 2;
 
     &:hover {
       .actions {
-        z-index: 1;
+        z-index: 100;
         opacity: 1;
         right: -$actionsWidth;
       }

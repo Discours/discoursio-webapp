@@ -27,6 +27,7 @@ const Message = (props: Props) => {
   const isOwn = props.ownId === Number(props.content.author)
   const user = props.members?.find((m) => m.id === Number(props.content.author))
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
+  const [selectedAction, setSelectedAction] = createSignal<string>()
 
   const handleMouseLeave = () => {
     if (isPopupVisible()) setIsPopupVisible(false)
@@ -48,6 +49,7 @@ const Message = (props: Props) => {
             </div>
             <MessageActionsPopup
               forceHide={!isPopupVisible()}
+              actionSelect={(selectedAction) => setSelectedAction(selectedAction)}
               onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
               trigger={<Icon name="menu" />}
             />

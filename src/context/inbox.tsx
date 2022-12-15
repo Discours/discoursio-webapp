@@ -53,10 +53,10 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     try {
       const message = await apiClient.createMessage(args)
       setMessages((prev) => [...prev, message])
-      const chat = chats().find((chat) => chat.id === args.chat)
+      const currentChat = chats().find((chat) => chat.id === args.chat)
       setChats((prev) => [
-        ...prev.filter((c) => c.id !== chat.id),
-        { ...chat, updatedAt: message.createdAt }
+        ...prev.filter((c) => c.id !== currentChat.id),
+        { ...currentChat, updatedAt: message.createdAt }
       ])
     } catch (error) {
       console.error('[post message error]:', error)

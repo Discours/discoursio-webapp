@@ -33,11 +33,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const loadChats = async () => {
     try {
       const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
-      setChats(
-        newChats.sort((x, y) => {
-          return x.updatedAt < y.updatedAt ? 1 : -1
-        })
-      )
+      setChats(newChats)
     } catch (error) {
       console.log(error)
     }
@@ -49,14 +45,19 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       const response = await loadMessages({ chat: chatId })
       setMessages(response as unknown as Message[])
     } catch (error) {
-      console.log('[loadMessages]', error)
+      console.error('[loadMessages]', error)
     }
   }
 
   const sendMessage = async (args) => {
     try {
-      const post = await apiClient.createMessage(args)
-      setMessages((prev) => [...prev, post.message])
+      const message = await apiClient.createMessage(args)
+      setMessages((prev) => [...prev, message])
+      const chat = chats().find((chat) => chat.id === args.chat)
+      setChats((prev) => [
+        ...prev.filter((c) => c.id !== chat.id),
+        { ...chat, updatedAt: message.createdAt }
+      ])
     } catch (error) {
       console.error('[post message error]:', error)
     }

@@ -18,6 +18,10 @@ import { useRouter } from '../../stores/router'
 import { clsx } from 'clsx'
 import styles from '../../styles/Inbox.module.scss'
 
+type InboxSearchParams = {
+  initChat: string
+  chat: string
+}
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
   return array.filter((value) => {
@@ -29,10 +33,9 @@ export const InboxView = () => {
   const {
     chats,
     messages,
-    actions: { loadChats, getMessages, sendMessage }
+    actions: { loadChats, getMessages, sendMessage, createChat }
   } = useInbox()
 
-  // const [messages, setMessages] = createSignal<MessageType[]>([])
   const [recipients, setRecipients] = createSignal<Author[]>([])
   const [postMessageText, setPostMessageText] = createSignal('')
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
@@ -65,10 +68,6 @@ export const InboxView = () => {
     }
   }
 
-  createEffect(() => {
-    console.log('!!! messages:', messages())
-  })
-
   onMount(async () => {
     try {
       const response = await loadRecipients({ days: 365 })
@@ -95,22 +94,24 @@ export const InboxView = () => {
     setPostMessageText(event.target.value)
   }
 
-  const { actions } = useInbox()
-  const urlParams = new URLSearchParams(window.location.search)
-  const params = Object.fromEntries(urlParams)
+  const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
+
   createEffect(async () => {
     if (textareaParent) {
       textareaParent.dataset.replicatedValue = postMessageText()
     }
-    if (params['chat']) {
-      if (chats().length === 0) return
-      const chatToOpen = chats()?.find((chat) => chat.id === params['chat'])
+    if (searchParams().chat) {
+      const chatToOpen = chats()?.find((chat) => chat.id === searchParams().chat)
+      if (!chatToOpen) return
       await handleOpenChat(chatToOpen)
+      return
     }
-    if (params['initChat']) {
+    if (searchParams().initChat) {
       try {
-        const newChat = await actions.createChat([Number(params['initChat'])], '')
+        const newChat = await createChat([Number(searchParams().initChat)], '')
         await loadChats()
+        changeSearchParam('initChat', null)
+        changeSearchParam('chat', newChat.chat.id)
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen)
       } catch (error) {
@@ -125,7 +126,7 @@ export const InboxView = () => {
 
   const chatsToShow = () => {
     const sorted = chats().sort((a, b) => {
-      return a.updatedAt - b.updatedAt
+      return b.updatedAt - a.updatedAt
     })
     if (sortByPerToPer()) {
       return sorted.filter((chat) => chat.title.trim().length === 0)

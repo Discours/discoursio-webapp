@@ -58,7 +58,7 @@ const DialogCard = (props: DialogProps) => {
         <Show when={!props.isChatHeader}>
           <div class={styles.activity}>
             <Show when={props.lastUpdate}>
-              <div class={styles.time}>{formattedTime(props.lastUpdate)}</div>
+              <div class={styles.time}>{formattedTime(props.lastUpdate * 1000)}</div>
             </Show>
             <Show when={props.counter > 0}>
               <div class={styles.counter}>

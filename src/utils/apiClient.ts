@@ -288,7 +288,7 @@ export const apiClient = {
 
   createMessage: async (options: MutationCreateMessageArgs) => {
     const resp = await privateGraphQLClient.mutation(createMessage, options).toPromise()
-    return resp.data.createMessage
+    return resp.data.createMessage.message
   },
 
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {

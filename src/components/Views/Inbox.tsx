@@ -28,7 +28,7 @@ const userSearch = (array: Author[], keyword: string) => {
     return value.name.toLowerCase().match(new RegExp(searchTerm, 'g'))
   })
 }
-const { changeSearchParam } = useRouter()
+
 export const InboxView = () => {
   const {
     chats,

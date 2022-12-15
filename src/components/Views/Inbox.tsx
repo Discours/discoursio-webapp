@@ -9,7 +9,7 @@ import MessagesFallback from '../Inbox/MessagesFallback'
 import QuotedMessage from '../Inbox/QuotedMessage'
 import { Icon } from '../_shared/Icon'
 import { useSession } from '../../context/session'
-import { loadRecipients } from '../../stores/inbox'
+import { loadMessages, loadRecipients } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
@@ -67,6 +67,20 @@ export const InboxView = () => {
       chatWindow.scrollTop = chatWindow.scrollHeight
     }
   }
+
+  // TODO: удалить когда будет готова подписка
+  createEffect(() => {
+    setInterval(async () => {
+      if (!currentDialog()) return
+      try {
+        await getMessages(currentDialog().id)
+      } catch (error) {
+        console.error('[getMessages]', error)
+      } finally {
+        chatWindow.scrollTop = chatWindow.scrollHeight
+      }
+    }, 2000)
+  })
 
   onMount(async () => {
     try {

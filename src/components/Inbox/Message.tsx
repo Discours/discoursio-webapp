@@ -29,10 +29,6 @@ const Message = (props: Props) => {
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
   const [selectedAction, setSelectedAction] = createSignal<string>()
 
-  const handleMouseLeave = () => {
-    if (isPopupVisible()) setIsPopupVisible(false)
-  }
-
   return (
     <div class={clsx(styles.Message, isOwn && styles.own)}>
       <Show when={!isOwn}>
@@ -41,14 +37,13 @@ const Message = (props: Props) => {
           <div class={styles.name}>{user.name}</div>
         </div>
       </Show>
-      <div class={styles.body} onMouseLeave={handleMouseLeave}>
+      <div class={clsx(styles.body, { [styles.popupVisible]: isPopupVisible() })}>
         <div class={styles.text}>
           <div class={styles.actions}>
             <div onClick={props.replyClick}>
               <Icon name="chat-reply" class={styles.reply} />
             </div>
             <MessageActionsPopup
-              forceHide={!isPopupVisible()}
               actionSelect={(selectedAction) => setSelectedAction(selectedAction)}
               onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
               trigger={<Icon name="menu" />}

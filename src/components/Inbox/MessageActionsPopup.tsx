@@ -3,11 +3,13 @@ import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 import { t } from '../../utils/intl'
 
+export type MessageActionType = 'reply' | 'copy' | 'pin' | 'forward' | 'select' | 'delete'
+
 type MessageActionsPopup = {
   actionSelect?: (selectedAction) => void
 } & Omit<PopupProps, 'children'>
 
-const actions = [
+const actions: { name: string; action: MessageActionType }[] = [
   { name: t('Reply'), action: 'reply' },
   { name: t('Copy'), action: 'copy' },
   { name: t('Pin'), action: 'pin' },
@@ -17,7 +19,8 @@ const actions = [
 ]
 
 export const MessageActionsPopup = (props: MessageActionsPopup) => {
-  const [selectedAction, setSelectedAction] = createSignal<string>()
+  const [selectedAction, setSelectedAction] = createSignal<MessageActionType | null>(null)
+
   createEffect(() => {
     if (props.actionSelect) props.actionSelect(selectedAction())
   })
@@ -25,7 +28,14 @@ export const MessageActionsPopup = (props: MessageActionsPopup) => {
     <Popup {...props} variant="tiny">
       <ul class="nodash">
         <For each={actions}>
-          {(item) => <li onClick={() => setSelectedAction(item.action)}>{item.name}</li>}
+          {(item) => (
+            <li
+              style={item.action === 'delete' && { color: 'red' }}
+              onClick={() => setSelectedAction(item.action)}
+            >
+              {item.name}
+            </li>
+          )}
         </For>
       </ul>
     </Popup>

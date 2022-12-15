@@ -51,10 +51,14 @@ $actionsWidth: 32px * 2;
       z-index: -1;
       transition: 0.3s ease-in-out;
     }
-
+    &.popupVisible {
+      position: relative;
+      z-index: 100;
+    }
+    &.popupVisible,
     &:hover {
       .actions {
-        z-index: 100;
+        z-index: 10000;
         opacity: 1;
         right: -$actionsWidth;
       }
@@ -102,8 +106,11 @@ $actionsWidth: 32px * 2;
         }
       }
 
-      &:hover .actions {
-        left: -$actionsWidth;
+      &.popupVisible,
+      &:hover {
+        .actions {
+          left: -$actionsWidth;
+        }
       }
     }
 

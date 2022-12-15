@@ -6,10 +6,10 @@
   font-size: 14px;
   padding: 12px;
   transition: background 0.3s ease-in-out;
-  cursor: pointer;
   width: 100%;
 
   &.hovered:hover {
+    cursor: pointer;
     background: #f7f7f7;
   }
 

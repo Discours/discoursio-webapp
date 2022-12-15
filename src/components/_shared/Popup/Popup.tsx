@@ -13,7 +13,6 @@ export type PopupProps = {
   onVisibilityChange?: (isVisible) => void
   horizontalAnchor?: HorizontalAnchor
   variant?: 'bordered' | 'tiny'
-  forceHide?: boolean
 }
 
 export const Popup = (props: PopupProps) => {
@@ -34,9 +33,6 @@ export const Popup = (props: PopupProps) => {
     handler: () => setIsVisible(false)
   })
 
-  createEffect(() => {
-    if (props.forceHide) setIsVisible(false)
-  })
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
 
   return (

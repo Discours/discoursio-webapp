@@ -1,23 +1,22 @@
 import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
 import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
-import { useSession } from '../../context/session'
 import Message from '../Inbox/Message'
-import { loadRecipients, loadMessages } from '../../stores/inbox'
+import CreateModalContent from '../Inbox/CreateModalContent'
+import DialogHeader from '../Inbox/DialogHeader'
+import MessagesFallback from '../Inbox/MessagesFallback'
+import QuotedMessage from '../Inbox/QuotedMessage'
+import { Icon } from '../_shared/Icon'
+import { useSession } from '../../context/session'
+import { loadRecipients } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
-import CreateModalContent from '../Inbox/CreateModalContent'
 import { useInbox } from '../../context/inbox'
-import DialogHeader from '../Inbox/DialogHeader'
-import { apiClient } from '../../utils/apiClient'
-import MessagesFallback from '../Inbox/MessagesFallback'
 import { useRouter } from '../../stores/router'
 import { clsx } from 'clsx'
 import styles from '../../styles/Inbox.module.scss'
-import QuotedMessage from '../Inbox/QuotedMessage'
 
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
@@ -30,7 +29,7 @@ export const InboxView = () => {
   const {
     chats,
     messages,
-    actions: { loadChats, getMessages } // setListener
+    actions: { loadChats, getMessages, sendMessage }
   } = useInbox()
 
   // const [messages, setMessages] = createSignal<MessageType[]>([])
@@ -64,14 +63,6 @@ export const InboxView = () => {
     } finally {
       chatWindow.scrollTop = chatWindow.scrollHeight
     }
-    // try {
-    //   const response = await loadMessages({ chat: chat.id })
-    //   setMessages(response as unknown as MessageType[])
-    // } catch (error) {
-    //   console.error('[loadMessages]', error)
-    // } finally {
-    //   chatWindow.scrollTop = chatWindow.scrollHeight
-    // }
   }
 
   createEffect(() => {
@@ -89,21 +80,14 @@ export const InboxView = () => {
   })
 
   const handleSubmit = async () => {
-    try {
-      console.log('!!! post:')
-      const post = await apiClient.createMessage({
-        body: postMessageText().toString(),
-        chat: currentDialog().id.toString(),
-        replyTo: messageToReply()?.id
-      })
-      // setMessages((prev) => [...prev, post.message])
-      setPostMessageText('')
-      setMessageToReply(null)
-      chatWindow.scrollTop = chatWindow.scrollHeight
-      console.log('!!! messages:', messages())
-    } catch (error) {
-      console.error('[post message error]:', error)
-    }
+    await sendMessage({
+      body: postMessageText().toString(),
+      chat: currentDialog().id.toString(),
+      replyTo: messageToReply()?.id
+    })
+    setPostMessageText('')
+    setMessageToReply(null)
+    chatWindow.scrollTop = chatWindow.scrollHeight
   }
 
   let textareaParent // textarea autoresize ghost element

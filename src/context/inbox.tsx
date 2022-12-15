@@ -1,7 +1,7 @@
 import { Accessor, createMemo, JSX, onMount } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
 import { createChatClient } from '../graphql/privateGraphQLClient'
-import type { Chat, Message } from '../graphql/types.gen'
+import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import newMessage from '../graphql/subs/new-message'
 import type { Client } from '@urql/core'
@@ -15,6 +15,7 @@ type InboxContextType = {
     createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
     loadChats: () => Promise<void>
     getMessages?: (chatId: string) => Promise<void>
+    sendMessage?: (args: MutationCreateMessageArgs) => void
     unsubscribe: () => void
   }
 }
@@ -43,11 +44,21 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   }
 
   const getMessages = async (chatId: string) => {
+    if (!chatId) return
     try {
       const response = await loadMessages({ chat: chatId })
       setMessages(response as unknown as Message[])
     } catch (error) {
       console.log('[loadMessages]', error)
+    }
+  }
+
+  const sendMessage = async (args) => {
+    try {
+      const post = await apiClient.createMessage(args)
+      setMessages((prev) => [...prev, post.message])
+    } catch (error) {
+      console.error('[post message error]:', error)
     }
   }
 
@@ -71,6 +82,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     createChat,
     loadChats,
     getMessages,
+    sendMessage,
     unsubscribe // TODO: call unsubscribe some time!
   }
 

@@ -44,7 +44,7 @@ const Message = (props: Props) => {
               <Icon name="chat-reply" class={styles.reply} />
             </div>
             <MessageActionsPopup
-              actionSelect={(selectedAction) => setSelectedAction(selectedAction)}
+              actionSelect={(action) => setSelectedAction(action)}
               onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
               trigger={<Icon name="menu" />}
             />

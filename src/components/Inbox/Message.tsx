@@ -27,7 +27,6 @@ const Message = (props: Props) => {
   const isOwn = props.ownId === Number(props.content.author)
   const user = props.members?.find((m) => m.id === Number(props.content.author))
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
-  const [selectedAction, setSelectedAction] = createSignal<string>()
 
   return (
     <div class={clsx(styles.Message, isOwn && styles.own)}>
@@ -44,7 +43,6 @@ const Message = (props: Props) => {
               <Icon name="chat-reply" class={styles.reply} />
             </div>
             <MessageActionsPopup
-              actionSelect={(action) => setSelectedAction(action)}
               onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
               trigger={<Icon name="menu" />}
             />

@@ -10,6 +10,10 @@ import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
 
+type NestedReaction = {
+  children: Reaction[]
+} & Reaction
+
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
 
@@ -103,16 +107,16 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
         </div>
 
         <ul>
-          <For each={reactions().reverse()}>
-            {(reaction: Reaction) => (
-              <>
-                {JSON.stringify(getCommentLevel(reaction))}
-                <Comment
-                  comment={reaction}
-                  level={getCommentLevel(reaction)}
-                  canEdit={reaction.createdBy?.slug === session()?.user?.slug}
-                />
-              </>
+          <For each={nestComments(reactions().reverse())}>
+            {(reaction: NestedReaction) => (
+              <Comment
+                comment={reaction}
+                level={getCommentLevel(reaction)}
+                canEdit={reaction?.createdBy?.slug === session()?.user?.slug}
+                children={(reaction.children || []).map((r) => {
+                  return <Comment comment={r} />
+                })}
+              />
             )}
           </For>
         </ul>

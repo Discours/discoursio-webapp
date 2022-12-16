@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
 import { useSession } from '../../context/session'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
@@ -49,6 +49,25 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     return level
   }
   onMount(async () => await loadMore())
+
+  function nestComments(commentList) {
+    const commentMap = {}
+    commentList.forEach((comment) => (commentMap[comment.id] = comment))
+    commentList.forEach((comment) => {
+      if (comment.replyTo !== null) {
+        const parent = commentMap[comment.replyTo]
+        ;(parent.children = parent.children || []).push(comment)
+      }
+    })
+    return commentList.filter((comment) => {
+      return comment.replyTo === null
+    })
+  }
+
+  createEffect(() => {
+    console.log('!!! reactions():', nestComments(reactions()))
+  })
+
   return (
     <>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -83,15 +102,20 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
           </ul>
         </div>
 
-        <For each={reactions().reverse()}>
-          {(reaction: Reaction) => (
-            <Comment
-              comment={reaction}
-              level={getCommentLevel(reaction)}
-              canEdit={reaction.createdBy?.slug === session()?.user?.slug}
-            />
-          )}
-        </For>
+        <ul>
+          <For each={reactions().reverse()}>
+            {(reaction: Reaction) => (
+              <>
+                {JSON.stringify(getCommentLevel(reaction))}
+                <Comment
+                  comment={reaction}
+                  level={getCommentLevel(reaction)}
+                  canEdit={reaction.createdBy?.slug === session()?.user?.slug}
+                />
+              </>
+            )}
+          </For>
+        </ul>
 
         <Show when={isLoadMoreButtonVisible()}>
           <button onClick={loadMore}>{t('Load more')}</button>

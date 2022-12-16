@@ -12,6 +12,7 @@ import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
+import CommentWrapper from './CommentWrapper'
 
 export default (props: {
   level?: number
@@ -34,114 +35,116 @@ export default (props: {
   )
 
   return (
-    <div class={clsx(styles.comment, { [styles[`commentLevel${props.level}`]]: Boolean(props.level) })}>
-      <Show when={!!body()}>
-        <div class={styles.commentContent}>
-          <Show
-            when={!props.compact}
-            fallback={
-              <div>
-                <Userpic user={comment().createdBy as Author} isBig={false} isAuthorsList={false} />
-                <small class={styles.commentArticle}>
-                  <a href={`#comment-${comment()?.id}`}>{comment()?.shout.title || ''}</a>
-                </small>
-              </div>
-            }
-          >
-            <div class={styles.commentDetails}>
-              <div class={styles.commentAuthor}>
-                <AuthorCard
-                  author={comment()?.createdBy as Author}
-                  hideDescription={true}
-                  hideFollow={true}
-                  isComments={true}
-                  hasLink={true}
-                />
-              </div>
-
-              <div class={styles.commentDate}>{formattedDate()}</div>
-              <div
-                class={styles.commentRating}
-                classList={{
-                  [styles.commentRatingPositive]: comment().stat?.rating > 0,
-                  [styles.commentRatingNegative]: comment().stat?.rating < 0
-                }}
-              >
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlUp)} />
-                <div class={styles.commentRatingValue}>{comment().stat?.rating || 0}</div>
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlDown)} />
-              </div>
-            </div>
-          </Show>
-
-          <div
-            class={styles.commentBody}
-            contenteditable={props.canEdit}
-            id={'comment-' + (comment().id || '')}
-          >
-            <MD body={body()} />
-          </div>
-
-          <Show when={!props.compact}>
-            <div class={styles.commentControls}>
-              <button
-                class={clsx(styles.commentControl, styles.commentControlReply)}
-                onClick={() => setIsReplyVisible(!isReplyVisible())}
-              >
-                <Icon name="reply" class={styles.icon} />
-                {t('Reply')}
-              </button>
-
-              <Show when={props.canEdit}>
-                {/*FIXME implement edit comment modal*/}
-                {/*<button*/}
-                {/*  class={clsx(styles.commentControl, styles.commentControlEdit)}*/}
-                {/*  onClick={() => showModal('editComment')}*/}
-                {/*>*/}
-                {/*  <Icon name="edit" class={styles.icon} />*/}
-                {/*  {t('Edit')}*/}
-                {/*</button>*/}
-                <button
-                  class={clsx(styles.commentControl, styles.commentControlDelete)}
-                  onClick={() => remove()}
-                >
-                  <Icon name="delete" class={styles.icon} />
-                  {t('Delete')}
-                </button>
-              </Show>
-
-              <SharePopup
-                containerCssClass={stylesHeader.control}
-                trigger={
-                  <button class={clsx(styles.commentControl, styles.commentControlShare)}>
-                    <Icon name="share" class={styles.icon} />
-                    {t('Share')}
-                  </button>
-                }
-              />
-
-              {/*<button*/}
-              {/*  class={clsx(styles.commentControl, styles.commentControlComplain)}*/}
-              {/*  onClick={() => showModal('reportComment')}*/}
-              {/*>*/}
-              {/*  {t('Report')}*/}
-              {/*</button>*/}
-            </div>
-
-            <Show when={isReplyVisible()}>
-              <form class={styles.replyForm}>
-                <textarea name="reply" id="reply" rows="5" />
-                <div class={styles.replyFormControls}>
-                  <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
-                    {t('Cancel')}
-                  </button>
-                  <button class="button">{t('Send')}</button>
+    <CommentWrapper level={props.level}>
+      <li class={clsx(styles.comment, { [styles[`commentLevel${props.level}`]]: Boolean(props.level) })}>
+        <Show when={!!body()}>
+          <div class={styles.commentContent}>
+            <Show
+              when={!props.compact}
+              fallback={
+                <div>
+                  <Userpic user={comment().createdBy as Author} isBig={false} isAuthorsList={false} />
+                  <small class={styles.commentArticle}>
+                    <a href={`#comment-${comment()?.id}`}>{comment()?.shout.title || ''}</a>
+                  </small>
                 </div>
-              </form>
+              }
+            >
+              <div class={styles.commentDetails}>
+                <div class={styles.commentAuthor}>
+                  <AuthorCard
+                    author={comment()?.createdBy as Author}
+                    hideDescription={true}
+                    hideFollow={true}
+                    isComments={true}
+                    hasLink={true}
+                  />
+                </div>
+
+                <div class={styles.commentDate}>{formattedDate()}</div>
+                <div
+                  class={styles.commentRating}
+                  classList={{
+                    [styles.commentRatingPositive]: comment().stat?.rating > 0,
+                    [styles.commentRatingNegative]: comment().stat?.rating < 0
+                  }}
+                >
+                  <button class={clsx(styles.commentRatingControl, styles.commentRatingControlUp)} />
+                  <div class={styles.commentRatingValue}>{comment().stat?.rating || 0}</div>
+                  <button class={clsx(styles.commentRatingControl, styles.commentRatingControlDown)} />
+                </div>
+              </div>
             </Show>
-          </Show>
-        </div>
-      </Show>
-    </div>
+
+            <div
+              class={styles.commentBody}
+              contenteditable={props.canEdit}
+              id={'comment-' + (comment().id || '')}
+            >
+              <MD body={body()} />
+            </div>
+
+            <Show when={!props.compact}>
+              <div class={styles.commentControls}>
+                <button
+                  class={clsx(styles.commentControl, styles.commentControlReply)}
+                  onClick={() => setIsReplyVisible(!isReplyVisible())}
+                >
+                  <Icon name="reply" class={styles.icon} />
+                  {t('Reply')}
+                </button>
+
+                <Show when={props.canEdit}>
+                  {/*FIXME implement edit comment modal*/}
+                  {/*<button*/}
+                  {/*  class={clsx(styles.commentControl, styles.commentControlEdit)}*/}
+                  {/*  onClick={() => showModal('editComment')}*/}
+                  {/*>*/}
+                  {/*  <Icon name="edit" class={styles.icon} />*/}
+                  {/*  {t('Edit')}*/}
+                  {/*</button>*/}
+                  <button
+                    class={clsx(styles.commentControl, styles.commentControlDelete)}
+                    onClick={() => remove()}
+                  >
+                    <Icon name="delete" class={styles.icon} />
+                    {t('Delete')}
+                  </button>
+                </Show>
+
+                <SharePopup
+                  containerCssClass={stylesHeader.control}
+                  trigger={
+                    <button class={clsx(styles.commentControl, styles.commentControlShare)}>
+                      <Icon name="share" class={styles.icon} />
+                      {t('Share')}
+                    </button>
+                  }
+                />
+
+                {/*<button*/}
+                {/*  class={clsx(styles.commentControl, styles.commentControlComplain)}*/}
+                {/*  onClick={() => showModal('reportComment')}*/}
+                {/*>*/}
+                {/*  {t('Report')}*/}
+                {/*</button>*/}
+              </div>
+
+              <Show when={isReplyVisible()}>
+                <form class={styles.replyForm}>
+                  <textarea name="reply" id="reply" rows="5" />
+                  <div class={styles.replyFormControls}>
+                    <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
+                      {t('Cancel')}
+                    </button>
+                    <button class="button">{t('Send')}</button>
+                  </div>
+                </form>
+              </Show>
+            </Show>
+          </div>
+        </Show>
+      </li>
+    </CommentWrapper>
   )
 }

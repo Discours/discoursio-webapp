@@ -3,6 +3,7 @@
   margin: 0 -2.4rem 1.5em;
   padding: 0.8rem 2.4rem;
   transition: background-color 0.3s;
+  border: 1px solid red;
 
   &:hover {
     background-color: #f6f6f6;
@@ -32,25 +33,25 @@
   }
 }
 
-.commentLevel1 {
-  margin-left: 3.2rem;
-}
-
-.commentLevel2 {
-  margin-left: 6.4rem;
-}
-
-.commentLevel3 {
-  margin-left: 9.6rem;
-}
-
-.commentLevel4 {
-  margin-left: 12.8rem;
-}
-
-.commentLevel5 {
-  margin-left: 16rem;
-}
+//.commentLevel1 {
+//  margin-left: 3.2rem;
+//}
+//
+//.commentLevel2 {
+//  margin-left: 6.4rem;
+//}
+//
+//.commentLevel3 {
+//  margin-left: 9.6rem;
+//}
+//
+//.commentLevel4 {
+//  margin-left: 12.8rem;
+//}
+//
+//.commentLevel5 {
+//  margin-left: 16rem;
+//}
 
 .commentControls {
   @include font-size(1.2rem);

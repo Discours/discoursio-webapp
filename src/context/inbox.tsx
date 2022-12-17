@@ -1,5 +1,5 @@
-import { Accessor, createMemo, JSX, onMount } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
+import type { Accessor, JSX } from 'solid-js'
 // import { createChatClient } from '../graphql/privateGraphQLClient'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'

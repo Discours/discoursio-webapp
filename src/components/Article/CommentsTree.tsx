@@ -56,15 +56,16 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
 
   function nestComments(commentList) {
     const commentMap = {}
-    commentList.forEach((comment) => (commentMap[comment.id] = comment))
     commentList.forEach((comment) => {
-      if (comment.replyTo !== null) {
+      commentMap[comment.id] = comment
+      if (comment.replyTo) {
+        if (!comment.replyTo) return
         const parent = commentMap[comment.replyTo]
         ;(parent.children = parent.children || []).push(comment)
       }
     })
     return commentList.filter((comment) => {
-      return comment.replyTo === null
+      return !comment.replyTo
     })
   }
 

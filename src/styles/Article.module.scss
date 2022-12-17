@@ -60,6 +60,7 @@ img {
 
 .shoutMediaBody {
   display: block;
+
   audio {
     display: inline-block;
   }
@@ -258,6 +259,7 @@ img {
 
 .commentsHeader {
   @include font-size(2.4rem);
+
   margin-bottom: 1em;
 }
 
@@ -287,6 +289,7 @@ img {
 
   button {
     @include font-size(1.5rem);
+
     border-radius: 0.8rem;
     margin-right: 1.2rem;
     padding: 1.1rem 1.2rem 0.9rem;

@@ -7,6 +7,7 @@ export default gql`
       token
       user {
         _id: slug
+        id
         name
         slug
         bio

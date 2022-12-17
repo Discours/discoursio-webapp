@@ -1,13 +1,22 @@
-import type { JSX } from 'solid-js'
-import { createContext, useContext } from 'solid-js'
-import type { Message } from '../graphql/types.gen'
+import { createContext, createSignal, useContext } from 'solid-js'
+import type { Accessor, JSX } from 'solid-js'
+// import { createChatClient } from '../graphql/privateGraphQLClient'
+import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
-import { createStore } from 'solid-js/store'
+// import newMessage from '../graphql/subs/new-message'
+// import type { Client } from '@urql/core'
+import { pipe, subscribe } from 'wonka'
+import { loadMessages } from '../stores/inbox'
 
 type InboxContextType = {
-  chatEntities: { [chatId: string]: Message[] }
+  chats: Accessor<Chat[]>
+  messages?: Accessor<Message[]>
   actions: {
-    createChat: (members: number[], title: string) => Promise<void>
+    createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
+    loadChats: () => Promise<void>
+    getMessages?: (chatId: string) => Promise<void>
+    sendMessage?: (args: MutationCreateMessageArgs) => void
+    // unsubscribe: () => void
   }
 }
 
@@ -18,20 +27,66 @@ export function useInbox() {
 }
 
 export const InboxProvider = (props: { children: JSX.Element }) => {
-  const [chatEntities, setChatEntities] = createStore({})
+  const [chats, setChats] = createSignal<Chat[]>([])
+  const [messages, setMessages] = createSignal<Message[]>([])
+  // const subclient = createMemo<Client>(() => createChatClient())
+  const loadChats = async () => {
+    try {
+      const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
+      setChats(newChats)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getMessages = async (chatId: string) => {
+    if (!chatId) return
+    try {
+      const response = await loadMessages({ chat: chatId })
+      setMessages(response as unknown as Message[])
+    } catch (error) {
+      console.error('[loadMessages]', error)
+    }
+  }
+
+  const sendMessage = async (args) => {
+    try {
+      const message = await apiClient.createMessage(args)
+      setMessages((prev) => [...prev, message])
+      const currentChat = chats().find((chat) => chat.id === args.chat)
+      setChats((prev) => [
+        ...prev.filter((c) => c.id !== currentChat.id),
+        { ...currentChat, updatedAt: message.createdAt }
+      ])
+    } catch (error) {
+      console.error('[post message error]:', error)
+    }
+  }
 
   const createChat = async (members: number[], title: string) => {
     const chat = await apiClient.createChat({ members, title })
-    setChatEntities((s) => {
-      s[chat.id] = chat
+    setChats((prevChats) => {
+      return [chat, ...prevChats]
     })
     return chat
   }
 
+  const { unsubscribe } = pipe(
+    () => null, // subclient().subscription(newMessage, {}),
+    subscribe((result) => {
+      console.info('[subscription]')
+      console.debug(result)
+      // TODO: handle data result
+    })
+  )
   const actions = {
-    createChat
+    createChat,
+    loadChats,
+    getMessages,
+    sendMessage,
+    unsubscribe // TODO: call unsubscribe some time!
   }
 
-  const value: InboxContextType = { chatEntities, actions }
+  const value: InboxContextType = { chats, messages, actions }
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>
 }

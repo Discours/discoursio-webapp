@@ -6,6 +6,7 @@ export default gql`
       members {
         id
         name
+        id
         slug
         userpic
       }

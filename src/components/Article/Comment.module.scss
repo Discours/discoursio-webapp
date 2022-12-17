@@ -54,6 +54,7 @@
 
 .commentControls {
   @include font-size(1.2rem);
+
   margin-bottom: 0.5em;
 }
 
@@ -120,6 +121,7 @@
 
 .commentBody {
   @include font-size(1.5rem);
+
   line-height: 1.47;
 }
 
@@ -196,6 +198,7 @@
 
   button {
     @include font-size(1.6rem);
+
     margin-left: 1.2rem;
   }
 }

@@ -14,7 +14,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
   } = useSession()
 
   return (
-    <Popup {...props} horizontalAnchor="right">
+    <Popup {...props} horizontalAnchor="right" variant="bordered">
       {/*TODO: l10n*/}
       <ul class="nodash">
         <li>

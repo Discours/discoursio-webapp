@@ -1,25 +1,66 @@
+$actionsWidth: 32px * 2;
+
 .Message {
   display: flex;
   flex-direction: column;
   margin: 3.2rem 0;
 
   .body {
-    background: #f6f6f6;
-    font-size: 14px;
-    max-width: 60%;
-    border-radius: 16px;
-    padding: 12px 16px;
     position: relative;
     display: flex;
+    flex-direction: row;
 
-    p {
-      margin: 0;
-    }
-    a {
-      color: inherit;
-      text-decoration: underline;
-      &:hover {
+    .text {
+      display: inline-flex;
+      flex-direction: column;
+      max-width: 60%;
+      margin-right: auto;
+      background: #f6f6f6;
+      font-size: 14px;
+      border-radius: 16px;
+      padding: 12px 16px;
+      position: relative;
+      z-index: 1;
+      word-wrap: break-word;
+
+      p {
+        margin: 0;
+      }
+
+      a {
         color: inherit;
+        text-decoration: underline;
+
+        &:hover {
+          color: inherit;
+        }
+      }
+    }
+
+    .actions {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      width: $actionsWidth;
+      height: 32px;
+      cursor: pointer;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      right: -$actionsWidth/2;
+      z-index: -1;
+      transition: 0.3s ease-in-out;
+    }
+    &.popupVisible {
+      position: relative;
+      z-index: 100;
+    }
+    &.popupVisible,
+    &:hover {
+      .actions {
+        z-index: 10000;
+        opacity: 1;
+        right: -$actionsWidth;
       }
     }
   }
@@ -44,13 +85,35 @@
       line-height: 20px;
     }
   }
+
   &.own {
     .body {
       justify-content: flex-end;
-      margin-left: auto;
-      background: #000;
-      color: #fff;
+
+      .text {
+        margin-left: auto;
+        margin-right: unset;
+        background: #000;
+        color: #fff;
+      }
+
+      .actions {
+        right: unset;
+        left: -$actionsWidth/2;
+        flex-direction: row-reverse;
+        .reply {
+          transform: scaleX(-1);
+        }
+      }
+
+      &.popupVisible,
+      &:hover {
+        .actions {
+          left: -$actionsWidth;
+        }
+      }
     }
+
     .time {
       text-align: right;
     }

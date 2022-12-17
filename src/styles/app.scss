@@ -85,8 +85,8 @@ h2 {
     color: #fff;
     margin-left: -0.15em;
     padding: 0 0.15em;
-    box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
 
     &::selection {
       background: #fff;
@@ -809,5 +809,6 @@ details {
 
 .description {
   @include font-size(1.4rem);
+
   color: rgba(0 0 0 / 40%);
 }

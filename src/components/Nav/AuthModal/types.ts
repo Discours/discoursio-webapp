@@ -7,3 +7,7 @@ export type AuthModalSearchParams = {
 export type ConfirmEmailSearchParams = {
   token: string
 }
+
+export type CreateChatSearchParams = {
+  id: number
+}

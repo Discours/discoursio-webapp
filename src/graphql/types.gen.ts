@@ -146,7 +146,7 @@ export type Message = {
   chatId: Scalars['String']
   createdAt: Scalars['Int']
   id: Scalars['Int']
-  replyTo?: Maybe<Scalars['String']>
+  replyTo?: Maybe<Scalars['Int']>
   seen?: Maybe<Scalars['Boolean']>
   updatedAt?: Maybe<Scalars['Int']>
 }

@@ -54,13 +54,12 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   }
   onMount(async () => await loadMore())
 
-  function nestComments(commentList) {
+  const nestComments = (commentList) => {
     const commentMap = {}
     commentList.forEach((comment) => {
       commentMap[comment.id] = comment
-      if (comment.replyTo) {
-        if (!comment.replyTo) return
-        const parent = commentMap[comment.replyTo]
+      if (comment.replyTo !== null) {
+        const parent = commentMap[comment.replyTo] ?? []
         ;(parent.children = parent.children || []).push(comment)
       }
     })
@@ -68,10 +67,6 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
       return !comment.replyTo
     })
   }
-
-  createEffect(() => {
-    console.log('!!! reactions():', nestComments(reactions()))
-  })
 
   return (
     <>

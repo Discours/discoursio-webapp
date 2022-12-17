@@ -3,35 +3,53 @@ import { t } from '../../../utils/intl'
 import type { PageProps } from '../../types'
 import { Icon } from '../../_shared/Icon'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show } from 'solid-js'
+import { For, createSignal, Show, onMount } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
 import { createFileUploader } from '@solid-primitives/upload'
+import validateUrl from '../../../utils/validateUrl'
 
 export const ProfileSettingsPage = (props: PageProps) => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
-  const { form, updateFormField, submit } = useProfileForm()
+  const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
+  const { form, updateFormField, submit, slugError } = useProfileForm()
   const handleChangeSocial = (value) => {
-    updateFormField('links', value)
-    setAddLinkForm(false)
+    if (validateUrl(value)) {
+      updateFormField('links', value)
+      setAddLinkForm(false)
+    } else {
+      setIncorrectUrl(true)
+    }
   }
   const handleSubmit = (event: Event): void => {
     event.preventDefault()
     submit(form)
   }
-  const { selectFiles: selectFilesAsync } = createFileUploader({ accept: 'image/*' })
+
+  const { files, selectFiles: selectFilesAsync } = createFileUploader({ accept: 'image/*' })
 
   const handleUpload = () => {
     selectFilesAsync(async ([{ source, name, size, file }]) => {
+      const image = { source, name, size, file }
       try {
-        console.log({ source, name, size, file })
-        // DO UPLOAD STUFF HERE AND RETURN URL
+        const formData = new FormData()
+        formData.append('type', file.type)
+        formData.append('name', image.source.split('/').pop())
+        formData.append('ext', image.name.split('.').pop())
+        const resp = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        })
+        const url = await resp.json()
+        updateFormField('userpic', url)
       } catch (error) {
-        console.log(error)
+        console.error('[upload] error', error)
       }
     })
   }
+  const [hostname, setHostname] = createSignal('new.discours.io')
+  onMount(() => setHostname(window?.location.host))
 
   return (
     <PageWrap>
@@ -52,7 +70,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
                       <img class={styles.avatar} src={form.userpic} alt={form.name} />
-                      <button type="button" class={styles.avatarInput} onClick={handleUpload} />
+                      <input type="button" class={styles.avatarInput} onClick={handleUpload} />
                     </div>
                   </div>
                   <h4>{t('Name')}</h4>
@@ -76,7 +94,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                   <h4>{t('Address on Discourse')}</h4>
                   <div class="pretty-form__item">
                     <div class={styles.discoursName}>
-                      <label for="user-address">https://new.discours.io/author/</label>
+                      <label for="user-address">https://{hostname()}/author/</label>
                       <div class={styles.discoursNameField}>
                         <input
                           type="text"
@@ -86,9 +104,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                           value={form.slug}
                           class="nolabel"
                         />
-                        <p class="form-message form-message--error">
-                          {t('Sorry, this address is already taken, please choose another one.')}
-                        </p>
+                        <p class="form-message form-message--error">{t(`${slugError()}`)}</p>
                       </div>
                     </div>
                   </div>
@@ -152,6 +168,9 @@ export const ProfileSettingsPage = (props: PageProps) => {
                           onChange={(event) => handleChangeSocial(event.currentTarget.value)}
                         />
                       </div>
+                      <Show when={incorrectUrl()}>
+                        <p class="form-message form-message--error">{t('It does not look like url')}</p>
+                      </Show>
                     </Show>
                     <For each={form.links}>
                       {(link) => (
@@ -175,7 +194,6 @@ export const ProfileSettingsPage = (props: PageProps) => {
               </div>
             </div>
           </div>
-          <pre>{JSON.stringify(form, null, 2)}</pre>
         </div>
       </Show>
     </PageWrap>

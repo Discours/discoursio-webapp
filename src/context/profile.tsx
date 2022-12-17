@@ -1,23 +1,29 @@
-import { createEffect, createMemo } from 'solid-js'
+import { createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { useSession } from './session'
 import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
 import { apiClient } from '../utils/apiClient'
 import type { ProfileInput } from '../graphql/types.gen'
 
-const submit = async (profile: ProfileInput) => {
-  try {
-    await apiClient.updateProfile(profile)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 const useProfileForm = () => {
   const { session } = useSession()
   const currentSlug = createMemo(() => session()?.user?.slug)
   const { authorEntities } = useAuthorsStore({ authors: [] })
   const currentAuthor = createMemo(() => authorEntities()[currentSlug()])
+  const [slugError, setSlugError] = createSignal<string>()
+
+  const submit = async (profile: ProfileInput) => {
+    try {
+      const response = await apiClient.updateProfile(profile)
+      if (response.error) {
+        setSlugError(response.error)
+        return response.error
+      }
+      return response
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const [form, setForm] = createStore<ProfileInput>({
     name: '',
@@ -30,12 +36,11 @@ const useProfileForm = () => {
 
   createEffect(async () => {
     if (!currentSlug()) return
-
     try {
       await loadAuthor({ slug: currentSlug() })
       setForm({
         name: currentAuthor()?.name,
-        slug: currentAuthor()?.name,
+        slug: currentAuthor()?.slug,
         bio: currentAuthor()?.bio,
         about: currentAuthor()?.about,
         userpic: currentAuthor()?.userpic,
@@ -62,7 +67,7 @@ const useProfileForm = () => {
       })
     }
   }
-  return { form, submit, updateFormField }
+  return { form, submit, updateFormField, slugError }
 }
 
 export { useProfileForm }

@@ -9,6 +9,7 @@ import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import { Icon } from '../_shared/Icon'
 
 const log = getLogger('TopicCard')
 
@@ -95,13 +96,14 @@ export const TopicCard = (props: TopicProps) => {
               class="button--light button--subscribe-topic"
               classList={{
                 [styles.buttonCompact]: props.compact,
-                [styles.isSubscribing]: isSubscribing()
+                [styles.isSubscribing]: isSubscribing(),
+                [styles.isSubscribed]: subscribed()
               }}
               disabled={isSubscribing()}
             >
               <Show when={props.iconButton}>
                 <Show when={subscribed()} fallback="+">
-                  -
+                  <Icon name="check-subscribed" />
                 </Show>
               </Show>
               <Show when={!props.iconButton}>

@@ -8,6 +8,7 @@ export default gql`
       slug
       name
       bio
+      about
       userpic
       communities
       links

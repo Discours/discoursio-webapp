@@ -102,7 +102,7 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
           </ul>
         </div>
 
-        <ul>
+        <ul class={styles.comments}>
           <For each={nestComments(reactions().reverse())}>
             {(reaction: NestedReaction) => (
               <Comment

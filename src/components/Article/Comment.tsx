@@ -135,7 +135,7 @@ export default (props: {
                 <textarea name="reply" id="reply" rows="5" />
                 <div class={styles.replyFormControls}>
                   <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
-                    {t('Cancel')}
+                    {t('cancel')}
                   </button>
                   <button class="button">{t('Send')}</button>
                 </div>

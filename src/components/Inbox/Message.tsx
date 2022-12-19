@@ -28,6 +28,7 @@ const Message = (props: Props) => {
   const user = props.members?.find((m) => m.id === Number(props.content.author))
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
 
+  // console.log('!!! replyBody:', props.replyBody)
   return (
     <div class={clsx(styles.Message, isOwn && styles.own)}>
       <Show when={!isOwn}>
@@ -48,7 +49,12 @@ const Message = (props: Props) => {
             />
           </div>
           <Show when={props.replyBody}>
-            <QuotedMessage body={props.replyBody} variant="inline" isOwn={isOwn} />
+            <QuotedMessage
+              body={props.replyBody}
+              author={props.replyAuthor}
+              variant="inline"
+              isOwn={isOwn}
+            />
           </Show>
           <div innerHTML={md.render(props.content.body)} />
         </div>

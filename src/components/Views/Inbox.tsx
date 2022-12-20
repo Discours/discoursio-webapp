@@ -79,7 +79,7 @@ export const InboxView = () => {
       } finally {
         chatWindow.scrollTop = chatWindow.scrollHeight
       }
-    }, 2000)
+    }, 10000)
   })
 
   onMount(async () => {
@@ -247,6 +247,8 @@ export const InboxView = () => {
                 <For each={messages()}>
                   {(message) => (
                     <Message
+                      id={message.id}
+                      chatId={currentDialog().id}
                       content={message}
                       ownId={currentUserId()}
                       members={currentDialog().members}

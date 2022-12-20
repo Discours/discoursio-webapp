@@ -10,6 +10,8 @@ import { MessageActionsPopup } from './MessageActionsPopup'
 import QuotedMessage from './QuotedMessage'
 
 type Props = {
+  id
+  chatId
   content: Message
   ownId: number
   members: ChatMember[]
@@ -44,6 +46,8 @@ const Message = (props: Props) => {
               <Icon name="chat-reply" class={styles.reply} />
             </div>
             <MessageActionsPopup
+              chatId={props.chatId}
+              messageId={props.id}
               onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
               trigger={<Icon name="menu" />}
             />

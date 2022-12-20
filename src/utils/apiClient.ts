@@ -44,6 +44,7 @@ import shoutsLoadBy from '../graphql/query/articles-load-by'
 import shoutLoad from '../graphql/query/article-load'
 import loadRecipients from '../graphql/query/chat-recipients'
 import createMessage from '../graphql/mutation/create-chat-message'
+import deleteMessage from '../graphql/mutation/delete-chat-message'
 import updateProfile from '../graphql/mutation/update-profile'
 
 type ApiErrorCode =
@@ -289,6 +290,12 @@ export const apiClient = {
   createMessage: async (options: MutationCreateMessageArgs) => {
     const resp = await privateGraphQLClient.mutation(createMessage, options).toPromise()
     return resp.data.createMessage.message
+  },
+
+  deleteMessage: async (options) => {
+    const resp = await privateGraphQLClient.mutation(deleteMessage, options).toPromise()
+    console.log('!!! resp:', resp)
+    return resp.data.deleteMessage.message
   },
 
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {

@@ -9,7 +9,7 @@ import MessagesFallback from '../Inbox/MessagesFallback'
 import QuotedMessage from '../Inbox/QuotedMessage'
 import { Icon } from '../_shared/Icon'
 import { useSession } from '../../context/session'
-import { loadMessages, loadRecipients } from '../../stores/inbox'
+import { loadRecipients } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
@@ -79,7 +79,7 @@ export const InboxView = () => {
       } finally {
         chatWindow.scrollTop = chatWindow.scrollHeight
       }
-    }, 2000)
+    }, 10000)
   })
 
   onMount(async () => {
@@ -247,10 +247,17 @@ export const InboxView = () => {
                 <For each={messages()}>
                   {(message) => (
                     <Message
+                      id={message.id}
+                      chatId={currentDialog().id}
                       content={message}
                       ownId={currentUserId()}
                       members={currentDialog().members}
                       replyBody={message.replyTo && findToReply(message.replyTo).body}
+                      replyAuthor={
+                        message.replyTo &&
+                        currentDialog().members.find((u) => u.id === findToReply(message.replyTo)?.author)
+                          ?.name
+                      }
                       replyClick={() => setMessageToReply(message)}
                     />
                   )}

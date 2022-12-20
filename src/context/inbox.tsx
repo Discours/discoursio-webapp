@@ -1,12 +1,12 @@
 import { createContext, createSignal, useContext } from 'solid-js'
 import type { Accessor, JSX } from 'solid-js'
-// import { createChatClient } from '../graphql/privateGraphQLClient'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
-// import newMessage from '../graphql/subs/new-message'
-// import type { Client } from '@urql/core'
 import { pipe, subscribe } from 'wonka'
 import { loadMessages } from '../stores/inbox'
+// import { createChatClient } from '../graphql/privateGraphQLClient'
+// import newMessage from '../graphql/subs/new-message'
+// import type { Client } from '@urql/core'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -16,6 +16,7 @@ type InboxContextType = {
     loadChats: () => Promise<void>
     getMessages?: (chatId: string) => Promise<void>
     sendMessage?: (args: MutationCreateMessageArgs) => void
+    deleteMessage?: (args: { chatId: string; id: number }) => void
     // unsubscribe: () => void
   }
 }
@@ -59,7 +60,15 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
         { ...currentChat, updatedAt: message.createdAt }
       ])
     } catch (error) {
-      console.error('[post message error]:', error)
+      console.error('[createMessage]:', error)
+    }
+  }
+
+  const deleteMessage = async (args: { chatId: string; id: number }) => {
+    try {
+      await apiClient.deleteMessage(args)
+    } catch (error) {
+      console.error('[deleteMessage]:', error)
     }
   }
 
@@ -84,6 +93,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     loadChats,
     getMessages,
     sendMessage,
+    deleteMessage,
     unsubscribe // TODO: call unsubscribe some time!
   }
 

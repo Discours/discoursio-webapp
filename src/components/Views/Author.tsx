@@ -43,7 +43,7 @@ export const AuthorView = (props: AuthorProps) => {
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
-  const subscribers = new Array(12).fill(author())
+  const subscribers = Array.from({ length: 12 }).fill(author())
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
   const loadMore = async () => {

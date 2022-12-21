@@ -60,7 +60,11 @@ async function handler(req, res) {
       })
 
       const data = Buffer.concat(chunks)
-
+      if (!data) {
+        throw Error('data is empty')
+      } else {
+        console.debug(data)
+      }
       const params = {
         Bucket: process.env.S3_BUCKET || 'discours-io',
         Key: fields.name + '.' + fields.ext,

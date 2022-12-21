@@ -33,8 +33,9 @@
     "vercel-build": "astro build"
   },
   "dependencies": {
+    "@aws-sdk/abort-controller": "^3.226.0",
     "@aws-sdk/client-s3": "^3.216.0",
-    "@aws-sdk/lib-storage": "^3.223.0",
+    "@aws-sdk/lib-storage": "^3.235.0",
     "formidable": "^2.1.1",
     "mailgun.js": "^8.0.2"
   },

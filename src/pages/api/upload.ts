@@ -1,7 +1,19 @@
 // pages/api/upload.ts
 
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
+
+export async function putToS3(fileObject, presignedUrl) {
+  const requestOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': fileObject.type
+    },
+    body: fileObject
+  }
+  const response = await fetch(presignedUrl, requestOptions)
+  return await response
+}
 
 export default async function handler(req, res) {
   const s3Client = new S3Client({
@@ -11,8 +23,7 @@ export default async function handler(req, res) {
       secretAccessKey: process.env.S3_SECRET_KEY
     }
   })
-
-  const post = await createPresignedPost(s3Client, {
+  const presignedUrl = await createPresignedPost(s3Client, {
     Bucket: process.env.S3_BUCKET_NAME || 'discours-io',
     Key: req.query.file,
     Fields: {
@@ -24,6 +35,7 @@ export default async function handler(req, res) {
       ['content-length-range', 0, 22 * 1048576] // up to 22 MB
     ]
   })
-
-  res.status(200).json(post)
+  const result = await putToS3(req.query.file, presignedUrl)
+  console.debug(result)
+  res.status(200).json(presignedUrl)
 }

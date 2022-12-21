@@ -271,7 +271,6 @@ export const apiClient = {
   },
   getReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
-    console.debug(resp)
     return resp.data.loadReactionsBy
   },
 

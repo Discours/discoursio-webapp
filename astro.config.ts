@@ -36,6 +36,9 @@ const astroConfig: AstroUserConfig = {
   output: 'server',
   adapter: vercel(),
   vite: {
+    ssr: {
+      noExternal: ['swiper']
+    },
     build: {
       chunkSizeWarningLimit: 777,
       rollupOptions: {

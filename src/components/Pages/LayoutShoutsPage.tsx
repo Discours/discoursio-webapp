@@ -13,7 +13,7 @@ import { t } from '../../utils/intl'
 import { Row3 } from '../Feed/Row3'
 import { Row2 } from '../Feed/Row2'
 import { Beside } from '../Feed/Beside'
-import Slider from '../_shared/Slider'
+import Slider from '../_shared/Slider/Slider'
 import { Row1 } from '../Feed/Row1'
 import styles from '../../styles/Topic.module.scss'
 import { ArticleCard } from '../Feed/Card'
@@ -107,21 +107,21 @@ export const LayoutShoutsPage = (props: PageProps) => {
             <ModeSwitcher />
             <Row1 article={sortedArticles()[0]} />
             <Row2 articles={sortedArticles().slice(1, 3)} />
-            <Slider title={title()}>
-              <For each={sortedArticles().slice(5, 11)}>
-                {(a: Shout) => (
-                  <ArticleCard
-                    article={a}
-                    settings={{
-                      additionalClass: 'swiper-slide',
-                      isFloorImportant: true,
-                      isWithCover: true,
-                      nodate: true
-                    }}
-                  />
-                )}
-              </For>
-            </Slider>
+            {/*<Slider title={title()}>*/}
+            {/*  <For each={sortedArticles().slice(5, 11)}>*/}
+            {/*    {(a: Shout) => (*/}
+            {/*      <ArticleCard*/}
+            {/*        article={a}*/}
+            {/*        settings={{*/}
+            {/*          additionalClass: 'swiper-slide',*/}
+            {/*          isFloorImportant: true,*/}
+            {/*          isWithCover: true,*/}
+            {/*          nodate: true*/}
+            {/*        }}*/}
+            {/*      />*/}
+            {/*    )}*/}
+            {/*  </For>*/}
+            {/*</Slider>*/}
             <Beside
               beside={sortedArticles()[12]}
               title={t('Top viewed')}

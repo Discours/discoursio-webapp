@@ -14,13 +14,13 @@ import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
 import VideoPlayer from './VideoPlayer'
-import Slider from '../_shared/Slider'
+import Slider from '../_shared/Slider/Slider'
 
 interface ArticleProps {
   article: Shout
 }
 
-interface MediaItem {
+export type MediaItem = {
   url?: string
   pic?: string
   title?: string
@@ -83,7 +83,7 @@ export const FullArticle = (props: ArticleProps) => {
   const body = createMemo(() => props.article.body)
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
-    console.debug(mi)
+    // console.log('media items', mi)
     return mi
   })
 
@@ -115,18 +115,7 @@ export const FullArticle = (props: ArticleProps) => {
 
         <Show
           when={media() && props.article.layout !== 'image'}
-          fallback={
-            <Slider>
-              <For each={media() || []}>
-                {(m: MediaItem) => (
-                  <>
-                    <img src={m.url || m.pic} alt={m.title} />
-                    <div innerHTML={m.body} />
-                  </>
-                )}
-              </For>
-            </Slider>
-          }
+          fallback={<Slider childElements={media()} />}
         >
           <div class="media-items">
             <For each={media() || []}>

@@ -41,10 +41,10 @@ export default (props: Props) => {
     event.preventDefault()
     // await createReaction({
     await apiClient.createReaction({
-      kind: 7,
       replyTo: props.parent,
       body: postMessageText(),
-      shout: comment().shout.slug
+      shout: comment().shout.slug,
+      kind: 7
     })
   }
   const formattedDate = createMemo(() =>
@@ -167,9 +167,6 @@ export default (props: Props) => {
             </Show>
           </Show>
         </div>
-      </Show>
-      <Show when={props.children}>
-        <ul>{props.children}</ul>
       </Show>
     </li>
   )

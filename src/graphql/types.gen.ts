@@ -501,7 +501,7 @@ export type ReactionInput = {
   kind: Scalars['Int']
   range?: InputMaybe<Scalars['String']>
   replyTo?: InputMaybe<Scalars['Int']>
-  shout: Scalars['String']
+  shout: Scalars['Int']
 }
 
 export enum ReactionKind {

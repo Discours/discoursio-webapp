@@ -34,7 +34,6 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     try {
       const page = getCommentsPage()
       setIsCommentsLoading(true)
-
       const { hasMore } = await loadReactionsBy({
         by: { shout: props.shoutSlug, comment: true },
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
@@ -67,6 +66,10 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
       return !comment.replyTo
     })
   }
+
+  createEffect(() => {
+    console.log('!!! re:', nestComments(reactions()))
+  })
 
   return (
     <>
@@ -107,10 +110,11 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
             {(reaction: NestedReaction) => (
               <Comment
                 comment={reaction}
+                parent={reaction.id}
                 level={getCommentLevel(reaction)}
                 canEdit={reaction?.createdBy?.slug === session()?.user?.slug}
                 children={(reaction.children || []).map((r) => {
-                  return <Comment comment={r} />
+                  return <Comment comment={r} parent={reaction.id} />
                 })}
               />
             )}

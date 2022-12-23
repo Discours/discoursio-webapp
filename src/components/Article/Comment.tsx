@@ -2,26 +2,30 @@ import styles from './Comment.module.scss'
 import type { JSX } from 'solid-js/jsx-runtime'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { Show, createMemo, createSignal } from 'solid-js'
+import { Show, createMemo, createSignal, createEffect } from 'solid-js'
 import { clsx } from 'clsx'
 import type { Author, Reaction as Point } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-// import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
+import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
 import MD from './MD'
-import { deleteReaction } from '../../stores/zine/reactions'
 import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
+import { apiClient } from '../../utils/apiClient'
 
-export default (props: {
+type Props = {
   level?: number
   comment: Partial<Point>
   canEdit?: boolean
   compact?: boolean
   children?: JSX.Element[]
-}) => {
+  parent?: number
+}
+
+export default (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
+  const [postMessageText, setPostMessageText] = createSignal('')
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
@@ -30,6 +34,18 @@ export default (props: {
       console.log('[comment] removing', comment().id)
       deleteReaction(comment().id)
     }
+  }
+
+  const compose = (event) => setPostMessageText(event.target.value)
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    // await createReaction({
+    await apiClient.createReaction({
+      kind: 7,
+      replyTo: props.parent,
+      body: postMessageText(),
+      shout: comment().shout.slug
+    })
   }
   const formattedDate = createMemo(() =>
     formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
@@ -131,13 +147,21 @@ export default (props: {
             </div>
 
             <Show when={isReplyVisible()}>
-              <form class={styles.replyForm}>
-                <textarea name="reply" id="reply" rows="5" />
+              <form class={styles.replyForm} onSubmit={(event) => handleCreate(event)}>
+                <textarea
+                  value={postMessageText()}
+                  rows={1}
+                  onInput={(event) => compose(event)}
+                  placeholder="Написать сообщение"
+                />
+
                 <div class={styles.replyFormControls}>
                   <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
                     {t('cancel')}
                   </button>
-                  <button class="button">{t('Send')}</button>
+                  <button type="submit" class="button">
+                    {t('Send')}
+                  </button>
                 </div>
               </form>
             </Show>

@@ -15,17 +15,11 @@ export default gql`
         kind
         range
         createdAt
-        shout
-        replyTo {
+        shout {
           id
-          createdBy {
-            slug
-            userpic
-            name
-          }
-          body
-          kind
+          slug
         }
+        replyTo
       }
     }
   }

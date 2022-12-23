@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import { useSession } from '../../context/session'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
@@ -71,6 +71,23 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     console.log('!!! re:', nestComments(reactions()))
   })
 
+  // const treeItems = () => {
+  //   return nestComments(reactions().reverse()).map((comment) => {
+  //     return (
+  //       <>
+  //         <Comment
+  //           comment={comment}
+  //           parent={comment.id}
+  //         />
+  //         {comment.children && treeItems(comment.children)}
+  //       </>
+  //     )
+  //   })
+  // }
+
+  // createEffect(() => {
+  //   console.log('!!! :')
+  // })
   return (
     <>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -113,9 +130,9 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
                 parent={reaction.id}
                 level={getCommentLevel(reaction)}
                 canEdit={reaction?.createdBy?.slug === session()?.user?.slug}
-                children={(reaction.children || []).map((r) => {
-                  return <Comment comment={r} parent={reaction.id} />
-                })}
+                // children={(reaction.children).map((r) => {
+                //   return <Comment comment={r} parent={reaction.id} />
+                // })}
               />
             )}
           </For>
@@ -133,6 +150,12 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
             <div class="pretty-form__item">
               <input type="text" id="new-comment" placeholder={t('Write comment')} />
               <label for="new-comment">{t('Write comment')}</label>
+            </div>
+            <div>
+              <button class="button button--light">{t('cancel')}</button>
+              <button type="submit" class="button button-sm">
+                {t('Send')}
+              </button>
             </div>
           </form>
         }

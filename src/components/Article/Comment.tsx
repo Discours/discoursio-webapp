@@ -40,9 +40,8 @@ export default (props: Props) => {
   const compose = (event) => setPostMessageText(event.target.value)
   const handleCreate = async (event) => {
     event.preventDefault()
-    // await createReaction({
-    await apiClient.createReaction({
-      kind: 7,
+    await createReaction({
+      kind: ReactionKind.Comment,
       replyTo: props.parent,
       body: postMessageText(),
       shout: comment().shout.id

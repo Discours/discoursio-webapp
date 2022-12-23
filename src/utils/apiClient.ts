@@ -230,8 +230,7 @@ export const apiClient = {
     console.debug('createArticle response:', response)
     return response.data.createShout
   },
-  createReaction: async (reaction) => {
-    //TODO: add ReactionInput Type after debug
+  createReaction: async (reaction: ReactionInput) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()
     console.log('!!! response:', response)
     return response.data

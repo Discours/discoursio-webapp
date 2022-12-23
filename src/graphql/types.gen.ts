@@ -238,7 +238,7 @@ export type MutationDeleteMessageArgs = {
 }
 
 export type MutationDeleteReactionArgs = {
-  id: Scalars['Int']
+  reaction: Scalars['Int']
 }
 
 export type MutationDeleteShoutArgs = {

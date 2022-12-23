@@ -51,8 +51,10 @@ export default (props: Props) => {
     formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
   )
 
+  console.log('!!! lvl:', props.level)
   return (
-    <li class={clsx(styles.comment, { [styles[`commentLevel${props.level}`]]: Boolean(props.level) })}>
+    <li class={clsx(styles.comment, { [styles[`commentLevel-${props.level}`]]: props.level })}>
+      {props.level}
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show

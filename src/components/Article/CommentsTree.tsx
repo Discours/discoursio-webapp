@@ -11,7 +11,7 @@ import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
 
 type NestedReaction = {
-  children: Reaction[]
+  children: Reaction[] | []
 } & Reaction
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
@@ -53,6 +53,24 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   }
   onMount(async () => await loadMore())
 
+  const nestComments = (commentList) => {
+    const commentMap = {}
+    commentList.forEach((comment) => {
+      commentMap[comment.id] = comment
+      if (comment.replyTo !== null) {
+        const parent = commentMap[comment.replyTo] ?? []
+        ;(parent.children = parent.children || []).push(comment)
+      }
+    })
+    return commentList.filter((comment) => {
+      return !comment.replyTo
+    })
+  }
+
+  createEffect(() => {
+    console.log('!!! re:', nestComments(reactions()))
+  })
+
   return (
     <>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -88,13 +106,16 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
         </div>
 
         <ul class={styles.comments}>
-          <For each={reactions().reverse()}>
+          <For each={nestComments(reactions().reverse())}>
             {(reaction: NestedReaction) => (
               <Comment
                 comment={reaction}
                 parent={reaction.id}
                 level={getCommentLevel(reaction)}
                 canEdit={reaction?.createdBy?.slug === session()?.user?.slug}
+                children={(reaction.children || []).map((r) => {
+                  return <Comment comment={r} parent={reaction.id} />
+                })}
               />
             )}
           </For>

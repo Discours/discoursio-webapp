@@ -9,11 +9,32 @@
     margin-bottom: 0;
   }
 
-  $levels: 0, 1, 2, 3, 4;
-  $padding: 1rem;
-  @each $level in $levels {
-    &.commentLevel-#{level} {
-      padding-left: $padding * $level;
+  .comment {
+    &:before,
+    &:after {
+      content: '';
+      left: 0;
+      position: absolute;
+    }
+
+    &:before {
+      border-bottom: 2px solid #ccc;
+      border-left: 2px solid #ccc;
+      border-radius: 0 0 0 1.2rem;
+      top: -1rem;
+      height: 2.4rem;
+      width: 1.2rem;
+    }
+
+    &:after {
+      background: #ccc;
+      height: 100%;
+      top: 0;
+      width: 2px;
+    }
+
+    &:last-child:after {
+      display: none;
     }
   }
 

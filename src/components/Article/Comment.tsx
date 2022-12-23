@@ -13,6 +13,7 @@ import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
 import { apiClient } from '../../utils/apiClient'
+import { ReactionKind } from '../../graphql/types.gen'
 
 type Props = {
   level?: number
@@ -41,20 +42,18 @@ export default (props: Props) => {
     event.preventDefault()
     // await createReaction({
     await apiClient.createReaction({
+      kind: 7,
       replyTo: props.parent,
       body: postMessageText(),
-      shout: comment().shout.slug,
-      kind: 7
+      shout: comment().shout.id
     })
   }
   const formattedDate = createMemo(() =>
     formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
   )
 
-  console.log('!!! lvl:', props.level)
   return (
-    <li class={clsx(styles.comment, { [styles[`commentLevel-${props.level}`]]: props.level })}>
-      {props.level}
+    <li class={clsx(styles.comment, { [styles[`commentLevel${props.level}`]]: Boolean(props.level) })}>
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show
@@ -169,6 +168,9 @@ export default (props: Props) => {
             </Show>
           </Show>
         </div>
+      </Show>
+      <Show when={props.children}>
+        <ul>{props.children}</ul>
       </Show>
     </li>
   )

@@ -1,10 +1,9 @@
 import styles from './Comment.module.scss'
-import type { JSX } from 'solid-js/jsx-runtime'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { Show, createMemo, createSignal, createEffect } from 'solid-js'
+import { Show, createMemo, createSignal, For, createEffect } from 'solid-js'
 import { clsx } from 'clsx'
-import type { Author, Reaction as Point } from '../../graphql/types.gen'
+import type { Author, Reaction, Reaction as Point } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
 import MD from './MD'
@@ -12,7 +11,6 @@ import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
-import { apiClient } from '../../utils/apiClient'
 import { ReactionKind } from '../../graphql/types.gen'
 
 type Props = {
@@ -20,16 +18,16 @@ type Props = {
   comment: Partial<Point>
   canEdit?: boolean
   compact?: boolean
-  children?: JSX.Element[]
-  parent?: number
+  children?: Reaction[]
+  // parent?: number
 }
 
-export default (props: Props) => {
+const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [postMessageText, setPostMessageText] = createSignal('')
 
   const comment = createMemo(() => props.comment)
-  const body = createMemo(() => (comment().body || '').trim())
+  const body = createMemo(() => (comment()?.body || '').trim())
   const remove = () => {
     if (comment()?.id) {
       console.log('[comment] removing', comment().id)
@@ -42,7 +40,7 @@ export default (props: Props) => {
     event.preventDefault()
     await createReaction({
       kind: ReactionKind.Comment,
-      replyTo: props.parent,
+      replyTo: props.comment.id ?? null,
       body: postMessageText(),
       shout: comment().shout.id
     })
@@ -169,8 +167,16 @@ export default (props: Props) => {
         </div>
       </Show>
       <Show when={props.children}>
-        <ul>{props.children}</ul>
+        <ul>
+          <For each={props.children}>
+            {(reaction: { children: Reaction[] } & Reaction) => (
+              <Comment children={reaction.children} comment={reaction} />
+            )}
+          </For>
+        </ul>
       </Show>
     </li>
   )
 }
+
+export default Comment

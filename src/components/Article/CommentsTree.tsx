@@ -85,9 +85,6 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   //   })
   // }
 
-  // createEffect(() => {
-  //   console.log('!!! :')
-  // })
   return (
     <>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -127,12 +124,9 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
             {(reaction: NestedReaction) => (
               <Comment
                 comment={reaction}
-                parent={reaction.id}
-                level={getCommentLevel(reaction)}
+                // parent={reaction.id}
                 canEdit={reaction?.createdBy?.slug === session()?.user?.slug}
-                // children={(reaction.children).map((r) => {
-                //   return <Comment comment={r} parent={reaction.id} />
-                // })}
+                children={reaction?.children}
               />
             )}
           </For>

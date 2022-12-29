@@ -37,6 +37,7 @@ const Comment = (props: Props) => {
 
   const compose = (event) => setPostMessageText(event.target.value)
   const handleCreate = async (event) => {
+    console.log('!!! comment().shout.id:', comment().shout.id)
     event.preventDefault()
     await createReaction({
       kind: ReactionKind.Comment,

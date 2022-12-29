@@ -24,10 +24,9 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { session } = useSession()
   const { sortedReactions, loadReactionsBy } = useReactionsStore()
-  const reactions = createMemo<Reaction[]>(() =>
-    sortedReactions()
-      .sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
-      .filter((r) => r.shout.slug === props.shoutSlug)
+  const reactions = createMemo<Reaction[]>(
+    () => sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
+    // .filter((r) => r.shout?.slug === props.shoutSlug)
   )
 
   const loadMore = async () => {
@@ -70,20 +69,6 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   createEffect(() => {
     console.log('!!! re:', nestComments(reactions()))
   })
-
-  // const treeItems = () => {
-  //   return nestComments(reactions().reverse()).map((comment) => {
-  //     return (
-  //       <>
-  //         <Comment
-  //           comment={comment}
-  //           parent={comment.id}
-  //         />
-  //         {comment.children && treeItems(comment.children)}
-  //       </>
-  //     )
-  //   })
-  // }
 
   return (
     <>

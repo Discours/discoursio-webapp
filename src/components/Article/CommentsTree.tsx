@@ -1,6 +1,6 @@
 import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
 import { useSession } from '../../context/session'
-import Comment from './Comment'
+import { Comment } from './Comment'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
 import styles from '../../styles/Article.module.scss'
@@ -9,10 +9,6 @@ import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
-
-type NestedReaction = {
-  children: Reaction[] | []
-} & Reaction
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
@@ -106,18 +102,8 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
         </div>
 
         <ul class={styles.comments}>
-          <For each={nestComments(reactions().reverse())}>
-            {(reaction: NestedReaction) => (
-              <Comment
-                comment={reaction}
-                parent={reaction.id}
-                level={getCommentLevel(reaction)}
-                canEdit={reaction?.createdBy?.slug === session()?.user?.slug}
-                children={(reaction.children || []).map((r) => {
-                  return <Comment comment={r} parent={reaction.id} />
-                })}
-              />
-            )}
+          <For each={reactions().filter((r) => !r.replyTo)}>
+            {(reaction) => <Comment level={0} reactions={reactions()} comment={reaction} />}
           </For>
         </ul>
 

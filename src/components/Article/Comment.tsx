@@ -1,32 +1,33 @@
 import styles from './Comment.module.scss'
-import type { JSX } from 'solid-js/jsx-runtime'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { Show, createMemo, createSignal, createEffect } from 'solid-js'
+import { Show, createMemo, createSignal, For } from 'solid-js'
 import { clsx } from 'clsx'
-import type { Author, Reaction as Point } from '../../graphql/types.gen'
+import type { Author, Reaction } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
+import { deleteReaction } from '../../stores/zine/reactions'
 import MD from './MD'
 import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
 import { apiClient } from '../../utils/apiClient'
-import { ReactionKind } from '../../graphql/types.gen'
+import { useSession } from '../../context/session'
 
 type Props = {
-  level?: number
-  comment: Partial<Point>
-  canEdit?: boolean
+  level: number
+  comment: Reaction
   compact?: boolean
-  children?: JSX.Element[]
-  parent?: number
+  reactions: Reaction[]
 }
 
-export default (props: Props) => {
+export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [postMessageText, setPostMessageText] = createSignal('')
+
+  const { session } = useSession()
+
+  const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
@@ -43,7 +44,7 @@ export default (props: Props) => {
     // await createReaction({
     await apiClient.createReaction({
       kind: 7,
-      replyTo: props.parent,
+      replyTo: props.comment.id,
       body: postMessageText(),
       shout: comment().shout.id
     })
@@ -95,7 +96,7 @@ export default (props: Props) => {
 
           <div
             class={styles.commentBody}
-            contenteditable={props.canEdit}
+            contenteditable={canEdit()}
             id={'comment-' + (comment().id || '')}
           >
             <MD body={body()} />
@@ -111,7 +112,7 @@ export default (props: Props) => {
                 {t('Reply')}
               </button>
 
-              <Show when={props.canEdit}>
+              <Show when={canEdit()}>
                 {/*FIXME implement edit comment modal*/}
                 {/*<button*/}
                 {/*  class={clsx(styles.commentControl, styles.commentControlEdit)}*/}
@@ -169,9 +170,11 @@ export default (props: Props) => {
           </Show>
         </div>
       </Show>
-      <Show when={props.children}>
-        <ul>{props.children}</ul>
-      </Show>
+      <ul>
+        <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
+          {(reaction) => <Comment reactions={props.reactions} comment={reaction} level={props.level + 1} />}
+        </For>
+      </ul>
     </li>
   )
 }

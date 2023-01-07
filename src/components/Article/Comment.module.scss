@@ -10,14 +10,14 @@
   }
 
   .comment {
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       content: '';
       left: 0;
       position: absolute;
     }
 
-    &:before {
+    &::before {
       border-bottom: 2px solid #ccc;
       border-left: 2px solid #ccc;
       border-radius: 0 0 0 1.2rem;
@@ -26,14 +26,14 @@
       width: 1.2rem;
     }
 
-    &:after {
+    &::after {
       background: #ccc;
       height: 100%;
       top: 0;
       width: 2px;
     }
 
-    &:last-child:after {
+    &:last-child::after {
       display: none;
     }
   }
@@ -68,6 +68,7 @@
 
 .commentControls {
   @include font-size(1.2rem);
+
   margin-bottom: 0.5em;
 }
 
@@ -134,6 +135,7 @@
 
 .commentBody {
   @include font-size(1.5rem);
+
   line-height: 1.47;
 }
 
@@ -210,6 +212,7 @@
 
   button {
     @include font-size(1.6rem);
+
     margin-left: 1.2rem;
   }
 }

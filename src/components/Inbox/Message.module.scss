@@ -15,9 +15,11 @@
     p {
       margin: 0;
     }
+
     a {
       color: inherit;
       text-decoration: underline;
+
       &:hover {
         color: inherit;
       }
@@ -44,6 +46,7 @@
       line-height: 20px;
     }
   }
+
   &.own {
     .body {
       justify-content: flex-end;
@@ -51,6 +54,7 @@
       background: #000;
       color: #fff;
     }
+
     .time {
       text-align: right;
     }

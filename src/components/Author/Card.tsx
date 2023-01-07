@@ -36,11 +36,13 @@ export const AuthorCard = (props: AuthorCardProps) => {
     actions: { loadSession }
   } = useSession()
 
+  if (!props.author) return false // FIXME: с сервера должен приходить автор реакции (ApiClient.CreateReaction)
+
   const [isSubscribing, setIsSubscribing] = createSignal(false)
 
-  const subscribed = createMemo<boolean>(
-    () => session()?.news?.authors?.some((u) => u === props.author.slug) || false
-  )
+  const subscribed = createMemo<boolean>(() => {
+    return session()?.news?.authors?.some((u) => u === props.author.slug) || false
+  })
 
   const subscribe = async (really = true) => {
     setIsSubscribing(true)

@@ -21,11 +21,12 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   const { session } = useSession()
   const { sortedReactions, loadReactionsBy } = useReactionsStore()
   const reactions = createMemo<Reaction[]>(() =>
-    sortedReactions()
-      .sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
-      .filter((r) => r.shout.slug === props.shoutSlug)
+    sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
   )
 
+  createEffect(() => {
+    console.log('!!! sortedReactions():', sortedReactions())
+  })
   const loadMore = async () => {
     try {
       const page = getCommentsPage()
@@ -48,24 +49,6 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     return level
   }
   onMount(async () => await loadMore())
-
-  const nestComments = (commentList) => {
-    const commentMap = {}
-    commentList.forEach((comment) => {
-      commentMap[comment.id] = comment
-      if (comment.replyTo !== null) {
-        const parent = commentMap[comment.replyTo] ?? []
-        ;(parent.children = parent.children || []).push(comment)
-      }
-    })
-    return commentList.filter((comment) => {
-      return !comment.replyTo
-    })
-  }
-
-  createEffect(() => {
-    console.log('!!! re:', nestComments(reactions()))
-  })
 
   return (
     <>
@@ -103,7 +86,7 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
 
         <ul class={styles.comments}>
           <For each={reactions().filter((r) => !r.replyTo)}>
-            {(reaction) => <Comment level={0} reactions={reactions()} comment={reaction} />}
+            {(reaction) => <Comment reactions={reactions()} comment={reaction} />}
           </For>
         </ul>
 

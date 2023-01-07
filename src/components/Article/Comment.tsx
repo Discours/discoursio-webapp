@@ -5,20 +5,19 @@ import { Show, createMemo, createSignal, For } from 'solid-js'
 import { clsx } from 'clsx'
 import type { Author, Reaction } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-import { deleteReaction } from '../../stores/zine/reactions'
+import { createReaction, deleteReaction } from '../../stores/zine/reactions'
 import MD from './MD'
 import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
-import { apiClient } from '../../utils/apiClient'
 import { useSession } from '../../context/session'
+import { ReactionKind } from '../../graphql/types.gen'
 
 type Props = {
-  level: number
   comment: Reaction
   compact?: boolean
-  reactions: Reaction[]
+  reactions?: Reaction[]
 }
 
 export const Comment = (props: Props) => {
@@ -41,20 +40,24 @@ export const Comment = (props: Props) => {
   const compose = (event) => setPostMessageText(event.target.value)
   const handleCreate = async (event) => {
     event.preventDefault()
-    // await createReaction({
-    await apiClient.createReaction({
-      kind: 7,
-      replyTo: props.comment.id,
-      body: postMessageText(),
-      shout: comment().shout.id
-    })
+    try {
+      await createReaction({
+        kind: ReactionKind.Comment,
+        replyTo: props.comment.id,
+        body: postMessageText(),
+        shout: comment().shout.id
+      })
+      setIsReplyVisible(false)
+    } catch (error) {
+      console.log('!!! err:', error)
+    }
   }
   const formattedDate = createMemo(() =>
     formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
   )
 
   return (
-    <li class={clsx(styles.comment, { [styles[`commentLevel${props.level}`]]: Boolean(props.level) })}>
+    <li class={styles.comment}>
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show
@@ -93,7 +96,7 @@ export const Comment = (props: Props) => {
               </div>
             </div>
           </Show>
-
+          <div style={{ color: 'red' }}>{comment().id}</div>
           <div
             class={styles.commentBody}
             contenteditable={canEdit()}
@@ -170,11 +173,13 @@ export const Comment = (props: Props) => {
           </Show>
         </div>
       </Show>
-      <ul>
-        <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
-          {(reaction) => <Comment reactions={props.reactions} comment={reaction} level={props.level + 1} />}
-        </For>
-      </ul>
+      <Show when={props.reactions}>
+        <ul>
+          <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
+            {(reaction) => <Comment reactions={props.reactions} comment={reaction} />}
+          </For>
+        </ul>
+      </Show>
     </li>
   )
 }

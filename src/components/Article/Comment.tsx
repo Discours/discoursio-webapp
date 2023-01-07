@@ -96,7 +96,6 @@ export const Comment = (props: Props) => {
               </div>
             </div>
           </Show>
-          <div style={{ color: 'red' }}>{comment().id}</div>
           <div
             class={styles.commentBody}
             contenteditable={canEdit()}

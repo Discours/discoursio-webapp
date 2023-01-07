@@ -24,6 +24,7 @@ type Props = {
 
 const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
+  const [loading, setLoading] = createSignal(false)
   const [postMessageText, setPostMessageText] = createSignal('')
 
   const comment = createMemo(() => props.comment)
@@ -37,14 +38,21 @@ const Comment = (props: Props) => {
 
   const compose = (event) => setPostMessageText(event.target.value)
   const handleCreate = async (event) => {
-    console.log('!!! comment().shout.id:', comment().shout.id)
     event.preventDefault()
-    await createReaction({
-      kind: ReactionKind.Comment,
-      replyTo: props.comment.id ?? null,
-      body: postMessageText(),
-      shout: comment().shout.id
-    })
+    try {
+      setLoading(true)
+      await createReaction({
+        kind: ReactionKind.Comment,
+        replyTo: props.comment.id ?? null,
+        body: postMessageText(),
+        shout: comment().shout.id
+      })
+      setIsReplyVisible(false)
+      setPostMessageText('')
+      setLoading(false)
+    } catch (error) {
+      console.error('[handleCreate reaction]:', error)
+    }
   }
   const formattedDate = createMemo(() =>
     formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
@@ -102,11 +110,12 @@ const Comment = (props: Props) => {
           <Show when={!props.compact}>
             <div class={styles.commentControls}>
               <button
-                class={clsx(styles.commentControl, styles.commentControlReply)}
+                disabled={loading()}
                 onClick={() => setIsReplyVisible(!isReplyVisible())}
+                class={clsx(styles.commentControl, styles.commentControlReply)}
               >
                 <Icon name="reply" class={styles.icon} />
-                {t('Reply')}
+                {loading() ? t('Loading') : t('Reply')}
               </button>
 
               <Show when={props.canEdit}>

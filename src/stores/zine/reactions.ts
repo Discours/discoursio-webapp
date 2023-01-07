@@ -24,21 +24,15 @@ export const loadReactionsBy = async ({
   return { hasMore }
 }
 
-console.log('!!! sortedReactions():', sortedReactions())
 export const createReaction = async (reaction: ReactionInput) => {
   try {
     const response = await apiClient.createReaction(reaction)
-
-    console.log('!!! reaction:', response.data?.createReaction.reaction)
-    const newReaction = response.data?.createReaction.reaction
-    console.log('!!! newReaction:', newReaction)
-    setSortedReactions((prev) => [...prev, response.data?.createReaction.reaction])
-    console.log('!!! S:', sortedReactions())
-    // return newReaction
+    setSortedReactions((prev) => [...prev, response])
   } catch (error) {
     console.error('[createReaction]', error)
   }
 }
+
 export const updateReaction = async (reaction: Reaction) => {
   const { reaction: r } = await apiClient.updateReaction({ reaction })
   return r

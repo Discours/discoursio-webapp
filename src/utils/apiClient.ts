@@ -232,8 +232,7 @@ export const apiClient = {
   },
   createReaction: async (reaction: ReactionInput) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()
-    console.log('!!! response:', response)
-    return response.data
+    return response.data.createReaction.reaction
   },
 
   // CUDL

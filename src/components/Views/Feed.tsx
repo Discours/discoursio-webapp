@@ -129,7 +129,7 @@ export const FeedView = () => {
               <h4>{t('Comments')}</h4>
               <For each={topComments()}>
                 {/*FIXME: different components/better comment props*/}
-                {(comment) => <CommentCard comment={comment} level={0} reactions={[]} compact={true} />}
+                {(comment) => <CommentCard comment={comment} reactions={[]} compact={true} />}
               </For>
             </section>
             <Show when={topTopics().length > 0}>

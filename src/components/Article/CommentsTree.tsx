@@ -1,6 +1,6 @@
-import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
 import { useSession } from '../../context/session'
-import Comment from './Comment'
+import { Comment } from './Comment'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
 import styles from '../../styles/Article.module.scss'
@@ -21,16 +21,16 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   const { session } = useSession()
   const { sortedReactions, loadReactionsBy } = useReactionsStore()
   const reactions = createMemo<Reaction[]>(() =>
-    sortedReactions()
-      .sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
-      .filter((r) => r.shout.slug === props.shoutSlug)
+    sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
   )
 
+  createEffect(() => {
+    console.log('!!! sortedReactions():', sortedReactions())
+  })
   const loadMore = async () => {
     try {
       const page = getCommentsPage()
       setIsCommentsLoading(true)
-
       const { hasMore } = await loadReactionsBy({
         by: { shout: props.shoutSlug, comment: true },
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
@@ -49,6 +49,7 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     return level
   }
   onMount(async () => await loadMore())
+
   return (
     <>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -83,15 +84,11 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
           </ul>
         </div>
 
-        <For each={reactions().reverse()}>
-          {(reaction: Reaction) => (
-            <Comment
-              comment={reaction}
-              level={getCommentLevel(reaction)}
-              canEdit={reaction.createdBy?.slug === session()?.user?.slug}
-            />
-          )}
-        </For>
+        <ul class={styles.comments}>
+          <For each={reactions().filter((r) => !r.replyTo)}>
+            {(reaction) => <Comment reactions={reactions()} comment={reaction} />}
+          </For>
+        </ul>
 
         <Show when={isLoadMoreButtonVisible()}>
           <button onClick={loadMore}>{t('Load more')}</button>

@@ -8,7 +8,9 @@ export default gql`
       range
       replyTo
       shout {
+        id
         slug
+        title
       }
       createdBy {
         name

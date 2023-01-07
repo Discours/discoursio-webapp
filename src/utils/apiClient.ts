@@ -12,7 +12,9 @@ import type {
   MutationCreateMessageArgs,
   Chat,
   QueryLoadRecipientsArgs,
-  ProfileInput
+  User,
+  ProfileInput,
+  ReactionInput
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -229,16 +231,16 @@ export const apiClient = {
     console.debug('createArticle response:', response)
     return response.data.createShout
   },
-  createReaction: async ({ reaction }) => {
-    const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()
-    console.debug('[api-client] [api] create reaction mutation called')
-    return response.data.createReaction
+  createReaction: async (input: ReactionInput) => {
+    const response = await privateGraphQLClient.mutation(reactionCreate, { reaction: input }).toPromise()
+    console.debug('[createReaction]:', response.data)
+    return response.data.createReaction.reaction
   },
 
   // CUDL
 
-  updateReaction: async ({ reaction }) => {
-    const response = await privateGraphQLClient.mutation(reactionUpdate, { reaction }).toPromise()
+  updateReaction: async (reaction) => {
+    const response = await privateGraphQLClient.mutation(reactionUpdate, reaction).toPromise()
 
     return response.data.createReaction
   },

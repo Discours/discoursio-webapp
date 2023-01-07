@@ -1,25 +1,32 @@
 import styles from './Comment.module.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { Show, createMemo, createSignal } from 'solid-js'
+import { Show, createMemo, createSignal, For } from 'solid-js'
 import { clsx } from 'clsx'
-import type { Author, Reaction as Point } from '../../graphql/types.gen'
+import type { Author, Reaction } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-// import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
+import { createReaction, deleteReaction } from '../../stores/zine/reactions'
 import MD from './MD'
-import { deleteReaction } from '../../stores/zine/reactions'
 import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
+import { useSession } from '../../context/session'
+import { ReactionKind } from '../../graphql/types.gen'
 
-export default (props: {
-  level?: number
-  comment: Partial<Point>
-  canEdit?: boolean
+type Props = {
+  comment: Reaction
   compact?: boolean
-}) => {
+  reactions?: Reaction[]
+}
+
+export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
+  const [postMessageText, setPostMessageText] = createSignal('')
+
+  const { session } = useSession()
+
+  const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
@@ -29,12 +36,28 @@ export default (props: {
       deleteReaction(comment().id)
     }
   }
+
+  const compose = (event) => setPostMessageText(event.target.value)
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    try {
+      await createReaction({
+        kind: ReactionKind.Comment,
+        replyTo: props.comment.id,
+        body: postMessageText(),
+        shout: comment().shout.id
+      })
+      setIsReplyVisible(false)
+    } catch (error) {
+      console.log('!!! err:', error)
+    }
+  }
   const formattedDate = createMemo(() =>
     formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
   )
 
   return (
-    <div class={clsx(styles.comment, { [styles[`commentLevel${props.level}`]]: Boolean(props.level) })}>
+    <li class={styles.comment}>
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show
@@ -73,10 +96,10 @@ export default (props: {
               </div>
             </div>
           </Show>
-
+          <div style={{ color: 'red' }}>{comment().id}</div>
           <div
             class={styles.commentBody}
-            contenteditable={props.canEdit}
+            contenteditable={canEdit()}
             id={'comment-' + (comment().id || '')}
           >
             <MD body={body()} />
@@ -92,7 +115,7 @@ export default (props: {
                 {t('Reply')}
               </button>
 
-              <Show when={props.canEdit}>
+              <Show when={canEdit()}>
                 {/*FIXME implement edit comment modal*/}
                 {/*<button*/}
                 {/*  class={clsx(styles.commentControl, styles.commentControlEdit)}*/}
@@ -129,19 +152,34 @@ export default (props: {
             </div>
 
             <Show when={isReplyVisible()}>
-              <form class={styles.replyForm}>
-                <textarea name="reply" id="reply" rows="5" />
+              <form class={styles.replyForm} onSubmit={(event) => handleCreate(event)}>
+                <textarea
+                  value={postMessageText()}
+                  rows={1}
+                  onInput={(event) => compose(event)}
+                  placeholder="Написать сообщение"
+                />
+
                 <div class={styles.replyFormControls}>
                   <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
-                    {t('Cancel')}
+                    {t('cancel')}
                   </button>
-                  <button class="button">{t('Send')}</button>
+                  <button type="submit" class="button">
+                    {t('Send')}
+                  </button>
                 </div>
               </form>
             </Show>
           </Show>
         </div>
       </Show>
-    </div>
+      <Show when={props.reactions}>
+        <ul>
+          <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
+            {(reaction) => <Comment reactions={props.reactions} comment={reaction} />}
+          </For>
+        </ul>
+      </Show>
+    </li>
   )
 }

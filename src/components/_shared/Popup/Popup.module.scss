@@ -4,18 +4,19 @@
 
 .popup {
   background: #fff;
-  top: calc(100% + 8px);
-  opacity: 1;
   color: #000;
-  position: absolute;
-  z-index: 100;
   min-width: 144px;
+  opacity: 1;
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 100;
 
   ul {
     margin-bottom: 0;
 
     li {
       position: relative;
+
       &:last-child {
         margin-bottom: 0;
       }
@@ -24,11 +25,12 @@
 
   &.bordered {
     @include font-size(1.6rem);
-
     border: 2px solid #000;
     padding: 2.4rem;
+
     ul li {
       margin-bottom: 1.6rem;
+
       &:last-child {
         margin-bottom: 0;
       }
@@ -37,11 +39,12 @@
 
   &.tiny {
     @include font-size(1.4rem);
-
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.1);
     padding: 1rem;
+
     ul li {
       margin-bottom: 1rem;
+
       &:last-child {
         margin-bottom: 0;
       }
@@ -67,22 +70,22 @@
     white-space: nowrap;
 
     &:hover {
-      img {
+      .icon img {
         filter: invert(0);
       }
     }
   }
 
-  img {
-    filter: invert(1);
-    max-height: 2rem;
-    max-width: 2rem;
-    transition: filter 0.3s;
-  }
-
   .icon {
     display: inline-block;
     width: 3.6rem;
+
+    img {
+      filter: invert(1);
+      max-height: 2rem;
+      max-width: 2rem;
+      transition: filter 0.3s;
+    }
   }
 }
 

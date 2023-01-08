@@ -1,10 +1,10 @@
-import { createEffect, createMemo, createSignal, For, onMount, Show, Suspense } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
 import { useSession } from '../../context/session'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
 import { showModal } from '../../stores/ui'
 import styles from '../../styles/Article.module.scss'
-import { createReaction, useReactionsStore } from '../../stores/zine/reactions'
+import { useReactionsStore } from '../../stores/zine/reactions'
 import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
@@ -12,13 +12,10 @@ import { Loading } from '../Loading'
 import GrowingTextarea from '../_shared/GrowingTextarea'
 import { ReactionKind } from '../../graphql/types.gen'
 
-type NestedReaction = {
-  children: Reaction[] | []
-} & Reaction
-
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
+const MAX_COMMENT_LEVEL = 6
 
-export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
+export const CommentsTree = (props: { shoutSlug: string }) => {
   const [getCommentsPage, setCommentsPage] = createSignal(0)
   const [commentsOrder, setCommentsOrder] = createSignal<'rating' | 'createdAt'>('createdAt')
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
@@ -28,7 +25,6 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   const reactions = createMemo<Reaction[]>(() =>
     sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
   )
-
   const loadMore = async () => {
     try {
       const page = getCommentsPage()
@@ -43,28 +39,14 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
       setIsCommentsLoading(false)
     }
   }
-
-  onMount(async () => await loadMore())
-
-  const nestComments = (commentList) => {
-    const commentMap = {}
-    commentList.forEach((comment) => {
-      commentMap[comment.id] = comment
-      if (comment.replyTo !== null) {
-        const parent = commentMap[comment.replyTo] ?? []
-        ;(parent.children = parent.children || []).push(comment)
-      }
-    })
-    return commentList.filter((comment) => {
-      return !comment.replyTo
-    })
+  const getCommentById = (cid: number) => reactions().find((r: Reaction) => r.id === cid)
+  const getCommentLevel = (c: Reaction, level = 0) => {
+    if (c && c.replyTo && level < MAX_COMMENT_LEVEL) {
+      return getCommentLevel(getCommentById(c.replyTo), level + 1)
+    }
+    return level
   }
-  const [reactionTree, setReactionTree] = createSignal([])
-
-  createEffect(() => {
-    setReactionTree(nestComments(reactions().reverse()))
-  })
-
+  onMount(async () => await loadMore())
   const [loading, setLoading] = createSignal<boolean>(false)
   const [error, setError] = createSignal<string | null>(null)
   const handleSubmitComment = async (value) => {
@@ -82,7 +64,6 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
       console.error('[handleCreate reaction]:', error)
     }
   }
-
   return (
     <>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -118,17 +99,9 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
         </div>
 
         <ul class={styles.comments}>
-          <Suspense>
-            <For each={reactionTree()}>
-              {(reaction: NestedReaction) => (
-                <Comment
-                  comment={reaction}
-                  canEdit={reaction?.createdBy?.slug === session()?.user?.slug}
-                  children={reaction?.children}
-                />
-              )}
-            </For>
-          </Suspense>
+          <For each={reactions().filter((r) => !r.replyTo)}>
+            {(reaction) => <Comment reactions={reactions()} comment={reaction} />}
+          </For>
         </ul>
 
         <Show when={isLoadMoreButtonVisible()}>

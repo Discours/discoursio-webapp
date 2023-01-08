@@ -8,11 +8,8 @@ import { follow, unfollow } from '../../stores/zine/common'
 import { getLogger } from '../../utils/logger'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import { StatMetrics } from '../_shared/StatMetrics'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { Icon } from '../_shared/Icon'
-
-const log = getLogger('TopicCard')
 
 interface TopicProps {
   topic: Topic

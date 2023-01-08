@@ -21,7 +21,7 @@ const GroupDialogAvatar = (props: Props) => {
       <For each={slicedUsers()}>
         {(user) => (
           <DialogAvatar
-            class={styles.grouped}
+            className={styles.grouped}
             bordered={true}
             size="small"
             name={user.name}

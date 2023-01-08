@@ -2,7 +2,6 @@ import { createEffect, createMemo, createSignal, onMount, Show, Suspense } from 
 import { FullArticle } from '../Article/FullArticle'
 import { t } from '../../utils/intl'
 import type { Shout, Reaction } from '../../graphql/types.gen'
-import { useReactionsStore } from '../../stores/zine/reactions'
 
 interface ArticlePageProps {
   article: Shout

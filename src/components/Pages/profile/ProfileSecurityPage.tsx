@@ -72,7 +72,7 @@ export const ProfileSecurityPage = (props: PageProps) => {
                 <h5>Google</h5>
                 <div class="pretty-form__item">
                   <p>
-                    <button class={clsx('button button--light', styles.socialButton)} type="button">
+                    <button class={clsx('button', 'button--light', styles.socialButton)} type="button">
                       <Icon name="google" class={styles.icon} />
                       Привязать
                     </button>
@@ -82,7 +82,7 @@ export const ProfileSecurityPage = (props: PageProps) => {
                 <h5>VK</h5>
                 <div class="pretty-form__item">
                   <p>
-                    <button class={clsx(styles.socialButton, 'button button--light')} type="button">
+                    <button class={clsx(styles.socialButton, 'button', 'button--light')} type="button">
                       <Icon name="vk" class={styles.icon} />
                       Привязать
                     </button>
@@ -92,7 +92,7 @@ export const ProfileSecurityPage = (props: PageProps) => {
                 <h5>Facebook</h5>
                 <div class="pretty-form__item">
                   <p>
-                    <button class={clsx(styles.socialButton, 'button button--light')} type="button">
+                    <button class={clsx(styles.socialButton, 'button', 'button--light')} type="button">
                       <Icon name="facebook" class={styles.icon} />
                       Привязать
                     </button>

@@ -11,7 +11,7 @@ import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
-import { apiClient } from '../../utils/apiClient'
+import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
 
 type Props = {
@@ -44,10 +44,10 @@ export const Comment = (props: Props) => {
     try {
       setLoading(true)
       await createReaction({
-        kind: ReactionKind.Comment,
+        kind: 7, //ReactionKind.Comment,
         replyTo: props.comment.id,
         body: postMessageText(),
-        shout: comment().shout.id
+        shout: comment().shout.slug //comment().shout.id
       })
       setIsReplyVisible(false)
       setPostMessageText('')
@@ -100,7 +100,6 @@ export const Comment = (props: Props) => {
               </div>
             </div>
           </Show>
-          <div style={{ color: 'red' }}>{comment().id}</div>
           <div
             class={styles.commentBody}
             contenteditable={canEdit()}

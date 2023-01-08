@@ -13,7 +13,8 @@ import type {
   QueryLoadRecipientsArgs,
   User,
   ProfileInput,
-  ReactionInput
+  ReactionInput,
+  Chat
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -277,7 +278,7 @@ export const apiClient = {
   },
 
   // inbox
-  getChats: async (options: QueryLoadChatsArgs) => {
+  getChats: async (options: QueryLoadChatsArgs): Promise<Chat[]> => {
     const resp = await privateGraphQLClient.query(myChats, options).toPromise()
     return resp.data.loadChats.chats
   },

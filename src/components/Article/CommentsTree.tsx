@@ -1,10 +1,9 @@
 import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
 import { useSession } from '../../context/session'
-import Comment from './Comment'
+import { Comment } from './Comment'
 import { t } from '../../utils/intl'
-import { showModal } from '../../stores/ui'
 import styles from '../../styles/Article.module.scss'
-import { useReactionsStore } from '../../stores/zine/reactions'
+import { createReaction, useReactionsStore } from '../../stores/zine/reactions'
 import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
@@ -47,6 +46,7 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     return level
   }
   onMount(async () => await loadMore())
+
   const [loading, setLoading] = createSignal<boolean>(false)
   const [error, setError] = createSignal<string | null>(null)
   const handleSubmitComment = async (value) => {
@@ -56,7 +56,7 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
       await createReaction({
         kind: ReactionKind.Comment,
         body: value,
-        shout: props.shoutId
+        shout: 0
       })
       setLoading(false)
     } catch (error) {

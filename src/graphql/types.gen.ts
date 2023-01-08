@@ -238,7 +238,7 @@ export type MutationDeleteMessageArgs = {
 }
 
 export type MutationDeleteReactionArgs = {
-  reaction: Scalars['Int']
+  id: Scalars['Int']
 }
 
 export type MutationDeleteShoutArgs = {
@@ -498,10 +498,10 @@ export type ReactionBy = {
 
 export type ReactionInput = {
   body?: InputMaybe<Scalars['String']>
-  kind: ReactionKind
+  kind: Scalars['Int']
   range?: InputMaybe<Scalars['String']>
   replyTo?: InputMaybe<Scalars['Int']>
-  shout: Scalars['Int']
+  shout: Scalars['String']
 }
 
 export enum ReactionKind {

@@ -1,7 +1,7 @@
 import styles from './SearchField.module.scss'
 import { Icon } from './Icon'
 import { t } from '../../utils/intl'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 type SearchFieldProps = {
   onChange: (value: string) => void

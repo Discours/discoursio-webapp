@@ -6,11 +6,19 @@ export default gql`
       error
       chats {
         id
+        title
         admins
         users
+        members {
+          id
+          slug
+          name
+          userpic
+        }
         unread
         description
         updatedAt
+        private
         messages {
           id
           body

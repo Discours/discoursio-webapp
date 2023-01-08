@@ -1,6 +1,6 @@
 import { capitalize } from '../../utils'
 import styles from './Card.module.scss'
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+import { createMemo, createSignal, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'

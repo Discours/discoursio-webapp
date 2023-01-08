@@ -4,8 +4,20 @@ import Prerendered from '../main.astro'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
 
+const excludes = [
+  'authors',
+  'connect',
+  'create',
+  'inbox',
+  'search',
+  'topics',
+  'welcome',
+  'confirm',
+  'feed'
+]
+
 const slug = Astro.params.slug?.toString()
-if (slug.endsWith('.map')) {
+if (slug.endsWith('.map') || slug in excludes) {
   return Astro.redirect('/404')
 }
 

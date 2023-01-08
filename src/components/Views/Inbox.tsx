@@ -1,51 +1,27 @@
 import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
-import type { Author, Chat, ChatMember } from '../../graphql/types.gen'
-import { AuthorCard } from '../Author/Card'
-import { Icon } from '../_shared/Icon'
-import { Loading } from '../Loading'
+import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
-import { useSession } from '../../context/session'
-import { createClient } from '@urql/core'
 import Message from '../Inbox/Message'
-import { loadRecipients, loadChats } from '../../stores/inbox'
+import CreateModalContent from '../Inbox/CreateModalContent'
+import DialogHeader from '../Inbox/DialogHeader'
+import MessagesFallback from '../Inbox/MessagesFallback'
+import QuotedMessage from '../Inbox/QuotedMessage'
+import { Icon } from '../_shared/Icon'
+import { useSession } from '../../context/session'
+import { loadMessages, loadRecipients } from '../../stores/inbox'
 import { t } from '../../utils/intl'
-import '../../styles/Inbox.scss'
-import { useInbox } from '../../context/inbox'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
-import InviteUser from '../Inbox/InviteUser'
-import CreateModalContent from '../Inbox/CreateModalContent'
+import { useInbox } from '../../context/inbox'
+import { useRouter } from '../../stores/router'
+import { clsx } from 'clsx'
+import styles from '../../styles/Inbox.module.scss'
 
-const OWNER_ID = '501'
-const client = createClient({
-  url: 'https://graphqlzero.almansi.me/api'
-})
-
-const messageQuery = `
-query Comments ($options: PageQueryOptions) {
-  comments(options: $options) {
-    data {
-      id
-      body
-      email
-    }
-  }
+type InboxSearchParams = {
+  initChat: string
+  chat: string
 }
-`
-const newMessageQuery = `
-mutation postComment($messageBody: String!) {
-  createComment(
-    input: { body: $messageBody, email: "test@test.com", name: "User" }
-  ) {
-    id
-    body
-    name
-    email
-  }
-}
-`
-
 const userSearch = (array: Author[], keyword: string) => {
   const searchTerm = keyword.toLowerCase()
   return array.filter((value) => {
@@ -53,161 +29,267 @@ const userSearch = (array: Author[], keyword: string) => {
   })
 }
 
-const postMessage = async (msg: string) => {
-  const response = await client.mutation(newMessageQuery, { messageBody: msg }).toPromise()
-  return response.data.createComment
-}
-
 export const InboxView = () => {
-  const [messages, setMessages] = createSignal([])
-  const [recipients, setRecipients] = createSignal<Author[]>([])
-  const [chats, setChats] = createSignal<Chat[]>([])
-  const [cashedRecipients, setCashedRecipients] = createSignal<Author[]>([])
-  const [postMessageText, setPostMessageText] = createSignal('')
-  const [loading, setLoading] = createSignal<boolean>(false)
-  const { session } = useSession()
+  const {
+    chats,
+    messages,
+    actions: { loadChats, getMessages, sendMessage, createChat }
+  } = useInbox()
 
+  const [recipients, setRecipients] = createSignal<Author[]>([])
+  const [postMessageText, setPostMessageText] = createSignal('')
+  const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
+  const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
+  const [currentDialog, setCurrentDialog] = createSignal<Chat>()
+  const [messageToReply, setMessageToReply] = createSignal<MessageType | null>(null)
+  const { session } = useSession()
+  const currentUserId = createMemo(() => session()?.user.id)
   // Поиск по диалогам
   const getQuery = (query) => {
-    if (query().length >= 2) {
-      const match = userSearch(recipients(), query())
-      setRecipients(match)
-    } else {
-      setRecipients(cashedRecipients())
-    }
-  }
-
-  const fetchMessages = async (query) => {
-    const response = await client
-      .query(query, {
-        options: { slice: { start: 0, end: 3 } }
-      })
-      .toPromise()
-    if (response.error) console.debug('getMessages', response.error)
-    setMessages(response.data.comments.data)
+    // if (query().length >= 2) {
+    //   const match = userSearch(recipients(), query())
+    //   setRecipients(match)
+    // } else {
+    //   setRecipients(cashedRecipients())
+    // }
   }
 
   let chatWindow
-  onMount(async () => {
-    setLoading(true)
+
+  const handleOpenChat = async (chat: Chat) => {
+    setCurrentDialog(chat)
+    changeSearchParam('chat', `${chat.id}`)
     try {
-      await fetchMessages(messageQuery)
+      await getMessages(chat.id)
     } catch (error) {
-      setLoading(false)
-      console.error([fetchMessages], error)
+      console.error('[getMessages]', error)
     } finally {
-      setLoading(false)
       chatWindow.scrollTop = chatWindow.scrollHeight
     }
+  }
 
+  // TODO: удалить когда будет готова подписка
+  createEffect(() => {
+    setInterval(async () => {
+      if (!currentDialog()) return
+      try {
+        await getMessages(currentDialog().id)
+      } catch (error) {
+        console.error('[getMessages]', error)
+      } finally {
+        chatWindow.scrollTop = chatWindow.scrollHeight
+      }
+    }, 2000)
+  })
+
+  onMount(async () => {
     try {
       const response = await loadRecipients({ days: 365 })
       setRecipients(response as unknown as Author[])
-      setCashedRecipients(response as unknown as Author[])
     } catch (error) {
       console.log(error)
     }
-
-    try {
-      const response = await loadChats()
-      setChats(response as unknown as Chat[])
-    } catch (error) {
-      console.log(error)
-    }
+    await loadChats()
   })
 
   const handleSubmit = async () => {
-    try {
-      const post = await postMessage(postMessageText())
-      setMessages((prev) => [...prev, post])
-      setPostMessageText('')
-      chatWindow.scrollTop = chatWindow.scrollHeight
-    } catch (error) {
-      console.error('[post message error]:', error)
-    }
+    await sendMessage({
+      body: postMessageText().toString(),
+      chat: currentDialog().id.toString(),
+      replyTo: messageToReply()?.id
+    })
+    setPostMessageText('')
+    setMessageToReply(null)
+    chatWindow.scrollTop = chatWindow.scrollHeight
   }
 
   let textareaParent // textarea autoresize ghost element
   const handleChangeMessage = (event) => {
     setPostMessageText(event.target.value)
   }
-  createEffect(() => {
-    textareaParent.dataset.replicatedValue = postMessageText()
+
+  const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
+
+  createEffect(async () => {
+    if (textareaParent) {
+      textareaParent.dataset.replicatedValue = postMessageText()
+    }
+    if (searchParams().chat) {
+      const chatToOpen = chats()?.find((chat) => chat.id === searchParams().chat)
+      if (!chatToOpen) return
+      await handleOpenChat(chatToOpen)
+      return
+    }
+    if (searchParams().initChat) {
+      try {
+        const newChat = await createChat([Number(searchParams().initChat)], '')
+        await loadChats()
+        changeSearchParam('initChat', null)
+        changeSearchParam('chat', newChat.chat.id)
+        const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
+        await handleOpenChat(chatToOpen)
+      } catch (error) {
+        console.error(error)
+      }
+    }
   })
 
-  const handleOpenInviteModal = (event: Event) => {
-    event.preventDefault()
+  const handleOpenInviteModal = () => {
     showModal('inviteToChat')
   }
 
+  const chatsToShow = () => {
+    const sorted = chats().sort((a, b) => {
+      return b.updatedAt - a.updatedAt
+    })
+    if (sortByPerToPer()) {
+      return sorted.filter((chat) => chat.title.trim().length === 0)
+    } else if (sortByGroup()) {
+      return sorted.filter((chat) => chat.title.trim().length > 0)
+    } else {
+      return sorted
+    }
+  }
+
+  const findToReply = (messageId) => {
+    return messages().find((message) => message.id === messageId)
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13 && event.shiftKey) return
+    if (event.keyCode === 13 && !event.shiftKey && postMessageText().trim().length > 0) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+
   return (
-    <div class="messages container">
+    <div class={clsx('container', styles.Inbox)}>
       <Modal variant="narrow" name="inviteToChat">
         <CreateModalContent users={recipients()} />
       </Modal>
-      <div class="row">
-        <div class="chat-list col-md-4">
-          <div class="sidebar-header">
+      <div class={clsx('row', styles.row)}>
+        <div class={clsx(styles.chatList, 'col-md-4')}>
+          <div class={styles.sidebarHeader}>
             <Search placeholder="Поиск" onChange={getQuery} />
-            <div onClick={handleOpenInviteModal}>
+            <button type="button" onClick={handleOpenInviteModal}>
               <Icon name="plus-button" style={{ width: '40px', height: '40px' }} />
-            </div>
+            </button>
           </div>
 
-          <div class="chat-list__types">
-            <ul>
-              <li>
-                <strong>{t('All')}</strong>
-              </li>
-              <li>{t('Personal')}</li>
-              <li>{t('Groups')}</li>
-            </ul>
-          </div>
-          <div class="holder">
-            <div class="dialogs">
-              <For each={chats()}>{(chat: Chat) => <DialogCard members={chat.members} />}</For>
+          <Show when={chatsToShow}>
+            <div class={styles.chatListTypes}>
+              <ul>
+                <li
+                  class={clsx({ [styles.selected]: !sortByPerToPer() && !sortByGroup() })}
+                  onClick={() => {
+                    setSortByPerToPer(false)
+                    setSortByGroup(false)
+                  }}
+                >
+                  <span>{t('All')}</span>
+                </li>
+                <li
+                  class={clsx({ [styles.selected]: sortByPerToPer() })}
+                  onClick={() => {
+                    setSortByPerToPer(true)
+                    setSortByGroup(false)
+                  }}
+                >
+                  <span>{t('Personal')}</span>
+                </li>
+                <li
+                  class={clsx({ [styles.selected]: sortByGroup() })}
+                  onClick={() => {
+                    setSortByGroup(true)
+                    setSortByPerToPer(false)
+                  }}
+                >
+                  <span>{t('Groups')}</span>
+                </li>
+              </ul>
+            </div>
+          </Show>
+          <div class={styles.holder}>
+            <div class={styles.dialogs}>
+              <For each={chatsToShow()}>
+                {(chat) => (
+                  <DialogCard
+                    onClick={() => handleOpenChat(chat)}
+                    isOpened={chat.id === currentDialog()?.id}
+                    title={chat.title || chat.members[0].name}
+                    members={chat.members}
+                    ownId={currentUserId()}
+                    lastUpdate={chat.updatedAt}
+                    counter={chat.unread}
+                    message={chat.messages.pop()?.body}
+                  />
+                )}
+              </For>
             </div>
           </div>
         </div>
 
-        <div class="col-md-8 conversation">
-          <div class="interlocutor user--online">
-            <AuthorCard author={{} as Author} hideFollow={true} />
-            <div class="user-status">Online</div>
-          </div>
-
-          <div class="conversation__messages">
-            <div class="conversation__messages-container" ref={chatWindow}>
-              <Show when={loading()}>
-                <Loading />
-              </Show>
-              <For each={messages()}>
-                {(comment: { body: string; id: string; email: string }) => (
-                  <Message body={comment.body} isOwn={OWNER_ID === comment.id} />
-                )}
-              </For>
-
-              {/*<div class="conversation__date">*/}
-              {/*  <time>12 сентября</time>*/}
-              {/*</div>*/}
-            </div>
-          </div>
-
-          <div class="message-form">
-            <div class="wrapper">
-              <div class="grow-wrap" ref={textareaParent}>
-                <textarea
-                  value={postMessageText()}
-                  rows={1}
-                  onInput={(event) => handleChangeMessage(event)}
-                  placeholder="Написать сообщение"
-                />
+        <div class={clsx('col-md-8', styles.conversation)}>
+          <Show
+            when={currentDialog()}
+            fallback={
+              <MessagesFallback
+                message={t('Choose who you want to write to')}
+                onClick={handleOpenInviteModal}
+                actionText={t('Start conversation')}
+              />
+            }
+          >
+            <DialogHeader ownId={currentUserId()} chat={currentDialog()} />
+            <div class={styles.conversationMessages}>
+              <div class={styles.messagesContainer} ref={chatWindow}>
+                <For each={messages()}>
+                  {(message) => (
+                    <Message
+                      content={message}
+                      ownId={currentUserId()}
+                      members={currentDialog().members}
+                      replyBody={message.replyTo && findToReply(message.replyTo).body}
+                      replyClick={() => setMessageToReply(message)}
+                    />
+                  )}
+                </For>
+                {/*<div class={styles.conversationDate}>*/}
+                {/*  <time>12 сентября</time>*/}
+                {/*</div>*/}
               </div>
-              <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>
-                <Icon name="send-message" />
-              </button>
             </div>
-          </div>
+
+            <div class={styles.messageForm}>
+              <Show when={messageToReply()}>
+                <QuotedMessage
+                  variant="reply"
+                  author={
+                    currentDialog().members.find((member) => member.id === Number(messageToReply().author))
+                      .name
+                  }
+                  body={messageToReply().body}
+                  cancel={() => setMessageToReply(null)}
+                />
+              </Show>
+              <div class={styles.wrapper}>
+                <div class={styles.growWrap} ref={textareaParent}>
+                  <textarea
+                    class={styles.textInput}
+                    value={postMessageText()}
+                    rows={1}
+                    onKeyDown={handleKeyDown}
+                    onInput={(event) => handleChangeMessage(event)}
+                    placeholder={t('Write message')}
+                  />
+                </div>
+                <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>
+                  <Icon name="send-message" />
+                </button>
+              </div>
+            </div>
+          </Show>
         </div>
       </div>
     </div>

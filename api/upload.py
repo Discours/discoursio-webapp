@@ -16,7 +16,7 @@ storj_client = boto3.client('s3',
 
 
 def upload_storj(filecontent, filename, bucket_name):
-    success = False
+    head = None
 
     try:
         bucket = storj_resource.Bucket(bucket_name)
@@ -53,9 +53,7 @@ def upload_storj(filecontent, filename, bucket_name):
             pass
         else:
             head = storj_client.head_object(Bucket=bucket_name, Key=filename)
-            success = head['ContentLength']
-
-    return success
+    return head
 
 
 @app.route('/upload', methods=['post'])

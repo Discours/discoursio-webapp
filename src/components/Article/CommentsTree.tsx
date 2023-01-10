@@ -1,5 +1,4 @@
-import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
-import { useSession } from '../../context/session'
+import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
 import { Comment } from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
@@ -14,12 +13,11 @@ import { ReactionKind } from '../../graphql/types.gen'
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
 
-export const CommentsTree = (props: { shoutSlug: string }) => {
+export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   const [getCommentsPage, setCommentsPage] = createSignal(0)
   const [commentsOrder, setCommentsOrder] = createSignal<'rating' | 'createdAt'>('createdAt')
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const { session } = useSession()
   const { sortedReactions, loadReactionsBy } = useReactionsStore()
   const reactions = createMemo<Reaction[]>(() =>
     sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
@@ -50,13 +48,12 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
   const [error, setError] = createSignal<string | null>(null)
   const handleSubmitComment = async (value) => {
-    console.log('!!! test:', value)
     try {
       setLoading(true)
       await createReaction({
         kind: ReactionKind.Comment,
         body: value,
-        shout: 0
+        shout: props.shoutId
       })
       setLoading(false)
     } catch (error) {
@@ -65,7 +62,7 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     }
   }
   return (
-    <>
+    <div>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
         <div class={styles.commentsHeaderWrapper}>
           <h2 id="comments" class={styles.commentsHeader}>
@@ -97,26 +94,27 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
             </li>
           </ul>
         </div>
-
         <ul class={styles.comments}>
-          <For each={reactions().filter((r) => !r.replyTo)}>
+          <For
+            each={reactions()
+              .reverse()
+              .filter((r) => !r.replyTo)}
+          >
             {(reaction) => <Comment reactions={reactions()} comment={reaction} />}
           </For>
         </ul>
-
         <Show when={isLoadMoreButtonVisible()}>
           <button onClick={loadMore}>{t('Load more')}</button>
         </Show>
+        <GrowingTextarea
+          placeholder={t('Write comment')}
+          submitButtonText={t('Send')}
+          cancelButtonText={t('cancel')}
+          submit={(value) => handleSubmitComment(value)}
+          loading={loading()}
+          errorMessage={error()}
+        />
       </Show>
-
-      <GrowingTextarea
-        placeholder={t('Write comment')}
-        submitButtonText={t('Send')}
-        cancelButtonText={t('cancel')}
-        submit={(value) => handleSubmitComment(value)}
-        loading={loading()}
-        errorMessage={error()}
-      />
-    </>
+    </div>
   )
 }

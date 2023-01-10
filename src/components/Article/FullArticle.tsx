@@ -87,8 +87,6 @@ export const FullArticle = (props: ArticleProps) => {
     return mi
   })
 
-  console.log('!!! props.article:, ', props.article)
-
   return (
     <div class="shout wide-container">
       <article class="col-md-6 shift-content">

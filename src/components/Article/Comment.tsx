@@ -13,6 +13,7 @@ import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
 import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
+import GrowingTextarea from '../_shared/GrowingTextarea'
 
 type Props = {
   comment: Reaction
@@ -23,7 +24,7 @@ type Props = {
 export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal(false)
-  const [postMessageText, setPostMessageText] = createSignal('')
+  const [error, setError] = createSignal<string | null>(null)
 
   const { session } = useSession()
 
@@ -38,22 +39,20 @@ export const Comment = (props: Props) => {
     }
   }
 
-  const compose = (event) => setPostMessageText(event.target.value)
-  const handleCreate = async (event) => {
-    event.preventDefault()
+  const handleCreate = async (value) => {
     try {
       setLoading(true)
       await createReaction({
-        kind: 7, //ReactionKind.Comment,
+        kind: ReactionKind.Comment,
         replyTo: props.comment.id,
-        body: postMessageText(),
-        shout: comment().shout.slug //comment().shout.id
+        body: value,
+        shout: comment().shout.id
       })
       setIsReplyVisible(false)
-      setPostMessageText('')
       setLoading(false)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
+      setError(t('Something went wrong, please try again'))
     }
   }
   const formattedDate = createMemo(() =>
@@ -156,23 +155,14 @@ export const Comment = (props: Props) => {
             </div>
 
             <Show when={isReplyVisible()}>
-              <form class={styles.replyForm} onSubmit={(event) => handleCreate(event)}>
-                <textarea
-                  value={postMessageText()}
-                  rows={1}
-                  onInput={(event) => compose(event)}
-                  placeholder="Написать сообщение"
-                />
-
-                <div class={styles.replyFormControls}>
-                  <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
-                    {t('cancel')}
-                  </button>
-                  <button type="submit" class="button">
-                    {t('Send')}
-                  </button>
-                </div>
-              </form>
+              <GrowingTextarea
+                placeholder={t('Write comment')}
+                submitButtonText={t('Send')}
+                cancelButtonText={t('cancel')}
+                submit={(value) => handleCreate(value)}
+                loading={loading()}
+                errorMessage={error()}
+              />
             </Show>
           </Show>
         </div>

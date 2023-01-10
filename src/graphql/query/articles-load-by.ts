@@ -4,6 +4,7 @@ export default gql`
   query LoadShoutsQuery($options: LoadShoutsOptions) {
     loadShouts(options: $options) {
       _id: slug
+      id
       title
       subtitle
       slug

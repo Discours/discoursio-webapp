@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, onMount, Show, Suspense } from 'solid-js'
+import { onMount, Show, Suspense } from 'solid-js'
 import { FullArticle } from '../Article/FullArticle'
 import { t } from '../../utils/intl'
 import type { Shout, Reaction } from '../../graphql/types.gen'

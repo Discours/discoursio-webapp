@@ -159,24 +159,3 @@
 .commentRatingControlDown {
   border-top: 8px solid rgb(0 0 0 / 40%);
 }
-.replyForm {
-  background: #fff;
-  border: 2px solid rgb(38 56 217 / 50%);
-  border-radius: 0.8rem;
-  margin-left: 2.4rem;
-  position: relative;
-  textarea {
-    border: none;
-    border-radius: 0.8rem;
-    padding-top: 1.2rem;
-  }
-}
-.replyFormControls {
-  padding: 0.5rem 1.6rem 1.6rem;
-  text-align: right;
-  button {
-    @include font-size(1.6rem);
-
-    margin-left: 1.2rem;
-  }
-}

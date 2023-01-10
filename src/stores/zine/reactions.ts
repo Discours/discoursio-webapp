@@ -25,6 +25,7 @@ export const loadReactionsBy = async ({
 }
 
 export const createReaction = async (input: ReactionInput) => {
+  console.log('!!! input:', input)
   try {
     const reaction = await apiClient.createReaction(input)
     reaction.shout = { slug: input.shout }

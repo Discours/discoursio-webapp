@@ -56,9 +56,9 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
         shout: props.shoutId
       })
       setLoading(false)
-    } catch (error) {
+    } catch (err) {
       setError(t('Something went wrong, please try again'))
-      console.error('[handleCreate reaction]:', error)
+      console.error('[handleCreate reaction]:', err)
     }
   }
   return (

@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import boto3
 from botocore.exceptions import ClientError, WaiterError
@@ -17,7 +17,7 @@ storj_client = boto3.client('s3',
 
 def upload_storj(filecontent, filename, bucket_name):
     head = None
-
+    bucket_obj = None
     try:
         bucket = storj_resource.Bucket(bucket_name)
     except ClientError:
@@ -33,22 +33,22 @@ def upload_storj(filecontent, filename, bucket_name):
         etag = head['ETag'].strip('"')
 
     try:
-        s3_obj = bucket.Object(filename)
+        bucket_obj = bucket.Object(filename)
     except (ClientError, AttributeError):
-        s3_obj = None
+        bucket_obj = None
 
     try:
         # Use the upload_fileobj method to safely upload the file
         storj_client.upload_fileobj(
             Fileobj=filecontent,
-            Bucket='discours.io',
+            Bucket=bucket_name,
             Key=filename
         )
     except (ClientError, AttributeError):
         pass
     else:
         try:
-            s3_obj.wait_until_exists(IfNoneMatch=etag)
+            bucket_obj.wait_until_exists(IfNoneMatch=etag)
         except WaiterError:
             pass
         else:
@@ -56,22 +56,21 @@ def upload_storj(filecontent, filename, bucket_name):
     return head
 
 
-@app.route('/upload', methods=['post'])
+@app.route('/api/upload', methods=['post'])
 def upload():
-    if request.method == 'POST':
-        img = request.files['file']
-        if img:
-            # Perform the file upload
-            filename = secure_filename(img.filename)
-            # Save the file to a temporary location
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_path = os.path.join(temp_dir, filename)
-                img.save(temp_path)
-                # Open the file in binary mode
-                with open(temp_path, 'rb') as filecontent:
-                    return upload_storj(filecontent, filename, 'discours.io')
+    print('upload serverless route is fine')
+    print(request.path)
+    print(request.form)
+    print(request.files)
+    img = request.files['file']
+    if img:
+        # Perform the file upload
+        filename = secure_filename(img.filename)
+        # Save the file to a temporary location
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = os.path.join(temp_dir, filename)
+            img.save(temp_path)
+            # Open the file in binary mode
+            with open(temp_path, 'rb') as filecontent:
+                return jsonify(upload_storj(filecontent, filename, 'discoursio'))
     return
-
-
-if __name__ == "__main__":
-    app.run()

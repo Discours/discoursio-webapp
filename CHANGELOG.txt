@@ -1,3 +1,8 @@
+[0.7.1]
+[+] reactions CRUL
+[+] upload with storj
+
+
 [0.7.0]
 [+] inbox: context provider, chats
 [+] comments: show

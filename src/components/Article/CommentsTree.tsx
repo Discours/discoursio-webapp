@@ -49,7 +49,7 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   onMount(async () => await loadMore())
 
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [error, setError] = createSignal<string | null>(null)
+  const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
   const handleSubmitComment = async (value) => {
     try {
       setLoading(true)
@@ -67,7 +67,7 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
       )
       setLoading(false)
     } catch (error) {
-      setError(t('Something went wrong, please try again'))
+      setErrorMessage(t('Something went wrong, please try again'))
       console.error('[handleCreate reaction]:', error)
     }
   }
@@ -122,7 +122,7 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
           cancelButtonText={t('cancel')}
           submit={(value) => handleSubmitComment(value)}
           loading={loading()}
-          errorMessage={error()}
+          errorMessage={errorMessage()}
         />
       </Show>
     </div>

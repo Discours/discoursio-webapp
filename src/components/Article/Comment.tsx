@@ -46,7 +46,7 @@ export const Comment = (props: Props) => {
           kind: ReactionKind.Comment,
           replyTo: props.comment.id,
           body: value,
-          shout: comment().shout.id
+          shout: props.comment.shout.id
         },
         {
           name: session().user.name,
@@ -67,6 +67,7 @@ export const Comment = (props: Props) => {
 
   return (
     <li class={styles.comment}>
+      <p style={{ color: 'red' }}>{props.comment.id}</p>
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show

@@ -29,7 +29,7 @@ export const createReaction = async (
   createdBy: { name: string; userpic: string; slug: string }
 ) => {
   const reaction = await apiClient.createReaction(input)
-  reaction.shout = { slug: input.shout }
+  reaction.shout = { id: input.shout }
   reaction.createdBy = createdBy
   setSortedReactions((prev) => [...prev, reaction])
 }

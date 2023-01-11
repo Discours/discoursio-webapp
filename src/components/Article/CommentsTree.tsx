@@ -9,6 +9,8 @@ import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
 import GrowingTextarea from '../_shared/GrowingTextarea'
 import { ReactionKind } from '../../graphql/types.gen'
+import { useSession } from '../../context/session'
+import userpic from '../Author/Userpic'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
@@ -22,9 +24,7 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   const reactions = createMemo<Reaction[]>(() =>
     sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
   )
-  createEffect(() => {
-    console.log('!!! sortedReactions:', sortedReactions())
-  })
+  const { session } = useSession()
   const loadMore = async () => {
     try {
       const page = getCommentsPage()
@@ -53,11 +53,18 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   const handleSubmitComment = async (value) => {
     try {
       setLoading(true)
-      await createReaction({
-        kind: ReactionKind.Comment,
-        body: value,
-        shout: props.shoutId
-      })
+      await createReaction(
+        {
+          kind: ReactionKind.Comment,
+          body: value,
+          shout: props.shoutId
+        },
+        {
+          name: session().user.name,
+          userpic: session().user.userpic,
+          slug: session().user.slug
+        }
+      )
       setLoading(false)
     } catch (err) {
       setError(t('Something went wrong, please try again'))

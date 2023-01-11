@@ -11,11 +11,6 @@ export default gql`
         range
         createdAt
         replyTo
-        createdBy {
-          name
-          #          slug
-          userpic
-        }
       }
     }
   }

@@ -25,7 +25,6 @@ export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal(false)
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
-
   const { session } = useSession()
 
   const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
@@ -42,12 +41,19 @@ export const Comment = (props: Props) => {
   const handleCreate = async (value) => {
     try {
       setLoading(true)
-      await createReaction({
-        kind: ReactionKind.Comment,
-        replyTo: props.comment.id,
-        body: value,
-        shout: comment().shout.id
-      })
+      await createReaction(
+        {
+          kind: ReactionKind.Comment,
+          replyTo: props.comment.id,
+          body: value,
+          shout: comment().shout.id
+        },
+        {
+          name: session().user.name,
+          userpic: session().user.userpic,
+          slug: session().user.slug
+        }
+      )
       setIsReplyVisible(false)
       setLoading(false)
     } catch (err) {

@@ -56,8 +56,8 @@ export const Comment = (props: Props) => {
       )
       setIsReplyVisible(false)
       setLoading(false)
-    } catch (err) {
-      console.error('[handleCreate reaction]:', err)
+    } catch (error) {
+      console.error('[handleCreate reaction]:', error)
       setErrorMessage(t('Something went wrong, please try again'))
     }
   }

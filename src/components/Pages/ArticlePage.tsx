@@ -25,7 +25,7 @@ export const ArticlePage = (props: PageProps) => {
   const { articleEntities } = useArticlesStore({
     shouts
   })
-  console.log('!!! articleEntities:', articleEntities())
+
   const article = createMemo<Shout>(() => articleEntities()[slug()])
 
   onMount(async () => {
@@ -35,8 +35,6 @@ export const ArticlePage = (props: PageProps) => {
       await loadShout(slug())
     }
   })
-
-  console.log('!!! article():', article())
 
   return (
     <PageWrap headerTitle={article()?.title || ''}>

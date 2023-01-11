@@ -24,7 +24,7 @@ type Props = {
 export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal(false)
-  const [error, setError] = createSignal<string | null>(null)
+  const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
 
   const { session } = useSession()
 
@@ -52,7 +52,7 @@ export const Comment = (props: Props) => {
       setLoading(false)
     } catch (err) {
       console.error('[handleCreate reaction]:', err)
-      setError(t('Something went wrong, please try again'))
+      setErrorMessage(t('Something went wrong, please try again'))
     }
   }
   const formattedDate = createMemo(() =>
@@ -161,7 +161,7 @@ export const Comment = (props: Props) => {
                 cancelButtonText={t('cancel')}
                 submit={(value) => handleCreate(value)}
                 loading={loading()}
-                errorMessage={error()}
+                errorMessage={errorMessage()}
               />
             </Show>
           </Show>

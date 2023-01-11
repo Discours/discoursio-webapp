@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
 import { Comment } from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
@@ -22,6 +22,9 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   const reactions = createMemo<Reaction[]>(() =>
     sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
   )
+  createEffect(() => {
+    console.log('!!! sortedReactions:', sortedReactions())
+  })
   const loadMore = async () => {
     try {
       const page = getCommentsPage()

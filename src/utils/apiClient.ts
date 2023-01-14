@@ -14,7 +14,9 @@ import type {
   User,
   ProfileInput,
   ReactionInput,
-  Chat
+  Chat,
+  ProfileInput,
+  ReactionBy
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -271,7 +273,16 @@ export const apiClient = {
     if (resp.error) console.debug(resp)
     return resp.data.loadShouts
   },
-  getReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
+
+  getReactionsBy: async ({
+    by,
+    limit = REACTIONS_AMOUNT_PER_PAGE,
+    offset = 0
+  }: {
+    by: ReactionBy
+    limit: number
+    offset: number
+  }) => {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
     console.debug(resp)
     return resp.data.loadReactionsBy

@@ -1,5 +1,5 @@
-import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
-import { Comment } from './Comment'
+import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import Comment from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
 import { createReaction, useReactionsStore } from '../../stores/zine/reactions'
@@ -10,7 +10,6 @@ import { Loading } from '../Loading'
 import GrowingTextarea from '../_shared/GrowingTextarea'
 import { ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
-import userpic from '../Author/Userpic'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6

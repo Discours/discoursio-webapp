@@ -21,7 +21,7 @@ type Props = {
   reactions?: Reaction[]
 }
 
-export const Comment = (props: Props) => {
+const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal(false)
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
@@ -183,3 +183,5 @@ export const Comment = (props: Props) => {
     </li>
   )
 }
+
+export default Comment

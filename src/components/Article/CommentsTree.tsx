@@ -1,36 +1,33 @@
 import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
-import { useSession } from '../../context/session'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
-import { showModal } from '../../stores/ui'
 import styles from '../../styles/Article.module.scss'
-import { useReactionsStore } from '../../stores/zine/reactions'
+import { createReaction, useReactionsStore } from '../../stores/zine/reactions'
 import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
+import GrowingTextarea from '../_shared/GrowingTextarea'
+import { ReactionKind } from '../../graphql/types.gen'
+import { useSession } from '../../context/session'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
 
-export const CommentsTree = (props: { shoutSlug: string }) => {
+export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   const [getCommentsPage, setCommentsPage] = createSignal(0)
   const [commentsOrder, setCommentsOrder] = createSignal<'rating' | 'createdAt'>('createdAt')
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const { session } = useSession()
   const { sortedReactions, loadReactionsBy } = useReactionsStore()
   const reactions = createMemo<Reaction[]>(() =>
-    sortedReactions()
-      .sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
-      .filter((r) => r.shout.slug === props.shoutSlug)
+    sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
   )
-
+  const { session } = useSession()
   const loadMore = async () => {
     try {
       const page = getCommentsPage()
       setIsCommentsLoading(true)
-
       const { hasMore } = await loadReactionsBy({
         by: { shout: props.shoutSlug, comment: true },
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
@@ -49,8 +46,32 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
     return level
   }
   onMount(async () => await loadMore())
+
+  const [loading, setLoading] = createSignal<boolean>(false)
+  const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
+  const handleSubmitComment = async (value) => {
+    try {
+      setLoading(true)
+      await createReaction(
+        {
+          kind: ReactionKind.Comment,
+          body: value,
+          shout: props.shoutId
+        },
+        {
+          name: session().user.name,
+          userpic: session().user.userpic,
+          slug: session().user.slug
+        }
+      )
+      setLoading(false)
+    } catch (error) {
+      setErrorMessage(t('Something went wrong, please try again'))
+      console.error('[handleCreate reaction]:', error)
+    }
+  }
   return (
-    <>
+    <div>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
         <div class={styles.commentsHeaderWrapper}>
           <h2 id="comments" class={styles.commentsHeader}>
@@ -82,46 +103,27 @@ export const CommentsTree = (props: { shoutSlug: string }) => {
             </li>
           </ul>
         </div>
-
-        <For each={reactions().reverse()}>
-          {(reaction: Reaction) => (
-            <Comment
-              comment={reaction}
-              level={getCommentLevel(reaction)}
-              canEdit={reaction.createdBy?.slug === session()?.user?.slug}
-            />
-          )}
-        </For>
-
+        <ul class={styles.comments}>
+          <For
+            each={reactions()
+              .reverse()
+              .filter((r) => !r.replyTo)}
+          >
+            {(reaction) => <Comment reactions={reactions()} comment={reaction} />}
+          </For>
+        </ul>
         <Show when={isLoadMoreButtonVisible()}>
           <button onClick={loadMore}>{t('Load more')}</button>
         </Show>
+        <GrowingTextarea
+          placeholder={t('Write comment')}
+          submitButtonText={t('Send')}
+          cancelButtonText={t('cancel')}
+          submit={(value) => handleSubmitComment(value)}
+          loading={loading()}
+          errorMessage={errorMessage()}
+        />
       </Show>
-
-      <Show
-        when={!session()?.user?.slug}
-        fallback={
-          <form class={styles.commentForm}>
-            <div class="pretty-form__item">
-              <input type="text" id="new-comment" placeholder={t('Write comment')} />
-              <label for="new-comment">{t('Write comment')}</label>
-            </div>
-          </form>
-        }
-      >
-        <div class={styles.commentWarning} id="comments">
-          {t('To leave a comment you please')}
-          <a
-            href={''}
-            onClick={(evt) => {
-              evt.preventDefault()
-              showModal('auth')
-            }}
-          >
-            <i>{t('sign up or sign in')}</i>
-          </a>
-        </div>
-      </Show>
-    </>
+    </div>
   )
 }

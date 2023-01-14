@@ -189,6 +189,7 @@
   "create_group": "Создать группу",
   "discourse_theme": "Тема дискурса",
   "cancel": "Отмена",
+  "Send": "Отправить",
   "group_chat": "Общий чат",
   "Choose who you want to write to": "Выберите кому хотите написать",
   "Start conversation": "Начать беседу",
@@ -212,5 +213,7 @@
   "Forward": "Переслать",
   "Select": "Выбрать",
   "slug is used by another user": "Имя уже занято другим пользователем",
-  "It does not look like url": "Это не похоже на ссылку"
+  "It does not look like url": "Это не похоже на ссылку",
+  "Something went wrong, please try again": "Что-то пошло не так, попробуйте еще раз",
+  "To write a comment, you must": "Чтобы написать комментарий, необходимо"
 }

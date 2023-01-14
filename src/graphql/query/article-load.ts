@@ -4,6 +4,7 @@ export default gql`
   query LoadShoutQuery($slug: String!) {
     loadShout(slug: $slug) {
       _id: slug
+      id
       title
       subtitle
       slug

@@ -67,7 +67,6 @@ export const Comment = (props: Props) => {
 
   return (
     <li class={styles.comment}>
-      <p style={{ color: 'red' }}>{props.comment.id}</p>
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show

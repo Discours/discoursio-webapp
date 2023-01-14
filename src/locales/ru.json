@@ -213,5 +213,6 @@
   "Select": "Выбрать",
   "slug is used by another user": "Имя уже занято другим пользователем",
   "It does not look like url": "Это не похоже на ссылку",
-  "Something went wrong, please try again": "Что-то пошло не так, попробуйте еще раз"
+  "Something went wrong, please try again": "Что-то пошло не так, попробуйте еще раз",
+  "To write a comment, you must": "Чтобы написать комментарий, необходимо"
 }

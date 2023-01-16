@@ -5,6 +5,7 @@ import { t } from '../../../utils/intl'
 import Button from '../Button'
 import { clsx } from 'clsx'
 import { useSession } from '../../../context/session'
+import { Editor } from '../../EditorNew/Editor'
 
 type Props = {
   placeholder?: string
@@ -41,12 +42,13 @@ const GrowingTextarea = (props: Props) => {
     <form onSubmit={(event) => handleSubmit(event)} class={styles.GrowingTextarea}>
       <div class={styles.wrapper}>
         <div class={styles.growArea} ref={growArea}>
-          <textarea
-            value={inputText()}
-            rows={1}
-            onInput={(event) => handleChangeMessage(event)}
-            placeholder={props?.placeholder}
-          />
+          {/*<textarea*/}
+          {/*  value={inputText()}*/}
+          {/*  rows={1}*/}
+          {/*  onInput={(event) => handleChangeMessage(event)}*/}
+          {/*  placeholder={props?.placeholder}*/}
+          {/*/>*/}
+          <Editor />
         </div>
         <div class={clsx(styles.actions, { [styles.visible]: inputText().trim().length > 0 })}>
           <div class={styles.buttons}>

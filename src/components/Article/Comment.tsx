@@ -31,10 +31,13 @@ const Comment = (props: Props) => {
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
-  const remove = () => {
+  const remove = async () => {
     if (comment()?.id) {
-      console.log('[comment] removing', comment().id)
-      deleteReaction(comment().id)
+      try {
+        await deleteReaction(comment().id)
+      } catch (error) {
+        console.error('[deleteReaction]', error)
+      }
     }
   }
 

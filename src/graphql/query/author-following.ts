@@ -4,6 +4,7 @@ export default gql`
   query UserFollowingQuery($slug: String!) {
     userFollowing(slug: $slug) {
       _id: slug
+      id
       slug
       name
       bio

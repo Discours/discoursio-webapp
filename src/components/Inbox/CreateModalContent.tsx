@@ -6,69 +6,59 @@ import type { Author } from '../../graphql/types.gen'
 import { hideModal } from '../../stores/ui'
 import { useInbox } from '../../context/inbox'
 
-type InvitingUser = Author & {
-  selected: boolean
-}
-
-type query =
-  | {
-      theme: string
-      members: string[]
-    }
-  | undefined
+type inviteUser = Author & { selected: boolean }
 type Props = {
   users: Author[]
 }
 
 const CreateModalContent = (props: Props) => {
-  const inviteUsers: InvitingUser[] = props.users.map((user) => ({ ...user, selected: false }))
-  const [title, setTitle] = createSignal<string>('')
-  const [uids, setUids] = createSignal<number[]>([])
-  const [collectionToInvite, setCollectionToInvite] = createSignal<InvitingUser[]>(inviteUsers)
+  const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
+  const [theme, setTheme] = createSignal<string>(' ')
+  const [usersId, setUsersId] = createSignal<number[]>([])
+  const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
   let textInput: HTMLInputElement
 
   const reset = () => {
-    setTitle('')
-    setUids([])
+    setTheme('')
+    setUsersId([])
     hideModal()
   }
 
   createEffect(() => {
-    console.log(collectionToInvite())
-    setUids(() => {
+    setUsersId(() => {
       return collectionToInvite()
-        .filter((user: InvitingUser) => {
+        .filter((user) => {
           return user.selected === true
         })
-        .map((user: InvitingUser) => {
-          return user.id
+        .map((user) => {
+          return user['id']
         })
     })
-    if (uids().length > 1 && title().length === 0) {
-      setTitle(t('group_chat'))
+    if (usersId().length > 1 && theme().length === 1) {
+      setTheme(t('group_chat'))
     }
   })
 
   const handleSetTheme = () => {
-    setTitle(textInput.value.length > 0 && textInput.value)
+    setTheme(textInput.value.length > 0 && textInput.value)
   }
 
   const handleClick = (user) => {
-    setCollectionToInvite((userCollection: InvitingUser[]) => {
-      return userCollection.map((clickedUser: InvitingUser) =>
-        user.slug === clickedUser.slug ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser
+    setCollectionToInvite((userCollection) => {
+      return userCollection.map((clickedUser) =>
+        user.id === clickedUser.id ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser
       )
     })
   }
 
-  const { chatEntities, actions } = useInbox()
-
-  console.log('!!! chatEntities:', chatEntities)
+  const { actions } = useInbox()
 
   const handleCreate = async () => {
     try {
-      const initChat = await actions.createChat(uids(), title())
+      const initChat = await actions.createChat(usersId(), theme())
       console.debug('[initChat]', initChat)
+      hideModal()
+      await actions.loadChats()
     } catch (error) {
       console.error(error)
     }
@@ -77,7 +67,7 @@ const CreateModalContent = (props: Props) => {
   return (
     <div class={styles.CreateModalContent}>
       <h4>{t('create_chat')}</h4>
-      {uids().length > 1 && (
+      {usersId().length > 1 && (
         <input
           ref={textInput}
           onInput={handleSetTheme}
@@ -90,7 +80,7 @@ const CreateModalContent = (props: Props) => {
 
       <div class="invite-recipients" style={{ height: '400px', overflow: 'auto' }}>
         <For each={collectionToInvite()}>
-          {(author: InvitingUser) => (
+          {(author) => (
             <InviteUser onClick={() => handleClick(author)} author={author} selected={author.selected} />
           )}
         </For>
@@ -104,9 +94,9 @@ const CreateModalContent = (props: Props) => {
           type="button"
           class="btn btn-lg fs-3 btn-outline-primary"
           onClick={handleCreate}
-          disabled={uids().length === 0}
+          disabled={usersId().length === 0}
         >
-          {uids().length > 1 ? t('create_group') : t('create_chat')}
+          {usersId().length > 1 ? t('create_group') : t('create_chat')}
         </button>
       </div>
     </div>

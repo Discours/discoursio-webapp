@@ -4,7 +4,7 @@ import 'swiper/scss'
 import 'swiper/scss/navigation'
 import 'swiper/scss/pagination'
 import './Slider.scss'
-import { createEffect, createMemo, createSignal, Show, For, JSX } from 'solid-js'
+import { createEffect, createSignal, JSX } from 'solid-js'
 import { Icon } from './Icon'
 
 interface SliderProps {

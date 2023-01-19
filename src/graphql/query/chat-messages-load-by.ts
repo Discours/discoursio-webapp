@@ -7,9 +7,11 @@ export default gql`
       messages {
         author
         body
+        replyTo
         createdAt
+        id
         updatedAt
-        seen
+        replyTo
       }
     }
   }

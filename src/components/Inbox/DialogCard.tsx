@@ -1,36 +1,72 @@
-import styles from './DialogCard.module.scss'
+import { Show, Switch, Match, createMemo } from 'solid-js'
 import DialogAvatar from './DialogAvatar'
-import type { Author, ChatMember, User } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
-import { Show } from 'solid-js'
-import { useSession } from '../../context/session'
+import type { ChatMember } from '../../graphql/types.gen'
+import GroupDialogAvatar from './GroupDialogAvatar'
+import formattedTime from '../../utils/formatDateTime'
+import { clsx } from 'clsx'
+import styles from './DialogCard.module.scss'
 
 type DialogProps = {
   online?: boolean
   message?: string
   counter?: number
+  title?: string
+  ownId: number
   members: ChatMember[]
+  onClick?: () => void
+  isChatHeader?: boolean
+  lastUpdate?: number
+  isOpened?: boolean
 }
 
 const DialogCard = (props: DialogProps) => {
-  console.log('!!! participants:', props.members)
+  const companions = createMemo(
+    () => props.members && props.members.filter((member) => member.id !== props.ownId)
+  )
+  const names = createMemo(() =>
+    companions()
+      ?.map((companion) => companion.name)
+      .join(', ')
+  )
+
   return (
-    //DialogCardView - подумать
-    <Show when={props.members?.length > 0}>
-      <div class={styles.DialogCard}>
+    <Show when={props.members}>
+      <div
+        class={clsx(styles.DialogCard, {
+          [styles.header]: props.isChatHeader,
+          [styles.opened]: props.isOpened,
+          [styles.hovered]: !props.isChatHeader
+        })}
+        onClick={props.onClick}
+      >
         <div class={styles.avatar}>
-          <DialogAvatar name={props.members[0].name} online={props.online} />
+          <Switch fallback={<DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />}>
+            <Match when={props.members.length >= 3}>
+              <GroupDialogAvatar users={props.members} />
+            </Match>
+          </Switch>
         </div>
         <div class={styles.row}>
-          <div class={styles.name}>{props.members[0].name}</div>
-          <div class={styles.message}>{t('You can announce your languages in profile')}</div>
-        </div>
-        <div class={styles.activity}>
-          <div class={styles.time}>22:22</div>
-          <div class={styles.counter}>
-            <span>12</span>
+          <div class={styles.name}>{props.title}</div>
+          <div class={styles.message}>
+            <Switch>
+              <Match when={props.message && !props.isChatHeader}>{props.message}</Match>
+              <Match when={props.isChatHeader && companions().length > 1}>{names()}</Match>
+            </Switch>
           </div>
         </div>
+        <Show when={!props.isChatHeader}>
+          <div class={styles.activity}>
+            <Show when={props.lastUpdate}>
+              <div class={styles.time}>{formattedTime(props.lastUpdate * 1000)}</div>
+            </Show>
+            <Show when={props.counter > 0}>
+              <div class={styles.counter}>
+                <span>{props.counter}</span>
+              </div>
+            </Show>
+          </div>
+        </Show>
       </div>
     </Show>
   )

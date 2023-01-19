@@ -87,7 +87,15 @@ const handleClientRouteLinkClick = (event) => {
       event.preventDefault()
 
       if (url.hash) {
-        const anchor = document.querySelector(url.hash)
+        let selector = url.hash
+
+        if (/^#\d+/.test(selector)) {
+          // id="1" fix
+          // https://stackoverflow.com/questions/20306204/using-queryselector-with-ids-that-are-numbers
+          selector = `[id="${selector.replace('#', '')}"]`
+        }
+
+        const anchor = document.querySelector(selector)
         const headerOffset = 80 // 100px for header
         const elementPosition = anchor.getBoundingClientRect().top
         const newScrollTop = elementPosition + window.scrollY - headerOffset

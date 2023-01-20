@@ -11,8 +11,6 @@ import { useSession } from '../../context/session'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { Icon } from '../_shared/Icon'
 
-const log = getLogger('TopicCard')
-
 interface TopicProps {
   topic: Topic
   compact?: boolean

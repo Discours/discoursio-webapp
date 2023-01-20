@@ -1,18 +1,40 @@
 .comment {
   background-color: #fff;
-  margin: 0 -2.4rem 1.5em;
+  margin: 0 -2.4rem 0.5em;
   padding: 0.8rem 2.4rem;
   transition: background-color 0.3s;
+  position: relative;
 
-  &:hover {
-    background-color: #f6f6f6;
+  &:last-child {
+    margin-bottom: 0;
+  }
 
-    .commentControlReply,
-    .commentControlShare,
-    .commentControlDelete,
-    .commentControlEdit,
-    .commentControlComplain {
-      opacity: 1;
+  .comment {
+    &:before,
+    &:after {
+      content: '';
+      left: 0;
+      position: absolute;
+    }
+
+    &:before {
+      border-bottom: 2px solid #ccc;
+      border-left: 2px solid #ccc;
+      border-radius: 0 0 0 1.2rem;
+      top: -1rem;
+      height: 2.4rem;
+      width: 1.2rem;
+    }
+
+    &:after {
+      background: #ccc;
+      height: 100%;
+      top: 0;
+      width: 2px;
+    }
+
+    &:last-child:after {
+      display: none;
     }
   }
 
@@ -32,24 +54,16 @@
   }
 }
 
-.commentLevel1 {
-  margin-left: 3.2rem;
-}
-
-.commentLevel2 {
-  margin-left: 6.4rem;
-}
-
-.commentLevel3 {
-  margin-left: 9.6rem;
-}
-
-.commentLevel4 {
-  margin-left: 12.8rem;
-}
-
-.commentLevel5 {
-  margin-left: 16rem;
+.commentContent {
+  &:hover {
+    .commentControlReply,
+    .commentControlShare,
+    .commentControlDelete,
+    .commentControlEdit,
+    .commentControlComplain {
+      opacity: 1;
+    }
+  }
 }
 
 .commentControls {

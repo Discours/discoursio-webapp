@@ -1,4 +1,4 @@
-import type { Reaction } from '../../graphql/types.gen'
+import type { Reaction, ReactionInput } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { createSignal } from 'solid-js'
 // TODO: import { roomConnect } from '../../utils/p2p'
@@ -23,9 +23,16 @@ export const loadReactionsBy = async ({
   setSortedReactions(data)
   return { hasMore }
 }
-export const createReaction = async (reaction: Reaction) => {
-  const { reaction: r } = await apiClient.createReaction({ reaction })
-  return r
+
+export const createReaction = async (input: ReactionInput) => {
+  try {
+    const reaction = await apiClient.createReaction(input)
+    console.log('!!! reaction:', reaction)
+    reaction.shout = { slug: input.shout }
+    setSortedReactions((prev) => [...prev, reaction])
+  } catch (error) {
+    console.error('[createReaction]', error)
+  }
 }
 export const updateReaction = async (reaction: Reaction) => {
   const { reaction: r } = await apiClient.updateReaction({ reaction })

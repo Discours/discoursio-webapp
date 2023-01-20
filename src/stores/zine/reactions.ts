@@ -35,9 +35,9 @@ export const createReaction = async (
 }
 
 export const deleteReaction = async (reactionId: number) => {
-  const resp = await apiClient.destroyReaction(reactionId)
-  console.debug(resp)
-  return resp
+  const reaction = await apiClient.destroyReaction(reactionId)
+  console.debug('[deleteReaction]:', reaction.reaction.id)
+  setSortedReactions(sortedReactions().filter((item) => item.id !== reaction.reaction.id))
 }
 
 export const updateReaction = async (reaction: Reaction) => {

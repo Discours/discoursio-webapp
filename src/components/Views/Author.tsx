@@ -19,7 +19,7 @@ import { Popup } from '../_shared/Popup'
 import { AuthorCard } from '../Author/Card'
 import { loadReactionsBy, REACTIONS_AMOUNT_PER_PAGE } from '../../stores/zine/reactions'
 import { apiClient } from '../../utils/apiClient'
-import Comment from '../Article/Comment'
+import { Comment } from '../Article/Comment'
 
 // TODO: load reactions on client
 type AuthorProps = {

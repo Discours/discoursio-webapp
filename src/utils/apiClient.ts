@@ -14,7 +14,8 @@ import type {
   QueryLoadRecipientsArgs,
   User,
   ProfileInput,
-  ReactionInput
+  ReactionInput,
+  ReactionBy
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'

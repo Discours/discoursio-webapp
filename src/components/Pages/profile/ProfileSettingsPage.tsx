@@ -37,7 +37,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
         formData.append('type', file.type)
         formData.append('name', image.source.split('/').pop())
         formData.append('ext', image.name.split('.').pop())
-        formData.append('data', image.file)
+        // formData.append('data', image.file)
         const resp = await fetch('/api/upload', {
           method: 'POST',
           body: formData

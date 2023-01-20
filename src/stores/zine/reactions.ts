@@ -1,4 +1,4 @@
-import type { Reaction } from '../../graphql/types.gen'
+import type { Reaction, ReactionInput, User } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { createSignal } from 'solid-js'
 // TODO: import { roomConnect } from '../../utils/p2p'
@@ -23,20 +23,28 @@ export const loadReactionsBy = async ({
   setSortedReactions(data)
   return { hasMore }
 }
-export const createReaction = async (reaction: Reaction) => {
-  const { reaction: r } = await apiClient.createReaction({ reaction })
-  return r
+
+export const createReaction = async (
+  input: ReactionInput,
+  createdBy: { name: string; userpic: string; slug: string }
+) => {
+  const reaction = await apiClient.createReaction(input)
+  reaction.shout = { id: input.shout }
+  reaction.createdBy = createdBy
+  setSortedReactions((prev) => [...prev, reaction])
 }
+
+export const deleteReaction = async (reactionId: number) => {
+  const reaction = await apiClient.destroyReaction(reactionId)
+  console.debug('[deleteReaction]:', reaction.reaction.id)
+  setSortedReactions(sortedReactions().filter((item) => item.id !== reaction.reaction.id))
+}
+
 export const updateReaction = async (reaction: Reaction) => {
   const { reaction: r } = await apiClient.updateReaction({ reaction })
   return r
 }
 
-export const deleteReaction = async (reactionId: number) => {
-  const resp = await apiClient.destroyReaction({ id: reactionId })
-  console.debug(resp)
-  return resp
-}
 export const useReactionsStore = () => {
   return {
     reactionsByShout,

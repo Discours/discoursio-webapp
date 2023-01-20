@@ -10,9 +10,11 @@ import type {
   QueryLoadMessagesByArgs,
   MutationCreateChatArgs,
   MutationCreateMessageArgs,
-  Chat,
   QueryLoadRecipientsArgs,
-  ProfileInput
+  ProfileInput,
+  ReactionInput,
+  Chat,
+  ReactionBy
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -226,26 +228,23 @@ export const apiClient = {
   },
   createArticle: async ({ article }: { article: ShoutInput }) => {
     const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()
-    console.debug('createArticle response:', response)
+    console.debug('[createArticle]:', response.data)
     return response.data.createShout
   },
-  createReaction: async ({ reaction }) => {
-    const response = await privateGraphQLClient.mutation(reactionCreate, { reaction }).toPromise()
-    console.debug('[api-client] [api] create reaction mutation called')
-    return response.data.createReaction
+  createReaction: async (input: ReactionInput) => {
+    const response = await privateGraphQLClient.mutation(reactionCreate, { reaction: input }).toPromise()
+    console.debug('[createReaction]:', response)
+    return response.data.createReaction.reaction
   },
-
-  // CUDL
-
-  updateReaction: async ({ reaction }) => {
-    const response = await privateGraphQLClient.mutation(reactionUpdate, { reaction }).toPromise()
-
-    return response.data.createReaction
-  },
-  destroyReaction: async ({ id }) => {
-    const response = await privateGraphQLClient.mutation(reactionDestroy, { id }).toPromise()
-
+  destroyReaction: async (id: number) => {
+    const response = await privateGraphQLClient.mutation(reactionDestroy, { reaction: id }).toPromise()
+    console.debug('[destroyReaction]:', response)
     return response.data.deleteReaction
+  },
+  updateReaction: async (reaction) => {
+    const response = await privateGraphQLClient.mutation(reactionUpdate, reaction).toPromise()
+
+    return response.data.createReaction
   },
   getAuthorsBy: async (options: QueryLoadAuthorsByArgs) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, options).toPromise()
@@ -269,7 +268,16 @@ export const apiClient = {
     if (resp.error) console.debug(resp)
     return resp.data.loadShouts
   },
-  getReactionsBy: async ({ by, limit = REACTIONS_AMOUNT_PER_PAGE, offset = 0 }) => {
+
+  getReactionsBy: async ({
+    by,
+    limit = REACTIONS_AMOUNT_PER_PAGE,
+    offset = 0
+  }: {
+    by: ReactionBy
+    limit: number
+    offset: number
+  }) => {
     const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
     console.debug(resp)
     return resp.data.loadReactionsBy
@@ -288,15 +296,13 @@ export const apiClient = {
 
   createMessage: async (options: MutationCreateMessageArgs) => {
     const resp = await privateGraphQLClient.mutation(createMessage, options).toPromise()
-    return resp.data.createMessage.message
+    return resp.data.createMessage
   },
 
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {
     const resp = await privateGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
-    console.log('[getChatMessages]', resp)
-    return resp.data.loadMessagesBy.messages
+    return resp.data.loadChat
   },
-
   getRecipients: async (options: QueryLoadRecipientsArgs) => {
     const resp = await privateGraphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members

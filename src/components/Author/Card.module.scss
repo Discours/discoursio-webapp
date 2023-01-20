@@ -54,6 +54,10 @@
     padding: 0 0 0 42px;
   }
 
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+  }
+
   a {
     background: #f7f7f7;
     border: none;
@@ -136,6 +140,17 @@
   }
 }
 
+.authorSubscribeSocial {
+  align-items: center;
+  display: flex;
+
+  @include media-breakpoint-down(sm) {
+    flex: 1 100%;
+    justify-content: center;
+    margin-top: 1em;
+  }
+}
+
 .buttonSubscribe {
   align-items: center;
   aspect-ratio: 1/1;
@@ -180,9 +195,12 @@
 }
 
 .authorPage {
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+
   .authorName {
     @include font-size(3.4rem);
-
     font-weight: 500;
     margin-bottom: 0.2em;
   }
@@ -195,10 +213,18 @@
   .authorSubscribe {
     margin-top: 2rem;
     padding-left: 0;
+
+    @include media-breakpoint-down(md) {
+      justify-content: center;
+    }
   }
 
   .authorDetails {
     display: block;
+
+    @include media-breakpoint-down(md) {
+      flex: 1 100%;
+    }
   }
 
   .buttonLabel {
@@ -237,6 +263,16 @@
   .button {
     margin-right: 1.6rem;
     vertical-align: middle;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+      margin-bottom: 0.5em;
+      margin-right: 0;
+    }
   }
 }
 

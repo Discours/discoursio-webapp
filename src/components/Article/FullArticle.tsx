@@ -224,7 +224,7 @@ export const FullArticle = (props: ArticleProps) => {
             )}
           </For>
         </div>
-        <CommentsTree shoutSlug={props.article?.slug} />
+        <CommentsTree shoutSlug={props.article?.slug} shoutId={props.article?.id} />
       </div>
     </div>
   )

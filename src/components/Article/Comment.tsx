@@ -1,32 +1,67 @@
 import styles from './Comment.module.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { Show, createMemo, createSignal } from 'solid-js'
+import { Show, createMemo, createSignal, For } from 'solid-js'
 import { clsx } from 'clsx'
-import type { Author, Reaction as Point } from '../../graphql/types.gen'
+import type { Author, Reaction } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-// import { createReaction, updateReaction, deleteReaction } from '../../stores/zine/reactions'
+import { createReaction, deleteReaction } from '../../stores/zine/reactions'
 import MD from './MD'
-import { deleteReaction } from '../../stores/zine/reactions'
 import { formatDate } from '../../utils'
 import { SharePopup } from './SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
+import { useSession } from '../../context/session'
+import { ReactionKind } from '../../graphql/types.gen'
+import GrowingTextarea from '../_shared/GrowingTextarea'
 
-export default (props: {
-  level?: number
-  comment: Partial<Point>
-  canEdit?: boolean
+type Props = {
+  comment: Reaction
   compact?: boolean
-}) => {
+  reactions?: Reaction[]
+}
+
+const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
+  const [loading, setLoading] = createSignal(false)
+  const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
+  const { session } = useSession()
+
+  const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
-  const remove = () => {
+  const remove = async () => {
     if (comment()?.id) {
-      console.log('[comment] removing', comment().id)
-      deleteReaction(comment().id)
+      try {
+        await deleteReaction(comment().id)
+      } catch (error) {
+        console.error('[deleteReaction]', error)
+      }
+    }
+  }
+
+  const handleCreate = async (value) => {
+    try {
+      setLoading(true)
+      await createReaction(
+        {
+          kind: ReactionKind.Comment,
+          replyTo: props.comment.id,
+          body: value,
+          shout: props.comment.shout.id
+        },
+        {
+          name: session().user.name,
+          userpic: session().user.userpic,
+          slug: session().user.slug
+        }
+      )
+      setIsReplyVisible(false)
+      setLoading(false)
+    } catch (error) {
+      console.error('[handleCreate reaction]:', error)
+      setErrorMessage(t('Something went wrong, please try again'))
     }
   }
   const formattedDate = createMemo(() =>
@@ -34,7 +69,7 @@ export default (props: {
   )
 
   return (
-    <div class={clsx(styles.comment, { [styles[`commentLevel${props.level}`]]: Boolean(props.level) })}>
+    <li class={styles.comment}>
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show
@@ -73,10 +108,9 @@ export default (props: {
               </div>
             </div>
           </Show>
-
           <div
             class={styles.commentBody}
-            contenteditable={props.canEdit}
+            contenteditable={canEdit()}
             id={'comment-' + (comment().id || '')}
           >
             <MD body={body()} />
@@ -85,14 +119,15 @@ export default (props: {
           <Show when={!props.compact}>
             <div class={styles.commentControls}>
               <button
-                class={clsx(styles.commentControl, styles.commentControlReply)}
+                disabled={loading()}
                 onClick={() => setIsReplyVisible(!isReplyVisible())}
+                class={clsx(styles.commentControl, styles.commentControlReply)}
               >
                 <Icon name="reply" class={styles.icon} />
-                {t('Reply')}
+                {loading() ? t('Loading') : t('Reply')}
               </button>
 
-              <Show when={props.canEdit}>
+              <Show when={canEdit()}>
                 {/*FIXME implement edit comment modal*/}
                 {/*<button*/}
                 {/*  class={clsx(styles.commentControl, styles.commentControlEdit)}*/}
@@ -129,19 +164,27 @@ export default (props: {
             </div>
 
             <Show when={isReplyVisible()}>
-              <form class={styles.replyForm}>
-                <textarea name="reply" id="reply" rows="5" />
-                <div class={styles.replyFormControls}>
-                  <button class="button button--light" onClick={() => setIsReplyVisible(false)}>
-                    {t('Cancel')}
-                  </button>
-                  <button class="button">{t('Send')}</button>
-                </div>
-              </form>
+              <GrowingTextarea
+                placeholder={t('Write comment')}
+                submitButtonText={t('Send')}
+                cancelButtonText={t('cancel')}
+                submit={(value) => handleCreate(value)}
+                loading={loading()}
+                errorMessage={errorMessage()}
+              />
             </Show>
           </Show>
         </div>
       </Show>
-    </div>
+      <Show when={props.reactions}>
+        <ul>
+          <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
+            {(reaction) => <Comment reactions={props.reactions} comment={reaction} />}
+          </For>
+        </ul>
+      </Show>
+    </li>
   )
 }
+
+export default Comment

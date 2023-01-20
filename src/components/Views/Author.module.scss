@@ -1,0 +1,55 @@
+.ratingContainer {
+  @include font-size(1.5rem);
+  display: inline-block;
+  vertical-align: top;
+}
+
+.ratingControl {
+  @include font-size(1.5rem);
+  display: inline-flex;
+  margin-left: 1em;
+  vertical-align: middle;
+}
+
+.additionalControls {
+  white-space: nowrap;
+
+  @include media-breakpoint-up(md) {
+    text-align: right;
+  }
+}
+
+.userpic {
+  background: #fff;
+  box-shadow: 0 0 0 2px #fff;
+  display: inline-block;
+  margin-right: -1.2rem;
+  vertical-align: top;
+}
+
+.subscribers {
+  cursor: pointer;
+  display: inline-block;
+  margin: -0.4rem 2em 0 0;
+  vertical-align: top;
+}
+
+.subscribersCounter {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 100%;
+  @include font-size(1rem);
+  font-weight: bold;
+  height: 32px;
+  line-height: 30px;
+  position: relative;
+  text-align: center;
+  width: 32px;
+  z-index: 1;
+}
+
+.subscribersList {
+  max-height: 15em;
+  overflow: auto;
+  position: relative;
+}

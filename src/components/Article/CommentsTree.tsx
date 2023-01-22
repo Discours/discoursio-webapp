@@ -10,6 +10,8 @@ import { Loading } from '../Loading'
 import GrowingTextarea from '../_shared/GrowingTextarea'
 import { ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
+import CommentEditor from '../CommentEditor'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
@@ -50,6 +52,7 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
   const handleSubmitComment = async (value) => {
+    console.log('!!! value:', value)
     try {
       setLoading(true)
       await createReaction(
@@ -115,14 +118,23 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
         <Show when={isLoadMoreButtonVisible()}>
           <button onClick={loadMore}>{t('Load more')}</button>
         </Show>
-        <GrowingTextarea
-          placeholder={t('Write comment')}
-          submitButtonText={t('Send')}
-          cancelButtonText={t('cancel')}
-          submit={(value) => handleSubmitComment(value)}
-          loading={loading()}
-          errorMessage={errorMessage()}
-        />
+
+        <ShowOnlyOnClient>
+          <CommentEditor
+            initialValue={''}
+            onCancel={() => {}}
+            onSubmit={(value) => handleSubmitComment(value)}
+          />
+        </ShowOnlyOnClient>
+
+        {/*<GrowingTextarea*/}
+        {/*  placeholder={t('Write comment')}*/}
+        {/*  submitButtonText={t('Send')}*/}
+        {/*  cancelButtonText={t('cancel')}*/}
+        {/*  submit={(value) => handleSubmitComment(value)}*/}
+        {/*  loading={loading()}*/}
+        {/*  errorMessage={errorMessage()}*/}
+        {/*/>*/}
       </Show>
     </div>
   )

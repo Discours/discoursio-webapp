@@ -6,6 +6,8 @@ import Button from '../Button'
 import { clsx } from 'clsx'
 import { useSession } from '../../../context/session'
 import { Editor } from '../../EditorNew/Editor'
+import CommentEditor from '../../CommentEditor'
+import { ShowOnlyOnClient } from '../ShowOnlyOnClient'
 
 type Props = {
   placeholder?: string
@@ -48,7 +50,6 @@ const GrowingTextarea = (props: Props) => {
           {/*  onInput={(event) => handleChangeMessage(event)}*/}
           {/*  placeholder={props?.placeholder}*/}
           {/*/>*/}
-          <Editor />
         </div>
         <div class={clsx(styles.actions, { [styles.visible]: inputText().trim().length > 0 })}>
           <div class={styles.buttons}>

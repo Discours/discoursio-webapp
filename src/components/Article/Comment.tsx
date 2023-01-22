@@ -31,10 +31,37 @@ const Comment = (props: Props) => {
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
-  const remove = () => {
+  const remove = async () => {
     if (comment()?.id) {
-      console.log('[comment] removing', comment().id)
-      deleteReaction(comment().id)
+      try {
+        await deleteReaction(comment().id)
+      } catch (error) {
+        console.error('[deleteReaction]', error)
+      }
+    }
+  }
+
+  const handleCreate = async (value) => {
+    try {
+      setLoading(true)
+      await createReaction(
+        {
+          kind: ReactionKind.Comment,
+          replyTo: props.comment.id,
+          body: value,
+          shout: props.comment.shout.id
+        },
+        {
+          name: session().user.name,
+          userpic: session().user.userpic,
+          slug: session().user.slug
+        }
+      )
+      setIsReplyVisible(false)
+      setLoading(false)
+    } catch (error) {
+      console.error('[handleCreate reaction]:', error)
+      setErrorMessage(t('Something went wrong, please try again'))
     }
   }
 

@@ -236,18 +236,15 @@ export const apiClient = {
     console.debug('[createReaction]:', response)
     return response.data.createReaction.reaction
   },
-
-  // CUDL
-
+  destroyReaction: async (id: number) => {
+    const response = await privateGraphQLClient.mutation(reactionDestroy, { reaction: id }).toPromise()
+    console.debug('[destroyReaction]:', response)
+    return response.data.deleteReaction
+  },
   updateReaction: async (reaction) => {
     const response = await privateGraphQLClient.mutation(reactionUpdate, reaction).toPromise()
 
     return response.data.createReaction
-  },
-  destroyReaction: async ({ id }) => {
-    const response = await privateGraphQLClient.mutation(reactionDestroy, { id }).toPromise()
-
-    return response.data.deleteReaction
   },
   getAuthorsBy: async (options: QueryLoadAuthorsByArgs) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, options).toPromise()

@@ -66,7 +66,7 @@ export const Editor = () => {
   }
 
   return (
-    <div class="container" style={{ display: 'flex' }}>
+    <div class="wide-container" style={{ display: 'flex' }}>
       <div style={{ flex: 1 }}>
         <div ref={(el) => (editorElRef.current = el)} />
         <button class={clsx('button')} onClick={handleSaveButtonClick}>

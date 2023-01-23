@@ -211,7 +211,7 @@
   }
 
   .authorSubscribe {
-    margin-top: 2rem;
+    margin: 2rem -0.8rem 0;
     padding-left: 0;
 
     @include media-breakpoint-down(md) {
@@ -261,17 +261,11 @@
   }
 
   .button {
-    margin-right: 1.6rem;
+    margin: 0 0.8rem;
     vertical-align: middle;
 
-    &:last-of-type {
-      margin-right: 0;
-    }
-
     @include media-breakpoint-down(sm) {
-      display: block;
       margin-bottom: 0.5em;
-      margin-right: 0;
     }
   }
 }

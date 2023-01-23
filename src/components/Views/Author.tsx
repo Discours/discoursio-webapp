@@ -50,6 +50,8 @@ export const AuthorView = (props: AuthorProps) => {
   const subscribers = Array.from({ length: 12 }).fill(author())
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
+  changeSearchParam('by', 'rating')
+
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
@@ -95,43 +97,6 @@ export const AuthorView = (props: AuthorProps) => {
       }
     }
   })
-
-  const zhopa = {
-    'v-kramer': {
-      _id: 'v-kramer',
-      id: 33,
-      slug: 'v-kramer',
-      name: 'Владислав Крамер',
-      bio: 'юрист, публицист, охотник на ведьм',
-      about: null,
-      userpic: '',
-      communities: null,
-      links: [],
-      createdAt: '2016-04-25T10:21:25.065000',
-      lastSeen: '2023-01-22T14:37:55.058203'
-    },
-    'aleksei-bodyashkin': {
-      id: 831,
-      name: 'Алексей Бодяшкин',
-      slug: 'aleksei-bodyashkin',
-      userpic:
-        'https://assets.discours.io/unsafe/100x/production/image/d4d5bf40-974c-11ed-9568-bf8d9bd79f61.jpg'
-    },
-    'vsevolod-korolyov': {
-      id: 680,
-      name: 'Всеволод Королёв',
-      slug: 'vsevolod-korolyov',
-      userpic:
-        'https://assets.discours.io/unsafe/100x/production/image/5b959660-944f-11ec-86dd-e3ee00090109.jpg'
-    },
-    'igor-bobyrev': { id: 790, name: 'Игорь Бобырев', slug: 'igor-bobyrev', userpic: '' },
-    'natasha-lozinskaya': {
-      id: 829,
-      name: 'Наташа Лозинская',
-      slug: 'natasha-lozinskaya',
-      userpic: ''
-    }
-  }
 
   return (
     <div class="author-page">
@@ -223,7 +188,7 @@ export const AuthorView = (props: AuthorProps) => {
               </ul>
             </div>
           </Match>
-          <Match when={searchParams().by === 'popular'}>
+          <Match when={searchParams().by === 'rating'}>
             <Row1 article={sortedArticles()[0]} />
             <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} />
             <Row1 article={sortedArticles()[3]} />

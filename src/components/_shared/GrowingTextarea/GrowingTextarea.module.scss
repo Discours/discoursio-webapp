@@ -2,7 +2,8 @@
   .wrapper {
     border: 2px solid #e8e8e8;
     border-radius: 8px;
-    padding: 16px;
+    padding: 3rem 1.6rem 1.6rem;
+    position: relative;
 
     .growArea {
       display: grid;
@@ -15,7 +16,7 @@
         transition: height 1.3s ease-in-out;
       }
 
-      & textarea {
+      textarea {
         margin-bottom: 0;
         font-family: inherit;
         resize: none;
@@ -36,14 +37,13 @@
       }
 
       &::after,
-      & textarea {
+      textarea {
         font-weight: 400;
         font-size: 14px;
         line-height: 20px;
         padding: 0;
         grid-area: 1 / 1 / 2 / 2;
         width: 100%;
-        min-height: unset;
       }
     }
 

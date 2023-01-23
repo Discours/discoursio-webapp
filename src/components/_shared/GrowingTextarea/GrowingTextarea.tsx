@@ -47,6 +47,7 @@ const GrowingTextarea = (props: Props) => {
             onInput={(event) => handleChangeMessage(event)}
             placeholder={props?.placeholder}
           />
+          <label for="">{props?.placeholder}</label>
         </div>
         <div class={clsx(styles.actions, { [styles.visible]: inputText().trim().length > 0 })}>
           <div class={styles.buttons}>

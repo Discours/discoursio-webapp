@@ -13,6 +13,7 @@ import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { RatingControl } from '../Article/RatingControl'
 import styles from './Author.module.scss'
+import stylesArticle from '../../styles/Article.module.scss'
 import { clsx } from 'clsx'
 import Userpic from '../Author/Userpic'
 import { Popup } from '../_shared/Popup'
@@ -95,6 +96,43 @@ export const AuthorView = (props: AuthorProps) => {
     }
   })
 
+  const zhopa = {
+    'v-kramer': {
+      _id: 'v-kramer',
+      id: 33,
+      slug: 'v-kramer',
+      name: 'Владислав Крамер',
+      bio: 'юрист, публицист, охотник на ведьм',
+      about: null,
+      userpic: '',
+      communities: null,
+      links: [],
+      createdAt: '2016-04-25T10:21:25.065000',
+      lastSeen: '2023-01-22T14:37:55.058203'
+    },
+    'aleksei-bodyashkin': {
+      id: 831,
+      name: 'Алексей Бодяшкин',
+      slug: 'aleksei-bodyashkin',
+      userpic:
+        'https://assets.discours.io/unsafe/100x/production/image/d4d5bf40-974c-11ed-9568-bf8d9bd79f61.jpg'
+    },
+    'vsevolod-korolyov': {
+      id: 680,
+      name: 'Всеволод Королёв',
+      slug: 'vsevolod-korolyov',
+      userpic:
+        'https://assets.discours.io/unsafe/100x/production/image/5b959660-944f-11ec-86dd-e3ee00090109.jpg'
+    },
+    'igor-bobyrev': { id: 790, name: 'Игорь Бобырев', slug: 'igor-bobyrev', userpic: '' },
+    'natasha-lozinskaya': {
+      id: 829,
+      name: 'Наташа Лозинская',
+      slug: 'natasha-lozinskaya',
+      userpic: ''
+    }
+  }
+
   return (
     <div class="author-page">
       <Show when={author()} fallback={<div class="center">{t('Loading')}</div>}>
@@ -118,11 +156,13 @@ export const AuthorView = (props: AuthorProps) => {
                     {t('Comments')}
                   </button>
                 </li>
+                {/*
                 <li classList={{ selected: searchParams().by === 'popular' }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'popular')}>
                     Популярное
                   </button>
                 </li>
+*/}
                 <li classList={{ selected: searchParams().by === 'about' }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'about')}>
                     О себе
@@ -162,13 +202,26 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </div>
 
-        <Switch fallback={<p>дефолтное состояние</p>}>
+        <Switch
+          fallback={
+            <div class="wide-container">
+              <p>дефолтное состояние</p>
+            </div>
+          }
+        >
           <Match when={searchParams().by === 'about'}>
-            <h1>About</h1>
-            <p>{JSON.stringify(authorEntities())}</p>
+            <div class="wide-container">
+              <Show when={authorEntities()[author().slug].bio}>
+                <p>{authorEntities()[author().slug].bio}</p>
+              </Show>
+            </div>
           </Match>
           <Match when={searchParams().by === 'commented'}>
-            <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
+            <div class="wide-container">
+              <ul class={stylesArticle.comments}>
+                <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
+              </ul>
+            </div>
           </Match>
           <Match when={searchParams().by === 'popular'}>
             <Row1 article={sortedArticles()[0]} />

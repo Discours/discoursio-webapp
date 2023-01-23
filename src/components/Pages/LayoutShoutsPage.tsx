@@ -103,7 +103,10 @@ export const LayoutShoutsPage = (props: PageProps) => {
       <Show when={isLoaded()} fallback={<Loading />}>
         <div class={styles.topicPage}>
           <Show when={layout() && Boolean(sortedArticles())}>
-            <h1>{title()}</h1>
+            <div class="wide-container">
+              <h1>{title()}</h1>
+            </div>
+
             <ModeSwitcher />
             <Row1 article={sortedArticles()[0]} />
             <Row2 articles={sortedArticles().slice(1, 3)} />

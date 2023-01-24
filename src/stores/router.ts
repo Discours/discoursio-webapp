@@ -8,6 +8,7 @@ export interface Routes {
   home: void
   connect: void
   create: void
+  createSettings: void
   topics: void
   topic: 'slug'
   authors: void
@@ -39,6 +40,7 @@ const routerStore = createRouter<Routes>(
     inbox: '/inbox',
     connect: '/connect',
     create: '/create',
+    createSettings: '/create/settings',
     topics: '/topics',
     topic: '/topic/:slug',
     authors: '/authors',

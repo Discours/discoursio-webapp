@@ -108,7 +108,7 @@ export const AuthorView = (props: AuthorProps) => {
               <ul class="view-switcher">
                 <li classList={{ selected: searchParams().by === 'rating' }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
-                    {t('Popular')}
+                    {t('Publications')}
                   </button>
                 </li>
                 <li classList={{ selected: searchParams().by === 'followed' }}>

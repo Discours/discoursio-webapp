@@ -1,6 +1,5 @@
 import { Plugin } from 'prosemirror-state'
 import { DecorationSet, Decoration } from 'prosemirror-view'
-import styles from '../styles/ProseMirror.module.scss'
 
 export const placeholder = (text: string): Plugin =>
   new Plugin({

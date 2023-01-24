@@ -107,7 +107,7 @@ export const HomeView = (props: HomeProps) => {
     <Show when={locale() && sortedArticles().length > 0}>
       <NavTopics topics={randomTopics()} />
 
-      <Row5 articles={sortedArticles().slice(0, 5)} />
+      <Row5 articles={sortedArticles().slice(0, 5)} nodate={true} />
 
       <Hero />
 
@@ -117,15 +117,17 @@ export const HomeView = (props: HomeProps) => {
           title={t('Top viewed')}
           values={topViewedArticles().slice(0, 5)}
           wrapper={'top-article'}
+          nodate={true}
         />
 
-        <Row3 articles={sortedArticles().slice(6, 9)} />
+        <Row3 articles={sortedArticles().slice(6, 9)} nodate={true} />
 
         <Beside
           beside={sortedArticles()[9]}
           title={t('Top authors')}
           values={topAuthors()}
           wrapper={'author'}
+          nodate={true}
         />
 
         <Slider title={t('Top month articles')}>
@@ -144,13 +146,17 @@ export const HomeView = (props: HomeProps) => {
           </For>
         </Slider>
 
-        <Row2 articles={sortedArticles().slice(10, 12)} />
+        <Row2 articles={sortedArticles().slice(10, 12)} nodate={true} />
 
         <RowShort articles={sortedArticles().slice(12, 16)} />
 
-        <Row1 article={sortedArticles()[16]} />
-        <Row3 articles={sortedArticles().slice(17, 20)} />
-        <Row3 articles={topCommentedArticles().slice(0, 3)} header={<h2>{t('Top commented')}</h2>} />
+        <Row1 article={sortedArticles()[16]} nodate={true} />
+        <Row3 articles={sortedArticles().slice(17, 20)} nodate={true} />
+        <Row3
+          articles={topCommentedArticles().slice(0, 3)}
+          header={<h2>{t('Top commented')}</h2>}
+          nodate={true}
+        />
 
         {randomLayout()}
 
@@ -176,28 +182,29 @@ export const HomeView = (props: HomeProps) => {
           values={topTopics().slice(0, 5)}
           wrapper={'topic'}
           isTopicCompact={true}
+          nodate={true}
         />
 
         <Row3 articles={sortedArticles().slice(21, 24)} />
 
         <Banner />
 
-        <Row2 articles={sortedArticles().slice(24, 26)} />
-        <Row3 articles={sortedArticles().slice(26, 29)} />
-        <Row2 articles={sortedArticles().slice(29, 31)} />
-        <Row3 articles={sortedArticles().slice(31, 34)} />
+        <Row2 articles={sortedArticles().slice(24, 26)} nodate={true} />
+        <Row3 articles={sortedArticles().slice(26, 29)} nodate={true} />
+        <Row2 articles={sortedArticles().slice(29, 31)} nodate={true} />
+        <Row3 articles={sortedArticles().slice(31, 34)} nodate={true} />
       </Show>
 
       <For each={pages()}>
         {(page) => (
           <>
-            <Row1 article={page[0]} />
-            <Row3 articles={page.slice(1, 4)} />
-            <Row2 articles={page.slice(4, 6)} />
-            <Beside values={page.slice(6, 9)} beside={page[9]} wrapper="article" />
-            <Row1 article={page[10]} />
-            <Row2 articles={page.slice(11, 13)} />
-            <Row3 articles={page.slice(13, 16)} />
+            <Row1 article={page[0]} nodate={true} />
+            <Row3 articles={page.slice(1, 4)} nodate={true} />
+            <Row2 articles={page.slice(4, 6)} nodate={true} />
+            <Beside values={page.slice(6, 9)} beside={page[9]} wrapper="article" nodate={true} />
+            <Row1 article={page[10]} nodate={true} />
+            <Row2 articles={page.slice(11, 13)} nodate={true} />
+            <Row3 articles={page.slice(13, 16)} nodate={true} />
           </>
         )}
       </For>

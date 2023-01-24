@@ -2,13 +2,13 @@ import { Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from './Card'
 
-export const Row1 = (props: { article: Shout }) => (
+export const Row1 = (props: { article: Shout; nodate?: boolean }) => (
   <Show when={!!props.article}>
     <div class="floor floor--one-article">
       <div class="wide-container">
         <div class="row">
           <div class="col-12">
-            <ArticleCard article={props.article} settings={{ isSingle: true }} />
+            <ArticleCard article={props.article} settings={{ isSingle: true, nodate: props.nodate }} />
           </div>
         </div>
       </div>

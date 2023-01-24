@@ -1,0 +1,25 @@
+.commentEditor {
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 0 16px 16px;
+
+  .textarea {
+    min-height: 1em;
+    overflow: hidden;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .menu,
+    .buttons {
+      display: flex;
+      flex-direction: row;
+    }
+    .buttons {
+      gap: 10px;
+    }
+  }
+}

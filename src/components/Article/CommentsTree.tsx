@@ -7,10 +7,9 @@ import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
-import GrowingTextarea from '../_shared/GrowingTextarea'
 import { ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
-import CommentEditor from '../CommentEditor'
+import CommentEditor from '../_shared/CommentEditor'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
@@ -49,12 +48,9 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   }
   onMount(async () => await loadMore())
 
-  const [loading, setLoading] = createSignal<boolean>(false)
-  const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
+  const [submitted, setSubmitted] = createSignal<boolean>(false)
   const handleSubmitComment = async (value) => {
-    console.log('!!! value:', value)
     try {
-      setLoading(true)
       await createReaction(
         {
           kind: ReactionKind.Comment,
@@ -67,9 +63,8 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
           slug: session().user.slug
         }
       )
-      setLoading(false)
+      setSubmitted(true)
     } catch (error) {
-      setErrorMessage(t('Something went wrong, please try again'))
       console.error('[handleCreate reaction]:', error)
     }
   }
@@ -121,20 +116,11 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
 
         <ShowOnlyOnClient>
           <CommentEditor
-            initialValue={''}
-            onCancel={() => {}}
+            initialValue={t('Write a comment...')}
+            clear={submitted()}
             onSubmit={(value) => handleSubmitComment(value)}
           />
         </ShowOnlyOnClient>
-
-        {/*<GrowingTextarea*/}
-        {/*  placeholder={t('Write comment')}*/}
-        {/*  submitButtonText={t('Send')}*/}
-        {/*  cancelButtonText={t('cancel')}*/}
-        {/*  submit={(value) => handleSubmitComment(value)}*/}
-        {/*  loading={loading()}*/}
-        {/*  errorMessage={errorMessage()}*/}
-        {/*/>*/}
       </Show>
     </div>
   )

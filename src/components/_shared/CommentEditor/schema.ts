@@ -15,6 +15,15 @@ export const schema = new Schema({
       toDOM: function toDOM(node) {
         return ['p', { class: 'paragraph' }, 0]
       }
+    },
+    blockquote: {
+      content: 'block+',
+      group: 'block',
+      defining: true,
+      parseDOM: [{ tag: 'blockquote' }],
+      toDOM() {
+        return ['blockquote', 0]
+      }
     }
   },
   marks: {

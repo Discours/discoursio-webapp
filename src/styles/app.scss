@@ -187,6 +187,11 @@ button {
   cursor: pointer;
   font-family: inherit;
   padding: 0;
+
+  &[disabled] {
+    cursor: default;
+    opacity: 0.5 !important;
+  }
 }
 
 .button {
@@ -252,6 +257,11 @@ button {
     background: #000;
     color: #fff;
     opacity: 1;
+  }
+
+  &[disabled]:hover {
+    background: #fff;
+    color: #000;
   }
 }
 
@@ -710,7 +720,9 @@ astro-island {
 .mode-switcher {
   @include font-size(1.5rem);
 
-  text-align: right;
+  @include media-breakpoint-up(md) {
+    text-align: right;
+  }
 }
 
 .mode-switcher__control {

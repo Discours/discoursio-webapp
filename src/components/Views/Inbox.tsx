@@ -155,7 +155,7 @@ export const InboxView = () => {
     return messages().find((message) => message.id === messageId)
   }
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = async (event) => {
     if (event.keyCode === 13 && event.shiftKey) return
     if (event.keyCode === 13 && !event.shiftKey && postMessageText().trim().length > 0) {
       event.preventDefault()

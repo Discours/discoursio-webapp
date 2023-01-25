@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
@@ -116,7 +116,7 @@ export const CommentsTree = (props: Props) => {
           >
             {(reaction) => (
               <Comment
-                isArticleAuthor={Boolean(props.commentAuthors.find((a) => a.slug === session()?.user.slug))}
+                isArticleAuthor={Boolean(props.commentAuthors.some((a) => a.slug === session()?.user.slug))}
                 reactions={reactions()}
                 comment={reaction}
               />

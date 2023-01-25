@@ -20,7 +20,7 @@ type Props = {
   comment: Reaction
   compact?: boolean
   reactions?: Reaction[]
-  isArticleAuthor: boolean
+  isArticleAuthor?: boolean
 }
 
 const Comment = (props: Props) => {

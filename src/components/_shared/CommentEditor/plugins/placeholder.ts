@@ -13,7 +13,6 @@ export const placeholder = (text: string): Plugin =>
 
         const div = document.createElement('div')
         div.setAttribute('contenteditable', 'false')
-        div.classList.add(styles.placeholder)
         div.textContent = text
 
         return DecorationSet.create(doc, [Decoration.widget(1, div)])

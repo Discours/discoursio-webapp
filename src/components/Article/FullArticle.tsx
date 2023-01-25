@@ -87,6 +87,8 @@ export const FullArticle = (props: ArticleProps) => {
     return mi
   })
 
+  console.log('!!! props.article:', props.article)
+
   return (
     <div class="shout wide-container">
       <article class="col-md-6 shift-content">
@@ -224,7 +226,11 @@ export const FullArticle = (props: ArticleProps) => {
             )}
           </For>
         </div>
-        <CommentsTree shoutSlug={props.article?.slug} shoutId={props.article?.id} />
+        <CommentsTree
+          shoutId={props.article?.id}
+          shoutSlug={props.article?.slug}
+          commentAuthors={props.article?.authors}
+        />
       </div>
     </div>
   )

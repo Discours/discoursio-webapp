@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount, createEffect } from 'solid-js'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
@@ -7,7 +7,7 @@ import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
-import { ReactionKind } from '../../graphql/types.gen'
+import { Author, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import CommentEditor from '../_shared/CommentEditor'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
@@ -15,7 +15,13 @@ import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
 
-export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
+type Props = {
+  commentAuthors: Author[]
+  shoutSlug: string
+  shoutId: number
+}
+
+export const CommentsTree = (props: Props) => {
   const [getCommentsPage, setCommentsPage] = createSignal(0)
   const [commentsOrder, setCommentsOrder] = createSignal<'rating' | 'createdAt'>('createdAt')
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
@@ -68,6 +74,7 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
       console.error('[handleCreate reaction]:', error)
     }
   }
+
   return (
     <div>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -107,7 +114,13 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
               .reverse()
               .filter((r) => !r.replyTo)}
           >
-            {(reaction) => <Comment reactions={reactions()} comment={reaction} />}
+            {(reaction) => (
+              <Comment
+                isArticleAuthor={Boolean(props.commentAuthors.find((a) => a.slug === session()?.user.slug))}
+                reactions={reactions()}
+                comment={reaction}
+              />
+            )}
           </For>
         </ul>
         <Show when={isLoadMoreButtonVisible()}>

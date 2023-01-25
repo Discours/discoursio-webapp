@@ -20,6 +20,7 @@ type Props = {
   comment: Reaction
   compact?: boolean
   reactions?: Reaction[]
+  isArticleAuthor: boolean
 }
 
 const Comment = (props: Props) => {
@@ -95,6 +96,10 @@ const Comment = (props: Props) => {
                   hasLink={true}
                 />
               </div>
+
+              <Show when={props.isArticleAuthor}>
+                <div class={styles.articleAuthor}>{t('Author')}</div>
+              </Show>
 
               <div class={styles.commentDate}>{formattedDate()}</div>
               <div
@@ -180,7 +185,13 @@ const Comment = (props: Props) => {
       <Show when={props.reactions}>
         <ul>
           <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
-            {(reaction) => <Comment reactions={props.reactions} comment={reaction} />}
+            {(reaction) => (
+              <Comment
+                isArticleAuthor={props.isArticleAuthor}
+                reactions={props.reactions}
+                comment={reaction}
+              />
+            )}
           </For>
         </ul>
       </Show>

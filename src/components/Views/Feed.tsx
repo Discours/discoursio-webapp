@@ -18,6 +18,7 @@ import stylesArticle from '../../styles/Article.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import styles from './Feed.module.scss'
 import { clsx } from 'clsx'
+import Userpic from '../Author/Userpic'
 
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,
@@ -132,8 +133,23 @@ export const FeedView = () => {
             <section class={styles.asideSection}>
               <h4>{t('Comments')}</h4>
               <ul class={stylesArticle.comments}>
-                <For each={topComments()}>
-                  {(comment) => <Comment comment={comment} reactions={[]} compact={true} />}
+                <For each={topComments().filter((item) => item.body)}>
+                  {(comment) => {
+                    return (
+                      <li class={styles.comment}>
+                        <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
+                        <AuthorCard
+                          author={comment.createdBy}
+                          isFeedMode={true}
+                          compact={true}
+                          hideFollow={true}
+                        />
+                        <div class={clsx('text-truncate', styles.commentArticleTitle)}>
+                          <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
+                        </div>
+                      </li>
+                    )
+                  }}
                 </For>
               </ul>
             </section>

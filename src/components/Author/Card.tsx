@@ -29,6 +29,7 @@ interface AuthorCardProps {
   truncateBio?: boolean
   liteButtons?: boolean
   isComments?: boolean
+  isFeedMode?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -83,7 +84,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
       classList={{
         [styles.authorPage]: props.isAuthorPage,
         [styles.authorComments]: props.isComments,
-        [styles.authorsListItem]: props.isAuthorsList
+        [styles.authorsListItem]: props.isAuthorsList,
+        [styles.feedMode]: props.isFeedMode
       }}
     >
       <Userpic

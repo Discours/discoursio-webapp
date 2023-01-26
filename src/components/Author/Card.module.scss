@@ -307,3 +307,19 @@
 .isSubscribing {
   opacity: 0.5;
 }
+
+.feedMode {
+  margin-bottom: 0.6rem;
+
+  .authorName {
+    @include font-size(1.2rem);
+    margin-bottom: 0;
+  }
+
+  .circlewrap {
+    height: 1.6rem;
+    margin-right: 0.4rem;
+    min-width: 1.6rem;
+    width: 1.6rem;
+  }
+}

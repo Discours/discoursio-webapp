@@ -36,6 +36,7 @@
   h4 {
     @include font-size(2.2rem);
     font-weight: bold;
+    margin-bottom: 2.4rem;
     text-transform: lowercase;
   }
 }
@@ -50,6 +51,7 @@
   background: transparentize(#2638d9, 0.95);
   display: inline-block;
   font-weight: bold;
+  line-height: 1.2;
   margin: 0 0.5em 0.5em 0;
   padding: 0.6em 1em;
   position: relative;
@@ -95,4 +97,34 @@
   a {
     border: none;
   }
+}
+
+.comment {
+  @include font-size(1.5rem);
+  line-height: 1.4;
+  margin-bottom: 2.4rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.commentBody {
+  margin-bottom: 1.2rem;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+}
+
+.commentArticleTitle {
+  @include font-size(1.2rem);
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+}
+
+.commentAuthor {
+  @include font-size(1.2rem);
 }

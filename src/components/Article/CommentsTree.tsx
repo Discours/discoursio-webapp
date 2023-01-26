@@ -126,7 +126,6 @@ export const CommentsTree = (props: Props) => {
         <Show when={isLoadMoreButtonVisible()}>
           <button onClick={loadMore}>{t('Load more')}</button>
         </Show>
-
         <ShowOnlyOnClient>
           <CommentEditor
             initialValue={t('Write a comment...')}

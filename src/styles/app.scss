@@ -187,6 +187,11 @@ button {
   cursor: pointer;
   font-family: inherit;
   padding: 0;
+
+  &[disabled] {
+    cursor: default;
+    opacity: 0.5 !important;
+  }
 }
 
 .button {
@@ -243,16 +248,20 @@ button {
   border: 2px solid #000;
   border-radius: 0.8rem;
   color: #000;
-  font-size: 1.2em;
+  font-size: 1.4rem;
   line-height: 2.8rem;
   height: 3.2rem;
-  padding: 0;
-  width: 3.2rem;
+  padding: 0 1rem;
 
   &:hover {
     background: #000;
     color: #fff;
     opacity: 1;
+  }
+
+  &[disabled]:hover {
+    background: #fff;
+    color: #000;
   }
 }
 
@@ -400,10 +409,9 @@ form {
   }
 
   textarea {
-    min-height: 10em;
-
     & ~ label {
-      top: 3rem;
+      left: 1.6rem;
+      top: 3.2rem;
     }
   }
 
@@ -712,7 +720,9 @@ astro-island {
 .mode-switcher {
   @include font-size(1.5rem);
 
-  text-align: right;
+  @include media-breakpoint-up(md) {
+    text-align: right;
+  }
 }
 
 .mode-switcher__control {

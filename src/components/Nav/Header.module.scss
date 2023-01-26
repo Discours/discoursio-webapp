@@ -140,10 +140,6 @@
   position: relative;
   @include font-size(1.7rem);
 
-  @include media-breakpoint-down(lg) {
-    margin-right: 7rem;
-  }
-
   @include media-breakpoint-down(md) {
     display: none;
   }

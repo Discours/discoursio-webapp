@@ -13,6 +13,7 @@ import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { RatingControl } from '../Article/RatingControl'
 import styles from './Author.module.scss'
+import stylesArticle from '../../styles/Article.module.scss'
 import { clsx } from 'clsx'
 import Userpic from '../Author/Userpic'
 import { Popup } from '../_shared/Popup'
@@ -48,6 +49,8 @@ export const AuthorView = (props: AuthorProps) => {
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const subscribers = Array.from({ length: 12 }).fill(author())
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
+
+  changeSearchParam('by', 'rating')
 
   const loadMore = async () => {
     saveScrollPosition()
@@ -105,7 +108,7 @@ export const AuthorView = (props: AuthorProps) => {
               <ul class="view-switcher">
                 <li classList={{ selected: searchParams().by === 'rating' }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
-                    {t('Popular')}
+                    {t('Publications')}
                   </button>
                 </li>
                 <li classList={{ selected: searchParams().by === 'followed' }}>
@@ -118,11 +121,13 @@ export const AuthorView = (props: AuthorProps) => {
                     {t('Comments')}
                   </button>
                 </li>
+                {/*
                 <li classList={{ selected: searchParams().by === 'popular' }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'popular')}>
                     Популярное
                   </button>
                 </li>
+*/}
                 <li classList={{ selected: searchParams().by === 'about' }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'about')}>
                     О себе
@@ -162,15 +167,28 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </div>
 
-        <Switch fallback={<p>дефолтное состояние</p>}>
+        <Switch
+          fallback={
+            <div class="wide-container">
+              <p>дефолтное состояние</p>
+            </div>
+          }
+        >
           <Match when={searchParams().by === 'about'}>
-            <h1>About</h1>
-            <p>{JSON.stringify(authorEntities())}</p>
+            <div class="wide-container">
+              <Show when={authorEntities()[author().slug].bio}>
+                <p>{authorEntities()[author().slug].bio}</p>
+              </Show>
+            </div>
           </Match>
           <Match when={searchParams().by === 'commented'}>
-            <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
+            <div class="wide-container">
+              <ul class={stylesArticle.comments}>
+                <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
+              </ul>
+            </div>
           </Match>
-          <Match when={searchParams().by === 'popular'}>
+          <Match when={searchParams().by === 'rating'}>
             <Row1 article={sortedArticles()[0]} />
             <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} />
             <Row1 article={sortedArticles()[3]} />

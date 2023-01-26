@@ -118,9 +118,10 @@
 }
 
 .isSubscribing {
-  color: transparent;
+  opacity: 0.5;
 }
 
 .isSubscribed {
   background: #000;
+  color: #fff;
 }

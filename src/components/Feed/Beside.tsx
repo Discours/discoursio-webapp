@@ -20,6 +20,7 @@ interface BesideProps {
   topicShortDescription?: boolean
   topicsBySlug?: { [slug: string]: Topic }
   iconButton?: boolean
+  nodate?: boolean
 }
 
 export const Beside = (props: BesideProps) => {
@@ -72,7 +73,10 @@ export const Beside = (props: BesideProps) => {
                           />
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>
-                          <ArticleCard article={value as Shout} settings={{ noimage: true }} />
+                          <ArticleCard
+                            article={value as Shout}
+                            settings={{ noimage: true, nodate: props.nodate }}
+                          />
                         </Show>
                         <Show when={props.wrapper === 'top-article' && value?.slug}>
                           <ArticleCard
@@ -87,7 +91,10 @@ export const Beside = (props: BesideProps) => {
               </div>
             </Show>
             <div class={clsx('col-md-8', styles.shoutCardContainer)}>
-              <ArticleCard article={props.beside} settings={{ isBigTitle: true, isBeside: true }} />
+              <ArticleCard
+                article={props.beside}
+                settings={{ isBigTitle: true, isBeside: true, nodate: props.nodate }}
+              />
             </div>
           </div>
         </div>

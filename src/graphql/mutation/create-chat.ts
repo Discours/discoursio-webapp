@@ -6,6 +6,10 @@ export default gql`
       error
       chat {
         id
+        members {
+          id
+          slug
+        }
       }
     }
   }

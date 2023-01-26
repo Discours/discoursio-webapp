@@ -5,12 +5,12 @@ import GroupDialogAvatar from './GroupDialogAvatar'
 import formattedTime from '../../utils/formatDateTime'
 import { clsx } from 'clsx'
 import styles from './DialogCard.module.scss'
+import { t } from '../../utils/intl'
 
 type DialogProps = {
   online?: boolean
   message?: string
   counter?: number
-  title?: string
   ownId: number
   members: ChatMember[]
   onClick?: () => void
@@ -23,6 +23,7 @@ const DialogCard = (props: DialogProps) => {
   const companions = createMemo(
     () => props.members && props.members.filter((member) => member.id !== props.ownId)
   )
+
   const names = createMemo(() =>
     companions()
       ?.map((companion) => companion.name)
@@ -40,14 +41,16 @@ const DialogCard = (props: DialogProps) => {
         onClick={props.onClick}
       >
         <div class={styles.avatar}>
-          <Switch fallback={<DialogAvatar name={props.members[0].name} url={props.members[0].userpic} />}>
+          <Switch fallback={<DialogAvatar name={props.members[0].slug} url={props.members[0].userpic} />}>
             <Match when={props.members.length >= 3}>
               <GroupDialogAvatar users={props.members} />
             </Match>
           </Switch>
         </div>
         <div class={styles.row}>
-          <div class={styles.name}>{props.title}</div>
+          <div class={styles.name}>
+            {companions()?.length > 1 ? t('Group Chat') : companions()[0]?.name}
+          </div>
           <div class={styles.message}>
             <Switch>
               <Match when={props.message && !props.isChatHeader}>{props.message}</Match>

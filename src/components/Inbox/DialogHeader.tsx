@@ -9,12 +9,7 @@ type DialogHeader = {
 const DialogHeader = (props: DialogHeader) => {
   return (
     <header class={styles.DialogHeader}>
-      <DialogCard
-        isChatHeader={true}
-        title={props.chat.title || props.chat.members[0].name}
-        members={props.chat.members}
-        ownId={props.ownId}
-      />
+      <DialogCard isChatHeader={true} members={props.chat.members} ownId={props.ownId} />
     </header>
   )
 }

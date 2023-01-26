@@ -14,6 +14,10 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useSession } from '../../context/session'
+import stylesArticle from '../../styles/Article.module.scss'
+import stylesTopic from '../Feed/CardTopic.module.scss'
+import styles from './Feed.module.scss'
+import { clsx } from 'clsx'
 
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,
@@ -71,9 +75,9 @@ export const FeedView = () => {
 
   return (
     <>
-      <div class="container feed">
+      <div class="wide-container feed">
         <div class="row">
-          <div class="col-md-3 feed-navigation">
+          <div class={clsx('col-md-3', styles.feedNavigation)}>
             <FeedSidebar authors={sortedAuthors()} />
           </div>
 
@@ -104,7 +108,7 @@ export const FeedView = () => {
                 <h4>{t('Popular authors')}</h4>
                 <a href="/authors">
                   {t('All authors')}
-                  <Icon name="arrow-right" />
+                  <Icon name="arrow-right" class={stylesBeside.icon} />
                 </a>
               </div>
 
@@ -124,21 +128,46 @@ export const FeedView = () => {
             </Show>
           </div>
 
-          <aside class="col-md-3">
-            <section class="feed-comments">
+          <aside class={clsx('col-md-3', styles.feedAside)}>
+            <section class={styles.asideSection}>
               <h4>{t('Comments')}</h4>
-              <For each={topComments()}>
-                {(comment) => <Comment comment={comment} reactions={[]} compact={true} />}
-              </For>
+              <ul class={stylesArticle.comments}>
+                <For each={topComments()}>
+                  {(comment) => <Comment comment={comment} reactions={[]} compact={true} />}
+                </For>
+              </ul>
             </section>
+
             <Show when={topTopics().length > 0}>
-              <section class="feed-topics">
+              <section class={styles.asideSection}>
                 <h4>{t('Topics')}</h4>
                 <For each={topTopics().slice(0, 5)}>
-                  {(topic) => <TopicCard topic={topic} subscribeButtonBottom={true} />}
+                  {(topic) => (
+                    <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
+                      <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
+                    </span>
+                  )}
                 </For>
               </section>
             </Show>
+
+            <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
+              <Icon name="pin" class={styles.icon} />
+              <ul class="nodash">
+                <li>
+                  <a href="/about/guide">Как устроен Дискурс</a>
+                </li>
+                <li>
+                  <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
+                </li>
+                <li>
+                  <a href="#">Правила конструктивных дискуссий</a>
+                </li>
+                <li>
+                  <a href="/about/principles">Принципы сообщества</a>
+                </li>
+              </ul>
+            </section>
           </aside>
         </div>
         <Show when={isLoadMoreButtonVisible()}>

@@ -1,0 +1,98 @@
+.feedNavigation {
+  @include font-size(1.5rem);
+  font-weight: 500;
+
+  h4 {
+    font-size: inherit;
+    margin-bottom: 1.6rem;
+  }
+
+  ul,
+  li {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul {
+    margin-bottom: 3rem;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 1rem;
+
+    a {
+      margin-right: 0.5em;
+    }
+  }
+
+  a {
+    border: none;
+  }
+}
+
+.feedAside {
+  h4 {
+    @include font-size(2.2rem);
+    font-weight: bold;
+    text-transform: lowercase;
+  }
+}
+
+.asideSection {
+  border: 1px solid #e9e9ee;
+  margin-bottom: 0.8em;
+  padding: 1em;
+}
+
+.topic {
+  background: transparentize(#2638d9, 0.95);
+  display: inline-block;
+  font-weight: bold;
+  margin: 0 0.5em 0.5em 0;
+  padding: 0.6em 1em;
+  position: relative;
+  vertical-align: middle;
+
+  &:hover {
+    background: #2638d9;
+  }
+
+  a {
+    position: static;
+
+    &:before {
+      content: '';
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+}
+
+.pinnedLinks {
+  .icon {
+    height: 2.8rem;
+    width: 2.8rem;
+  }
+
+  ul {
+    @include font-size(1.4rem);
+    font-weight: bold;
+    margin: 1rem 0 0;
+    line-height: 1.4;
+
+    li {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  a {
+    border: none;
+  }
+}

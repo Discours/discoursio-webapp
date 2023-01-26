@@ -25,6 +25,10 @@
     height: 1.2em;
     width: 100%;
   }
+
+  .feedControlIcon {
+    max-width: 1.4em;
+  }
 }
 
 .shoutCardWithBorder {
@@ -399,8 +403,7 @@
 }
 
 .shoutCardFeed {
-  border-bottom: 1px solid #e8e8e8;
-  margin-bottom: 2em;
+  margin-bottom: 4em;
 
   .shoutCardContent {
     margin-bottom: 0;
@@ -408,11 +411,12 @@
 }
 
 .shoutCardDetails {
+  border-top: 3px solid #141414;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   @include font-size(1.5rem);
-
+  margin-top: 1em;
   padding: 1em 0 1.5em;
   position: relative;
   width: 100%;
@@ -426,7 +430,12 @@
 .shoutCardDetailsItem {
   align-items: center;
   display: flex;
-  margin-right: 1.7em;
+  margin-right: 1.4em;
+  white-space: nowrap;
+
+  &:last-child {
+    margin-right: 0;
+  }
 
   img {
     vertical-align: middle;
@@ -442,7 +451,8 @@
   }
 }
 
-.shoutCardComments {
+.shoutCardComments,
+.shoutCardDetailsViewed {
   align-items: center;
   display: flex;
 
@@ -457,6 +467,10 @@
       color: rgb(0 0 0 / 60%);
     }
   }
+}
+
+.shoutCardComments {
+  @include font-size(1.2rem);
 }
 
 .shoutCardDetailsViewed {

@@ -9,6 +9,8 @@ import { locale } from '../../stores/ui'
 import { clsx } from 'clsx'
 import { CardTopic } from './CardTopic'
 import { RatingControl } from '../Article/RatingControl'
+import { SharePopup } from '../Article/SharePopup'
+import stylesHeader from '../Nav/Header.module.scss'
 
 interface ArticleCardProps {
   settings?: {
@@ -161,37 +163,50 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <section class={styles.shoutCardDetails}>
             <div class={styles.shoutCardDetailsContent}>
               <RatingControl rating={stat?.rating} class={styles.shoutCardDetailsItem} />
-              <div
-                class={clsx(
-                  styles.shoutCardDetailsItem,
-                  styles.shoutCardDetailsViewed,
-                  styles.shoutCardComments
-                )}
-              >
-                <Icon name="eye" class={styles.icon} />
+
+              <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardDetailsViewed)}>
+                <Icon name="eye" class={clsx(styles.icon, styles.feedControlIcon)} />
                 {stat?.viewed}
               </div>
+
               <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardComments)}>
                 <a href={`/${slug + '#comments' || ''}`}>
-                  <Icon name="comment" class={styles.icon} />
-                  {stat?.commented || ''}
+                  <Icon name="comment" class={clsx(styles.icon, styles.feedControlIcon)} />
+                  {stat?.commented || t('Add comment')}
                 </a>
-              </div>
-
-              <div class={styles.shoutCardDetailsItem}>
-                <button>
-                  <Icon name="bookmark" class={styles.icon} />
-                </button>
-              </div>
-
-              <div class={styles.shoutCardDetailsItem}>
-                <button>
-                  <Icon name="ellipsis" class={styles.icon} />
-                </button>
               </div>
             </div>
 
-            <button class={clsx('button--light', styles.shoutCardEditControl)}>{t('Collaborate')}</button>
+            <div class={styles.shoutCardDetailsContent}>
+              <div class={styles.shoutCardDetailsItem}>
+                <button>
+                  <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                </button>
+              </div>
+
+              <div class={styles.shoutCardDetailsItem}>
+                <button>
+                  <Icon name="bookmark" class={clsx(styles.icon, styles.feedControlIcon)} />
+                </button>
+              </div>
+
+              <div class={styles.shoutCardDetailsItem}>
+                <SharePopup
+                  containerCssClass={stylesHeader.control}
+                  trigger={
+                    <button>
+                      <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                    </button>
+                  }
+                />
+              </div>
+
+              <div class={styles.shoutCardDetailsItem}>
+                <button>
+                  <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />
+                </button>
+              </div>
+            </div>
           </section>
         </Show>
       </div>

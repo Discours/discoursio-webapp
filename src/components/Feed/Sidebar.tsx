@@ -7,6 +7,7 @@ import { useTopicsStore } from '../../stores/zine/topics'
 import { useArticlesStore } from '../../stores/zine/articles'
 import { useSeenStore } from '../../stores/zine/seen'
 import { useSession } from '../../context/session'
+import styles from './Sidebar.module.scss'
 
 type FeedSidebarProps = {
   authors: Author[]
@@ -32,30 +33,54 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
       <ul>
         <li>
           <a href="#">
-            <strong>Мои дискуссии</strong>
+            <Icon name="feed-all" class={styles.icon} />
+            <strong>общая лента</strong>
           </a>
         </li>
         <li>
           <a href="#">
-            <strong>Помощь сообществу</strong>
+            <Icon name="feed-my" class={styles.icon} />
+            моя лента
+          </a>
+        </li>
+      </ul>
+
+      <ul>
+        <li>
+          <a href="#">
+            <Icon name="feed-collaborate" class={styles.icon} />
+            соучастие
+          </a>
+          <span class={styles.counter}>7</span>
+        </li>
+        <li>
+          <a href="#">
+            <Icon name="feed-discussion" class={styles.icon} />
+            дискуссии
+          </a>
+          <span class={styles.counter}>18</span>
+        </li>
+        <li>
+          <a href="#">
+            <Icon name="feed-drafts" class={styles.icon} />
+            черновики
+          </a>
+          <span class={styles.counter}>283</span>
+        </li>
+        <li>
+          <a href="#">
+            <Icon name="bookmark" class={styles.icon} />
+            закладки
           </a>
         </li>
         <li>
-          <a href="#">Редактирование</a>
-          <span class="counter">7</span>
-        </li>
-        <li>
-          <a href="#">Поделиться историей</a>
-          <span class="counter">18</span>
-        </li>
-        <li>
-          <a href="#">Проголосовать</a>
-          <span class="counter">283</span>
-        </li>
-        <li>
-          <a href="#">Подписки на форуме</a>
+          <a href="#">
+            <Icon name="feed-notifications" class={styles.icon} />
+            уведомления
+          </a>
         </li>
       </ul>
+
       <ul>
         <li>
           <a href="/feed?by=subscribed">
@@ -66,7 +91,10 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
         <For each={session()?.news?.authors}>
           {(authorSlug: string) => (
             <li>
-              <a href={`/author/${authorSlug}`} classList={{ unread: checkAuthorIsSeen(authorSlug) }}>
+              <a
+                href={`/author/${authorSlug}`}
+                classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
+              >
                 <small>@{authorSlug}</small>
                 {authorEntities()[authorSlug].name}
               </a>
@@ -77,7 +105,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
         <For each={session()?.news?.topics}>
           {(topicSlug: string) => (
             <li>
-              <a href={`/author/${topicSlug}`} classList={{ unread: checkTopicIsSeen(topicSlug) }}>
+              <a href={`/author/${topicSlug}`} classList={{ [styles.unread]: checkTopicIsSeen(topicSlug) }}>
                 {topicEntities()[topicSlug]?.title}
               </a>
             </li>
@@ -85,10 +113,10 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
         </For>
       </ul>
 
-      <div class="settings">
+      <div class={styles.settings}>
         <a href="/feed/settings">
-          <strong>{t('Feed settings')}</strong>
-          <Icon name="settings" />
+          <Icon name="settings" class={styles.icon} />
+          {t('Feed settings')}
         </a>
       </div>
     </>

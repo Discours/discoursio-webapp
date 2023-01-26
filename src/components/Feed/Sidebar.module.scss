@@ -1,0 +1,60 @@
+.counter {
+  align-items: center;
+  align-self: flex-start;
+  background: #f6f6f6;
+  border-radius: 0.8rem;
+  display: flex;
+  @include font-size(1.2rem);
+  font-weight: 500;
+  padding: 0.2em 0.5em;
+}
+
+.unread {
+  position: relative;
+
+  &::after {
+    background: #2638d9;
+    border-radius: 100%;
+    content: '';
+    display: inline-block;
+    height: 0.5em;
+    left: 100%;
+    margin-left: 0.3em;
+    position: absolute;
+    top: 0.5em;
+    width: 0.5em;
+  }
+}
+
+.settings {
+  display: flex;
+  justify-content: space-between;
+}
+
+a {
+  img {
+    transition: filter 0.3s;
+  }
+
+  &:hover {
+    img {
+      filter: invert(1);
+    }
+  }
+}
+
+.icon {
+  display: inline-block;
+  line-height: 1;
+  height: 2rem;
+  margin-right: 0.5em;
+  vertical-align: middle;
+  width: 2.2rem;
+
+  img {
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    width: 100%;
+  }
+}

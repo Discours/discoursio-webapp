@@ -9,7 +9,7 @@ import MessagesFallback from '../Inbox/MessagesFallback'
 import QuotedMessage from '../Inbox/QuotedMessage'
 import { Icon } from '../_shared/Icon'
 import { useSession } from '../../context/session'
-import { loadMessages, loadRecipients } from '../../stores/inbox'
+import { loadRecipients } from '../../stores/inbox'
 import { t } from '../../utils/intl'
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
@@ -155,7 +155,7 @@ export const InboxView = () => {
     return messages().find((message) => message.id === messageId)
   }
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = async (event) => {
     if (event.keyCode === 13 && event.shiftKey) return
     if (event.keyCode === 13 && !event.shiftKey && postMessageText().trim().length > 0) {
       event.preventDefault()
@@ -217,7 +217,6 @@ export const InboxView = () => {
                   <DialogCard
                     onClick={() => handleOpenChat(chat)}
                     isOpened={chat.id === currentDialog()?.id}
-                    title={chat.title || chat.members[0].name}
                     members={chat.members}
                     ownId={currentUserId()}
                     lastUpdate={chat.updatedAt}

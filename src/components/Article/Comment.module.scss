@@ -122,11 +122,30 @@
   @include font-size(1.5rem);
 
   line-height: 1.47;
+
+  blockquote {
+    margin-left: 0;
+    padding-left: 10px;
+    font-style: italic;
+    font-weight: 400;
+    color: #9fa1a7;
+    border-left: 2px solid #696969;
+
+    p,
+    .paragraph {
+      margin-bottom: 0;
+    }
+  }
 }
 .commentAuthor,
 .commentDate,
 .commentRating {
   @include font-size(1.2rem);
+}
+.articleAuthor {
+  color: #2638d9;
+  font-size: 12px;
+  margin-right: 12px;
 }
 .commentDate {
   color: rgb(0 0 0 / 30%);

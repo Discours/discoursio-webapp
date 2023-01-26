@@ -1,4 +1,4 @@
-import type { Reaction, ReactionInput, User } from '../../graphql/types.gen'
+import type { Reaction, ReactionInput } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { createSignal } from 'solid-js'
 // TODO: import { roomConnect } from '../../utils/p2p'

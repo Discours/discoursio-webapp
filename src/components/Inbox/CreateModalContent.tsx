@@ -35,7 +35,7 @@ const CreateModalContent = (props: Props) => {
         })
     })
     if (usersId().length > 1 && theme().length === 1) {
-      setTheme(t('group_chat'))
+      setTheme(t('Group Chat'))
     }
   })
 

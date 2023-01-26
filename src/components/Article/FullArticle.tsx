@@ -224,7 +224,11 @@ export const FullArticle = (props: ArticleProps) => {
             )}
           </For>
         </div>
-        <CommentsTree shoutSlug={props.article?.slug} shoutId={props.article?.id} />
+        <CommentsTree
+          shoutId={props.article?.id}
+          shoutSlug={props.article?.slug}
+          commentAuthors={props.article?.authors}
+        />
       </div>
     </div>
   )

@@ -13,18 +13,20 @@ import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
 import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
-import GrowingTextarea from '../_shared/GrowingTextarea'
+import CommentEditor from '../_shared/CommentEditor'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 type Props = {
   comment: Reaction
   compact?: boolean
   reactions?: Reaction[]
+  isArticleAuthor?: boolean
 }
 
 const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
-  const [loading, setLoading] = createSignal(false)
-  const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
+  const [loading, setLoading] = createSignal<boolean>(false)
+  const [submitted, setSubmitted] = createSignal<boolean>(false)
   const { session } = useSession()
 
   const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
@@ -58,12 +60,13 @@ const Comment = (props: Props) => {
         }
       )
       setIsReplyVisible(false)
+      setSubmitted(true)
       setLoading(false)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
-      setErrorMessage(t('Something went wrong, please try again'))
     }
   }
+
   const formattedDate = createMemo(() =>
     formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
   )
@@ -93,6 +96,10 @@ const Comment = (props: Props) => {
                   hasLink={true}
                 />
               </div>
+
+              <Show when={props.isArticleAuthor}>
+                <div class={styles.articleAuthor}>{t('Author')}</div>
+              </Show>
 
               <div class={styles.commentDate}>{formattedDate()}</div>
               <div
@@ -164,14 +171,13 @@ const Comment = (props: Props) => {
             </div>
 
             <Show when={isReplyVisible()}>
-              <GrowingTextarea
-                placeholder={t('Write comment')}
-                submitButtonText={t('Send')}
-                cancelButtonText={t('cancel')}
-                submit={(value) => handleCreate(value)}
-                loading={loading()}
-                errorMessage={errorMessage()}
-              />
+              <ShowOnlyOnClient>
+                <CommentEditor
+                  initialValue={''}
+                  clear={submitted()}
+                  onSubmit={(value) => handleCreate(value)}
+                />
+              </ShowOnlyOnClient>
             </Show>
           </Show>
         </div>
@@ -179,7 +185,13 @@ const Comment = (props: Props) => {
       <Show when={props.reactions}>
         <ul>
           <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
-            {(reaction) => <Comment reactions={props.reactions} comment={reaction} />}
+            {(reaction) => (
+              <Comment
+                isArticleAuthor={props.isArticleAuthor}
+                reactions={props.reactions}
+                comment={reaction}
+              />
+            )}
           </For>
         </ul>
       </Show>

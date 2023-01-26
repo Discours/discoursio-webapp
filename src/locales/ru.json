@@ -166,6 +166,7 @@
   "actions": "действия",
   "all topics": "все темы",
   "author": "автор",
+  "Author": "Автор",
   "authors": "авторы",
   "collections": "коллекции",
   "community": "сообщество",
@@ -192,7 +193,7 @@
   "discourse_theme": "Тема дискурса",
   "cancel": "Отмена",
   "Send": "Отправить",
-  "group_chat": "Общий чат",
+  "Group Chat": "Общий чат",
   "Choose who you want to write to": "Выберите кому хотите написать",
   "Start conversation": "Начать беседу",
   "Profile settings": "Настройки профиля",
@@ -218,6 +219,7 @@
   "It does not look like url": "Это не похоже на ссылку",
   "Something went wrong, please try again": "Что-то пошло не так, попробуйте еще раз",
   "To write a comment, you must": "Чтобы написать комментарий, необходимо",
+  "Write a comment...": "Написать комментарий..."
   "Add comment": "Комментировать",
   "My subscriptions": "Подписки"
 }

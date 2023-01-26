@@ -9,6 +9,7 @@ export default gql`
         id
         slug
         userpic
+        online
       }
       error
     }

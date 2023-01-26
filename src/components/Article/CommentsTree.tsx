@@ -7,14 +7,21 @@ import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
 import { byCreated, byStat } from '../../utils/sortby'
 import { Loading } from '../Loading'
-import GrowingTextarea from '../_shared/GrowingTextarea'
-import { ReactionKind } from '../../graphql/types.gen'
+import { Author, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
+import CommentEditor from '../_shared/CommentEditor'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
 
-export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
+type Props = {
+  commentAuthors: Author[]
+  shoutSlug: string
+  shoutId: number
+}
+
+export const CommentsTree = (props: Props) => {
   const [getCommentsPage, setCommentsPage] = createSignal(0)
   const [commentsOrder, setCommentsOrder] = createSignal<'rating' | 'createdAt'>('createdAt')
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
@@ -47,11 +54,9 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
   }
   onMount(async () => await loadMore())
 
-  const [loading, setLoading] = createSignal<boolean>(false)
-  const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
+  const [submitted, setSubmitted] = createSignal<boolean>(false)
   const handleSubmitComment = async (value) => {
     try {
-      setLoading(true)
       await createReaction(
         {
           kind: ReactionKind.Comment,
@@ -64,12 +69,12 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
           slug: session().user.slug
         }
       )
-      setLoading(false)
+      setSubmitted(true)
     } catch (error) {
-      setErrorMessage(t('Something went wrong, please try again'))
       console.error('[handleCreate reaction]:', error)
     }
   }
+
   return (
     <div>
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
@@ -109,20 +114,25 @@ export const CommentsTree = (props: { shoutSlug: string; shoutId: number }) => {
               .reverse()
               .filter((r) => !r.replyTo)}
           >
-            {(reaction) => <Comment reactions={reactions()} comment={reaction} />}
+            {(reaction) => (
+              <Comment
+                isArticleAuthor={Boolean(props.commentAuthors.some((a) => a.slug === session()?.user.slug))}
+                reactions={reactions()}
+                comment={reaction}
+              />
+            )}
           </For>
         </ul>
         <Show when={isLoadMoreButtonVisible()}>
           <button onClick={loadMore}>{t('Load more')}</button>
         </Show>
-        <GrowingTextarea
-          placeholder={t('Write comment')}
-          submitButtonText={t('Send')}
-          cancelButtonText={t('cancel')}
-          submit={(value) => handleSubmitComment(value)}
-          loading={loading()}
-          errorMessage={errorMessage()}
-        />
+        <ShowOnlyOnClient>
+          <CommentEditor
+            initialValue={t('Write a comment...')}
+            clear={submitted()}
+            onSubmit={(value) => handleSubmitComment(value)}
+          />
+        </ShowOnlyOnClient>
       </Show>
     </div>
   )

@@ -170,7 +170,7 @@ export const AuthorView = (props: AuthorProps) => {
         <Switch
           fallback={
             <div class="wide-container">
-              <p>дефолтное состояние</p>
+              <p>{t('Nothing here yet')}</p>
             </div>
           }
         >

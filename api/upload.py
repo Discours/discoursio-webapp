@@ -62,7 +62,7 @@ def upload():
     print(request.path)
     print(request.form)
     print(request.files)
-    img = request.files['file']
+    img = request.files['userpic']
     if img:
         # Perform the file upload
         filename = secure_filename(img.filename)

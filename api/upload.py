@@ -58,19 +58,22 @@ def upload_storj(filecontent, filename, bucket_name):
 
 @app.route('/api/upload', methods=['post'])
 def upload():
-    print('upload serverless route is fine')
-    print(request.path)
-    print(request.form)
-    print(request.files)
-    img = request.files['userpic']
-    if img:
-        # Perform the file upload
-        filename = secure_filename(img.filename)
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        return json({'error': 'No file part'}, status=400)
+    file = request.files.get('file')
+    # if user does not select file, browser also
+    # submit a empty part without filename
+    if file.name == '':
+        return json({'error': 'No selected file'}, status=400)
+    if file:
+        # save the file
+        filename = secure_filename(file.name)
         # Save the file to a temporary location
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = os.path.join(temp_dir, filename)
-            img.save(temp_path)
+            file.save(temp_path)
             # Open the file in binary mode
             with open(temp_path, 'rb') as filecontent:
-                return jsonify(upload_storj(filecontent, filename, 'discoursio'))
-    return
+                result = upload_storj(filecontent, filename, 'discoursio')
+    return json({'message': 'File uploaded'}, status=200)

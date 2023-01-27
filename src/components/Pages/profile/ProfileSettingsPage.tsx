@@ -36,13 +36,13 @@ export const ProfileSettingsPage = (props: PageProps) => {
         const reader = new FileReader()
         reader.onloadend = () => {
           f.fileData = reader.result
-          const data = new FormData()
-          data.append('file', f)
+          const body = new FormData()
+          body.append('file', f)
           fetch('/api/upload', {
             method: 'POST',
-            body: data
+            body
           }).then((resp) => {
-            resp.json().then((url) => updateFormField('userpic', url))
+            resp.json().then((url) => updateFormField('file', url))
           })
         }
         reader.readAsDataURL(f)
@@ -81,8 +81,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                       <input
                         ref={userpicFile}
                         type="file"
-                        name="userpic"
-                        value="userpic"
+                        name="file"
                         hidden
                         onChange={handleUserpicUpload}
                       />

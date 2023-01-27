@@ -19,6 +19,7 @@ import stylesTopic from '../Feed/CardTopic.module.scss'
 import styles from './Feed.module.scss'
 import { clsx } from 'clsx'
 import Userpic from '../Author/Userpic'
+import type { Author } from '../../graphql/types.gen'
 
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,
@@ -139,7 +140,7 @@ export const FeedView = () => {
                       <li class={styles.comment}>
                         <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
                         <AuthorCard
-                          author={comment.createdBy}
+                          author={comment.createdBy as Author}
                           isFeedMode={true}
                           compact={true}
                           hideFollow={true}

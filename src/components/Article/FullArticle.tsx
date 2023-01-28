@@ -170,6 +170,9 @@ export const FullArticle = (props: ArticleProps) => {
 
           <div class={styles.shoutStatsItem}>
             <SharePopup
+              title={props.article.title}
+              description={props.article.body}
+              imageUrl={props.article.cover}
               containerCssClass={stylesHeader.control}
               trigger={<Icon name="share-outline" class={styles.icon} />}
             />

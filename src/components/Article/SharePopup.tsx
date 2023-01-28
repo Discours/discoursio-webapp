@@ -6,13 +6,17 @@ import styles from '../_shared/Popup/Popup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 
-type SharePopupProps = Omit<PopupProps, 'children'>
+type SharePopupProps = {
+  title: string
+  imageUrl: string
+  description: string
+} & Omit<PopupProps, 'children'>
 
 export const SharePopup = (props: SharePopupProps) => {
   const [share] = createSocialShare(() => ({
-    title: 'SolidJS.com',
-    url: 'https://www.solidjs.com',
-    description: 'Simple and performant reactivity!'
+    title: props.title,
+    url: props.imageUrl,
+    description: props.description
   }))
 
   return (

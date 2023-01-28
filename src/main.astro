@@ -2,20 +2,31 @@
 import { setLocale } from './stores/ui'
 import './styles/app.scss'
 import { t } from './utils/intl'
+import { Seo } from "astro-seo-meta"
 
 // Setting locale for prerendered content here
 
 const lang = Astro.url.searchParams.get('lang') || 'ru'
 console.log('[main.astro] astro runtime locale is', lang)
 setLocale(lang)
-
+const title = Astro.props.title ?? t('Discours');
+const imageUrl = Astro.props.imageUrl
+const description = Astro.props.description
+console.log(Astro.props)
 ---
 <html lang={lang || 'ru'}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <title>{t('Discours')}</title>
+    <Seo
+      title={title}
+      icon="favicon.png"
+      facebook={{
+            image: "/facebook.png",
+            url: "https://astro.build",
+            type: "website",
+          }}
+    />
   </head>
   <body>
     <slot />

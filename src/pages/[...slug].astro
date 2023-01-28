@@ -5,7 +5,11 @@ import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
 import {getDescription} from '../utils/meta.ts'
 
+
 const slug = Astro.params.slug?.toString()
+if (slug.includes('.')) {
+  return Astro.redirect('/404')
+}
 
 const article = await apiClient.getShout(slug)
 if (!article) {
@@ -25,7 +29,6 @@ const description = getDescription(article.body)
 <Prerendered
   title={title}
   imageUrl={imageUrl}
-
   description={description}
 >
   <Root article={article} client:load />

@@ -60,20 +60,23 @@ def upload_storj(filecontent, filename, bucket_name):
 def upload():
     # check if the post request has the file part
     if 'file' not in request.files:
-        return json({'error': 'No file part'}, status=400)
+        return {'error': 'No file part'}, 400
     file = request.files.get('file')
-    # if user does not select file, browser also
-    # submit a empty part without filename
-    if file.name == '':
-        return json({'error': 'No selected file'}, status=400)
     if file:
         # save the file
         filename = secure_filename(file.name)
-        # Save the file to a temporary location
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = os.path.join(temp_dir, filename)
-            file.save(temp_path)
-            # Open the file in binary mode
-            with open(temp_path, 'rb') as filecontent:
-                result = upload_storj(filecontent, filename, 'discoursio')
-    return json({'message': 'File uploaded'}, status=200)
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.name == '':
+            return {'error': 'No selected file'}, 400
+        else:
+          # Save the file to a temporary location
+          with tempfile.TemporaryDirectory() as temp_dir:
+              temp_path = os.path.join(temp_dir, filename)
+              file.save(temp_path)
+              # Open the file in binary mode
+              with open(temp_path, 'rb') as filecontent:
+                  result = upload_storj(filecontent, filename, 'discoursio')
+    else:
+        return {'error': 'No selected file'}, 400
+    return {'message': 'File uploaded', 'result': jsonify(result)}, 200

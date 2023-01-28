@@ -27,30 +27,32 @@ export const ProfileSettingsPage = (props: PageProps) => {
     submit(form)
   }
   let userpicFile: HTMLInputElement
-  const handleUserpicUpload = async (ev) => {
-    // TODO: show progress
+  const handleFileUpload = async (file: File) => {
     try {
-      console.debug('handleUserpicUpload trigger')
-      const f = ev.target.files[0]
-      if (f) {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          f.fileData = reader.result
-          const body = new FormData()
-          body.append('file', f)
-          fetch('/api/upload', {
-            method: 'POST',
-            body
-          }).then((resp) => {
-            resp.json().then((url) => updateFormField('file', url))
-          })
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data; boundary=discoursiofile'
         }
-        reader.readAsDataURL(f)
-      }
+      })
+      console.debug(response)
     } catch (error) {
       console.error('[upload] error', error)
     }
   }
+  const handleUserpicUpload = async (ev) => {
+    // TODO: show progress
+    try {
+      const f = ev.target.files[0]
+      if (f) handleFileUpload(f)
+    } catch (error) {
+      console.error('[upload] error', error)
+    }
+  }
+
   const [hostname, setHostname] = createSignal('new.discours.io')
   onMount(() => setHostname(window?.location.host))
 

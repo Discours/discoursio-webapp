@@ -28,26 +28,25 @@ export const ProfileSettingsPage = (props: PageProps) => {
   }
   let userpicFile: HTMLInputElement
   const handleFileUpload = async (file: File) => {
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data; boundary=discoursiofile'
-        }
-      })
-      console.debug(response)
-    } catch (error) {
-      console.error('[upload] error', error)
-    }
+    const formData = new FormData()
+    formData.append('file', file)
+    console.log(formData)
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    const json = await response.json()
+    console.debug(json)
   }
   const handleUserpicUpload = async (ev) => {
     // TODO: show progress
+    console.debug('handleUserpicUpload')
     try {
       const f = ev.target.files[0]
-      if (f) handleFileUpload(f)
+      if (f) await handleFileUpload(f)
     } catch (error) {
       console.error('[upload] error', error)
     }
@@ -84,6 +83,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
                         ref={userpicFile}
                         type="file"
                         name="file"
+                        value="file"
                         hidden
                         onChange={handleUserpicUpload}
                       />

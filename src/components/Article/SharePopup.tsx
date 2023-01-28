@@ -15,7 +15,7 @@ type SharePopupProps = {
 export const SharePopup = (props: SharePopupProps) => {
   const [share] = createSocialShare(() => ({
     title: props.title,
-    url: props.imageUrl,
+    url: location.href,
     description: props.description
   }))
 

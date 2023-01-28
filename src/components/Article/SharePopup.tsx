@@ -18,7 +18,10 @@ export const SharePopup = (props: SharePopupProps) => {
     url: location.href,
     description: props.description
   }))
-
+  const copyLink = async () => {
+    await navigator.clipboard.writeText(window.location.href)
+    console.log('!!! :', window.location.href)
+  }
   return (
     <Popup {...props} variant="bordered">
       <ul class="nodash">
@@ -47,10 +50,10 @@ export const SharePopup = (props: SharePopupProps) => {
           </button>
         </li>
         <li>
-          <a href="#">
+          <button role="button" onClick={copyLink}>
             <Icon name="link-white" class={styles.icon} />
             {t('Copy link')}
-          </a>
+          </button>
         </li>
       </ul>
     </Popup>

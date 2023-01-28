@@ -22,8 +22,8 @@ initRouter(pathname, search)
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
 
 const title = article.title
-const imageUrl = article.cover
-const description = getDescription(article.body)
+const imageUrl = article.cover ?? ''
+const description = article.body ? getDescription(article.body) : ''
 ---
 
 <Prerendered

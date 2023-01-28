@@ -22,9 +22,13 @@ const description = Astro.props.description ?? t('Horizontal collaborative journ
       title={title}
       icon="favicon.png"
       facebook={{
-            image: imageUrl,
-            type: "website",
-          }}
+        image: imageUrl,
+        type: "website",
+      }}
+      twitter={{
+        image: imageUrl,
+        card: description,
+      }}
     />
   </head>
   <body>

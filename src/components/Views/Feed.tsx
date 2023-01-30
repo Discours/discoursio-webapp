@@ -7,7 +7,7 @@ import { ArticleCard } from '../Feed/Card'
 import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
 import { FeedSidebar } from '../Feed/Sidebar'
-import Comment from '../Article/Comment'
+import { Comment as CommentCard } from '../Article/Comment'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
@@ -133,26 +133,10 @@ export const FeedView = () => {
           <aside class={clsx('col-md-3', styles.feedAside)}>
             <section class={styles.asideSection}>
               <h4>{t('Comments')}</h4>
-              <ul class={stylesArticle.comments}>
-                <For each={topComments().filter((item) => item.body)}>
-                  {(comment) => {
-                    return (
-                      <li class={styles.comment}>
-                        <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
-                        <AuthorCard
-                          author={comment.createdBy as Author}
-                          isFeedMode={true}
-                          compact={true}
-                          hideFollow={true}
-                        />
-                        <div class={clsx('text-truncate', styles.commentArticleTitle)}>
-                          <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
-                        </div>
-                      </li>
-                    )
-                  }}
-                </For>
-              </ul>
+              <For each={topComments()}>
+                {/*FIXME: different components/better comment props*/}
+                {(comment) => <CommentCard comment={comment} reactions={[]} compact={true} />}
+              </For>
             </section>
 
             <Show when={topTopics().length > 0}>

@@ -7,14 +7,14 @@ import { For, createSignal, Show, onMount } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
-import { createFileUploader } from '@solid-primitives/upload'
 import validateUrl from '../../../utils/validateUrl'
 
 export const ProfileSettingsPage = (props: PageProps) => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const { form, updateFormField, submit, slugError } = useProfileForm()
-  const handleChangeSocial = (value) => {
+  let updateForm: HTMLFormElement
+  const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
       updateFormField('links', value)
       setAddLinkForm(false)
@@ -26,28 +26,32 @@ export const ProfileSettingsPage = (props: PageProps) => {
     event.preventDefault()
     submit(form)
   }
-
-  const { files, selectFiles: selectFilesAsync } = createFileUploader({ accept: 'image/*' })
-
-  const handleUpload = () => {
-    selectFilesAsync(async ([{ source, name, size, file }]) => {
-      const image = { source, name, size, file }
-      try {
-        const formData = new FormData()
-        formData.append('type', file.type)
-        formData.append('name', image.source.split('/').pop())
-        formData.append('ext', image.name.split('.').pop())
-        const resp = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData
-        })
-        const url = await resp.json()
-        updateFormField('userpic', url)
-      } catch (error) {
-        console.error('[upload] error', error)
+  let userpicFile: HTMLInputElement
+  const handleFileUpload = async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    console.log(formData)
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
     })
+    const json = await response.json()
+    console.debug(json)
   }
+  const handleUserpicUpload = async (ev) => {
+    // TODO: show progress
+    console.debug('handleUserpicUpload')
+    try {
+      const f = ev.target.files[0]
+      if (f) await handleFileUpload(f)
+    } catch (error) {
+      console.error('[upload] error', error)
+    }
+  }
+
   const [hostname, setHostname] = createSignal('new.discours.io')
   onMount(() => setHostname(window?.location.host))
 
@@ -65,12 +69,24 @@ export const ProfileSettingsPage = (props: PageProps) => {
               <div class="col-md-10 col-lg-9 col-xl-8">
                 <h1>{t('Profile settings')}</h1>
                 <p class="description">{t('Here you can customize your profile the way you want.')}</p>
-                <form onSubmit={handleSubmit}>
+                <form ref={updateForm} onSubmit={handleSubmit} enctype="multipart/form-data">
                   <h4>{t('Userpic')}</h4>
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
-                      <img class={styles.avatar} src={form.userpic} alt={form.name} />
-                      <input type="button" class={styles.avatarInput} onClick={handleUpload} />
+                      <img
+                        class={styles.avatar}
+                        src={form.userpic}
+                        alt={form.name}
+                        onClick={() => userpicFile.click()}
+                      />
+                      <input
+                        ref={userpicFile}
+                        type="file"
+                        name="file"
+                        value="file"
+                        hidden
+                        onChange={handleUserpicUpload}
+                      />
                     </div>
                   </div>
                   <h4>{t('Name')}</h4>

@@ -174,6 +174,7 @@ export const FullArticle = (props: ArticleProps) => {
               title={props.article.title}
               description={getDescription(props.article.body)}
               imageUrl={props.article.cover}
+              shareUrl={location.href}
               containerCssClass={stylesHeader.control}
               trigger={<Icon name="share-outline" class={styles.icon} />}
             />

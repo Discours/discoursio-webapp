@@ -1,4 +1,5 @@
 export const getDescription = (body: string) => {
+  if (!body) return null
   const descriptionWordsArray = body
     .slice(0, 150)
     .replaceAll(/<[^>]*>/g, '')

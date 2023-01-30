@@ -37,7 +37,7 @@ export const ArticlePage = (props: PageProps) => {
   })
 
   return (
-    <PageWrap headerTitle={article()?.title || ''}>
+    <PageWrap headerTitle={article()?.title || ''} articleBody={article()?.body} cover={article()?.cover}>
       <Show when={Boolean(article())} fallback={<Loading />}>
         <ArticleView article={article()} />
       </Show>

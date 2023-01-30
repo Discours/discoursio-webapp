@@ -8,6 +8,7 @@ import { Popup } from '../_shared/Popup'
 
 type SharePopupProps = {
   title: string
+  shareUrl?: string
   imageUrl: string
   description: string
 } & Omit<PopupProps, 'children'>
@@ -15,12 +16,11 @@ type SharePopupProps = {
 export const SharePopup = (props: SharePopupProps) => {
   const [share] = createSocialShare(() => ({
     title: props.title,
-    url: location.href,
+    url: props.shareUrl,
     description: props.description
   }))
   const copyLink = async () => {
     await navigator.clipboard.writeText(window.location.href)
-    console.log('!!! :', window.location.href)
   }
   return (
     <Popup {...props} variant="bordered">

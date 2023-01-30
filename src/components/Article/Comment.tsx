@@ -15,6 +15,7 @@ import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
 import CommentEditor from '../_shared/CommentEditor'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import { getDescription } from '../../utils/meta'
 
 type Props = {
   comment: Reaction
@@ -152,15 +153,17 @@ const Comment = (props: Props) => {
                 </button>
               </Show>
 
-              <SharePopup
-                containerCssClass={stylesHeader.control}
-                trigger={
-                  <button class={clsx(styles.commentControl, styles.commentControlShare)}>
-                    <Icon name="share" class={styles.icon} />
-                    {t('Share')}
-                  </button>
-                }
-              />
+              {/*<SharePopup*/}
+              {/*  title={'artile.title'}*/}
+              {/*  description={getDescription(body())}*/}
+              {/*  containerCssClass={stylesHeader.control}*/}
+              {/*  trigger={*/}
+              {/*    <button class={clsx(styles.commentControl, styles.commentControlShare)}>*/}
+              {/*      <Icon name="share" class={styles.icon} />*/}
+              {/*      {t('Share')}*/}
+              {/*    </button>*/}
+              {/*  }*/}
+              {/*/>*/}
 
               {/*<button*/}
               {/*  class={clsx(styles.commentControl, styles.commentControlComplain)}*/}

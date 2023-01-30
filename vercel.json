@@ -4,6 +4,14 @@
       "src": "/api/upload",
       "headers": { "Content-Type": "application/json" },
       "dest": "api/upload.py"
+    },
+    {
+      "src": "/api/newsletter",
+      "dest": "api/newsletter.ts"
+    },
+    {
+      "src": "/api/feedback",
+      "dest": "api/feedback.ts"
     }
   ]
 }

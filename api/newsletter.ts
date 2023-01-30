@@ -1,27 +1,32 @@
-/* eslint-disable unicorn/no-empty-file */
-/*
 import MG from 'mailgun.js'
+import fd from 'form-data'
 
-const mailgun = new MG({})
-const options = {
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN
+const mgOptions = {
+  key: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN,
+  username: 'discoursio' // FIXME
 }
-const list = mailgun.lists(process.env.MAILGUN_LIST_ID) // 'services@discours.io'
 
-export default async function handler(req, res) {
-  const { email } = req.body.data
-  list.members().create({ subscribed: true, address: email }, (err, data) => {
-    if (err) {
-      console.error('[newsletter ] error', err)
-      res.status(500)
-    } else {
-      res.status(200).json(data)
-    }
-  })
-}
-*/
+export default async (req, res) => {
+  const { email } = req.query
+  const mailgun = new MG(fd)
+  const client = mailgun.client(mgOptions)
 
-export const handler = (req, res) => {
-  return 'WIP'
+  try {
+    const response = await client.lists.members.createMember(mgOptions.domain, {
+      address: email,
+      subscribed: true,
+      upsert: 'yes'
+    })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Email added to newsletter list'
+    })
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    })
+  }
 }

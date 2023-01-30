@@ -9,7 +9,7 @@ const mgOptions = {
 
 const messageData = (subject, text) => {
   return {
-    from: 'Feedback Robot <robot@discours.io>',
+    from: 'Discours Feedback Robot <robot@discours.io>',
     to: 'welcome@discours.io',
     subject,
     text
@@ -19,12 +19,7 @@ export default async function handler(req, res) {
   const { contact, subject, message } = req.query
   try {
     const mailgun = new MG(fd)
-    const client = mailgun.client({
-      username: mgOptions.username,
-      key: mgOptions.key
-      //url?: string;
-      //public_key?: string;
-    })
+    const client = mailgun.client(mgOptions)
     const data = messageData(`${contact}: ${subject}`, message)
     client.messages.create(mgOptions.domain, data).then(console.log).catch(console.error)
   } catch (error) {

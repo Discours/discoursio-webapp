@@ -691,11 +691,11 @@ astro-island {
   .left-col {
     height: 100%;
     padding-right: 2rem;
-    position: absolute;
     right: 100%;
     top: 0;
 
     @include media-breakpoint-up(md) {
+      position: absolute;
       width: 161px;
     }
 

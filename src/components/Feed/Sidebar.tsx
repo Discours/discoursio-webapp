@@ -29,7 +29,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
   }
 
   return (
-    <>
+    <div class={styles.sidebar}>
       <ul>
         <li>
           <a href="#">
@@ -78,6 +78,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
             <Icon name="feed-notifications" class={styles.icon} />
             уведомления
           </a>
+          <span class={styles.counter}>283</span>
         </li>
       </ul>
 
@@ -119,6 +120,6 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
           {t('Feed settings')}
         </a>
       </div>
-    </>
+    </div>
   )
 }

@@ -1,16 +1,16 @@
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 import MarkdownIt from 'markdown-it'
 import { clsx } from 'clsx'
 import styles from './Message.module.scss'
 import DialogAvatar from './DialogAvatar'
-import type { Message, ChatMember } from '../../graphql/types.gen'
+import type { Message as MessageType, ChatMember } from '../../graphql/types.gen'
 import formattedTime from '../../utils/formatDateTime'
 import { Icon } from '../_shared/Icon'
 import { MessageActionsPopup } from './MessageActionsPopup'
 import QuotedMessage from './QuotedMessage'
 
 type Props = {
-  content: Message
+  content: MessageType
   ownId: number
   members: ChatMember[]
   replyClick?: () => void

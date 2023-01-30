@@ -1,5 +1,5 @@
 import { t } from '../../utils/intl'
-import { createMemo, For, Show } from 'solid-js'
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
@@ -11,6 +11,7 @@ import { CardTopic } from './CardTopic'
 import { RatingControl } from '../Article/RatingControl'
 import { SharePopup } from '../Article/SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
+import { getDescription } from '../../utils/meta'
 
 interface ArticleCardProps {
   settings?: {
@@ -71,6 +72,12 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const { cover, layout, slug, authors, stat } = props.article
+
+  const [url, setUrl] = createSignal<string>(null)
+  onMount(() => {
+    const composeUrl = new URL(location.href)
+    setUrl(composeUrl.origin)
+  })
 
   return (
     <section
@@ -193,6 +200,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutCardDetailsItem}>
                 <SharePopup
                   containerCssClass={stylesHeader.control}
+                  title={props.article['title']}
+                  description={getDescription(props.article['body'])}
+                  imageUrl={props.article['cover']}
+                  shareUrl={`${url()}/${slug}`}
                   trigger={
                     <button>
                       <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />

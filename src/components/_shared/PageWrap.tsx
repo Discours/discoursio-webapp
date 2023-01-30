@@ -8,6 +8,8 @@ import { clsx } from 'clsx'
 
 type PageWrapProps = {
   headerTitle?: string
+  articleBody?: string
+  cover?: string
   children: JSX.Element
   isHeaderFixed?: boolean
   hideFooter?: boolean
@@ -19,7 +21,12 @@ export const PageWrap = (props: PageWrapProps) => {
 
   return (
     <>
-      <Header title={props.headerTitle} isHeaderFixed={isHeaderFixed} />
+      <Header
+        title={props.headerTitle}
+        articleBody={props.articleBody}
+        cover={props.articleBody}
+        isHeaderFixed={isHeaderFixed}
+      />
       <main
         class={clsx('main-content', props.class)}
         classList={{ 'main-content--no-padding': !isHeaderFixed }}

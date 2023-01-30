@@ -21,7 +21,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
   const { topicEntities } = useTopicsStore()
 
   const checkTopicIsSeen = (topicSlug: string) => {
-    return articlesByTopic()[topicSlug].every((article) => Boolean(seen()[article.slug]))
+    return articlesByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
 
   const checkAuthorIsSeen = (authorSlug: string) => {
@@ -97,7 +97,7 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
                 classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
               >
                 <small>@{authorSlug}</small>
-                {authorEntities()[authorSlug].name}
+                {authorEntities()[authorSlug]?.name}
               </a>
             </li>
           )}

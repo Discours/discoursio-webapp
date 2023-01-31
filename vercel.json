@@ -7,11 +7,11 @@
     },
     {
       "src": "/api/newsletter",
-      "dest": "api/newsletter.ts"
+      "dest": "api/newsletter.js"
     },
     {
       "src": "/api/feedback",
-      "dest": "api/feedback.ts"
+      "dest": "api/feedback.js"
     }
   ]
 }

@@ -1,5 +1,5 @@
-import MG from 'mailgun.js'
-import fd from 'form-data'
+const MG = require('mailgun.js')
+const fd = require('form-data')
 
 const mgOptions = {
   key: process.env.MAILGUN_API_KEY,

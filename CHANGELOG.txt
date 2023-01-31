@@ -1,8 +1,9 @@
 [0.7.1]
 [+] reactions CRUL
-[+] use api/upload with storj
-[+] use api/feedback
+[+] api/upload with storj
+[+] api/feedback
 [+] bumped astro pkgs versions
+[+] graphql ws subs
 
 [0.7.0]
 [+] inbox: context provider, chats

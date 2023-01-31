@@ -8,6 +8,7 @@ import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
 import validateUrl from '../../../utils/validateUrl'
+import { createFileUploader } from '@solid-primitives/upload'
 
 export const ProfileSettingsPage = (props: PageProps) => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
@@ -26,11 +27,16 @@ export const ProfileSettingsPage = (props: PageProps) => {
     event.preventDefault()
     submit(form)
   }
-  let userpicFile: HTMLInputElement
-  const handleFileUpload = async (file: File) => {
+
+  const { files, selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
+
+  //TODO: add file type
+  const handleFileUpload = async (file) => {
     const formData = new FormData()
     formData.append('file', file)
-    console.log(formData)
+    for (let key of formData.entries()) {
+      console.log(key[0] + ', ' + key[1])
+    }
     const response = await fetch('/api/upload', {
       method: 'POST',
       body: formData,
@@ -41,15 +47,17 @@ export const ProfileSettingsPage = (props: PageProps) => {
     const json = await response.json()
     console.debug(json)
   }
-  const handleUserpicUpload = async (ev) => {
+
+  const handleUserpicUpload = async () => {
     // TODO: show progress
-    console.debug('handleUserpicUpload')
-    try {
-      const f = ev.target.files[0]
-      if (f) await handleFileUpload(f)
-    } catch (error) {
-      console.error('[upload] error', error)
-    }
+    await selectFiles(([{ file }]) => {
+      const avatar = { file }
+      try {
+        handleFileUpload(avatar.file)
+      } catch (error) {
+        console.error('[upload avatar] error', error)
+      }
+    })
   }
 
   const [hostname, setHostname] = createSignal('new.discours.io')
@@ -73,20 +81,9 @@ export const ProfileSettingsPage = (props: PageProps) => {
                   <h4>{t('Userpic')}</h4>
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
-                      <img
-                        class={styles.avatar}
-                        src={form.userpic}
-                        alt={form.name}
-                        onClick={() => userpicFile.click()}
-                      />
-                      <input
-                        ref={userpicFile}
-                        type="file"
-                        name="file"
-                        value="file"
-                        hidden
-                        onChange={handleUserpicUpload}
-                      />
+                      <button role="button" onClick={() => handleUserpicUpload()}>
+                        <img class={styles.avatar} src={form.userpic} alt={form.name} />
+                      </button>
                     </div>
                   </div>
                   <h4>{t('Name')}</h4>

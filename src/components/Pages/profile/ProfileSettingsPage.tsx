@@ -50,10 +50,10 @@ export const ProfileSettingsPage = (props: PageProps) => {
 
   const handleUserpicUpload = async () => {
     // TODO: show progress
-    await selectFiles(([{ file }]) => {
-      const avatar = { file }
+    await selectFiles(([file]) => {
+      console.log('!!! file:', file)
       try {
-        handleFileUpload(avatar)
+        handleFileUpload(file)
       } catch (error) {
         console.error('[upload avatar] error', error)
       }

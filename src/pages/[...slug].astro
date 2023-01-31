@@ -3,21 +3,11 @@ import { Root } from '../components/Root'
 import Prerendered from '../main.astro'
 import { apiClient } from '../utils/apiClient'
 import { initRouter } from '../stores/router'
+import {getDescription} from '../utils/meta'
 
-const excludes = [
-  'authors',
-  'connect',
-  'create',
-  'inbox',
-  'search',
-  'topics',
-  'welcome',
-  'confirm',
-  'feed'
-]
 
 const slug = Astro.params.slug?.toString()
-if (slug.endsWith('.map') || slug in excludes) {
+if (slug.includes('.')) {
   return Astro.redirect('/404')
 }
 
@@ -30,8 +20,16 @@ const { pathname, search } = Astro.url
 initRouter(pathname, search)
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+
+const title = article.title
+const imageUrl = article.cover ?? ''
+const description = article.body ? getDescription(article.body) : ''
 ---
 
-<Prerendered>
+<Prerendered
+  title={title}
+  imageUrl={imageUrl}
+  description={description}
+>
   <Root article={article} client:load />
 </Prerendered>

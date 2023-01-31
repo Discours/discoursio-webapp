@@ -6,7 +6,8 @@ import { createMemo, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
 import MD from './MD'
-import { SharePopup } from './SharePopup'
+import { getShareUrl, SharePopup } from './SharePopup'
+import { getDescription } from '../../utils/meta'
 import stylesHeader from '../Nav/Header.module.scss'
 import styles from '../../styles/Article.module.scss'
 import { RatingControl } from './RatingControl'
@@ -170,6 +171,10 @@ export const FullArticle = (props: ArticleProps) => {
 
           <div class={styles.shoutStatsItem}>
             <SharePopup
+              title={props.article.title}
+              description={getDescription(props.article.body)}
+              imageUrl={props.article.cover}
+              shareUrl={getShareUrl()}
               containerCssClass={stylesHeader.control}
               trigger={<Icon name="share-outline" class={styles.icon} />}
             />

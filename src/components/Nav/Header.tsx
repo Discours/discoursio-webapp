@@ -9,7 +9,8 @@ import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { HeaderAuth } from './HeaderAuth'
-import { SharePopup } from '../Article/SharePopup'
+import { getShareUrl, SharePopup } from '../Article/SharePopup'
+import { getDescription } from '../../utils/meta'
 
 const resources: { name: string; route: keyof Routes }[] = [
   { name: t('zine'), route: 'home' },
@@ -20,6 +21,8 @@ const resources: { name: string; route: keyof Routes }[] = [
 type Props = {
   title?: string
   isHeaderFixed?: boolean
+  articleBody?: string
+  cover?: string
 }
 
 export const Header = (props: Props) => {
@@ -123,6 +126,10 @@ export const Header = (props: Props) => {
           <Show when={props.title}>
             <div class={styles.articleControls}>
               <SharePopup
+                title={props.title}
+                imageUrl={props.cover}
+                shareUrl={getShareUrl()}
+                description={getDescription(props.articleBody)}
                 onVisibilityChange={(isVisible) => {
                   setIsSharePopupVisible(isVisible)
                 }}

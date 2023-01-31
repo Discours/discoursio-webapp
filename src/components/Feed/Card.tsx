@@ -1,5 +1,5 @@
 import { t } from '../../utils/intl'
-import { createMemo, For, Show } from 'solid-js'
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
@@ -9,8 +9,9 @@ import { locale } from '../../stores/ui'
 import { clsx } from 'clsx'
 import { CardTopic } from './CardTopic'
 import { RatingControl } from '../Article/RatingControl'
-import { SharePopup } from '../Article/SharePopup'
+import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
+import { getDescription } from '../../utils/meta'
 
 interface ArticleCardProps {
   settings?: {
@@ -193,6 +194,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutCardDetailsItem}>
                 <SharePopup
                   containerCssClass={stylesHeader.control}
+                  title={props.article['title']}
+                  description={getDescription(props.article['body'])}
+                  imageUrl={props.article['cover']}
+                  shareUrl={getShareUrl({ pathname: `/${slug}` })}
                   trigger={
                     <button>
                       <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />

@@ -2,8 +2,7 @@
   "routes": [
     {
       "src": "/api/upload",
-      "headers": { "Content-Type": "application/json" },
-      "dest": "api/upload.py"
+      "dest": "api/upload.mjs"
     },
     {
       "src": "/api/newsletter",

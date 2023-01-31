@@ -14,16 +14,21 @@
   }
 
   ul {
-    margin-bottom: 3rem;
+    margin: 0 0 3rem;
   }
 
   li {
     display: flex;
     justify-content: space-between;
     margin: 0 0 1rem;
+    white-space: nowrap;
+    width: 100%;
 
     a {
       margin-right: 0.5em;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 

@@ -53,7 +53,7 @@ export const ProfileSettingsPage = (props: PageProps) => {
     await selectFiles(([{ file }]) => {
       const avatar = { file }
       try {
-        handleFileUpload(avatar.file)
+        handleFileUpload(avatar)
       } catch (error) {
         console.error('[upload avatar] error', error)
       }

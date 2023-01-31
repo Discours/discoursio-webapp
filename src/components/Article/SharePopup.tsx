@@ -1,7 +1,6 @@
 import { Icon } from '../_shared/Icon'
 import { t } from '../../utils/intl'
 import { createSocialShare, TWITTER, VK, FACEBOOK, TELEGRAM } from '@solid-primitives/share'
-
 import styles from '../_shared/Popup/Popup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
@@ -13,6 +12,12 @@ type SharePopupProps = {
   description: string
 } & Omit<PopupProps, 'children'>
 
+export const getShareUrl = (params: { pathname?: string } = {}) => {
+  if (typeof location === 'undefined') return ''
+  const pathname = params.pathname ?? location.pathname
+  return location.origin + pathname
+}
+
 export const SharePopup = (props: SharePopupProps) => {
   const [share] = createSocialShare(() => ({
     title: props.title,
@@ -20,7 +25,7 @@ export const SharePopup = (props: SharePopupProps) => {
     description: props.description
   }))
   const copyLink = async () => {
-    await navigator.clipboard.writeText(window.location.href)
+    await navigator.clipboard.writeText(props.shareUrl)
   }
   return (
     <Popup {...props} variant="bordered">

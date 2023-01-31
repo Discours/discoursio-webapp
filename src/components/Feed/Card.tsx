@@ -9,7 +9,7 @@ import { locale } from '../../stores/ui'
 import { clsx } from 'clsx'
 import { CardTopic } from './CardTopic'
 import { RatingControl } from '../Article/RatingControl'
-import { SharePopup } from '../Article/SharePopup'
+import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import { getDescription } from '../../utils/meta'
 
@@ -72,12 +72,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const { cover, layout, slug, authors, stat } = props.article
-
-  const [url, setUrl] = createSignal<string>(null)
-  onMount(() => {
-    const composeUrl = new URL(location.href)
-    setUrl(composeUrl.origin)
-  })
 
   return (
     <section
@@ -203,7 +197,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   title={props.article['title']}
                   description={getDescription(props.article['body'])}
                   imageUrl={props.article['cover']}
-                  shareUrl={`${url()}/${slug}`}
+                  shareUrl={getShareUrl({ pathname: `/${slug}` })}
                   trigger={
                     <button>
                       <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />

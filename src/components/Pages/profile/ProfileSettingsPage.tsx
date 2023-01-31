@@ -34,9 +34,6 @@ export const ProfileSettingsPage = (props: PageProps) => {
   const handleFileUpload = async (file) => {
     const formData = new FormData()
     formData.append('file', file)
-    for (let key of formData.entries()) {
-      console.log(key[0] + ', ' + key[1])
-    }
     const response = await fetch('/api/upload', {
       method: 'POST',
       body: formData,

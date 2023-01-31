@@ -58,7 +58,9 @@ def upload_storj(filecontent, filename, bucket_name):
 
 @app.route('/api/upload', methods=['post'])
 def upload():
+    print('request.files')
     print(request.files)
+    print('request.files.to_dict()')
     print(request.files.to_dict())
     # check if the post request has the file part
     if 'file' not in request.files:

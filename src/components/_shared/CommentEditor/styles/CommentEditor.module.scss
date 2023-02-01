@@ -30,3 +30,21 @@
   margin: 12px 0;
   font-style: italic;
 }
+
+.signInMessage {
+  background: #f1f2f3;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  font-size: 20px;
+
+  .link {
+    color: #2638d9;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+
+    &:hover {
+      text-decoration: unset;
+    }
+  }
+}

@@ -2,7 +2,7 @@ import styles from './styles/CommentEditor.module.scss'
 import './styles/ProseMirrorOverrides.scss'
 import { clsx } from 'clsx'
 import Button from '../Button'
-import { createEffect, createMemo, onMount } from 'solid-js'
+import { createEffect, onMount, Show } from 'solid-js'
 import { t } from '../../../utils/intl'
 //ProseMirror deps
 import { schema } from './schema'
@@ -16,6 +16,8 @@ import { baseKeymap } from 'prosemirror-commands'
 import { customKeymap } from '../../EditorNew/prosemirror/plugins/customKeymap'
 import { placeholder } from '../../EditorNew/prosemirror/plugins/placeholder'
 import { undo, redo, history } from 'prosemirror-history'
+import { useSession } from '../../../context/session'
+import { showModal } from '../../../stores/ui'
 
 type Props = {
   initialValue: string
@@ -31,6 +33,7 @@ const getHtml = (state: EditorState) => {
 }
 
 const CommentEditor = (props: Props) => {
+  const { session } = useSession()
   const editorElRef: { current: HTMLDivElement } = { current: null }
   const menuElRef: { current: HTMLDivElement } = { current: null }
   const editorViewRef: { current: EditorView } = { current: null }
@@ -65,7 +68,9 @@ const CommentEditor = (props: Props) => {
   }
 
   createEffect(() => {
-    if (props.clear) clearEditor()
+    if (props.clear) {
+      clearEditor()
+    }
   })
 
   return (
@@ -78,12 +83,28 @@ const CommentEditor = (props: Props) => {
         <div class={styles.actions}>
           <div class={styles.menu} ref={(el) => (menuElRef.current = el)} />
           <div class={styles.buttons}>
-            <Button value={t('Send')} variant="primary" onClick={handleSubmitButtonClick} />
-            <Button value="Cancel" variant="secondary" onClick={clearEditor} />
+            <Show when={session()?.user?.slug}>
+              <Button value={t('Send')} variant="primary" onClick={handleSubmitButtonClick} />
+            </Show>
+            <Button value={t('cancel')} variant="secondary" onClick={clearEditor} />
           </div>
         </div>
       </div>
       <div class={styles.helpText}>{'"Cmd-Z": Undo, "Cmd-Y": Redo'}</div>
+      <Show when={!session()?.user?.slug}>
+        <div class={styles.signInMessage} id="comments">
+          {t('To write a comment, you must')}&nbsp;
+          <span
+            class={styles.link}
+            onClick={(evt) => {
+              evt.preventDefault()
+              showModal('auth')
+            }}
+          >
+            {t('sign up or sign in')}
+          </span>
+        </div>
+      </Show>
     </>
   )
 }

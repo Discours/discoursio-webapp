@@ -9,7 +9,7 @@ import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { HeaderAuth } from './HeaderAuth'
-import { SharePopup } from '../Article/SharePopup'
+import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import { getDescription } from '../../utils/meta'
 
 const resources: { name: string; route: keyof Routes }[] = [
@@ -128,7 +128,7 @@ export const Header = (props: Props) => {
               <SharePopup
                 title={props.title}
                 imageUrl={props.cover}
-                shareUrl={location.href}
+                shareUrl={getShareUrl()}
                 description={getDescription(props.articleBody)}
                 onVisibilityChange={(isVisible) => {
                   setIsSharePopupVisible(isVisible)

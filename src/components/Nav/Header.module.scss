@@ -117,6 +117,10 @@
 
     &:hover {
       background: none;
+
+      img {
+        filter: none;
+      }
     }
   }
 }

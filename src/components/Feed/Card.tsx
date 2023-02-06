@@ -12,6 +12,7 @@ import { RatingControl } from '../Article/RatingControl'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import { getDescription } from '../../utils/meta'
+import { FeedArticlePopup } from './FeedArticlePopup'
 
 interface ArticleCardProps {
   settings?: {
@@ -207,9 +208,18 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </div>
 
               <div class={styles.shoutCardDetailsItem}>
-                <button>
-                  <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />
-                </button>
+                <FeedArticlePopup
+                  containerCssClass={stylesHeader.control}
+                  title={props.article['title']}
+                  description={getDescription(props.article['body'])}
+                  imageUrl={props.article['cover']}
+                  shareUrl={getShareUrl({ pathname: `/${slug}` })}
+                  trigger={
+                    <button>
+                      <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />
+                    </button>
+                  }
+                />
               </div>
             </div>
           </section>

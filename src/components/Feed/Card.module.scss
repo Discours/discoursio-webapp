@@ -411,20 +411,25 @@
 }
 
 .shoutCardDetails {
-  border-top: 3px solid #141414;
+  align-items: flex-start;
+  border-top: 2px solid #141414;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   @include font-size(1.5rem);
   margin-top: 1em;
-  padding: 1em 0 1.5em;
+  padding: 1em 0 0;
   position: relative;
   width: 100%;
-  z-index: 2;
+  z-index: 3;
 }
 
 .shoutCardDetailsContent {
   display: flex;
+
+  &:first-child {
+    padding: 0 1em 1em 0;
+  }
 }
 
 .shoutCardDetailsItem {
@@ -465,6 +470,10 @@
     &:hover {
       background: none;
       color: rgb(0 0 0 / 60%);
+
+      img {
+        filter: none;
+      }
     }
   }
 }

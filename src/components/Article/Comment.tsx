@@ -24,7 +24,7 @@ type Props = {
   isArticleAuthor?: boolean
 }
 
-const Comment = (props: Props) => {
+export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal<boolean>(false)
   const [submitted, setSubmitted] = createSignal<boolean>(false)

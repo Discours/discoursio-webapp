@@ -8,13 +8,14 @@ export default () => {
   const [title, setTitle] = createSignal('')
   const subscribe = async () => {
     setTitle(t('...subscribing'))
-    const r = await fetch(`/maillist?email=${emailElement?.value}`)
+    const r = await fetch(`/api/newsletter?email=${emailElement?.value}`)
     setTitle(r.ok ? t('You are subscribed') : '')
   }
 
   return (
     <div class={styles.subscribeForm}>
-      <input type="email" name="email" ref={emailElement} placeholder={t('Fill email')} value={title()} />
+      <label for="email">{title()}</label>
+      <input type="email" name="email" ref={emailElement} placeholder={t('Fill email')} />
       <button
         class={clsx(styles.button, 'button--light')}
         onClick={() => emailElement?.value && subscribe()}

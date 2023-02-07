@@ -1,12 +1,17 @@
 {
-  "functions": {
-    "api/upload.ts": {
-      "memory": 3008,
-      "maxDuration": 30
+  "routes": [
+    {
+      "src": "/api/upload",
+      "headers": { "Content-Type": "application/json" },
+      "dest": "api/upload.py"
     },
-    "api/feedback.js": {
-      "memory": 3008,
-      "maxDuration": 30
+    {
+      "src": "/api/newsletter",
+      "dest": "api/newsletter.js"
+    },
+    {
+      "src": "/api/feedback",
+      "dest": "api/feedback.js"
     }
-  }
+  ]
 }

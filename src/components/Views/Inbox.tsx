@@ -143,9 +143,9 @@ export const InboxView = () => {
       return b.updatedAt - a.updatedAt
     })
     if (sortByPerToPer()) {
-      return sorted.filter((chat) => chat.title.trim().length === 0)
+      return sorted.filter((chat) => Boolean(chat.title?.trim()))
     } else if (sortByGroup()) {
-      return sorted.filter((chat) => chat.title.trim().length > 0)
+      return sorted.filter((chat) => chat.title?.trim().length > 0)
     } else {
       return sorted
     }
@@ -157,7 +157,7 @@ export const InboxView = () => {
 
   const handleKeyDown = async (event) => {
     if (event.keyCode === 13 && event.shiftKey) return
-    if (event.keyCode === 13 && !event.shiftKey && postMessageText().trim().length > 0) {
+    if (event.keyCode === 13 && !event.shiftKey && postMessageText()?.trim().length > 0) {
       event.preventDefault()
       handleSubmit()
     }

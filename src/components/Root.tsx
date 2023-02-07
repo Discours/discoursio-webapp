@@ -35,6 +35,7 @@ import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from './Pages/profile/ProfileSettingsPage'
 import { ProfileSecurityPage } from './Pages/profile/ProfileSecurityPage'
 import { ProfileSubscriptionsPage } from './Pages/profile/ProfileSubscriptionsPage'
+import CreateSettingsPage from './Pages/CreateSettingsPage'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -44,6 +45,7 @@ const pagesMap: Record<keyof Routes, Component<PageProps>> = {
   expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
+  createSettings: CreateSettingsPage,
   home: HomePage,
   topics: AllTopicsPage,
   topic: TopicPage,

@@ -1,5 +1,5 @@
 import { t } from '../../utils/intl'
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createMemo, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
@@ -72,7 +72,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
-  const { cover, layout, slug, authors, stat } = props.article
+  const { cover, layout, slug, authors, stat, body } = props.article
 
   return (
     <section
@@ -195,9 +195,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutCardDetailsItem}>
                 <SharePopup
                   containerCssClass={stylesHeader.control}
-                  title={props.article['title']}
-                  description={getDescription(props.article['body'])}
-                  imageUrl={props.article['cover']}
+                  title={title}
+                  description={getDescription(body)}
+                  imageUrl={cover}
                   shareUrl={getShareUrl({ pathname: `/${slug}` })}
                   trigger={
                     <button>
@@ -210,9 +210,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutCardDetailsItem}>
                 <FeedArticlePopup
                   containerCssClass={stylesHeader.control}
-                  title={props.article['title']}
-                  description={getDescription(props.article['body'])}
-                  imageUrl={props.article['cover']}
+                  title={title}
+                  description={getDescription(body)}
+                  imageUrl={cover}
                   shareUrl={getShareUrl({ pathname: `/${slug}` })}
                   trigger={
                     <button>

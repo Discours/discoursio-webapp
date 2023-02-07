@@ -1,6 +1,7 @@
 import { createSignal, Show } from 'solid-js'
 import { PageWrap } from '../../_shared/PageWrap'
 import { Icon } from '../../_shared/Icon'
+import { showModal } from '../../../stores/ui'
 
 // const title = t('Terms of use')
 

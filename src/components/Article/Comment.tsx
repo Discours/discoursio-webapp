@@ -1,21 +1,17 @@
 import styles from './Comment.module.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { Show, createMemo, createSignal, For } from 'solid-js'
+import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
 import type { Author, Reaction } from '../../graphql/types.gen'
 import { t } from '../../utils/intl'
-import { createReaction, deleteReaction } from '../../stores/zine/reactions'
+import { createReaction, deleteReaction, updateReaction } from '../../stores/zine/reactions'
 import MD from './MD'
 import { formatDate } from '../../utils'
-import { SharePopup } from './SharePopup'
-import stylesHeader from '../Nav/Header.module.scss'
 import Userpic from '../Author/Userpic'
 import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
-import CommentEditor from '../_shared/CommentEditor'
-import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { getDescription } from '../../utils/meta'
+const CommentEditor = lazy(() => import('../_shared/CommentEditor'))
 
 type Props = {
   comment: Reaction
@@ -27,7 +23,7 @@ type Props = {
 export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [submitted, setSubmitted] = createSignal<boolean>(false)
+  const [editMode, setEditMode] = createSignal<boolean>(false)
   const { session } = useSession()
 
   const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
@@ -61,16 +57,33 @@ export const Comment = (props: Props) => {
         }
       )
       setIsReplyVisible(false)
-      setSubmitted(true)
       setLoading(false)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
   }
 
-  const formattedDate = createMemo(() =>
-    formatDate(new Date(comment()?.createdAt), { hour: 'numeric', minute: 'numeric' })
-  )
+  const formattedDate = (date) =>
+    createMemo(() => formatDate(new Date(date), { hour: 'numeric', minute: 'numeric' }))
+
+  const toggleEditMode = () => {
+    setEditMode((oldEditMode) => !oldEditMode)
+  }
+
+  const handleUpdate = async (value) => {
+    setLoading(true)
+    try {
+      await updateReaction(props.comment.id, {
+        kind: ReactionKind.Comment,
+        body: value,
+        shout: props.comment.shout.id
+      })
+      setEditMode(false)
+      setLoading(false)
+    } catch (error) {
+      console.error('[handleCreate reaction]:', error)
+    }
+  }
 
   return (
     <li class={styles.comment}>
@@ -102,7 +115,15 @@ export const Comment = (props: Props) => {
                 <div class={styles.articleAuthor}>{t('Author')}</div>
               </Show>
 
-              <div class={styles.commentDate}>{formattedDate()}</div>
+              <div class={styles.commentDates}>
+                <div class={styles.date}>{formattedDate(comment()?.createdAt)}</div>
+                <Show when={comment()?.updatedAt}>
+                  <div class={styles.date}>
+                    <Icon name="edit" class={styles.icon} />
+                    {t('Edited')} {formattedDate(comment()?.updatedAt)}
+                  </div>
+                </Show>
+              </div>
               <div
                 class={styles.commentRating}
                 classList={{
@@ -116,12 +137,12 @@ export const Comment = (props: Props) => {
               </div>
             </div>
           </Show>
-          <div
-            class={styles.commentBody}
-            contenteditable={canEdit()}
-            id={'comment-' + (comment().id || '')}
-          >
-            <MD body={body()} />
+          <div class={styles.commentBody} id={'comment-' + (comment().id || '')}>
+            <Show when={editMode()} fallback={<MD body={body()} />}>
+              <Suspense fallback={<p>Loading...</p>}>
+                <CommentEditor initialContent={body()} onSubmit={(value) => handleUpdate(value)} />
+              </Suspense>
+            </Show>
           </div>
 
           <Show when={!props.compact}>
@@ -136,14 +157,13 @@ export const Comment = (props: Props) => {
               </button>
 
               <Show when={canEdit()}>
-                {/*FIXME implement edit comment modal*/}
-                {/*<button*/}
-                {/*  class={clsx(styles.commentControl, styles.commentControlEdit)}*/}
-                {/*  onClick={() => showModal('editComment')}*/}
-                {/*>*/}
-                {/*  <Icon name="edit" class={styles.icon} />*/}
-                {/*  {t('Edit')}*/}
-                {/*</button>*/}
+                <button
+                  class={clsx(styles.commentControl, styles.commentControlEdit)}
+                  onClick={toggleEditMode}
+                >
+                  <Icon name="edit" class={styles.icon} />
+                  {t('Edit')}
+                </button>
                 <button
                   class={clsx(styles.commentControl, styles.commentControlDelete)}
                   onClick={() => remove()}
@@ -174,13 +194,9 @@ export const Comment = (props: Props) => {
             </div>
 
             <Show when={isReplyVisible()}>
-              <ShowOnlyOnClient>
-                <CommentEditor
-                  initialValue={''}
-                  clear={submitted()}
-                  onSubmit={(value) => handleCreate(value)}
-                />
-              </ShowOnlyOnClient>
+              <Suspense fallback={<p>{t('Loading')}</p>}>
+                <CommentEditor placeholder={''} onSubmit={(value) => handleCreate(value)} />
+              </Suspense>
             </Show>
           </Show>
         </div>

@@ -237,14 +237,16 @@ export const apiClient = {
     return response.data.createReaction.reaction
   },
   destroyReaction: async (id: number) => {
-    const response = await privateGraphQLClient.mutation(reactionDestroy, { reaction: id }).toPromise()
+    const response = await privateGraphQLClient.mutation(reactionDestroy, { id: id }).toPromise()
     console.debug('[destroyReaction]:', response)
     return response.data.deleteReaction
   },
-  updateReaction: async (reaction) => {
-    const response = await privateGraphQLClient.mutation(reactionUpdate, reaction).toPromise()
-
-    return response.data.createReaction
+  updateReaction: async (id: number, input: ReactionInput) => {
+    const response = await privateGraphQLClient
+      .mutation(reactionUpdate, { id: id, reaction: input })
+      .toPromise()
+    console.debug('[updateReaction]:', response)
+    return response.data.updateReaction.reaction
   },
   getAuthorsBy: async (options: QueryLoadAuthorsByArgs) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, options).toPromise()

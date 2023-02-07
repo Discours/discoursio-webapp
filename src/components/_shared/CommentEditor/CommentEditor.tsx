@@ -8,7 +8,7 @@ import { t } from '../../../utils/intl'
 import { schema } from './schema'
 import { EditorState } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
-import { DOMSerializer } from 'prosemirror-model'
+import { DOMParser as ProseDOMParser, DOMSerializer } from 'prosemirror-model'
 import { renderGrouped } from 'prosemirror-menu'
 import { buildMenuItems } from './menu'
 import { keymap } from 'prosemirror-keymap'
@@ -20,9 +20,10 @@ import { useSession } from '../../../context/session'
 import { showModal } from '../../../stores/ui'
 
 type Props = {
-  initialValue: string
+  placeholder?: string
   onSubmit: (value: string) => void
   clear?: boolean
+  initialContent?: string
 }
 
 const htmlContainer = typeof document === 'undefined' ? null : document.createElement('div')
@@ -37,14 +38,19 @@ const CommentEditor = (props: Props) => {
   const editorElRef: { current: HTMLDivElement } = { current: null }
   const menuElRef: { current: HTMLDivElement } = { current: null }
   const editorViewRef: { current: EditorView } = { current: null }
+
+  const domNew = new DOMParser().parseFromString(`<div>${props.initialContent}</div>`, 'text/xml')
+  const doc = ProseDOMParser.fromSchema(schema).parse(domNew)
+
   const initEditor = () => {
     editorViewRef.current = new EditorView(editorElRef.current, {
       state: EditorState.create({
         schema,
+        doc: props.initialContent ? doc : null,
         plugins: [
           history(),
           customKeymap(),
-          placeholder(props.initialValue),
+          placeholder(props.placeholder),
           keymap({ 'Mod-z': undo, 'Mod-y': redo }),
           keymap(baseKeymap)
         ]

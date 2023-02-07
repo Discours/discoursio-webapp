@@ -27,6 +27,19 @@
     }
   }
 
+  &.inline {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 21px;
+    color: #696969;
+
+    &.hover,
+    &.active {
+      text-decoration: underline;
+      color: #141414;
+    }
+  }
+
   &:disabled,
   &:disabled:hover {
     cursor: default;

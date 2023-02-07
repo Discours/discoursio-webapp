@@ -138,7 +138,6 @@
   }
 }
 .commentAuthor,
-.commentDate,
 .commentRating {
   @include font-size(1.2rem);
 }
@@ -147,11 +146,31 @@
   font-size: 12px;
   margin-right: 12px;
 }
-.commentDate {
-  color: rgb(0 0 0 / 30%);
+
+.commentDates {
   flex: 1;
-  @include media-breakpoint-down(md) {
-    margin-left: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+  color: rgb(0 0 0 / 30%);
+  @include font-size(1.2rem);
+
+  .date {
+    .icon {
+      line-height: 1;
+      width: 1rem;
+      display: inline-block;
+      opacity: 0.6;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+    @include media-breakpoint-down(md) {
+      margin-left: 1rem;
+    }
   }
 }
 .commentDetails {

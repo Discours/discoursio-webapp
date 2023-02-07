@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
 import Comment from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
@@ -11,6 +11,7 @@ import { Author, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import CommentEditor from '../_shared/CommentEditor'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import Button from '../_shared/Button'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
 const MAX_COMMENT_LEVEL = 6
@@ -27,9 +28,11 @@ export const CommentsTree = (props: Props) => {
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { sortedReactions, loadReactionsBy } = useReactionsStore()
+
   const reactions = createMemo<Reaction[]>(() =>
     sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
   )
+
   const { session } = useSession()
   const loadMore = async () => {
     try {
@@ -85,26 +88,22 @@ export const CommentsTree = (props: Props) => {
 
           <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
             <li classList={{ selected: commentsOrder() === 'createdAt' || !commentsOrder() }}>
-              <a
-                href="#"
-                onClick={(ev) => {
-                  ev.preventDefault()
+              <Button
+                variant="inline"
+                value={t('By time')}
+                onClick={() => {
                   setCommentsOrder('createdAt')
                 }}
-              >
-                {t('By time')}
-              </a>
+              />
             </li>
             <li classList={{ selected: commentsOrder() === 'rating' }}>
-              <a
-                href="#"
-                onClick={(ev) => {
-                  ev.preventDefault()
+              <Button
+                variant="inline"
+                value={t('By rating')}
+                onClick={() => {
                   setCommentsOrder('rating')
                 }}
-              >
-                {t('By rating')}
-              </a>
+              />
             </li>
           </ul>
         </div>
@@ -128,7 +127,7 @@ export const CommentsTree = (props: Props) => {
         </Show>
         <ShowOnlyOnClient>
           <CommentEditor
-            initialValue={t('Write a comment...')}
+            placeholder={t('Write a comment...')}
             clear={submitted()}
             onSubmit={(value) => handleSubmitComment(value)}
           />

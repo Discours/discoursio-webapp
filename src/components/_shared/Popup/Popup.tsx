@@ -8,6 +8,7 @@ type HorizontalAnchor = 'center' | 'right'
 
 export type PopupProps = {
   containerCssClass?: string
+  popupCssClass?: string
   trigger: JSX.Element
   children: JSX.Element
   onVisibilityChange?: (isVisible) => void
@@ -40,7 +41,7 @@ export const Popup = (props: PopupProps) => {
       <span onClick={toggle}>{props.trigger}</span>
       <Show when={isVisible()}>
         <div
-          class={clsx(styles.popup, {
+          class={clsx(styles.popup, props.popupCssClass, {
             [styles.horizontalAnchorCenter]: horizontalAnchor === 'center',
             [styles.horizontalAnchorRight]: horizontalAnchor === 'right',
             [styles.bordered]: props.variant === 'bordered',

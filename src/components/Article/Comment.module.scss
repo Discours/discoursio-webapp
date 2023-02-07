@@ -37,6 +37,7 @@
       display: none;
     }
   }
+
   .shout-body {
     @include font-size(1.5rem);
     margin-bottom: 1em;
@@ -44,11 +45,13 @@
       margin-bottom: 0;
     }
   }
+
   .author {
     align-items: center;
     margin-bottom: 1.4rem;
   }
 }
+
 .commentContent {
   &:hover {
     .commentControlReply,
@@ -60,11 +63,13 @@
     }
   }
 }
+
 .commentControls {
   @include font-size(1.2rem);
 
   margin-bottom: 0.5em;
 }
+
 .commentControlReply,
 .commentControlShare,
 .commentControlDelete,
@@ -75,6 +80,7 @@
     transition: opacity 0.3s;
   }
 }
+
 .commentControlReply,
 .commentControlShare,
 .commentControlDelete,
@@ -84,6 +90,7 @@
     width: 1.2rem;
   }
 }
+
 .commentControl {
   border: none;
   color: #696969;
@@ -94,6 +101,7 @@
   padding: 0.2em 0.3em;
   transition: opacity 0.2s, color 0.3s, background-color 0.3s;
   vertical-align: top;
+
   &:hover {
     background: #000;
     color: #fff;
@@ -102,6 +110,7 @@
       opacity: 1;
     }
   }
+
   .icon {
     filter: invert(0);
     margin-right: 0.3em;
@@ -112,12 +121,14 @@
     }
   }
 }
+
 .commentControlReply {
   .icon {
     height: 1.2em;
     width: 1.2em;
   }
 }
+
 .commentBody {
   @include font-size(1.5rem);
 
@@ -137,10 +148,12 @@
     }
   }
 }
+
 .commentAuthor,
 .commentRating {
   @include font-size(1.2rem);
 }
+
 .articleAuthor {
   color: #2638d9;
   font-size: 12px;
@@ -173,33 +186,41 @@
     }
   }
 }
+
 .commentDetails {
   display: flex;
   margin-bottom: 1.2rem;
 }
+
 .commentRating {
   align-items: center;
   display: flex;
   font-weight: bold;
 }
+
 .commentRatingValue {
   padding: 0 0.3em;
 }
+
 .commentRatingPositive {
   color: #2bb452;
 }
+
 .commentRatingNegative {
   color: #d00820;
 }
+
 .commentRatingControl {
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   height: 0;
   width: 0;
 }
+
 .commentRatingControlUp {
   border-bottom: 8px solid rgb(0 0 0 / 40%);
 }
+
 .commentRatingControlDown {
   border-top: 8px solid rgb(0 0 0 / 40%);
 }

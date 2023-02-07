@@ -8,9 +8,11 @@
   &.primary {
     background: #000;
     color: #fff;
+
     &:hover {
       color: #ccc;
     }
+
     &:active {
       color: #9fa1a7;
     }
@@ -19,9 +21,11 @@
   &.secondary {
     background: #f7f7f7;
     color: #141414;
+
     &:hover {
       background: #e8e8e8;
     }
+
     &:active {
       background: #ccc;
     }
@@ -46,6 +50,7 @@
     color: #9fa1a7;
     background: #f6f6f6;
   }
+
   &.loading,
   &.loading:hover {
     background: #f6f6f6;

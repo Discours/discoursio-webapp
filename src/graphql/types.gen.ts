@@ -537,11 +537,13 @@ export enum ReactionKind {
   Disagree = 'DISAGREE',
   Dislike = 'DISLIKE',
   Disproof = 'DISPROOF',
+  Footnote = 'FOOTNOTE',
   Like = 'LIKE',
   Proof = 'PROOF',
   Propose = 'PROPOSE',
   Quote = 'QUOTE',
-  Reject = 'REJECT'
+  Reject = 'REJECT',
+  Remark = 'REMARK'
 }
 
 export enum ReactionStatus {
@@ -656,12 +658,9 @@ export type Stat = {
 }
 
 export type Subscription = {
-  collabUpdate?: Maybe<Reaction>
   newMessage?: Maybe<Message>
-}
-
-export type SubscriptionCollabUpdateArgs = {
-  collab: Scalars['Int']
+  newReaction?: Maybe<Reaction>
+  newShout?: Maybe<Shout>
 }
 
 export type Token = {

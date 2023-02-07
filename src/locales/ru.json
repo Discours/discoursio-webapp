@@ -17,6 +17,7 @@
   "By name": "По имени",
   "By popularity": "По популярности",
   "By rating": "По популярности",
+  "By time": "По времени",
   "By relevance": "По релевантности",
   "By shouts": "По публикациям",
   "By signing up you agree with our": "Регистрируясь, вы соглашаетесь с",
@@ -222,5 +223,6 @@
   "Write a comment...": "Написать комментарий...",
   "Add comment": "Комментировать",
   "My subscriptions": "Подписки",
-  "Nothing here yet": "Здесь пока ничего нет"
+  "Nothing here yet": "Здесь пока ничего нет",
+  "Edited": "Отредактирован"
 }

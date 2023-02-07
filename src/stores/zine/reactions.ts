@@ -1,6 +1,6 @@
 import type { Reaction, ReactionInput } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
-import { createSignal } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 // TODO: import { roomConnect } from '../../utils/p2p'
 
 export const REACTIONS_AMOUNT_PER_PAGE = 100
@@ -34,15 +34,21 @@ export const createReaction = async (
   setSortedReactions((prev) => [...prev, reaction])
 }
 
-export const deleteReaction = async (reactionId: number) => {
-  const reaction = await apiClient.destroyReaction(reactionId)
+export const deleteReaction = async (id: number) => {
+  const reaction = await apiClient.destroyReaction(id)
   console.debug('[deleteReaction]:', reaction.reaction.id)
   setSortedReactions(sortedReactions().filter((item) => item.id !== reaction.reaction.id))
 }
 
-export const updateReaction = async (reaction: Reaction) => {
-  const { reaction: r } = await apiClient.updateReaction({ reaction })
-  return r
+export const updateReaction = async (id: number, input: ReactionInput) => {
+  const reaction = await apiClient.updateReaction(id, input)
+  const editedReactionIndex = sortedReactions().findIndex((r) => r.id === id)
+  const newSortedReactions = [...sortedReactions()]
+  newSortedReactions[editedReactionIndex] = {
+    ...newSortedReactions[editedReactionIndex],
+    ...reaction
+  }
+  setSortedReactions(newSortedReactions)
 }
 
 export const useReactionsStore = () => {

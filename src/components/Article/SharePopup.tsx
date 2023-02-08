@@ -31,31 +31,31 @@ export const SharePopup = (props: SharePopupProps) => {
     <Popup {...props} variant="bordered">
       <ul class="nodash">
         <li>
-          <button role="button" onClick={() => share(VK)}>
+          <button role="button" class={styles.shareControl} onClick={() => share(VK)}>
             <Icon name="vk-white" class={styles.icon} />
             VK
           </button>
         </li>
         <li>
-          <button role="button" onClick={() => share(FACEBOOK)}>
+          <button role="button" class={styles.shareControl} onClick={() => share(FACEBOOK)}>
             <Icon name="facebook-white" class={styles.icon} />
             Facebook
           </button>
         </li>
         <li>
-          <button role="button" onClick={() => share(TWITTER)}>
+          <button role="button" class={styles.shareControl} onClick={() => share(TWITTER)}>
             <Icon name="twitter-white" class={styles.icon} />
             Twitter
           </button>
         </li>
         <li>
-          <button role="button" onClick={() => share(TELEGRAM)}>
+          <button role="button" class={styles.shareControl} onClick={() => share(TELEGRAM)}>
             <Icon name="telegram-white" class={styles.icon} />
             Telegram
           </button>
         </li>
         <li>
-          <button role="button" onClick={copyLink}>
+          <button role="button" class={styles.shareControl} onClick={copyLink}>
             <Icon name="link-white" class={styles.icon} />
             {t('Copy link')}
           </button>

@@ -5,6 +5,7 @@
 .popup {
   background: #fff;
   color: #000;
+  cursor: default;
   min-width: 144px;
   opacity: 1;
   position: absolute;
@@ -86,6 +87,21 @@
       max-height: 2rem;
       max-width: 2rem;
       transition: filter 0.3s;
+    }
+  }
+
+  .shareControl {
+    text-align: left;
+    transition: color 0.3s, background-color 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+      background: #000;
+      color: #fff;
+
+      .icon img {
+        filter: invert(0);
+      }
     }
   }
 }

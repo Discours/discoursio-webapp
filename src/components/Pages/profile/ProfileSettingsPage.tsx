@@ -64,7 +64,7 @@ export const ProfileSettingsPage = () => {
     return response.json()
   }
 
-  const handleUserpicUpload = async () => {
+  const handleAvatarClick = async () => {
     await selectFiles(async ([uploadFile]) => {
       try {
         setIsUserpicUpdating(true)
@@ -99,9 +99,12 @@ export const ProfileSettingsPage = () => {
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
                       <Show when={!isUserpicUpdating()} fallback={<Loading />}>
-                        <button role="button" onClick={() => handleUserpicUpload()}>
-                          <img class={styles.avatar} src={form.userpic} alt={form.name} />
-                        </button>
+                        <img
+                          class={styles.avatar}
+                          src={form.userpic}
+                          alt={form.name}
+                          onClick={handleAvatarClick}
+                        />
                       </Show>
                     </div>
                   </div>

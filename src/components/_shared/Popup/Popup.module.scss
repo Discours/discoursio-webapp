@@ -83,10 +83,12 @@
     width: 3.6rem;
 
     img {
+      display: inline-block;
       filter: invert(1);
       max-height: 2rem;
       max-width: 2rem;
       transition: filter 0.3s;
+      vertical-align: middle;
     }
   }
 

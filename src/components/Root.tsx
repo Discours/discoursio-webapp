@@ -36,6 +36,7 @@ import { ProfileSettingsPage } from './Pages/profile/ProfileSettingsPage'
 import { ProfileSecurityPage } from './Pages/profile/ProfileSecurityPage'
 import { ProfileSubscriptionsPage } from './Pages/profile/ProfileSubscriptionsPage'
 import CreateSettingsPage from './Pages/CreateSettingsPage'
+import { SnackbarProvider } from '../context/snackbar'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -98,8 +99,10 @@ export const Root = (props: PageProps) => {
   }
 
   return (
-    <SessionProvider>
-      <Dynamic component={pageComponent()} {...props} />
-    </SessionProvider>
+    <SnackbarProvider>
+      <SessionProvider>
+        <Dynamic component={pageComponent()} {...props} />
+      </SessionProvider>
+    </SnackbarProvider>
   )
 }

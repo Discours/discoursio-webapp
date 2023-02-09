@@ -1,0 +1,23 @@
+.snackbar {
+  min-height: 4px;
+  background-color: #141414;
+  color: #ffffff;
+  transition: background-color 0.3s;
+
+  &.error {
+    background-color: #d00820;
+  }
+}
+.content {
+  transition: height 0.3s, color 0.3s;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.enter,
+  &.exitTo {
+    height: 0;
+    color: transparent;
+  }
+}

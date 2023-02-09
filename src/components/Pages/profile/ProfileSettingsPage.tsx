@@ -1,9 +1,8 @@
 import { PageWrap } from '../../_shared/PageWrap'
 import { t } from '../../../utils/intl'
-import type { PageProps } from '../../types'
 import { Icon } from '../../_shared/Icon'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount } from 'solid-js'
+import { For, createSignal, Show, onMount, createEffect } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
@@ -12,12 +11,18 @@ import { createFileUploader, UploadFile } from '@solid-primitives/upload'
 import { Loading } from '../../Loading'
 import { useSession } from '../../../context/session'
 import Button from '../../_shared/Button'
+import { useSnackbar } from '../../../context/snackbar'
 
 export const ProfileSettingsPage = () => {
   const [addLinkForm, setAddLinkForm] = createSignal(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal(false)
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
+
   const {
     actions: { loadSession }
   } = useSession()
@@ -31,11 +36,19 @@ export const ProfileSettingsPage = () => {
       setIncorrectUrl(true)
     }
   }
+
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
     setIsSubmitting(true)
-    await submit(form)
-    await loadSession()
+
+    try {
+      await submit(form)
+      showSnackbar({ body: t('Profile successfully saved') })
+    } catch {
+      showSnackbar({ type: 'error', body: t('Error') })
+    }
+
+    loadSession()
     setIsSubmitting(false)
   }
 

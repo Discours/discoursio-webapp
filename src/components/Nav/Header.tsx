@@ -11,6 +11,7 @@ import { clsx } from 'clsx'
 import { HeaderAuth } from './HeaderAuth'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import { getDescription } from '../../utils/meta'
+import { Snackbar } from './Snackbar'
 
 const resources: { name: string; route: keyof Routes }[] = [
   { name: t('zine'), route: 'home' },
@@ -153,6 +154,7 @@ export const Header = (props: Props) => {
             </div>
           </div>
         </nav>
+        <Snackbar />
       </div>
     </header>
   )

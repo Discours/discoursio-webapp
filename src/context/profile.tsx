@@ -13,16 +13,12 @@ const useProfileForm = () => {
   const [slugError, setSlugError] = createSignal<string>()
 
   const submit = async (profile: ProfileInput) => {
-    try {
-      const response = await apiClient.updateProfile(profile)
-      if (response.error) {
-        setSlugError(response.error)
-        return response.error
-      }
-      return response
-    } catch (error) {
-      console.error(error)
+    const response = await apiClient.updateProfile(profile)
+    if (response.error) {
+      setSlugError(response.error)
+      return response.error
     }
+    return response
   }
 
   const [form, setForm] = createStore<ProfileInput>({

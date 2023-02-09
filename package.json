@@ -125,6 +125,7 @@
     "rollup-plugin-visualizer": "^5.9.0",
     "sass": "1.32.13",
     "solid-js": "^1.6.9",
+    "solid-transition-group": "^0.0.13",
     "sort-package-json": "^2.3.0",
     "stylelint": "^14.16.1",
     "stylelint-config-css-modules": "^4.1.0",

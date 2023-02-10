@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { inputRules } from 'prosemirror-inputrules'
 import type { Mark, MarkType } from 'prosemirror-model'
 import type { EditorState, Transaction } from 'prosemirror-state'

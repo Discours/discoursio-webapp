@@ -1,5 +1,5 @@
 import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
-import Comment from './Comment'
+import { Comment } from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
 import { createReaction, useReactionsStore } from '../../stores/zine/reactions'
@@ -14,7 +14,6 @@ import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import Button from '../_shared/Button'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
-const MAX_COMMENT_LEVEL = 6
 
 type Props = {
   commentAuthors: Author[]
@@ -48,13 +47,7 @@ export const CommentsTree = (props: Props) => {
       setIsCommentsLoading(false)
     }
   }
-  const getCommentById = (cid: number) => reactions().find((r: Reaction) => r.id === cid)
-  const getCommentLevel = (c: Reaction, level = 0) => {
-    if (c && c.replyTo && level < MAX_COMMENT_LEVEL) {
-      return getCommentLevel(getCommentById(c.replyTo), level + 1)
-    }
-    return level
-  }
+
   onMount(async () => await loadMore())
 
   const [submitted, setSubmitted] = createSignal<boolean>(false)

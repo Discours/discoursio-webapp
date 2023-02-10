@@ -2,7 +2,7 @@ import { PageWrap } from '../../_shared/PageWrap'
 import { t } from '../../../utils/intl'
 import { Icon } from '../../_shared/Icon'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount, createEffect } from 'solid-js'
+import { For, createSignal, Show, onMount } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
@@ -12,6 +12,16 @@ import { Loading } from '../../Loading'
 import { useSession } from '../../../context/session'
 import Button from '../../_shared/Button'
 import { useSnackbar } from '../../../context/snackbar'
+
+const handleFileUpload = async (uploadFile: UploadFile) => {
+  const formData = new FormData()
+  formData.append('file', uploadFile.file, uploadFile.name)
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData
+  })
+  return response.json()
+}
 
 export const ProfileSettingsPage = () => {
   const [addLinkForm, setAddLinkForm] = createSignal(false)
@@ -53,16 +63,6 @@ export const ProfileSettingsPage = () => {
   }
 
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
-
-  const handleFileUpload = async (uploadFile: UploadFile) => {
-    const formData = new FormData()
-    formData.append('file', uploadFile.file, uploadFile.name)
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    })
-    return response.json()
-  }
 
   const handleAvatarClick = async () => {
     await selectFiles(async ([uploadFile]) => {

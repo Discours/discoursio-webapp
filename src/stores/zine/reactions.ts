@@ -1,6 +1,6 @@
 import type { Reaction, ReactionInput } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
-import { createEffect, createSignal } from 'solid-js'
+import { createSignal } from 'solid-js'
 // TODO: import { roomConnect } from '../../utils/p2p'
 
 export const REACTIONS_AMOUNT_PER_PAGE = 100

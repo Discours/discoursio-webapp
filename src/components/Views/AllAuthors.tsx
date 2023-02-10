@@ -11,7 +11,6 @@ import { translit } from '../../utils/ru2en'
 import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
-import { StatMetrics } from '../_shared/StatMetrics'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'

@@ -2,7 +2,6 @@ import { createEffect, createMemo, createSignal, For, onMount, Show } from 'soli
 import '../../styles/Feed.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { Icon } from '../_shared/Icon'
-import { TopicCard } from '../Topic/Card'
 import { ArticleCard } from '../Feed/Card'
 import { AuthorCard } from '../Author/Card'
 import { t } from '../../utils/intl'
@@ -14,12 +13,9 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useSession } from '../../context/session'
-import stylesArticle from '../../styles/Article.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import styles from './Feed.module.scss'
 import { clsx } from 'clsx'
-import Userpic from '../Author/Userpic'
-import type { Author } from '../../graphql/types.gen'
 
 // const AUTHORSHIP_REACTIONS = [
 //   ReactionKind.Accept,

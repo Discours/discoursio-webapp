@@ -1,10 +1,9 @@
 import { defineConfig, AstroUserConfig } from 'astro/config'
 import vercel from '@astrojs/vercel/serverless'
 import solidJs from '@astrojs/solid-js'
-import type { CSSOptions } from 'vite'
 import defaultGenerateScopedName from 'postcss-modules/build/generateScopedName'
 import { isDev } from './src/utils/config'
-import { visualizer } from 'rollup-plugin-visualizer'
+// import { visualizer } from 'rollup-plugin-visualizer'
 
 const PATH_PREFIX = '/src/'
 
@@ -18,18 +17,6 @@ const getDevCssClassPrefix = (filename: string): string => {
 const devGenerateScopedName = (name: string, filename: string, css: string) =>
   getDevCssClassPrefix(filename) + '_' + defaultGenerateScopedName(name, filename, css)
 
-const css: CSSOptions = {
-  preprocessorOptions: {
-    scss: {
-      additionalData: '@import "src/styles/imports";\n'
-    }
-  },
-  modules: {
-    generateScopedName: isDev ? devGenerateScopedName : defaultGenerateScopedName,
-    localsConvention: null
-  }
-}
-
 const astroConfig: AstroUserConfig = {
   site: 'https://new.discours.io',
   integrations: [solidJs()],
@@ -39,7 +26,7 @@ const astroConfig: AstroUserConfig = {
     build: {
       chunkSizeWarningLimit: 777,
       rollupOptions: {
-        plugins: [visualizer()],
+        // plugins: [visualizer()],
         output: {
           // eslint-disable-next-line sonarjs/cognitive-complexity
           /*
@@ -71,7 +58,17 @@ const astroConfig: AstroUserConfig = {
         external: []
       }
     },
-    css
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "src/styles/imports";\n'
+        }
+      },
+      modules: {
+        generateScopedName: isDev ? devGenerateScopedName : defaultGenerateScopedName,
+        localsConvention: null
+      }
+    }
   }
 }
 

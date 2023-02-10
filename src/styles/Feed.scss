@@ -56,9 +56,10 @@
 }
 
 .feed-filter {
+  @include font-size(1.7rem);
+
   display: flex;
   flex-wrap: wrap;
-  @include font-size(1.7rem);
   font-weight: 500;
   list-style: none;
   margin: 0 0 1.6rem;

@@ -3,6 +3,8 @@ import { createContext, createMemo, createResource, createSignal, onMount, useCo
 import type { AuthResult } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
+import { t } from '../utils/intl'
+import { useSnackbar } from './snackbar'
 
 type SessionContextType = {
   session: Resource<AuthResult>
@@ -25,6 +27,10 @@ export function useSession() {
 
 export const SessionProvider = (props: { children: JSX.Element }) => {
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const getSession = async (): Promise<AuthResult> => {
     try {
@@ -63,7 +69,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     // TODO: call backend to revoke token
     mutate(null)
     resetToken()
-    console.debug('signed out')
+    showSnackbar({ body: t("You've successfully logged out") })
   }
 
   const confirmEmail = async (token: string) => {

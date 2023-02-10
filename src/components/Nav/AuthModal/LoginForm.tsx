@@ -11,6 +11,7 @@ import type { AuthModalSearchParams } from './types'
 import { hideModal, locale } from '../../../stores/ui'
 import { useSession } from '../../../context/session'
 import { signSendLink } from '../../../stores/auth'
+import { useSnackbar } from '../../../context/snackbar'
 
 type FormFields = {
   email: string
@@ -26,6 +27,10 @@ export const LoginForm = () => {
   // TODO: better solution for interactive error messages
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const {
     actions: { signIn }
@@ -83,6 +88,7 @@ export const LoginForm = () => {
     try {
       await signIn({ email: email(), password: password() })
       hideModal()
+      showSnackbar({ body: t('Welcome!') })
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.code === 'email_not_confirmed') {

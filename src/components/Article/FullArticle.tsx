@@ -16,6 +16,8 @@ import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
 import VideoPlayer from './VideoPlayer'
 import Slider from '../_shared/Slider'
+import { getPagePath } from '@nanostores/router'
+import { router } from '../../stores/router'
 
 interface ArticleProps {
   article: Shout
@@ -59,8 +61,6 @@ export const FullArticle = (props: ArticleProps) => {
       props.article.topics[0]
   )
 
-  const mainTopicTitle = createMemo(() => mainTopic().title.replace(' ', '&nbsp;'))
-
   onMount(() => {
     const windowHash = window.location.hash
     if (windowHash?.length > 0) {
@@ -93,7 +93,9 @@ export const FullArticle = (props: ArticleProps) => {
       <article class="col-md-6 shift-content">
         <div class={styles.shoutHeader}>
           <div class={styles.shoutTopic}>
-            <a href={`/topic/${props.article.mainTopic}`} innerHTML={mainTopicTitle() || ''} />
+            <a href={`/topic/${props.article.mainTopic}`} class={styles.mainTopicLink}>
+              {mainTopic().title}
+            </a>
           </div>
 
           <h1>{props.article.title}</h1>
@@ -106,7 +108,7 @@ export const FullArticle = (props: ArticleProps) => {
               {(a: Author, index) => (
                 <>
                   <Show when={index() > 0}>, </Show>
-                  <a href={`/author/${a.slug}`}>{a.name}</a>
+                  <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
                 </>
               )}
             </For>
@@ -210,7 +212,7 @@ export const FullArticle = (props: ArticleProps) => {
           <For each={props.article.topics}>
             {(topic) => (
               <div class={styles.shoutTopic}>
-                <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                <a href={getPagePath(router, 'topic', { slug: topic.slug })}>{topic.title}</a>
               </div>
             )}
           </For>

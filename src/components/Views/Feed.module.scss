@@ -1,5 +1,6 @@
 .feedNavigation {
   @include font-size(1.5rem);
+
   font-weight: 500;
 
   h4 {
@@ -40,6 +41,7 @@
 .feedAside {
   h4 {
     @include font-size(2.2rem);
+
     font-weight: bold;
     margin-bottom: 2.4rem;
     text-transform: lowercase;
@@ -69,7 +71,7 @@
   a {
     position: static;
 
-    &:before {
+    &::before {
       content: '';
       height: 100%;
       left: 0;
@@ -88,6 +90,7 @@
 
   ul {
     @include font-size(1.4rem);
+
     font-weight: bold;
     margin: 1rem 0 0;
     line-height: 1.4;
@@ -106,6 +109,7 @@
 
 .comment {
   @include font-size(1.5rem);
+
   line-height: 1.4;
   margin-bottom: 2.4rem;
 
@@ -126,6 +130,7 @@
 
 .commentArticleTitle {
   @include font-size(1.2rem);
+
   line-clamp: 1;
   -webkit-line-clamp: 1;
 }

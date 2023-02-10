@@ -201,6 +201,7 @@
 
   .authorName {
     @include font-size(3.4rem);
+
     font-weight: 500;
     margin-bottom: 0.2em;
   }
@@ -313,6 +314,7 @@
 
   .authorName {
     @include font-size(1.2rem);
+
     margin-bottom: 0;
   }
 

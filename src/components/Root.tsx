@@ -3,7 +3,7 @@
 
 import { MODALS, setLocale, showModal } from '../stores/ui'
 import { Component, createEffect, createMemo } from 'solid-js'
-import { Routes, useRouter } from '../stores/router'
+import { ROUTES, useRouter } from '../stores/router'
 import { Dynamic, isServer } from 'solid-js/web'
 
 import type { PageProps, RootSearchParams } from './types'
@@ -35,13 +35,13 @@ import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from './Pages/profile/ProfileSettingsPage'
 import { ProfileSecurityPage } from './Pages/profile/ProfileSecurityPage'
 import { ProfileSubscriptionsPage } from './Pages/profile/ProfileSubscriptionsPage'
-import CreateSettingsPage from './Pages/CreateSettingsPage'
+import { CreateSettingsPage } from './Pages/CreateSettingsPage'
 import { SnackbarProvider } from '../context/snackbar'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
 
-const pagesMap: Record<keyof Routes, Component<PageProps>> = {
+const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   inbox: InboxPage,
   expo: LayoutShoutsPage,
   connect: ConnectPage,

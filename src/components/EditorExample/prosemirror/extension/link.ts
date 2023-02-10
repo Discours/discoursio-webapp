@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { Plugin, PluginKey, TextSelection, Transaction } from 'prosemirror-state'
 import type { EditorView } from 'prosemirror-view'
 import type { Mark, Node, Schema } from 'prosemirror-model'

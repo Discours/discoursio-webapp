@@ -3,71 +3,40 @@ import { createRouter, createSearchParams } from '@nanostores/router'
 import { isServer } from 'solid-js/web'
 import { useStore } from '@nanostores/solid'
 
-// TODO: more
-export interface Routes {
-  home: void
-  connect: void
-  create: void
-  createSettings: void
-  topics: void
-  topic: 'slug'
-  authors: void
-  author: 'slug'
-  feed: void
-  article: 'slug'
-  search: 'q'
-  dogma: void
-  discussionRules: void
-  guide: void
-  help: void
-  manifest: void
-  partners: void
-  principles: void
-  projects: void
-  termsOfUse: void
-  thanks: void
-  expo: 'layout'
-  inbox: void // TODO: добавить ID текущего юзера
-  profileSettings: void
-  profileSecurity: void
-  profileSubscriptions: void
-}
+export const ROUTES = {
+  home: '/',
+  inbox: '/inbox',
+  connect: '/connect',
+  create: '/create',
+  createSettings: '/create/settings',
+  topics: '/topics',
+  topic: '/topic/:slug',
+  authors: '/authors',
+  author: '/author/:slug',
+  feed: '/feed',
+  search: '/search/:q?',
+  article: '/:slug',
+  dogma: '/about/dogma',
+  discussionRules: '/about/discussion-rules',
+  guide: '/about/guide',
+  help: '/about/help',
+  manifest: '/about/manifest',
+  partners: '/about/partners',
+  principles: '/about/principles',
+  projects: '/about/projects',
+  termsOfUse: '/about/terms-of-use',
+  thanks: '/about/thanks',
+  expo: '/expo/:layout',
+  profileSettings: '/profile/settings',
+  profileSecurity: '/profile/security',
+  profileSubscriptions: '/profile/subscriptions'
+} as const
 
 const searchParamsStore = createSearchParams()
-const routerStore = createRouter<Routes>(
-  {
-    home: '/',
-    inbox: '/inbox',
-    connect: '/connect',
-    create: '/create',
-    createSettings: '/create/settings',
-    topics: '/topics',
-    topic: '/topic/:slug',
-    authors: '/authors',
-    author: '/author/:slug',
-    feed: '/feed',
-    search: '/search/:q?',
-    article: '/:slug',
-    dogma: '/about/dogma',
-    discussionRules: '/about/discussion-rules',
-    guide: '/about/guide',
-    help: '/about/help',
-    manifest: '/about/manifest',
-    partners: '/about/partners',
-    principles: '/about/principles',
-    projects: '/about/projects',
-    termsOfUse: '/about/terms-of-use',
-    thanks: '/about/thanks',
-    expo: '/expo/:layout',
-    profileSettings: '/profile/settings',
-    profileSecurity: '/profile/security',
-    profileSubscriptions: '/profile/subscriptions'
-  },
-  {
-    search: false,
-    links: false
-  }
-)
+const routerStore = createRouter(ROUTES, {
+  search: false,
+  links: false
+})
 
 export const router = routerStore
 

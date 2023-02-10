@@ -1,4 +1,4 @@
-import { blockTypeItem, icons, MenuItem, wrapItem } from 'prosemirror-menu'
+import { icons, MenuItem, wrapItem } from 'prosemirror-menu'
 import { toggleMark } from 'prosemirror-commands'
 
 const markActive = (state, type) => {

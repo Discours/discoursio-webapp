@@ -38,7 +38,7 @@ main {
   padding: 10px;
   height: calc(100% - 10px);
 
-  $fade-height: 10px;
+  $fadeHeight: 10px;
 
   .sidebarHeader {
     display: flex;
@@ -50,7 +50,7 @@ main {
     overflow: hidden;
     flex: 1;
     position: relative;
-    padding: $fade-height 0;
+    padding: $fadeHeight 0;
 
     &::before,
     &::after {
@@ -59,17 +59,17 @@ main {
       width: 100%;
       right: 0;
       z-index: 1;
-      height: $fade-height;
+      height: $fadeHeight;
     }
 
     &::before {
       top: 0;
-      background: linear-gradient(white, transparent $fade-height);
+      background: linear-gradient(white, transparent $fadeHeight);
     }
 
     &::after {
       bottom: 0;
-      background: linear-gradient(transparent, white $fade-height);
+      background: linear-gradient(transparent, white $fadeHeight);
     }
 
     .dialogs {
@@ -207,6 +207,7 @@ main {
   flex: 1;
   overflow: auto;
   position: relative;
+
   .messagesContainer {
     left: 0;
     height: 100%;
@@ -216,6 +217,7 @@ main {
     width: 100%;
     scroll-behavior: smooth;
   }
+
   .conversation__date {
     position: relative;
     text-align: center;

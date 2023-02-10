@@ -13,13 +13,14 @@
   }
 
   .comment {
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       content: '';
       left: 0;
       position: absolute;
     }
-    &:before {
+
+    &::before {
       border-bottom: 2px solid #ccc;
       border-left: 2px solid #ccc;
       border-radius: 0 0 0 1.2rem;
@@ -27,20 +28,24 @@
       height: 2.4rem;
       width: 1.2rem;
     }
-    &:after {
+
+    &::after {
       background: #ccc;
       height: 100%;
       top: 0;
       width: 2px;
     }
-    &:last-child:after {
+
+    &:last-child::after {
       display: none;
     }
   }
 
   .shout-body {
     @include font-size(1.5rem);
+
     margin-bottom: 1em;
+
     *:last-child {
       margin-bottom: 0;
     }
@@ -76,7 +81,7 @@
 .commentControlEdit,
 .commentControlComplain {
   @include media-breakpoint-up(md) {
-    //opacity: 0;
+    // opacity: 0;
     transition: opacity 0.3s;
   }
 }
@@ -105,6 +110,7 @@
   &:hover {
     background: #000;
     color: #fff;
+
     .icon {
       filter: invert(1);
       opacity: 1;
@@ -116,6 +122,7 @@
     margin-right: 0.3em;
     opacity: 0.6;
     transition: filter 0.3s, opacity 0.2s;
+
     img {
       margin-bottom: -0.1em;
     }
@@ -166,7 +173,6 @@
   gap: 1rem;
   align-items: center;
   justify-content: flex-start;
-  color: rgba(0, 0, 0, 0.3);
   font-size: 1.2rem;
   margin-bottom: 4px;
   color: rgb(0 0 0 / 30%);

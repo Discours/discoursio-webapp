@@ -22,12 +22,12 @@ type InboxSearchParams = {
   initChat: string
   chat: string
 }
-const userSearch = (array: Author[], keyword: string) => {
-  const searchTerm = keyword.toLowerCase()
-  return array.filter((value) => {
-    return value.name.toLowerCase().match(new RegExp(searchTerm, 'g'))
-  })
-}
+// const userSearch = (array: Author[], keyword: string) => {
+//   const searchTerm = keyword.toLowerCase()
+//   return array.filter((value) => {
+//     return value.name.toLowerCase().match(new RegExp(searchTerm, 'g'))
+//   })
+// }
 
 export const InboxView = () => {
   const {

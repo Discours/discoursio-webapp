@@ -1,13 +1,14 @@
 .snackbar {
   min-height: 4px;
   background-color: #141414;
-  color: #ffffff;
+  color: #fff;
   transition: background-color 0.3s;
 
   &.error {
     background-color: #d00820;
   }
 }
+
 .content {
   transition: height 0.3s, color 0.3s;
   height: 60px;

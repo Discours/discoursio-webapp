@@ -1,11 +1,13 @@
 .ratingContainer {
   @include font-size(1.5rem);
+
   display: inline-block;
   vertical-align: top;
 }
 
 .ratingControl {
   @include font-size(1.5rem);
+
   display: inline-flex;
   margin-left: 1em;
   vertical-align: middle;
@@ -35,10 +37,11 @@
 }
 
 .subscribersCounter {
+  @include font-size(1rem);
+
   background: #fff;
   border: 2px solid #000;
   border-radius: 100%;
-  @include font-size(1rem);
   font-weight: bold;
   height: 32px;
   line-height: 30px;

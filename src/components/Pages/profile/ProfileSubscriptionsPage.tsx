@@ -1,12 +1,11 @@
 import { PageWrap } from '../../_shared/PageWrap'
-import type { PageProps } from '../../types'
 import styles from './Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
 import { clsx } from 'clsx'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
 import { SearchField } from '../../_shared/SearchField'
 
-export const ProfileSubscriptionsPage = (props: PageProps) => {
+export const ProfileSubscriptionsPage = () => {
   return (
     <PageWrap>
       <div class="wide-container">

@@ -13,7 +13,7 @@ export default async (req, res) => {
   const client = mailgun.client(mgOptions)
 
   try {
-    const response = await client.lists.members.createMember(mgOptions.domain, {
+    await client.lists.members.createMember(mgOptions.domain, {
       address: email,
       subscribed: true,
       upsert: 'yes'

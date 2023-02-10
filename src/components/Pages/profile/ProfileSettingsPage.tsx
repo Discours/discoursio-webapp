@@ -53,7 +53,7 @@ export const ProfileSettingsPage = () => {
 
     try {
       await submit(form)
-      showSnackbar({ body: t('Profile successfully saved') })
+      showSnackbar({ body: `<Icon name="success-sign"/> ${t('Profile successfully saved')}` })
     } catch {
       showSnackbar({ type: 'error', body: t('Error') })
     }

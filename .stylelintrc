@@ -12,12 +12,16 @@
     "selector-class-pattern": null,
     "no-descending-specificity": null,
     "scss/function-no-unknown": null,
+    "scss/no-global-function-names": null,
     "function-url-quotes": null,
     "font-family-no-missing-generic-family-keyword": null,
     "order/order": [
       "custom-properties",
       "declarations"
-    ]
+    ],
+    "scss/dollar-variable-pattern": ["^[a-z][a-zA-Z]+$", {
+      "ignore": "global"
+    }]
   },
   "defaultSeverity": "warning"
 }

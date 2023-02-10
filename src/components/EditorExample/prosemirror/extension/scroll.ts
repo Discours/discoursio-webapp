@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { Plugin } from 'prosemirror-state'
 import type { EditorView } from 'prosemirror-view'
 import type { ProseMirrorExtension } from '../helpers'

@@ -6,8 +6,6 @@ import { AuthorFull } from '../Author/Full'
 import { t } from '../../utils/intl'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
-
-import { useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
@@ -18,7 +16,6 @@ import { clsx } from 'clsx'
 import Userpic from '../Author/Userpic'
 import { Popup } from '../_shared/Popup'
 import { AuthorCard } from '../Author/Card'
-import { loadReactionsBy, REACTIONS_AMOUNT_PER_PAGE } from '../../stores/zine/reactions'
 import { apiClient } from '../../utils/apiClient'
 import { Comment } from '../Article/Comment'
 
@@ -43,7 +40,6 @@ export const AuthorView = (props: AuthorProps) => {
     shouts: props.shouts
   })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
-  const { topicsByAuthor } = useTopicsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const author = createMemo(() => authorEntities()[props.authorSlug])

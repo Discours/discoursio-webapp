@@ -4,15 +4,16 @@ import { Modal } from './Modal'
 import { AuthModal } from './AuthModal'
 import { t } from '../../utils/intl'
 import { useModalStore } from '../../stores/ui'
-import { router, Routes, useRouter } from '../../stores/router'
+import { router, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { HeaderAuth } from './HeaderAuth'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import { getDescription } from '../../utils/meta'
+import { Snackbar } from './Snackbar'
 
-const resources: { name: string; route: keyof Routes }[] = [
+const resources: { name: string; route: 'home' | 'feed' | 'topics' }[] = [
   { name: t('zine'), route: 'home' },
   { name: t('feed'), route: 'feed' },
   { name: t('topics'), route: 'topics' }
@@ -110,7 +111,7 @@ export const Header = (props: Props) => {
               <For each={resources}>
                 {(r) => (
                   <li classList={{ [styles.selected]: r.route === page().route }}>
-                    <a href={getPagePath(router, r.route, null)}>{r.name}</a>
+                    <a href={getPagePath(router, r.route)}>{r.name}</a>
                   </li>
                 )}
               </For>
@@ -153,6 +154,7 @@ export const Header = (props: Props) => {
             </div>
           </div>
         </nav>
+        <Snackbar />
       </div>
     </header>
   )

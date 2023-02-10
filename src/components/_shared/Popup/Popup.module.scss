@@ -27,6 +27,7 @@
 
   &.bordered {
     @include font-size(1.6rem);
+
     border: 2px solid #000;
     padding: 2.4rem;
 
@@ -41,7 +42,8 @@
 
   &.tiny {
     @include font-size(1.4rem);
-    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.1);
+
+    box-shadow: 0 4px 60px rgb(0 0 0 / 10%);
     padding: 1rem;
 
     ul li {

@@ -1,6 +1,5 @@
 import { PageWrap } from '../../_shared/PageWrap'
 import { t } from '../../../utils/intl'
-import type { PageProps } from '../../types'
 import { Icon } from '../../_shared/Icon'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
 import { For, createSignal, Show, onMount } from 'solid-js'
@@ -9,12 +8,36 @@ import styles from './Settings.module.scss'
 import { useProfileForm } from '../../../context/profile'
 import validateUrl from '../../../utils/validateUrl'
 import { createFileUploader, UploadFile } from '@solid-primitives/upload'
+import { Loading } from '../../Loading'
+import { useSession } from '../../../context/session'
+import Button from '../../_shared/Button'
+import { useSnackbar } from '../../../context/snackbar'
 
-export const ProfileSettingsPage = (props: PageProps) => {
-  const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
-  const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
+const handleFileUpload = async (uploadFile: UploadFile) => {
+  const formData = new FormData()
+  formData.append('file', uploadFile.file, uploadFile.name)
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData
+  })
+  return response.json()
+}
+
+export const ProfileSettingsPage = () => {
+  const [addLinkForm, setAddLinkForm] = createSignal(false)
+  const [incorrectUrl, setIncorrectUrl] = createSignal(false)
+  const [isSubmitting, setIsSubmitting] = createSignal(false)
+  const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
+
+  const {
+    actions: { loadSession }
+  } = useSession()
   const { form, updateFormField, submit, slugError } = useProfileForm()
-  let updateForm: HTMLFormElement
+
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
       updateFormField('links', value)
@@ -23,28 +46,31 @@ export const ProfileSettingsPage = (props: PageProps) => {
       setIncorrectUrl(true)
     }
   }
-  const handleSubmit = (event: Event): void => {
+
+  const handleSubmit = async (event: Event) => {
     event.preventDefault()
-    submit(form)
+    setIsSubmitting(true)
+
+    try {
+      await submit(form)
+      showSnackbar({ body: t('Profile successfully saved') })
+    } catch {
+      showSnackbar({ type: 'error', body: t('Error') })
+    }
+
+    loadSession()
+    setIsSubmitting(false)
   }
 
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
-  const handleFileUpload = async (uploadFile: UploadFile) => {
-    const formData = new FormData()
-    formData.append('file', uploadFile.file, uploadFile.name)
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    })
-    return response.json()
-  }
-
-  const handleUserpicUpload = async () => {
+  const handleAvatarClick = async () => {
     await selectFiles(async ([uploadFile]) => {
       try {
+        setIsUserpicUpdating(true)
         const fileUrl = await handleFileUpload(uploadFile)
         updateFormField('userpic', fileUrl)
+        setIsUserpicUpdating(false)
       } catch (error) {
         console.error('[upload avatar] error', error)
       }
@@ -68,13 +94,18 @@ export const ProfileSettingsPage = (props: PageProps) => {
               <div class="col-md-10 col-lg-9 col-xl-8">
                 <h1>{t('Profile settings')}</h1>
                 <p class="description">{t('Here you can customize your profile the way you want.')}</p>
-                <form ref={updateForm} onSubmit={handleSubmit} enctype="multipart/form-data">
+                <form onSubmit={handleSubmit} enctype="multipart/form-data">
                   <h4>{t('Userpic')}</h4>
                   <div class="pretty-form__item">
                     <div class={styles.avatarContainer}>
-                      <button role="button" onClick={() => handleUserpicUpload()}>
-                        <img class={styles.avatar} src={form.userpic} alt={form.name} />
-                      </button>
+                      <Show when={!isUserpicUpdating()} fallback={<Loading />}>
+                        <img
+                          class={styles.avatar}
+                          src={form.userpic}
+                          alt={form.name}
+                          onClick={handleAvatarClick}
+                        />
+                      </Show>
                     </div>
                   </div>
                   <h4>{t('Name')}</h4>
@@ -187,13 +218,8 @@ export const ProfileSettingsPage = (props: PageProps) => {
                       )}
                     </For>
                   </div>
-
                   <br />
-                  <p>
-                    <button type="submit" class="button button--submit">
-                      {t('Save settings')}
-                    </button>
-                  </p>
+                  <Button type="submit" size="L" value={t('Save settings')} loading={isSubmitting()} />
                 </form>
               </div>
             </div>

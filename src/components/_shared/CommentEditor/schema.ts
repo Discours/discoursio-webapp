@@ -12,7 +12,7 @@ export const schema = new Schema({
     paragraph: {
       content: 'inline*',
       group: 'block',
-      toDOM: function toDOM(node) {
+      toDOM: function toDOM() {
         return ['p', { class: 'paragraph' }, 0]
       }
     },

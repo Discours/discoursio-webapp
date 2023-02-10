@@ -1,11 +1,10 @@
 import { PageWrap } from '../../_shared/PageWrap'
-import type { PageProps } from '../../types'
 import styles from './Settings.module.scss'
 import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
 import ProfileSettingsNavigation from '../../Discours/ProfileSettingsNavigation'
 
-export const ProfileSecurityPage = (props: PageProps) => {
+export const ProfileSecurityPage = () => {
   return (
     <PageWrap>
       <div class="wide-container">

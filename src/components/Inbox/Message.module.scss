@@ -51,10 +51,12 @@ $actionsWidth: 32px * 2;
       z-index: -1;
       transition: 0.3s ease-in-out;
     }
+
     &.popupVisible {
       position: relative;
       z-index: 100;
     }
+
     &.popupVisible,
     &:hover {
       .actions {
@@ -101,6 +103,7 @@ $actionsWidth: 32px * 2;
         right: unset;
         left: -$actionsWidth/2;
         flex-direction: row-reverse;
+
         .reply {
           transform: scaleX(-1);
         }

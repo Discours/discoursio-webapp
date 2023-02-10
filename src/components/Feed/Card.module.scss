@@ -411,12 +411,13 @@
 }
 
 .shoutCardDetails {
+  @include font-size(1.5rem);
+
   align-items: flex-start;
   border-top: 2px solid #141414;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  @include font-size(1.5rem);
   margin-top: 1em;
   padding: 1em 0 0;
   position: relative;

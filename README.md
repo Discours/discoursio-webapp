@@ -1,23 +1,23 @@
 ## How to start
 ```
-yarn install
-yarn start
+npm install
+npm start
 ```
 with different backends
 ```
-yarn run start:local
-yarn run start:production
-yarn run start:staging
+npm run start:local
+npm run start:production
+npm run start:staging
 ```
 
 ## Useful commands
 run checks
 ```
-yarn run check
+npm run check
 ```
 type checking with watch
 ```
-yarn run typecheck:watch
+npm run typecheck:watch
 ```
 ## Code generation
 

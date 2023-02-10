@@ -12,7 +12,7 @@ jobs:
           node-version: '16'
 
       - name: Install deps
-        run: yarn install
+        run: npm install
 
       - name: Lint
         run: npm run lint

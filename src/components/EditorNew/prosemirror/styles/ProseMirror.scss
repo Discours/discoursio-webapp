@@ -1,4 +1,4 @@
-.ProseMirror {
+.ProseMirror.createArticle {
   color: var(--foreground);
   background-color: var(--background);
   position: relative;
@@ -7,6 +7,35 @@
   font-variant-ligatures: none;
   outline: none;
 
+  //font styles
+
+  h1 {
+    margin: 0 0 16px 0;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 50px;
+  }
+
+  h2 {
+    margin: 0 0 16px 0;
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 50px;
+  }
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 40px;
+  }
+
+  p {
+    margin: 0 0 16px 0;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
+  }
   .dark & {
     color: var(--background);
     background-color: var(--foreground);

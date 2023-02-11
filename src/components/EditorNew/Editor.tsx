@@ -62,6 +62,7 @@ export const Editor = (props: Props) => {
       dispatchTransaction
     })
 
+    editorViewRef.current.dom.classList.add('createArticle')
     editorViewRef.current.focus()
   })
 

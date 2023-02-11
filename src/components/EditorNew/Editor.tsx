@@ -12,6 +12,8 @@ import { createArticle } from '../../stores/zine/articles'
 import type { ShoutInput } from '../../graphql/types.gen'
 import { Sidebar } from './Sidebar'
 import styles from './Sidebar.module.scss'
+import Button from '../_shared/Button'
+import { t } from '../../utils/intl'
 
 type Props = {
   initialContent?: string
@@ -78,9 +80,7 @@ export const Editor = (props: Props) => {
   return (
     <div class={clsx('container')} style={{ width: '100%', 'max-width': '670px' }}>
       <div class={styles.editor} ref={(el) => (editorElRef.current = el)} />
-      <button class={clsx('button')} onClick={handleSaveButtonClick}>
-        Опубликовать WIP
-      </button>
+      <Button value={t('Publish')} onClick={handleSaveButtonClick} />
       <Sidebar editorViewRef={editorViewRef} />
     </div>
   )

@@ -1,5 +1,5 @@
 import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
-import { Comment } from './Comment'
+import Comment from './Comment'
 import { t } from '../../utils/intl'
 import styles from '../../styles/Article.module.scss'
 import { createReaction, useReactionsStore } from '../../stores/zine/reactions'
@@ -12,8 +12,10 @@ import { useSession } from '../../context/session'
 import CommentEditor from '../_shared/CommentEditor'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import Button from '../_shared/Button'
+import { createStorage } from '@solid-primitives/storage'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
+const MAX_COMMENT_LEVEL = 6
 
 type Props = {
   commentAuthors: Author[]
@@ -27,6 +29,19 @@ export const CommentsTree = (props: Props) => {
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { sortedReactions, loadReactionsBy } = useReactionsStore()
+  const [store, setStore] = createStorage({ api: localStorage })
+  const [newReactions, setNewReactions] = createSignal<number>()
+
+  const getNewReactions = () => {
+    const storeValue = Number(store[`${props.shoutSlug}`])
+    const setVal = () => setStore(`${props.shoutSlug}`, `${sortedReactions().length}`)
+    if (!store[`${props.shoutSlug}`]) {
+      setVal()
+    } else if (storeValue < sortedReactions().length) {
+      setNewReactions(sortedReactions().length - storeValue)
+      setVal()
+    }
+  }
 
   const reactions = createMemo<Reaction[]>(() =>
     sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
@@ -42,6 +57,7 @@ export const CommentsTree = (props: Props) => {
         limit: ARTICLE_COMMENTS_PAGE_SIZE,
         offset: page * ARTICLE_COMMENTS_PAGE_SIZE
       })
+      getNewReactions()
       setIsLoadMoreButtonVisible(hasMore)
     } finally {
       setIsCommentsLoading(false)
@@ -77,6 +93,9 @@ export const CommentsTree = (props: Props) => {
         <div class={styles.commentsHeaderWrapper}>
           <h2 id="comments" class={styles.commentsHeader}>
             {t('Comments')} {reactions().length.toString() || ''}
+            <Show when={newReactions()}>
+              <span class={styles.newReactions}>&nbsp;+{newReactions()}</span>
+            </Show>
           </h2>
 
           <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>

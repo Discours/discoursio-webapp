@@ -275,6 +275,10 @@ img {
   @include font-size(2.4rem);
 
   margin-bottom: 1em;
+
+  .newReactions {
+    color: #d00820;
+  }
 }
 
 .ratingControl {

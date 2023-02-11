@@ -77,7 +77,7 @@ export const ProfileSettingsPage = () => {
     })
   }
 
-  const [hostname, setHostname] = createSignal('new.discours.io')
+  const [hostname, setHostname] = createSignal<string | null>(null)
   onMount(() => setHostname(window?.location.host))
 
   return (

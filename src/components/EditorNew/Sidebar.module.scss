@@ -1,4 +1,11 @@
+.editor {
+  margin: 0 auto;
+  padding: 1rem;
+  max-width: 670px;
+}
+
 .sidebarContainer {
+  display: none; // режим отладки
   color: rgb(255 255 255 / 50%);
   @include font-size(1.6rem);
 

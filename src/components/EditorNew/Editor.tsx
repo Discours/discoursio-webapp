@@ -6,11 +6,18 @@ import type { Nodes, Marks } from './prosemirror/schema'
 import { createImageView } from './prosemirror/views/image'
 import { schema } from './prosemirror/schema'
 import { createPlugins } from './prosemirror/plugins'
-import { DOMSerializer } from 'prosemirror-model'
+import { DOMParser as ProseDOMParser, DOMSerializer } from 'prosemirror-model'
 import { clsx } from 'clsx'
 import { createArticle } from '../../stores/zine/articles'
 import type { ShoutInput } from '../../graphql/types.gen'
 import { Sidebar } from './Sidebar'
+import styles from './Sidebar.module.scss'
+import Button from '../_shared/Button'
+import { t } from '../../utils/intl'
+
+type Props = {
+  initialContent?: string
+}
 
 const htmlContainer = typeof document === 'undefined' ? null : document.createElement('div')
 
@@ -20,7 +27,7 @@ const getHtml = (state: EditorState) => {
   return htmlContainer.innerHTML
 }
 
-export const Editor = () => {
+export const Editor = (props: Props) => {
   const editorElRef: {
     current: HTMLDivElement
   } = {
@@ -43,8 +50,12 @@ export const Editor = () => {
 
     const markViews: Partial<Record<Marks, MarkViewConstructor>> = {}
 
+    const domNew = new DOMParser().parseFromString(`<div>${props.initialContent}</div>`, 'text/xml')
+    const doc = ProseDOMParser.fromSchema(schema).parse(domNew)
+
     editorViewRef.current = new EditorView(editorElRef.current, {
       state: EditorState.create({
+        doc,
         schema,
         plugins
       }),
@@ -53,6 +64,7 @@ export const Editor = () => {
       dispatchTransaction
     })
 
+    editorViewRef.current.dom.classList.add('createArticle')
     editorViewRef.current.focus()
   })
 
@@ -66,14 +78,12 @@ export const Editor = () => {
   }
 
   return (
-    <div class="wide-container" style={{ display: 'flex' }}>
-      <div style={{ flex: 1 }}>
-        <div ref={(el) => (editorElRef.current = el)} />
-        <button class={clsx('button')} onClick={handleSaveButtonClick}>
-          Опубликовать WIP
-        </button>
-      </div>
+    <div class={clsx('container')} style={{ width: '100%', 'max-width': '670px' }}>
+      <div class={styles.editor} ref={(el) => (editorElRef.current = el)} />
+      <Button value={t('Publish')} onClick={handleSaveButtonClick} />
       <Sidebar editorViewRef={editorViewRef} />
     </div>
   )
 }
+
+export default Editor

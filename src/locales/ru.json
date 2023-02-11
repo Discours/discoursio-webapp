@@ -231,5 +231,9 @@
   "Get notifications": "Получать уведомления",
   "Profile successfully saved": "Профиль успешно сохранён",
   "Welcome!": "Добро пожаловать!",
-  "You've successfully logged out": "Вы успешно вышли из аккаунта"
+  "You've successfully logged out": "Вы успешно вышли из аккаунта",
+  "Header": "Заголовок",
+  "Subheader": "Подзаголовок",
+  "A short introduction to keep the reader interested": "Небольшое вступление, чтобы заинтересовать читателя",
+  "Publish": "Опубликовать"
 }

@@ -139,7 +139,7 @@ export const Comment = (props: Props) => {
           </Show>
           <div class={styles.commentBody} id={'comment-' + (comment().id || '')}>
             <Show when={editMode()} fallback={<MD body={body()} />}>
-              <Suspense fallback={<p>Loading...</p>}>
+              <Suspense fallback={<p>{t('Loading')}</p>}>
                 <CommentEditor initialContent={body()} onSubmit={(value) => handleUpdate(value)} />
               </Suspense>
             </Show>

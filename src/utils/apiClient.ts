@@ -37,6 +37,7 @@ import createArticle from '../graphql/mutation/article-create'
 import myChats from '../graphql/query/chats-load'
 import chatMessagesLoadBy from '../graphql/query/chat-messages-load-by'
 import authorBySlug from '../graphql/query/author-by-slug'
+import userSubscribers from '../graphql/query/author-followers'
 import topicBySlug from '../graphql/query/topic-by-slug'
 import createChat from '../graphql/mutation/create-chat'
 import reactionsLoadBy from '../graphql/query/reactions-load-by'
@@ -217,9 +218,12 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
     return response.data.getAuthor
   },
+  getAuthorFollowers: async ({ slug }: { slug: string }): Promise<Author[]> => {
+    const response = await publicGraphQLClient.query(userSubscribers, { slug }).toPromise()
+    return response.data.userFollowers
+  },
   updateProfile: async (input: ProfileInput) => {
     const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
-    console.log('!!! response.data.getAuthor:', response.data.updateProfile)
     return response.data.updateProfile
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {

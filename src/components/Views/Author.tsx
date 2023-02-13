@@ -18,6 +18,7 @@ import { Popup } from '../_shared/Popup'
 import { AuthorCard } from '../Author/Card'
 import { apiClient } from '../../utils/apiClient'
 import { Comment } from '../Article/Comment'
+import DialogAvatar from '../Inbox/DialogAvatar'
 
 // TODO: load reactions on client
 type AuthorProps = {
@@ -43,7 +44,16 @@ export const AuthorView = (props: AuthorProps) => {
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
-  const subscribers = Array.from({ length: 12 }).fill(author())
+  const [followers, setFollowers] = createSignal<Author[]>([])
+  onMount(async () => {
+    try {
+      const authorSubscribers = await apiClient.getAuthorFollowers({ slug: props.author.slug })
+      setFollowers(authorSubscribers)
+    } catch (error) {
+      console.log('[getAuthorSubscribers]', error)
+    }
+  })
+
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
   changeSearchParam('by', 'rating')
@@ -136,19 +146,36 @@ export const AuthorView = (props: AuthorProps) => {
                 {...props}
                 trigger={
                   <div class={styles.subscribers}>
-                    <Userpic user={author()} class={styles.userpic} />
-                    <Userpic user={author()} class={styles.userpic} />
-                    <Userpic user={author()} class={styles.userpic} />
-                    <div class={clsx(styles.userpic, styles.subscribersCounter)}>12</div>
+                    <Switch>
+                      <Match when={followers().length <= 3}>
+                        <For each={followers().slice(0, 3)}>
+                          {(f) => <Userpic user={f} class={styles.userpic} />}
+                        </For>
+                      </Match>
+                      <Match when={followers().length > 3}>
+                        <For each={followers().slice(0, 2)}>
+                          {(f) => <Userpic user={f} class={styles.userpic} />}
+                        </For>
+                        <div class={clsx(styles.userpic, styles.subscribersCounter)}>
+                          {followers().length}
+                        </div>
+                      </Match>
+                    </Switch>
                   </div>
                 }
                 variant="tiny"
               >
                 <ul class={clsx('nodash', styles.subscribersList)}>
-                  <For each={subscribers}>
+                  <For each={followers()}>
                     {(item: Author) => (
-                      <li>
-                        <AuthorCard author={item} hideDescription={true} hideFollow={true} hasLink={true} />
+                      <li class={styles.subscriber}>
+                        <AuthorCard
+                          author={item}
+                          isNowrap={true}
+                          hideDescription={true}
+                          hideFollow={true}
+                          hasLink={true}
+                        />
                       </li>
                     )}
                   </For>
@@ -156,7 +183,7 @@ export const AuthorView = (props: AuthorProps) => {
               </Popup>
 
               <div class={styles.ratingContainer}>
-                Карма
+                {t('Karma')}
                 <RatingControl rating={19} class={styles.ratingControl} />
               </div>
             </div>

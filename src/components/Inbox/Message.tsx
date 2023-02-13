@@ -23,7 +23,7 @@ const md = new MarkdownIt({
   breaks: true
 })
 
-const Message = (props: Props) => {
+export const Message = (props: Props) => {
   const isOwn = props.ownId === Number(props.content.author)
   const user = props.members?.find((m) => m.id === Number(props.content.author))
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
@@ -57,5 +57,3 @@ const Message = (props: Props) => {
     </div>
   )
 }
-
-export default Message

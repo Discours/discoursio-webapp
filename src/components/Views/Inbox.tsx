@@ -2,7 +2,7 @@ import { For, createSignal, Show, onMount, createEffect, createMemo } from 'soli
 import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
-import Message from '../Inbox/Message'
+import { Message } from '../Inbox/Message'
 import CreateModalContent from '../Inbox/CreateModalContent'
 import DialogHeader from '../Inbox/DialogHeader'
 import MessagesFallback from '../Inbox/MessagesFallback'

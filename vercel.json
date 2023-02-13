@@ -12,5 +12,11 @@
       "src": "/api/feedback",
       "dest": "api/feedback.js"
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!assets/).*)",
+      "destination": "/api/ssr.js"
+    }
   ]
 }

@@ -15,7 +15,6 @@ import Button from '../_shared/Button'
 import { createStorage } from '@solid-primitives/storage'
 
 const ARTICLE_COMMENTS_PAGE_SIZE = 50
-const MAX_COMMENT_LEVEL = 6
 
 type Props = {
   commentAuthors: Author[]

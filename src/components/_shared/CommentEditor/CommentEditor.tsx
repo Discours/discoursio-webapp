@@ -17,7 +17,6 @@ import { customKeymap } from '../../EditorNew/prosemirror/plugins/customKeymap'
 import { placeholder } from '../../EditorNew/prosemirror/plugins/placeholder'
 import { undo, redo, history } from 'prosemirror-history'
 import { useSession } from '../../../context/session'
-import { showModal } from '../../../stores/ui'
 
 type Props = {
   placeholder?: string
@@ -51,7 +50,7 @@ const CommentEditor = (props: Props) => {
           history(),
           customKeymap(),
           placeholder(props.placeholder),
-          keymap({ 'Mod-z': undo, 'Mod-y': redo }),
+          keymap({ 'Mod-z': undo, 'Mod-Shift-z': undo, 'Mod-Shift-y': redo, 'Mod-y': redo }),
           keymap(baseKeymap)
         ]
       })
@@ -81,34 +80,31 @@ const CommentEditor = (props: Props) => {
 
   return (
     <>
-      <div class={styles.commentEditor}>
-        <div
-          class={clsx('ProseMirrorOverrides', styles.textarea)}
-          ref={(el) => (editorElRef.current = el)}
-        />
-        <div class={styles.actions}>
-          <div class={styles.menu} ref={(el) => (menuElRef.current = el)} />
-          <div class={styles.buttons}>
-            <Show when={session()?.user?.slug}>
-              <Button value={t('Send')} variant="primary" onClick={handleSubmitButtonClick} />
-            </Show>
-            <Button value={t('cancel')} variant="secondary" onClick={clearEditor} />
+      <Show
+        when={session()?.user?.slug}
+        fallback={
+          <div class={styles.signInMessage} id="comments">
+            {t('To write a comment, you must')}&nbsp;
+            <a href="?modal=auth&mode=register">{t('sign up')}</a>
+            &nbsp;{t('or')}&nbsp;
+            <a href="?modal=auth&mode=login">{t('sign in')}</a>
           </div>
-        </div>
-      </div>
-      <div class={styles.helpText}>{'"Cmd-Z": Undo, "Cmd-Y": Redo'}</div>
-      <Show when={!session()?.user?.slug}>
-        <div class={styles.signInMessage} id="comments">
-          {t('To write a comment, you must')}&nbsp;
-          <span
-            class={styles.link}
-            onClick={(evt) => {
-              evt.preventDefault()
-              showModal('auth')
-            }}
-          >
-            {t('sign up or sign in')}
-          </span>
+        }
+      >
+        <div class={styles.commentEditor}>
+          <div
+            class={clsx('ProseMirrorOverrides', styles.textarea)}
+            ref={(el) => (editorElRef.current = el)}
+          />
+          <div class={styles.actions}>
+            <div class={styles.menu} ref={(el) => (menuElRef.current = el)} />
+            <div class={styles.buttons}>
+              <Show when={session()?.user?.slug}>
+                <Button value={t('Send')} variant="primary" onClick={handleSubmitButtonClick} />
+              </Show>
+              <Button value={t('cancel')} variant="secondary" onClick={clearEditor} />
+            </div>
+          </div>
         </div>
       </Show>
     </>

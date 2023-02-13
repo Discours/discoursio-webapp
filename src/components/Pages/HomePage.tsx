@@ -8,6 +8,8 @@ import { Loading } from '../Loading'
 import styles from './HomePage.module.scss'
 
 export const HomePage = (props: PageProps) => {
+  console.log('HomePage', { props })
+
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts) && Boolean(props.randomTopics))
 
   onMount(async () => {

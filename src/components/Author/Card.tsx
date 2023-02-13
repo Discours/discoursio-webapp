@@ -30,6 +30,7 @@ interface AuthorCardProps {
   liteButtons?: boolean
   isComments?: boolean
   isFeedMode?: boolean
+  isNowrap?: boolean
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -83,7 +84,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
         [styles.authorPage]: props.isAuthorPage,
         [styles.authorComments]: props.isComments,
         [styles.authorsListItem]: props.isAuthorsList,
-        [styles.feedMode]: props.isFeedMode
+        [styles.feedMode]: props.isFeedMode,
+        [styles.nowrapView]: props.isNowrap
       }}
     >
       <Userpic

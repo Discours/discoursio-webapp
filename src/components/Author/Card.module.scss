@@ -1,6 +1,8 @@
 .author {
   align-items: flex-start;
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   margin-bottom: 2.4rem;
 
   &:last-child {
@@ -291,6 +293,12 @@
   .buttonLabel {
     display: block;
   }
+}
+
+.nowrapView {
+  flex-wrap: nowrap;
+  align-items: center;
+  margin: 0;
 }
 
 .authorComments {

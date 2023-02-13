@@ -17,7 +17,6 @@ import { customKeymap } from '../../EditorNew/prosemirror/plugins/customKeymap'
 import { placeholder } from '../../EditorNew/prosemirror/plugins/placeholder'
 import { undo, redo, history } from 'prosemirror-history'
 import { useSession } from '../../../context/session'
-import { showModal } from '../../../stores/ui'
 
 type Props = {
   placeholder?: string
@@ -51,7 +50,7 @@ const CommentEditor = (props: Props) => {
           history(),
           customKeymap(),
           placeholder(props.placeholder),
-          keymap({ 'Mod-z': undo, 'Mod-y': redo }),
+          keymap({ 'Mod-z': undo, 'Mod-Shift-z': undo, 'Mod-Shift-y': redo, 'Mod-y': redo }),
           keymap(baseKeymap)
         ]
       })

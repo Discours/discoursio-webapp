@@ -1,8 +1,7 @@
 .author {
   align-items: flex-start;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   margin-bottom: 2.4rem;
 
   &:last-child {

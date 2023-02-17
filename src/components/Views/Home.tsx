@@ -11,7 +11,7 @@ import RowShort from '../Feed/RowShort'
 import Slider from '../_shared/Slider'
 import Group from '../Feed/Group'
 import type { Shout, Topic } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
+
 import { useTopicsStore } from '../../stores/zine/topics'
 import {
   loadShouts,
@@ -20,10 +20,10 @@ import {
   useArticlesStore
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { locale } from '../../stores/ui'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { ArticleCard } from '../Feed/Card'
+import { useLocalize } from '../../context/localize'
 
 type HomeProps = {
   randomTopics: Topic[]
@@ -51,6 +51,7 @@ export const HomeView = (props: HomeProps) => {
   })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { topAuthors } = useTopAuthorsStore()
+  const { t } = useLocalize()
 
   onMount(async () => {
     loadTopArticles()
@@ -104,7 +105,7 @@ export const HomeView = (props: HomeProps) => {
   )
 
   return (
-    <Show when={locale() && sortedArticles().length > 0}>
+    <Show when={sortedArticles().length > 0}>
       <NavTopics topics={randomTopics()} />
 
       <Row5 articles={sortedArticles().slice(0, 5)} nodate={true} />

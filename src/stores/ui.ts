@@ -1,9 +1,8 @@
 import { createSignal } from 'solid-js'
 import { useRouter } from './router'
 import type { AuthModalSearchParams, ConfirmEmailSearchParams } from '../components/Nav/AuthModal/types'
-import type { RootSearchParams } from '../components/types'
+import type { RootSearchParams } from '../pages/types'
 
-export const [locale, setLocale] = createSignal('ru')
 export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate' | 'inviteToChat'
 type WarnKind = 'error' | 'warn' | 'info'
 

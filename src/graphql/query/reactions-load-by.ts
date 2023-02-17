@@ -4,6 +4,7 @@ export default gql`
   query LoadReactions($by: ReactionBy!, $limit: Int, $offset: Int) {
     loadReactionsBy(by: $by, limit: $limit, offset: $offset) {
       id
+      kind
       body
       range
       replyTo
@@ -19,6 +20,9 @@ export default gql`
       }
       createdAt
       updatedAt
+      stat {
+        rating
+      }
     }
   }
 `

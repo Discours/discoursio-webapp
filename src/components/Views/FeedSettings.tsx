@@ -1,11 +1,12 @@
 import styles from '../../styles/FeedSettings.module.scss'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 // type FeedSettingsSearchParams = {
 //   by: '' | 'topics' | 'authors' | 'reacted'
 // }
 
 export const FeedSettingsView = (_props) => {
+  const { t } = useLocalize()
   return (
     <div class="container">
       <h1>{t('Feed settings')}</h1>

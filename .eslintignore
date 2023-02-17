@@ -2,7 +2,5 @@ node_modules
 public
 *.cjs
 src/graphql/*.gen.ts
-src/legacy_*
-src/components/EditorExample
 dist/
 .vercel/

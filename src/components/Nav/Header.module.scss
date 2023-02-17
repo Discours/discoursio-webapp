@@ -110,8 +110,10 @@
     }
   }
 
-  a {
-    border: none;
+  a,
+  a:link,
+  a:visited {
+    border-bottom: none;
     color: #000;
 
     &:hover {
@@ -127,9 +129,11 @@
 .usernav {
   display: inline-flex;
   font-weight: 500;
-  padding-right: 0;
   position: relative;
-  width: auto;
+
+  // replace row > * selector to remove !important
+  padding-right: 0 !important;
+  width: auto !important;
 
   @include media-breakpoint-down(md) {
     flex: 1;
@@ -195,7 +199,8 @@
     margin-right: 2.4rem;
   }
 
-  a {
+  a,
+  a:link {
     border: none;
   }
 
@@ -443,7 +448,8 @@
   }
 
   .button,
-  a {
+  a,
+  a:link {
     border: none;
     height: auto;
     margin: 0;

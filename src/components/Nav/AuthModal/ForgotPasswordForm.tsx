@@ -1,4 +1,3 @@
-import { t } from '../../../utils/intl'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
@@ -6,9 +5,9 @@ import { useRouter } from '../../../stores/router'
 import { email, setEmail } from './sharedLogic'
 import type { AuthModalSearchParams } from './types'
 import { isValidEmail } from './validators'
-import { locale } from '../../../stores/ui'
 import { ApiError } from '../../../utils/apiClient'
 import { signSendLink } from '../../../stores/auth'
+import { useLocalize } from '../../../context/localize'
 
 type FormFields = {
   email: string
@@ -18,7 +17,7 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const ForgotPasswordForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
-
+  const { t, lang } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail)
@@ -54,7 +53,7 @@ export const ForgotPasswordForm = () => {
     setIsSubmitting(true)
 
     try {
-      await signSendLink({ email: email(), lang: locale(), template: 'forgot_password' })
+      await signSendLink({ email: email(), lang: lang(), template: 'forgot_password' })
     } catch (error) {
       if (error instanceof ApiError && error.code === 'user_not_found') {
         setIsUserNotFound(true)

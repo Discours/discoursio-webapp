@@ -1,10 +1,11 @@
 import { createSignal, For, createEffect } from 'solid-js'
 import styles from './CreateModalContent.module.scss'
-import { t } from '../../utils/intl'
+
 import InviteUser from './InviteUser'
 import type { Author } from '../../graphql/types.gen'
 import { hideModal } from '../../stores/ui'
 import { useInbox } from '../../context/inbox'
+import { useLocalize } from '../../context/localize'
 
 type inviteUser = Author & { selected: boolean }
 type Props = {
@@ -12,6 +13,7 @@ type Props = {
 }
 
 const CreateModalContent = (props: Props) => {
+  const { t } = useLocalize()
   const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
   const [theme, setTheme] = createSignal<string>(' ')
   const [usersId, setUsersId] = createSignal<number[]>([])
@@ -66,7 +68,7 @@ const CreateModalContent = (props: Props) => {
 
   return (
     <div class={styles.CreateModalContent}>
-      <h4>{t('create_chat')}</h4>
+      <h4>{t('Create Chat')}</h4>
       {usersId().length > 1 && (
         <input
           ref={textInput}
@@ -74,7 +76,7 @@ const CreateModalContent = (props: Props) => {
           type="text"
           required={true}
           class="form-control form-control-lg fs-3"
-          placeholder={t('discourse_theme')}
+          placeholder={t('Chat Title')}
         />
       )}
 
@@ -96,7 +98,7 @@ const CreateModalContent = (props: Props) => {
           onClick={handleCreate}
           disabled={usersId().length === 0}
         >
-          {usersId().length > 1 ? t('create_group') : t('create_chat')}
+          {usersId().length > 1 ? t('Create Group') : t('Create Chat')}
         </button>
       </div>
     </div>

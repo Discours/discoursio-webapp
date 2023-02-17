@@ -1,9 +1,9 @@
-import { t } from '../../../utils/intl'
 import { Icon } from '../../_shared/Icon'
 import { hideModal } from '../../../stores/ui'
 
 import styles from './SocialProviders.module.scss'
 import { apiBaseUrl } from '../../../utils/config'
+import { useLocalize } from '../../../context/localize'
 
 type Provider = 'facebook' | 'google' | 'vk' | 'github'
 
@@ -16,6 +16,7 @@ const handleSocialAuthLinkClick = (event: MouseEvent, provider: Provider): void 
 }
 
 export const SocialProviders = () => {
+  const { t } = useLocalize()
   return (
     <div class={styles.container}>
       <div class={styles.text}>{t('Or continue with social network')}</div>

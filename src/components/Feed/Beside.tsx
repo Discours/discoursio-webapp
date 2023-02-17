@@ -7,8 +7,9 @@ import { TopicCard } from '../Topic/Card'
 import styles from './Beside.module.scss'
 import type { Author, Shout, Topic, User } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
-import { t } from '../../utils/intl'
+
 import { clsx } from 'clsx'
+import { useLocalize } from '../../context/localize'
 
 interface BesideProps {
   title?: string
@@ -24,6 +25,7 @@ interface BesideProps {
 }
 
 export const Beside = (props: BesideProps) => {
+  const { t } = useLocalize()
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
       <div class="floor floor--9">

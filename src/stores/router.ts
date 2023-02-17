@@ -68,7 +68,7 @@ const handleClientRouteLinkClick = (event) => {
 
         const anchor = document.querySelector(selector)
         const headerOffset = 80 // 100px for header
-        const elementPosition = anchor.getBoundingClientRect().top
+        const elementPosition = anchor ? anchor.getBoundingClientRect().top : 0
         const newScrollTop = elementPosition + window.scrollY - headerOffset
 
         window.scrollTo({
@@ -91,7 +91,7 @@ const handleClientRouteLinkClick = (event) => {
   }
 }
 
-export const initRouter = (pathname: string, search: string) => {
+export const initRouter = (pathname: string, search: Record<string, string>) => {
   routerStore.open(pathname)
   const params = Object.fromEntries(new URLSearchParams(search))
   searchParamsStore.open(params)
@@ -103,7 +103,8 @@ export const initRouter = (pathname: string, search: string) => {
 
 if (!isServer) {
   const { pathname, search } = window.location
-  initRouter(pathname, search)
+  const searchParams = Object.fromEntries(new URLSearchParams(search))
+  initRouter(pathname, searchParams)
 }
 
 export const useRouter = <TSearchParams extends Record<string, string> = Record<string, string>>() => {

@@ -1,5 +1,3 @@
-$actionsWidth: 32px * 2;
-
 .Message {
   display: flex;
   flex-direction: column;
@@ -41,13 +39,13 @@ $actionsWidth: 32px * 2;
       position: absolute;
       display: flex;
       flex-direction: row;
-      width: $actionsWidth;
+      width: 64px;
       height: 32px;
       cursor: pointer;
       top: 50%;
       transform: translateY(-50%);
       opacity: 0;
-      right: -$actionsWidth/2;
+      right: -32px;
       z-index: -1;
       transition: 0.3s ease-in-out;
     }
@@ -62,7 +60,7 @@ $actionsWidth: 32px * 2;
       .actions {
         z-index: 10000;
         opacity: 1;
-        right: -$actionsWidth;
+        right: -64px;
       }
     }
   }
@@ -101,7 +99,7 @@ $actionsWidth: 32px * 2;
 
       .actions {
         right: unset;
-        left: -$actionsWidth/2;
+        left: -32px;
         flex-direction: row-reverse;
 
         .reply {
@@ -112,7 +110,7 @@ $actionsWidth: 32px * 2;
       &.popupVisible,
       &:hover {
         .actions {
-          left: -$actionsWidth;
+          left: -64px;
         }
       }
     }

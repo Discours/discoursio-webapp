@@ -1,9 +1,11 @@
 import { createSignal } from 'solid-js'
 import styles from './Subscribe.module.scss'
-import { t } from '../../utils/intl'
+
 import { clsx } from 'clsx'
+import { useLocalize } from '../../context/localize'
 
 export default () => {
+  const { t } = useLocalize()
   let emailElement: HTMLInputElement | undefined
   const [title, setTitle] = createSignal('')
   const subscribe = async () => {

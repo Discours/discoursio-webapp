@@ -1,5 +1,14 @@
+[0.8.0]
+[+] i18next for ,solid
+[-] i18n
+[+] custom snackbar
+[+] editor lazy load
+[+] hygen
+[-] astro removed
+[+] vite ssr plugin
+
 [0.7.1]
-[+] reactions CRUL
+[+] reactions CUDL
 [+] api/upload with storj
 [+] api/feedback
 [+] bumped astro pkgs versions

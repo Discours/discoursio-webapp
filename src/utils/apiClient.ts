@@ -41,7 +41,6 @@ import userSubscribers from '../graphql/query/author-followers'
 import topicBySlug from '../graphql/query/topic-by-slug'
 import createChat from '../graphql/mutation/create-chat'
 import reactionsLoadBy from '../graphql/query/reactions-load-by'
-import { REACTIONS_AMOUNT_PER_PAGE } from '../stores/zine/reactions'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
 import shoutLoad from '../graphql/query/article-load'
@@ -243,7 +242,7 @@ export const apiClient = {
   destroyReaction: async (id: number) => {
     const response = await privateGraphQLClient.mutation(reactionDestroy, { id: id }).toPromise()
     console.debug('[destroyReaction]:', response)
-    return response.data.deleteReaction
+    return response.data.deleteReaction.reaction
   },
   updateReaction: async (id: number, input: ReactionInput) => {
     const response = await privateGraphQLClient
@@ -266,25 +265,19 @@ export const apiClient = {
     return resp.data.loadShout
   },
   getShouts: async (options: LoadShoutsOptions) => {
-    const resp = await publicGraphQLClient
-      .query(shoutsLoadBy, {
-        options
-      })
-      .toPromise()
-    if (resp.error) console.debug(resp)
+    const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
+
+    if (resp.error) {
+      console.error(resp)
+    }
+
     return resp.data.loadShouts
   },
 
-  getReactionsBy: async ({
-    by,
-    limit = REACTIONS_AMOUNT_PER_PAGE,
-    offset = 0
-  }: {
-    by: ReactionBy
-    limit: number
-    offset: number
-  }) => {
-    const resp = await publicGraphQLClient.query(reactionsLoadBy, { by, limit, offset }).toPromise()
+  getReactionsBy: async ({ by, limit }: { by: ReactionBy; limit?: number }) => {
+    const resp = await publicGraphQLClient
+      .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: 0 })
+      .toPromise()
     console.debug(resp)
     return resp.data.loadReactionsBy
   },

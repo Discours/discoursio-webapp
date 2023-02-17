@@ -9,7 +9,7 @@ type Props = {
   online?: boolean
   size?: 'small'
   bordered?: boolean
-  className?: string
+  class?: string
 }
 
 const colors = [
@@ -38,7 +38,7 @@ const DialogAvatar = (props: Props) => {
 
   return (
     <div
-      class={clsx(styles.DialogAvatar, props.className, {
+      class={clsx(styles.DialogAvatar, props.class, {
         [styles.online]: props.online,
         [styles.bordered]: props.bordered,
         [styles.small]: props.size === 'small'

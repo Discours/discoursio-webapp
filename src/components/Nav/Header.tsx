@@ -2,9 +2,8 @@ import { For, Show, createSignal, createEffect, onMount, onCleanup } from 'solid
 import { Icon } from '../_shared/Icon'
 import { Modal } from './Modal'
 import { AuthModal } from './AuthModal'
-import { t } from '../../utils/intl'
 import { useModalStore } from '../../stores/ui'
-import { router, useRouter } from '../../stores/router'
+import { router, ROUTES, useRouter } from '../../stores/router'
 import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -12,12 +11,7 @@ import { HeaderAuth } from './HeaderAuth'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import { getDescription } from '../../utils/meta'
 import { Snackbar } from './Snackbar'
-
-const resources: { name: string; route: 'home' | 'feed' | 'topics' }[] = [
-  { name: t('zine'), route: 'home' },
-  { name: t('feed'), route: 'feed' },
-  { name: t('topics'), route: 'topics' }
-]
+import { useLocalize } from '../../context/localize'
 
 type Props = {
   title?: string
@@ -27,6 +21,13 @@ type Props = {
 }
 
 export const Header = (props: Props) => {
+  const { t } = useLocalize()
+
+  const resources: { name: string; route: keyof typeof ROUTES }[] = [
+    { name: t('zine'), route: 'home' },
+    { name: t('feed'), route: 'feed' },
+    { name: t('topics'), route: 'topics' }
+  ]
   // signals
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -117,7 +118,7 @@ export const Header = (props: Props) => {
               </For>
               <li class={styles.headerSearch}>
                 <a href="#">
-                  <Icon name="search" class={styles.icon} iconClassName={styles.searchIcon} />
+                  <Icon name="search" class={styles.icon} />
                   {t('Search')}
                 </a>
               </li>

@@ -10,7 +10,6 @@ import type { EditorView } from 'prosemirror-view'
 const Off = (props) => <div class={styles.sidebarOff}>{props.children}</div>
 
 const Link = (props: {
-  withMargin?: boolean
   disabled?: boolean
   title?: string
   className?: string
@@ -18,9 +17,7 @@ const Link = (props: {
   onClick?: () => void
 }) => (
   <button
-    class={clsx(styles.sidebarLink, props.className, {
-      [styles.withMargin]: props.withMargin
-    })}
+    class={clsx(styles.sidebarLink, props.className)}
     onClick={props.onClick}
     disabled={props.disabled}
     title={props.title}

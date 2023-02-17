@@ -3,8 +3,8 @@ import { createContext, createMemo, createResource, createSignal, onMount, useCo
 import type { AuthResult } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
-import { t } from '../utils/intl'
 import { useSnackbar } from './snackbar'
+import { useLocalize } from './localize'
 
 type SessionContextType = {
   session: Resource<AuthResult>
@@ -27,7 +27,7 @@ export function useSession() {
 
 export const SessionProvider = (props: { children: JSX.Element }) => {
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
-
+  const { t } = useLocalize()
   const {
     actions: { showSnackbar }
   } = useSnackbar()

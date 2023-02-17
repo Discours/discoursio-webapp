@@ -6,7 +6,7 @@ import { createMemo, createSignal, For, Suspense } from 'solid-js'
 import type { JSX } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import './List.scss'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 export const Block6 = (props: { articles: Shout[] }) => {
   const dice = createMemo(() => shuffle([Row1, Row2, Row3]))
@@ -25,6 +25,7 @@ interface ArticleListProps {
 }
 
 export default (props: ArticleListProps) => {
+  const { t } = useLocalize()
   const [articles, setArticles] = createSignal(
     props.articles.slice(props.page * props.size, props.size * (props.page + 1)) || []
   )

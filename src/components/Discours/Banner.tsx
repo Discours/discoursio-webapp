@@ -1,9 +1,11 @@
 import styles from './Banner.module.scss'
-import { t } from '../../utils/intl'
+
 import { showModal } from '../../stores/ui'
 import { clsx } from 'clsx'
+import { useLocalize } from '../../context/localize'
 
 export default () => {
+  const { t } = useLocalize()
   return (
     <div class={styles.discoursBanner}>
       <div class="wide-container">

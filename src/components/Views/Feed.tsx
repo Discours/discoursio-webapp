@@ -4,11 +4,10 @@ import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/Card'
 import { AuthorCard } from '../Author/Card'
-import { t } from '../../utils/intl'
+
 import { FeedSidebar } from '../Feed/Sidebar'
 import { Comment as CommentCard } from '../Article/Comment'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
-import { useReactionsStore } from '../../stores/zine/reactions'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
@@ -16,41 +15,46 @@ import { useSession } from '../../context/session'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import styles from './Feed.module.scss'
 import { clsx } from 'clsx'
-
-// const AUTHORSHIP_REACTIONS = [
-//   ReactionKind.Accept,
-//   ReactionKind.Reject,
-//   ReactionKind.Propose,
-//   ReactionKind.Ask
-// ]
+import { useReactions } from '../../context/reactions'
+import type { Reaction } from '../../graphql/types.gen'
+import { getPagePath } from '@nanostores/router'
+import { router } from '../../stores/router'
+import { useLocalize } from '../../context/localize'
 
 export const FEED_PAGE_SIZE = 20
 
 export const FeedView = () => {
+  const { t } = useLocalize()
+
   // state
   const { sortedArticles } = useArticlesStore()
-  const { sortedReactions: topComments, loadReactionsBy } = useReactionsStore()
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
   const { session } = useSession()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [topComments, setTopComments] = createSignal<Reaction[]>([])
 
-  const collaborativeShouts = createMemo(() =>
-    sortedArticles().filter((shout) => shout.visibility === 'authors')
-  )
-  createEffect(async () => {
-    if (collaborativeShouts()) {
-      // load reactions on collaborativeShouts
-      await loadReactionsBy({ by: { shouts: [...collaborativeShouts()] }, limit: 5 })
-    }
-  })
+  const {
+    actions: { loadReactionsBy }
+  } = useReactions()
 
-  const userslug = createMemo(() => session()?.user?.slug)
+  // TODO:
+  // const collaborativeShouts = createMemo(() =>
+  //   sortedArticles().filter((shout) => shout.visibility === 'authors')
+  // )
+
+  // createEffect(async () => {
+  //   if (collaborativeShouts()) {
+  //     await loadReactionsBy({ by: { shouts: collaborativeShouts().map((shout) => shout.slug) }, limit: 5 })
+  //   }
+  // })
+
+  const userSlug = createMemo(() => session()?.user?.slug)
   createEffect(async () => {
-    if (userslug()) {
+    if (userSlug()) {
       // load recent editing shouts ( visibility = authors )
-      await loadShouts({ filters: { author: userslug(), visibility: 'authors' }, limit: 15 })
+      await loadShouts({ filters: { author: userSlug(), visibility: 'authors' }, limit: 15 })
     }
   })
 
@@ -64,11 +68,11 @@ export const FeedView = () => {
   }
 
   onMount(async () => {
-    // load 5 recent comments overall
-    await loadReactionsBy({ by: { comment: true }, limit: 5, offset: 0 })
-
     // load recent shouts not only published ( visibility = community )
-    await loadMore()
+    loadMore()
+    // load 5 recent comments overall
+    const comments = await loadReactionsBy({ by: { comment: true }, limit: 5 })
+    setTopComments(comments)
   })
 
   return (
@@ -131,8 +135,7 @@ export const FeedView = () => {
               <section class={styles.asideSection}>
                 <h4>{t('Comments')}</h4>
                 <For each={topComments()}>
-                  {/*FIXME: different components/better comment props*/}
-                  {(comment) => <CommentCard comment={comment} reactions={[]} compact={true} />}
+                  {(comment) => <CommentCard comment={comment} compact={true} />}
                 </For>
               </section>
 
@@ -153,7 +156,7 @@ export const FeedView = () => {
                 <Icon name="pin" class={styles.icon} />
                 <ul class="nodash">
                   <li>
-                    <a href="/about/guide">Как устроен Дискурс</a>
+                    <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
                   </li>
                   <li>
                     <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
@@ -162,7 +165,7 @@ export const FeedView = () => {
                     <a href="#">Правила конструктивных дискуссий</a>
                   </li>
                   <li>
-                    <a href="/about/principles">Принципы сообщества</a>
+                    <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
                   </li>
                 </ul>
               </section>

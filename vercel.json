@@ -1,16 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/upload",
-      "dest": "api/upload.mjs"
-    },
-    {
-      "src": "/api/newsletter",
-      "dest": "api/newsletter.js"
-    },
-    {
-      "src": "/api/feedback",
-      "dest": "api/feedback.js"
+      "source": "/((?!assets/).*)",
+      "destination": "/api/ssr.js"
     }
   ]
 }

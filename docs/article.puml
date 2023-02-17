@@ -2,7 +2,7 @@
 actor User
 participant Browser
 participant Vercel
-participant Astro
+participant article.page.server.ts
 participant Solid
 participant Store
 
@@ -10,17 +10,17 @@ User -> Browser: discours.io
 activate Browser
 Browser -> Vercel: GET <slug>
 activate Vercel
-Vercel -> Astro: render
-activate Astro
-Astro -> apiClient: getArticle({ slug })
+Vercel -> article.page.server.ts: render
+activate article.page.server.ts
+article.page.server.ts -> apiClient: getArticle({ slug })
 activate apiClient
 apiClient -> DB: query: articleBySlug
 activate DB
 DB --> apiClient: response
 deactivate DB
-apiClient --> Astro: article data
+apiClient --> article.page.server.ts: article data
 deactivate apiClient
-Astro -> Solid: render <ArticlePage article={article} />
+article.page.server.ts -> Solid: render <ArticlePage article={article} />
 activate Solid
 Solid -> Store: useCurrentArticleStore(article)
 activate Store
@@ -28,11 +28,11 @@ Store -> Store: create store with initial data (server)
 Store --> Solid: currentArticle
 deactivate Store
 Solid -> Solid: render component
-Solid --> Astro: rendered component
+Solid --> article.page.server.ts: rendered component
 deactivate Solid
-Astro --> Vercel: rendered page
+article.page.server.ts --> Vercel: rendered page
 Vercel -> Vercel: save rendered page to CDN
-deactivate Astro
+deactivate article.page.server.ts
 Vercel --> Browser: rendered page
 deactivate Vercel
 Browser --> User: rendered page
@@ -50,7 +50,7 @@ Solid -> Store: loadArticleComments
 activate Store
 Store -> apiClient: getArticleComments
 activate apiClient
-apiClient -> DB: query: getReactionsForShouts
+apiClient -> DB: query: getReactions
 activate DB
 DB --> apiClient: response
 deactivate DB

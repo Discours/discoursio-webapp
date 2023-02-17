@@ -5,7 +5,7 @@ import GroupDialogAvatar from './GroupDialogAvatar'
 import formattedTime from '../../utils/formatDateTime'
 import { clsx } from 'clsx'
 import styles from './DialogCard.module.scss'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 type DialogProps = {
   online?: boolean
@@ -20,6 +20,7 @@ type DialogProps = {
 }
 
 const DialogCard = (props: DialogProps) => {
+  const { t } = useLocalize()
   const companions = createMemo(
     () => props.members && props.members.filter((member) => member.id !== props.ownId)
   )
@@ -34,7 +35,6 @@ const DialogCard = (props: DialogProps) => {
     <Show when={props.members}>
       <div
         class={clsx(styles.DialogCard, {
-          [styles.header]: props.isChatHeader,
           [styles.opened]: props.isOpened,
           [styles.hovered]: !props.isChatHeader
         })}

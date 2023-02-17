@@ -1,9 +1,10 @@
 import { Icon } from '../_shared/Icon'
-import { t } from '../../utils/intl'
+
 import { createSocialShare, TWITTER, VK, FACEBOOK, TELEGRAM } from '@solid-primitives/share'
 import styles from '../_shared/Popup/Popup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
+import { useLocalize } from '../../context/localize'
 
 type SharePopupProps = {
   title: string
@@ -19,6 +20,7 @@ export const getShareUrl = (params: { pathname?: string } = {}) => {
 }
 
 export const SharePopup = (props: SharePopupProps) => {
+  const { t } = useLocalize()
   const [share] = createSocialShare(() => ({
     title: props.title,
     url: props.shareUrl,

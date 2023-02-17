@@ -1,7 +1,7 @@
 import styles from './Header.module.scss'
 import { clsx } from 'clsx'
 import { useRouter } from '../../stores/router'
-import { t } from '../../utils/intl'
+
 import { Icon } from '../_shared/Icon'
 import { createSignal, Show } from 'solid-js'
 import Notifications from './Notifications'
@@ -11,12 +11,14 @@ import type { Author } from '../../graphql/types.gen'
 import { showModal, useWarningsStore } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
+import { useLocalize } from '../../context/localize'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
 }
 
 export const HeaderAuth = (props: HeaderAuthProps) => {
+  const { t } = useLocalize()
   const { page } = useRouter()
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
   const { warnings } = useWarningsStore()
@@ -38,7 +40,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
   return (
     <ShowOnlyOnClient>
-      <Show when={isSessionLoaded()}>
+      <Show when={isSessionLoaded()} keyed={true}>
         <div class={styles.usernav}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
             <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

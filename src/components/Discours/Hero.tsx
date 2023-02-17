@@ -1,8 +1,10 @@
 import './Hero.scss'
-import { t } from '../../utils/intl'
+
 import { showModal } from '../../stores/ui'
+import { useLocalize } from '../../context/localize'
 
 export default () => {
+  const { t } = useLocalize()
   return (
     <div class="about-discours">
       <div class="wide-container">

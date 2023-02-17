@@ -1,14 +1,16 @@
-import { createMemo, For } from 'solid-js'
+import { createEffect, createMemo, For } from 'solid-js'
 import styles from './Footer.module.scss'
 import { Icon } from '../_shared/Icon'
 import Subscribe from './Subscribe'
-import { t } from '../../utils/intl'
-import { locale } from '../../stores/ui'
+
 import { clsx } from 'clsx'
+import { useLocalize } from '../../context/localize'
 
 export const Footer = () => {
-  const locale_title = createMemo(() => (locale() === 'ru' ? 'English' : 'Русский'))
-  const locale_link = createMemo(() => '?lang=' + (locale() === 'ru' ? 'en' : 'ru'))
+  const { t, lang } = useLocalize()
+
+  const changeLangTitle = createMemo(() => (lang() === 'ru' ? 'English' : 'Русский'))
+  const changeLangLink = createMemo(() => '?lng=' + (lang() === 'ru' ? 'en' : 'ru'))
   const links = createMemo(() => [
     {
       header: 'About the project',
@@ -82,8 +84,9 @@ export const Footer = () => {
           slug: '/about/projects'
         },
         {
-          title: locale_title(),
-          slug: locale_link()
+          title: changeLangTitle(),
+          slug: changeLangLink(),
+          rel: 'external'
         }
       ]
     }
@@ -117,10 +120,12 @@ export const Footer = () => {
                 <h5>{t(header)}</h5>
                 <ul>
                   <For each={items}>
-                    {({ slug, title }) => (
+                    {({ slug, title, ...rest }) => (
                       <li>
                         {' '}
-                        <a href={slug}>{slug.startsWith('?') ? title : t(title)}</a>{' '}
+                        <a href={slug} {...rest}>
+                          {slug.startsWith('?') ? title : t(title)}
+                        </a>{' '}
                       </li>
                     )}
                   </For>
@@ -137,12 +142,14 @@ export const Footer = () => {
 
         <div class={clsx(styles.footerCopyright, 'row')}>
           <div class="col-md-9 col-lg-10">
-            Независимый журнал с&nbsp;открытой горизонтальной редакцией о&nbsp;культуре, науке
-            и&nbsp;обществе. Дискурс&nbsp;&copy; 2015&ndash;2022{' '}
+            {t(
+              'Independant magazine with an open horizontal cooperation about culture, science and society'
+            )}
+            . {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
             <a href="/about/terms-of-use">{t('Terms of use')}</a>
           </div>
           <div class={clsx(styles.footerCopyrightSocial, 'col-md-3 col-lg-2')}>
-            <For each={[...SOCIAL]}>
+            <For each={SOCIAL}>
               {(social) => (
                 <div class={clsx(styles.socialItem, styles[`socialItem${social.name}`])}>
                   <a href={social.href}>

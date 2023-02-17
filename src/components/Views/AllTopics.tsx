@@ -1,17 +1,17 @@
 import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
+
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
 import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { StatMetrics } from '../_shared/StatMetrics'
+import { useLocalize } from '../../context/localize'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -25,6 +25,7 @@ const PAGE_SIZE = 20
 const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#']
 
 export const AllTopicsView = (props: AllTopicsViewProps) => {
+  const { t, lang } = useLocalize()
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
 
@@ -48,7 +49,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
     return sortedTopics().reduce((acc, topic) => {
       let letter = topic.title[0].toUpperCase()
-      if (/[^ËА-яё]/.test(letter) && locale() === 'ru') letter = '#'
+      if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '#'
       if (!acc[letter]) acc[letter] = []
       acc[letter].push(topic)
       return acc
@@ -75,7 +76,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       return sortedTopics()
     }
 
-    if (locale() === 'ru') {
+    if (lang() === 'ru') {
       q = translit(q)
     }
 
@@ -85,7 +86,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       }
 
       let title = topic.title.toLowerCase()
-      if (locale() === 'ru') {
+      if (lang() === 'ru') {
         title = translit(title)
       }
 
@@ -95,7 +96,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const AllTopicsHead = () => (
     <div class="row">
-      <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
+      <div class={clsx('col-lg-10 col-xl-9')}>
         <h1>{t('Topics')}</h1>
         <p>{t('Subscribe what you like to tune your personal feed')}</p>
 

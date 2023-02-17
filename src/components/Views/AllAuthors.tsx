@@ -1,16 +1,16 @@
 import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
+
 import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { useRouter } from '../../stores/router'
 import { AuthorCard } from '../Author/Card'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import { locale } from '../../stores/ui'
 import { translit } from '../../utils/ru2en'
 import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
+import { useLocalize } from '../../context/localize'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -24,6 +24,7 @@ const PAGE_SIZE = 20
 const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@']
 
 export const AllAuthorsView = (props: AllAuthorsViewProps) => {
+  const { t, lang } = useLocalize()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
   const { searchParams, changeSearchParam } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
@@ -49,7 +50,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
     return sortedAuthors().reduce((acc, author) => {
       let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
 
-      if (/[^ËА-яё]/.test(letter) && locale() === 'ru') letter = '@'
+      if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '@'
 
       if (!acc[letter]) acc[letter] = []
 
@@ -74,7 +75,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
       return sortedAuthors()
     }
 
-    if (locale() === 'ru') q = translit(q)
+    if (lang() === 'ru') q = translit(q)
 
     return sortedAuthors().filter((author) => {
       if (author.slug.split('-').some((w) => w.startsWith(q))) {
@@ -82,7 +83,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
       }
 
       let name = author.name.toLowerCase()
-      if (locale() === 'ru') {
+      if (lang() === 'ru') {
         name = translit(name)
       }
 
@@ -93,7 +94,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const AllAuthorsHead = () => (
     <div class="row">
-      <div class={clsx(styles.pageHeader, 'col-lg-10 col-xl-9')}>
+      <div class={clsx('col-lg-10', 'col-xl-9')}>
         <h1>{t('Authors')}</h1>
         <p>{t('Subscribe who you like to tune your personal feed')}</p>
 

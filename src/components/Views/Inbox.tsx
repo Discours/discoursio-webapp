@@ -2,7 +2,7 @@ import { For, createSignal, Show, onMount, createEffect, createMemo } from 'soli
 import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
-import Message from '../Inbox/Message'
+import { Message } from '../Inbox/Message'
 import CreateModalContent from '../Inbox/CreateModalContent'
 import DialogHeader from '../Inbox/DialogHeader'
 import MessagesFallback from '../Inbox/MessagesFallback'
@@ -10,13 +10,14 @@ import QuotedMessage from '../Inbox/QuotedMessage'
 import { Icon } from '../_shared/Icon'
 import { useSession } from '../../context/session'
 import { loadRecipients } from '../../stores/inbox'
-import { t } from '../../utils/intl'
+
 import { Modal } from '../Nav/Modal'
 import { showModal } from '../../stores/ui'
 import { useInbox } from '../../context/inbox'
 import { useRouter } from '../../stores/router'
 import { clsx } from 'clsx'
 import styles from '../../styles/Inbox.module.scss'
+import { useLocalize } from '../../context/localize'
 
 type InboxSearchParams = {
   initChat: string
@@ -30,6 +31,7 @@ type InboxSearchParams = {
 // }
 
 export const InboxView = () => {
+  const { t } = useLocalize()
   const {
     chats,
     messages,
@@ -37,7 +39,7 @@ export const InboxView = () => {
   } = useInbox()
 
   const [recipients, setRecipients] = createSignal<Author[]>([])
-  const [postMessageText, setPostMessageText] = createSignal('')
+  const [postMessageText, setPostMessageText] = createSignal<string>('')
   const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
@@ -143,9 +145,9 @@ export const InboxView = () => {
       return b.updatedAt - a.updatedAt
     })
     if (sortByPerToPer()) {
-      return sorted.filter((chat) => Boolean(chat.title?.trim()))
+      return sorted.filter((chat) => (chat.title || '').trim().length === 0)
     } else if (sortByGroup()) {
-      return sorted.filter((chat) => chat.title?.trim().length > 0)
+      return sorted.filter((chat) => (chat.title || '').trim().length > 0)
     } else {
       return sorted
     }

@@ -14,8 +14,11 @@ export default gql`
         stat {
           rating
         }
-        shout
-        createBy {
+        shout {
+          id
+          slug
+        }
+        createdBy {
           name
           slug
           userpic

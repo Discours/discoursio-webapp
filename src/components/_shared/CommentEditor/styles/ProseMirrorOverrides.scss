@@ -1,4 +1,8 @@
 .ProseMirrorOverrides > .ProseMirror {
+  &-focused {
+    outline: none;
+  }
+
   .paragraph {
     font-size: 15px;
     line-height: 1.1em;

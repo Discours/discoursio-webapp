@@ -260,7 +260,7 @@ export type MutationDeleteMessageArgs = {
 }
 
 export type MutationDeleteReactionArgs = {
-  reaction: Scalars['Int']
+  id: Scalars['Int']
 }
 
 export type MutationDeleteShoutArgs = {
@@ -331,6 +331,7 @@ export type MutationUpdateProfileArgs = {
 }
 
 export type MutationUpdateReactionArgs = {
+  id: Scalars['Int']
   reaction: ReactionInput
 }
 
@@ -661,7 +662,6 @@ export type Subscription = {
   newMessage?: Maybe<Message>
   newReaction?: Maybe<Reaction>
   newShout?: Maybe<Shout>
-  newInvite?: Maybe<DraftCollab>
 }
 
 export type Token = {

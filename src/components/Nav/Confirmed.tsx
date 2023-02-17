@@ -1,8 +1,9 @@
 import './Confirmed.scss'
 import { onMount } from 'solid-js'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 export const Confirmed = (props: { token?: string }) => {
+  const { t } = useLocalize()
   onMount(() => {
     const token = props.token ?? document.cookie.split(';').at(0).replace('token=', '')
     window.addEventListener('mousemove', () => window.close())

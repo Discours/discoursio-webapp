@@ -1,11 +1,9 @@
-import { t } from '../../utils/intl'
 import { createMemo, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
 import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
-import { locale } from '../../stores/ui'
 import { clsx } from 'clsx'
 import { CardTopic } from './CardTopic'
 import { RatingControl } from '../Article/RatingControl'
@@ -13,6 +11,7 @@ import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import { getDescription } from '../../utils/meta'
 import { FeedArticlePopup } from './FeedArticlePopup'
+import { useLocalize } from '../../context/localize'
 
 interface ArticleCardProps {
   settings?: {
@@ -60,13 +59,15 @@ const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string 
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
+  const { t, lang } = useLocalize()
+
   const mainTopic =
     props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic) ||
     props.article.topics[0]
 
   const formattedDate = createMemo<string>(() => {
     return new Date(props.article.createdAt)
-      .toLocaleDateString(locale(), { month: 'long', day: 'numeric', year: 'numeric' })
+      .toLocaleDateString(lang(), { month: 'long', day: 'numeric', year: 'numeric' })
       .replace(' г.', '')
   })
 
@@ -111,7 +112,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <Show when={!props.settings?.isGroup}>
           <CardTopic
             title={
-              locale() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic?.slug?.replace('-', ' ')
+              lang() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic?.slug?.replace('-', ' ')
             }
             slug={mainTopic.slug}
             isFloorImportant={props.settings?.isFloorImportant}
@@ -140,7 +141,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   {(author, index) => {
                     let name = author.name
 
-                    if (locale() !== 'ru') {
+                    if (lang() !== 'ru') {
                       name = name === 'Дискурс' ? 'Discours' : translit(name)
                     }
 

@@ -1,4 +1,3 @@
-import { t } from '../../../utils/intl'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { SocialProviders } from './SocialProviders'
@@ -8,10 +7,12 @@ import { isValidEmail } from './validators'
 import { email, setEmail } from './sharedLogic'
 import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
-import { hideModal, locale } from '../../../stores/ui'
+import { hideModal } from '../../../stores/ui'
 import { useSession } from '../../../context/session'
 import { signSendLink } from '../../../stores/auth'
+
 import { useSnackbar } from '../../../context/snackbar'
+import { useLocalize } from '../../../context/localize'
 
 type FormFields = {
   email: string
@@ -21,6 +22,8 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string>>
 
 export const LoginForm = () => {
+  const { t, lang } = useLocalize()
+
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
@@ -55,7 +58,7 @@ export const LoginForm = () => {
     setIsEmailNotConfirmed(false)
     setSubmitError('')
     setIsLinkSent(true)
-    const result = await signSendLink({ email: email(), lang: locale(), template: 'email_confirmation' })
+    const result = await signSendLink({ email: email(), lang: lang(), template: 'email_confirmation' })
     if (result.error) setSubmitError(result.error)
   }
 
@@ -116,7 +119,7 @@ export const LoginForm = () => {
         <div class={styles.authInfo}>
           <div class={styles.warn}>{submitError()}</div>
           <Show when={isEmailNotConfirmed()}>
-            <a href="#" class={styles.sendLink} onClick={handleSendLinkAgainClick}>
+            <a href="#" onClick={handleSendLinkAgainClick}>
               {t('Send link again')}
             </a>
           </Show>

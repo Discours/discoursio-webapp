@@ -1,7 +1,8 @@
 import styles from './SearchField.module.scss'
 import { Icon } from './Icon'
-import { t } from '../../utils/intl'
+
 import { clsx } from 'clsx'
+import { useLocalize } from '../../context/localize'
 
 type SearchFieldProps = {
   onChange: (value: string) => void
@@ -10,7 +11,7 @@ type SearchFieldProps = {
 
 export const SearchField = (props: SearchFieldProps) => {
   const handleInputChange = (event) => props.onChange(event.target.value.trim())
-
+  const { t } = useLocalize()
   return (
     <div class={clsx(styles.searchField, props.class)}>
       <label for="search-field">

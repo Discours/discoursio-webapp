@@ -1,14 +1,14 @@
-import { For, Show } from 'solid-js'
+import { createMemo, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import './Topics.scss'
-import { t } from '../../utils/intl'
-import { locale } from '../../stores/ui'
+
+import { useLocalize } from '../../context/localize'
 
 export const NavTopics = (props: { topics: Topic[] }) => {
+  const { t, lang } = useLocalize()
   const tag = (topic: Topic) =>
-    /[ЁА-яё]/.test(topic.title || '') && locale() !== 'ru' ? topic.slug : topic.title
-
+    /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
   // TODO: something about subtopics
   return (
     <nav class="subnavigation wide-container text-2xl">

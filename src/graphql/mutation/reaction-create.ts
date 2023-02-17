@@ -11,6 +11,15 @@ export default gql`
         range
         createdAt
         replyTo
+        stat {
+          rating
+        }
+        shout
+        createBy {
+          name
+          slug
+          userpic
+        }
       }
     }
   }

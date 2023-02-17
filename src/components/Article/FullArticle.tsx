@@ -4,7 +4,8 @@ import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
 import { createMemo, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
+import { ReactionKind } from '../../graphql/types.gen'
+
 import MD from './MD'
 import { SharePopup } from './SharePopup'
 import { getDescription } from '../../utils/meta'
@@ -18,6 +19,10 @@ import VideoPlayer from './VideoPlayer'
 import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
+import { useReactions } from '../../context/reactions'
+import { loadShout } from '../../stores/zine/articles'
+import { Title } from '@solidjs/meta'
+import { useLocalize } from '../../context/localize'
 
 interface ArticleProps {
   article: Shout
@@ -31,6 +36,7 @@ interface MediaItem {
 }
 
 const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
+  const { t } = useLocalize()
   return (
     <>
       <Switch fallback={<a href={props.media.url}>{t('Cannot show this media type')}</a>}>
@@ -52,6 +58,7 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
 }
 
 export const FullArticle = (props: ArticleProps) => {
+  const { t } = useLocalize()
   const { session } = useSession()
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
@@ -88,8 +95,31 @@ export const FullArticle = (props: ArticleProps) => {
     return mi
   })
 
+  const {
+    actions: { createReaction }
+  } = useReactions()
+
+  const handleUpvote = async () => {
+    await createReaction({
+      kind: ReactionKind.Like,
+      shout: props.article.id
+    })
+
+    await loadShout(props.article.slug)
+  }
+
+  const handleDownvote = async () => {
+    await createReaction({
+      kind: ReactionKind.Dislike,
+      shout: props.article.id
+    })
+
+    await loadShout(props.article.slug)
+  }
+
   return (
     <>
+      <Title>{props.article.title}</Title>
       <div class="shout wide-container">
         <article class="col-md-6 shift-content">
           <div class={styles.shoutHeader}>
@@ -167,7 +197,12 @@ export const FullArticle = (props: ArticleProps) => {
         <div class="col-md-8 shift-content">
           <div class={styles.shoutStats}>
             <div class={styles.shoutStatsItem}>
-              <RatingControl rating={props.article.stat?.rating} class={styles.ratingControl} />
+              <RatingControl
+                rating={props.article.stat?.rating}
+                class={styles.ratingControl}
+                onUpvote={handleUpvote}
+                onDownvote={handleDownvote}
+              />
             </div>
 
             <Show when={props.article.stat?.viewed}>

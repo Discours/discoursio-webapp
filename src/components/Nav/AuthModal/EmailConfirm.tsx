@@ -1,14 +1,15 @@
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
-import { t } from '../../../utils/intl'
 import { hideModal } from '../../../stores/ui'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { useRouter } from '../../../stores/router'
 import type { ConfirmEmailSearchParams } from './types'
 import { ApiError } from '../../../utils/apiClient'
 import { useSession } from '../../../context/session'
+import { useLocalize } from '../../../context/localize'
 
 export const EmailConfirm = () => {
+  const { t } = useLocalize()
   const {
     session,
     actions: { confirmEmail }
@@ -48,7 +49,7 @@ export const EmailConfirm = () => {
       <Show when={isTokenExpired()}>
         <div class={styles.title}>Ссылка больше не действительна</div>
         <div class={styles.text}>
-          <a href="/?modal=auth&mode=login" class={styles.sendLink}>
+          <a href="/?modal=auth&mode=login">
             {/*TODO: temp solution, should be send link again, but we don't have email here*/}
             Вход
           </a>
@@ -57,7 +58,7 @@ export const EmailConfirm = () => {
       <Show when={isTokenInvalid()}>
         <div class={styles.title}>Неправильная ссылка</div>
         <div class={styles.text}>
-          <a href="/?modal=auth&mode=login" class={styles.sendLink}>
+          <a href="/?modal=auth&mode=login">
             {/*TODO: temp solution, should be send link again, but we don't have email here*/}
             Вход
           </a>

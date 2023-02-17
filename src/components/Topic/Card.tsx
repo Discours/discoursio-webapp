@@ -3,12 +3,13 @@ import styles from './Card.module.scss'
 import { createMemo, createSignal, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
+
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { Icon } from '../_shared/Icon'
+import { useLocalize } from '../../context/localize'
 
 interface TopicProps {
   topic: Topic
@@ -23,6 +24,7 @@ interface TopicProps {
 }
 
 export const TopicCard = (props: TopicProps) => {
+  const { t } = useLocalize()
   const {
     session,
     isSessionLoaded,

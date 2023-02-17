@@ -1,9 +1,10 @@
 import '../../styles/help.scss'
 import { createSignal, onMount } from 'solid-js'
 import { showModal, warn } from '../../stores/ui'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 export const Donate = () => {
+  const { t } = useLocalize()
   const once = ''
   const monthly = 'Monthly'
   const cpOptions = {

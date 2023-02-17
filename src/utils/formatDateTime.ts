@@ -1,13 +1,16 @@
 import { createMemo } from 'solid-js'
-import { locale } from '../stores/ui'
+import { useLocalize } from '../context/localize'
 
 // unix timestamp in seconds
-const formattedTime = (time: number) =>
-  createMemo<string>(() => {
-    return new Date(time).toLocaleTimeString(locale(), {
+const formattedTime = (time: number) => {
+  const { lang } = useLocalize()
+
+  return createMemo<string>(() => {
+    return new Date(time).toLocaleTimeString(lang(), {
       hour: 'numeric',
       minute: 'numeric'
     })
   })
+}
 
 export default formattedTime

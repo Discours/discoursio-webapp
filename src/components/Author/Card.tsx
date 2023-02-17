@@ -4,8 +4,6 @@ import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
 import { createMemo, createSignal, For, Show } from 'solid-js'
 import { translit } from '../../utils/ru2en'
-import { t } from '../../utils/intl'
-import { locale } from '../../stores/ui'
 import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
@@ -14,6 +12,7 @@ import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { FollowingEntity } from '../../graphql/types.gen'
 import { router, useRouter } from '../../stores/router'
 import { openPage } from '@nanostores/router'
+import { useLocalize } from '../../context/localize'
 
 interface AuthorCardProps {
   caption?: string
@@ -34,6 +33,8 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
+  const { t, lang } = useLocalize()
+
   const {
     session,
     isSessionLoaded,
@@ -60,7 +61,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const canFollow = createMemo(() => !props.hideFollow && session()?.user?.slug !== props.author.slug)
 
   const name = createMemo(() => {
-    if (locale() !== 'ru') {
+    if (lang() !== 'ru') {
       if (props.author.name === 'Дискурс') {
         return 'Discours'
       }

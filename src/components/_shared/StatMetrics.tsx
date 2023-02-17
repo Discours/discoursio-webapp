@@ -1,9 +1,8 @@
-import { For } from 'solid-js'
+import { createMemo, For } from 'solid-js'
 import type { Stat, TopicStat } from '../../graphql/types.gen'
-import { locale } from '../../stores/ui'
 import { plural } from '../../utils'
-import { t } from '../../utils/intl'
 import styles from './Stat.module.scss'
+import { useLocalize } from '../../context/localize'
 
 interface StatMetricsProps {
   fields?: string[]
@@ -27,6 +26,8 @@ const pseudonames = {
 }
 
 export const StatMetrics = (props: StatMetricsProps) => {
+  const { t, lang } = useLocalize()
+
   return (
     <div class={styles.statMetrics}>
       <For each={props.fields}>
@@ -35,7 +36,7 @@ export const StatMetrics = (props: StatMetricsProps) => {
             {props.stat[entity] +
               ' ' +
               t(pseudonames[entity] || entity.slice(-1)) +
-              plural(props.stat[entity] || 0, locale() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's'])}
+              plural(props.stat[entity] || 0, lang() === 'ru' ? ['ов', '', 'а'] : ['s', '', 's'])}
           </span>
         )}
       </For>

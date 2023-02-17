@@ -1,7 +1,7 @@
 import styles from './FeedArticlePopup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 type FeedArticlePopupProps = {
   title: string
@@ -17,6 +17,7 @@ export const getShareUrl = (params: { pathname?: string } = {}) => {
 }
 
 export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
+  const { t } = useLocalize()
   return (
     <Popup {...props} variant="tiny" popupCssClass={styles.feedArticlePopup}>
       <ul class="nodash">

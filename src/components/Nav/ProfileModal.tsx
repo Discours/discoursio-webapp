@@ -1,9 +1,11 @@
 import { AuthorCard } from '../Author/Card'
 import type { Author } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
+
+import { translit } from '../../utils/ru2en'
 import { hideModal } from '../../stores/ui'
 import { createMemo, For } from 'solid-js'
 import { useSession } from '../../context/session'
+import { useLocalize } from '../../context/localize'
 
 export const ProfileModal = () => {
   const {
@@ -15,6 +17,7 @@ export const ProfileModal = () => {
     signOut()
     hideModal()
   }
+  const { t, lang } = useLocalize()
 
   const author = createMemo<Author>(() => {
     const a: Author = {
@@ -26,7 +29,7 @@ export const ProfileModal = () => {
 
     if (session()?.user?.slug) {
       const u = session().user
-      a.name = u.name
+      a.name = lang() === 'ru' ? u.name : translit(u.name)
       a.slug = u.slug
       a.userpic = u.userpic
     }

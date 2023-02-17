@@ -1,20 +1,14 @@
 ---
-import { setLocale } from './stores/ui'
 import './styles/app.scss'
-import { t } from './utils/intl'
 import { Seo } from "astro-seo-meta"
 
-// Setting locale for prerendered content here
-
-const lang = Astro.url.searchParams.get('lang') || 'ru'
-console.log('[main.astro] astro runtime locale is', lang)
-setLocale(lang)
-const { protocol, host} = Astro.url
-const title = Astro.props.title ?? t('Discours');
+const ln = Astro.url.searchParams.get('lng') || 'ru'
+const { protocol, host } = Astro.url
+const title = ln === 'ru' ? 'Дискурс' : 'Discours'
 const imageUrl = Astro.props.imageUrl ?? `${protocol}${host}/public/bonfire.png`
-const description = Astro.props.description ?? t('Horizontal collaborative journalistic platform')
+const description = ln === 'ru' ? 'Горизонтальная платформа коллаборативной журналистики' : 'Horizontal collaborative journalistic platform'
 ---
-<html lang={lang || 'ru'}>
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />

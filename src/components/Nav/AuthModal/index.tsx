@@ -1,6 +1,5 @@
 import { Dynamic } from 'solid-js/web'
 import { Component, createEffect, createMemo } from 'solid-js'
-import { t } from '../../../utils/intl'
 import { hideModal } from '../../../stores/ui'
 import { useRouter } from '../../../stores/router'
 import { clsx } from 'clsx'
@@ -10,6 +9,7 @@ import { RegisterForm } from './RegisterForm'
 import { ForgotPasswordForm } from './ForgotPasswordForm'
 import { EmailConfirm } from './EmailConfirm'
 import type { AuthModalMode, AuthModalSearchParams } from './types'
+import { useLocalize } from '../../../context/localize'
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   login: LoginForm,
@@ -20,7 +20,7 @@ const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
 
 export const AuthModal = () => {
   let rootRef: HTMLDivElement
-
+  const { t } = useLocalize()
   const { searchParams } = useRouter<AuthModalSearchParams>()
 
   const mode = createMemo<AuthModalMode>(() => {

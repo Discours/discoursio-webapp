@@ -1,7 +1,9 @@
 import { hideModal } from '../../stores/ui'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 export const Feedback = () => {
+  const { t } = useLocalize()
+
   const action = '/user/feedback'
   const method = 'post'
   let msgElement: HTMLTextAreaElement | undefined

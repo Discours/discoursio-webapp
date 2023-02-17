@@ -1,9 +1,10 @@
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import './FloorHeader.scss'
-import { t } from '../../utils/intl'
+import { useLocalize } from '../../context/localize'
 
 export default (props: { topic: Topic; color: string }) => {
+  const { t } = useLocalize()
   return (
     <>
       <h3 class="col-sm-6">{props.topic.title}</h3>

@@ -3,7 +3,7 @@ import type { Author, Shout } from '../../graphql/types.gen'
 import { Row1 } from '../Feed/Row1'
 import { Row2 } from '../Feed/Row2'
 import { AuthorFull } from '../Author/Full'
-import { t } from '../../utils/intl'
+
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
@@ -18,15 +18,12 @@ import { Popup } from '../_shared/Popup'
 import { AuthorCard } from '../Author/Card'
 import { apiClient } from '../../utils/apiClient'
 import { Comment } from '../Article/Comment'
-import DialogAvatar from '../Inbox/DialogAvatar'
+import { useLocalize } from '../../context/localize'
 
-// TODO: load reactions on client
 type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  // FIXME author topics from server
-  // topics: Topic[]
 }
 
 type AuthorPageSearchParams = {
@@ -34,9 +31,10 @@ type AuthorPageSearchParams = {
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
-const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
+const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: AuthorProps) => {
+  const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({
     shouts: props.shouts
   })
@@ -75,27 +73,25 @@ export const AuthorView = (props: AuthorProps) => {
     }
   })
 
-  const title = createMemo(() => {
-    const m = searchParams().by
-    if (m === 'viewed') return t('Top viewed')
-    if (m === 'rating') return t('Top rated')
-    if (m === 'commented') return t('Top discussed')
-    return t('Top recent')
-  })
+  // TODO: use title
+  // const title = createMemo(() => {
+  //   const m = searchParams().by
+  //   if (m === 'viewed') return t('Top viewed')
+  //   if (m === 'rating') return t('Top rated')
+  //   if (m === 'commented') return t('Top discussed')
+  //   return t('Top recent')
+  // })
 
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
-  console.log('!!! authorEntities():', author())
   const [commented, setCommented] = createSignal([])
   createEffect(async () => {
     if (searchParams().by === 'commented') {
       try {
         const data = await apiClient.getReactionsBy({
-          by: { comment: true, createdBy: props.authorSlug },
-          limit: 100,
-          offset: 0
+          by: { comment: true, createdBy: props.authorSlug }
         })
         setCommented(data)
       } catch (error) {
@@ -106,142 +102,140 @@ export const AuthorView = (props: AuthorProps) => {
 
   return (
     <div class="author-page">
-      <Show when={author()} fallback={<div class="center">{t('Loading')}</div>}>
-        <div class="wide-container">
-          <AuthorFull author={author()} />
-          <div class="row group__controls">
-            <div class="col-md-8">
-              <ul class="view-switcher">
-                <li classList={{ selected: searchParams().by === 'rating' }}>
-                  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
-                    {t('Publications')}
-                  </button>
-                </li>
-                <li classList={{ selected: searchParams().by === 'followed' }}>
-                  <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
-                    {t('Followers')}
-                  </button>
-                </li>
-                <li classList={{ selected: searchParams().by === 'commented' }}>
-                  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
-                    {t('Comments')}
-                  </button>
-                </li>
-                {/*
+      <div class="wide-container">
+        <AuthorFull author={author()} />
+        <div class="row group__controls">
+          <div class="col-md-8">
+            <ul class="view-switcher">
+              <li classList={{ selected: searchParams().by === 'rating' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
+                  {t('Publications')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'followed' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
+                  {t('Followers')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'commented' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
+                  {t('Comments')}
+                </button>
+              </li>
+              {/*
                 <li classList={{ selected: searchParams().by === 'popular' }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'popular')}>
                     Популярное
                   </button>
                 </li>
                 */}
-                <li classList={{ selected: searchParams().by === 'about' }}>
-                  <button type="button" onClick={() => changeSearchParam('by', 'about')}>
-                    О себе
-                  </button>
-                </li>
+              <li classList={{ selected: searchParams().by === 'about' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'about')}>
+                  О себе
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class={clsx('col-md-4', styles.additionalControls)}>
+            <Popup
+              {...props}
+              trigger={
+                <div class={styles.subscribers}>
+                  <Switch>
+                    <Match when={followers().length <= 3}>
+                      <For each={followers().slice(0, 3)}>
+                        {(f) => <Userpic user={f} class={styles.userpic} />}
+                      </For>
+                    </Match>
+                    <Match when={followers().length > 3}>
+                      <For each={followers().slice(0, 2)}>
+                        {(f) => <Userpic user={f} class={styles.userpic} />}
+                      </For>
+                      <div class={clsx(styles.userpic, styles.subscribersCounter)}>
+                        {followers().length}
+                      </div>
+                    </Match>
+                  </Switch>
+                </div>
+              }
+              variant="tiny"
+            >
+              <ul class={clsx('nodash', styles.subscribersList)}>
+                <For each={followers()}>
+                  {(item: Author) => (
+                    <li class={styles.subscriber}>
+                      <AuthorCard
+                        author={item}
+                        isNowrap={true}
+                        hideDescription={true}
+                        hideFollow={true}
+                        hasLink={true}
+                      />
+                    </li>
+                  )}
+                </For>
               </ul>
-            </div>
-            <div class={clsx('col-md-4', styles.additionalControls)}>
-              <Popup
-                {...props}
-                trigger={
-                  <div class={styles.subscribers}>
-                    <Switch>
-                      <Match when={followers().length <= 3}>
-                        <For each={followers().slice(0, 3)}>
-                          {(f) => <Userpic user={f} class={styles.userpic} />}
-                        </For>
-                      </Match>
-                      <Match when={followers().length > 3}>
-                        <For each={followers().slice(0, 2)}>
-                          {(f) => <Userpic user={f} class={styles.userpic} />}
-                        </For>
-                        <div class={clsx(styles.userpic, styles.subscribersCounter)}>
-                          {followers().length}
-                        </div>
-                      </Match>
-                    </Switch>
-                  </div>
-                }
-                variant="tiny"
-              >
-                <ul class={clsx('nodash', styles.subscribersList)}>
-                  <For each={followers()}>
-                    {(item: Author) => (
-                      <li class={styles.subscriber}>
-                        <AuthorCard
-                          author={item}
-                          isNowrap={true}
-                          hideDescription={true}
-                          hideFollow={true}
-                          hasLink={true}
-                        />
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </Popup>
+            </Popup>
 
-              <div class={styles.ratingContainer}>
-                {t('Karma')}
-                <RatingControl rating={19} class={styles.ratingControl} />
-              </div>
+            <div class={styles.ratingContainer}>
+              {t('Karma')}
+              <RatingControl rating={19} class={styles.ratingControl} />
             </div>
           </div>
         </div>
+      </div>
 
-        <Switch
-          fallback={
-            <div class="wide-container">
-              <p>{t('Nothing here yet')}</p>
-            </div>
-          }
-        >
-          <Match when={searchParams().by === 'about'}>
-            <div class="wide-container">
-              <Show when={authorEntities()[author().slug].bio}>
-                <p>{authorEntities()[author().slug].bio}</p>
-              </Show>
-            </div>
-          </Match>
-          <Match when={searchParams().by === 'commented'}>
-            <div class="wide-container">
-              <ul class={stylesArticle.comments}>
-                <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
-              </ul>
-            </div>
-          </Match>
-          <Match when={searchParams().by === 'rating'}>
-            <Row1 article={sortedArticles()[0]} />
-            <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} />
-            <Row1 article={sortedArticles()[3]} />
-            <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} />
-            <Row1 article={sortedArticles()[6]} />
-            <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} />
-
-            <For each={pages()}>
-              {(page) => (
-                <>
-                  <Row1 article={page[0]} />
-                  <Row2 articles={page.slice(1, 3)} isEqual={true} />
-                  <Row1 article={page[3]} />
-                  <Row2 articles={page.slice(4, 6)} isEqual={true} />
-                  <Row1 article={page[6]} />
-                  <Row2 articles={page.slice(7, 9)} isEqual={true} />
-                </>
-              )}
-            </For>
-
-            <Show when={isLoadMoreButtonVisible()}>
-              <p class="load-more-container">
-                <button class="button" onClick={loadMore}>
-                  {t('Load more')}
-                </button>
-              </p>
+      <Switch
+        fallback={
+          <div class="wide-container">
+            <p>{t('Nothing here yet')}</p>
+          </div>
+        }
+      >
+        <Match when={searchParams().by === 'about'}>
+          <div class="wide-container">
+            <Show when={author().bio}>
+              <p>{author().bio}</p>
             </Show>
-          </Match>
-        </Switch>
-      </Show>
+          </div>
+        </Match>
+        <Match when={searchParams().by === 'commented'}>
+          <div class="wide-container">
+            <ul class={stylesArticle.comments}>
+              <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
+            </ul>
+          </div>
+        </Match>
+        <Match when={searchParams().by === 'rating'}>
+          <Row1 article={sortedArticles()[0]} />
+          <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} />
+          <Row1 article={sortedArticles()[3]} />
+          <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} />
+          <Row1 article={sortedArticles()[6]} />
+          <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} />
+
+          <For each={pages()}>
+            {(page) => (
+              <>
+                <Row1 article={page[0]} />
+                <Row2 articles={page.slice(1, 3)} isEqual={true} />
+                <Row1 article={page[3]} />
+                <Row2 articles={page.slice(4, 6)} isEqual={true} />
+                <Row1 article={page[6]} />
+                <Row2 articles={page.slice(7, 9)} isEqual={true} />
+              </>
+            )}
+          </For>
+
+          <Show when={isLoadMoreButtonVisible()}>
+            <p class="load-more-container">
+              <button class="button" onClick={loadMore}>
+                {t('Load more')}
+              </button>
+            </p>
+          </Show>
+        </Match>
+      </Switch>
     </div>
   )
 }

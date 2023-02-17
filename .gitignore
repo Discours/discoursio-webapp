@@ -12,3 +12,5 @@ pnpm-debug.log*
 public/upload/*
 src/graphql/introspec.gen.ts
 stats.html
+*.scss.d.ts
+pnpm-lock.yaml

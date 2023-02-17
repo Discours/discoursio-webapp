@@ -2,10 +2,11 @@ import { Show, For, createSignal } from 'solid-js'
 import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from '../Feed/Card'
-import { t } from '../../utils/intl'
+
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { useRouter } from '../../stores/router'
+import { useLocalize } from '../../context/localize'
 
 type SearchPageSearchParams = {
   by: '' | 'relevance' | 'rating'
@@ -19,6 +20,7 @@ type Props = {
 const LOAD_MORE_PAGE_SIZE = 50
 
 export const SearchView = (props: Props) => {
+  const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.results })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [query, setQuery] = createSignal(props.query)

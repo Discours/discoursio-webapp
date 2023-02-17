@@ -4,27 +4,38 @@ import { AuthorCard } from '../Author/Card'
 import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
 import type { Author, Reaction } from '../../graphql/types.gen'
-import { t } from '../../utils/intl'
-import { createReaction, deleteReaction, updateReaction } from '../../stores/zine/reactions'
 import MD from './MD'
 import { formatDate } from '../../utils'
 import Userpic from '../Author/Userpic'
 import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
+import { useReactions } from '../../context/reactions'
+import { useSnackbar } from '../../context/snackbar'
+import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
+import { useLocalize } from '../../context/localize'
 const CommentEditor = lazy(() => import('../_shared/CommentEditor'))
 
 type Props = {
   comment: Reaction
   compact?: boolean
-  reactions?: Reaction[]
   isArticleAuthor?: boolean
+  sortedComments?: Reaction[]
 }
 
 export const Comment = (props: Props) => {
+  const { t } = useLocalize()
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal<boolean>(false)
   const [editMode, setEditMode] = createSignal<boolean>(false)
   const { session } = useSession()
+
+  const {
+    actions: { createReaction, deleteReaction, updateReaction }
+  } = useReactions()
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
 
@@ -34,6 +45,7 @@ export const Comment = (props: Props) => {
     if (comment()?.id) {
       try {
         await deleteReaction(comment().id)
+        showSnackbar({ body: t('Comment successfully deleted') })
       } catch (error) {
         console.error('[deleteReaction]', error)
       }
@@ -43,19 +55,12 @@ export const Comment = (props: Props) => {
   const handleCreate = async (value) => {
     try {
       setLoading(true)
-      await createReaction(
-        {
-          kind: ReactionKind.Comment,
-          replyTo: props.comment.id,
-          body: value,
-          shout: props.comment.shout.id
-        },
-        {
-          name: session().user.name,
-          userpic: session().user.userpic,
-          slug: session().user.slug
-        }
-      )
+      await createReaction({
+        kind: ReactionKind.Comment,
+        replyTo: props.comment.id,
+        body: value,
+        shout: props.comment.shout.id
+      })
       setIsReplyVisible(false)
       setLoading(false)
     } catch (error) {
@@ -93,8 +98,15 @@ export const Comment = (props: Props) => {
             when={!props.compact}
             fallback={
               <div>
-                <Userpic user={comment().createdBy as Author} isBig={false} isAuthorsList={false} />
-                <small class={styles.commentArticle}>
+                <Userpic
+                  user={comment().createdBy as Author}
+                  isBig={false}
+                  isAuthorsList={false}
+                  class={clsx({
+                    [styles.compactUserpic]: props.compact
+                  })}
+                />
+                <small>
                   <a href={`#comment-${comment()?.id}`}>{comment()?.shout.title || ''}</a>
                 </small>
               </div>
@@ -127,12 +139,12 @@ export const Comment = (props: Props) => {
               <div
                 class={styles.commentRating}
                 classList={{
-                  [styles.commentRatingPositive]: comment().stat?.rating > 0,
-                  [styles.commentRatingNegative]: comment().stat?.rating < 0
+                  [styles.commentRatingPositive]: comment().stat.rating > 0,
+                  [styles.commentRatingNegative]: comment().stat.rating < 0
                 }}
               >
                 <button class={clsx(styles.commentRatingControl, styles.commentRatingControlUp)} />
-                <div class={styles.commentRatingValue}>{comment().stat?.rating || 0}</div>
+                <div class={styles.commentRatingValue}>{comment().stat.rating || 0}</div>
                 <button class={clsx(styles.commentRatingControl, styles.commentRatingControlDown)} />
               </div>
             </div>
@@ -147,15 +159,16 @@ export const Comment = (props: Props) => {
 
           <Show when={!props.compact}>
             <div class={styles.commentControls}>
-              <button
-                disabled={loading()}
-                onClick={() => setIsReplyVisible(!isReplyVisible())}
-                class={clsx(styles.commentControl, styles.commentControlReply)}
-              >
-                <Icon name="reply" class={styles.icon} />
-                {loading() ? t('Loading') : t('Reply')}
-              </button>
-
+              <ShowIfAuthenticated>
+                <button
+                  disabled={loading()}
+                  onClick={() => setIsReplyVisible(!isReplyVisible())}
+                  class={clsx(styles.commentControl, styles.commentControlReply)}
+                >
+                  <Icon name="reply" class={styles.icon} />
+                  {loading() ? t('Loading') : t('Reply')}
+                </button>
+              </ShowIfAuthenticated>
               <Show when={canEdit()}>
                 <button
                   class={clsx(styles.commentControl, styles.commentControlEdit)}
@@ -201,14 +214,14 @@ export const Comment = (props: Props) => {
           </Show>
         </div>
       </Show>
-      <Show when={props.reactions}>
+      <Show when={props.sortedComments}>
         <ul>
-          <For each={props.reactions.filter((r) => r.replyTo === props.comment.id)}>
-            {(reaction) => (
+          <For each={props.sortedComments.filter((r) => r.replyTo === props.comment.id)}>
+            {(c) => (
               <Comment
+                sortedComments={props.sortedComments}
                 isArticleAuthor={props.isArticleAuthor}
-                reactions={props.reactions}
-                comment={reaction}
+                comment={c}
               />
             )}
           </For>
@@ -217,5 +230,3 @@ export const Comment = (props: Props) => {
     </li>
   )
 }
-
-export default Comment

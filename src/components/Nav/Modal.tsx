@@ -1,12 +1,9 @@
 import { createEffect, createSignal, Show } from 'solid-js'
 import type { JSX } from 'solid-js'
-import { getLogger } from '../../utils/logger'
 import { hideModal, useModalStore } from '../../stores/ui'
 import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 import { clsx } from 'clsx'
 import styles from './Modal.module.scss'
-
-const log = getLogger('modal')
 
 interface ModalProps {
   name: string
@@ -27,7 +24,6 @@ export const Modal = (props: ModalProps) => {
 
   createEffect(() => {
     setVisible(modal() === props.name)
-    log.debug(`${props.name} is ${modal() === props.name ? 'visible' : 'hidden'}`)
   })
 
   return (
@@ -35,7 +31,6 @@ export const Modal = (props: ModalProps) => {
       <div class={styles.backdrop} onClick={backdropClick}>
         <div
           class={clsx(styles.modal, {
-            [styles.wide]: props.variant === 'wide',
             [styles.narrow]: props.variant === 'narrow'
           })}
           onClick={(event) => event.stopPropagation()}

@@ -626,9 +626,8 @@ figcaption {
   }
 }
 
-/* stylelint-disable-next-line */
-astro-island {
-  display: flex !important;
+#root {
+  display: flex;
   flex-direction: column;
   align-content: space-between;
   justify-content: space-between;

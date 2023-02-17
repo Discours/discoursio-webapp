@@ -4,6 +4,7 @@ import { Popup } from '../_shared/Popup'
 import styles from '../_shared/Popup/Popup.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
+import { useLocalize } from '../../context/localize'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
@@ -13,27 +14,30 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     actions: { signOut }
   } = useSession()
 
+  const { t, lang } = useLocalize()
+
   return (
     <Popup {...props} horizontalAnchor="right" variant="bordered">
-      {/*TODO: l10n*/}
       <ul class="nodash">
         <li>
-          <a href={getPagePath(router, 'author', { slug: userSlug() })}>Профиль</a>
+          <a href={getPagePath(router, 'author', { slug: userSlug(), lang: lang() } as never)}>
+            {t('Profile')}
+          </a>
         </li>
         <li>
-          <a href="#">Черновики</a>
+          <a href="#">{t('Drafts')}</a>
         </li>
         <li>
-          <a href="#">Подписки</a>
+          <a href="#">{t('Subscriptions')}</a>
         </li>
         <li>
-          <a href="#">Комментарии</a>
+          <a href="#">{t('Comments')}</a>
         </li>
         <li>
-          <a href="#">Закладки</a>
+          <a href="#">{t('Bookmarks')}</a>
         </li>
         <li>
-          <a href={getPagePath(router, 'profileSettings')}>Настройки</a>
+          <a href={getPagePath(router, 'profileSettings')}>{t('Settings')}</a>
         </li>
         <li class={styles.topBorderItem}>
           <a
@@ -43,7 +47,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
               signOut()
             }}
           >
-            Выйти из&nbsp;аккаунта
+            {t('Logout')}
           </a>
         </li>
       </ul>

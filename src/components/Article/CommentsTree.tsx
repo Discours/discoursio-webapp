@@ -1,20 +1,20 @@
 import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
-import Comment from './Comment'
-import { t } from '../../utils/intl'
+import { Comment } from './Comment'
 import styles from '../../styles/Article.module.scss'
-import { createReaction, useReactionsStore } from '../../stores/zine/reactions'
-import type { Reaction } from '../../graphql/types.gen'
 import { clsx } from 'clsx'
-import { byCreated, byStat } from '../../utils/sortby'
-import { Loading } from '../Loading'
+import { Loading } from '../_shared/Loading'
 import { Author, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import CommentEditor from '../_shared/CommentEditor'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import Button from '../_shared/Button'
+import { Button } from '../_shared/Button'
 import { createStorage } from '@solid-primitives/storage'
+import { useReactions } from '../../context/reactions'
+import { byCreated } from '../../utils/sortby'
+import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
+import { useLocalize } from '../../context/localize'
 
-const ARTICLE_COMMENTS_PAGE_SIZE = 50
+type CommentsOrder = 'createdAt' | 'rating'
 
 type Props = {
   commentAuthors: Author[]
@@ -23,63 +23,85 @@ type Props = {
 }
 
 export const CommentsTree = (props: Props) => {
-  const [getCommentsPage, setCommentsPage] = createSignal(0)
-  const [commentsOrder, setCommentsOrder] = createSignal<'rating' | 'createdAt'>('createdAt')
   const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const { sortedReactions, loadReactionsBy } = useReactionsStore()
-  const [store, setStore] = createStorage({ api: localStorage })
-  const [newReactions, setNewReactions] = createSignal<number>()
+  const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
+  const {
+    reactionEntities,
+    actions: { loadReactionsBy, createReaction }
+  } = useReactions()
 
-  const getNewReactions = () => {
+  const { t } = useLocalize()
+
+  // TODO: server side?
+  const [store, setStore] = createStorage({ api: typeof localStorage === 'undefined' ? {} : localStorage })
+  const [newReactionsCount, setNewReactionsCount] = createSignal<number>(0)
+
+  const comments = createMemo(() =>
+    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
+  )
+
+  const sortedComments = createMemo(() => {
+    let newSortedComments = [...comments()]
+    newSortedComments = newSortedComments.sort(byCreated)
+
+    if (commentsOrder() === 'rating') {
+      newSortedComments = newSortedComments.sort((a, b) => {
+        if (a.replyTo && b.replyTo) {
+          return 0
+        }
+
+        const x = (a?.stat && a.stat.rating) || 0
+        const y = (b?.stat && b.stat.rating) || 0
+
+        if (x > y) {
+          return 1
+        }
+        if (x < y) {
+          return -1
+        }
+
+        return 0
+      })
+    }
+
+    newSortedComments.reverse()
+
+    return newSortedComments
+  })
+
+  const updateNewReactionsCount = () => {
     const storeValue = Number(store[`${props.shoutSlug}`])
-    const setVal = () => setStore(`${props.shoutSlug}`, `${sortedReactions().length}`)
+    const setVal = () => setStore(`${props.shoutSlug}`, `${comments().length}`)
     if (!store[`${props.shoutSlug}`]) {
       setVal()
-    } else if (storeValue < sortedReactions().length) {
-      setNewReactions(sortedReactions().length - storeValue)
+    } else if (storeValue < comments().length) {
+      setNewReactionsCount(comments().length - storeValue)
       setVal()
     }
   }
 
-  const reactions = createMemo<Reaction[]>(() =>
-    sortedReactions().sort(commentsOrder() === 'rating' ? byStat('rating') : byCreated)
-  )
-
   const { session } = useSession()
-  const loadMore = async () => {
+
+  onMount(async () => {
     try {
-      const page = getCommentsPage()
       setIsCommentsLoading(true)
-      const { hasMore } = await loadReactionsBy({
-        by: { shout: props.shoutSlug, comment: true },
-        limit: ARTICLE_COMMENTS_PAGE_SIZE,
-        offset: page * ARTICLE_COMMENTS_PAGE_SIZE
+      await loadReactionsBy({
+        by: { shout: props.shoutSlug }
       })
-      getNewReactions()
-      setIsLoadMoreButtonVisible(hasMore)
+      updateNewReactionsCount()
     } finally {
       setIsCommentsLoading(false)
     }
-  }
-
-  onMount(async () => await loadMore())
+  })
 
   const [submitted, setSubmitted] = createSignal<boolean>(false)
   const handleSubmitComment = async (value) => {
     try {
-      await createReaction(
-        {
-          kind: ReactionKind.Comment,
-          body: value,
-          shout: props.shoutId
-        },
-        {
-          name: session().user.name,
-          userpic: session().user.userpic,
-          slug: session().user.slug
-        }
-      )
+      await createReaction({
+        kind: ReactionKind.Comment,
+        body: value,
+        shout: props.shoutId
+      })
       setSubmitted(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
@@ -91,14 +113,14 @@ export const CommentsTree = (props: Props) => {
       <Show when={!isCommentsLoading()} fallback={<Loading />}>
         <div class={styles.commentsHeaderWrapper}>
           <h2 id="comments" class={styles.commentsHeader}>
-            {t('Comments')} {reactions().length.toString() || ''}
-            <Show when={newReactions()}>
-              <span class={styles.newReactions}>&nbsp;+{newReactions()}</span>
+            {t('Comments')} {comments().length.toString() || ''}
+            <Show when={newReactionsCount() > 0}>
+              <span class={styles.newReactions}>&nbsp;+{newReactionsCount()}</span>
             </Show>
           </h2>
 
           <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
-            <li classList={{ selected: commentsOrder() === 'createdAt' || !commentsOrder() }}>
+            <li classList={{ selected: commentsOrder() === 'createdAt' }}>
               <Button
                 variant="inline"
                 value={t('By time')}
@@ -119,30 +141,36 @@ export const CommentsTree = (props: Props) => {
           </ul>
         </div>
         <ul class={styles.comments}>
-          <For
-            each={reactions()
-              .reverse()
-              .filter((r) => !r.replyTo)}
-          >
+          <For each={sortedComments().filter((r) => !r.replyTo)}>
             {(reaction) => (
               <Comment
+                sortedComments={sortedComments()}
                 isArticleAuthor={Boolean(props.commentAuthors.some((a) => a.slug === session()?.user.slug))}
-                reactions={reactions()}
                 comment={reaction}
               />
             )}
           </For>
         </ul>
-        <Show when={isLoadMoreButtonVisible()}>
-          <button onClick={loadMore}>{t('Load more')}</button>
-        </Show>
-        <ShowOnlyOnClient>
+        <ShowIfAuthenticated
+          fallback={
+            <div class={styles.signInMessage} id="comments">
+              {t('To write a comment, you must')}&nbsp;
+              <a href="?modal=auth&mode=register" class={styles.link}>
+                {t('sign up')}
+              </a>
+              &nbsp;{t('or')}&nbsp;
+              <a href="?modal=auth&mode=login" class={styles.link}>
+                {t('sign in')}
+              </a>
+            </div>
+          }
+        >
           <CommentEditor
             placeholder={t('Write a comment...')}
             clear={submitted()}
             onSubmit={(value) => handleSubmitComment(value)}
           />
-        </ShowOnlyOnClient>
+        </ShowIfAuthenticated>
       </Show>
     </div>
   )

@@ -661,6 +661,7 @@ export type Subscription = {
   newMessage?: Maybe<Message>
   newReaction?: Maybe<Reaction>
   newShout?: Maybe<Shout>
+  newInvite?: Maybe<DraftCollab>
 }
 
 export type Token = {

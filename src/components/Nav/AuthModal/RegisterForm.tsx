@@ -1,6 +1,5 @@
 import { Show, createSignal } from 'solid-js'
 import type { JSX } from 'solid-js'
-import { t } from '../../../utils/intl'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { SocialProviders } from './SocialProviders'
@@ -12,6 +11,7 @@ import type { AuthModalSearchParams } from './types'
 import { hideModal } from '../../../stores/ui'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
+import { useLocalize } from '../../../context/localize'
 
 type FormFields = {
   name: string
@@ -23,7 +23,7 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const RegisterForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
-
+  const { t } = useLocalize()
   const { emailChecks } = useEmailChecks()
 
   const [submitError, setSubmitError] = createSignal('')

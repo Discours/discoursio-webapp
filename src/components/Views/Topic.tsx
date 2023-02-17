@@ -5,7 +5,7 @@ import { Row2 } from '../Feed/Row2'
 import { Beside } from '../Feed/Beside'
 import styles from '../../styles/Topic.module.scss'
 import { FullTopic } from '../Topic/Full'
-import { t } from '../../utils/intl'
+
 import { useRouter } from '../../stores/router'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
@@ -16,6 +16,7 @@ import { clsx } from 'clsx'
 import Slider from '../_shared/Slider'
 import { Row1 } from '../Feed/Row1'
 import { ArticleCard } from '../Feed/Card'
+import { useLocalize } from '../../context/localize'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
@@ -31,6 +32,7 @@ export const PRERENDERED_ARTICLES_COUNT = 28
 const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: TopicProps) => {
+  const { t } = useLocalize()
   const { searchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)

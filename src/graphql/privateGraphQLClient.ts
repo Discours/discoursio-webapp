@@ -37,7 +37,7 @@ export const resetToken = () => {
 }
 
 const options: ClientOptions = {
-  url: apiBaseUrl + '/graphql',
+  url: apiBaseUrl,
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   fetchOptions: () => {
@@ -57,7 +57,7 @@ export const privateGraphQLClient = createClient(options)
 
 export const createChatClient = () => {
   const subClient = createSubClient({
-    url: (apiBaseUrl + '/messages').replace('http', 'ws')
+    url: apiBaseUrl.replace('http', 'ws') // + '/messages'
   })
 
   const subExchange = subscriptionExchange({

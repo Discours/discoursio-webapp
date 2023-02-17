@@ -1,9 +1,10 @@
-import { t } from '../../utils/intl'
 import { Icon } from '../_shared/Icon'
 import styles from '../../styles/FourOuFour.module.scss'
 import { clsx } from 'clsx'
+import { useLocalize } from '../../context/localize'
 
 export const FourOuFourView = (_props) => {
+  const { t } = useLocalize()
   return (
     <div class={styles.errorPageWrapper}>
       <div class={styles.errorPage}>

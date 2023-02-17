@@ -12,8 +12,8 @@ import { createArticle } from '../../stores/zine/articles'
 import type { ShoutInput } from '../../graphql/types.gen'
 import { Sidebar } from './Sidebar'
 import styles from './Sidebar.module.scss'
-import Button from '../_shared/Button'
-import { t } from '../../utils/intl'
+import { Button } from '../_shared/Button'
+import { useLocalize } from '../../context/localize'
 
 type Props = {
   initialContent?: string
@@ -28,6 +28,7 @@ const getHtml = (state: EditorState) => {
 }
 
 export const Editor = (props: Props) => {
+  const { t } = useLocalize()
   const editorElRef: {
     current: HTMLDivElement
   } = {

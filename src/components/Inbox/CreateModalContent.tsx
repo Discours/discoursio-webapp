@@ -15,34 +15,32 @@ type Props = {
 const CreateModalContent = (props: Props) => {
   const { t } = useLocalize()
   const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
-  const [theme, setTheme] = createSignal<string>(' ')
+  const [chatTitle, setChatTitle] = createSignal<string>('')
   const [usersId, setUsersId] = createSignal<number[]>([])
   const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
   let textInput: HTMLInputElement
 
   const reset = () => {
-    setTheme('')
+    setChatTitle('')
     setUsersId([])
     hideModal()
   }
 
   createEffect(() => {
     setUsersId(() => {
-      return collectionToInvite()
+      const s = collectionToInvite()
         .filter((user) => {
           return user.selected === true
         })
         .map((user) => {
           return user['id']
         })
+      return [...s]
     })
-    if (usersId().length > 1 && theme().length === 1) {
-      setTheme(t('Group Chat'))
-    }
   })
 
   const handleSetTheme = () => {
-    setTheme(textInput.value.length > 0 && textInput.value)
+    setChatTitle(textInput.value.length > 0 && textInput.value)
   }
 
   const handleClick = (user) => {
@@ -57,7 +55,7 @@ const CreateModalContent = (props: Props) => {
 
   const handleCreate = async () => {
     try {
-      const initChat = await actions.createChat(usersId(), theme())
+      const initChat = await actions.createChat(usersId(), chatTitle())
       console.debug('[initChat]', initChat)
       hideModal()
       await actions.loadChats()

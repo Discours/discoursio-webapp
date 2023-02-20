@@ -3,6 +3,21 @@
     {
       "source": "/((?!assets/).*)",
       "destination": "/api/ssr.js"
+    },
+
+    {
+      "source": "/api/feedback",
+      "destination": "/api/feedback.js"
+    },
+
+    {
+      "source": "/api/newsletter",
+      "destination": "/api/newsletter.js"
+    },
+
+    {
+      "source": "/api/upload",
+      "destination": "/api/upload.mjs"
     }
   ]
 }

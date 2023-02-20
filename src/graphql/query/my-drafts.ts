@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query GetCollabsQuery {
-    getCollabs {
+  query MyDraftsQuery {
+    loadDrafts {
       authors {
         id
         slug

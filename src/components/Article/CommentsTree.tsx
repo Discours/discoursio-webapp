@@ -3,18 +3,17 @@ import { Comment } from './Comment'
 import styles from '../../styles/Article.module.scss'
 import { clsx } from 'clsx'
 import { Loading } from '../_shared/Loading'
-import { Author, ReactionKind } from '../../graphql/types.gen'
+import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import CommentEditor from '../_shared/CommentEditor'
-import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { Button } from '../_shared/Button'
-import { createStorage } from '@solid-primitives/storage'
 import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
+import Cookie from 'js-cookie'
 
-type CommentsOrder = 'createdAt' | 'rating'
+type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
 type Props = {
   commentAuthors: Author[]
@@ -33,8 +32,8 @@ export const CommentsTree = (props: Props) => {
   const { t } = useLocalize()
 
   // TODO: server side?
-  const [store, setStore] = createStorage({ api: typeof localStorage === 'undefined' ? {} : localStorage })
   const [newReactionsCount, setNewReactionsCount] = createSignal<number>(0)
+  const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
 
   const comments = createMemo(() =>
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
@@ -64,19 +63,29 @@ export const CommentsTree = (props: Props) => {
       })
     }
 
+    if (commentsOrder() === 'newOnly') {
+      newSortedComments = newReactions()
+    }
+
     newSortedComments.reverse()
 
     return newSortedComments
   })
 
   const updateNewReactionsCount = () => {
-    const storeValue = Number(store[`${props.shoutSlug}`])
-    const setVal = () => setStore(`${props.shoutSlug}`, `${comments().length}`)
-    if (!store[`${props.shoutSlug}`]) {
-      setVal()
-    } else if (storeValue < comments().length) {
-      setNewReactionsCount(comments().length - storeValue)
-      setVal()
+    const dateFromCookie = new Date(Cookie.get(`${props.shoutSlug}`)).valueOf()
+    const setCookie = () => Cookie.set(`${props.shoutSlug}`, `${Date.now()}`)
+    if (!dateFromCookie) {
+      setCookie()
+    } else if (Date.now() > dateFromCookie) {
+      const newComments = comments().filter((c) => {
+        if (c.replyTo) return
+        const commentDate = new Date(c.createdAt).valueOf()
+        return commentDate > dateFromCookie
+      })
+      setNewReactions(newComments)
+      setNewReactionsCount(newComments.length)
+      setCookie()
     }
   }
 
@@ -120,6 +129,17 @@ export const CommentsTree = (props: Props) => {
           </h2>
 
           <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
+            <Show when={newReactionsCount() > 0}>
+              <li classList={{ selected: commentsOrder() === 'newOnly' }}>
+                <Button
+                  variant="inline"
+                  value={t('New only')}
+                  onClick={() => {
+                    setCommentsOrder('newOnly')
+                  }}
+                />
+              </li>
+            </Show>
             <li classList={{ selected: commentsOrder() === 'createdAt' }}>
               <Button
                 variant="inline"

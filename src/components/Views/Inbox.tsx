@@ -70,7 +70,7 @@ export const InboxView = () => {
     }
   }
 
-  // TODO: удалить когда будет готова подписка
+  /*
   createEffect(() => {
     setInterval(async () => {
       if (!currentDialog()) return
@@ -83,7 +83,7 @@ export const InboxView = () => {
       }
     }, 2000)
   })
-
+  */
   onMount(async () => {
     try {
       const response = await loadRecipients({ days: 365 })

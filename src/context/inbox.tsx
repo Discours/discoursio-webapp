@@ -1,6 +1,6 @@
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext, createMemo } from 'solid-js'
-import { createChatClient } from '../graphql/privateGraphQLClient'
+import { createSubClient } from '../graphql/privateGraphQLClient'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import newMessage from '../graphql/subs/new-message'
@@ -29,7 +29,7 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
-  const subclient = createMemo<Client>(() => createChatClient())
+  const subclient = createMemo<Client>(() => createSubClient())
   const loadChats = async () => {
     try {
       const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
@@ -71,8 +71,8 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     return chat
   }
 
-  const { unsubscribe } = pipe(
-    () => subclient().subscription(newMessage, {}),
+  pipe(
+    subclient().subscription(newMessage, {}),
     subscribe((result) => {
       console.info('[subscription]')
       console.debug(result)
@@ -83,8 +83,8 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     createChat,
     loadChats,
     getMessages,
-    sendMessage,
-    unsubscribe // TODO: call unsubscribe some time!
+    sendMessage
+    // unsubscribe // TODO: call unsubscribe some time!
   }
 
   const value: InboxContextType = { chats, messages, actions }

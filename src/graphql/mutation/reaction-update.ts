@@ -5,6 +5,7 @@ export default gql`
     updateReaction(id: $id, reaction: $reaction) {
       error
       reaction {
+        id
         body
         updatedAt
         replyTo

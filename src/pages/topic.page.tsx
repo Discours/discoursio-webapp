@@ -6,6 +6,7 @@ import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { useRouter } from '../stores/router'
 import { loadTopic } from '../stores/zine/topics'
 import { Loading } from '../components/_shared/Loading'
+import { ReactionsProvider } from '../context/reactions'
 
 export const TopicPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.topicShouts) && Boolean(props.topic))
@@ -37,9 +38,11 @@ export const TopicPage = (props: PageProps) => {
 
   return (
     <PageLayout>
-      <Show when={isLoaded()} fallback={<Loading />}>
-        <TopicView topic={props.topic} shouts={props.topicShouts} topicSlug={slug()} />
-      </Show>
+      <ReactionsProvider>
+        <Show when={isLoaded()} fallback={<Loading />}>
+          <TopicView topic={props.topic} shouts={props.topicShouts} topicSlug={slug()} />
+        </Show>
+      </ReactionsProvider>
     </PageLayout>
   )
 }

@@ -5,6 +5,7 @@ import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { Loading } from '../components/_shared/Loading'
+import { ReactionsProvider } from '../context/reactions'
 
 export const SearchPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
@@ -34,9 +35,11 @@ export const SearchPage = (props: PageProps) => {
 
   return (
     <PageLayout>
-      <Show when={isLoaded()} fallback={<Loading />}>
-        <SearchView results={props.searchResults || []} query={props.searchQuery} />
-      </Show>
+      <ReactionsProvider>
+        <Show when={isLoaded()} fallback={<Loading />}>
+          <SearchView results={props.searchResults || []} query={props.searchQuery} />
+        </Show>
+      </ReactionsProvider>
     </PageLayout>
   )
 }

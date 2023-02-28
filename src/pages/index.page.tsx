@@ -7,6 +7,7 @@ import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { loadRandomTopics } from '../stores/zine/topics'
 import { Loading } from '../components/_shared/Loading'
 import { useLocalize } from '../context/localize'
+import { ReactionsProvider } from '../context/reactions'
 
 export const HomePage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts) && Boolean(props.randomTopics))
@@ -27,10 +28,12 @@ export const HomePage = (props: PageProps) => {
 
   return (
     <PageLayout withPadding={true}>
-      <Title>{t('Discours')}</Title>
-      <Show when={isLoaded()} fallback={<Loading />}>
-        <HomeView randomTopics={props.randomTopics} shouts={props.homeShouts || []} />
-      </Show>
+      <ReactionsProvider>
+        <Title>{t('Discours')}</Title>
+        <Show when={isLoaded()} fallback={<Loading />}>
+          <HomeView randomTopics={props.randomTopics} shouts={props.homeShouts || []} />
+        </Show>
+      </ReactionsProvider>
     </PageLayout>
   )
 }

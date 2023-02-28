@@ -59,11 +59,18 @@ export const FeedView = () => {
   })
 
   const loadMore = async () => {
-    const { hasMore } = await loadShouts({
+    const { hasMore, newShouts } = await loadShouts({
       filters: { visibility: 'community' },
       limit: FEED_PAGE_SIZE,
       offset: sortedArticles().length
     })
+
+    loadReactionsBy({
+      by: {
+        shouts: newShouts.map((s) => s.slug)
+      }
+    })
+
     setIsLoadMoreButtonVisible(hasMore)
   }
 

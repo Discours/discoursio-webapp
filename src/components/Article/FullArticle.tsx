@@ -2,8 +2,8 @@ import { capitalize, formatDate } from '../../utils'
 import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, For, Match, onMount, Show, Switch } from 'solid-js'
-import type { Author, Shout } from '../../graphql/types.gen'
+import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import type { Author, Reaction, Shout } from '../../graphql/types.gen'
 import { ReactionKind } from '../../graphql/types.gen'
 
 import MD from './MD'
@@ -23,6 +23,7 @@ import { useReactions } from '../../context/reactions'
 import { loadShout } from '../../stores/zine/articles'
 import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
+import { checkReaction } from '../../utils/checkReaction'
 
 interface ArticleProps {
   article: Shout
@@ -59,7 +60,8 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
 
 export const FullArticle = (props: ArticleProps) => {
   const { t } = useLocalize()
-  const { session } = useSession()
+  const { userSlug, session } = useSession()
+  const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
   const mainTopic = createMemo(
@@ -81,6 +83,14 @@ export const FullArticle = (props: ArticleProps) => {
     }
   })
 
+  onMount(async () => {
+    await loadReactionsBy({
+      by: { shout: props.article.slug }
+    })
+
+    setIsReactionsLoaded(true)
+  })
+
   const canEdit = () => props.article.authors?.some((a) => a.slug === session()?.user?.slug)
 
   const bookmark = (ev) => {
@@ -96,26 +106,51 @@ export const FullArticle = (props: ArticleProps) => {
   })
 
   const {
-    actions: { createReaction }
+    reactionEntities,
+    actions: { loadReactionsBy, createReaction, deleteReaction }
   } = useReactions()
 
-  const handleUpvote = async () => {
-    await createReaction({
-      kind: ReactionKind.Like,
-      shout: props.article.id
+  const updateReactions = () => {
+    loadReactionsBy({
+      by: { shout: props.article.slug }
     })
-
-    await loadShout(props.article.slug)
   }
 
-  const handleDownvote = async () => {
-    await createReaction({
-      kind: ReactionKind.Dislike,
-      shout: props.article.id
-    })
+  const isUpvoted = createMemo(() =>
+    checkReaction(Object.values(reactionEntities), ReactionKind.Like, userSlug(), props.article.id)
+  )
 
-    await loadShout(props.article.slug)
+  const isDownvoted = createMemo(() =>
+    checkReaction(Object.values(reactionEntities), ReactionKind.Dislike, userSlug(), props.article.id)
+  )
+
+  const handleRatingChange = async (isUpvote: boolean) => {
+    const reactionKind = isUpvote ? ReactionKind.Like : ReactionKind.Dislike
+    const isReacted = (isUpvote && isUpvoted()) || (!isUpvote && isDownvoted())
+
+    if (isReacted) {
+      const reactionToDelete = Object.values(reactionEntities).find(
+        (r) =>
+          r.kind === reactionKind &&
+          r.createdBy.slug === userSlug() &&
+          r.shout.id === props.article.id &&
+          !r.replyTo
+      )
+      await deleteReaction(reactionToDelete.id)
+    } else {
+      await createReaction({
+        kind: reactionKind,
+        shout: props.article.id
+      })
+    }
+
+    loadShout(props.article.slug)
+    updateReactions()
   }
+
+  createEffect(() => {
+    console.log('reactions', reactionEntities)
+  })
 
   return (
     <>
@@ -200,8 +235,10 @@ export const FullArticle = (props: ArticleProps) => {
               <RatingControl
                 rating={props.article.stat?.rating}
                 class={styles.ratingControl}
-                onUpvote={handleUpvote}
-                onDownvote={handleDownvote}
+                onUpvote={() => handleRatingChange(true)}
+                onDownvote={() => handleRatingChange(false)}
+                isUpvoted={isUpvoted()}
+                isDownvoted={isDownvoted()}
               />
             </div>
 
@@ -265,22 +302,24 @@ export const FullArticle = (props: ArticleProps) => {
           </div>
 
           <div class={styles.shoutAuthorsList}>
-            <Show when={props.article?.authors?.length > 1}>
+            <Show when={props.article.authors.length > 1}>
               <h4>{t('Authors')}</h4>
             </Show>
-            <For each={props.article?.authors}>
-              {(a: Author) => (
+            <For each={props.article.authors}>
+              {(a) => (
                 <div class="col-xl-6">
                   <AuthorCard author={a} compact={false} hasLink={true} liteButtons={true} />
                 </div>
               )}
             </For>
           </div>
-          <CommentsTree
-            shoutId={props.article?.id}
-            shoutSlug={props.article?.slug}
-            commentAuthors={props.article?.authors}
-          />
+          <Show when={isReactionsLoaded()}>
+            <CommentsTree
+              shoutId={props.article.id}
+              shoutSlug={props.article.slug}
+              commentAuthors={props.article.authors}
+            />
+          </Show>
         </div>
       </div>
     </>

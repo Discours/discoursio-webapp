@@ -1,6 +1,13 @@
 .rating {
   align-items: center;
   display: flex;
+
+  &.isDownvoted .downvoteButton,
+  &.isUpvoted .upvoteButton {
+    background: #000;
+    border-color: #000;
+    color: #fff;
+  }
 }
 
 .ratingValue {

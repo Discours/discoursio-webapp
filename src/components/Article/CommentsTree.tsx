@@ -22,16 +22,14 @@ type Props = {
 }
 
 export const CommentsTree = (props: Props) => {
-  const [isCommentsLoading, setIsCommentsLoading] = createSignal(false)
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
   const {
     reactionEntities,
-    actions: { loadReactionsBy, createReaction }
+    actions: { createReaction }
   } = useReactions()
 
   const { t } = useLocalize()
 
-  // TODO: server side?
   const [newReactionsCount, setNewReactionsCount] = createSignal<number>(0)
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
 
@@ -79,7 +77,9 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     } else if (Date.now() > dateFromCookie) {
       const newComments = comments().filter((c) => {
-        if (c.replyTo) return
+        if (c.replyTo) {
+          return
+        }
         const commentDate = new Date(c.createdAt).valueOf()
         return commentDate > dateFromCookie
       })
@@ -92,15 +92,7 @@ export const CommentsTree = (props: Props) => {
   const { session } = useSession()
 
   onMount(async () => {
-    try {
-      setIsCommentsLoading(true)
-      await loadReactionsBy({
-        by: { shout: props.shoutSlug }
-      })
-      updateNewReactionsCount()
-    } finally {
-      setIsCommentsLoading(false)
-    }
+    updateNewReactionsCount()
   })
 
   const [submitted, setSubmitted] = createSignal<boolean>(false)
@@ -118,80 +110,78 @@ export const CommentsTree = (props: Props) => {
   }
 
   return (
-    <div>
-      <Show when={!isCommentsLoading()} fallback={<Loading />}>
-        <div class={styles.commentsHeaderWrapper}>
-          <h2 id="comments" class={styles.commentsHeader}>
-            {t('Comments')} {comments().length.toString() || ''}
-            <Show when={newReactionsCount() > 0}>
-              <span class={styles.newReactions}>&nbsp;+{newReactionsCount()}</span>
-            </Show>
-          </h2>
+    <>
+      <div class={styles.commentsHeaderWrapper}>
+        <h2 id="comments" class={styles.commentsHeader}>
+          {t('Comments')} {comments().length.toString() || ''}
+          <Show when={newReactionsCount() > 0}>
+            <span class={styles.newReactions}>&nbsp;+{newReactionsCount()}</span>
+          </Show>
+        </h2>
 
-          <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
-            <Show when={newReactionsCount() > 0}>
-              <li classList={{ selected: commentsOrder() === 'newOnly' }}>
-                <Button
-                  variant="inline"
-                  value={t('New only')}
-                  onClick={() => {
-                    setCommentsOrder('newOnly')
-                  }}
-                />
-              </li>
-            </Show>
-            <li classList={{ selected: commentsOrder() === 'createdAt' }}>
+        <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
+          <Show when={newReactionsCount() > 0}>
+            <li classList={{ selected: commentsOrder() === 'newOnly' }}>
               <Button
                 variant="inline"
-                value={t('By time')}
+                value={t('New only')}
                 onClick={() => {
-                  setCommentsOrder('createdAt')
+                  setCommentsOrder('newOnly')
                 }}
               />
             </li>
-            <li classList={{ selected: commentsOrder() === 'rating' }}>
-              <Button
-                variant="inline"
-                value={t('By rating')}
-                onClick={() => {
-                  setCommentsOrder('rating')
-                }}
-              />
-            </li>
-          </ul>
-        </div>
-        <ul class={styles.comments}>
-          <For each={sortedComments().filter((r) => !r.replyTo)}>
-            {(reaction) => (
-              <Comment
-                sortedComments={sortedComments()}
-                isArticleAuthor={Boolean(props.commentAuthors.some((a) => a.slug === session()?.user.slug))}
-                comment={reaction}
-              />
-            )}
-          </For>
+          </Show>
+          <li classList={{ selected: commentsOrder() === 'createdAt' }}>
+            <Button
+              variant="inline"
+              value={t('By time')}
+              onClick={() => {
+                setCommentsOrder('createdAt')
+              }}
+            />
+          </li>
+          <li classList={{ selected: commentsOrder() === 'rating' }}>
+            <Button
+              variant="inline"
+              value={t('By rating')}
+              onClick={() => {
+                setCommentsOrder('rating')
+              }}
+            />
+          </li>
         </ul>
-        <ShowIfAuthenticated
-          fallback={
-            <div class={styles.signInMessage} id="comments">
-              {t('To write a comment, you must')}&nbsp;
-              <a href="?modal=auth&mode=register" class={styles.link}>
-                {t('sign up')}
-              </a>
-              &nbsp;{t('or')}&nbsp;
-              <a href="?modal=auth&mode=login" class={styles.link}>
-                {t('sign in')}
-              </a>
-            </div>
-          }
-        >
-          <CommentEditor
-            placeholder={t('Write a comment...')}
-            clear={submitted()}
-            onSubmit={(value) => handleSubmitComment(value)}
-          />
-        </ShowIfAuthenticated>
-      </Show>
-    </div>
+      </div>
+      <ul class={styles.comments}>
+        <For each={sortedComments().filter((r) => !r.replyTo)}>
+          {(reaction) => (
+            <Comment
+              sortedComments={sortedComments()}
+              isArticleAuthor={Boolean(props.commentAuthors.some((a) => a.slug === session()?.user.slug))}
+              comment={reaction}
+            />
+          )}
+        </For>
+      </ul>
+      <ShowIfAuthenticated
+        fallback={
+          <div class={styles.signInMessage} id="comments">
+            {t('To write a comment, you must')}&nbsp;
+            <a href="?modal=auth&mode=register" class={styles.link}>
+              {t('sign up')}
+            </a>
+            &nbsp;{t('or')}&nbsp;
+            <a href="?modal=auth&mode=login" class={styles.link}>
+              {t('sign in')}
+            </a>
+          </div>
+        }
+      >
+        <CommentEditor
+          placeholder={t('Write a comment...')}
+          clear={submitted()}
+          onSubmit={(value) => handleSubmitComment(value)}
+        />
+      </ShowIfAuthenticated>
+    </>
   )
 }

@@ -12,12 +12,17 @@ interface RatingControlProps {
 
 export const RatingControl = (props: RatingControlProps) => {
   return (
-    <div class={clsx(props.class, styles.rating)}>
-      <button class={styles.ratingControl} onClick={props.onDownvote}>
+    <div
+      class={clsx(styles.rating, props.class, {
+        [styles.isUpvoted]: props.isUpvoted,
+        [styles.isDownvoted]: props.isDownvoted
+      })}
+    >
+      <button class={clsx(styles.ratingControl, styles.downvoteButton)} onClick={props.onDownvote}>
         &minus;
       </button>
       <span class={styles.ratingValue}>{props?.rating || ''}</span>
-      <button class={styles.ratingControl} onClick={props.onUpvote}>
+      <button class={clsx(styles.ratingControl, styles.upvoteButton)} onClick={props.onUpvote}>
         +
       </button>
     </div>

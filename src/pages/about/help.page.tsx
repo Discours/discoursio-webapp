@@ -2,16 +2,19 @@ import { createSignal, Show } from 'solid-js'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Donate } from '../../components/Discours/Donate'
 import { Icon } from '../../components/_shared/Icon'
-
-// const title = t('Support us')
+import { Meta, Title } from '@solidjs/meta'
+import { useLocalize } from '../../context/localize'
 
 export const HelpPage = () => {
   const [indexExpanded, setIndexExpanded] = createSignal(true)
+
+  const { t } = useLocalize()
 
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
     <PageLayout>
+      <Title>{t('Support us')}</Title>
       <Meta name="description">Здесь можно поддержать Дискурс материально.</Meta>
       <Meta name="keywords">Discours.io, помощь, благотворительность</Meta>
 

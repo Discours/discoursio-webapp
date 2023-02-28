@@ -126,24 +126,32 @@ const addSortedArticles = (articles: Shout[]) => {
 export const loadShout = async (slug: string): Promise<void> => {
   const newArticle = await apiClient.getShout(slug)
   addArticles([newArticle])
+  const newArticleIndex = sortedArticles().findIndex((s) => s.id === newArticle.id)
+  if (newArticleIndex >= 0) {
+    const newSortedArticles = [...sortedArticles()]
+    newSortedArticles[newArticleIndex] = newArticle
+    setSortedArticles(newSortedArticles)
+  }
 }
 
-export const loadShouts = async (options: LoadShoutsOptions): Promise<{ hasMore: boolean }> => {
-  const newArticles = await apiClient.getShouts({
+export const loadShouts = async (
+  options: LoadShoutsOptions
+): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
+  const newShouts = await apiClient.getShouts({
     ...options,
     limit: options.limit + 1
   })
 
-  const hasMore = newArticles.length === options.limit + 1
+  const hasMore = newShouts.length === options.limit + 1
 
   if (hasMore) {
-    newArticles.splice(-1)
+    newShouts.splice(-1)
   }
 
-  addArticles(newArticles)
-  addSortedArticles(newArticles)
+  addArticles(newShouts)
+  addSortedArticles(newShouts)
 
-  return { hasMore }
+  return { hasMore, newShouts }
 }
 
 export const resetSortedArticles = () => {

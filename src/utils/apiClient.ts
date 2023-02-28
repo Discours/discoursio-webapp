@@ -278,7 +278,7 @@ export const apiClient = {
     const resp = await publicGraphQLClient
       .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: 0 })
       .toPromise()
-    console.debug(resp)
+    // console.debug(resp)
     return resp.data.loadReactionsBy
   },
 

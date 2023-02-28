@@ -1,6 +1,7 @@
 import type { JSX } from 'solid-js'
 import { createContext, onCleanup, useContext } from 'solid-js'
 import type { Reaction, ReactionBy, ReactionInput } from '../graphql/types.gen'
+import { ReactionKind } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { createStore } from 'solid-js/store'
 
@@ -41,12 +42,33 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const createReaction = async (input: ReactionInput): Promise<void> => {
     const reaction = await apiClient.createReaction(input)
-    setReactionEntities(reaction.id, reaction)
+
+    const changes = {
+      [reaction.id]: reaction
+    }
+
+    if ([ReactionKind.Like, ReactionKind.Dislike].includes(reaction.kind)) {
+      const oppositeReactionKind =
+        reaction.kind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
+
+      const oppositeReaction = Object.values(reactionEntities).find(
+        (r) =>
+          r.kind === oppositeReactionKind &&
+          r.createdBy.slug === reaction.createdBy.slug &&
+          r.shout.id === reaction.shout.id &&
+          r.replyTo === reaction.replyTo
+      )
+
+      if (oppositeReaction) {
+        changes[oppositeReaction.id] = undefined
+      }
+    }
+
+    setReactionEntities(changes)
   }
 
   const deleteReaction = async (id: number): Promise<void> => {
     const reaction = await apiClient.destroyReaction(id)
-    console.debug('[deleteReaction]:', reaction.id)
     setReactionEntities((oldState) => ({
       ...oldState,
       [reaction.id]: undefined

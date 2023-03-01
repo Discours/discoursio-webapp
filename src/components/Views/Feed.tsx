@@ -20,6 +20,7 @@ import type { Reaction } from '../../graphql/types.gen'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
 import { useLocalize } from '../../context/localize'
+import type { Author } from '../../graphql/types.gen'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -142,7 +143,22 @@ export const FeedView = () => {
               <section class={styles.asideSection}>
                 <h4>{t('Comments')}</h4>
                 <For each={topComments()}>
-                  {(comment) => <CommentCard comment={comment} compact={true} />}
+                  {(comment) => {
+                    return (
+                      <div class={styles.comment}>
+                        <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
+                        <AuthorCard
+                          author={comment.createdBy as Author}
+                          isFeedMode={true}
+                          compact={true}
+                          hideFollow={true}
+                        />
+                        <div class={clsx('text-truncate', styles.commentArticleTitle)}>
+                          <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
+                        </div>
+                      </div>
+                    )
+                  }}
                 </For>
               </section>
 

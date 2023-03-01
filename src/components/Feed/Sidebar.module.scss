@@ -1,9 +1,14 @@
 .sidebar {
   max-height: calc(100vh - 120px);
-  overflow: auto;
-  padding-right: 1rem;
+  overflow: hidden;
+  padding-right: 2.6rem;
   position: sticky;
   top: 120px;
+
+  &:hover {
+    overflow: scroll;
+    padding-right: 1rem;
+  }
 }
 
 .counter {

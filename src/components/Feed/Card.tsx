@@ -101,20 +101,36 @@ export const ArticleCard = (props: ArticleCardProps) => {
     checkReaction(Object.values(reactionEntities), ReactionKind.Dislike, userSlug(), id)
   )
 
-  const handleRatingChange = async (isUpvote: boolean) => {
-    const reactionKind = isUpvote ? ReactionKind.Like : ReactionKind.Dislike
-    const isReacted = (isUpvote && isUpvoted()) || (!isUpvote && isDownvoted())
+  const deleteShoutReaction = async (reactionKind: ReactionKind) => {
+    const reactionToDelete = Object.values(reactionEntities).find(
+      (r) => r.kind === reactionKind && r.createdBy.slug === userSlug() && r.shout.id === id && !r.replyTo
+    )
+    return deleteReaction(reactionToDelete.id)
+  }
 
-    if (isReacted) {
-      const reactionToDelete = Object.values(reactionEntities).find(
-        (r) => r.kind === reactionKind && r.createdBy.slug === userSlug() && r.shout.id === id && !r.replyTo
-      )
-      await deleteReaction(reactionToDelete.id)
+  const handleRatingChange = async (isUpvote: boolean) => {
+    if (isUpvote) {
+      if (isUpvoted()) {
+        await deleteShoutReaction(ReactionKind.Like)
+      } else if (isDownvoted()) {
+        await deleteShoutReaction(ReactionKind.Dislike)
+      } else {
+        await createReaction({
+          kind: ReactionKind.Like,
+          shout: id
+        })
+      }
     } else {
-      await createReaction({
-        kind: reactionKind,
-        shout: id
-      })
+      if (isDownvoted()) {
+        await deleteShoutReaction(ReactionKind.Dislike)
+      } else if (isUpvoted()) {
+        await deleteShoutReaction(ReactionKind.Like)
+      } else {
+        await createReaction({
+          kind: ReactionKind.Dislike,
+          shout: id
+        })
+      }
     }
 
     loadShout(slug)

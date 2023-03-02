@@ -6,6 +6,7 @@ import { Show } from 'solid-js'
 import { clsx } from 'clsx'
 import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
+import { Meta } from '@solidjs/meta'
 
 type PageLayoutProps = {
   headerTitle?: string
@@ -23,6 +24,7 @@ export const PageLayout = (props: PageLayoutProps) => {
 
   return (
     <>
+      <Meta name="viewport" content="width=device-width, initial-scale=1" />
       <Header
         title={props.headerTitle}
         articleBody={props.articleBody}

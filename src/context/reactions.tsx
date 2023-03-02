@@ -3,7 +3,7 @@ import { createContext, onCleanup, useContext } from 'solid-js'
 import type { Reaction, ReactionBy, ReactionInput } from '../graphql/types.gen'
 import { ReactionKind } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
-import { createStore } from 'solid-js/store'
+import { createStore, reconcile } from 'solid-js/store'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
@@ -80,7 +80,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     setReactionEntities(reaction.id, reaction)
   }
 
-  onCleanup(() => setReactionEntities({}))
+  onCleanup(() => setReactionEntities(reconcile({})))
 
   const actions = {
     loadReactionsBy,

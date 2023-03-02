@@ -3,7 +3,7 @@ import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
 import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
-import type { Author, Reaction, Shout } from '../../graphql/types.gen'
+import type { Author, Shout } from '../../graphql/types.gen'
 import { ReactionKind } from '../../graphql/types.gen'
 
 import MD from './MD'
@@ -124,24 +124,40 @@ export const FullArticle = (props: ArticleProps) => {
     checkReaction(Object.values(reactionEntities), ReactionKind.Dislike, userSlug(), props.article.id)
   )
 
-  const handleRatingChange = async (isUpvote: boolean) => {
-    const reactionKind = isUpvote ? ReactionKind.Like : ReactionKind.Dislike
-    const isReacted = (isUpvote && isUpvoted()) || (!isUpvote && isDownvoted())
+  const deleteShoutReaction = async (reactionKind: ReactionKind) => {
+    const reactionToDelete = Object.values(reactionEntities).find(
+      (r) =>
+        r.kind === reactionKind &&
+        r.createdBy.slug === userSlug() &&
+        r.shout.id === props.article.id &&
+        !r.replyTo
+    )
+    return deleteReaction(reactionToDelete.id)
+  }
 
-    if (isReacted) {
-      const reactionToDelete = Object.values(reactionEntities).find(
-        (r) =>
-          r.kind === reactionKind &&
-          r.createdBy.slug === userSlug() &&
-          r.shout.id === props.article.id &&
-          !r.replyTo
-      )
-      await deleteReaction(reactionToDelete.id)
+  const handleRatingChange = async (isUpvote: boolean) => {
+    if (isUpvote) {
+      if (isUpvoted()) {
+        await deleteShoutReaction(ReactionKind.Like)
+      } else if (isDownvoted()) {
+        await deleteShoutReaction(ReactionKind.Dislike)
+      } else {
+        await createReaction({
+          kind: ReactionKind.Like,
+          shout: props.article.id
+        })
+      }
     } else {
-      await createReaction({
-        kind: reactionKind,
-        shout: props.article.id
-      })
+      if (isDownvoted()) {
+        await deleteShoutReaction(ReactionKind.Dislike)
+      } else if (isUpvoted()) {
+        await deleteShoutReaction(ReactionKind.Like)
+      } else {
+        await createReaction({
+          kind: ReactionKind.Dislike,
+          shout: props.article.id
+        })
+      }
     }
 
     loadShout(props.article.slug)

@@ -9,7 +9,6 @@ import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useRouter } from '../../stores/router'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-import { RatingControl } from '../Article/RatingControl'
 import styles from './Author.module.scss'
 import stylesArticle from '../../styles/Article.module.scss'
 import { clsx } from 'clsx'
@@ -19,6 +18,7 @@ import { AuthorCard } from '../Author/Card'
 import { apiClient } from '../../utils/apiClient'
 import { Comment } from '../Article/Comment'
 import { useLocalize } from '../../context/localize'
+import { AuthorRatingControl } from '../Author/AuthorRatingControl'
 
 type AuthorProps = {
   shouts: Shout[]
@@ -138,7 +138,6 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
           <div class={clsx('col-md-4', styles.additionalControls)}>
             <Popup
-              {...props}
               trigger={
                 <div class={styles.subscribers}>
                   <Switch>
@@ -179,7 +178,7 @@ export const AuthorView = (props: AuthorProps) => {
 
             <div class={styles.ratingContainer}>
               {t('Karma')}
-              <RatingControl rating={19} class={styles.ratingControl} />
+              <AuthorRatingControl author={props.author} class={styles.ratingControl} />
             </div>
           </div>
         </div>

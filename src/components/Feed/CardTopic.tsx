@@ -1,6 +1,9 @@
-import style from './CardTopic.module.scss'
+import { clsx } from 'clsx'
+import { getPagePath } from '@nanostores/router'
+import { router } from '../../stores/router'
+import styles from './CardTopic.module.scss'
 
-interface CardTopicProps {
+type CardTopicProps = {
   title: string
   slug: string
   isFloorImportant?: boolean
@@ -9,12 +12,11 @@ interface CardTopicProps {
 export const CardTopic = (props: CardTopicProps) => {
   return (
     <div
-      class={style.shoutTopic}
-      classList={{
-        [style.shoutTopicFloorImportant]: props.isFloorImportant
-      }}
+      class={clsx(styles.shoutTopic, {
+        [styles.shoutTopicFloorImportant]: props.isFloorImportant
+      })}
     >
-      <a href={`/topic/${props.slug}`}>{props.title}</a>
+      <a href={getPagePath(router, 'topic', { slug: props.slug })}>{props.title}</a>
     </div>
   )
 }

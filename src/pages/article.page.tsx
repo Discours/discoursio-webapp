@@ -1,12 +1,12 @@
 import { createMemo, onMount, Show } from 'solid-js'
 import type { Shout } from '../graphql/types.gen'
 import { PageLayout } from '../components/_shared/PageLayout'
-import { ArticleView } from '../components/Views/Article'
 import type { PageProps } from './types'
 import { loadShout, useArticlesStore } from '../stores/zine/articles'
 import { useRouter } from '../stores/router'
 import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
+import { FullArticle } from '../components/Article/FullArticle'
 
 export const ArticlePage = (props: PageProps) => {
   const shouts = props.article ? [props.article] : []
@@ -50,7 +50,7 @@ export const ArticlePage = (props: PageProps) => {
     <PageLayout headerTitle={article()?.title || ''} articleBody={article()?.body} cover={article()?.cover}>
       <ReactionsProvider>
         <Show when={Boolean(article())} fallback={<Loading />}>
-          <ArticleView article={article()} />
+          <FullArticle article={article()} />
         </Show>
       </ReactionsProvider>
     </PageLayout>

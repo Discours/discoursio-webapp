@@ -6,17 +6,13 @@ import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'
 import { clsx } from 'clsx'
 import { CardTopic } from './CardTopic'
-import { RatingControl } from '../Article/RatingControl'
+import { ShoutRatingControl } from '../Article/ShoutRatingControl'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
 import stylesHeader from '../Nav/Header.module.scss'
 import { getDescription } from '../../utils/meta'
 import { FeedArticlePopup } from './FeedArticlePopup'
 import { useLocalize } from '../../context/localize'
-import { ReactionKind } from '../../graphql/types.gen'
-import { loadShout } from '../../stores/zine/articles'
 import { useReactions } from '../../context/reactions'
-import { checkReaction } from '../../utils/checkReaction'
-import { useSession } from '../../context/session'
 
 interface ArticleCardProps {
   settings?: {
@@ -66,13 +62,6 @@ const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang } = useLocalize()
 
-  const { userSlug } = useSession()
-
-  const {
-    reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy }
-  } = useReactions()
-
   const mainTopic =
     props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic) ||
     props.article.topics[0]
@@ -85,57 +74,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
-  const { cover, layout, slug, authors, stat, body, id } = props.article
-
-  const updateReactions = () => {
-    loadReactionsBy({
-      by: { shout: slug }
-    })
-  }
-
-  const isUpvoted = createMemo(() =>
-    checkReaction(Object.values(reactionEntities), ReactionKind.Like, userSlug(), id)
-  )
-
-  const isDownvoted = createMemo(() =>
-    checkReaction(Object.values(reactionEntities), ReactionKind.Dislike, userSlug(), id)
-  )
-
-  const deleteShoutReaction = async (reactionKind: ReactionKind) => {
-    const reactionToDelete = Object.values(reactionEntities).find(
-      (r) => r.kind === reactionKind && r.createdBy.slug === userSlug() && r.shout.id === id && !r.replyTo
-    )
-    return deleteReaction(reactionToDelete.id)
-  }
-
-  const handleRatingChange = async (isUpvote: boolean) => {
-    if (isUpvote) {
-      if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
-      } else if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
-      } else {
-        await createReaction({
-          kind: ReactionKind.Like,
-          shout: id
-        })
-      }
-    } else {
-      if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
-      } else if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
-      } else {
-        await createReaction({
-          kind: ReactionKind.Dislike,
-          shout: id
-        })
-      }
-    }
-
-    loadShout(slug)
-    updateReactions()
-  }
+  const { cover, layout, slug, authors, stat, body } = props.article
 
   return (
     <section
@@ -227,14 +166,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <Show when={props.settings?.isFeedMode}>
           <section class={styles.shoutCardDetails}>
             <div class={styles.shoutCardDetailsContent}>
-              <RatingControl
-                rating={stat.rating}
-                class={styles.shoutCardDetailsItem}
-                onUpvote={() => handleRatingChange(true)}
-                onDownvote={() => handleRatingChange(false)}
-                isUpvoted={isUpvoted()}
-                isDownvoted={isDownvoted()}
-              />
+              <ShoutRatingControl shout={props.article} class={styles.shoutCardDetailsItem} />
 
               <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardDetailsViewed)}>
                 <Icon name="eye" class={clsx(styles.icon, styles.feedControlIcon)} />

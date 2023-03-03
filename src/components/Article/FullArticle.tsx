@@ -2,16 +2,14 @@ import { capitalize, formatDate } from '../../utils'
 import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import { createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
-import { ReactionKind } from '../../graphql/types.gen'
-
 import MD from './MD'
 import { SharePopup } from './SharePopup'
 import { getDescription } from '../../utils/meta'
 import stylesHeader from '../Nav/Header.module.scss'
 import styles from '../../styles/Article.module.scss'
-import { RatingControl } from './RatingControl'
+import { ShoutRatingControl } from './ShoutRatingControl'
 import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
@@ -20,10 +18,8 @@ import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
-import { loadShout } from '../../stores/zine/articles'
 import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
-import { checkReaction } from '../../utils/checkReaction'
 
 interface ArticleProps {
   article: Shout
@@ -60,7 +56,7 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
 
 export const FullArticle = (props: ArticleProps) => {
   const { t } = useLocalize()
-  const { userSlug, session } = useSession()
+  const { userSlug, isAuthenticated } = useSession()
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
@@ -91,7 +87,7 @@ export const FullArticle = (props: ArticleProps) => {
     setIsReactionsLoaded(true)
   })
 
-  const canEdit = () => props.article.authors?.some((a) => a.slug === session()?.user?.slug)
+  const canEdit = () => props.article.authors?.some((a) => a.slug === userSlug())
 
   const bookmark = (ev) => {
     // TODO: implement bookmark clicked
@@ -106,67 +102,8 @@ export const FullArticle = (props: ArticleProps) => {
   })
 
   const {
-    reactionEntities,
-    actions: { loadReactionsBy, createReaction, deleteReaction }
+    actions: { loadReactionsBy }
   } = useReactions()
-
-  const updateReactions = () => {
-    loadReactionsBy({
-      by: { shout: props.article.slug }
-    })
-  }
-
-  const isUpvoted = createMemo(() =>
-    checkReaction(Object.values(reactionEntities), ReactionKind.Like, userSlug(), props.article.id)
-  )
-
-  const isDownvoted = createMemo(() =>
-    checkReaction(Object.values(reactionEntities), ReactionKind.Dislike, userSlug(), props.article.id)
-  )
-
-  const deleteShoutReaction = async (reactionKind: ReactionKind) => {
-    const reactionToDelete = Object.values(reactionEntities).find(
-      (r) =>
-        r.kind === reactionKind &&
-        r.createdBy.slug === userSlug() &&
-        r.shout.id === props.article.id &&
-        !r.replyTo
-    )
-    return deleteReaction(reactionToDelete.id)
-  }
-
-  const handleRatingChange = async (isUpvote: boolean) => {
-    if (isUpvote) {
-      if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
-      } else if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
-      } else {
-        await createReaction({
-          kind: ReactionKind.Like,
-          shout: props.article.id
-        })
-      }
-    } else {
-      if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
-      } else if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
-      } else {
-        await createReaction({
-          kind: ReactionKind.Dislike,
-          shout: props.article.id
-        })
-      }
-    }
-
-    loadShout(props.article.slug)
-    updateReactions()
-  }
-
-  createEffect(() => {
-    console.log('reactions', reactionEntities)
-  })
 
   return (
     <>
@@ -248,14 +185,7 @@ export const FullArticle = (props: ArticleProps) => {
         <div class="col-md-8 shift-content">
           <div class={styles.shoutStats}>
             <div class={styles.shoutStatsItem}>
-              <RatingControl
-                rating={props.article.stat?.rating}
-                class={styles.ratingControl}
-                onUpvote={() => handleRatingChange(true)}
-                onDownvote={() => handleRatingChange(false)}
-                isUpvoted={isUpvoted()}
-                isDownvoted={isDownvoted()}
-              />
+              <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
             </div>
 
             <Show when={props.article.stat?.viewed}>
@@ -299,7 +229,7 @@ export const FullArticle = (props: ArticleProps) => {
             </div>
           </div>
           <div class={styles.help}>
-            <Show when={session()?.token}>
+            <Show when={isAuthenticated()}>
               <button class="button">{t('Cooperate')}</button>
             </Show>
             <Show when={canEdit()}>

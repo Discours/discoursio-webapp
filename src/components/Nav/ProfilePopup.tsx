@@ -14,15 +14,13 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     actions: { signOut }
   } = useSession()
 
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
 
   return (
     <Popup {...props} horizontalAnchor="right" variant="bordered">
       <ul class="nodash">
         <li>
-          <a href={getPagePath(router, 'author', { slug: userSlug(), lang: lang() } as never)}>
-            {t('Profile')}
-          </a>
+          <a href={getPagePath(router, 'author', { slug: userSlug() })}>{t('Profile')}</a>
         </li>
         <li>
           <a href="#">{t('Drafts')}</a>

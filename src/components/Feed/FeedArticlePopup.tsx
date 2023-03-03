@@ -10,12 +10,6 @@ type FeedArticlePopupProps = {
   description: string
 } & Omit<PopupProps, 'children'>
 
-export const getShareUrl = (params: { pathname?: string } = {}) => {
-  if (typeof location === 'undefined') return ''
-  const pathname = params.pathname ?? location.pathname
-  return location.origin + pathname
-}
-
 export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
   const { t } = useLocalize()
   return (

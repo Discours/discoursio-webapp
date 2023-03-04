@@ -1,4 +1,4 @@
-import { createMemo, For, Show } from 'solid-js'
+import { For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import './Topics.scss'

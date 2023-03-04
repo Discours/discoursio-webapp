@@ -12,7 +12,6 @@ import stylesHeader from '../Nav/Header.module.scss'
 import { getDescription } from '../../utils/meta'
 import { FeedArticlePopup } from './FeedArticlePopup'
 import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
 
 interface ArticleCardProps {
   settings?: {

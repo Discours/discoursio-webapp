@@ -1,13 +1,10 @@
 import styles from './ShoutRatingControl.module.scss'
 import { clsx } from 'clsx'
-import { createMemo, For, Match, Switch } from 'solid-js'
-import { Author, ReactionKind, Shout } from '../../graphql/types.gen'
+import { createMemo, For } from 'solid-js'
+import { ReactionKind, Shout } from '../../graphql/types.gen'
 import { loadShout } from '../../stores/zine/articles'
 import { useSession } from '../../context/session'
 import { useReactions } from '../../context/reactions'
-import { Button } from '../_shared/Button'
-import Userpic from '../Author/Userpic'
-import { AuthorCard } from '../Author/Card'
 import { Popup } from '../_shared/Popup'
 
 interface ShoutRatingControlProps {

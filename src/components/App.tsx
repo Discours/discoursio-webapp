@@ -2,7 +2,7 @@
 // import 'solid-devtools'
 
 import { MODALS, showModal } from '../stores/ui'
-import { Component, createEffect, createMemo, Suspense } from 'solid-js'
+import { Component, createEffect, createMemo } from 'solid-js'
 import { ROUTES, useRouter } from '../stores/router'
 import { Dynamic } from 'solid-js/web'
 
@@ -72,14 +72,14 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
 
 export const App = (props: PageProps) => {
   const { page, searchParams } = useRouter<RootSearchParams>()
-  // console.debug(page())
+
   createEffect(() => {
     const modal = MODALS[searchParams().modal]
     if (modal) {
       showModal(modal)
     }
   })
-  // console.debug(pagesMap)
+
   const pageComponent = createMemo(() => {
     const result = pagesMap[page()?.route || 'home']
 

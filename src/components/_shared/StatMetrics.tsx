@@ -1,4 +1,4 @@
-import { createMemo, For } from 'solid-js'
+import { For } from 'solid-js'
 import type { Stat, TopicStat } from '../../graphql/types.gen'
 import { plural } from '../../utils'
 import styles from './Stat.module.scss'

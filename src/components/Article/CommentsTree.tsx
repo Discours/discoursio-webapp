@@ -2,7 +2,6 @@ import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
 import { Comment } from './Comment'
 import styles from '../../styles/Article.module.scss'
 import { clsx } from 'clsx'
-import { Loading } from '../_shared/Loading'
 import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import CommentEditor from '../_shared/CommentEditor'
@@ -14,6 +13,25 @@ import { useLocalize } from '../../context/localize'
 import Cookie from 'js-cookie'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
+
+const sortCommentsByRating = (a: Reaction, b: Reaction): -1 | 0 | 1 => {
+  if (a.replyTo && b.replyTo) {
+    return 0
+  }
+
+  const x = (a?.stat && a.stat.rating) || 0
+  const y = (b?.stat && b.stat.rating) || 0
+
+  if (x > y) {
+    return 1
+  }
+
+  if (x < y) {
+    return -1
+  }
+
+  return 0
+}
 
 type Props = {
   commentAuthors: Author[]
@@ -41,28 +59,12 @@ export const CommentsTree = (props: Props) => {
     let newSortedComments = [...comments()]
     newSortedComments = newSortedComments.sort(byCreated)
 
-    if (commentsOrder() === 'rating') {
-      newSortedComments = newSortedComments.sort((a, b) => {
-        if (a.replyTo && b.replyTo) {
-          return 0
-        }
-
-        const x = (a?.stat && a.stat.rating) || 0
-        const y = (b?.stat && b.stat.rating) || 0
-
-        if (x > y) {
-          return 1
-        }
-        if (x < y) {
-          return -1
-        }
-
-        return 0
-      })
+    if (commentsOrder() === 'newOnly') {
+      return newReactions().reverse()
     }
 
-    if (commentsOrder() === 'newOnly') {
-      newSortedComments = newReactions()
+    if (commentsOrder() === 'rating') {
+      newSortedComments = newSortedComments.sort(sortCommentsByRating)
     }
 
     newSortedComments.reverse()

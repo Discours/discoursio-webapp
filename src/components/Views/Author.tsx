@@ -95,7 +95,7 @@ export const AuthorView = (props: AuthorProps) => {
         })
         setCommented(data)
       } catch (error) {
-        console.log('!!! error:', error)
+        console.error('[getReactionsBy comment]', error)
       }
     }
   })
@@ -202,6 +202,13 @@ export const AuthorView = (props: AuthorProps) => {
           <div class="wide-container">
             <ul class={stylesArticle.comments}>
               <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
+            </ul>
+          </div>
+        </Match>
+        <Match when={searchParams().by === 'followed'}>
+          <div class="wide-container">
+            <ul class={stylesArticle.comments}>
+              <For each={followers()}>{(follower: Author) => <AuthorCard author={follower} />}</For>
             </ul>
           </div>
         </Match>

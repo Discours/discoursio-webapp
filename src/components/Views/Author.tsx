@@ -95,7 +95,7 @@ export const AuthorView = (props: AuthorProps) => {
         })
         setCommented(data)
       } catch (error) {
-        console.log('!!! error:', error)
+        console.error('[getReactionsBy]:', error)
       }
     }
   })

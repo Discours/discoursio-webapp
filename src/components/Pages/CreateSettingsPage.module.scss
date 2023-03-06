@@ -1,0 +1,21 @@
+.articlePreview {
+  border: 2px solid #e8e8e8;
+  min-height: 10em;
+  padding: 1rem 1.2rem;
+}
+
+.saveBlock {
+  background: #f1f1f1;
+  line-height: 1.4;
+  margin-top: 6.4rem;
+  padding: 1.6rem 3.2rem;
+  text-align: center;
+
+  @include media-breakpoint-up(md) {
+    padding: 3.2rem 8rem;
+  }
+
+  .button {
+    margin: 0 divide($container-padding-x, 2);
+  }
+}

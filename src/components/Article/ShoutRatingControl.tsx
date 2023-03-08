@@ -35,7 +35,10 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   const shoutRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
-      (r) => [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) && r.shout.id === props.shout.id
+      (r) =>
+        [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
+        r.shout.id === props.shout.id &&
+        !r.replyTo
     )
   )
 

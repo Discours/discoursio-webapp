@@ -29,7 +29,7 @@ export const FeedView = () => {
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
-  const { session } = useSession()
+  const { session, userSlug } = useSession()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
 
@@ -48,7 +48,6 @@ export const FeedView = () => {
   //   }
   // })
 
-  const userSlug = createMemo(() => session()?.user?.slug)
   createEffect(async () => {
     if (userSlug()) {
       // load recent editing shouts ( visibility = authors )

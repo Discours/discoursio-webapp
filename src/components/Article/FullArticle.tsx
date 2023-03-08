@@ -1,5 +1,4 @@
 import { capitalize, formatDate } from '../../utils'
-import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
 import { createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
@@ -7,8 +6,6 @@ import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
 import { getDescription } from '../../utils/meta'
-import stylesHeader from '../Nav/Header.module.scss'
-import styles from '../../styles/Article.module.scss'
 import { ShoutRatingControl } from './ShoutRatingControl'
 import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
@@ -20,6 +17,8 @@ import { router } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
 import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
+import stylesHeader from '../Nav/Header.module.scss'
+import styles from './Article.module.scss'
 
 interface ArticleProps {
   article: Shout
@@ -108,7 +107,7 @@ export const FullArticle = (props: ArticleProps) => {
   return (
     <>
       <Title>{props.article.title}</Title>
-      <div class="shout wide-container">
+      <div class="wide-container">
         <article class="col-md-6 shift-content">
           <div class={styles.shoutHeader}>
             <div class={styles.shoutTopic}>
@@ -168,7 +167,7 @@ export const FullArticle = (props: ArticleProps) => {
       <Show when={media() && props.article.layout === 'image'}>
         <Slider slidesPerView={1} isPageGallery={true} isCardsWithCover={true} hasThumbs={true}>
           <For each={media() || []}>
-            {(m: MediaItem) => (
+            {(m) => (
               <div class="swiper-slide">
                 <div class="swiper-slide__inner">
                   <img src={m.url || m.pic} alt={m.title} loading="lazy" />
@@ -181,7 +180,7 @@ export const FullArticle = (props: ArticleProps) => {
         </Slider>
       </Show>
 
-      <div class="shout wide-container">
+      <div class=" wide-container">
         <div class="col-md-8 shift-content">
           <div class={styles.shoutStats}>
             <div class={styles.shoutStatsItem}>

@@ -1,0 +1,22 @@
+.bubbleMenu {
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.bubbleMenuButton {
+  opacity: 0.5;
+  padding: 1rem;
+}
+
+.bubbleMenuButtonActive {
+  opacity: 1;
+}
+
+.delimiter {
+  background: #999;
+  display: inline-block;
+  height: 1.4em;
+  margin: 0 0.2em;
+  vertical-align: text-bottom;
+  width: 1px;
+}

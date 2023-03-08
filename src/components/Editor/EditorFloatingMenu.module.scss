@@ -1,4 +1,10 @@
 .editorFloatingMenu {
+  left: 0;
   position: relative;
-  left: -100%;
+  vertical-align: middle;
+
+  button {
+    opacity: 0.3;
+    vertical-align: text-bottom;
+  }
 }

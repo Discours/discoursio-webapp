@@ -1,4 +1,7 @@
 import type { Editor } from '@tiptap/core'
+import styles from './EditorBubbleMenu.module.scss'
+import { Icon } from '../_shared/Icon'
+import { clsx } from 'clsx'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -7,8 +10,27 @@ type BubbleMenuProps = {
 
 export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   return (
-    <div ref={props.ref}>
-      <button>bold</button>
+    <div ref={props.ref} class={styles.bubbleMenu}>
+      <button class={clsx(styles.bubbleMenuButton, styles.bubbleMenuButtonActive)}>
+        <Icon name="editor-text-size" />
+      </button>
+      <button class={styles.bubbleMenuButton}>
+        <Icon name="editor-bold" />
+      </button>
+      <button class={styles.bubbleMenuButton}>
+        <Icon name="editor-italic" />
+      </button>
+      <div class={styles.delimiter}></div>
+      <button class={styles.bubbleMenuButton}>
+        <Icon name="editor-link" />
+      </button>
+      <button class={styles.bubbleMenuButton}>
+        <Icon name="editor-footnote" />
+      </button>
+      <div class={styles.delimiter}></div>
+      <button class={styles.bubbleMenuButton}>
+        <Icon name="editor-ul" />
+      </button>
     </div>
   )
 }

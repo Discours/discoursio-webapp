@@ -71,7 +71,7 @@ export const CommentRatingControl = (props: Props) => {
           replyTo: props.comment.id
         })
       }
-    } catch (e) {
+    } catch {
       showSnackbar({ type: 'error', body: t('Error') })
     }
 

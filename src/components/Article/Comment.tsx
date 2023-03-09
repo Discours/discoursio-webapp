@@ -97,7 +97,6 @@ export const Comment = (props: Props) => {
   return (
     <li class={clsx(styles.comment, { [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen })}>
       <Show when={!!body()}>
-        <div style={{ color: 'red' }}>{comment().id}</div>
         <div class={styles.commentContent}>
           <Show
             when={!props.compact}

@@ -30,7 +30,8 @@ export const CommentRatingControl = (props: Props) => {
     )
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
-  const canVote = userSlug() !== props.comment.createdBy.slug
+  const canVote = createMemo(() => userSlug() !== props.comment.createdBy.slug)
+
   const shoutRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
       (r) =>
@@ -56,7 +57,6 @@ export const CommentRatingControl = (props: Props) => {
     } else if (isDownvoted()) {
       await deleteCommentReaction(ReactionKind.Dislike)
     } else {
-      console.log('!!! createReaction:')
       await createReaction({
         kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
         shout: props.comment.shout.id,
@@ -72,8 +72,11 @@ export const CommentRatingControl = (props: Props) => {
 
   return (
     <div class={styles.commentRating}>
+      {!canVote()}
       <button
-        onClick={() => canVote && handleRatingChange(true)}
+        role="button"
+        disabled={!canVote() || !userSlug()}
+        onClick={() => handleRatingChange(true)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlUp, {
           [styles.voted]: isUpvoted()
         })}
@@ -102,7 +105,9 @@ export const CommentRatingControl = (props: Props) => {
         </ul>
       </Popup>
       <button
-        onClick={() => canVote && handleRatingChange(false)}
+        role="button"
+        disabled={!canVote() || !userSlug()}
+        onClick={() => handleRatingChange(false)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlDown, {
           [styles.voted]: isDownvoted()
         })}

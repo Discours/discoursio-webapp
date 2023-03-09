@@ -6,6 +6,8 @@ import { loadShout } from '../../stores/zine/articles'
 import { useSession } from '../../context/session'
 import { useReactions } from '../../context/reactions'
 import { Popup } from '../_shared/Popup'
+import VotersList from '../_shared/VotersList'
+import { useLocalize } from '../../context/localize'
 
 interface ShoutRatingControlProps {
   shout: Shout
@@ -13,6 +15,7 @@ interface ShoutRatingControlProps {
 }
 
 export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
+  const { t } = useLocalize()
   const { userSlug } = useSession()
 
   const {
@@ -83,15 +86,10 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       </button>
 
       <Popup trigger={<span class={styles.ratingValue}>{props.shout.stat.rating}</span>} variant="tiny">
-        <ul class={clsx('nodash')}>
-          <For each={shoutRatingReactions()}>
-            {(reaction) => (
-              <li>
-                {reaction.kind === ReactionKind.Like ? <>+1</> : <>&minus;1</>} {reaction.createdBy.name}
-              </li>
-            )}
-          </For>
-        </ul>
+        <VotersList
+          reactions={shoutRatingReactions()}
+          fallbackMessage={t('This post has not been rated yet')}
+        />
       </Popup>
 
       <button

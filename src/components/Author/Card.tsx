@@ -1,4 +1,4 @@
-import type { Author } from '../../graphql/types.gen'
+import type { Author, User } from '../../graphql/types.gen'
 import Userpic from './Userpic'
 import { Icon } from '../_shared/Icon'
 import styles from './Card.module.scss'

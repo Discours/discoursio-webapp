@@ -39,6 +39,7 @@ export default gql`
         viewed
         reacted
         rating
+        commented
       }
     }
   }

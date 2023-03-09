@@ -105,6 +105,14 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
+  let commentsRef: HTMLDivElement | undefined
+  const scrollToComments = () => {
+    if (!isReactionsLoaded()) {
+      return
+    }
+    commentsRef.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <>
       <Title>{props.article.title}</Title>
@@ -195,9 +203,9 @@ export const FullArticle = (props: ArticleProps) => {
               </div>
             </Show>
 
-            <div class={styles.shoutStatsItem}>
+            <div class={styles.shoutStatsItem} onClick={() => scrollToComments()}>
               <Icon name="comment" class={styles.icon} />
-              {props.article.stat?.commented || ''}
+              {/*{props.article.stat?.commented || ''}*/}
             </div>
 
             <div class={styles.shoutStatsItem}>
@@ -259,13 +267,15 @@ export const FullArticle = (props: ArticleProps) => {
               )}
             </For>
           </div>
-          <Show when={isReactionsLoaded()}>
-            <CommentsTree
-              shoutId={props.article.id}
-              shoutSlug={props.article.slug}
-              commentAuthors={props.article.authors}
-            />
-          </Show>
+          <div ref={commentsRef}>
+            <Show when={isReactionsLoaded()}>
+              <CommentsTree
+                shoutId={props.article.id}
+                shoutSlug={props.article.slug}
+                commentAuthors={props.article.authors}
+              />
+            </Show>
+          </div>
         </div>
       </div>
     </>

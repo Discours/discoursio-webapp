@@ -4,11 +4,12 @@ import type { Reaction } from '../../graphql/types.gen'
 import { ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import { useReactions } from '../../context/reactions'
-import { createMemo, For } from 'solid-js'
+import { createMemo } from 'solid-js'
 import { loadShout } from '../../stores/zine/articles'
 import { Popup } from '../_shared/Popup'
 import { useLocalize } from '../../context/localize'
 import { useSnackbar } from '../../context/snackbar'
+import { VotersList } from '../_shared/VotersList'
 
 type Props = {
   comment: Reaction
@@ -37,7 +38,7 @@ export const CommentRatingControl = (props: Props) => {
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
   const canVote = createMemo(() => userSlug() !== props.comment.createdBy.slug)
 
-  const shoutRatingReactions = createMemo(() =>
+  const commentRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
       (r) =>
         [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
@@ -45,6 +46,7 @@ export const CommentRatingControl = (props: Props) => {
         r.replyTo === props.comment.id
     )
   )
+
   const deleteCommentReaction = async (reactionKind: ReactionKind) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
@@ -69,7 +71,7 @@ export const CommentRatingControl = (props: Props) => {
           replyTo: props.comment.id
         })
       }
-    } catch (e) {
+    } catch {
       showSnackbar({ type: 'error', body: t('Error') })
     }
 
@@ -102,15 +104,10 @@ export const CommentRatingControl = (props: Props) => {
         }
         variant="tiny"
       >
-        <ul class={clsx('nodash')}>
-          <For each={shoutRatingReactions()}>
-            {(reaction) => (
-              <li>
-                {reaction.kind === ReactionKind.Like ? <>+1</> : <>&minus;1</>} {reaction.createdBy.name}
-              </li>
-            )}
-          </For>
-        </ul>
+        <VotersList
+          reactions={commentRatingReactions()}
+          fallbackMessage={t('This comment has not yet been rated')}
+        />
       </Popup>
       <button
         role="button"

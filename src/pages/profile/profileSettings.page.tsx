@@ -140,7 +140,9 @@ export const ProfileSettingsPage = () => {
                           value={form.slug}
                           class="nolabel"
                         />
-                        <p class="form-message form-message--error">{t(`${slugError()}`)}</p>
+                        <Show when={slugError()}>
+                          <p class="form-message form-message--error">{t(`${slugError()}`)}</p>
+                        </Show>
                       </div>
                     </div>
                   </div>

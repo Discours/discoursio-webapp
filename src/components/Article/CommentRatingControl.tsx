@@ -7,14 +7,19 @@ import { useReactions } from '../../context/reactions'
 import { createMemo, For } from 'solid-js'
 import { loadShout } from '../../stores/zine/articles'
 import { Popup } from '../_shared/Popup'
+import { useLocalize } from '../../context/localize'
+import { useSnackbar } from '../../context/snackbar'
 
 type Props = {
   comment: Reaction
 }
 
 export const CommentRatingControl = (props: Props) => {
+  const { t } = useLocalize()
   const { userSlug } = useSession()
-
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
   const {
     reactionEntities,
     actions: { createReaction, deleteReaction, loadReactionsBy }
@@ -52,16 +57,20 @@ export const CommentRatingControl = (props: Props) => {
   }
 
   const handleRatingChange = async (isUpvote: boolean) => {
-    if (isUpvoted()) {
-      await deleteCommentReaction(ReactionKind.Like)
-    } else if (isDownvoted()) {
-      await deleteCommentReaction(ReactionKind.Dislike)
-    } else {
-      await createReaction({
-        kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-        shout: props.comment.shout.id,
-        replyTo: props.comment.id
-      })
+    try {
+      if (isUpvoted()) {
+        await deleteCommentReaction(ReactionKind.Like)
+      } else if (isDownvoted()) {
+        await deleteCommentReaction(ReactionKind.Dislike)
+      } else {
+        await createReaction({
+          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+          shout: props.comment.shout.id,
+          replyTo: props.comment.id
+        })
+      }
+    } catch (e) {
+      showSnackbar({ type: 'error', body: t('Error') })
     }
 
     await loadShout(props.comment.shout.slug)
@@ -72,7 +81,6 @@ export const CommentRatingControl = (props: Props) => {
 
   return (
     <div class={styles.commentRating}>
-      {!canVote()}
       <button
         role="button"
         disabled={!canVote() || !userSlug()}

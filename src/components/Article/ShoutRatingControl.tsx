@@ -6,7 +6,7 @@ import { loadShout } from '../../stores/zine/articles'
 import { useSession } from '../../context/session'
 import { useReactions } from '../../context/reactions'
 import { Popup } from '../_shared/Popup'
-import VotersList from '../_shared/VotersList'
+import { VotersList } from '../_shared/VotersList'
 import { useLocalize } from '../../context/localize'
 
 interface ShoutRatingControlProps {

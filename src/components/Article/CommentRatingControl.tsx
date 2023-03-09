@@ -9,7 +9,7 @@ import { loadShout } from '../../stores/zine/articles'
 import { Popup } from '../_shared/Popup'
 import { useLocalize } from '../../context/localize'
 import { useSnackbar } from '../../context/snackbar'
-import VotersList from '../_shared/VotersList'
+import { VotersList } from '../_shared/VotersList'
 
 type Props = {
   comment: Reaction

@@ -1,1 +1,1 @@
-export { default } from './VotersList'
+export { VotersList } from './VotersList'

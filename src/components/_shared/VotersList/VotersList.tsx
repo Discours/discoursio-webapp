@@ -10,7 +10,7 @@ type Props = {
   fallbackMessage: string
 }
 
-const VotersList = (props: Props) => {
+export const VotersList = (props: Props) => {
   return (
     <div class={styles.VotersList}>
       <ul class={clsx('nodash', styles.users)}>
@@ -42,5 +42,3 @@ const VotersList = (props: Props) => {
     </div>
   )
 }
-
-export default VotersList

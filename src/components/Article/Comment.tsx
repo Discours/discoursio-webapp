@@ -13,7 +13,7 @@ import { useReactions } from '../../context/reactions'
 import { useSnackbar } from '../../context/snackbar'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
-import Cookie from 'js-cookie'
+import { CommentRatingControl } from './CommentRatingControl'
 
 const CommentEditor = lazy(() => import('../_shared/CommentEditor'))
 
@@ -140,17 +140,7 @@ export const Comment = (props: Props) => {
                   </div>
                 </Show>
               </div>
-              <div
-                class={styles.commentRating}
-                classList={{
-                  [styles.commentRatingPositive]: comment().stat.rating > 0,
-                  [styles.commentRatingNegative]: comment().stat.rating < 0
-                }}
-              >
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlUp)} />
-                <div class={styles.commentRatingValue}>{comment().stat.rating || 0}</div>
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlDown)} />
-              </div>
+              <CommentRatingControl comment={comment()} />
             </div>
           </Show>
           <div class={styles.commentBody} id={'comment-' + (comment().id || '')}>

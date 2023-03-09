@@ -6,7 +6,6 @@ import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
 import validateUrl from '../../utils/validateUrl'
-
 import { createFileUploader, UploadFile } from '@solid-primitives/upload'
 import { Loading } from '../../components/_shared/Loading'
 import { useSession } from '../../context/session'

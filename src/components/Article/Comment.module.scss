@@ -201,39 +201,6 @@
   margin-bottom: 1.2rem;
 }
 
-.commentRating {
-  align-items: center;
-  display: flex;
-  font-weight: bold;
-}
-
-.commentRatingValue {
-  padding: 0 0.3em;
-}
-
-.commentRatingPositive {
-  color: #2bb452;
-}
-
-.commentRatingNegative {
-  color: #d00820;
-}
-
-.commentRatingControl {
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  height: 0;
-  width: 0;
-}
-
-.commentRatingControlUp {
-  border-bottom: 8px solid rgb(0 0 0 / 40%);
-}
-
-.commentRatingControlDown {
-  border-top: 8px solid rgb(0 0 0 / 40%);
-}
-
 .compactUserpic {
   height: 28px;
   width: 28px;

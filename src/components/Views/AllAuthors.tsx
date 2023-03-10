@@ -94,7 +94,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const AllAuthorsHead = () => (
     <div class="row">
-      <div class={clsx('col-lg-10', 'col-xl-9')}>
+      <div class={clsx(styles.pageHeader, 'col-lg-20 col-xl-18')}>
         <h1>{t('Authors')}</h1>
         <p>{t('Subscribe who you like to tune your personal feed')}</p>
 
@@ -121,12 +121,12 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   return (
     <div class={clsx(styles.allTopicsPage, 'wide-container')}>
       <Show when={sortedAuthors().length > 0}>
-        <div class="shift-content">
+        <div class="offset-md-5">
           <AllAuthorsHead />
 
           <Show when={searchParams().by === 'name'}>
             <div class="row">
-              <div class="col-lg-10 col-xl-9">
+              <div class="col-lg-20 col-xl-18">
                 <ul class={clsx('nodash', styles.alphabet)}>
                   <For each={ALPHABET}>
                     {(letter, index) => (
@@ -155,11 +155,11 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
                   <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
                   <div class="container">
                     <div class="row">
-                      <div class="col-lg-10">
+                      <div class="col-lg-20">
                         <div class="row">
                           <For each={byLetter()[letter]}>
                             {(author) => (
-                              <div class={clsx(styles.topic, 'topic col-sm-6 col-md-4')}>
+                              <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                 <div class="topic-title">
                                   <a href={`/author/${author.slug}`}>{author.name}</a>
                                   <span class={styles.articlesCounter}>{author.stat.shouts}</span>
@@ -180,7 +180,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
             <For each={filteredAuthors().slice(0, limit())}>
               {(author) => (
                 <div class="row">
-                  <div class="col-lg-10 col-xl-9">
+                  <div class="col-lg-20 col-xl-18">
                     <AuthorCard
                       author={author}
                       hasLink={true}
@@ -197,7 +197,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
 
           <Show when={filteredAuthors().length > limit() && searchParams().by !== 'name'}>
             <div class="row">
-              <div class={clsx(styles.loadMoreContainer, 'col-12 col-md-10')}>
+              <div class={clsx(styles.loadMoreContainer, 'col-24 col-md-20')}>
                 <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
                   {t('Load more')}
                 </button>

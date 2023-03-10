@@ -5,7 +5,7 @@ export const ConnectPage = () => {
     <PageLayout>
       <article class="wide-container container--static-page">
         <div class="row">
-          <div class="col-sm-10 col-md-8 col-lg-7 col-xl-6 shift-content">
+          <div class="col-sm-20 col-md-16 col-lg-14 col-xl-12 offset-md-5">
             <h1>
               <span class="wrapped">Предложить идею</span>
             </h1>

@@ -241,7 +241,7 @@
     }
   }
 
-  .col-md-6 .col-md-6 {
+  .col-md-12 .col-md-12 {
     .shoutCard {
       border-bottom: 1px solid rgb(255 255 255 / 20%);
       margin: 3.6rem 0 0;
@@ -495,7 +495,7 @@
   margin: 0;
   padding: 0 0 20%;
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(xl) {
     aspect-ratio: 1 / 1.6;
     padding: 0;
   }
@@ -681,9 +681,11 @@
     flex: 1;
   }
 
-  .shoutCardCover {
-    height: 100%;
-    padding: 0;
+  @include media-breakpoint-up(md) {
+    .shoutCardCover {
+      height: 100%;
+      padding: 0;
+    }
   }
 
   .shoutCardContent {

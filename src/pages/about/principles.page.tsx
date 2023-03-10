@@ -10,7 +10,7 @@ export const PrinciplesPage = () => {
       <Title>{t('Principles')}</Title>
       <article class="wide-container container--static-page">
         <div class="row">
-          <div class="col-md-6 col-xl-7 shift-content order-md-first">
+          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
             <h1>
               <span class="wrapped">{t('Principles')}</span>
             </h1>

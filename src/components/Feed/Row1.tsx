@@ -7,7 +7,7 @@ export const Row1 = (props: { article: Shout; nodate?: boolean }) => (
     <div class="floor floor--one-article">
       <div class="wide-container">
         <div class="row">
-          <div class="col-12">
+          <div class="col-24">
             <ArticleCard article={props.article} settings={{ isSingle: true, nodate: props.nodate }} />
           </div>
         </div>

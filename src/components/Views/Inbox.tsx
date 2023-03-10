@@ -171,7 +171,7 @@ export const InboxView = () => {
         <CreateModalContent users={recipients()} />
       </Modal>
       <div class={clsx('row', styles.row)}>
-        <div class={clsx(styles.chatList, 'col-md-4')}>
+        <div class={clsx(styles.chatList, 'col-md-8')}>
           <div class={styles.sidebarHeader}>
             <Search placeholder="Поиск" onChange={getQuery} />
             <button type="button" onClick={handleOpenInviteModal}>
@@ -231,7 +231,7 @@ export const InboxView = () => {
           </div>
         </div>
 
-        <div class={clsx('col-md-8', styles.conversation)}>
+        <div class={clsx('col-md-16', styles.conversation)}>
           <Show
             when={currentDialog()}
             fallback={

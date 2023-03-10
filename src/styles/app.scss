@@ -67,12 +67,16 @@ section {
 
 .wide-container {
   margin: 0 auto;
-  max-width: 1400px;
+  max-width: 1500px;
   padding: 0 divide($container-padding-x, 2);
   width: 100%;
 
   @include media-breakpoint-up(sm) {
     padding: 0 $container-padding-x;
+  }
+
+  @include media-breakpoint-up(xl) {
+    padding: 0 $grid-gutter-width;
   }
 }
 
@@ -558,7 +562,7 @@ figcaption {
 }
 
 .floor--7 {
-  .col-md-6 {
+  .col-md-12 {
     @include media-breakpoint-down(lg) {
       &:nth-child(1),
       &:nth-child(2) {
@@ -647,7 +651,7 @@ figcaption {
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1500px;
   width: auto;
 
   @include media-breakpoint-down(sm) {

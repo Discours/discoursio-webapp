@@ -50,7 +50,7 @@ export const SearchView = (props: Props) => {
   return (
     <div class="search-page wide-container">
       <form action="/search" class="search-form row">
-        <div class="col-sm-9">
+        <div class="col-sm-18">
           <input
             type="search"
             name="q"
@@ -59,7 +59,7 @@ export const SearchView = (props: Props) => {
             placeholder={t('Enter text') + '...'}
           />
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-6">
           <button class="button" type="submit" onClick={loadMore}>
             {t('Search')}
           </button>
@@ -94,13 +94,13 @@ export const SearchView = (props: Props) => {
           <div class="row">
             <For each={sortedArticles()}>
               {(article) => (
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <ArticleCard article={article} />
                 </div>
               )}
             </For>
 
-            <div class="col-md-3">
+            <div class="col-md-6">
               <a href="#" class="search__show-more">
                 <span class="search__show-more-inner">{t('Load more')}</span>
               </a>

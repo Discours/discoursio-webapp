@@ -7,7 +7,7 @@ export const DogmaPage = () => {
     <PageLayout>
       <article class="wide-container container--static-page">
         <div class="row">
-          <div class="col-md-6 col-xl-7 shift-content order-md-first">
+          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
             <h4>Редакционные принципы</h4>
             <p>
               Дискурс - журнал с открытой горизонтальной редакцией. Содержание журнала определяется прямым

@@ -101,7 +101,7 @@ export default (props: SliderProps) => {
     <div class="floor floor--important">
       <div class="wide-container">
         <div class="row">
-          <h2 class="col-12">{props.title}</h2>
+          <h2 class="col-24">{props.title}</h2>
 
           <div class="sliders-container">
             <div

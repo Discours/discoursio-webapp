@@ -9,7 +9,7 @@ export default () => {
     <div class="about-discours">
       <div class="wide-container">
         <div class="row">
-          <div class="col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
+          <div class="col-lg-20 offset-lg-2 col-xl-16 offset-xl-4">
             <h4>{t('Horizontal collaborative journalistic platform')}</h4>
             <p>
               {t(

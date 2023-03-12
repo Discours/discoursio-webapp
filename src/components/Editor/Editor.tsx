@@ -33,8 +33,6 @@ import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
 import './Prosemirror.scss'
-import styles from './Editor.module.scss'
-import { Show } from 'solid-js'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 
@@ -121,11 +119,11 @@ export const Editor = (props: EditorProps) => {
   }))
 
   return (
-    <div class={clsx('container', styles.container)}>
-      <div class={styles.editor} ref={(el) => (editorElRef.current = el)} />
+    <>
+      <div ref={(el) => (editorElRef.current = el)} />
       <EditorBubbleMenu editor={editor()} ref={(el) => (bubbleMenuRef.current = el)} />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
-    </div>
+    </>
   )
 }
 

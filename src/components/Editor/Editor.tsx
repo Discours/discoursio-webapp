@@ -1,11 +1,8 @@
 import { createTiptapEditor } from 'solid-tiptap'
-import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
-import * as Y from 'yjs'
-import { WebrtcProvider } from 'y-webrtc'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
 import { Italic } from '@tiptap/extension-italic'
 import { Strike } from '@tiptap/extension-strike'
@@ -16,8 +13,6 @@ import { BulletList } from '@tiptap/extension-bullet-list'
 import { OrderedList } from '@tiptap/extension-ordered-list'
 import { ListItem } from '@tiptap/extension-list-item'
 import { CharacterCount } from '@tiptap/extension-character-count'
-import { Collaboration } from '@tiptap/extension-collaboration'
-import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Gapcursor } from '@tiptap/extension-gapcursor'
 import { HardBreak } from '@tiptap/extension-hard-break'
@@ -28,7 +23,6 @@ import { Youtube } from '@tiptap/extension-youtube'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
 import { Image } from '@tiptap/extension-image'
-import { History } from '@tiptap/extension-history'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
@@ -78,6 +72,9 @@ export const Editor = (props: EditorProps) => {
       Strike,
       HorizontalRule,
       Underline,
+      Link.configure({
+        openOnClick: false
+      }),
       BubbleMenu.configure({
         element: bubbleMenuRef.current
       }),

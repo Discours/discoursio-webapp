@@ -26,9 +26,9 @@ import { Image } from '@tiptap/extension-image'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
-import './Prosemirror.scss'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
+import './Prosemirror.scss'
 
 type EditorProps = {
   initialContent?: string
@@ -74,6 +74,9 @@ export const Editor = (props: EditorProps) => {
       Underline,
       Link.configure({
         openOnClick: false
+      }),
+      Heading.configure({
+        levels: [1, 2, 3]
       }),
       BubbleMenu.configure({
         element: bubbleMenuRef.current

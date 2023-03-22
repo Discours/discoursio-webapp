@@ -9,6 +9,10 @@
     flex-wrap: nowrap;
     opacity: 0.5;
     padding: 1rem;
+
+    .triangle {
+      margin-left: 4px;
+    }
   }
 
   &:hover,
@@ -80,10 +84,14 @@
       .actions {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         gap: 12px;
         flex-wrap: nowrap;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
 
         .bubbleMenuButton {
           min-width: 40px;

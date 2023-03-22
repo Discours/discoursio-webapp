@@ -255,5 +255,6 @@
   "Enter URL address": "Введите адрес ссылки",
   "Invalid url format": "Неверный формат ссылки",
   "Headers": "Заголовки",
-  "Quotes": "Цитаты"
+  "Quotes": "Цитаты",
+  "Lists": "Списки"
 }

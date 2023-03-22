@@ -6,6 +6,7 @@ import { clsx } from 'clsx'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import validateUrl from '../../utils/validateUrl'
+import list from '../Feed/List'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -15,6 +16,7 @@ type BubbleMenuProps = {
 export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   const { t } = useLocalize()
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal<boolean>(false)
+  const [listBubbleOpen, setListBubbleOpen] = createSignal<boolean>(false)
   const [linkEditorOpen, setLinkEditorOpen] = createSignal<boolean>(false)
   const [url, setUrl] = createSignal<string>('')
   const [prevUrl, setPrevUrl] = createSignal<string | null>(null)
@@ -46,6 +48,15 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
     () => props.editor,
     (editor) => editor && editor.isActive('blockquote')
   )
+  const isOrderedList = createEditorTransaction(
+    () => props.editor,
+    (editor) => editor && editor.isActive('isOrderedList')
+  )
+  const isBulletList = createEditorTransaction(
+    () => props.editor,
+    (editor) => editor && editor.isActive('isBulletList')
+  )
+
   const isLink = createEditorTransaction(
     () => props.editor,
     (editor) => {
@@ -73,6 +84,15 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
     } else {
       setLinkError(t('Invalid url format'))
     }
+  }
+
+  const toggleTextSizePopup = () => {
+    if (listBubbleOpen()) setListBubbleOpen(false)
+    setTextSizeBubbleOpen((prev) => !prev)
+  }
+  const toggleListPopup = () => {
+    if (textSizeBubbleOpen()) setTextSizeBubbleOpen(false)
+    setListBubbleOpen((prev) => !prev)
   }
 
   return (
@@ -105,10 +125,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                 class={clsx(styles.bubbleMenuButton, {
                   [styles.bubbleMenuButtonActive]: textSizeBubbleOpen()
                 })}
-                onClick={() => setTextSizeBubbleOpen(!textSizeBubbleOpen())}
+                onClick={toggleTextSizePopup}
               >
                 <Icon name="editor-text-size" />
-                <Icon name="down-triangle" />
+                <Icon name="down-triangle" class={styles.triangle} />
               </button>
               <Show when={textSizeBubbleOpen()}>
                 <div class={styles.dropDown}>
@@ -192,9 +212,41 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
               <Icon name="editor-footnote" />
             </button>
             <div class={styles.delimiter} />
-            <button type="button" class={styles.bubbleMenuButton}>
-              <Icon name="editor-ul" />
-            </button>
+            <div class={styles.dropDownHolder}>
+              <button
+                type="button"
+                class={clsx(styles.bubbleMenuButton, { [styles.bubbleMenuButtonActive]: listBubbleOpen() })}
+                onClick={toggleListPopup}
+              >
+                <Icon name="editor-ul" />
+                <Icon name="down-triangle" class={styles.triangle} />
+              </button>
+              <Show when={listBubbleOpen()}>
+                <div class={styles.dropDown}>
+                  <header>{t('Lists')}</header>
+                  <div class={styles.actions}>
+                    <button
+                      type="button"
+                      class={clsx(styles.bubbleMenuButton, {
+                        [styles.bubbleMenuButtonActive]: isBulletList()
+                      })}
+                      onClick={() => props.editor.commands.toggleBulletList()}
+                    >
+                      <Icon name="editor-ul" />
+                    </button>
+                    <button
+                      type="button"
+                      class={clsx(styles.bubbleMenuButton, {
+                        [styles.bubbleMenuButtonActive]: isOrderedList()
+                      })}
+                      onClick={() => props.editor.commands.toggleOrderedList()}
+                    >
+                      <Icon name="editor-ol" />
+                    </button>
+                  </div>
+                </div>
+              </Show>
+            </div>
           </>
         )}
       </div>

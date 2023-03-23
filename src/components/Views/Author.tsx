@@ -207,9 +207,15 @@ export const AuthorView = (props: AuthorProps) => {
         </Match>
         <Match when={searchParams().by === 'followed'}>
           <div class="wide-container">
-            <ul class={stylesArticle.comments}>
-              <For each={followers()}>{(follower: Author) => <AuthorCard author={follower} />}</For>
-            </ul>
+            <div class="row">
+              <For each={followers()}>
+                {(follower: Author) => (
+                  <div class="col-md-6 col-lg-4">
+                    <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />
+                  </div>
+                )}
+              </For>
+            </div>
           </div>
         </Match>
         <Match when={searchParams().by === 'rating'}>

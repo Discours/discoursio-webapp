@@ -16,7 +16,7 @@ import { useLocalize } from '../../context/localize'
 
 interface AuthorCardProps {
   caption?: string
-  compact?: boolean
+  hideWriteButton?: boolean
   hideDescription?: boolean
   hideFollow?: boolean
   hasLink?: boolean
@@ -166,7 +166,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   </button>
                 </Show>
 
-                <Show when={!props.compact && !props.isAuthorsList}>
+                <Show when={!props.hideWriteButton}>
                   <button
                     class={styles.button}
                     classList={{

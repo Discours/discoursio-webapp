@@ -10,7 +10,7 @@ export default () => {
     <div class={styles.discoursBanner}>
       <div class="wide-container">
         <div class="row">
-          <div class={clsx(styles.discoursBannerContent, 'col-lg-5')}>
+          <div class={clsx(styles.discoursBannerContent, 'col-lg-10')}>
             <h3>{t('Discours is created with our common effort')}</h3>
             <p>
               <a href="/about/help">{t('Support us')}</a>
@@ -20,7 +20,7 @@ export default () => {
               </a>
             </p>
           </div>
-          <div class={clsx(styles.discoursBannerImage, 'col-lg-6 offset-lg-1')}>
+          <div class={clsx(styles.discoursBannerImage, 'col-lg-12 offset-lg-2')}>
             <img src="/discours-banner.jpg" alt={t('Discours')} />
           </div>
         </div>

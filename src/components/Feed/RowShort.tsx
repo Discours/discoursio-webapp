@@ -8,7 +8,7 @@ export default (props: { articles: Shout[] }) => (
       <div class="row">
         <For each={props.articles}>
           {(a) => (
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-12 col-lg-6">
               <ArticleCard
                 article={a}
                 settings={{

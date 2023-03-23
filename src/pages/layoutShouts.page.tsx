@@ -76,7 +76,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
   const ModeSwitcher = () => (
     <div class="wide-container">
       <div class={clsx(styles.groupControls, 'row group__controls')}>
-        <div class="col-md-8">
+        <div class="col-md-16">
           <ul class="view-switcher">
             <li classList={{ selected: getLayout() === 'audio' }}>
               <a href="/expo/audio">{t('Audio')}</a>
@@ -92,7 +92,7 @@ export const LayoutShoutsPage = (props: PageProps) => {
             </li>
           </ul>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-8">
           <div class="mode-switcher">
             {`${t('Show')} `}
             <span class="mode-switcher__control">{t('All posts')}</span>

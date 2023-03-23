@@ -238,5 +238,9 @@
   "Invalid url format": "Invalid url format",
   "Headers": "Headers",
   "Quotes": "Quotes",
-  "Lists": "Lists"
+  "Lists": "Lists",
+  "Bookmarks": "Bookmarks",
+  "Logout": "Logout",
+  "This comment has not yet been rated": "This comment has not yet been rated",
+  "This post has not been rated yet": "This post has not been rated yet"
 }

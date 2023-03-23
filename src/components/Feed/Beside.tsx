@@ -32,7 +32,7 @@ export const Beside = (props: BesideProps) => {
         <div class="wide-container">
           <div class="row">
             <Show when={!!props.values}>
-              <div class="col-md-4">
+              <div class="col-md-8">
                 <Show when={!!props.title}>
                   <div class={styles.besideColumnTitle}>
                     <h4>{props.title}</h4>
@@ -92,7 +92,7 @@ export const Beside = (props: BesideProps) => {
                 </ul>
               </div>
             </Show>
-            <div class={clsx('col-md-8', styles.shoutCardContainer)}>
+            <div class={clsx('col-md-16', styles.shoutCardContainer)}>
               <ArticleCard
                 article={props.beside}
                 settings={{ isBigTitle: true, isBeside: true, nodate: props.nodate }}

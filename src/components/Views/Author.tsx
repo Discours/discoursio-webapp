@@ -95,7 +95,7 @@ export const AuthorView = (props: AuthorProps) => {
         })
         setCommented(data)
       } catch (error) {
-        console.log('!!! error:', error)
+        console.error('[getReactionsBy]:', error)
       }
     }
   })
@@ -105,7 +105,7 @@ export const AuthorView = (props: AuthorProps) => {
       <div class="wide-container">
         <AuthorFull author={author()} />
         <div class="row group__controls">
-          <div class="col-md-8">
+          <div class="col-md-16">
             <ul class="view-switcher">
               <li classList={{ selected: searchParams().by === 'rating' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
@@ -136,7 +136,7 @@ export const AuthorView = (props: AuthorProps) => {
               </li>
             </ul>
           </div>
-          <div class={clsx('col-md-4', styles.additionalControls)}>
+          <div class={clsx('col-md-8', styles.additionalControls)}>
             <Popup
               trigger={
                 <div class={styles.subscribers}>

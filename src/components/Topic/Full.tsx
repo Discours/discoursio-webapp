@@ -17,7 +17,7 @@ export const FullTopic = (props: Props) => {
   const { t } = useLocalize()
   const subscribed = createMemo(() => session()?.news?.topics?.includes(props.topic?.slug))
   return (
-    <div class={clsx(styles.topicHeader, 'col-md-8 col-lg-6 offset-md-2 offset-lg-3')}>
+    <div class={clsx(styles.topicHeader, 'col-md-16 col-lg-12 offset-md-4 offset-lg-6')}>
       <h1>#{props.topic.title}</h1>
       <p>{props.topic.body}</p>
       <div class={clsx(styles.topicActions)}>

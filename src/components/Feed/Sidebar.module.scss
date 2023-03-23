@@ -1,26 +1,30 @@
 .sidebar {
   max-height: calc(100vh - 120px);
-  overflow: hidden;
-  padding-right: 2.6rem;
+  overflow: auto;
   position: sticky;
   top: 120px;
+}
 
-  &:hover {
-    overflow: scroll;
-    padding-right: 1rem;
-  }
+.sidebarItemName {
+  margin-right: 0.5em;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .counter {
   @include font-size(1.2rem);
-
   align-items: center;
   align-self: flex-start;
   background: #f6f6f6;
   border-radius: 0.8rem;
   display: flex;
-  font-weight: 500;
-  padding: 0.2em 0.5em;
+  font-weight: bold;
+  justify-content: center;
+  min-width: 2em;
+  margin-left: 0.5em;
+  padding: 0.25em 0.5em 0.15em;
+  transition: background-color 0.2s;
 }
 
 .unread {
@@ -54,6 +58,10 @@ a {
   &:hover {
     img {
       filter: invert(1);
+    }
+
+    .counter {
+      background: #000;
     }
   }
 }

@@ -20,7 +20,7 @@ export const TermsOfUsePage = () => {
       <Meta property="og:description" content={title} />
       <article class="wide-container container--static-page">
         <div class="row">
-          <div class="col-md-3 col-lg-2 order-md-last">
+          <div class="col-md-6 col-lg-4 order-md-last">
             <button class="button button--content-index" onClick={toggleIndexExpanded}>
               <Show when={!indexExpanded()}>
                 <Icon name="content-index-control" />
@@ -58,7 +58,7 @@ export const TermsOfUsePage = () => {
             </Show>
           </div>
 
-          <div class="col-md-6 col-xl-7 shift-content order-md-first">
+          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
             <h1 id="terms-of-use">
               <span class="wrapped">Пользовательское соглашение</span>
             </h1>

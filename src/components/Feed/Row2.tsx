@@ -3,9 +3,9 @@ import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from './Card'
 
 const x = [
-  ['6', '6'],
-  ['4', '8'],
-  ['8', '4']
+  ['12', '12'],
+  ['8', '16'],
+  ['16', '8']
 ]
 
 export const Row2 = (props: { articles: Shout[]; isEqual?: boolean; nodate?: boolean }) => {
@@ -21,11 +21,11 @@ export const Row2 = (props: { articles: Shout[]; isEqual?: boolean; nodate?: boo
             {(a, i) => {
               return (
                 <Show when={!!a}>
-                  <div class={`col-md-${props.isEqual ? '6' : x[y()][i()]}`}>
+                  <div class={`col-md-${props.isEqual ? '12' : x[y()][i()]}`}>
                     <ArticleCard
                       article={a}
                       settings={{
-                        isWithCover: props.isEqual || x[y()][i()] === '8',
+                        isWithCover: props.isEqual || x[y()][i()] === '16',
                         nodate: props.isEqual || props.nodate
                       }}
                     />

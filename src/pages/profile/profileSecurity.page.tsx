@@ -8,7 +8,7 @@ export const ProfileSecurityPage = () => {
   return (
     <PageLayout>
       <div class="wide-container">
-        <div class="shift-content">
+        <div class="offset-md-5">
           <div class="left-col">
             <div class={clsx('left-navigation', styles.leftNavigation)}>
               <ProfileSettingsNavigation />
@@ -16,7 +16,7 @@ export const ProfileSecurityPage = () => {
           </div>
 
           <div class="row">
-            <div class="col-md-10 col-lg-9 col-xl-8">
+            <div class="col-md-20 col-lg-18 col-xl-16">
               <h1>Вход и&nbsp;безопасность</h1>
               <p class="description">Настройки аккаунта, почты, пароля и&nbsp;способов входа.</p>
 

@@ -42,7 +42,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
-        <div class={styles.usernav}>
+        <div class={clsx(styles.usernav, 'col')}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
             <Show when={page().route !== 'create'}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

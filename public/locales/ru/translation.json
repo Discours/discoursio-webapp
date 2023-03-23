@@ -256,5 +256,9 @@
   "Invalid url format": "Неверный формат ссылки",
   "Headers": "Заголовки",
   "Quotes": "Цитаты",
-  "Lists": "Списки"
+  "Lists": "Списки",
+  "Bookmarks": "Закладки",
+  "Logout": "Выход",
+  "This comment has not yet been rated": "Этот комментарий еще пока никто не оценил",
+  "This post has not been rated yet": "Эту публикацию еще пока никто не оценил"
 }

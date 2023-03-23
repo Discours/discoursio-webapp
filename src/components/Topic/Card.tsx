@@ -61,7 +61,7 @@ export const TopicCard = (props: TopicProps) => {
         [styles.topicInRow]: props.isTopicInRow
       }}
     >
-      <div classList={{ 'col-md-9 col-lg-7 col-xl-6': !props.compact && !props.subscribeButtonBottom }}>
+      <div classList={{ 'col-md-18 col-lg-14 col-xl-12': !props.compact && !props.subscribeButtonBottom }}>
         <Show when={props.topic.title}>
           <h3 class={styles.topicTitle}>
             <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
@@ -86,7 +86,7 @@ export const TopicCard = (props: TopicProps) => {
       </div>
       <div
         class={styles.controlContainer}
-        classList={{ 'col-md-3': !props.compact && !props.subscribeButtonBottom }}
+        classList={{ 'col-md-6': !props.compact && !props.subscribeButtonBottom }}
       >
         <ShowOnlyOnClient>
           <Show when={isSessionLoaded()}>

@@ -81,7 +81,7 @@ export const TopicView = (props: TopicProps) => {
         <FullTopic topic={topic()} />
         <div class="wide-container">
           <div class={clsx(styles.groupControls, 'row group__controls')}>
-            <div class="col-md-8">
+            <div class="col-md-16">
               <ul class="view-switcher">
                 <li classList={{ selected: searchParams().by === 'recent' || !searchParams().by }}>
                   <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
@@ -106,7 +106,7 @@ export const TopicView = (props: TopicProps) => {
                 {/*</li>*/}
               </ul>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-8">
               <div class="mode-switcher">
                 {`${t('Show')} `}
                 <span class="mode-switcher__control">{t('All posts')}</span>

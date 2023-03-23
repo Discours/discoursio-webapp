@@ -1,6 +1,6 @@
 import styles from './Header.module.scss'
 import { clsx } from 'clsx'
-import { useRouter } from '../../stores/router'
+import { router, useRouter } from '../../stores/router'
 
 import { Icon } from '../_shared/Icon'
 import { createSignal, Show } from 'solid-js'
@@ -12,6 +12,7 @@ import { showModal, useWarningsStore } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
+import { getPagePath } from '@nanostores/router'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -43,12 +44,14 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
       <Show when={isSessionLoaded()} keyed={true}>
         <div class={styles.usernav}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
-            <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-              <a href="/create">
-                <span class={styles.textLabel}>{t('Create post')}</span>
-                <Icon name="pencil" class={styles.icon} />
-              </a>
-            </div>
+            <Show when={page().route !== 'create'}>
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+                <a href={getPagePath(router, 'create')}>
+                  <span class={styles.textLabel}>{t('Create post')}</span>
+                  <Icon name="pencil" class={styles.icon} />
+                </a>
+              </div>
+            </Show>
 
             <Show when={isAuthenticated()}>
               <div class={styles.userControlItem}>

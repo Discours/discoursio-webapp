@@ -1,4 +1,4 @@
-import { createTiptapEditor } from 'solid-tiptap'
+import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'
 import { Blockquote } from '@tiptap/extension-blockquote'
@@ -35,9 +35,11 @@ import { TrailingNode } from './extensions/TrailingNode'
 import './Prosemirror.scss'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
+import { createEffect } from 'solid-js'
 
 type EditorProps = {
   initialContent?: string
+  onChange: (text: string) => void
 }
 
 // const ydoc = new Y.Doc()
@@ -117,6 +119,12 @@ export const Editor = (props: EditorProps) => {
       TrailingNode
     ]
   }))
+
+  const html = useEditorHTML(() => editor())
+
+  createEffect(() => {
+    props.onChange(html())
+  })
 
   return (
     <>

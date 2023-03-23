@@ -84,7 +84,7 @@ export const FeedView = () => {
     <>
       <div class="wide-container feed">
         <div class="row">
-          <div class={clsx('left-col col-md-5 col-xl-4', styles.feedNavigation)}>
+          <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
             <FeedSidebar authors={sortedAuthors()} />
           </div>
 

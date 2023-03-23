@@ -1,22 +1,108 @@
 .bubbleMenu {
   background: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-}
 
-.bubbleMenuButton {
-  opacity: 0.5;
-  padding: 1rem;
-}
+  .bubbleMenuButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    opacity: 0.5;
+    padding: 1rem;
 
-.bubbleMenuButtonActive {
-  opacity: 1;
-}
+    .triangle {
+      margin-left: 4px;
+    }
+  }
 
-.delimiter {
-  background: #999;
-  display: inline-block;
-  height: 1.4em;
-  margin: 0 0.2em;
-  vertical-align: text-bottom;
-  width: 1px;
+  &:hover,
+  .bubbleMenuButtonActive {
+    opacity: 1;
+  }
+
+  .delimiter {
+    background: #999;
+    display: inline-block;
+    height: 1.4em;
+    margin: 0 0.2em;
+    vertical-align: text-bottom;
+    width: 1px;
+  }
+
+  .linkForm {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 6px 11px;
+
+    input {
+      margin: 0 12px 0 0;
+      padding: 0;
+      flex: 1;
+      border: none;
+      min-width: 200px;
+
+      &:focus {
+        outline: none;
+      }
+
+      &::placeholder {
+        color: rgba(#000, 0.3);
+      }
+    }
+  }
+
+  .linkError {
+    padding: 6px 11px;
+    color: red;
+    font-size: 0.7em;
+  }
+
+  .dropDownHolder {
+    position: relative;
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+
+    .dropDown {
+      position: absolute;
+      padding: 6px;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      background: #fff;
+      color: #898c94;
+
+      & > header {
+        font-size: 10px;
+        border-bottom: 1px solid #898c94;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        flex-wrap: nowrap;
+        margin-bottom: 8px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .bubbleMenuButton {
+          min-width: 40px;
+        }
+      }
+    }
+  }
+
+  .dropDownEnter,
+  .dropDownExit {
+    height: 0;
+    color: transparent;
+  }
 }

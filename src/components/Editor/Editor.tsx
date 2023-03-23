@@ -28,14 +28,12 @@ import { Youtube } from '@tiptap/extension-youtube'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
 import { Image } from '@tiptap/extension-image'
-import { History } from '@tiptap/extension-history'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
-import './Prosemirror.scss'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
-import { createEffect } from 'solid-js'
+import './Prosemirror.scss'
 
 type EditorProps = {
   initialContent?: string
@@ -80,6 +78,12 @@ export const Editor = (props: EditorProps) => {
       Strike,
       HorizontalRule,
       Underline,
+      Link.configure({
+        openOnClick: false
+      }),
+      Heading.configure({
+        levels: [1, 2, 3]
+      }),
       BubbleMenu.configure({
         element: bubbleMenuRef.current
       }),

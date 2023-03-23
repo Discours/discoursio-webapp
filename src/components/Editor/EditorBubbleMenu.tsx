@@ -6,8 +6,9 @@ import { clsx } from 'clsx'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import validateUrl from '../../utils/validateUrl'
-import list from '../Feed/List'
 
+type HeadingLevel = 1 | 2 | 3
+type ActionName = 'heading' | 'bold' | 'italic' | 'blockquote' | 'isOrderedList' | 'isBulletList'
 type BubbleMenuProps = {
   editor: Editor
   ref: (el: HTMLDivElement) => void
@@ -22,42 +23,14 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   const [prevUrl, setPrevUrl] = createSignal<string | null>(null)
   const [linkError, setLinkError] = createSignal<string | null>(null)
 
-  const isBold = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('bold')
-  )
-  const isItalic = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('italic')
-  )
-
-  //props.editor.isActive('heading', { level: 1 }) - либо инлайново либо как-то возвращать что активно
-  const isHOne = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('heading', { level: 1 })
-  )
-  const isHTwo = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('heading', { level: 2 })
-  )
-  const isHThree = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('heading', { level: 3 })
-  )
-  const isBlockQuote = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('blockquote')
-  )
-  const isOrderedList = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('isOrderedList')
-  )
-  const isBulletList = createEditorTransaction(
-    () => props.editor,
-    (editor) => editor && editor.isActive('isBulletList')
-  )
+  const activeControl = (action: ActionName, actionLevel?: HeadingLevel, prevLink?: boolean) =>
+    createEditorTransaction(
+      () => props.editor,
+      (editor) => editor && editor.isActive(action, actionLevel && { actionLevel })
+    )
 
   const isLink = createEditorTransaction(
+    // вызов этой ф-ии обусловлен не через хэлпер activeControl только проверкой установленна ли ссылка
     () => props.editor,
     (editor) => {
       editor && editor.isActive('link')
@@ -72,12 +45,6 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
 
   const handleSubmitLink = (e) => {
     e.preventDefault()
-    if (url().length === 0) {
-      props.editor.chain().focus().unsetLink().run()
-      clearLinkForm()
-      return
-    }
-
     if (url().length > 1 && validateUrl(url())) {
       props.editor.commands.toggleLink({ href: url() })
       clearLinkForm()
@@ -137,7 +104,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                     <button
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isHOne()
+                        [styles.bubbleMenuButtonActive]: activeControl('heading', 1)()
                       })}
                       onClick={() => props.editor.commands.toggleHeading({ level: 1 })}
                     >
@@ -146,7 +113,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                     <button
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isHTwo()
+                        [styles.bubbleMenuButtonActive]: activeControl('heading', 2)()
                       })}
                       onClick={() => props.editor.commands.toggleHeading({ level: 2 })}
                     >
@@ -155,7 +122,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                     <button
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isHThree()
+                        [styles.bubbleMenuButtonActive]: activeControl('heading', 3)()
                       })}
                       onClick={() => props.editor.commands.toggleHeading({ level: 3 })}
                     >
@@ -167,7 +134,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                     <button
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isBlockQuote()
+                        [styles.bubbleMenuButtonActive]: activeControl('blockquote')()
                       })}
                       onClick={() => props.editor.chain().focus().toggleBlockquote().run()}
                     >
@@ -181,7 +148,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
             <button
               type="button"
               class={clsx(styles.bubbleMenuButton, {
-                [styles.bubbleMenuButtonActive]: isBold()
+                [styles.bubbleMenuButtonActive]: activeControl('bold')()
               })}
               onClick={() => props.editor.commands.toggleBold()}
             >
@@ -190,7 +157,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
             <button
               type="button"
               class={clsx(styles.bubbleMenuButton, {
-                [styles.bubbleMenuButtonActive]: isItalic()
+                [styles.bubbleMenuButtonActive]: activeControl('italic')()
               })}
               onClick={() => props.editor.commands.toggleItalic()}
             >
@@ -207,6 +174,9 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
               })}
             >
               <Icon name="editor-link" />
+            </button>
+            <button type="button" class={styles.bubbleMenuButton}>
+              <div class={styles.colorWheel} />
             </button>
             <button type="button" class={styles.bubbleMenuButton}>
               <Icon name="editor-footnote" />
@@ -228,7 +198,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                     <button
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isBulletList()
+                        [styles.bubbleMenuButtonActive]: activeControl('isBulletList')
                       })}
                       onClick={() => props.editor.commands.toggleBulletList()}
                     >
@@ -237,7 +207,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                     <button
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isOrderedList()
+                        [styles.bubbleMenuButtonActive]: activeControl('isOrderedList')
                       })}
                       onClick={() => props.editor.commands.toggleOrderedList()}
                     >

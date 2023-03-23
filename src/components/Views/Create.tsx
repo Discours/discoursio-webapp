@@ -15,7 +15,8 @@ type ShoutForm = {
   slug: string
   title: string
   subtitle: string
-  topicSlugs: string[]
+  selectedTopics: Topic[]
+  mainTopic: Topic
   body: string
   coverImageUrl: string
 }
@@ -29,7 +30,8 @@ export const CreateView = () => {
     slug: '',
     title: '',
     subtitle: '',
-    topicSlugs: [],
+    selectedTopics: [],
+    mainTopic: null,
     body: '',
     coverImageUrl: ''
   })
@@ -121,8 +123,8 @@ export const CreateView = () => {
                     <Show when={topics()}>
                       <TopicSelect
                         topics={topics()}
-                        onChange={(selectedTopicSlugs) => setForm('topicSlugs', selectedTopics)}
-                        selectedTopicSlugs={form.topicSlugs}
+                        onChange={(newSelectedTopics) => setForm('selectedTopics', newSelectedTopics)}
+                        selectedTopics={form.selectedTopics}
                       />
                     </Show>
                     {/*<input type="text" name="topics" id="topics" placeholder="Темы" class="nolabel" />*/}

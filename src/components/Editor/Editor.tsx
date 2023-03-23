@@ -1,3 +1,4 @@
+import { createEffect } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'

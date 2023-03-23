@@ -105,7 +105,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                 type="text"
                 placeholder={t('Enter URL address')}
                 autofocus
-                value={prevUrl() ? prevUrl() : null}
+                value={prevUrl() ?? null}
                 onChange={(e) => setUrl(e.currentTarget.value)}
               />
               <button type="submit">

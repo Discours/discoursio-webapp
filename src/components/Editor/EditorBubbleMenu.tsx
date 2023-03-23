@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Switch, Match, createSignal, Show } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './EditorBubbleMenu.module.scss'
 import { Icon } from '../_shared/Icon'

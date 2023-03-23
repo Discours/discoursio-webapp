@@ -6,7 +6,6 @@ import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
 import validateUrl from '../../utils/validateUrl'
-
 import { createFileUploader, UploadFile } from '@solid-primitives/upload'
 import { Loading } from '../../components/_shared/Loading'
 import { useSession } from '../../context/session'
@@ -85,14 +84,14 @@ export const ProfileSettingsPage = () => {
     <PageLayout>
       <Show when={form}>
         <div class="wide-container">
-          <div class="shift-content">
+          <div class="offset-md-5">
             <div class="left-col">
               <div class={clsx('left-navigation', styles.leftNavigation)}>
                 <ProfileSettingsNavigation />
               </div>
             </div>
             <div class="row">
-              <div class="col-md-10 col-lg-9 col-xl-8">
+              <div class="col-md-20 col-lg-18 col-xl-16">
                 <h1>{t('Profile settings')}</h1>
                 <p class="description">{t('Here you can customize your profile the way you want.')}</p>
                 <form onSubmit={handleSubmit} enctype="multipart/form-data">
@@ -140,7 +139,9 @@ export const ProfileSettingsPage = () => {
                           value={form.slug}
                           class="nolabel"
                         />
-                        <p class="form-message form-message--error">{t(`${slugError()}`)}</p>
+                        <Show when={slugError()}>
+                          <p class="form-message form-message--error">{t(`${slugError()}`)}</p>
+                        </Show>
                       </div>
                     </div>
                   </div>

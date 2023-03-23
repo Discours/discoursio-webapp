@@ -11,7 +11,7 @@ export const Row3 = (props: { articles: Shout[]; header?: JSX.Element; nodate?: 
           <div class="floor-header">{props.header}</div>
           <For each={props.articles}>
             {(a) => (
-              <div class="col-md-4">
+              <div class="col-md-8">
                 <ArticleCard article={a} settings={{ nodate: props.nodate }} />
               </div>
             )}

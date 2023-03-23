@@ -39,7 +39,7 @@ export const AuthModal = () => {
       class={clsx('row', styles.view)}
       classList={{ [styles.signUp]: mode() === 'register' || mode() === 'confirm-email' }}
     >
-      <div class={clsx('col-md-6 d-none d-md-block', styles.authImage)}>
+      <div class={clsx('col-md-12 d-none d-md-block', styles.authImage)}>
         <div
           class={styles.authImageText}
           classList={{ [styles.hidden]: mode() !== 'register' && mode() !== 'confirm-email' }}
@@ -67,7 +67,7 @@ export const AuthModal = () => {
           </p>
         </div>
       </div>
-      <div class={clsx('col-md-6', styles.auth)}>
+      <div class={clsx('col-md-12', styles.auth)}>
         <Dynamic component={AUTH_MODAL_MODES[mode()]} />
       </div>
     </div>

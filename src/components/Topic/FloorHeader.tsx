@@ -7,8 +7,8 @@ export default (props: { topic: Topic; color: string }) => {
   const { t } = useLocalize()
   return (
     <>
-      <h3 class="col-sm-6">{props.topic.title}</h3>
-      <div class="col-sm-6 all-materials">
+      <h3 class="col-sm-12">{props.topic.title}</h3>
+      <div class="col-sm-12 all-materials">
         <a href={`/topic/${props.topic.slug}`}>
           {t('All posts')}
           <Icon name={`arrow-right-${props.color}`} />

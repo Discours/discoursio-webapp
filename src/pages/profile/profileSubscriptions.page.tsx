@@ -9,7 +9,7 @@ export const ProfileSubscriptionsPage = () => {
   return (
     <PageLayout>
       <div class="wide-container">
-        <div class="shift-content">
+        <div class="offset-md-5">
           <div class="left-col">
             <div class={clsx('left-navigation', styles.leftNavigation)}>
               <ProfileSettingsNavigation />
@@ -17,7 +17,7 @@ export const ProfileSubscriptionsPage = () => {
           </div>
 
           <div class="row">
-            <div class="col-md-10 col-lg-9 col-xl-8">
+            <div class="col-md-20 col-lg-18 col-xl-16">
               <h1>Подписки</h1>
               <p class="description">Здесь можно управлять всеми своими подписками на&nbsp;сайте.</p>
 

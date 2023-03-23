@@ -1,6 +1,5 @@
 .feedNavigation {
   @include font-size(1.5rem);
-
   font-weight: 500;
 
   h4 {
@@ -19,17 +18,13 @@
   }
 
   li {
-    display: flex;
-    justify-content: space-between;
     margin: 0 0 1rem;
     white-space: nowrap;
     width: 100%;
 
     a {
-      margin-right: 0.5em;
-      position: relative;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: flex;
+      justify-content: space-between;
     }
   }
 

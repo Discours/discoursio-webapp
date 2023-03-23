@@ -34,7 +34,6 @@ import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from '../pages/profile/profileSettings.page'
 import { ProfileSecurityPage } from '../pages/profile/profileSecurity.page'
 import { ProfileSubscriptionsPage } from '../pages/profile/profileSubscriptions.page'
-import { CreateSettingsPage } from '../pages/createSettings.page'
 import { SnackbarProvider } from '../context/snackbar'
 import { LocalizeProvider } from '../context/localize'
 
@@ -46,7 +45,7 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
-  createSettings: CreateSettingsPage,
+  createSettings: CreatePage,
   home: HomePage,
   topics: AllTopicsPage,
   topic: TopicPage,

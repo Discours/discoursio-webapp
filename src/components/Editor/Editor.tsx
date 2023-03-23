@@ -1,8 +1,12 @@
-import { createTiptapEditor } from 'solid-tiptap'
+import { createEffect } from 'solid-js'
+import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
+import * as Y from 'yjs'
+import { WebrtcProvider } from 'y-webrtc'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
 import { Italic } from '@tiptap/extension-italic'
 import { Strike } from '@tiptap/extension-strike'
@@ -13,6 +17,8 @@ import { BulletList } from '@tiptap/extension-bullet-list'
 import { OrderedList } from '@tiptap/extension-ordered-list'
 import { ListItem } from '@tiptap/extension-list-item'
 import { CharacterCount } from '@tiptap/extension-character-count'
+import { Collaboration } from '@tiptap/extension-collaboration'
+import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Gapcursor } from '@tiptap/extension-gapcursor'
 import { HardBreak } from '@tiptap/extension-hard-break'
@@ -32,6 +38,7 @@ import './Prosemirror.scss'
 
 type EditorProps = {
   initialContent?: string
+  onChange: (text: string) => void
 }
 
 // const ydoc = new Y.Doc()
@@ -117,6 +124,12 @@ export const Editor = (props: EditorProps) => {
       TrailingNode
     ]
   }))
+
+  const html = useEditorHTML(() => editor())
+
+  createEffect(() => {
+    props.onChange(html())
+  })
 
   return (
     <>

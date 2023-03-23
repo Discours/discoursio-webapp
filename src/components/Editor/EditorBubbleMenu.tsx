@@ -1,4 +1,4 @@
-import { Match, Switch, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './EditorBubbleMenu.module.scss'
 import { Icon } from '../_shared/Icon'
@@ -49,12 +49,6 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
 
   const handleSubmitLink = (e) => {
     e.preventDefault()
-    if (url().length === 0) {
-      props.editor.chain().focus().unsetLink().run()
-      clearLinkForm()
-      return
-    }
-
     if (url().length > 1 && validateUrl(url())) {
       props.editor.chain().focus().toggleLink({ href: url() }).run()
       clearLinkForm()

@@ -82,123 +82,121 @@ export const FeedView = () => {
   return (
     <>
       <div class="wide-container feed">
-        <div class="shift-content">
-          <div class={clsx('left-col', styles.feedNavigation)}>
+        <div class="row">
+          <div class={clsx('left-col col-md-5 col-xl-4', styles.feedNavigation)}>
             <FeedSidebar authors={sortedAuthors()} />
           </div>
 
-          <div class="row">
-            <div class="col-md-8">
-              <ul class="feed-filter">
-                <Show when={!!session()?.user?.slug}>
-                  <li class="selected">
-                    <a href="/feed/my">{t('My feed')}</a>
-                  </li>
-                </Show>
-                <li>
-                  <a href="/feed/?by=views">{t('Most read')}</a>
+          <div class="col-md-12 offset-xl-1">
+            <ul class="feed-filter">
+              <Show when={!!session()?.user?.slug}>
+                <li class="selected">
+                  <a href="/feed/my">{t('My feed')}</a>
                 </li>
-                <li>
-                  <a href="/feed/?by=rating">{t('Top rated')}</a>
-                </li>
-                <li>
-                  <a href="/feed/?by=comments">{t('Most commented')}</a>
-                </li>
+              </Show>
+              <li>
+                <a href="/feed/?by=views">{t('Most read')}</a>
+              </li>
+              <li>
+                <a href="/feed/?by=rating">{t('Top rated')}</a>
+              </li>
+              <li>
+                <a href="/feed/?by=comments">{t('Most commented')}</a>
+              </li>
+            </ul>
+
+            <Show when={sortedArticles().length > 0}>
+              <For each={sortedArticles().slice(0, 4)}>
+                {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
+              </For>
+
+              <div class={stylesBeside.besideColumnTitle}>
+                <h4>{t('Popular authors')}</h4>
+                <a href="/authors">
+                  {t('All authors')}
+                  <Icon name="arrow-right" class={stylesBeside.icon} />
+                </a>
+              </div>
+
+              <ul class={stylesBeside.besideColumn}>
+                <For each={topAuthors().slice(0, 5)}>
+                  {(author) => (
+                    <li>
+                      <AuthorCard author={author} compact={true} hasLink={true} />
+                    </li>
+                  )}
+                </For>
               </ul>
 
-              <Show when={sortedArticles().length > 0}>
-                <For each={sortedArticles().slice(0, 4)}>
-                  {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
-                </For>
+              <For each={sortedArticles().slice(4)}>
+                {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
+              </For>
+            </Show>
 
-                <div class={stylesBeside.besideColumnTitle}>
-                  <h4>{t('Popular authors')}</h4>
-                  <a href="/authors">
-                    {t('All authors')}
-                    <Icon name="arrow-right" class={stylesBeside.icon} />
-                  </a>
-                </div>
-
-                <ul class={stylesBeside.besideColumn}>
-                  <For each={topAuthors().slice(0, 5)}>
-                    {(author) => (
-                      <li>
-                        <AuthorCard author={author} compact={true} hasLink={true} />
-                      </li>
-                    )}
-                  </For>
-                </ul>
-
-                <For each={sortedArticles().slice(4)}>
-                  {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
-                </For>
-              </Show>
-            </div>
-
-            <aside class={clsx('col-md-3', styles.feedAside)}>
-              <section class={styles.asideSection}>
-                <h4>{t('Comments')}</h4>
-                <For each={topComments()}>
-                  {(comment) => {
-                    return (
-                      <div class={styles.comment}>
-                        <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
-                        <AuthorCard
-                          author={comment.createdBy as Author}
-                          isFeedMode={true}
-                          compact={true}
-                          hideFollow={true}
-                        />
-                        <div class={clsx('text-truncate', styles.commentArticleTitle)}>
-                          <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
-                        </div>
-                      </div>
-                    )
-                  }}
-                </For>
-              </section>
-
-              <Show when={topTopics().length > 0}>
-                <section class={styles.asideSection}>
-                  <h4>{t('Topics')}</h4>
-                  <For each={topTopics().slice(0, 5)}>
-                    {(topic) => (
-                      <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
-                        <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
-                      </span>
-                    )}
-                  </For>
-                </section>
-              </Show>
-
-              <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
-                <Icon name="pin" class={styles.icon} />
-                <ul class="nodash">
-                  <li>
-                    <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
-                  </li>
-                  <li>
-                    <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
-                  </li>
-                  <li>
-                    <a href="#">Правила конструктивных дискуссий</a>
-                  </li>
-                  <li>
-                    <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
-                  </li>
-                </ul>
-              </section>
-            </aside>
+            <Show when={isLoadMoreButtonVisible()}>
+              <p class="load-more-container">
+                <button class="button" onClick={loadMore}>
+                  {t('Load more')}
+                </button>
+              </p>
+            </Show>
           </div>
-        </div>
 
-        <Show when={isLoadMoreButtonVisible()}>
-          <p class="load-more-container">
-            <button class="button" onClick={loadMore}>
-              {t('Load more')}
-            </button>
-          </p>
-        </Show>
+          <aside class={clsx('col-md-7 col-xl-6 offset-xl-1', styles.feedAside)}>
+            <section class={styles.asideSection}>
+              <h4>{t('Comments')}</h4>
+              <For each={topComments()}>
+                {(comment) => {
+                  return (
+                    <div class={styles.comment}>
+                      <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
+                      <AuthorCard
+                        author={comment.createdBy as Author}
+                        isFeedMode={true}
+                        compact={true}
+                        hideFollow={true}
+                      />
+                      <div class={clsx('text-truncate', styles.commentArticleTitle)}>
+                        <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
+                      </div>
+                    </div>
+                  )
+                }}
+              </For>
+            </section>
+
+            <Show when={topTopics().length > 0}>
+              <section class={styles.asideSection}>
+                <h4>{t('Topics')}</h4>
+                <For each={topTopics().slice(0, 5)}>
+                  {(topic) => (
+                    <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
+                      <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
+                    </span>
+                  )}
+                </For>
+              </section>
+            </Show>
+
+            <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
+              <Icon name="pin" class={styles.icon} />
+              <ul class="nodash">
+                <li>
+                  <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
+                </li>
+                <li>
+                  <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
+                </li>
+                <li>
+                  <a href="#">Правила конструктивных дискуссий</a>
+                </li>
+                <li>
+                  <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
+                </li>
+              </ul>
+            </section>
+          </aside>
+        </div>
       </div>
     </>
   )

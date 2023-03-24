@@ -18,7 +18,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
     key: 'title',
     disable: (topic) => {
       console.log({ selectedTopics: clone(props.selectedTopics) })
-      return props.selectedTopics.includes(topic)
+      return props.selectedTopics.some((selectedTopic) => selectedTopic.slug === topic.slug)
     }
   })
 

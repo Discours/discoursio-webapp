@@ -12,6 +12,7 @@ import { useSession } from '../../context/session'
 import { Button } from '../../components/_shared/Button'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
+import { Image } from '../../components/_shared/Image'
 
 const handleFileUpload = async (uploadFile: UploadFile) => {
   const formData = new FormData()
@@ -100,7 +101,7 @@ export const ProfileSettingsPage = () => {
                     <div class="pretty-form__item">
                       <div class={styles.avatarContainer}>
                         <Show when={!isUserpicUpdating()} fallback={<Loading />}>
-                          <img
+                          <Image
                             class={styles.avatar}
                             src={form.userpic}
                             alt={form.name}

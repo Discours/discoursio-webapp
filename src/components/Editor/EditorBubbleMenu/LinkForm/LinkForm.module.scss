@@ -1,0 +1,38 @@
+.LnkForm {
+  position: relative;
+
+  .form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 6px 11px;
+
+    input {
+      margin: 0 12px 0 0;
+      padding: 0;
+      flex: 1;
+      border: none;
+      min-width: 200px;
+
+      &:focus {
+        outline: none;
+      }
+
+      &::placeholder {
+        color: rgba(#000, 0.3);
+      }
+    }
+  }
+
+  .linkError {
+    padding: 6px 11px;
+    color: red;
+    font-size: 0.7em;
+    position: absolute;
+    bottom: -3rem;
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(#000, 0.25);
+  }
+}

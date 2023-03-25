@@ -17,8 +17,6 @@ import { BulletList } from '@tiptap/extension-bullet-list'
 import { OrderedList } from '@tiptap/extension-ordered-list'
 import { ListItem } from '@tiptap/extension-list-item'
 import { CharacterCount } from '@tiptap/extension-character-count'
-import { Collaboration } from '@tiptap/extension-collaboration'
-import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Gapcursor } from '@tiptap/extension-gapcursor'
 import { HardBreak } from '@tiptap/extension-hard-break'
@@ -32,7 +30,7 @@ import { Image } from '@tiptap/extension-image'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
-import { EditorBubbleMenu } from './EditorBubbleMenu'
+import { EditorBubbleMenu } from './EditorBubbleMenu/EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import './Prosemirror.scss'
 
@@ -119,7 +117,6 @@ export const Editor = (props: EditorProps) => {
       Heading,
       Highlight,
       Image,
-      Link,
       Youtube,
       TrailingNode
     ]

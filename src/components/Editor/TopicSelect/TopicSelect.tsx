@@ -17,7 +17,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
   const selectProps = createOptions(props.topics, {
     key: 'title',
     disable: (topic) => {
-      console.log({ selectedTopics: clone(props.selectedTopics) })
+      // console.log({ selectedTopics: clone(props.selectedTopics) })
       return props.selectedTopics.some((selectedTopic) => selectedTopic.slug === topic.slug)
     }
   })

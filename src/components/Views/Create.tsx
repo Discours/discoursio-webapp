@@ -53,7 +53,7 @@ export const CreateView = () => {
           <div class="wide-container">
             <div class="shift-content">
               <div class="row">
-                <div class="col-md-10 col-lg-9 col-xl-8">
+                <div class="col-md-20 col-lg-18 col-xl-16">
                   <h4>Slug</h4>
                   <div class="pretty-form__item">
                     <input
@@ -152,7 +152,7 @@ export const CreateView = () => {
                     Выберите заглавное изображение для статьи, тут сразу можно увидеть как карточка будет
                     выглядеть на&nbsp;главной странице
                   </p>
-                  <div class={styles.articlePreview}></div>
+                  <div class={styles.articlePreview} />
 
                   <div class={styles.saveBlock}>
                     <p>

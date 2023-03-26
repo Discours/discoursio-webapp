@@ -5,7 +5,6 @@ import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
-import { LinkForm } from './LinkForm'
 import validateUrl from '../../../utils/validateUrl'
 
 type BubbleMenuProps = {
@@ -92,7 +91,6 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
         <Switch>
           <Match when={linkEditorOpen()}>
             <>
-              {/*<LinkForm editor={props.editor} editorOpen={linkEditorOpen()} />*/}
               <div class={styles.linkForm}>
                 <input
                   type="text"

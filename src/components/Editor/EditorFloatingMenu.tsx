@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/core'
 import styles from './EditorFloatingMenu.module.scss'
 import { Icon } from '../_shared/Icon'
+import { createSignal } from 'solid-js'
 
 type FloatingMenuProps = {
   editor: Editor

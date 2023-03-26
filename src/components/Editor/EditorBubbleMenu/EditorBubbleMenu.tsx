@@ -5,7 +5,7 @@ import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
-import validateUrl from '../../../utils/validateUrl'
+import { LinkForm } from './LinkForm'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -38,42 +38,8 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   const isBulletList = isActive('isBulletList')
   const isLink = isActive('link')
 
-  //TODO: вынести логику линки в отдельный компонент
   const toggleLinkForm = () => {
-    setLinkError(null)
     setLinkEditorOpen(true)
-  }
-
-  const currentUrl = createEditorTransaction(
-    () => props.editor,
-    (editor) => {
-      return (editor && editor.getAttributes('link').href) || ''
-    }
-  )
-
-  const clearLinkForm = () => {
-    if (currentUrl()) {
-      props.editor.chain().focus().unsetLink().run()
-    }
-    setUrl('')
-    setLinkEditorOpen(false)
-  }
-  const handleUrlChange = (value) => {
-    setUrl(value)
-  }
-  const handleSubmitLink = () => {
-    if (validateUrl(url())) {
-      props.editor.chain().focus().setLink({ href: url() }).run()
-      setLinkEditorOpen(false)
-    } else {
-      setLinkError(t('Invalid url format'))
-    }
-  }
-
-  const handleKeyPress = (event) => {
-    const key = event.key
-    if (key === 'Enter') handleSubmitLink()
-    if (key === 'Esc') clearLinkForm()
   }
 
   const toggleTextSizePopup = () => {
@@ -90,25 +56,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
       <div ref={props.ref} class={styles.bubbleMenu}>
         <Switch>
           <Match when={linkEditorOpen()}>
-            <>
-              <div class={styles.linkForm}>
-                <input
-                  type="text"
-                  placeholder={t('Enter URL address')}
-                  autofocus
-                  value={currentUrl()}
-                  onKeyPress={(e) => handleKeyPress(e)}
-                  onChange={(e) => handleUrlChange(e.currentTarget.value)}
-                />
-                <button type="button" onClick={() => handleSubmitLink()} disabled={linkError() !== null}>
-                  <Icon name="status-done" />
-                </button>
-                <button type="button" onClick={() => clearLinkForm()}>
-                  {currentUrl() ? 'Ж' : <Icon name="status-cancel" />}
-                </button>
-              </div>
-              {linkError() && <div class={styles.linkError}>{linkError()}</div>}
-            </>
+            <LinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
           </Match>
           <Match when={!linkEditorOpen()}>
             <>

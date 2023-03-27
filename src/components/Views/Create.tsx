@@ -47,8 +47,21 @@ export const CreateView = () => {
     setTopics(allTopics)
   })
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault()
+
+    const newShout = await apiClient.createArticle({
+      article: {
+        slug: form.slug,
+        title: form.title,
+        subtitle: form.subtitle,
+        body: form.body,
+        topics: form.selectedTopics.map((topic) => topic.slug),
+        mainTopic: form.selectedTopics[0].slug
+      }
+    })
+
+    router.open(getPagePath(router, 'article', { slug: newShout.slug }))
   }
 
   const handleTitleInputChange = (e) => {

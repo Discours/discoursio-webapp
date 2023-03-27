@@ -67,7 +67,7 @@ const handleClientRouteLinkClick = (event) => {
         }
 
         const anchor = document.querySelector(selector)
-        const headerOffset = 80 // 100px for header
+        const headerOffset = 80 // 80px for header
         const elementPosition = anchor ? anchor.getBoundingClientRect().top : 0
         const newScrollTop = elementPosition + window.scrollY - headerOffset
 

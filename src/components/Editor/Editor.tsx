@@ -53,9 +53,9 @@ export const Editor = (props: EditorProps) => {
   const { user } = useSession()
 
   const docName = `shout-${props.shoutId}`
-  if (!persisters[docName]) {
-    persisters[docName] = new IndexeddbPersistence(docName, yDoc)
-  }
+  // if (!persisters[docName]) {
+  //   persisters[docName] = new IndexeddbPersistence(docName, yDoc)
+  // }
 
   if (!providers[docName]) {
     providers[docName] = new WebrtcProvider(docName, yDoc)
@@ -118,7 +118,7 @@ export const Editor = (props: EditorProps) => {
         provider: providers[docName],
         user: {
           name: user().name,
-          color: uniqolor(user().slug)
+          color: uniqolor(user().slug).color
         }
       }),
       Placeholder.configure({

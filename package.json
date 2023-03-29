@@ -32,6 +32,7 @@
     "@aws-sdk/abort-controller": "^3.272.0",
     "@aws-sdk/client-s3": "^3.282.0",
     "@aws-sdk/lib-storage": "^3.282.0",
+    "@hocuspocus/provider": "^1.1.3",
     "formidable": "^2.1.1",
     "i18next": "^22.4.11",
     "mailgun.js": "^8.2.1"

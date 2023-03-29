@@ -37,6 +37,7 @@ import './Prosemirror.scss'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
+import { HocuspocusProvider } from '@hocuspocus/provider'
 
 type EditorProps = {
   shoutId: number
@@ -46,19 +47,23 @@ type EditorProps = {
 
 const yDoc = new Y.Doc()
 const persisters: Record<string, IndexeddbPersistence> = {}
-const providers: Record<string, WebrtcProvider> = {}
+const providers: Record<string, HocuspocusProvider> = {}
 
 export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
 
   const docName = `shout-${props.shoutId}`
-  // if (!persisters[docName]) {
-  //   persisters[docName] = new IndexeddbPersistence(docName, yDoc)
-  // }
+  if (!persisters[docName]) {
+    persisters[docName] = new IndexeddbPersistence(docName, yDoc)
+  }
 
   if (!providers[docName]) {
-    providers[docName] = new WebrtcProvider(docName, yDoc)
+    providers[docName] = new HocuspocusProvider({
+      url: 'ws://v2.discours.io:4242',
+      name: docName,
+      document: yDoc
+    })
   }
 
   const editorElRef: {

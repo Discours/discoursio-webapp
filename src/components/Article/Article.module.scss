@@ -143,8 +143,8 @@ img {
 }
 
 .shoutStatsItem {
+  cursor: pointer;
   @include font-size(1.5rem);
-
   font-weight: 500;
   display: inline-block;
   margin: 0 3.2rem 1em 0;
@@ -166,17 +166,32 @@ img {
     max-height: 1.8em;
   }
 
+  .shoutStatsItemInner .iconEdit {
+    margin-right: 0.3em;
+  }
+
   img {
     display: block;
   }
 
   a {
     border: none;
+  }
+}
 
-    &:hover {
-      .icon {
-        filter: invert(1);
-      }
+.shoutStatsItemInner {
+  margin: -0.3em -0.3em 0;
+  padding: 0.3em;
+
+  .icon {
+    margin-right: 0;
+  }
+
+  &:hover {
+    background: #000;
+
+    img {
+      filter: invert(1);
     }
   }
 }

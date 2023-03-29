@@ -36,7 +36,7 @@ import { Collaboration } from '@tiptap/extension-collaboration'
 import './Prosemirror.scss'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import { useSession } from '../../context/session'
-import * as uniqolor from 'uniqolor'
+import uniqolor from 'uniqolor'
 
 type EditorProps = {
   shoutId: number

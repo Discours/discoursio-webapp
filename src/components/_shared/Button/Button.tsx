@@ -10,6 +10,7 @@ type Props = {
   loading?: boolean
   disabled?: boolean
   onClick?: () => void
+  className?: string | ''
 }
 
 export const Button = (props: Props) => {
@@ -18,9 +19,15 @@ export const Button = (props: Props) => {
       onClick={props.onClick}
       type={props.type ?? 'button'}
       disabled={props.loading || props.disabled}
-      class={clsx(styles.button, styles[props.size ?? 'M'], styles[props.variant ?? 'primary'], {
-        [styles.loading]: props.loading
-      })}
+      class={clsx(
+        styles.button,
+        styles[props.size ?? 'M'],
+        styles[props.variant ?? 'primary'],
+        {
+          [styles.loading]: props.loading
+        },
+        props.className
+      )}
     >
       {props.value}
     </button>

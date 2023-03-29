@@ -143,7 +143,6 @@ img {
 }
 
 .shoutStatsItem {
-  cursor: pointer;
   @include font-size(1.5rem);
   font-weight: 500;
   display: inline-block;
@@ -180,6 +179,7 @@ img {
 }
 
 .shoutStatsItemInner {
+  cursor: pointer;
   margin: -0.3em -0.3em 0;
   padding: 0.3em;
 
@@ -313,6 +313,11 @@ img {
 
 .commentsViewSwitcher {
   margin-top: 0;
+}
+
+.commentsViewSwitcherButton {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .help {

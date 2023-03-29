@@ -60,7 +60,7 @@ export const Editor = (props: EditorProps) => {
 
   if (!providers[docName]) {
     providers[docName] = new HocuspocusProvider({
-      url: 'ws://v2.discours.io:4242',
+      url: 'wss://v2.discours.io:4242',
       name: docName,
       document: yDoc
     })

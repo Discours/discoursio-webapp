@@ -45,27 +45,21 @@ type EditorProps = {
 }
 
 const yDoc = new Y.Doc()
-// const persisters: Record<string, IndexeddbPersistence> = {}
-// const providers: Record<string, WebrtcProvider> = {}
-
-const provider = new WebrtcProvider('tiptap-collaboration-extension', yDoc, {
-  signaling: ['wss://0.0.0.0:4444']
-})
+const persisters: Record<string, IndexeddbPersistence> = {}
+const providers: Record<string, WebrtcProvider> = {}
 
 export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
 
   const docName = `shout-${props.shoutId}`
-  // if (!persisters[docName]) {
-  //   persisters[docName] = new IndexeddbPersistence(docName, yDoc)
-  // }
+  if (!persisters[docName]) {
+    persisters[docName] = new IndexeddbPersistence(docName, yDoc)
+  }
 
-  // if (!providers[docName]) {
-  //   providers[docName] = new WebrtcProvider(docName, yDoc, {
-  //     signaling: ['wss://y-webrtc-signaling-eu.herokuapp.com', 'wss://y-webrtc-signaling-us.herokuapp.com']
-  //   })
-  // }
+  if (!providers[docName]) {
+    providers[docName] = new WebrtcProvider(docName, yDoc)
+  }
 
   const editorElRef: {
     current: HTMLDivElement
@@ -120,20 +114,19 @@ export const Editor = (props: EditorProps) => {
       Collaboration.configure({
         document: yDoc
       }),
-      // CollaborationCursor.configure({
-      //   provider: providers[docName],
-      //   user: {
-      //     name: user().name,
-      //     color: uniqolor(user().slug)
-      //   }
-      // }),
+      CollaborationCursor.configure({
+        provider: providers[docName],
+        user: {
+          name: user().name,
+          color: uniqolor(user().slug)
+        }
+      }),
       Placeholder.configure({
         placeholder: t('Short opening')
       }),
       Focus,
       Gapcursor,
       HardBreak,
-      Heading,
       Highlight,
       Image,
       Youtube,

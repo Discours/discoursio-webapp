@@ -96,7 +96,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const AllTopicsHead = () => (
     <div class="row">
-      <div class={clsx(styles.pageHeader, 'col-lg-20 col-xl-18')}>
+      <div class="col-lg-20 col-xl-18">
         <h1>{t('Topics')}</h1>
         <p>{t('Subscribe what you like to tune your personal feed')}</p>
 

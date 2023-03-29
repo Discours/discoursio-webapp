@@ -1,6 +1,6 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
 import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
-import type { AuthResult } from '../graphql/types.gen'
+import type { AuthResult, User } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { useSnackbar } from './snackbar'
@@ -9,7 +9,7 @@ import { useLocalize } from './localize'
 type SessionContextType = {
   session: Resource<AuthResult>
   isSessionLoaded: Accessor<boolean>
-  userSlug: Accessor<string>
+  user: Accessor<User>
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthResult | Promise<AuthResult>
@@ -55,6 +55,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   })
 
   const userSlug = createMemo(() => session()?.user?.slug)
+  const user = createMemo(() => session()?.user)
 
   const isAuthenticated = createMemo(() => Boolean(session()?.user?.slug))
 
@@ -85,7 +86,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     confirmEmail
   }
 
-  const value: SessionContextType = { session, isSessionLoaded, userSlug, isAuthenticated, actions }
+  const value: SessionContextType = { session, isSessionLoaded, user, isAuthenticated, actions }
 
   onMount(() => {
     loadSession()

@@ -29,7 +29,7 @@ export const FeedView = () => {
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
-  const { session, userSlug } = useSession()
+  const { session, user } = useSession()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
 
@@ -49,9 +49,9 @@ export const FeedView = () => {
   // })
 
   createEffect(async () => {
-    if (userSlug()) {
+    if (user()) {
       // load recent editing shouts ( visibility = authors )
-      await loadShouts({ filters: { author: userSlug(), visibility: 'authors' }, limit: 15 })
+      await loadShouts({ filters: { author: user().slug, visibility: 'authors' }, limit: 15 })
     }
   })
 

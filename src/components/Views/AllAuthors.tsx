@@ -94,7 +94,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const AllAuthorsHead = () => (
     <div class="row">
-      <div class={clsx(styles.pageHeader, 'col-lg-20 col-xl-18')}>
+      <div class="col-lg-20 col-xl-18">
         <h1>{t('Authors')}</h1>
         <p>{t('Subscribe who you like to tune your personal feed')}</p>
 

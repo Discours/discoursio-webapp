@@ -29,19 +29,43 @@ import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
 import { EditorBubbleMenu } from './EditorBubbleMenu/EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
+import * as Y from 'yjs'
+import { WebrtcProvider } from 'y-webrtc'
+import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
+import { Collaboration } from '@tiptap/extension-collaboration'
 import './Prosemirror.scss'
+import { IndexeddbPersistence } from 'y-indexeddb'
+import { useSession } from '../../context/session'
+import * as uniqolor from 'uniqolor'
 
 type EditorProps = {
+  shoutId: number
   initialContent?: string
   onChange: (text: string) => void
 }
 
-// const ydoc = new Y.Doc()
-// // TODO
-// const provider = new WebrtcProvider('slug!!!!!!', ydoc)
+const yDoc = new Y.Doc()
+// const persisters: Record<string, IndexeddbPersistence> = {}
+// const providers: Record<string, WebrtcProvider> = {}
+
+const provider = new WebrtcProvider('tiptap-collaboration-extension', yDoc, {
+  signaling: ['wss://0.0.0.0:4444']
+})
 
 export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
+  const { user } = useSession()
+
+  const docName = `shout-${props.shoutId}`
+  // if (!persisters[docName]) {
+  //   persisters[docName] = new IndexeddbPersistence(docName, yDoc)
+  // }
+
+  // if (!providers[docName]) {
+  //   providers[docName] = new WebrtcProvider(docName, yDoc, {
+  //     signaling: ['wss://y-webrtc-signaling-eu.herokuapp.com', 'wss://y-webrtc-signaling-us.herokuapp.com']
+  //   })
+  // }
 
   const editorElRef: {
     current: HTMLDivElement
@@ -93,18 +117,16 @@ export const Editor = (props: EditorProps) => {
       OrderedList,
       ListItem,
       CharacterCount,
-      // Collaboration.configure({
-      //   document: ydoc
-      // }),
+      Collaboration.configure({
+        document: yDoc
+      }),
       // CollaborationCursor.configure({
-      //   provider,
+      //   provider: providers[docName],
       //   user: {
-      //     name: 'Cyndi Lauper',
-      //     color: '#f783ac'
+      //     name: user().name,
+      //     color: uniqolor(user().slug)
       //   }
       // }),
-      // TODO conditional indexedDB
-      // History,
       Placeholder.configure({
         placeholder: t('Short opening')
       }),
@@ -133,5 +155,3 @@ export const Editor = (props: EditorProps) => {
     </>
   )
 }
-
-export default Editor

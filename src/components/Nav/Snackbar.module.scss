@@ -15,4 +15,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &.enter,
+  &.exitTo {
+    height: 0;
+    color: transparent;
+  }
 }

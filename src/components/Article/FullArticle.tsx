@@ -55,7 +55,7 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
 
 export const FullArticle = (props: ArticleProps) => {
   const { t } = useLocalize()
-  const { userSlug, isAuthenticated } = useSession()
+  const { user, isAuthenticated } = useSession()
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
@@ -86,7 +86,7 @@ export const FullArticle = (props: ArticleProps) => {
     setIsReactionsLoaded(true)
   })
 
-  const canEdit = () => props.article.authors?.some((a) => a.slug === userSlug())
+  const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
   const bookmark = (ev) => {
     // TODO: implement bookmark clicked

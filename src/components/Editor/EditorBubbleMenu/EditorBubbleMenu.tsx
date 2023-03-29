@@ -43,11 +43,17 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   const toggleTextSizePopup = () => {
-    if (listBubbleOpen()) setListBubbleOpen(false)
+    if (listBubbleOpen()) {
+      setListBubbleOpen(false)
+    }
+
     setTextSizeBubbleOpen((prev) => !prev)
   }
   const toggleListPopup = () => {
-    if (textSizeBubbleOpen()) setTextSizeBubbleOpen(false)
+    if (textSizeBubbleOpen()) {
+      setTextSizeBubbleOpen(false)
+    }
+
     setListBubbleOpen((prev) => !prev)
   }
 

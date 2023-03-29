@@ -10,7 +10,7 @@ type ProfilePopupProps = Omit<PopupProps, 'children'>
 
 export const ProfilePopup = (props: ProfilePopupProps) => {
   const {
-    userSlug,
+    user,
     actions: { signOut }
   } = useSession()
 
@@ -20,7 +20,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     <Popup {...props} horizontalAnchor="right" variant="bordered">
       <ul class="nodash">
         <li>
-          <a href={getPagePath(router, 'author', { slug: userSlug() })}>{t('Profile')}</a>
+          <a href={getPagePath(router, 'author', { slug: user().slug })}>{t('Profile')}</a>
         </li>
         <li>
           <a href="#">{t('Drafts')}</a>

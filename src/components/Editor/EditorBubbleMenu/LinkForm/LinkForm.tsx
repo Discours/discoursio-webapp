@@ -47,6 +47,7 @@ export const LinkForm = (props: Props) => {
   }
 
   const handleKeyPress = (event) => {
+    event.preventDefault()
     setLinkError('')
     const key = event.key
 

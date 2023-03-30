@@ -270,7 +270,7 @@ export const FullArticle = (props: ArticleProps) => {
                 )}
               </For>
             </div>
-            <div ref={commentsRef}>
+            <div>
               <Show when={isReactionsLoaded()}>
                 <CommentsTree
                   shoutId={props.article.id}

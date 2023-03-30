@@ -57,6 +57,15 @@ const handleClientRouteLinkClick = (event) => {
     if (url.origin === location.origin) {
       event.preventDefault()
 
+      if (url.pathname) {
+        routerStore.open(url.pathname)
+      }
+
+      if (url.search) {
+        const params = Object.fromEntries(new URLSearchParams(url.search))
+        searchParamsStore.open(params)
+      }
+
       if (url.hash) {
         let selector = url.hash
 
@@ -78,10 +87,6 @@ const handleClientRouteLinkClick = (event) => {
 
         return
       }
-
-      routerStore.open(url.pathname)
-      const params = Object.fromEntries(new URLSearchParams(url.search))
-      searchParamsStore.open(params)
 
       window.scrollTo({
         top: 0,

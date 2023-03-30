@@ -1,7 +1,7 @@
 .ratingContainer {
   @include font-size(1.5rem);
 
-  display: inline-block;
+  display: inline-flex;
   vertical-align: top;
 }
 

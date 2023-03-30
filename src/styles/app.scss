@@ -726,22 +726,6 @@ figcaption {
     margin-left: 235px;
   }
 
-  .left-col {
-    height: 100%;
-    padding-right: 2rem;
-    right: 100%;
-    top: 0;
-
-    @include media-breakpoint-up(md) {
-      position: absolute;
-      width: 161px;
-    }
-
-    @include media-breakpoint-up(lg) {
-      width: 235px;
-    }
-  }
-
   .left-navigation {
     position: sticky;
     top: 0;

@@ -126,6 +126,7 @@ export const CommentsTree = (props: Props) => {
                 onClick={() => {
                   setCommentsOrder('newOnly')
                 }}
+                className={styles.commentsViewSwitcherButton}
               />
             </li>
           </Show>
@@ -136,6 +137,7 @@ export const CommentsTree = (props: Props) => {
               onClick={() => {
                 setCommentsOrder('createdAt')
               }}
+              className={styles.commentsViewSwitcherButton}
             />
           </li>
           <li classList={{ selected: commentsOrder() === 'rating' }}>
@@ -145,6 +147,7 @@ export const CommentsTree = (props: Props) => {
               onClick={() => {
                 setCommentsOrder('rating')
               }}
+              className={styles.commentsViewSwitcherButton}
             />
           </li>
         </ul>

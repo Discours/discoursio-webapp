@@ -206,8 +206,10 @@ export const FullArticle = (props: ArticleProps) => {
               </Show>
 
               <div class={styles.shoutStatsItem} onClick={() => scrollToComments()}>
-                <Icon name="comment" class={styles.icon} />
-                {/*{props.article.stat?.commented || ''}*/}
+                <div class={styles.shoutStatsItemInner}>
+                  <Icon name="comment" class={styles.icon} />
+                  {/*{props.article.stat?.commented || ''}*/}
+                </div>
               </div>
 
               <div class={styles.shoutStatsItem}>
@@ -216,18 +218,24 @@ export const FullArticle = (props: ArticleProps) => {
                   description={getDescription(props.article.body)}
                   imageUrl={props.article.cover}
                   containerCssClass={stylesHeader.control}
-                  trigger={<Icon name="share-outline" class={styles.icon} />}
+                  trigger={
+                    <div class={styles.shoutStatsItemInner}>
+                      <Icon name="share-outline" class={styles.icon} />
+                    </div>
+                  }
                 />
               </div>
 
               <div class={styles.shoutStatsItem} onClick={bookmark}>
-                <Icon name="bookmark" class={styles.icon} />
+                <div class={styles.shoutStatsItemInner}>
+                  <Icon name="bookmark" class={styles.icon} />
+                </div>
               </div>
 
               <Show when={canEdit()}>
                 <div class={styles.shoutStatsItem}>
-                  <a href="/edit">
-                    <Icon name="edit" />
+                  <a href="/edit" class={styles.shoutStatsItemInner}>
+                    <Icon name="edit" class={clsx(styles.icon, styles.iconEdit)} />
                     {t('Edit')}
                   </a>
                 </div>

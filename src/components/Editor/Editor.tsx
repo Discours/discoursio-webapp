@@ -54,16 +54,18 @@ export const Editor = (props: EditorProps) => {
   const { user } = useSession()
 
   const docName = `shout-${props.shoutId}`
-  if (!persisters[docName]) {
-    persisters[docName] = new IndexeddbPersistence(docName, yDoc)
-  }
 
   if (!providers[docName]) {
     providers[docName] = new HocuspocusProvider({
-      url: 'wss://hocuspocus.discours.io',
+      // url: 'wss://hocuspocus.discours.io',
+      url: 'ws://localhost:4242',
       name: docName,
       document: yDoc
     })
+  }
+
+  if (!persisters[docName]) {
+    persisters[docName] = new IndexeddbPersistence(docName, yDoc)
   }
 
   const editorElRef: {

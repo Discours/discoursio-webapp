@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "importsNotUsedAsValues": "error",
     // Solid specific settings
     "jsx": "preserve",
     "jsxImportSource": "solid-js",

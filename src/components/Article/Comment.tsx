@@ -132,11 +132,11 @@ export const Comment = (props: Props) => {
               </Show>
 
               <div class={styles.commentDates}>
-                <div class={styles.date}>{formattedDate(comment()?.createdAt)}</div>
+                <div class={styles.date}>{formattedDate(comment()?.createdAt)()}</div>
                 <Show when={comment()?.updatedAt}>
                   <div class={styles.date}>
                     <Icon name="edit" class={styles.icon} />
-                    {t('Edited')} {formattedDate(comment()?.updatedAt)}
+                    {t('Edited')} {formattedDate(comment()?.updatedAt)()}
                   </div>
                 </Show>
               </div>

@@ -2,7 +2,7 @@ import { capitalize, formatDate } from '../../utils'
 import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -16,7 +16,7 @@ import { useSession } from '../../context/session'
 import VideoPlayer from './VideoPlayer'
 import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
-import { router } from '../../stores/router'
+import { router, useRouter } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
 import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
@@ -112,6 +112,12 @@ export const FullArticle = (props: ArticleProps) => {
     }
     commentsRef.scrollIntoView({ behavior: 'smooth' })
   }
+  const { searchParams } = useRouter()
+  createEffect(() => {
+    if (searchParams()?.scrollTo === 'comments') {
+      scrollToComments()
+    }
+  })
 
   return (
     <>

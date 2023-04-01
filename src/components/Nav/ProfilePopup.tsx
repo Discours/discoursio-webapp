@@ -2,9 +2,10 @@ import { useSession } from '../../context/session'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 import styles from '../_shared/Popup/Popup.module.scss'
-import { getPagePath } from '@nanostores/router'
-import { router } from '../../stores/router'
+import { getPagePath, openPage } from '@nanostores/router'
+import { router, useRouter } from '../../stores/router'
 import { useLocalize } from '../../context/localize'
+import type { AuthorPageSearchParams } from '../Views/Author'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
@@ -15,6 +16,12 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
   } = useSession()
 
   const { t } = useLocalize()
+  const { changeSearchParam } = useRouter<AuthorPageSearchParams>()
+
+  const openAuthorComments = () => {
+    openPage(router, 'author', { slug: userSlug() })
+    changeSearchParam('by', 'commented')
+  }
 
   return (
     <Popup {...props} horizontalAnchor="right" variant="bordered">
@@ -29,7 +36,15 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           <a href="#">{t('Subscriptions')}</a>
         </li>
         <li>
-          <a href="#">{t('Comments')}</a>
+          <a
+            href="#"
+            onClick={(event) => {
+              event.preventDefault()
+              openAuthorComments()
+            }}
+          >
+            {t('Comments')}
+          </a>
         </li>
         <li>
           <a href="#">{t('Bookmarks')}</a>

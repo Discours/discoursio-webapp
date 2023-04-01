@@ -12,7 +12,12 @@ import stylesHeader from '../Nav/Header.module.scss'
 import { getDescription } from '../../utils/meta'
 import { FeedArticlePopup } from './FeedArticlePopup'
 import { useLocalize } from '../../context/localize'
+import { openPage } from '@nanostores/router'
+import { router, useRouter } from '../../stores/router'
 
+type ArticleSearchParams = {
+  scrollTo: 'comments'
+}
 interface ArticleCardProps {
   settings?: {
     noicon?: boolean
@@ -74,6 +79,12 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const { cover, layout, slug, authors, stat, body } = props.article
+
+  const { changeSearchParam } = useRouter<ArticleSearchParams>()
+  const scrollToComments = () => {
+    openPage(router, 'article', { slug: slug })
+    changeSearchParam('scrollTo', 'comments')
+  }
 
   return (
     <section
@@ -173,10 +184,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </div>
 
               <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardComments)}>
-                <a href={`/${slug + '#comments' || ''}`}>
+                <button type="button" onClick={scrollToComments}>
                   <Icon name="comment" class={clsx(styles.icon, styles.feedControlIcon)} />
                   {stat?.commented || t('Add comment')}
-                </a>
+                </button>
               </div>
             </div>
 

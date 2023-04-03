@@ -2,6 +2,7 @@ import type { Accessor } from 'solid-js'
 import { createRouter, createSearchParams } from '@nanostores/router'
 import { isServer } from 'solid-js/web'
 import { useStore } from '@nanostores/solid'
+import { getPageLoadManagerPromise } from '../utils/pageLoadManager'
 
 export const ROUTES = {
   home: '/',
@@ -40,9 +41,8 @@ const routerStore = createRouter(ROUTES, {
 
 export const router = routerStore
 
-const handleClientRouteLinkClick = (event) => {
-  const link = event.target.closest('a')
-  if (
+const checkOpenOnClient = (link: HTMLAnchorElement, event) => {
+  return (
     link &&
     event.button === 0 &&
     link.target !== '_blank' &&
@@ -52,43 +52,84 @@ const handleClientRouteLinkClick = (event) => {
     !event.ctrlKey &&
     !event.shiftKey &&
     !event.altKey
-  ) {
-    const url = new URL(link.href)
-    if (url.origin === location.origin) {
-      event.preventDefault()
+  )
+}
 
-      if (url.hash) {
-        let selector = url.hash
+const scrollToHash = (hash: string) => {
+  let selector = hash
 
-        if (/^#\d+/.test(selector)) {
-          // id="1" fix
-          // https://stackoverflow.com/questions/20306204/using-queryselector-with-ids-that-are-numbers
-          selector = `[id="${selector.replace('#', '')}"]`
-        }
+  if (/^#\d+/.test(selector)) {
+    // id="1" fix
+    // https://stackoverflow.com/questions/20306204/using-queryselector-with-ids-that-are-numbers
+    selector = `[id="${selector.replace('#', '')}"]`
+  }
 
-        const anchor = document.querySelector(selector)
-        const headerOffset = 80 // 80px for header
-        const elementPosition = anchor ? anchor.getBoundingClientRect().top : 0
-        const newScrollTop = elementPosition + window.scrollY - headerOffset
+  const anchor = document.querySelector(selector)
+  const headerOffset = 80 // 80px for header
+  const elementPosition = anchor ? anchor.getBoundingClientRect().top : 0
+  const newScrollTop = elementPosition + window.scrollY - headerOffset
 
-        window.scrollTo({
-          top: newScrollTop,
-          behavior: 'smooth'
-        })
+  window.scrollTo({
+    top: newScrollTop,
+    behavior: 'smooth'
+  })
+}
 
-        return
-      }
+const handleClientRouteLinkClick = async (event) => {
+  const link = event.target.closest('a')
 
-      routerStore.open(url.pathname)
-      const params = Object.fromEntries(new URLSearchParams(url.search))
-      searchParamsStore.open(params)
+  if (!checkOpenOnClient(link, event)) {
+    return
+  }
 
-      window.scrollTo({
-        top: 0,
-        left: 0
-      })
+  const url = new URL(link.href)
+  if (url.origin !== location.origin) {
+    return
+  }
+
+  event.preventDefault()
+
+  if (url.pathname) {
+    routerStore.open(url.pathname)
+  }
+
+  if (url.search) {
+    const params = Object.fromEntries(new URLSearchParams(url.search))
+    searchParamsStore.open(params)
+  }
+
+  if (!url.hash) {
+    window.scrollTo({
+      top: 0,
+      left: 0
+    })
+
+    return
+  }
+
+  await getPageLoadManagerPromise()
+
+  const images = document.querySelectorAll('img')
+
+  let imagesLoaded = 0
+
+  const imageLoadEventHandler = () => {
+    imagesLoaded++
+    if (imagesLoaded === images.length) {
+      scrollToHash(url.hash)
+      images.forEach((image) => image.removeEventListener('load', imageLoadEventHandler))
+      images.forEach((image) => image.removeEventListener('error', imageLoadEventHandler))
     }
   }
+
+  images.forEach((image) => {
+    if (image.complete) {
+      imagesLoaded++
+    }
+
+    image.addEventListener('load', imageLoadEventHandler)
+    image.addEventListener('error', imageLoadEventHandler)
+  })
 }
 
 export const initRouter = (pathname: string, search: Record<string, string>) => {
@@ -129,7 +170,6 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   return {
     page,
     searchParams,
-    changeSearchParam,
-    handleClientRouteLinkClick
+    changeSearchParam
   }
 }

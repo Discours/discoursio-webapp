@@ -10,7 +10,6 @@ import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
-import Cookie from 'js-cookie'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
@@ -110,7 +109,7 @@ export const CommentsTree = (props: Props) => {
   return (
     <>
       <div class={styles.commentsHeaderWrapper}>
-        <h2 id="comments" class={styles.commentsHeader}>
+        <h2 class={styles.commentsHeader}>
           {t('Comments')} {comments().length.toString() || ''}
           <Show when={newReactions().length > 0}>
             <span class={styles.newReactions}>&nbsp;+{newReactions().length}</span>
@@ -166,7 +165,7 @@ export const CommentsTree = (props: Props) => {
       </ul>
       <ShowIfAuthenticated
         fallback={
-          <div class={styles.signInMessage} id="comments">
+          <div class={styles.signInMessage}>
             {t('To write a comment, you must')}{' '}
             <a href="?modal=auth&mode=register" class={styles.link}>
               {t('sign up')}

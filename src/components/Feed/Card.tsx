@@ -155,7 +155,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </For>
               </div>
             </Show>
-
             <Show when={!props.settings?.nodate}>
               <div class={styles.shoutDate}>{formattedDate()}</div>
             </Show>
@@ -173,7 +172,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </div>
 
               <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardComments)}>
-                <a href={`/${slug + '#comments' || ''}`}>
+                <a href={`/${slug + '#comments'}`}>
                   <Icon name="comment" class={clsx(styles.icon, styles.feedControlIcon)} />
                   {stat?.commented || t('Add comment')}
                 </a>

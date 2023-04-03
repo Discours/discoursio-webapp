@@ -1,7 +1,7 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -13,7 +13,7 @@ import { useSession } from '../../context/session'
 import VideoPlayer from './VideoPlayer'
 import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
-import { router } from '../../stores/router'
+import { router, useRouter } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
 import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
@@ -65,19 +65,6 @@ export const FullArticle = (props: ArticleProps) => {
       props.article.topics[0]
   )
 
-  onMount(() => {
-    const windowHash = window.location.hash
-    if (windowHash?.length > 0) {
-      const comments = document.querySelector(windowHash)
-      if (comments) {
-        window.scrollTo({
-          top: comments.getBoundingClientRect().top,
-          behavior: 'smooth'
-        })
-      }
-    }
-  })
-
   onMount(async () => {
     await loadReactionsBy({
       by: { shout: props.article.slug }
@@ -103,14 +90,6 @@ export const FullArticle = (props: ArticleProps) => {
   const {
     actions: { loadReactionsBy }
   } = useReactions()
-
-  let commentsRef: HTMLDivElement | undefined
-  const scrollToComments = () => {
-    if (!isReactionsLoaded()) {
-      return
-    }
-    commentsRef.scrollIntoView({ behavior: 'smooth' })
-  }
 
   return (
     <>
@@ -205,12 +184,10 @@ export const FullArticle = (props: ArticleProps) => {
                 </div>
               </Show>
 
-              <div class={styles.shoutStatsItem} onClick={() => scrollToComments()}>
-                <div class={styles.shoutStatsItemInner}>
-                  <Icon name="comment" class={styles.icon} />
-                  {/*{props.article.stat?.commented || ''}*/}
-                </div>
-              </div>
+              <a href="#comments" class={styles.shoutStatsItem}>
+                <Icon name="comment" class={styles.icon} />
+                {props.article.stat?.commented ?? ''}
+              </a>
 
               <div class={styles.shoutStatsItem}>
                 <SharePopup
@@ -277,7 +254,7 @@ export const FullArticle = (props: ArticleProps) => {
                 )}
               </For>
             </div>
-            <div ref={commentsRef}>
+            <div id="comments">
               <Show when={isReactionsLoaded()}>
                 <CommentsTree
                   shoutId={props.article.id}

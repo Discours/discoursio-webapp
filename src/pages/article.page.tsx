@@ -7,6 +7,7 @@ import { useRouter } from '../stores/router'
 import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
 import { FullArticle } from '../components/Article/FullArticle'
+import { setPageLoadManagerPromise } from '../utils/pageLoadManager'
 
 export const ArticlePage = (props: PageProps) => {
   const shouts = props.article ? [props.article] : []
@@ -33,7 +34,9 @@ export const ArticlePage = (props: PageProps) => {
     const articleValue = articleEntities()[slug()]
 
     if (!articleValue || !articleValue.body) {
-      await loadShout(slug())
+      const loadShoutPromise = loadShout(slug())
+      setPageLoadManagerPromise(loadShoutPromise)
+      await loadShoutPromise
     }
   })
 

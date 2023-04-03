@@ -26,7 +26,7 @@ type AuthorProps = {
   authorSlug: string
 }
 
-type AuthorPageSearchParams = {
+export type AuthorPageSearchParams = {
   by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'followed' | 'about' | 'popular'
 }
 
@@ -54,7 +54,11 @@ export const AuthorView = (props: AuthorProps) => {
 
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
-  changeSearchParam('by', 'rating')
+  onMount(() => {
+    if (!searchParams().by) {
+      changeSearchParam('by', 'rating')
+    }
+  })
 
   const loadMore = async () => {
     saveScrollPosition()
@@ -131,7 +135,7 @@ export const AuthorView = (props: AuthorProps) => {
                 */}
               <li classList={{ selected: searchParams().by === 'about' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'about')}>
-                  О себе
+                  {t('About myself')}
                 </button>
               </li>
             </ul>

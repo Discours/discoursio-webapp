@@ -187,7 +187,7 @@ export const FullArticle = (props: ArticleProps) => {
 
               <a href="#comments" class={styles.shoutStatsItem}>
                 <Icon name="comment" class={styles.icon} />
-                {/*{props.article.stat?.commented || ''}*/}
+                {props.article.stat?.commented ?? ''}
               </a>
 
               <div class={styles.shoutStatsItem}>

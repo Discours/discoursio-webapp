@@ -155,7 +155,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </For>
               </div>
             </Show>
-
             <Show when={!props.settings?.nodate}>
               <div class={styles.shoutDate}>{formattedDate()}</div>
             </Show>

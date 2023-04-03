@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show } from 'solid-js'
+import { Switch, Match, createSignal, Show, createEffect } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './EditorBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -17,8 +17,6 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal<boolean>(false)
   const [listBubbleOpen, setListBubbleOpen] = createSignal<boolean>(false)
   const [linkEditorOpen, setLinkEditorOpen] = createSignal<boolean>(false)
-  const [url, setUrl] = createSignal<string>('')
-  const [linkError, setLinkError] = createSignal<string | null>(null)
 
   const isActive = (name: string, attributes?: {}) =>
     createEditorTransaction(
@@ -27,6 +25,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
         return editor && editor.isActive(name, attributes)
       }
     )
+
+  createEffect(() => {
+    console.log('!!! editor:', props.editor)
+  })
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
@@ -86,7 +88,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                         class={clsx(styles.bubbleMenuButton, {
                           [styles.bubbleMenuButtonActive]: isH1()
                         })}
-                        onClick={() => props.editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                        onClick={() => {
+                          props.editor.chain().focus().toggleHeading({ level: 1 }).run()
+                          toggleTextSizePopup()
+                        }}
                       >
                         <Icon name="editor-h1" />
                       </button>
@@ -95,7 +100,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                         class={clsx(styles.bubbleMenuButton, {
                           [styles.bubbleMenuButtonActive]: isH2()
                         })}
-                        onClick={() => props.editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                        onClick={() => {
+                          props.editor.chain().focus().toggleHeading({ level: 2 }).run()
+                          toggleTextSizePopup()
+                        }}
                       >
                         <Icon name="editor-h2" />
                       </button>
@@ -104,7 +112,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                         class={clsx(styles.bubbleMenuButton, {
                           [styles.bubbleMenuButtonActive]: isH3()
                         })}
-                        onClick={() => props.editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                        onClick={() => {
+                          props.editor.chain().focus().toggleHeading({ level: 3 }).run()
+                          toggleTextSizePopup()
+                        }}
                       >
                         <Icon name="editor-h3" />
                       </button>
@@ -116,7 +127,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                         class={clsx(styles.bubbleMenuButton, {
                           [styles.bubbleMenuButtonActive]: isBlockQuote()
                         })}
-                        onClick={() => props.editor.chain().focus().toggleBlockquote().run()}
+                        onClick={() => {
+                          props.editor.chain().focus().toggleBlockquote().run()
+                          toggleTextSizePopup()
+                        }}
                       >
                         <Icon name="editor-blockquote" />
                       </button>
@@ -125,7 +139,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                         class={clsx(styles.bubbleMenuButton, {
                           [styles.bubbleMenuButtonActive]: isBlockQuote()
                         })}
-                        onClick={() => props.editor.chain().focus().toggleBlockquote().run()}
+                        onClick={() => {
+                          props.editor.chain().focus().toggleBlockquote().run()
+                          toggleTextSizePopup()
+                        }}
                       >
                         <Icon name="editor-quote" />
                       </button>
@@ -186,7 +203,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                         class={clsx(styles.bubbleMenuButton, {
                           [styles.bubbleMenuButtonActive]: isBulletList()
                         })}
-                        onClick={() => props.editor.chain().focus().toggleBulletList().run()}
+                        onClick={() => {
+                          props.editor.chain().focus().toggleBulletList().run()
+                          toggleListPopup()
+                        }}
                       >
                         <Icon name="editor-ul" />
                       </button>
@@ -195,7 +215,10 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
                         class={clsx(styles.bubbleMenuButton, {
                           [styles.bubbleMenuButtonActive]: isOrderedList()
                         })}
-                        onClick={() => props.editor.chain().focus().toggleOrderedList().run()}
+                        onClick={() => {
+                          props.editor.chain().focus().toggleOrderedList().run()
+                          toggleListPopup()
+                        }}
                       >
                         <Icon name="editor-ol" />
                       </button>

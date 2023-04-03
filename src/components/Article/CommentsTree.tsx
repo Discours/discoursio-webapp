@@ -10,7 +10,6 @@ import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
-import Cookie from 'js-cookie'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
@@ -148,7 +147,7 @@ export const CommentsTree = (props: Props) => {
         </ul>
       </div>
       <ul class={styles.comments}>
-        <For each={sortedComments().filter((r) => !r.replyTo)}>
+        <For each={sortedComments().filter((r: Reaction) => !r.replyTo)}>
           {(reaction) => (
             <Comment
               sortedComments={sortedComments()}

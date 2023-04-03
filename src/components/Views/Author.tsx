@@ -54,7 +54,11 @@ export const AuthorView = (props: AuthorProps) => {
 
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
 
-  changeSearchParam('by', 'rating')
+  onMount(() => {
+    if (!searchParams().by) {
+      changeSearchParam('by', 'rating')
+    }
+  })
 
   const loadMore = async () => {
     saveScrollPosition()

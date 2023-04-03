@@ -40,9 +40,8 @@ const routerStore = createRouter(ROUTES, {
 
 export const router = routerStore
 
-const handleClientRouteLinkClick = (event) => {
-  const link = event.target.closest('a')
-  if (
+const checkOpenOnClient = (link: HTMLAnchorElement, event) => {
+  return (
     link &&
     event.button === 0 &&
     link.target !== '_blank' &&
@@ -52,48 +51,58 @@ const handleClientRouteLinkClick = (event) => {
     !event.ctrlKey &&
     !event.shiftKey &&
     !event.altKey
-  ) {
-    const url = new URL(link.href)
-    if (url.origin === location.origin) {
-      event.preventDefault()
+  )
+}
 
-      if (url.pathname) {
-        routerStore.open(url.pathname)
-      }
+const handleClientRouteLinkClick = (event) => {
+  const link = event.target.closest('a')
 
-      if (url.search) {
-        const params = Object.fromEntries(new URLSearchParams(url.search))
-        searchParamsStore.open(params)
-      }
-
-      if (url.hash) {
-        let selector = url.hash
-
-        if (/^#\d+/.test(selector)) {
-          // id="1" fix
-          // https://stackoverflow.com/questions/20306204/using-queryselector-with-ids-that-are-numbers
-          selector = `[id="${selector.replace('#', '')}"]`
-        }
-
-        const anchor = document.querySelector(selector)
-        const headerOffset = 80 // 100px for header
-        const elementPosition = anchor ? anchor.getBoundingClientRect().top : 0
-        const newScrollTop = elementPosition + window.scrollY - headerOffset
-
-        window.scrollTo({
-          top: newScrollTop,
-          behavior: 'smooth'
-        })
-
-        return
-      }
-
-      window.scrollTo({
-        top: 0,
-        left: 0
-      })
-    }
+  if (!checkOpenOnClient(link, event)) {
+    return
   }
+
+  const url = new URL(link.href)
+  if (url.origin !== location.origin) {
+    return
+  }
+
+  event.preventDefault()
+
+  if (url.pathname) {
+    routerStore.open(url.pathname)
+  }
+
+  if (url.search) {
+    const params = Object.fromEntries(new URLSearchParams(url.search))
+    searchParamsStore.open(params)
+  }
+
+  if (url.hash) {
+    let selector = url.hash
+
+    if (/^#\d+/.test(selector)) {
+      // id="1" fix
+      // https://stackoverflow.com/questions/20306204/using-queryselector-with-ids-that-are-numbers
+      selector = `[id="${selector.replace('#', '')}"]`
+    }
+
+    const anchor = document.querySelector(selector)
+    const headerOffset = 80 // 100px for header
+    const elementPosition = anchor ? anchor.getBoundingClientRect().top : 0
+    const newScrollTop = elementPosition + window.scrollY - headerOffset
+
+    window.scrollTo({
+      top: newScrollTop,
+      behavior: 'smooth'
+    })
+
+    return
+  }
+
+  window.scrollTo({
+    top: 0,
+    left: 0
+  })
 }
 
 export const initRouter = (pathname: string, search: Record<string, string>) => {
@@ -134,7 +143,6 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   return {
     page,
     searchParams,
-    changeSearchParam,
-    handleClientRouteLinkClick
+    changeSearchParam
   }
 }

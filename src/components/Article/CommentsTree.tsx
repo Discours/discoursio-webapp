@@ -108,7 +108,7 @@ export const CommentsTree = (props: Props) => {
   return (
     <>
       <div class={styles.commentsHeaderWrapper}>
-        <h2 id="comments" class={styles.commentsHeader}>
+        <h2 class={styles.commentsHeader}>
           {t('Comments')} {comments().length.toString() || ''}
           <Show when={newReactions().length > 0}>
             <span class={styles.newReactions}>&nbsp;+{newReactions().length}</span>
@@ -161,7 +161,7 @@ export const CommentsTree = (props: Props) => {
       </ul>
       <ShowIfAuthenticated
         fallback={
-          <div class={styles.signInMessage} id="comments">
+          <div class={styles.signInMessage}>
             {t('To write a comment, you must')}{' '}
             <a href="?modal=auth&mode=register" class={styles.link}>
               {t('sign up')}

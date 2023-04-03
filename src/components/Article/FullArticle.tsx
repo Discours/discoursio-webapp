@@ -66,19 +66,6 @@ export const FullArticle = (props: ArticleProps) => {
       props.article.topics[0]
   )
 
-  onMount(() => {
-    const windowHash = window.location.hash
-    if (windowHash?.length > 0) {
-      const comments = document.querySelector(windowHash)
-      if (comments) {
-        window.scrollTo({
-          top: comments.getBoundingClientRect().top,
-          behavior: 'smooth'
-        })
-      }
-    }
-  })
-
   onMount(async () => {
     await loadReactionsBy({
       by: { shout: props.article.slug }
@@ -104,20 +91,6 @@ export const FullArticle = (props: ArticleProps) => {
   const {
     actions: { loadReactionsBy }
   } = useReactions()
-
-  let commentsRef: HTMLDivElement | undefined
-  const scrollToComments = () => {
-    if (!isReactionsLoaded()) {
-      return
-    }
-    commentsRef.scrollIntoView({ behavior: 'smooth' })
-  }
-  const { searchParams } = useRouter()
-  createEffect(() => {
-    if (searchParams()?.scrollTo === 'comments') {
-      scrollToComments()
-    }
-  })
 
   return (
     <>
@@ -276,7 +249,7 @@ export const FullArticle = (props: ArticleProps) => {
                 )}
               </For>
             </div>
-            <div>
+            <div id="comments">
               <Show when={isReactionsLoaded()}>
                 <CommentsTree
                   shoutId={props.article.id}

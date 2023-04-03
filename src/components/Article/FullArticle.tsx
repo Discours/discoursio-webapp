@@ -185,10 +185,10 @@ export const FullArticle = (props: ArticleProps) => {
                 </div>
               </Show>
 
-              <div class={styles.shoutStatsItem} onClick={() => scrollToComments()}>
+              <a href="#comments" class={styles.shoutStatsItem}>
                 <Icon name="comment" class={styles.icon} />
                 {/*{props.article.stat?.commented || ''}*/}
-              </div>
+              </a>
 
               <div class={styles.shoutStatsItem}>
                 <SharePopup

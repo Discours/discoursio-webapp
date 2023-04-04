@@ -10,7 +10,7 @@ type Props = {
   loading?: boolean
   disabled?: boolean
   onClick?: () => void
-  className?: string | ''
+  class?: string
 }
 
 export const Button = (props: Props) => {
@@ -26,7 +26,7 @@ export const Button = (props: Props) => {
         {
           [styles.loading]: props.loading
         },
-        props.className
+        props.class
       )}
     >
       {props.value}

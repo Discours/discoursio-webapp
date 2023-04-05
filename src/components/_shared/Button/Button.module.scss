@@ -37,10 +37,26 @@
     line-height: 21px;
     color: #696969;
 
-    &.hover,
-    &.active {
+    &:hover,
+    &:active {
       text-decoration: underline;
       color: #141414;
+    }
+  }
+
+  &.outline {
+    border: 3px solid #f2f2f2;
+    border-radius: 1.2em;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 0.8em;
+    padding: 0;
+
+    &:hover,
+    &:active {
+      background: #000;
+      border-color: #000;
+      color: #fff;
     }
   }
 

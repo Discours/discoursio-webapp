@@ -13,6 +13,7 @@ import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { getPagePath } from '@nanostores/router'
+import { Button } from '../_shared/Button'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -53,13 +54,23 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               </div>
             </Show>
 
-            <Show when={isAuthenticated()}>
+            <Show when={isAuthenticated() && page().route !== 'create'}>
               <div class={styles.userControlItem}>
                 <a href="#" onClick={handleBellIconClick}>
                   <div>
                     <Icon name="bell-white" counter={isAuthenticated() ? warnings().length : 1} />
                   </div>
                 </a>
+              </div>
+            </Show>
+
+            <Show when={isAuthenticated() && page().route === 'create'}>
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+                <Button value={t('Save')} variant={'outline'} />
+              </div>
+
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+                <Button value={t('Publish')} variant={'outline'} />
               </div>
             </Show>
 
@@ -70,7 +81,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
             </Show>
 
             <Show
-              when={isAuthenticated()}
+              when={isAuthenticated() && page().route !== 'create'}
               fallback={
                 <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                   <a href="?modal=auth&mode=login">

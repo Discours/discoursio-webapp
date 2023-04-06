@@ -72,6 +72,10 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <Button value={t('Publish')} variant={'outline'} />
               </div>
+
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+                <Button value={<Icon name="burger" />} variant={'outline'} onClick={() => {}} />
+              </div>
             </Show>
 
             <Show when={visibleWarnings()}>

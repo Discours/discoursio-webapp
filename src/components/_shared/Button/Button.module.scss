@@ -50,13 +50,25 @@
     cursor: pointer;
     font-weight: bold;
     margin-right: 0.8em;
+    min-width: auto !important;
     padding: 0;
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
 
     &:hover,
     &:active {
       background: #000;
       border-color: #000;
       color: #fff;
+
+      :global(.icon) {
+        filter: invert(1);
+      }
+    }
+
+    :global(.icon) {
+      margin: 0 -0.5em;
+      filter: invert(0);
+      transition: filter 0.3s;
     }
   }
 

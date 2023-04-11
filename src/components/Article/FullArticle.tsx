@@ -208,10 +208,12 @@ export const FullArticle = (props: ArticleProps) => {
                   <Icon name="bookmark" class={styles.icon} />
                 </div>
               </div>
-
               <Show when={canEdit()}>
                 <div class={styles.shoutStatsItem}>
-                  <a href="/edit" class={styles.shoutStatsItemInner}>
+                  <a
+                    href={getPagePath(router, 'edit', { shoutSlug: props.article.slug })}
+                    class={styles.shoutStatsItemInner}
+                  >
                     <Icon name="edit" class={clsx(styles.icon, styles.iconEdit)} />
                     {t('Edit')}
                   </a>

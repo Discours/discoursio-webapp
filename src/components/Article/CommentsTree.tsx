@@ -52,8 +52,6 @@ export const CommentsTree = (props: Props) => {
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
   )
 
-  console.log(JSON.parse(JSON.stringify(reactionEntities)))
-
   const sortedComments = createMemo(() => {
     let newSortedComments = [...comments()]
     newSortedComments = newSortedComments.sort(byCreated)

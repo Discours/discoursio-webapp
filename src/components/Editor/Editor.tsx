@@ -30,7 +30,7 @@ import { TrailingNode } from './extensions/TrailingNode'
 import { EditorBubbleMenu } from './EditorBubbleMenu/EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import * as Y from 'yjs'
-import { WebrtcProvider } from 'y-webrtc'
+// import { WebrtcProvider } from 'y-webrtc'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
 import './Prosemirror.scss'
@@ -40,7 +40,7 @@ import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
 
 type EditorProps = {
-  shoutId: number
+  shoutSlug: string
   initialContent?: string
   onChange: (text: string) => void
 }
@@ -53,12 +53,12 @@ export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
 
-  const docName = `shout-${props.shoutId}`
+  const docName = `shout-${props.shoutSlug}`
 
   if (!providers[docName]) {
     providers[docName] = new HocuspocusProvider({
-      // url: 'wss://hocuspocus.discours.io',
-      url: 'ws://localhost:4242',
+      url: 'wss://hocuspocus.discours.io',
+      // url: 'ws://localhost:4242',
       name: docName,
       document: yDoc
     })
@@ -88,6 +88,7 @@ export const Editor = (props: EditorProps) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
+    content: props.initialContent,
     extensions: [
       Document,
       Text,

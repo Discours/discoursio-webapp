@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, createEffect } from 'solid-js'
+import { Switch, Match, createSignal, Show } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './EditorBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -25,10 +25,6 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
         return editor && editor.isActive(name, attributes)
       }
     )
-
-  createEffect(() => {
-    console.log('!!! editor:', props.editor)
-  })
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')

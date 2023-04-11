@@ -27,6 +27,7 @@ import { ProjectsPage } from '../pages/about/projects.page'
 import { TermsOfUsePage } from '../pages/about/termsOfUse.page'
 import { ThanksPage } from '../pages/about/thanks.page'
 import { CreatePage } from '../pages/create.page'
+import { EditPage } from '../pages/edit.page'
 import { ConnectPage } from '../pages/connect.page'
 import { InboxPage } from '../pages/inbox.page'
 import { LayoutShoutsPage } from '../pages/layoutShouts.page'
@@ -45,7 +46,8 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
-  createSettings: CreatePage,
+  edit: EditPage,
+  editSettings: EditPage,
   home: HomePage,
   topics: AllTopicsPage,
   topic: TopicPage,

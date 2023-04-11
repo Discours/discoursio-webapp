@@ -1,15 +1,14 @@
-import { createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
-import { Loading } from '../_shared/Loading'
+import { createSignal, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
-import styles from './Create.module.scss'
+import styles from './Edit.module.scss'
 import { Title } from '@solidjs/meta'
 import { createStore } from 'solid-js/store'
-import type { Topic } from '../../graphql/types.gen'
+import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { TopicSelect } from '../Editor/TopicSelect/TopicSelect'
 import { router, useRouter } from '../../stores/router'
-import { getPagePath } from '@nanostores/router'
+import { getPagePath, openPage } from '@nanostores/router'
 import { translit } from '../../utils/ru2en'
 import { Editor } from '../Editor/Editor'
 
@@ -18,12 +17,16 @@ type ShoutForm = {
   title: string
   subtitle: string
   selectedTopics: Topic[]
-  mainTopic: Topic
+  mainTopic: string
   body: string
   coverImageUrl: string
 }
 
-export const CreateView = () => {
+type EditViewProps = {
+  shout: Shout
+}
+
+export const EditView = (props: EditViewProps) => {
   const { t } = useLocalize()
 
   const [topics, setTopics] = createSignal<Topic[]>(null)
@@ -32,13 +35,13 @@ export const CreateView = () => {
   const [isSlugChanged, setIsSlugChanged] = createSignal(false)
 
   const [form, setForm] = createStore<ShoutForm>({
-    slug: '',
-    title: '',
-    subtitle: '',
-    selectedTopics: [],
-    mainTopic: null,
-    body: '',
-    coverImageUrl: ''
+    slug: props.shout.slug,
+    title: props.shout.title,
+    subtitle: props.shout.subtitle,
+    selectedTopics: props.shout.topics,
+    mainTopic: props.shout.mainTopic,
+    body: props.shout.body,
+    coverImageUrl: props.shout.cover
   })
 
   onMount(async () => {
@@ -49,18 +52,18 @@ export const CreateView = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault()
 
-    const newShout = await apiClient.createArticle({
-      article: {
-        slug: form.slug,
-        title: form.title,
-        subtitle: form.subtitle,
-        body: form.body,
-        topics: form.selectedTopics.map((topic) => topic.slug),
-        mainTopic: form.selectedTopics[0].slug
-      }
-    })
+    // const newShout = await apiClient.updateArticle({
+    //   article: {
+    //     slug: form.slug,
+    //     title: form.title,
+    //     subtitle: form.subtitle,
+    //     body: form.body,
+    //     topics: form.selectedTopics.map((topic) => topic.slug),
+    //     mainTopic: form.selectedTopics[0].slug
+    //   }
+    // })
 
-    router.open(getPagePath(router, 'article', { slug: newShout.slug }))
+    // openPage(getPagePath(router, 'article', { slug: newShout.slug }))
   }
 
   const handleTitleInputChange = (e) => {
@@ -92,8 +95,8 @@ export const CreateView = () => {
             <div class="row">
               <div class="col-md-20 col-lg-18 col-xl-16">
                 <div
-                  class={clsx(styles.create, {
-                    [styles.visible]: page().route === 'create'
+                  class={clsx(styles.edit, {
+                    [styles.visible]: page().route === 'edit'
                   })}
                 >
                   <input
@@ -116,16 +119,22 @@ export const CreateView = () => {
                     onChange={(e) => setForm('subtitle', e.currentTarget.value)}
                   />
 
-                  <Editor shoutId={42} onChange={(body) => setForm('body', body)} />
+                  <Editor
+                    shoutSlug={props.shout.slug}
+                    initialContent={form.body}
+                    onChange={(body) => setForm('body', body)}
+                  />
 
                   <div class={styles.saveBlock}>
                     {/*<button class={clsx('button button--outline', styles.button)}>Сохранить</button>*/}
-                    <a href={getPagePath(router, 'createSettings')}>Настройки</a>
+                    <a href={getPagePath(router, 'editSettings', { shoutSlug: props.shout.slug })}>
+                      Настройки
+                    </a>
                   </div>
                 </div>
                 <div
-                  class={clsx(styles.createSettings, {
-                    [styles.visible]: page().route === 'createSettings'
+                  class={clsx(styles.editSettings, {
+                    [styles.visible]: page().route === 'editSettings'
                   })}
                 >
                   <h1>Настройки публикации</h1>
@@ -206,8 +215,8 @@ export const CreateView = () => {
                       Проверьте ещё раз введённые данные, если всё верно, вы&nbsp;можете сохранить или
                       опубликовать ваш текст
                     </p>
-                    {/*<button class={clsx('button button--outline', styles.button)}>Сохранить</button>*/}
-                    <a href={getPagePath(router, 'create')}>Назад</a>
+                    <button class={clsx('button button--outline', styles.button)}>Сохранить</button>
+                    <a href={getPagePath(router, 'edit', { shoutSlug: props.shout.slug })}>Назад</a>
                     <button type="submit" class={clsx('button button--submit', styles.button)}>
                       Опубликовать
                     </button>
@@ -222,4 +231,4 @@ export const CreateView = () => {
   )
 }
 
-export default CreateView
+export default EditView

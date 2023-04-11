@@ -44,7 +44,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
       <Show when={isSessionLoaded()} keyed={true}>
         <div class={clsx(styles.usernav, 'col')}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
-            <Show when={page().route !== 'create'}>
+            <Show when={page().route !== 'edit'}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>

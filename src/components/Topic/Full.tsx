@@ -37,7 +37,7 @@ export const FullTopic = (props: Props) => {
             {t('Unfollow the topic')}
           </button>
         </Show>
-        <a href={`/create/${props.topic.slug}`}>{t('Write about the topic')}</a>
+        <a href={`/create/?topicId=${props.topic.id}`}>{t('Write about the topic')}</a>
       </div>
       <Show when={props.topic.pic}>
         <img src={props.topic.pic} alt={props.topic.title} />

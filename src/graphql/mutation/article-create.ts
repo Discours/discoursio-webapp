@@ -10,18 +10,6 @@ export default gql`
         title
         subtitle
         body
-        topics {
-          id
-          title
-          slug
-        }
-        authors {
-          id
-          name
-          slug
-          userpic
-          caption
-        }
       }
     }
   }

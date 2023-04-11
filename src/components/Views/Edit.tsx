@@ -11,6 +11,8 @@ import { router, useRouter } from '../../stores/router'
 import { getPagePath, openPage } from '@nanostores/router'
 import { translit } from '../../utils/ru2en'
 import { Editor } from '../Editor/Editor'
+import { Button } from '../_shared/Button'
+import { Icon } from '../_shared/Icon'
 
 type ShoutForm = {
   slug: string
@@ -33,6 +35,7 @@ export const EditView = (props: EditViewProps) => {
   const { page } = useRouter()
 
   const [isSlugChanged, setIsSlugChanged] = createSignal(false)
+  const [isEditorPanelOPened, setIsEditorPanelOPened] = createSignal(false)
 
   const [form, setForm] = createStore<ShoutForm>({
     slug: props.shout.slug,
@@ -85,15 +88,19 @@ export const EditView = (props: EditViewProps) => {
     setForm('slug', slug)
   }
 
-  return (
-    <div class={styles.container}>
-      <Title>{t('Write an article')}</Title>
+  const toggleEditorPanel = () => {
+    setIsEditorPanelOPened(!isEditorPanelOPened())
+  }
 
-      <form onSubmit={handleFormSubmit}>
-        <div class="wide-container">
-          <div class="shift-content">
+  return (
+    <>
+      <div class={styles.container}>
+        <Title>{t('Write an article')}</Title>
+
+        <form onSubmit={handleFormSubmit}>
+          <div class="wide-container">
             <div class="row">
-              <div class="col-md-20 col-lg-18 col-xl-16">
+              <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
                 <div
                   class={clsx(styles.edit, {
                     [styles.visible]: page().route === 'edit'
@@ -225,9 +232,93 @@ export const EditView = (props: EditViewProps) => {
               </div>
             </div>
           </div>
+        </form>
+      </div>
+
+      <aside
+        class={clsx('col-md-6', styles.asidePanel, { [styles.asidePanelHidden]: !isEditorPanelOPened() })}
+      >
+        <div>
+          <Button
+            value={<Icon name="close" />}
+            variant={'inline'}
+            class={styles.close}
+            onClick={toggleEditorPanel}
+          />
         </div>
-      </form>
-    </div>
+
+        <section>
+          <Button value={t('Publish')} variant={'inline'} class={styles.button} />
+          <Button value={t('Save draft')} variant={'inline'} class={styles.button} />
+        </section>
+
+        <section>
+          <Button
+            value={
+              <>
+                <Icon name="eye" class={styles.icon} />
+                {t('Preview')}
+              </>
+            }
+            variant={'inline'}
+            class={clsx(styles.button, styles.buttonWithIcon)}
+          />
+          <Button
+            value={
+              <>
+                <Icon name="pencil-outline" class={styles.icon} />
+                {t('Editing')}
+              </>
+            }
+            variant={'inline'}
+            class={clsx(styles.button, styles.buttonWithIcon)}
+          />
+          <Button
+            value={
+              <>
+                <Icon name="feed-discussion" class={styles.icon} />
+                {t('FAQ')}
+              </>
+            }
+            variant={'inline'}
+            class={clsx(styles.button, styles.buttonWithIcon)}
+          />
+        </section>
+
+        <section>
+          <Button value={t('Invite co-authors')} variant={'inline'} class={styles.button} />
+          <Button value={t('Publication settings')} variant={'inline'} class={styles.button} />
+          <Button value={t('Corrections history')} variant={'inline'} class={styles.button} />
+        </section>
+
+        <section>
+          <p>
+            <a href="/how-to-write-a-good-article">Как написать хорошую статью</a>
+          </p>
+          <p>
+            <a href="#">Горячие клавиши</a>
+          </p>
+          <p>
+            <a href="#">Помощь</a>
+          </p>
+        </section>
+
+        <div class={styles.stats}>
+          <div>
+            Знаков: <em>2345</em>
+          </div>
+          <div>
+            Слов: <em>215</em>
+          </div>
+          <div>
+            Абзацев: <em>300</em>
+          </div>
+          <div>
+            Посл. изм.: <em>22.03.22 в 18:20</em>
+          </div>
+        </div>
+      </aside>
+    </>
   )
 }
 

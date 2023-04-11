@@ -123,10 +123,12 @@ export const FullArticle = (props: ArticleProps) => {
                   )}
                 </For>
               </div>
-              <div
-                class={styles.shoutCover}
-                style={{ 'background-image': `url('${props.article.cover}')` }}
-              />
+              <Show when={props.article.cover}>
+                <div
+                  class={styles.shoutCover}
+                  style={{ 'background-image': `url('${props.article.cover}')` }}
+                />
+              </Show>
             </div>
 
             <Show when={media() && props.article.layout !== 'image'}>
@@ -244,7 +246,7 @@ export const FullArticle = (props: ArticleProps) => {
               <For each={props.article.authors}>
                 {(a) => (
                   <div class="col-xl-12">
-                    <AuthorCard author={a} compact={false} hasLink={true} liteButtons={true} />
+                    <AuthorCard author={a} hasLink={true} liteButtons={true} />
                   </div>
                 )}
               </For>

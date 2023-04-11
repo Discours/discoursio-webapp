@@ -105,7 +105,6 @@ export const Comment = (props: Props) => {
                 <Userpic
                   user={comment().createdBy as Author}
                   isBig={false}
-                  isAuthorsList={false}
                   class={clsx({
                     [styles.compactUserpic]: props.compact
                   })}

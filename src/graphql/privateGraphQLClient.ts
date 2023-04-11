@@ -7,7 +7,7 @@ import {
   createClient
 } from '@urql/core'
 // import { createClient as createSubClient } from 'graphql-sse'
-import { createClient as createSubClient } from 'graphql-ws'
+import { createClient as createWSClient } from 'graphql-ws'
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
 // import { cache } from './cache'
@@ -55,8 +55,8 @@ const options: ClientOptions = {
 
 export const privateGraphQLClient = createClient(options)
 
-export const createChatClient = () => {
-  const subClient = createSubClient({
+export const createSubClient = () => {
+  const subClient = createWSClient({
     url: apiBaseUrl.replace('http', 'ws') // + '/messages'
   })
 

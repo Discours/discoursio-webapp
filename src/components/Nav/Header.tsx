@@ -95,12 +95,12 @@ export const Header = (props: Props) => {
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
         <nav class={clsx(styles.headerInner, 'row')} classList={{ fixed: fixed() }}>
-          <div class={clsx(styles.mainLogo, 'col-auto')}>
+          <div class={clsx(styles.mainLogo, 'col-auto col-md-4')}>
             <a href={getPagePath(router, 'home')}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx(styles.mainNavigationWrapper, 'col')}>
+          <div class={clsx(styles.mainNavigationWrapper, 'col-auto offset-md-1')}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
@@ -149,7 +149,7 @@ export const Header = (props: Props) => {
               </a>
             </div>
           </Show>
-          <div class={styles.burgerContainer}>
+          <div class={clsx(styles.burgerContainer, 'col-auto')}>
             <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
               <div />
             </div>

@@ -10,7 +10,6 @@ import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
-import Cookie from 'js-cookie'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
@@ -47,8 +46,6 @@ export const CommentsTree = (props: Props) => {
   } = useReactions()
 
   const { t } = useLocalize()
-
-  const [newReactionsCount, setNewReactionsCount] = createSignal<number>(0)
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
 
   const comments = createMemo(() =>
@@ -72,31 +69,27 @@ export const CommentsTree = (props: Props) => {
     return newSortedComments
   })
 
-  const updateNewReactionsCount = () => {
-    const dateFromCookie = new Date(Cookie.get(`${props.shoutSlug}`)).valueOf()
-    const setCookie = () => Cookie.set(`${props.shoutSlug}`, `${Date.now()}`)
-    if (!dateFromCookie) {
+  const dateFromLocalStorage = new Date(localStorage.getItem(`${props.shoutSlug}`))
+  const currentDate = new Date()
+  const setCookie = () => localStorage.setItem(`${props.shoutSlug}`, `${currentDate}`)
+
+  onMount(() => {
+    if (!dateFromLocalStorage) {
       setCookie()
-    } else if (Date.now() > dateFromCookie) {
+    } else if (currentDate > dateFromLocalStorage) {
       const newComments = comments().filter((c) => {
         if (c.replyTo) {
           return
         }
-        const commentDate = new Date(c.createdAt).valueOf()
-        return commentDate > dateFromCookie
+        const created = new Date(c.createdAt)
+        return created > dateFromLocalStorage
       })
       setNewReactions(newComments)
-      setNewReactionsCount(newComments.length)
       setCookie()
     }
-  }
-
-  const { session } = useSession()
-
-  onMount(async () => {
-    updateNewReactionsCount()
   })
 
+  const { session } = useSession()
   const [submitted, setSubmitted] = createSignal<boolean>(false)
   const handleSubmitComment = async (value) => {
     try {
@@ -114,15 +107,15 @@ export const CommentsTree = (props: Props) => {
   return (
     <>
       <div class={styles.commentsHeaderWrapper}>
-        <h2 id="comments" class={styles.commentsHeader}>
+        <h2 class={styles.commentsHeader}>
           {t('Comments')} {comments().length.toString() || ''}
-          <Show when={newReactionsCount() > 0}>
-            <span class={styles.newReactions}>&nbsp;+{newReactionsCount()}</span>
+          <Show when={newReactions().length > 0}>
+            <span class={styles.newReactions}>&nbsp;+{newReactions().length}</span>
           </Show>
         </h2>
 
         <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
-          <Show when={newReactionsCount() > 0}>
+          <Show when={newReactions().length > 0}>
             <li classList={{ selected: commentsOrder() === 'newOnly' }}>
               <Button
                 variant="inline"
@@ -160,18 +153,19 @@ export const CommentsTree = (props: Props) => {
               sortedComments={sortedComments()}
               isArticleAuthor={Boolean(props.commentAuthors.some((a) => a.slug === session()?.user.slug))}
               comment={reaction}
+              lastSeen={dateFromLocalStorage}
             />
           )}
         </For>
       </ul>
       <ShowIfAuthenticated
         fallback={
-          <div class={styles.signInMessage} id="comments">
-            {t('To write a comment, you must')}&nbsp;
+          <div class={styles.signInMessage}>
+            {t('To write a comment, you must')}{' '}
             <a href="?modal=auth&mode=register" class={styles.link}>
               {t('sign up')}
-            </a>
-            &nbsp;{t('or')}&nbsp;
+            </a>{' '}
+            {t('or')}&nbsp;
             <a href="?modal=auth&mode=login" class={styles.link}>
               {t('sign in')}
             </a>

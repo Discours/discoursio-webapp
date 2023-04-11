@@ -13,6 +13,8 @@ import { useReactions } from '../../context/reactions'
 import { useSnackbar } from '../../context/snackbar'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
+import { CommentRatingControl } from './CommentRatingControl'
+
 const CommentEditor = lazy(() => import('../_shared/CommentEditor'))
 
 type Props = {
@@ -20,6 +22,7 @@ type Props = {
   compact?: boolean
   isArticleAuthor?: boolean
   sortedComments?: Reaction[]
+  lastSeen?: Date
 }
 
 export const Comment = (props: Props) => {
@@ -37,7 +40,7 @@ export const Comment = (props: Props) => {
     actions: { showSnackbar }
   } = useSnackbar()
 
-  const canEdit = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
+  const isCommentAuthor = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
@@ -90,8 +93,9 @@ export const Comment = (props: Props) => {
     }
   }
 
+  const createdAt = new Date(comment()?.createdAt)
   return (
-    <li class={styles.comment}>
+    <li class={clsx(styles.comment, { [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen })}>
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show
@@ -135,17 +139,7 @@ export const Comment = (props: Props) => {
                   </div>
                 </Show>
               </div>
-              <div
-                class={styles.commentRating}
-                classList={{
-                  [styles.commentRatingPositive]: comment().stat.rating > 0,
-                  [styles.commentRatingNegative]: comment().stat.rating < 0
-                }}
-              >
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlUp)} />
-                <div class={styles.commentRatingValue}>{comment().stat.rating || 0}</div>
-                <button class={clsx(styles.commentRatingControl, styles.commentRatingControlDown)} />
-              </div>
+              <CommentRatingControl comment={comment()} />
             </div>
           </Show>
           <div class={styles.commentBody} id={'comment-' + (comment().id || '')}>
@@ -168,7 +162,7 @@ export const Comment = (props: Props) => {
                   {loading() ? t('Loading') : t('Reply')}
                 </button>
               </ShowIfAuthenticated>
-              <Show when={canEdit()}>
+              <Show when={isCommentAuthor()}>
                 <button
                   class={clsx(styles.commentControl, styles.commentControlEdit)}
                   onClick={toggleEditMode}
@@ -221,6 +215,7 @@ export const Comment = (props: Props) => {
                 sortedComments={props.sortedComments}
                 isArticleAuthor={props.isArticleAuthor}
                 comment={c}
+                lastSeen={props.lastSeen}
               />
             )}
           </For>

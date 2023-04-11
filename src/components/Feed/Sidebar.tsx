@@ -35,52 +35,63 @@ export const FeedSidebar = (props: FeedSidebarProps) => {
       <ul>
         <li>
           <a href="#">
-            <Icon name="feed-all" class={styles.icon} />
-            <strong>общая лента</strong>
+            <span class={styles.sidebarItemName}>
+              <Icon name="feed-all" class={styles.icon} />
+              <strong>общая лента</strong>
+            </span>
           </a>
         </li>
         <li>
           <a href="#">
-            <Icon name="feed-my" class={styles.icon} />
-            моя лента
-          </a>
-        </li>
-      </ul>
-
-      <ul>
-        <li>
-          <a href="#">
-            <Icon name="feed-collaborate" class={styles.icon} />
-            соучастие
-          </a>
-          <span class={styles.counter}>7</span>
-        </li>
-        <li>
-          <a href="#">
-            <Icon name="feed-discussion" class={styles.icon} />
-            дискуссии
-          </a>
-          <span class={styles.counter}>18</span>
-        </li>
-        <li>
-          <a href="#">
-            <Icon name="feed-drafts" class={styles.icon} />
-            черновики
-          </a>
-          <span class={styles.counter}>283</span>
-        </li>
-        <li>
-          <a href="#">
-            <Icon name="bookmark" class={styles.icon} />
-            закладки
+            <span class={styles.sidebarItemName}>
+              <Icon name="feed-my" class={styles.icon} />
+              моя лента
+            </span>
           </a>
         </li>
         <li>
           <a href="#">
-            <Icon name="feed-notifications" class={styles.icon} />
-            уведомления
+            <span class={styles.sidebarItemName}>
+              <Icon name="feed-collaborate" class={styles.icon} />
+              соучастие
+            </span>
+            <span class={styles.counter}>7</span>
           </a>
-          <span class={styles.counter}>283</span>
+        </li>
+        <li>
+          <a href="#">
+            <span class={styles.sidebarItemName}>
+              <Icon name="feed-discussion" class={styles.icon} />
+              дискуссии
+            </span>
+            <span class={styles.counter}>18</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class={styles.sidebarItemName}>
+              <Icon name="feed-drafts" class={styles.icon} />
+              черновики
+            </span>
+            <span class={styles.counter}>283</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class={styles.sidebarItemName}>
+              <Icon name="bookmark" class={styles.icon} />
+              закладки
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class={styles.sidebarItemName}>
+              <Icon name="feed-notifications" class={styles.icon} />
+              уведомления
+            </span>
+            <span class={styles.counter}>283</span>
+          </a>
         </li>
       </ul>
 

@@ -26,7 +26,7 @@ export const SearchView = (props: Props) => {
   const [query, setQuery] = createSignal(props.query)
   const [offset, setOffset] = createSignal(0)
 
-  const { searchParams, handleClientRouteLinkClick } = useRouter<SearchPageSearchParams>()
+  const { searchParams } = useRouter<SearchPageSearchParams>()
   let searchEl: HTMLInputElement
   const handleQueryChange = (_ev) => {
     setQuery(searchEl.value)
@@ -50,7 +50,7 @@ export const SearchView = (props: Props) => {
   return (
     <div class="search-page wide-container">
       <form action="/search" class="search-form row">
-        <div class="col-sm-9">
+        <div class="col-sm-18">
           <input
             type="search"
             name="q"
@@ -59,7 +59,7 @@ export const SearchView = (props: Props) => {
             placeholder={t('Enter text') + '...'}
           />
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-6">
           <button class="button" type="submit" onClick={loadMore}>
             {t('Search')}
           </button>
@@ -72,18 +72,14 @@ export const SearchView = (props: Props) => {
             selected: searchParams().by === 'relevance'
           }}
         >
-          <a href="?by=relevance" onClick={handleClientRouteLinkClick}>
-            {t('By relevance')}
-          </a>
+          <a href="?by=relevance">{t('By relevance')}</a>
         </li>
         <li
           classList={{
             selected: searchParams().by === 'rating'
           }}
         >
-          <a href="?by=rating" onClick={handleClientRouteLinkClick}>
-            {t('Top rated')}
-          </a>
+          <a href="?by=rating">{t('Top rated')}</a>
         </li>
       </ul>
 
@@ -94,13 +90,13 @@ export const SearchView = (props: Props) => {
           <div class="row">
             <For each={sortedArticles()}>
               {(article) => (
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <ArticleCard article={article} />
                 </div>
               )}
             </For>
 
-            <div class="col-md-3">
+            <div class="col-md-6">
               <a href="#" class="search__show-more">
                 <span class="search__show-more-inner">{t('Load more')}</span>
               </a>

@@ -8,7 +8,7 @@
   .wide-container {
     background: #fff;
 
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(lg) {
       padding: 0 divide($container-padding-x, 2);
     }
   }
@@ -53,8 +53,8 @@
 .headerInner {
   align-items: center;
   background: #fff;
-  flex-wrap: nowrap;
-  justify-content: space-between;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start;
   margin: 0;
 
   .fixed & {
@@ -130,15 +130,14 @@
   display: inline-flex;
   font-weight: 500;
   position: relative;
+  //flex: 1 100% !important;
 
   // replace row > * selector to remove !important
-  padding-right: 0 !important;
-  width: auto !important;
+  //width: auto !important;
 
   @include media-breakpoint-down(md) {
     flex: 1;
-    padding-left: 0;
-    padding-right: 0;
+    padding-right: 0 !important;
   }
 }
 
@@ -225,7 +224,6 @@
   float: right;
   padding-left: 0;
   padding-right: 0;
-  width: 2.2rem;
 
   @include media-breakpoint-up(sm) {
     padding-left: divide($container-padding-x, 2);
@@ -312,7 +310,7 @@
 .articleHeader {
   @include font-size(1.4rem);
 
-  left: 0;
+  left: $container-padding-x;
   margin: 0.2em 0;
   overflow: hidden;
   position: absolute;

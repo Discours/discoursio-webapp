@@ -1,16 +1,17 @@
 .comment {
-  margin: 0 -2.4rem 0.5em;
-  padding: 0.8rem 2.4rem;
+  margin: 0.5em 0;
+  padding: 1rem;
   transition: background-color 0.3s;
   position: relative;
   list-style: none;
 
-  @include media-breakpoint-down(sm) {
-    margin-right: -1.2rem;
+  &.isNew {
+    border-radius: 6px;
+    background: rgba(38, 56, 217, 0.05);
   }
 
-  &:last-child {
-    margin-bottom: 0;
+  @include media-breakpoint-down(sm) {
+    margin-right: -1.2rem;
   }
 
   .comment {
@@ -196,40 +197,8 @@
 
 .commentDetails {
   display: flex;
+  padding: 1rem 0.2rem 0;
   margin-bottom: 1.2rem;
-}
-
-.commentRating {
-  align-items: center;
-  display: flex;
-  font-weight: bold;
-}
-
-.commentRatingValue {
-  padding: 0 0.3em;
-}
-
-.commentRatingPositive {
-  color: #2bb452;
-}
-
-.commentRatingNegative {
-  color: #d00820;
-}
-
-.commentRatingControl {
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  height: 0;
-  width: 0;
-}
-
-.commentRatingControlUp {
-  border-bottom: 8px solid rgb(0 0 0 / 40%);
-}
-
-.commentRatingControlDown {
-  border-top: 8px solid rgb(0 0 0 / 40%);
 }
 
 .compactUserpic {

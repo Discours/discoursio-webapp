@@ -116,7 +116,7 @@ export const Footer = () => {
         <div class="row">
           <For each={links()}>
             {({ header, items }) => (
-              <div class="col-sm-4 col-md-3">
+              <div class="col-sm-8 col-md-6">
                 <h5>{t(header)}</h5>
                 <ul>
                   <For each={items}>
@@ -133,7 +133,7 @@ export const Footer = () => {
               </div>
             )}
           </For>
-          <div class="col-md-3">
+          <div class="col-md-6">
             <h5>{t('Subscription')}</h5>
             <p>{t('Join our maillist')}</p>
             <Subscribe />
@@ -141,14 +141,14 @@ export const Footer = () => {
         </div>
 
         <div class={clsx(styles.footerCopyright, 'row')}>
-          <div class="col-md-9 col-lg-10">
+          <div class="col-md-18 col-lg-20">
             {t(
               'Independant magazine with an open horizontal cooperation about culture, science and society'
             )}
             . {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
             <a href="/about/terms-of-use">{t('Terms of use')}</a>
           </div>
-          <div class={clsx(styles.footerCopyrightSocial, 'col-md-3 col-lg-2')}>
+          <div class={clsx(styles.footerCopyrightSocial, 'col-md-6 col-lg-4')}>
             <For each={SOCIAL}>
               {(social) => (
                 <div class={clsx(styles.socialItem, styles[`socialItem${social.name}`])}>

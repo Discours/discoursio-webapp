@@ -66,11 +66,27 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
             <Show when={isAuthenticated() && page().route === 'create'}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button value={t('Save')} variant={'outline'} />
+                <Button
+                  value={
+                    <>
+                      <span class={styles.textLabel}>{t('Save')}</span>
+                      <Icon name="save" class={styles.icon} />
+                    </>
+                  }
+                  variant={'outline'}
+                />
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button value={t('Publish')} variant={'outline'} />
+                <Button
+                  value={
+                    <>
+                      <span class={styles.textLabel}>{t('Publish')}</span>
+                      <Icon name="publish" class={styles.icon} />
+                    </>
+                  }
+                  variant={'outline'}
+                />
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

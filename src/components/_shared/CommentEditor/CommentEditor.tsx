@@ -21,6 +21,7 @@ type Props = {
   placeholder?: string
   onSubmit: (value: string) => void
   clear?: boolean
+  cancel?: () => void
   initialContent?: string
 }
 
@@ -69,6 +70,9 @@ const CommentEditor = (props: Props) => {
   const clearEditor = () => {
     editorViewRef.current.destroy()
     initEditor()
+    if (props.cancel) {
+      props.cancel()
+    }
   }
 
   createEffect(() => {
@@ -76,7 +80,6 @@ const CommentEditor = (props: Props) => {
       clearEditor()
     }
   })
-
   return (
     <div class={styles.commentEditor}>
       <div class={clsx('ProseMirrorOverrides', styles.textarea)} ref={(el) => (editorElRef.current = el)} />

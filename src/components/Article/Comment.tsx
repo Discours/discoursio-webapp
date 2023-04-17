@@ -1,7 +1,7 @@
 import styles from './Comment.module.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
+import { Show, createMemo, createSignal, For, lazy, Suspense, createEffect } from 'solid-js'
 import { clsx } from 'clsx'
 import type { Author, Reaction } from '../../graphql/types.gen'
 import MD from './MD'
@@ -30,6 +30,7 @@ export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal<boolean>(false)
   const [editMode, setEditMode] = createSignal<boolean>(false)
+  const [submitted, setSubmitted] = createSignal<boolean>(false)
   const { session } = useSession()
 
   const {
@@ -66,6 +67,7 @@ export const Comment = (props: Props) => {
       })
       setIsReplyVisible(false)
       setLoading(false)
+      setSubmitted(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
@@ -94,6 +96,7 @@ export const Comment = (props: Props) => {
   }
 
   const createdAt = new Date(comment()?.createdAt)
+
   return (
     <li class={clsx(styles.comment, { [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen })}>
       <Show when={!!body()}>
@@ -201,7 +204,12 @@ export const Comment = (props: Props) => {
 
             <Show when={isReplyVisible()}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
-                <CommentEditor placeholder={''} onSubmit={(value) => handleCreate(value)} />
+                <CommentEditor
+                  placeholder={''}
+                  clear={submitted()}
+                  onSubmit={(value) => handleCreate(value)}
+                  cancel={() => setIsReplyVisible(false)}
+                />
               </Suspense>
             </Show>
           </Show>

@@ -15,9 +15,11 @@ import { useLocalize } from '../../context/localize'
 
 type Props = {
   title?: string
+  slug?: string
   isHeaderFixed?: boolean
   articleBody?: string
   cover?: string
+  scrollToComments?: (value: boolean) => void
 }
 
 export const Header = (props: Props) => {
@@ -77,6 +79,10 @@ export const Header = (props: Props) => {
       window.removeEventListener('scroll', handleScroll)
     })
   })
+
+  const scrollToComments = (value) => {
+    props.scrollToComments(value)
+  }
 
   return (
     <header
@@ -138,9 +144,9 @@ export const Header = (props: Props) => {
                 containerCssClass={styles.control}
                 trigger={<Icon name="share-outline" class={styles.icon} />}
               />
-              <a href={getPagePath(router, 'inbox')} class={styles.control}>
+              <div onClick={() => scrollToComments(true)} class={styles.control}>
                 <Icon name="comments-outline" class={styles.icon} />
-              </a>
+              </div>
               <a href={getPagePath(router, 'create')} class={styles.control}>
                 <Icon name="pencil-outline" class={styles.icon} />
               </a>

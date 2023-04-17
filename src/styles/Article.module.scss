@@ -172,12 +172,19 @@ img {
 
   a {
     border: none;
-
+    text-decoration: none;
     &:hover {
-      .icon {
-        filter: invert(1);
+      background: unset;
+      color: #000;
+
+      img {
+        filter: unset;
       }
     }
+  }
+
+  &:hover {
+    cursor: pointer;
   }
 }
 

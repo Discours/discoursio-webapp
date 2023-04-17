@@ -39,14 +39,15 @@ type Props = {
 }
 
 export const CommentsTree = (props: Props) => {
+  const { session } = useSession()
+  const { t } = useLocalize()
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
+  const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
+  const [submitted, setSubmitted] = createSignal(false)
   const {
     reactionEntities,
     actions: { createReaction }
   } = useReactions()
-
-  const { t } = useLocalize()
-  const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
 
   const comments = createMemo(() =>
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
@@ -78,7 +79,7 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     } else if (currentDate > dateFromLocalStorage) {
       const newComments = comments().filter((c) => {
-        if (c.replyTo) {
+        if (c.replyTo || c.createdBy.slug === session()?.user.slug) {
           return
         }
         const created = new Date(c.createdAt)
@@ -89,8 +90,6 @@ export const CommentsTree = (props: Props) => {
     }
   })
 
-  const { session } = useSession()
-  const [submitted, setSubmitted] = createSignal<boolean>(false)
   const handleSubmitComment = async (value) => {
     try {
       await createReaction({
@@ -113,38 +112,39 @@ export const CommentsTree = (props: Props) => {
             <span class={styles.newReactions}>&nbsp;+{newReactions().length}</span>
           </Show>
         </h2>
-
-        <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
-          <Show when={newReactions().length > 0}>
-            <li classList={{ selected: commentsOrder() === 'newOnly' }}>
+        <Show when={comments().length > 0}>
+          <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
+            <Show when={newReactions().length > 0}>
+              <li classList={{ selected: commentsOrder() === 'newOnly' }}>
+                <Button
+                  variant="inline"
+                  value={t('New only')}
+                  onClick={() => {
+                    setCommentsOrder('newOnly')
+                  }}
+                />
+              </li>
+            </Show>
+            <li classList={{ selected: commentsOrder() === 'createdAt' }}>
               <Button
                 variant="inline"
-                value={t('New only')}
+                value={t('By time')}
                 onClick={() => {
-                  setCommentsOrder('newOnly')
+                  setCommentsOrder('createdAt')
                 }}
               />
             </li>
-          </Show>
-          <li classList={{ selected: commentsOrder() === 'createdAt' }}>
-            <Button
-              variant="inline"
-              value={t('By time')}
-              onClick={() => {
-                setCommentsOrder('createdAt')
-              }}
-            />
-          </li>
-          <li classList={{ selected: commentsOrder() === 'rating' }}>
-            <Button
-              variant="inline"
-              value={t('By rating')}
-              onClick={() => {
-                setCommentsOrder('rating')
-              }}
-            />
-          </li>
-        </ul>
+            <li classList={{ selected: commentsOrder() === 'rating' }}>
+              <Button
+                variant="inline"
+                value={t('By rating')}
+                onClick={() => {
+                  setCommentsOrder('rating')
+                }}
+              />
+            </li>
+          </ul>
+        </Show>
       </div>
       <ul class={styles.comments}>
         <For each={sortedComments().filter((r) => !r.replyTo)}>

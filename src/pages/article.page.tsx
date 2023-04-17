@@ -1,4 +1,4 @@
-import { createMemo, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import type { Shout } from '../graphql/types.gen'
 import { PageLayout } from '../components/_shared/PageLayout'
 import type { PageProps } from './types'
@@ -48,12 +48,21 @@ export const ArticlePage = (props: PageProps) => {
     script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
     document.body.appendChild(script)
   })
+  const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
 
   return (
-    <PageLayout headerTitle={article()?.title || ''} articleBody={article()?.body} cover={article()?.cover}>
+    <PageLayout
+      headerTitle={article()?.title || ''}
+      slug={article()?.slug}
+      articleBody={article()?.body}
+      cover={article()?.cover}
+      scrollToComments={(value) => {
+        setScrollToComments(value)
+      }}
+    >
       <ReactionsProvider>
         <Show when={Boolean(article())} fallback={<Loading />}>
-          <FullArticle article={article()} />
+          <FullArticle article={article()} scrollToComments={scrollToComments()} />
         </Show>
       </ReactionsProvider>
     </PageLayout>

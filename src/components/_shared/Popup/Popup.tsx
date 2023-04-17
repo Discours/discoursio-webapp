@@ -37,7 +37,9 @@ export const Popup = (props: PopupProps) => {
 
   return (
     <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>
-      <span onClick={toggle}>{props.trigger}</span>
+      <span class={styles.trigger} onClick={toggle}>
+        {props.trigger}
+      </span>
       <Show when={isVisible()}>
         <div
           class={clsx(styles.popup, props.popupCssClass, {

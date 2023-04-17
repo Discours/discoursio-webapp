@@ -122,7 +122,7 @@ export const FeedView = () => {
                 <For each={topAuthors().slice(0, 5)}>
                   {(author) => (
                     <li>
-                      <AuthorCard author={author} compact={true} hasLink={true} />
+                      <AuthorCard author={author} hideWriteButton={true} hasLink={true} />
                     </li>
                   )}
                 </For>
@@ -153,7 +153,7 @@ export const FeedView = () => {
                       <AuthorCard
                         author={comment.createdBy as Author}
                         isFeedMode={true}
-                        compact={true}
+                        hideWriteButton={true}
                         hideFollow={true}
                       />
                       <div class={clsx('text-truncate', styles.commentArticleTitle)}>

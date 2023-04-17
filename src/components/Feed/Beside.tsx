@@ -69,7 +69,7 @@ export const Beside = (props: BesideProps) => {
                         <Show when={props.wrapper === 'author'}>
                           <AuthorCard
                             author={value as Author}
-                            compact={true}
+                            hideWriteButton={true}
                             hasLink={true}
                             truncateBio={true}
                           />

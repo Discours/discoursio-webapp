@@ -6,7 +6,7 @@ export const AuthorFull = (props: { author: Author }) => {
   return (
     <div class="row">
       <div class="col-md-18 col-lg-16 user-details">
-        <AuthorCard author={props.author} compact={false} isAuthorPage={true} />
+        <AuthorCard author={props.author} isAuthorPage={true} />
       </div>
     </div>
   )

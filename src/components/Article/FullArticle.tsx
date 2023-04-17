@@ -22,6 +22,7 @@ import styles from './Article.module.scss'
 
 interface ArticleProps {
   article: Shout
+  scrollToComments?: boolean
 }
 
 interface MediaItem {
@@ -87,6 +88,22 @@ export const FullArticle = (props: ArticleProps) => {
     return mi
   })
 
+  const commentsRef: { current: HTMLDivElement } = { current: null }
+
+  const scrollToComments = () => {
+    window.scrollTo({
+      top: commentsRef.current.offsetTop - 96,
+      left: 0,
+      behavior: 'smooth'
+    })
+  }
+
+  createEffect(() => {
+    if (props.scrollToComments) {
+      scrollToComments()
+    }
+  })
+
   const {
     actions: { loadReactionsBy }
   } = useReactions()
@@ -122,10 +139,12 @@ export const FullArticle = (props: ArticleProps) => {
                   )}
                 </For>
               </div>
-              <div
-                class={styles.shoutCover}
-                style={{ 'background-image': `url('${props.article.cover}')` }}
-              />
+              <Show when={props.article.cover}>
+                <div
+                  class={styles.shoutCover}
+                  style={{ 'background-image': `url('${props.article.cover}')` }}
+                />
+              </Show>
             </div>
 
             <Show when={media() && props.article.layout !== 'image'}>
@@ -183,12 +202,10 @@ export const FullArticle = (props: ArticleProps) => {
                   {props.article.stat?.viewed}
                 </div>
               </Show>
-
-              <a href="#comments" class={styles.shoutStatsItem}>
+              <div class={styles.shoutStatsItem} onClick={scrollToComments}>
                 <Icon name="comment" class={styles.icon} />
                 {props.article.stat?.commented ?? ''}
-              </a>
-
+              </div>
               <div class={styles.shoutStatsItem}>
                 <SharePopup
                   title={props.article.title}
@@ -251,12 +268,12 @@ export const FullArticle = (props: ArticleProps) => {
               <For each={props.article.authors}>
                 {(a) => (
                   <div class="col-xl-12">
-                    <AuthorCard author={a} compact={false} hasLink={true} liteButtons={true} />
+                    <AuthorCard author={a} hasLink={true} liteButtons={true} />
                   </div>
                 )}
               </For>
             </div>
-            <div id="comments">
+            <div id="comments" ref={(el) => (commentsRef.current = el)}>
               <Show when={isReactionsLoaded()}>
                 <CommentsTree
                   shoutId={props.article.id}

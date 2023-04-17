@@ -144,6 +144,7 @@ img {
 
 .shoutStatsItem {
   @include font-size(1.5rem);
+
   font-weight: 500;
   display: inline-block;
   margin: 0 3.2rem 1em 0;
@@ -175,6 +176,19 @@ img {
 
   a {
     border: none;
+    text-decoration: none;
+    &:hover {
+      background: unset;
+      color: #000;
+
+      img {
+        filter: unset;
+      }
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
   }
 }
 

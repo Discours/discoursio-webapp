@@ -80,7 +80,8 @@ export const Header = (props: Props) => {
     })
   })
 
-  const scrollToComments = (value) => {
+  const scrollToComments = (event, value) => {
+    event.preventDefault()
     props.scrollToComments(value)
   }
 
@@ -110,7 +111,6 @@ export const Header = (props: Props) => {
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
-
             <ul
               class={clsx(styles.mainNavigation, 'col text-xl inline-flex')}
               classList={{ fixed: fixed() }}
@@ -144,7 +144,7 @@ export const Header = (props: Props) => {
                 containerCssClass={styles.control}
                 trigger={<Icon name="share-outline" class={styles.icon} />}
               />
-              <div onClick={() => scrollToComments(true)} class={styles.control}>
+              <div onClick={(event) => scrollToComments(event, true)} class={styles.control}>
                 <Icon name="comments-outline" class={styles.icon} />
               </div>
               <a href={getPagePath(router, 'create')} class={styles.control}>

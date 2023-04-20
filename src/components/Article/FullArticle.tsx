@@ -90,7 +90,6 @@ export const FullArticle = (props: ArticleProps) => {
   })
 
   const commentsRef: { current: HTMLDivElement } = { current: null }
-
   const scrollToComments = () => {
     window.scrollTo({
       top: commentsRef.current.offsetTop - 96,
@@ -98,10 +97,18 @@ export const FullArticle = (props: ArticleProps) => {
       behavior: 'smooth'
     })
   }
+  const { searchParams } = useRouter()
 
   createEffect(() => {
     if (props.scrollToComments) {
       scrollToComments()
+    }
+  })
+  const { changeSearchParam } = useRouter()
+  createEffect(() => {
+    if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
+      scrollToComments()
+      changeSearchParam('scrollTo', null)
     }
   })
 

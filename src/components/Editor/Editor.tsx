@@ -1,4 +1,3 @@
-import { createEffect } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import { Blockquote } from '@tiptap/extension-blockquote'
@@ -89,6 +88,7 @@ export const Editor = (props: EditorProps) => {
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     content: props.initialContent,
+    //onTransaction: handleEditorTransaction,
     extensions: [
       Document,
       Text,
@@ -105,15 +105,6 @@ export const Editor = (props: EditorProps) => {
       }),
       Heading.configure({
         levels: [1, 2, 3]
-      }),
-      BubbleMenu.configure({
-        element: bubbleMenuRef.current
-      }),
-      FloatingMenu.configure({
-        tippyOptions: {
-          placement: 'left'
-        },
-        element: floatingMenuRef.current
       }),
       BulletList,
       OrderedList,
@@ -138,15 +129,18 @@ export const Editor = (props: EditorProps) => {
       Highlight,
       Image,
       Youtube,
-      TrailingNode
+      TrailingNode,
+      BubbleMenu.configure({
+        element: bubbleMenuRef.current
+      }),
+      FloatingMenu.configure({
+        tippyOptions: {
+          placement: 'left'
+        },
+        element: floatingMenuRef.current
+      })
     ]
   }))
-
-  const html = useEditorHTML(() => editor())
-
-  createEffect(() => {
-    props.onChange(html())
-  })
 
   return (
     <>

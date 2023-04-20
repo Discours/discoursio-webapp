@@ -173,6 +173,7 @@ export type Mutation = {
   follow: Result
   getSession: AuthResult
   markAsRead: Result
+  publishShout: Result
   rateUser: Result
   registerUser: AuthResult
   sendLink: Result
@@ -244,6 +245,10 @@ export type MutationMarkAsReadArgs = {
   ids: Array<InputMaybe<Scalars['Int']>>
 }
 
+export type MutationPublishShoutArgs = {
+  inp: ShoutInput
+}
+
 export type MutationRateUserArgs = {
   slug: Scalars['String']
   value: Scalars['Int']
@@ -287,6 +292,7 @@ export type MutationUpdateReactionArgs = {
 
 export type MutationUpdateShoutArgs = {
   inp: ShoutInput
+  slug: Scalars['String']
 }
 
 export type MutationUpdateTopicArgs = {
@@ -325,6 +331,7 @@ export type Query = {
   isEmailUsed: Scalars['Boolean']
   loadAuthorsBy: Array<Maybe<Author>>
   loadChats: Result
+  loadDrafts: Array<Maybe<Shout>>
   loadMessagesBy: Result
   loadReactionsBy: Array<Maybe<Reaction>>
   loadRecipients: Result
@@ -332,6 +339,7 @@ export type Query = {
   loadShouts: Array<Maybe<Shout>>
   markdownBody: Scalars['String']
   myFeed?: Maybe<Array<Maybe<Shout>>>
+  publishShout: Array<Maybe<Shout>>
   searchMessages: Result
   searchRecipients: Result
   signIn: AuthResult
@@ -368,6 +376,10 @@ export type QueryLoadChatsArgs = {
   offset?: InputMaybe<Scalars['Int']>
 }
 
+export type QueryLoadDraftsArgs = {
+  options?: InputMaybe<LoadShoutsOptions>
+}
+
 export type QueryLoadMessagesByArgs = {
   by: MessagesBy
   limit?: InputMaybe<Scalars['Int']>
@@ -399,6 +411,10 @@ export type QueryMarkdownBodyArgs = {
 
 export type QueryMyFeedArgs = {
   options?: InputMaybe<LoadShoutsOptions>
+}
+
+export type QueryPublishShoutArgs = {
+  slug: Scalars['String']
 }
 
 export type QuerySearchMessagesArgs = {

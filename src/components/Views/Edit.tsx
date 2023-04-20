@@ -55,18 +55,14 @@ export const EditView = (props: EditViewProps) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault()
 
-    // const newShout = await apiClient.updateArticle({
-    //   article: {
-    //     slug: form.slug,
-    //     title: form.title,
-    //     subtitle: form.subtitle,
-    //     body: form.body,
-    //     topics: form.selectedTopics.map((topic) => topic.slug),
-    //     mainTopic: form.selectedTopics[0].slug
-    //   }
-    // })
+    const article = await apiClient.updateArticle({
+      article: {
+        slug: props.shout.slug,
+        visibility: 'community'
+      }
+    })
 
-    // openPage(getPagePath(router, 'article', { slug: newShout.slug }))
+    openPage(router, 'article', { slug: article.slug })
   }
 
   const handleTitleInputChange = (e) => {
@@ -90,6 +86,24 @@ export const EditView = (props: EditViewProps) => {
 
   const toggleEditorPanel = () => {
     setIsEditorPanelOPened(!isEditorPanelOPened())
+  }
+
+  const handleSaveButtonClick = async (e) => {
+    e.preventDefault()
+
+    await apiClient.updateArticle({
+      slug: props.shout.slug,
+      article: {
+        slug: form.slug,
+        title: form.title,
+        subtitle: form.subtitle,
+        body: form.body,
+        topics: form.selectedTopics.map((topic) => topic.slug),
+        mainTopic: form.selectedTopics[0].slug
+      }
+    })
+
+    openPage(router, 'drafts')
   }
 
   return (
@@ -222,8 +236,13 @@ export const EditView = (props: EditViewProps) => {
                       Проверьте ещё раз введённые данные, если всё верно, вы&nbsp;можете сохранить или
                       опубликовать ваш текст
                     </p>
-                    <button class={clsx('button button--outline', styles.button)}>Сохранить</button>
                     <a href={getPagePath(router, 'edit', { shoutSlug: props.shout.slug })}>Назад</a>
+                    <button
+                      onClick={handleSaveButtonClick}
+                      class={clsx('button button--outline', styles.button)}
+                    >
+                      Сохранить
+                    </button>
                     <button type="submit" class={clsx('button button--submit', styles.button)}>
                       Опубликовать
                     </button>

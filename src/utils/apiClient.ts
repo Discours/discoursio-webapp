@@ -49,6 +49,7 @@ import shoutLoad from '../graphql/query/article-load'
 import loadRecipients from '../graphql/query/chat-recipients'
 import createMessage from '../graphql/mutation/create-chat-message'
 import updateProfile from '../graphql/mutation/update-profile'
+import updateArticle from '../graphql/mutation/article-update'
 
 type ApiErrorCode =
   | 'unknown'
@@ -239,6 +240,13 @@ export const apiClient = {
     const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()
     console.debug('[createArticle]:', response.data)
     return response.data.createShout.shout
+  },
+  updateArticle: async ({ slug, article }: { slug: string; article: ShoutInput }): Promise<Shout> => {
+    const response = await privateGraphQLClient
+      .mutation(updateArticle, { slug, shout: article })
+      .toPromise()
+    console.debug('[updateArticle]:', response.data)
+    return response.data.updateArticle.shout
   },
   createReaction: async (input: ReactionInput) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction: input }).toPromise()

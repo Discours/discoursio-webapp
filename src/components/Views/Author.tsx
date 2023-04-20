@@ -35,24 +35,12 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: AuthorProps) => {
   const { t } = useLocalize()
-  const { sortedArticles } = useArticlesStore({
-    shouts: props.shouts
-  })
-  const { authorEntities } = useAuthorsStore({ authors: [props.author] })
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
-  const author = createMemo(() => authorEntities()[props.authorSlug])
-  const [followers, setFollowers] = createSignal<Author[]>([])
-  onMount(async () => {
-    try {
-      const authorSubscribers = await apiClient.getAuthorFollowers({ slug: props.author.slug })
-      setFollowers(authorSubscribers)
-    } catch (error) {
-      console.log('[getAuthorSubscribers]', error)
-    }
-  })
-
+  const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
+  const { authorEntities } = useAuthorsStore({ authors: [props.author] })
+  const author = authorEntities()[props.authorSlug]
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [followers, setFollowers] = createSignal<Author[]>([])
 
   onMount(() => {
     if (!searchParams().by) {
@@ -63,7 +51,7 @@ export const AuthorView = (props: AuthorProps) => {
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
-      filters: { author: author().slug },
+      filters: { author: props.authorSlug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })
@@ -73,7 +61,7 @@ export const AuthorView = (props: AuthorProps) => {
 
   onMount(async () => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore()
+      await loadMore()
     }
   })
 
@@ -91,6 +79,16 @@ export const AuthorView = (props: AuthorProps) => {
   )
 
   const [commented, setCommented] = createSignal([])
+
+  onMount(async () => {
+    try {
+      const authorSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
+      setFollowers(authorSubscribers)
+    } catch (error) {
+      console.log('[getAuthorSubscribers]', error)
+    }
+  })
+
   createEffect(async () => {
     if (searchParams().by === 'commented') {
       try {
@@ -107,7 +105,7 @@ export const AuthorView = (props: AuthorProps) => {
   return (
     <div class="author-page">
       <div class="wide-container">
-        <AuthorFull author={author()} />
+        <AuthorFull author={author} />
         <div class="row group__controls">
           <div class="col-md-16">
             <ul class="view-switcher">
@@ -197,9 +195,7 @@ export const AuthorView = (props: AuthorProps) => {
       >
         <Match when={searchParams().by === 'about'}>
           <div class="wide-container">
-            <Show when={author().bio}>
-              <p>{author().bio}</p>
-            </Show>
+            <p>{author.bio}</p>
           </div>
         </Match>
         <Match when={searchParams().by === 'commented'}>

@@ -11,6 +11,7 @@ export const ROUTES = {
   create: '/create',
   edit: '/edit/:shoutSlug',
   editSettings: '/edit/:shoutSlug/settings',
+  drafts: '/drafts',
   topics: '/topics',
   topic: '/topic/:slug',
   authors: '/authors',

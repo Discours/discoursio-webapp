@@ -1,7 +1,7 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'

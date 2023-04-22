@@ -196,6 +196,7 @@ export type Mutation = {
   deleteReaction: Result
   deleteShout: Result
   destroyTopic: Result
+  draftToShout: Result
   follow: Result
   getSession: AuthResult
   inviteAccept: Result
@@ -269,6 +270,10 @@ export type MutationDeleteShoutArgs = {
 
 export type MutationDestroyTopicArgs = {
   slug: Scalars['String']
+}
+
+export type MutationDraftToShoutArgs = {
+  draft: Scalars['Int']
 }
 
 export type MutationFollowArgs = {
@@ -382,6 +387,7 @@ export type Query = {
   loadShout?: Maybe<Shout>
   loadShouts: Array<Maybe<Shout>>
   markdownBody: Scalars['String']
+  myFeed?: Maybe<Array<Maybe<Shout>>>
   searchMessages: Result
   searchRecipients: Result
   signIn: AuthResult
@@ -445,6 +451,10 @@ export type QueryLoadShoutsArgs = {
 
 export type QueryMarkdownBodyArgs = {
   body: Scalars['String']
+}
+
+export type QueryMyFeedArgs = {
+  options?: InputMaybe<LoadShoutsOptions>
 }
 
 export type QuerySearchMessagesArgs = {
@@ -573,6 +583,7 @@ export type Result = {
   chats?: Maybe<Array<Maybe<Chat>>>
   communities?: Maybe<Array<Maybe<Community>>>
   community?: Maybe<Community>
+  draft?: Maybe<DraftCollab>
   drafts?: Maybe<Array<Maybe<DraftCollab>>>
   error?: Maybe<Scalars['String']>
   members?: Maybe<Array<Maybe<ChatMember>>>
@@ -610,7 +621,6 @@ export type Shout = {
   mainTopic?: Maybe<Scalars['String']>
   media?: Maybe<Scalars['String']>
   publishedAt?: Maybe<Scalars['DateTime']>
-  publishedBy?: Maybe<User>
   slug: Scalars['String']
   stat?: Maybe<Stat>
   subtitle?: Maybe<Scalars['String']>
@@ -675,7 +685,8 @@ export type Token = {
 
 export type Topic = {
   body?: Maybe<Scalars['String']>
-  community: Community
+  community?: Community
+  id: Scalars['Int']
   oid?: Maybe<Scalars['String']>
   pic?: Maybe<Scalars['String']>
   slug: Scalars['String']

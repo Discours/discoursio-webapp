@@ -56,34 +56,33 @@ export const AuthorView = (props: AuthorProps) => {
   const [subscribedTopics, setSubscribedTopics] = createSignal<Topic[]>([])
 
   onMount(async () => {
-    if (!props.author.slug) return
     try {
-      const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.author.slug })
+      const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
       setFollowers(userSubscribers)
     } catch (error) {
       console.log('[getAuthorFollowers]', error)
     }
 
     try {
-      const authorSubscriptionsUsers = await apiClient.getAuthorFollowingUsers({ slug: props.author.slug })
+      const authorSubscriptionsUsers = await apiClient.getAuthorFollowingUsers({ slug: props.authorSlug })
       setFollowingUsers(authorSubscriptionsUsers)
     } catch (error) {
       console.log('[getAuthorFollowingUsers]', error)
     }
 
     try {
-      const authorSubscriptionsTopics = await apiClient.getAuthorFollowingTopics({
-        slug: props.author.slug
-      })
+      const authorSubscriptionsTopics = await apiClient.getAuthorFollowingTopics({ slug: props.authorSlug })
       setSubscribedTopics(authorSubscriptionsTopics)
     } catch (error) {
       console.log('[getAuthorFollowing]', error)
     }
-  })
 
-  onMount(() => {
     if (!searchParams().by) {
       changeSearchParam('by', 'rating')
+    }
+
+    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
+      await loadMore()
     }
   })
 
@@ -97,12 +96,6 @@ export const AuthorView = (props: AuthorProps) => {
     setIsLoadMoreButtonVisible(hasMore)
     restoreScrollPosition()
   }
-
-  onMount(async () => {
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      await loadMore()
-    }
-  })
 
   // TODO: use title
   // const title = createMemo(() => {
@@ -118,15 +111,6 @@ export const AuthorView = (props: AuthorProps) => {
   )
 
   const [commented, setCommented] = createSignal([])
-
-  onMount(async () => {
-    try {
-      const authorSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
-      setFollowers(authorSubscribers)
-    } catch (error) {
-      console.log('[getAuthorSubscribers]', error)
-    }
-  })
 
   createEffect(async () => {
     if (searchParams().by === 'commented') {
@@ -276,6 +260,7 @@ export const AuthorView = (props: AuthorProps) => {
         <Match when={searchParams().by === 'subscribed-authors'}>
           <div class="wide-container">
             <div class="row">
+              asdasd
               <For each={followingUsers()}>
                 {(follower: Author) => (
                   <div class="col-md-6 col-lg-4">

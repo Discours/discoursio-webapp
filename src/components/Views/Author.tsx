@@ -260,7 +260,6 @@ export const AuthorView = (props: AuthorProps) => {
         <Match when={searchParams().by === 'subscribed-authors'}>
           <div class="wide-container">
             <div class="row">
-              asdasd
               <For each={followingUsers()}>
                 {(follower: Author) => (
                   <div class="col-md-6 col-lg-4">

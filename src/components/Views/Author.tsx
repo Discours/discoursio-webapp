@@ -1,5 +1,5 @@
 import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
-import type { Author, Shout } from '../../graphql/types.gen'
+import type { Author, Shout, Topic } from '../../graphql/types.gen'
 import { Row1 } from '../Feed/Row1'
 import { Row2 } from '../Feed/Row2'
 import { AuthorFull } from '../Author/Full'
@@ -19,6 +19,7 @@ import { apiClient } from '../../utils/apiClient'
 import { Comment } from '../Article/Comment'
 import { useLocalize } from '../../context/localize'
 import { AuthorRatingControl } from '../Author/AuthorRatingControl'
+import { TopicCard } from '../Topic/Card'
 
 type AuthorProps = {
   shouts: Shout[]
@@ -27,7 +28,17 @@ type AuthorProps = {
 }
 
 export type AuthorPageSearchParams = {
-  by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'followed' | 'about' | 'popular'
+  by:
+    | ''
+    | 'viewed'
+    | 'rating'
+    | 'commented'
+    | 'recent'
+    | 'subscribed-authors'
+    | 'subscribed-topics'
+    | 'followers'
+    | 'about'
+    | 'popular'
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -41,6 +52,34 @@ export const AuthorView = (props: AuthorProps) => {
   const author = authorEntities()[props.authorSlug]
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
+  const [followingUsers, setFollowingUsers] = createSignal<Author[]>([])
+  const [subscribedTopics, setSubscribedTopics] = createSignal<Topic[]>([])
+
+  onMount(async () => {
+    if (!props.author.slug) return
+    try {
+      const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.author.slug })
+      setFollowers(userSubscribers)
+    } catch (error) {
+      console.log('[getAuthorFollowers]', error)
+    }
+
+    try {
+      const authorSubscriptionsUsers = await apiClient.getAuthorFollowingUsers({ slug: props.author.slug })
+      setFollowingUsers(authorSubscriptionsUsers)
+    } catch (error) {
+      console.log('[getAuthorFollowingUsers]', error)
+    }
+
+    try {
+      const authorSubscriptionsTopics = await apiClient.getAuthorFollowingTopics({
+        slug: props.author.slug
+      })
+      setSubscribedTopics(authorSubscriptionsTopics)
+    } catch (error) {
+      console.log('[getAuthorFollowing]', error)
+    }
+  })
 
   onMount(() => {
     if (!searchParams().by) {
@@ -114,9 +153,19 @@ export const AuthorView = (props: AuthorProps) => {
                   {t('Publications')}
                 </button>
               </li>
-              <li classList={{ selected: searchParams().by === 'followed' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
+              <li classList={{ selected: searchParams().by === 'followers' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'followers')}>
                   {t('Followers')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'subscribed-authors' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'subscribed-authors')}>
+                  {t('Author subscriptions')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'subscribed-topics' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'subscribed-topics')}>
+                  {t('Topic subscriptions')}
                 </button>
               </li>
               <li classList={{ selected: searchParams().by === 'commented' }}>
@@ -124,13 +173,6 @@ export const AuthorView = (props: AuthorProps) => {
                   {t('Comments')}
                 </button>
               </li>
-              {/*
-                <li classList={{ selected: searchParams().by === 'popular' }}>
-                  <button type="button" onClick={() => changeSearchParam('by', 'popular')}>
-                    Популярное
-                  </button>
-                </li>
-                */}
               <li classList={{ selected: searchParams().by === 'about' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'about')}>
                   {t('About myself')}
@@ -205,10 +247,36 @@ export const AuthorView = (props: AuthorProps) => {
             </ul>
           </div>
         </Match>
-        <Match when={searchParams().by === 'followed'}>
+        <Match when={searchParams().by === 'subscribed-topics'}>
+          <div class="wide-container">
+            <div class="row">
+              <For each={subscribedTopics()}>
+                {(topic) => (
+                  <div class="col-md-12 col-lg-8">
+                    <TopicCard compact iconButton isTopicInRow topic={topic} />
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+        </Match>
+        <Match when={searchParams().by === 'followers'}>
           <div class="wide-container">
             <div class="row">
               <For each={followers()}>
+                {(follower: Author) => (
+                  <div class="col-md-6 col-lg-4">
+                    <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+        </Match>
+        <Match when={searchParams().by === 'subscribed-authors'}>
+          <div class="wide-container">
+            <div class="row">
+              <For each={followingUsers()}>
                 {(follower: Author) => (
                   <div class="col-md-6 col-lg-4">
                     <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />

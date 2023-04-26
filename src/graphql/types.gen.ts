@@ -685,7 +685,7 @@ export type Token = {
 
 export type Topic = {
   body?: Maybe<Scalars['String']>
-  community?: Community
+  community: Community
   id: Scalars['Int']
   oid?: Maybe<Scalars['String']>
   pic?: Maybe<Scalars['String']>

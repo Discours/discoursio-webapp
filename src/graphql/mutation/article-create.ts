@@ -5,13 +5,13 @@ export default gql`
     createShout(inp: $shout) {
       error
       shout {
-        _id: slug
+        id
         slug
         title
         subtitle
         body
         topics {
-          # id
+          id
           title
           slug
         }

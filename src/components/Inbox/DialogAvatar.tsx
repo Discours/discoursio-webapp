@@ -31,9 +31,9 @@ const getById = (letter: string) =>
   colors[Math.abs(Number(BigInt(letter.toLowerCase().codePointAt(0) - 97) % BigInt(colors.length)))]
 
 const DialogAvatar = (props: Props) => {
-  const nameFirstLetter = props.name.slice(0, 1)
+  const nameFirstLetter = createMemo(() => props.name.slice(0, 1))
   const randomBg = createMemo(() => {
-    return getById(nameFirstLetter)
+    return getById(nameFirstLetter())
   })
 
   return (
@@ -45,7 +45,7 @@ const DialogAvatar = (props: Props) => {
       })}
       style={{ 'background-color': `${randomBg()}` }}
     >
-      <Show when={props.url} fallback={() => <div class={styles.letter}>{nameFirstLetter}</div>}>
+      <Show when={Boolean(props.url)} fallback={<div class={styles.letter}>{nameFirstLetter()}</div>}>
         <div class={styles.imageHolder} style={{ 'background-image': `url(${props.url})` }} />
       </Show>
     </div>

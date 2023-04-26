@@ -69,10 +69,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const deleteReaction = async (id: number): Promise<void> => {
     const reaction = await apiClient.destroyReaction(id)
-    setReactionEntities((oldState) => ({
-      ...oldState,
+    setReactionEntities({
       [reaction.id]: undefined
-    }))
+    })
   }
 
   const updateReaction = async (id: number, input: ReactionInput): Promise<void> => {

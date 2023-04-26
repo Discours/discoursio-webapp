@@ -1,6 +1,6 @@
 import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
 import { Comment } from './Comment'
-import styles from '../../styles/Article.module.scss'
+import styles from './Article.module.scss'
 import { clsx } from 'clsx'
 import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'

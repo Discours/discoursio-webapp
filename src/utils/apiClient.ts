@@ -14,7 +14,8 @@ import type {
   ProfileInput,
   ReactionInput,
   Chat,
-  ReactionBy
+  ReactionBy,
+  Shout
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -239,10 +240,10 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
     return response.data.getTopic
   },
-  createArticle: async ({ article }: { article: ShoutInput }) => {
+  createArticle: async ({ article }: { article: ShoutInput }): Promise<Shout> => {
     const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()
     console.debug('[createArticle]:', response.data)
-    return response.data.createShout
+    return response.data.createShout.shout
   },
   createReaction: async (input: ReactionInput) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction: input }).toPromise()

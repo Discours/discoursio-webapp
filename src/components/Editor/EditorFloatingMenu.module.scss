@@ -1,0 +1,15 @@
+.editorFloatingMenu {
+  left: 0;
+  position: relative;
+  vertical-align: middle;
+
+  button {
+    opacity: 0.3;
+    vertical-align: text-bottom;
+    transition: opacity 0.3s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

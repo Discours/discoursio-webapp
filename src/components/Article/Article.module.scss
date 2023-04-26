@@ -182,9 +182,27 @@ img {
       }
     }
   }
+}
+
+.shoutStatsItemInner {
+  cursor: pointer;
+  margin: -0.3em -0.3em 0;
+  padding: 0.3em;
+
+  .icon {
+    margin-right: 0;
+  }
+
+  .iconEdit {
+    margin-right: 0.3em;
+  }
 
   &:hover {
+    background: #000;
     cursor: pointer;
+    img {
+      filter: invert(1);
+    }
   }
 }
 
@@ -305,6 +323,11 @@ img {
 
 .commentsViewSwitcher {
   margin-top: 0;
+}
+
+.commentsViewSwitcherButton {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .help {

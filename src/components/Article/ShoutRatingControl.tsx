@@ -16,7 +16,7 @@ interface ShoutRatingControlProps {
 
 export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
-  const { userSlug } = useSession()
+  const { user } = useSession()
 
   const {
     reactionEntities,
@@ -27,7 +27,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.createdBy.slug === userSlug() &&
+        r.createdBy.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
         !r.replyTo
     )
@@ -38,7 +38,10 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   const shoutRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
-      (r) => [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) && r.shout.id === props.shout.id
+      (r) =>
+        [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
+        r.shout.id === props.shout.id &&
+        !r.replyTo
     )
   )
 
@@ -46,7 +49,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
-        r.createdBy.slug === userSlug() &&
+        r.createdBy.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
         !r.replyTo
     )

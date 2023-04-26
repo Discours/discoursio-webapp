@@ -53,7 +53,7 @@ export const Message = (props: Props) => {
           <div innerHTML={md.render(props.content.body)} />
         </div>
       </div>
-      <div class={styles.time}>{formattedTime(props.content.createdAt * 1000)}</div>
+      <div class={styles.time}>{formattedTime(props.content.createdAt * 1000)()}</div>
     </div>
   )
 }

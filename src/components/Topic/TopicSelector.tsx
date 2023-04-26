@@ -1,3 +1,0 @@
-// aka TopicInput
-
-export default () => <></>

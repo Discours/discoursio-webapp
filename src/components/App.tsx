@@ -34,9 +34,9 @@ import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from '../pages/profile/profileSettings.page'
 import { ProfileSecurityPage } from '../pages/profile/profileSecurity.page'
 import { ProfileSubscriptionsPage } from '../pages/profile/profileSubscriptions.page'
-import { CreateSettingsPage } from '../pages/createSettings.page'
 import { SnackbarProvider } from '../context/snackbar'
 import { LocalizeProvider } from '../context/localize'
+import { EditorProvider } from '../context/editor'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -46,7 +46,7 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
-  createSettings: CreateSettingsPage,
+  createSettings: CreatePage,
   home: HomePage,
   topics: AllTopicsPage,
   topic: TopicPage,
@@ -92,11 +92,13 @@ export const App = (props: PageProps) => {
 
   return (
     <LocalizeProvider>
-      <SnackbarProvider>
-        <SessionProvider>
-          <Dynamic component={pageComponent()} {...props} />
-        </SessionProvider>
-      </SnackbarProvider>
+      <EditorProvider>
+        <SnackbarProvider>
+          <SessionProvider>
+            <Dynamic component={pageComponent()} {...props} />
+          </SessionProvider>
+        </SnackbarProvider>
+      </EditorProvider>
     </LocalizeProvider>
   )
 }

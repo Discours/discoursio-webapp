@@ -502,7 +502,10 @@
 }
 
 .userControlItemVerbose {
+  margin-right: 0.5em;
+
   @include media-breakpoint-up(lg) {
+    margin-right: 0;
     width: auto;
 
     .icon {
@@ -511,7 +514,7 @@
 
     .textLabel {
       display: inline;
-      padding: 0 1.2rem;
+      //padding: 0 1.2rem;
       position: relative;
       z-index: 1;
     }

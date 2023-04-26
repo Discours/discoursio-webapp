@@ -1,5 +1,5 @@
 import { generateHydrationScript, renderToString } from 'solid-js/web'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { App } from '../components/App'
 import { initRouter } from '../stores/router'
 import type { PageContext } from './types'

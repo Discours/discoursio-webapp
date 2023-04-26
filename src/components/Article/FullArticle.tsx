@@ -1,14 +1,11 @@
 import { capitalize, formatDate } from '../../utils'
-import './Full.scss'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/Card'
-import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import { createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
 import { getDescription } from '../../utils/meta'
-import stylesHeader from '../Nav/Header.module.scss'
-import styles from '../../styles/Article.module.scss'
 import { ShoutRatingControl } from './ShoutRatingControl'
 import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
@@ -16,10 +13,12 @@ import { useSession } from '../../context/session'
 import VideoPlayer from './VideoPlayer'
 import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
-import { router, useRouter } from '../../stores/router'
+import { router } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
 import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
+import stylesHeader from '../Nav/Header.module.scss'
+import styles from './Article.module.scss'
 
 interface ArticleProps {
   article: Shout
@@ -57,7 +56,7 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
 
 export const FullArticle = (props: ArticleProps) => {
   const { t } = useLocalize()
-  const { userSlug, isAuthenticated } = useSession()
+  const { user, isAuthenticated } = useSession()
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
@@ -75,7 +74,7 @@ export const FullArticle = (props: ArticleProps) => {
     setIsReactionsLoaded(true)
   })
 
-  const canEdit = () => props.article.authors?.some((a) => a.slug === userSlug())
+  const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
   const bookmark = (ev) => {
     // TODO: implement bookmark clicked
@@ -119,7 +118,7 @@ export const FullArticle = (props: ArticleProps) => {
   return (
     <>
       <Title>{props.article.title}</Title>
-      <div class="shout wide-container">
+      <div class="wide-container">
         <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             <div class={styles.shoutHeader}>
@@ -183,7 +182,7 @@ export const FullArticle = (props: ArticleProps) => {
       <Show when={media() && props.article.layout === 'image'}>
         <Slider slidesPerView={1} isPageGallery={true} isCardsWithCover={true} hasThumbs={true}>
           <For each={media() || []}>
-            {(m: MediaItem) => (
+            {(m) => (
               <div class="swiper-slide">
                 <div class="swiper-slide__inner">
                   <img src={m.url || m.pic} alt={m.title} loading="lazy" />
@@ -196,7 +195,7 @@ export const FullArticle = (props: ArticleProps) => {
         </Slider>
       </Show>
 
-      <div class="shout wide-container">
+      <div class="wide-container">
         <div class="row">
           <div class="col-md-16 offset-md-5">
             <div class={styles.shoutStats}>
@@ -220,18 +219,24 @@ export const FullArticle = (props: ArticleProps) => {
                   description={getDescription(props.article.body)}
                   imageUrl={props.article.cover}
                   containerCssClass={stylesHeader.control}
-                  trigger={<Icon name="share-outline" class={styles.icon} />}
+                  trigger={
+                    <div class={styles.shoutStatsItemInner}>
+                      <Icon name="share-outline" class={styles.icon} />
+                    </div>
+                  }
                 />
               </div>
 
               <div class={styles.shoutStatsItem} onClick={bookmark}>
-                <Icon name="bookmark" class={styles.icon} />
+                <div class={styles.shoutStatsItemInner}>
+                  <Icon name="bookmark" class={styles.icon} />
+                </div>
               </div>
 
               <Show when={canEdit()}>
                 <div class={styles.shoutStatsItem}>
-                  <a href="/edit">
-                    <Icon name="edit" />
+                  <a href="/edit" class={styles.shoutStatsItemInner}>
+                    <Icon name="edit" class={clsx(styles.icon, styles.iconEdit)} />
                     {t('Edit')}
                   </a>
                 </div>

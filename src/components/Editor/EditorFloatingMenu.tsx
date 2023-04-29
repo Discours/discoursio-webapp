@@ -4,7 +4,6 @@ import { Icon } from '../_shared/Icon'
 import { InlineForm } from './InlineForm'
 import styles from './EditorFloatingMenu.module.scss'
 import HTMLParser from 'html-to-json-parser'
-import { useLocalize } from '../../context/localize'
 
 type FloatingMenuProps = {
   editor: Editor
@@ -19,7 +18,6 @@ const embedData = async (data) => {
 }
 
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
-  const { t } = useLocalize()
   const [inlineEditorOpen, setInlineEditorOpen] = createSignal<boolean>(false)
 
   const handleEmbedFormSubmit = async (value: string) => {

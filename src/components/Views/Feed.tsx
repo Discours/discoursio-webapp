@@ -3,7 +3,7 @@ import '../../styles/Feed.scss'
 import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/Card'
 import { AuthorCard } from '../Author/Card'
-import { FeedSidebar } from '../Feed/Sidebar'
+import { Sidebar } from '../Feed/Sidebar'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
@@ -73,18 +73,18 @@ export const FeedView = () => {
 
   onMount(async () => {
     // load recent shouts not only published ( visibility = community )
-    loadMore()
+    await loadMore()
     // load 5 recent comments overall
     const comments = await loadReactionsBy({ by: { comment: true }, limit: 5 })
     setTopComments(comments)
   })
 
   return (
-    <>
+    <div>
       <div class="wide-container feed">
         <div class="row">
           <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
-            <FeedSidebar authors={sortedAuthors()} />
+            <Sidebar authors={sortedAuthors()} />
           </div>
 
           <div class="col-md-12 offset-xl-1">
@@ -198,6 +198,6 @@ export const FeedView = () => {
           </aside>
         </div>
       </div>
-    </>
+    </div>
   )
 }

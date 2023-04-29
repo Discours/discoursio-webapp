@@ -1,3 +1,4 @@
+import { Show } from 'solid-js'
 import { clsx } from 'clsx'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'

@@ -83,17 +83,19 @@ export const Sidebar = (props: FeedSidebarProps) => {
   return (
     <div class={styles.sidebar}>
       <ul>
-        {menuItems.map((item: ListItem, index) => (
-          <li key={index}>
-            <a href="#">
-              <span class={styles.sidebarItemName}>
-                {item.icon && <Icon name={item.icon} class={styles.icon} />}
-                <strong>{item.title}</strong>
-                {item.counter && <span class={styles.counter}>18</span>}
-              </span>
-            </a>
-          </li>
-        ))}
+        <For each={menuItems}>
+          {(item: ListItem, index) => (
+            <li key={index}>
+              <a href="#">
+                <span class={styles.sidebarItemName}>
+                  {item.icon && <Icon name={item.icon} class={styles.icon} />}
+                  <strong>{item.title}</strong>
+                  {item.counter && <span class={styles.counter}>18</span>}
+                </span>
+              </a>
+            </li>
+          )}
+        </For>
         <For each={session()?.news?.authors}>
           {(authorSlug: string) => (
             <li>
@@ -107,12 +109,11 @@ export const Sidebar = (props: FeedSidebarProps) => {
             </li>
           )}
         </For>
-
         <For each={session()?.news?.topics}>
           {(topicSlug: string) => (
             <li>
               <a href={`/author/${topicSlug}`} classList={{ [styles.unread]: checkTopicIsSeen(topicSlug) }}>
-                {topicEntities()[topicSlug]?.title ? topicEntities()[topicSlug]?.title : topicSlug}
+                {topicEntities()[topicSlug]?.title ?? topicSlug}
               </a>
             </li>
           )}

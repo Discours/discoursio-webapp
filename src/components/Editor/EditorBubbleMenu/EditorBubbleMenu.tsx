@@ -57,7 +57,6 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   const handleLinkFormSubmit = (value: string) => {
-    console.log('!!! value:', value)
     props.editor.chain().focus().setLink({ href: value }).run()
   }
 

@@ -1,9 +1,8 @@
 import { For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
-import './Topics.scss'
-
 import { useLocalize } from '../../context/localize'
+import './Topics.scss'
 
 export const NavTopics = (props: { topics: Topic[] }) => {
   const { t, lang } = useLocalize()

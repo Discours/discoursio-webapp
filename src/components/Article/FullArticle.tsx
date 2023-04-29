@@ -34,7 +34,7 @@ interface MediaItem {
 
 const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
   const { t } = useLocalize()
-  console.log('!!! test:')
+
   return (
     <>
       <Switch fallback={<a href={props.media.url}>{t('Cannot show this media type')}</a>}>

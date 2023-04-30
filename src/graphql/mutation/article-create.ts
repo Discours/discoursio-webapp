@@ -5,7 +5,7 @@ export default gql`
     createShout(inp: $shout) {
       error
       shout {
-        id
+        _id: slug
         slug
         title
         subtitle

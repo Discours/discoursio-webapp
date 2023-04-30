@@ -47,3 +47,17 @@
   user-select: none;
   white-space: nowrap;
 }
+
+.embed-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: #f1f1f1;
+  margin: 4rem 0;
+
+  iframe {
+    border: none;
+    overflow: hidden;
+  }
+}

@@ -1,5 +1,5 @@
 import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
-import type { Author, Shout } from '../../graphql/types.gen'
+import type { Author, Shout, Topic } from '../../graphql/types.gen'
 import { Row1 } from '../Feed/Row1'
 import { Row2 } from '../Feed/Row2'
 import { AuthorFull } from '../Author/Full'
@@ -19,6 +19,7 @@ import { apiClient } from '../../utils/apiClient'
 import { Comment } from '../Article/Comment'
 import { useLocalize } from '../../context/localize'
 import { AuthorRatingControl } from '../Author/AuthorRatingControl'
+import { TopicCard } from '../Topic/Card'
 
 type AuthorProps = {
   shouts: Shout[]
@@ -27,7 +28,17 @@ type AuthorProps = {
 }
 
 export type AuthorPageSearchParams = {
-  by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'followed' | 'about' | 'popular'
+  by:
+    | ''
+    | 'viewed'
+    | 'rating'
+    | 'commented'
+    | 'recent'
+    | 'subscribed-authors'
+    | 'subscribed-topics'
+    | 'followers'
+    | 'about'
+    | 'popular'
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -35,47 +46,56 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: AuthorProps) => {
   const { t } = useLocalize()
-  const { sortedArticles } = useArticlesStore({
-    shouts: props.shouts
-  })
+  const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
+  const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
+  const author = authorEntities()[props.authorSlug]
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
-  const author = createMemo(() => authorEntities()[props.authorSlug])
   const [followers, setFollowers] = createSignal<Author[]>([])
+  const [followingUsers, setFollowingUsers] = createSignal<Author[]>([])
+  const [subscribedTopics, setSubscribedTopics] = createSignal<Topic[]>([])
+
   onMount(async () => {
     try {
-      const authorSubscribers = await apiClient.getAuthorFollowers({ slug: props.author.slug })
-      setFollowers(authorSubscribers)
+      const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
+      setFollowers(userSubscribers)
     } catch (error) {
-      console.log('[getAuthorSubscribers]', error)
+      console.log('[getAuthorFollowers]', error)
     }
-  })
 
-  const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
+    try {
+      const authorSubscriptionsUsers = await apiClient.getAuthorFollowingUsers({ slug: props.authorSlug })
+      setFollowingUsers(authorSubscriptionsUsers)
+    } catch (error) {
+      console.log('[getAuthorFollowingUsers]', error)
+    }
 
-  onMount(() => {
+    try {
+      const authorSubscriptionsTopics = await apiClient.getAuthorFollowingTopics({ slug: props.authorSlug })
+      setSubscribedTopics(authorSubscriptionsTopics)
+    } catch (error) {
+      console.log('[getAuthorFollowing]', error)
+    }
+
     if (!searchParams().by) {
       changeSearchParam('by', 'rating')
+    }
+
+    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
+      await loadMore()
     }
   })
 
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
-      filters: { author: author().slug },
+      filters: { author: props.authorSlug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })
     setIsLoadMoreButtonVisible(hasMore)
     restoreScrollPosition()
   }
-
-  onMount(async () => {
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore()
-    }
-  })
 
   // TODO: use title
   // const title = createMemo(() => {
@@ -91,6 +111,7 @@ export const AuthorView = (props: AuthorProps) => {
   )
 
   const [commented, setCommented] = createSignal([])
+
   createEffect(async () => {
     if (searchParams().by === 'commented') {
       try {
@@ -107,7 +128,7 @@ export const AuthorView = (props: AuthorProps) => {
   return (
     <div class="author-page">
       <div class="wide-container">
-        <AuthorFull author={author()} />
+        <AuthorFull author={author} />
         <div class="row group__controls">
           <div class="col-md-16">
             <ul class="view-switcher">
@@ -116,9 +137,19 @@ export const AuthorView = (props: AuthorProps) => {
                   {t('Publications')}
                 </button>
               </li>
-              <li classList={{ selected: searchParams().by === 'followed' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'followed')}>
+              <li classList={{ selected: searchParams().by === 'followers' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'followers')}>
                   {t('Followers')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'subscribed-authors' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'subscribed-authors')}>
+                  {t('Author subscriptions')}
+                </button>
+              </li>
+              <li classList={{ selected: searchParams().by === 'subscribed-topics' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'subscribed-topics')}>
+                  {t('Topic subscriptions')}
                 </button>
               </li>
               <li classList={{ selected: searchParams().by === 'commented' }}>
@@ -126,13 +157,6 @@ export const AuthorView = (props: AuthorProps) => {
                   {t('Comments')}
                 </button>
               </li>
-              {/*
-                <li classList={{ selected: searchParams().by === 'popular' }}>
-                  <button type="button" onClick={() => changeSearchParam('by', 'popular')}>
-                    Популярное
-                  </button>
-                </li>
-                */}
               <li classList={{ selected: searchParams().by === 'about' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'about')}>
                   {t('About myself')}
@@ -197,9 +221,7 @@ export const AuthorView = (props: AuthorProps) => {
       >
         <Match when={searchParams().by === 'about'}>
           <div class="wide-container">
-            <Show when={author().bio}>
-              <p>{author().bio}</p>
-            </Show>
+            <p>{author.bio}</p>
           </div>
         </Match>
         <Match when={searchParams().by === 'commented'}>
@@ -209,10 +231,36 @@ export const AuthorView = (props: AuthorProps) => {
             </ul>
           </div>
         </Match>
-        <Match when={searchParams().by === 'followed'}>
+        <Match when={searchParams().by === 'subscribed-topics'}>
+          <div class="wide-container">
+            <div class="row">
+              <For each={subscribedTopics()}>
+                {(topic) => (
+                  <div class="col-md-12 col-lg-8">
+                    <TopicCard compact iconButton isTopicInRow topic={topic} />
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+        </Match>
+        <Match when={searchParams().by === 'followers'}>
           <div class="wide-container">
             <div class="row">
               <For each={followers()}>
+                {(follower: Author) => (
+                  <div class="col-md-6 col-lg-4">
+                    <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+        </Match>
+        <Match when={searchParams().by === 'subscribed-authors'}>
+          <div class="wide-container">
+            <div class="row">
+              <For each={followingUsers()}>
                 {(follower: Author) => (
                   <div class="col-md-6 col-lg-4">
                     <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />

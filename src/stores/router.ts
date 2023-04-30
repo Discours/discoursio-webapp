@@ -2,7 +2,6 @@ import type { Accessor } from 'solid-js'
 import { createRouter, createSearchParams } from '@nanostores/router'
 import { isServer } from 'solid-js/web'
 import { useStore } from '@nanostores/solid'
-import { getPageLoadManagerPromise } from '../utils/pageLoadManager'
 
 export const ROUTES = {
   home: '/',
@@ -105,33 +104,9 @@ const handleClientRouteLinkClick = async (event) => {
       top: 0,
       left: 0
     })
-
     return
   }
-
-  await getPageLoadManagerPromise()
-
-  const images = document.querySelectorAll('img')
-
-  let imagesLoaded = 0
-
-  const imageLoadEventHandler = () => {
-    imagesLoaded++
-    if (imagesLoaded === images.length) {
-      scrollToHash(url.hash)
-      images.forEach((image) => image.removeEventListener('load', imageLoadEventHandler))
-      images.forEach((image) => image.removeEventListener('error', imageLoadEventHandler))
-    }
-  }
-
-  images.forEach((image) => {
-    if (image.complete) {
-      imagesLoaded++
-    }
-
-    image.addEventListener('load', imageLoadEventHandler)
-    image.addEventListener('error', imageLoadEventHandler)
-  })
+  scrollToHash(url.hash)
 }
 
 export const initRouter = (pathname: string, search: Record<string, string>) => {

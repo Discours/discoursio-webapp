@@ -14,6 +14,7 @@ import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { getPagePath } from '@nanostores/router'
 import { Button } from '../_shared/Button'
+import { useEditorContext } from '../../context/editor'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -27,6 +28,10 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
   const { session, isSessionLoaded, isAuthenticated } = useSession()
 
+  const {
+    actions: { toggleEditorPanel }
+  } = useEditorContext()
+
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
 
   const handleBellIconClick = (event: Event) => {
@@ -36,7 +41,6 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
       showModal('auth')
       return
     }
-
     toggleWarnings()
   }
 

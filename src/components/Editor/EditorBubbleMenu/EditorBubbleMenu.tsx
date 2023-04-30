@@ -5,7 +5,8 @@ import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
-import { LinkForm } from './LinkForm'
+import { InlineForm } from '../InlineForm'
+import validateUrl from '../../../utils/validateUrl'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -55,12 +56,37 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
     setListBubbleOpen((prev) => !prev)
   }
 
+  const handleLinkFormSubmit = (value: string) => {
+    props.editor.chain().focus().setLink({ href: value }).run()
+  }
+
+  const currentUrl = createEditorTransaction(
+    () => props.editor,
+    (editor) => {
+      return (editor && editor.getAttributes('link').href) || ''
+    }
+  )
+
+  const handleClearLinkForm = () => {
+    if (currentUrl()) {
+      props.editor.chain().focus().unsetLink().run()
+    }
+    setLinkEditorOpen(false)
+  }
+
   return (
     <>
       <div ref={props.ref} class={styles.bubbleMenu}>
         <Switch>
           <Match when={linkEditorOpen()}>
-            <LinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
+            <InlineForm
+              variant="inBubble"
+              initialValue={currentUrl() ?? ''}
+              onClear={handleClearLinkForm}
+              validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
+              onSubmit={handleLinkFormSubmit}
+              onClose={() => setLinkEditorOpen(false)}
+            />
           </Match>
           <Match when={!linkEditorOpen()}>
             <>

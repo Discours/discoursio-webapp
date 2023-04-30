@@ -186,9 +186,27 @@ img {
       }
     }
   }
+}
+
+.shoutStatsItemInner {
+  cursor: pointer;
+  margin: -0.3em -0.3em 0;
+  padding: 0.3em;
+
+  .icon {
+    margin-right: 0;
+  }
+
+  .iconEdit {
+    margin-right: 0.3em;
+  }
 
   &:hover {
+    background: #000;
     cursor: pointer;
+    img {
+      filter: invert(1);
+    }
   }
 }
 

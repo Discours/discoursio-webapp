@@ -150,9 +150,13 @@ export const ProfileSettingsPage = () => {
 
                     <h4>{t('Introduce')}</h4>
                     <div class="pretty-form__item">
-                      <textarea name="presentation" id="presentation" placeholder={t('Introduce')}>
-                        {form.bio}
-                      </textarea>
+                      <textarea
+                        name="bio"
+                        id="bio"
+                        placeholder={t('Introduce')}
+                        value={form.bio}
+                        onChange={(event) => updateFormField('bio', event.currentTarget.value)}
+                      />
                       <label for="presentation">{t('Introduce')}</label>
                     </div>
 

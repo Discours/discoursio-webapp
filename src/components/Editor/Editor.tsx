@@ -1,3 +1,4 @@
+import { createEffect } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import { Blockquote } from '@tiptap/extension-blockquote'
@@ -19,7 +20,6 @@ import { HardBreak } from '@tiptap/extension-hard-break'
 import { Heading } from '@tiptap/extension-heading'
 import { Highlight } from '@tiptap/extension-highlight'
 import { Link } from '@tiptap/extension-link'
-import { Youtube } from '@tiptap/extension-youtube'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
 import { Image } from '@tiptap/extension-image'
@@ -37,6 +37,8 @@ import { IndexeddbPersistence } from 'y-indexeddb'
 import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
+import { Embed } from './extensions/embed'
+import { useEditorContext } from '../../context/editor'
 
 type EditorProps = {
   shoutSlug: string
@@ -128,7 +130,7 @@ export const Editor = (props: EditorProps) => {
       HardBreak,
       Highlight,
       Image,
-      Youtube,
+      Embed,
       TrailingNode,
       BubbleMenu.configure({
         element: bubbleMenuRef.current
@@ -141,6 +143,22 @@ export const Editor = (props: EditorProps) => {
       })
     ]
   }))
+
+  const html = useEditorHTML(() => editor())
+
+  const {
+    actions: { countWords }
+  } = useEditorContext()
+
+  createEffect(() => {
+    props.onChange(html())
+    if (html()) {
+      countWords({
+        characters: editor().storage.characterCount.characters(),
+        words: editor().storage.characterCount.words()
+      })
+    }
+  })
 
   return (
     <>

@@ -13,7 +13,7 @@ export const Block6 = (props: { articles: Shout[] }) => {
 
   return (
     <>
-      <For each={dice()}>{(c: (ppp: Shout[]) => JSX.Element) => c(props.articles)}</For>
+      <For each={dice()}>{(c: () => JSX.Element) => c(props.articles)}</For>
     </>
   )
 }

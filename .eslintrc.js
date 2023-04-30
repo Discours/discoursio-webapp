@@ -27,7 +27,7 @@ module.exports = {
         // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
       rules: {
-        '@typescript-eslint/no-unused-vars': [
+        'no-unused-vars': [
           'warn',
           {
             argsIgnorePattern: '^_',
@@ -77,7 +77,14 @@ module.exports = {
     eqeqeq: 'error',
     'no-param-reassign': 'error',
     'no-nested-ternary': 'error',
-    'no-shadow': 'error'
+    'no-shadow': 'error',
+    'no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^log$'
+      }
+    ]
   },
   settings: {
     'import/resolver': {

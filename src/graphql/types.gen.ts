@@ -247,6 +247,7 @@ export type MutationMarkAsReadArgs = {
 
 export type MutationPublishShoutArgs = {
   inp: ShoutInput
+  slug: Scalars['String']
 }
 
 export type MutationRateUserArgs = {

@@ -130,10 +130,11 @@
   display: inline-flex;
   font-weight: 500;
   position: relative;
-  //flex: 1 100% !important;
+
+  // flex: 1 100% !important;
 
   // replace row > * selector to remove !important
-  //width: auto !important;
+  // width: auto !important;
 
   @include media-breakpoint-down(md) {
     flex: 1;
@@ -142,9 +143,10 @@
 }
 
 .mainNavigationWrapper {
+  @include font-size(1.7rem);
+
   padding-left: 0;
   position: relative;
-  @include font-size(1.7rem);
 
   @include media-breakpoint-down(md) {
     display: none;
@@ -513,8 +515,9 @@
     }
 
     .textLabel {
+      // padding: 0 1.2rem;
+
       display: inline;
-      //padding: 0 1.2rem;
       position: relative;
       z-index: 1;
     }

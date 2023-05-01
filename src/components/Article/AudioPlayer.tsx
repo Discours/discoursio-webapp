@@ -14,7 +14,7 @@ export default (props: { shout: Shout }) => {
     return []
   })
   let audioRef: HTMLAudioElement
-  const [currentTrack, setCurrentTrack] = createSignal(media()[0])
+  const [currentTrack] = createSignal(media()[0])
   const [paused, setPaused] = createSignal(true)
   const togglePlayPause = () => setPaused(!paused())
   const playMedia = (m: MediaItem) => {

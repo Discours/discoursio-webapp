@@ -85,9 +85,9 @@
   }
 
   blockquote {
-    border-left: 2px solid;
     @include font-size(1.6rem);
 
+    border-left: 2px solid;
     margin: 1.5em 0;
     padding-left: 1.6em;
   }
@@ -287,10 +287,7 @@ li.ProseMirror-selectednode {
 li.ProseMirror-selectednode::after {
   content: '';
   position: absolute;
-  left: -32px;
-  right: -2px;
-  top: -2px;
-  bottom: -2px;
+  inset: -2px -2px -2px -32px;
   border: 2px solid #8cf;
   pointer-events: none;
 }

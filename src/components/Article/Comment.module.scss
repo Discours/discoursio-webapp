@@ -7,7 +7,7 @@
 
   &.isNew {
     border-radius: 6px;
-    background: rgba(38, 56, 217, 0.05);
+    background: rgb(38 56 217 / 5%);
   }
 
   @include media-breakpoint-down(sm) {
@@ -178,6 +178,7 @@
   font-size: 1.2rem;
   margin-bottom: 4px;
   color: rgb(0 0 0 / 30%);
+
   @include font-size(1.2rem);
 
   .date {
@@ -189,6 +190,7 @@
       margin-right: 0.5rem;
       vertical-align: middle;
     }
+
     @include media-breakpoint-down(md) {
       margin-left: 1rem;
     }

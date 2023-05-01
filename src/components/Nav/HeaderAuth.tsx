@@ -7,14 +7,13 @@ import { createMemo, createSignal, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
-import type { Author } from '../../graphql/types.gen'
 import { showModal, useWarningsStore } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { getPagePath } from '@nanostores/router'
 import { Button } from '../_shared/Button'
-import { useEditorContext } from '../../context/editor'
+// import { useEditorContext } from '../../context/editor'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -28,9 +27,9 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
   const { session, isSessionLoaded, isAuthenticated } = useSession()
 
-  const {
-    actions: { toggleEditorPanel }
-  } = useEditorContext()
+  // const {
+  //   actions: { toggleEditorPanel }
+  // } = useEditorContext()
 
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
 
@@ -49,6 +48,12 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
   const showSaveButton = createMemo(() => isAuthenticated() && isEditorPage())
   const showCreatePostButton = createMemo(() => isAuthenticated() && !isEditorPage())
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleBurgerButtonClick = () => {
+    // TODO: implement me
+    console.log('Burger clicked')
+  }
 
   return (
     <ShowOnlyOnClient>
@@ -100,7 +105,11 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button value={<Icon name="burger" />} variant={'outline'} onClick={() => {}} />
+                <Button
+                  value={<Icon name="burger" />}
+                  variant={'outline'}
+                  onClick={handleBurgerButtonClick}
+                />
               </div>
             </Show>
 

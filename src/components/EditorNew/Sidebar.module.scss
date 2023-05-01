@@ -5,10 +5,10 @@
 }
 
 .sidebarContainer {
-  display: none; // режим отладки
-  color: rgb(255 255 255 / 50%);
   @include font-size(1.6rem);
 
+  display: none; // режим отладки
+  color: rgb(255 255 255 / 50%);
   overflow: hidden;
   position: relative;
   top: 0;

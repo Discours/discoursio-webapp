@@ -15,10 +15,10 @@
   }
 
   input {
-    border: none;
-    border-bottom: 1px solid #ccc;
     @include font-size(4rem);
 
+    border: none;
+    border-bottom: 1px solid #ccc;
     height: 100%;
   }
 

@@ -1,5 +1,5 @@
 import type { Author } from '../../graphql/types.gen'
-import { AuthorCard } from './Card'
+import { AuthorCard } from './AuthorCard'
 import './Full.scss'
 
 export const AuthorFull = (props: { author: Author }) => {

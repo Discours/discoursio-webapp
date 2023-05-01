@@ -253,6 +253,34 @@ export const apiClient = {
     console.debug('[updateArticle]:', response.data)
     return response.data.updateArticle.shout
   },
+  publishDraft: async (): Promise<Shout> => {
+    console.log('publishDraft')
+    return {
+      authors: undefined,
+      body: '',
+      community: '',
+      cover: '',
+      createdAt: undefined,
+      deletedAt: undefined,
+      deletedBy: undefined,
+      id: 0,
+      lang: '',
+      layout: '',
+      mainTopic: '',
+      media: '',
+      publishedAt: undefined,
+      slug: '',
+      stat: undefined,
+      subtitle: '',
+      title: '',
+      topics: undefined,
+      updatedAt: undefined,
+      updatedBy: undefined,
+      versionOf: '',
+      visibility: ''
+    }
+  },
+
   createReaction: async (input: ReactionInput) => {
     const response = await privateGraphQLClient.mutation(reactionCreate, { reaction: input }).toPromise()
     console.debug('[createReaction]:', response)

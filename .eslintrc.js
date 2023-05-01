@@ -27,7 +27,7 @@ module.exports = {
         // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
       rules: {
-        'no-unused-vars': [
+        '@typescript-eslint/no-unused-vars': [
           'warn',
           {
             argsIgnorePattern: '^_',
@@ -68,7 +68,7 @@ module.exports = {
     'unicorn/prefer-dom-node-append': 'off', // FIXME
     'unicorn/prefer-top-level-await': 'warn',
     'unicorn/consistent-function-scoping': 'warn',
-    'sonarjs/no-duplicate-string': 'warn',
+    'sonarjs/no-duplicate-string': ['warn', 5],
 
     // Promise
     // 'promise/catch-or-return': 'off',  // Should be enabled
@@ -77,14 +77,7 @@ module.exports = {
     eqeqeq: 'error',
     'no-param-reassign': 'error',
     'no-nested-ternary': 'error',
-    'no-shadow': 'error',
-    'no-unused-vars': [
-      'warn',
-      {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^log$'
-      }
-    ]
+    'no-shadow': 'error'
   },
   settings: {
     'import/resolver': {

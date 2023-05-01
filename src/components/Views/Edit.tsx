@@ -55,12 +55,7 @@ export const EditView = (props: EditViewProps) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault()
 
-    const article = await apiClient.updateArticle({
-      article: {
-        slug: props.shout.slug,
-        visibility: 'community'
-      }
-    })
+    const article = await apiClient.publishDraft()
 
     openPage(router, 'article', { slug: article.slug })
   }

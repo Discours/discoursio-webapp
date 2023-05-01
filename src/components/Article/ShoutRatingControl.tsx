@@ -1,6 +1,6 @@
 import styles from './ShoutRatingControl.module.scss'
 import { clsx } from 'clsx'
-import { createMemo, For } from 'solid-js'
+import { createMemo } from 'solid-js'
 import { ReactionKind, Shout } from '../../graphql/types.gen'
 import { loadShout } from '../../stores/zine/articles'
 import { useSession } from '../../context/session'

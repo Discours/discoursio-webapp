@@ -1,6 +1,6 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
-import { AuthorCard } from '../Author/Card'
+import { AuthorCard } from '../Author/AuthorCard'
 import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
@@ -13,7 +13,7 @@ import { useSession } from '../../context/session'
 import VideoPlayer from './VideoPlayer'
 import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
-import { router } from '../../stores/router'
+import { router, useRouter } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
 import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
@@ -77,7 +77,8 @@ export const FullArticle = (props: ArticleProps) => {
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
-  const bookmark = (ev) => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleBookmarkButtonClick = (ev) => {
     // TODO: implement bookmark clicked
     ev.preventDefault()
   }
@@ -97,14 +98,14 @@ export const FullArticle = (props: ArticleProps) => {
       behavior: 'smooth'
     })
   }
-  const { searchParams } = useRouter()
+  const { searchParams, changeSearchParam } = useRouter()
 
   createEffect(() => {
     if (props.scrollToComments) {
       scrollToComments()
     }
   })
-  const { changeSearchParam } = useRouter()
+
   createEffect(() => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
@@ -228,7 +229,7 @@ export const FullArticle = (props: ArticleProps) => {
                 />
               </div>
 
-              <div class={styles.shoutStatsItem} onClick={bookmark}>
+              <div class={styles.shoutStatsItem} onClick={handleBookmarkButtonClick}>
                 <div class={styles.shoutStatsItemInner}>
                   <Icon name="bookmark" class={styles.icon} />
                 </div>

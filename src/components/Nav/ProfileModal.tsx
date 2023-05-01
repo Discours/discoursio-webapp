@@ -1,4 +1,4 @@
-import { AuthorCard } from '../Author/Card'
+import { AuthorCard } from '../Author/AuthorCard'
 import type { Author } from '../../graphql/types.gen'
 
 import { translit } from '../../utils/ru2en'

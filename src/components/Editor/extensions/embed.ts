@@ -1,7 +1,4 @@
 import { mergeAttributes, Node } from '@tiptap/core'
-import { NodeRange } from 'prosemirror-model'
-import { insert } from 'solid-js/web'
-import { TextSelection } from 'prosemirror-state'
 
 export interface IframeOptions {
   allowFullscreen: boolean
@@ -48,7 +45,7 @@ export const Embed = Node.create<IframeOptions>({
       const iframe = document.createElement('iframe')
       iframe.width = node.attrs.width
       iframe.height = node.attrs.height
-      iframe.allowfullscreen = node.attrs.allowfullscreen
+      iframe.allowFullscreen = node.attrs.allowFullscreen
       iframe.src = node.attrs.src
       div.append(iframe)
       return {

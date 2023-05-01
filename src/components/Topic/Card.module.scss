@@ -24,9 +24,9 @@
 }
 
 .topicTitle {
-  font-weight: bold;
   @include font-size(2.2rem);
 
+  font-weight: bold;
   margin-bottom: 1.2rem;
   margin-top: 0.5rem !important;
 }

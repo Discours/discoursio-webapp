@@ -2,7 +2,7 @@ import type { i18n } from 'i18next'
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createEffect, createSignal, Show, useContext } from 'solid-js'
 import { useRouter } from '../stores/router'
-import i18next from 'i18next'
+import i18next, { changeLanguage, t } from 'i18next'
 import Cookie from 'js-cookie'
 
 type LocalizeContextType = {
@@ -30,13 +30,13 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
 
     const lng: Language = searchParams().lng === 'en' ? 'en' : 'ru'
 
-    i18next.changeLanguage(lng)
+    changeLanguage(lng)
     setLang(lng)
     Cookie.set('lng', lng)
     changeSearchParam('lng', null)
   })
 
-  const value: LocalizeContextType = { t: i18next.t, lang, setLang }
+  const value: LocalizeContextType = { t, lang, setLang }
 
   return (
     <LocalizeContext.Provider value={value}>

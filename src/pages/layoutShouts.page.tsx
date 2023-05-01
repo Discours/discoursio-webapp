@@ -16,7 +16,7 @@ import { Beside } from '../components/Feed/Beside'
 import Slider from '../components/_shared/Slider'
 import { Row1 } from '../components/Feed/Row1'
 import styles from '../styles/Topic.module.scss'
-import { ArticleCard } from '../components/Feed/Card'
+import { ArticleCard } from '../components/Feed/ArticleCard'
 import { useLocalize } from '../context/localize'
 
 export const PRERENDERED_ARTICLES_COUNT = 21
@@ -27,14 +27,16 @@ export const LayoutShoutsPage = (props: PageProps) => {
   const getLayout = createMemo<LayoutType>(() => {
     const { page: getPage } = useRouter()
     const page = getPage()
-    if (page.route !== 'expo') throw new Error('ts guard')
+    if (page.route !== 'expo') {
+      throw new Error('ts guard')
+    }
     const { layout } = page.params
     return layout as LayoutType
   })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { sortedLayoutShouts, loadLayoutShoutsBy } = useLayoutsStore(getLayout(), props.layoutShouts)
   const sortedArticles = createMemo<Shout[]>(() => sortedLayoutShouts().get(getLayout()) || [])
-  const loadMoreLayout = async (kind: LayoutType) => {
+  const loadMoreLayout = async (_kind: LayoutType) => {
     saveScrollPosition()
     const { hasMore } = await loadLayoutShoutsBy({
       // filters: { layout: kind },

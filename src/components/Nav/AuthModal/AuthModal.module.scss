@@ -33,12 +33,12 @@
 }
 
 .authImage {
+  @include font-size(1.5rem);
+
   background: #141414 url('/auth-page.jpg') center no-repeat;
   background-size: cover;
   color: #fff;
   display: flex;
-  @include font-size(1.5rem);
-
   padding: 3em;
   position: relative;
 
@@ -81,8 +81,9 @@
 }
 
 .disclaimer {
-  color: #9fa1a7;
   @include font-size(1.2rem);
+
+  color: #9fa1a7;
 }
 
 .authActions {

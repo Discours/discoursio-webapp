@@ -1,8 +1,7 @@
-import { createMemo, createSignal, For, lazy, onMount, Show, Suspense } from 'solid-js'
+import { createSignal, For, onMount, Show } from 'solid-js'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useSession } from '../context/session'
 import { Shout } from '../graphql/types.gen'
-import { useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
 
 export const DraftsPage = () => {

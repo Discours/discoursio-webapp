@@ -22,7 +22,7 @@ import {
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-import { ArticleCard } from '../Feed/Card'
+import { ArticleCard } from '../Feed/ArticleCard'
 import { useLocalize } from '../../context/localize'
 
 type HomeProps = {

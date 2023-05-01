@@ -1,7 +1,5 @@
 import styles from './InlineForm.module.scss'
 import { Icon } from '../../_shared/Icon'
-import { createEditorTransaction } from 'solid-tiptap'
-import type { Editor } from '@tiptap/core'
 import { createSignal, Show } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { clsx } from 'clsx'
@@ -50,7 +48,7 @@ export const InlineForm = (props: Props) => {
   return (
     <div
       class={clsx(styles.InlineForm, {
-        [styles.inBubble]: props.variant === 'inBubble',
+        // [styles.inBubble]: props.variant === 'inBubble',
         [styles.inFloating]: props.variant === 'inFloating'
       })}
     >

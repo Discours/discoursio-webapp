@@ -35,6 +35,7 @@ import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from '../pages/profile/profileSettings.page'
 import { ProfileSecurityPage } from '../pages/profile/profileSecurity.page'
 import { ProfileSubscriptionsPage } from '../pages/profile/profileSubscriptions.page'
+import { DraftsPage } from '../pages/drafts.page'
 import { SnackbarProvider } from '../context/snackbar'
 import { LocalizeProvider } from '../context/localize'
 import { EditorProvider } from '../context/editor'
@@ -49,6 +50,7 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   create: CreatePage,
   edit: EditPage,
   editSettings: EditPage,
+  drafts: DraftsPage,
   home: HomePage,
   topics: AllTopicsPage,
   topic: TopicPage,

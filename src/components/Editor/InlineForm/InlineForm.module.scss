@@ -2,7 +2,7 @@
   position: relative;
 
   &.inBubble {
-    //...
+    // ...
   }
 
   &.inFloating {
@@ -15,6 +15,7 @@
 
     button {
       opacity: 1;
+
       &:disabled,
       &:disabled:hover {
         opacity: 0.3;
@@ -24,8 +25,7 @@
 
   .form {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     padding: 6px 11px;
 
     input {
@@ -39,6 +39,7 @@
       &::placeholder {
         color: rgba(#000, 0.3);
       }
+
       &:focus {
         outline: none;
       }

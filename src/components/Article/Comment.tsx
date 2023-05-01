@@ -1,6 +1,6 @@
 import styles from './Comment.module.scss'
 import { Icon } from '../_shared/Icon'
-import { AuthorCard } from '../Author/Card'
+import { AuthorCard } from '../Author/AuthorCard'
 import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
 import type { Author, Reaction } from '../../graphql/types.gen'

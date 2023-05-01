@@ -5,11 +5,11 @@ import { useLocalize } from '../../context/localize'
 
 export type MessageActionType = 'reply' | 'copy' | 'pin' | 'forward' | 'select' | 'delete'
 
-type MessageActionsPopup = {
+type MessageActionsPopupProps = {
   actionSelect?: (selectedAction) => void
 } & Omit<PopupProps, 'children'>
 
-export const MessageActionsPopup = (props: MessageActionsPopup) => {
+export const MessageActionsPopup = (props: MessageActionsPopupProps) => {
   const [selectedAction, setSelectedAction] = createSignal<MessageActionType | null>(null)
   const { t } = useLocalize()
   const actions: { name: string; action: MessageActionType }[] = [

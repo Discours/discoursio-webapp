@@ -169,11 +169,11 @@
 }
 
 .buttonWrite {
+  @include font-size(1.5rem);
+
   color: #000;
   display: inline-flex;
   transition: background-color 0.3s, color 0.3s;
-
-  @include font-size(1.5rem);
 
   &:hover {
     background: #000;
@@ -208,8 +208,9 @@
   }
 
   .authorAbout {
-    color: #696969;
     @include font-size(1.7rem);
+
+    color: #696969;
   }
 
   .authorSubscribe {

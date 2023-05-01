@@ -6,11 +6,11 @@ import { useLocalize } from '../../../context/localize'
 import styles from './Panel.module.scss'
 import { useEditorContext } from '../../../context/editor'
 
-type Props = {
-  // isVisible: boolean
-}
+// type Props = {
+//   // isVisible: boolean
+// }
 
-export const Panel = (props: Props) => {
+export const Panel = () => {
   const { t } = useLocalize()
   const {
     isEditorPanelVisible,

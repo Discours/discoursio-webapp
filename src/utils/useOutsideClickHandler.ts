@@ -1,9 +1,11 @@
 import { onCleanup, onMount } from 'solid-js'
 
 type Options = {
-  predicate?: () => boolean
   containerRef: { current: HTMLElement }
   handler: () => void
+  // if predicate is present
+  // handler is called only if predicate function returns true
+  predicate?: () => boolean
 }
 
 export const useOutsideClickHandler = (options: Options) => {

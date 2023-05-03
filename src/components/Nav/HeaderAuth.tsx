@@ -13,7 +13,7 @@ import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { getPagePath } from '@nanostores/router'
 import { Button } from '../_shared/Button'
-// import { useEditorContext } from '../../context/editor'
+import { useEditorContext } from '../../context/editor'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -27,9 +27,9 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
   const { session, isSessionLoaded, isAuthenticated } = useSession()
 
-  // const {
-  //   actions: { toggleEditorPanel }
-  // } = useEditorContext()
+  const {
+    actions: { toggleEditorPanel }
+  } = useEditorContext()
 
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
 
@@ -43,16 +43,16 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     toggleWarnings()
   }
 
-  const isEditorPage = createMemo(() => page().route === 'create' || page().route === 'edit')
+  const isEditorPage = createMemo(
+    () => page().route === 'create' || page().route === 'edit' || page().route === 'editSettings'
+  )
 
   const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
   const showSaveButton = createMemo(() => isAuthenticated() && isEditorPage())
   const showCreatePostButton = createMemo(() => isAuthenticated() && !isEditorPage())
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleBurgerButtonClick = () => {
-    // TODO: implement me
-    console.log('Burger clicked')
+    toggleEditorPanel()
   }
 
   return (

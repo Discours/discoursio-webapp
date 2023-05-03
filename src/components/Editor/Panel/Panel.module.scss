@@ -56,18 +56,8 @@
     }
   }
 
-  .buttonWithIcon {
+  .linkWithIcon {
     margin-left: -1.6rem;
-
-    .icon {
-      filter: invert(0.5);
-      margin-right: 0.3em;
-      width: 1em;
-    }
-
-    img {
-      vertical-align: middle;
-    }
   }
 
   .stats {
@@ -90,5 +80,16 @@
 
   &.hidden {
     transform: translateX(100%);
+  }
+
+  .icon {
+    display: inline-block;
+    filter: invert(0.5);
+    margin-right: 0.3em;
+    width: 1em;
+
+    img {
+      vertical-align: bottom;
+    }
   }
 }

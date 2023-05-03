@@ -12,22 +12,6 @@
   padding: 0 4rem;
 }
 
-.saveBlock {
-  background: #f1f1f1;
-  line-height: 1.4;
-  margin-top: 6.4rem;
-  padding: 1.6rem 3.2rem;
-  text-align: center;
-
-  @include media-breakpoint-up(md) {
-    padding: 3.2rem 8rem;
-  }
-
-  .button {
-    margin: 0 divide($container-padding-x, 2);
-  }
-}
-
 .container {
   .titleInput,
   .subtitleInput {
@@ -103,28 +87,6 @@
     }
   }
 
-  .buttonWithIcon {
-    margin-left: -1.6rem;
-
-    .icon {
-      filter: invert(0.5);
-      margin-right: 0.3em;
-      width: 1em;
-    }
-
-    img {
-      vertical-align: middle;
-    }
-  }
-
-  .stats {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: flex-end;
-    margin-top: 3em;
-  }
-
   a {
     color: rgb(255 255 255 / 35%);
     font-weight: normal !important;
@@ -134,8 +96,4 @@
       color: #fff;
     }
   }
-}
-
-.asidePanelHidden {
-  transform: translateX(100%);
 }

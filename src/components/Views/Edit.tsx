@@ -8,11 +8,10 @@ import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { TopicSelect } from '../Editor/TopicSelect/TopicSelect'
 import { router, useRouter } from '../../stores/router'
-import { getPagePath, openPage } from '@nanostores/router'
+import { openPage } from '@nanostores/router'
 import { translit } from '../../utils/ru2en'
 import { Editor } from '../Editor/Editor'
-import { Button } from '../_shared/Button'
-import { Icon } from '../_shared/Icon'
+import { Panel } from '../Editor/Panel'
 
 type ShoutForm = {
   slug: string
@@ -35,7 +34,6 @@ export const EditView = (props: EditViewProps) => {
   const { page } = useRouter()
 
   const [isSlugChanged, setIsSlugChanged] = createSignal(false)
-  const [isEditorPanelOPened, setIsEditorPanelOPened] = createSignal(false)
 
   const [form, setForm] = createStore<ShoutForm>({
     slug: props.shout.slug,
@@ -77,10 +75,6 @@ export const EditView = (props: EditViewProps) => {
       setIsSlugChanged(true)
     }
     setForm('slug', slug)
-  }
-
-  const toggleEditorPanel = () => {
-    setIsEditorPanelOPened(!isEditorPanelOPened())
   }
 
   const handleSaveButtonClick = async (e) => {
@@ -137,16 +131,9 @@ export const EditView = (props: EditViewProps) => {
 
                   <Editor
                     shoutSlug={props.shout.slug}
-                    initialContent={form.body}
+                    initialContent={props.shout.body}
                     onChange={(body) => setForm('body', body)}
                   />
-
-                  <div class={styles.saveBlock}>
-                    {/*<button class={clsx('button button--outline', styles.button)}>Сохранить</button>*/}
-                    <a href={getPagePath(router, 'editSettings', { shoutSlug: props.shout.slug })}>
-                      Настройки
-                    </a>
-                  </div>
                 </div>
                 <div
                   class={clsx(styles.editSettings, {
@@ -225,113 +212,13 @@ export const EditView = (props: EditViewProps) => {
                     выглядеть на&nbsp;главной странице
                   </p>
                   <div class={styles.articlePreview} />
-
-                  <div class={styles.saveBlock}>
-                    <p>
-                      Проверьте ещё раз введённые данные, если всё верно, вы&nbsp;можете сохранить или
-                      опубликовать ваш текст
-                    </p>
-                    <a href={getPagePath(router, 'edit', { shoutSlug: props.shout.slug })}>Назад</a>
-                    <button
-                      onClick={handleSaveButtonClick}
-                      class={clsx('button button--outline', styles.button)}
-                    >
-                      Сохранить
-                    </button>
-                    <button type="submit" class={clsx('button button--submit', styles.button)}>
-                      Опубликовать
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </form>
       </div>
-
-      <aside
-        class={clsx('col-md-6', styles.asidePanel, { [styles.asidePanelHidden]: !isEditorPanelOPened() })}
-      >
-        <div>
-          <Button
-            value={<Icon name="close" />}
-            variant={'inline'}
-            class={styles.close}
-            onClick={toggleEditorPanel}
-          />
-        </div>
-
-        <section>
-          <Button value={t('Publish')} variant={'inline'} class={styles.button} />
-          <Button value={t('Save draft')} variant={'inline'} class={styles.button} />
-        </section>
-
-        <section>
-          <Button
-            value={
-              <>
-                <Icon name="eye" class={styles.icon} />
-                {t('Preview')}
-              </>
-            }
-            variant={'inline'}
-            class={clsx(styles.button, styles.buttonWithIcon)}
-          />
-          <Button
-            value={
-              <>
-                <Icon name="pencil-outline" class={styles.icon} />
-                {t('Editing')}
-              </>
-            }
-            variant={'inline'}
-            class={clsx(styles.button, styles.buttonWithIcon)}
-          />
-          <Button
-            value={
-              <>
-                <Icon name="feed-discussion" class={styles.icon} />
-                {t('FAQ')}
-              </>
-            }
-            variant={'inline'}
-            class={clsx(styles.button, styles.buttonWithIcon)}
-          />
-        </section>
-
-        <section>
-          <Button value={t('Invite co-authors')} variant={'inline'} class={styles.button} />
-          <Button value={t('Publication settings')} variant={'inline'} class={styles.button} />
-          <Button value={t('Corrections history')} variant={'inline'} class={styles.button} />
-        </section>
-
-        <section>
-          <p>
-            <a href="/how-to-write-a-good-article">Как написать хорошую статью</a>
-          </p>
-          <p>
-            <a href="#">Горячие клавиши</a>
-          </p>
-          <p>
-            <a href="#">Помощь</a>
-          </p>
-        </section>
-
-        <div class={styles.stats}>
-          <div>
-            Знаков: <em>2345</em>
-          </div>
-          <div>
-            Слов: <em>215</em>
-          </div>
-          <div>
-            Абзацев: <em>300</em>
-          </div>
-          <div>
-            Посл. изм.: <em>22.03.22 в 18:20</em>
-          </div>
-        </div>
-      </aside>
+      <Panel shoutSlug={props.shout.slug} />
     </>
   )
 }

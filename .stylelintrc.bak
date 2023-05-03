@@ -25,12 +25,6 @@
       {
         "ignorePseudoClasses": ["global", "export"]
       }
-    ],
-    "property-no-vendor-prefix": [
-      true,
-      {
-        "ignoreProperties": ["box-decoration-break"]
-      }
     ]
   },
   "defaultSeverity": "warning"

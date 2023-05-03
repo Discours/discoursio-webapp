@@ -3,11 +3,10 @@ import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 
 import { Icon } from '../_shared/Icon'
-import { createSignal, Show } from 'solid-js'
+import { createMemo, createSignal, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
-import type { Author } from '../../graphql/types.gen'
 import { showModal, useWarningsStore } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
@@ -44,12 +43,24 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     toggleWarnings()
   }
 
+  const isEditorPage = createMemo(
+    () => page().route === 'create' || page().route === 'edit' || page().route === 'editSettings'
+  )
+
+  const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
+  const showSaveButton = createMemo(() => isAuthenticated() && isEditorPage())
+  const showCreatePostButton = createMemo(() => isAuthenticated() && !isEditorPage())
+
+  const handleBurgerButtonClick = () => {
+    toggleEditorPanel()
+  }
+
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
         <div class={clsx(styles.usernav, 'col')}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
-            <Show when={page().route !== 'create'}>
+            <Show when={showCreatePostButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
@@ -58,7 +69,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               </div>
             </Show>
 
-            <Show when={isAuthenticated() && page().route !== 'create'}>
+            <Show when={showNotifications()}>
               <div class={styles.userControlItem}>
                 <a href="#" onClick={handleBellIconClick}>
                   <div>
@@ -68,7 +79,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               </div>
             </Show>
 
-            <Show when={isAuthenticated() && page().route === 'create'}>
+            <Show when={showSaveButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <Button
                   value={
@@ -97,7 +108,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                 <Button
                   value={<Icon name="burger" />}
                   variant={'outline'}
-                  onClick={() => toggleEditorPanel()}
+                  onClick={handleBurgerButtonClick}
                 />
               </div>
             </Show>
@@ -136,7 +147,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                   <div class={styles.userControlItem}>
                     <button class={styles.button}>
                       <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
-                        <Userpic user={session().user as Author} class={styles.userpic} />
+                        <Userpic user={session().user} class={styles.userpic} />
                       </div>
                     </button>
                   </div>

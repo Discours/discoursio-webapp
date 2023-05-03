@@ -23,12 +23,14 @@ type InboxSearchParams = {
   initChat: string
   chat: string
 }
-// const userSearch = (array: Author[], keyword: string) => {
-//   const searchTerm = keyword.toLowerCase()
-//   return array.filter((value) => {
-//     return value.name.toLowerCase().match(new RegExp(searchTerm, 'g'))
-//   })
-// }
+
+const userSearch = (array: Author[], keyword: string) => {
+  return array.filter((value) => new RegExp(keyword.trim(), 'gi').test(value.name))
+}
+
+const handleOpenInviteModal = () => {
+  showModal('inviteToChat')
+}
 
 export const InboxView = () => {
   const { t } = useLocalize()
@@ -46,14 +48,15 @@ export const InboxView = () => {
   const [messageToReply, setMessageToReply] = createSignal<MessageType | null>(null)
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user.id)
+
   // Поиск по диалогам
   const getQuery = (query) => {
-    // if (query().length >= 2) {
-    //   const match = userSearch(recipients(), query())
-    //   setRecipients(match)
-    // } else {
-    //   setRecipients(cashedRecipients())
-    // }
+    if (query().length >= 2) {
+      const match = userSearch(recipients(), query())
+      setRecipients(match)
+    } else {
+      // setRecipients(cashedRecipients())
+    }
   }
 
   let chatWindow
@@ -136,10 +139,6 @@ export const InboxView = () => {
     }
   })
 
-  const handleOpenInviteModal = () => {
-    showModal('inviteToChat')
-  }
-
   const chatsToShow = () => {
     const sorted = chats().sort((a, b) => {
       return b.updatedAt - a.updatedAt
@@ -158,7 +157,10 @@ export const InboxView = () => {
   }
 
   const handleKeyDown = async (event) => {
-    if (event.keyCode === 13 && event.shiftKey) return
+    if (event.keyCode === 13 && event.shiftKey) {
+      return
+    }
+
     if (event.keyCode === 13 && !event.shiftKey && postMessageText()?.trim().length > 0) {
       event.preventDefault()
       handleSubmit()

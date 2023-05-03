@@ -3,7 +3,7 @@ import type { Author } from '../../graphql/types.gen'
 
 import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { useRouter } from '../../stores/router'
-import { AuthorCard } from '../Author/Card'
+import { AuthorCard } from '../Author/AuthorCard'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
 import { translit } from '../../utils/ru2en'

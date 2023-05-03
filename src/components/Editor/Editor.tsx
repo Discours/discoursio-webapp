@@ -29,6 +29,7 @@ import { TrailingNode } from './extensions/TrailingNode'
 import { EditorBubbleMenu } from './EditorBubbleMenu/EditorBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import * as Y from 'yjs'
+// import { WebrtcProvider } from 'y-webrtc'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
 import './Prosemirror.scss'
@@ -40,7 +41,7 @@ import { Embed } from './extensions/embed'
 import { useEditorContext } from '../../context/editor'
 
 type EditorProps = {
-  shoutId: number
+  shoutSlug: string
   initialContent?: string
   onChange: (text: string) => void
 }
@@ -53,7 +54,7 @@ export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
 
-  const docName = `shout-${props.shoutId}`
+  const docName = `shout-${props.shoutSlug}`
 
   if (!providers[docName]) {
     providers[docName] = new HocuspocusProvider({
@@ -88,6 +89,8 @@ export const Editor = (props: EditorProps) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
+    content: props.initialContent,
+    //onTransaction: handleEditorTransaction,
     extensions: [
       Document,
       Text,
@@ -105,18 +108,10 @@ export const Editor = (props: EditorProps) => {
       Heading.configure({
         levels: [1, 2, 3]
       }),
-      BubbleMenu.configure({
-        element: bubbleMenuRef.current
-      }),
-      FloatingMenu.configure({
-        tippyOptions: {
-          placement: 'left'
-        },
-        element: floatingMenuRef.current
-      }),
       BulletList,
       OrderedList,
       ListItem,
+      CharacterCount,
       Collaboration.configure({
         document: yDoc
       }),
@@ -135,10 +130,17 @@ export const Editor = (props: EditorProps) => {
       HardBreak,
       Highlight,
       Image,
-      TrailingNode,
       Embed,
       TrailingNode,
-      CharacterCount
+      BubbleMenu.configure({
+        element: bubbleMenuRef.current
+      }),
+      FloatingMenu.configure({
+        tippyOptions: {
+          placement: 'left'
+        },
+        element: floatingMenuRef.current
+      })
     ]
   }))
 

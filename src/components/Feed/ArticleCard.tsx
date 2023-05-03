@@ -3,7 +3,7 @@ import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
 import { Icon } from '../_shared/Icon'
-import styles from './Card.module.scss'
+import styles from './ArticleCard.module.scss'
 import { clsx } from 'clsx'
 import { CardTopic } from './CardTopic'
 import { ShoutRatingControl } from '../Article/ShoutRatingControl'
@@ -37,7 +37,6 @@ interface ArticleCardProps {
     isBeside?: boolean
   }
   article: Shout
-  scrollTo: 'comments'
 }
 
 const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string } => {

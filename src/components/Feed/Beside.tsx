@@ -1,8 +1,8 @@
 // TODO: additional entities list column + article
 
 import { For, Show } from 'solid-js'
-import { ArticleCard } from './Card'
-import { AuthorCard } from '../Author/Card'
+import { ArticleCard } from './ArticleCard'
+import { AuthorCard } from '../Author/AuthorCard'
 import { TopicCard } from '../Topic/Card'
 import styles from './Beside.module.scss'
 import type { Author, Shout, Topic, User } from '../../graphql/types.gen'

@@ -9,6 +9,7 @@
     font-size: 1.2rem;
     cursor: pointer;
     transition: opacity 0.3s ease-in-out;
+
     &:hover {
       opacity: 0.5;
     }
@@ -31,6 +32,7 @@
 
   .commentRatingControlUp {
     border-bottom: 8px solid rgb(0 0 0 / 40%);
+
     &.voted {
       border-bottom-color: #2bb452;
     }
@@ -38,6 +40,7 @@
 
   .commentRatingControlDown {
     border-top: 8px solid rgb(0 0 0 / 40%);
+
     &.voted {
       border-top-color: #d00820;
     }

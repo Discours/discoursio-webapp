@@ -1,16 +1,19 @@
-import { Show } from 'solid-js'
 import { clsx } from 'clsx'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { useLocalize } from '../../../context/localize'
 import styles from './Panel.module.scss'
 import { useEditorContext } from '../../../context/editor'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { getPagePath } from '@nanostores/router'
+import { router } from '../../../stores/router'
 
-type Props = {
-  // isVisible: boolean
+type PanelProps = {
+  shoutSlug: string
 }
 
-export const Panel = (props: Props) => {
+export const Panel = (props: PanelProps) => {
   const { t } = useLocalize()
   const {
     isEditorPanelVisible,
@@ -18,8 +21,27 @@ export const Panel = (props: Props) => {
     actions: { toggleEditorPanel }
   } = useEditorContext()
 
+  const containerRef: { current: HTMLElement } = {
+    current: null
+  }
+
+  useOutsideClickHandler({
+    containerRef,
+    predicate: () => isEditorPanelVisible(),
+    handler: () => toggleEditorPanel()
+  })
+
+  useEscKeyDownHandler(() => {
+    if (isEditorPanelVisible()) {
+      toggleEditorPanel()
+    }
+  })
+
   return (
-    <aside class={clsx('col-md-6', styles.Panel, { [styles.hidden]: !isEditorPanelVisible() })}>
+    <aside
+      ref={(el) => (containerRef.current = el)}
+      class={clsx('col-md-6', styles.Panel, { [styles.hidden]: !isEditorPanelVisible() })}
+    >
       <div class={styles.actionsHolder}>
         <Button
           value={<Icon name="close" />}
@@ -30,47 +52,50 @@ export const Panel = (props: Props) => {
       </div>
       <div class={clsx(styles.actionsHolder, styles.scrolled)}>
         <section>
-          <Button value={t('Publish')} variant={'inline'} class={styles.button} />
-          <Button value={t('Save draft')} variant={'inline'} class={styles.button} />
+          <p>
+            <a>{t('Publish')}</a>
+          </p>
+          <p>
+            <a>{t('Save draft')}</a>
+          </p>
         </section>
 
         <section>
-          <Button
-            value={
-              <>
-                <Icon name="eye" class={styles.icon} />
-                {t('Preview')}
-              </>
-            }
-            variant={'inline'}
-            class={clsx(styles.button, styles.buttonWithIcon)}
-          />
-          <Button
-            value={
-              <>
-                <Icon name="pencil-outline" class={styles.icon} />
-                {t('Editing')}
-              </>
-            }
-            variant={'inline'}
-            class={clsx(styles.button, styles.buttonWithIcon)}
-          />
-          <Button
-            value={
-              <>
-                <Icon name="feed-discussion" class={styles.icon} />
-                {t('FAQ')}
-              </>
-            }
-            variant={'inline'}
-            class={clsx(styles.button, styles.buttonWithIcon)}
-          />
+          <p>
+            <a class={styles.linkWithIcon}>
+              <Icon name="eye" class={styles.icon} />
+              {t('Preview')}
+            </a>
+          </p>
+          <p>
+            <a
+              class={styles.linkWithIcon}
+              href={getPagePath(router, 'edit', { shoutSlug: props.shoutSlug })}
+            >
+              <Icon name="pencil-outline" class={styles.icon} />
+              {t('Editing')}
+            </a>
+          </p>
+          <p>
+            <a class={styles.linkWithIcon}>
+              <Icon name="feed-discussion" class={styles.icon} />
+              {t('FAQ')}
+            </a>
+          </p>
         </section>
 
         <section>
-          <Button value={t('Invite co-authors')} variant={'inline'} class={styles.button} />
-          <Button value={t('Publication settings')} variant={'inline'} class={styles.button} />
-          <Button value={t('Corrections history')} variant={'inline'} class={styles.button} />
+          <p>
+            <a>{t('Invite co-authors')}</a>
+          </p>
+          <p>
+            <a href={getPagePath(router, 'editSettings', { shoutSlug: props.shoutSlug })}>
+              {t('Publication settings')}
+            </a>
+          </p>
+          <p>
+            <a>{t('Corrections history')}</a>
+          </p>
         </section>
 
         <section>
@@ -92,14 +117,9 @@ export const Panel = (props: Props) => {
           <div>
             {t('Words')}: <em>{wordCounter().words}</em>
           </div>
-          <Show when={wordCounter().paragraphs}>
-            <div>
-              {t('Paragraphs')}: <em>{wordCounter().paragraphs}</em>
-            </div>
-          </Show>
-          <div>
-            {t('Last rev.')}: <em>22.03.22 в 18:20</em>
-          </div>
+          {/*<div>*/}
+          {/*  {t('Last rev.')}: <em>22.03.22 в 18:20</em>*/}
+          {/*</div>*/}
         </div>
       </div>
     </aside>

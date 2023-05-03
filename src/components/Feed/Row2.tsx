@@ -1,6 +1,6 @@
 import { createComputed, createSignal, Show, For } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
-import { ArticleCard } from './Card'
+import { ArticleCard } from './ArticleCard'
 
 const x = [
   ['12', '12'],

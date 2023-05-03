@@ -1,22 +1,19 @@
-import { lazy, Show, Suspense } from 'solid-js'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { Loading } from '../components/_shared/Loading'
-import { useSession } from '../context/session'
-
-const CreateView = lazy(() => import('../components/Views/Create'))
+import { onMount } from 'solid-js'
+import { apiClient } from '../utils/apiClient'
+import { router } from '../stores/router'
+import { redirectPage } from '@nanostores/router'
 
 export const CreatePage = () => {
-  const { isAuthenticated, isSessionLoaded } = useSession()
+  onMount(async () => {
+    const shout = await apiClient.createArticle({ article: {} })
+    redirectPage(router, 'edit', { shoutSlug: shout.slug })
+  })
 
   return (
     <PageLayout>
-      <Show when={isSessionLoaded()}>
-        <Show when={isAuthenticated()} fallback="Давайте авторизуемся">
-          <Suspense fallback={<Loading />}>
-            <CreateView />
-          </Suspense>
-        </Show>
-      </Show>
+      <Loading />
     </PageLayout>
   )
 }

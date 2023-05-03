@@ -11,6 +11,7 @@ export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
   const isUpvoted = false
   const isDownvoted = false
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleRatingChange = (isUpvote: boolean) => {
     console.log('handleRatingChange', { isUpvote })
   }

@@ -1,6 +1,6 @@
 import { Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
-import { ArticleCard } from './Card'
+import { ArticleCard } from './ArticleCard'
 
 export const Row1 = (props: { article: Shout; nodate?: boolean }) => (
   <Show when={!!props.article}>

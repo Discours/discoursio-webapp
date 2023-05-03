@@ -36,10 +36,8 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         external: []
       },
-      chunkSizeWarningLimit: 812,
+      chunkSizeWarningLimit: 1024,
       target: 'esnext'
-      // FIXME ??
-      // polyfillDynamicImport: false
     }
   }
 })

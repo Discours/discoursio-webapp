@@ -12,8 +12,25 @@ type FloatingMenuProps = {
 
 const embedData = async (data) => {
   const result = await HTMLParser(data, false)
+
+  if (typeof result === 'string') {
+    return
+  }
+
   if (result && 'type' in result && result.type === 'iframe') {
     return result.attributes
+  }
+}
+
+const validateEmbed = async (value: string): Promise<string> => {
+  const iframeData = await HTMLParser(value, false)
+
+  if (typeof iframeData === 'string') {
+    return
+  }
+
+  if (iframeData && iframeData.type !== 'iframe') {
+    return
   }
 }
 
@@ -22,15 +39,8 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
 
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
-    const emb = await embedData(value)
-    props.editor.chain().focus().setIframe(emb).run()
-  }
-
-  const validateEmbed = async (value) => {
-    const iframeData = await HTMLParser(value, false)
-    if (iframeData && iframeData.type !== 'iframe') {
-      return
-    }
+    const { src } = (await embedData(value)) as { src: string }
+    props.editor.chain().focus().setIframe({ src }).run()
   }
 
   return (

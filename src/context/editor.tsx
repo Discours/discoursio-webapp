@@ -4,7 +4,6 @@ import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 type WordCounter = {
   characters: number
   words: number
-  paragraphs?: number
 }
 
 type EditorContextType = {
@@ -23,12 +22,12 @@ export function useEditorContext() {
 }
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
-  const [isEditorPanelVisible, setEditorPanelVisible] = createSignal<boolean>(false)
+  const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
     words: 0
   })
-  const toggleEditorPanel = () => setEditorPanelVisible(!isEditorPanelVisible())
+  const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const countWords = (value) => setWordCounter(value)
   const actions = {
     toggleEditorPanel,

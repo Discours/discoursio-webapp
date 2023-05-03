@@ -27,6 +27,7 @@ import { ProjectsPage } from '../pages/about/projects.page'
 import { TermsOfUsePage } from '../pages/about/termsOfUse.page'
 import { ThanksPage } from '../pages/about/thanks.page'
 import { CreatePage } from '../pages/create.page'
+import { EditPage } from '../pages/edit.page'
 import { ConnectPage } from '../pages/connect.page'
 import { InboxPage } from '../pages/inbox.page'
 import { LayoutShoutsPage } from '../pages/layoutShouts.page'
@@ -34,6 +35,7 @@ import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from '../pages/profile/profileSettings.page'
 import { ProfileSecurityPage } from '../pages/profile/profileSecurity.page'
 import { ProfileSubscriptionsPage } from '../pages/profile/profileSubscriptions.page'
+import { DraftsPage } from '../pages/drafts.page'
 import { SnackbarProvider } from '../context/snackbar'
 import { LocalizeProvider } from '../context/localize'
 import { EditorProvider } from '../context/editor'
@@ -46,7 +48,9 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   expo: LayoutShoutsPage,
   connect: ConnectPage,
   create: CreatePage,
-  createSettings: CreatePage,
+  edit: EditPage,
+  editSettings: EditPage,
+  drafts: DraftsPage,
   home: HomePage,
   topics: AllTopicsPage,
   topic: TopicPage,

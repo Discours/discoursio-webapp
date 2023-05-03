@@ -1,27 +1,5 @@
-.InlineForm {
+.LinkForm {
   position: relative;
-
-  &.inBubble {
-    // ...
-  }
-
-  &.inFloating {
-    position: absolute;
-    left: calc(100% + 1rem);
-    top: -0.8rem;
-    min-width: 64vw;
-    background: #fff;
-    box-shadow: 0 4px 10px rgba(#000, 0.25);
-
-    button {
-      opacity: 1;
-
-      &:disabled,
-      &:disabled:hover {
-        opacity: 0.3;
-      }
-    }
-  }
 
   .form {
     display: flex;

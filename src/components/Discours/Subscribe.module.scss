@@ -11,13 +11,13 @@
   }
 
   input {
+    @include font-size(2rem);
+
     background: none;
     border: none;
     border-bottom: 1px solid;
     color: #fff;
     font-family: inherit;
-    @include font-size(2rem);
-
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -30,13 +30,13 @@
   }
 
   a {
+    @include font-size(1.5rem);
+
     align-items: center;
     background: #fff;
     border: none;
     color: #000;
     display: flex;
-    @include font-size(1.5rem);
-
     padding: 0 0.5em;
   }
 

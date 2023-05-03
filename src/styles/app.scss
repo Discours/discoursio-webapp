@@ -239,10 +239,10 @@ button {
 }
 
 .button--light {
-  background-color: #f6f6f6;
-  color: #000;
   @include font-size(1.5rem);
 
+  background-color: #f6f6f6;
+  color: #000;
   font-weight: 400;
   height: auto;
   padding: 0.6rem 1.2rem 0.6rem 1rem;
@@ -324,6 +324,7 @@ button {
 .button--submit,
 .button--outline {
   @include font-size(2rem);
+
   padding: 1.6rem 2rem;
 }
 
@@ -499,8 +500,9 @@ figure {
 }
 
 figcaption {
-  color: #9fa1a7;
   @include font-size(1.2rem);
+
+  color: #9fa1a7;
 }
 
 .view-switcher {

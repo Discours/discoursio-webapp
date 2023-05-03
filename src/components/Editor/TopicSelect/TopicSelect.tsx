@@ -3,7 +3,6 @@ import { createOptions, Select } from '@thisbeyond/solid-select'
 import { useLocalize } from '../../../context/localize'
 import '@thisbeyond/solid-select/style.css'
 import './TopicSelect.scss'
-import { clone } from '../../../utils/clone'
 
 type TopicSelectProps = {
   topics: Topic[]

@@ -84,8 +84,8 @@ export const Sidebar = (props: FeedSidebarProps) => {
     <div class={styles.sidebar}>
       <ul>
         <For each={menuItems}>
-          {(item: ListItem, index) => (
-            <li key={index}>
+          {(item: ListItem) => (
+            <li>
               <a href="#">
                 <span class={styles.sidebarItemName}>
                   {item.icon && <Icon name={item.icon} class={styles.icon} />}

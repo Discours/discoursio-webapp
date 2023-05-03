@@ -54,7 +54,6 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     initialValue: null
   })
 
-  const userSlug = createMemo(() => session()?.user?.slug)
   const user = createMemo(() => session()?.user)
 
   const isAuthenticated = createMemo(() => Boolean(session()?.user?.slug))

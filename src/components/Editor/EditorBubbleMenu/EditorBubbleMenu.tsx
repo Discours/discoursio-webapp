@@ -19,7 +19,7 @@ export const EditorBubbleMenu = (props: BubbleMenuProps) => {
   const [listBubbleOpen, setListBubbleOpen] = createSignal<boolean>(false)
   const [linkEditorOpen, setLinkEditorOpen] = createSignal<boolean>(false)
 
-  const isActive = (name: string, attributes?: any) =>
+  const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
       () => props.editor,
       (editor) => {

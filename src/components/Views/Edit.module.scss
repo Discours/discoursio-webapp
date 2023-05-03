@@ -1,4 +1,46 @@
-.Panel {
+:global(.main-content) {
+  position: static;
+}
+
+.articlePreview {
+  border: 2px solid #e8e8e8;
+  min-height: 10em;
+  padding: 1rem 1.2rem;
+}
+
+.formHolder {
+  padding: 0 4rem;
+}
+
+.container {
+  .titleInput,
+  .subtitleInput {
+    border: 0;
+    outline: 0;
+    padding: 0;
+    font-size: 36px;
+
+    &::placeholder {
+      opacity: 0.3;
+      color: #000;
+    }
+  }
+
+  .titleInput {
+    font-weight: 700;
+  }
+}
+
+.editSettings,
+.edit {
+  display: none;
+
+  &.visible {
+    display: block;
+  }
+}
+
+.asidePanel {
   background: #1f1f1f;
   color: rgb(255 255 255 / 35%);
   display: flex;
@@ -7,7 +49,7 @@
   justify-content: flex-start;
   height: 100%;
   line-height: 1.4;
-  padding: $grid-gutter-width $grid-gutter-width / 2;
+  padding: $grid-gutter-width;
   position: fixed;
   transition: transform 0.3s;
   right: 0;
@@ -19,22 +61,12 @@
     margin: -1.6rem 0 0 -1.6rem;
   }
 
-  .actionsHolder {
-    padding: 0 $grid-gutter-width / 2;
-
-    &.scrolled {
-      overflow-y: auto;
-      scroll-behavior: smooth;
-    }
-  }
-
   section {
     border-bottom: 2px solid rgb(255 255 255 / 10%);
-    padding: 1.8rem 0;
 
-    &:first-child {
-      padding-top: 0;
-    }
+    // margin-bottom: 1.8rem;
+    margin-top: 1.8rem;
+    padding-bottom: 1.8rem;
 
     p {
       margin: 0.6em 0;
@@ -48,24 +80,11 @@
   .button {
     font-weight: normal;
     margin-left: -1.6rem;
-    text-align: left;
 
     &:hover {
       color: #fff;
       text-decoration: none;
     }
-  }
-
-  .linkWithIcon {
-    margin-left: -1.6rem;
-  }
-
-  .stats {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: flex-end;
-    margin-top: 3em;
   }
 
   a {
@@ -75,21 +94,6 @@
     &:hover {
       background: none;
       color: #fff;
-    }
-  }
-
-  &.hidden {
-    transform: translateX(100%);
-  }
-
-  .icon {
-    display: inline-block;
-    filter: invert(0.5);
-    margin-right: 0.3em;
-    width: 1em;
-
-    img {
-      vertical-align: bottom;
     }
   }
 }

@@ -1,10 +1,10 @@
 import { Show } from 'solid-js'
-import type { Author } from '../../graphql/types.gen'
+import type { Author, User } from '../../graphql/types.gen'
 import styles from './Userpic.module.scss'
 import { clsx } from 'clsx'
 
 interface UserpicProps {
-  user: Author
+  user: Author | User
   hasLink?: boolean
   isBig?: boolean
   class?: string

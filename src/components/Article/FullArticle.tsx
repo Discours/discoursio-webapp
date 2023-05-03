@@ -1,6 +1,6 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
-import { AuthorCard } from '../Author/Card'
+import { AuthorCard } from '../Author/AuthorCard'
 import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
@@ -77,7 +77,8 @@ export const FullArticle = (props: ArticleProps) => {
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
-  const bookmark = (ev) => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleBookmarkButtonClick = (ev) => {
     // TODO: implement bookmark clicked
     ev.preventDefault()
   }
@@ -97,14 +98,14 @@ export const FullArticle = (props: ArticleProps) => {
       behavior: 'smooth'
     })
   }
-  const { searchParams } = useRouter()
+  const { searchParams, changeSearchParam } = useRouter()
 
   createEffect(() => {
     if (props.scrollToComments) {
       scrollToComments()
     }
   })
-  const { changeSearchParam } = useRouter()
+
   createEffect(() => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
@@ -228,15 +229,17 @@ export const FullArticle = (props: ArticleProps) => {
                 />
               </div>
 
-              <div class={styles.shoutStatsItem} onClick={bookmark}>
+              <div class={styles.shoutStatsItem} onClick={handleBookmarkButtonClick}>
                 <div class={styles.shoutStatsItemInner}>
                   <Icon name="bookmark" class={styles.icon} />
                 </div>
               </div>
-
               <Show when={canEdit()}>
                 <div class={styles.shoutStatsItem}>
-                  <a href="/edit" class={styles.shoutStatsItemInner}>
+                  <a
+                    href={getPagePath(router, 'edit', { shoutSlug: props.article.slug })}
+                    class={styles.shoutStatsItemInner}
+                  >
                     <Icon name="edit" class={clsx(styles.icon, styles.iconEdit)} />
                     {t('Edit')}
                   </a>

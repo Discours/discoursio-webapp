@@ -15,7 +15,7 @@ import { splitToPages } from '../../utils/splitToPages'
 import { clsx } from 'clsx'
 import Slider from '../_shared/Slider'
 import { Row1 } from '../Feed/Row1'
-import { ArticleCard } from '../Feed/Card'
+import { ArticleCard } from '../Feed/ArticleCard'
 import { useLocalize } from '../../context/localize'
 
 type TopicsPageSearchParams = {

@@ -5,16 +5,15 @@
     max-height: 360px;
     overflow: auto;
   }
+
   .item {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     align-items: center;
 
     .user {
       display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
+      flex-flow: row nowrap;
       align-items: center;
       margin-right: 1.2rem;
 

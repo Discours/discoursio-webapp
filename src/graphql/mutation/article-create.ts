@@ -5,23 +5,11 @@ export default gql`
     createShout(inp: $shout) {
       error
       shout {
-        id
+        _id: slug
         slug
         title
         subtitle
         body
-        topics {
-          id
-          title
-          slug
-        }
-        authors {
-          id
-          name
-          slug
-          userpic
-          caption
-        }
       }
     }
   }

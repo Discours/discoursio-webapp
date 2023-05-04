@@ -128,9 +128,8 @@ export const EditView = (props: EditViewProps) => {
                     value={form.subtitle}
                     onChange={(e) => setForm('subtitle', e.currentTarget.value)}
                   />
-
                   <Editor
-                    shoutSlug={props.shout.slug}
+                    shoutId={props.shout.id}
                     initialContent={props.shout.body}
                     onChange={(body) => setForm('body', body)}
                   />

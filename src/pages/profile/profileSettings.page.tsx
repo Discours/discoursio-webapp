@@ -6,23 +6,14 @@ import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
 import validateUrl from '../../utils/validateUrl'
-import { createFileUploader, UploadFile } from '@solid-primitives/upload'
+import { createFileUploader } from '@solid-primitives/upload'
 import { Loading } from '../../components/_shared/Loading'
 import { useSession } from '../../context/session'
 import { Button } from '../../components/_shared/Button'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
 import { Image } from '../../components/_shared/Image'
-
-const handleFileUpload = async (uploadFile: UploadFile) => {
-  const formData = new FormData()
-  formData.append('file', uploadFile.file, uploadFile.name)
-  const response = await fetch('/api/upload', {
-    method: 'POST',
-    body: formData
-  })
-  return response.json()
-}
+import { handleFileUpload } from '../../utils/handleFileUpload'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()

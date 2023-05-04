@@ -1,0 +1,13 @@
+.Menu {
+  display: flex;
+  flex-direction: row;
+  .icon {
+    opacity: 0.5;
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

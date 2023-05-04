@@ -25,7 +25,12 @@ export const UploadModalContent = (props: Props) => {
   const [dragError, setDragError] = createSignal<string | undefined>()
 
   const renderImage = (src: string) => {
-    props.editor.chain().focus().extendMarkRange('link').setImage({ src: src }).run()
+    props.editor
+      .chain()
+      .focus()
+      .extendMarkRange('link')
+      .setImage({ src: `/api/image?url=${src}` })
+      .run()
     hideModal()
   }
   const handleImageFormSubmit = async (value: string) => {

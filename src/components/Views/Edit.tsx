@@ -12,16 +12,7 @@ import { openPage } from '@nanostores/router'
 import { translit } from '../../utils/ru2en'
 import { Editor } from '../Editor/Editor'
 import { Panel } from '../Editor/Panel'
-
-type ShoutForm = {
-  slug: string
-  title: string
-  subtitle: string
-  selectedTopics: Topic[]
-  mainTopic: string
-  body: string
-  coverImageUrl: string
-}
+import { useEditorContext } from '../../context/editor'
 
 type EditViewProps = {
   shout: Shout
@@ -33,9 +24,14 @@ export const EditView = (props: EditViewProps) => {
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const { page } = useRouter()
 
+  const {
+    form,
+    actions: { setForm }
+  } = useEditorContext()
+
   const [isSlugChanged, setIsSlugChanged] = createSignal(false)
 
-  const [form, setForm] = createStore<ShoutForm>({
+  setForm({
     slug: props.shout.slug,
     title: props.shout.title,
     subtitle: props.shout.subtitle,
@@ -75,24 +71,6 @@ export const EditView = (props: EditViewProps) => {
       setIsSlugChanged(true)
     }
     setForm('slug', slug)
-  }
-
-  const handleSaveButtonClick = async (e) => {
-    e.preventDefault()
-
-    await apiClient.updateArticle({
-      slug: props.shout.slug,
-      article: {
-        slug: form.slug,
-        title: form.title,
-        subtitle: form.subtitle,
-        body: form.body,
-        topics: form.selectedTopics.map((topic) => topic.slug),
-        mainTopic: form.selectedTopics[0].slug
-      }
-    })
-
-    openPage(router, 'drafts')
   }
 
   return (

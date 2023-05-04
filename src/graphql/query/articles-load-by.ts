@@ -3,7 +3,6 @@ import { gql } from '@urql/core'
 export default gql`
   query LoadShoutsQuery($options: LoadShoutsOptions) {
     loadShouts(options: $options) {
-      _id: slug
       id
       title
       subtitle
@@ -18,7 +17,6 @@ export default gql`
         body
         slug
         stat {
-          _id: shouts
           shouts
           authors
           followers
@@ -33,7 +31,6 @@ export default gql`
       createdAt
       publishedAt
       stat {
-        _id: viewed
         viewed
         reacted
         rating

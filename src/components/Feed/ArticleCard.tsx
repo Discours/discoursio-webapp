@@ -1,5 +1,5 @@
 import { createMemo, For, Show } from 'solid-js'
-import type { Shout } from '../../graphql/types.gen'
+import type { Shout, Topic } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
 import { Icon } from '../_shared/Icon'
@@ -80,7 +80,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {
     event.preventDefault()
-    openPage(router, 'article', { slug: slug })
+    openPage(router, 'article', { slug })
     changeSearchParam('scrollTo', 'comments')
   }
 
@@ -118,7 +118,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </Show>
 
-        <Show when={!props.settings?.isGroup}>
+        <Show when={!props.settings?.isGroup && mainTopic}>
           <CardTopic
             title={
               lang() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic?.slug?.replace('-', ' ')

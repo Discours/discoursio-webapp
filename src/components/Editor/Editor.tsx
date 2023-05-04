@@ -105,7 +105,11 @@ export const Editor = (props: EditorProps) => {
       Bold,
       Italic,
       Strike,
-      HorizontalRule,
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          class: 'horizontalRule'
+        }
+      }),
       Underline,
       Link.configure({
         openOnClick: false

@@ -212,13 +212,7 @@ export const AuthorView = (props: AuthorProps) => {
         </div>
       </div>
 
-      <Switch
-        fallback={
-          <div class="wide-container">
-            <p>{t('Nothing here yet')}</p>
-          </div>
-        }
-      >
+      <Switch>
         <Match when={searchParams().by === 'about'}>
           <div class="wide-container">
             <p>{author.bio}</p>

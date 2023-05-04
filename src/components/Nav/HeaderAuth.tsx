@@ -50,6 +50,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
   const showSaveButton = createMemo(() => isAuthenticated() && isEditorPage())
   const showCreatePostButton = createMemo(() => isAuthenticated() && !isEditorPage())
+  const showAuthenticatedControls = createMemo(() => isAuthenticated() && isEditorPage())
 
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
@@ -120,7 +121,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
             </Show>
 
             <Show
-              when={isAuthenticated() && page().route !== 'create'}
+              when={showAuthenticatedControls()}
               fallback={
                 <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                   <a href="?modal=auth&mode=login">

@@ -5,7 +5,6 @@ import { gql } from '@urql/core'
 export default gql`
   query ShoutsReactedByUserQuery($slug: String!, $limit: Int!, $offset: Int!) {
     userReactedShouts(slug: String!, page: Int!, size: Int!) {
-      _id: slug
       title
       subtitle
       layout
@@ -19,7 +18,6 @@ export default gql`
         body
         slug
         stat {
-          _id: shouts
           shouts
           authors
           followers
@@ -34,7 +32,6 @@ export default gql`
       createdAt
       publishedAt
       stat {
-        _id: viewed
         viewed
         reacted
         rating

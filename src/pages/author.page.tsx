@@ -28,7 +28,10 @@ export const AuthorPage = (props: PageProps) => {
       return
     }
 
-    await loadShouts({ filters: { author: slug() }, limit: PRERENDERED_ARTICLES_COUNT })
+    await loadShouts({
+      filters: { author: slug(), visibility: 'community' },
+      limit: PRERENDERED_ARTICLES_COUNT
+    })
     await loadAuthor({ slug: slug() })
 
     setIsLoaded(true)

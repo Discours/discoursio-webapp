@@ -17,7 +17,6 @@ export default gql`
         body
         slug
         stat {
-          _id: shouts
           shouts
           authors
           followers

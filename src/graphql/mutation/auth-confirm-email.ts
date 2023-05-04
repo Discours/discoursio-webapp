@@ -6,7 +6,7 @@ export default gql`
       error
       token
       user {
-        _id: slug
+        id
         email
         name
         slug

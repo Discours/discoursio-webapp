@@ -9,7 +9,6 @@ export default gql`
       pic
       # community
       stat {
-        _id: shouts
         shouts
         authors
         # viewed

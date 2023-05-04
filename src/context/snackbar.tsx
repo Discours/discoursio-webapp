@@ -2,7 +2,7 @@ import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
 import { delay } from '../utils/delay'
 
-const DEFAULT_DURATION = 5000 // 5 sec
+const DEFAULT_DURATION = 3000 // 3 sec
 
 type SnackbarMessage = {
   type: 'success' | 'error'

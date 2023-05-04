@@ -35,7 +35,8 @@ import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { Embed } from './extensions/embed'
-import { EditorBubbleMenu } from './EditorBubbleMenu'
+import { TextBubbleMenu } from './TextBubbleMenu'
+import { ImageBubbleMenu } from './ImageBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 
@@ -74,7 +75,13 @@ export const Editor = (props: EditorProps) => {
     current: null
   }
 
-  const bubbleMenuRef: {
+  const textBubbleMenuRef: {
+    current: HTMLDivElement
+  } = {
+    current: null
+  }
+
+  const imageBubbleMenuRef: {
     current: HTMLDivElement
   } = {
     current: null
@@ -135,7 +142,19 @@ export const Editor = (props: EditorProps) => {
       TrailingNode,
       CharacterCount,
       BubbleMenu.configure({
-        element: bubbleMenuRef.current
+        pluginKey: 'textBubbleMenu',
+        element: textBubbleMenuRef.current,
+        shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
+          console.log(view)
+          return e.isFocused && !e.isActive('image')
+        }
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'imageBubbleMenu',
+        element: imageBubbleMenuRef.current,
+        shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
+          return e.isFocused && e.isActive('image')
+        }
       }),
       FloatingMenu.configure({
         tippyOptions: {
@@ -165,7 +184,8 @@ export const Editor = (props: EditorProps) => {
   return (
     <>
       <div ref={(el) => (editorElRef.current = el)} />
-      <EditorBubbleMenu editor={editor()} ref={(el) => (bubbleMenuRef.current = el)} />
+      <TextBubbleMenu editor={editor()} ref={(el) => (textBubbleMenuRef.current = el)} />
+      <ImageBubbleMenu editor={editor()} ref={(el) => (imageBubbleMenuRef.current = el)} />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
     </>
   )

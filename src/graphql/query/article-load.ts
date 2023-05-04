@@ -3,7 +3,6 @@ import { gql } from '@urql/core'
 export default gql`
   query LoadShoutQuery($slug: String!) {
     loadShout(slug: $slug) {
-      _id: slug
       id
       title
       subtitle
@@ -15,12 +14,11 @@ export default gql`
       # community
       mainTopic
       topics {
-        # id
+        id
         title
         body
         slug
         stat {
-          _id: shouts
           shouts
           authors
           followers
@@ -35,7 +33,6 @@ export default gql`
       createdAt
       publishedAt
       stat {
-        _id: viewed
         viewed
         reacted
         rating

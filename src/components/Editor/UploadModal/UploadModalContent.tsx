@@ -11,6 +11,7 @@ import { useLocalize } from '../../../context/localize'
 import { Editor } from '@tiptap/core'
 import { Loading } from '../../_shared/Loading'
 import { verifyImg } from '../../../utils/verifyImg'
+import { imageProxy } from '../../../utils/imageProxy'
 
 type Props = {
   editor: Editor
@@ -29,7 +30,7 @@ export const UploadModalContent = (props: Props) => {
       .chain()
       .focus()
       .extendMarkRange('link')
-      .setImage({ src: `https://new.discours.io/api/image?url=${src}` })
+      .setImage({ src: imageProxy(src) })
       .run()
     hideModal()
   }
@@ -43,6 +44,7 @@ export const UploadModalContent = (props: Props) => {
       setIsUploading(true)
       const fileUrl = await handleFileUpload(file)
       setIsUploading(false)
+      props.closeCallback()
       renderImage(fileUrl)
     } catch (error) {
       console.error('[upload image] error', error)

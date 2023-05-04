@@ -145,7 +145,6 @@ export const Editor = (props: EditorProps) => {
         pluginKey: 'textBubbleMenu',
         element: textBubbleMenuRef.current,
         shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
-          console.log(view)
           return e.isFocused && !e.isActive('image')
         }
       }),

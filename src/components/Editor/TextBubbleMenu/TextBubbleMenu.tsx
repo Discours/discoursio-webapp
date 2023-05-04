@@ -75,7 +75,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   return (
-    <div ref={props.ref} class={styles.bubbleMenu}>
+    <div ref={props.ref} class={styles.TextBubbleMenu}>
       <Switch>
         <Match when={linkEditorOpen()}>
           <InlineForm

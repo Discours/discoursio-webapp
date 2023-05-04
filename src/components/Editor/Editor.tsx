@@ -39,7 +39,6 @@ import { TextBubbleMenu } from './TextBubbleMenu'
 import { ImageBubbleMenu } from './ImageBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
-import { isTextSelection } from '@tiptap/core'
 
 type EditorProps = {
   shoutId: number
@@ -105,7 +104,11 @@ export const Editor = (props: EditorProps) => {
       Bold,
       Italic,
       Strike,
-      HorizontalRule,
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          class: 'horizontalRule'
+        }
+      }),
       Underline,
       Link.configure({
         openOnClick: false
@@ -144,25 +147,17 @@ export const Editor = (props: EditorProps) => {
       CharacterCount,
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
-        element: textBubbleMenuRef.current,
-        shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
-          const { doc, selection } = state
-          const { empty } = selection
-
-          const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
-
-          if (!view.hasFocus() || empty || isEmptyTextBlock || e.isActive('image')) {
-            return false
-          }
-
-          return true
-        }
+        element: textBubbleMenuRef.current
+        // shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
+        //   console.log('!!! e:', view)
+        //   return !e.isActive('image')
+        // }
       }),
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',
         element: imageBubbleMenuRef.current,
         shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
-          return view.hasFocus() && e.isActive('image')
+          return e.isFocused && e.isActive('image')
         }
       }),
       FloatingMenu.configure({

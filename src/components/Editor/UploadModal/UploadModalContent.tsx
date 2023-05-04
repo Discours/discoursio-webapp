@@ -29,7 +29,7 @@ export const UploadModalContent = (props: Props) => {
       .chain()
       .focus()
       .extendMarkRange('link')
-      .setImage({ src: `/api/image?url=${src}` })
+      .setImage({ src: `https://new.discours.io/api/image?url=${src}` })
       .run()
     hideModal()
   }

@@ -3,7 +3,14 @@ import { useRouter } from './router'
 import type { AuthModalSearchParams, ConfirmEmailSearchParams } from '../components/Nav/AuthModal/types'
 import type { RootSearchParams } from '../pages/types'
 
-export type ModalType = 'auth' | 'subscribe' | 'feedback' | 'thank' | 'donate' | 'inviteToChat'
+export type ModalType =
+  | 'auth'
+  | 'subscribe'
+  | 'feedback'
+  | 'thank'
+  | 'donate'
+  | 'inviteToChat'
+  | 'uploadImage'
 type WarnKind = 'error' | 'warn' | 'info'
 
 export interface Warning {
@@ -18,7 +25,8 @@ export const MODALS: Record<ModalType, ModalType> = {
   feedback: 'feedback',
   thank: 'thank',
   donate: 'donate',
-  inviteToChat: 'inviteToChat'
+  inviteToChat: 'inviteToChat',
+  uploadImage: 'uploadImage'
 }
 
 const [modal, setModal] = createSignal<ModalType | null>(null)

@@ -26,10 +26,7 @@ import { Image } from '@tiptap/extension-image'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
-import { EditorBubbleMenu } from './EditorBubbleMenu/EditorBubbleMenu'
-import { EditorFloatingMenu } from './EditorFloatingMenu'
 import * as Y from 'yjs'
-// import { WebrtcProvider } from 'y-webrtc'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
 import './Prosemirror.scss'
@@ -38,10 +35,12 @@ import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { Embed } from './extensions/embed'
+import { EditorBubbleMenu } from './EditorBubbleMenu'
+import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 
 type EditorProps = {
-  shoutSlug: string
+  shoutId: number
   initialContent?: string
   onChange: (text: string) => void
 }
@@ -54,7 +53,7 @@ export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
 
-  const docName = `shout-${props.shoutSlug}`
+  const docName = `shout-${props.shoutId}`
 
   if (!providers[docName]) {
     providers[docName] = new HocuspocusProvider({
@@ -89,8 +88,6 @@ export const Editor = (props: EditorProps) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
-    content: props.initialContent,
-    //onTransaction: handleEditorTransaction,
     extensions: [
       Document,
       Text,
@@ -111,7 +108,6 @@ export const Editor = (props: EditorProps) => {
       BulletList,
       OrderedList,
       ListItem,
-      CharacterCount,
       Collaboration.configure({
         document: yDoc
       }),
@@ -129,9 +125,15 @@ export const Editor = (props: EditorProps) => {
       Gapcursor,
       HardBreak,
       Highlight,
-      Image,
+      Image.configure({
+        HTMLAttributes: {
+          class: 'uploadedImage'
+        }
+      }),
+      TrailingNode,
       Embed,
       TrailingNode,
+      CharacterCount,
       BubbleMenu.configure({
         element: bubbleMenuRef.current
       }),

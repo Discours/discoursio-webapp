@@ -61,3 +61,10 @@
     overflow: hidden;
   }
 }
+
+.uploadedImage {
+  max-height: 80vh;
+  margin: auto;
+  display: block;
+  width: unset !important;
+}

@@ -1,32 +1,13 @@
 .InlineForm {
   position: relative;
-
-  &.inBubble {
-    // ...
-  }
-
-  &.inFloating {
-    position: absolute;
-    left: calc(100% + 1rem);
-    top: -0.8rem;
-    min-width: 64vw;
-    background: #fff;
-    box-shadow: 0 4px 10px rgba(#000, 0.25);
-
-    button {
-      opacity: 1;
-
-      &:disabled,
-      &:disabled:hover {
-        opacity: 0.3;
-      }
-    }
-  }
+  width: 100%;
 
   .form {
     display: flex;
-    flex-flow: row nowrap;
+    flex-direction: row;
+    flex-wrap: nowrap;
     padding: 6px 11px;
+    width: 100%;
 
     input {
       margin: 0 12px 0 0;
@@ -56,7 +37,8 @@
     right: 0;
     height: 0;
     background: #fff;
-    box-shadow: 0 4px 10px rgba(#000, 0.25);
+    border: 1px solid #e9e9ee;
+    border-radius: 2px;
     opacity: 0;
     transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
 

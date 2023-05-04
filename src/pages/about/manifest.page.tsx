@@ -3,7 +3,7 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import { Modal } from '../../components/Nav/Modal'
 import { Feedback } from '../../components/Discours/Feedback'
 import Subscribe from '../../components/Discours/Subscribe'
-import Opener from '../../components/Nav/Opener'
+import Opener from '../../components/Nav/Modal/Opener'
 import { Icon } from '../../components/_shared/Icon'
 
 // title={t('Manifest')}

@@ -9,11 +9,11 @@ import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../../stores/router'
 
-type PanelProps = {
+type Props = {
   shoutSlug: string
 }
 
-export const Panel = (props: PanelProps) => {
+export const Panel = (props: Props) => {
   const { t } = useLocalize()
   const {
     isEditorPanelVisible,

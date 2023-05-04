@@ -151,11 +151,7 @@ export const Editor = (props: EditorProps) => {
 
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
 
-          if (!view.hasFocus() || empty || isEmptyTextBlock || e.isActive('image')) {
-            return false
-          }
-
-          return true
+          return !(!view.hasFocus() || empty || isEmptyTextBlock || e.isActive('image'))
         }
       }),
       BubbleMenu.configure({

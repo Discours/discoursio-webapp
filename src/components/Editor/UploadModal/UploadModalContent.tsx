@@ -44,6 +44,7 @@ export const UploadModalContent = (props: Props) => {
       setIsUploading(true)
       const fileUrl = await handleFileUpload(file)
       setIsUploading(false)
+      props.closeCallback()
       renderImage(fileUrl)
     } catch (error) {
       console.error('[upload image] error', error)

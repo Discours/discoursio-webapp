@@ -1,4 +1,4 @@
-import { createSignal, For } from 'solid-js'
+import { For } from 'solid-js'
 import type { Author } from '../../../graphql/types.gen'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { Icon } from '../../_shared/Icon'
@@ -28,10 +28,6 @@ export const Sidebar = (props: FeedSidebarProps) => {
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
   const { topicEntities } = useTopicsStore()
-
-  createSignal(() => {
-    console.log('!!! topicEntities:', topicEntities())
-  })
 
   const checkTopicIsSeen = (topicSlug: string) => {
     return articlesByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))

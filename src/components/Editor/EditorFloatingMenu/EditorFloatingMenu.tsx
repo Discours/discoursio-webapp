@@ -32,7 +32,7 @@ const validateEmbed = async (value) => {
 
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const { t } = useLocalize()
-  const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | null>(null)
+  const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | undefined>()
   const [menuOpen, setMenuOpen] = createSignal<boolean>(false)
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
@@ -53,14 +53,19 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     }
   })
   const closeUploadModalHandler = () => {
-    setSelectedMenuItem(null)
+    setSelectedMenuItem()
     setMenuOpen(false)
   }
 
   return (
     <>
       <div ref={props.ref} class={styles.editorFloatingMenu}>
-        <button type="button" onClick={() => setMenuOpen(!menuOpen())}>
+        <button
+          type="button"
+          onClick={() => {
+            setMenuOpen(!menuOpen())
+          }}
+        >
           <Icon name="editor-plus" />
         </button>
         <Show when={menuOpen()}>
@@ -73,7 +78,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
                 placeholder={t('Paste Embed code')}
                 showInput={true}
                 onClose={closeUploadModalHandler}
-                onClear={() => setSelectedMenuItem(null)}
+                onClear={() => setSelectedMenuItem()}
                 validate={validateEmbed}
                 onSubmit={handleEmbedFormSubmit}
                 errorMessage={t('Error')}
@@ -83,7 +88,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         </Show>
       </div>
       <Modal variant="narrow" name="uploadImage" onClose={closeUploadModalHandler}>
-        <UploadModalContent closeCallback={() => setSelectedMenuItem(null)} editor={props.editor} />
+        <UploadModalContent closeCallback={() => setSelectedMenuItem()} editor={props.editor} />
       </Modal>
     </>
   )

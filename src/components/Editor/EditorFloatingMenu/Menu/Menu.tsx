@@ -2,6 +2,7 @@ import styles from './Menu.module.scss'
 import { Icon } from '../../../_shared/Icon'
 
 export type MenuItem = 'image' | 'embed' | 'horizontal-rule'
+
 type Props = {
   selectedItem: (value: string) => void
 }

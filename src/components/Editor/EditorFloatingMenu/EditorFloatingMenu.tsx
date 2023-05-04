@@ -7,6 +7,7 @@ import HTMLParser from 'html-to-json-parser'
 import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { Menu } from './Menu'
+import type { MenuItem } from './Menu/Menu'
 import { showModal } from '../../../stores/ui'
 import { UploadModalContent } from '../UploadModal'
 
@@ -31,7 +32,7 @@ const validateEmbed = async (value) => {
 
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const { t } = useLocalize()
-  const [selectedMenuItem, setSelectedMenuItem] = createSignal<string | null>(null)
+  const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | null>(null)
   const [menuOpen, setMenuOpen] = createSignal<boolean>(false)
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
@@ -40,8 +41,15 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   }
 
   createEffect(() => {
-    if (selectedMenuItem() === 'image') {
-      showModal('uploadImage')
+    switch (selectedMenuItem()) {
+      case 'image': {
+        showModal('uploadImage')
+        return
+      }
+      case 'horizontal-rule': {
+        props.editor.chain().focus().setHorizontalRule().run()
+        return
+      }
     }
   })
   const closeUploadModalHandler = () => {
@@ -58,7 +66,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         <Show when={menuOpen()}>
           <div class={styles.menuHolder}>
             <Show when={!selectedMenuItem()}>
-              <Menu selectedItem={(value) => setSelectedMenuItem(value)} />
+              <Menu selectedItem={(value: MenuItem) => setSelectedMenuItem(value)} />
             </Show>
             <Show when={selectedMenuItem() === 'embed'}>
               <InlineForm

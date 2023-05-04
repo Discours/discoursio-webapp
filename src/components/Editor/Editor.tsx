@@ -39,6 +39,7 @@ import { TextBubbleMenu } from './TextBubbleMenu'
 import { ImageBubbleMenu } from './ImageBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
+import { isTextSelection } from '@tiptap/core'
 
 type EditorProps = {
   shoutId: number
@@ -145,14 +146,23 @@ export const Editor = (props: EditorProps) => {
         pluginKey: 'textBubbleMenu',
         element: textBubbleMenuRef.current,
         shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
-          return e.isFocused && !e.isActive('image')
+          const { doc, selection } = state
+          const { empty } = selection
+
+          const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
+
+          if (!view.hasFocus() || empty || isEmptyTextBlock || e.isActive('image')) {
+            return false
+          }
+
+          return true
         }
       }),
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',
         element: imageBubbleMenuRef.current,
         shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
-          return e.isFocused && e.isActive('image')
+          return view.hasFocus() && e.isActive('image')
         }
       }),
       FloatingMenu.configure({

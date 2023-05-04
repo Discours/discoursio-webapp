@@ -52,14 +52,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   return (
     <>
       <div ref={props.ref} class={styles.editorFloatingMenu}>
-        <button
-          type="button"
-          onClick={() => {
-            console.log('!!! selectedMenuItem:', selectedMenuItem())
-
-            setMenuOpen(!menuOpen())
-          }}
-        >
+        <button type="button" onClick={() => setMenuOpen(!menuOpen())}>
           <Icon name="editor-plus" />
         </button>
         <Show when={menuOpen()}>
@@ -82,7 +75,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         </Show>
       </div>
       <Modal variant="narrow" name="uploadImage" onClose={closeUploadModalHandler}>
-        <UploadModalContent editor={props.editor} />
+        <UploadModalContent closeCallback={() => setSelectedMenuItem(null)} editor={props.editor} />
       </Modal>
     </>
   )

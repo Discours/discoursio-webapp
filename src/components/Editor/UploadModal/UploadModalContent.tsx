@@ -14,6 +14,7 @@ import { verifyImg } from '../../../utils/verifyImg'
 
 type Props = {
   editor: Editor
+  closeCallback: () => void
 }
 
 export const UploadModalContent = (props: Props) => {
@@ -103,6 +104,7 @@ export const UploadModalContent = (props: Props) => {
               showInput={true}
               onClose={() => {
                 hideModal()
+                props.closeCallback()
               }}
               validate={(value) => verifyImg(value)}
               onSubmit={handleImageFormSubmit}

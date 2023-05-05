@@ -26,7 +26,8 @@ export const EditView = (props: EditViewProps) => {
 
   const {
     form,
-    actions: { setForm }
+    formErrors,
+    actions: { setForm, setFormErrors }
   } = useEditorContext()
 
   const [isSlugChanged, setIsSlugChanged] = createSignal(false)
@@ -35,7 +36,7 @@ export const EditView = (props: EditViewProps) => {
     slug: props.shout.slug,
     title: props.shout.title,
     subtitle: props.shout.subtitle,
-    selectedTopics: props.shout.topics,
+    selectedTopics: props.shout.topics || [],
     mainTopic: props.shout.mainTopic,
     body: props.shout.body,
     coverImageUrl: props.shout.cover
@@ -46,22 +47,18 @@ export const EditView = (props: EditViewProps) => {
     setTopics(allTopics)
   })
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault()
-
-    const article = await apiClient.publishDraft()
-
-    openPage(router, 'article', { slug: article.slug })
-  }
-
   const handleTitleInputChange = (e) => {
     const title = e.currentTarget.value
     setForm('title', title)
 
-    if (!isSlugChanged()) {
-      const slug = translit(title).replaceAll(' ', '-')
-      setForm('slug', slug)
+    if (title) {
+      setFormErrors('title', '')
     }
+
+    // if (!isSlugChanged()) {
+    //   const slug = translit(title).replaceAll(' ', '-')
+    //   setForm('slug', slug)
+    // }
   }
 
   const handleSlugInputChange = (e) => {
@@ -77,8 +74,7 @@ export const EditView = (props: EditViewProps) => {
     <>
       <div class={styles.container}>
         <Title>{t('Write an article')}</Title>
-
-        <form onSubmit={handleFormSubmit}>
+        <form>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
@@ -93,15 +89,18 @@ export const EditView = (props: EditViewProps) => {
                     name="title"
                     id="title"
                     placeholder="Заголовок"
+                    autocomplete="off"
                     value={form.title}
-                    onChange={handleTitleInputChange}
+                    onInput={handleTitleInputChange}
                   />
+                  <Show when={formErrors.title}>{formErrors.title}</Show>
 
                   <input
                     class={styles.subtitleInput}
                     type="text"
                     name="subtitle"
                     id="subtitle"
+                    autocomplete="off"
                     placeholder="Подзаголовок"
                     value={form.subtitle}
                     onChange={(e) => setForm('subtitle', e.currentTarget.value)}

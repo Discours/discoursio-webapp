@@ -25,7 +25,6 @@ import { Text } from '@tiptap/extension-text'
 import { Image } from '@tiptap/extension-image'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
-import { TrailingNode } from './extensions/TrailingNode'
 import * as Y from 'yjs'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
@@ -40,6 +39,7 @@ import { ImageBubbleMenu } from './ImageBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 import { isTextSelection } from '@tiptap/core'
+import type { Doc } from 'yjs/dist/src/utils/Doc'
 
 type EditorProps = {
   shoutId: number
@@ -47,7 +47,7 @@ type EditorProps = {
   onChange: (text: string) => void
 }
 
-const yDoc = new Y.Doc()
+const yDocs: Record<string, Doc> = {}
 const persisters: Record<string, IndexeddbPersistence> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
@@ -57,17 +57,20 @@ export const Editor = (props: EditorProps) => {
 
   const docName = `shout-${props.shoutId}`
 
+  if (!yDocs[docName]) {
+    yDocs[docName] = new Y.Doc()
+  }
+
   if (!providers[docName]) {
     providers[docName] = new HocuspocusProvider({
       url: 'wss://hocuspocus.discours.io',
-      // url: 'ws://localhost:4242',
       name: docName,
-      document: yDoc
+      document: yDocs[docName]
     })
   }
 
   if (!persisters[docName]) {
-    persisters[docName] = new IndexeddbPersistence(docName, yDoc)
+    persisters[docName] = new IndexeddbPersistence(docName, yDocs[docName])
   }
 
   const editorElRef: {
@@ -121,7 +124,7 @@ export const Editor = (props: EditorProps) => {
       OrderedList,
       ListItem,
       Collaboration.configure({
-        document: yDoc
+        document: yDocs[docName]
       }),
       CollaborationCursor.configure({
         provider: providers[docName],
@@ -142,9 +145,7 @@ export const Editor = (props: EditorProps) => {
           class: 'uploadedImage'
         }
       }),
-      TrailingNode,
       Embed,
-      TrailingNode,
       CharacterCount,
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
@@ -155,7 +156,7 @@ export const Editor = (props: EditorProps) => {
 
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
 
-          return !(!view.hasFocus() || empty || isEmptyTextBlock || e.isActive('image'))
+          return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
         }
       }),
       BubbleMenu.configure({

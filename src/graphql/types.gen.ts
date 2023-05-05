@@ -340,7 +340,6 @@ export type Query = {
   loadShouts: Array<Maybe<Shout>>
   markdownBody: Scalars['String']
   myFeed?: Maybe<Array<Maybe<Shout>>>
-  publishShout: Array<Maybe<Shout>>
   searchMessages: Result
   searchRecipients: Result
   signIn: AuthResult
@@ -377,10 +376,6 @@ export type QueryLoadChatsArgs = {
   offset?: InputMaybe<Scalars['Int']>
 }
 
-export type QueryLoadDraftsArgs = {
-  options?: InputMaybe<LoadShoutsOptions>
-}
-
 export type QueryLoadMessagesByArgs = {
   by: MessagesBy
   limit?: InputMaybe<Scalars['Int']>
@@ -412,10 +407,6 @@ export type QueryMarkdownBodyArgs = {
 
 export type QueryMyFeedArgs = {
   options?: InputMaybe<LoadShoutsOptions>
-}
-
-export type QueryPublishShoutArgs = {
-  slug: Scalars['String']
 }
 
 export type QuerySearchMessagesArgs = {

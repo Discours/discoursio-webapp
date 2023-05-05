@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadDraftsQuery($options: LoadShoutsOptions) {
-    loadDrafts(options: $options) {
+  query LoadDraftsQuery {
+    loadDrafts {
       id
       title
       subtitle
@@ -12,7 +12,7 @@ export default gql`
       # community
       mainTopic
       topics {
-        # id
+        id
         title
         body
         slug
@@ -30,6 +30,12 @@ export default gql`
       }
       createdAt
       publishedAt
+      stat {
+        viewed
+        reacted
+        rating
+        commented
+      }
     }
   }
 `

@@ -22,7 +22,8 @@ import { Highlight } from '@tiptap/extension-highlight'
 import { Link } from '@tiptap/extension-link'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
-import { Image } from '@tiptap/extension-image'
+// import { Image } from '@tiptap/extension-image'
+import CustomImage from './extensions/CustomImage'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
@@ -34,7 +35,7 @@ import { IndexeddbPersistence } from 'y-indexeddb'
 import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
-import { Embed } from './extensions/embed'
+import { Embed } from './extensions/Embed'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { ImageBubbleMenu } from './ImageBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
@@ -137,7 +138,7 @@ export const Editor = (props: EditorProps) => {
       Gapcursor,
       HardBreak,
       Highlight,
-      Image.configure({
+      CustomImage.configure({
         HTMLAttributes: {
           class: 'uploadedImage'
         }

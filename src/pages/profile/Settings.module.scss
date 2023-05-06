@@ -189,3 +189,33 @@ h5 {
     transition: filter 0.3s;
   }
 }
+
+:global(.solid-select-control) {
+  align-items: center !important;
+  border: 2px solid #e8e8e8 !important;
+  border-radius: 2px;
+  min-height: 61px;
+  padding: 1rem 0.7rem 0.5rem 1.2rem !important;
+
+  :global(.solid-select-input) {
+    border: none;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  :global(.solid-select-multi-value) {
+    margin: 0 0.5rem 0.5rem 0;
+    padding-left: 0.8rem;
+    padding-bottom: 0.2rem;
+  }
+
+  :global(.solid-select-multi-value-remove) {
+    font-size: 2.4rem;
+    line-height: 1.1;
+
+    &:hover {
+      opacity: 0.5;
+      text-shadow: none !important;
+    }
+  }
+}

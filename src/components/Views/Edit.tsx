@@ -13,6 +13,7 @@ import { translit } from '../../utils/ru2en'
 import { Editor } from '../Editor/Editor'
 import { Panel } from '../Editor/Panel'
 import { useEditorContext } from '../../context/editor'
+import { Icon } from '../_shared/Icon'
 
 type EditViewProps = {
   shout: Shout
@@ -73,8 +74,20 @@ export const EditView = (props: EditViewProps) => {
     setForm('slug', slug)
   }
 
+  const scrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+
   return (
     <>
+      <button class={styles.scrollTopButton} onClick={scrollTop}>
+        <Icon name="up-button" class={styles.icon} />
+        <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>
+      </button>
+
       <div class={styles.container}>
         <Title>{t('Write an article')}</Title>
 

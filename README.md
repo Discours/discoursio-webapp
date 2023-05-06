@@ -21,6 +21,11 @@ npm run typecheck:watch
 ```
 ## Code generation
 
+generate new SolidJS component:
+```
+npx hygen component new NewComponentName
+```
+
 generate new SolidJS context:
 ```
 npx hygen context new NewContextName

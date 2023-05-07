@@ -1,22 +1,15 @@
 import Image from '@tiptap/extension-image'
-import { mergeAttributes } from '@tiptap/core'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    resizableMedia: {
-      setFloat: (float: 'none' | 'left' | 'right') => ReturnType
+    customImage: {
+      /**
+       * Add an image
+       */
+      setImage: (options: { src: string; alt?: string; title?: string }) => ReturnType
+      setFloat: (float: null | 'left' | 'right') => ReturnType
     }
   }
-}
-
-export const updateAttrs = (attrs, editor, node) => {
-  const { view } = editor
-  if (!view.editable) return
-  const { state } = view
-  const newAttrs = { ...node.attrs, ...attrs }
-  const { from } = state.selection
-  const transaction = state.tr.setNodeMarkup(from, null, newAttrs)
-  view.dispatch(transaction)
 }
 
 export default Image.extend({
@@ -39,11 +32,16 @@ export default Image.extend({
       }
     }
   },
-  renderHTML({ HTMLAttributes }) {
-    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
-  },
   addCommands() {
     return {
+      setImage:
+        (options) =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+            attrs: options
+          })
+        },
       setFloat:
         (value) =>
         ({ commands }) => {

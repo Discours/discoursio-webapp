@@ -29,7 +29,6 @@ export const UploadModalContent = (props: Props) => {
     props.editor
       .chain()
       .focus()
-      .extendMarkRange('link')
       .setImage({ src: imageProxy(src) })
       .run()
     hideModal()

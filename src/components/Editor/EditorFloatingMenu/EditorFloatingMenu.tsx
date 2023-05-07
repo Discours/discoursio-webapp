@@ -10,6 +10,7 @@ import { Menu } from './Menu'
 import type { MenuItem } from './Menu/Menu'
 import { showModal } from '../../../stores/ui'
 import { UploadModalContent } from '../UploadModal'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 
 type FloatingMenuProps = {
   editor: Editor
@@ -57,6 +58,17 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     setMenuOpen(false)
   }
 
+  const menuRef: { current: HTMLDivElement } = { current: null }
+
+  useOutsideClickHandler({
+    containerRef: menuRef,
+    handler: () => {
+      if (menuOpen()) {
+        setMenuOpen(false)
+      }
+    }
+  })
+
   return (
     <>
       <div ref={props.ref} class={styles.editorFloatingMenu}>
@@ -69,7 +81,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
           <Icon name="editor-plus" />
         </button>
         <Show when={menuOpen()}>
-          <div class={styles.menuHolder}>
+          <div class={styles.menuHolder} ref={(el) => (menuRef.current = el)}>
             <Show when={!selectedMenuItem()}>
               <Menu selectedItem={(value: MenuItem) => setSelectedMenuItem(value)} />
             </Show>

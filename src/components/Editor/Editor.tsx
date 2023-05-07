@@ -26,7 +26,6 @@ import { CustomImage } from './extensions/CustomImage'
 import { Figure } from './extensions/Figure'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
-import { TrailingNode } from './extensions/TrailingNode'
 import * as Y from 'yjs'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
@@ -41,6 +40,7 @@ import { ImageBubbleMenu } from './ImageBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 import { isTextSelection } from '@tiptap/core'
+import type { Doc } from 'yjs/dist/src/utils/Doc'
 import './Prosemirror.scss'
 
 type EditorProps = {
@@ -49,7 +49,7 @@ type EditorProps = {
   onChange: (text: string) => void
 }
 
-const yDoc = new Y.Doc()
+const yDocs: Record<string, Doc> = {}
 const persisters: Record<string, IndexeddbPersistence> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
@@ -59,17 +59,20 @@ export const Editor = (props: EditorProps) => {
 
   const docName = `shout-${props.shoutId}`
 
+  if (!yDocs[docName]) {
+    yDocs[docName] = new Y.Doc()
+  }
+
   if (!providers[docName]) {
     providers[docName] = new HocuspocusProvider({
       url: 'wss://hocuspocus.discours.io',
-      // url: 'ws://localhost:4242',
       name: docName,
-      document: yDoc
+      document: yDocs[docName]
     })
   }
 
   if (!persisters[docName]) {
-    persisters[docName] = new IndexeddbPersistence(docName, yDoc)
+    persisters[docName] = new IndexeddbPersistence(docName, yDocs[docName])
   }
 
   const editorElRef: {
@@ -123,7 +126,7 @@ export const Editor = (props: EditorProps) => {
       OrderedList,
       ListItem,
       Collaboration.configure({
-        document: yDoc
+        document: yDocs[docName]
       }),
       CollaborationCursor.configure({
         provider: providers[docName],
@@ -145,7 +148,6 @@ export const Editor = (props: EditorProps) => {
         }
       }),
       Figure,
-      TrailingNode,
       Embed,
       CharacterCount,
       BubbleMenu.configure({

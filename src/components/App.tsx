@@ -96,13 +96,13 @@ export const App = (props: PageProps) => {
 
   return (
     <LocalizeProvider>
-      <EditorProvider>
-        <SnackbarProvider>
-          <SessionProvider>
+      <SnackbarProvider>
+        <SessionProvider>
+          <EditorProvider>
             <Dynamic component={pageComponent()} {...props} />
-          </SessionProvider>
-        </SnackbarProvider>
-      </EditorProvider>
+          </EditorProvider>
+        </SessionProvider>
+      </SnackbarProvider>
     </LocalizeProvider>
   )
 }

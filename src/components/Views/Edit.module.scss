@@ -132,12 +132,24 @@
 }
 
 .scrollTopButtonLabel {
-  display: none;
   @include font-size(1.4rem);
+
+  display: none;
   font-weight: bold;
   left: 100%;
   padding-left: 0.5em;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.inputContainer {
+  position: relative;
+
+  .validationError {
+    position: absolute;
+    top: 100%;
+    font-size: small;
+    color: #f00;
+  }
 }

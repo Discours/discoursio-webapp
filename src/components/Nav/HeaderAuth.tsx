@@ -11,9 +11,10 @@ import { showModal, useWarningsStore } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
-import { getPagePath } from '@nanostores/router'
+import { getPagePath, openPage } from '@nanostores/router'
 import { Button } from '../_shared/Button'
 import { useEditorContext } from '../../context/editor'
+import { apiClient } from '../../utils/apiClient'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -28,7 +29,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   const { session, isSessionLoaded, isAuthenticated } = useSession()
 
   const {
-    actions: { toggleEditorPanel }
+    actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
 
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
@@ -50,10 +51,17 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
   const showSaveButton = createMemo(() => isAuthenticated() && isEditorPage())
   const showCreatePostButton = createMemo(() => isAuthenticated() && !isEditorPage())
-  const showAuthenticatedControls = createMemo(() => isAuthenticated() && isEditorPage())
+  const showAuthenticatedControls = createMemo(() => isAuthenticated())
 
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
+  }
+
+  const handleSaveButtonClick = async () => {
+    const result = await saveShout()
+    if (result) {
+      openPage(router, 'drafts')
+    }
   }
 
   return (
@@ -90,6 +98,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                     </>
                   }
                   variant={'outline'}
+                  onClick={handleSaveButtonClick}
                 />
               </div>
 

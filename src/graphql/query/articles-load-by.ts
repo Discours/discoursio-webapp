@@ -12,7 +12,7 @@ export default gql`
       # community
       mainTopic
       topics {
-        # id
+        id
         title
         body
         slug

@@ -1,4 +1,4 @@
-import { createSignal, onMount, Show } from 'solid-js'
+import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import styles from './Edit.module.scss'
@@ -19,6 +19,7 @@ type EditViewProps = {
 export const EditView = (props: EditViewProps) => {
   const { t } = useLocalize()
 
+  const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const { page } = useRouter()
 
@@ -44,6 +45,17 @@ export const EditView = (props: EditViewProps) => {
   onMount(async () => {
     const allTopics = await apiClient.getAllTopics()
     setTopics(allTopics)
+  })
+
+  onMount(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    onCleanup(() => {
+      window.removeEventListener('scroll', handleScroll)
+    })
   })
 
   const handleTitleInputChange = (e) => {
@@ -78,7 +90,12 @@ export const EditView = (props: EditViewProps) => {
 
   return (
     <>
-      <button class={styles.scrollTopButton} onClick={scrollTop}>
+      <button
+        class={clsx(styles.scrollTopButton, {
+          [styles.visible]: isScrolled()
+        })}
+        onClick={scrollTop}
+      >
         <Icon name="up-button" class={styles.icon} />
         <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>
       </button>

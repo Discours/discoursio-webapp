@@ -585,14 +585,12 @@ export type ShoutInput = {
   authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
   body?: InputMaybe<Scalars['String']>
   community?: InputMaybe<Scalars['Int']>
+  cover?: InputMaybe<Scalars['String']>
   mainTopic?: InputMaybe<Scalars['String']>
   slug?: InputMaybe<Scalars['String']>
   subtitle?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>
   topics?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-  versionOf?: InputMaybe<Scalars['String']>
-  visibleForRoles?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-  visibleForUsers?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
 }
 
 export type ShoutsFilterBy = {

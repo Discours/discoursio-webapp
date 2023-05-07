@@ -496,13 +496,23 @@ input[type='checkbox'] {
 }
 
 figure {
-  margin: 2em 0;
-}
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  gap: 16px;
+  margin: 2em auto;
 
-figcaption {
-  @include font-size(1.2rem);
+  img {
+    display: block;
+    max-height: 90vh;
+    margin: auto;
+  }
 
-  color: #9fa1a7;
+  figcaption {
+    @include font-size(1.2rem);
+
+    color: #9fa1a7;
+  }
 }
 
 .view-switcher {

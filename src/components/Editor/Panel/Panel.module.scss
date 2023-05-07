@@ -7,7 +7,7 @@
   justify-content: flex-start;
   height: 100%;
   line-height: 1.4;
-  padding: $grid-gutter-width $grid-gutter-width / 2;
+  padding: $grid-gutter-width calc($grid-gutter-width / 2);
   position: fixed;
   transition: transform 0.3s;
   right: 0;
@@ -20,7 +20,7 @@
   }
 
   .actionsHolder {
-    padding: 0 $grid-gutter-width / 2;
+    padding: 0 calc($grid-gutter-width / 2);
 
     &.scrolled {
       overflow-y: auto;

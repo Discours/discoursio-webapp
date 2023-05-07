@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   mutation UpdateShoutMutation($shoutId: Int!, $shoutInput: ShoutInput!) {
-    updateShout(shoutId: $shoutId, shoutInput: $shoutInput) {
+    updateShout(shout_id: $shoutId, shout_input: $shoutInput) {
       error
       shout {
         id

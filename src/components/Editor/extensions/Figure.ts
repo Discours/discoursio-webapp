@@ -134,7 +134,8 @@ export const Figure = Node.create<FigureOptions>({
               type: this.name,
               attrs: {
                 src: node.attrs.src
-              }
+              },
+              content: [{ type: 'text', text: node.attrs.src }]
             })
           })
         },

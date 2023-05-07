@@ -367,3 +367,11 @@ img {
     }
   }
 }
+
+[data-float='left'] {
+  float: left;
+}
+
+[data-float='right'] {
+  float: right;
+}

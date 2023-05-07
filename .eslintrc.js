@@ -68,6 +68,9 @@ module.exports = {
     'unicorn/prefer-dom-node-append': 'off', // FIXME
     'unicorn/prefer-top-level-await': 'warn',
     'unicorn/consistent-function-scoping': 'warn',
+    'unicorn/no-array-callback-reference': 'warn',
+    'unicorn/no-array-method-this-argument': 'warn',
+
     'sonarjs/no-duplicate-string': ['warn', 5],
 
     // Promise

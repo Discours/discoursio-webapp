@@ -1,4 +1,4 @@
-import Image from '@tiptap/extension-image'
+import { Image } from '@tiptap/extension-image'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -12,7 +12,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export default Image.extend({
+export const CustomImage = Image.extend({
   addAttributes() {
     return {
       src: {

@@ -22,15 +22,15 @@ import { Highlight } from '@tiptap/extension-highlight'
 import { Link } from '@tiptap/extension-link'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
-// import { Image } from '@tiptap/extension-image'
-import CustomImage from './extensions/CustomImage'
+import { CustomImage } from './extensions/CustomImage'
+import { Figure } from './extensions/Figure'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { TrailingNode } from './extensions/TrailingNode'
 import * as Y from 'yjs'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
-import './Prosemirror.scss'
+
 import { IndexeddbPersistence } from 'y-indexeddb'
 import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
@@ -41,7 +41,7 @@ import { ImageBubbleMenu } from './ImageBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 import { isTextSelection } from '@tiptap/core'
-import { Figure } from './extensions/Figure'
+import './Prosemirror.scss'
 
 type EditorProps = {
   shoutId: number
@@ -151,7 +151,7 @@ export const Editor = (props: EditorProps) => {
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
         element: textBubbleMenuRef.current,
-        shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
+        shouldShow: ({ editor: e, view, state, from, to }) => {
           const { doc, selection } = state
           const { empty } = selection
 
@@ -165,7 +165,7 @@ export const Editor = (props: EditorProps) => {
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',
         element: imageBubbleMenuRef.current,
-        shouldShow: ({ editor: e, view, state, oldState, from, to }) => {
+        shouldShow: ({ editor: e, view }) => {
           return view.hasFocus() && e.isActive('image')
         }
       }),

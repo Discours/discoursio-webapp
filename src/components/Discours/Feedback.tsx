@@ -15,7 +15,7 @@ export const Feedback = () => {
         accept: 'application/json',
         'content-type': 'application/json; charset=utf-8'
       },
-      body: JSON.stringify({ contact: contactElement?.value, message: msgElement?.innerText })
+      body: JSON.stringify({ contact: contactElement?.value, message: msgElement?.textContent })
     })
     hideModal()
   }

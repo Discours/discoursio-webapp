@@ -106,12 +106,13 @@ export const Figure = Node.create<FigureOptions>({
 
       imageToFigure:
         () =>
+        // eslint-disable-next-line unicorn/consistent-function-scoping
         ({ tr, commands }) => {
           const { doc, selection } = tr
           const { from, to } = selection
           const images = findChildrenInRange(doc, { from, to }, (node) => node.type.name === 'image')
 
-          if (!images.length) {
+          if (images.length === 0) {
             return false
           }
 
@@ -137,15 +138,15 @@ export const Figure = Node.create<FigureOptions>({
             })
           })
         },
-
       figureToImage:
         () =>
+        // eslint-disable-next-line unicorn/consistent-function-scoping
         ({ tr, commands }) => {
           const { doc, selection } = tr
           const { from, to } = selection
           const figures = findChildrenInRange(doc, { from, to }, (node) => node.type.name === this.name)
 
-          if (!figures.length) {
+          if (figures.length === 0) {
             return false
           }
 

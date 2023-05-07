@@ -13,6 +13,8 @@
 }
 
 .container {
+  position: relative;
+
   .titleInput,
   .subtitleInput {
     border: 0;
@@ -96,6 +98,49 @@
       color: #fff;
     }
   }
+}
+
+.scrollTopButton {
+  cursor: pointer;
+  left: 2rem;
+  position: sticky;
+  top: calc(100vh - 40px);
+  width: 2.8rem;
+  z-index: 2;
+
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
+
+  @include media-breakpoint-up(xl) {
+    left: 4rem;
+  }
+
+  &:hover {
+    .icon {
+      opacity: 1;
+    }
+
+    .scrollTopButtonLabel {
+      display: block;
+    }
+  }
+
+  .icon {
+    opacity: 0.4;
+  }
+}
+
+.scrollTopButtonLabel {
+  @include font-size(1.4rem);
+
+  display: none;
+  font-weight: bold;
+  left: 100%;
+  padding-left: 0.5em;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .inputContainer {

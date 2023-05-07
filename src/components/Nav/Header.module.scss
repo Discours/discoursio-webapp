@@ -392,7 +392,7 @@
 }
 
 .userControl {
-  align-items: baseline;
+  align-items: center;
   display: flex;
   opacity: 1;
   transition: opacity 0.3s;
@@ -428,6 +428,7 @@
   display: flex;
   height: 2.4em;
   justify-content: center;
+  margin-left: 0.5em;
   position: relative;
   transition: margin-left 0.3s;
   width: 2.4em;
@@ -484,11 +485,8 @@
       width: 100%;
     }
   }
-  .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 
+  .icon {
     img {
       height: 20px;
       width: auto;
@@ -508,7 +506,20 @@
 }
 
 .userControlItemVerbose {
-  margin-right: 0.5em;
+  margin-left: 0.5em;
+
+  &:global(.loginbtn) {
+    .icon {
+      height: 2.4rem;
+      width: 2.4rem;
+    }
+
+    img {
+      max-width: none;
+      height: 2.4rem;
+      width: 2.4rem;
+    }
+  }
 
   @include media-breakpoint-up(lg) {
     margin-right: 0;
@@ -519,8 +530,7 @@
     }
 
     .textLabel {
-      // padding: 0 1.2rem;
-
+      padding: 0 1.2rem;
       display: inline;
       position: relative;
       z-index: 1;
@@ -530,5 +540,11 @@
   &,
   a::before {
     border-radius: 1.2em !important;
+  }
+
+  a:hover {
+    .icon {
+      filter: invert(0);
+    }
   }
 }

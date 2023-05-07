@@ -101,12 +101,20 @@
 }
 
 .scrollTopButton {
+  pointer-events: none;
   cursor: pointer;
   left: 2rem;
   position: sticky;
   top: calc(100vh - 40px);
   width: 2.8rem;
   z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+
+  &.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
 
   @include media-breakpoint-down(md) {
     display: none;

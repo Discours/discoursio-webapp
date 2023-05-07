@@ -79,7 +79,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
           mainTopic: form.selectedTopics[0]?.slug || 'society',
           slug: form.slug,
           subtitle: form.subtitle,
-          title: form.title
+          title: form.title,
+          cover: form.coverImageUrl
         }
       })
       return true

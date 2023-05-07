@@ -1,5 +1,5 @@
 import { createMemo, For, Show } from 'solid-js'
-import type { Shout, Topic } from '../../graphql/types.gen'
+import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
 import { Icon } from '../_shared/Icon'

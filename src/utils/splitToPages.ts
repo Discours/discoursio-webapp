@@ -4,7 +4,7 @@ export function splitToPages<T>(arr: T[], startIndex: number, pageSize: number):
       acc.push([])
     }
 
-    acc[acc.length - 1].push(article)
+    acc.at(-1).push(article)
     return acc
   }, [] as T[][])
 }

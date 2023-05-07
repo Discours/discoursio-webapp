@@ -30,8 +30,8 @@ export const capitalize = (originalString: string, firstonly = false) => {
 export const plural = (amount: number, w: string[]) => {
   try {
     const a = amount.toString()
-    const x = Number.parseInt(a.charAt(a.length - 1))
-    const xx = Number.parseInt(a.charAt(a.length - 2) + a.charAt(a.length - 1))
+    const x = Number.parseInt(a.at(-1))
+    const xx = Number.parseInt(a.at(-2) + a.at(-1))
 
     if (xx > 5 && xx < 20) return w[0]
 

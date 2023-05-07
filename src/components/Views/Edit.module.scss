@@ -97,3 +97,14 @@
     }
   }
 }
+
+.inputContainer {
+  position: relative;
+
+  .validationError {
+    position: absolute;
+    top: 100%;
+    font-size: small;
+    color: #f00;
+  }
+}

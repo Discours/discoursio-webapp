@@ -248,10 +248,14 @@ export const apiClient = {
     console.debug('[createArticle]:', response.data)
     return response.data.createShout.shout
   },
-  updateArticle: async ({ slug, article }: { slug: string; article: ShoutInput }): Promise<Shout> => {
-    const response = await privateGraphQLClient
-      .mutation(updateArticle, { slug, shout: article })
-      .toPromise()
+  updateArticle: async ({
+    shoutId,
+    shoutInput
+  }: {
+    shoutId: number
+    shoutInput: ShoutInput
+  }): Promise<Shout> => {
+    const response = await privateGraphQLClient.mutation(updateArticle, { shoutId, shoutInput }).toPromise()
     console.debug('[updateArticle]:', response.data)
     return response.data.updateShout.shout
   },

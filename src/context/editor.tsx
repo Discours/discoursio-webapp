@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
-import { Accessor, createContext, createEffect, createSignal, useContext } from 'solid-js'
+import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
-import { InputMaybe, Scalars, Shout, Topic } from '../graphql/types.gen'
+import { Topic } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
@@ -12,6 +12,7 @@ type WordCounter = {
 }
 
 type ShoutForm = {
+  shoutId: number
   slug: string
   title: string
   subtitle: string
@@ -69,8 +70,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
     try {
       await apiClient.updateArticle({
-        slug: form.slug,
-        article: {
+        shoutId: form.shoutId,
+        shoutInput: {
           body: form.body,
           topics: form.selectedTopics.map((topic) => topic.slug),
           // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>

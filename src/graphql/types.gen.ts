@@ -228,7 +228,7 @@ export type MutationDeleteReactionArgs = {
 }
 
 export type MutationDeleteShoutArgs = {
-  slug: Scalars['String']
+  shout_id: Scalars['Int']
 }
 
 export type MutationDestroyTopicArgs = {
@@ -246,8 +246,8 @@ export type MutationMarkAsReadArgs = {
 }
 
 export type MutationPublishShoutArgs = {
-  inp: ShoutInput
-  slug: Scalars['String']
+  shout_id: Scalars['Int']
+  shout_input?: InputMaybe<ShoutInput>
 }
 
 export type MutationRateUserArgs = {
@@ -292,8 +292,8 @@ export type MutationUpdateReactionArgs = {
 }
 
 export type MutationUpdateShoutArgs = {
-  inp: ShoutInput
-  slug: Scalars['String']
+  shout_id: Scalars['Int']
+  shout_input: ShoutInput
 }
 
 export type MutationUpdateTopicArgs = {

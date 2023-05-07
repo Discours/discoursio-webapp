@@ -6,9 +6,7 @@ import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { TopicSelect } from '../Editor/TopicSelect/TopicSelect'
-import { router, useRouter } from '../../stores/router'
-import { openPage } from '@nanostores/router'
-import { translit } from '../../utils/ru2en'
+import { useRouter } from '../../stores/router'
 import { Editor } from '../Editor/Editor'
 import { Panel } from '../Editor/Panel'
 import { useEditorContext } from '../../context/editor'
@@ -32,6 +30,7 @@ export const EditView = (props: EditViewProps) => {
   const [isSlugChanged, setIsSlugChanged] = createSignal(false)
 
   setForm({
+    shoutId: props.shout.id,
     slug: props.shout.slug,
     title: props.shout.title,
     subtitle: props.shout.subtitle,
@@ -82,17 +81,21 @@ export const EditView = (props: EditViewProps) => {
                     [styles.visible]: page().route === 'edit'
                   })}
                 >
-                  <input
-                    class={styles.titleInput}
-                    type="text"
-                    name="title"
-                    id="title"
-                    placeholder="Заголовок"
-                    autocomplete="off"
-                    value={form.title}
-                    onInput={handleTitleInputChange}
-                  />
-                  <Show when={formErrors.title}>{formErrors.title}</Show>
+                  <div class={styles.inputContainer}>
+                    <input
+                      class={styles.titleInput}
+                      type="text"
+                      name="title"
+                      id="title"
+                      placeholder="Заголовок"
+                      autocomplete="off"
+                      value={form.title}
+                      onInput={handleTitleInputChange}
+                    />
+                    <Show when={formErrors.title}>
+                      <div class={styles.validationError}>{formErrors.title}</div>
+                    </Show>
+                  </div>
 
                   <input
                     class={styles.subtitleInput}

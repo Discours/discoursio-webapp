@@ -5,7 +5,7 @@ import { Button } from '../../_shared/Button'
 import { createSignal, Show } from 'solid-js'
 import { InlineForm } from '../InlineForm'
 import { hideModal } from '../../../stores/ui'
-import { createDropzone, createFileUploader } from '@solid-primitives/upload'
+import { createDropzone, createFileUploader, UploadFile } from '@solid-primitives/upload'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { useLocalize } from '../../../context/localize'
 import { Editor } from '@tiptap/core'
@@ -33,9 +33,6 @@ export const UploadModalContent = (props: Props) => {
       .run()
     hideModal()
   }
-  const handleImageFormSubmit = async (value: string) => {
-    renderImage(value)
-  }
 
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
   const runUpload = async (file) => {
@@ -49,6 +46,23 @@ export const UploadModalContent = (props: Props) => {
       console.error('[upload image] error', error)
       setIsUploading(false)
       setUploadError(t('Error'))
+    }
+  }
+
+  const handleImageFormSubmit = async (value: string) => {
+    try {
+      const data = await fetch(value)
+      const blob = await data.blob()
+      const file = new File([blob], 'convertedFromUrl', { type: data.headers.get('Content-Type') })
+      const fileToUpload: UploadFile = {
+        source: blob.toString(),
+        name: file.name,
+        size: file.size,
+        file: file
+      }
+      await runUpload(fileToUpload)
+    } catch (error) {
+      console.error('[handleImageFormSubmit]', error)
     }
   }
 

@@ -3,6 +3,7 @@
   "About myself": "About myself",
   "About the project": "About the project",
   "Add comment": "Comment",
+  "Add image": "Add image",
   "Address on Discourse": "Address on Discourse",
   "All": "All",
   "All authors": "All authors",
@@ -32,6 +33,7 @@
   "By views": "By views",
   "Characters": "Знаков",
   "Chat Title": "Chat Title",
+  "Choose a title image for the article. You can immediately see how the publication card will look like.": "Choose a title image for the article. You can immediately see how the publication card will look like.",
   "Choose who you want to write to": "Choose who you want to write to",
   "Collaborate": "Help Edit",
   "Comments": "Comments",
@@ -119,6 +121,7 @@
   "Logout": "Logout",
   "Manifest": "Manifest",
   "Many files, choose only one": "Many files, choose only one",
+  "Material card": "Material card",
   "More": "More",
   "Most commented": "Commented",
   "Most read": "Readable",
@@ -162,6 +165,7 @@
   "Recent": "Fresh",
   "Reply": "Reply",
   "Report": "Complain",
+  "Required": "Required",
   "Resend code": "Send confirmation",
   "Restore password": "Restore password",
   "Save draft": "Save draft",
@@ -272,5 +276,5 @@
   "user already exist": "user already exists",
   "view": "view",
   "zine": "zine",
-  "Required": "Required"
+  "Publish Settings": "Publish Settings"
 }

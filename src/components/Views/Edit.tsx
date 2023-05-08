@@ -1,16 +1,16 @@
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
-import styles from './Edit.module.scss'
 import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
-import { TopicSelect } from '../Editor/TopicSelect/TopicSelect'
 import { useRouter } from '../../stores/router'
-import { Editor } from '../Editor/Editor'
-import { Panel } from '../Editor/Panel'
 import { useEditorContext } from '../../context/editor'
+import { Editor, Panel, TopicSelect } from '../Editor'
 import { Icon } from '../_shared/Icon'
+import { Button } from '../_shared/Button'
+import styles from './Edit.module.scss'
+import { useSession } from '../../context/session'
 
 type EditViewProps = {
   shout: Shout
@@ -18,6 +18,7 @@ type EditViewProps = {
 
 export const EditView = (props: EditViewProps) => {
   const { t } = useLocalize()
+  const { user } = useSession()
 
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
@@ -87,7 +88,7 @@ export const EditView = (props: EditViewProps) => {
       behavior: 'smooth'
     })
   }
-
+  console.log('!!! :')
   return (
     <>
       <button
@@ -101,6 +102,7 @@ export const EditView = (props: EditViewProps) => {
       </button>
 
       <div class={styles.container}>
+        <h1>ЙФЙФЙФЙФЙЫЙ &nbsp;</h1>
         <Title>{t('Write an article')}</Title>
         <form>
           <div class="wide-container">
@@ -117,7 +119,7 @@ export const EditView = (props: EditViewProps) => {
                       type="text"
                       name="title"
                       id="title"
-                      placeholder="Заголовок"
+                      placeholder={t('Header')}
                       autocomplete="off"
                       value={form.title}
                       onInput={handleTitleInputChange}
@@ -133,7 +135,7 @@ export const EditView = (props: EditViewProps) => {
                     name="subtitle"
                     id="subtitle"
                     autocomplete="off"
-                    placeholder="Подзаголовок"
+                    placeholder={t('Subheader')}
                     value={form.subtitle}
                     onChange={(e) => setForm('subtitle', e.currentTarget.value)}
                   />
@@ -148,7 +150,7 @@ export const EditView = (props: EditViewProps) => {
                     [styles.visible]: page().route === 'editSettings'
                   })}
                 >
-                  <h1>Настройки публикации</h1>
+                  <h1>{t('Publish Settings')}</h1>
 
                   <h4>Slug</h4>
                   <div class="pretty-form__item">
@@ -214,12 +216,19 @@ export const EditView = (props: EditViewProps) => {
                   {/*  </div>*/}
                   {/*</div>*/}
 
-                  <h4>Карточка материала на&nbsp;главной</h4>
+                  <h4>{t('Material card')}</h4>
                   <p class="description">
-                    Выберите заглавное изображение для статьи, тут сразу можно увидеть как карточка будет
-                    выглядеть на&nbsp;главной странице
+                    {t(
+                      'Choose a title image for the article. You can immediately see how the publication card will look like.'
+                    )}
                   </p>
-                  <div class={styles.articlePreview} />
+                  <div class={styles.articlePreview}>
+                    <Button variant="primary" onClick={() => ''} value={t('Add image')} />
+
+                    <div class={styles.shoutCardTitle}>{form.title}</div>
+                    <div class={styles.shoutCardSubtitle}>{form.subtitle}</div>
+                    <div class={styles.shoutAuthor}>{user().name}</div>
+                  </div>
                 </div>
               </div>
             </div>

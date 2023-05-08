@@ -4,8 +4,37 @@
 
 .articlePreview {
   border: 2px solid #e8e8e8;
-  min-height: 10em;
   padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  align-items: flex-start;
+  box-sizing: border-box;
+
+  .shoutCardTitle {
+    @include font-size(2.2rem);
+
+    font-weight: 700;
+    line-height: 1.25;
+    margin: auto 0 0.8rem;
+  }
+
+  .shoutCardSubtitle {
+    @include font-size(1.7rem);
+
+    color: #696969;
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 0.8rem;
+    transition: color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  }
+
+  .shoutAuthor {
+    @include font-size(1.2rem);
+
+    margin-right: 1.6rem;
+    color: rgb(0 0 0 / 70%);
+  }
 }
 
 .formHolder {

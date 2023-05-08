@@ -139,6 +139,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         },
         publish: true
       })
+      openPage(router, 'feed')
     } catch (error) {
       console.error('[publishShout]', error)
       showSnackbar({ type: 'error', body: t('Error') })

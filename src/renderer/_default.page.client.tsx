@@ -21,6 +21,13 @@ export const render = async (pageContext: PageContextBuiltInClient & PageContext
     load: 'languageOnly'
   })
 
+  const isIOSorMacOSorAndroid = /iphone|ipad|ipod|macintosh|android/i.test(navigator.userAgent)
+
+  if (!isIOSorMacOSorAndroid) {
+    const htmlEl = document.querySelector('html')
+    htmlEl.dataset.customScroll = 'on'
+  }
+
   const content = document.querySelector('#root')
 
   if (!layoutReady) {

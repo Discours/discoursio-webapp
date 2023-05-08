@@ -19,19 +19,21 @@ type Props = {
 export const Draft = (props: Props) => {
   const { t } = useLocalize()
 
-  const handlePublishLinkClick = () => {
+  const handlePublishLinkClick = (e) => {
+    e.preventDefault()
     props.onPublish(props.shout)
   }
 
-  const handleDeleteLinkClick = () => {
+  const handleDeleteLinkClick = (e) => {
+    e.preventDefault()
     props.onDelete(props.shout)
   }
 
   return (
     <div class={clsx(props.class)}>
       <div class={styles.created}>
-        <Icon name="pencil-outline" class={styles.icon} /> {formatDate(new Date(props.shout.createdAt))}{' '}
-        {formatDateTime(props.shout.createdAt)()}
+        <Icon name="pencil-outline" class={styles.icon} /> {formatDate(new Date(props.shout.createdAt))}
+        &nbsp;{formatDateTime(props.shout.createdAt)()}
       </div>
       <div class={styles.titleContainer}>
         <span class={styles.title}>{props.shout.title || t('Unnamed draft')}</span> {props.shout.subtitle}

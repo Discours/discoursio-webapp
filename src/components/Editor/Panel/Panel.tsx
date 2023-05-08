@@ -37,11 +37,13 @@ export const Panel = (props: Props) => {
     }
   })
 
-  const handleSaveLinkClick = () => {
+  const handleSaveLinkClick = (e) => {
+    e.preventDefault()
     saveShout()
   }
 
-  const handlePublishLinkClick = () => {
+  const handlePublishLinkClick = (e) => {
+    e.preventDefault()
     publishShout()
   }
 

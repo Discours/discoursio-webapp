@@ -107,7 +107,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         openPage(router, 'article', { slug: shout.slug })
       }
     } catch (error) {
-      console.error(error)
+      console.error('[saveShout]', error)
       showSnackbar({ type: 'error', body: t('Error') })
     }
   }
@@ -140,7 +140,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         publish: true
       })
     } catch (error) {
-      console.error(error)
+      console.error('[publishShout]', error)
       showSnackbar({ type: 'error', body: t('Error') })
     }
   }
@@ -154,7 +154,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
       openPage(router, 'feed')
     } catch (error) {
-      console.error(error)
+      console.error('[publishShoutById]', error)
       showSnackbar({ type: 'error', body: t('Error') })
     }
   }

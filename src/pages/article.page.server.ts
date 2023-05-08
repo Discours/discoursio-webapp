@@ -4,7 +4,7 @@ import { apiClient } from '../utils/apiClient'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams
-  const article = await apiClient.getShout(slug)
+  const article = await apiClient.getShoutBySlug(slug)
 
   const pageProps: PageProps = { article }
 

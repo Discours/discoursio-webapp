@@ -14,7 +14,6 @@ import { useLocalize } from '../../context/localize'
 import { getPagePath, openPage } from '@nanostores/router'
 import { Button } from '../_shared/Button'
 import { useEditorContext } from '../../context/editor'
-import { apiClient } from '../../utils/apiClient'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -57,11 +56,12 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     toggleEditorPanel()
   }
 
-  const handleSaveButtonClick = async () => {
-    const result = await saveShout()
-    if (result) {
-      openPage(router, 'drafts')
-    }
+  const handleSaveButtonClick = () => {
+    saveShout()
+  }
+
+  const handlePublishButtonClick = () => {
+    publishShout()
   }
 
   return (
@@ -111,6 +111,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                     </>
                   }
                   variant={'outline'}
+                  onClick={handlePublishButtonClick}
                 />
               </div>
 

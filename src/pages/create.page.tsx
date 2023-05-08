@@ -8,7 +8,7 @@ import { redirectPage } from '@nanostores/router'
 export const CreatePage = () => {
   onMount(async () => {
     const shout = await apiClient.createArticle({ article: {} })
-    redirectPage(router, 'edit', { shoutSlug: shout.slug })
+    redirectPage(router, 'edit', { shoutId: shout.id.toString() })
   })
 
   return (

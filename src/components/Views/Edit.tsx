@@ -65,11 +65,6 @@ export const EditView = (props: EditViewProps) => {
     if (title) {
       setFormErrors('title', '')
     }
-
-    // if (!isSlugChanged()) {
-    //   const slug = translit(title).replaceAll(' ', '-')
-    //   setForm('slug', slug)
-    // }
   }
 
   const handleSlugInputChange = (e) => {
@@ -226,7 +221,7 @@ export const EditView = (props: EditViewProps) => {
           </div>
         </form>
       </div>
-      <Panel shoutSlug={props.shout.slug} />
+      <Panel shoutId={props.shout.id} />
     </>
   )
 }

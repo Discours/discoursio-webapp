@@ -12,7 +12,7 @@ import stylesHeader from '../Nav/Header.module.scss'
 import { getDescription } from '../../utils/meta'
 import { FeedArticlePopup } from './FeedArticlePopup'
 import { useLocalize } from '../../context/localize'
-import { openPage } from '@nanostores/router'
+import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
 
 interface ArticleCardProps {
@@ -75,7 +75,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
-  const { cover, layout, slug, authors, stat, body } = props.article
+  const { id, cover, layout, slug, authors, stat, body } = props.article
 
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {
@@ -190,9 +190,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
             <div class={styles.shoutCardDetailsContent}>
               <div class={styles.shoutCardDetailsItem}>
-                <button>
+                <a href={getPagePath(router, 'edit', { shoutId: id.toString() })}>
                   <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
-                </button>
+                </a>
               </div>
 
               <div class={styles.shoutCardDetailsItem}>

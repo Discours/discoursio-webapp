@@ -124,14 +124,16 @@ export const FullArticle = (props: ArticleProps) => {
         <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             <div class={styles.shoutHeader}>
-              <div class={styles.shoutTopic}>
-                <a
-                  href={getPagePath(router, 'topic', { slug: props.article.mainTopic })}
-                  class={styles.mainTopicLink}
-                >
-                  {mainTopic().title}
-                </a>
-              </div>
+              <Show when={mainTopic()}>
+                <div class={styles.shoutTopic}>
+                  <a
+                    href={getPagePath(router, 'topic', { slug: props.article.mainTopic })}
+                    class={styles.mainTopicLink}
+                  >
+                    {mainTopic().title}
+                  </a>
+                </div>
+              </Show>
 
               <h1>{props.article.title}</h1>
               <Show when={props.article.subtitle}>
@@ -237,7 +239,7 @@ export const FullArticle = (props: ArticleProps) => {
               <Show when={canEdit()}>
                 <div class={styles.shoutStatsItem}>
                   <a
-                    href={getPagePath(router, 'edit', { shoutSlug: props.article.slug })}
+                    href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}
                     class={styles.shoutStatsItemInner}
                   >
                     <Icon name="edit" class={clsx(styles.icon, styles.iconEdit)} />

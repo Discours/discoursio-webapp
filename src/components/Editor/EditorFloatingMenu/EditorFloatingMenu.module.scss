@@ -21,3 +21,7 @@
     min-width: 64vw;
   }
 }
+
+:global(.tippy-box) {
+  line-height: 1.3;
+}

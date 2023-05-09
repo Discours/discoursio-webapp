@@ -42,6 +42,7 @@ import { useEditorContext } from '../../context/editor'
 import { isTextSelection } from '@tiptap/core'
 import type { Doc } from 'yjs/dist/src/utils/Doc'
 import './Prosemirror.scss'
+import { TrailingNode } from './extensions/TrailingNode'
 
 type EditorProps = {
   shoutId: number
@@ -176,7 +177,8 @@ export const Editor = (props: EditorProps) => {
           placement: 'left'
         },
         element: floatingMenuRef.current
-      })
+      }),
+      TrailingNode
     ]
   }))
 

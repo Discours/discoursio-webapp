@@ -1,40 +1,15 @@
-import { createSignal, For, onMount, Show } from 'solid-js'
 import { PageLayout } from '../components/_shared/PageLayout'
-import { useSession } from '../context/session'
-import { Shout } from '../graphql/types.gen'
-import { apiClient } from '../utils/apiClient'
-import { getPagePath } from '@nanostores/router'
-import { router } from '../stores/router'
+import { Title } from '@solidjs/meta'
+import { useLocalize } from '../context/localize'
+import { DraftsView } from '../components/Views/DraftsView'
 
 export const DraftsPage = () => {
-  const { isAuthenticated, isSessionLoaded, user } = useSession()
-
-  const [drafts, setDrafts] = createSignal<Shout[]>([])
-
-  onMount(async () => {
-    const loadedDrafts = await apiClient.getDrafts()
-    setDrafts(loadedDrafts)
-  })
+  const { t } = useLocalize()
 
   return (
     <PageLayout>
-      <Show when={isSessionLoaded()}>
-        <div class="wide-container">
-          <div class="row">
-            <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
-              <Show when={isAuthenticated()} fallback="Давайте авторизуемся">
-                <For each={drafts()}>
-                  {(draft) => (
-                    <div>
-                      <a href={getPagePath(router, 'edit', { shoutSlug: draft.slug })}>{draft.id}</a>
-                    </div>
-                  )}
-                </For>
-              </Show>
-            </div>
-          </div>
-        </div>
-      </Show>
+      <Title>{t('Drafts')}</Title>
+      <DraftsView />
     </PageLayout>
   )
 }

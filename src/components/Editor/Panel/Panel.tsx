@@ -10,7 +10,7 @@ import { getPagePath } from '@nanostores/router'
 import { router } from '../../../stores/router'
 
 type Props = {
-  shoutSlug: string
+  shoutId: number
 }
 
 export const Panel = (props: Props) => {
@@ -18,7 +18,7 @@ export const Panel = (props: Props) => {
   const {
     isEditorPanelVisible,
     wordCounter,
-    actions: { toggleEditorPanel }
+    actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
 
   const containerRef: { current: HTMLElement } = {
@@ -37,6 +37,16 @@ export const Panel = (props: Props) => {
     }
   })
 
+  const handleSaveLinkClick = (e) => {
+    e.preventDefault()
+    saveShout()
+  }
+
+  const handlePublishLinkClick = (e) => {
+    e.preventDefault()
+    publishShout()
+  }
+
   return (
     <aside
       ref={(el) => (containerRef.current = el)}
@@ -53,10 +63,14 @@ export const Panel = (props: Props) => {
       <div class={clsx(styles.actionsHolder, styles.scrolled)}>
         <section>
           <p>
-            <a>{t('Publish')}</a>
+            <a href="#" onClick={handlePublishLinkClick}>
+              {t('Publish')}
+            </a>
           </p>
           <p>
-            <a>{t('Save draft')}</a>
+            <a href="#" onClick={handleSaveLinkClick}>
+              {t('Save draft')}
+            </a>
           </p>
         </section>
 
@@ -70,7 +84,7 @@ export const Panel = (props: Props) => {
           <p>
             <a
               class={styles.linkWithIcon}
-              href={getPagePath(router, 'edit', { shoutSlug: props.shoutSlug })}
+              href={getPagePath(router, 'edit', { shoutId: props.shoutId.toString() })}
             >
               <Icon name="pencil-outline" class={styles.icon} />
               {t('Editing')}
@@ -89,7 +103,7 @@ export const Panel = (props: Props) => {
             <a>{t('Invite co-authors')}</a>
           </p>
           <p>
-            <a href={getPagePath(router, 'editSettings', { shoutSlug: props.shoutSlug })}>
+            <a href={getPagePath(router, 'editSettings', { shoutId: props.shoutId.toString() })}>
               {t('Publication settings')}
             </a>
           </p>

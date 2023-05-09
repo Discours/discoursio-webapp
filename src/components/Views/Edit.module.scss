@@ -156,6 +156,7 @@
 
 .scrollTopButton {
   pointer-events: none;
+  user-select: none;
   cursor: pointer;
   left: 2rem;
   position: sticky;

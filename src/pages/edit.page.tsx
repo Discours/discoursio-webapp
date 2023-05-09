@@ -13,12 +13,12 @@ export const EditPage = () => {
 
   const { page } = useRouter()
 
-  const shoutSlug = createMemo(() => (page().params as Record<'shoutSlug', string>).shoutSlug)
+  const shoutId = createMemo(() => Number((page().params as Record<'shoutId', string>).shoutId))
 
   const [shout, setShout] = createSignal<Shout>(null)
 
   onMount(async () => {
-    const loadedShout = await apiClient.getShout(shoutSlug())
+    const loadedShout = await apiClient.getShoutById(shoutId())
     setShout(loadedShout)
   })
 

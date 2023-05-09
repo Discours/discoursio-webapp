@@ -173,7 +173,6 @@ export type Mutation = {
   follow: Result
   getSession: AuthResult
   markAsRead: Result
-  publishShout: Result
   rateUser: Result
   registerUser: AuthResult
   sendLink: Result
@@ -245,11 +244,6 @@ export type MutationMarkAsReadArgs = {
   ids: Array<InputMaybe<Scalars['Int']>>
 }
 
-export type MutationPublishShoutArgs = {
-  shout_id: Scalars['Int']
-  shout_input?: InputMaybe<ShoutInput>
-}
-
 export type MutationRateUserArgs = {
   slug: Scalars['String']
   value: Scalars['Int']
@@ -292,8 +286,9 @@ export type MutationUpdateReactionArgs = {
 }
 
 export type MutationUpdateShoutArgs = {
+  publish?: InputMaybe<Scalars['Boolean']>
   shout_id: Scalars['Int']
-  shout_input: ShoutInput
+  shout_input?: InputMaybe<ShoutInput>
 }
 
 export type MutationUpdateTopicArgs = {
@@ -394,7 +389,8 @@ export type QueryLoadRecipientsArgs = {
 }
 
 export type QueryLoadShoutArgs = {
-  slug: Scalars['String']
+  shout_id?: InputMaybe<Scalars['Int']>
+  slug?: InputMaybe<Scalars['String']>
 }
 
 export type QueryLoadShoutsArgs = {

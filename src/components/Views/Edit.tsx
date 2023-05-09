@@ -74,11 +74,6 @@ export const EditView = (props: EditViewProps) => {
     if (title) {
       setFormErrors('title', '')
     }
-
-    // if (!isSlugChanged()) {
-    //   const slug = translit(title).replaceAll(' ', '-')
-    //   setForm('slug', slug)
-    // }
   }
 
   const handleSlugInputChange = (e) => {
@@ -254,7 +249,7 @@ export const EditView = (props: EditViewProps) => {
       <Modal variant="narrow" name="uploadImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
       </Modal>
-      <Panel shoutSlug={props.shout.slug} />
+      <Panel shoutId={props.shout.id} />
     </>
   )
 }

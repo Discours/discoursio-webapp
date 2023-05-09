@@ -52,7 +52,7 @@ import loadRecipients from '../graphql/query/chat-recipients'
 import createMessage from '../graphql/mutation/create-chat-message'
 import updateProfile from '../graphql/mutation/update-profile'
 import updateArticle from '../graphql/mutation/article-update'
-import publishShout from '../graphql/mutation/shout-publish'
+import deleteShout from '../graphql/mutation/article-delete'
 
 type ApiErrorCode =
   | 'unknown'
@@ -250,21 +250,22 @@ export const apiClient = {
   },
   updateArticle: async ({
     shoutId,
-    shoutInput
+    shoutInput,
+    publish
   }: {
     shoutId: number
-    shoutInput: ShoutInput
+    shoutInput?: ShoutInput
+    publish: boolean
   }): Promise<Shout> => {
-    const response = await privateGraphQLClient.mutation(updateArticle, { shoutId, shoutInput }).toPromise()
+    const response = await privateGraphQLClient
+      .mutation(updateArticle, { shoutId, shoutInput, publish })
+      .toPromise()
     console.debug('[updateArticle]:', response.data)
     return response.data.updateShout.shout
   },
-  publishShout: async ({ slug, shoutInput }: { slug: string; shoutInput: ShoutInput }): Promise<Shout> => {
-    const response = await privateGraphQLClient
-      .mutation(publishShout, { slug, shout: shoutInput })
-      .toPromise()
-    console.debug('[publishShout]:', response)
-    return response.data.publishShout.shout
+  deleteShout: async ({ shoutId }: { shoutId: number }): Promise<void> => {
+    const response = await privateGraphQLClient.mutation(deleteShout, { shoutId }).toPromise()
+    console.debug('[deleteShout]:', response)
   },
   getDrafts: async (): Promise<Shout[]> => {
     const response = await privateGraphQLClient.query(draftsLoad, {}).toPromise()
@@ -292,15 +293,33 @@ export const apiClient = {
     const resp = await publicGraphQLClient.query(authorsLoadBy, options).toPromise()
     return resp.data.loadAuthorsBy
   },
-  getShout: async (slug: string) => {
+  getShoutBySlug: async (slug: string) => {
     const resp = await publicGraphQLClient
       .query(shoutLoad, {
         slug
       })
       .toPromise()
-    if (resp.error) console.debug(resp)
+
+    if (resp.error) {
+      console.error(resp)
+    }
+
     return resp.data.loadShout
   },
+  getShoutById: async (shoutId: number) => {
+    const resp = await publicGraphQLClient
+      .query(shoutLoad, {
+        shoutId
+      })
+      .toPromise()
+
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.loadShout
+  },
+
   getShouts: async (options: LoadShoutsOptions) => {
     const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
 

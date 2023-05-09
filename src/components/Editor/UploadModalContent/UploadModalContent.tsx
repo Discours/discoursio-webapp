@@ -8,13 +8,11 @@ import { hideModal } from '../../../stores/ui'
 import { createDropzone, createFileUploader, UploadFile } from '@solid-primitives/upload'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { useLocalize } from '../../../context/localize'
-import { Editor } from '@tiptap/core'
 import { Loading } from '../../_shared/Loading'
 import { verifyImg } from '../../../utils/verifyImg'
-import { imageProxy } from '../../../utils/imageProxy'
 
 type Props = {
-  closeCallback: (imgUrl?: string) => void
+  onClose: (imgUrl?: string) => void
 }
 
 export const UploadModalContent = (props: Props) => {
@@ -30,7 +28,7 @@ export const UploadModalContent = (props: Props) => {
       setIsUploading(true)
       const fileUrl = await handleFileUpload(file)
       setIsUploading(false)
-      props.closeCallback(fileUrl)
+      props.onClose(fileUrl)
     } catch (error) {
       setIsUploading(false)
       setUploadError(t('Error'))
@@ -113,9 +111,9 @@ export const UploadModalContent = (props: Props) => {
               showInput={true}
               onClose={() => {
                 hideModal()
-                props.closeCallback()
+                props.onClose()
               }}
-              // validate={(value) => verifyImg(value)}
+              validate={(value) => verifyImg(value)}
               onSubmit={handleImageFormSubmit}
               errorMessage={t('Invalid image link')}
             />

@@ -110,7 +110,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
       </div>
       <Modal variant="narrow" name="uploadImage" onClose={closeUploadModalHandler}>
         <UploadModalContent
-          closeCallback={(value) => {
+          onClose={(value) => {
             renderImage(value)
             setSelectedMenuItem()
           }}

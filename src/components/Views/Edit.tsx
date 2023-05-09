@@ -90,9 +90,8 @@ export const EditView = (props: EditViewProps) => {
     setForm('slug', slug)
   }
 
-  const handleSetCover = (imgUrl: string) => {
+  const handleUploadModalContentCloseSetCover = (imgUrl: string) => {
     hideModal()
-    console.log('!!! imgUrl:', imgUrl)
     setCoverImage(imgUrl)
     setForm('coverImageUrl', imgUrl)
   }
@@ -253,7 +252,7 @@ export const EditView = (props: EditViewProps) => {
         </form>
       </div>
       <Modal variant="narrow" name="uploadImage">
-        <UploadModalContent closeCallback={(value) => handleSetCover(value)} />
+        <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
       </Modal>
       <Panel shoutSlug={props.shout.slug} />
     </>

@@ -18,6 +18,13 @@ type EditViewProps = {
   shout: Shout
 }
 
+const scrollTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
+
 export const EditView = (props: EditViewProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
@@ -83,13 +90,6 @@ export const EditView = (props: EditViewProps) => {
     setForm('slug', slug)
   }
 
-  const scrollTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
-
   const handleSetCover = (imgUrl: string) => {
     hideModal()
     console.log('!!! imgUrl:', imgUrl)
@@ -110,7 +110,6 @@ export const EditView = (props: EditViewProps) => {
       </button>
 
       <div class={styles.container}>
-        <h1>ЙФЙФЙФЙФЙЫЙ &nbsp;</h1>
         <Title>{t('Write an article')}</Title>
         <form>
           <div class="wide-container">

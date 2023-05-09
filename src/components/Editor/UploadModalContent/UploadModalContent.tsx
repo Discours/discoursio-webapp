@@ -14,8 +14,7 @@ import { verifyImg } from '../../../utils/verifyImg'
 import { imageProxy } from '../../../utils/imageProxy'
 
 type Props = {
-  editor: Editor
-  closeCallback: () => void
+  closeCallback: (imgUrl?: string) => void
 }
 
 export const UploadModalContent = (props: Props) => {
@@ -25,27 +24,17 @@ export const UploadModalContent = (props: Props) => {
   const [dragActive, setDragActive] = createSignal(false)
   const [dragError, setDragError] = createSignal<string | undefined>()
 
-  const renderImage = (src: string) => {
-    props.editor
-      .chain()
-      .focus()
-      .setImage({ src: imageProxy(src) })
-      .run()
-    hideModal()
-  }
-
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
   const runUpload = async (file) => {
     try {
       setIsUploading(true)
       const fileUrl = await handleFileUpload(file)
       setIsUploading(false)
-      props.closeCallback()
-      renderImage(fileUrl)
+      props.closeCallback(fileUrl)
     } catch (error) {
-      console.error('[upload image] error', error)
       setIsUploading(false)
       setUploadError(t('Error'))
+      console.error('[runUpload]', error)
     }
   }
 
@@ -53,7 +42,7 @@ export const UploadModalContent = (props: Props) => {
     try {
       const data = await fetch(value)
       const blob = await data.blob()
-      const file = new File([blob], 'convertedFromUrl', { type: data.headers.get('Content-Type') })
+      const file = await new File([blob], 'convertedFromUrl', { type: data.headers.get('Content-Type') })
       const fileToUpload: UploadFile = {
         source: blob.toString(),
         name: file.name,
@@ -126,7 +115,7 @@ export const UploadModalContent = (props: Props) => {
                 hideModal()
                 props.closeCallback()
               }}
-              validate={(value) => verifyImg(value)}
+              // validate={(value) => verifyImg(value)}
               onSubmit={handleImageFormSubmit}
               errorMessage={t('Invalid image link')}
             />

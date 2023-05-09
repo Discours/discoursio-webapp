@@ -11,6 +11,32 @@
   align-items: flex-start;
   box-sizing: border-box;
 
+  .shoutCardCoverContainer {
+    position: relative;
+    width: 100%;
+  }
+
+  .shoutCardCover {
+    height: 0;
+    margin-bottom: 1.6rem;
+    overflow: hidden;
+    padding-bottom: 56.2%;
+    position: relative;
+
+    img {
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      transform-origin: 50% 50%;
+      transition: transform 1s ease-in-out;
+      width: 100%;
+    }
+
+    &:hover img {
+      transform: scale(1.1);
+    }
+  }
+
   .shoutCardTitle {
     @include font-size(2.2rem);
 
@@ -89,7 +115,7 @@
 
   .close {
     filter: invert(1);
-    margin: -1.6rem 0 0 -1.6rem;
+    margin: -1.6rem 0 0 -2.8rem;
   }
 
   section {

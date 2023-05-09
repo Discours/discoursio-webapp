@@ -6,11 +6,13 @@ import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { useRouter } from '../../stores/router'
 import { useEditorContext } from '../../context/editor'
-import { Editor, Panel, TopicSelect } from '../Editor'
+import { Editor, Panel, TopicSelect, UploadModalContent } from '../Editor'
 import { Icon } from '../_shared/Icon'
 import { Button } from '../_shared/Button'
 import styles from './Edit.module.scss'
 import { useSession } from '../../context/session'
+import { Modal } from '../Nav/Modal'
+import { hideModal, showModal } from '../../stores/ui'
 
 type EditViewProps = {
   shout: Shout
@@ -22,14 +24,13 @@ export const EditView = (props: EditViewProps) => {
 
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
+  const [coverImage, setCoverImage] = createSignal<string>(null)
   const { page } = useRouter()
-
   const {
     form,
     formErrors,
     actions: { setForm, setFormErrors }
   } = useEditorContext()
-
   const [isSlugChanged, setIsSlugChanged] = createSignal(false)
 
   setForm({
@@ -88,7 +89,14 @@ export const EditView = (props: EditViewProps) => {
       behavior: 'smooth'
     })
   }
-  console.log('!!! :')
+
+  const handleSetCover = (imgUrl: string) => {
+    hideModal()
+    console.log('!!! imgUrl:', imgUrl)
+    setCoverImage(imgUrl)
+    setForm('coverImageUrl', imgUrl)
+  }
+
   return (
     <>
       <button
@@ -223,8 +231,18 @@ export const EditView = (props: EditViewProps) => {
                     )}
                   </p>
                   <div class={styles.articlePreview}>
-                    <Button variant="primary" onClick={() => ''} value={t('Add image')} />
-
+                    <Button
+                      variant="primary"
+                      onClick={() => showModal('uploadImage')}
+                      value={coverImage() ? t('Add another image') : t('Add image')}
+                    />
+                    <Show when={coverImage() ?? form.coverImageUrl}>
+                      <div class={styles.shoutCardCoverContainer}>
+                        <div class={styles.shoutCardCover}>
+                          <img src={coverImage() || form.coverImageUrl} alt={form.title} loading="lazy" />
+                        </div>
+                      </div>
+                    </Show>
                     <div class={styles.shoutCardTitle}>{form.title}</div>
                     <div class={styles.shoutCardSubtitle}>{form.subtitle}</div>
                     <div class={styles.shoutAuthor}>{user().name}</div>
@@ -235,6 +253,9 @@ export const EditView = (props: EditViewProps) => {
           </div>
         </form>
       </div>
+      <Modal variant="narrow" name="uploadImage">
+        <UploadModalContent closeCallback={(value) => handleSetCover(value)} />
+      </Modal>
       <Panel shoutSlug={props.shout.slug} />
     </>
   )

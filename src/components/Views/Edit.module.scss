@@ -14,26 +14,25 @@
   .shoutCardCoverContainer {
     position: relative;
     width: 100%;
-  }
+    .shoutCardCover {
+      height: 0;
+      overflow: hidden;
+      position: relative;
+      margin: 1.6rem 0;
+      padding-bottom: 56.2%;
 
-  .shoutCardCover {
-    height: 0;
-    margin-bottom: 1.6rem;
-    overflow: hidden;
-    padding-bottom: 56.2%;
-    position: relative;
+      img {
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        transform-origin: 50% 50%;
+        transition: transform 1s ease-in-out;
+        width: 100%;
+      }
 
-    img {
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      transform-origin: 50% 50%;
-      transition: transform 1s ease-in-out;
-      width: 100%;
-    }
-
-    &:hover img {
-      transform: scale(1.1);
+      &:hover img {
+        transform: scale(1.1);
+      }
     }
   }
 

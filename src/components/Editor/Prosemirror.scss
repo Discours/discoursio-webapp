@@ -72,3 +72,8 @@
 .horizontalRule {
   border-top: 2px solid #000;
 }
+
+mark.highlight {
+  box-decoration-break: clone;
+  padding: 0.125em 0;
+}

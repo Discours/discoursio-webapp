@@ -142,7 +142,12 @@ export const Editor = (props: EditorProps) => {
       Focus,
       Gapcursor,
       HardBreak,
-      Highlight,
+      Highlight.configure({
+        multicolor: true,
+        HTMLAttributes: {
+          class: 'highlight'
+        }
+      }),
       CustomImage.configure({
         HTMLAttributes: {
           class: 'uploadedImage'

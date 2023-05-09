@@ -10,7 +10,7 @@ import { openPage } from '@nanostores/router'
 import { router } from '../../../stores/router'
 
 export const DraftsView = () => {
-  const { isAuthenticated, isSessionLoaded, user } = useSession()
+  const { isAuthenticated, isSessionLoaded } = useSession()
 
   const [drafts, setDrafts] = createSignal<Shout[]>([])
 

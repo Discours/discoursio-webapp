@@ -118,26 +118,32 @@ export const Figure = Node.create<FigureOptions>({
 
           const tracker = new Tracker(tr)
 
-          return commands.forEach(images, ({ node, pos }) => {
-            const mapResult = tracker.map(pos)
+          return commands.forEach(
+            // eslint-disable-next-line unicorn/no-array-callback-reference
+            images,
+            // eslint-disable-next-line unicorn/no-array-method-this-argument
+            ({ node, pos }) => {
+              // eslint-disable-next-line unicorn/no-array-callback-reference
+              const mapResult = tracker.map(pos)
 
-            if (mapResult.deleted) {
-              return false
+              if (mapResult.deleted) {
+                return false
+              }
+
+              const range = {
+                from: mapResult.position,
+                to: mapResult.position + node.nodeSize
+              }
+
+              return commands.insertContentAt(range, {
+                type: this.name,
+                attrs: {
+                  src: node.attrs.src
+                },
+                content: [{ type: 'text', text: node.attrs.src }]
+              })
             }
-
-            const range = {
-              from: mapResult.position,
-              to: mapResult.position + node.nodeSize
-            }
-
-            return commands.insertContentAt(range, {
-              type: this.name,
-              attrs: {
-                src: node.attrs.src
-              },
-              content: [{ type: 'text', text: node.attrs.src }]
-            })
-          })
+          )
         },
       figureToImage:
         () =>
@@ -153,25 +159,31 @@ export const Figure = Node.create<FigureOptions>({
 
           const tracker = new Tracker(tr)
 
-          return commands.forEach(figures, ({ node, pos }) => {
-            const mapResult = tracker.map(pos)
+          return commands.forEach(
+            // eslint-disable-next-line unicorn/no-array-callback-reference
+            figures,
+            // eslint-disable-next-line unicorn/no-array-method-this-argument
+            ({ node, pos }) => {
+              // eslint-disable-next-line unicorn/no-array-callback-reference
+              const mapResult = tracker.map(pos)
 
-            if (mapResult.deleted) {
-              return false
-            }
-
-            const range = {
-              from: mapResult.position,
-              to: mapResult.position + node.nodeSize
-            }
-
-            return commands.insertContentAt(range, {
-              type: 'image',
-              attrs: {
-                src: node.attrs.src
+              if (mapResult.deleted) {
+                return false
               }
-            })
-          })
+
+              const range = {
+                from: mapResult.position,
+                to: mapResult.position + node.nodeSize
+              }
+
+              return commands.insertContentAt(range, {
+                type: 'image',
+                attrs: {
+                  src: node.attrs.src
+                }
+              })
+            }
+          )
         }
     }
   },

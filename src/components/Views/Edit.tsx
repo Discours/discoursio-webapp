@@ -38,7 +38,6 @@ export const EditView = (props: EditViewProps) => {
     formErrors,
     actions: { setForm, setFormErrors }
   } = useEditorContext()
-  const [isSlugChanged, setIsSlugChanged] = createSignal(false)
 
   setForm({
     shoutId: props.shout.id,
@@ -78,10 +77,6 @@ export const EditView = (props: EditViewProps) => {
 
   const handleSlugInputChange = (e) => {
     const slug = e.currentTarget.value
-
-    if (slug !== form.slug) {
-      setIsSlugChanged(true)
-    }
     setForm('slug', slug)
   }
 

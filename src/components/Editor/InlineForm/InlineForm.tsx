@@ -7,11 +7,10 @@ type Props = {
   onClose: () => void
   onClear?: () => void
   onSubmit: (value: string) => void
-  validate?: (value: string) => string | Promise<string> | Promise<void> | Promise<boolean>
+  validate?: (value: string) => string | Promise<string>
   initialValue?: string
   showInput?: boolean
   placeholder: string
-  errorMessage: string
   autoFocus?: boolean
 }
 
@@ -26,17 +25,15 @@ export const InlineForm = (props: Props) => {
 
   const handleSaveButtonClick = async () => {
     if (props.validate) {
-      const checkValid = await props.validate(formValue())
-      if (checkValid) {
-        props.onSubmit(formValue())
-        props.onClose()
-      } else {
-        setFormValueError(props.errorMessage)
+      const errorMessage = await props.validate(formValue())
+      if (errorMessage) {
+        setFormValueError(errorMessage)
+        return
       }
-    } else {
-      props.onSubmit(formValue())
-      props.onClose()
     }
+
+    props.onSubmit(formValue())
+    props.onClose()
   }
 
   const handleKeyPress = async (event) => {

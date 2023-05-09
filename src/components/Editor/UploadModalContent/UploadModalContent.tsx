@@ -113,9 +113,8 @@ export const UploadModalContent = (props: Props) => {
                 hideModal()
                 props.onClose()
               }}
-              validate={(value) => verifyImg(value)}
+              validate={async (value) => ((await verifyImg(value)) ? '' : t('Invalid image URL'))}
               onSubmit={handleImageFormSubmit}
-              errorMessage={t('Invalid image link')}
             />
           </div>
         </>

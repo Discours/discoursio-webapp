@@ -5,9 +5,8 @@ import { Icon } from '../_shared/Icon'
 import { formatDate } from '../../utils'
 import formatDateTime from '../../utils/formatDateTime'
 import { useLocalize } from '../../context/localize'
-import { getPagePath, openPage } from '@nanostores/router'
+import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
-import { useEditorContext } from '../../context/editor'
 
 type Props = {
   class?: string

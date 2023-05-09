@@ -6,7 +6,7 @@ import { clsx } from 'clsx'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
 import { InlineForm } from '../InlineForm'
-import validateImage from '../../../utils/validateUrl'
+import { validateUrl } from '../../../utils/validateUrl'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -83,10 +83,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             placeholder={t('Enter URL address')}
             initialValue={currentUrl() ?? ''}
             onClear={handleClearLinkForm}
-            validate={(value) => (validateImage(value) ? '' : t('Invalid url format'))}
+            validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
             onSubmit={handleLinkFormSubmit}
             onClose={() => setLinkEditorOpen(false)}
-            errorMessage={t('Error')}
           />
         </Match>
         <Match when={!linkEditorOpen()}>

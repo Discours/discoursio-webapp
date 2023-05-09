@@ -36,6 +36,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isOrderedList = isActive('isOrderedList')
   const isBulletList = isActive('isBulletList')
   const isLink = isActive('link')
+  const isHighlight = isActive('highlight')
 
   const toggleLinkForm = () => {
     setLinkEditorOpen(true)
@@ -190,6 +191,15 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               onClick={() => props.editor.chain().focus().toggleItalic().run()}
             >
               <Icon name="editor-italic" />
+            </button>
+            <button
+              type="button"
+              class={clsx(styles.bubbleMenuButton, {
+                [styles.bubbleMenuButtonActive]: isHighlight()
+              })}
+              onClick={() => props.editor.chain().focus().toggleHighlight({ color: '#F6E3A1' }).run()}
+            >
+              <div class={styles.toggleHighlight} />
             </button>
             <div class={styles.delimiter} />
             <button

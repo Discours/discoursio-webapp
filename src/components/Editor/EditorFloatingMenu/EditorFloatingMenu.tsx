@@ -25,13 +25,6 @@ const embedData = async (data) => {
   }
 }
 
-const validateEmbed = async (value) => {
-  const iframeData = (await HTMLParser(value, false)) as JSONContent
-  if (iframeData.type !== 'iframe') {
-    return
-  }
-}
-
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const { t } = useLocalize()
   const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | undefined>()
@@ -41,6 +34,13 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
     props.editor.chain().focus().setIframe(emb).run()
+  }
+
+  const validateEmbed = async (value) => {
+    const iframeData = (await HTMLParser(value, false)) as JSONContent
+    if (iframeData.type !== 'iframe') {
+      return t('Error')
+    }
   }
 
   createEffect(() => {
@@ -102,7 +102,6 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
                 onClear={() => setSelectedMenuItem()}
                 validate={validateEmbed}
                 onSubmit={handleEmbedFormSubmit}
-                errorMessage={t('Error')}
               />
             </Show>
           </div>

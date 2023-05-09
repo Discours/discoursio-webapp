@@ -4,8 +4,7 @@
 
   .form {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     padding: 6px 11px;
     width: 100%;
 

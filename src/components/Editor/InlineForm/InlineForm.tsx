@@ -33,6 +33,9 @@ export const InlineForm = (props: Props) => {
       } else {
         setFormValueError(props.errorMessage)
       }
+    } else {
+      props.onSubmit(formValue())
+      props.onClose()
     }
   }
 

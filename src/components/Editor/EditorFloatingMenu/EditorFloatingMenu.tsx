@@ -8,9 +8,10 @@ import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { Menu } from './Menu'
 import type { MenuItem } from './Menu/Menu'
-import { showModal } from '../../../stores/ui'
-import { UploadModalContent } from '../UploadModal'
+import { hideModal, showModal } from '../../../stores/ui'
+import { UploadModalContent } from '../UploadModalContent'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { imageProxy } from '../../../utils/imageProxy'
 
 type FloatingMenuProps = {
   editor: Editor
@@ -35,6 +36,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const { t } = useLocalize()
   const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | undefined>()
   const [menuOpen, setMenuOpen] = createSignal<boolean>(false)
+  const menuRef: { current: HTMLDivElement } = { current: null }
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
@@ -58,8 +60,6 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     setMenuOpen(false)
   }
 
-  const menuRef: { current: HTMLDivElement } = { current: null }
-
   useOutsideClickHandler({
     containerRef: menuRef,
     handler: () => {
@@ -68,6 +68,15 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
       }
     }
   })
+
+  const renderImage = (src: string) => {
+    props.editor
+      .chain()
+      .focus()
+      .setImage({ src: imageProxy(src) })
+      .run()
+    hideModal()
+  }
 
   return (
     <>
@@ -100,7 +109,12 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         </Show>
       </div>
       <Modal variant="narrow" name="uploadImage" onClose={closeUploadModalHandler}>
-        <UploadModalContent closeCallback={() => setSelectedMenuItem()} editor={props.editor} />
+        <UploadModalContent
+          onClose={(value) => {
+            renderImage(value)
+            setSelectedMenuItem()
+          }}
+        />
       </Modal>
     </>
   )

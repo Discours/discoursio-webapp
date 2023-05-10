@@ -16,7 +16,7 @@
 
   .close {
     filter: invert(1);
-    margin: -1.6rem 0 0 -1.6rem;
+    margin: -1.6rem 0 0 -2.4rem;
   }
 
   .actionsHolder {
@@ -54,6 +54,11 @@
       color: #fff;
       text-decoration: none;
     }
+  }
+
+  a {
+    text-decoration: none;
+    border-bottom: none;
   }
 
   .linkWithIcon {

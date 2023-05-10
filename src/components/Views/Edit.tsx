@@ -13,6 +13,7 @@ import styles from './Edit.module.scss'
 import { useSession } from '../../context/session'
 import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
+import { imageProxy } from '../../utils/imageProxy'
 
 type EditViewProps = {
   shout: Shout
@@ -28,7 +29,6 @@ const scrollTop = () => {
 export const EditView = (props: EditViewProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
-
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
@@ -82,7 +82,7 @@ export const EditView = (props: EditViewProps) => {
 
   const handleUploadModalContentCloseSetCover = (imgUrl: string) => {
     hideModal()
-    setCoverImage(imgUrl)
+    setCoverImage(imageProxy(imgUrl))
     setForm('coverImageUrl', imgUrl)
   }
 
@@ -227,7 +227,11 @@ export const EditView = (props: EditViewProps) => {
                     <Show when={coverImage() ?? form.coverImageUrl}>
                       <div class={styles.shoutCardCoverContainer}>
                         <div class={styles.shoutCardCover}>
-                          <img src={coverImage() || form.coverImageUrl} alt={form.title} loading="lazy" />
+                          <img
+                            src={coverImage() || imageProxy(form.coverImageUrl)}
+                            alt={form.title}
+                            loading="lazy"
+                          />
                         </div>
                       </div>
                     </Show>

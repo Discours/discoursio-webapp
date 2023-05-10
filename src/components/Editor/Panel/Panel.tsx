@@ -84,6 +84,7 @@ export const Panel = (props: Props) => {
           <p>
             <a
               class={styles.linkWithIcon}
+              onClick={() => toggleEditorPanel()}
               href={getPagePath(router, 'edit', { shoutId: props.shoutId.toString() })}
             >
               <Icon name="pencil-outline" class={styles.icon} />
@@ -103,7 +104,10 @@ export const Panel = (props: Props) => {
             <a>{t('Invite co-authors')}</a>
           </p>
           <p>
-            <a href={getPagePath(router, 'editSettings', { shoutId: props.shoutId.toString() })}>
+            <a
+              onClick={() => toggleEditorPanel()}
+              href={getPagePath(router, 'editSettings', { shoutId: props.shoutId.toString() })}
+            >
               {t('Publication settings')}
             </a>
           </p>

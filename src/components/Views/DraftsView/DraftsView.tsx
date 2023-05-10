@@ -16,7 +16,7 @@ export const DraftsView = () => {
 
   const loadDrafts = async () => {
     const loadedDrafts = await apiClient.getDrafts()
-    setDrafts(loadedDrafts)
+    setDrafts(loadedDrafts.reverse())
   }
 
   onMount(() => {

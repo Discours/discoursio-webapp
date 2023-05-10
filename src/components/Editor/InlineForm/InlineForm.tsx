@@ -55,6 +55,7 @@ export const InlineForm = (props: Props) => {
         <input
           autofocus={props.autoFocus ?? true}
           type="text"
+          value={props.initialValue ?? ''}
           placeholder={props.placeholder}
           onKeyPress={(e) => handleKeyPress(e)}
           onInput={(e) => handleFormInput(e.currentTarget.value)}

@@ -80,6 +80,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const saveShout = async () => {
+    if (isEditorPanelVisible()) {
+      toggleEditorPanel()
+    }
+
     if (!validate()) {
       return
     }
@@ -113,6 +117,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const publishShout = async () => {
+    if (isEditorPanelVisible()) {
+      toggleEditorPanel()
+    }
     if (!validate()) {
       return
     }

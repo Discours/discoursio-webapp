@@ -76,7 +76,6 @@ export const FullArticle = (props: ArticleProps) => {
   })
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
-
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleBookmarkButtonClick = (ev) => {
     // TODO: implement bookmark clicked
@@ -254,7 +253,7 @@ export const FullArticle = (props: ArticleProps) => {
               </div>
             </div>
             <div class={styles.help}>
-              <Show when={isAuthenticated()}>
+              <Show when={isAuthenticated() && !canEdit()}>
                 <button class="button">{t('Cooperate')}</button>
               </Show>
               <Show when={canEdit()}>

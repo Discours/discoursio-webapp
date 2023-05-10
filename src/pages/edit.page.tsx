@@ -25,7 +25,16 @@ export const EditPage = () => {
   return (
     <PageLayout>
       <Show when={isSessionLoaded()}>
-        <Show when={isAuthenticated()} fallback="Давайте авторизуемся">
+        <Show
+          when={isAuthenticated()}
+          fallback={
+            <div class="wide-container">
+              <div class="row">
+                <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">Давайте авторизуемся</div>
+              </div>
+            </div>
+          }
+        >
           <Show when={shout()}>
             <Suspense fallback={<Loading />}>
               <EditView shout={shout()} />

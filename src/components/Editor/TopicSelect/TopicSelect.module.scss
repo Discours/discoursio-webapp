@@ -1,0 +1,13 @@
+.selectedItem {
+  cursor: pointer;
+
+  &.mainTopic {
+    cursor: default;
+    background: #000;
+    color: #ccc;
+
+    + :global(.solid-select-multi-value-remove) {
+      background: #000;
+    }
+  }
+}

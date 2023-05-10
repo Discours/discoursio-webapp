@@ -85,6 +85,10 @@ export const EditView = (props: EditViewProps) => {
     setCoverImage(imageProxy(imgUrl))
     setForm('coverImageUrl', imgUrl)
   }
+  const handleDeleteCoverImage = () => {
+    setForm('coverImageUrl', '')
+    setCoverImage(null)
+  }
 
   return (
     <>
@@ -219,11 +223,16 @@ export const EditView = (props: EditViewProps) => {
                     )}
                   </p>
                   <div class={styles.articlePreview}>
-                    <Button
-                      variant="primary"
-                      onClick={() => showModal('uploadImage')}
-                      value={coverImage() ? t('Add another image') : t('Add image')}
-                    />
+                    <div class={styles.actions}>
+                      <Button
+                        variant="primary"
+                        onClick={() => showModal('uploadImage')}
+                        value={coverImage() || form.coverImageUrl ? t('Add another image') : t('Add image')}
+                      />
+                      <Show when={coverImage() ?? form.coverImageUrl}>
+                        <Button variant="secondary" onClick={handleDeleteCoverImage} value={t('Delete')} />
+                      </Show>
+                    </div>
                     <Show when={coverImage() ?? form.coverImageUrl}>
                       <div class={styles.shoutCardCoverContainer}>
                         <div class={styles.shoutCardCover}>

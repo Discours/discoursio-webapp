@@ -11,6 +11,11 @@
   align-items: flex-start;
   box-sizing: border-box;
 
+  .actions {
+    display: flex;
+    gap: 16px;
+  }
+
   .shoutCardCoverContainer {
     position: relative;
     width: 100%;

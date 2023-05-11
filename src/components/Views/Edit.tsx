@@ -117,20 +117,20 @@ export const EditView = (props: EditViewProps) => {
 
   return (
     <>
-      <button
-        class={clsx(styles.scrollTopButton, {
-          [styles.visible]: isScrolled()
-        })}
-        onClick={scrollTop}
-      >
-        <Icon name="up-button" class={styles.icon} />
-        <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>
-      </button>
-
       <div class={styles.container}>
         <Title>{t('Write an article')}</Title>
         <form>
           <div class="wide-container">
+            <button
+              class={clsx(styles.scrollTopButton, {
+                [styles.visible]: isScrolled()
+              })}
+              onClick={scrollTop}
+            >
+              <Icon name="up-button" class={styles.icon} />
+              <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>
+            </button>
+
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
                 <div

@@ -1,4 +1,4 @@
-import { For } from 'solid-js'
+import { createSignal, For } from 'solid-js'
 import type { Author } from '../../../graphql/types.gen'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { Icon } from '../../_shared/Icon'
@@ -28,6 +28,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
   const { topicEntities } = useTopicsStore()
+  const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(false)
 
   const checkTopicIsSeen = (topicSlug: string) => {
     return articlesByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
@@ -68,11 +69,6 @@ export const Sidebar = (props: FeedSidebarProps) => {
     {
       icon: 'feed-notifications',
       title: t('notifications')
-    },
-    {
-      href: '/feed?by=subscribed',
-      title: t('My subscriptions'),
-      isBold: true
     }
   ]
 
@@ -92,29 +88,46 @@ export const Sidebar = (props: FeedSidebarProps) => {
             </li>
           )}
         </For>
-        <For each={session()?.news?.authors}>
-          {(authorSlug: string) => (
-            <li>
-              <a
-                href={`/author/${authorSlug}`}
-                classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
-              >
-                <small>@{authorSlug}</small>
-                {authorEntities()[authorSlug]?.name}
-              </a>
-            </li>
-          )}
-        </For>
-        <For each={session()?.news?.topics}>
-          {(topicSlug: string) => (
-            <li>
-              <a href={`/author/${topicSlug}`} classList={{ [styles.unread]: checkTopicIsSeen(topicSlug) }}>
-                {topicEntities()[topicSlug]?.title ?? topicSlug}
-              </a>
-            </li>
-          )}
-        </For>
       </ul>
+
+      <Show when={session()?.news?.authors || session()?.news?.topics}>
+        <h4
+          classList={{ [styles.opened]: isSubscriptionsVisible() }}
+          onClick={() => {
+            setSubscriptionsVisible(!isSubscriptionsVisible())
+          }}
+        >
+          {t('My subscriptions')}
+        </h4>
+        <ul classList={{ [styles.hidden]: !isSubscriptionsVisible() }}>
+          <For each={session()?.news?.authors}>
+            {(authorSlug: string) => (
+              <li>
+                <a
+                  href={`/author/${authorSlug}`}
+                  classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
+                >
+                  <small>@{authorSlug}</small>
+                  {authorEntities()[authorSlug]?.name}
+                </a>
+              </li>
+            )}
+          </For>
+          <For each={session()?.news?.topics}>
+            {(topicSlug: string) => (
+              <li>
+                <a
+                  href={`/topic/${topicSlug}`}
+                  classList={{ [styles.unread]: checkTopicIsSeen(topicSlug) }}
+                >
+                  {topicEntities()[topicSlug]?.title ?? topicSlug}
+                </a>
+              </li>
+            )}
+          </For>
+        </ul>
+      </Show>
+
       <div class={styles.settings}>
         <a href="/feed/settings">
           <Icon name="settings" class={styles.icon} />

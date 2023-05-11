@@ -262,11 +262,22 @@ button {
     background: #000;
     color: #fff;
     opacity: 1;
+
+    .icon {
+      filter: invert(1);
+    }
   }
 
   &[disabled]:hover {
     background: #fff;
     color: #000;
+  }
+
+  .icon {
+    display: inline-block;
+    margin-right: 0.3em;
+    vertical-align: text-bottom;
+    width: 1.4em;
   }
 }
 

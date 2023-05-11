@@ -14,6 +14,7 @@ import { useSession } from '../../context/session'
 import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
 import { imageProxy } from '../../utils/imageProxy'
+import { GrowingTextarea } from '../_shared/GrowingTextarea'
 
 type EditViewProps = {
   shout: Shout
@@ -73,11 +74,10 @@ export const EditView = (props: EditViewProps) => {
     })
   })
 
-  const handleTitleInputChange = (e) => {
-    const title = e.currentTarget.value
-    setForm('title', title)
+  const handleTitleInputChange = (value) => {
+    setForm('title', value)
 
-    if (title) {
+    if (value) {
       setFormErrors('title', '')
     }
   }
@@ -139,30 +139,21 @@ export const EditView = (props: EditViewProps) => {
                   })}
                 >
                   <div class={styles.inputContainer}>
-                    <input
+                    <GrowingTextarea
+                      value={(value) => handleTitleInputChange(value)}
                       class={styles.titleInput}
-                      type="text"
-                      name="title"
-                      id="title"
                       placeholder={t('Header')}
-                      autocomplete="off"
-                      value={form.title}
-                      onInput={handleTitleInputChange}
+                      initialValue={form.title}
                     />
                     <Show when={formErrors.title}>
                       <div class={styles.validationError}>{formErrors.title}</div>
                     </Show>
                   </div>
-
-                  <input
+                  <GrowingTextarea
+                    value={(value) => setForm('subtitle', value)}
                     class={styles.subtitleInput}
-                    type="text"
-                    name="subtitle"
-                    id="subtitle"
-                    autocomplete="off"
                     placeholder={t('Subheader')}
-                    value={form.subtitle}
-                    onChange={(e) => setForm('subtitle', e.currentTarget.value)}
+                    initialValue={form.subtitle}
                   />
                   <Editor
                     shoutId={props.shout.id}

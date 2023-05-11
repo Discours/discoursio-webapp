@@ -1,0 +1,44 @@
+.GrowingTextarea {
+  display: block;
+  width: 100%;
+
+  .growWrap {
+    display: grid;
+    width: 100%;
+
+    &::after {
+      content: attr(data-replicated-value);
+      visibility: hidden;
+      transition: height 0.3s linear;
+    }
+
+    .textInput {
+      margin-bottom: 0;
+      border: none;
+      resize: none;
+      overflow: hidden;
+      &::placeholder {
+        color: #858585;
+      }
+
+      &:focus,
+      &:focus-visible,
+      &:active {
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+    }
+
+    &::after,
+    & .textInput {
+      /* Identical styling required!! */
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow: hidden;
+      grid-area: 1 / 1 / 2 / 2;
+      width: 100%;
+      padding: 0;
+    }
+  }
+}

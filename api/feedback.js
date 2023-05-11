@@ -1,29 +1,28 @@
-const MG = require('mailgun.js')
-const fd = require('form-data')
-const mailgun = new MG(fd)
+import { formidablePromise } from './_shared/formidablePromise'
+const mailgun = require('mailgun-js')({
+  apiKey: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN
+})
 
-const mgOptions = {
-  key: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
-  username: 'discoursio' // FIXME
-}
+export default async function handler(req, res) {
+  const { contact, subject, message } = await formidablePromise(req)
 
-const client = mailgun.client(mgOptions)
+  const text = `${contact}\n\n${message}`
 
-const messageData = (subject, text) => {
-  return {
+  const data = {
     from: 'Discours Feedback Robot <robot@discours.io>',
     to: 'welcome@discours.io',
     subject,
     text
   }
-}
-export default async function handler(req, res) {
-  const { contact, subject, message } = req.query
-  try {
-    const data = messageData(`${contact}: ${subject}`, message)
-    client.messages.create(mgOptions.domain, data).then(console.log).catch(console.error)
-  } catch (error) {
-    res.status(400).json(error)
-  }
+
+  mailgun.messages().send(data, (error) => {
+    if (error) {
+      console.log('Error:', error)
+      res.status(400).json(error)
+    } else {
+      console.log('Email sent successfully!')
+      res.status(200)
+    }
+  })
 }

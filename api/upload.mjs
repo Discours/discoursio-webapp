@@ -4,6 +4,7 @@ import formidable from 'formidable'
 import { Writable } from 'stream'
 import path from 'path'
 import crypto from 'crypto'
+import { formidablePromise } from './_shared/formidablePromise.js'
 
 const { STORJ_ACCESS_KEY, STORJ_SECRET_KEY, STORJ_END_POINT, STORJ_BUCKET_NAME, CDN_DOMAIN } = process.env
 
@@ -14,19 +15,6 @@ const storjS3Client = new S3Client({
     secretAccessKey: STORJ_SECRET_KEY
   }
 })
-
-const formidablePromise = async (request, options) => {
-  return new Promise((resolve, reject) => {
-    const form = formidable(options)
-
-    form.parse(request, (err, fields, files) => {
-      if (err) {
-        return reject(err)
-      }
-      return resolve({ fields, files })
-    })
-  })
-}
 
 const fileConsumer = (acc) => {
   return new Writable({

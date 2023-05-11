@@ -48,6 +48,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
 
   const format = (item, type) => {
     if (type === 'option') {
+      // eslint-disable-next-line solid/components-return-once
       return item.label
     }
 

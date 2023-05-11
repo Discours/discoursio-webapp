@@ -1,3 +1,5 @@
+import { formidablePromise } from './_shared/formidablePromise'
+
 const MG = require('mailgun.js')
 const fd = require('form-data')
 const mailgun = new MG(fd)
@@ -19,7 +21,8 @@ const messageData = (subject, text) => {
   }
 }
 export default async function handler(req, res) {
-  const { contact, subject, message } = req.query
+  const { contact, subject, message } = await formidablePromise(req)
+
   try {
     const data = messageData(`${contact}: ${subject}`, message)
     client.messages.create(mgOptions.domain, data).then(console.log).catch(console.error)

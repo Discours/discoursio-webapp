@@ -19,7 +19,6 @@ export const ConnectPage = () => {
       return acc
     }, {} as Record<string, string>)
 
-    debugger
     const requestOptions = {
       method: 'POST',
       headers: {

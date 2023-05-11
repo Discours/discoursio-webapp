@@ -15,7 +15,7 @@ export const ConnectPage = () => {
               скорее! Если укажете свою почту, мы&nbsp;обязательно ответим.
             </p>
 
-            <form action="../components/Pages">
+            <form action="/api/feedback">
               <div class="pretty-form__item">
                 <select id="subject">
                   <option value="">Сотрудничество</option>

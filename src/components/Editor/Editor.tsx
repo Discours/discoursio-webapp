@@ -1,4 +1,4 @@
-import { createEffect } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import { Blockquote } from '@tiptap/extension-blockquote'
@@ -57,6 +57,7 @@ const providers: Record<string, HocuspocusProvider> = {}
 export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
+  const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
 
   const docName = `shout-${props.shoutId}`
 
@@ -165,9 +166,8 @@ export const Editor = (props: EditorProps) => {
 
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
 
-          return (
-            view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image') && !e.isActive('figure')
-          )
+          setIsCommonMarkup(e.isActive('figure'))
+          return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
         }
       }),
       BubbleMenu.configure({
@@ -206,7 +206,11 @@ export const Editor = (props: EditorProps) => {
   return (
     <>
       <div ref={(el) => (editorElRef.current = el)} />
-      <TextBubbleMenu editor={editor()} ref={(el) => (textBubbleMenuRef.current = el)} />
+      <TextBubbleMenu
+        isCommonMarkup={isCommonMarkup()}
+        editor={editor()}
+        ref={(el) => (textBubbleMenuRef.current = el)}
+      />
       <ImageBubbleMenu editor={editor()} ref={(el) => (imageBubbleMenuRef.current = el)} />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
     </>

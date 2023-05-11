@@ -248,7 +248,7 @@ export const EditView = (props: EditViewProps) => {
                     <div class={styles.actions}>
                       <Button
                         variant="primary"
-                        onClick={() => showModal('uploadImage')}
+                        onClick={() => showModal('uploadCoverImage')}
                         value={coverImage() || form.coverImageUrl ? t('Add another image') : t('Add image')}
                       />
                       <Show when={coverImage() ?? form.coverImageUrl}>
@@ -276,7 +276,7 @@ export const EditView = (props: EditViewProps) => {
           </div>
         </form>
       </div>
-      <Modal variant="narrow" name="uploadImage">
+      <Modal variant="narrow" name="uploadCoverImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
       </Modal>
       <Panel shoutId={props.shout.id} />

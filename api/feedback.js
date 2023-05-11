@@ -1,9 +1,10 @@
 const { formidablePromise } = require('./_shared/formidablePromise')
-const mailgun = require('mailgun.js')
-const FormData = require('form-data')
+const formData = require('form-data')
+const Mailgun = require('mailgun.js')
+
+const mailgun = new Mailgun(formData)
 
 const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
-
 const mg = mailgun.client({ username: 'discoursio', key: MAILGUN_API_KEY })
 
 export default async function handler(req, res) {
@@ -11,14 +12,15 @@ export default async function handler(req, res) {
 
   const text = `${contact}\n\n${message}`
 
-  const form = new FormData()
-  form.append('from', 'Discours Feedback Robot <robot@discours.io>')
-  form.append('to', 'welcome@discours.io')
-  form.append('subject', subject)
-  form.append('text', text)
+  const data = {
+    from: 'Discours Feedback Robot <robot@discours.io>',
+    to: 'welcome@discours.io',
+    subject,
+    text
+  }
 
   try {
-    const response = await mg.messages.create(MAILGUN_DOMAIN, { form })
+    const response = await mg.messages.create(MAILGUN_DOMAIN, data)
     console.log('Email sent successfully!', response)
     res.status(200).json({ result: 'great success' })
   } catch (error) {

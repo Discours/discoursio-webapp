@@ -10,6 +10,7 @@ import { validateUrl } from '../../../utils/validateUrl'
 
 type BubbleMenuProps = {
   editor: Editor
+  isCommonMarkup: boolean
   ref: (el: HTMLDivElement) => void
 }
 
@@ -90,89 +91,93 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
         </Match>
         <Match when={!linkEditorOpen()}>
           <>
-            <div class={styles.dropDownHolder}>
-              <button
-                type="button"
-                class={clsx(styles.bubbleMenuButton, {
-                  [styles.bubbleMenuButtonActive]: textSizeBubbleOpen()
-                })}
-                onClick={toggleTextSizePopup}
-              >
-                <Icon name="editor-text-size" />
-                <Icon name="down-triangle" class={styles.triangle} />
-              </button>
-              <Show when={textSizeBubbleOpen()}>
-                <div class={styles.dropDown}>
-                  <header>{t('Headers')}</header>
-                  <div class={styles.actions}>
-                    <button
-                      type="button"
-                      class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isH1()
-                      })}
-                      onClick={() => {
-                        props.editor.chain().focus().toggleHeading({ level: 1 }).run()
-                        toggleTextSizePopup()
-                      }}
-                    >
-                      <Icon name="editor-h1" />
-                    </button>
-                    <button
-                      type="button"
-                      class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isH2()
-                      })}
-                      onClick={() => {
-                        props.editor.chain().focus().toggleHeading({ level: 2 }).run()
-                        toggleTextSizePopup()
-                      }}
-                    >
-                      <Icon name="editor-h2" />
-                    </button>
-                    <button
-                      type="button"
-                      class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isH3()
-                      })}
-                      onClick={() => {
-                        props.editor.chain().focus().toggleHeading({ level: 3 }).run()
-                        toggleTextSizePopup()
-                      }}
-                    >
-                      <Icon name="editor-h3" />
-                    </button>
-                  </div>
-                  <header>{t('Quotes')}</header>
-                  <div class={styles.actions}>
-                    <button
-                      type="button"
-                      class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isBlockQuote()
-                      })}
-                      onClick={() => {
-                        props.editor.chain().focus().toggleBlockquote().run()
-                        toggleTextSizePopup()
-                      }}
-                    >
-                      <Icon name="editor-blockquote" />
-                    </button>
-                    <button
-                      type="button"
-                      class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isBlockQuote()
-                      })}
-                      onClick={() => {
-                        props.editor.chain().focus().toggleBlockquote().run()
-                        toggleTextSizePopup()
-                      }}
-                    >
-                      <Icon name="editor-quote" />
-                    </button>
-                  </div>
+            <Show when={!props.isCommonMarkup}>
+              <>
+                <div class={styles.dropDownHolder}>
+                  <button
+                    type="button"
+                    class={clsx(styles.bubbleMenuButton, {
+                      [styles.bubbleMenuButtonActive]: textSizeBubbleOpen()
+                    })}
+                    onClick={toggleTextSizePopup}
+                  >
+                    <Icon name="editor-text-size" />
+                    <Icon name="down-triangle" class={styles.triangle} />
+                  </button>
+                  <Show when={textSizeBubbleOpen()}>
+                    <div class={styles.dropDown}>
+                      <header>{t('Headers')}</header>
+                      <div class={styles.actions}>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isH1()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleHeading({ level: 1 }).run()
+                            toggleTextSizePopup()
+                          }}
+                        >
+                          <Icon name="editor-h1" />
+                        </button>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isH2()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleHeading({ level: 2 }).run()
+                            toggleTextSizePopup()
+                          }}
+                        >
+                          <Icon name="editor-h2" />
+                        </button>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isH3()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleHeading({ level: 3 }).run()
+                            toggleTextSizePopup()
+                          }}
+                        >
+                          <Icon name="editor-h3" />
+                        </button>
+                      </div>
+                      <header>{t('Quotes')}</header>
+                      <div class={styles.actions}>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isBlockQuote()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleBlockquote().run()
+                            toggleTextSizePopup()
+                          }}
+                        >
+                          <Icon name="editor-blockquote" />
+                        </button>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isBlockQuote()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleBlockquote().run()
+                            toggleTextSizePopup()
+                          }}
+                        >
+                          <Icon name="editor-quote" />
+                        </button>
+                      </div>
+                    </div>
+                  </Show>
                 </div>
-              </Show>
-            </div>
-            <div class={styles.delimiter} />
+                <div class={styles.delimiter} />
+              </>
+            </Show>
             <button
               type="button"
               class={clsx(styles.bubbleMenuButton, {
@@ -191,15 +196,18 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             >
               <Icon name="editor-italic" />
             </button>
-            <button
-              type="button"
-              class={clsx(styles.bubbleMenuButton, {
-                [styles.bubbleMenuButtonActive]: isHighlight()
-              })}
-              onClick={() => props.editor.chain().focus().toggleHighlight({ color: '#F6E3A1' }).run()}
-            >
-              <div class={styles.toggleHighlight} />
-            </button>
+
+            <Show when={!props.isCommonMarkup}>
+              <button
+                type="button"
+                class={clsx(styles.bubbleMenuButton, {
+                  [styles.bubbleMenuButtonActive]: isHighlight()
+                })}
+                onClick={() => props.editor.chain().focus().toggleHighlight({ color: '#f6e3a1' }).run()}
+              >
+                <div class={styles.toggleHighlight} />
+              </button>
+            </Show>
             <div class={styles.delimiter} />
             <button
               type="button"
@@ -210,53 +218,57 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             >
               <Icon name="editor-link" />
             </button>
-            <button type="button" class={styles.bubbleMenuButton}>
-              <Icon name="editor-footnote" />
-            </button>
-            <div class={styles.delimiter} />
-            <div class={styles.dropDownHolder}>
-              <button
-                type="button"
-                class={clsx(styles.bubbleMenuButton, {
-                  [styles.bubbleMenuButtonActive]: listBubbleOpen()
-                })}
-                onClick={toggleListPopup}
-              >
-                <Icon name="editor-ul" />
-                <Icon name="down-triangle" class={styles.triangle} />
-              </button>
-              <Show when={listBubbleOpen()}>
-                <div class={styles.dropDown}>
-                  <header>{t('Lists')}</header>
-                  <div class={styles.actions}>
-                    <button
-                      type="button"
-                      class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isBulletList()
-                      })}
-                      onClick={() => {
-                        props.editor.chain().focus().toggleBulletList().run()
-                        toggleListPopup()
-                      }}
-                    >
-                      <Icon name="editor-ul" />
-                    </button>
-                    <button
-                      type="button"
-                      class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isOrderedList()
-                      })}
-                      onClick={() => {
-                        props.editor.chain().focus().toggleOrderedList().run()
-                        toggleListPopup()
-                      }}
-                    >
-                      <Icon name="editor-ol" />
-                    </button>
-                  </div>
+            <Show when={!props.isCommonMarkup}>
+              <>
+                <button type="button" class={styles.bubbleMenuButton}>
+                  <Icon name="editor-footnote" />
+                </button>
+                <div class={styles.delimiter} />
+                <div class={styles.dropDownHolder}>
+                  <button
+                    type="button"
+                    class={clsx(styles.bubbleMenuButton, {
+                      [styles.bubbleMenuButtonActive]: listBubbleOpen()
+                    })}
+                    onClick={toggleListPopup}
+                  >
+                    <Icon name="editor-ul" />
+                    <Icon name="down-triangle" class={styles.triangle} />
+                  </button>
+                  <Show when={listBubbleOpen()}>
+                    <div class={styles.dropDown}>
+                      <header>{t('Lists')}</header>
+                      <div class={styles.actions}>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isBulletList()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleBulletList().run()
+                            toggleListPopup()
+                          }}
+                        >
+                          <Icon name="editor-ul" />
+                        </button>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isOrderedList()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleOrderedList().run()
+                            toggleListPopup()
+                          }}
+                        >
+                          <Icon name="editor-ol" />
+                        </button>
+                      </div>
+                    </div>
+                  </Show>
                 </div>
-              </Show>
-            </div>
+              </>
+            </Show>
           </>
         </Match>
       </Switch>

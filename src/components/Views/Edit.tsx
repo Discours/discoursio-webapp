@@ -26,6 +26,11 @@ const scrollTop = () => {
   })
 }
 
+const EMPTY_TOPIC: Topic = {
+  id: -1,
+  slug: ''
+}
+
 export const EditView = (props: EditViewProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
@@ -39,13 +44,15 @@ export const EditView = (props: EditViewProps) => {
     actions: { setForm, setFormErrors }
   } = useEditorContext()
 
+  const shoutTopics = props.shout.topics || []
+
   setForm({
     shoutId: props.shout.id,
     slug: props.shout.slug,
     title: props.shout.title,
     subtitle: props.shout.subtitle,
-    selectedTopics: props.shout.topics || [],
-    mainTopic: props.shout.mainTopic,
+    selectedTopics: shoutTopics,
+    mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
     body: props.shout.body,
     coverImageUrl: props.shout.cover
   })
@@ -88,6 +95,24 @@ export const EditView = (props: EditViewProps) => {
   const handleDeleteCoverImage = () => {
     setForm('coverImageUrl', '')
     setCoverImage(null)
+  }
+
+  const handleTopicSelectChange = (newSelectedTopics) => {
+    console.log({ newSelectedTopics })
+    if (newSelectedTopics.length === 0) {
+      setForm('mainTopic', EMPTY_TOPIC)
+    } else if (
+      form.selectedTopics.length === 0 ||
+      newSelectedTopics.every((topic) => topic.id !== form.mainTopic.id)
+    ) {
+      setForm('mainTopic', newSelectedTopics[0])
+    }
+
+    if (newSelectedTopics.length > 0) {
+      setFormErrors('selectedTopics', '')
+    }
+
+    setForm('selectedTopics', newSelectedTopics)
   }
 
   return (
@@ -188,15 +213,21 @@ export const EditView = (props: EditViewProps) => {
                   {/*  его на&nbsp;страницах интересных ему тем. Темы можно менять местами, первая тема*/}
                   {/*  становится заглавной*/}
                   {/*</p>*/}
-                  <div class="pretty-form__item">
-                    <Show when={topics()}>
-                      <TopicSelect
-                        topics={topics()}
-                        onChange={(newSelectedTopics) => setForm('selectedTopics', newSelectedTopics)}
-                        selectedTopics={form.selectedTopics}
-                      />
+                  <div class={styles.inputContainer}>
+                    <div class={clsx('pretty-form__item', styles.topicSelectContainer)}>
+                      <Show when={topics()}>
+                        <TopicSelect
+                          topics={topics()}
+                          onChange={handleTopicSelectChange}
+                          selectedTopics={form.selectedTopics}
+                          onMainTopicChange={(mainTopic) => setForm('mainTopic', mainTopic)}
+                          mainTopic={form.mainTopic}
+                        />
+                      </Show>
+                    </div>
+                    <Show when={formErrors.selectedTopics}>
+                      <div class={styles.validationError}>{formErrors.selectedTopics}</div>
                     </Show>
-                    {/*<input type="text" name="topics" id="topics" placeholder="Темы" class="nolabel" />*/}
                   </div>
 
                   {/*<h4>Соавторы</h4>*/}

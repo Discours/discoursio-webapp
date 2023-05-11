@@ -204,9 +204,23 @@ h5 {
   }
 
   :global(.solid-select-multi-value) {
+    background: none;
     margin: 0 0.5rem 0.5rem 0;
+    overflow: hidden;
     padding-left: 0.8rem;
     padding-bottom: 0.2rem;
+    position: relative;
+
+    &:before {
+      background: rgb(243, 244, 246);
+      content: '';
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: -1;
+    }
   }
 
   :global(.solid-select-multi-value-remove) {

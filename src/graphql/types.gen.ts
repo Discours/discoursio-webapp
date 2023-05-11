@@ -582,11 +582,11 @@ export type ShoutInput = {
   body?: InputMaybe<Scalars['String']>
   community?: InputMaybe<Scalars['Int']>
   cover?: InputMaybe<Scalars['String']>
-  mainTopic?: InputMaybe<Scalars['String']>
+  mainTopic?: InputMaybe<TopicInput>
   slug?: InputMaybe<Scalars['String']>
   subtitle?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>
-  topics?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
+  topics?: InputMaybe<Array<InputMaybe<TopicInput>>>
 }
 
 export type ShoutsFilterBy = {
@@ -628,7 +628,6 @@ export type Token = {
 
 export type Topic = {
   body?: Maybe<Scalars['String']>
-  community: Community
   id: Scalars['Int']
   oid?: Maybe<Scalars['String']>
   pic?: Maybe<Scalars['String']>
@@ -639,7 +638,7 @@ export type Topic = {
 
 export type TopicInput = {
   body?: InputMaybe<Scalars['String']>
-  community: Scalars['String']
+  id?: InputMaybe<Scalars['Int']>
   pic?: InputMaybe<Scalars['String']>
   slug: Scalars['String']
   title?: InputMaybe<Scalars['String']>

@@ -1,13 +1,13 @@
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
-import { Topic } from '../graphql/types.gen'
+import { Topic, TopicInput } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { translit } from '../utils/ru2en'
 import { openPage } from '@nanostores/router'
 import { router, useRouter } from '../stores/router'
+import { slugify } from '../utils/slugify'
 
 type WordCounter = {
   characters: number
@@ -20,7 +20,7 @@ type ShoutForm = {
   title: string
   subtitle: string
   selectedTopics: Topic[]
-  mainTopic: string
+  mainTopic?: Topic
   body: string
   coverImageUrl: string
 }
@@ -29,7 +29,7 @@ type EditorContextType = {
   isEditorPanelVisible: Accessor<boolean>
   wordCounter: Accessor<WordCounter>
   form: ShoutForm
-  formErrors: Partial<ShoutForm>
+  formErrors: Record<keyof ShoutForm, string>
   actions: {
     saveShout: () => Promise<void>
     publishShout: () => Promise<void>
@@ -38,7 +38,7 @@ type EditorContextType = {
     toggleEditorPanel: () => void
     countWords: (value: WordCounter) => void
     setForm: SetStoreFunction<ShoutForm>
-    setFormErrors: SetStoreFunction<Partial<ShoutForm>>
+    setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
   }
 }
 
@@ -46,6 +46,14 @@ const EditorContext = createContext<EditorContextType>()
 
 export function useEditorContext() {
   return useContext(EditorContext)
+}
+
+const topic2topicInput = (topic: Topic): TopicInput => {
+  return {
+    id: topic.id,
+    slug: topic.slug,
+    title: topic.title
+  }
 }
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
@@ -60,7 +68,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
 
   const [form, setForm] = createStore<ShoutForm>(null)
-  const [formErrors, setFormErrors] = createStore<Partial<ShoutForm>>(null)
+  const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
 
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
@@ -79,31 +87,48 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     return true
   }
 
+  const validateSettings = () => {
+    if (form.selectedTopics.length === 0) {
+      setFormErrors('selectedTopics', t('Required'))
+      return false
+    }
+
+    return true
+  }
+
+  const updateShout = async ({ publish }: { publish: boolean }) => {
+    return apiClient.updateArticle({
+      shoutId: form.shoutId,
+      shoutInput: {
+        body: form.body,
+        topics: form.selectedTopics.map((topic) => topic2topicInput(topic)),
+        // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
+        // community?: InputMaybe<Scalars['Int']>
+        mainTopic: topic2topicInput(form.mainTopic),
+        slug: form.slug,
+        subtitle: form.subtitle,
+        title: form.title,
+        cover: form.coverImageUrl
+      },
+      publish
+    })
+  }
+
   const saveShout = async () => {
     if (isEditorPanelVisible()) {
       toggleEditorPanel()
     }
 
-    if (!validate()) {
+    if (page().route === 'edit' && !validate()) {
+      return
+    }
+
+    if (page().route === 'editSettings' && !validateSettings()) {
       return
     }
 
     try {
-      const shout = await apiClient.updateArticle({
-        shoutId: form.shoutId,
-        shoutInput: {
-          body: form.body,
-          topics: form.selectedTopics.map((topic) => topic.slug),
-          // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-          // community?: InputMaybe<Scalars['Int']>
-          mainTopic: form.selectedTopics[0]?.slug || 'society',
-          slug: form.slug,
-          subtitle: form.subtitle,
-          title: form.title,
-          cover: form.coverImageUrl
-        },
-        publish: false
-      })
+      const shout = await updateShout({ publish: false })
 
       if (shout.visibility === 'owner') {
         openPage(router, 'drafts')
@@ -120,32 +145,26 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     if (isEditorPanelVisible()) {
       toggleEditorPanel()
     }
-    if (!validate()) {
-      return
-    }
+
     if (page().route === 'edit') {
-      const slug = translit(form.title.toLowerCase()).replaceAll(' ', '-')
+      if (!validate()) {
+        return
+      }
+
+      await updateShout({ publish: false })
+
+      const slug = slugify(form.title)
       setForm('slug', slug)
       openPage(router, 'editSettings', { shoutId: form.shoutId.toString() })
       return
     }
 
+    if (!validateSettings()) {
+      return
+    }
+
     try {
-      await apiClient.updateArticle({
-        shoutId: form.shoutId,
-        shoutInput: {
-          body: form.body,
-          topics: form.selectedTopics.map((topic) => topic.slug),
-          // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-          // community?: InputMaybe<Scalars['Int']>
-          mainTopic: form.selectedTopics[0]?.slug || 'society',
-          slug: form.slug,
-          subtitle: form.subtitle,
-          title: form.title,
-          cover: form.coverImageUrl
-        },
-        publish: true
-      })
+      await updateShout({ publish: true })
       openPage(router, 'feed')
     } catch (error) {
       console.error('[publishShout]', error)

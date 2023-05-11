@@ -14,6 +14,7 @@ import { FeedArticlePopup } from './FeedArticlePopup'
 import { useLocalize } from '../../context/localize'
 import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
+import { imageProxy } from '../../utils/imageProxy'
 
 interface ArticleCardProps {
   settings?: {
@@ -104,7 +105,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       <Show when={!props.settings?.noimage && cover}>
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
-            <img src={cover || ''} alt={title || ''} loading="lazy" />
+            <img src={imageProxy(cover)} alt={title || ''} loading="lazy" />
           </div>
         </div>
       </Show>

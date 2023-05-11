@@ -1,20 +1,16 @@
-const MG = require('mailgun.js')
-const fd = require('form-data')
-const mailgun = new MG(fd)
+const formData = require('form-data')
+const Mailgun = require('mailgun.js')
 
-const mgOptions = {
-  key: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
-  username: 'discoursio' // FIXME
-}
+const mailgun = new Mailgun(formData)
 
-const client = mailgun.client(mgOptions)
+const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
+const mg = mailgun.client({ username: 'discoursio', key: MAILGUN_API_KEY })
 
 export default async (req, res) => {
-  const { email } = req.query
+  const { email } = req.body
 
   try {
-    const response = await client.lists.members.createMember(mgOptions.domain, {
+    const response = await mg.lists.members.createMember(MAILGUN_DOMAIN, {
       address: email,
       subscribed: true,
       upsert: 'yes'

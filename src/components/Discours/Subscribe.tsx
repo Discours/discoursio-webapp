@@ -10,7 +10,18 @@ export default () => {
   const [title, setTitle] = createSignal('')
   const subscribe = async () => {
     setTitle(t('...subscribing'))
-    const r = await fetch(`/api/newsletter?email=${emailElement?.value}`)
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: emailElement?.value
+      })
+    }
+
+    const r = await fetch('/api/newsletter', requestOptions)
     setTitle(r.ok ? t('You are subscribed') : '')
   }
 

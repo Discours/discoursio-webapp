@@ -1,4 +1,3 @@
-const { formidablePromise } = require('./_shared/formidablePromise')
 const formData = require('form-data')
 const Mailgun = require('mailgun.js')
 
@@ -8,7 +7,7 @@ const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
 const mg = mailgun.client({ username: 'discoursio', key: MAILGUN_API_KEY })
 
 export default async function handler(req, res) {
-  const { contact, subject, message } = await formidablePromise(req)
+  const { contact, subject, message } = req.body
 
   const text = `${contact}\n\n${message}`
 

@@ -77,10 +77,9 @@
 
   .titleInput,
   .subtitleInput {
-    border: 0;
-    outline: 0;
-    padding: 0;
     font-size: 36px;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
 
     &::placeholder {
       opacity: 0.3;
@@ -92,6 +91,8 @@
     font-weight: 700;
   }
 }
+
+//Grow input
 
 .editSettings,
 .edit {

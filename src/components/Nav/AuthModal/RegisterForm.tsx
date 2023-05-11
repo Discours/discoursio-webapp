@@ -44,8 +44,30 @@ export const RegisterForm = () => {
     }
   }
 
+  function isValidPassword(password) {
+    const minLength = 8
+    const hasNumber = /\d/
+    const hasSpecial = /[!@#$%^&*]/
+
+    if (password.length < minLength) {
+      return t('Password should be at least 8 characters')
+    }
+    if (!hasNumber.test(password)) {
+      return t('Password should contain at least one number')
+    }
+    if (!hasSpecial.test(password)) {
+      return t('Password should contain at least one special character: !@#$%^&*')
+    }
+    return null
+  }
+
   const handlePasswordInput = (newPassword: string) => {
-    setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
+    const passwordError = isValidPassword(newPassword)
+    if (passwordError) {
+      setValidationErrors((errors) => ({ ...errors, password: passwordError }))
+    } else {
+      setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
+    }
     setPassword(newPassword)
   }
 
@@ -176,7 +198,9 @@ export const RegisterForm = () => {
             <label for="password">{t('Password')}</label>
           </div>
           <Show when={validationErrors().password}>
-            <div class={styles.validationError}>{validationErrors().password}</div>
+            <div class={clsx(styles.registerPassword, styles.validationError)}>
+              {validationErrors().password}
+            </div>
           </Show>
 
           <div>

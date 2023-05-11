@@ -98,7 +98,6 @@ export const EditView = (props: EditViewProps) => {
   }
 
   const handleTopicSelectChange = (newSelectedTopics) => {
-    console.log({ newSelectedTopics })
     if (newSelectedTopics.length === 0) {
       setForm('mainTopic', EMPTY_TOPIC)
     } else if (

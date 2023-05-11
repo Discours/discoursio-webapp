@@ -7,6 +7,7 @@ import styles from './TopicSelect.module.scss'
 import { clsx } from 'clsx'
 import { createSignal } from 'solid-js'
 import { slugify } from '../../../utils/slugify'
+import { clone } from '../../../utils/clone'
 
 type TopicSelectProps = {
   topics: Topic[]
@@ -64,10 +65,13 @@ export const TopicSelect = (props: TopicSelectProps) => {
     )
   }
 
+  const initialValue = clone(props.selectedTopics)
+
   return (
     <Select
       multiple={true}
       disabled={isDisabled()}
+      initialValue={initialValue}
       {...selectProps}
       format={format}
       placeholder={t('Topics')}

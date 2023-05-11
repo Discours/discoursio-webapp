@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
-import { Topic } from '../graphql/types.gen'
+import { Topic, TopicInput } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
@@ -46,6 +46,14 @@ const EditorContext = createContext<EditorContextType>()
 
 export function useEditorContext() {
   return useContext(EditorContext)
+}
+
+const topic2topicInput = (topic: Topic): TopicInput => {
+  return {
+    id: topic.id,
+    slug: topic.slug,
+    title: topic.title
+  }
 }
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
@@ -93,10 +101,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       shoutId: form.shoutId,
       shoutInput: {
         body: form.body,
-        topics: form.selectedTopics,
+        topics: form.selectedTopics.map((topic) => topic2topicInput(topic)),
         // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
         // community?: InputMaybe<Scalars['Int']>
-        mainTopic: form.mainTopic,
+        mainTopic: topic2topicInput(form.mainTopic),
         slug: form.slug,
         subtitle: form.subtitle,
         title: form.title,
@@ -138,14 +146,20 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       toggleEditorPanel()
     }
 
-    if (!validate()) {
-      return
-    }
-
     if (page().route === 'edit') {
+      if (!validate()) {
+        return
+      }
+
+      await updateShout({ publish: false })
+
       const slug = slugify(form.title)
       setForm('slug', slug)
       openPage(router, 'editSettings', { shoutId: form.shoutId.toString() })
+      return
+    }
+
+    if (!validateSettings()) {
       return
     }
 

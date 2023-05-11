@@ -209,20 +209,22 @@ export const EditView = (props: EditViewProps) => {
                   {/*  его на&nbsp;страницах интересных ему тем. Темы можно менять местами, первая тема*/}
                   {/*  становится заглавной*/}
                   {/*</p>*/}
-                  <div class={clsx('pretty-form__item', styles.topicSelectContainer)}>
-                    <Show when={topics()}>
-                      <TopicSelect
-                        topics={topics()}
-                        onChange={handleTopicSelectChange}
-                        selectedTopics={form.selectedTopics}
-                        onMainTopicChange={(mainTopic) => setForm('mainTopic', mainTopic)}
-                        mainTopic={form.mainTopic}
-                      />
+                  <div class={styles.inputContainer}>
+                    <div class={clsx('pretty-form__item', styles.topicSelectContainer)}>
+                      <Show when={topics()}>
+                        <TopicSelect
+                          topics={topics()}
+                          onChange={handleTopicSelectChange}
+                          selectedTopics={form.selectedTopics}
+                          onMainTopicChange={(mainTopic) => setForm('mainTopic', mainTopic)}
+                          mainTopic={form.mainTopic}
+                        />
+                      </Show>
+                    </div>
+                    <Show when={formErrors.selectedTopics}>
+                      <div class={styles.validationError}>{formErrors.selectedTopics}</div>
                     </Show>
                   </div>
-                  <Show when={formErrors.selectedTopics}>
-                    <div class={styles.validationError}>{formErrors.selectedTopics}</div>
-                  </Show>
 
                   {/*<h4>Соавторы</h4>*/}
                   {/*<p class="description">У каждого соавтора можно добавить роль</p>*/}

@@ -13,6 +13,7 @@ import { signSendLink } from '../../../stores/auth'
 
 import { useSnackbar } from '../../../context/snackbar'
 import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
 
 type FormFields = {
   email: string
@@ -30,6 +31,7 @@ export const LoginForm = () => {
   // TODO: better solution for interactive error messages
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
+  const [showPassword, setShowPassword] = createSignal(false)
 
   const {
     actions: { showSnackbar }
@@ -143,17 +145,26 @@ export const LoginForm = () => {
       <Show when={validationErrors().email}>
         <div class={styles.validationError}>{validationErrors().email}</div>
       </Show>
+
       <div class="pretty-form__item">
         <input
           id="password"
           name="password"
           autocomplete="password"
-          type="password"
+          type={showPassword() ? 'text' : 'password'}
           placeholder={t('Password')}
           onInput={(event) => handlePasswordInput(event.currentTarget.value)}
         />
         <label for="password">{t('Password')}</label>
+        <button
+          type="button"
+          class={styles.passwordToggle}
+          onClick={() => setShowPassword(!showPassword())}
+        >
+          <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
+        </button>
       </div>
+
       <Show when={validationErrors().password}>
         <div class={styles.validationError}>{validationErrors().password}</div>
       </Show>

@@ -42,18 +42,15 @@ export const Panel = (props: Props) => {
     }
   })
 
-  const handleSaveLinkClick = (e) => {
-    e.preventDefault()
+  const handleSaveClick = () => {
     saveShout()
   }
 
-  const handlePublishLinkClick = (e) => {
-    e.preventDefault()
+  const handlePublishClick = () => {
     publishShout()
   }
 
-  const handleFixTypographyLinkClick = (e) => {
-    e.preventDefault()
+  const handleFixTypographyClick = () => {
     const html = useEditorHTML(() => editorRef.current())
     editorRef.current().commands.setContent(typograf.execute(html()))
   }
@@ -74,27 +71,27 @@ export const Panel = (props: Props) => {
       <div class={clsx(styles.actionsHolder, styles.scrolled)}>
         <section>
           <p>
-            <a href="#" onClick={handlePublishLinkClick}>
+            <span class={styles.link} onClick={handlePublishClick}>
               {t('Publish')}
-            </a>
+            </span>
           </p>
           <p>
-            <a href="#" onClick={handleSaveLinkClick}>
+            <span class={styles.link} onClick={handleSaveClick}>
               {t('Save draft')}
-            </a>
+            </span>
           </p>
         </section>
 
         <section>
           <p>
-            <a class={styles.linkWithIcon}>
+            <a class={clsx(styles.link, styles.linkWithIcon)}>
               <Icon name="eye" class={styles.icon} />
               {t('Preview')}
             </a>
           </p>
           <p>
             <a
-              class={styles.linkWithIcon}
+              class={clsx(styles.link, styles.linkWithIcon)}
               onClick={() => toggleEditorPanel()}
               href={getPagePath(router, 'edit', { shoutId: props.shoutId.toString() })}
             >
@@ -103,7 +100,7 @@ export const Panel = (props: Props) => {
             </a>
           </p>
           <p>
-            <a class={styles.linkWithIcon}>
+            <a class={clsx(styles.link, styles.linkWithIcon)}>
               <Icon name="feed-discussion" class={styles.icon} />
               {t('FAQ')}
             </a>
@@ -112,10 +109,11 @@ export const Panel = (props: Props) => {
 
         <section>
           <p>
-            <a>{t('Invite co-authors')}</a>
+            <a class={styles.link}>{t('Invite co-authors')}</a>
           </p>
           <p>
             <a
+              class={styles.link}
               onClick={() => toggleEditorPanel()}
               href={getPagePath(router, 'editSettings', { shoutId: props.shoutId.toString() })}
             >
@@ -123,24 +121,30 @@ export const Panel = (props: Props) => {
             </a>
           </p>
           <p>
-            <a onClick={handleFixTypographyLinkClick} href="#">
+            <span class={styles.link} onClick={handleFixTypographyClick}>
               {t('Fix typography')}
-            </a>
+            </span>
           </p>
           <p>
-            <a>{t('Corrections history')}</a>
+            <a class={styles.link}>{t('Corrections history')}</a>
           </p>
         </section>
 
         <section>
           <p>
-            <a href="/how-to-write-a-good-article">{t('How to write a good article')}</a>
+            <a class={styles.link} href="/how-to-write-a-good-article">
+              {t('How to write a good article')}
+            </a>
           </p>
           <p>
-            <a href="#">{t('Hotkeys')}</a>
+            <a class={styles.link} href="#">
+              {t('Hotkeys')}
+            </a>
           </p>
           <p>
-            <a href="#">{t('Help')}</a>
+            <a class={styles.link} href="#">
+              {t('Help')}
+            </a>
           </p>
         </section>
 

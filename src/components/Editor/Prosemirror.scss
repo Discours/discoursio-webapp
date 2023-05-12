@@ -1,5 +1,6 @@
 .ProseMirror {
   outline: none;
+  min-height: 300px;
 
   blockquote {
     @include font-size(1.6rem);

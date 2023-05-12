@@ -59,6 +59,13 @@
   a {
     text-decoration: none;
     border-bottom: none;
+    color: rgb(255 255 255 / 35%);
+    font-weight: normal !important;
+
+    &:hover {
+      background: none;
+      color: #fff;
+    }
   }
 
   .linkWithIcon {
@@ -71,16 +78,6 @@
     flex-direction: column;
     justify-content: flex-end;
     margin-top: 3em;
-  }
-
-  a {
-    color: rgb(255 255 255 / 35%);
-    font-weight: normal !important;
-
-    &:hover {
-      background: none;
-      color: #fff;
-    }
   }
 
   &.hidden {

@@ -20,7 +20,8 @@ type EditViewProps = {
   shout: Shout
 }
 
-const scrollTop = () => {
+const handleScrollTopButtonClick = (e) => {
+  e.preventDefault()
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
@@ -124,7 +125,7 @@ export const EditView = (props: EditViewProps) => {
               class={clsx(styles.scrollTopButton, {
                 [styles.visible]: isScrolled()
               })}
-              onClick={scrollTop}
+              onClick={handleScrollTopButtonClick}
             >
               <Icon name="up-button" class={styles.icon} />
               <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>

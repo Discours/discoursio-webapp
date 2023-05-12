@@ -187,11 +187,13 @@ export const Editor = (props: EditorProps) => {
     ]
   }))
 
-  const html = useEditorHTML(() => editor())
-
   const {
-    actions: { countWords }
+    actions: { countWords, setEditor }
   } = useEditorContext()
+
+  setEditor(editor)
+
+  const html = useEditorHTML(() => editor())
 
   createEffect(() => {
     props.onChange(html())

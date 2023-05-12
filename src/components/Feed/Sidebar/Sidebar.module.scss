@@ -89,14 +89,15 @@
   }
 
   h4 {
+    @include font-size(1.2rem);
+
     color: #9fa1a7;
     cursor: pointer;
-    @include font-size(1.2rem);
     letter-spacing: 0.05em;
     text-transform: uppercase;
     position: relative;
 
-    &:after {
+    &::after {
       content: '+';
       font-size: 1.6em;
       line-height: 1;
@@ -107,7 +108,7 @@
     }
 
     &.opened {
-      &:after {
+      &::after {
         right: 0.9rem;
         transform: rotate(45deg);
       }

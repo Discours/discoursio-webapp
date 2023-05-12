@@ -8,6 +8,10 @@ import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../../stores/router'
+import { useEditorHTML } from 'solid-tiptap'
+import Typograf from 'typograf'
+
+const typograf = new Typograf({ locale: ['ru', 'en-US'] })
 
 type Props = {
   shoutId: number
@@ -18,6 +22,7 @@ export const Panel = (props: Props) => {
   const {
     isEditorPanelVisible,
     wordCounter,
+    editorRef,
     actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
 
@@ -45,6 +50,12 @@ export const Panel = (props: Props) => {
   const handlePublishLinkClick = (e) => {
     e.preventDefault()
     publishShout()
+  }
+
+  const handleFixTypographyLinkClick = (e) => {
+    e.preventDefault()
+    const html = useEditorHTML(() => editorRef.current())
+    editorRef.current().commands.setContent(typograf.execute(html()))
   }
 
   return (
@@ -109,6 +120,11 @@ export const Panel = (props: Props) => {
               href={getPagePath(router, 'editSettings', { shoutId: props.shoutId.toString() })}
             >
               {t('Publication settings')}
+            </a>
+          </p>
+          <p>
+            <a onClick={handleFixTypographyLinkClick} href="#">
+              {t('Fix typography')}
             </a>
           </p>
           <p>

@@ -2,6 +2,7 @@ import { Show, createMemo } from 'solid-js'
 import './DialogCard.module.scss'
 import styles from './DialogAvatar.module.scss'
 import { clsx } from 'clsx'
+import { imageProxy } from '../../utils/imageProxy'
 
 type Props = {
   name: string
@@ -46,7 +47,7 @@ const DialogAvatar = (props: Props) => {
       style={{ 'background-color': `${randomBg()}` }}
     >
       <Show when={Boolean(props.url)} fallback={<div class={styles.letter}>{nameFirstLetter()}</div>}>
-        <div class={styles.imageHolder} style={{ 'background-image': `url(${props.url})` }} />
+        <div class={styles.imageHolder} style={{ 'background-image': `url(${imageProxy(props.url)})` }} />
       </Show>
     </div>
   )

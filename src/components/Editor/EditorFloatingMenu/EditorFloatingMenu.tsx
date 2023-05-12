@@ -30,6 +30,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | undefined>()
   const [menuOpen, setMenuOpen] = createSignal<boolean>(false)
   const menuRef: { current: HTMLDivElement } = { current: null }
+  const plusButtonRef: { current: HTMLButtonElement } = { current: null }
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
@@ -62,7 +63,11 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
 
   useOutsideClickHandler({
     containerRef: menuRef,
-    handler: () => {
+    handler: (e) => {
+      if (plusButtonRef.current.contains(e.target)) {
+        return
+      }
+
       if (menuOpen()) {
         setMenuOpen(false)
       }
@@ -82,6 +87,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     <>
       <div ref={props.ref} class={styles.editorFloatingMenu}>
         <button
+          ref={(el) => (plusButtonRef.current = el)}
           type="button"
           onClick={() => {
             setMenuOpen(!menuOpen())

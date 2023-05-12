@@ -10,7 +10,7 @@ export default async (req, res) => {
   const { email } = req.body
 
   try {
-    const response = await mg.lists.members.createMember('welcome@discours.io', {
+    const response = await mg.lists.members.createMember('newsletter@discours.io', {
       address: email,
       subscribed: true,
       upsert: 'yes'

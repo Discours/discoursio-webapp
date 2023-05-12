@@ -1,4 +1,4 @@
-import { createSignal } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 import styles from './Subscribe.module.scss'
 
 import { clsx } from 'clsx'
@@ -27,14 +27,15 @@ export default () => {
 
   return (
     <div class={styles.subscribeForm}>
-      <label for="email">{title()}</label>
-      <input type="email" name="email" ref={emailElement} placeholder={t('Fill email')} />
-      <button
-        class={clsx(styles.button, 'button--light')}
-        onClick={() => emailElement?.value && subscribe()}
-      >
-        {t('Subscribe')}
-      </button>
+      <Show when={!title()} fallback={title()}>
+        <input type="email" name="email" ref={emailElement} placeholder={t('Fill email')} />
+        <button
+          class={clsx(styles.button, 'button--light')}
+          onClick={() => emailElement?.value && subscribe()}
+        >
+          {t('Subscribe')}
+        </button>
+      </Show>
     </div>
   )
 }

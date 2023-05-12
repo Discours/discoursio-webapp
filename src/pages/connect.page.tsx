@@ -34,6 +34,10 @@ export const ConnectPage = () => {
       console.error('[handleFormSubmit]', error)
       setState('error')
     }
+
+    window.scrollTo({
+      top: 0
+    })
   }
 
   return (
@@ -53,7 +57,7 @@ export const ConnectPage = () => {
 
               <form onSubmit={handleFormSubmit} ref={(el) => (formRef.current = el)}>
                 <div class="pretty-form__item">
-                  <select name="subject">
+                  <select name="subject" disabled={state() === 'loading'}>
                     <option value="Сотрудничество" selected>
                       Сотрудничество
                     </option>
@@ -65,11 +69,16 @@ export const ConnectPage = () => {
                   </select>
                 </div>
                 <div class="pretty-form__item">
-                  <input type="email" name="contact" placeholder="Email для обратной связи" />
+                  <input
+                    type="email"
+                    name="contact"
+                    placeholder="Email для обратной связи"
+                    disabled={state() === 'loading'}
+                  />
                   <label for="contact-email">Email для обратной связи</label>
                 </div>
                 <div class="pretty-form__item">
-                  <textarea name="message" placeholder="Текст сообщения" />
+                  <textarea name="message" placeholder="Текст сообщения" disabled={state() === 'loading'} />
                   <label for="message">Текст сообщения</label>
                 </div>
                 <button class="button" disabled={state() === 'loading'} type="submit">

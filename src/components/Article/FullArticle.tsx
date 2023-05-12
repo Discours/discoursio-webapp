@@ -19,6 +19,7 @@ import { Title } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
 import stylesHeader from '../Nav/Header.module.scss'
 import styles from './Article.module.scss'
+import { imageProxy } from '../../utils/imageProxy'
 
 interface ArticleProps {
   article: Shout
@@ -152,7 +153,7 @@ export const FullArticle = (props: ArticleProps) => {
               <Show when={props.article.cover}>
                 <div
                   class={styles.shoutCover}
-                  style={{ 'background-image': `url('${props.article.cover}')` }}
+                  style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}
                 />
               </Show>
             </div>

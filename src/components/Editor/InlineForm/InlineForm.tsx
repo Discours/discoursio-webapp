@@ -18,7 +18,8 @@ export const InlineForm = (props: Props) => {
   const [formValue, setFormValue] = createSignal(props.initialValue || '')
   const [formValueError, setFormValueError] = createSignal<string | undefined>()
 
-  const handleFormInput = (value) => {
+  const handleFormInput = (e) => {
+    const value = e.currentTarget.value
     setFormValueError()
     setFormValue(value)
   }
@@ -36,16 +37,16 @@ export const InlineForm = (props: Props) => {
     props.onClose()
   }
 
-  const handleKeyPress = async (event) => {
+  const handleKeyDown = async (e) => {
     setFormValueError('')
-    const key = event.key
 
-    if (key === 'Enter') {
+    if (e.key === 'Enter') {
+      e.preventDefault()
       await handleSaveButtonClick()
     }
 
-    if (key === 'Esc') {
-      props.onClear
+    if (e.key === 'Escape' && props.onClear) {
+      props.onClear()
     }
   }
 
@@ -57,8 +58,8 @@ export const InlineForm = (props: Props) => {
           type="text"
           value={props.initialValue ?? ''}
           placeholder={props.placeholder}
-          onKeyPress={(e) => handleKeyPress(e)}
-          onInput={(e) => handleFormInput(e.currentTarget.value)}
+          onKeyDown={handleKeyDown}
+          onInput={handleFormInput}
         />
         <button type="button" onClick={handleSaveButtonClick} disabled={Boolean(formValueError())}>
           <Icon name="status-done" />

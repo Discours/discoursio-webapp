@@ -56,7 +56,8 @@
     }
   }
 
-  a {
+  .link {
+    cursor: pointer;
     text-decoration: none;
     border-bottom: none;
     color: rgb(255 255 255 / 35%);

@@ -2,7 +2,9 @@ import { onCleanup, onMount } from 'solid-js'
 
 export const useEscKeyDownHandler = (onEscKeyDown: () => void) => {
   const keydownHandler = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') onEscKeyDown()
+    if (e.key === 'Escape') {
+      onEscKeyDown()
+    }
   }
 
   onMount(() => {

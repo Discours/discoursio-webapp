@@ -16,8 +16,10 @@ export const Modal = (props: ModalProps) => {
   const { modal } = useModalStore()
 
   const handleHide = () => {
-    hideModal()
-    props.onClose && props.onClose()
+    if (modal()) {
+      hideModal()
+      props.onClose && props.onClose()
+    }
   }
 
   useEscKeyDownHandler(handleHide)

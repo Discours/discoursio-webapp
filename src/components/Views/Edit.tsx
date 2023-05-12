@@ -43,8 +43,7 @@ export const EditView = (props: EditViewProps) => {
   const {
     form,
     formErrors,
-    editorRef,
-    actions: { setForm, setFormErrors, setEditor }
+    actions: { setForm, setFormErrors }
   } = useEditorContext()
 
   const shoutTopics = props.shout.topics || []
@@ -160,7 +159,6 @@ export const EditView = (props: EditViewProps) => {
                     shoutId={props.shout.id}
                     initialContent={props.shout.body}
                     onChange={(body) => setForm('body', body)}
-                    onEditorInitialized={setEditor}
                   />
                 </div>
                 <div
@@ -281,7 +279,7 @@ export const EditView = (props: EditViewProps) => {
       <Modal variant="narrow" name="uploadCoverImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
       </Modal>
-      <Panel shoutId={props.shout.id} editor={editorRef.current} />
+      <Panel shoutId={props.shout.id} />
     </>
   )
 }

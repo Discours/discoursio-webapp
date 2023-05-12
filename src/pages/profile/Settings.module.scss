@@ -211,8 +211,8 @@ h5 {
     padding-bottom: 0.2rem;
     position: relative;
 
-    &:before {
-      background: rgb(243, 244, 246);
+    &::before {
+      background: rgb(243 244 246);
       content: '';
       height: 100%;
       left: 0;

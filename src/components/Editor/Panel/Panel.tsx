@@ -8,7 +8,6 @@ import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../../stores/router'
-import { Editor } from '@tiptap/core'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
 
@@ -16,7 +15,6 @@ const typograf = new Typograf({ locale: ['ru', 'en-US'] })
 
 type Props = {
   shoutId: number
-  editor: () => Editor
 }
 
 export const Panel = (props: Props) => {
@@ -24,6 +22,7 @@ export const Panel = (props: Props) => {
   const {
     isEditorPanelVisible,
     wordCounter,
+    editorRef,
     actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
 
@@ -55,8 +54,8 @@ export const Panel = (props: Props) => {
 
   const handleFixTypographyLinkClick = (e) => {
     e.preventDefault()
-    const html = useEditorHTML(() => props.editor())
-    props.editor().commands.setContent(typograf.execute(html()))
+    const html = useEditorHTML(() => editorRef.current())
+    editorRef.current().commands.setContent(typograf.execute(html()))
   }
 
   return (

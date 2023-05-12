@@ -9,7 +9,7 @@
       color: #ccc;
     }
 
-    &:before {
+    &::before {
       background: #000;
       content: '';
       height: 100%;

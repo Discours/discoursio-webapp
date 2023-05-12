@@ -1,6 +1,7 @@
 .GrowingTextarea {
   display: block;
   width: 100%;
+  position: relative;
 
   .growWrap {
     display: grid;
@@ -41,5 +42,35 @@
       width: 100%;
       padding: 0;
     }
+  }
+
+  .maxLength {
+    opacity: 1;
+    position: absolute;
+    right: 0.6rem;
+    bottom: -1.2rem;
+    font-size: 1.1rem;
+    border: 3px solid rgba(#ccc, 0.5);
+    padding: 0.5rem;
+    border-radius: 1.3rem;
+    line-height: 1;
+    user-select: none;
+    transition: opacity 0.3s ease-in-out;
+    background: rgba(255, 255, 255, 0.8);
+
+    &.visible {
+      opacity: 1;
+    }
+
+    &.limited {
+      animation: blink 0.8s;
+      animation-iteration-count: 2;
+    }
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: #000;
   }
 }

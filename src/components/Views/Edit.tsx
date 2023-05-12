@@ -144,6 +144,7 @@ export const EditView = (props: EditViewProps) => {
                       class={styles.titleInput}
                       placeholder={t('Header')}
                       initialValue={form.title}
+                      maxLength={100}
                     />
                     <Show when={formErrors.title}>
                       <div class={styles.validationError}>{formErrors.title}</div>
@@ -154,6 +155,7 @@ export const EditView = (props: EditViewProps) => {
                     class={styles.subtitleInput}
                     placeholder={t('Subheader')}
                     initialValue={form.subtitle}
+                    maxLength={100}
                   />
                   <Editor
                     shoutId={props.shout.id}

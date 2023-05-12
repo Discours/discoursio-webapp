@@ -3,14 +3,14 @@ const Mailgun = require('mailgun.js')
 
 const mailgun = new Mailgun(formData)
 
-const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
+const { MAILGUN_API_KEY } = process.env
 const mg = mailgun.client({ username: 'discoursio', key: MAILGUN_API_KEY })
 
 export default async (req, res) => {
   const { email } = req.body
 
   try {
-    const response = await mg.lists.members.createMember(MAILGUN_DOMAIN, {
+    const response = await mg.lists.members.createMember('robot@discours.io', {
       address: email,
       subscribed: true,
       upsert: 'yes'

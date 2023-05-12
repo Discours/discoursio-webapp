@@ -27,14 +27,15 @@ export const ConnectPage = () => {
       body: JSON.stringify(postData)
     }
 
-    try {
-      await fetch('/api/feedback', requestOptions)
-      setState('success')
-    } catch (error) {
-      console.error('[handleFormSubmit]', error)
+    const result = await fetch('/api/feedback', requestOptions)
+
+    if (!result.ok) {
+      console.error('[handleFormSubmit]', result)
       setState('error')
+      return
     }
 
+    setState('success')
     window.scrollTo({
       top: 0
     })
@@ -45,7 +46,7 @@ export const ConnectPage = () => {
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-sm-20 col-md-16 col-lg-14 col-xl-12 offset-md-5">
-            <Show when={state() === 'loading' || state() === 'initial'}>
+            <Show when={state() === 'loading' || state() === 'initial' || state() === 'error'}>
               <h1>
                 <span class="wrapped">Предложить идею</span>
               </h1>
@@ -86,8 +87,11 @@ export const ConnectPage = () => {
                 </button>
               </form>
             </Show>
-            <Show when={state() === 'error'}>Произошла ошибка</Show>
-            <Show when={state() === 'success'}>Спасибо</Show>
+            <Show when={state() === 'error'}>
+              <br />
+              Ошибка. Что-то пошло не так. Пожалуйста, попробуйте написать ещё раз
+            </Show>
+            <Show when={state() === 'success'}>Спасибо за письмо!</Show>
           </div>
         </div>
       </article>

@@ -1,6 +1,5 @@
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
-import type { Editor as TipTapEditor } from '@tiptap/core'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'

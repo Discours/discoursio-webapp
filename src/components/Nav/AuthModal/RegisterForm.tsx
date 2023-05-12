@@ -44,18 +44,18 @@ export const RegisterForm = () => {
     }
   }
 
-  function isValidPassword(password) {
+  function isValidPassword(passwordToCheck) {
     const minLength = 8
     const hasNumber = /\d/
-    const hasSpecial = /[!@#$%^&*]/
+    const hasSpecial = /[!#$%&*@^]/
 
-    if (password.length < minLength) {
+    if (passwordToCheck.length < minLength) {
       return t('Password should be at least 8 characters')
     }
-    if (!hasNumber.test(password)) {
+    if (!hasNumber.test(passwordToCheck)) {
       return t('Password should contain at least one number')
     }
-    if (!hasSpecial.test(password)) {
+    if (!hasSpecial.test(passwordToCheck)) {
       return t('Password should contain at least one special character: !@#$%^&*')
     }
     return null

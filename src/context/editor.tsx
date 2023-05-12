@@ -8,6 +8,7 @@ import { useSnackbar } from './snackbar'
 import { openPage } from '@nanostores/router'
 import { router, useRouter } from '../stores/router'
 import { slugify } from '../utils/slugify'
+import { Editor } from '@tiptap/core'
 
 type WordCounter = {
   characters: number
@@ -30,6 +31,7 @@ type EditorContextType = {
   wordCounter: Accessor<WordCounter>
   form: ShoutForm
   formErrors: Record<keyof ShoutForm, string>
+  editorRef: { current: () => Editor }
   actions: {
     saveShout: () => Promise<void>
     publishShout: () => Promise<void>
@@ -39,6 +41,7 @@ type EditorContextType = {
     countWords: (value: WordCounter) => void
     setForm: SetStoreFunction<ShoutForm>
     setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
+    setEditor: (editor: () => Editor) => void
   }
 }
 
@@ -66,6 +69,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   } = useSnackbar()
 
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
+
+  const editorRef: { current: () => Editor } = { current: null }
 
   const [form, setForm] = createStore<ShoutForm>(null)
   const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
@@ -198,6 +203,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
+  const setEditor = (editor: () => Editor) => {
+    editorRef.current = editor
+  }
+
   const actions = {
     saveShout,
     publishShout,
@@ -206,10 +215,18 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     toggleEditorPanel,
     countWords,
     setForm,
-    setFormErrors
+    setFormErrors,
+    setEditor
   }
 
-  const value: EditorContextType = { actions, form, formErrors, isEditorPanelVisible, wordCounter }
+  const value: EditorContextType = {
+    actions,
+    form,
+    formErrors,
+    editorRef,
+    isEditorPanelVisible,
+    wordCounter
+  }
 
   return <EditorContext.Provider value={value}>{props.children}</EditorContext.Provider>
 }

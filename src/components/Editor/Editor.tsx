@@ -1,6 +1,7 @@
 import { createEffect, createSignal } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
+import type { Editor as TipTapEditor } from '@tiptap/core'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
@@ -48,6 +49,7 @@ type EditorProps = {
   shoutId: number
   initialContent?: string
   onChange: (text: string) => void
+  onEditorInitialized?: (editor: () => TipTapEditor) => void
 }
 
 const yDocs: Record<string, Doc> = {}
@@ -186,6 +188,10 @@ export const Editor = (props: EditorProps) => {
       TrailingNode
     ]
   }))
+
+  if (props.onEditorInitialized) {
+    props.onEditorInitialized(editor)
+  }
 
   const html = useEditorHTML(() => editor())
 

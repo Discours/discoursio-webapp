@@ -1,5 +1,6 @@
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
+import type { Editor as TipTapEditor } from '@tiptap/core'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
@@ -20,7 +21,8 @@ type EditViewProps = {
   shout: Shout
 }
 
-const scrollTop = () => {
+const handleScrollTopButtonClick = (e) => {
+  e.preventDefault()
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
@@ -42,7 +44,8 @@ export const EditView = (props: EditViewProps) => {
   const {
     form,
     formErrors,
-    actions: { setForm, setFormErrors }
+    editorRef,
+    actions: { setForm, setFormErrors, setEditor }
   } = useEditorContext()
 
   const shoutTopics = props.shout.topics || []
@@ -124,7 +127,7 @@ export const EditView = (props: EditViewProps) => {
               class={clsx(styles.scrollTopButton, {
                 [styles.visible]: isScrolled()
               })}
-              onClick={scrollTop}
+              onClick={handleScrollTopButtonClick}
             >
               <Icon name="up-button" class={styles.icon} />
               <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>
@@ -158,6 +161,7 @@ export const EditView = (props: EditViewProps) => {
                     shoutId={props.shout.id}
                     initialContent={props.shout.body}
                     onChange={(body) => setForm('body', body)}
+                    onEditorInitialized={setEditor}
                   />
                 </div>
                 <div
@@ -278,7 +282,7 @@ export const EditView = (props: EditViewProps) => {
       <Modal variant="narrow" name="uploadCoverImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
       </Modal>
-      <Panel shoutId={props.shout.id} />
+      <Panel shoutId={props.shout.id} editor={editorRef.current} />
     </>
   )
 }

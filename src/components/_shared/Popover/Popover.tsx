@@ -32,13 +32,26 @@ export const Popover = (props: Props) => {
   const showEvents = ['mouseenter', 'focus']
   const hideEvents = ['mouseleave', 'blur']
 
+  const handleMouseOver = () => setShow(true)
+  const handleMouseOut = () => setShow(false)
+
   createEffect(() => {
-    showEvents.forEach((event) => {
-      anchor() && anchor().addEventListener(event, () => setShow(true))
-    })
-    hideEvents.forEach((event) => {
-      anchor() && anchor().addEventListener(event, () => setShow(false))
-    })
+    if (anchor()) {
+      showEvents.forEach((event) => {
+        anchor().addEventListener(event, handleMouseOver)
+      })
+      hideEvents.forEach((event) => {
+        anchor().addEventListener(event, handleMouseOut)
+      })
+      return () => {
+        showEvents.forEach((event) => {
+          anchor().removeEventListener(event, handleMouseOver)
+        })
+        hideEvents.forEach((event) => {
+          anchor().removeEventListener(event, handleMouseOut)
+        })
+      }
+    }
   })
 
   return (

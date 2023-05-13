@@ -92,9 +92,9 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
             <Show when={showSaveButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <Popover content={t('Save')}>
-                  {(refEl) => (
+                  {(ref) => (
                     <Button
-                      ref={refEl}
+                      ref={ref}
                       value={
                         <>
                           <span class={styles.textLabel}>{t('Save')}</span>
@@ -110,9 +110,9 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <Popover content={t('Publish')}>
-                  {(refEl) => (
+                  {(ref) => (
                     <Button
-                      ref={refEl}
+                      ref={ref}
                       value={
                         <>
                           <span class={styles.textLabel}>{t('Publish')}</span>
@@ -128,9 +128,9 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <Popover content={t('Settings')}>
-                  {(refEl) => (
+                  {(ref) => (
                     <Button
-                      ref={refEl}
+                      ref={ref}
                       value={<Icon name="burger" />}
                       variant={'outline'}
                       onClick={handleBurgerButtonClick}

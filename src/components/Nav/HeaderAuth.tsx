@@ -3,7 +3,7 @@ import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 
 import { Icon } from '../_shared/Icon'
-import { createMemo, createSignal, JSX, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, JSX, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -65,6 +65,44 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     publishShout()
   }
 
+  const [width, setWidth] = createSignal(0)
+  const handleResize = () => setWidth(window.innerWidth)
+  createEffect(() => {
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  })
+
+  type IconedButton = {
+    value: string
+    icon: string
+    action: () => void
+  }
+  const renderIconedButton = (iconedButtonProps: IconedButton) => {
+    return (
+      <Show
+        when={width() < 992}
+        fallback={
+          <Button
+            value={<span class={styles.textLabel}>{iconedButtonProps.value}</span>}
+            variant={'outline'}
+            onClick={handleSaveButtonClick}
+          />
+        }
+      >
+        <Popover content={iconedButtonProps.value}>
+          {(ref) => (
+            <Button
+              ref={ref}
+              variant={'outline'}
+              onClick={handleSaveButtonClick}
+              value={<Icon name={iconedButtonProps.icon} class={styles.icon} />}
+            />
+          )}
+        </Popover>
+      </Show>
+    )
+  }
+
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
@@ -91,39 +129,19 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
             <Show when={showSaveButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Popover content={t('Save')}>
-                  {(ref) => (
-                    <Button
-                      ref={ref}
-                      value={
-                        <>
-                          <span class={styles.textLabel}>{t('Save')}</span>
-                          <Icon name="save" class={styles.icon} />
-                        </>
-                      }
-                      variant={'outline'}
-                      onClick={handleSaveButtonClick}
-                    />
-                  )}
-                </Popover>
+                {renderIconedButton({
+                  value: t('Save'),
+                  icon: 'save',
+                  action: handleSaveButtonClick
+                })}
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Popover content={t('Publish')}>
-                  {(ref) => (
-                    <Button
-                      ref={ref}
-                      value={
-                        <>
-                          <span class={styles.textLabel}>{t('Publish')}</span>
-                          <Icon name="publish" class={styles.icon} />
-                        </>
-                      }
-                      variant={'outline'}
-                      onClick={handlePublishButtonClick}
-                    />
-                  )}
-                </Popover>
+                {renderIconedButton({
+                  value: t('Publish'),
+                  icon: 'publish',
+                  action: handlePublishButtonClick
+                })}
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

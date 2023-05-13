@@ -17,7 +17,7 @@ export const Popover = (props: Props) => {
       {
         name: 'offset',
         options: {
-          offset: 20
+          offset: [0, 8]
         }
       },
       {

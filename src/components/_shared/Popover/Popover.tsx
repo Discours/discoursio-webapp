@@ -17,7 +17,7 @@ export const Popover = (props: Props) => {
       {
         name: 'offset',
         options: {
-          offset: 8
+          offset: 20
         }
       },
       {
@@ -34,7 +34,6 @@ export const Popover = (props: Props) => {
 
   createEffect(() => {
     showEvents.forEach((event) => {
-      console.log('!!! anchor():', anchor())
       anchor() && anchor().addEventListener(event, () => setShow(true))
     })
     hideEvents.forEach((event) => {

@@ -92,11 +92,6 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
             <Show when={showSaveButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <Popover content={t('Save')}>
-                  {(triggerRef: (el: HTMLElement | null) => void) => (
-                    <Button value="asd" ref={(el) => triggerRef(el)} />
-                  )}
-                </Popover>
-                <Popover content={t('Save')}>
                   {(refEl) => (
                     <Button
                       ref={refEl}
@@ -114,24 +109,34 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button
-                  value={
-                    <>
-                      <span class={styles.textLabel}>{t('Publish')}</span>
-                      <Icon name="publish" class={styles.icon} />
-                    </>
-                  }
-                  variant={'outline'}
-                  onClick={handlePublishButtonClick}
-                />
+                <Popover content={t('Publish')}>
+                  {(refEl) => (
+                    <Button
+                      ref={refEl}
+                      value={
+                        <>
+                          <span class={styles.textLabel}>{t('Publish')}</span>
+                          <Icon name="publish" class={styles.icon} />
+                        </>
+                      }
+                      variant={'outline'}
+                      onClick={handlePublishButtonClick}
+                    />
+                  )}
+                </Popover>
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button
-                  value={<Icon name="burger" />}
-                  variant={'outline'}
-                  onClick={handleBurgerButtonClick}
-                />
+                <Popover content={t('Settings')}>
+                  {(refEl) => (
+                    <Button
+                      ref={refEl}
+                      value={<Icon name="burger" />}
+                      variant={'outline'}
+                      onClick={handleBurgerButtonClick}
+                    />
+                  )}
+                </Popover>
               </div>
             </Show>
 

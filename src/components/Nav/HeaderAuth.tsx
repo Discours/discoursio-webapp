@@ -3,7 +3,7 @@ import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 
 import { Icon } from '../_shared/Icon'
-import { createMemo, createSignal, Show } from 'solid-js'
+import { createMemo, createSignal, JSX, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -14,6 +14,7 @@ import { useLocalize } from '../../context/localize'
 import { getPagePath } from '@nanostores/router'
 import { Button } from '../_shared/Button'
 import { useEditorContext } from '../../context/editor'
+import { Popover } from '../_shared/Popover'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -90,16 +91,26 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
             <Show when={showSaveButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button
-                  value={
-                    <>
-                      <span class={styles.textLabel}>{t('Save')}</span>
-                      <Icon name="save" class={styles.icon} />
-                    </>
-                  }
-                  variant={'outline'}
-                  onClick={handleSaveButtonClick}
-                />
+                <Popover content={t('Save')}>
+                  {(triggerRef: (el: HTMLElement | null) => void) => (
+                    <Button value="asd" ref={(el) => triggerRef(el)} />
+                  )}
+                </Popover>
+                <Popover content={t('Save')}>
+                  {(refEl) => (
+                    <Button
+                      ref={refEl}
+                      value={
+                        <>
+                          <span class={styles.textLabel}>{t('Save')}</span>
+                          <Icon name="save" class={styles.icon} />
+                        </>
+                      }
+                      variant={'outline'}
+                      onClick={handleSaveButtonClick}
+                    />
+                  )}
+                </Popover>
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

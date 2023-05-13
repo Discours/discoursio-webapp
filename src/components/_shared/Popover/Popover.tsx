@@ -1,4 +1,4 @@
-import { createEffect, createSignal, JSX, Show } from 'solid-js'
+import { createEffect, createSignal, JSX, JSXElement, Show } from 'solid-js'
 import usePopper from 'solid-popper'
 import styles from './Popover.module.scss'
 
@@ -11,12 +11,13 @@ export const Popover = (props: Props) => {
   const [show, setShow] = createSignal(false)
   const [anchor, setAnchor] = createSignal<HTMLElement>()
   const [popper, setPopper] = createSignal<HTMLElement>()
+
   usePopper(anchor, popper, {
     modifiers: [
       {
         name: 'offset',
         options: {
-          offset: 10
+          offset: 8
         }
       },
       {
@@ -33,6 +34,7 @@ export const Popover = (props: Props) => {
 
   createEffect(() => {
     showEvents.forEach((event) => {
+      console.log('!!! anchor():', anchor())
       anchor() && anchor().addEventListener(event, () => setShow(true))
     })
     hideEvents.forEach((event) => {

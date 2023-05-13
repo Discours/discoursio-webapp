@@ -1,9 +1,8 @@
 import styles from './Header.module.scss'
 import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
-
 import { Icon } from '../_shared/Icon'
-import { createEffect, createMemo, createSignal, JSX, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -19,7 +18,13 @@ import { Popover } from '../_shared/Popover'
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
 }
+type IconedButton = {
+  value: string
+  icon: string
+  action: () => void
+}
 
+const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: HeaderAuthProps) => {
   const { t } = useLocalize()
   const { page } = useRouter()
@@ -67,20 +72,16 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
   const [width, setWidth] = createSignal(0)
   const handleResize = () => setWidth(window.innerWidth)
-  createEffect(() => {
+  onMount(() => {
+    handleResize()
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    onCleanup(() => window.removeEventListener('resize', handleResize))
   })
 
-  type IconedButton = {
-    value: string
-    icon: string
-    action: () => void
-  }
   const renderIconedButton = (iconedButtonProps: IconedButton) => {
     return (
       <Show
-        when={width() < 992}
+        when={width() < MD_WIDTH_BREAKPOINT}
         fallback={
           <Button
             value={<span class={styles.textLabel}>{iconedButtonProps.value}</span>}

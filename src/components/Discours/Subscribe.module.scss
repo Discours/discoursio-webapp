@@ -1,4 +1,9 @@
-.subscribeForm {
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.controls {
   display: flex;
   width: 100%;
 
@@ -10,7 +15,18 @@
     flex-direction: column;
   }
 
-  input {
+  a {
+    @include font-size(1.5rem);
+
+    align-items: center;
+    background: #fff;
+    border: none;
+    color: #000;
+    display: flex;
+    padding: 0 0.5em;
+  }
+
+  .input {
     @include font-size(2rem);
 
     background: none;
@@ -29,19 +45,18 @@
     }
   }
 
-  a {
-    @include font-size(1.5rem);
-
-    align-items: center;
-    background: #fff;
-    border: none;
-    color: #000;
-    display: flex;
-    padding: 0 0.5em;
-  }
-
   .button {
     border-radius: 0;
     margin: 0;
   }
+}
+
+.error {
+  position: relative;
+  top: 4px;
+  font-size: 12px;
+  line-height: 16px;
+
+  /* Red/500 */
+  color: #d00820;
 }

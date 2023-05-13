@@ -1,9 +1,8 @@
 import styles from './Header.module.scss'
 import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
-
 import { Icon } from '../_shared/Icon'
-import { createMemo, createSignal, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -14,11 +13,18 @@ import { useLocalize } from '../../context/localize'
 import { getPagePath } from '@nanostores/router'
 import { Button } from '../_shared/Button'
 import { useEditorContext } from '../../context/editor'
+import { Popover } from '../_shared/Popover'
 
 type HeaderAuthProps = {
   setIsProfilePopupVisible: (value: boolean) => void
 }
+type IconedButton = {
+  value: string
+  icon: string
+  action: () => void
+}
 
+const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: HeaderAuthProps) => {
   const { t } = useLocalize()
   const { page } = useRouter()
@@ -64,6 +70,40 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     publishShout()
   }
 
+  const [width, setWidth] = createSignal(0)
+  const handleResize = () => setWidth(window.innerWidth)
+  onMount(() => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    onCleanup(() => window.removeEventListener('resize', handleResize))
+  })
+
+  const renderIconedButton = (iconedButtonProps: IconedButton) => {
+    return (
+      <Show
+        when={width() < MD_WIDTH_BREAKPOINT}
+        fallback={
+          <Button
+            value={<span class={styles.textLabel}>{iconedButtonProps.value}</span>}
+            variant={'outline'}
+            onClick={handleSaveButtonClick}
+          />
+        }
+      >
+        <Popover content={iconedButtonProps.value}>
+          {(ref) => (
+            <Button
+              ref={ref}
+              variant={'outline'}
+              onClick={handleSaveButtonClick}
+              value={<Icon name={iconedButtonProps.icon} class={styles.icon} />}
+            />
+          )}
+        </Popover>
+      </Show>
+    )
+  }
+
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
@@ -90,37 +130,32 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
 
             <Show when={showSaveButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button
-                  value={
-                    <>
-                      <span class={styles.textLabel}>{t('Save')}</span>
-                      <Icon name="save" class={styles.icon} />
-                    </>
-                  }
-                  variant={'outline'}
-                  onClick={handleSaveButtonClick}
-                />
+                {renderIconedButton({
+                  value: t('Save'),
+                  icon: 'save',
+                  action: handleSaveButtonClick
+                })}
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button
-                  value={
-                    <>
-                      <span class={styles.textLabel}>{t('Publish')}</span>
-                      <Icon name="publish" class={styles.icon} />
-                    </>
-                  }
-                  variant={'outline'}
-                  onClick={handlePublishButtonClick}
-                />
+                {renderIconedButton({
+                  value: t('Publish'),
+                  icon: 'publish',
+                  action: handlePublishButtonClick
+                })}
               </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                <Button
-                  value={<Icon name="burger" />}
-                  variant={'outline'}
-                  onClick={handleBurgerButtonClick}
-                />
+                <Popover content={t('Settings')}>
+                  {(ref) => (
+                    <Button
+                      ref={ref}
+                      value={<Icon name="burger" />}
+                      variant={'outline'}
+                      onClick={handleBurgerButtonClick}
+                    />
+                  )}
+                </Popover>
               </div>
             </Show>
 

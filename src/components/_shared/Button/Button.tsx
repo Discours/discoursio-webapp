@@ -11,11 +11,19 @@ type Props = {
   disabled?: boolean
   onClick?: () => void
   class?: string
+  ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void)
 }
 
 export const Button = (props: Props) => {
   return (
     <button
+      ref={(el) => {
+        if (typeof props.ref === 'function') {
+          props.ref(el)
+          return
+        }
+        props.ref = el
+      }}
       onClick={props.onClick}
       type={props.type ?? 'button'}
       disabled={props.loading || props.disabled}

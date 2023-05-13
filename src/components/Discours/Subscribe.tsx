@@ -1,9 +1,10 @@
-import { createSignal, Show } from 'solid-js'
-import styles from './Subscribe.module.scss'
+import { createSignal, JSX, Show } from 'solid-js'
 
-import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'
 import { isValidEmail } from '../../utils/validators'
+import { Button } from '../_shared/Button'
+
+import styles from './Subscribe.module.scss'
 
 export default () => {
   const { t } = useLocalize()
@@ -27,7 +28,12 @@ export default () => {
     return true
   }
 
-  const subscribe = async (event: SubmitEvent) => {
+  const handleInput: JSX.ChangeEventHandlerUnion<HTMLInputElement, Event> = (event) => {
+    setEmailError(null)
+    setEmail(event.target.value)
+  }
+
+  const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault()
 
     if (!validate()) return
@@ -58,20 +64,18 @@ export default () => {
   }
 
   return (
-    <form class={styles.form} onSubmit={subscribe} novalidate>
+    <form class={styles.form} onSubmit={handleSubmit} novalidate>
       <Show when={!title()} fallback={title()}>
         <div class={styles.controls}>
           <input
             type="email"
             name="email"
             value={email()}
-            onChange={(e) => setEmail(e.target.value)}
+            onInput={handleInput}
             class={styles.input}
             placeholder={t('Fill email')}
           />
-          <button type="submit" class={clsx(styles.button, 'button--light')}>
-            {t('Subscribe')}
-          </button>
+          <Button class={styles.button} type="submit" variant="secondary" value={t('Subscribe')} />
         </div>
         <Show when={emailError()}>
           <div class={styles.error}>{emailError()}</div>

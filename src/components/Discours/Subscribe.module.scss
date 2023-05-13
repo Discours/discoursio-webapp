@@ -1,53 +1,66 @@
+@mixin input-placeholder-overflow($direction: 'down') {
+  @if $direction == 'down' {
+    @media (max-width: 1410px) {
+      @content;
+    }
+  } @else if $direction == 'up' {
+    @media (min-width: 1411px) {
+      @content;
+    }
+  } @else {
+    @error "Unknown direction #{$direction}.";
+  }
+}
+
 .form {
   display: flex;
   flex-direction: column;
+
+  @include input-placeholder-overflow(down) {
+    margin-bottom: 2.4rem;
+  }
 }
 
 .controls {
   display: flex;
   width: 100%;
 
-  @include media-breakpoint-down(md) {
-    margin-bottom: 2.4rem;
-  }
-
-  @include media-breakpoint-between(md, xl) {
+  @include input-placeholder-overflow(down) {
     flex-direction: column;
-  }
-
-  a {
-    @include font-size(1.5rem);
-
-    align-items: center;
-    background: #fff;
-    border: none;
-    color: #000;
-    display: flex;
-    padding: 0 0.5em;
   }
 
   .input {
     @include font-size(2rem);
 
     background: none;
-    border: none;
-    border-bottom: 1px solid;
     color: #fff;
     font-family: inherit;
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 0.2em 0.5em 0.3em 0;
+    padding: 0.2em 0.5em 0.2em 0.5em;
     width: 100%;
+    outline: none;
+    border: 1px solid #fff;
+    border-radius: 0;
+    height: 4rem;
+
+    @include input-placeholder-overflow(up) {
+      border-right: none;
+    }
+
+    @include input-placeholder-overflow(down) {
+      border-bottom: none;
+    }
 
     &::placeholder {
-      color: #fff;
+      color: #858585;
     }
   }
 
   .button {
     border-radius: 0;
-    margin: 0;
+    flex-shrink: 0;
   }
 }
 
@@ -56,7 +69,5 @@
   top: 4px;
   font-size: 12px;
   line-height: 16px;
-
-  /* Red/500 */
   color: #d00820;
 }

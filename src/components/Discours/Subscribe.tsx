@@ -45,7 +45,7 @@ export default () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email: email() })
     }
 
     const response = await fetch('/api/newsletter', requestOptions)

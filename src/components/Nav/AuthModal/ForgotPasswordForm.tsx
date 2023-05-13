@@ -4,10 +4,10 @@ import { createSignal, JSX, Show } from 'solid-js'
 import { useRouter } from '../../../stores/router'
 import { email, setEmail } from './sharedLogic'
 import type { AuthModalSearchParams } from './types'
-import { isValidEmail } from './validators'
 import { ApiError } from '../../../utils/apiClient'
 import { signSendLink } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
+import { isValidEmail } from '../../../utils/validators'
 
 type FormFields = {
   email: string

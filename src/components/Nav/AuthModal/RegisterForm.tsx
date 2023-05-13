@@ -3,7 +3,6 @@ import type { JSX } from 'solid-js'
 import styles from './AuthModal.module.scss'
 import { clsx } from 'clsx'
 import { SocialProviders } from './SocialProviders'
-import { isValidEmail } from './validators'
 import { ApiError } from '../../../utils/apiClient'
 import { email, setEmail } from './sharedLogic'
 import { useRouter } from '../../../stores/router'
@@ -12,6 +11,7 @@ import { hideModal } from '../../../stores/ui'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
+import { isValidEmail } from '../../../utils/validators'
 
 type FormFields = {
   name: string

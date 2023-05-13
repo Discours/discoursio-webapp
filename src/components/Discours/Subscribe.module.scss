@@ -61,6 +61,10 @@
   .button {
     border-radius: 0;
     flex-shrink: 0;
+
+    @include input-placeholder-overflow(down) {
+      width: 100%;
+    }
   }
 }
 

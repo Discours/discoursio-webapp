@@ -3,5 +3,5 @@ export const isValidEmail = (email: string) => {
     return false
   }
 
-  return email.includes('@') && email.includes('.') && email.length > 5
+  return /^[\w%+.-]+@[\d.a-z-]+\.[a-z]{2,}$/i.test(email)
 }

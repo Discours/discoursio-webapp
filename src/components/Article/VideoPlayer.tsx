@@ -1,7 +1,8 @@
 import { Show } from 'solid-js'
+import styles from './VideoPlayer.module.scss'
 
 export default (props: { url: string }) => (
-  <>
+  <div class={styles.videoContainer}>
     <Show when={props.url.includes('youtube.com')}>
       <iframe
         id="ytplayer"
@@ -20,5 +21,5 @@ export default (props: { url: string }) => (
         allowfullscreen
       />
     </Show>
-  </>
+  </div>
 )

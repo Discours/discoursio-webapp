@@ -1,0 +1,12 @@
+.videoContainer {
+  aspect-ratio: 16/9;
+
+  @include media-breakpoint-up(md) {
+    margin: 0 0 1em -16.6666%;
+  }
+
+  iframe {
+    height: 100%;
+    width: 100%;
+  }
+}

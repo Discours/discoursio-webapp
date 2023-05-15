@@ -149,6 +149,7 @@ img {
   display: inline-block;
   margin: 0 3.2rem 1em 0;
   vertical-align: baseline;
+  cursor: pointer;
 
   .icon {
     height: 1.6em;
@@ -192,10 +193,6 @@ img {
 
   .icon {
     margin-right: 0;
-  }
-
-  .iconEdit {
-    margin-right: 0.3em;
   }
 
   &:hover {

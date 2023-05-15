@@ -15,6 +15,7 @@ import { useLocalize } from '../../context/localize'
 import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
 import { imageProxy } from '../../utils/imageProxy'
+import { Popover } from '../_shared/Popover'
 
 interface ArticleCardProps {
   settings?: {
@@ -190,32 +191,44 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </div>
 
             <div class={styles.shoutCardDetailsContent}>
-              <div class={styles.shoutCardDetailsItem}>
-                <a href={getPagePath(router, 'edit', { shoutId: id.toString() })}>
-                  <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
-                </a>
-              </div>
+              <Popover content={t('Edit')}>
+                {(triggerRef: (el) => void) => (
+                  <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
+                    <a href={getPagePath(router, 'edit', { shoutId: id.toString() })}>
+                      <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                    </a>
+                  </div>
+                )}
+              </Popover>
 
-              <div class={styles.shoutCardDetailsItem}>
-                <button>
-                  <Icon name="bookmark" class={clsx(styles.icon, styles.feedControlIcon)} />
-                </button>
-              </div>
-
-              <div class={styles.shoutCardDetailsItem}>
-                <SharePopup
-                  containerCssClass={stylesHeader.control}
-                  title={title}
-                  description={getDescription(body)}
-                  imageUrl={cover}
-                  shareUrl={getShareUrl({ pathname: `/${slug}` })}
-                  trigger={
+              <Popover content={t('Add to bookmarks')}>
+                {(triggerRef: (el) => void) => (
+                  <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <button>
-                      <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                      <Icon name="bookmark" class={clsx(styles.icon, styles.feedControlIcon)} />
                     </button>
-                  }
-                />
-              </div>
+                  </div>
+                )}
+              </Popover>
+
+              <Popover content={t('Share')}>
+                {(triggerRef: (el) => void) => (
+                  <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
+                    <SharePopup
+                      containerCssClass={stylesHeader.control}
+                      title={title}
+                      description={getDescription(body)}
+                      imageUrl={cover}
+                      shareUrl={getShareUrl({ pathname: `/${slug}` })}
+                      trigger={
+                        <button>
+                          <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                        </button>
+                      }
+                    />
+                  </div>
+                )}
+              </Popover>
 
               <div class={styles.shoutCardDetailsItem}>
                 <FeedArticlePopup

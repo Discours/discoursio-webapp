@@ -20,6 +20,7 @@ import { useLocalize } from '../../context/localize'
 import stylesHeader from '../Nav/Header.module.scss'
 import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
+import { Popover } from '../_shared/Popover'
 
 interface ArticleProps {
   article: Shout
@@ -213,39 +214,53 @@ export const FullArticle = (props: ArticleProps) => {
                   {props.article.stat?.viewed}
                 </div>
               </Show>
-              <div class={styles.shoutStatsItem} onClick={scrollToComments}>
-                <Icon name="comment" class={styles.icon} />
-                {props.article.stat?.commented ?? ''}
-              </div>
-              <div class={styles.shoutStatsItem}>
-                <SharePopup
-                  title={props.article.title}
-                  description={getDescription(props.article.body)}
-                  imageUrl={props.article.cover}
-                  containerCssClass={stylesHeader.control}
-                  trigger={
+              <Popover content={t('Comment')}>
+                {(triggerRef: (el) => void) => (
+                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={scrollToComments}>
+                    <Icon name="comment" class={styles.icon} />
+                    {props.article.stat?.commented ?? ''}
+                  </div>
+                )}
+              </Popover>
+              <Popover content={t('Share')}>
+                {(triggerRef: (el) => void) => (
+                  <div class={styles.shoutStatsItem} ref={triggerRef}>
+                    <SharePopup
+                      title={props.article.title}
+                      description={getDescription(props.article.body)}
+                      imageUrl={props.article.cover}
+                      containerCssClass={stylesHeader.control}
+                      trigger={
+                        <div class={styles.shoutStatsItemInner}>
+                          <Icon name="share-outline" class={styles.icon} />
+                        </div>
+                      }
+                    />
+                  </div>
+                )}
+              </Popover>
+              <Popover content={t('Add to bookmarks')}>
+                {(triggerRef: (el) => void) => (
+                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={handleBookmarkButtonClick}>
                     <div class={styles.shoutStatsItemInner}>
-                      <Icon name="share-outline" class={styles.icon} />
+                      <Icon name="bookmark" class={styles.icon} />
                     </div>
-                  }
-                />
-              </div>
-
-              <div class={styles.shoutStatsItem} onClick={handleBookmarkButtonClick}>
-                <div class={styles.shoutStatsItemInner}>
-                  <Icon name="bookmark" class={styles.icon} />
-                </div>
-              </div>
+                  </div>
+                )}
+              </Popover>
               <Show when={canEdit()}>
-                <div class={styles.shoutStatsItem}>
-                  <a
-                    href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}
-                    class={styles.shoutStatsItemInner}
-                  >
-                    <Icon name="edit" class={clsx(styles.icon, styles.iconEdit)} />
-                    {t('Edit')}
-                  </a>
-                </div>
+                <Popover content={t('Edit')}>
+                  {(triggerRef: (el) => void) => (
+                    <div class={styles.shoutStatsItem} ref={triggerRef}>
+                      <a
+                        href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}
+                        class={styles.shoutStatsItemInner}
+                      >
+                        <Icon name="pencil-outline" class={styles.icon} />
+                      </a>
+                    </div>
+                  )}
+                </Popover>
               </Show>
               <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>

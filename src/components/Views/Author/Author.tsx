@@ -44,6 +44,9 @@ export type AuthorPageSearchParams = {
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
+function isAuthor(value: Author | Topic): value is Author {
+  return 'name' in value
+}
 export const AuthorView = (props: AuthorProps) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
@@ -61,8 +64,8 @@ export const AuthorView = (props: AuthorProps) => {
         apiClient.getAuthorFollowingUsers({ slug: props.authorSlug }),
         apiClient.getAuthorFollowingTopics({ slug: props.authorSlug })
       ])
-      const authors = await getAuthors
-      const topics = await getTopics
+      const authors = getAuthors
+      const topics = getTopics
       return { authors, topics }
     } catch (error) {
       console.error('[fetchSubscriptions] :', error)
@@ -252,7 +255,7 @@ export const AuthorView = (props: AuthorProps) => {
                 <For each={subscriptions()}>
                   {(subscription: Author | Topic) => (
                     <div class="col-md-24">
-                      {'name' in subscription ? (
+                      {isAuthor(subscription) ? (
                         <AuthorCard author={subscription} hideWriteButton={true} hasLink={true} />
                       ) : (
                         <TopicCard compact iconButton isTopicInRow topic={subscription} />

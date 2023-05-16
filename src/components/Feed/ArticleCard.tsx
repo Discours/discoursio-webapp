@@ -1,4 +1,4 @@
-import { createMemo, For, Show } from 'solid-js'
+import { createMemo, createSignal, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize } from '../../utils'
 import { translit } from '../../utils/ru2en'
@@ -84,6 +84,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
     openPage(router, 'article', { slug })
     changeSearchParam('scrollTo', 'comments')
   }
+
+  const [isSharePopupActive, setIsSharePopupActive] = createSignal(false)
 
   return (
     <section
@@ -172,7 +174,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
 
         <Show when={props.settings?.isFeedMode}>
-          <section class={styles.shoutCardDetails}>
+          <section
+            class={styles.shoutCardDetails}
+            classList={{ [styles.shoutCardDetailsActive]: isSharePopupActive() }}
+          >
             <div class={styles.shoutCardDetailsContent}>
               <ShoutRatingControl shout={props.article} class={styles.shoutCardDetailsItem} />
 

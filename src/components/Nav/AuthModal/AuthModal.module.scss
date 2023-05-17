@@ -1,6 +1,11 @@
 .view {
   background: #fff;
+  min-height: 550px;
   position: relative;
+
+  @include media-breakpoint-up(md) {
+    min-height: 710px;
+  }
 
   input {
     font-size: 1.7rem;
@@ -82,8 +87,8 @@
 
 .disclaimer {
   @include font-size(1.2rem);
-
   color: #9fa1a7;
+  margin-bottom: 0;
 }
 
 .authActions {

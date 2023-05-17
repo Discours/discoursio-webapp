@@ -242,7 +242,7 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </Match>
         <Match when={searchParams().by === 'subscriptions'}>
-          <div class="wide-container">
+          <div class={clsx('wide-container', styles.subscriptions)}>
             <div class="row position-relative">
               <Show
                 when={isLoaded()}
@@ -254,11 +254,18 @@ export const AuthorView = (props: AuthorProps) => {
               >
                 <For each={subscriptions()}>
                   {(subscription: Author | Topic) => (
-                    <div class="col-md-24">
+                    <div class="col-md-20 col-lg-18">
                       {isAuthor(subscription) ? (
-                        <AuthorCard author={subscription} hideWriteButton={true} hasLink={true} />
+                        <div class={styles.authorContainer}>
+                          <AuthorCard
+                            author={subscription}
+                            hideWriteButton={true}
+                            hasLink={true}
+                            isTextButton={true}
+                          />
+                        </div>
                       ) : (
-                        <TopicCard compact iconButton isTopicInRow topic={subscription} />
+                        <TopicCard compact isTopicInRow showDescription topic={subscription} />
                       )}
                     </div>
                   )}

@@ -21,6 +21,7 @@ interface TopicProps {
   isTopicInRow?: boolean
   iconButton?: boolean
   showPublications?: boolean
+  showDescription?: boolean
 }
 
 export const TopicCard = (props: TopicProps) => {
@@ -56,12 +57,12 @@ export const TopicCard = (props: TopicProps) => {
     <div
       class={styles.topic}
       classList={{
-        row: !props.compact && !props.subscribeButtonBottom,
+        row: !props.subscribeButtonBottom,
         [styles.topicCompact]: props.compact,
         [styles.topicInRow]: props.isTopicInRow
       }}
     >
-      <div classList={{ 'col-md-18 col-lg-14 col-xl-12': !props.compact && !props.subscribeButtonBottom }}>
+      <div classList={{ 'col-sm-18 col-lg-14 col-xl-12': !props.subscribeButtonBottom }}>
         <Show when={props.topic.title}>
           <h3 class={styles.topicTitle}>
             <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
@@ -75,7 +76,7 @@ export const TopicCard = (props: TopicProps) => {
           </div>
         </Show>
 
-        <Show when={!props.compact && props.topic?.body}>
+        <Show when={props.showDescription && props.topic?.body}>
           <div
             class={clsx(styles.topicDescription, 'text-truncate')}
             classList={{ 'topic-description--short': props.shortDescription }}
@@ -86,7 +87,7 @@ export const TopicCard = (props: TopicProps) => {
       </div>
       <div
         class={styles.controlContainer}
-        classList={{ 'col-md-6': !props.compact && !props.subscribeButtonBottom }}
+        classList={{ 'col-sm-6 col-lg-10 col-xl-12': !props.subscribeButtonBottom }}
       >
         <ShowOnlyOnClient>
           <Show when={isSessionLoaded()}>

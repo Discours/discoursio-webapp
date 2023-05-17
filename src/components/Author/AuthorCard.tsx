@@ -27,6 +27,7 @@ interface AuthorCardProps {
   isAuthorsList?: boolean
   truncateBio?: boolean
   liteButtons?: boolean
+  isTextButton?: boolean
   isComments?: boolean
   isFeedMode?: boolean
   isNowrap?: boolean
@@ -132,18 +133,22 @@ export const AuthorCard = (props: AuthorCardProps) => {
                       onClick={() => subscribe(true)}
                       class={clsx('button', styles.button)}
                       classList={{
-                        [styles.buttonSubscribe]: !props.isAuthorsList,
+                        [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
                         'button--subscribe': !props.isAuthorsList,
-                        'button--subscribe-topic': props.isAuthorsList,
-                        [styles.buttonWrite]: props.isAuthorsList,
+                        'button--subscribe-topic': props.isAuthorsList || props.isTextButton,
+                        [styles.buttonWrite]: props.isAuthorsList || props.isTextButton,
                         [styles.isSubscribing]: isSubscribing()
                       }}
                       disabled={isSubscribing()}
                     >
-                      <Show when={!props.isAuthorsList}>
+                      <Show when={!props.isAuthorsList && !props.isTextButton}>
                         <Icon name="author-subscribe" class={styles.icon} />
                       </Show>
-                      <span class={styles.buttonLabel}>{t('Follow')}</span>
+                      <Show when={props.isTextButton}>
+                        <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
+                          {t('Follow')}
+                        </span>
+                      </Show>
                     </button>
                   }
                 >
@@ -151,18 +156,22 @@ export const AuthorCard = (props: AuthorCardProps) => {
                     onClick={() => subscribe(false)}
                     class={clsx('button', styles.button)}
                     classList={{
-                      [styles.buttonSubscribe]: !props.isAuthorsList,
+                      [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
                       'button--subscribe': !props.isAuthorsList,
-                      'button--subscribe-topic': props.isAuthorsList,
-                      [styles.buttonWrite]: props.isAuthorsList,
+                      'button--subscribe-topic': props.isAuthorsList || props.isTextButton,
+                      [styles.buttonWrite]: props.isAuthorsList || props.isTextButton,
                       [styles.isSubscribing]: isSubscribing()
                     }}
                     disabled={isSubscribing()}
                   >
-                    <Show when={!props.isAuthorsList}>
+                    <Show when={!props.isAuthorsList && !props.isTextButton}>
                       <Icon name="author-unsubscribe" class={styles.icon} />
                     </Show>
-                    <span class={styles.buttonLabel}>{t('Unfollow')}</span>
+                    <Show when={props.isTextButton}>
+                      <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
+                        {t('Unfollow')}
+                      </span>
+                    </Show>
                   </button>
                 </Show>
 
@@ -177,8 +186,10 @@ export const AuthorCard = (props: AuthorCardProps) => {
                     }}
                     onClick={initChat}
                   >
-                    <Icon name="comment" class={styles.icon} />
-                    <Show when={!props.liteButtons}>{t('Write')}</Show>
+                    <Show when={!props.isTextButton}>
+                      <Icon name="comment" class={styles.icon} />
+                    </Show>
+                    <Show when={!props.liteButtons || props.isTextButton}>{t('Write')}</Show>
                   </button>
 
                   <Show when={!props.noSocialButtons}>

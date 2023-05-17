@@ -176,19 +176,24 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
             </Show>
 
             <Show when={searchParams().by && searchParams().by !== 'title'}>
-              <For each={filteredResults().slice(0, limit())}>
-                {(topic) => (
-                  <>
-                    <TopicCard
-                      topic={topic}
-                      compact={false}
-                      subscribed={subscribed(topic.slug)}
-                      showPublications={true}
-                    />
-                    <StatMetrics fields={['shouts', 'authors', 'followers']} stat={topic.stat} />
-                  </>
-                )}
-              </For>
+              <div class="row">
+                <div className="col-lg-20 col-xl-18">
+                  <For each={filteredResults().slice(0, limit())}>
+                    {(topic) => (
+                      <>
+                        <TopicCard
+                          topic={topic}
+                          compact={false}
+                          subscribed={subscribed(topic.slug)}
+                          showPublications={true}
+                          showDescription={true}
+                        />
+                        <StatMetrics fields={['shouts', 'authors', 'followers']} stat={topic.stat} />
+                      </>
+                    )}
+                  </For>
+                </div>
+              </div>
             </Show>
 
             <Show when={filteredResults().length > limit() && searchParams().by !== 'title'}>

@@ -188,6 +188,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
                       noSocialButtons={true}
                       isAuthorsList={true}
                       truncateBio={true}
+                      isTextButton={true}
                     />
                   </div>
                 </div>

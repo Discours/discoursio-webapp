@@ -18,14 +18,15 @@
     margin-top: 0;
   }
 
-  .topicTitle {
-    margin-bottom: 0;
+  @include media-breakpoint-up(sm) {
+    .topicDescription {
+      margin-bottom: 0;
+    }
   }
 }
 
 .topicTitle {
   @include font-size(2.2rem);
-
   font-weight: bold;
   margin-bottom: 1.2rem;
   margin-top: 0.5rem !important;
@@ -50,9 +51,8 @@
 
 .topicDescription {
   @include font-size(1.6rem);
-
   color: #696969;
-  margin: 0 0 1.6rem;
+  margin: 0.5em 0 1.6rem;
 
   &.compact {
     font-size: medium;
@@ -102,7 +102,7 @@
 }
 
 .controlContainer {
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(sm) {
     text-align: right;
   }
 }
@@ -124,4 +124,10 @@
 .isSubscribed {
   background: #000;
   color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background: #fff;
+    color: #000;
+  }
 }

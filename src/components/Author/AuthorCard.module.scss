@@ -168,8 +168,12 @@
   display: none;
 }
 
+.buttonLabelVisible {
+  display: block;
+}
+
 .buttonWrite {
-  @include font-size(1.5rem);
+  //@include font-size(1.5rem);
 
   color: #000;
   display: inline-flex;

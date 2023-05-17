@@ -177,7 +177,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
             <Show when={searchParams().by && searchParams().by !== 'title'}>
               <div class="row">
-                <div className="col-lg-20 col-xl-18">
+                <div class="col-lg-20 col-xl-18">
                   <For each={filteredResults().slice(0, limit())}>
                     {(topic) => (
                       <>

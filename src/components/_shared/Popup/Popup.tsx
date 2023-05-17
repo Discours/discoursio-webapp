@@ -10,7 +10,7 @@ export type PopupProps = {
   popupCssClass?: string
   trigger: JSX.Element
   children: JSX.Element
-  onVisibilityChange?: (isVisible) => void
+  onVisibilityChange?: (isVisible: boolean) => void
   horizontalAnchor?: HorizontalAnchor
   variant?: 'bordered' | 'tiny'
 }

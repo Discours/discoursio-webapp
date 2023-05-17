@@ -5,6 +5,7 @@ import styles from './Popover.module.scss'
 type Props = {
   children: (setTooltipEl: (el: HTMLElement | null) => void) => JSX.Element
   content: string
+  disabled?: boolean
 }
 
 export const Popover = (props: Props) => {
@@ -35,27 +36,29 @@ export const Popover = (props: Props) => {
   const handleMouseOver = () => setShow(true)
   const handleMouseOut = () => setShow(false)
 
-  onMount(() => {
-    showEvents.forEach((event) => {
-      anchor().addEventListener(event, handleMouseOver)
-    })
-    hideEvents.forEach((event) => {
-      anchor().addEventListener(event, handleMouseOut)
-    })
-    return () => {
+  if (!props.disabled) {
+    onMount(() => {
       showEvents.forEach((event) => {
-        anchor().removeEventListener(event, handleMouseOver)
+        anchor().addEventListener(event, handleMouseOver)
       })
       hideEvents.forEach((event) => {
-        anchor().removeEventListener(event, handleMouseOut)
+        anchor().addEventListener(event, handleMouseOut)
       })
-    }
-  })
+      return () => {
+        showEvents.forEach((event) => {
+          anchor().removeEventListener(event, handleMouseOver)
+        })
+        hideEvents.forEach((event) => {
+          anchor().removeEventListener(event, handleMouseOut)
+        })
+      }
+    })
+  }
 
   return (
     <>
       {props.children(setAnchor)}
-      <Show when={show()}>
+      <Show when={show() && !props.disabled}>
         <div ref={setPopper} class={styles.tooltip} role="tooltip">
           {props.content}
           <div class={styles.arrow} data-popper-arrow={true} />

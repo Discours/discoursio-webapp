@@ -5,12 +5,14 @@ import styles from '../_shared/Popup/Popup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 import { useLocalize } from '../../context/localize'
+import { createEffect } from 'solid-js'
 
 type SharePopupProps = {
   title: string
   shareUrl?: string
   imageUrl: string
   description: string
+  isVisible: (value: boolean) => void
 } & Omit<PopupProps, 'children'>
 
 export const getShareUrl = (params: { pathname?: string } = {}) => {
@@ -29,8 +31,9 @@ export const SharePopup = (props: SharePopupProps) => {
   const copyLink = async () => {
     await navigator.clipboard.writeText(props.shareUrl)
   }
+
   return (
-    <Popup {...props} variant="bordered">
+    <Popup {...props} variant="bordered" onVisibilityChange={(value) => props.isVisible(value)}>
       <ul class="nodash">
         <li>
           <button role="button" class={styles.shareControl} onClick={() => share(VK)}>

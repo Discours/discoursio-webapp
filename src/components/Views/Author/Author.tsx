@@ -1,25 +1,26 @@
 import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
-import type { Author, Shout, Topic } from '../../graphql/types.gen'
-import { Row1 } from '../Feed/Row1'
-import { Row2 } from '../Feed/Row2'
-import { AuthorFull } from '../Author/Full'
+import type { Author, Shout, Topic } from '../../../graphql/types.gen'
+import { Row1 } from '../../Feed/Row1'
+import { Row2 } from '../../Feed/Row2'
+import { AuthorFull } from '../../Author/Full'
 
-import { useAuthorsStore } from '../../stores/zine/authors'
-import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
-import { useRouter } from '../../stores/router'
-import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
-import { splitToPages } from '../../utils/splitToPages'
+import { useAuthorsStore } from '../../../stores/zine/authors'
+import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
+import { useRouter } from '../../../stores/router'
+import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { splitToPages } from '../../../utils/splitToPages'
 import styles from './Author.module.scss'
-import stylesArticle from '../Article/Article.module.scss'
+import stylesArticle from '../../Article/Article.module.scss'
 import { clsx } from 'clsx'
-import Userpic from '../Author/Userpic'
-import { Popup } from '../_shared/Popup'
-import { AuthorCard } from '../Author/AuthorCard'
-import { apiClient } from '../../utils/apiClient'
-import { Comment } from '../Article/Comment'
-import { useLocalize } from '../../context/localize'
-import { AuthorRatingControl } from '../Author/AuthorRatingControl'
-import { TopicCard } from '../Topic/Card'
+import Userpic from '../../Author/Userpic'
+import { Popup } from '../../_shared/Popup'
+import { AuthorCard } from '../../Author/AuthorCard'
+import { apiClient } from '../../../utils/apiClient'
+import { Comment } from '../../Article/Comment'
+import { useLocalize } from '../../../context/localize'
+import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
+import { TopicCard } from '../../Topic/Card'
+import { Loading } from '../../_shared/Loading'
 
 type AuthorProps = {
   shouts: Shout[]
@@ -34,8 +35,7 @@ export type AuthorPageSearchParams = {
     | 'rating'
     | 'commented'
     | 'recent'
-    | 'subscribed-authors'
-    | 'subscribed-topics'
+    | 'subscriptions'
     | 'followers'
     | 'about'
     | 'popular'
@@ -44,6 +44,9 @@ export type AuthorPageSearchParams = {
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
+function isAuthor(value: Author | Topic): value is Author {
+  return 'name' in value
+}
 export const AuthorView = (props: AuthorProps) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
@@ -52,8 +55,23 @@ export const AuthorView = (props: AuthorProps) => {
   const author = authorEntities()[props.authorSlug]
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
-  const [followingUsers, setFollowingUsers] = createSignal<Author[]>([])
-  const [subscribedTopics, setSubscribedTopics] = createSignal<Topic[]>([])
+  const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>([])
+  const [isLoaded, setIsLoaded] = createSignal<boolean>()
+
+  const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
+    try {
+      const [getAuthors, getTopics] = await Promise.all([
+        apiClient.getAuthorFollowingUsers({ slug: props.authorSlug }),
+        apiClient.getAuthorFollowingTopics({ slug: props.authorSlug })
+      ])
+      const authors = getAuthors
+      const topics = getTopics
+      return { authors, topics }
+    } catch (error) {
+      console.error('[fetchSubscriptions] :', error)
+      throw error
+    }
+  }
 
   onMount(async () => {
     try {
@@ -62,25 +80,9 @@ export const AuthorView = (props: AuthorProps) => {
     } catch (error) {
       console.log('[getAuthorFollowers]', error)
     }
-
-    try {
-      const authorSubscriptionsUsers = await apiClient.getAuthorFollowingUsers({ slug: props.authorSlug })
-      setFollowingUsers(authorSubscriptionsUsers)
-    } catch (error) {
-      console.log('[getAuthorFollowingUsers]', error)
-    }
-
-    try {
-      const authorSubscriptionsTopics = await apiClient.getAuthorFollowingTopics({ slug: props.authorSlug })
-      setSubscribedTopics(authorSubscriptionsTopics)
-    } catch (error) {
-      console.log('[getAuthorFollowing]', error)
-    }
-
     if (!searchParams().by) {
       changeSearchParam('by', 'rating')
     }
-
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       await loadMore()
     }
@@ -113,6 +115,13 @@ export const AuthorView = (props: AuthorProps) => {
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
+    if (searchParams().by === 'subscriptions') {
+      setIsLoaded(false)
+      const { authors, topics } = await fetchSubscriptions()
+      setSubscriptions([...authors, ...topics])
+      setIsLoaded(true)
+    }
+
     if (searchParams().by === 'commented') {
       try {
         const data = await apiClient.getReactionsBy({
@@ -124,7 +133,6 @@ export const AuthorView = (props: AuthorProps) => {
       }
     }
   })
-
   return (
     <div class="author-page">
       <div class="wide-container">
@@ -142,14 +150,9 @@ export const AuthorView = (props: AuthorProps) => {
                   {t('Followers')}
                 </button>
               </li>
-              <li classList={{ selected: searchParams().by === 'subscribed-authors' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'subscribed-authors')}>
-                  {t('Author subscriptions')}
-                </button>
-              </li>
-              <li classList={{ selected: searchParams().by === 'subscribed-topics' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'subscribed-topics')}>
-                  {t('Topic subscriptions')}
+              <li classList={{ selected: searchParams().by === 'subscriptions' }}>
+                <button type="button" onClick={() => changeSearchParam('by', 'subscriptions')}>
+                  {t('Subscriptions')}
                 </button>
               </li>
               <li classList={{ selected: searchParams().by === 'commented' }}>
@@ -225,19 +228,6 @@ export const AuthorView = (props: AuthorProps) => {
             </ul>
           </div>
         </Match>
-        <Match when={searchParams().by === 'subscribed-topics'}>
-          <div class="wide-container">
-            <div class="row">
-              <For each={subscribedTopics()}>
-                {(topic) => (
-                  <div class="col-md-12 col-lg-8">
-                    <TopicCard compact iconButton isTopicInRow topic={topic} />
-                  </div>
-                )}
-              </For>
-            </div>
-          </div>
-        </Match>
         <Match when={searchParams().by === 'followers'}>
           <div class="wide-container">
             <div class="row">
@@ -251,16 +241,29 @@ export const AuthorView = (props: AuthorProps) => {
             </div>
           </div>
         </Match>
-        <Match when={searchParams().by === 'subscribed-authors'}>
+        <Match when={searchParams().by === 'subscriptions'}>
           <div class="wide-container">
-            <div class="row">
-              <For each={followingUsers()}>
-                {(follower: Author) => (
-                  <div class="col-md-6 col-lg-4">
-                    <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />
+            <div class="row position-relative">
+              <Show
+                when={isLoaded()}
+                fallback={
+                  <div class={styles.loadingWrapper}>
+                    <Loading />
                   </div>
-                )}
-              </For>
+                }
+              >
+                <For each={subscriptions()}>
+                  {(subscription: Author | Topic) => (
+                    <div class="col-md-24">
+                      {isAuthor(subscription) ? (
+                        <AuthorCard author={subscription} hideWriteButton={true} hasLink={true} />
+                      ) : (
+                        <TopicCard compact iconButton isTopicInRow topic={subscription} />
+                      )}
+                    </div>
+                  )}
+                </For>
+              </Show>
             </div>
           </div>
         </Match>

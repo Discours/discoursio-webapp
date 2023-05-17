@@ -14,6 +14,8 @@ import { useSnackbar } from '../../context/snackbar'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
 import { CommentRatingControl } from './CommentRatingControl'
+import { getPagePath } from '@nanostores/router'
+import { router } from '../../stores/router'
 
 const CommentEditor = lazy(() => import('../_shared/CommentEditor'))
 
@@ -23,6 +25,8 @@ type Props = {
   isArticleAuthor?: boolean
   sortedComments?: Reaction[]
   lastSeen?: Date
+  class?: string
+  showArticleLink?: boolean
 }
 
 export const Comment = (props: Props) => {
@@ -98,7 +102,11 @@ export const Comment = (props: Props) => {
   const createdAt = new Date(comment()?.createdAt)
 
   return (
-    <li class={clsx(styles.comment, { [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen })}>
+    <li
+      class={clsx(styles.comment, props.class ? props.class : '', {
+        [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen
+      })}
+    >
       <Show when={!!body()}>
         <div class={styles.commentContent}>
           <Show
@@ -133,6 +141,15 @@ export const Comment = (props: Props) => {
                 <div class={styles.articleAuthor}>{t('Author')}</div>
               </Show>
 
+              <Show when={props.showArticleLink}>
+                <div class={styles.articleLink}>
+                  <Icon name="arrow-right" class={styles.articleLinkIcon} />
+                  <a href={getPagePath(router, 'article', { slug: comment().shout.slug })}>
+                    {comment().shout.title}
+                  </a>
+                </div>
+              </Show>
+
               <div class={styles.commentDates}>
                 <div class={styles.date}>{formattedDate(comment()?.createdAt)()}</div>
                 <Show when={comment()?.updatedAt}>
@@ -142,6 +159,7 @@ export const Comment = (props: Props) => {
                   </div>
                 </Show>
               </div>
+
               <CommentRatingControl comment={comment()} />
             </div>
           </Show>

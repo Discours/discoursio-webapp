@@ -169,6 +169,32 @@
   margin-right: 12px;
 }
 
+.articleLink {
+  flex: 0 0 50%;
+  @include font-size(1.2rem);
+  margin-right: 2em;
+
+  @include media-breakpoint-down(md) {
+    margin: 0.3em 0 0.5em;
+  }
+
+  @include media-breakpoint-up(md) {
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.articleLinkIcon {
+  display: inline-block;
+  margin-right: 1em;
+  vertical-align: middle;
+  width: 1em;
+}
+
 .commentDates {
   flex: 1;
   display: flex;
@@ -176,7 +202,7 @@
   align-items: center;
   justify-content: flex-start;
   font-size: 1.2rem;
-  margin-bottom: 4px;
+  margin: 0 1em 4px 0;
   color: rgb(0 0 0 / 30%);
 
   @include font-size(1.2rem);
@@ -190,17 +216,17 @@
       margin-right: 0.5rem;
       vertical-align: middle;
     }
-
-    @include media-breakpoint-down(md) {
-      margin-left: 1rem;
-    }
   }
 }
 
 .commentDetails {
-  display: flex;
   padding: 1rem 0.2rem 0;
   margin-bottom: 1.2rem;
+
+  @include media-breakpoint-up(md) {
+    align-items: start;
+    display: flex;
+  }
 }
 
 .compactUserpic {

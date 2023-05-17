@@ -223,9 +223,15 @@ export const AuthorView = (props: AuthorProps) => {
         </Match>
         <Match when={searchParams().by === 'commented'}>
           <div class="wide-container">
-            <ul class={stylesArticle.comments}>
-              <For each={commented()}>{(comment) => <Comment comment={comment} />}</For>
-            </ul>
+            <div class="row">
+              <div class="col-md-20 col-lg-18">
+                <ul class={stylesArticle.comments}>
+                  <For each={commented()}>
+                    {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
+                  </For>
+                </ul>
+              </div>
+            </div>
           </div>
         </Match>
         <Match when={searchParams().by === 'followers'}>

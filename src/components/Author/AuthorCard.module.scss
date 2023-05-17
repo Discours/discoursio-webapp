@@ -253,8 +253,11 @@
     }
 
     &:hover {
+      background: #fff;
+      color: #000;
+
       .icon img {
-        filter: invert(0.7);
+        filter: invert(0);
       }
     }
   }

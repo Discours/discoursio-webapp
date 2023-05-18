@@ -105,20 +105,19 @@
 .auth {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   padding: $container-padding-x;
 
   @include media-breakpoint-up(lg) {
-    padding: 10rem 6rem;
+    padding: 4rem !important;
   }
 }
 
 .submitButton {
   display: block;
   font-weight: 700;
+  margin-top: 32px;
   padding: 1.6rem !important;
   width: 100%;
-  margin-top: 32px;
 }
 
 .authControl {
@@ -129,12 +128,12 @@
 
 .authLink {
   cursor: pointer;
+  @include font-size(1.6rem);
 }
 
 .authSubtitle {
   @include font-size(1.5rem);
-
-  margin: 1em;
+  margin-bottom: 1em;
 }
 
 .authInfo {
@@ -145,6 +144,21 @@
   .warn {
     color: #a00;
   }
+}
+
+.authForm {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+
+  h4 {
+    font-weight: bold;
+  }
+}
+
+.authFormForgetPassword {
+  justify-content: center;
 }
 
 .validationError {

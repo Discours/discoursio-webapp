@@ -9,14 +9,22 @@
   }
 
   .actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    @include media-breakpoint-up(sm) {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
 
     .menu,
     .buttons {
       display: flex;
       flex-direction: row;
+    }
+
+    @include media-breakpoint-down(sm) {
+      .menu {
+        margin-bottom: 1em;
+      }
     }
 
     .buttons {

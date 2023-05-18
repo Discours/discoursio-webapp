@@ -23,7 +23,8 @@
 }
 
 .authorDetailsWrapper {
-  flex: 1 100%;
+  flex: 1 0;
+  padding-right: 1em;
 
   @include media-breakpoint-up(sm) {
     flex: 1;
@@ -50,10 +51,6 @@
 .authorSubscribe {
   align-items: center;
   display: flex;
-
-  @include media-breakpoint-up(sm) {
-    padding: 0 0 0 42px;
-  }
 
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;

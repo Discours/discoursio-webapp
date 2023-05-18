@@ -26,7 +26,9 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           <a href={getPagePath(router, 'drafts')}>{t('Drafts')}</a>
         </li>
         <li>
-          <a href="#">{t('Subscriptions')}</a>
+          <a href={`${getPagePath(router, 'author', { slug: user().slug })}/?by=subscriptions`}>
+            {t('Subscriptions')}
+          </a>
         </li>
         <li>
           <a href={`${getPagePath(router, 'author', { slug: user().slug })}/?by=commented`}>

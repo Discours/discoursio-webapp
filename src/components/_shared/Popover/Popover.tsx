@@ -1,4 +1,4 @@
-import { createEffect, createSignal, JSX, JSXElement, onMount, Show } from 'solid-js'
+import { createSignal, JSX, onMount, Show } from 'solid-js'
 import usePopper from 'solid-popper'
 import styles from './Popover.module.scss'
 

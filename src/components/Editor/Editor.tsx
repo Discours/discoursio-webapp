@@ -1,7 +1,6 @@
 import { createEffect, createSignal } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
-import { Blockquote } from '@tiptap/extension-blockquote'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
@@ -30,7 +29,6 @@ import Focus from '@tiptap/extension-focus'
 import * as Y from 'yjs'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
-
 import { IndexeddbPersistence } from 'y-indexeddb'
 import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
@@ -115,7 +113,6 @@ export const Editor = (props: EditorProps) => {
       Text,
       Paragraph,
       Dropcursor,
-      // Blockquote,
       CustomBlockquote,
       Bold,
       Italic,

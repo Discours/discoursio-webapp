@@ -1,14 +1,6 @@
 .ProseMirror {
   outline: none;
   min-height: 300px;
-
-  blockquote {
-    @include font-size(1.6rem);
-
-    border-left: 2px solid;
-    margin: 1.5em 0;
-    padding-left: 1.6em;
-  }
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
@@ -77,4 +69,53 @@
 mark.highlight {
   box-decoration-break: clone;
   padding: 0.125em 0;
+}
+
+// custom atibutes fro TipTap Nodes
+
+[data-float] {
+  max-width: 50%;
+}
+[data-float='left'] {
+  float: left;
+  margin: 1rem 1rem 0;
+}
+[data-float='right'] {
+  float: right;
+  margin: 1rem 0 1rem;
+}
+
+.ProseMirror blockquote {
+  &[data-type='quote'] {
+    @include font-size(1.6rem);
+
+    border: solid #000;
+    border-width: 0 0 0 2px;
+    margin: 1.5em 0;
+    padding-left: 1.6em;
+    padding-bottom: 0;
+
+    &[data-float='left'] {
+      padding-left: 0;
+      padding-right: 1.6rem;
+      border-width: 0 2px 0 0;
+    }
+
+    &[data-float='right'] {
+      border-width: 0 0 0 2px;
+    }
+  }
+
+  &[data-type='punchline'] {
+    padding: 1.6rem 0 0;
+    border: solid #000;
+    border-width: 2px 0;
+    font-size: 3.2rem;
+    font-weight: 700;
+
+    &[data-float='left'],
+    &[data-float='right'] {
+      font-size: 2.2rem;
+    }
+  }
 }

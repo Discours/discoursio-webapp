@@ -1,4 +1,4 @@
-import { createEffect, Show } from 'solid-js'
+import { Show } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './ImageBubbleMenu.module.scss'
 import { clsx } from 'clsx'

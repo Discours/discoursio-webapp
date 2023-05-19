@@ -54,7 +54,6 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     if (textSizeBubbleOpen()) {
       setTextSizeBubbleOpen(false)
     }
-
     setListBubbleOpen((prev) => !prev)
   }
 
@@ -153,7 +152,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                             [styles.bubbleMenuButtonActive]: isBlockQuote()
                           })}
                           onClick={() => {
-                            props.editor.chain().focus().toggleBlockquote().run()
+                            props.editor.chain().focus().toggleBlockquote('quote').run()
                             toggleTextSizePopup()
                           }}
                         >
@@ -165,7 +164,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                             [styles.bubbleMenuButtonActive]: isBlockQuote()
                           })}
                           onClick={() => {
-                            props.editor.chain().focus().toggleBlockquote().run()
+                            props.editor.chain().focus().toggleBlockquote('punchline').run()
                             toggleTextSizePopup()
                           }}
                         >

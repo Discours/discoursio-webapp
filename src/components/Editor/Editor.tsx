@@ -23,6 +23,7 @@ import { Link } from '@tiptap/extension-link'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
 import { CustomImage } from './extensions/CustomImage'
+import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figure } from './extensions/Figure'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
@@ -58,6 +59,7 @@ export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
+  const [floatMenuRef, setFloatMenuRef] = createSignal<'blockquote' | 'image'>()
 
   const docName = `shout-${props.shoutId}`
 
@@ -90,7 +92,12 @@ export const Editor = (props: EditorProps) => {
   }
 
   const imageBubbleMenuRef: {
-    current: HTMLDivElement
+    current: HTMLElement
+  } = {
+    current: null
+  }
+  const blockquoteBubbleMenuRef: {
+    current: HTMLElement
   } = {
     current: null
   }
@@ -108,7 +115,8 @@ export const Editor = (props: EditorProps) => {
       Text,
       Paragraph,
       Dropcursor,
-      Blockquote,
+      // Blockquote,
+      CustomBlockquote,
       Bold,
       Italic,
       Strike,
@@ -163,18 +171,28 @@ export const Editor = (props: EditorProps) => {
         shouldShow: ({ editor: e, view, state, from, to }) => {
           const { doc, selection } = state
           const { empty } = selection
-
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
 
           setIsCommonMarkup(e.isActive('figure'))
-          return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
+          return (
+            view.hasFocus() &&
+            !empty &&
+            !isEmptyTextBlock &&
+            !e.isActive('image') &&
+            !e.isActive('blockquote')
+          )
         }
       }),
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',
-        element: imageBubbleMenuRef.current,
+        element: blockquoteBubbleMenuRef.current,
         shouldShow: ({ editor: e, view }) => {
-          return view.hasFocus() && e.isActive('image')
+          if (view.hasFocus() && e.isActive('image')) {
+            setFloatMenuRef('image')
+          } else if (view.hasFocus() && e.isActive('blockquote')) {
+            setFloatMenuRef('blockquote')
+          }
+          return (view.hasFocus() && e.isActive('image')) || e.isActive('blockquote')
         }
       }),
       FloatingMenu.configure({
@@ -213,7 +231,15 @@ export const Editor = (props: EditorProps) => {
         editor={editor()}
         ref={(el) => (textBubbleMenuRef.current = el)}
       />
-      <ImageBubbleMenu editor={editor()} ref={(el) => (imageBubbleMenuRef.current = el)} />
+      <ImageBubbleMenu
+        focusedRef={floatMenuRef()}
+        editor={editor()}
+        ref={(el) =>
+          floatMenuRef() === 'image'
+            ? (imageBubbleMenuRef.current = el)
+            : (blockquoteBubbleMenuRef.current = el)
+        }
+      />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
     </>
   )

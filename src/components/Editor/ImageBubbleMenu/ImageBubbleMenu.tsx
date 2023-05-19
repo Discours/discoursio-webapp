@@ -1,3 +1,4 @@
+import { createEffect, Show } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './ImageBubbleMenu.module.scss'
 import { clsx } from 'clsx'
@@ -5,7 +6,8 @@ import { Icon } from '../../_shared/Icon'
 
 type BubbleMenuProps = {
   editor: Editor
-  ref: (el: HTMLDivElement) => void
+  ref: (el: HTMLElement) => void
+  focusedRef?: 'image' | 'blockquote'
 }
 
 export const ImageBubbleMenu = (props: BubbleMenuProps) => {
@@ -15,7 +17,11 @@ export const ImageBubbleMenu = (props: BubbleMenuProps) => {
         type="button"
         class={clsx(styles.bubbleMenuButton)}
         onClick={() => {
-          props.editor.chain().focus().setFloat('left').run()
+          if (props.focusedRef === 'image') {
+            props.editor.chain().focus().setImageFloat('left').run()
+          } else {
+            props.editor.chain().focus().setBlockQuoteFloat('left').run()
+          }
         }}
       >
         <Icon name="editor-image-align-left" />
@@ -24,7 +30,11 @@ export const ImageBubbleMenu = (props: BubbleMenuProps) => {
         type="button"
         class={clsx(styles.bubbleMenuButton)}
         onClick={() => {
-          props.editor.chain().focus().setFloat(null).run()
+          if (props.focusedRef === 'image') {
+            props.editor.chain().focus().setImageFloat(null).run()
+          } else {
+            props.editor.chain().focus().setBlockQuoteFloat(null).run()
+          }
         }}
       >
         <Icon name="editor-image-align-center" />
@@ -33,25 +43,31 @@ export const ImageBubbleMenu = (props: BubbleMenuProps) => {
         type="button"
         class={clsx(styles.bubbleMenuButton)}
         onClick={() => {
-          props.editor.chain().focus().setFloat('right').run()
+          if (props.focusedRef === 'image') {
+            props.editor.chain().focus().setImageFloat('right').run()
+          } else {
+            props.editor.chain().focus().setBlockQuoteFloat('right').run()
+          }
         }}
       >
         <Icon name="editor-image-align-right" />
       </button>
-      <div class={styles.delimiter} />
-      <button
-        type="button"
-        class={clsx(styles.bubbleMenuButton)}
-        onClick={() => {
-          props.editor.chain().focus().imageToFigure().run()
-        }}
-      >
-        <span style={{ color: 'white' }}>Добавить подпись</span>
-      </button>
-      <div class={styles.delimiter} />
-      <button type="button" class={clsx(styles.bubbleMenuButton)}>
-        <Icon name="editor-image-add" />
-      </button>
+      <Show when={props.focusedRef === 'image'}>
+        <div class={styles.delimiter} />
+        <button
+          type="button"
+          class={clsx(styles.bubbleMenuButton)}
+          onClick={() => {
+            props.editor.chain().focus().imageToFigure().run()
+          }}
+        >
+          <span style={{ color: 'white' }}>Добавить подпись</span>
+        </button>
+        <div class={styles.delimiter} />
+        <button type="button" class={clsx(styles.bubbleMenuButton)}>
+          <Icon name="editor-image-add" />
+        </button>
+      </Show>
     </div>
   )
 }

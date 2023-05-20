@@ -60,14 +60,12 @@ export const Panel = (props: Props) => {
       ref={(el) => (containerRef.current = el)}
       class={clsx('col-md-6', styles.Panel, { [styles.hidden]: !isEditorPanelVisible() })}
     >
-      <div class={styles.actionsHolder}>
-        <Button
-          value={<Icon name="close" />}
-          variant={'inline'}
-          class={styles.close}
-          onClick={() => toggleEditorPanel()}
-        />
-      </div>
+      <Button
+        value={<Icon name="close" />}
+        variant={'inline'}
+        class={styles.close}
+        onClick={() => toggleEditorPanel()}
+      />
       <div class={clsx(styles.actionsHolder, styles.scrolled)}>
         <section>
           <p>
@@ -79,31 +77,6 @@ export const Panel = (props: Props) => {
             <span class={styles.link} onClick={handleSaveClick}>
               {t('Save draft')}
             </span>
-          </p>
-        </section>
-
-        <section>
-          <p>
-            <a class={clsx(styles.link, styles.linkWithIcon)}>
-              <Icon name="eye" class={styles.icon} />
-              {t('Preview')}
-            </a>
-          </p>
-          <p>
-            <a
-              class={clsx(styles.link, styles.linkWithIcon)}
-              onClick={() => toggleEditorPanel()}
-              href={getPagePath(router, 'edit', { shoutId: props.shoutId.toString() })}
-            >
-              <Icon name="pencil-outline" class={styles.icon} />
-              {t('Editing')}
-            </a>
-          </p>
-          <p>
-            <a class={clsx(styles.link, styles.linkWithIcon)}>
-              <Icon name="feed-discussion" class={styles.icon} />
-              {t('FAQ')}
-            </a>
           </p>
         </section>
 
@@ -128,6 +101,26 @@ export const Panel = (props: Props) => {
           <p>
             <a class={styles.link}>{t('Corrections history')}</a>
           </p>
+        </section>
+
+        <section>
+          <div class={styles.typograph}>
+            <div class={styles.typographLabel}>{t('Autotypograph')}</div>
+            <div class={clsx(styles.typographStatus, styles.typographStatusSuccess)}>{t('Fixed')}</div>
+          </div>
+          <p>{t('Text checking')}</p>
+        </section>
+
+        <section>
+          <div class={styles.themeSwitcher}>
+            <input type="checkbox" id="theme-switcher" value="1" />
+            <label for="theme-switcher">
+              {t('Night mode')}
+              <div class={styles.switcher}>
+                <Icon name="night-theme" class={styles.icon} />
+              </div>
+            </label>
+          </div>
         </section>
 
         <section>

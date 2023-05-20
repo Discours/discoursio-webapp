@@ -10,6 +10,7 @@ import { getPagePath } from '@nanostores/router'
 import { router } from '../../../stores/router'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
+import { createSignal } from 'solid-js'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
 
@@ -29,6 +30,8 @@ export const Panel = (props: Props) => {
   const containerRef: { current: HTMLElement } = {
     current: null
   }
+
+  const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
 
   useOutsideClickHandler({
     containerRef,
@@ -66,7 +69,7 @@ export const Panel = (props: Props) => {
         class={styles.close}
         onClick={() => toggleEditorPanel()}
       />
-      <div class={clsx(styles.actionsHolder, styles.scrolled)}>
+      <div class={clsx(styles.actionsHolder, styles.scrolled, { hidden: isShortcutsVisible() })}>
         <section>
           <p>
             <span class={styles.link} onClick={handlePublishClick}>
@@ -130,9 +133,9 @@ export const Panel = (props: Props) => {
             </a>
           </p>
           <p>
-            <a class={styles.link} href="#">
+            <button class={styles.link} onClick={() => setIsShortcutsVisible(true)}>
               {t('Hotkeys')}
-            </a>
+            </button>
           </p>
           <p>
             <a class={styles.link} href="#">
@@ -152,6 +155,107 @@ export const Panel = (props: Props) => {
           {/*  {t('Last rev.')}: <em>22.03.22 в 18:20</em>*/}
           {/*</div>*/}
         </div>
+      </div>
+
+      <div class={clsx(styles.actionsHolder, styles.scrolled, { hidden: !isShortcutsVisible() })}>
+        <p>
+          <button class={styles.backToMenuControl} onClick={() => setIsShortcutsVisible(false)}>
+            назад в меню
+          </button>
+        </p>
+
+        <section class={styles.shortcutList}>
+          <p>
+            жирный
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>B</span>
+            </span>
+          </p>
+          <p>
+            курсив
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>I</span>
+            </span>
+          </p>
+          <p>
+            добавить ссылку
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>K</span>
+            </span>
+          </p>
+        </section>
+
+        <section class={styles.shortcutList}>
+          <p>
+            заголовок 1
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>Alt</span>
+              <span class={styles.shortcutButton}>1</span>
+            </span>
+          </p>
+          <p>
+            заголовок 2
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>Alt</span>
+              <span class={styles.shortcutButton}>2</span>
+            </span>
+          </p>
+          <p>
+            заголовок 3
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>Alt</span>
+              <span class={styles.shortcutButton}>3</span>
+            </span>
+          </p>
+        </section>
+
+        <section class={styles.shortcutList}>
+          <p>
+            маркир. список
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>*</span>
+              <span class={styles.shortcutButton}>Space</span>
+            </span>
+          </p>
+          <p>
+            нумер. список
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>1</span>
+              <span class={styles.shortcutButton}>Space</span>
+            </span>
+          </p>
+          <p>
+            разделитель
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>***</span>
+              <span class={styles.shortcutButton}>Enter</span>
+            </span>
+          </p>
+        </section>
+
+        <section class={styles.shortcutList}>
+          <p>
+            отменить
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>Z</span>
+            </span>
+          </p>
+          <p>
+            повторить
+            <span class={styles.shortcut}>
+              <span class={styles.shortcutButton}>Ctrl</span>
+              <span class={styles.shortcutButton}>Shift</span>
+              <span class={styles.shortcutButton}>Z</span>
+            </span>
+          </p>
+        </section>
       </div>
     </aside>
   )

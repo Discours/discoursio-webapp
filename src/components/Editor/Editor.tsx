@@ -42,6 +42,7 @@ import { isTextSelection } from '@tiptap/core'
 import type { Doc } from 'yjs/dist/src/utils/Doc'
 import './Prosemirror.scss'
 import { TrailingNode } from './extensions/TrailingNode'
+import Article from './extensions/Article'
 
 type EditorProps = {
   shoutId: number
@@ -198,7 +199,8 @@ export const Editor = (props: EditorProps) => {
         },
         element: floatingMenuRef.current
       }),
-      TrailingNode
+      TrailingNode,
+      Article
     ]
   }))
 

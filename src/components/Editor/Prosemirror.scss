@@ -117,10 +117,21 @@ mark.highlight {
     border-width: 2px 0;
     font-size: 3.2rem;
     font-weight: 700;
+    margin: 0;
 
     &[data-float='left'],
     &[data-float='right'] {
       font-size: 2.2rem;
     }
+  }
+}
+
+.ProseMirror article[data-type='squib'] {
+  background: #f1f2f3;
+  padding: 1.6rem;
+  font-size: 1.4rem;
+
+  *:last-child {
+    margin-bottom: 0;
   }
 }

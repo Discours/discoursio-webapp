@@ -171,6 +171,21 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           <Icon name="editor-quote" />
                         </button>
                       </div>
+                      <header>{t('squib')}</header>
+                      <div class={styles.actions}>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isBlockQuote()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleArticle().run()
+                            toggleTextSizePopup()
+                          }}
+                        >
+                          <Icon name="editor-squib" />
+                        </button>
+                      </div>
                     </div>
                   </Show>
                 </div>

@@ -35,7 +35,7 @@ import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { Embed } from './extensions/Embed'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { ImageBubbleMenu } from './ImageBubbleMenu'
+import { FigureBubbleMenu } from './FigureBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 import { isTextSelection } from '@tiptap/core'
@@ -89,7 +89,7 @@ export const Editor = (props: EditorProps) => {
     current: null
   }
 
-  const imageBubbleMenuRef: {
+  const figureBubbleMenuRef: {
     current: HTMLElement
   } = {
     current: null
@@ -228,12 +228,12 @@ export const Editor = (props: EditorProps) => {
         editor={editor()}
         ref={(el) => (textBubbleMenuRef.current = el)}
       />
-      <ImageBubbleMenu
+      <FigureBubbleMenu
         focusedRef={floatMenuRef()}
         editor={editor()}
         ref={(el) =>
           floatMenuRef() === 'image'
-            ? (imageBubbleMenuRef.current = el)
+            ? (figureBubbleMenuRef.current = el)
             : (blockquoteBubbleMenuRef.current = el)
         }
       />

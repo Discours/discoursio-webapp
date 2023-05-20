@@ -1,18 +1,18 @@
 import { Show } from 'solid-js'
 import type { Editor } from '@tiptap/core'
-import styles from './ImageBubbleMenu.module.scss'
+import styles from './FigureBubbleMenu.module.scss'
 import { clsx } from 'clsx'
 import { Icon } from '../../_shared/Icon'
 
-type BubbleMenuProps = {
+type Props = {
   editor: Editor
   ref: (el: HTMLElement) => void
-  focusedRef?: 'image' | 'blockquote'
+  focusedRef?: 'image' | 'blockquote' | 'squib'
 }
 
-export const ImageBubbleMenu = (props: BubbleMenuProps) => {
+export const FigureBubbleMenu = (props: Props) => {
   return (
-    <div ref={props.ref} class={styles.ImageBubbleMenu}>
+    <div ref={props.ref} class={styles.FigureBubbleMenu}>
       <button
         type="button"
         class={clsx(styles.bubbleMenuButton)}

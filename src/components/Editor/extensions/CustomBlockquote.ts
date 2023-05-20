@@ -1,4 +1,4 @@
-import { Blockquote, BlockquoteOptions } from '@tiptap/extension-blockquote'
+import { Blockquote } from '@tiptap/extension-blockquote'
 
 export type QuoteTypes = 'quote' | 'punchline'
 
@@ -22,6 +22,7 @@ export const CustomBlockquote = Blockquote.extend({
       }
     }
   },
+
   addCommands() {
     return {
       toggleBlockquote:

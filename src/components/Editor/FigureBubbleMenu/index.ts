@@ -1,0 +1,1 @@
+export { FigureBubbleMenu } from './FigureBubbleMenu'

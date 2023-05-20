@@ -129,6 +129,7 @@
 .authLink {
   cursor: pointer;
   @include font-size(1.6rem);
+  font-weight: 500;
 }
 
 .authSubtitle {

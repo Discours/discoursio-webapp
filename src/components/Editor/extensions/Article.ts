@@ -15,7 +15,7 @@ export default Node.create({
 
   defaultOptions: {
     HTMLAttributes: {
-      'data-type': 'squib'
+      'data-type': 'incut'
     }
   },
 

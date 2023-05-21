@@ -7,10 +7,11 @@ import { Icon } from '../../_shared/Icon'
 type Props = {
   editor: Editor
   ref: (el: HTMLElement) => void
-  focusedRef?: 'image' | 'blockquote' | 'squib'
+  focusedRef?: 'image' | 'blockquote' | 'incut'
 }
 
 export const FigureBubbleMenu = (props: Props) => {
+  console.log('!!! props.ref:', props.ref)
   return (
     <div ref={props.ref} class={styles.FigureBubbleMenu}>
       <button

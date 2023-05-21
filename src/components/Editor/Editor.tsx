@@ -58,7 +58,7 @@ export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
-  const [floatMenuRef, setFloatMenuRef] = createSignal<'blockquote' | 'image'>()
+  const [floatMenuRef, setFloatMenuRef] = createSignal<'blockquote' | 'image' | 'incut'>()
 
   const docName = `shout-${props.shoutId}`
 
@@ -90,6 +90,11 @@ export const Editor = (props: EditorProps) => {
     current: null
   }
 
+  const incutBubbleMenuRef: {
+    current: HTMLElement
+  } = {
+    current: null
+  }
   const figureBubbleMenuRef: {
     current: HTMLElement
   } = {
@@ -189,8 +194,12 @@ export const Editor = (props: EditorProps) => {
             setFloatMenuRef('image')
           } else if (view.hasFocus() && e.isActive('blockquote')) {
             setFloatMenuRef('blockquote')
+          } else if (view.hasFocus() && e.isActive('article', { dataType: 'incut' })) {
+            setFloatMenuRef('incut')
           }
-          return (view.hasFocus() && e.isActive('image')) || e.isActive('blockquote')
+          return (
+            (view.hasFocus() && e.isActive('image')) || e.isActive('blockquote') || e.isActive('article')
+          )
         }
       }),
       FloatingMenu.configure({
@@ -233,11 +242,15 @@ export const Editor = (props: EditorProps) => {
       <FigureBubbleMenu
         focusedRef={floatMenuRef()}
         editor={editor()}
-        ref={(el) =>
-          floatMenuRef() === 'image'
-            ? (figureBubbleMenuRef.current = el)
-            : (blockquoteBubbleMenuRef.current = el)
-        }
+        ref={(el) => {
+          if (floatMenuRef() === 'image') {
+            figureBubbleMenuRef.current = el
+          } else if (floatMenuRef() === 'incut') {
+            incutBubbleMenuRef.current = el
+          } else {
+            blockquoteBubbleMenuRef.current = el
+          }
+        }}
       />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
     </>

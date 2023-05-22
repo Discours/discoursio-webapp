@@ -4,7 +4,8 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     Article: {
       toggleArticle: () => ReturnType
-      setArticleFloat: (float: null | 'left' | 'right') => ReturnType
+      setArticleFloat: (float: null | 'left' | 'half-left' | 'right' | 'half-right') => ReturnType
+      setArticleBg: (bg: null | string) => ReturnType
     }
   }
 }
@@ -36,6 +37,9 @@ export default Node.create({
     return {
       'data-float': {
         default: null
+      },
+      'data-bg': {
+        default: null
       }
     }
   },
@@ -51,6 +55,11 @@ export default Node.create({
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-float': value })
+        },
+      setArticleBg:
+        (value) =>
+        ({ commands }) => {
+          return commands.updateAttributes(this.name, { 'data-bg': value })
         }
     }
   }

@@ -11,7 +11,7 @@ type Props = {
   focusedRef?: 'image' | 'blockquote' | 'incut'
 }
 
-const backgrounds = [null, 'black', 'yellow', 'pink', 'green']
+const backgrounds = [null, 'white', 'black', 'yellow', 'pink', 'green']
 
 export const FigureBubbleMenu = (props: Props) => {
   const { t } = useLocalize()

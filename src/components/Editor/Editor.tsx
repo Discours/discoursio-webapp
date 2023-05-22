@@ -182,7 +182,8 @@ export const Editor = (props: EditorProps) => {
             !empty &&
             !isEmptyTextBlock &&
             !e.isActive('image') &&
-            !e.isActive('blockquote')
+            !e.isActive('blockquote') &&
+            !e.isActive('article')
           )
         }
       }),

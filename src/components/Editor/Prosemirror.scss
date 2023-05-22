@@ -79,13 +79,14 @@ mark.highlight {
 [data-float='left'] {
   max-width: 30%;
   float: left;
-  margin: 1rem 1rem 0;
+  margin: 1rem 1rem 0 0;
 }
 [data-float='right'] {
   max-width: 30%;
   float: right;
-  margin: 1rem 0 1rem;
+  margin: 1rem 0 1rem 1rem;
 }
+
 [data-float='half-left'] {
   max-width: 50%;
   min-width: 30%;
@@ -146,6 +147,13 @@ mark.highlight {
   font-size: 1.4rem;
   transition: background 0.3s ease-in-out;
 
+  &[data-float] img {
+    float: none;
+    max-width: unset;
+    width: 100% !important;
+    margin: 0;
+  }
+
   *:last-child {
     margin-bottom: 0;
   }
@@ -162,5 +170,10 @@ mark.highlight {
   }
   &[data-bg='green'] {
     background: #bfe9cb;
+    box-shadow: 0 0 0 1px #000;
+  }
+  &[data-bg='white'] {
+    background: #fff;
+    box-shadow: 0 0 0 1px #000;
   }
 }

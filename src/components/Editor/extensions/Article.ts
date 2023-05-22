@@ -1,5 +1,4 @@
 import { Node, mergeAttributes } from '@tiptap/core'
-import { Command } from '@tiptap/core'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -18,9 +17,7 @@ export default Node.create({
       'data-type': 'incut'
     }
   },
-
   group: 'block',
-
   content: 'block+',
 
   parseHTML() {
@@ -37,20 +34,8 @@ export default Node.create({
 
   addAttributes() {
     return {
-      bgColor: {
-        default: null,
-        renderHTML: (attributes) => {
-          if (!attributes.bgColor) {
-            return {}
-          }
-
-          return {
-            'data-bgColor': attributes.bgColor
-          }
-        },
-        parseHTML: (element) => ({
-          bgColor: element.dataset.bgcolor
-        })
+      'data-float': {
+        default: null
       }
     }
   },
@@ -63,18 +48,9 @@ export default Node.create({
           return commands.toggleWrap('article')
         },
       setArticleFloat:
-        (float: null | 'left' | 'right') =>
-        ({ tr, state: { selection, doc }, dispatch }) => {
-          if (dispatch) {
-            const node = doc.nodeAt(selection.from)
-            if (node?.type.name === 'article') {
-              const newAttrs = { ...node.attrs, float }
-              const transaction = tr.setNodeMarkup(selection.from, undefined, newAttrs)
-              dispatch(transaction)
-              return true
-            }
-          }
-          return false
+        (value) =>
+        ({ commands }) => {
+          return commands.updateAttributes(this.name, { 'data-float': value })
         }
     }
   }

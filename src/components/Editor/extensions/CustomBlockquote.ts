@@ -29,7 +29,8 @@ export const CustomBlockquote = Blockquote.extend({
       }
     }
   },
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   addCommands() {
     return {
       toggleBlockquote:

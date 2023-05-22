@@ -11,7 +11,6 @@ type Props = {
 }
 
 export const FigureBubbleMenu = (props: Props) => {
-  console.log('!!! props.ref:', props.ref)
   return (
     <div ref={props.ref} class={styles.FigureBubbleMenu}>
       <button
@@ -20,8 +19,10 @@ export const FigureBubbleMenu = (props: Props) => {
         onClick={() => {
           if (props.focusedRef === 'image') {
             props.editor.chain().focus().setImageFloat('left').run()
-          } else {
+          } else if (props.focusedRef === 'blockquote') {
             props.editor.chain().focus().setBlockQuoteFloat('left').run()
+          } else {
+            props.editor.chain().focus().setArticleFloat('left')
           }
         }}
       >

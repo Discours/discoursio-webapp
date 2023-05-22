@@ -43,6 +43,11 @@
     }
   }
 
+  &.light {
+    font-weight: inherit;
+    padding: 0;
+  }
+
   &.outline,
   &.bordered {
     border: 3px solid #f2f2f2;

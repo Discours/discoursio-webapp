@@ -1,6 +1,5 @@
 h1 {
   @include font-size(4rem);
-
   line-height: 1.1;
   margin-top: 0.5em;
 }
@@ -334,12 +333,7 @@ img {
 }
 
 .commentsViewSwitcher {
-  margin-top: 0;
-}
-
-.commentsViewSwitcherButton {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  margin-top: 0 !important;
 }
 
 .help {

@@ -83,23 +83,27 @@ export const TopicView = (props: TopicProps) => {
           <div class={clsx(styles.groupControls, 'row group__controls')}>
             <div class="col-md-16">
               <ul class="view-switcher">
-                <li classList={{ selected: searchParams().by === 'recent' || !searchParams().by }}>
+                <li
+                  classList={{
+                    'view-switcher__item--selected': searchParams().by === 'recent' || !searchParams().by
+                  }}
+                >
                   <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
                     {t('Recent')}
                   </button>
                 </li>
                 {/*TODO: server sort*/}
-                {/*<li classList={{ selected: getSearchParams().by === 'rating' }}>*/}
+                {/*<li classList={{ 'view-switcher__item--selected': getSearchParams().by === 'rating' }}>*/}
                 {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
                 {/*    {t('Popular')}*/}
                 {/*  </button>*/}
                 {/*</li>*/}
-                {/*<li classList={{ selected: getSearchParams().by === 'viewed' }}>*/}
+                {/*<li classList={{ 'view-switcher__item--selected': getSearchParams().by === 'viewed' }}>*/}
                 {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
                 {/*    {t('Views')}*/}
                 {/*  </button>*/}
                 {/*</li>*/}
-                {/*<li classList={{ selected: getSearchParams().by === 'commented' }}>*/}
+                {/*<li classList={{ 'view-switcher__item--selected': getSearchParams().by === 'commented' }}>*/}
                 {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
                 {/*    {t('Discussing')}*/}
                 {/*  </button>*/}

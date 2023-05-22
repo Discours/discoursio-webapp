@@ -100,14 +100,14 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
         <h1>{t('Topics')}</h1>
         <p>{t('Subscribe what you like to tune your personal feed')}</p>
 
-        <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
-          <li classList={{ selected: searchParams().by === 'shouts' }}>
+        <ul class="view-switcher">
+          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'shouts' }}>
             <a href="/topics?by=shouts">{t('By shouts')}</a>
           </li>
-          <li classList={{ selected: searchParams().by === 'authors' }}>
+          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'authors' }}>
             <a href="/topics?by=authors">{t('By authors')}</a>
           </li>
-          <li classList={{ selected: searchParams().by === 'title' }}>
+          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'title' }}>
             <a href="/topics?by=title">{t('By title')}</a>
           </li>
           <Show when={searchParams().by !== 'title'}>

@@ -111,13 +111,10 @@ export const Header = (props: Props) => {
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
-            <ul
-              class={clsx(styles.mainNavigation, 'col text-xl inline-flex')}
-              classList={{ fixed: fixed() }}
-            >
+            <ul class={clsx('view-switcher', styles.mainNavigation)} classList={{ fixed: fixed() }}>
               <For each={resources}>
                 {(r) => (
-                  <li classList={{ [styles.selected]: r.route === page().route }}>
+                  <li classList={{ 'view-switcher__item--selected': r.route === page().route }}>
                     <a href={getPagePath(router, r.route)}>{r.name}</a>
                   </li>
                 )}

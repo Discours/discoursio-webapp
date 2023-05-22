@@ -80,16 +80,16 @@ export const LayoutShoutsPage = (props: PageProps) => {
       <div class={clsx(styles.groupControls, 'row group__controls')}>
         <div class="col-md-16">
           <ul class="view-switcher">
-            <li classList={{ selected: getLayout() === 'audio' }}>
+            <li classList={{ 'view-switcher__item--selected': getLayout() === 'audio' }}>
               <a href="/expo/audio">{t('Audio')}</a>
             </li>
-            <li classList={{ selected: getLayout() === 'video' }}>
+            <li classList={{ 'view-switcher__item--selected': getLayout() === 'video' }}>
               <a href="/expo/video">{t('Video')}</a>
             </li>
-            <li classList={{ selected: getLayout() === 'image' }}>
+            <li classList={{ 'view-switcher__item--selected': getLayout() === 'image' }}>
               <a href="/expo/image">{t('Artworks')}</a>
             </li>
-            <li classList={{ selected: getLayout() === 'literature' }}>
+            <li classList={{ 'view-switcher__item--selected': getLayout() === 'literature' }}>
               <a href="/expo/literature">{t('Literature')}</a>
             </li>
           </ul>

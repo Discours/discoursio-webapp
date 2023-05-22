@@ -158,13 +158,13 @@
 }
 
 .mainNavigation {
-  display: inline-flex;
-  font-weight: 500;
-  list-style: none;
-  margin: 0;
+  margin: 0 !important;
   opacity: 1;
-  padding: 0;
   transition: opacity 0.3s;
+
+  li {
+    margin-bottom: 0 !important;
+  }
 
   @include media-breakpoint-down(md) {
     background: #fff;
@@ -180,7 +180,7 @@
     z-index: 1;
 
     li {
-      margin-bottom: 2.4rem;
+      margin-bottom: 2.4rem !important;
     }
   }
 
@@ -194,22 +194,6 @@
     @include media-breakpoint-down(lg) {
       display: block !important;
     }
-  }
-
-  li {
-    margin-right: 2.4rem;
-  }
-
-  a,
-  a:link {
-    border: none;
-  }
-
-  .selected a {
-    border-bottom: 2px solid;
-    color: #000;
-    cursor: default;
-    pointer-events: none;
   }
 }
 

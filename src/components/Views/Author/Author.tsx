@@ -140,27 +140,27 @@ export const AuthorView = (props: AuthorProps) => {
         <div class="row group__controls">
           <div class="col-md-16">
             <ul class="view-switcher">
-              <li classList={{ selected: searchParams().by === 'rating' }}>
+              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'rating' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
                   {t('Publications')}
                 </button>
               </li>
-              <li classList={{ selected: searchParams().by === 'followers' }}>
+              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'followers' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'followers')}>
                   {t('Followers')}
                 </button>
               </li>
-              <li classList={{ selected: searchParams().by === 'subscriptions' }}>
+              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'subscriptions' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'subscriptions')}>
                   {t('Subscriptions')}
                 </button>
               </li>
-              <li classList={{ selected: searchParams().by === 'commented' }}>
+              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'commented' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
                   {t('Comments')}
                 </button>
               </li>
-              <li classList={{ selected: searchParams().by === 'about' }}>
+              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'about' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'about')}>
                   {t('About myself')}
                 </button>

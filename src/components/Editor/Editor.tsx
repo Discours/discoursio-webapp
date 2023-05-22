@@ -194,7 +194,7 @@ export const Editor = (props: EditorProps) => {
             setFloatMenuRef('image')
           } else if (view.hasFocus() && e.isActive('blockquote')) {
             setFloatMenuRef('blockquote')
-          } else if (view.hasFocus() && e.isActive('article', { dataType: 'incut' })) {
+          } else if (view.hasFocus() && e.isActive('article')) {
             setFloatMenuRef('incut')
           }
           return (

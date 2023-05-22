@@ -22,7 +22,7 @@ export const FigureBubbleMenu = (props: Props) => {
           } else if (props.focusedRef === 'blockquote') {
             props.editor.chain().focus().setBlockQuoteFloat('left').run()
           } else {
-            props.editor.chain().focus().setArticleFloat('left')
+            props.editor.chain().focus().setArticleFloat('left').run()
           }
         }}
       >
@@ -34,8 +34,10 @@ export const FigureBubbleMenu = (props: Props) => {
         onClick={() => {
           if (props.focusedRef === 'image') {
             props.editor.chain().focus().setImageFloat(null).run()
-          } else {
+          } else if (props.focusedRef === 'blockquote') {
             props.editor.chain().focus().setBlockQuoteFloat(null).run()
+          } else {
+            props.editor.chain().focus().setArticleFloat(null).run()
           }
         }}
       >
@@ -47,8 +49,10 @@ export const FigureBubbleMenu = (props: Props) => {
         onClick={() => {
           if (props.focusedRef === 'image') {
             props.editor.chain().focus().setImageFloat('right').run()
-          } else {
+          } else if (props.focusedRef === 'blockquote') {
             props.editor.chain().focus().setBlockQuoteFloat('right').run()
+          } else {
+            props.editor.chain().focus().setArticleFloat('right').run()
           }
         }}
       >

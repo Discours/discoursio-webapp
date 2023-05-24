@@ -1,5 +1,6 @@
 .mainHeader {
   background: #fff;
+  font-size: 1.4rem;
   margin-bottom: 2.2rem;
   position: absolute;
   width: 100%;
@@ -10,17 +11,6 @@
 
     @include media-breakpoint-down(lg) {
       padding: 0 divide($container-padding-x, 2);
-    }
-  }
-
-  .icon {
-    height: 1em;
-    width: 1em;
-  }
-
-  a:hover {
-    .icon {
-      filter: invert(1);
     }
   }
 }
@@ -77,20 +67,11 @@
   height: 56px;
   padding: 0;
   position: relative;
-  transition: height 0.2s;
   text-align: center;
   z-index: 9;
 
   @include media-breakpoint-up(sm) {
     padding: 0 6rem 0 0;
-  }
-
-  @include media-breakpoint-up(md) {
-    height: 70px;
-  }
-
-  @include media-breakpoint-up(lg) {
-    height: 80px;
   }
 
   img {
@@ -100,14 +81,6 @@
     transition: height 0.2s;
     vertical-align: middle;
     width: 100px;
-
-    @include media-breakpoint-up(md) {
-      height: 32px;
-    }
-
-    @include media-breakpoint-up(lg) {
-      width: 175px;
-    }
   }
 
   a,
@@ -158,8 +131,10 @@
 }
 
 .mainNavigation {
+  font-size: 1.4rem !important;
   margin: 0 !important;
   opacity: 1;
+  text-transform: capitalize;
   transition: opacity 0.3s;
 
   li {
@@ -331,16 +306,12 @@
   transform: translateY(-50%);
   width: 100%;
 
-  @include media-breakpoint-up(sm) {
-    right: 6rem;
-  }
-
   @include media-breakpoint-up(md) {
-    right: 1.5rem;
+    right: 0;
   }
 
-  @include media-breakpoint-up(lg) {
-    right: 1.5rem;
+  @include media-breakpoint-up(xl) {
+    right: 2rem;
   }
 
   .control {
@@ -378,6 +349,7 @@
 .userControl {
   align-items: center;
   display: flex;
+  justify-content: flex-end;
   opacity: 1;
   transition: opacity 0.3s;
   z-index: 1;
@@ -387,10 +359,6 @@
     opacity: 0;
     z-index: -1;
   }
-
-  @include font-size(1.7rem);
-
-  justify-content: flex-end;
 
   @include media-breakpoint-down(md) {
     padding: divide($container-padding-x, 2);
@@ -412,7 +380,7 @@
   display: flex;
   height: 2.4em;
   justify-content: center;
-  margin-left: 0.5em;
+  margin-left: 0.3rem;
   position: relative;
   transition: margin-left 0.3s;
   width: 2.4em;
@@ -472,8 +440,9 @@
 
   .icon {
     img {
-      height: 20px;
-      width: auto;
+      height: 17px;
+      max-width: none;
+      width: 20px;
     }
   }
 

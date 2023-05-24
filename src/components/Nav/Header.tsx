@@ -107,7 +107,7 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx(styles.mainNavigationWrapper, 'col-auto offset-md-1')}>
+          <div class={clsx(styles.mainNavigationWrapper, 'col offset-md-1')}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
@@ -119,17 +119,11 @@ export const Header = (props: Props) => {
                   </li>
                 )}
               </For>
-              <li class={styles.headerSearch}>
-                <a href="#">
-                  <Icon name="search" class={styles.icon} />
-                  {t('Search')}
-                </a>
-              </li>
             </ul>
           </div>
           <HeaderAuth setIsProfilePopupVisible={setIsProfilePopupVisible} />
           <Show when={props.title}>
-            <div class={styles.articleControls}>
+            <div class={clsx(styles.articleControls, 'col-auto')}>
               <SharePopup
                 title={props.title}
                 imageUrl={props.cover}

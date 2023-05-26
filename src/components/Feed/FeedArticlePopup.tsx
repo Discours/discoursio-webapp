@@ -2,18 +2,32 @@ import styles from './FeedArticlePopup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 import { useLocalize } from '../../context/localize'
+import { createEffect, createSignal } from 'solid-js'
 
 type FeedArticlePopupProps = {
   title: string
   shareUrl?: string
   imageUrl: string
   description: string
+  isVisible?: (value: boolean) => void
 } & Omit<PopupProps, 'children'>
 
 export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
   const { t } = useLocalize()
+  const [isVisible, setIsVisible] = createSignal(false)
+
+  createEffect(() => {
+    if (props.isVisible) {
+      props.isVisible(isVisible())
+    }
+  })
   return (
-    <Popup {...props} variant="tiny" popupCssClass={styles.feedArticlePopup}>
+    <Popup
+      {...props}
+      variant="tiny"
+      onVisibilityChange={(value) => setIsVisible(value)}
+      popupCssClass={styles.feedArticlePopup}
+    >
       <ul class="nodash">
         <li>
           <button

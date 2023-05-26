@@ -126,18 +126,11 @@ export const FullArticle = (props: ArticleProps) => {
   })
 
   createEffect(() => {
-    if (searchParams().commentId) {
-      const checkElementExist = setInterval(function () {
-        // eslint-disable-next-line unicorn/prefer-query-selector
-        const commentElement = document.getElementById(searchParams().commentId)
-        if (commentElement) {
-          commentElement.scrollIntoView({ behavior: 'smooth' })
-          clearInterval(checkElementExist)
-        }
-      }, 100)
-      onCleanup(() => {
-        clearInterval(checkElementExist)
-      })
+    if (searchParams().commentId && isReactionsLoaded()) {
+      const commentElement = document.querySelector(`[id='comment_${searchParams().commentId}']`)
+      if (commentElement) {
+        commentElement.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   })
 

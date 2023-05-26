@@ -148,7 +148,14 @@ export const FeedView = () => {
                 {(comment) => {
                   return (
                     <div class={styles.comment}>
-                      <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
+                      <div class={clsx('text-truncate', styles.commentBody)}>
+                        <a
+                          href={`${getPagePath(router, 'article', {
+                            slug: comment.shout.slug
+                          })}?commentId=${comment.id}`}
+                          innerHTML={comment.body}
+                        />
+                      </div>
                       <AuthorCard
                         author={comment.createdBy as Author}
                         isFeedMode={true}

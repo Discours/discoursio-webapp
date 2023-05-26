@@ -277,7 +277,7 @@
   position: absolute;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 100%;
+  width: calc(100% - 180px);
 
   @include media-breakpoint-down(md) {
     display: none;

@@ -1,7 +1,17 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
-import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Match,
+  onCleanup,
+  onMount,
+  Show,
+  Switch
+} from 'solid-js'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -99,6 +109,7 @@ export const FullArticle = (props: ArticleProps) => {
       behavior: 'smooth'
     })
   }
+
   const { searchParams, changeSearchParam } = useRouter()
 
   createEffect(() => {
@@ -111,6 +122,15 @@ export const FullArticle = (props: ArticleProps) => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
       changeSearchParam('scrollTo', null)
+    }
+  })
+
+  createEffect(() => {
+    if (searchParams().commentId && isReactionsLoaded()) {
+      const commentElement = document.querySelector(`[id='comment_${searchParams().commentId}']`)
+      if (commentElement) {
+        commentElement.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   })
 
@@ -277,15 +297,17 @@ export const FullArticle = (props: ArticleProps) => {
               </Show>
             </div>
 
-            <div class={styles.topicsList}>
-              <For each={props.article.topics}>
-                {(topic) => (
-                  <div class={styles.shoutTopic}>
-                    <a href={getPagePath(router, 'topic', { slug: topic.slug })}>{topic.title}</a>
-                  </div>
-                )}
-              </For>
-            </div>
+            <Show when={props.article.topics.length}>
+              <div class={styles.topicsList}>
+                <For each={props.article.topics}>
+                  {(topic) => (
+                    <div class={styles.shoutTopic}>
+                      <a href={getPagePath(router, 'topic', { slug: topic.slug })}>{topic.title}</a>
+                    </div>
+                  )}
+                </For>
+              </div>
+            </Show>
 
             <div class={styles.shoutAuthorsList}>
               <Show when={props.article.authors.length > 1}>

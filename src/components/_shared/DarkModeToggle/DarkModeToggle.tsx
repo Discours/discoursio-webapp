@@ -33,10 +33,11 @@ export const DarkModeToggle = (props: Props) => {
     }
   })
 
-  createEffect(() => {
+  const handleSwitchTheme = () => {
+    setEditorDarkMode(!editorDarkMode())
     localStorage.setItem('editorDarkMode', editorDarkMode() ? 'true' : 'false')
     document.documentElement.dataset.editorDarkMode = editorDarkMode() ? 'true' : 'false'
-  })
+  }
 
   return (
     <div class={clsx(styles.DarkModeToggle, props.class)}>
@@ -45,7 +46,7 @@ export const DarkModeToggle = (props: Props) => {
         id="theme-switcher"
         value="1"
         checked={editorDarkMode()}
-        onClick={() => setEditorDarkMode(!editorDarkMode())}
+        onClick={handleSwitchTheme}
       />
       <label for="theme-switcher">
         {t('Night mode')}

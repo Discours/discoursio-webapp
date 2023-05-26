@@ -11,6 +11,7 @@ import { router } from '../../../stores/router'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
 import { createSignal } from 'solid-js'
+import { DarkModeToggle } from '../../_shared/DarkModeToggle'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
 
@@ -108,22 +109,14 @@ export const Panel = (props: Props) => {
 
         <section>
           <div class={styles.typograph}>
-            <div class={styles.typographLabel}>{t('Autotypograph')}</div>
+            <div>{t('Autotypograph')}</div>
             <div class={clsx(styles.typographStatus, styles.typographStatusSuccess)}>{t('Fixed')}</div>
           </div>
           <p>{t('Text checking')}</p>
         </section>
 
         <section>
-          <div class={styles.themeSwitcher}>
-            <input type="checkbox" id="theme-switcher" value="1" />
-            <label for="theme-switcher">
-              {t('Night mode')}
-              <div class={styles.switcher}>
-                <Icon name="night-theme" class={styles.icon} />
-              </div>
-            </label>
-          </div>
+          <DarkModeToggle />
         </section>
 
         <section>

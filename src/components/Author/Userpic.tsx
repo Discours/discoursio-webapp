@@ -34,7 +34,7 @@ export default (props: UserpicProps) => {
               <img
                 src={props.user.userpic || '/icons/user-default.svg'}
                 alt={props.user.name || ''}
-                classList={{ anonymous: !props.user.userpic }}
+                classList={{ [styles.anonymous]: !props.user.userpic }}
               />
             }
           >
@@ -50,7 +50,7 @@ export default (props: UserpicProps) => {
             <img
               src={props.user.userpic || '/icons/user-default.svg'}
               alt={props.user.name || ''}
-              classList={{ anonymous: !props.user.userpic }}
+              classList={{ [styles.anonymous]: !props.user.userpic }}
               loading="lazy"
             />
           }

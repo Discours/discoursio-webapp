@@ -12,7 +12,7 @@ export const FeedSettingsView = (_props) => {
       <h1>{t('Feed settings')}</h1>
 
       <ul class="view-switcher">
-        <li class="selected">
+        <li class="view-switcher__item--selected">
           <a href="?by=topics">{t('topics')}</a>
         </li>
         {/*<li>

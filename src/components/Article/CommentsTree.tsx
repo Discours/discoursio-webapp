@@ -115,35 +115,32 @@ export const CommentsTree = (props: Props) => {
         <Show when={comments().length > 0}>
           <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
             <Show when={newReactions().length > 0}>
-              <li classList={{ selected: commentsOrder() === 'newOnly' }}>
+              <li classList={{ 'view-switcher__item--selected': commentsOrder() === 'newOnly' }}>
                 <Button
-                  variant="inline"
+                  variant="light"
                   value={t('New only')}
                   onClick={() => {
                     setCommentsOrder('newOnly')
                   }}
-                  class={styles.commentsViewSwitcherButton}
                 />
               </li>
             </Show>
-            <li classList={{ selected: commentsOrder() === 'createdAt' }}>
+            <li classList={{ 'view-switcher__item--selected': commentsOrder() === 'createdAt' }}>
               <Button
-                variant="inline"
+                variant="light"
                 value={t('By time')}
                 onClick={() => {
                   setCommentsOrder('createdAt')
                 }}
-                class={styles.commentsViewSwitcherButton}
               />
             </li>
-            <li classList={{ selected: commentsOrder() === 'rating' }}>
+            <li classList={{ 'view-switcher__item--selected': commentsOrder() === 'rating' }}>
               <Button
-                variant="inline"
+                variant="light"
                 value={t('By rating')}
                 onClick={() => {
                   setCommentsOrder('rating')
                 }}
-                class={styles.commentsViewSwitcherButton}
               />
             </li>
           </ul>

@@ -118,11 +118,21 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
               </div>
             </Show>
 
+            <div class={styles.userControlItem}>
+              <a href="#">
+                <Icon name="search" class={styles.icon} />
+              </a>
+            </div>
+
             <Show when={showNotifications()}>
               <div class={styles.userControlItem}>
                 <a href="#" onClick={handleBellIconClick}>
                   <div>
-                    <Icon name="bell-white" counter={isAuthenticated() ? warnings().length : 1} />
+                    <Icon
+                      name="bell-white"
+                      counter={isAuthenticated() ? warnings().length : 1}
+                      class={styles.icon}
+                    />
                   </div>
                 </a>
               </div>
@@ -180,7 +190,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                 <a href="/inbox">
                   {/*FIXME: replace with route*/}
                   <div classList={{ entered: page().path === '/inbox' }}>
-                    <Icon name="inbox-white" counter={session()?.news?.unread || 0} />
+                    <Icon name="inbox-white" counter={session()?.news?.unread || 0} class={styles.icon} />
                   </div>
                 </a>
               </div>

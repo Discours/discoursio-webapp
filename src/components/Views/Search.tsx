@@ -69,14 +69,14 @@ export const SearchView = (props: Props) => {
       <ul class="view-switcher">
         <li
           classList={{
-            selected: searchParams().by === 'relevance'
+            'view-switcher__item--selected': searchParams().by === 'relevance'
           }}
         >
           <a href="?by=relevance">{t('By relevance')}</a>
         </li>
         <li
           classList={{
-            selected: searchParams().by === 'rating'
+            'view-switcher__item--selected': searchParams().by === 'rating'
           }}
         >
           <a href="?by=rating">{t('Top rated')}</a>

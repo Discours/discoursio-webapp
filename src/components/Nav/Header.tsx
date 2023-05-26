@@ -107,32 +107,23 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx(styles.mainNavigationWrapper, 'col-auto offset-md-1')}>
+          <div class={clsx(styles.mainNavigationWrapper, 'col offset-md-1')}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
-            <ul
-              class={clsx(styles.mainNavigation, 'col text-xl inline-flex')}
-              classList={{ fixed: fixed() }}
-            >
+            <ul class={clsx('view-switcher', styles.mainNavigation)} classList={{ fixed: fixed() }}>
               <For each={resources}>
                 {(r) => (
-                  <li classList={{ [styles.selected]: r.route === page().route }}>
+                  <li classList={{ 'view-switcher__item--selected': r.route === page().route }}>
                     <a href={getPagePath(router, r.route)}>{r.name}</a>
                   </li>
                 )}
               </For>
-              <li class={styles.headerSearch}>
-                <a href="#">
-                  <Icon name="search" class={styles.icon} />
-                  {t('Search')}
-                </a>
-              </li>
             </ul>
           </div>
           <HeaderAuth setIsProfilePopupVisible={setIsProfilePopupVisible} />
           <Show when={props.title}>
-            <div class={styles.articleControls}>
+            <div class={clsx(styles.articleControls, 'col-auto')}>
               <SharePopup
                 title={props.title}
                 imageUrl={props.cover}

@@ -100,13 +100,17 @@ export const Panel = (props: Props) => {
             </a>
           </p>
           <p>
-            <a class={styles.link}>{t('Corrections history')}</a>
+            <span class={styles.link}>{t('Corrections history')}</span>
           </p>
         </section>
 
         <section>
           <div class={styles.typograph}>
-            <div onClick={handleFixTypographyClick}>{t('Autotypograph')}</div>
+            <div>
+              <span class={styles.link} onClick={handleFixTypographyClick}>
+                {t('Autotypograph')}
+              </span>
+            </div>
             <Show when={isTypographyFixed()}>
               <div class={clsx(styles.typographStatus, styles.typographStatusSuccess)}>{t('Fixed')}</div>
             </Show>

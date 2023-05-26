@@ -10,7 +10,7 @@ import { getPagePath } from '@nanostores/router'
 import { router } from '../../../stores/router'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
-import { createSignal } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 import { DarkModeToggle } from '../../_shared/DarkModeToggle'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
@@ -33,6 +33,7 @@ export const Panel = (props: Props) => {
   }
 
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
+  const [isTypographyFixed, setIsTypographyFixed] = createSignal(false)
 
   useOutsideClickHandler({
     containerRef,
@@ -57,6 +58,7 @@ export const Panel = (props: Props) => {
   const handleFixTypographyClick = () => {
     const html = useEditorHTML(() => editorRef.current())
     editorRef.current().commands.setContent(typograf.execute(html()))
+    setIsTypographyFixed(true)
   }
 
   return (
@@ -98,19 +100,16 @@ export const Panel = (props: Props) => {
             </a>
           </p>
           <p>
-            <span class={styles.link} onClick={handleFixTypographyClick}>
-              {t('Fix typography')}
-            </span>
-          </p>
-          <p>
             <a class={styles.link}>{t('Corrections history')}</a>
           </p>
         </section>
 
         <section>
           <div class={styles.typograph}>
-            <div>{t('Autotypograph')}</div>
-            <div class={clsx(styles.typographStatus, styles.typographStatusSuccess)}>{t('Fixed')}</div>
+            <div onClick={handleFixTypographyClick}>{t('Autotypograph')}</div>
+            <Show when={isTypographyFixed()}>
+              <div class={clsx(styles.typographStatus, styles.typographStatusSuccess)}>{t('Fixed')}</div>
+            </Show>
           </div>
           <p>{t('Text checking')}</p>
         </section>

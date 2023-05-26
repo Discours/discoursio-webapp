@@ -103,6 +103,7 @@ export const Comment = (props: Props) => {
 
   return (
     <li
+      id={`${comment().id}`}
       class={clsx(styles.comment, props.class, {
         [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen
       })}
@@ -144,7 +145,11 @@ export const Comment = (props: Props) => {
               <Show when={props.showArticleLink}>
                 <div class={styles.articleLink}>
                   <Icon name="arrow-right" class={styles.articleLinkIcon} />
-                  <a href={getPagePath(router, 'article', { slug: comment().shout.slug })}>
+                  <a
+                    href={`${getPagePath(router, 'article', { slug: comment().shout.slug })}?commentId=${
+                      comment().id
+                    }`}
+                  >
                     {comment().shout.title}
                   </a>
                 </div>

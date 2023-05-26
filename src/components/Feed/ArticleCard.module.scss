@@ -569,8 +569,7 @@
   }
 
   .shoutCardSubtitle {
-    @include font-size(2.4rem);
-
+    @include font-size(2.6rem);
     color: #696969;
   }
 }
@@ -689,16 +688,5 @@
   &,
   .shoutCardCoverContainer {
     flex: 1;
-  }
-
-  @include media-breakpoint-up(md) {
-    .shoutCardCover {
-      height: 100%;
-      padding: 0;
-    }
-  }
-
-  .shoutCardContent {
-    padding-top: 1.6rem;
   }
 }

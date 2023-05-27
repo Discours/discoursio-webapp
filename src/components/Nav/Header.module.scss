@@ -1,5 +1,6 @@
 .mainHeader {
-  background: #fff;
+  background: var(--background-color);
+  color: var(--default-color);
   font-size: 1.4rem;
   margin-bottom: 2.2rem;
   position: absolute;
@@ -42,7 +43,8 @@
 
 .headerInner {
   align-items: center;
-  background: #fff;
+  background: var(--background-color);
+  color: var(--default-color);
   flex-wrap: nowrap !important;
   justify-content: flex-start;
   margin: 0;
@@ -63,6 +65,7 @@
 
 .mainLogo {
   align-items: center;
+  color: var(--default-color);
   display: inline-flex;
   height: 56px;
   padding: 0;
@@ -81,20 +84,20 @@
     transition: height 0.2s;
     vertical-align: middle;
     width: 100px;
+
+    [data-editor-dark-mode='true'] & {
+      filter: invert(1);
+    }
   }
 
   a,
   a:link,
   a:visited {
     border-bottom: none;
-    color: #000;
+    color: var(--link-color);
 
     &:hover {
       background: none;
-
-      img {
-        filter: none;
-      }
     }
   }
 }
@@ -207,7 +210,7 @@
   > div,
   &::after,
   &::before {
-    background: #000;
+    background: var(--link-color);
     content: '';
     display: block;
     height: 2px;
@@ -412,21 +415,21 @@
       background: none;
 
       &::before {
-        background-color: #000;
+        background-color: var(--default-color);
       }
 
       img {
-        filter: invert(1);
+        filter: var(--icon-filter-hover);
       }
     }
 
     img {
-      filter: invert(0);
+      filter: var(--icon-filter);
       transition: filter 0.3s;
     }
 
     &::before {
-      background-color: #fff;
+      background-color: var(--background-color);
       border-radius: 100%;
       content: '';
       height: 100%;
@@ -483,6 +486,7 @@
     }
 
     .textLabel {
+      color: var(--link-color);
       padding: 0 1.2rem;
       display: inline;
       position: relative;
@@ -495,9 +499,17 @@
     border-radius: 1.2em !important;
   }
 
+  button:hover,
   a:hover {
+    background-color: var(--link-hover-background);
+    color: var(--link-hover-color);
+
     .icon {
       filter: invert(0);
+    }
+
+    .textLabel {
+      color: var(--link-hover-color);
     }
   }
 }

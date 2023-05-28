@@ -145,13 +145,13 @@
   }
 
   @include media-breakpoint-down(md) {
-    background: #fff;
+    background: var(--background-color);
     bottom: 0;
     display: none;
     font-size: 2.6rem;
     font-weight: bold;
     left: 0;
-    padding: $container-padding-x;
+    padding: $container-padding-x !important;
     position: fixed;
     top: 74px;
     width: 100%;
@@ -163,14 +163,17 @@
   }
 
   @include media-breakpoint-down(sm) {
-    padding: divide($container-padding-x, 2);
+    padding: divide($container-padding-x, 2) !important;
   }
 
-  .fixed & {
-    display: inline-flex;
+  @include media-breakpoint-down(md) {
+    :global(.fixed) & {
+      font-size: 2.2rem !important;
 
-    @include media-breakpoint-down(lg) {
-      display: block !important;
+      &,
+      li {
+        display: block !important;
+      }
     }
   }
 }
@@ -199,7 +202,6 @@
 }
 
 .burger {
-  background: #fff;
   cursor: pointer;
   height: 1.8rem;
   display: inline-block;
@@ -462,7 +464,7 @@
 }
 
 .userControlItemVerbose {
-  margin-left: 0.5em;
+  margin-left: 1.2em !important;
 
   &:global(.loginbtn) {
     .icon {
@@ -478,6 +480,7 @@
   }
 
   @include media-breakpoint-up(lg) {
+    margin-left: 0.5em !important;
     margin-right: 0;
     width: auto;
 
@@ -487,7 +490,7 @@
 
     .textLabel {
       color: var(--link-color);
-      padding: 0 1.2rem;
+      padding: 0;
       display: inline;
       position: relative;
       z-index: 1;

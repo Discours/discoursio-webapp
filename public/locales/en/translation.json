@@ -283,5 +283,17 @@
   "topics": "topics",
   "user already exist": "user already exists",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "back to menu": "back to menu",
+  "bold": "bold",
+  "italic": "italic",
+  "add link": "add link",
+  "header 1": "header 1",
+  "header 2": "header 2",
+  "header 3": "header 3",
+  "marker list": "marker list",
+  "number list": "number list",
+  "delimiter": "delimiter",
+  "cancel_low_caps": "cancel",
+  "repeat": "repeat"
 }

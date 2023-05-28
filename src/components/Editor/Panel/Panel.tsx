@@ -156,27 +156,27 @@ export const Panel = (props: Props) => {
       <div class={clsx(styles.actionsHolder, styles.scrolled, { hidden: !isShortcutsVisible() })}>
         <p>
           <button class={styles.backToMenuControl} onClick={() => setIsShortcutsVisible(false)}>
-            назад в меню
+            {t('back to menu"')}
           </button>
         </p>
 
         <section class={styles.shortcutList}>
           <p>
-            жирный
+            {t('bold')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>B</span>
             </span>
           </p>
           <p>
-            курсив
+            {t('italic')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>I</span>
             </span>
           </p>
           <p>
-            добавить ссылку
+            {t('add link')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>K</span>
@@ -186,7 +186,7 @@ export const Panel = (props: Props) => {
 
         <section class={styles.shortcutList}>
           <p>
-            заголовок 1
+            {t('header 1')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Alt</span>
@@ -194,7 +194,7 @@ export const Panel = (props: Props) => {
             </span>
           </p>
           <p>
-            заголовок 2
+            {t('header 2')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Alt</span>
@@ -202,7 +202,7 @@ export const Panel = (props: Props) => {
             </span>
           </p>
           <p>
-            заголовок 3
+            {t('header 3')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Alt</span>
@@ -213,21 +213,21 @@ export const Panel = (props: Props) => {
 
         <section class={styles.shortcutList}>
           <p>
-            маркир. список
+            {t('marker list')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>*</span>
               <span class={styles.shortcutButton}>Space</span>
             </span>
           </p>
           <p>
-            нумер. список
+            {t('number list')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>1</span>
               <span class={styles.shortcutButton}>Space</span>
             </span>
           </p>
           <p>
-            разделитель
+            {t('delimiter')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>***</span>
               <span class={styles.shortcutButton}>Enter</span>
@@ -237,14 +237,14 @@ export const Panel = (props: Props) => {
 
         <section class={styles.shortcutList}>
           <p>
-            отменить
+            {t('cancel_low_caps')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Z</span>
             </span>
           </p>
           <p>
-            повторить
+            {t('repeat')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Shift</span>

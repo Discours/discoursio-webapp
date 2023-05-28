@@ -2,7 +2,7 @@ import { clsx } from 'clsx'
 import styles from './DarkModeToggle.module.scss'
 import { Icon } from '../Icon'
 import { useLocalize } from '../../../context/localize'
-import { createEffect, createSignal, onMount } from 'solid-js'
+import { createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { createPrefersDark } from '@solid-primitives/media'
 
 type Props = {
@@ -31,6 +31,11 @@ export const DarkModeToggle = (props: Props) => {
       localStorage.setItem('editorDarkMode', prefersDark() ? 'true' : 'false')
       document.documentElement.dataset.editorDarkMode = prefersDark() ? 'true' : 'false'
     }
+
+    onCleanup(() => {
+      setEditorDarkMode(false)
+      delete document.documentElement.dataset.editorDarkMode
+    })
   })
 
   const handleSwitchTheme = () => {

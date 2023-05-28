@@ -44,7 +44,7 @@ export const GrowingTextarea = (props: Props) => {
           onBlur={() => setIsFocused(false)}
         />
       </div>
-      <Show when={props.maxLength && value()}>
+      <Show when={props.maxLength && value() && isFocused()}>
         <div
           class={clsx(styles.maxLength, {
             [styles.visible]: isFocused(),

@@ -1,6 +1,6 @@
 import { createSignal, Show, For } from 'solid-js'
 import type { Editor } from '@tiptap/core'
-import styles from './FigureBubbleMenu.module.scss'
+import styles from './BubbleMenu.module.scss'
 import { clsx } from 'clsx'
 import { Icon } from '../../_shared/Icon'
 import { useLocalize } from '../../../context/localize'
@@ -16,7 +16,7 @@ export const IncutBubbleMenu = (props: Props) => {
   const { t } = useLocalize()
   const [substratBubbleOpen, setSubstratBubbleOpen] = createSignal(false)
   return (
-    <div ref={props.ref} class={styles.FigureBubbleMenu}>
+    <div ref={props.ref} class={styles.BubbleMenu}>
       <button
         type="button"
         class={clsx(styles.bubbleMenuButton)}

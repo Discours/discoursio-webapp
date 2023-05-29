@@ -5,10 +5,10 @@ import { ArticleCard } from './ArticleCard'
 export default (props: { articles: Shout[] }) => (
   <div class="floor floor--7">
     <div class="wide-container">
-      <div class="row">
+      <div class="short-cards">
         <For each={props.articles}>
           {(a) => (
-            <div class="col-md-12 col-lg-6">
+            <div class="short-card">
               <ArticleCard
                 article={a}
                 settings={{

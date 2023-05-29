@@ -325,7 +325,9 @@
 }
 
 .shoutCardWithCover {
-  padding: 56.2% 2.4rem 0;
+  aspect-ratio: 16/9;
+  padding: 0 2.4rem 0;
+  width: 100%;
 
   @include media-breakpoint-down(sm) {
     padding-top: 100%;
@@ -392,6 +394,11 @@
 
   .shoutCardTitle {
     @include font-size(3.2rem);
+  }
+
+  .shoutTopic a:hover {
+    background: #fff !important;
+    color: #000 !important;
   }
 }
 
@@ -505,12 +512,20 @@
 .shoutCardVertical {
   aspect-ratio: auto;
   height: 100%;
+  min-height: 250px;
   margin: 0;
-  padding: 0 0 20%;
+  padding: 0;
 
-  @include media-breakpoint-up(xl) {
-    aspect-ratio: 1 / 1.6;
-    padding: 0;
+  @include media-breakpoint-up(sm) {
+    aspect-ratio: 2/1;
+  }
+
+  @include media-breakpoint-up(md) {
+    aspect-ratio: 1/1;
+  }
+
+  @include media-breakpoint-up(lg) {
+    aspect-ratio: 1/1.6;
   }
 
   .shoutCardTitle,

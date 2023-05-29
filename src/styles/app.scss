@@ -708,6 +708,28 @@ figure {
   }
 }
 
+.short-cards {
+  margin: 0 -5px;
+
+  @include media-breakpoint-up(md) {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.short-card {
+  margin-bottom: 10px;
+  padding: 0 5px;
+
+  @include media-breakpoint-up(md) {
+    flex: 1 0 50%;
+  }
+
+  @include media-breakpoint-up(lg) {
+    flex: 1 0 25%;
+  }
+}
+
 .row {
   @include media-breakpoint-down(sm) {
     margin-left: divide(-$container-padding-x, 2);

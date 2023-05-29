@@ -129,6 +129,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             }
             slug={mainTopic.slug}
             isFloorImportant={props.settings?.isFloorImportant}
+            class={styles.shoutTopic}
           />
         </Show>
 

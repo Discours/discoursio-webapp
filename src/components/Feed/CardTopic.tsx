@@ -7,12 +7,13 @@ type CardTopicProps = {
   title: string
   slug: string
   isFloorImportant?: boolean
+  class?: string
 }
 
 export const CardTopic = (props: CardTopicProps) => {
   return (
     <div
-      class={clsx(styles.shoutTopic, {
+      class={clsx(styles.shoutTopic, props.class, {
         [styles.shoutTopicFloorImportant]: props.isFloorImportant
       })}
     >

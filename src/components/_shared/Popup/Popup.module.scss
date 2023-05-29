@@ -7,8 +7,8 @@
 }
 
 .popup {
-  background: #fff;
-  color: #000;
+  background: var(--background-color);
+  color: var(--default-color);
   cursor: default;
   min-width: 144px;
   opacity: 1;

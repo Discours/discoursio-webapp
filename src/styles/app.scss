@@ -10,12 +10,32 @@
 :root {
   --background-color: #fff;
   --default-color: #121416;
-  --link-color: #543fd7;
+  --link-color: #000;
+  --link-hover-color: #fff;
+  --link-hover-background: #000;
   --secondary-color: #85878a;
   --danger-color: #fc6847;
   --lightgray-color: rgb(84 16 17 / 6%);
   --font: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu, cantarell, 'Open Sans',
     'Helvetica Neue', sans-serif;
+  --selection-background: #000;
+  --selection-color: #fff;
+  --icon-filter: invert(0);
+  --icon-filter-hover: invert(1);
+  --editor-bubble-menu-background: #fff;
+}
+
+[data-editor-dark-mode='true'] {
+  --background-color: #121416;
+  --default-color: #fff;
+  --link-color: #fff;
+  --link-hover-color: #000;
+  --link-hover-background: #fff;
+  --selection-background: #eee;
+  --selection-color: #000;
+  --icon-filter: invert(1);
+  --icon-filter-hover: invert(0);
+  --editor-bubble-menu-background: #444;
 }
 
 * {
@@ -23,8 +43,8 @@
 }
 
 ::selection {
-  background: #000;
-  color: #fff;
+  background: var(--selection-background);
+  color: var(--selection-color);
 }
 
 html {
@@ -37,6 +57,8 @@ html {
 }
 
 body {
+  background: var(--background-color);
+  color: var(--default-color);
   font-family: Muller, Arial, Helvetica, sans-serif;
   font-size: 2rem;
   line-height: 1.6;
@@ -161,13 +183,13 @@ a:link {
 }
 
 a {
-  color: #000;
+  color: var(--link-color);
   padding-bottom: 0.1em;
   transition: color 0.2s, background-color 0.2s;
 
   &:hover {
-    background: #000;
-    color: #fff;
+    background: var(--link-hover-background);
+    color: var(--link-hover-color);
   }
 }
 
@@ -568,13 +590,13 @@ figure {
   a,
   button {
     border-bottom: 2px solid #fff;
-    color: #000;
+    color: var(--link-color);
     cursor: pointer;
     font-weight: inherit;
 
     &:hover {
-      background: #000;
-      color: #fff;
+      background: var(--link-hover-background);
+      color: var(--link-hover-color);
     }
   }
 

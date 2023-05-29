@@ -7,7 +7,7 @@ declare module '@tiptap/core' {
        * Add an image
        */
       setImage: (options: { src: string; alt?: string; title?: string }) => ReturnType
-      setFloat: (float: null | 'left' | 'right') => ReturnType
+      setImageFloat: (float: null | 'left' | 'right') => ReturnType
     }
   }
 }
@@ -42,7 +42,7 @@ export const CustomImage = Image.extend({
             attrs: options
           })
         },
-      setFloat:
+      setImageFloat:
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-float': value })

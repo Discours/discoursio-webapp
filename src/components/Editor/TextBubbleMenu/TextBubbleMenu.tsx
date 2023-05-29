@@ -54,7 +54,6 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     if (textSizeBubbleOpen()) {
       setTextSizeBubbleOpen(false)
     }
-
     setListBubbleOpen((prev) => !prev)
   }
 
@@ -153,7 +152,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                             [styles.bubbleMenuButtonActive]: isBlockQuote()
                           })}
                           onClick={() => {
-                            props.editor.chain().focus().toggleBlockquote().run()
+                            props.editor.chain().focus().toggleBlockquote('quote').run()
                             toggleTextSizePopup()
                           }}
                         >
@@ -165,11 +164,26 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                             [styles.bubbleMenuButtonActive]: isBlockQuote()
                           })}
                           onClick={() => {
-                            props.editor.chain().focus().toggleBlockquote().run()
+                            props.editor.chain().focus().toggleBlockquote('punchline').run()
                             toggleTextSizePopup()
                           }}
                         >
                           <Icon name="editor-quote" />
+                        </button>
+                      </div>
+                      <header>{t('squib')}</header>
+                      <div class={styles.actions}>
+                        <button
+                          type="button"
+                          class={clsx(styles.bubbleMenuButton, {
+                            [styles.bubbleMenuButtonActive]: isBlockQuote()
+                          })}
+                          onClick={() => {
+                            props.editor.chain().focus().toggleArticle().run()
+                            toggleTextSizePopup()
+                          }}
+                        >
+                          <Icon name="editor-squib" />
                         </button>
                       </div>
                     </div>

@@ -1,43 +1,40 @@
 import type { Editor } from '@tiptap/core'
-import styles from './ImageBubbleMenu.module.scss'
+import styles from './FigureBubbleMenu.module.scss'
 import { clsx } from 'clsx'
 import { Icon } from '../../_shared/Icon'
+import { useLocalize } from '../../../context/localize'
 
-type BubbleMenuProps = {
+type Props = {
   editor: Editor
-  ref: (el: HTMLDivElement) => void
+  ref: (el: HTMLElement) => void
 }
 
-export const ImageBubbleMenu = (props: BubbleMenuProps) => {
+export const FigureBubbleMenu = (props: Props) => {
+  const { t } = useLocalize()
   return (
-    <div ref={props.ref} class={styles.ImageBubbleMenu}>
+    <div ref={props.ref} class={styles.FigureBubbleMenu}>
       <button
         type="button"
         class={clsx(styles.bubbleMenuButton)}
-        onClick={() => {
-          props.editor.chain().focus().setFloat('left').run()
-        }}
+        onClick={() => props.editor.chain().focus().setImageFloat('left').run()}
       >
         <Icon name="editor-image-align-left" />
       </button>
       <button
         type="button"
         class={clsx(styles.bubbleMenuButton)}
-        onClick={() => {
-          props.editor.chain().focus().setFloat(null).run()
-        }}
+        onClick={() => props.editor.chain().focus().setImageFloat(null).run()}
       >
         <Icon name="editor-image-align-center" />
       </button>
       <button
         type="button"
         class={clsx(styles.bubbleMenuButton)}
-        onClick={() => {
-          props.editor.chain().focus().setFloat('right').run()
-        }}
+        onClick={() => props.editor.chain().focus().setImageFloat('right').run()}
       >
         <Icon name="editor-image-align-right" />
       </button>
+
       <div class={styles.delimiter} />
       <button
         type="button"
@@ -46,7 +43,7 @@ export const ImageBubbleMenu = (props: BubbleMenuProps) => {
           props.editor.chain().focus().imageToFigure().run()
         }}
       >
-        <span style={{ color: 'white' }}>Добавить подпись</span>
+        <span style={{ color: 'white' }}>{t('Add signature')}</span>
       </button>
       <div class={styles.delimiter} />
       <button type="button" class={clsx(styles.bubbleMenuButton)}>

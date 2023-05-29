@@ -1,1 +1,0 @@
-export { ImageBubbleMenu } from './ImageBubbleMenu'

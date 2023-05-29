@@ -1,14 +1,6 @@
 .ProseMirror {
   outline: none;
   min-height: 300px;
-
-  blockquote {
-    @include font-size(1.6rem);
-
-    border-left: 2px solid;
-    margin: 1.5em 0;
-    padding-left: 1.6em;
-  }
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
@@ -77,4 +69,111 @@
 mark.highlight {
   box-decoration-break: clone;
   padding: 0.125em 0;
+}
+
+// custom atibutes fro TipTap Nodes
+
+[data-float] {
+  max-width: 50%;
+}
+[data-float='left'] {
+  max-width: 30%;
+  float: left;
+  margin: 1rem 1rem 0 0;
+}
+[data-float='right'] {
+  max-width: 30%;
+  float: right;
+  margin: 1rem 0 1rem 1rem;
+}
+
+[data-float='half-left'] {
+  max-width: 50%;
+  min-width: 30%;
+  float: left;
+  margin: 1rem 1rem 0;
+}
+[data-float='half-right'] {
+  max-width: 50%;
+  min-width: 30%;
+  float: right;
+  margin: 1rem 0 1rem;
+}
+
+.ProseMirror blockquote {
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  &[data-type='quote'] {
+    @include font-size(1.6rem);
+
+    border: solid #000;
+    border-width: 0 0 0 2px;
+    margin: 1.6rem 0;
+    padding: 1rem;
+
+    &[data-float='left'] {
+      padding-left: 0;
+      padding-right: 0;
+      margin-right: 1.6rem;
+      border-width: 0 2px 0 0;
+    }
+
+    &[data-float='right'] {
+      margin-left: 1.6rem;
+      border-width: 0 0 0 2px;
+    }
+  }
+
+  &[data-type='punchline'] {
+    padding: 1.6rem 0 0;
+    border: solid #000;
+    border-width: 2px 0;
+    font-size: 3.2rem;
+    font-weight: 700;
+    margin: 0;
+
+    &[data-float='left'],
+    &[data-float='right'] {
+      font-size: 2.2rem;
+    }
+  }
+}
+
+.ProseMirror article[data-type='incut'] {
+  background: #f1f2f3;
+  padding: 1.6rem;
+  font-size: 1.4rem;
+  transition: background 0.3s ease-in-out;
+
+  &[data-float] img {
+    float: none;
+    max-width: unset;
+    width: 100% !important;
+    margin: 0;
+  }
+
+  *:last-child {
+    margin-bottom: 0;
+  }
+
+  &[data-bg='black'] {
+    background: #000;
+    color: #fff;
+  }
+  &[data-bg='yellow'] {
+    background: #f6e3a1;
+  }
+  &[data-bg='pink'] {
+    background: #f1b5bc;
+  }
+  &[data-bg='green'] {
+    background: #bfe9cb;
+    box-shadow: 0 0 0 1px #000;
+  }
+  &[data-bg='white'] {
+    background: #fff;
+    box-shadow: 0 0 0 1px #000;
+  }
 }

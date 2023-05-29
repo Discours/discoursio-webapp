@@ -300,6 +300,7 @@
   "sign up": "зарегистрироваться",
   "sign up or sign in": "зарегистрироваться или войти",
   "slug is used by another user": "Имя уже занято другим пользователем",
+  "squib": "Подверстка",
   "terms of use": "правилами пользования сайтом",
   "topics": "темы",
   "user already exist": "пользователь уже существует",
@@ -316,5 +317,7 @@
   "number list": "нумер. список",
   "delimiter": "разделитель",
   "cancel_low_caps": "отменить",
-  "repeat": "повторить"
+  "repeat": "повторить",
+  "Add signature": "Добавить подпись",
+  "Substrate": "Подложка"
 }

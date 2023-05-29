@@ -1,7 +1,6 @@
 import { createEffect, createSignal } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
-import { Blockquote } from '@tiptap/extension-blockquote'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
@@ -23,26 +22,27 @@ import { Link } from '@tiptap/extension-link'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
 import { CustomImage } from './extensions/CustomImage'
+import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figure } from './extensions/Figure'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import * as Y from 'yjs'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { Collaboration } from '@tiptap/extension-collaboration'
-
 import { IndexeddbPersistence } from 'y-indexeddb'
 import { useSession } from '../../context/session'
 import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { Embed } from './extensions/Embed'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { ImageBubbleMenu } from './ImageBubbleMenu'
+import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 import { isTextSelection } from '@tiptap/core'
 import type { Doc } from 'yjs/dist/src/utils/Doc'
 import './Prosemirror.scss'
 import { TrailingNode } from './extensions/TrailingNode'
+import Article from './extensions/Article'
 
 type EditorProps = {
   shoutId: number
@@ -58,6 +58,7 @@ export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
+  const [floatMenuRef, setFloatMenuRef] = createSignal<'blockquote' | 'image' | 'incut'>()
 
   const docName = `shout-${props.shoutId}`
 
@@ -89,8 +90,18 @@ export const Editor = (props: EditorProps) => {
     current: null
   }
 
-  const imageBubbleMenuRef: {
-    current: HTMLDivElement
+  const incutBubbleMenuRef: {
+    current: HTMLElement
+  } = {
+    current: null
+  }
+  const figureBubbleMenuRef: {
+    current: HTMLElement
+  } = {
+    current: null
+  }
+  const blockquoteBubbleMenuRef: {
+    current: HTMLElement
   } = {
     current: null
   }
@@ -108,7 +119,7 @@ export const Editor = (props: EditorProps) => {
       Text,
       Paragraph,
       Dropcursor,
-      Blockquote,
+      CustomBlockquote,
       Bold,
       Italic,
       Strike,
@@ -163,16 +174,36 @@ export const Editor = (props: EditorProps) => {
         shouldShow: ({ editor: e, view, state, from, to }) => {
           const { doc, selection } = state
           const { empty } = selection
-
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
 
           setIsCommonMarkup(e.isActive('figure'))
-          return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
+          return (
+            view.hasFocus() &&
+            !empty &&
+            !isEmptyTextBlock &&
+            !e.isActive('image') &&
+            !e.isActive('blockquote') &&
+            !e.isActive('article')
+          )
+        }
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'blockquoteBubbleMenu',
+        element: blockquoteBubbleMenuRef.current,
+        shouldShow: ({ editor: e, view }) => {
+          return view.hasFocus() && e.isActive('blockquote')
+        }
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'incutBubbleMenu',
+        element: incutBubbleMenuRef.current,
+        shouldShow: ({ editor: e, view }) => {
+          return view.hasFocus() && e.isActive('article')
         }
       }),
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',
-        element: imageBubbleMenuRef.current,
+        element: figureBubbleMenuRef.current,
         shouldShow: ({ editor: e, view }) => {
           return view.hasFocus() && e.isActive('image')
         }
@@ -183,7 +214,8 @@ export const Editor = (props: EditorProps) => {
         },
         element: floatingMenuRef.current
       }),
-      TrailingNode
+      TrailingNode,
+      Article
     ]
   }))
 
@@ -213,7 +245,24 @@ export const Editor = (props: EditorProps) => {
         editor={editor()}
         ref={(el) => (textBubbleMenuRef.current = el)}
       />
-      <ImageBubbleMenu editor={editor()} ref={(el) => (imageBubbleMenuRef.current = el)} />
+      <BlockquoteBubbleMenu
+        ref={(el) => {
+          blockquoteBubbleMenuRef.current = el
+        }}
+        editor={editor()}
+      />
+      <FigureBubbleMenu
+        editor={editor()}
+        ref={(el) => {
+          figureBubbleMenuRef.current = el
+        }}
+      />
+      <IncutBubbleMenu
+        editor={editor()}
+        ref={(el) => {
+          incutBubbleMenuRef.current = el
+        }}
+      />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
     </>
   )

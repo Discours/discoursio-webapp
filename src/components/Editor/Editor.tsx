@@ -35,7 +35,7 @@ import uniqolor from 'uniqolor'
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { Embed } from './extensions/Embed'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { FigureBubbleMenu } from './FigureBubbleMenu'
+import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { useEditorContext } from '../../context/editor'
 import { isTextSelection } from '@tiptap/core'
@@ -188,19 +188,24 @@ export const Editor = (props: EditorProps) => {
         }
       }),
       BubbleMenu.configure({
-        pluginKey: 'imageBubbleMenu',
+        pluginKey: 'blockquoteBubbleMenu',
         element: blockquoteBubbleMenuRef.current,
         shouldShow: ({ editor: e, view }) => {
-          if (view.hasFocus() && e.isActive('image')) {
-            setFloatMenuRef('image')
-          } else if (view.hasFocus() && e.isActive('blockquote')) {
-            setFloatMenuRef('blockquote')
-          } else if (view.hasFocus() && e.isActive('article')) {
-            setFloatMenuRef('incut')
-          }
-          return (
-            (view.hasFocus() && e.isActive('image')) || e.isActive('blockquote') || e.isActive('article')
-          )
+          return view.hasFocus() && e.isActive('blockquote')
+        }
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'incutBubbleMenu',
+        element: incutBubbleMenuRef.current,
+        shouldShow: ({ editor: e, view }) => {
+          return view.hasFocus() && e.isActive('article')
+        }
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'imageBubbleMenu',
+        element: figureBubbleMenuRef.current,
+        shouldShow: ({ editor: e, view }) => {
+          return view.hasFocus() && e.isActive('image')
         }
       }),
       FloatingMenu.configure({
@@ -240,17 +245,22 @@ export const Editor = (props: EditorProps) => {
         editor={editor()}
         ref={(el) => (textBubbleMenuRef.current = el)}
       />
+      <BlockquoteBubbleMenu
+        ref={(el) => {
+          blockquoteBubbleMenuRef.current = el
+        }}
+        editor={editor()}
+      />
       <FigureBubbleMenu
-        focusedRef={floatMenuRef()}
         editor={editor()}
         ref={(el) => {
-          if (floatMenuRef() === 'image') {
-            figureBubbleMenuRef.current = el
-          } else if (floatMenuRef() === 'incut') {
-            incutBubbleMenuRef.current = el
-          } else {
-            blockquoteBubbleMenuRef.current = el
-          }
+          figureBubbleMenuRef.current = el
+        }}
+      />
+      <IncutBubbleMenu
+        editor={editor()}
+        ref={(el) => {
+          incutBubbleMenuRef.current = el
         }}
       />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />

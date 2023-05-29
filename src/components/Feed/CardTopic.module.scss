@@ -22,7 +22,7 @@
 }
 
 .shoutTopicFloorImportant {
-  a {
-    color: rgb(255 255 255 / 50%);
+  a:hover {
+    background: $link-color !important;
   }
 }

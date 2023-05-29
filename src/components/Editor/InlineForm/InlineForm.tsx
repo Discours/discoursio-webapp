@@ -2,6 +2,8 @@ import styles from './InlineForm.module.scss'
 import { Icon } from '../../_shared/Icon'
 import { createSignal } from 'solid-js'
 import { clsx } from 'clsx'
+import { Popover } from '../../_shared/Popover'
+import { useLocalize } from '../../../context/localize'
 
 type Props = {
   onClose: () => void
@@ -15,6 +17,7 @@ type Props = {
 }
 
 export const InlineForm = (props: Props) => {
+  const { t } = useLocalize()
   const [formValue, setFormValue] = createSignal(props.initialValue || '')
   const [formValueError, setFormValueError] = createSignal<string | undefined>()
 
@@ -61,12 +64,25 @@ export const InlineForm = (props: Props) => {
           onKeyDown={handleKeyDown}
           onInput={handleFormInput}
         />
-        <button type="button" onClick={handleSaveButtonClick} disabled={Boolean(formValueError())}>
-          <Icon name="status-done" />
-        </button>
-        <button type="button" onClick={props.onClear}>
-          {props.initialValue ? <Icon name="editor-unlink" /> : <Icon name="status-cancel" />}
-        </button>
+        <Popover content={t('Add link')}>
+          {(triggerRef: (el) => void) => (
+            <button
+              ref={triggerRef}
+              type="button"
+              onClick={handleSaveButtonClick}
+              disabled={Boolean(formValueError())}
+            >
+              <Icon name="status-done" />
+            </button>
+          )}
+        </Popover>
+        <Popover content={props.initialValue ? t('Unlink') : t('Cancel')}>
+          {(triggerRef: (el) => void) => (
+            <button ref={triggerRef} type="button" onClick={props.onClear}>
+              {props.initialValue ? <Icon name="editor-unlink" /> : <Icon name="status-cancel" />}
+            </button>
+          )}
+        </Popover>
       </div>
 
       <div class={clsx(styles.linkError, { [styles.visible]: Boolean(formValueError()) })}>

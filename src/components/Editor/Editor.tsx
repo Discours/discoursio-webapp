@@ -177,28 +177,25 @@ export const Editor = (props: EditorProps) => {
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
 
           setIsCommonMarkup(e.isActive('figure'))
-          return (
-            view.hasFocus() &&
-            !empty &&
-            !isEmptyTextBlock &&
-            !e.isActive('image') &&
-            !e.isActive('blockquote') &&
-            !e.isActive('article')
-          )
+          return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
         }
       }),
       BubbleMenu.configure({
         pluginKey: 'blockquoteBubbleMenu',
         element: blockquoteBubbleMenuRef.current,
-        shouldShow: ({ editor: e, view }) => {
-          return view.hasFocus() && e.isActive('blockquote')
+        shouldShow: ({ editor: e, state }) => {
+          const { selection } = state
+          const { empty } = selection
+          return empty && e.isActive('blockquote')
         }
       }),
       BubbleMenu.configure({
         pluginKey: 'incutBubbleMenu',
         element: incutBubbleMenuRef.current,
-        shouldShow: ({ editor: e, view }) => {
-          return view.hasFocus() && e.isActive('article')
+        shouldShow: ({ editor: e, state }) => {
+          const { selection } = state
+          const { empty } = selection
+          return empty && e.isActive('article')
         }
       }),
       BubbleMenu.configure({

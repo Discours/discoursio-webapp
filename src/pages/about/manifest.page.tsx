@@ -125,9 +125,7 @@ export const ManifestPage = () => {
                 <h3 id="donate">Поддерживать проект</h3>
               </summary>
               <p>
-                Дискурс существует на&nbsp;пожертвования читателей. Если вам нравится журнал, пожалуйста,
-              </p>
-              <p>
+                Дискурс существует на&nbsp;пожертвования читателей. Если вам нравится журнал, пожалуйста,{' '}
                 <a href="/about/help">поддержите</a> нашу работу. Ваши пожертвования пойдут на&nbsp;выпуск
                 новых материалов, оплату серверов, труда программистов, дизайнеров и&nbsp;редакторов.
               </p>
@@ -165,13 +163,13 @@ export const ManifestPage = () => {
                 Советуйте Дискурс друзьям и&nbsp;знакомым. Обсуждайте и&nbsp;распространяйте наши
                 публикации&nbsp;&mdash; все материалы открытой редакции можно читать и&nbsp;перепечатывать
                 бесплатно. Подпишитесь на&nbsp;самиздат <a href="https://vk.com/discoursio">ВКонтакте</a>,
-                в&nbsp;<a href="https://facebook.com/discoursio">Фейсбуке</a>
-                и&nbsp;в&nbsp;<a href="https://t.me/discoursio">Телеграме</a>, а&nbsp;также на&nbsp;
+                в&nbsp;<a href="https://facebook.com/discoursio">Фейсбуке</a> и&nbsp;в&nbsp;
+                <a href="https://t.me/discoursio">Телеграме</a>, а&nbsp;также на&nbsp;
                 <Opener name="subscribe">рассылку лучших материалов</Opener>, чтобы не&nbsp;пропустить
                 ничего интересного.
               </p>
               <p>
-                <a href="https://forms.gle/9UnHBAz9Q3tjH5dAA">Рассказывайте о&nbsp;впечатлениях</a>
+                <a href="https://forms.gle/9UnHBAz9Q3tjH5dAA">Рассказывайте о&nbsp;впечатлениях</a>{' '}
                 от&nbsp;материалов открытой редакции, <Opener name="feedback">делитесь идеями</Opener>,
                 интересными темами, о&nbsp;которых хотели бы узнать больше, и&nbsp;историями, которые нужно
                 рассказать.

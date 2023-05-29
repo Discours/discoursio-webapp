@@ -1,5 +1,6 @@
 import { hideModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
+import { Button } from '../_shared/Button'
 
 export const Feedback = () => {
   const { t } = useLocalize()
@@ -21,10 +22,10 @@ export const Feedback = () => {
   }
 
   return (
-    <form method={method} action={action}>
+    <form method={method} action={action} onSubmit={submit}>
       <input type="text" name="contact" placeholder="email" ref={contactElement} />
       <textarea cols="12" name="message" rows="3" placeholder={t('Write to us')} ref={msgElement} />
-      <input type="submit" onClick={submit} />
+      <Button value={'Отправить'} />
     </form>
   )
 }

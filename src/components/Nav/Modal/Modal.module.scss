@@ -16,18 +16,24 @@
 .modal {
   background: #fff;
   max-width: 1000px;
+  padding: 5.4rem 2.4rem 2.4rem;
   position: relative;
-  width: 80%;
+  width: 100%;
+
+  @include media-breakpoint-up(sm) {
+    padding: 4.2rem;
+    width: 80%;
+  }
 
   .close {
     position: absolute;
-    top: 1em;
+    top: 1.6rem;
     cursor: pointer;
     height: 18px;
     width: 16px;
     opacity: 1;
     padding: 0;
-    right: 0;
+    right: 1.6rem;
     transition: opacity 0.3s;
     z-index: 1;
 
@@ -37,16 +43,16 @@
     }
 
     &:hover {
-      opacity: 0.5;
+      background: #000;
+
+      .icon {
+        filter: invert(1);
+      }
     }
 
     .icon {
       height: 100%;
       width: 100%;
-    }
-
-    @media (width >= 800px) and (width <= 991px) {
-      // top: 11em;
     }
   }
 

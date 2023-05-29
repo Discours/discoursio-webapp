@@ -99,13 +99,17 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
         <p>{t('Subscribe who you like to tune your personal feed')}</p>
 
         <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
-          <li classList={{ selected: !searchParams().by || searchParams().by === 'shouts' }}>
+          <li
+            classList={{
+              'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts'
+            }}
+          >
             <a href="/authors?by=shouts">{t('By shouts')}</a>
           </li>
-          <li classList={{ selected: searchParams().by === 'followers' }}>
+          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'followers' }}>
             <a href="/authors?by=followers">{t('By popularity')}</a>
           </li>
-          <li classList={{ selected: searchParams().by === 'name' }}>
+          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'name' }}>
             <a href="/authors?by=name">{t('By name')}</a>
           </li>
           <Show when={searchParams().by !== 'name'}>

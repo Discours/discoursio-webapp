@@ -134,87 +134,91 @@ export const RegisterForm = () => {
   return (
     <>
       <Show when={!isSuccess()}>
-        <form onSubmit={handleSubmit}>
-          <h4>{t('Create account')}</h4>
-          <Show when={submitError()}>
-            <div class={styles.authInfo}>
-              <ul>
-                <li class={styles.warn}>{submitError()}</li>
-              </ul>
+        <form onSubmit={handleSubmit} class={styles.authForm}>
+          <div>
+            <h4>{t('Create account')}</h4>
+            <Show when={submitError()}>
+              <div class={styles.authInfo}>
+                <ul>
+                  <li class={styles.warn}>{submitError()}</li>
+                </ul>
+              </div>
+            </Show>
+            <div class="pretty-form__item">
+              <input
+                name="fullName"
+                type="text"
+                placeholder={t('Full name')}
+                autocomplete=""
+                onInput={(event) => handleNameInput(event.currentTarget.value)}
+              />
+              <label for="fullName">{t('Full name')}</label>
             </div>
-          </Show>
-          <div class="pretty-form__item">
-            <input
-              name="fullName"
-              type="text"
-              placeholder={t('Full name')}
-              autocomplete=""
-              onInput={(event) => handleNameInput(event.currentTarget.value)}
-            />
-            <label for="fullName">{t('Full name')}</label>
-          </div>
-          <Show when={validationErrors().name}>
-            <div class={styles.validationError}>{validationErrors().name}</div>
-          </Show>
-          <div class="pretty-form__item">
-            <input
-              id="email"
-              name="email"
-              autocomplete="email"
-              type="email"
-              value={email()}
-              placeholder={t('Email')}
-              onInput={(event) => handleEmailInput(event.currentTarget.value)}
-              onBlur={handleEmailBlur}
-            />
-            <label for="email">{t('Email')}</label>
-          </div>
-          <Show when={validationErrors().email}>
-            <div class={styles.validationError}>{validationErrors().email}</div>
-          </Show>
-          <Show when={emailChecks()[email()]}>
-            <div class={styles.validationError}>
-              {t("This email is already taken. If it's you")},{' '}
-              <a
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault()
-                  changeSearchParam('mode', 'login')
-                }}
-              >
-                {t('enter')}
-              </a>
+            <Show when={validationErrors().name}>
+              <div class={styles.validationError}>{validationErrors().name}</div>
+            </Show>
+            <div class="pretty-form__item">
+              <input
+                id="email"
+                name="email"
+                autocomplete="email"
+                type="email"
+                value={email()}
+                placeholder={t('Email')}
+                onInput={(event) => handleEmailInput(event.currentTarget.value)}
+                onBlur={handleEmailBlur}
+              />
+              <label for="email">{t('Email')}</label>
             </div>
-          </Show>
-          <div class="pretty-form__item">
-            <input
-              id="password"
-              name="password"
-              autocomplete="current-password"
-              type="password"
-              placeholder={t('Password')}
-              onInput={(event) => handlePasswordInput(event.currentTarget.value)}
-            />
-            <label for="password">{t('Password')}</label>
-          </div>
-          <Show when={validationErrors().password}>
-            <div class={clsx(styles.registerPassword, styles.validationError)}>
-              {validationErrors().password}
+            <Show when={validationErrors().email}>
+              <div class={styles.validationError}>{validationErrors().email}</div>
+            </Show>
+            <Show when={emailChecks()[email()]}>
+              <div class={styles.validationError}>
+                {t("This email is already taken. If it's you")},{' '}
+                <a
+                  href="#"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    changeSearchParam('mode', 'login')
+                  }}
+                >
+                  {t('enter')}
+                </a>
+              </div>
+            </Show>
+            <div class="pretty-form__item">
+              <input
+                id="password"
+                name="password"
+                autocomplete="current-password"
+                type="password"
+                placeholder={t('Password')}
+                onInput={(event) => handlePasswordInput(event.currentTarget.value)}
+              />
+              <label for="password">{t('Password')}</label>
             </div>
-          </Show>
+            <Show when={validationErrors().password}>
+              <div class={clsx(styles.registerPassword, styles.validationError)}>
+                {validationErrors().password}
+              </div>
+            </Show>
+
+            <div>
+              <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
+                {isSubmitting() ? '...' : t('Join')}
+              </button>
+            </div>
+          </div>
 
           <div>
-            <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
-              {isSubmitting() ? '...' : t('Join')}
-            </button>
-          </div>
+            <SocialProviders />
 
-          <SocialProviders />
-
-          <div class={styles.authControl}>
-            <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'login')}>
-              {t('I have an account')}
-            </span>
+            <div class={styles.authControl}>
+              <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'login')}>
+                {t('I have an account')}
+              </span>
+            </div>
           </div>
         </form>
       </Show>

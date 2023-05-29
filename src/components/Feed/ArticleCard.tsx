@@ -86,7 +86,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
     changeSearchParam('scrollTo', 'comments')
   }
 
-  const [isSharePopupActive, setIsSharePopupActive] = createSignal(false)
+  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
 
   return (
     <section
@@ -175,10 +175,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
 
         <Show when={props.settings?.isFeedMode}>
-          <p>asdasd</p>
           <section
             class={styles.shoutCardDetails}
-            classList={{ [styles.shoutCardDetailsActive]: isSharePopupActive() }}
+            classList={{ [styles.shoutCardDetailsActive]: isActionPopupActive() }}
           >
             <div class={styles.shoutCardDetailsContent}>
               <ShoutRatingControl shout={props.article} class={styles.shoutCardDetailsItem} />
@@ -217,7 +216,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 )}
               </Popover>
 
-              <Popover content={t('Share')} disabled={isSharePopupActive()}>
+              <Popover content={t('Share')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <SharePopup
@@ -226,7 +225,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                       description={getDescription(body)}
                       imageUrl={cover}
                       shareUrl={getShareUrl({ pathname: `/${slug}` })}
-                      isVisible={(value) => setIsSharePopupActive(value)}
+                      isVisible={(value) => setIsActionPopupActive(value)}
                       trigger={
                         <button>
                           <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
@@ -244,6 +243,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   description={getDescription(body)}
                   imageUrl={cover}
                   shareUrl={getShareUrl({ pathname: `/${slug}` })}
+                  isVisible={(value) => setIsActionPopupActive(value)}
                   trigger={
                     <button>
                       <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />

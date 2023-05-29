@@ -6,10 +6,8 @@
 
   h1 {
     color: #2638d9;
-    font-weight: 500;
-    text-transform: uppercase;
-
     @include font-size(2rem);
+    text-transform: uppercase;
   }
 }
 

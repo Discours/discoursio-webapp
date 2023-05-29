@@ -1,10 +1,7 @@
 .Panel {
   background: #1f1f1f;
   color: rgb(255 255 255 / 35%);
-  display: flex;
-  flex-direction: column;
   font-size: 1.7rem;
-  justify-content: flex-start;
   height: 100%;
   line-height: 1.4;
   padding: $grid-gutter-width calc($grid-gutter-width / 2);
@@ -20,7 +17,9 @@
   }
 
   .actionsHolder {
-    padding: 0 calc($grid-gutter-width / 2);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     &.scrolled {
       overflow-y: auto;
@@ -61,6 +60,7 @@
     text-decoration: none;
     border-bottom: none;
     color: rgb(255 255 255 / 35%);
+    font-size: inherit;
     font-weight: normal !important;
 
     &:hover {
@@ -94,5 +94,42 @@
     img {
       vertical-align: bottom;
     }
+  }
+
+  .typograph {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .typographStatus {
+    @include font-size(1.2rem);
+  }
+
+  .typographStatusSuccess {
+    color: #28d353;
+  }
+
+  .backToMenuControl {
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  .shortcutList {
+    color: #fff;
+  }
+
+  .shortcut {
+    margin-left: 1em;
+  }
+
+  .shortcutButton {
+    border: 1px solid;
+    border-bottom-width: 2px;
+    border-radius: 2px;
+    display: inline-block;
+    font-style: italic;
+    margin-right: 0.5em;
+    padding: 0.1em 0.4em;
   }
 }

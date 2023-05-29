@@ -14,8 +14,10 @@
     }
 
     .textInput {
-      margin-bottom: 0;
+      background: var(--background-color);
       border: none;
+      color: var(--default-color);
+      margin-bottom: 0;
       resize: none;
       overflow: hidden;
 
@@ -45,6 +47,7 @@
   }
 
   .maxLength {
+    color: #000;
     opacity: 1;
     position: absolute;
     right: 0.6rem;

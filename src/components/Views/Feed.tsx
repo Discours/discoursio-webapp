@@ -1,5 +1,4 @@
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
-import '../../styles/Feed.scss'
 import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { AuthorCard } from '../Author/AuthorCard'
@@ -88,9 +87,9 @@ export const FeedView = () => {
           </div>
 
           <div class="col-md-12 offset-xl-1">
-            <ul class="feed-filter">
+            <ul class={clsx(styles.feedFilter, 'view-switcher')}>
               <Show when={!!session()?.user?.slug}>
-                <li class="selected">
+                <li class="view-switcher__item--selected">
                   <a href="/feed/my">{t('My feed')}</a>
                 </li>
               </Show>
@@ -149,7 +148,14 @@ export const FeedView = () => {
                 {(comment) => {
                   return (
                     <div class={styles.comment}>
-                      <div class={clsx('text-truncate', styles.commentBody)} innerHTML={comment.body} />
+                      <div class={clsx('text-truncate', styles.commentBody)}>
+                        <a
+                          href={`${getPagePath(router, 'article', {
+                            slug: comment.shout.slug
+                          })}?commentId=${comment.id}`}
+                          innerHTML={comment.body}
+                        />
+                      </div>
                       <AuthorCard
                         author={comment.createdBy as Author}
                         isFeedMode={true}

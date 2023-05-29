@@ -66,57 +66,59 @@ export const ForgotPasswordForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h4>{t('Forgot password?')}</h4>
-      <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
-      <Show when={submitError()}>
-        <div class={styles.authInfo}>
-          <ul>
-            <li class={styles.warn}>{submitError()}</li>
-          </ul>
-        </div>
-      </Show>
-      <Show when={isUserNotFount()}>
-        <div class={styles.authSubtitle}>
-          {/*TODO: text*/}
-          {t("We can't find you, check email or")}{' '}
-          <a
-            href="#"
-            onClick={(event) => {
-              event.preventDefault()
-              changeSearchParam('mode', 'register')
-            }}
-          >
-            {t('register')}
-          </a>
-        </div>
-      </Show>
-      <Show when={validationErrors().email}>
-        <div class={styles.validationError}>{validationErrors().email}</div>
-      </Show>
-      <div class="pretty-form__item">
-        <input
-          id="email"
-          name="email"
-          autocomplete="email"
-          type="email"
-          value={email()}
-          placeholder={t('Email')}
-          onInput={(event) => handleEmailInput(event.currentTarget.value)}
-        />
-
-        <label for="email">{t('Email')}</label>
-      </div>
-
+    <form onSubmit={handleSubmit} class={clsx(styles.authForm, styles.authFormForgetPassword)}>
       <div>
-        <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
-          {isSubmitting() ? '...' : t('Restore password')}
-        </button>
-      </div>
-      <div class={styles.authControl}>
-        <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'login')}>
-          {t('I know the password')}
-        </span>
+        <h4>{t('Forgot password?')}</h4>
+        <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
+        <Show when={submitError()}>
+          <div class={styles.authInfo}>
+            <ul>
+              <li class={styles.warn}>{submitError()}</li>
+            </ul>
+          </div>
+        </Show>
+        <Show when={isUserNotFount()}>
+          <div class={styles.authSubtitle}>
+            {/*TODO: text*/}
+            {t("We can't find you, check email or")}{' '}
+            <a
+              href="#"
+              onClick={(event) => {
+                event.preventDefault()
+                changeSearchParam('mode', 'register')
+              }}
+            >
+              {t('register')}
+            </a>
+          </div>
+        </Show>
+        <Show when={validationErrors().email}>
+          <div class={styles.validationError}>{validationErrors().email}</div>
+        </Show>
+        <div class="pretty-form__item">
+          <input
+            id="email"
+            name="email"
+            autocomplete="email"
+            type="email"
+            value={email()}
+            placeholder={t('Email')}
+            onInput={(event) => handleEmailInput(event.currentTarget.value)}
+          />
+
+          <label for="email">{t('Email')}</label>
+        </div>
+
+        <div>
+          <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
+            {isSubmitting() ? '...' : t('Restore password')}
+          </button>
+        </div>
+        <div class={styles.authControl}>
+          <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'login')}>
+            {t('I know the password')}
+          </span>
+        </div>
       </div>
     </form>
   )

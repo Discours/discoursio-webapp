@@ -1,5 +1,5 @@
 .TextBubbleMenu {
-  background: #fff;
+  background: var(--editor-bubble-menu-background);
   box-shadow: 0 4px 10px rgba(#000, 0.25);
 
   .bubbleMenuButton {
@@ -20,6 +20,10 @@
       height: 20px;
       border-radius: 50%;
       background: #f6e3a1;
+    }
+
+    img {
+      filter: var(--icon-filter);
     }
   }
 
@@ -50,8 +54,8 @@
       left: 50%;
       transform: translateX(-50%);
       box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
-      background: #fff;
-      color: #898c94;
+      background: var(--editor-bubble-menu-background);
+      color: var(--default-color);
 
       & > header {
         font-size: 10px;

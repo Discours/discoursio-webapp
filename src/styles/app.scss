@@ -10,12 +10,32 @@
 :root {
   --background-color: #fff;
   --default-color: #121416;
-  --link-color: #543fd7;
+  --link-color: #000;
+  --link-hover-color: #fff;
+  --link-hover-background: #000;
   --secondary-color: #85878a;
   --danger-color: #fc6847;
   --lightgray-color: rgb(84 16 17 / 6%);
   --font: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu, cantarell, 'Open Sans',
     'Helvetica Neue', sans-serif;
+  --selection-background: #000;
+  --selection-color: #fff;
+  --icon-filter: invert(0);
+  --icon-filter-hover: invert(1);
+  --editor-bubble-menu-background: #fff;
+}
+
+[data-editor-dark-mode='true'] {
+  --background-color: #121416;
+  --default-color: #fff;
+  --link-color: #fff;
+  --link-hover-color: #000;
+  --link-hover-background: #fff;
+  --selection-background: #eee;
+  --selection-color: #000;
+  --icon-filter: invert(1);
+  --icon-filter-hover: invert(0);
+  --editor-bubble-menu-background: #444;
 }
 
 * {
@@ -23,8 +43,8 @@
 }
 
 ::selection {
-  background: #000;
-  color: #fff;
+  background: var(--selection-background);
+  color: var(--selection-color);
 }
 
 html {
@@ -37,6 +57,8 @@ html {
 }
 
 body {
+  background: var(--background-color);
+  color: var(--default-color);
   font-family: Muller, Arial, Helvetica, sans-serif;
   font-size: 2rem;
   line-height: 1.6;
@@ -161,13 +183,13 @@ a:link {
 }
 
 a {
-  color: #000;
+  color: var(--link-color);
   padding-bottom: 0.1em;
   transition: color 0.2s, background-color 0.2s;
 
   &:hover {
-    background: #000;
-    color: #fff;
+    background: var(--link-hover-background);
+    color: var(--link-hover-color);
   }
 }
 
@@ -222,10 +244,12 @@ button {
   background: #fff;
   border: 2px solid #f6f6f6;
   font-size: 1.5rem;
+  justify-content: center;
   padding: 0.6rem 1.2rem;
   transition: background-color 0.2s;
 
   img {
+    height: auto;
     transition: filter 0.2s;
   }
 
@@ -528,18 +552,20 @@ figure {
 
 .view-switcher {
   @include font-size(1.7rem);
-
   display: flex;
   flex-wrap: wrap;
-  font-weight: bold;
+  font-weight: 500;
   list-style: none;
   margin: 3.6rem 0 0;
   padding: 0;
 
   li {
     display: inline-block;
-    margin-right: 1em;
+    margin-right: 2rem;
     margin-bottom: 0.6em;
+
+    @include media-breakpoint-down(md) {
+    }
 
     &:last-child {
       margin-right: 0;
@@ -549,34 +575,40 @@ figure {
   button {
     background: none;
     border: none;
-    border-bottom: 2px solid #fff;
-    color: #696969;
     cursor: pointer;
-    font-size: inherit;
-    font-weight: inherit;
-    padding: 0;
+    height: auto !important;
+    font-size: inherit !important;
+    padding: 0 !important;
   }
 
   a {
-    border-bottom: 2px solid #fff;
-    color: rgb(0 0 0 / 50%);
-
     &:hover {
       color: #fff;
     }
   }
 
-  .selected {
-    button {
-      border-color: #000;
-      color: #000;
-      cursor: default;
-    }
+  a,
+  button {
+    border-bottom: 2px solid #fff;
+    color: var(--link-color);
+    cursor: pointer;
+    font-weight: inherit;
 
-    a {
-      border-color: #000;
+    &:hover {
+      background: var(--link-hover-background);
+      color: var(--link-hover-color);
+    }
+  }
+
+  .view-switcher__item--selected {
+    font-weight: bold;
+
+    a,
+    button {
+      border-bottom: 2px solid #000;
       color: #000;
       cursor: default;
+      pointer-events: none;
 
       &:hover {
         background: none;
@@ -894,4 +926,8 @@ details {
   ::-webkit-scrollbar-button {
     display: none;
   }
+}
+
+iframe {
+  border: none;
 }

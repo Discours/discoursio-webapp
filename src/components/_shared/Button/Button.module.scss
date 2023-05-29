@@ -43,6 +43,11 @@
     }
   }
 
+  &.light {
+    font-weight: inherit;
+    padding: 0;
+  }
+
   &.outline,
   &.bordered {
     border: 3px solid #f2f2f2;
@@ -56,18 +61,18 @@
 
     &:hover,
     &:active {
-      background: #000;
-      border-color: #000;
-      color: #fff;
+      background: var(--link-color);
+      border-color: var(--link-color);
+      color: var(--link-hover-color);
 
       :global(.icon) {
-        filter: invert(1);
+        filter: var(--icon-filter-hover);
       }
     }
 
     :global(.icon) {
       margin: 0 -0.5em;
-      filter: invert(0);
+      filter: var(--icon-filter);
       transition: filter 0.3s;
     }
   }

@@ -5,7 +5,7 @@ import styles from './Button.module.scss'
 type Props = {
   value: string | JSX.Element
   size?: 'S' | 'M' | 'L'
-  variant?: 'primary' | 'secondary' | 'bordered' | 'inline' | 'outline'
+  variant?: 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline'
   type?: 'submit' | 'button'
   loading?: boolean
   disabled?: boolean

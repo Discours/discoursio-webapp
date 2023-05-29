@@ -1,6 +1,5 @@
 h1 {
   @include font-size(4rem);
-
   line-height: 1.1;
   margin-top: 0.5em;
 }
@@ -98,6 +97,17 @@ img {
     font-size: 1.5rem;
     font-weight: normal;
   }
+
+  :global(.button--subscribe) {
+    font-size: 1rem;
+    height: 3.2rem;
+    padding: 0.4rem;
+    width: 3.2rem;
+
+    img {
+      width: 1.6rem;
+    }
+  }
 }
 
 .writeComment {
@@ -144,12 +154,15 @@ img {
 
 .shoutStatsItem {
   @include font-size(1.5rem);
-
   font-weight: 500;
   display: inline-block;
-  margin: 0 3.2rem 1em 0;
+  margin: 0 6% 1em 0;
   vertical-align: baseline;
   cursor: pointer;
+
+  @include media-breakpoint-up(sm) {
+    margin-right: 3.2rem;
+  }
 
   .icon {
     height: 1.6em;
@@ -320,12 +333,7 @@ img {
 }
 
 .commentsViewSwitcher {
-  margin-top: 0;
-}
-
-.commentsViewSwitcherButton {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  margin-top: 0 !important;
 }
 
 .help {

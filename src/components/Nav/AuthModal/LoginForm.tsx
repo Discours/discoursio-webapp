@@ -115,82 +115,86 @@ export const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h4>{t('Enter the Discours')}</h4>
-      <Show when={submitError()}>
-        <div class={styles.authInfo}>
-          <div class={styles.warn}>{submitError()}</div>
-          <Show when={isEmailNotConfirmed()}>
-            <a href="#" onClick={handleSendLinkAgainClick}>
-              {t('Send link again')}
-            </a>
-          </Show>
-        </div>
-      </Show>
-      <Show when={isLinkSent()}>
-        <div class={styles.authInfo}>{t('Link sent, check your email')}</div>
-      </Show>
-      <div class="pretty-form__item">
-        <input
-          id="email"
-          name="email"
-          autocomplete="email"
-          type="email"
-          value={email()}
-          placeholder={t('Email')}
-          onInput={(event) => handleEmailInput(event.currentTarget.value)}
-        />
-        <label for="email">{t('Email')}</label>
-      </div>
-      <Show when={validationErrors().email}>
-        <div class={styles.validationError}>{validationErrors().email}</div>
-      </Show>
-
-      <div class="pretty-form__item">
-        <input
-          id="password"
-          name="password"
-          autocomplete="password"
-          type={showPassword() ? 'text' : 'password'}
-          placeholder={t('Password')}
-          onInput={(event) => handlePasswordInput(event.currentTarget.value)}
-        />
-        <label for="password">{t('Password')}</label>
-        <button
-          type="button"
-          class={styles.passwordToggle}
-          onClick={() => setShowPassword(!showPassword())}
-        >
-          <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
-        </button>
-      </div>
-
-      <Show when={validationErrors().password}>
-        <div class={styles.validationError}>{validationErrors().password}</div>
-      </Show>
+    <form onSubmit={handleSubmit} class={styles.authForm}>
       <div>
-        <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
-          {isSubmitting() ? '...' : t('Enter')}
-        </button>
-      </div>
-      <div class={styles.authActions}>
-        <a
-          href="#"
-          onClick={(ev) => {
-            ev.preventDefault()
-            changeSearchParam('mode', 'forgot-password')
-          }}
-        >
-          {t('Forgot password?')}
-        </a>
+        <h4>{t('Enter the Discours')}</h4>
+        <Show when={submitError()}>
+          <div class={styles.authInfo}>
+            <div class={styles.warn}>{submitError()}</div>
+            <Show when={isEmailNotConfirmed()}>
+              <a href="#" onClick={handleSendLinkAgainClick}>
+                {t('Send link again')}
+              </a>
+            </Show>
+          </div>
+        </Show>
+        <Show when={isLinkSent()}>
+          <div class={styles.authInfo}>{t('Link sent, check your email')}</div>
+        </Show>
+        <div class="pretty-form__item">
+          <input
+            id="email"
+            name="email"
+            autocomplete="email"
+            type="email"
+            value={email()}
+            placeholder={t('Email')}
+            onInput={(event) => handleEmailInput(event.currentTarget.value)}
+          />
+          <label for="email">{t('Email')}</label>
+        </div>
+        <Show when={validationErrors().email}>
+          <div class={styles.validationError}>{validationErrors().email}</div>
+        </Show>
+
+        <div class="pretty-form__item">
+          <input
+            id="password"
+            name="password"
+            autocomplete="password"
+            type={showPassword() ? 'text' : 'password'}
+            placeholder={t('Password')}
+            onInput={(event) => handlePasswordInput(event.currentTarget.value)}
+          />
+          <label for="password">{t('Password')}</label>
+          <button
+            type="button"
+            class={styles.passwordToggle}
+            onClick={() => setShowPassword(!showPassword())}
+          >
+            <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
+          </button>
+        </div>
+
+        <Show when={validationErrors().password}>
+          <div class={styles.validationError}>{validationErrors().password}</div>
+        </Show>
+        <div>
+          <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
+            {isSubmitting() ? '...' : t('Enter')}
+          </button>
+        </div>
+        <div class={styles.authActions}>
+          <a
+            href="#"
+            onClick={(ev) => {
+              ev.preventDefault()
+              changeSearchParam('mode', 'forgot-password')
+            }}
+          >
+            {t('Forgot password?')}
+          </a>
+        </div>
       </div>
 
-      <SocialProviders />
+      <div>
+        <SocialProviders />
 
-      <div class={styles.authControl}>
-        <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'register')}>
-          {t('I have no account yet')}
-        </span>
+        <div class={styles.authControl}>
+          <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'register')}>
+            {t('I have no account yet')}
+          </span>
+        </div>
       </div>
     </form>
   )

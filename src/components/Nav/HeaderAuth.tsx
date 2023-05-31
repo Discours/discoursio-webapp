@@ -49,9 +49,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     toggleWarnings()
   }
 
-  const isEditorPage = createMemo(
-    () => page().route === 'create' || page().route === 'edit' || page().route === 'editSettings'
-  )
+  const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
 
   const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
   const showSaveButton = createMemo(() => isAuthenticated() && isEditorPage())

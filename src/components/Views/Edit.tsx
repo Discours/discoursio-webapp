@@ -15,9 +15,11 @@ import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
 import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
+import { VideoUploader } from '../Editor/VideoUploader'
 
 type EditViewProps = {
   shout: Shout
+  type?: string
 }
 
 const handleScrollTopButtonClick = (e) => {
@@ -157,6 +159,11 @@ export const EditView = (props: EditViewProps) => {
                     initialValue={form.subtitle}
                     maxLength={100}
                   />
+
+                  <Show when={props.type === 'video'}>
+                    <VideoUploader />
+                  </Show>
+
                   <Editor
                     shoutId={props.shout.id}
                     initialContent={props.shout.body}

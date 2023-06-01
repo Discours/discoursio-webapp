@@ -8,7 +8,7 @@ export const ROUTES = {
   inbox: '/inbox',
   connect: '/connect',
   create: '/create',
-  edit: '/edit/:shoutId',
+  edit: '/edit/:type/:shoutId',
   editSettings: '/edit/:shoutId/settings',
   drafts: '/drafts',
   topics: '/topics',

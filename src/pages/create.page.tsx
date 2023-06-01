@@ -10,7 +10,18 @@ import { router } from '../stores/router'
 
 const handleCreateArticle = async () => {
   const shout = await apiClient.createArticle({ article: {} })
-  redirectPage(router, 'edit', { shoutId: shout.id.toString() })
+  redirectPage(router, 'edit', {
+    type: 'article',
+    shoutId: shout.id.toString()
+  })
+}
+
+const handleCreateVideo = async () => {
+  const shout = await apiClient.createArticle({ article: {} })
+  redirectPage(router, 'edit', {
+    type: 'video',
+    shoutId: shout.id.toString()
+  })
 }
 
 export const CreatePage = () => {
@@ -45,10 +56,10 @@ export const CreatePage = () => {
             </a>
           </li>
           <li>
-            <a href="#">
+            <div class={styles.link} onClick={handleCreateVideo}>
               <Icon name="create-video" class={styles.icon} />
-              <div>{t('music')}</div>
-            </a>
+              <div>{t('video')}</div>
+            </div>
           </li>
         </ul>
         <Button value={t('Back')} onClick={() => window.history.back()} />

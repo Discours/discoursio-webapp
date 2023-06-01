@@ -1,0 +1,19 @@
+.VideoUploader {
+  display: block;
+
+  .dropArea {
+    border: 2px dashed rgba(38, 56, 217, 0.3);
+    border-radius: 16px;
+    color: #2638d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    padding: 24px;
+    transition: background-color 0.3s ease-in-out;
+
+    &.active {
+      background-color: rgba(#2638d9, 0.3);
+    }
+  }
+}

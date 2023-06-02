@@ -396,9 +396,14 @@
     @include font-size(3.2rem);
   }
 
-  .shoutTopic a:hover {
-    background: #fff !important;
-    color: #000 !important;
+  .shoutTopic a {
+    &,
+    &:visited {
+      &:hover {
+        background: #fff !important;
+        color: #000 !important;
+      }
+    }
   }
 }
 

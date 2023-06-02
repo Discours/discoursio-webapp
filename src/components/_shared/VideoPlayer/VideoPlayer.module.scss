@@ -1,0 +1,11 @@
+.VideoPlayer {
+  display: flex;
+  flex-direction: column;
+  background: var(--secondary-color);
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    margin-top: auto;
+  }
+}

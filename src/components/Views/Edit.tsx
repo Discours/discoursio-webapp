@@ -16,6 +16,7 @@ import { hideModal, showModal } from '../../stores/ui'
 import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
+import { VideoPlayer } from '../_shared/VideoPlayer'
 
 type EditViewProps = {
   shout: Shout
@@ -163,6 +164,8 @@ export const EditView = (props: EditViewProps) => {
                   <Show when={props.type === 'video'}>
                     <VideoUploader />
                   </Show>
+
+                  {/*<VideoPlayer src={'https://www.youtube.com/watch?v=3nWgy5wkPuE&ab_channel=%D0%9F%D0%BE%D0%BB%D0%B8%D0%B3%D0%BE%D0%BD-98'} />*/}
 
                   <Editor
                     shoutId={props.shout.id}

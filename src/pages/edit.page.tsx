@@ -23,7 +23,6 @@ export const EditPage = () => {
     const loadedShout = await apiClient.getShoutById(shoutId())
     setShout(loadedShout)
   })
-  console.log('!!! page route:', page().params['type'])
 
   return (
     <PageLayout>

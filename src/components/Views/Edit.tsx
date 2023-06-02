@@ -42,6 +42,7 @@ export const EditView = (props: EditViewProps) => {
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
+  const [pastedUrl, setPastedUrl] = createSignal<string | undefined>()
   const { page } = useRouter()
   const {
     form,
@@ -162,11 +163,14 @@ export const EditView = (props: EditViewProps) => {
                   />
 
                   <Show when={props.type === 'video'}>
-                    <VideoUploader />
+                    <VideoUploader videoUrl={(value) => setPastedUrl(value)} />
+                    <Show when={pastedUrl()}>{pastedUrl()}</Show>
+
+                    <VideoPlayer
+                      videoUrl={'https://www.youtube.com/watch?v=fhDfmUnN1vY&t=765s&ab_channel=FranzFloyd'}
+                    />
+                    <VideoPlayer videoUrl={'https://vimeo.com/524933864'} />
                   </Show>
-
-                  {/*<VideoPlayer src={'https://www.youtube.com/watch?v=3nWgy5wkPuE&ab_channel=%D0%9F%D0%BE%D0%BB%D0%B8%D0%B3%D0%BE%D0%BD-98'} />*/}
-
                   <Editor
                     shoutId={props.shout.id}
                     initialContent={props.shout.body}

@@ -1,35 +1,50 @@
 import { clsx } from 'clsx'
 import styles from './VideoPlayer.module.scss'
-import { createEffect, createSignal } from 'solid-js'
-import { Button } from '../Button'
+import { createEffect, createSignal, Match, Switch } from 'solid-js'
 
 type Props = {
   class?: string
-  src: string
+  videoUrl: string
 }
 
 export const VideoPlayer = (props: Props) => {
-  const video: { current: HTMLVideoElement } = { current: null }
+  const [videoId, setVideoId] = createSignal<string | undefined>()
+  const [isVimeo, setIsVimeo] = createSignal(false)
+
+  createEffect(() => {
+    const isYoutube = props.videoUrl.includes('youtube.com') || props.videoUrl.includes('youtu.be')
+    setIsVimeo(!isYoutube)
+
+    if (isYoutube) {
+      const videoIdMatch = props.videoUrl.match(/v=(\w+)/)
+      setVideoId(videoIdMatch && videoIdMatch[1])
+    } else {
+      const videoIdMatch = props.videoUrl.match(/vimeo.com\/(\d+)/)
+      setVideoId(videoIdMatch && videoIdMatch[1])
+    }
+  })
 
   return (
     <div class={clsx(styles.VideoPlayer, props.class)}>
-      <video
-        ref={(el) => (video.current = el)}
-        // onClick={playVideo}
-        src={props.src}
-      />
-      {/*<div class={styles.controls}>*/}
-      {/*  <Button*/}
-      {/*    size="S"*/}
-      {/*    onClick={playVideo}*/}
-      {/*    value={'Play'}*/}
-      {/*  />*/}
-      {/*  <Button*/}
-      {/*    size="S"*/}
-      {/*    onClick={pauseVideo}*/}
-      {/*    value={'Pause'}*/}
-      {/*  />*/}
-      {/*</div>*/}
+      <Switch>
+        <Match when={isVimeo()}>
+          <iframe
+            src={`https://player.vimeo.com/video/${videoId()}`}
+            width="640"
+            height="360"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+          />
+        </Match>
+        <Match when={!isVimeo()}>
+          <iframe
+            width="560"
+            height="315"
+            src={`https://www.youtube.com/embed/${videoId()}`}
+            allowfullscreen
+          />
+        </Match>
+      </Switch>
     </div>
   )
 }

@@ -19,21 +19,21 @@ export const IncutBubbleMenu = (props: Props) => {
     <div ref={props.ref} class={styles.BubbleMenu}>
       <button
         type="button"
-        class={clsx(styles.bubbleMenuButton)}
+        class={styles.bubbleMenuButton}
         onClick={() => props.editor.chain().focus().setArticleFloat('left').run()}
       >
         <Icon name="editor-image-align-left" />
       </button>
       <button
         type="button"
-        class={clsx(styles.bubbleMenuButton)}
+        class={styles.bubbleMenuButton}
         onClick={() => props.editor.chain().focus().setArticleFloat('half-left').run()}
       >
         <Icon name="editor-image-half-align-left" />
       </button>
       <button
         type="button"
-        class={clsx(styles.bubbleMenuButton)}
+        class={styles.bubbleMenuButton}
         onClick={() => props.editor.chain().focus().setArticleFloat(null).run()}
       >
         <Icon name="editor-image-align-center" />
@@ -41,7 +41,7 @@ export const IncutBubbleMenu = (props: Props) => {
 
       <button
         type="button"
-        class={clsx(styles.bubbleMenuButton)}
+        class={styles.bubbleMenuButton}
         onClick={() => props.editor.chain().focus().setArticleFloat('half-right').run()}
       >
         <Icon name="editor-image-half-align-right" />
@@ -49,7 +49,7 @@ export const IncutBubbleMenu = (props: Props) => {
 
       <button
         type="button"
-        class={clsx(styles.bubbleMenuButton)}
+        class={styles.bubbleMenuButton}
         onClick={() => props.editor.chain().focus().setArticleFloat('right').run()}
       >
         <Icon name="editor-image-align-right" />
@@ -59,7 +59,7 @@ export const IncutBubbleMenu = (props: Props) => {
       <div class={styles.dropDownHolder}>
         <button
           type="button"
-          class={clsx(styles.bubbleMenuButton)}
+          class={styles.bubbleMenuButton}
           onClick={() => setSubstratBubbleOpen(!substratBubbleOpen())}
         >
           <span style={{ color: 'white' }}>{t('Substrate')}</span>

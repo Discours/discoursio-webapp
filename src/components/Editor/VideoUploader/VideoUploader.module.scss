@@ -40,6 +40,42 @@
     text-align: center;
     padding: 1rem;
   }
+
+  .inputHolder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+
+    .urlInput {
+      display: block;
+      width: unset;
+      margin: auto;
+      padding: 1rem 0;
+      border: none;
+      background: unset;
+      font-size: 18px;
+      min-width: 20em;
+      text-align: center;
+      border-bottom: 1px solid transparent;
+      transition: all 0.35s ease-in-out;
+      border-radius: 0;
+
+      &::placeholder {
+        color: #2638d9;
+        font-weight: 500;
+      }
+
+      &:focus,
+      &:active,
+      &.hasError {
+        outline: none;
+        width: 100%;
+        text-align: left;
+        border-bottom-color: var(--default-color);
+      }
+    }
+  }
 }
 
 @keyframes slide {

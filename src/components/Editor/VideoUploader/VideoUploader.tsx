@@ -4,19 +4,28 @@ import { useLocalize } from '../../../context/localize'
 import { createDropzone } from '@solid-primitives/upload'
 import { createSignal, Show } from 'solid-js'
 import { useSnackbar } from '../../../context/snackbar'
+import { validateUrl } from '../../../utils/validateUrl'
 // import { handleFileUpload } from '../../../utils/handleFileUpload'
 
 type Props = {
   class?: string
+  videoUrl?: (value: string) => void
 }
 
 export const VideoUploader = (props: Props) => {
   const { t } = useLocalize()
   const [dragActive, setDragActive] = createSignal(false)
   const [dragError, setDragError] = createSignal<string | undefined>()
+  const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const {
     actions: { showSnackbar }
   } = useSnackbar()
+
+  const videoUrlInput: {
+    current: HTMLInputElement
+  } = {
+    current: null
+  }
 
   // const [videoUrl, setVideoUrl] = createSignal<string | undefined>()
   // const runUpload = async (file) => {
@@ -54,6 +63,14 @@ export const VideoUploader = (props: Props) => {
     }
   }
 
+  const handleChangeInput = (value: string) => {
+    if (validateUrl(value)) {
+      props.videoUrl(value)
+    } else {
+      setIncorrectUrl(true)
+    }
+  }
+
   return (
     <div class={clsx(styles.VideoUploader, props.class)}>
       <div
@@ -67,6 +84,20 @@ export const VideoUploader = (props: Props) => {
       </div>
       <Show when={dragError()}>
         <div class={styles.error}>{dragError()}</div>
+      </Show>
+      <div class={styles.inputHolder}>
+        <input
+          class={clsx(styles.urlInput, { [styles.hasError]: incorrectUrl() })}
+          ref={(el) => {
+            videoUrlInput.current = el
+          }}
+          type="text"
+          placeholder={t('Insert video link')}
+          onChange={(event) => handleChangeInput(event.currentTarget.value)}
+        />
+      </div>
+      <Show when={incorrectUrl()}>
+        <div class={styles.error}>{t('It does not look like url')}</div>
       </Show>
     </div>
   )

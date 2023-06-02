@@ -19,7 +19,7 @@ export const BlockquoteBubbleMenu = (props: Props) => {
           <button
             ref={triggerRef}
             type="button"
-            class={clsx(styles.bubbleMenuButton)}
+            class={styles.bubbleMenuButton}
             onClick={() => {
               props.editor.chain().focus().setBlockQuoteFloat('left').run()
             }}
@@ -33,7 +33,7 @@ export const BlockquoteBubbleMenu = (props: Props) => {
           <button
             ref={triggerRef}
             type="button"
-            class={clsx(styles.bubbleMenuButton)}
+            class={styles.bubbleMenuButton}
             onClick={() => props.editor.chain().focus().setBlockQuoteFloat(null).run()}
           >
             <Icon name="editor-image-align-center" />
@@ -45,7 +45,7 @@ export const BlockquoteBubbleMenu = (props: Props) => {
           <button
             ref={triggerRef}
             type="button"
-            class={clsx(styles.bubbleMenuButton)}
+            class={styles.bubbleMenuButton}
             onClick={() => props.editor.chain().focus().setBlockQuoteFloat('right').run()}
           >
             <Icon name="editor-image-align-right" />

@@ -18,6 +18,7 @@ const handleCreateArticle = async () => {
 
 const handleCreateVideo = async () => {
   const shout = await apiClient.createArticle({ article: {} })
+  console.log('!!! createArticle shout:', shout)
   redirectPage(router, 'edit', {
     type: 'video',
     shoutId: shout.id.toString()

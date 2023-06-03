@@ -128,6 +128,7 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
+  console.log('!!! props.article:', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>
@@ -263,7 +264,7 @@ export const FullArticle = (props: ArticleProps) => {
                   {(triggerRef: (el) => void) => (
                     <div class={styles.shoutStatsItem} ref={triggerRef}>
                       <a
-                        href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}
+                        href={getPagePath(router, 'edit', { shoutId: `${props.article.id}` })}
                         class={styles.shoutStatsItemInner}
                       >
                         <Icon name="pencil-outline" class={styles.icon} />

@@ -165,7 +165,12 @@ export const EditView = (props: EditViewProps) => {
                   <Show when={props.type === 'video'}>
                     <VideoUploader videoUrl={(value) => setPastedVideoUrl(value)} />
                     <Show when={pastedVideoUrl()}>
-                      <VideoPlayer videoUrl={pastedVideoUrl()} />
+                      <VideoPlayer
+                        deleteAction={() => {
+                          ;('')
+                        }}
+                        videoUrl={pastedVideoUrl()}
+                      />
                     </Show>
 
                     {/*<VideoPlayer videoUrl={'https://vimeo.com/524933864'} />*/}

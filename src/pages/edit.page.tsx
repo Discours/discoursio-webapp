@@ -22,6 +22,7 @@ export const EditPage = () => {
   onMount(async () => {
     const loadedShout = await apiClient.getShoutById(shoutId())
     setShout(loadedShout)
+    console.log('!!! loadedShout:', loadedShout)
   })
 
   return (

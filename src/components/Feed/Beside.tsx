@@ -32,7 +32,14 @@ export const Beside = (props: BesideProps) => {
         <div class="wide-container">
           <div class="row">
             <Show when={!!props.values}>
-              <div class="col-md-8">
+              <div
+                class={clsx(
+                  'col-md-8',
+                  styles[
+                    `besideRatingColumn${props.wrapper.charAt(0).toUpperCase() + props.wrapper.slice(1)}`
+                  ]
+                )}
+              >
                 <Show when={!!props.title}>
                   <div class={styles.besideColumnTitle}>
                     <h4>{props.title}</h4>
@@ -72,6 +79,8 @@ export const Beside = (props: BesideProps) => {
                             hideWriteButton={true}
                             hasLink={true}
                             truncateBio={true}
+                            isTextButton={true}
+                            class={styles.author}
                           />
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>

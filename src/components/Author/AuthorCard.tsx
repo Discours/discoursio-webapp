@@ -31,6 +31,7 @@ interface AuthorCardProps {
   isComments?: boolean
   isFeedMode?: boolean
   isNowrap?: boolean
+  class?: string
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -81,7 +82,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
   return (
     <div
-      class={clsx(styles.author)}
+      class={clsx(styles.author, props.class)}
       classList={{
         [styles.authorPage]: props.isAuthorPage,
         [styles.authorComments]: props.isComments,
@@ -101,9 +102,11 @@ export const AuthorCard = (props: AuthorCardProps) => {
       <div class={styles.authorDetails}>
         <div class={styles.authorDetailsWrapper}>
           <Show when={props.hasLink}>
-            <a class={styles.authorName} href={`/author/${props.author.slug}`}>
-              {name()}
-            </a>
+            <div class={styles.authorNameContainer}>
+              <a class={styles.authorName} href={`/author/${props.author.slug}`}>
+                {name()}
+              </a>
+            </div>
           </Show>
           <Show when={!props.hasLink}>
             <div class={styles.authorName}>{name()}</div>

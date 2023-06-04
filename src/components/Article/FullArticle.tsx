@@ -50,6 +50,7 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
           </div>
         </Match>
         <Match when={props.kind === 'video'}>
+          VIDEO!
           <VideoPlayer url={props.media.url} />
         </Match>
       </Switch>
@@ -84,6 +85,7 @@ export const FullArticle = (props: ArticleProps) => {
     ev.preventDefault()
   }
 
+  console.log('!!! props.article.media:', props.article.media)
   const body = createMemo(() => props.article.body)
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
@@ -170,11 +172,12 @@ export const FullArticle = (props: ArticleProps) => {
               </Show>
             </div>
 
-            <Show when={media() && props.article.layout !== 'image'}>
+            <Show when={media()}>
               <div class="media-items">
                 <For each={media() || []}>
                   {(m: MediaItem) => (
                     <div class={styles.shoutMediaBody}>
+                      <h1>WTF</h1>
                       <MediaView media={m} kind={props.article.layout} />
                       <Show when={m?.body}>
                         <div innerHTML={m.body} />

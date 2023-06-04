@@ -24,6 +24,7 @@ type ShoutForm = {
   mainTopic?: Topic
   body: string
   coverImageUrl: string
+  media?: string
 }
 
 type EditorContextType = {
@@ -113,7 +114,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         slug: form.slug,
         subtitle: form.subtitle,
         title: form.title,
-        cover: form.coverImageUrl
+        cover: form.coverImageUrl,
+        media: form.media
       },
       publish
     })

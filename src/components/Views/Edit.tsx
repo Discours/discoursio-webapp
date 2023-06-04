@@ -20,7 +20,6 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 
 type EditViewProps = {
   shout: Shout
-  type?: string
 }
 
 const handleScrollTopButtonClick = (e) => {
@@ -60,7 +59,8 @@ export const EditView = (props: EditViewProps) => {
     selectedTopics: shoutTopics,
     mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
     body: props.shout.body,
-    coverImageUrl: props.shout.cover
+    coverImageUrl: props.shout.cover,
+    media: props.shout.media
   })
 
   onMount(async () => {
@@ -119,6 +119,18 @@ export const EditView = (props: EditViewProps) => {
     setForm('selectedTopics', newSelectedTopics)
   }
 
+  const handlePastVideo = (value) => {
+    setPastedVideoUrl(value)
+    const videoObj = [
+      {
+        title: 'test video',
+        body: 'test desc',
+        url: value
+      }
+    ]
+    setForm('media', JSON.stringify(videoObj))
+  }
+
   return (
     <>
       <div class={styles.container}>
@@ -162,8 +174,8 @@ export const EditView = (props: EditViewProps) => {
                     maxLength={100}
                   />
 
-                  <Show when={props.type === 'video'}>
-                    <VideoUploader videoUrl={(value) => setPastedVideoUrl(value)} />
+                  <Show when={props.shout.layout === 'video'}>
+                    <VideoUploader videoUrl={(value) => handlePastVideo(value)} />
                     <Show when={pastedVideoUrl()}>
                       <VideoPlayer
                         deleteAction={() => {

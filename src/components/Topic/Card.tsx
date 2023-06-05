@@ -84,24 +84,6 @@ export const TopicCard = (props: TopicProps) => {
             </div>
           </Show>
 
-          <div
-            class={clsx(styles.topicDescription, 'text-truncate', styles.topicDescriptionShort)}
-            classList={{ [styles.topicDescriptionShort]: props.shortDescription }}
-          >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta gravida urna, et vestibulum
-            dolor fermentum malesuada. Aenean est arcu, imperdiet vel aliquet quis, egestas ac justo.
-            Maecenas viverra enim a efficitur accumsan. Donec eu iaculis purus. Sed malesuada arcu sed nisl
-            luctus ultrices. Maecenas eget odio vitae turpis sollicitudin rutrum. Fusce rutrum urna felis,
-            id efficitur lacus faucibus et. Duis at libero dui. Quisque vitae pretium mi. Etiam non leo ut
-            nisi ornare auctor sit amet et enim. Aenean tempor ullamcorper augue, et mattis augue vestibulum
-            sed. Curabitur nec luctus sem. Phasellus imperdiet rhoncus lacus, in ultrices elit mollis ac.
-            Donec luctus dignissim cursus. Pellentesque sed risus sodales, tincidunt urna a, cursus ligula.
-            Curabitur nec nibh urna. Integer hendrerit quam eget diam malesuada, ac sagittis eros efficitur.
-            Sed ut orci eu quam mattis commodo. Nullam elementum nulla massa. Morbi placerat, lorem vitae
-            venenatis mollis, arcu erat sodales sapien, sit amet vehicula nunc tellus eget eros. Sed arcu
-            massa, vehicula sit amet viverra ut, eleifend ac leo. Mauris volutpat ex at orci tempor sodales.
-          </div>
-
           <Show when={props.showDescription && props.topic?.body}>
             <div
               class={clsx(styles.topicDescription, 'text-truncate')}
@@ -121,7 +103,6 @@ export const TopicCard = (props: TopicProps) => {
                 onClick={() => subscribe(!subscribed())}
                 class="button--light button--subscribe-topic"
                 classList={{
-                  [styles.buttonCompact]: props.compact,
                   [styles.isSubscribing]: isSubscribing(),
                   [styles.isSubscribed]: subscribed()
                 }}

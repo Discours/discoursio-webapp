@@ -136,7 +136,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <div class={styles.shoutCardTitlesContainer}>
           <a href={`/${slug || ''}`}>
             <div class={styles.shoutCardTitle}>
-              <h1>slug: {slug}</h1>
               <span class={styles.shoutCardLinkContainer}>{title}</span>
             </div>
 

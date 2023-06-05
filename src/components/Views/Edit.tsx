@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -119,17 +119,9 @@ export const EditView = (props: EditViewProps) => {
     setForm('selectedTopics', newSelectedTopics)
   }
 
-  const handlePastVideo = (value) => {
-    setPastedVideoUrl(value)
-    const videoObj = [
-      {
-        title: 'test video',
-        body: 'test desc',
-        url: value
-      }
-    ]
-    setForm('media', JSON.stringify(videoObj))
-  }
+  const media = createMemo(() => {
+    return JSON.parse(props.shout.media || '[]')
+  })
 
   return (
     <>
@@ -175,18 +167,27 @@ export const EditView = (props: EditViewProps) => {
                   />
 
                   <Show when={props.shout.layout === 'video'}>
-                    <VideoUploader videoUrl={(value) => handlePastVideo(value)} />
-                    <Show when={pastedVideoUrl()}>
-                      <VideoPlayer
-                        deleteAction={() => {
-                          ;('')
-                        }}
-                        videoUrl={pastedVideoUrl()}
-                      />
+                    <VideoUploader
+                      data={(data) => {
+                        setForm('media', JSON.stringify([data]))
+                      }}
+                    />
+                    <Show when={media()}>
+                      <For each={media()}>
+                        {(mediaItem) => (
+                          <VideoPlayer
+                            videoUrl={mediaItem.url}
+                            title={mediaItem.title}
+                            description={mediaItem.body}
+                            deleteAction={() => {
+                              setForm('media', null)
+                            }}
+                          />
+                        )}
+                      </For>
                     </Show>
-
-                    {/*<VideoPlayer videoUrl={'https://vimeo.com/524933864'} />*/}
                   </Show>
+
                   <Editor
                     shoutId={props.shout.id}
                     initialContent={props.shout.body}

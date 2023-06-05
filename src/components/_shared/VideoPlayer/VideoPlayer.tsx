@@ -7,9 +7,11 @@ import styles from './VideoPlayer.module.scss'
 import { useLocalize } from '../../../context/localize'
 
 type Props = {
-  class?: string
   videoUrl: string
-  deleteAction: () => void
+  title?: string
+  description?: string
+  class?: string
+  deleteAction?: () => void
 }
 
 export const VideoPlayer = (props: Props) => {
@@ -68,6 +70,14 @@ export const VideoPlayer = (props: Props) => {
           />
         </Match>
       </Switch>
+      <div class={styles.meta}>
+        <Show when={props.title}>
+          <div class={styles.title}>{props.title}</div>
+        </Show>
+        <Show when={props.description}>
+          <div class={styles.description}>{props.description}</div>
+        </Show>
+      </div>
     </div>
   )
 }

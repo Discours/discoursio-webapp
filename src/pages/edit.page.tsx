@@ -22,7 +22,6 @@ export const EditPage = () => {
   onMount(async () => {
     const loadedShout = await apiClient.getShoutById(shoutId())
     setShout(loadedShout)
-    console.log('!!! loadedShout:', loadedShout)
   })
 
   return (
@@ -40,7 +39,7 @@ export const EditPage = () => {
         >
           <Show when={shout()}>
             <Suspense fallback={<Loading />}>
-              <EditView shout={shout()} type={page().params['type']} />
+              <EditView shout={shout()} />
             </Suspense>
           </Show>
         </Show>

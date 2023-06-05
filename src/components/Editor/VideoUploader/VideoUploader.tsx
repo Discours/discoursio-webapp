@@ -2,14 +2,21 @@ import { clsx } from 'clsx'
 import styles from './VideoUploader.module.scss'
 import { useLocalize } from '../../../context/localize'
 import { createDropzone } from '@solid-primitives/upload'
-import { createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { useSnackbar } from '../../../context/snackbar'
 import { validateUrl } from '../../../utils/validateUrl'
+import { VideoPlayer } from '../../_shared/VideoPlayer'
 // import { handleFileUpload } from '../../../utils/handleFileUpload'
+
+type VideoItem = {
+  url: string
+  title: string
+  body: string
+}
 
 type Props = {
   class?: string
-  videoUrl?: (value: string) => void
+  data: (value: VideoItem) => void
 }
 
 export const VideoUploader = (props: Props) => {
@@ -17,11 +24,21 @@ export const VideoUploader = (props: Props) => {
   const [dragActive, setDragActive] = createSignal(false)
   const [dragError, setDragError] = createSignal<string | undefined>()
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
+  const [data, setData] = createSignal<VideoItem>()
+
+  const updateData = (key, value) => {
+    setData((prev) => ({ ...prev, [key]: value }))
+  }
+
+  createEffect(() => {
+    props.data(data())
+  })
+
   const {
     actions: { showSnackbar }
   } = useSnackbar()
 
-  const videoUrlInput: {
+  const urlInput: {
     current: HTMLInputElement
   } = {
     current: null
@@ -43,7 +60,7 @@ export const VideoUploader = (props: Props) => {
       if (droppedFiles().length > 1) {
         setDragError(t('Many files, choose only one'))
       } else if (droppedFiles()[0].file.type.startsWith('video/')) {
-        showSnackbar({
+        await showSnackbar({
           body: t(
             'This functionality is currently not available, we would like to work on this issue. Use the download link.'
           )
@@ -63,9 +80,20 @@ export const VideoUploader = (props: Props) => {
     }
   }
 
-  const handleChangeInput = (value: string) => {
+  const handleUrlInput = async (value: string) => {
     if (validateUrl(value)) {
-      props.videoUrl(value)
+      updateData('url', value)
+      try {
+        await fetch(`https://noembed.com/embed?dataType=json&url=${value}`)
+          .then((res) => res.json())
+          .then((v) => {
+            console.log(v)
+            updateData('body', v.author_name)
+            updateData('title', v.title)
+          })
+      } catch (error) {
+        console.error('error', error)
+      }
     } else {
       setIncorrectUrl(true)
     }
@@ -73,31 +101,43 @@ export const VideoUploader = (props: Props) => {
 
   return (
     <div class={clsx(styles.VideoUploader, props.class)}>
-      <div
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        ref={dropzoneRef}
-        class={clsx(styles.dropArea, { [styles.active]: dragActive() })}
+      <Show
+        when={data() && data().url}
+        fallback={
+          <>
+            <div
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              ref={dropzoneRef}
+              class={clsx(styles.dropArea, { [styles.active]: dragActive() })}
+            >
+              {t('Upload video')}
+            </div>
+            <Show when={dragError()}>
+              <div class={styles.error}>{dragError()}</div>
+            </Show>
+            <div class={styles.inputHolder}>
+              <input
+                class={clsx(styles.urlInput, { [styles.hasError]: incorrectUrl() })}
+                ref={(el) => (urlInput.current = el)}
+                type="text"
+                placeholder={t('Insert video link')}
+                onChange={(event) => handleUrlInput(event.currentTarget.value)}
+              />
+            </div>
+            <Show when={incorrectUrl()}>
+              <div class={styles.error}>{t('It does not look like url')}</div>
+            </Show>
+          </>
+        }
       >
-        {t('Upload video')}
-      </div>
-      <Show when={dragError()}>
-        <div class={styles.error}>{dragError()}</div>
-      </Show>
-      <div class={styles.inputHolder}>
-        <input
-          class={clsx(styles.urlInput, { [styles.hasError]: incorrectUrl() })}
-          ref={(el) => {
-            videoUrlInput.current = el
-          }}
-          type="text"
-          placeholder={t('Insert video link')}
-          onChange={(event) => handleChangeInput(event.currentTarget.value)}
+        <VideoPlayer
+          deleteAction={() => setData()}
+          videoUrl={data().url}
+          title={data().title}
+          description={data().body}
         />
-      </div>
-      <Show when={incorrectUrl()}>
-        <div class={styles.error}>{t('It does not look like url')}</div>
       </Show>
     </div>
   )

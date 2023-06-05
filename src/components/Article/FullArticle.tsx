@@ -10,7 +10,7 @@ import { ShoutRatingControl } from './ShoutRatingControl'
 import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
-import VideoPlayer from './VideoPlayer'
+import { VideoPlayer } from '../_shared/VideoPlayer'
 import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
@@ -29,7 +29,6 @@ interface ArticleProps {
 
 interface MediaItem {
   url?: string
-  pic?: string
   title?: string
   body?: string
 }
@@ -40,18 +39,12 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
   return (
     <>
       <Switch fallback={<a href={props.media.url}>{t('Cannot show this media type')}</a>}>
-        <Match when={props.kind === 'audio'}>
-          <div>
-            <h5>{props.media.title}</h5>
-            <audio controls>
-              <source src={props.media.url} />
-            </audio>
-            <hr />
-          </div>
-        </Match>
         <Match when={props.kind === 'video'}>
-          VIDEO!
-          <VideoPlayer url={props.media.url} />
+          <VideoPlayer
+            videoUrl={props.media.url}
+            title={props.media.title}
+            description={props.media.body}
+          />
         </Match>
       </Switch>
     </>
@@ -85,7 +78,6 @@ export const FullArticle = (props: ArticleProps) => {
     ev.preventDefault()
   }
 
-  console.log('!!! props.article.media:', props.article.media)
   const body = createMemo(() => props.article.body)
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
@@ -130,7 +122,6 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
-  console.log('!!! props.article:', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>
@@ -177,11 +168,7 @@ export const FullArticle = (props: ArticleProps) => {
                 <For each={media() || []}>
                   {(m: MediaItem) => (
                     <div class={styles.shoutMediaBody}>
-                      <h1>WTF</h1>
                       <MediaView media={m} kind={props.article.layout} />
-                      <Show when={m?.body}>
-                        <div innerHTML={m.body} />
-                      </Show>
                     </div>
                   )}
                 </For>

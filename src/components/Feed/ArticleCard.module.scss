@@ -624,11 +624,17 @@
   .shoutCardTitle,
   .shoutCardSubtitle {
     display: inline;
-    @include font-size(1.4rem);
+    @include font-size(1.8rem);
   }
 
   .shoutCardTitle {
     padding-right: 0.25em;
+  }
+
+  .shoutCardTitlesContainer {
+    a {
+      padding: 0.3em 0;
+    }
   }
 
   a:hover {
@@ -700,4 +706,8 @@
   .shoutCardCoverContainer {
     flex: 1;
   }
+}
+
+.shoutTopicTop {
+  margin-bottom: 0.4rem !important;
 }

@@ -17,8 +17,10 @@
     &.top {
       border-bottom: 1px solid #e1e1e1;
       display: flex;
-      margin-bottom: 1.6rem;
-      padding-bottom: 1.6rem;
+      justify-content: space-between;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
 
       &:last-child {
         border: none;
@@ -30,16 +32,16 @@
         }
       }
 
-      &::before {
+      &::after {
         content: counter(item, upper-roman);
         counter-increment: item;
+        flex: 0 1.4em;
         font-size: 1.4em;
         font-weight: 900;
         line-height: 1;
-        padding-right: 0.3em;
-        min-width: 2em;
+        min-width: 1.4em;
+        padding-left: 0.3em;
         text-align: center;
-        width: 2em;
       }
     }
   }

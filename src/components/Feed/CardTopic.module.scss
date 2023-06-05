@@ -22,7 +22,11 @@
 }
 
 .shoutTopicFloorImportant {
-  a:hover {
-    background: $link-color !important;
+  a:link,
+  a:visited {
+    &:hover {
+      background: #fff !important;
+      color: #000 !important;
+    }
   }
 }

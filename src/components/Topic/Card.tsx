@@ -10,6 +10,7 @@ import { useSession } from '../../context/session'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { Icon } from '../_shared/Icon'
 import { useLocalize } from '../../context/localize'
+import { CardTopic } from '../Feed/CardTopic'
 
 interface TopicProps {
   topic: Topic
@@ -22,6 +23,7 @@ interface TopicProps {
   iconButton?: boolean
   showPublications?: boolean
   showDescription?: boolean
+  isCardMode?: boolean
 }
 
 export const TopicCard = (props: TopicProps) => {
@@ -54,66 +56,91 @@ export const TopicCard = (props: TopicProps) => {
   }
 
   return (
-    <div
-      class={styles.topic}
-      classList={{
-        row: !props.subscribeButtonBottom,
-        [styles.topicCompact]: props.compact,
-        [styles.topicInRow]: props.isTopicInRow
-      }}
-    >
-      <div classList={{ 'col-sm-18 col-lg-14 col-xl-12': !props.subscribeButtonBottom }}>
-        <Show when={props.topic.title}>
-          <h3 class={styles.topicTitle}>
-            <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
-          </h3>
-        </Show>
-        <Show when={props.topic.pic}>
-          <div class={styles.topicAvatar}>
-            <a href={`/topic/${props.topic.slug}`}>
-              <img src={props.topic.pic} alt={props.topic.title} />
-            </a>
-          </div>
-        </Show>
-
-        <Show when={props.showDescription && props.topic?.body}>
-          <div
-            class={clsx(styles.topicDescription, 'text-truncate')}
-            classList={{ 'topic-description--short': props.shortDescription }}
-          >
-            {props.topic.body}
-          </div>
-        </Show>
-      </div>
+    <div class={styles.topicContainer}>
       <div
-        class={styles.controlContainer}
-        classList={{ 'col-sm-6 col-lg-10 col-xl-12': !props.subscribeButtonBottom }}
+        class={styles.topic}
+        classList={{
+          row: !props.subscribeButtonBottom,
+          [styles.topicCompact]: props.compact,
+          [styles.topicInRow]: props.isTopicInRow
+        }}
       >
-        <ShowOnlyOnClient>
-          <Show when={isSessionLoaded()}>
-            <button
-              onClick={() => subscribe(!subscribed())}
-              class="button--light button--subscribe-topic"
-              classList={{
-                [styles.buttonCompact]: props.compact,
-                [styles.isSubscribing]: isSubscribing(),
-                [styles.isSubscribed]: subscribed()
-              }}
-              disabled={isSubscribing()}
-            >
-              <Show when={props.iconButton}>
-                <Show when={subscribed()} fallback="+">
-                  <Icon name="check-subscribed" />
-                </Show>
-              </Show>
-              <Show when={!props.iconButton}>
-                <Show when={subscribed()} fallback={t('Follow')}>
-                  {t('Unfollow')}
-                </Show>
-              </Show>
-            </button>
+        <div classList={{ 'col-sm-18 col-md-24 col-lg-14 col-xl-15': !props.subscribeButtonBottom }}>
+          <Show when={props.topic.title && !props.isCardMode}>
+            <h3 class={styles.topicTitle}>
+              <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
+            </h3>
           </Show>
-        </ShowOnlyOnClient>
+
+          <Show when={props.isCardMode}>
+            <CardTopic title={props.topic.title} slug={props.topic.slug} class={styles.cardMode} />
+          </Show>
+
+          <Show when={props.topic.pic}>
+            <div class={styles.topicAvatar}>
+              <a href={`/topic/${props.topic.slug}`}>
+                <img src={props.topic.pic} alt={props.topic.title} />
+              </a>
+            </div>
+          </Show>
+
+          <div
+            class={clsx(styles.topicDescription, 'text-truncate', styles.topicDescriptionShort)}
+            classList={{ [styles.topicDescriptionShort]: props.shortDescription }}
+          >
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta gravida urna, et vestibulum
+            dolor fermentum malesuada. Aenean est arcu, imperdiet vel aliquet quis, egestas ac justo.
+            Maecenas viverra enim a efficitur accumsan. Donec eu iaculis purus. Sed malesuada arcu sed nisl
+            luctus ultrices. Maecenas eget odio vitae turpis sollicitudin rutrum. Fusce rutrum urna felis,
+            id efficitur lacus faucibus et. Duis at libero dui. Quisque vitae pretium mi. Etiam non leo ut
+            nisi ornare auctor sit amet et enim. Aenean tempor ullamcorper augue, et mattis augue vestibulum
+            sed. Curabitur nec luctus sem. Phasellus imperdiet rhoncus lacus, in ultrices elit mollis ac.
+            Donec luctus dignissim cursus. Pellentesque sed risus sodales, tincidunt urna a, cursus ligula.
+            Curabitur nec nibh urna. Integer hendrerit quam eget diam malesuada, ac sagittis eros efficitur.
+            Sed ut orci eu quam mattis commodo. Nullam elementum nulla massa. Morbi placerat, lorem vitae
+            venenatis mollis, arcu erat sodales sapien, sit amet vehicula nunc tellus eget eros. Sed arcu
+            massa, vehicula sit amet viverra ut, eleifend ac leo. Mauris volutpat ex at orci tempor sodales.
+          </div>
+
+          <Show when={props.showDescription && props.topic?.body}>
+            <div
+              class={clsx(styles.topicDescription, 'text-truncate')}
+              classList={{ [styles.topicDescriptionShort]: props.shortDescription }}
+            >
+              {props.topic.body}
+            </div>
+          </Show>
+        </div>
+        <div
+          class={styles.controlContainer}
+          classList={{ 'col-sm-6 col-md-24 col-lg-10 col-xl-9': !props.subscribeButtonBottom }}
+        >
+          <ShowOnlyOnClient>
+            <Show when={isSessionLoaded()}>
+              <button
+                onClick={() => subscribe(!subscribed())}
+                class="button--light button--subscribe-topic"
+                classList={{
+                  [styles.buttonCompact]: props.compact,
+                  [styles.isSubscribing]: isSubscribing(),
+                  [styles.isSubscribed]: subscribed()
+                }}
+                disabled={isSubscribing()}
+              >
+                <Show when={props.iconButton}>
+                  <Show when={subscribed()} fallback="+">
+                    <Icon name="check-subscribed" />
+                  </Show>
+                </Show>
+                <Show when={!props.iconButton}>
+                  <Show when={subscribed()} fallback={t('Follow')}>
+                    {t('Unfollow')}
+                  </Show>
+                </Show>
+              </button>
+            </Show>
+          </ShowOnlyOnClient>
+        </div>
       </div>
     </div>
   )

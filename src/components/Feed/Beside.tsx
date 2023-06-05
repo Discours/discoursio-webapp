@@ -71,6 +71,7 @@ export const Beside = (props: BesideProps) => {
                             isTopicInRow={props.isTopicInRow}
                             iconButton={props.iconButton}
                             showPublications={true}
+                            isCardMode={true}
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>

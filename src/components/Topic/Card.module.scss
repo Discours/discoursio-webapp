@@ -1,5 +1,13 @@
+.topicContainer {
+  border-bottom: 1px solid #e1e1e1;
+
+  li:last-child & {
+    border: none;
+  }
+}
+
 .topic {
-  align-items: flex-start;
+  align-items: baseline;
   margin-top: 3.2rem;
 
   .stats & {
@@ -50,25 +58,22 @@
 }
 
 .topicDescription {
-  @include font-size(1.6rem);
+  @include font-size(1.4rem);
+  font-weight: 500;
   color: #696969;
-  margin: 0.5em 0 1.6rem;
+  line-height: 1.3;
+  margin: 0.2rem 0 1.6rem;
 
-  &.compact {
-    font-size: medium;
+  &.topicDescriptionShort {
+    display: block;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
-.topicDescriptionShort {
-  display: block;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .topicDetails {
-  @include font-size(1.7rem);
-
+  @include font-size(1.6rem);
   color: #9fa1a7;
   display: flex;
   margin-bottom: 1em;
@@ -79,8 +84,7 @@
 }
 
 .topicDetailsItem {
-  @include font-size(1.5rem);
-
+  @include font-size(1.4rem);
   margin-right: 1.6rem;
   white-space: nowrap;
 
@@ -102,6 +106,8 @@
 }
 
 .controlContainer {
+  margin-bottom: 1.6rem;
+
   @include media-breakpoint-up(sm) {
     text-align: right;
   }
@@ -109,12 +115,8 @@
 
 .topicCompact {
   .topicTitle {
-    @include font-size(1.7rem);
+    @include font-size(1.6rem);
   }
-}
-
-.buttonCompact {
-  margin-top: 0.6rem;
 }
 
 .isSubscribing {
@@ -130,4 +132,8 @@
     background: #fff;
     color: #000;
   }
+}
+
+.cardMode {
+  margin-bottom: 0;
 }

@@ -17,6 +17,7 @@ import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { VideoPlayer } from '../_shared/VideoPlayer'
+import { slugify } from '../../utils/slugify'
 
 type Props = {
   shout: Shout
@@ -80,7 +81,7 @@ export const EditView = (props: Props) => {
 
   const handleTitleInputChange = (value) => {
     setForm('title', value)
-
+    setForm('slug', slugify(value))
     if (value) {
       setFormErrors('title', '')
     }

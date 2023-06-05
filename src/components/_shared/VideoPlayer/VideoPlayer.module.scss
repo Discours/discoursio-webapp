@@ -18,11 +18,13 @@
     padding: 0;
     min-width: 30px;
   }
+
   .deleteIcon {
     filter: invert(1);
   }
 
   .meta {
+    width: 100%;
     max-width: 560px;
     margin: auto;
 

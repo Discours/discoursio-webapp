@@ -1,4 +1,4 @@
-import { createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
+import { createEffect, createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { Loading } from '../components/_shared/Loading'
 import { useSession } from '../context/session'
@@ -7,7 +7,7 @@ import { useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from '../context/localize'
 
-const EditView = lazy(() => import('../components/Views/Edit'))
+const Edit = lazy(() => import('../components/Views/Edit'))
 
 export const EditPage = () => {
   const { t } = useLocalize()
@@ -39,7 +39,7 @@ export const EditPage = () => {
         >
           <Show when={shout()}>
             <Suspense fallback={<Loading />}>
-              <EditView shout={shout()} />
+              <Edit shout={shout()} />
             </Suspense>
           </Show>
         </Show>

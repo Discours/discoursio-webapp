@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -18,7 +18,7 @@ import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 
-type EditViewProps = {
+type Props = {
   shout: Shout
 }
 
@@ -35,13 +35,12 @@ const EMPTY_TOPIC: Topic = {
   slug: ''
 }
 
-export const EditView = (props: EditViewProps) => {
+export const EditView = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
-  const [pastedVideoUrl, setPastedVideoUrl] = createSignal<string | undefined>()
   const { page } = useRouter()
   const {
     form,
@@ -115,13 +114,14 @@ export const EditView = (props: EditViewProps) => {
     if (newSelectedTopics.length > 0) {
       setFormErrors('selectedTopics', '')
     }
-
     setForm('selectedTopics', newSelectedTopics)
   }
 
   const media = createMemo(() => {
     return JSON.parse(props.shout.media || '[]')
   })
+
+  console.log('!!! props.shout:', props.shout)
 
   return (
     <>
@@ -167,22 +167,28 @@ export const EditView = (props: EditViewProps) => {
                   />
 
                   <Show when={props.shout.layout === 'video'}>
-                    <VideoUploader
-                      data={(data) => {
-                        setForm('media', JSON.stringify([data]))
-                      }}
-                    />
-                    <Show when={media()}>
+                    <Show
+                      when={media().length}
+                      fallback={
+                        <VideoUploader
+                          data={(data) => {
+                            setForm('media', JSON.stringify([data]))
+                          }}
+                        />
+                      }
+                    >
                       <For each={media()}>
                         {(mediaItem) => (
-                          <VideoPlayer
-                            videoUrl={mediaItem.url}
-                            title={mediaItem.title}
-                            description={mediaItem.body}
-                            deleteAction={() => {
-                              setForm('media', null)
-                            }}
-                          />
+                          <>
+                            <VideoPlayer
+                              videoUrl={mediaItem?.url}
+                              title={mediaItem?.title}
+                              description={mediaItem?.body}
+                              deleteAction={() => {
+                                setForm('media', null)
+                              }}
+                            />
+                          </>
                         )}
                       </For>
                     </Show>

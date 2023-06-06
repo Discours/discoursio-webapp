@@ -25,8 +25,8 @@ export const NavTopics = (props: { topics: Topic[] }) => {
           <li class="item right">
             <a href={`/topics`}>
               <span>
-                <Icon name="arrow-right-black" style={{ height: '12px', display: 'inline-block' }} />
-                <small style={{ margin: '4px' }}>{t('All topics')} </small>
+                {t('All topics')}
+                <Icon name="arrow-right-black" class={'icon'} />
               </span>
             </a>
           </li>

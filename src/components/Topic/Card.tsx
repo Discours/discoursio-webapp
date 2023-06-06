@@ -29,7 +29,8 @@ export const TopicCard = (props: TopicProps) => {
   const {
     session,
     isSessionLoaded,
-    actions: { loadSession }
+    isAuthenticated,
+    actions: { loadSession, callAuthenticationModal }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -51,6 +52,14 @@ export const TopicCard = (props: TopicProps) => {
 
     await loadSession()
     setIsSubscribing(false)
+  }
+
+  const handleSubscribe = () => {
+    if (!isAuthenticated()) {
+      callAuthenticationModal()
+    } else {
+      subscribe(!subscribed())
+    }
   }
 
   return (
@@ -92,7 +101,7 @@ export const TopicCard = (props: TopicProps) => {
         <ShowOnlyOnClient>
           <Show when={isSessionLoaded()}>
             <button
-              onClick={() => subscribe(!subscribed())}
+              onClick={handleSubscribe}
               class="button--light button--subscribe-topic"
               classList={{
                 [styles.buttonCompact]: props.compact,

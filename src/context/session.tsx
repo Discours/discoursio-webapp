@@ -2,6 +2,7 @@ import type { Accessor, JSX, Resource } from 'solid-js'
 import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 import type { AuthResult, User } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
+import { useRouter } from '../stores/router'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { useSnackbar } from './snackbar'
 import { useLocalize } from './localize'
@@ -13,6 +14,7 @@ type SessionContextType = {
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthResult | Promise<AuthResult>
+    callAuthenticationModal: () => void
     signIn: ({ email, password }: { email: string; password: string }) => Promise<void>
     signOut: () => Promise<void>
     confirmEmail: (token: string) => Promise<void>
@@ -28,6 +30,7 @@ export function useSession() {
 export const SessionProvider = (props: { children: JSX.Element }) => {
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const { t } = useLocalize()
+  const { changeSearchParam } = useRouter()
   const {
     actions: { showSnackbar }
   } = useSnackbar()
@@ -65,6 +68,11 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     console.debug('signed in')
   }
 
+  const callAuthenticationModal = () => {
+    changeSearchParam('modal', 'auth')
+    changeSearchParam('mode', 'login')
+  }
+
   const signOut = async () => {
     // TODO: call backend to revoke token
     mutate(null)
@@ -80,6 +88,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const actions = {
     loadSession,
+    callAuthenticationModal,
     signIn,
     signOut,
     confirmEmail

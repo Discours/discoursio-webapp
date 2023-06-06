@@ -39,7 +39,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const {
     session,
     isSessionLoaded,
-    actions: { loadSession }
+    isAuthenticated,
+    actions: { loadSession, callAuthenticationModal }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -79,6 +80,13 @@ export const AuthorCard = (props: AuthorCardProps) => {
     openPage(router, `inbox`)
     changeSearchParam('initChat', `${props.author.id}`)
   }
+
+  const handleSubscribe = () => {
+    if (!isAuthenticated()) {
+      callAuthenticationModal()
+    } else subscribe(true)
+  }
+
   return (
     <div
       class={clsx(styles.author)}
@@ -130,7 +138,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   when={subscribed()}
                   fallback={
                     <button
-                      onClick={() => subscribe(true)}
+                      onClick={handleSubscribe}
                       class={clsx('button', styles.button)}
                       classList={{
                         [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,

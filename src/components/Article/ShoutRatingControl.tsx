@@ -16,7 +16,11 @@ interface ShoutRatingControlProps {
 
 export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
-  const { user } = useSession()
+  const {
+    user,
+    isAuthenticated,
+    actions: { callAuthenticationModal }
+  } = useSession()
 
   const {
     reactionEntities,
@@ -57,21 +61,25 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   }
 
   const handleRatingChange = async (isUpvote: boolean) => {
-    if (isUpvoted()) {
-      await deleteShoutReaction(ReactionKind.Like)
-    } else if (isDownvoted()) {
-      await deleteShoutReaction(ReactionKind.Dislike)
+    if (!isAuthenticated()) {
+      callAuthenticationModal()
     } else {
-      await createReaction({
-        kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-        shout: props.shout.id
+      if (isUpvoted()) {
+        await deleteShoutReaction(ReactionKind.Like)
+      } else if (isDownvoted()) {
+        await deleteShoutReaction(ReactionKind.Dislike)
+      } else {
+        await createReaction({
+          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+          shout: props.shout.id
+        })
+      }
+
+      loadShout(props.shout.slug)
+      loadReactionsBy({
+        by: { shout: props.shout.slug }
       })
     }
-
-    loadShout(props.shout.slug)
-    loadReactionsBy({
-      by: { shout: props.shout.slug }
-    })
   }
 
   return (

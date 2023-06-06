@@ -210,6 +210,10 @@ export const FullArticle = (props: ArticleProps) => {
         </Slider>
       </Show>
 
+      {/* @@TODO show modal on */}
+      {/* on upvote/downvote */}
+      {/* on bookmarks */}
+
       <div class="wide-container">
         <div class="row">
           <div class="col-md-16 offset-md-5">
@@ -218,12 +222,6 @@ export const FullArticle = (props: ArticleProps) => {
                 <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
               </div>
 
-              <Show when={props.article.stat?.viewed}>
-                <div class={clsx(styles.shoutStatsItem)}>
-                  <Icon name="eye" class={clsx(styles.icon, styles.iconEye)} />
-                  {props.article.stat?.viewed}
-                </div>
-              </Show>
               <Popover content={t('Comment')}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutStatsItem} ref={triggerRef} onClick={scrollToComments}>
@@ -276,6 +274,12 @@ export const FullArticle = (props: ArticleProps) => {
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
                   {formattedDate()}
                 </div>
+                <Show when={props.article.stat?.viewed}>
+                  <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
+                    <Icon name="eye" class={clsx(styles.icon, styles.iconEye)} />
+                    {props.article.stat?.viewed}
+                  </div>
+                </Show>
               </div>
             </div>
             <div class={styles.help}>

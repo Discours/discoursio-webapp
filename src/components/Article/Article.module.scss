@@ -237,6 +237,12 @@ img {
   margin-right: 0;
   margin-left: auto;
   white-space: nowrap;
+  cursor: default;
+
+  > .shoutStatsItemViews,
+  > .shoutStatsItemAdditionalDataItem {
+    cursor: default;
+  }
 
   .icon {
     opacity: 0.4;
@@ -246,6 +252,11 @@ img {
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
   }
+}
+
+.shoutStatsItemViews {
+  margin-left: 2rem;
+  margin-right: 0;
 }
 
 .shoutStatsItemAdditionalDataItem {

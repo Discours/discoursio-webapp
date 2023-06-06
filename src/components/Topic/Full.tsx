@@ -22,14 +22,14 @@ export const FullTopic = (props: Props) => {
   const subscribed = createMemo(() => session()?.news?.topics?.includes(props.topic?.slug))
 
   const handleSubscribe = (isFollowed: boolean) => {
-    if (!isAuthenticated()) {
-      callAuthenticationModal()
-    } else {
+    if (isAuthenticated()) {
       if (isFollowed) {
         unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })
       } else {
         follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
       }
+    } else {
+      callAuthenticationModal()
     }
   }
 

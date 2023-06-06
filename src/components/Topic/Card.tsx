@@ -55,10 +55,10 @@ export const TopicCard = (props: TopicProps) => {
   }
 
   const handleSubscribe = () => {
-    if (!isAuthenticated()) {
-      callAuthenticationModal()
-    } else {
+    if (isAuthenticated()) {
       subscribe(!subscribed())
+    } else {
+      callAuthenticationModal()
     }
   }
 

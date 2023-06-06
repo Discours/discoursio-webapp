@@ -82,9 +82,11 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
 
   const handleSubscribe = () => {
-    if (!isAuthenticated()) {
+    if (isAuthenticated()) {
+      subscribe(true)
+    } else {
       callAuthenticationModal()
-    } else subscribe(true)
+    }
   }
 
   return (

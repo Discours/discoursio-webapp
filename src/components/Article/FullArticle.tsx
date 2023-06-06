@@ -84,12 +84,12 @@ export const FullArticle = (props: ArticleProps) => {
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
   const handleBookmarkButtonClick = (ev) => {
-    if (!isAuthenticated()) {
-      callAuthenticationModal()
-    } else {
+    if (isAuthenticated()) {
       // eslint-disable-next-line unicorn/consistent-function-scoping
       // TODO: implement bookmark clicked
       ev.preventDefault()
+    } else {
+      callAuthenticationModal()
     }
   }
 

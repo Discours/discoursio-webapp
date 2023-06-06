@@ -61,9 +61,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   }
 
   const handleRatingChange = async (isUpvote: boolean) => {
-    if (!isAuthenticated()) {
-      callAuthenticationModal()
-    } else {
+    if (isAuthenticated()) {
       if (isUpvoted()) {
         await deleteShoutReaction(ReactionKind.Like)
       } else if (isDownvoted()) {
@@ -79,6 +77,8 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       loadReactionsBy({
         by: { shout: props.shout.slug }
       })
+    } else {
+      callAuthenticationModal()
     }
   }
 

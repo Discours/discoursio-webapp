@@ -3,8 +3,7 @@
 }
 
 .feedNavigation {
-  @include font-size(1.5rem);
-
+  @include font-size(1.6rem);
   font-weight: 500;
 
   h4 {
@@ -67,7 +66,7 @@
     background: #2638d9;
   }
 
-  a {
+  a:link {
     position: static;
 
     &::before {
@@ -129,7 +128,6 @@
 
 .commentArticleTitle {
   @include font-size(1.2rem);
-
   line-clamp: 1;
   -webkit-line-clamp: 1;
 }

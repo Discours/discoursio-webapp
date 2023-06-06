@@ -8,6 +8,7 @@ import { useSeenStore } from '../../../stores/zine/seen'
 import { useSession } from '../../../context/session'
 import { useLocalize } from '../../../context/localize'
 import styles from './Sidebar.module.scss'
+import { clsx } from 'clsx'
 
 type FeedSidebarProps = {
   authors: Author[]
@@ -28,7 +29,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
   const { topicEntities } = useTopicsStore()
-  const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(false)
+  const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
 
   const checkTopicIsSeen = (topicSlug: string) => {
     return articlesByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
@@ -45,30 +46,30 @@ export const Sidebar = (props: FeedSidebarProps) => {
     },
     {
       icon: 'feed-my',
-      title: t('my feed')
+      title: t('My feed')
     },
     {
       icon: 'feed-collaborate',
-      title: t('accomplices')
+      title: t('Accomplices')
     },
     {
       icon: 'feed-discussion',
-      title: t('discussions'),
+      title: t('Discussions'),
       counter: 4
     },
     {
       icon: 'feed-drafts',
-      title: t('drafts'),
+      title: t('Drafts'),
       counter: 14
     },
     {
       icon: 'bookmark',
-      title: t('bookmarks'),
+      title: t('Bookmarks'),
       counter: 6
     },
     {
       icon: 'feed-notifications',
-      title: t('notifications')
+      title: t('Notifications')
     }
   ]
 
@@ -82,8 +83,8 @@ export const Sidebar = (props: FeedSidebarProps) => {
                 <span class={styles.sidebarItemName}>
                   {item.icon && <Icon name={item.icon} class={styles.icon} />}
                   <strong>{item.title}</strong>
-                  {item.counter && <span class={styles.counter}>18</span>}
                 </span>
+                {item.counter && <span class={styles.counter}>18</span>}
               </a>
             </li>
           )}
@@ -99,7 +100,8 @@ export const Sidebar = (props: FeedSidebarProps) => {
         >
           {t('My subscriptions')}
         </h4>
-        <ul classList={{ [styles.hidden]: !isSubscriptionsVisible() }}>
+
+        <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
           <For each={session()?.news?.authors}>
             {(authorSlug: string) => (
               <li>
@@ -107,8 +109,11 @@ export const Sidebar = (props: FeedSidebarProps) => {
                   href={`/author/${authorSlug}`}
                   classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
                 >
-                  <small>@{authorSlug}</small>
-                  {authorEntities()[authorSlug]?.name}
+                  <div class={styles.sidebarItemName}>
+                    <Icon name="hash" class={styles.icon} />
+                    {authorSlug}
+                    {authorEntities()[authorSlug]?.name}
+                  </div>
                 </a>
               </li>
             )}
@@ -120,7 +125,10 @@ export const Sidebar = (props: FeedSidebarProps) => {
                   href={`/topic/${topicSlug}`}
                   classList={{ [styles.unread]: checkTopicIsSeen(topicSlug) }}
                 >
-                  {topicEntities()[topicSlug]?.title ?? topicSlug}
+                  <div class={styles.sidebarItemName}>
+                    <Icon name="hash" class={styles.icon} />
+                    {topicEntities()[topicSlug]?.title ?? topicSlug}
+                  </div>
                 </a>
               </li>
             )}

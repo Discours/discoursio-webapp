@@ -112,7 +112,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
                 >
                   <div class={styles.sidebarItemName}>
                     <Show when={authorEntities()[authorSlug]}>
-                      <Userpic user={authorEntities()[authorSlug]?.userpic} />
+                      <Userpic user={authorEntities()[authorSlug]} />
                     </Show>
                     <Show when={!authorEntities()[authorSlug]}>
                       <Icon name="hash" class={styles.icon} />

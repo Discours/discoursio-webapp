@@ -9,6 +9,7 @@ import { useSession } from '../../../context/session'
 import { useLocalize } from '../../../context/localize'
 import styles from './Sidebar.module.scss'
 import { clsx } from 'clsx'
+import Userpic from '../../Author/Userpic'
 
 type FeedSidebarProps = {
   authors: Author[]
@@ -110,7 +111,12 @@ export const Sidebar = (props: FeedSidebarProps) => {
                   classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
                 >
                   <div class={styles.sidebarItemName}>
-                    <Icon name="hash" class={styles.icon} />
+                    <Show when={authorEntities()[authorSlug]}>
+                      <Userpic user={authorEntities()[authorSlug]?.userpic} />
+                    </Show>
+                    <Show when={!authorEntities()[authorSlug]}>
+                      <Icon name="hash" class={styles.icon} />
+                    </Show>
                     {authorSlug}
                     {authorEntities()[authorSlug]?.name}
                   </div>

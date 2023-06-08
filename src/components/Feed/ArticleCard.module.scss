@@ -322,6 +322,12 @@
       }
     }
   }
+
+  &:global(.swiper-slide-active) .shoutCardCover {
+    &:after {
+      background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 40%, rgb(0 0 0 / 70%) 100%);
+    }
+  }
 }
 
 .shoutCardWithCover {

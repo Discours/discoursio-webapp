@@ -15,7 +15,8 @@ export default (props: { articles: Shout[] }) => (
                   additionalClass: 'shout-card--content-top',
                   isWithCover: true,
                   isBigTitle: true,
-                  isVertical: true
+                  isVertical: true,
+                  nodate: true
                 }}
               />
             </div>

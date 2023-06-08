@@ -16,6 +16,7 @@ type WordCounter = {
 }
 
 type ShoutForm = {
+  layout?: string
   shoutId: number
   slug: string
   title: string
@@ -87,6 +88,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const validate = () => {
     if (!form.title) {
       setFormErrors('title', t('Required'))
+      return false
+    }
+
+    const parsedMedia = JSON.parse(form.media)
+    if (form.layout === 'video' && !parsedMedia[0]) {
+      showSnackbar({ type: 'error', body: t('Looks like you forgot to upload the video') })
       return false
     }
 

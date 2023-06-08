@@ -42,6 +42,7 @@ export const EditView = (props: Props) => {
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
+  const [media, setMedia] = createSignal<string>(props.shout.media)
   const { page } = useRouter()
   const {
     form,
@@ -60,7 +61,8 @@ export const EditView = (props: Props) => {
     mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
     body: props.shout.body,
     coverImageUrl: props.shout.cover,
-    media: props.shout.media
+    media: media(),
+    layout: props.shout.layout
   })
 
   onMount(async () => {
@@ -118,11 +120,9 @@ export const EditView = (props: Props) => {
     setForm('selectedTopics', newSelectedTopics)
   }
 
-  const media = createMemo(() => {
-    return JSON.parse(props.shout.media || '[]')
-  })
-
-  console.log('!!! props.shout:', props.shout)
+  const handleAddMedia = (data) => {
+    setForm('media', JSON.stringify([data]))
+  }
 
   return (
     <>
@@ -169,25 +169,23 @@ export const EditView = (props: Props) => {
 
                   <Show when={props.shout.layout === 'video'}>
                     <Show
-                      when={media().length}
+                      when={media()}
                       fallback={
                         <VideoUploader
                           data={(data) => {
-                            setForm('media', JSON.stringify([data]))
+                            handleAddMedia(data)
                           }}
                         />
                       }
                     >
-                      <For each={media()}>
+                      <For each={JSON.parse(media())}>
                         {(mediaItem) => (
                           <>
                             <VideoPlayer
                               videoUrl={mediaItem?.url}
                               title={mediaItem?.title}
                               description={mediaItem?.body}
-                              deleteAction={() => {
-                                setForm('media', null)
-                              }}
+                              deleteAction={() => setMedia(null)}
                             />
                           </>
                         )}

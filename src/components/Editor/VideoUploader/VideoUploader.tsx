@@ -87,7 +87,6 @@ export const VideoUploader = (props: Props) => {
         await fetch(`https://noembed.com/embed?dataType=json&url=${value}`)
           .then((res) => res.json())
           .then((v) => {
-            console.log(v)
             updateData('body', v.author_name)
             updateData('title', v.title)
           })

@@ -18,8 +18,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
   const {
     user,
-    isAuthenticated,
-    actions: { callAuthenticationModal }
+    actions: { requireAuthentication }
   } = useSession()
 
   const {
@@ -61,25 +60,21 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   }
 
   const handleRatingChange = async (isUpvote: boolean) => {
-    if (isAuthenticated()) {
-      if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
-      } else if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
-      } else {
-        await createReaction({
-          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-          shout: props.shout.id
-        })
-      }
-
-      loadShout(props.shout.slug)
-      loadReactionsBy({
-        by: { shout: props.shout.slug }
-      })
+    if (isUpvoted()) {
+      await deleteShoutReaction(ReactionKind.Like)
+    } else if (isDownvoted()) {
+      await deleteShoutReaction(ReactionKind.Dislike)
     } else {
-      callAuthenticationModal()
+      await createReaction({
+        kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+        shout: props.shout.id
+      })
     }
+
+    loadShout(props.shout.slug)
+    loadReactionsBy({
+      by: { shout: props.shout.slug }
+    })
   }
 
   return (
@@ -91,7 +86,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     >
       <button
         class={clsx(styles.ratingControl, styles.downvoteButton)}
-        onClick={() => handleRatingChange(false)}
+        onClick={() => requireAuthentication(() => handleRatingChange(false), 'vote')}
       >
         &minus;
       </button>
@@ -105,7 +100,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
       <button
         class={clsx(styles.ratingControl, styles.upvoteButton)}
-        onClick={() => handleRatingChange(true)}
+        onClick={() => requireAuthentication(() => handleRatingChange(true), 'vote')}
       >
         +
       </button>

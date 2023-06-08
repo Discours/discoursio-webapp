@@ -1,11 +1,12 @@
-import type { Accessor, JSX, Resource } from 'solid-js'
+import { Accessor, JSX, Resource, createEffect } from 'solid-js'
 import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 import type { AuthResult, User } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
-import { useRouter } from '../stores/router'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { useSnackbar } from './snackbar'
 import { useLocalize } from './localize'
+import { showModal } from '../stores/ui'
+import type { AuthModalSource } from '../components/Nav/AuthModal/types'
 
 type SessionContextType = {
   session: Resource<AuthResult>
@@ -14,7 +15,10 @@ type SessionContextType = {
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthResult | Promise<AuthResult>
-    callAuthenticationModal: () => void
+    requireAuthentication: (
+      callback: (() => Promise<void>) | (() => void),
+      modalSource: AuthModalSource
+    ) => void
     signIn: ({ email, password }: { email: string; password: string }) => Promise<void>
     signOut: () => Promise<void>
     confirmEmail: (token: string) => Promise<void>
@@ -30,7 +34,6 @@ export function useSession() {
 export const SessionProvider = (props: { children: JSX.Element }) => {
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const { t } = useLocalize()
-  const { changeSearchParam } = useRouter()
   const {
     actions: { showSnackbar }
   } = useSnackbar()
@@ -68,10 +71,27 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     console.debug('signed in')
   }
 
-  const callAuthenticationModal = () => {
-    changeSearchParam('modal', 'auth')
-    changeSearchParam('mode', 'login')
+  const [isAuthWithCallback, setIsAuthWithCallback] = createSignal(null)
+
+  const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
+    setIsAuthWithCallback(() => callback)
+
+    if (!isAuthenticated()) {
+      showModal('auth', modalSource)
+    }
   }
+
+  createEffect(async () => {
+    if (isAuthWithCallback()) {
+      const sessionProof = await session()
+
+      if (sessionProof) {
+        await isAuthWithCallback()()
+
+        setIsAuthWithCallback(null)
+      }
+    }
+  })
 
   const signOut = async () => {
     // TODO: call backend to revoke token
@@ -88,7 +108,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const actions = {
     loadSession,
-    callAuthenticationModal,
+    requireAuthentication,
     signIn,
     signOut,
     confirmEmail

@@ -39,8 +39,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const {
     session,
     isSessionLoaded,
-    isAuthenticated,
-    actions: { loadSession, callAuthenticationModal }
+    actions: { loadSession, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -82,11 +81,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
 
   const handleSubscribe = () => {
-    if (isAuthenticated()) {
-      subscribe(true)
-    } else {
-      callAuthenticationModal()
-    }
+    subscribe(true)
   }
 
   return (
@@ -140,7 +135,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   when={subscribed()}
                   fallback={
                     <button
-                      onClick={handleSubscribe}
+                      onClick={() => requireAuthentication(handleSubscribe, 'subscribe')}
                       class={clsx('button', styles.button)}
                       classList={{
                         [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
@@ -194,7 +189,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                       'button--subscribe-topic': props.isAuthorsList,
                       [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
                     }}
-                    onClick={initChat}
+                    onClick={() => requireAuthentication(initChat, 'discussions')}
                   >
                     <Show when={!props.isTextButton}>
                       <Icon name="comment" class={styles.icon} />

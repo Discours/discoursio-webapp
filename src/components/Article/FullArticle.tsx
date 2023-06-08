@@ -62,7 +62,7 @@ export const FullArticle = (props: ArticleProps) => {
   const {
     user,
     isAuthenticated,
-    actions: { callAuthenticationModal }
+    actions: { requireAuthentication }
   } = useSession()
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
@@ -84,13 +84,8 @@ export const FullArticle = (props: ArticleProps) => {
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
   const handleBookmarkButtonClick = (ev) => {
-    if (isAuthenticated()) {
-      // eslint-disable-next-line unicorn/consistent-function-scoping
-      // TODO: implement bookmark clicked
-      ev.preventDefault()
-    } else {
-      callAuthenticationModal()
-    }
+    // TODO: implement bookmark clicked
+    ev.preventDefault()
   }
 
   const body = createMemo(() => props.article.body)
@@ -254,7 +249,11 @@ export const FullArticle = (props: ArticleProps) => {
               </Popover>
               <Popover content={t('Add to bookmarks')}>
                 {(triggerRef: (el) => void) => (
-                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={handleBookmarkButtonClick}>
+                  <div
+                    class={styles.shoutStatsItem}
+                    ref={triggerRef}
+                    onClick={(e) => requireAuthentication(() => handleBookmarkButtonClick(e), 'bookmark')}
+                  >
                     <div class={styles.shoutStatsItemInner}>
                       <Icon name="bookmark" class={styles.icon} />
                     </div>

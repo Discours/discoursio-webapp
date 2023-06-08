@@ -1,6 +1,10 @@
 import { createSignal } from 'solid-js'
 import { useRouter } from './router'
-import type { AuthModalSearchParams, ConfirmEmailSearchParams } from '../components/Nav/AuthModal/types'
+import type {
+  AuthModalSearchParams,
+  AuthModalSource,
+  ConfirmEmailSearchParams
+} from '../components/Nav/AuthModal/types'
 import type { RootSearchParams } from '../pages/types'
 
 export type ModalType =
@@ -36,14 +40,20 @@ const [modal, setModal] = createSignal<ModalType | null>(null)
 
 const [warnings, setWarnings] = createSignal<Warning[]>([])
 
-export const showModal = (modalType: ModalType) => setModal(modalType)
+const { searchParams, changeSearchParam } = useRouter<
+  AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams
+>()
+
+export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
+  if (modalSource) {
+    changeSearchParam('source', modalSource)
+  }
+
+  setModal(modalType)
+}
 
 // TODO: find a better solution
 export const hideModal = () => {
-  const { searchParams, changeSearchParam } = useRouter<
-    AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams
-  >()
-
   if (searchParams().modal === 'auth') {
     if (searchParams().mode === 'confirm-email') {
       changeSearchParam('token', null, true)
@@ -52,6 +62,7 @@ export const hideModal = () => {
   }
 
   changeSearchParam('modal', null, true)
+  changeSearchParam('source', null, true)
 
   setModal(null)
 }

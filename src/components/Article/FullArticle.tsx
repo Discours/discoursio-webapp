@@ -254,7 +254,7 @@ export const FullArticle = (props: ArticleProps) => {
                   {(triggerRef: (el) => void) => (
                     <div class={styles.shoutStatsItem} ref={triggerRef}>
                       <a
-                        href={getPagePath(router, 'edit', { shoutId: `${props.article.id}` })}
+                        href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}
                         class={styles.shoutStatsItemInner}
                       >
                         <Icon name="pencil-outline" class={styles.icon} />

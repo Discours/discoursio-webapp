@@ -139,6 +139,7 @@
   "Karma": "Карма",
   "Knowledge base": "База знаний",
   "Last rev.": "Посл. изм.",
+  "Let's log in": "Давайте авторизуемся",
   "Link sent, check your email": "Ссылка отправлена, проверьте почту",
   "Lists": "Списки",
   "Literature": "Литература",
@@ -244,6 +245,7 @@
   "Thank you": "Благодарности",
   "This comment has not yet been rated": "Этот комментарий еще пока никто не оценил",
   "This email is already taken. If it's you": "Такой email уже зарегистрирован. Если это вы",
+  "This functionality is currently not available, we would like to work on this issue. Use the download link.": "В данный момент этот функционал не доступен, бы работаем над этой проблемой. Воспользуйтесь загрузкой по ссылке.",
   "This post has not been rated yet": "Эту публикацию еще пока никто не оценил",
   "To leave a comment please": "Чтобы оставить комментарий, необходимо",
   "To write a comment, you must": "Чтобы написать комментарий, необходимо",
@@ -263,9 +265,11 @@
   "Unfollow the topic": "Отписаться от темы",
   "Unnamed draft": "Unnamed draft",
   "Upload": "Загрузить",
+  "Upload video": "Загрузить видео",
   "Username": "Имя пользователя",
   "Userpic": "Аватар",
   "Video": "Видео",
+  "Video format not supported": "Тип видео не поддерживается",
   "Views": "Просмотры",
   "We are convinced that one voice is good, but many is better": "Мы убеждены, один голос хорошо, а много — лучше",
   "We can't find you, check email or": "Не можем вас найти, проверьте адрес электронной почты или",
@@ -343,5 +347,7 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал"
+  "zine": "журнал",
+  "Insert video link": "Вставить ссылку на видео",
+  "Looks like you forgot to upload the video": "Похоже, что вы забыли загрузить видео"
 }

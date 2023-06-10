@@ -58,7 +58,6 @@ export const Editor = (props: EditorProps) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
-  const [floatMenuRef, setFloatMenuRef] = createSignal<'blockquote' | 'image' | 'incut'>()
 
   const docName = `shout-${props.shoutId}`
 

@@ -53,31 +53,27 @@ export const VideoPlayer = (props: Props) => {
       </Show>
       <Switch>
         <Match when={isVimeo()}>
-          <iframe
-            src={`https://player.vimeo.com/video/${videoId()}`}
-            width="640"
-            height="360"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-          />
+          <div class={styles.videoContainer}>
+            <iframe
+              src={`https://player.vimeo.com/video/${videoId()}`}
+              width="640"
+              height="360"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen
+            />
+          </div>
         </Match>
         <Match when={!isVimeo()}>
-          <iframe
-            width="560"
-            height="315"
-            src={`https://www.youtube.com/embed/${videoId()}`}
-            allowfullscreen
-          />
+          <div class={styles.videoContainer}>
+            <iframe
+              width="560"
+              height="315"
+              src={`https://www.youtube.com/embed/${videoId()}`}
+              allowfullscreen
+            />
+          </div>
         </Match>
       </Switch>
-      <div class={styles.meta}>
-        <Show when={props.title}>
-          <div class={styles.title}>{props.title}</div>
-        </Show>
-        <Show when={props.description}>
-          <div class={styles.description}>{props.description}</div>
-        </Show>
-      </div>
     </div>
   )
 }

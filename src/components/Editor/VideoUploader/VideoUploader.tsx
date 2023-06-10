@@ -83,16 +83,6 @@ export const VideoUploader = (props: Props) => {
   const handleUrlInput = async (value: string) => {
     if (validateUrl(value)) {
       updateData('url', value)
-      try {
-        await fetch(`https://noembed.com/embed?dataType=json&url=${value}`)
-          .then((res) => res.json())
-          .then((v) => {
-            updateData('body', v.author_name)
-            updateData('title', v.title)
-          })
-      } catch (error) {
-        console.error('error', error)
-      }
     } else {
       setIncorrectUrl(true)
     }

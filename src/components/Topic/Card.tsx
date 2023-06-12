@@ -115,7 +115,8 @@ export const TopicCard = (props: TopicProps) => {
                 </Show>
                 <Show when={!props.iconButton}>
                   <Show when={subscribed()} fallback={t('Follow')}>
-                    {t('Unfollow')}
+                    <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
+                    <span class={styles.buttonSubscribedLabel}>{t('You are subscribed')}</span>
                   </Show>
                 </Show>
               </button>

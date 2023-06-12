@@ -1,9 +1,8 @@
 .subnavigation {
-  @include font-size(1.5rem);
-
-  height: 3em;
-  line-height: 3em;
-  margin-bottom: 1.2rem !important;
+  @include font-size(1.4rem);
+  height: 6rem;
+  line-height: 6rem;
+  margin-bottom: 5rem !important;
   overflow: hidden;
   position: relative;
 
@@ -14,22 +13,37 @@
   .topics {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     list-style: none;
-    margin-right: 2.2rem;
     margin-top: 0;
-    padding: 0;
+    padding: 0 7em 0 0;
+    position: relative;
   }
 
   .item {
-    margin-right: 2.4rem;
+    margin-right: 2rem;
 
-    &:last-child {
+    &.right {
       margin-right: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
     }
 
     a {
       border-bottom: 0;
+
+      &:hover {
+        .icon {
+          filter: invert(1);
+        }
+      }
+    }
+
+    .icon {
+      display: inline-block;
+      margin-left: 0.3em;
+      position: relative;
+      top: 0.15em;
     }
   }
 

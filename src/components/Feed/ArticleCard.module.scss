@@ -98,7 +98,7 @@
 
   a:link {
     border: none;
-    color: rgb(0 0 0 / 70%);
+    color: rgb(0 0 0 / 90%);
     position: relative;
     z-index: 2;
 
@@ -138,7 +138,7 @@
 }
 
 .shoutCardSubtitle {
-  color: #696969;
+  color: #141414;
   @include font-size(1.8rem);
   font-weight: 400;
   line-height: 1.3;
@@ -322,6 +322,12 @@
       }
     }
   }
+
+  &:global(.swiper-slide-active) .shoutCardCover {
+    &:after {
+      background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 40%, rgb(0 0 0 / 70%) 100%);
+    }
+  }
 }
 
 .shoutCardWithCover {
@@ -396,9 +402,14 @@
     @include font-size(3.2rem);
   }
 
-  .shoutTopic a:hover {
-    background: #fff !important;
-    color: #000 !important;
+  .shoutTopic a {
+    &,
+    &:visited {
+      &:hover {
+        background: #fff !important;
+        color: #000 !important;
+      }
+    }
   }
 }
 
@@ -474,6 +485,10 @@
         opacity: 0.5;
       }
     }
+  }
+
+  a {
+    border: none;
   }
 }
 
@@ -577,14 +592,13 @@
 
 .shoutCardBigTitle {
   .shoutCardTitle {
-    @include font-size(2.6rem);
+    @include font-size(3.2rem);
     display: block;
     padding-right: 0;
   }
 
   .shoutCardSubtitle {
     @include font-size(2.6rem);
-    color: #696969;
   }
 }
 
@@ -605,10 +619,6 @@
 
   a:link {
     background: none !important;
-
-    .shoutCardSubtitle {
-      color: #696969;
-    }
   }
 }
 
@@ -619,11 +629,21 @@
   .shoutCardTitle,
   .shoutCardSubtitle {
     display: inline;
-    @include font-size(1.4rem);
+    @include font-size(1.8rem);
+  }
+
+  .shoutCardSubtitle {
+    color: #000;
   }
 
   .shoutCardTitle {
     padding-right: 0.25em;
+  }
+
+  .shoutCardTitlesContainer {
+    a {
+      padding: 0.3em 0;
+    }
   }
 
   a:hover {
@@ -685,7 +705,6 @@
 
   .shoutCardSubtitle {
     @include font-size(2.4rem);
-    color: #696969;
     flex: 1;
   }
 }
@@ -695,4 +714,8 @@
   .shoutCardCoverContainer {
     flex: 1;
   }
+}
+
+.shoutTopicTop {
+  margin-bottom: 0.4rem !important;
 }

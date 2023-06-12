@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -15,8 +15,11 @@ import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
 import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
+import { VideoUploader } from '../Editor/VideoUploader'
+import { VideoPlayer } from '../_shared/VideoPlayer'
+import { slugify } from '../../utils/slugify'
 
-type EditViewProps = {
+type Props = {
   shout: Shout
 }
 
@@ -33,12 +36,13 @@ const EMPTY_TOPIC: Topic = {
   slug: ''
 }
 
-export const EditView = (props: EditViewProps) => {
+export const EditView = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
+  const [media, setMedia] = createSignal<string>(props.shout.media)
   const { page } = useRouter()
   const {
     form,
@@ -56,7 +60,9 @@ export const EditView = (props: EditViewProps) => {
     selectedTopics: shoutTopics,
     mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
     body: props.shout.body,
-    coverImageUrl: props.shout.cover
+    coverImageUrl: props.shout.cover,
+    media: media(),
+    layout: props.shout.layout
   })
 
   onMount(async () => {
@@ -77,7 +83,7 @@ export const EditView = (props: EditViewProps) => {
 
   const handleTitleInputChange = (value) => {
     setForm('title', value)
-
+    setForm('slug', slugify(value))
     if (value) {
       setFormErrors('title', '')
     }
@@ -111,8 +117,11 @@ export const EditView = (props: EditViewProps) => {
     if (newSelectedTopics.length > 0) {
       setFormErrors('selectedTopics', '')
     }
-
     setForm('selectedTopics', newSelectedTopics)
+  }
+
+  const handleAddMedia = (data) => {
+    setForm('media', JSON.stringify([data]))
   }
 
   return (
@@ -157,6 +166,33 @@ export const EditView = (props: EditViewProps) => {
                     initialValue={form.subtitle}
                     maxLength={100}
                   />
+
+                  <Show when={props.shout.layout === 'video'}>
+                    <Show
+                      when={media()}
+                      fallback={
+                        <VideoUploader
+                          data={(data) => {
+                            handleAddMedia(data)
+                          }}
+                        />
+                      }
+                    >
+                      <For each={JSON.parse(media())}>
+                        {(mediaItem) => (
+                          <>
+                            <VideoPlayer
+                              videoUrl={mediaItem?.url}
+                              title={mediaItem?.title}
+                              description={mediaItem?.body}
+                              deleteAction={() => setMedia(null)}
+                            />
+                          </>
+                        )}
+                      </For>
+                    </Show>
+                  </Show>
+
                   <Editor
                     shoutId={props.shout.id}
                     initialContent={props.shout.body}

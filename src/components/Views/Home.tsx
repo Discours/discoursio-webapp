@@ -186,7 +186,7 @@ export const HomeView = (props: HomeProps) => {
           nodate={true}
         />
 
-        <Row3 articles={sortedArticles().slice(21, 24)} />
+        <Row3 articles={sortedArticles().slice(21, 24)} nodate={true} />
 
         <Banner />
 

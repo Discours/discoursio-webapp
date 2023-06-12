@@ -218,6 +218,7 @@
 
   .validationError {
     position: absolute;
+    z-index: 1;
     top: 100%;
     font-size: small;
     color: #f00;

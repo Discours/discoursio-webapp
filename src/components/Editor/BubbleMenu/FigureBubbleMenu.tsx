@@ -19,7 +19,7 @@ export const FigureBubbleMenu = (props: Props) => {
           <button
             ref={triggerRef}
             type="button"
-            class={clsx(styles.bubbleMenuButton)}
+            class={styles.bubbleMenuButton}
             onClick={() => props.editor.chain().focus().setImageFloat('left').run()}
           >
             <Icon name="editor-image-align-left" />
@@ -31,7 +31,7 @@ export const FigureBubbleMenu = (props: Props) => {
           <button
             ref={triggerRef}
             type="button"
-            class={clsx(styles.bubbleMenuButton)}
+            class={styles.bubbleMenuButton}
             onClick={() => props.editor.chain().focus().setImageFloat(null).run()}
           >
             <Icon name="editor-image-align-center" />
@@ -43,7 +43,7 @@ export const FigureBubbleMenu = (props: Props) => {
           <button
             ref={triggerRef}
             type="button"
-            class={clsx(styles.bubbleMenuButton)}
+            class={styles.bubbleMenuButton}
             onClick={() => props.editor.chain().focus().setImageFloat('right').run()}
           >
             <Icon name="editor-image-align-right" />
@@ -53,7 +53,7 @@ export const FigureBubbleMenu = (props: Props) => {
       <div class={styles.delimiter} />
       <button
         type="button"
-        class={clsx(styles.bubbleMenuButton)}
+        class={styles.bubbleMenuButton}
         onClick={() => {
           props.editor.chain().focus().imageToFigure().run()
         }}
@@ -63,7 +63,7 @@ export const FigureBubbleMenu = (props: Props) => {
       <div class={styles.delimiter} />
       <Popover content={t('Add image')}>
         {(triggerRef: (el) => void) => (
-          <button type="button" ref={triggerRef} class={clsx(styles.bubbleMenuButton)}>
+          <button type="button" ref={triggerRef} class={styles.bubbleMenuButton}>
             <Icon name="editor-image-add" />
           </button>
         )}

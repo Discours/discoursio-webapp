@@ -545,13 +545,12 @@ figure {
 
   figcaption {
     @include font-size(1.2rem);
-
     color: #9fa1a7;
   }
 }
 
 .view-switcher {
-  @include font-size(1.7rem);
+  @include font-size(1.4rem);
   display: flex;
   flex-wrap: wrap;
   font-weight: 500;
@@ -563,9 +562,6 @@ figure {
     display: inline-block;
     margin-right: 2rem;
     margin-bottom: 0.6em;
-
-    @include media-breakpoint-down(md) {
-    }
 
     &:last-child {
       margin-right: 0;

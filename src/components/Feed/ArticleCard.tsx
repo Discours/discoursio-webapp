@@ -129,7 +129,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             }
             slug={mainTopic.slug}
             isFloorImportant={props.settings?.isFloorImportant}
-            class={styles.shoutTopic}
+            class={clsx(styles.shoutTopic, { [styles.shoutTopicTop]: props.settings.isShort })}
           />
         </Show>
 

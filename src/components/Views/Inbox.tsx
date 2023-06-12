@@ -182,37 +182,38 @@ export const InboxView = () => {
           </div>
 
           <Show when={chatsToShow}>
-            <div class={styles.chatListTypes}>
-              <ul>
-                <li
-                  class={clsx({ [styles.selected]: !sortByPerToPer() && !sortByGroup() })}
+            <ul class="view-switcher">
+              <li class={clsx({ 'view-switcher__item--selected': !sortByPerToPer() && !sortByGroup() })}>
+                <button
                   onClick={() => {
                     setSortByPerToPer(false)
                     setSortByGroup(false)
                   }}
                 >
-                  <span>{t('All')}</span>
-                </li>
-                <li
-                  class={clsx({ [styles.selected]: sortByPerToPer() })}
+                  {t('All')}
+                </button>
+              </li>
+              <li class={clsx({ 'view-switcher__item--selected': sortByPerToPer() })}>
+                <button
                   onClick={() => {
                     setSortByPerToPer(true)
                     setSortByGroup(false)
                   }}
                 >
-                  <span>{t('Personal')}</span>
-                </li>
-                <li
-                  class={clsx({ [styles.selected]: sortByGroup() })}
+                  {t('Personal')}
+                </button>
+              </li>
+              <li class={clsx({ 'view-switcher__item--selected': sortByGroup() })}>
+                <button
                   onClick={() => {
                     setSortByGroup(true)
                     setSortByPerToPer(false)
                   }}
                 >
-                  <span>{t('Groups')}</span>
-                </li>
-              </ul>
-            </div>
+                  {t('Groups')}
+                </button>
+              </li>
+            </ul>
           </Show>
           <div class={styles.holder}>
             <div class={styles.dialogs}>

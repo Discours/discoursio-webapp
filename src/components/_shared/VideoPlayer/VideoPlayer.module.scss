@@ -1,0 +1,39 @@
+.VideoPlayer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0;
+  position: relative;
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    margin-top: auto;
+  }
+  .deleteAction {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    padding: 0;
+    min-width: 30px;
+  }
+
+  .deleteIcon {
+    filter: invert(1);
+  }
+
+  .videoContainer {
+    width: 100%;
+    aspect-ratio: 16/9;
+
+    @include media-breakpoint-up(md) {
+      margin: 0 0 1em -16.6666%;
+    }
+
+    iframe {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

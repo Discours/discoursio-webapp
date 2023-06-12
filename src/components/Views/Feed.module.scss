@@ -53,12 +53,14 @@
 .topic {
   background: transparentize(#2638d9, 0.95);
   display: inline-block;
+  @include font-size(1.2rem);
   font-weight: bold;
-  line-height: 1.2;
-  margin: 0 0.5em 0.5em 0;
-  padding: 0.6em 1em;
+  line-height: 3.4rem;
+  margin: 0 0.6rem 0.6rem 0;
+  padding: 0 1.2rem;
   position: relative;
   vertical-align: middle;
+  white-space: nowrap;
 
   &:hover {
     background: #2638d9;

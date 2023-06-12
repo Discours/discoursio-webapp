@@ -458,6 +458,8 @@
 
 .shoutCardDetailsContent {
   display: flex;
+  font-size: 1.2rem;
+  font-weight: bold;
 
   &:first-child {
     padding: 0 1em 1em 0;
@@ -499,7 +501,8 @@
 
   .icon {
     display: inline-block;
-    margin: 0.2em 0.5em 0 0;
+    margin: 0 0.5em 0 0;
+    vertical-align: middle;
   }
 
   a {
@@ -512,10 +515,6 @@
       }
     }
   }
-}
-
-.shoutCardComments {
-  @include font-size(1.2rem);
 }
 
 .shoutCardDetailsViewed {

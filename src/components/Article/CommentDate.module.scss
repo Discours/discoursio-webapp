@@ -1,0 +1,27 @@
+.commentDates {
+  flex: 1;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 1.2rem;
+  margin: 0 1em 4px 0;
+  color: rgb(0 0 0 / 30%);
+  @include font-size(1.2rem);
+
+  .date {
+    .icon {
+      line-height: 1;
+      width: 1rem;
+      display: inline-block;
+      opacity: 0.6;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+  }
+}
+
+.commentDatesLastInRow {
+  margin-right: 0;
+  white-space: nowrap;
+}

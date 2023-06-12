@@ -16,6 +16,7 @@ import { useLocalize } from '../../context/localize'
 import { CommentRatingControl } from './CommentRatingControl'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
+import { CommentDate } from './CommentDate'
 
 const CommentEditor = lazy(() => import('../_shared/CommentEditor'))
 
@@ -155,15 +156,7 @@ export const Comment = (props: Props) => {
                 </div>
               </Show>
 
-              <div class={styles.commentDates}>
-                <div class={styles.date}>{formattedDate(comment()?.createdAt)()}</div>
-                <Show when={comment()?.updatedAt}>
-                  <div class={styles.date}>
-                    <Icon name="edit" class={styles.icon} />
-                    {t('Edited')} {formattedDate(comment()?.updatedAt)()}
-                  </div>
-                </Show>
-              </div>
+              <CommentDate comment={comment()} isShort={true} />
 
               <CommentRatingControl comment={comment()} />
             </div>

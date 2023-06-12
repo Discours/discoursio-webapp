@@ -1,6 +1,6 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
-import { capitalize } from '../../utils'
+import { capitalize, formatDate } from '../../utils'
 import { translit } from '../../utils/ru2en'
 import { Icon } from '../_shared/Icon'
 import styles from './ArticleCard.module.scss'
@@ -70,9 +70,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
     props.article.topics[0]
 
   const formattedDate = createMemo<string>(() => {
-    return new Date(props.article.createdAt)
-      .toLocaleDateString(lang(), { month: 'long', day: 'numeric', year: 'numeric' })
-      .replace(' г.', '')
+    return formatDate(new Date(props.article.createdAt), { month: 'long', day: 'numeric', year: 'numeric' })
   })
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
@@ -170,7 +168,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </div>
             </Show>
             <Show when={!props.settings?.nodate}>
-              <div class={styles.shoutDate}>{formattedDate()}</div>
+              <time class={styles.shoutDate}>{formattedDate()}</time>
             </Show>
           </div>
         </Show>

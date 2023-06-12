@@ -17,6 +17,7 @@ import { useLocalize } from '../../context/localize'
 import styles from './Feed.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
+import { CommentDate } from '../Article/CommentDate'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -156,12 +157,15 @@ export const FeedView = () => {
                           innerHTML={comment.body}
                         />
                       </div>
-                      <AuthorCard
-                        author={comment.createdBy as Author}
-                        isFeedMode={true}
-                        hideWriteButton={true}
-                        hideFollow={true}
-                      />
+                      <div class={styles.commentDetails}>
+                        <AuthorCard
+                          author={comment.createdBy as Author}
+                          isFeedMode={true}
+                          hideWriteButton={true}
+                          hideFollow={true}
+                        />
+                        <CommentDate comment={comment} isShort={true} isLastInRow={true} />
+                      </div>
                       <div class={clsx('text-truncate', styles.commentArticleTitle)}>
                         <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
                       </div>

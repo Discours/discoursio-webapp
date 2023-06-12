@@ -1,0 +1,312 @@
+.allTracks {
+  color: red;
+}
+
+.playerHeader {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.playerTitle {
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playerControls {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  & > button {
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.playerControlsDisabled {
+  cursor: crosshair;
+  pointer-events: none;
+}
+
+.playButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+  background-color: #141414;
+
+  & img {
+    width: 14px;
+    height: auto;
+  }
+}
+
+.controlsButton {
+  margin-left: 19px;
+
+  & img {
+    width: 15px;
+    height: auto;
+  }
+}
+
+.controlsButtonNext {
+  margin-left: 26px;
+  transform: rotate(180deg);
+}
+
+.volumeButton {
+  margin-left: 23px;
+
+  & img {
+    width: 18px;
+    height: auto;
+  }
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding-left: 10px;
+}
+
+.progress {
+  position: relative;
+  width: 100%;
+  height: 44px;
+  cursor: pointer;
+  border-bottom: 2px solid black;
+}
+
+.progressCanvas {
+  position: absolute;
+  z-index: 1;
+}
+
+.progressFilled {
+  position: absolute;
+  z-index: 2;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 2px solid red;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: -8px;
+    right: -8px;
+
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: black;
+  }
+}
+
+.progressTiming {
+  width: 100%;
+  padding-top: 7px;
+  display: flex;
+  justify-content: space-between;
+
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.003em;
+}
+
+.volumeContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.volume {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 14px;
+
+  height: 28px;
+  -webkit-appearance: none;
+  margin: 10px 0;
+  width: 80px;
+  background: transparent;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: #0e0e0e;
+    border-radius: 10px;
+  }
+
+  &::-webkit-slider-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 100px;
+    border: none;
+    background: #0e0e0e;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4px;
+  }
+
+  &:focus::-webkit-slider-runnable-track {
+    background: #0e0e0e;
+  }
+
+  &::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: #0e0e0e;
+    border-radius: 10px;
+  }
+
+  &::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 100px;
+    border: none;
+    background: #0e0e0e;
+    cursor: pointer;
+    margin-top: -4px;
+  }
+
+  &::-ms-track {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: #0e0e0e;
+    border-radius: 10px;
+  }
+
+  &::-ms-fill-lower {
+    background: #0e0e0e;
+    border-radius: 10px;
+  }
+
+  &::-ms-fill-upper {
+    background: #0e0e0e;
+    border-radius: 10px;
+  }
+
+  &::-ms-thumb {
+    margin-top: 1px;
+    height: 15px;
+    width: 15px;
+    border-radius: 5px;
+    border: none;
+    background: #0e0e0e;
+    cursor: pointer;
+  }
+
+  &:focus::-ms-fill-lower {
+    background: #38bdf8;
+  }
+
+  &:focus::-ms-fill-upper {
+    background: #38bdf8;
+  }
+}
+
+.playlist {
+  display: flex;
+  flex-direction: column;
+
+  list-style-type: none;
+  margin: 32px 0 0;
+  padding: 0;
+
+  & > li {
+    border-top: 1px solid #e9e9ee;
+  }
+}
+
+.playlistItem {
+  display: flex;
+  align-items: center;
+
+  min-height: 56px;
+  padding: 16px 0;
+}
+
+.playlistItemActive {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.playlistItemPlayButton {
+  border: none;
+  cursor: pointer;
+  width: 14px;
+  height: auto;
+}
+
+.playlistItemTitle {
+  max-width: 254px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  margin-left: 17px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  color: #000000;
+}
+
+.playlistItemControls {
+  display: flex;
+  margin-left: auto;
+}
+
+.playlistItemDuration {
+  margin-left: 22px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  color: #000000;
+}
+
+.timelinePlaceholder {
+  width: 100%;
+  height: 67px;
+}
+
+.playerHeaderPlaceholder {
+  width: 100%;
+  height: 67px;
+}
+.playlistPlaceholder {
+  width: 100%;
+  height: 67px;
+}

@@ -1,7 +1,9 @@
+import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
-import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import AudioPlayer from './AudioPlayer'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -83,11 +85,8 @@ export const FullArticle = (props: ArticleProps) => {
     // TODO: implement bookmark clicked
     ev.preventDefault()
   }
-
-  const body = createMemo(() => props.article.body)
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
-    console.debug('!!! media items', mi)
     return mi
   })
 
@@ -134,7 +133,7 @@ export const FullArticle = (props: ArticleProps) => {
       <div class="wide-container">
         <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
-            <div class={styles.shoutHeader}>
+            {/* <div class={styles.shoutHeader}>
               <Show when={mainTopic()}>
                 <div class={styles.shoutTopic}>
                   <a
@@ -167,11 +166,20 @@ export const FullArticle = (props: ArticleProps) => {
                   style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}
                 />
               </Show>
-            </div>
+
+              <Show when={body()}>
+                <div class={styles.shoutBody}>
+                  <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
+                    <MD body={body()} />
+                  </Show>
+                </div>
+              </Show>
+            </div> */}
 
             <Show when={media() && props.article.layout !== 'image'}>
               <div class="media-items">
-                <For each={media() || []}>
+                <AudioPlayer media={media()} />
+                {/* <For each={media() || []}>
                   {(m: MediaItem) => (
                     <div class={styles.shoutMediaBody}>
                       <MediaView media={m} kind={props.article.layout} />
@@ -180,14 +188,7 @@ export const FullArticle = (props: ArticleProps) => {
                       </Show>
                     </div>
                   )}
-                </For>
-              </div>
-            </Show>
-            <Show when={body()}>
-              <div class={styles.shoutBody}>
-                <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
-                  <MD body={body()} />
-                </Show>
+                </For> */}
               </div>
             </Show>
           </article>

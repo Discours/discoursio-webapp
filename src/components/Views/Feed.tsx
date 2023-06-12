@@ -189,7 +189,7 @@ export const FeedView = () => {
             </Show>
 
             <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
-              <Icon name="pin" class={styles.icon} />
+              <h4>{t('Knowledge base')}</h4>
               <ul class="nodash">
                 <li>
                   <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>

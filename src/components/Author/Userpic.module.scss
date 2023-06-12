@@ -1,5 +1,4 @@
 .circlewrap {
-  align-items: center;
   border-radius: 100%;
   display: flex;
   height: 32px;
@@ -35,6 +34,8 @@
   }
 
   a {
+    padding: 0;
+
     &:hover {
       color: #000;
     }

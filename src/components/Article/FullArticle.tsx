@@ -84,8 +84,10 @@ export const FullArticle = (props: ArticleProps) => {
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
   const handleBookmarkButtonClick = (ev) => {
-    // TODO: implement bookmark clicked
-    ev.preventDefault()
+    requireAuthentication(() => {
+      // TODO: implement bookmark clicked
+      ev.preventDefault()
+    }, 'bookmark')
   }
 
   const body = createMemo(() => props.article.body)
@@ -249,11 +251,7 @@ export const FullArticle = (props: ArticleProps) => {
               </Popover>
               <Popover content={t('Add to bookmarks')}>
                 {(triggerRef: (el) => void) => (
-                  <div
-                    class={styles.shoutStatsItem}
-                    ref={triggerRef}
-                    onClick={(e) => requireAuthentication(() => handleBookmarkButtonClick(e), 'bookmark')}
-                  >
+                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={handleBookmarkButtonClick}>
                     <div class={styles.shoutStatsItemInner}>
                       <Icon name="bookmark" class={styles.icon} />
                     </div>

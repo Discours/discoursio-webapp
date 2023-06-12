@@ -54,7 +54,9 @@ export const TopicCard = (props: TopicProps) => {
   }
 
   const handleSubscribe = () => {
-    subscribe(!subscribed())
+    requireAuthentication(() => {
+      subscribe(!subscribed())
+    }, 'subscribe')
   }
 
   return (
@@ -96,7 +98,7 @@ export const TopicCard = (props: TopicProps) => {
         <ShowOnlyOnClient>
           <Show when={isSessionLoaded()}>
             <button
-              onClick={() => requireAuthentication(() => handleSubscribe(), 'subscribe')}
+              onClick={handleSubscribe}
               class="button--light button--subscribe-topic"
               classList={{
                 [styles.buttonCompact]: props.compact,

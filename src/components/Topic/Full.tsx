@@ -21,11 +21,13 @@ export const FullTopic = (props: Props) => {
   const subscribed = createMemo(() => session()?.news?.topics?.includes(props.topic?.slug))
 
   const handleSubscribe = (isFollowed: boolean) => {
-    if (isFollowed) {
-      unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-    } else {
-      follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-    }
+    requireAuthentication(() => {
+      if (isFollowed) {
+        unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })
+      } else {
+        follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
+      }
+    }, 'follow')
   }
 
   return (
@@ -34,18 +36,12 @@ export const FullTopic = (props: Props) => {
       <p>{props.topic.body}</p>
       <div class={clsx(styles.topicActions)}>
         <Show when={!subscribed()}>
-          <button
-            onClick={() => requireAuthentication(() => handleSubscribe(false), 'follow')}
-            class="button"
-          >
+          <button onClick={() => handleSubscribe(false)} class="button">
             {t('Follow the topic')}
           </button>
         </Show>
         <Show when={subscribed()}>
-          <button
-            onClick={() => requireAuthentication(() => handleSubscribe(true), 'follow')}
-            class="button"
-          >
+          <button onClick={() => handleSubscribe(true)} class="button">
             {t('Unfollow the topic')}
           </button>
         </Show>

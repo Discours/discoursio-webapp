@@ -13,6 +13,7 @@ import { FollowingEntity } from '../../graphql/types.gen'
 import { router, useRouter } from '../../stores/router'
 import { openPage } from '@nanostores/router'
 import { useLocalize } from '../../context/localize'
+import { init } from 'i18next'
 
 interface AuthorCardProps {
   caption?: string
@@ -76,12 +77,16 @@ export const AuthorCard = (props: AuthorCardProps) => {
   // TODO: reimplement AuthorCard
   const { changeSearchParam } = useRouter()
   const initChat = () => {
-    openPage(router, `inbox`)
-    changeSearchParam('initChat', `${props.author.id}`)
+    requireAuthentication(() => {
+      openPage(router, `inbox`)
+      changeSearchParam('initChat', `${props.author.id}`)
+    }, 'discussions')
   }
 
   const handleSubscribe = () => {
-    subscribe(true)
+    requireAuthentication(() => {
+      subscribe(true)
+    }, 'subscribe')
   }
 
   return (
@@ -135,7 +140,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   when={subscribed()}
                   fallback={
                     <button
-                      onClick={() => requireAuthentication(handleSubscribe, 'subscribe')}
+                      onClick={handleSubscribe}
                       class={clsx('button', styles.button)}
                       classList={{
                         [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
@@ -189,7 +194,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                       'button--subscribe-topic': props.isAuthorsList,
                       [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
                     }}
-                    onClick={() => requireAuthentication(initChat, 'discussions')}
+                    onClick={initChat}
                   >
                     <Show when={!props.isTextButton}>
                       <Icon name="comment" class={styles.icon} />

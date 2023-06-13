@@ -46,6 +46,15 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
             description={props.media.body}
           />
         </Match>
+        <Match when={props.kind === 'audio'}>
+          <div>
+            <h5>{props.media.title}</h5>
+            <audio controls>
+              <source src={props.media.url} />
+            </audio>
+            <hr />
+          </div>
+        </Match>
       </Switch>
     </>
   )

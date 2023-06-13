@@ -167,6 +167,10 @@ export const EditView = (props: Props) => {
                     maxLength={100}
                   />
 
+                  <Show when={props.shout.layout === 'image'}>
+                    <h1>Images</h1>
+                  </Show>
+
                   <Show when={props.shout.layout === 'video'}>
                     <Show
                       when={media()}

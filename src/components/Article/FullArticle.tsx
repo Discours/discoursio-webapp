@@ -21,6 +21,7 @@ import stylesHeader from '../Nav/Header.module.scss'
 import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
+import article from '../Editor/extensions/Article'
 
 interface ArticleProps {
   article: Shout
@@ -132,6 +133,7 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
+  console.log('!!! props.article:', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>

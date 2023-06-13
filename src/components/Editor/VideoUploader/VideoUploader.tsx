@@ -98,10 +98,17 @@ export const VideoUploader = (props: Props) => {
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
+              onClick={() =>
+                showSnackbar({
+                  body: t(
+                    'This functionality is currently not available, we would like to work on this issue. Use the download link.'
+                  )
+                })
+              }
               ref={dropzoneRef}
               class={clsx(styles.dropArea, { [styles.active]: dragActive() })}
             >
-              {t('Upload video')}
+              <div class={styles.text}>{t('Upload video')}</div>
             </div>
             <Show when={dragError()}>
               <div class={styles.error}>{dragError()}</div>

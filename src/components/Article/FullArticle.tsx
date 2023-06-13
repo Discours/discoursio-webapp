@@ -46,6 +46,15 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
             description={props.media.body}
           />
         </Match>
+        <Match when={props.kind === 'audio'}>
+          <div>
+            <h5>{props.media.title}</h5>
+            <audio controls>
+              <source src={props.media.url} />
+            </audio>
+            <hr />
+          </div>
+        </Match>
       </Switch>
     </>
   )
@@ -79,6 +88,7 @@ export const FullArticle = (props: ArticleProps) => {
   }
 
   const body = createMemo(() => props.article.body)
+
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
     console.debug('!!! media items', mi)
@@ -169,6 +179,9 @@ export const FullArticle = (props: ArticleProps) => {
                   {(m: MediaItem) => (
                     <div class={styles.shoutMediaBody}>
                       <MediaView media={m} kind={props.article.layout} />
+                      <Show when={m?.body}>
+                        <MD body={m.body} />
+                      </Show>
                     </div>
                   )}
                 </For>

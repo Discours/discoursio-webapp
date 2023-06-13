@@ -11,8 +11,17 @@
     font-weight: 500;
     padding: 24px;
     transition: background-color 0.3s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
 
-    &.active {
+    .text {
+      position: relative;
+      z-index: 1;
+    }
+
+    &.active,
+    &:hover {
       background-color: rgba(#2638d9, 0.3);
 
       &::after {

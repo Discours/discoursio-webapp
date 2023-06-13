@@ -88,6 +88,7 @@ export const FullArticle = (props: ArticleProps) => {
   }
 
   const body = createMemo(() => props.article.body)
+
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
     console.debug('!!! media items', mi)
@@ -178,6 +179,9 @@ export const FullArticle = (props: ArticleProps) => {
                   {(m: MediaItem) => (
                     <div class={styles.shoutMediaBody}>
                       <MediaView media={m} kind={props.article.layout} />
+                      <Show when={m?.body}>
+                        <MD body={m.body} />
+                      </Show>
                     </div>
                   )}
                 </For>

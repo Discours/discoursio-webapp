@@ -1,10 +1,12 @@
-import type { Accessor, JSX, Resource } from 'solid-js'
+import { Accessor, JSX, Resource, createEffect } from 'solid-js'
 import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 import type { AuthResult, User } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { useSnackbar } from './snackbar'
 import { useLocalize } from './localize'
+import { showModal } from '../stores/ui'
+import type { AuthModalSource } from '../components/Nav/AuthModal/types'
 
 type SessionContextType = {
   session: Resource<AuthResult>
@@ -13,6 +15,10 @@ type SessionContextType = {
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthResult | Promise<AuthResult>
+    requireAuthentication: (
+      callback: (() => Promise<void>) | (() => void),
+      modalSource: AuthModalSource
+    ) => void
     signIn: ({ email, password }: { email: string; password: string }) => Promise<void>
     signOut: () => Promise<void>
     confirmEmail: (token: string) => Promise<void>
@@ -65,6 +71,28 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     console.debug('signed in')
   }
 
+  const [isAuthWithCallback, setIsAuthWithCallback] = createSignal(null)
+
+  const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
+    setIsAuthWithCallback(() => callback)
+
+    if (!isAuthenticated()) {
+      showModal('auth', modalSource)
+    }
+  }
+
+  createEffect(async () => {
+    if (isAuthWithCallback()) {
+      const sessionProof = await session()
+
+      if (sessionProof) {
+        await isAuthWithCallback()()
+
+        setIsAuthWithCallback(null)
+      }
+    }
+  })
+
   const signOut = async () => {
     // TODO: call backend to revoke token
     mutate(null)
@@ -80,6 +108,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const actions = {
     loadSession,
+    requireAuthentication,
     signIn,
     signOut,
     confirmEmail

@@ -62,7 +62,11 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
 
 export const FullArticle = (props: ArticleProps) => {
   const { t } = useLocalize()
-  const { user, isAuthenticated } = useSession()
+  const {
+    user,
+    isAuthenticated,
+    actions: { requireAuthentication }
+  } = useSession()
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
@@ -81,10 +85,12 @@ export const FullArticle = (props: ArticleProps) => {
   })
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
-  // eslint-disable-next-line unicorn/consistent-function-scoping
+
   const handleBookmarkButtonClick = (ev) => {
-    // TODO: implement bookmark clicked
-    ev.preventDefault()
+    requireAuthentication(() => {
+      // TODO: implement bookmark clicked
+      ev.preventDefault()
+    }, 'bookmark')
   }
 
   const body = createMemo(() => props.article.body)
@@ -222,12 +228,6 @@ export const FullArticle = (props: ArticleProps) => {
                 <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
               </div>
 
-              <Show when={props.article.stat?.viewed}>
-                <div class={clsx(styles.shoutStatsItem)}>
-                  <Icon name="eye" class={clsx(styles.icon, styles.iconEye)} />
-                  {props.article.stat?.viewed}
-                </div>
-              </Show>
               <Popover content={t('Comment')}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutStatsItem} ref={triggerRef} onClick={scrollToComments}>
@@ -280,6 +280,12 @@ export const FullArticle = (props: ArticleProps) => {
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
                   {formattedDate()}
                 </div>
+                <Show when={props.article.stat?.viewed}>
+                  <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
+                    <Icon name="eye" class={clsx(styles.icon, styles.iconEye)} />
+                    {props.article.stat?.viewed}
+                  </div>
+                </Show>
               </div>
             </div>
             <div class={styles.help}>

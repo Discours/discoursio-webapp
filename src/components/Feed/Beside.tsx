@@ -30,7 +30,7 @@ export const Beside = (props: BesideProps) => {
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
       <div class="floor floor--9">
         <div class="wide-container">
-          <div class="row">
+          <div class="row justify-content-between">
             <Show when={!!props.values}>
               <div
                 class={clsx(
@@ -102,7 +102,7 @@ export const Beside = (props: BesideProps) => {
                 </ul>
               </div>
             </Show>
-            <div class={clsx('col-md-16', styles.shoutCardContainer)}>
+            <div class={clsx('col-md-14', styles.shoutCardContainer)}>
               <ArticleCard
                 article={props.beside}
                 settings={{ isBigTitle: true, isBeside: true, nodate: props.nodate }}

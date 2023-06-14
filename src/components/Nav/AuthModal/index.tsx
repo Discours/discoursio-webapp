@@ -5,6 +5,7 @@ import { useRouter } from '../../../stores/router'
 import { clsx } from 'clsx'
 import styles from './AuthModal.module.scss'
 import { LoginForm } from './LoginForm'
+import { isMobile } from '../../../utils/media-query'
 import { RegisterForm } from './RegisterForm'
 import { ForgotPasswordForm } from './ForgotPasswordForm'
 import { EmailConfirm } from './EmailConfirm'
@@ -28,7 +29,7 @@ export const AuthModal = () => {
   })
 
   createEffect((oldMode) => {
-    if (oldMode !== mode()) {
+    if (oldMode !== mode() && !isMobile()) {
       rootRef?.querySelector('input')?.focus()
     }
   }, null)

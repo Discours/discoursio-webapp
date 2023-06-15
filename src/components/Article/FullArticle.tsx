@@ -89,6 +89,7 @@ export const FullArticle = (props: ArticleProps) => {
     const mi = JSON.parse(props.article.media || '[]')
     return mi
   })
+  const body = createMemo(() => props.article.body || '')
 
   const commentsRef: { current: HTMLDivElement } = { current: null }
   const scrollToComments = () => {
@@ -133,7 +134,7 @@ export const FullArticle = (props: ArticleProps) => {
       <div class="wide-container">
         <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
-            {/* <div class={styles.shoutHeader}>
+            <div class={styles.shoutTopic}>
               <Show when={mainTopic()}>
                 <div class={styles.shoutTopic}>
                   <a
@@ -145,27 +146,34 @@ export const FullArticle = (props: ArticleProps) => {
                 </div>
               </Show>
 
-              <h1>{props.article.title}</h1>
-              <Show when={props.article.subtitle}>
-                <h4>{capitalize(props.article.subtitle, false)}</h4>
-              </Show>
+              <div class={styles.shoutHeader}>
+                <div>
+                  <h1>{props.article.title}</h1>
+                  <div>
+                    <div class={styles.shoutAuthor}>
+                      <For each={props.article.authors}>
+                        {(a: Author, index) => (
+                          <>
+                            <Show when={index() > 0}>, </Show>
+                            <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
+                          </>
+                        )}
+                      </For>
+                    </div>
 
-              <div class={styles.shoutAuthor}>
-                <For each={props.article.authors}>
-                  {(a: Author, index) => (
-                    <>
-                      <Show when={index() > 0}>, </Show>
-                      <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
-                    </>
-                  )}
-                </For>
+                    {/* @@TODO add album's year and genre
+                  <div>year</div>
+                  <div>genre</div> */}
+                  </div>
+                </div>
+
+                {/* @@TODO implement image zoom */}
+                <Show when={props.article.cover && props.article.layout !== 'video'}>
+                  <div class={styles.shoutCover}>
+                    <img src={imageProxy(props.article.cover)} alt="Article cover" />
+                  </div>
+                </Show>
               </div>
-              <Show when={props.article.cover && props.article.layout !== 'video'}>
-                <div
-                  class={styles.shoutCover}
-                  style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}
-                />
-              </Show>
 
               <Show when={body()}>
                 <div class={styles.shoutBody}>
@@ -174,21 +182,11 @@ export const FullArticle = (props: ArticleProps) => {
                   </Show>
                 </div>
               </Show>
-            </div> */}
+            </div>
 
-            <Show when={media() && props.article.layout !== 'image'}>
+            <Show when={media().length && props.article.layout !== 'image'}>
               <div class="media-items">
-                <AudioPlayer media={media()} />
-                {/* <For each={media() || []}>
-                  {(m: MediaItem) => (
-                    <div class={styles.shoutMediaBody}>
-                      <MediaView media={m} kind={props.article.layout} />
-                      <Show when={m?.body}>
-                        <div innerHTML={m.body} />
-                      </Show>
-                    </div>
-                  )}
-                </For> */}
+                <AudioPlayer media={media()} articleSlug={props.article.slug} />
               </div>
             </Show>
           </article>

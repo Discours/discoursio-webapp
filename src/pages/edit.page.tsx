@@ -1,14 +1,16 @@
-import { createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
+import { createEffect, createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { Loading } from '../components/_shared/Loading'
 import { useSession } from '../context/session'
 import { Shout } from '../graphql/types.gen'
 import { useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
+import { useLocalize } from '../context/localize'
 
-const EditView = lazy(() => import('../components/Views/Edit'))
+const Edit = lazy(() => import('../components/Views/Edit'))
 
 export const EditPage = () => {
+  const { t } = useLocalize()
   const { isAuthenticated, isSessionLoaded } = useSession()
 
   const { page } = useRouter()
@@ -30,14 +32,14 @@ export const EditPage = () => {
           fallback={
             <div class="wide-container">
               <div class="row">
-                <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">Давайте авторизуемся</div>
+                <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">{t("Let's log in")}</div>
               </div>
             </div>
           }
         >
           <Show when={shout()}>
             <Suspense fallback={<Loading />}>
-              <EditView shout={shout()} />
+              <Edit shout={shout()} />
             </Suspense>
           </Show>
         </Show>

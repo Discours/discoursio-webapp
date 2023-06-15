@@ -17,6 +17,7 @@ import { useLocalize } from '../../context/localize'
 import styles from './Feed.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
+import { CommentDate } from '../Article/CommentDate'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -156,12 +157,15 @@ export const FeedView = () => {
                           innerHTML={comment.body}
                         />
                       </div>
-                      <AuthorCard
-                        author={comment.createdBy as Author}
-                        isFeedMode={true}
-                        hideWriteButton={true}
-                        hideFollow={true}
-                      />
+                      <div class={styles.commentDetails}>
+                        <AuthorCard
+                          author={comment.createdBy as Author}
+                          isFeedMode={true}
+                          hideWriteButton={true}
+                          hideFollow={true}
+                        />
+                        <CommentDate comment={comment} isShort={true} isLastInRow={true} />
+                      </div>
                       <div class={clsx('text-truncate', styles.commentArticleTitle)}>
                         <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
                       </div>
@@ -173,7 +177,7 @@ export const FeedView = () => {
 
             <Show when={topTopics().length > 0}>
               <section class={styles.asideSection}>
-                <h4>{t('Topics')}</h4>
+                <h4>{t('Hot topics')}</h4>
                 <For each={topTopics().slice(0, 5)}>
                   {(topic) => (
                     <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
@@ -185,7 +189,7 @@ export const FeedView = () => {
             </Show>
 
             <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
-              <Icon name="pin" class={styles.icon} />
+              <h4>{t('Knowledge base')}</h4>
               <ul class="nodash">
                 <li>
                   <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>

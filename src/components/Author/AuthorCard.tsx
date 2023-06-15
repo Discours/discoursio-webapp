@@ -13,6 +13,7 @@ import { FollowingEntity } from '../../graphql/types.gen'
 import { router, useRouter } from '../../stores/router'
 import { openPage } from '@nanostores/router'
 import { useLocalize } from '../../context/localize'
+import { init } from 'i18next'
 
 interface AuthorCardProps {
   caption?: string
@@ -40,7 +41,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const {
     session,
     isSessionLoaded,
-    actions: { loadSession }
+    actions: { loadSession, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -77,9 +78,18 @@ export const AuthorCard = (props: AuthorCardProps) => {
   // TODO: reimplement AuthorCard
   const { changeSearchParam } = useRouter()
   const initChat = () => {
-    openPage(router, `inbox`)
-    changeSearchParam('initChat', `${props.author.id}`)
+    requireAuthentication(() => {
+      openPage(router, `inbox`)
+      changeSearchParam('initChat', `${props.author.id}`)
+    }, 'discussions')
   }
+
+  const handleSubscribe = () => {
+    requireAuthentication(() => {
+      subscribe(true)
+    }, 'subscribe')
+  }
+
   return (
     <div
       class={clsx(styles.author, props.class)}
@@ -133,7 +143,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   when={subscribed()}
                   fallback={
                     <button
-                      onClick={() => subscribe(true)}
+                      onClick={handleSubscribe}
                       class={clsx('button', styles.button)}
                       classList={{
                         [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,

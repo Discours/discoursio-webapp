@@ -16,6 +16,7 @@ type WordCounter = {
 }
 
 type ShoutForm = {
+  layout?: string
   shoutId: number
   slug: string
   title: string
@@ -24,6 +25,7 @@ type ShoutForm = {
   mainTopic?: Topic
   body: string
   coverImageUrl: string
+  media?: string
 }
 
 type EditorContextType = {
@@ -89,6 +91,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       return false
     }
 
+    const parsedMedia = JSON.parse(form.media)
+    if (form.layout === 'video' && !parsedMedia[0]) {
+      showSnackbar({ type: 'error', body: t('Looks like you forgot to upload the video') })
+      return false
+    }
+
     return true
   }
 
@@ -113,7 +121,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         slug: form.slug,
         subtitle: form.subtitle,
         title: form.title,
-        cover: form.coverImageUrl
+        cover: form.coverImageUrl,
+        media: form.media
       },
       publish
     })

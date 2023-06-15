@@ -8,9 +8,11 @@ import { apiClient } from '../utils/apiClient'
 import { redirectPage } from '@nanostores/router'
 import { router } from '../stores/router'
 
-const handleCreateArticle = async () => {
-  const shout = await apiClient.createArticle({ article: {} })
-  redirectPage(router, 'edit', { shoutId: shout.id.toString() })
+const handleCreate = async (layout: 'article' | 'video') => {
+  const shout = await apiClient.createArticle({ article: { layout: layout } })
+  redirectPage(router, 'edit', {
+    shoutId: shout.id.toString()
+  })
 }
 
 export const CreatePage = () => {
@@ -21,7 +23,7 @@ export const CreatePage = () => {
         <h1>{t('Choose a post type')}</h1>
         <ul class={clsx('nodash', styles.list)}>
           <li>
-            <div class={styles.link} onClick={handleCreateArticle}>
+            <div class={styles.link} onClick={() => handleCreate('article')}>
               <Icon name="create-article" class={styles.icon} />
               <div>{t('article')}</div>
             </div>
@@ -45,10 +47,10 @@ export const CreatePage = () => {
             </a>
           </li>
           <li>
-            <a href="#">
+            <div class={styles.link} onClick={() => handleCreate('video')}>
               <Icon name="create-video" class={styles.icon} />
-              <div>{t('music')}</div>
-            </a>
+              <div>{t('video')}</div>
+            </div>
           </li>
         </ul>
         <Button value={t('Back')} onClick={() => window.history.back()} />

@@ -323,6 +323,10 @@
     }
   }
 
+  .shoutCardSubtitle {
+    color: rgb(255 255 255 / 0.5);
+  }
+
   &:global(.swiper-slide-active) .shoutCardCover {
     &:after {
       background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 40%, rgb(0 0 0 / 70%) 100%);
@@ -458,6 +462,8 @@
 
 .shoutCardDetailsContent {
   display: flex;
+  font-size: 1.2rem;
+  font-weight: bold;
 
   &:first-child {
     padding: 0 1em 1em 0;
@@ -499,7 +505,8 @@
 
   .icon {
     display: inline-block;
-    margin: 0.2em 0.5em 0 0;
+    margin: 0 0.5em 0 0;
+    vertical-align: middle;
   }
 
   a {
@@ -512,10 +519,6 @@
       }
     }
   }
-}
-
-.shoutCardComments {
-  @include font-size(1.2rem);
 }
 
 .shoutCardDetailsViewed {
@@ -610,8 +613,11 @@
     line-height: 1.2;
   }
 
+  .shoutCardTitle {
+    padding-right: 0.3em;
+  }
+
   .shoutCardSubtitle {
-    padding-left: 0.3em;
     box-decoration-break: slice;
     /* stylelint-disable-next-line */
     -webkit-box-decoration-break: slice;

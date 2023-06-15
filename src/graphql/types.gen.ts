@@ -582,7 +582,9 @@ export type ShoutInput = {
   body?: InputMaybe<Scalars['String']>
   community?: InputMaybe<Scalars['Int']>
   cover?: InputMaybe<Scalars['String']>
+  layout?: InputMaybe<Scalars['String']>
   mainTopic?: InputMaybe<TopicInput>
+  media?: InputMaybe<Scalars['String']>
   slug?: InputMaybe<Scalars['String']>
   subtitle?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>

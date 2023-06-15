@@ -39,10 +39,8 @@
 .feedAside {
   h4 {
     @include font-size(2.2rem);
-
     font-weight: bold;
     margin-bottom: 2.4rem;
-    text-transform: lowercase;
   }
 }
 
@@ -55,12 +53,14 @@
 .topic {
   background: transparentize(#2638d9, 0.95);
   display: inline-block;
+  @include font-size(1.2rem);
   font-weight: bold;
-  line-height: 1.2;
-  margin: 0 0.5em 0.5em 0;
-  padding: 0.6em 1em;
+  line-height: 3.4rem;
+  margin: 0 0.6rem 0.6rem 0;
+  padding: 0 1.2rem;
   position: relative;
   vertical-align: middle;
+  white-space: nowrap;
 
   &:hover {
     background: #2638d9;
@@ -88,12 +88,24 @@
 
   ul {
     @include font-size(1.4rem);
-
     font-weight: bold;
     margin: 1rem 0 0;
-    line-height: 1.4;
+    line-height: 1.3;
 
     li {
+      margin-bottom: 1.2rem;
+      padding-left: 2.6rem;
+      position: relative;
+
+      &:before {
+        background: url(/public/icons/knowledge-base-bullet.svg) no-repeat;
+        content: '';
+        height: 1.6rem;
+        left: 0;
+        position: absolute;
+        width: 2rem;
+      }
+
       &:last-child {
         margin-bottom: 0;
       }
@@ -120,18 +132,31 @@
   }
 }
 
+.commentDetails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 .commentBody {
+  @include font-size(1.4rem);
   margin-bottom: 1.2rem;
   line-clamp: 3;
   -webkit-line-clamp: 3;
+
+  a {
+    border: none;
+    padding-bottom: 0.2em;
+  }
 }
 
 .commentArticleTitle {
-  @include font-size(1.2rem);
   line-clamp: 1;
   -webkit-line-clamp: 1;
 }
 
+.commentArticleTitle,
 .commentAuthor {
   @include font-size(1.2rem);
+  font-weight: 500;
 }

@@ -127,10 +127,24 @@
   background: #000;
   color: #fff;
   transition: background-color 0.3s, color 0.3s;
+  white-space: nowrap;
+  width: 9em;
 
   &:hover {
     background: #fff;
     color: #000;
+
+    .buttonUnfollowLabel {
+      display: block;
+    }
+
+    .buttonSubscribedLabel {
+      display: none;
+    }
+  }
+
+  .buttonUnfollowLabel {
+    display: none;
   }
 }
 

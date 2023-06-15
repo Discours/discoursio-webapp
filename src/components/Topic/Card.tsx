@@ -31,7 +31,7 @@ export const TopicCard = (props: TopicProps) => {
   const {
     session,
     isSessionLoaded,
-    actions: { loadSession }
+    actions: { loadSession, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -53,6 +53,12 @@ export const TopicCard = (props: TopicProps) => {
 
     await loadSession()
     setIsSubscribing(false)
+  }
+
+  const handleSubscribe = () => {
+    requireAuthentication(() => {
+      subscribe(!subscribed())
+    }, 'subscribe')
   }
 
   return (
@@ -100,7 +106,7 @@ export const TopicCard = (props: TopicProps) => {
           <ShowOnlyOnClient>
             <Show when={isSessionLoaded()}>
               <button
-                onClick={() => subscribe(!subscribed())}
+                onClick={handleSubscribe}
                 class="button--light button--subscribe-topic"
                 classList={{
                   [styles.isSubscribing]: isSubscribing(),
@@ -115,7 +121,8 @@ export const TopicCard = (props: TopicProps) => {
                 </Show>
                 <Show when={!props.iconButton}>
                   <Show when={subscribed()} fallback={t('Follow')}>
-                    {t('Unfollow')}
+                    <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
+                    <span class={styles.buttonSubscribedLabel}>{t('You are subscribed')}</span>
                   </Show>
                 </Show>
               </button>

@@ -1,11 +1,11 @@
 import { clsx } from 'clsx'
 import styles from './DropArea.module.scss'
 import { createEffect, createSignal, For, JSX, Show } from 'solid-js'
-import { createDropzone, UploadFile, fileUploader, createFileUploader } from '@solid-primitives/upload'
+import { createDropzone, createFileUploader } from '@solid-primitives/upload'
 import { useLocalize } from '../../../context/localize'
 import { validateFiles } from '../../../utils/validateFile'
-import { FileTypeToUpload } from '../../../pages/types'
-import { handleFileUpload, handleMultiplyFileUpload } from '../../../utils/handleFileUpload'
+import type { FileTypeToUpload } from '../../../pages/types'
+import { handleFileUpload } from '../../../utils/handleFileUpload'
 
 type Props = {
   class?: string
@@ -26,12 +26,13 @@ export const DropArea = (props: Props) => {
   const runUpload = async (files) => {
     try {
       setLoading(true)
-      const uploaded = files.map(async (file) => {
-        await handleFileUpload(file)
-      })
 
-      console.log('!!! uploaded:', uploaded)
-      props.data(uploaded)
+      const results: string[] = []
+      for (const file of files) {
+        const result = await handleFileUpload(file)
+        results.push(result)
+      }
+      props.data(results)
       setLoading(false)
     } catch (error) {
       setDropAreaError('Error')

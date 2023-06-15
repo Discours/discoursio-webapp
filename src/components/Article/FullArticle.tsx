@@ -56,6 +56,12 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
             <hr />
           </div>
         </Match>
+        <Match when={props.kind === 'image'}>
+          <div>
+            <img src={props.media.url} alt={props.media.title} />
+            <h5>{props.media.title}</h5>
+          </div>
+        </Match>
       </Switch>
     </>
   )
@@ -92,7 +98,7 @@ export const FullArticle = (props: ArticleProps) => {
 
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
-    console.debug('!!! media items', mi)
+    console.debug('[media items]:', media())
     return mi
   })
 
@@ -133,7 +139,6 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
-  console.log('!!! props.article:', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>

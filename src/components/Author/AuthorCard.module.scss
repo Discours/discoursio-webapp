@@ -143,11 +143,26 @@
     }
   }
 
-  button {
+  .button {
     margin-right: 0.5em;
+    width: 9em;
 
     &:last-child {
       margin-right: 0;
+    }
+
+    &:hover {
+      .buttonUnfollowLabel {
+        display: block;
+      }
+
+      .buttonSubscribedLabel {
+        display: none;
+      }
+    }
+
+    .buttonUnfollowLabel {
+      display: none;
     }
   }
 }
@@ -184,8 +199,6 @@
 }
 
 .buttonWrite {
-  //@include font-size(1.5rem);
-
   color: #000;
   display: inline-flex;
   transition: background-color 0.3s, color 0.3s;

@@ -181,8 +181,23 @@ export const AuthorCard = (props: AuthorCardProps) => {
                       <Icon name="author-unsubscribe" class={styles.icon} />
                     </Show>
                     <Show when={props.isTextButton}>
-                      <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
+                      <span
+                        class={clsx(
+                          styles.buttonLabel,
+                          styles.buttonLabelVisible,
+                          styles.buttonUnfollowLabel
+                        )}
+                      >
                         {t('Unfollow')}
+                      </span>
+                      <span
+                        class={clsx(
+                          styles.buttonLabel,
+                          styles.buttonLabelVisible,
+                          styles.buttonSubscribedLabel
+                        )}
+                      >
+                        {t('You are subscribed')}
                       </span>
                     </Show>
                   </button>

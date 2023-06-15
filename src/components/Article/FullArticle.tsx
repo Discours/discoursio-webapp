@@ -191,7 +191,6 @@ export const FullArticle = (props: ArticleProps) => {
               </Show>
             </div>
 
-
             <Show when={media().length > 0 && props.article.layout !== 'image'}>
               <div class="media-items">
                 <AudioPlayer media={media()} articleSlug={props.article.slug} />

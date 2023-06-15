@@ -18,7 +18,7 @@ export const CommentDate = (props: Props) => {
   const formattedDate = (date) =>
     props.isShort
       ? formatDate(new Date(date), { month: 'long', day: 'numeric', year: 'numeric' })
-      : createMemo(() => formatDate(new Date(date), { hour: 'numeric', minute: 'numeric' }))
+      : createMemo(() => formatDate(new Date(date), { hour: 'numeric', minute: 'numeric' }))()
 
   return (
     <div class={clsx(styles.commentDates, { [styles.commentDatesLastInRow]: props.isLastInRow })}>

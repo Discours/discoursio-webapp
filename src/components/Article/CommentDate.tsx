@@ -22,11 +22,11 @@ export const CommentDate = (props: Props) => {
 
   return (
     <div class={clsx(styles.commentDates, { [styles.commentDatesLastInRow]: props.isLastInRow })}>
-      <time class={styles.date}>{formattedDate(props.comment.createdAt)}</time>
+      <time class={styles.date}>{formattedDate(props.comment.createdAt).toString()}</time>
       <Show when={props.comment.updatedAt}>
         <time class={styles.date}>
           <Icon name="edit" class={styles.icon} />
-          {t('Edited')} {formattedDate(props.comment.updatedAt)}
+          {t('Edited')} {formattedDate(props.comment.updatedAt).toString()}
         </time>
       </Show>
     </div>

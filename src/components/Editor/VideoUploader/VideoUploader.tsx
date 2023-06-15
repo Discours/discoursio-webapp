@@ -22,7 +22,7 @@ type Props = {
 export const VideoUploader = (props: Props) => {
   const { t } = useLocalize()
   const [dragActive, setDragActive] = createSignal(false)
-  const [dragError, setDragError] = createSignal<string | undefined>()
+  const [dragError, setDragError] = createSignal<string>()
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const [data, setData] = createSignal<VideoItem>()
 

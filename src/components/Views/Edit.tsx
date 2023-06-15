@@ -18,6 +18,7 @@ import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
+import { ImagesUploader } from '../Editor/ImagesUploader'
 
 type Props = {
   shout: Shout
@@ -168,7 +169,7 @@ export const EditView = (props: Props) => {
                   />
 
                   <Show when={props.shout.layout === 'image'}>
-                    <h1>Images</h1>
+                    <ImagesUploader />
                   </Show>
 
                   <Show when={props.shout.layout === 'video'}>

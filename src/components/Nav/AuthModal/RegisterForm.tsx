@@ -11,7 +11,7 @@ import { hideModal } from '../../../stores/ui'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
-import { isValidEmail } from '../../../utils/validators'
+import { validateEmail } from '../../../utils/validateEmail'
 
 type FormFields = {
   name: string
@@ -39,7 +39,7 @@ export const RegisterForm = () => {
   }
 
   const handleEmailBlur = () => {
-    if (isValidEmail(email())) {
+    if (validateEmail(email())) {
       checkEmail(email())
     }
   }
@@ -92,7 +92,7 @@ export const RegisterForm = () => {
 
     if (!cleanEmail) {
       newValidationErrors.email = t('Please enter email')
-    } else if (!isValidEmail(email())) {
+    } else if (!validateEmail(email())) {
       newValidationErrors.email = t('Invalid email')
     }
 

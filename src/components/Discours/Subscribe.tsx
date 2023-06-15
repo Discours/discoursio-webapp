@@ -1,7 +1,7 @@
 import { createSignal, JSX, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
-import { isValidEmail } from '../../utils/validators'
+import { validateEmail } from '../../utils/validateEmail'
 import { Button } from '../_shared/Button'
 
 import styles from './Subscribe.module.scss'
@@ -19,7 +19,7 @@ export default () => {
       return false
     }
 
-    if (!isValidEmail(email())) {
+    if (!validateEmail(email())) {
       setEmailError(t('Please check your email address'))
       return false
     }

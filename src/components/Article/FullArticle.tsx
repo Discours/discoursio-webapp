@@ -3,7 +3,7 @@ import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Swit
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
-import AudioPlayer from './AudioPlayer'
+import AudioPlayer from './AudioPlayer/AudioPlayer'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -85,10 +85,8 @@ export const FullArticle = (props: ArticleProps) => {
     // TODO: implement bookmark clicked
     ev.preventDefault()
   }
-  const media = createMemo(() => {
-    const mi = JSON.parse(props.article.media || '[]')
-    return mi
-  })
+
+  const media = createMemo(() => JSON.parse(props.article.media || '[]'))
   const body = createMemo(() => props.article.body || '')
 
   const commentsRef: { current: HTMLDivElement } = { current: null }
@@ -184,7 +182,7 @@ export const FullArticle = (props: ArticleProps) => {
               </Show>
             </div>
 
-            <Show when={media().length && props.article.layout !== 'image'}>
+            <Show when={media().length > 0 && props.article.layout !== 'image'}>
               <div class="media-items">
                 <AudioPlayer media={media()} articleSlug={props.article.slug} />
               </div>

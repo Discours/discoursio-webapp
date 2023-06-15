@@ -178,7 +178,7 @@ export const FeedView = () => {
             <Show when={topTopics().length > 0}>
               <section class={styles.asideSection}>
                 <h4>{t('Hot topics')}</h4>
-                <For each={topTopics().slice(0, 5)}>
+                <For each={topTopics().slice(0, 7)}>
                   {(topic) => (
                     <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
                       <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}

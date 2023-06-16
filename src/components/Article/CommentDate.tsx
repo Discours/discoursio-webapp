@@ -1,6 +1,6 @@
 import styles from './CommentDate.module.scss'
 import { Icon } from '../_shared/Icon'
-import { Show, createMemo } from 'solid-js'
+import { Show } from 'solid-js'
 import type { Reaction } from '../../graphql/types.gen'
 import { formatDate } from '../../utils'
 import { useLocalize } from '../../context/localize'

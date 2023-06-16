@@ -1,10 +1,10 @@
 @mixin input-placeholder-overflow($direction: 'down') {
   @if $direction == 'down' {
-    @media (max-width: 1410px) {
+    @media (width <= 1410px) {
       @content;
     }
   } @else if $direction == 'up' {
-    @media (min-width: 1411px) {
+    @media (width > 1410px) {
       @content;
     }
   } @else {
@@ -38,7 +38,7 @@
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 0.2em 0.5em 0.2em 0.5em;
+    padding: 0.2em 0.5em;
     width: 100%;
     outline: none;
     border: 1px solid #fff;

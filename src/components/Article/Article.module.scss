@@ -1,5 +1,6 @@
 h1 {
   @include font-size(4rem);
+
   line-height: 1.1;
   margin-top: 0.5em;
 }
@@ -154,6 +155,7 @@ img {
 
 .shoutStatsItem {
   @include font-size(1.5rem);
+
   font-weight: 500;
   display: inline-block;
   margin: 0 6% 1em 0;

@@ -68,8 +68,9 @@
   }
 
   a:link {
-    border: none;
     @include font-size(1.4rem);
+
+    border: none;
     font-weight: bold;
     padding-right: 0.3em;
     white-space: nowrap;
@@ -87,6 +88,7 @@
 
   h4 {
     @include font-size(2.6rem);
+
     font-weight: bold;
     padding-right: 1em;
   }

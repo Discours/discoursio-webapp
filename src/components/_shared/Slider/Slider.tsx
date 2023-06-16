@@ -15,9 +15,10 @@ interface Props {
   slidesPerView?: number
   isCardsWithCover?: boolean
   children?: JSX.Element
-  class?: string
   isPageGallery?: boolean
   hasThumbs?: boolean
+  variant?: 'uploadPreview'
+  slideIndex?: (value: number) => void
 }
 
 export const Slider = (props: Props) => {
@@ -31,7 +32,6 @@ export const Slider = (props: Props) => {
 
   const [swiper, setSwiper] = createSignal<Swiper>()
   const [swiperThumbs, setSwiperThumbs] = createSignal<Swiper>()
-
   const opts: SwiperOptions = {
     lazy: true,
     roundLengths: true,
@@ -40,6 +40,9 @@ export const Slider = (props: Props) => {
     slidesPerView: 1,
     modules: [Navigation, Pagination, Lazy, Thumbs],
     speed: 500,
+    on: {
+      slideChange: () => props.slideIndex(swiper()?.realIndex || 0)
+    },
     navigation: { nextEl, prevEl },
     breakpoints: {
       768: {
@@ -98,14 +101,16 @@ export const Slider = (props: Props) => {
   })
 
   return (
-    <div class="floor floor--important">
+    <div class={clsx('floor', 'floor--important', props.variant)}>
       <div class="wide-container">
         <div class="row">
-          <h2 class="col-24">{props.title}</h2>
+          <Show when={props.title}>
+            <h2 class="col-24">{props.title}</h2>
+          </Show>
 
           <div class="sliders-container">
             <div
-              class={clsx('swiper', props.class)}
+              class={clsx('swiper')}
               classList={{
                 'cards-with-cover': isCardsWithCover,
                 'swiper--page-gallery': props.isPageGallery
@@ -113,13 +118,15 @@ export const Slider = (props: Props) => {
               ref={el}
             >
               <div class="swiper-wrapper">{props.children}</div>
-              <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
-                <Icon name="slider-arrow" class={'icon'} />
-              </div>
-              <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
-                <Icon name="slider-arrow" class={'icon'} />
-              </div>
-              <div class="swiper-pagination" ref={pagEl} />
+              <Show when={!(props.variant === 'uploadPreview')}>
+                <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
+                  <Icon name="slider-arrow" class={'icon'} />
+                </div>
+                <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
+                  <Icon name="slider-arrow" class={'icon'} />
+                </div>
+              </Show>
+              {/*<div class="swiper-pagination" ref={pagEl} />*/}
             </div>
 
             <Show when={props.hasThumbs}>
@@ -132,6 +139,14 @@ export const Slider = (props: Props) => {
           </div>
         </div>
       </div>
+      <Show when={props.variant === 'uploadPreview'}>
+        <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
+          <Icon name="slider-arrow" class={'icon'} />
+        </div>
+        <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
+          <Icon name="slider-arrow" class={'icon'} />
+        </div>
+      </Show>
     </div>
   )
 }

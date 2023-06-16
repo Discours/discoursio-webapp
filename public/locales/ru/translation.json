@@ -354,5 +354,7 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал"
+  "zine": "журнал",
+  "Specify the source and the name of the author": "Укажите источник и имя автора",
+  "Enter image description": "Введите описание изображения"
 }

@@ -332,5 +332,7 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "Specify the source and the name of the author": "Specify the source and the name of the author",
+  "Enter image description": "Enter image description"
 }

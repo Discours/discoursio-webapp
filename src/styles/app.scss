@@ -545,12 +545,14 @@ figure {
 
   figcaption {
     @include font-size(1.2rem);
+
     color: #9fa1a7;
   }
 }
 
 .view-switcher {
   @include font-size(1.4rem);
+
   display: flex;
   flex-wrap: wrap;
   font-weight: 500;
@@ -828,6 +830,7 @@ figure {
 
 .content-index {
   @include font-size(1.4rem);
+
   line-height: 1.4;
   margin: 0 3.6rem 2em 0;
 

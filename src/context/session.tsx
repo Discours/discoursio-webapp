@@ -1,5 +1,13 @@
-import { Accessor, JSX, Resource, createEffect } from 'solid-js'
-import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
+import type { Accessor, JSX, Resource } from 'solid-js'
+import {
+  createEffect,
+  createContext,
+  createMemo,
+  createResource,
+  createSignal,
+  onMount,
+  useContext
+} from 'solid-js'
 import type { AuthResult, User } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'

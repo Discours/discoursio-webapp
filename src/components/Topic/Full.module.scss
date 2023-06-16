@@ -5,8 +5,9 @@
   text-align: center;
 
   h1 {
-    color: #2638d9;
     @include font-size(2rem);
+
+    color: #2638d9;
     text-transform: uppercase;
   }
 }

@@ -1,4 +1,6 @@
 .commentDates {
+  @include font-size(1.2rem);
+
   flex: 1;
   display: flex;
   gap: 1rem;
@@ -7,7 +9,6 @@
   font-size: 1.2rem;
   margin: 0 1em 4px 0;
   color: rgb(0 0 0 / 30%);
-  @include font-size(1.2rem);
 
   .date {
     .icon {

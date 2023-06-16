@@ -1,5 +1,4 @@
 import { Blockquote } from '@tiptap/extension-blockquote'
-import { Command } from '@tiptap/core'
 
 export type QuoteTypes = 'quote' | 'punchline'
 

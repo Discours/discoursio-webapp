@@ -13,7 +13,6 @@ import { FollowingEntity } from '../../graphql/types.gen'
 import { router, useRouter } from '../../stores/router'
 import { openPage } from '@nanostores/router'
 import { useLocalize } from '../../context/localize'
-import { init } from 'i18next'
 
 interface AuthorCardProps {
   caption?: string

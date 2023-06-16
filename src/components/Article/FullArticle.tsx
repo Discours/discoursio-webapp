@@ -11,7 +11,7 @@ import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
 import { VideoPlayer } from '../_shared/VideoPlayer'
-import Slider from '../_shared/Slider'
+import { Slider } from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
@@ -98,7 +98,7 @@ export const FullArticle = (props: ArticleProps) => {
 
   const media = createMemo(() => {
     const mi = JSON.parse(props.article.media || '[]')
-    console.debug('[media items]:', media())
+    console.debug('[media items]:', mi)
     return mi
   })
 

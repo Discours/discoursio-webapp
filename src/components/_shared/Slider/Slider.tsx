@@ -7,10 +7,10 @@ import 'swiper/scss/lazy'
 import 'swiper/scss/thumbs'
 import './Slider.scss'
 import { createEffect, createSignal, JSX, Show } from 'solid-js'
-import { Icon } from './Icon'
+import { Icon } from '../Icon'
 import { clsx } from 'clsx'
 
-interface SliderProps {
+interface Props {
   title?: string
   slidesPerView?: number
   isCardsWithCover?: boolean
@@ -20,7 +20,7 @@ interface SliderProps {
   hasThumbs?: boolean
 }
 
-export default (props: SliderProps) => {
+export const Slider = (props: Props) => {
   let el: HTMLDivElement | undefined
   let thumbsEl: HTMLDivElement | undefined
   let pagEl: HTMLDivElement | undefined

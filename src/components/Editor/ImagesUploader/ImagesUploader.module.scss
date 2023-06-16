@@ -1,3 +1,23 @@
 .ImagesUploader {
   display: block;
+
+  .sliderSlide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .sliderImage {
+      display: block;
+      height: auto;
+      margin: 0 auto;
+      max-height: 80vh;
+      width: auto;
+      position: relative;
+      z-index: 11;
+    }
+
+    .sliderDescription {
+      display: flex;
+    }
+  }
 }

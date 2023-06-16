@@ -2,7 +2,7 @@ import { clsx } from 'clsx'
 import styles from './DarkModeToggle.module.scss'
 import { Icon } from '../Icon'
 import { useLocalize } from '../../../context/localize'
-import { createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import { createSignal, onCleanup, onMount } from 'solid-js'
 import { createPrefersDark } from '@solid-primitives/media'
 
 type Props = {

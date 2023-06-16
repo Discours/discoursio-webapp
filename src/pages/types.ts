@@ -31,3 +31,5 @@ export type UploadFile = {
   size: number
   file: File
 }
+
+export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'

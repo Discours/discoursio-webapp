@@ -1,5 +1,5 @@
 import { PageLayout } from '../components/_shared/PageLayout'
-import type { PageProps } from './types'
+import type { LayoutType, PageProps } from './types'
 import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../stores/zine/articles'
 import { router, useRouter } from '../stores/router'
@@ -22,8 +22,6 @@ import { Title } from '@solidjs/meta'
 
 export const PRERENDERED_ARTICLES_COUNT = 27
 const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
-
-type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
 export const LayoutShoutsPage = (props: PageProps) => {
   const { t } = useLocalize()

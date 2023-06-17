@@ -1,5 +1,6 @@
 .ImagesUploader {
   display: block;
+  margin-top: 2rem;
 
   .slide {
     display: flex;
@@ -38,12 +39,33 @@
       margin: 0;
       border: none;
       height: 1.2em;
+
       &:focus {
         outline: none;
       }
 
       &::placeholder {
         color: var(--placeholder-color);
+      }
+    }
+  }
+
+  .sortable {
+    margin: 2rem 0;
+
+    & > div {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      width: 100%;
+      gap: 12px;
+
+      .sortItem {
+        border: 1px solid cadetblue;
+        width: 110px;
+        height: 75px;
+        background-size: cover;
       }
     }
   }

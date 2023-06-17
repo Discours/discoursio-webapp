@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -122,7 +122,7 @@ export const EditView = (props: Props) => {
   }
 
   const handleAddMedia = (data) => {
-    setForm('media', JSON.stringify([data]))
+    setForm('media', JSON.stringify(data))
   }
 
   return (
@@ -169,7 +169,7 @@ export const EditView = (props: Props) => {
                   />
 
                   <Show when={props.shout.layout === 'image'}>
-                    <ImagesUploader />
+                    <ImagesUploader images={(value) => handleAddMedia(value)} />
                   </Show>
 
                   <Show when={props.shout.layout === 'video'}>

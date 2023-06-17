@@ -41,7 +41,11 @@ export const Slider = (props: Props) => {
     modules: [Navigation, Pagination, Lazy, Thumbs],
     speed: 500,
     on: {
-      slideChange: () => props.slideIndex(swiper()?.realIndex || 0)
+      slideChange: () => {
+        if (swiper()) {
+          props.slideIndex(swiper().realIndex || 0)
+        }
+      }
     },
     navigation: { nextEl, prevEl },
     breakpoints: {

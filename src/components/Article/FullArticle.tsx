@@ -139,6 +139,7 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
+  console.log('!!! props.article:', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>
@@ -207,12 +208,12 @@ export const FullArticle = (props: ArticleProps) => {
 
       <Show when={media() && props.article.layout === 'image'}>
         <Slider slidesPerView={1} isPageGallery={true} isCardsWithCover={true} hasThumbs={true}>
-          <For each={media() || []}>
+          <For each={media()}>
             {(m) => (
               <div class="swiper-slide">
                 <div class="swiper-slide__inner">
                   <img src={m.url || m.pic} alt={m.title} loading="lazy" />
-                  <div class="swiper-lazy-preloader swiper-lazy-preloader-white" />
+                  {/*<div class="swiper-lazy-preloader swiper-lazy-preloader-white" />*/}
                   <div class="image-description" innerHTML={m.title} />
                 </div>
               </div>

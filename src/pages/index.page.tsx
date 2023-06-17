@@ -8,6 +8,9 @@ import { loadRandomTopics } from '../stores/zine/topics'
 import { Loading } from '../components/_shared/Loading'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
+import SSEService from '../services/SSEService'
+
+const sseService = new SSEService()
 
 export const HomePage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts) && Boolean(props.randomTopics))
@@ -22,9 +25,20 @@ export const HomePage = (props: PageProps) => {
     await loadRandomTopics({ amount: RANDOM_TOPICS_COUNT })
 
     setIsLoaded(true)
+
+    // Connect to the SSE endpoint and start listening for events
+    sseService.connect(`${process.env.PUBLIC_API_URL}/subscribe`)
+    sseService.subscribeToEvent('message', (data) => {
+      console.log(data)
+    })
   })
 
-  onCleanup(() => resetSortedArticles())
+  onCleanup(() => {
+    resetSortedArticles()
+
+    // Disconnect from the SSE endpoint
+    sseService.disconnect()
+  })
 
   return (
     <PageLayout withPadding={true}>

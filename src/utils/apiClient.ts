@@ -173,7 +173,7 @@ export const apiClient = {
       console.error('[api-client] getRandomTopics', response.error)
     }
 
-    return response.data.topicsRandom
+    return response.data?.topicsRandom || []
   },
 
   // subscribe
@@ -327,7 +327,7 @@ export const apiClient = {
       console.error(resp)
     }
 
-    return resp.data.loadShouts
+    return resp.data?.loadShouts ?? []
   },
 
   getReactionsBy: async ({ by, limit }: { by: ReactionBy; limit?: number }) => {

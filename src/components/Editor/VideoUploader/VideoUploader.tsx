@@ -11,7 +11,7 @@ import type { MediaItem } from '../../../pages/types'
 
 type Props = {
   class?: string
-  data: (value: MediaItem) => void
+  data: (value: MediaItem[]) => void
 }
 
 export const VideoUploader = (props: Props) => {
@@ -26,7 +26,7 @@ export const VideoUploader = (props: Props) => {
   }
 
   createEffect(() => {
-    props.data(data())
+    props.data([data()])
   })
 
   const {

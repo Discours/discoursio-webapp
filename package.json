@@ -40,7 +40,7 @@
     "mailgun.js": "8.2.1",
     "node-fetch": "3.3.1",
     "solid-popper": "0.3.0",
-    "solid-sortablejs": "2.0.9",
+    "sortablejs": "1.15.0",
     "typograf": "7.1.0"
   },
   "devDependencies": {

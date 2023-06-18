@@ -1,3 +1,5 @@
+//TODO: Replace with SolidSwiper.tsx
+
 import { Swiper, Navigation, Pagination, Lazy, Thumbs } from 'swiper'
 import type { SwiperOptions } from 'swiper'
 import 'swiper/scss'

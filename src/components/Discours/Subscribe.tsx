@@ -5,6 +5,7 @@ import { isValidEmail } from '../../utils/validators'
 import { Button } from '../_shared/Button'
 
 import styles from './Subscribe.module.scss'
+import { useSnackbar } from '../../context/snackbar'
 
 export default () => {
   const { t } = useLocalize()
@@ -12,6 +13,9 @@ export default () => {
   const [title, setTitle] = createSignal('')
   const [email, setEmail] = createSignal('')
   const [emailError, setEmailError] = createSignal<string>(null)
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const validate = (): boolean => {
     if (!email()) {
@@ -52,6 +56,7 @@ export default () => {
 
     if (response.ok) {
       setTitle(t('You are subscribed'))
+      showSnackbar({ body: t('Thank you for subscribing') })
     } else {
       if (response.status === 400) {
         setEmailError(t('Please check your email address'))

@@ -25,23 +25,15 @@ export const SolidSwiper = (props: Props) => {
   const [slideIndex, setSlideIndex] = createSignal<number>(0)
   const [thumbsSwiper, setThumbsSwiper] = createSignal(null)
 
-  const [isReady, setIsReady] = createSignal(false)
-
-  onMount(() => {
-    setTimeout(() => {
-      setIsReady(true)
-    }, 0)
-  })
-
   return (
     <div class={clsx(styles.Swiper, props.class)}>
       <div class={styles.holder}>
-        <Show when={isReady()}>
+        <Show when={thumbsSwiper()}>
           <Swiper
             onBeforeInit={(s) => {
               swiperRef.current = s
             }}
-            thumbs={{ swiper: thumbsSwiper() }} // empty
+            thumbs={{ swiper: thumbsSwiper() }}
             modules={[Navigation, Thumbs]}
             spaceBetween={20}
             slidesPerView={1}

@@ -40,4 +40,5 @@ export type MediaItem = {
   url: string
   title: string
   body: string
+  source?: string
 }

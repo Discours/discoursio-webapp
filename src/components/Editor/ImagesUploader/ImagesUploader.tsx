@@ -53,6 +53,7 @@ export const ImagesUploader = (props: Props) => {
   createEffect(() => {
     console.log('!!! IDX:', slideIdx())
   })
+
   return (
     <div class={clsx(styles.ImagesUploader, props.class)}>
       <Show
@@ -73,17 +74,7 @@ export const ImagesUploader = (props: Props) => {
           />
         }
       >
-        <SolidSwiper slides={data()} slideIndex={(idx) => setSlideIdx(idx)} />
-
-        {/*<For each={data()}>*/}
-        {/*  {(img) => (*/}
-        {/*    <div class="swiper-slide">*/}
-        {/*      <div class={styles.slide}>*/}
-        {/*        <img class={styles.image} src={img.url} alt={img.title} loading="lazy" />*/}
-        {/*      </div>*/}
-        {/*    </div>*/}
-        {/*  )}*/}
-        {/*</For>*/}
+        <SolidSwiper withThumbs={true} slides={data()} slideIndex={(idx) => setSlideIdx(idx)} />
 
         <div class={styles.description}>
           <GrowingTextarea

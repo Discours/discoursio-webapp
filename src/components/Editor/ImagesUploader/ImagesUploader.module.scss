@@ -29,7 +29,6 @@
       @include font-size(1.4rem);
 
       line-height: 1.1;
-      font-weight: 500;
     }
 
     .input {
@@ -47,26 +46,10 @@
       &::placeholder {
         color: var(--placeholder-color);
       }
+
+      &.title {
+        font-weight: 500;
+      }
     }
   }
-
-  //.sortable {
-  //  margin: 2rem 0;
-  //
-  //  & > div {
-  //    display: flex;
-  //    flex-direction: row;
-  //    flex-wrap: nowrap;
-  //    overflow-x: auto;
-  //    width: 100%;
-  //    gap: 12px;
-  //
-  //    .sortItem {
-  //      border: 1px solid cadetblue;
-  //      width: 110px;
-  //      height: 75px;
-  //      background-size: cover;
-  //    }
-  //  }
-  //}
 }

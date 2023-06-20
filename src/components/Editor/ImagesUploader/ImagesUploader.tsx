@@ -7,6 +7,7 @@ import { MediaItem } from '../../../pages/types'
 import { imageProxy } from '../../../utils/imageProxy'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { SolidSwiper } from '../../_shared/SolidSwiper'
+import { filter } from 'wonka'
 
 type Props = {
   class?: string
@@ -26,6 +27,7 @@ const composeMedia = (value) => {
   return value.map((url) => {
     return {
       url: imageProxy(url),
+      source: '',
       title: '',
       body: ''
     }
@@ -51,7 +53,7 @@ export const ImagesUploader = (props: Props) => {
   }
 
   createEffect(() => {
-    console.log('!!! IDX:', slideIdx())
+    console.log('!!! data:', data())
   })
 
   return (
@@ -74,23 +76,36 @@ export const ImagesUploader = (props: Props) => {
           />
         }
       >
-        <SolidSwiper withThumbs={true} slides={data()} slideIndex={(idx) => setSlideIdx(idx)} />
-
-        <div class={styles.description}>
-          <GrowingTextarea
-            class={styles.descriptionText}
-            placeholder={t('Enter image description')}
-            initialValue={data()[slideIdx()]?.body}
-            value={(value) => handleTitleChange(slideIdx(), 'body', value)}
-          />
-          <input
-            type="text"
-            class={styles.input}
-            placeholder={t('Specify the source and the name of the author')}
-            value={data()[slideIdx()]?.title}
-            onChange={(event) => handleTitleChange(slideIdx(), 'title', event.target.value)}
-          />
-        </div>
+        <SolidSwiper
+          variant="uploadView"
+          withThumbs={true}
+          slides={data()}
+          slideIndex={(idx) => setSlideIdx(idx)}
+          updatedSlides={(value) => setData(value)}
+        >
+          <div class={styles.description}>
+            <input
+              type="text"
+              class={clsx(styles.input, styles.title)}
+              placeholder={t('Enter image title')}
+              value={data()[slideIdx()]?.title}
+              onChange={(event) => handleTitleChange(slideIdx(), 'title', event.target.value)}
+            />
+            <input
+              type="text"
+              class={styles.input}
+              placeholder={t('Specify the source and the name of the author')}
+              value={data()[slideIdx()]?.source}
+              onChange={(event) => handleTitleChange(slideIdx(), 'source', event.target.value)}
+            />
+            <GrowingTextarea
+              class={styles.descriptionText}
+              placeholder={t('Enter image description')}
+              initialValue={data()[slideIdx()]?.body}
+              value={(value) => handleTitleChange(slideIdx(), 'body', value)}
+            />
+          </div>
+        </SolidSwiper>
       </Show>
     </div>
   )

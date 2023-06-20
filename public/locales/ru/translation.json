@@ -79,6 +79,8 @@
   "Email": "Почта",
   "Enter": "Войти",
   "Enter URL address": "Введите адрес ссылки",
+  "Enter image description": "Введите описание изображения",
+  "Enter image title": "Введите название изображения",
   "Enter text": "Введите текст",
   "Enter the Discours": "Войти в Дискурс",
   "Enter the code or click the link from email to confirm": "Введите код из письма или пройдите по ссылке в письме для подтверждения регистрации",
@@ -237,6 +239,7 @@
   "Something went wrong, please try again": "Что-то пошло не так, попробуйте еще раз",
   "Sorry, this address is already taken, please choose another one.": "Увы, этот адрес уже занят, выберите другой",
   "Special projects": "Спецпроекты",
+  "Specify the source and the name of the author": "Укажите источник и имя автора",
   "Start conversation": "Начать беседу",
   "Subheader": "Подзаголовок",
   "Subscribe": "Подписаться",
@@ -354,7 +357,5 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал",
-  "Specify the source and the name of the author": "Укажите источник и имя автора",
-  "Enter image description": "Введите описание изображения"
+  "zine": "журнал"
 }

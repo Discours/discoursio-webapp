@@ -3,6 +3,25 @@ $navigation-reserve: 32px;
 .Swiper {
   display: block;
 
+  .delete {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(#000, 0.3);
+    cursor: pointer;
+    display: none;
+
+    .icon {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
   .holder {
     position: relative;
     box-sizing: border-box;
@@ -14,21 +33,15 @@ $navigation-reserve: 32px;
       justify-content: center;
       height: 500px;
       background: #fafafa;
+      position: relative;
+
+      &:hover .delete {
+        display: flex;
+      }
 
       img {
         max-height: 100%;
       }
-    }
-
-    .counter {
-      @include font-size(1.2rem);
-
-      position: absolute;
-      right: 0;
-      top: 100%;
-      padding: 0.2rem 0.8rem;
-      color: var(--background-color);
-      background-color: var(--default-color);
     }
   }
 
@@ -75,12 +88,48 @@ $navigation-reserve: 32px;
       background-size: cover;
       background-position: 50% 50%;
       opacity: 0.5;
-      filter: sepia(1);
+      filter: grayscale(1);
+      transition: filter 0.3s ease-in-out, opacity 0.5s ease-in-out;
+
+      .delete {
+        width: 18px;
+        height: 18px;
+        top: 6px;
+        right: 6px;
+
+        .icon {
+          width: 8px;
+          height: 8px;
+        }
+      }
 
       &.active {
         opacity: 1;
         filter: unset;
+
+        .delete {
+          display: flex;
+        }
+      }
+
+      &:not(.active):hover {
+        opacity: 1;
+        cursor: pointer;
+        filter: unset;
+
+        .delete {
+          display: flex;
+        }
       }
     }
   }
+}
+
+:global(.swiper-pagination-fraction) {
+  @include font-size(1.2rem);
+
+  font-weight: 600;
+  padding: 0.2rem 0.8rem;
+  color: var(--background-color);
+  background-color: var(--default-color);
 }

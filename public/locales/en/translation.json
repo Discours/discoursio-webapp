@@ -75,6 +75,8 @@
   "Email": "Mail",
   "Enter": "Enter",
   "Enter URL address": "Enter URL address",
+  "Enter image description": "Enter image description",
+  "Enter image title": "Enter image title",
   "Enter text": "Enter text",
   "Enter the Discours": "Enter the Discours",
   "Enter the code or click the link from email to confirm": "Enter the code from the email or follow the link in the email to confirm registration",
@@ -224,6 +226,7 @@
   "Something went wrong, please try again": "Something went wrong, please try again",
   "Sorry, this address is already taken, please choose another one.": "Sorry, this address is already taken, please choose another one",
   "Special projects": "Special projects",
+  "Specify the source and the name of the author": "Specify the source and the name of the author",
   "Start conversation": "Start a conversation",
   "Subsccriptions": "Subscriptions",
   "Subscribe": "Subscribe",
@@ -332,7 +335,5 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine",
-  "Specify the source and the name of the author": "Specify the source and the name of the author",
-  "Enter image description": "Enter image description"
+  "zine": "zine"
 }

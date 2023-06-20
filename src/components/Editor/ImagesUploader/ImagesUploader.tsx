@@ -7,7 +7,6 @@ import { MediaItem } from '../../../pages/types'
 import { imageProxy } from '../../../utils/imageProxy'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { SolidSwiper } from '../../_shared/SolidSwiper'
-import { filter } from 'wonka'
 
 type Props = {
   class?: string
@@ -84,6 +83,7 @@ export const ImagesUploader = (props: Props) => {
           updatedSlides={(value) => setData(value)}
         >
           <div class={styles.description}>
+            <p>{slideIdx()}</p>
             <input
               type="text"
               class={clsx(styles.input, styles.title)}

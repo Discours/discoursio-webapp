@@ -82,6 +82,17 @@ $navigation-reserve: 32px;
   .thumbs {
     margin: 3rem 0;
 
+    .upload {
+      width: 110px;
+      height: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccced3;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
     .imageThumb {
       width: 110px;
       height: 75px;

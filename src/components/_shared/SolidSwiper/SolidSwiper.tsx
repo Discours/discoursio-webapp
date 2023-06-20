@@ -9,6 +9,7 @@ import { useLocalize } from '../../../context/localize'
 import 'swiper/scss'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
+import { handleFileUpload } from '../../../utils/handleFileUpload'
 
 type Props = {
   class?: string
@@ -24,8 +25,11 @@ SwiperCore.use([Pagination, Manipulation])
 
 export const SolidSwiper = (props: Props) => {
   const { t } = useLocalize()
+  const [slides, setSlides] = createSignal<MediaItem[]>(props.slides)
+
   const [mainSwiper, setMainSwiper] = createSignal<SwiperTypes>(null)
   const [thumbsSwiper, setThumbsSwiper] = createSignal<SwiperTypes>(null)
+
   const [slideIndex, setSlideIndex] = createSignal<number>(0)
 
   const handleSlideDelete = () => {
@@ -36,6 +40,13 @@ export const SolidSwiper = (props: Props) => {
     thumbsSwiper().removeSlide(slideIndex())
   }
 
+  const handleUploadClick = () => {
+    mainSwiper().slideTo(slideIndex())
+    // window.scrollTo({
+    //   top: 0,
+    //   behavior: 'smooth',
+    // });
+  }
   return (
     <div class={clsx(styles.Swiper, props.class)}>
       <div class={styles.holder}>
@@ -56,7 +67,7 @@ export const SolidSwiper = (props: Props) => {
               props.slideIndex(s.realIndex)
             }}
           >
-            <For each={props.slides}>
+            <For each={slides()}>
               {(slide, index) => (
                 <SwiperSlide virtualIndex={index()}>
                   <div class={styles.image}>
@@ -106,8 +117,9 @@ export const SolidSwiper = (props: Props) => {
             slidesPerView="auto"
             freeMode={true}
             watchSlidesProgress={true}
+            id={'simpleList'}
           >
-            <For each={props.slides}>
+            <For each={slides()}>
               {(slide, idx) => (
                 <SwiperSlide style={{ width: 'auto' }}>
                   <div
@@ -127,6 +139,11 @@ export const SolidSwiper = (props: Props) => {
                 </SwiperSlide>
               )}
             </For>
+            <SwiperSlide style={{ width: 'auto' }} onClick={handleUploadClick}>
+              <div class={clsx(styles.upload)}>
+                <Icon name="swiper-plus" />
+              </div>
+            </SwiperSlide>
           </Swiper>
         </div>
       </Show>

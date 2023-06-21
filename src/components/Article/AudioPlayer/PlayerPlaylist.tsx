@@ -15,7 +15,7 @@ import styles from './AudioPlayer.module.scss'
 export const PlayerPlaylist = (props) => {
   const { t } = useLocalize()
 
-  const { tracks, getCurrentTrack, playMedia, articleSlug } = props
+  const { tracks, getCurrentTrack, playMedia, articleSlug, body } = props
 
   return (
     <ul class={styles.playlist}>
@@ -42,9 +42,8 @@ export const PlayerPlaylist = (props) => {
                 {(triggerRef: (el) => void) => (
                   <div ref={triggerRef}>
                     <SharePopup
-                      //@@ TODO discuss title
-                      title={`Checkout ${m.title} on Discours`}
-                      description={getDescription(m.body)}
+                      title={m.title}
+                      description={getDescription(body)}
                       imageUrl={m.pic}
                       shareUrl={getShareUrl({ pathname: `/${articleSlug}` })}
                       trigger={

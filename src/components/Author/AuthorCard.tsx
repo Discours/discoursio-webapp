@@ -105,6 +105,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
         hasLink={props.hasLink}
         isBig={props.isAuthorPage}
         isAuthorsList={props.isAuthorsList}
+        isFeedMode={props.isFeedMode}
         class={styles.circlewrap}
       />
 

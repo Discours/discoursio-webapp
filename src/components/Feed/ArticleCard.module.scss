@@ -114,11 +114,20 @@
 
 .shoutDetails {
   display: flex;
+  margin-bottom: 1rem;
+}
+
+.shoutDetailsFeedMode {
+  justify-content: space-between;
+
+  .shoutAuthor,
+  .shoutDate {
+    @include font-size(1.2rem);
+  }
 }
 
 .shoutCardTitle {
   @include font-size(2.2rem);
-
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 0.8rem;
@@ -136,11 +145,15 @@
     /* stylelint-disable-next-line */
     -webkit-box-decoration-break: clone;
   }
+
+  .shoutCardTitlesContainerFeedMode & {
+    @include font-size(3.2rem);
+    line-height: 1.1;
+  }
 }
 
 .shoutCardSubtitle {
   @include font-size(1.8rem);
-
   color: #141414;
   font-weight: 400;
   line-height: 1.3;

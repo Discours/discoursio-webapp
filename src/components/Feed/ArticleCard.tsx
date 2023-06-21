@@ -16,6 +16,7 @@ import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
+import { AuthorCard } from '../Author/AuthorCard'
 
 interface ArticleCardProps {
   settings?: {
@@ -103,7 +104,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardBeside]: props.settings?.isBeside
       }}
     >
-      <Show when={!props.settings?.noimage && cover}>
+      <Show when={!props.settings?.noimage && cover && !props.settings?.isFeedMode}>
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
             <img src={imageProxy(cover)} alt={title || ''} loading="lazy" />
@@ -112,7 +113,14 @@ export const ArticleCard = (props: ArticleCardProps) => {
       </Show>
 
       <div class={styles.shoutCardContent}>
-        <Show when={layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)}>
+        <Show
+          when={
+            layout &&
+            layout !== 'article' &&
+            !(props.settings?.noicon || props.settings?.noimage) &&
+            !props.settings?.isFeedMode
+          }
+        >
           <div class={styles.shoutCardType}>
             <a href={`/expo/${layout}`}>
               <Icon name={layout} class={styles.icon} />
@@ -127,11 +135,16 @@ export const ArticleCard = (props: ArticleCardProps) => {
             }
             slug={mainTopic.slug}
             isFloorImportant={props.settings?.isFloorImportant}
+            isFeedMode={true}
             class={clsx(styles.shoutTopic, { [styles.shoutTopicTop]: props.settings.isShort })}
           />
         </Show>
 
-        <div class={styles.shoutCardTitlesContainer}>
+        <div
+          class={clsx(styles.shoutCardTitlesContainer, {
+            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
+          })}
+        >
           <a href={`/${slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkContainer}>{title}</span>
@@ -146,22 +159,21 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </div>
 
         <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
-          <div class={styles.shoutDetails}>
+          <div
+            class={clsx(styles.shoutDetails, { [styles.shoutDetailsFeedMode]: props.settings?.isFeedMode })}
+          >
             <Show when={!props.settings?.noauthor}>
               <div class={styles.shoutAuthor}>
                 <For each={authors}>
-                  {(author, index) => {
-                    let name = author.name
-
-                    if (lang() !== 'ru') {
-                      name = name === 'Дискурс' ? 'Discours' : translit(name)
-                    }
-
+                  {(author) => {
                     return (
-                      <>
-                        <Show when={index() > 0}>, </Show>
-                        <a href={`/author/${author.slug}`}>{name}</a>
-                      </>
+                      <AuthorCard
+                        author={author}
+                        hideWriteButton={true}
+                        hideFollow={true}
+                        isFeedMode={true}
+                        hasLink={props.settings?.isFeedMode}
+                      />
                     )
                   }}
                 </For>
@@ -174,6 +186,25 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
 
         <Show when={props.settings?.isFeedMode}>
+          <Show when={!props.settings?.noimage && cover}>
+            <div class={styles.shoutCardCoverContainer}>
+              <Show
+                when={
+                  layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)
+                }
+              >
+                <div class={styles.shoutCardType}>
+                  <a href={`/expo/${layout}`}>
+                    <Icon name={layout} class={styles.icon} />
+                  </a>
+                </div>
+              </Show>
+              <div class={styles.shoutCardCover}>
+                <img src={imageProxy(cover)} alt={title || ''} loading="lazy" />
+              </div>
+            </div>
+          </Show>
+
           <section
             class={styles.shoutCardDetails}
             classList={{ [styles.shoutCardDetailsActive]: isActionPopupActive() }}

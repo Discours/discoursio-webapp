@@ -6,7 +6,7 @@
     position: relative;
     width: 4.6rem;
 
-    &:before {
+    &::before {
       background: #fff;
       border-radius: 100%;
       content: '';
@@ -41,14 +41,14 @@
       padding: 0;
       position: relative;
 
-      &:before {
+      &::before {
         display: none;
       }
     }
 
     &:checked + label {
       .switcher {
-        &:before {
+        &::before {
           left: 2.4rem;
         }
       }

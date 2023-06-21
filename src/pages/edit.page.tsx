@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
+import { createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { Loading } from '../components/_shared/Loading'
 import { useSession } from '../context/session'

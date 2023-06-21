@@ -99,7 +99,6 @@ export const DropArea = (props: Props) => {
       <Show when={!dropAreaError() && props.description}>
         <div class={styles.description}>{props.description}</div>
       </Show>
-      <For each={files()}>{(file) => <p>{file.name}</p>}</For>
     </div>
   )
 }

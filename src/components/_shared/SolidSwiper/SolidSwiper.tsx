@@ -6,19 +6,21 @@ import { MediaItem } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
+import { Button } from '../Button'
 import 'swiper/scss'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
-import { handleFileUpload } from '../../../utils/handleFileUpload'
 
 type Props = {
   class?: string
   variant: 'uploadView'
   slides: MediaItem[]
-  updatedSlides?: (value: MediaItem[]) => void
   slideIndex?: (value: number) => void
   withThumbs?: boolean
   children?: JSX.Element
+  addSlides?: (value: boolean) => void
+  uploadComplete?: boolean
+  updatedSlides?: (value: MediaItem[]) => void
 }
 
 SwiperCore.use([Pagination, Manipulation])
@@ -36,17 +38,21 @@ export const SolidSwiper = (props: Props) => {
     const copy = props.slides
     copy.splice(slideIndex(), 1)
     props.updatedSlides(copy)
+    setSlides(copy)
     mainSwiper().removeSlide(slideIndex())
     thumbsSwiper().removeSlide(slideIndex())
   }
 
-  const handleUploadClick = () => {
-    mainSwiper().slideTo(slideIndex())
-    // window.scrollTo({
-    //   top: 0,
-    //   behavior: 'smooth',
-    // });
-  }
+  // createEffect(() => {
+  //   if (slides() !== props.slides) {
+  //     console.log('!!! SW PROPS:', props.slides)
+  //     console.log('!!! SW OLD:', slides())
+  //     setSlides(props.slides)
+  //     mainSwiper().updateSlides()
+  //     thumbsSwiper().updateSlides()
+  //   }
+  // })
+
   return (
     <div class={clsx(styles.Swiper, props.class)}>
       <div class={styles.holder}>
@@ -109,42 +115,58 @@ export const SolidSwiper = (props: Props) => {
       <Show when={props.children}>{props.children}</Show>
 
       <Show when={props.withThumbs}>
-        <div class={styles.thumbs}>
-          <Swiper
-            onSwiper={setThumbsSwiper}
-            modules={[Navigation, Thumbs]}
-            spaceBetween={20}
-            slidesPerView="auto"
-            freeMode={true}
-            watchSlidesProgress={true}
-            id={'simpleList'}
+        <div class={styles.holder}>
+          <div class={styles.thumbs}>
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              modules={[Navigation, Thumbs]}
+              spaceBetween={20}
+              slidesPerView="auto"
+              freeMode
+              watchSlidesProgress
+              centeredSlides
+            >
+              <For each={slides()}>
+                {(slide, idx) => (
+                  <SwiperSlide style={{ width: 'auto' }}>
+                    <div
+                      class={clsx(styles.imageThumb, { [styles.active]: idx() === slideIndex() })}
+                      style={{ 'background-image': `url(${slide.url})` }}
+                    >
+                      <Show when={props.variant === 'uploadView'}>
+                        <Popover content={t('Delete')}>
+                          {(triggerRef: (el) => void) => (
+                            <div ref={triggerRef} class={styles.delete} onClick={handleSlideDelete}>
+                              <Icon class={styles.icon} name="delete-white" />
+                            </div>
+                          )}
+                        </Popover>
+                      </Show>
+                    </div>
+                  </SwiperSlide>
+                )}
+              </For>
+            </Swiper>
+          </div>
+          <div
+            class={clsx(styles.navigation, styles.prev, {
+              [styles.disabled]: slideIndex() === 0
+            })}
+            onClick={() => thumbsSwiper()?.slidePrev()}
           >
-            <For each={slides()}>
-              {(slide, idx) => (
-                <SwiperSlide style={{ width: 'auto' }}>
-                  <div
-                    class={clsx(styles.imageThumb, { [styles.active]: idx() === slideIndex() })}
-                    style={{ 'background-image': `url(${slide.url})` }}
-                  >
-                    <Show when={props.variant === 'uploadView'}>
-                      <Popover content={t('Delete')}>
-                        {(triggerRef: (el) => void) => (
-                          <div ref={triggerRef} class={styles.delete} onClick={handleSlideDelete}>
-                            <Icon class={styles.icon} name="delete-white" />
-                          </div>
-                        )}
-                      </Popover>
-                    </Show>
-                  </div>
-                </SwiperSlide>
-              )}
-            </For>
-            <SwiperSlide style={{ width: 'auto' }} onClick={handleUploadClick}>
-              <div class={clsx(styles.upload)}>
-                <Icon name="swiper-plus" />
-              </div>
-            </SwiperSlide>
-          </Swiper>
+            <Icon name="swiper-l-arr" class={styles.icon} />
+          </div>
+          <div
+            class={clsx(styles.navigation, styles.next, {
+              [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
+            })}
+            onClick={() => thumbsSwiper()?.slideNext()}
+          >
+            <Icon name="swiper-r-arr" class={styles.icon} />
+          </div>
+        </div>
+        <div class={styles.addSlides}>
+          <Button value={t('Add images')} onClick={() => props.addSlides(true)} />
         </div>
       </Show>
     </div>

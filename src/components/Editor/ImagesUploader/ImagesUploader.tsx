@@ -7,6 +7,7 @@ import { MediaItem } from '../../../pages/types'
 import { imageProxy } from '../../../utils/imageProxy'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { SolidSwiper } from '../../_shared/SolidSwiper'
+import { scrollIntoView } from '@tiptap/core/dist/packages/core/src/commands'
 
 type Props = {
   class?: string
@@ -34,9 +35,11 @@ const composeMedia = (value) => {
 }
 
 export const ImagesUploader = (props: Props) => {
+  const dropAreaRef: { current: HTMLElement } = { current: null }
   const { t } = useLocalize()
   const [data, setData] = createSignal<MediaItem[]>(composeMedia(mock))
   const [slideIdx, setSlideIdx] = createSignal<number>(0)
+  const [addImages, setAddImages] = createSignal(false)
 
   createEffect((prevData) => {
     if (prevData !== data() && data().length > 0) {
@@ -44,43 +47,56 @@ export const ImagesUploader = (props: Props) => {
     }
   }, data())
 
-  const handleTitleChange = (index: number, field: string, value) => {
-    console.log('!!! index change:', index)
+  const handleSlideDescriptionChange = (index: number, field: string, value) => {
     setData((prev) => {
       return prev.map((item, idx) => (idx === index ? { ...item, [field]: value } : item))
     })
   }
 
-  createEffect(() => {
-    console.log('!!! data:', data())
-  })
+  const handleAddImages = () => {
+    setAddImages(true)
+
+    window.scrollTo({
+      top: 96,
+      left: 0,
+      behavior: 'smooth'
+    })
+  }
+
+  const handleSetData = (value: string[]) => {
+    if (addImages()) {
+      value.length > 0 && setData([...data(), ...composeMedia(value)])
+    } else {
+      setData(composeMedia(value))
+    }
+  }
 
   return (
     <div class={clsx(styles.ImagesUploader, props.class)}>
-      <Show
-        when={data() && data().length > 0}
-        fallback={
-          <DropArea
-            fileType="image"
-            isMultiply={true}
-            placeholder={t('Add images')}
-            data={(value) => setData(composeMedia(value))}
-            description={
-              <div>
-                {t('You can upload up to 100 images in .jpg, .png format.')}
-                <br />
-                {t('Each image must be no larger than 5 MB.')}
-              </div>
-            }
-          />
-        }
-      >
+      <Show when={addImages()}>
+        <DropArea
+          ref={(el) => (dropAreaRef.current = el)}
+          fileType="image"
+          isMultiply={true}
+          placeholder={t('Add images')}
+          data={(value) => handleSetData(value)}
+          description={
+            <div>
+              {t('You can upload up to 100 images in .jpg, .png format.')}
+              <br />
+              {t('Each image must be no larger than 5 MB.')}
+            </div>
+          }
+        />
+      </Show>
+      <Show when={data() && data().length > 0}>
         <SolidSwiper
           variant="uploadView"
           withThumbs={true}
           slides={data()}
           slideIndex={(idx) => setSlideIdx(idx)}
           updatedSlides={(value) => setData(value)}
+          addSlides={(val) => (val ? handleAddImages() : null)}
         >
           <div class={styles.description}>
             <p>{slideIdx()}</p>
@@ -89,20 +105,20 @@ export const ImagesUploader = (props: Props) => {
               class={clsx(styles.input, styles.title)}
               placeholder={t('Enter image title')}
               value={data()[slideIdx()]?.title}
-              onChange={(event) => handleTitleChange(slideIdx(), 'title', event.target.value)}
+              onChange={(event) => handleSlideDescriptionChange(slideIdx(), 'title', event.target.value)}
             />
             <input
               type="text"
               class={styles.input}
               placeholder={t('Specify the source and the name of the author')}
               value={data()[slideIdx()]?.source}
-              onChange={(event) => handleTitleChange(slideIdx(), 'source', event.target.value)}
+              onChange={(event) => handleSlideDescriptionChange(slideIdx(), 'source', event.target.value)}
             />
             <GrowingTextarea
               class={styles.descriptionText}
               placeholder={t('Enter image description')}
               initialValue={data()[slideIdx()]?.body}
-              value={(value) => handleTitleChange(slideIdx(), 'body', value)}
+              value={(value) => handleSlideDescriptionChange(slideIdx(), 'body', value)}
             />
           </div>
         </SolidSwiper>

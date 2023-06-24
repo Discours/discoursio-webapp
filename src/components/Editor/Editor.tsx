@@ -132,7 +132,7 @@ export const Editor = (props: EditorProps) => {
         openOnClick: false
       }),
       Heading.configure({
-        levels: [1, 2, 3]
+        levels: [2, 3, 4]
       }),
       BulletList,
       OrderedList,

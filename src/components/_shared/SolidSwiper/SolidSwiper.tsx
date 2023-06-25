@@ -1,47 +1,37 @@
-import { createEffect, createSignal, For, JSX, Show } from 'solid-js'
-import SwiperCore, { Navigation, Thumbs, Manipulation, Pagination } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/solid'
-import { Swiper as SwiperTypes } from 'swiper/types'
+import { createEffect, createSignal, For, JSX, onMount, Show } from 'solid-js'
 import { MediaItem } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
-import { Button } from '../Button'
 import 'swiper/scss'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
+import KeenSlider, { KeenSliderInstance } from 'keen-slider'
+import { Mutation, Thumbnail } from './plugins'
+import 'keen-slider/keen-slider.scss'
 
 type Props = {
   class?: string
   variant: 'uploadView'
   slides: MediaItem[]
   slideIndex?: (value: number) => void
-  withThumbs?: boolean
   children?: JSX.Element
-  addSlides?: (value: boolean) => void
-  uploadComplete?: boolean
+  // addSlides?: (value: boolean) => void
   updatedSlides?: (value: MediaItem[]) => void
 }
-
-SwiperCore.use([Pagination, Manipulation])
 
 export const SolidSwiper = (props: Props) => {
   const { t } = useLocalize()
   const [slides, setSlides] = createSignal<MediaItem[]>(props.slides)
 
-  const [mainSwiper, setMainSwiper] = createSignal<SwiperTypes>(null)
-  const [thumbsSwiper, setThumbsSwiper] = createSignal<SwiperTypes>(null)
+  const [mainSwiper, setMainSwiper] = createSignal<KeenSliderInstance>(null)
+  const [thumbSwiper, setThumbSwiper] = createSignal<KeenSliderInstance>(null)
 
   const [slideIndex, setSlideIndex] = createSignal<number>(0)
 
-  const handleSlideDelete = () => {
-    const copy = props.slides
-    copy.splice(slideIndex(), 1)
-    props.updatedSlides(copy)
-    setSlides(copy)
-    mainSwiper().removeSlide(slideIndex())
-    thumbsSwiper().removeSlide(slideIndex())
-  }
+  // createEffect(() => {
+  //   props.slideIndex(slideIndex())
+  // })
 
   // createEffect(() => {
   //   if (slides() !== props.slides) {
@@ -53,52 +43,77 @@ export const SolidSwiper = (props: Props) => {
   //   }
   // })
 
+  onMount(() => {
+    const slider = new KeenSlider(
+      '#slider',
+      {
+        initial: 0,
+        created: (s) => {
+          console.log('!!! created:', s)
+        },
+        slideChanged(s) {
+          setSlideIndex(s.track.details.rel)
+          props.slideIndex(s.track.details.rel)
+        }
+      },
+      [Mutation]
+    )
+    setMainSwiper(slider)
+
+    const thumbnails = new KeenSlider(
+      '#thumbnails',
+      {
+        initial: 0,
+        slides: {
+          perView: 4,
+          spacing: 10
+        }
+      },
+      [Thumbnail(slider)]
+    )
+    setThumbSwiper(thumbnails)
+  })
+
+  const handleSlideDelete = (e: Event, index: number) => {
+    e.preventDefault()
+    const copy = slides()
+    props.updatedSlides(copy.splice(index, 1))
+    setSlides([...slides().slice(0, index), ...slides().slice(-index)])
+  }
   return (
     <div class={clsx(styles.Swiper, props.class)}>
       <div class={styles.holder}>
-        <Show when={thumbsSwiper()}>
-          <Swiper
-            onBeforeInit={(s) => setMainSwiper(s)}
-            thumbs={{ swiper: thumbsSwiper() }}
-            modules={[Navigation, Thumbs]}
-            spaceBetween={20}
-            slidesPerView={1}
-            pagination={{ type: 'fraction' }}
-            onSwiper={(s) => {
-              props.slideIndex(s.realIndex)
-              setSlideIndex(s.realIndex)
-            }}
-            onSlideChange={(s) => {
-              setSlideIndex(s.realIndex)
-              props.slideIndex(s.realIndex)
-            }}
-          >
-            <For each={slides()}>
-              {(slide, index) => (
-                <SwiperSlide virtualIndex={index()}>
-                  <div class={styles.image}>
-                    <img src={slide.url} alt={slide.title} />
-                    <Show when={props.variant === 'uploadView'}>
-                      <Popover content={t('Delete')}>
-                        {(triggerRef: (el) => void) => (
-                          <div ref={triggerRef} class={styles.delete} onClick={handleSlideDelete}>
-                            <Icon class={styles.icon} name="delete-white" />
-                          </div>
-                        )}
-                      </Popover>
-                    </Show>
-                  </div>
-                </SwiperSlide>
-              )}
-            </For>
-          </Swiper>
-        </Show>
+        <p>
+          {slideIndex() + 1} / {slides().length}
+        </p>
+        <div id="slider" class="keen-slider">
+          <For each={slides()}>
+            {(slide, index) => (
+              <div class={clsx(styles.image, 'keen-slider__slide')} data-key={index()}>
+                <img src={slide.url} alt={slide.title} />
+                <Show when={props.variant === 'uploadView'}>
+                  <Popover content={t('Delete')}>
+                    {(triggerRef: (el) => void) => (
+                      <div
+                        ref={triggerRef}
+                        class={styles.delete}
+                        onClick={(e) => handleSlideDelete(e, index())}
+                      >
+                        <Icon class={styles.icon} name="delete-white" />
+                      </div>
+                    )}
+                  </Popover>
+                </Show>
+              </div>
+            )}
+          </For>
+        </div>
 
         <div
           class={clsx(styles.navigation, styles.prev, {
             [styles.disabled]: slideIndex() === 0
           })}
-          onClick={() => mainSwiper()?.slidePrev()}
+          onClick={() => mainSwiper()?.prev()}
         >
           <Icon name="swiper-l-arr" class={styles.icon} />
         </div>
@@ -106,7 +121,7 @@ export const SolidSwiper = (props: Props) => {
           class={clsx(styles.navigation, styles.next, {
             [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
           })}
-          onClick={() => mainSwiper()?.slideNext()}
+          onClick={() => mainSwiper()?.next()}
         >
           <Icon name="swiper-r-arr" class={styles.icon} />
         </div>
@@ -114,61 +129,53 @@ export const SolidSwiper = (props: Props) => {
 
       <Show when={props.children}>{props.children}</Show>
 
-      <Show when={props.withThumbs}>
-        <div class={styles.holder}>
-          <div class={styles.thumbs}>
-            <Swiper
-              onSwiper={setThumbsSwiper}
-              modules={[Navigation, Thumbs]}
-              spaceBetween={20}
-              slidesPerView="auto"
-              freeMode
-              watchSlidesProgress
-              centeredSlides
-            >
-              <For each={slides()}>
-                {(slide, idx) => (
-                  <SwiperSlide style={{ width: 'auto' }}>
-                    <div
-                      class={clsx(styles.imageThumb, { [styles.active]: idx() === slideIndex() })}
-                      style={{ 'background-image': `url(${slide.url})` }}
-                    >
-                      <Show when={props.variant === 'uploadView'}>
-                        <Popover content={t('Delete')}>
-                          {(triggerRef: (el) => void) => (
-                            <div ref={triggerRef} class={styles.delete} onClick={handleSlideDelete}>
-                              <Icon class={styles.icon} name="delete-white" />
-                            </div>
-                          )}
-                        </Popover>
-                      </Show>
-                    </div>
-                  </SwiperSlide>
-                )}
-              </For>
-            </Swiper>
-          </div>
-          <div
-            class={clsx(styles.navigation, styles.prev, {
-              [styles.disabled]: slideIndex() === 0
-            })}
-            onClick={() => thumbsSwiper()?.slidePrev()}
-          >
-            <Icon name="swiper-l-arr" class={styles.icon} />
-          </div>
-          <div
-            class={clsx(styles.navigation, styles.next, {
-              [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
-            })}
-            onClick={() => thumbsSwiper()?.slideNext()}
-          >
-            <Icon name="swiper-r-arr" class={styles.icon} />
+      <div class={styles.holder}>
+        <div class={styles.thumbs}>
+          <div id="thumbnails" class="keen-slider thumbnail">
+            <For each={slides()}>
+              {(slide, index) => (
+                <div class={clsx('keen-slider__slide')}>
+                  <div
+                    class={clsx(styles.imageThumb, { [styles.active]: index() === slideIndex() })}
+                    style={{ 'background-image': `url(${slide.url})` }}
+                  >
+                    <Show when={props.variant === 'uploadView'}>
+                      <Popover content={t('Delete')}>
+                        {(triggerRef: (el) => void) => (
+                          <div
+                            ref={triggerRef}
+                            class={styles.delete}
+                            onClick={(e) => handleSlideDelete(e, index())}
+                          >
+                            <Icon class={styles.icon} name="delete-white" />
+                          </div>
+                        )}
+                      </Popover>
+                    </Show>
+                  </div>
+                </div>
+              )}
+            </For>
           </div>
         </div>
-        <div class={styles.addSlides}>
-          <Button value={t('Add images')} onClick={() => props.addSlides(true)} />
-        </div>
-      </Show>
+        {/*    <div*/}
+        {/*      class={clsx(styles.navigation, styles.prev, {*/}
+        {/*        [styles.disabled]: slideIndex() === 0*/}
+        {/*      })}*/}
+        {/*      onClick={() => thumbsSwiper()?.slidePrev()}*/}
+        {/*    >*/}
+        {/*      <Icon name="swiper-l-arr" class={styles.icon} />*/}
+        {/*    </div>*/}
+        {/*    <div*/}
+        {/*      class={clsx(styles.navigation, styles.next, {*/}
+        {/*        [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)*/}
+        {/*      })}*/}
+        {/*      onClick={() => thumbsSwiper()?.slideNext()}*/}
+        {/*    >*/}
+        {/*      <Icon name="swiper-r-arr" class={styles.icon} />*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+      </div>
     </div>
   )
 }

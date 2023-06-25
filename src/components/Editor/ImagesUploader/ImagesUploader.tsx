@@ -7,7 +7,6 @@ import { MediaItem } from '../../../pages/types'
 import { imageProxy } from '../../../utils/imageProxy'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { SolidSwiper } from '../../_shared/SolidSwiper'
-import { scrollIntoView } from '@tiptap/core/dist/packages/core/src/commands'
 
 type Props = {
   class?: string
@@ -17,10 +16,10 @@ type Props = {
 const mock = [
   'http://cdn.discours.io/4e09b3e5-aeac-4f0e-9249-be7ef9067f52.png',
   'http://cdn.discours.io/8abdfe6b-eef7-4126-974f-26a89e1674aa.png',
-  'http://cdn.discours.io/0ca27f02-9f3d-4a4f-b26b-5eaaf517e582.png',
-  'http://cdn.discours.io/77f24b9b-bde7-470d-bdd9-278b40f5b207.jpeg',
-  'http://cdn.discours.io/25bf14aa-d415-4ae1-b7c4-9bd732ad2af7.jpeg',
-  'http://cdn.discours.io/0be24718-513b-49b3-ad23-804a18b84850.jpeg'
+  'http://cdn.discours.io/0ca27f02-9f3d-4a4f-b26b-5eaaf517e582.png'
+  // 'http://cdn.discours.io/77f24b9b-bde7-470d-bdd9-278b40f5b207.jpeg',
+  // 'http://cdn.discours.io/25bf14aa-d415-4ae1-b7c4-9bd732ad2af7.jpeg',
+  // 'http://cdn.discours.io/0be24718-513b-49b3-ad23-804a18b84850.jpeg'
 ]
 
 const composeMedia = (value) => {
@@ -92,11 +91,13 @@ export const ImagesUploader = (props: Props) => {
       <Show when={data() && data().length > 0}>
         <SolidSwiper
           variant="uploadView"
-          withThumbs={true}
+          // withThumbs={true}
           slides={data()}
           slideIndex={(idx) => setSlideIdx(idx)}
-          updatedSlides={(value) => setData(value)}
-          addSlides={(val) => (val ? handleAddImages() : null)}
+          // updatedSlides={(value) => {
+          //   setData(value)
+          // }}
+          // addSlides={(val) => (val ? handleAddImages() : null)}
         >
           <div class={styles.description}>
             <p>{slideIdx()}</p>

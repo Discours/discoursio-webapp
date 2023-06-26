@@ -47,13 +47,13 @@
   color: var(--default-color);
   flex-wrap: nowrap !important;
   justify-content: flex-start;
-  margin: 0;
 
   .fixed & {
     left: 0;
     position: fixed;
     right: 0;
     top: 0;
+    margin: 0;
     padding: 0 divide($container-padding-x, 2);
     z-index: 9;
 

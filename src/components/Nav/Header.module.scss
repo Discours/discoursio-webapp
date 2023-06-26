@@ -68,14 +68,9 @@
   color: var(--default-color);
   display: inline-flex;
   height: 56px;
-  padding: 0;
   position: relative;
   text-align: center;
   z-index: 9;
-
-  @include media-breakpoint-up(sm) {
-    padding: 0 6rem 0 0;
-  }
 
   img {
     height: 20px;
@@ -121,7 +116,6 @@
 .mainNavigationWrapper {
   @include font-size(1.7rem);
 
-  padding-left: 0;
   position: relative;
 
   @include media-breakpoint-down(md) {

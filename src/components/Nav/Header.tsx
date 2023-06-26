@@ -85,7 +85,7 @@ export const Header = (props: Props) => {
     props.scrollToComments(value)
   }
 
-  const logoColWidth = page().path === '/' ? 'col-md-5' : 'col-md-5 col-xl-4'
+  const logoColWidth = page().path === '/' ? 'col-md-6' : 'col-md-5 col-xl-4'
 
   return (
     <header
@@ -109,7 +109,7 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx('col-md-6 col offset-xl-1', styles.mainNavigationWrapper)}>
+          <div class={clsx('col', styles.mainNavigationWrapper)}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>

@@ -109,7 +109,7 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx('col', styles.mainNavigationWrapper)}>
+          <div class={clsx('col', styles.mainNavigationWrapper, { ['offset-xl-1']: page().path !== '/' })}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>

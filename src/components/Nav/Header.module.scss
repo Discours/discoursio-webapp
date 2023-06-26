@@ -54,12 +54,8 @@
     right: 0;
     top: 0;
     margin: 0;
-    padding: 0 divide($container-padding-x, 2);
+    padding: 0;
     z-index: 9;
-
-    @include media-breakpoint-up(sm) {
-      padding: 0 $container-padding-x;
-    }
   }
 }
 
@@ -184,7 +180,6 @@
   display: inline-flex;
   float: right;
   padding-left: 0;
-  padding-right: 0;
 
   @include media-breakpoint-up(sm) {
     padding-left: divide($container-padding-x, 2);

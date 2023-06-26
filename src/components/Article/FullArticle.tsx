@@ -139,7 +139,6 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
-  console.log('!!! props.article:', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>

@@ -44,6 +44,19 @@ $navigation-reserve: 32px;
         max-height: 100%;
       }
     }
+
+    .counter {
+      @include font-size(1.2rem);
+
+      font-weight: bold;
+      background: var(--default-color);
+      color: var(--background-color);
+      position: absolute;
+      padding: 0 0.5rem;
+      right: $navigation-reserve;
+      bottom: 0;
+      z-index: 1;
+    }
   }
 
   .navigation {
@@ -97,10 +110,13 @@ $navigation-reserve: 32px;
     .imageThumb {
       width: 110px;
       height: 75px;
+      position: relative;
       background-size: cover;
       background-position: 50% 50%;
+      background-color: #fafafa;
       opacity: 0.5;
       filter: grayscale(1);
+
       transition: filter 0.3s ease-in-out, opacity 0.5s ease-in-out;
 
       .delete {

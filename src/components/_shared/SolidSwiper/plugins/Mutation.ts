@@ -9,7 +9,6 @@ export const Mutation: KeenSliderPlugin = (slider) => {
   })
   const config = { childList: true }
   slider.on('created', () => {
-    console.log('!!! HERE IM:')
     observer.observe(slider.container, config)
   })
   slider.on('destroyed', () => {

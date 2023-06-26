@@ -12,8 +12,7 @@ import 'keen-slider/keen-slider.scss'
 import { Button } from '../Button'
 
 type Props = {
-  class?: string
-  variant: 'uploadView'
+  variant: 'uploadView' | 'articleView'
   slides: MediaItem[]
 
   slideIndex?: (value: number) => void
@@ -55,6 +54,7 @@ export const SolidSwiper = (props: Props) => {
       '#thumbnails',
       {
         initial: 0,
+        vertical: true,
         slides: {
           perView: 6,
           spacing: 20
@@ -70,101 +70,107 @@ export const SolidSwiper = (props: Props) => {
   })
 
   return (
-    <div class={clsx(styles.Swiper, props.class)}>
-      <div class={styles.holder}>
-        <div class={styles.counter}>
-          {slideIndex() + 1} / {slides().length}
-        </div>
-        <div id="slider" class="keen-slider">
-          <For each={slides()}>
-            {(slide, index) => (
-              <div class={clsx(styles.image, 'keen-slider__slide')} data-key={index()}>
-                <img src={slide.url} alt={slide.title} />
-                <Show when={props.variant === 'uploadView'}>
-                  <Popover content={t('Delete')}>
-                    {(triggerRef: (el) => void) => (
-                      <div
-                        ref={triggerRef}
-                        class={styles.delete}
-                        onClick={() => props.deletedSlide(index())}
-                      >
-                        <Icon class={styles.icon} name="delete-white" />
-                      </div>
-                    )}
-                  </Popover>
-                </Show>
-              </div>
-            )}
-          </For>
-        </div>
-
-        <div
-          class={clsx(styles.navigation, styles.prev, {
-            [styles.disabled]: slideIndex() === 0
-          })}
-          onClick={() => mainSwiper()?.prev()}
-        >
-          <Icon name="swiper-l-arr" class={styles.icon} />
-        </div>
-        <div
-          class={clsx(styles.navigation, styles.next, {
-            [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
-          })}
-          onClick={() => mainSwiper()?.next()}
-        >
-          <Icon name="swiper-r-arr" class={styles.icon} />
-        </div>
-      </div>
-
-      <Show when={props.children}>{props.children}</Show>
-
-      <div class={styles.holder}>
-        <div class={styles.thumbs}>
-          <div id="thumbnails" class="keen-slider thumbnail">
+    <div class={clsx(styles.Swiper, styles[`${props.variant}`])}>
+      <div class={styles.container}>
+        <div class={styles.holder}>
+          <div class={styles.counter}>
+            {slideIndex() + 1} / {slides().length}
+          </div>
+          <div id="slider" class="keen-slider">
             <For each={slides()}>
               {(slide, index) => (
-                <div class={clsx('keen-slider__slide')}>
-                  <div
-                    class={clsx(styles.imageThumb, { [styles.active]: index() === slideIndex() })}
-                    style={{ 'background-image': `url(${slide.url})` }}
-                  >
-                    <Show when={props.variant === 'uploadView'}>
-                      <Popover content={t('Delete')}>
-                        {(triggerRef: (el) => void) => (
-                          <div
-                            ref={triggerRef}
-                            class={styles.delete}
-                            onClick={() => props.deletedSlide(index())}
-                          >
-                            <Icon class={styles.icon} name="delete-white" />
-                          </div>
-                        )}
-                      </Popover>
-                    </Show>
-                  </div>
+                <div class={clsx(styles.image, 'keen-slider__slide')} data-key={index()}>
+                  <img src={slide.url} alt={slide.title} />
+                  <Show when={props.variant === 'uploadView'}>
+                    <Popover content={t('Delete')}>
+                      {(triggerRef: (el) => void) => (
+                        <div
+                          ref={triggerRef}
+                          class={styles.delete}
+                          onClick={() => props.deletedSlide(index())}
+                        >
+                          <Icon class={styles.icon} name="delete-white" />
+                        </div>
+                      )}
+                    </Popover>
+                  </Show>
                 </div>
               )}
             </For>
           </div>
+
+          <div
+            class={clsx(styles.navigation, styles.prev, {
+              [styles.disabled]: slideIndex() === 0
+            })}
+            onClick={() => mainSwiper()?.prev()}
+          >
+            <Icon name="swiper-l-arr" class={styles.icon} />
+          </div>
+          <div
+            class={clsx(styles.navigation, styles.next, {
+              [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
+            })}
+            onClick={() => mainSwiper()?.next()}
+          >
+            <Icon name="swiper-r-arr" class={styles.icon} />
+          </div>
         </div>
-        <div
-          class={clsx(styles.navigation, styles.prev, {
-            [styles.disabled]: slideIndex() === 0
-          })}
-          onClick={() => thumbSwiper()?.prev()}
-        >
-          <Icon name="swiper-l-arr" class={styles.icon} />
+
+        <Show when={props.children}>{props.children}</Show>
+
+        <div class={styles.holder}>
+          <div class={styles.thumbs}>
+            <div id="thumbnails" class="keen-slider thumbnail">
+              <For each={slides()}>
+                {(slide, index) => (
+                  <div class={clsx('keen-slider__slide')}>
+                    <div
+                      class={clsx(styles.imageThumb, { [styles.active]: index() === slideIndex() })}
+                      style={{ 'background-image': `url(${slide.url})` }}
+                    >
+                      <Show when={props.variant === 'uploadView'}>
+                        <Popover content={t('Delete')}>
+                          {(triggerRef: (el) => void) => (
+                            <div
+                              ref={triggerRef}
+                              class={styles.delete}
+                              onClick={() => props.deletedSlide(index())}
+                            >
+                              <Icon class={styles.icon} name="delete-white" />
+                            </div>
+                          )}
+                        </Popover>
+                      </Show>
+                    </div>
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+          <div
+            class={clsx(styles.navigation, styles.prev, {
+              [styles.disabled]: slideIndex() === 0
+            })}
+            onClick={() => thumbSwiper()?.prev()}
+          >
+            <Icon name="swiper-l-arr" class={styles.icon} />
+          </div>
+          <div
+            class={clsx(styles.navigation, styles.next, {
+              [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
+            })}
+            onClick={() => thumbSwiper()?.next()}
+          >
+            <Icon name="swiper-r-arr" class={styles.icon} />
+          </div>
         </div>
-        <div
-          class={clsx(styles.navigation, styles.next, {
-            [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
-          })}
-          onClick={() => thumbSwiper()?.next()}
-        >
-          <Icon name="swiper-r-arr" class={styles.icon} />
-        </div>
+        <Show when={props.variant === 'uploadView'}>
+          <div class={styles.addSlides}>
+            <Button value={t('Add images')} onClick={() => props.addSlides(true)} />
+          </div>
+        </Show>
       </div>
-      <Button value={t('Add images')} onClick={() => props.addSlides(true)} />
     </div>
   )
 }

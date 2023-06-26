@@ -10,6 +10,8 @@
 :root {
   --background-color: #fff;
   --default-color: #121416;
+  --invert-background-color: #000;
+  --invert-default-color: #fff;
   --link-color: #000;
   --link-hover-color: #fff;
   --link-hover-background: #000;
@@ -29,6 +31,8 @@
 [data-editor-dark-mode='true'] {
   --background-color: #121416;
   --default-color: #fff;
+  --invert-background-color: #fff;
+  --invert-default-color: #000;
   --link-color: #fff;
   --link-hover-color: #000;
   --link-hover-background: #fff;

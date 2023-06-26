@@ -4,25 +4,6 @@ $navigation-reserve: 32px;
   display: block;
   margin-top: 2rem;
 
-  .delete {
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(#000, 0.3);
-    cursor: pointer;
-    display: none;
-
-    .icon {
-      width: 14px;
-      height: 14px;
-    }
-  }
-
   .holder {
     position: relative;
     box-sizing: border-box;
@@ -33,7 +14,6 @@ $navigation-reserve: 32px;
       align-items: center;
       justify-content: center;
       height: 500px;
-      background: #fafafa;
       position: relative;
 
       &:hover .delete {
@@ -90,6 +70,25 @@ $navigation-reserve: 32px;
 
     &:not(.disabled):hover .icon {
       scale: 1.1;
+    }
+  }
+
+  .delete {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(#000, 0.3);
+    cursor: pointer;
+    display: none;
+
+    .icon {
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -156,6 +155,29 @@ $navigation-reserve: 32px;
     align-items: center;
     justify-content: center;
     margin: 2rem auto;
+  }
+
+  &.articleView {
+    background-color: var(--invert-background-color);
+    color: var(--invert-default-color);
+    margin-bottom: 2rem;
+
+    .container {
+      max-width: 880px;
+      margin: auto;
+    }
+
+    .navigation {
+      filter: invert(1);
+    }
+  }
+
+  &.uploadView {
+    .holder {
+      .image {
+        background: #fafafa;
+      }
+    }
   }
 }
 

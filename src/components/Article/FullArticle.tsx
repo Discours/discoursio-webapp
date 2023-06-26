@@ -22,6 +22,7 @@ import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import article from '../Editor/extensions/Article'
+import { SolidSwiper } from '../_shared/SolidSwiper'
 
 interface ArticleProps {
   article: Shout
@@ -54,12 +55,6 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
               <source src={props.media.url} />
             </audio>
             <hr />
-          </div>
-        </Match>
-        <Match when={props.kind === 'image'}>
-          <div>
-            <img src={props.media.url} alt={props.media.title} />
-            <h5>{props.media.title}</h5>
           </div>
         </Match>
       </Switch>
@@ -206,19 +201,20 @@ export const FullArticle = (props: ArticleProps) => {
       </div>
 
       <Show when={media() && props.article.layout === 'image'}>
-        <Slider slidesPerView={1} isPageGallery={true} isCardsWithCover={true} hasThumbs={true}>
-          <For each={media()}>
-            {(m) => (
-              <div class="swiper-slide">
-                <div class="swiper-slide__inner">
-                  <img src={m.url || m.pic} alt={m.title} loading="lazy" />
-                  {/*<div class="swiper-lazy-preloader swiper-lazy-preloader-white" />*/}
-                  <div class="image-description" innerHTML={m.title} />
-                </div>
-              </div>
-            )}
-          </For>
-        </Slider>
+        <SolidSwiper variant="articleView" slides={media()} />
+        {/*<Slider slidesPerView={1} isPageGallery={true} isCardsWithCover={true} hasThumbs={true}>*/}
+        {/*  <For each={media()}>*/}
+        {/*    {(m) => (*/}
+        {/*      <div class="swiper-slide">*/}
+        {/*        <div class="swiper-slide__inner">*/}
+        {/*          <img src={m.url || m.pic} alt={m.title} loading="lazy" />*/}
+        {/*          /!*<div class="swiper-lazy-preloader swiper-lazy-preloader-white" />*!/*/}
+        {/*          <div class="image-description" innerHTML={m.title} />*/}
+        {/*        </div>*/}
+        {/*      </div>*/}
+        {/*    )}*/}
+        {/*  </For>*/}
+        {/*</Slider>*/}
       </Show>
 
       <div class="wide-container">

@@ -47,19 +47,15 @@
   color: var(--default-color);
   flex-wrap: nowrap !important;
   justify-content: flex-start;
-  margin: 0;
 
   .fixed & {
     left: 0;
     position: fixed;
     right: 0;
     top: 0;
-    padding: 0 divide($container-padding-x, 2);
+    margin: 0;
+    padding: 0;
     z-index: 9;
-
-    @include media-breakpoint-up(sm) {
-      padding: 0 $container-padding-x;
-    }
   }
 }
 
@@ -68,14 +64,9 @@
   color: var(--default-color);
   display: inline-flex;
   height: 56px;
-  padding: 0;
   position: relative;
   text-align: center;
   z-index: 9;
-
-  @include media-breakpoint-up(sm) {
-    padding: 0 6rem 0 0;
-  }
 
   img {
     height: 20px;
@@ -121,7 +112,6 @@
 .mainNavigationWrapper {
   @include font-size(1.7rem);
 
-  padding-left: 0;
   position: relative;
 
   @include media-breakpoint-down(md) {
@@ -190,7 +180,6 @@
   display: inline-flex;
   float: right;
   padding-left: 0;
-  padding-right: 0;
 
   @include media-breakpoint-up(sm) {
     padding-left: divide($container-padding-x, 2);

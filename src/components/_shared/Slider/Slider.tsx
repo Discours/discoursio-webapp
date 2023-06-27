@@ -1,11 +1,10 @@
 //TODO: Replace with SolidSwiper.tsx
 
-import { Swiper, Navigation, Pagination, Lazy, Thumbs } from 'swiper'
+import { Swiper, Navigation, Pagination, Thumbs } from 'swiper'
 import type { SwiperOptions } from 'swiper'
 import 'swiper/scss'
 import 'swiper/scss/navigation'
 import 'swiper/scss/pagination'
-import 'swiper/scss/lazy'
 import 'swiper/scss/thumbs'
 import './Slider.scss'
 import { createEffect, createSignal, JSX, Show } from 'solid-js'
@@ -35,12 +34,11 @@ export const Slider = (props: Props) => {
   const [swiper, setSwiper] = createSignal<Swiper>()
   const [swiperThumbs, setSwiperThumbs] = createSignal<Swiper>()
   const opts: SwiperOptions = {
-    lazy: true,
     roundLengths: true,
     loop: true,
     centeredSlides: true,
     slidesPerView: 1,
-    modules: [Navigation, Pagination, Lazy, Thumbs],
+    modules: [Navigation, Pagination, Thumbs],
     speed: 500,
     on: {
       slideChange: () => {
@@ -71,8 +69,7 @@ export const Slider = (props: Props) => {
         setSwiperThumbs(
           new Swiper(thumbsEl, {
             slidesPerView: 'auto',
-            modules: [Lazy, Thumbs],
-            lazy: true,
+            modules: [Thumbs],
             roundLengths: true,
             spaceBetween: 20,
             freeMode: true,

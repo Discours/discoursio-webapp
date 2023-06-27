@@ -1,4 +1,4 @@
-import { createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -18,7 +18,7 @@ import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
-import { ImagesUploader } from '../Editor/ImagesUploader'
+import { SolidSwiper } from '../_shared/SolidSwiper'
 
 type Props = {
   shout: Shout
@@ -43,7 +43,7 @@ export const EditView = (props: Props) => {
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
-  const [media, setMedia] = createSignal<string>(props.shout.media)
+
   const { page } = useRouter()
   const {
     form,
@@ -62,8 +62,15 @@ export const EditView = (props: Props) => {
     mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
     body: props.shout.body,
     coverImageUrl: props.shout.cover,
-    media: media(),
+    media: props.shout.media,
     layout: props.shout.layout
+  })
+
+  //TODO: вынести в хэлпер
+  const mediaItems = createMemo(() => {
+    const mi = JSON.parse(form.media || '[]')
+    console.debug('[media items]:', mi)
+    return mi
   })
 
   onMount(async () => {
@@ -121,8 +128,20 @@ export const EditView = (props: Props) => {
     setForm('selectedTopics', newSelectedTopics)
   }
 
-  const handleAddMedia = (data) => {
-    setForm('media', JSON.stringify(data))
+  const handleAddImages = (data) => {
+    const newImages = [...mediaItems(), ...data]
+    setForm('media', JSON.stringify(newImages))
+  }
+
+  const handleImageDelete = (index) => {
+    const copy = [...mediaItems()]
+    copy.splice(index, 1)
+    setForm('media', JSON.stringify(copy))
+  }
+
+  const handleImageChange = (index, value) => {
+    const updated = mediaItems().map((item, idx) => (idx === index ? value : item))
+    setForm('media', JSON.stringify(updated))
   }
 
   return (
@@ -169,28 +188,33 @@ export const EditView = (props: Props) => {
                   />
 
                   <Show when={props.shout.layout === 'image'}>
-                    <ImagesUploader images={(value) => handleAddMedia(value)} />
+                    <SolidSwiper
+                      images={mediaItems()}
+                      onImageChange={handleImageChange}
+                      onImageDelete={(index) => handleImageDelete(index)}
+                      onImagesAdd={(value) => handleAddImages(value)}
+                    />
                   </Show>
 
                   <Show when={props.shout.layout === 'video'}>
                     <Show
-                      when={media()}
+                      when={form.media}
                       fallback={
                         <VideoUploader
                           data={(data) => {
-                            handleAddMedia(data)
+                            handleAddImages(data)
                           }}
                         />
                       }
                     >
-                      <For each={JSON.parse(media())}>
+                      <For each={mediaItems()}>
                         {(mediaItem) => (
                           <>
                             <VideoPlayer
                               videoUrl={mediaItem?.url}
                               title={mediaItem?.title}
                               description={mediaItem?.body}
-                              deleteAction={() => setMedia(null)}
+                              deleteAction={() => setForm('media', null)}
                             />
                           </>
                         )}

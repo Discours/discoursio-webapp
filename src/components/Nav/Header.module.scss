@@ -278,6 +278,10 @@
   }
 }
 
+.iconHover {
+  display: none;
+}
+
 .headerSearch {
   text-transform: lowercase;
 
@@ -285,7 +289,6 @@
     display: inline-block;
     height: 1em;
     margin-right: 0.3em;
-    transition: filter 0.3s;
     vertical-align: middle;
     width: 1em;
   }
@@ -321,7 +324,6 @@
       background: none;
 
       .icon {
-        filter: none;
         opacity: 1;
       }
     }
@@ -406,38 +408,19 @@
     &:hover {
       background: none;
 
-      &::before {
-        background-color: var(--default-color);
+      .icon {
+        display: none;
       }
 
-      img {
-        filter: var(--icon-filter-hover);
+      .iconHover {
+        display: block;
       }
-    }
-
-    img {
-      filter: var(--icon-filter);
-      transition: filter 0.3s;
-    }
-
-    &::before {
-      background-color: var(--background-color);
-      border-radius: 100%;
-      content: '';
-      height: 100%;
-      left: 0;
-      position: absolute;
-      top: 0;
-      transition: background-color 0.3s;
-      width: 100%;
     }
   }
 
   .icon {
     img {
-      height: 17px;
       max-width: none;
-      width: 20px;
     }
   }
 
@@ -494,7 +477,11 @@
   a:hover,
   button:hover {
     .icon {
-      filter: invert(0);
+      display: none;
+    }
+
+    .iconHover {
+      display: block;
     }
 
     .textLabel {

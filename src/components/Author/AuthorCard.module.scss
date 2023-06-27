@@ -349,7 +349,8 @@
 }
 
 .feedMode {
-  margin-bottom: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.4rem;
 
   .authorName {
     @include font-size(1.2rem);

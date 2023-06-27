@@ -17,13 +17,31 @@
     }
   }
 
-  a {
-    border: none;
+  .icon {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
   }
 
-  .icon {
-    height: 1.5em;
-    width: 100%;
+  .iconHover {
+    display: none;
+  }
+
+  button,
+  a:link {
+    border: none;
+
+    &:hover {
+      color: var(--default-color);
+
+      .icon {
+        display: none;
+      }
+
+      .iconHover {
+        display: inline-block;
+      }
+    }
   }
 
   .feedControlIcon {
@@ -54,8 +72,8 @@
 
     &:hover {
       .shoutCardTitle .shoutCardLinkContainer {
-        background-color: #000;
-        color: #fff;
+        background-color: var(--default-color);
+        color: var(--link-hover-color);
       }
     }
   }
@@ -129,7 +147,7 @@
 .shoutCardTitle {
   @include font-size(2.2rem);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.2;
   margin-bottom: 0.8rem;
 
   :global(.col-md-12) & {
@@ -148,7 +166,7 @@
 
   .shoutCardTitlesContainerFeedMode & {
     @include font-size(3.2rem);
-    line-height: 1.1;
+    line-height: 1.25;
   }
 }
 
@@ -208,8 +226,6 @@
 }
 
 .shoutCardType {
-  background: #fff;
-  border-radius: 100%;
   height: 3.2rem;
   position: absolute;
   right: 0.8rem;
@@ -219,11 +235,19 @@
   width: 3.2rem;
   z-index: 2;
 
-  &:hover {
-    background: #000;
+  a:link {
+    background: #fff;
+    border-radius: 100%;
+    display: block;
+    height: 100%;
+    width: 100%;
 
-    .icon {
-      filter: invert(1);
+    &:hover {
+      background: #000;
+
+      .icon {
+        filter: invert(1);
+      }
     }
   }
 
@@ -450,7 +474,11 @@
 }
 
 .shoutCardFeed {
-  margin-bottom: 4em;
+  margin: 4em 0;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
 
   .shoutCardContent {
     margin-bottom: 0;
@@ -489,7 +517,7 @@
 .shoutCardDetailsItem {
   align-items: center;
   display: flex;
-  margin-right: 1.4em;
+  margin-right: 1.2rem;
   white-space: nowrap;
 
   &:last-child {
@@ -500,17 +528,12 @@
     vertical-align: middle;
   }
 
-  a,
-  button {
-    &:hover {
-      img {
-        opacity: 0.5;
-      }
-    }
-  }
-
-  a {
+  a:link {
     border: none;
+
+    &:hover {
+      background: none;
+    }
   }
 }
 
@@ -520,26 +543,18 @@
   display: flex;
 
   .icon {
-    display: inline-block;
     margin: 0 0.5em 0 0;
     vertical-align: middle;
   }
 
-  a {
+  a:link {
     &:hover {
       background: none;
-      color: rgb(0 0 0 / 60%);
 
-      img {
-        filter: none;
+      .shoutCardLinkContainer {
+        background: var(--default-color);
       }
     }
-  }
-}
-
-.shoutCardDetailsViewed {
-  .icon {
-    margin-top: -0.1em;
   }
 }
 

@@ -124,6 +124,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <div class={styles.shoutCardType}>
             <a href={`/expo/${layout}`}>
               <Icon name={layout} class={styles.icon} />
+              <Icon name={layout} class={clsx(styles.icon, styles.iconHover)} />
             </a>
           </div>
         </Show>
@@ -196,6 +197,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <div class={styles.shoutCardType}>
                   <a href={`/expo/${layout}`}>
                     <Icon name={layout} class={styles.icon} />
+                    <Icon name={layout} class={clsx(styles.icon, styles.iconHover)} />
                   </a>
                 </div>
               </Show>
@@ -220,7 +222,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardComments)}>
                 <a href="#" onClick={(event) => scrollToComments(event)}>
                   <Icon name="comment" class={clsx(styles.icon, styles.feedControlIcon)} />
-                  {stat?.commented || t('Add comment')}
+                  <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)} />
+                  <span class={styles.shoutCardLinkContainer}>{stat?.commented || t('Add comment')}</span>
                 </a>
               </div>
             </div>
@@ -231,6 +234,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <a href={getPagePath(router, 'edit', { shoutId: id.toString() })}>
                       <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                      <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)} />
                     </a>
                   </div>
                 )}
@@ -241,6 +245,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <button>
                       <Icon name="bookmark" class={clsx(styles.icon, styles.feedControlIcon)} />
+                      <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)} />
                     </button>
                   </div>
                 )}
@@ -259,6 +264,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                       trigger={
                         <button>
                           <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                          <Icon name="share-outline-hover" class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)} />
                         </button>
                       }
                     />
@@ -277,6 +283,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   trigger={
                     <button>
                       <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />
+                      <Icon name="ellipsis" class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)} />
                     </button>
                   }
                 />

@@ -18,6 +18,7 @@ import styles from './Feed.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { CommentDate } from '../Article/CommentDate'
+import {Beside} from "../Feed/Beside";
 
 export const FEED_PAGE_SIZE = 20
 
@@ -122,7 +123,13 @@ export const FeedView = () => {
                 <For each={topAuthors().slice(0, 5)}>
                   {(author) => (
                     <li>
-                      <AuthorCard author={author} hideWriteButton={true} hasLink={true} />
+                      <AuthorCard
+                        author={author}
+                        hideWriteButton={true}
+                        hasLink={true}
+                        truncateBio={true}
+                        isTextButton={true}
+                      />
                     </li>
                   )}
                 </For>

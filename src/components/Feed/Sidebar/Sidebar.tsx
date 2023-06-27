@@ -78,15 +78,27 @@ export const Sidebar = (props: FeedSidebarProps) => {
     <div class={styles.sidebar}>
       <ul>
         <For each={menuItems}>
-          {(item: ListItem) => (
+          {(item: ListItem, index) => (
             <li>
-              <a href="#">
-                <span class={styles.sidebarItemName}>
-                  {item.icon && <Icon name={item.icon} class={styles.icon} />}
-                  <strong>{item.title}</strong>
-                </span>
-                {item.counter && <span class={styles.counter}>18</span>}
-              </a>
+              {/* TODO: implement selection logic */}
+              <Show when={index() === 0}>
+                <strong>
+                  <span class={styles.sidebarItemName}>
+                    {item.icon && <Icon name={item.icon} class={styles.icon} />}
+                    {item.title}
+                  </span>
+                  {item.counter && <span class={styles.counter}>18</span>}
+                </strong>
+              </Show>
+              <Show when={index() > 0}>
+                <a href="#">
+                  <span class={styles.sidebarItemName}>
+                    {item.icon && <Icon name={item.icon} class={styles.icon} />}
+                    {item.title}
+                  </span>
+                  {item.counter && <span class={styles.counter}>18</span>}
+                </a>
+              </Show>
             </li>
           )}
         </For>

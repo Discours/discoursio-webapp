@@ -34,7 +34,9 @@
     width: 20px !important;
   }
 
-  a {
+  a:link {
+    display: block;
+    height: 100%;
     padding: 0;
 
     &:hover {
@@ -76,6 +78,8 @@
 
 .feedMode {
   .userpic {
+    font-size: 0.8rem;
+    line-height: 12px;
     min-width: 16px;
     max-width: 16px;
   }

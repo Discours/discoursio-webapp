@@ -18,7 +18,6 @@
 
   .counter {
     @include font-size(1.2rem);
-
     align-items: center;
     align-self: flex-start;
     background: #f6f6f6;
@@ -74,11 +73,11 @@
   .icon {
     display: inline-block;
     line-height: 1;
-    height: 2rem;
-    margin-right: 0.5em;
+    height: 2.4rem;
+    margin-right: 0.8rem;
     vertical-align: middle;
     text-align: center;
-    width: 2.2rem;
+    width: 2.4rem;
 
     img {
       height: 100%;
@@ -90,7 +89,6 @@
 
   h4 {
     @include font-size(1.2rem);
-
     font-weight: bold;
     color: #9fa1a7;
     cursor: pointer;
@@ -127,9 +125,7 @@
 
     img {
       display: inline-block;
-      height: 1.6rem;
       vertical-align: middle;
-      width: 1.6rem;
     }
   }
 }

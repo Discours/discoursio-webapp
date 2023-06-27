@@ -179,7 +179,8 @@ a:link {
   cursor: pointer;
 }
 
-a {
+a:visited,
+a:link {
   color: var(--link-color);
   padding-bottom: 0.1em;
   transition: color 0.2s, background-color 0.2s;
@@ -474,7 +475,7 @@ form {
     &:-webkit-autofill,
     &:not(:placeholder-shown) {
       & ~ label {
-        font-size: 60%;
+        font-size: 80%;
         transform: translateY(-1.7em) !important;
       }
     }

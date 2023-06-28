@@ -10,13 +10,14 @@ import { SwiperContainer } from 'swiper/element/swiper-element'
 import { GrowingTextarea } from '../GrowingTextarea'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
+import MD from '../../Article/MD'
 
 type Props = {
   images: MediaItem[]
   editorMode?: boolean
-  onImagesAdd: (value: MediaItem[]) => void
-  onImageDelete: (mediaItemIndex: number) => void
-  onImageChange: (index: number, value: MediaItem) => void
+  onImagesAdd?: (value: MediaItem[]) => void
+  onImageDelete?: (mediaItemIndex: number) => void
+  onImageChange?: (index: number, value: MediaItem) => void
 }
 
 // const mock = [
@@ -55,125 +56,156 @@ export const SolidSwiper = (props: Props) => {
     setThumbSwiperEl(thumbSwiper)
   })
 
+  // mainSwiperEl().swiper.on('slideChangeTransitionStart', function() {
+  //   thumbSwiperEl().swiper.slideTo(mainSwiperEl().swiper.activeIndex);
+  // });
+  //
+  // thumbSwiperEl().swiper.on('transitionStart', function(){
+  //   mainSwiperEl().swiper.slideTo(thumbSwiperEl().swiper.activeIndex);
+  // });
+
   const handleSlideDescriptionChange = (index: number, field: string, value) => {
     props.onImageChange(index, { ...props.images[index], [field]: value })
   }
 
+  const slideChangeTransitionStart = () => {
+    console.log('!!! AAA:', mainSwiperEl().swiper.activeIndex)
+    thumbSwiperEl().swiper.slideTo(mainSwiperEl().swiper.activeIndex)
+  }
   return (
-    <div class={styles.Swiper}>
-      <Show when={props.editorMode}>
-        <DropArea
-          ref={(el) => (dropAreaRef.current = el)}
-          fileType="image"
-          isMultiply={true}
-          placeholder={t('Add images')}
-          data={(value) => props.onImagesAdd(composeMediaItem(value))}
-          description={
-            <div>
-              {t('You can upload up to 100 images in .jpg, .png format.')}
-              <br />
-              {t('Each image must be no larger than 5 MB.')}
-            </div>
-          }
-        />
-      </Show>
+    <div class={clsx(styles.Swiper, props.editorMode ? styles.editorMode : styles.articleMode)}>
+      <div class={styles.container}>
+        <Show when={props.editorMode}>
+          <DropArea
+            ref={(el) => (dropAreaRef.current = el)}
+            fileType="image"
+            isMultiply={true}
+            placeholder={t('Add images')}
+            data={(value) => props.onImagesAdd(composeMediaItem(value))}
+            description={
+              <div>
+                {t('You can upload up to 100 images in .jpg, .png format.')}
+                <br />
+                {t('Each image must be no larger than 5 MB.')}
+              </div>
+            }
+          />
+        </Show>
 
-      <div class={styles.holder}>
-        <swiper-container
-          id="mainSwiper"
-          slides-per-view={1}
-          thumbs-swiper=".thumbSwiper"
-          pagination={{ type: 'fraction' }}
-          observer={true}
-        >
-          <div class="swiper-pagination" />
-          <For each={props.images}>
-            {(slide, index) => (
-              <swiper-slide virtual-index={index()}>
-                <div class={styles.image}>
-                  <img src={slide.url} alt={slide.title} />
-                  <Show when={props.editorMode}>
-                    <Popover content={t('Delete')}>
-                      {(triggerRef: (el) => void) => (
-                        <div
-                          ref={triggerRef}
-                          onClick={() => props.onImageDelete(index())}
-                          class={styles.delete}
-                        >
-                          <Icon class={styles.icon} name="delete-white" />
-                        </div>
-                      )}
-                    </Popover>
-                  </Show>
-                </div>
-                <Switch>
-                  <Match when={props.editorMode}>
-                    <div class={styles.description}>
-                      <input
-                        type="text"
-                        class={clsx(styles.input, styles.title)}
-                        placeholder={t('Enter image title')}
-                        value={slide.title}
-                        onChange={(event) =>
-                          handleSlideDescriptionChange(index(), 'title', event.target.value)
-                        }
-                      />
-                      <input
-                        type="text"
-                        class={styles.input}
-                        placeholder={t('Specify the source and the name of the author')}
-                        value={slide.source}
-                        onChange={(event) =>
-                          handleSlideDescriptionChange(index(), 'source', event.target.value)
-                        }
-                      />
-                      <GrowingTextarea
-                        class={styles.descriptionText}
-                        placeholder={t('Enter image description')}
-                        initialValue={slide.body}
-                        value={(value) => handleSlideDescriptionChange(index(), 'body', value)}
-                      />
-                    </div>
-                  </Match>
-                </Switch>
-              </swiper-slide>
-            )}
-          </For>
-        </swiper-container>
-        <div
-          class={clsx(styles.navigation, styles.prev, {
-            // [styles.disabled]: slideIndex() === 0
-          })}
-          onClick={() => mainSwiperEl().swiper.slidePrev()}
-        >
-          <Icon name="swiper-l-arr" class={styles.icon} />
+        <div class={styles.holder}>
+          <swiper-container
+            id="mainSwiper"
+            slides-per-view={1}
+            thumbs-swiper=".thumbSwiper"
+            pagination={{ type: 'fraction' }}
+            observer={true}
+            onSlideChangeTransitionStart={slideChangeTransitionStart}
+          >
+            <div class="swiper-pagination" />
+            <For each={props.images}>
+              {(slide, index) => (
+                <swiper-slide virtual-index={index()}>
+                  <div class={styles.image}>
+                    <img src={slide.url} alt={slide.title} />
+                    <Show when={props.editorMode}>
+                      <Popover content={t('Delete')}>
+                        {(triggerRef: (el) => void) => (
+                          <div
+                            ref={triggerRef}
+                            onClick={() => props.onImageDelete(index())}
+                            class={styles.delete}
+                          >
+                            <Icon class={styles.icon} name="delete-white" />
+                          </div>
+                        )}
+                      </Popover>
+                    </Show>
+                  </div>
+                  <Switch>
+                    <Match when={props.editorMode}>
+                      <div class={styles.description}>
+                        <input
+                          type="text"
+                          class={clsx(styles.input, styles.title)}
+                          placeholder={t('Enter image title')}
+                          value={slide.title}
+                          onChange={(event) =>
+                            handleSlideDescriptionChange(index(), 'title', event.target.value)
+                          }
+                        />
+                        <input
+                          type="text"
+                          class={styles.input}
+                          placeholder={t('Specify the source and the name of the author')}
+                          value={slide.source}
+                          onChange={(event) =>
+                            handleSlideDescriptionChange(index(), 'source', event.target.value)
+                          }
+                        />
+                        <GrowingTextarea
+                          class={styles.descriptionText}
+                          placeholder={t('Enter image description')}
+                          initialValue={slide.body}
+                          value={(value) => handleSlideDescriptionChange(index(), 'body', value)}
+                        />
+                      </div>
+                    </Match>
+                    <Match when={!props.editorMode}>
+                      <Show when={slide?.title}>
+                        <p>
+                          <small>{slide.title}</small>
+                        </p>
+                      </Show>
+                      <Show when={slide?.source}>
+                        <p>
+                          <small>{slide.source}</small>
+                        </p>
+                      </Show>
+                      <Show when={slide?.body}>
+                        <MD body={slide.body} />
+                      </Show>
+                    </Match>
+                  </Switch>
+                </swiper-slide>
+              )}
+            </For>
+          </swiper-container>
+          <div
+            class={clsx(styles.navigation, styles.prev, {
+              // [styles.disabled]: slideIndex() === 0
+            })}
+            onClick={() => mainSwiperEl().swiper.slidePrev()}
+          >
+            <Icon name="swiper-l-arr" class={styles.icon} />
+          </div>
+          <div
+            class={clsx(styles.navigation, styles.next, {
+              // [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
+            })}
+            onClick={() => mainSwiperEl().swiper.slideNext()}
+          >
+            <Icon name="swiper-r-arr" class={styles.icon} />
+          </div>
         </div>
-        <div
-          class={clsx(styles.navigation, styles.next, {
-            // [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
-          })}
-          onClick={() => mainSwiperEl().swiper.slideNext()}
-        >
-          <Icon name="swiper-r-arr" class={styles.icon} />
-        </div>
-      </div>
 
-      <div class={styles.holder}>
         <div class={styles.thumbs}>
           <swiper-container
             class="thumbSwiper"
             id="thumbSwiper"
-            slides-per-view="auto"
+            slides-per-view={'auto'}
             observer={true}
             space-between={20}
+            centered-slides={true}
+            centered-slides-bounds={true}
+            watch-overflow={true}
+            watch-slides-visibility={true}
+            watch-slides-progress={true}
+            direction={props.editorMode ? 'horizontal' : 'vertical'}
           >
             <For each={props.images}>
               {(slide, index) => (
-                <swiper-slide virtual-index={index()} style={{ width: 'auto' }}>
-                  <div
-                    class={clsx(styles.imageThumb, { [styles.active]: index() === 0 })}
-                    style={{ 'background-image': `url(${slide.url})` }}
-                  >
+                <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
+                  <div class={clsx(styles.imageThumb)} style={{ 'background-image': `url(${slide.url})` }}>
                     <Show when={props.editorMode}>
                       <Popover content={t('Delete')}>
                         {(triggerRef: (el) => void) => (

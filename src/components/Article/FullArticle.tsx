@@ -22,6 +22,7 @@ import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import article from '../Editor/extensions/Article'
+import { SolidSwiper } from '../_shared/SolidSwiper'
 
 interface ArticleProps {
   article: Shout
@@ -54,12 +55,6 @@ const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
               <source src={props.media.url} />
             </audio>
             <hr />
-          </div>
-        </Match>
-        <Match when={props.kind === 'image'}>
-          <div>
-            <img src={props.media.url} alt={props.media.title} />
-            <h5>{props.media.title}</h5>
           </div>
         </Match>
       </Switch>
@@ -181,7 +176,7 @@ export const FullArticle = (props: ArticleProps) => {
               </Show>
             </div>
 
-            <Show when={media()}>
+            <Show when={media() && props.article.layout !== 'image'}>
               <div class="media-items">
                 <For each={media() || []}>
                   {(m: MediaItem) => (
@@ -195,6 +190,13 @@ export const FullArticle = (props: ArticleProps) => {
                 </For>
               </div>
             </Show>
+          </article>
+
+          <Show when={media() && props.article.layout === 'image'}>
+            <SolidSwiper images={media()} />
+          </Show>
+
+          <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             <Show when={body()}>
               <div class={styles.shoutBody}>
                 <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
@@ -205,22 +207,6 @@ export const FullArticle = (props: ArticleProps) => {
           </article>
         </div>
       </div>
-
-      <Show when={media() && props.article.layout === 'image'}>
-        <Slider slidesPerView={1} isPageGallery={true} isCardsWithCover={true} hasThumbs={true}>
-          <For each={media()}>
-            {(m) => (
-              <div class="swiper-slide">
-                <div class="swiper-slide__inner">
-                  <img src={m.url || m.pic} alt={m.title} loading="lazy" />
-                  {/*<div class="swiper-lazy-preloader swiper-lazy-preloader-white" />*/}
-                  <div class="image-description" innerHTML={m.title} />
-                </div>
-              </div>
-            )}
-          </For>
-        </Slider>
-      </Show>
 
       <div class="wide-container">
         <div class="row">

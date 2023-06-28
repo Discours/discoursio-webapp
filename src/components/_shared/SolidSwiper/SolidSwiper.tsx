@@ -1,14 +1,15 @@
-import { createEffect, createSignal, For, JSX, Match, onMount, Show, Switch } from 'solid-js'
+import { createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
 import { MediaItem } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
 import { register } from 'swiper/element/bundle'
+import { DropArea } from '../DropArea'
+import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
+import { SwiperContainer } from 'swiper/element/swiper-element'
+import { GrowingTextarea } from '../GrowingTextarea'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
-import { DropArea } from '../DropArea'
-import SwiperCore, { Manipulation, Navigation, Pagination, Swiper, SwiperOptions, Thumbs } from 'swiper'
-import { SwiperContainer } from 'swiper/element/swiper-element'
 
 type Props = {
   images: MediaItem[]
@@ -53,6 +54,10 @@ export const SolidSwiper = (props: Props) => {
     setMainSwiperEl(mainSwiper)
     setThumbSwiperEl(thumbSwiper)
   })
+
+  const handleSlideDescriptionChange = (index: number, field: string, value) => {
+    props.onImageChange(index, { ...props.images[index], [field]: value })
+  }
 
   return (
     <div class={styles.Swiper}>
@@ -101,6 +106,36 @@ export const SolidSwiper = (props: Props) => {
                     </Popover>
                   </Show>
                 </div>
+                <Switch>
+                  <Match when={props.editorMode}>
+                    <div class={styles.description}>
+                      <input
+                        type="text"
+                        class={clsx(styles.input, styles.title)}
+                        placeholder={t('Enter image title')}
+                        value={slide.title}
+                        onChange={(event) =>
+                          handleSlideDescriptionChange(index(), 'title', event.target.value)
+                        }
+                      />
+                      <input
+                        type="text"
+                        class={styles.input}
+                        placeholder={t('Specify the source and the name of the author')}
+                        value={slide.source}
+                        onChange={(event) =>
+                          handleSlideDescriptionChange(index(), 'source', event.target.value)
+                        }
+                      />
+                      <GrowingTextarea
+                        class={styles.descriptionText}
+                        placeholder={t('Enter image description')}
+                        initialValue={slide.body}
+                        value={(value) => handleSlideDescriptionChange(index(), 'body', value)}
+                      />
+                    </div>
+                  </Match>
+                </Switch>
               </swiper-slide>
             )}
           </For>

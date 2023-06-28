@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, JSX, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, JSX, Match, onMount, Show, Switch } from 'solid-js'
 import { MediaItem } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
@@ -47,44 +47,11 @@ export const SolidSwiper = (props: Props) => {
   const [mainSwiperEl, setMainSwiperEl] = createSignal<SwiperContainer>(null)
   const [thumbSwiperEl, setThumbSwiperEl] = createSignal(null)
 
-  const mainSwiperParams: SwiperOptions = {
-    slidesPerView: 1,
-    pagination: {
-      type: 'fraction'
-    },
-    thumbs: {
-      swiper: thumbSwiperEl()
-    },
-    on: {
-      init() {
-        console.log('!!! init:')
-      }
-    }
-  }
-
-  const thumbsSwiperParams: SwiperOptions = {
-    slidesPerView: 'auto',
-    spaceBetween: 20,
-    on: {
-      init() {
-        console.log('!!! initThumbs:')
-      }
-    }
-  }
-
   onMount(() => {
     const mainSwiper: SwiperContainer = document.querySelector('#mainSwiper')
     const thumbSwiper: SwiperContainer = document.querySelector('#thumbSwiper')
     setMainSwiperEl(mainSwiper)
     setThumbSwiperEl(thumbSwiper)
-    if (mainSwiperEl) {
-      Object.assign(mainSwiper, mainSwiperParams)
-      mainSwiper.initialize()
-    }
-    if (thumbSwiper) {
-      Object.assign(thumbSwiper, thumbsSwiperParams)
-      thumbSwiper.initialize()
-    }
   })
 
   return (
@@ -107,7 +74,14 @@ export const SolidSwiper = (props: Props) => {
       </Show>
 
       <div class={styles.holder}>
-        <swiper-container init="false" id="mainSwiper" pagination={{ type: 'fraction' }}>
+        <swiper-container
+          id="mainSwiper"
+          slides-per-view={1}
+          thumbs-swiper=".thumbSwiper"
+          pagination={{ type: 'fraction', el: '.swiper-pagination' }}
+          observer={true}
+        >
+          <div class="swiper-pagination" />
           <For each={props.images}>
             {(slide, index) => (
               <swiper-slide virtual-index={index()}>
@@ -151,7 +125,13 @@ export const SolidSwiper = (props: Props) => {
 
       <div class={styles.holder}>
         <div class={styles.thumbs}>
-          <swiper-container id="thumbSwiper" init="false">
+          <swiper-container
+            class="thumbSwiper"
+            id="thumbSwiper"
+            slides-per-view="auto"
+            observer={true}
+            space-between={20}
+          >
             <For each={props.images}>
               {(slide, index) => (
                 <swiper-slide virtual-index={index()} style={{ width: 'auto' }}>

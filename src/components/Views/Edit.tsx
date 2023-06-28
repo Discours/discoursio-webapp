@@ -189,6 +189,7 @@ export const EditView = (props: Props) => {
 
                   <Show when={props.shout.layout === 'image'}>
                     <SolidSwiper
+                      editorMode={true}
                       images={mediaItems()}
                       onImageChange={handleImageChange}
                       onImageDelete={(index) => handleImageDelete(index)}

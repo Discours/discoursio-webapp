@@ -141,6 +141,40 @@ $navigation-reserve: 32px;
     justify-content: center;
     margin: 2rem auto;
   }
+
+  .description {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin: 1em 0;
+
+    .descriptionText {
+      @include font-size(1.4rem);
+
+      line-height: 1.1;
+    }
+
+    .input {
+      @include font-size(1.4rem);
+
+      padding: 0;
+      margin: 0;
+      border: none;
+      height: 1.2em;
+
+      &:focus {
+        outline: none;
+      }
+
+      &::placeholder {
+        color: var(--placeholder-color);
+      }
+
+      &.title {
+        font-weight: 500;
+      }
+    }
+  }
 }
 
 :global(.swiper-pagination) {

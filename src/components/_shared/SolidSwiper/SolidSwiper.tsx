@@ -83,7 +83,7 @@ export const SolidSwiper = (props: Props) => {
           id="mainSwiper"
           slides-per-view={1}
           thumbs-swiper=".thumbSwiper"
-          pagination={{ type: 'fraction', el: '.swiper-pagination' }}
+          pagination={{ type: 'fraction' }}
           observer={true}
         >
           <div class="swiper-pagination" />

@@ -85,8 +85,6 @@ export const Header = (props: Props) => {
     props.scrollToComments(value)
   }
 
-  const logoColWidth = page().path === '/' ? 'col-md-6' : 'col-md-5 col-xl-4'
-
   return (
     <header
       class={styles.mainHeader}
@@ -104,12 +102,12 @@ export const Header = (props: Props) => {
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
         <nav class={clsx('row', styles.headerInner, { ['fixed']: fixed() })}>
-          <div class={clsx(logoColWidth, 'col-auto', styles.mainLogo)}>
+          <div class={clsx('col-md-5 col-xl-4 col-auto', styles.mainLogo)}>
             <a href={getPagePath(router, 'home')}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx('col', styles.mainNavigationWrapper, { ['offset-xl-1']: page().path !== '/' })}>
+          <div class={clsx('col offset-xl-1', styles.mainNavigationWrapper)}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>

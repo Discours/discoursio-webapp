@@ -48,14 +48,17 @@ const thumbSwipeRef: { current: SwiperRef } = { current: null }
 export const SolidSwiper = (props: Props) => {
   const { t } = useLocalize()
   const [loading, setLoading] = createSignal(false)
-  const handleSlideDescriptionChange = (index: number, field: string, value) => {
-    props.onImageChange(index, { ...props.images[index], [field]: value })
-  }
-
   const {
     actions: { showSnackbar }
   } = useSnackbar()
-
+  const handleSlideDescriptionChange = (index: number, field: string, value) => {
+    props.onImageChange(index, { ...props.images[index], [field]: value })
+  }
+  const swipeToUploaded = () => {
+    setTimeout(() => {
+      mainSwipeRef.current.swiper.slideTo(props.images.length - 1)
+    }, 0)
+  }
   const handleSlideChange = () => {
     thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
   }
@@ -70,11 +73,9 @@ export const SolidSwiper = (props: Props) => {
     )
   )
 
-  const handleUpload = (value: string[]) => {
+  const handleDropAreaUpload = (value: string[]) => {
     props.onImagesAdd(composeMediaItem(value))
-    setTimeout(() => {
-      mainSwipeRef.current.swiper.slideTo(props.images.length - 1)
-    }, 0)
+    swipeToUploaded()
   }
 
   const handleDelete = (index: number) => {
@@ -103,8 +104,8 @@ export const SolidSwiper = (props: Props) => {
           results.push(result)
         }
         props.onImagesAdd(composeMediaItem(results))
-
         setLoading(false)
+        swipeToUploaded()
       } catch (error) {
         await showSnackbar({ type: 'error', body: t('Error') })
         console.error('[runUpload]', error)
@@ -132,7 +133,7 @@ export const SolidSwiper = (props: Props) => {
             fileType="image"
             isMultiply={true}
             placeholder={t('Add images')}
-            onUpload={handleUpload}
+            onUpload={handleDropAreaUpload}
             description={
               <div>
                 {t('You can upload up to 100 images in .jpg, .png format.')}

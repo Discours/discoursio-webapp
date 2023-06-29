@@ -201,6 +201,8 @@ export const SolidSwiper = (props: Props) => {
             watch-slides-visibility={true}
             watch-slides-progress={true}
             direction={props.editorMode ? 'horizontal' : 'vertical'}
+            preventClicks={props.editorMode}
+            preventClicksPropagation={props.editorMode}
           >
             <For each={props.images}>
               {(slide, index) => (

@@ -13,14 +13,13 @@ type Props = {
   description?: string | JSX.Element
   fileType: FileTypeToUpload
   isMultiply: boolean
-  data: (value: string[]) => void
+  onUpload: (value: string[]) => void
 }
 
 export const DropArea = (props: Props) => {
   const { t } = useLocalize()
   const [dragActive, setDragActive] = createSignal(false)
   const [dropAreaError, setDropAreaError] = createSignal<string>()
-  const [filesToUpload, setFilesToUpload] = createSignal([])
   const [loading, setLoading] = createSignal(false)
 
   const runUpload = async (files) => {
@@ -32,11 +31,25 @@ export const DropArea = (props: Props) => {
         const result = await handleFileUpload(file)
         results.push(result)
       }
-      props.data(results)
+      props.onUpload(results)
       setLoading(false)
     } catch (error) {
       setDropAreaError('Error')
       console.error('[runUpload]', error)
+    }
+  }
+
+  const initUpload = async (selectedFiles) => {
+    if (!props.isMultiply && files.length > 1) {
+      setDropAreaError(t('Many files, choose only one'))
+      return
+    }
+    const isValid = validateFiles(props.fileType, selectedFiles)
+    if (isValid) {
+      await runUpload(selectedFiles)
+    } else {
+      setDropAreaError(t('Invalid file type'))
+      return false
     }
   }
 
@@ -48,7 +61,7 @@ export const DropArea = (props: Props) => {
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async () => {
       setDragActive(false)
-      setFilesToUpload(droppedFiles())
+      await initUpload(droppedFiles())
     }
   })
   const handleDrag = (event) => {
@@ -58,28 +71,14 @@ export const DropArea = (props: Props) => {
       setDragActive(false)
     }
   }
-  const handleDropFieldClick = () => {
+  const handleDropFieldClick = async () => {
     selectFiles((selectedFiles) => {
       const filesArray = selectedFiles.map((file) => {
         return file
       })
-      setFilesToUpload(filesArray)
+      initUpload(filesArray)
     })
   }
-
-  createEffect(async () => {
-    if (!props.isMultiply && filesToUpload().length > 1) {
-      setDropAreaError(t('Many files, choose only one'))
-      return
-    }
-    const isValid = validateFiles(props.fileType, filesToUpload())
-    if (isValid) {
-      await runUpload(filesToUpload())
-    } else {
-      setDropAreaError(t('Invalid file type'))
-      return false
-    }
-  })
 
   return (
     <div class={clsx(styles.DropArea, props.class)}>

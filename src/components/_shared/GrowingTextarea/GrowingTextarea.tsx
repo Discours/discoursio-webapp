@@ -15,7 +15,6 @@ export const GrowingTextarea = (props: Props) => {
   const [isFocused, setIsFocused] = createSignal(false)
   const handleChangeValue = (event) => {
     setValue(event.target.value)
-    props.value(event.target.value)
   }
 
   const handleKeyDown = async (event) => {
@@ -39,6 +38,7 @@ export const GrowingTextarea = (props: Props) => {
           value={props.initialValue}
           onKeyDown={handleKeyDown}
           onInput={(event) => handleChangeValue(event)}
+          onChange={(event) => props.value(event.target.value)}
           placeholder={props.placeholder}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}

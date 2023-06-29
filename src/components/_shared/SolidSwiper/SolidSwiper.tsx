@@ -1,4 +1,4 @@
-import { createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import { createEffect, createSignal, For, Match, onMount, Show, Switch, on } from 'solid-js'
 import { MediaItem } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
@@ -11,6 +11,7 @@ import { GrowingTextarea } from '../GrowingTextarea'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
 import MD from '../../Article/MD'
+import { SwiperRef } from './swiper'
 
 type Props = {
   images: MediaItem[]
@@ -46,32 +47,44 @@ SwiperCore.use([Pagination, Navigation, Manipulation])
 export const SolidSwiper = (props: Props) => {
   const { t } = useLocalize()
   const dropAreaRef: { current: HTMLElement } = { current: null }
-  const [mainSwiperEl, setMainSwiperEl] = createSignal<SwiperContainer>(null)
-  const [thumbSwiperEl, setThumbSwiperEl] = createSignal(null)
-
-  onMount(() => {
-    const mainSwiper: SwiperContainer = document.querySelector('#mainSwiper')
-    const thumbSwiper: SwiperContainer = document.querySelector('#thumbSwiper')
-    setMainSwiperEl(mainSwiper)
-    setThumbSwiperEl(thumbSwiper)
-  })
-
-  // mainSwiperEl().swiper.on('slideChangeTransitionStart', function() {
-  //   thumbSwiperEl().swiper.slideTo(mainSwiperEl().swiper.activeIndex);
-  // });
-  //
-  // thumbSwiperEl().swiper.on('transitionStart', function(){
-  //   mainSwiperEl().swiper.slideTo(thumbSwiperEl().swiper.activeIndex);
-  // });
-
+  const mainSwipeRef: { current: SwiperRef } = { current: null }
+  const thumbSwipeRef: { current: SwiperRef } = { current: null }
   const handleSlideDescriptionChange = (index: number, field: string, value) => {
     props.onImageChange(index, { ...props.images[index], [field]: value })
   }
 
   const slideChangeTransitionStart = () => {
-    console.log('!!! AAA:', mainSwiperEl().swiper.activeIndex)
-    thumbSwiperEl().swiper.slideTo(mainSwiperEl().swiper.activeIndex)
+    console.log('!!! mainSwipeRef.current.swiper.activeIndex:', mainSwipeRef.current.swiper.activeIndex)
+    thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
   }
+
+  createEffect(
+    on(
+      () => props.images.length,
+      () => {
+        mainSwipeRef.current.swiper.update()
+        thumbSwipeRef.current.swiper.update()
+      }
+    )
+  )
+
+  const handleUpload = (value: string[]) => {
+    props.onImagesAdd(composeMediaItem(value))
+    setTimeout(() => {
+      mainSwipeRef.current.swiper.slideTo(props.images.length - 1)
+    }, 0)
+  }
+
+  const handleDelete = (index: number) => {
+    props.onImageDelete(index)
+
+    if (index === 0) {
+      mainSwipeRef.current.swiper.update()
+    } else {
+      mainSwipeRef.current.swiper.slideTo(index - 1)
+    }
+  }
+
   return (
     <div class={clsx(styles.Swiper, props.editorMode ? styles.editorMode : styles.articleMode)}>
       <div class={styles.container}>
@@ -81,7 +94,7 @@ export const SolidSwiper = (props: Props) => {
             fileType="image"
             isMultiply={true}
             placeholder={t('Add images')}
-            data={(value) => props.onImagesAdd(composeMediaItem(value))}
+            onUpload={handleUpload}
             description={
               <div>
                 {t('You can upload up to 100 images in .jpg, .png format.')}
@@ -94,27 +107,24 @@ export const SolidSwiper = (props: Props) => {
 
         <div class={styles.holder}>
           <swiper-container
-            id="mainSwiper"
+            ref={(el) => (mainSwipeRef.current = el)}
             slides-per-view={1}
-            thumbs-swiper=".thumbSwiper"
-            pagination={{ type: 'fraction' }}
+            thumbs-swiper={'.thumbSwiper'}
             observer={true}
-            onSlideChangeTransitionStart={slideChangeTransitionStart}
+            onSlideChange={slideChangeTransitionStart}
           >
             <div class="swiper-pagination" />
             <For each={props.images}>
               {(slide, index) => (
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 <swiper-slide virtual-index={index()}>
                   <div class={styles.image}>
                     <img src={slide.url} alt={slide.title} />
                     <Show when={props.editorMode}>
                       <Popover content={t('Delete')}>
                         {(triggerRef: (el) => void) => (
-                          <div
-                            ref={triggerRef}
-                            onClick={() => props.onImageDelete(index())}
-                            class={styles.delete}
-                          >
+                          <div ref={triggerRef} onClick={() => handleDelete(index())} class={styles.delete}>
                             <Icon class={styles.icon} name="delete-white" />
                           </div>
                         )}
@@ -174,7 +184,7 @@ export const SolidSwiper = (props: Props) => {
             class={clsx(styles.navigation, styles.prev, {
               // [styles.disabled]: slideIndex() === 0
             })}
-            onClick={() => mainSwiperEl().swiper.slidePrev()}
+            onClick={() => mainSwipeRef.current.swiper.slidePrev()}
           >
             <Icon name="swiper-l-arr" class={styles.icon} />
           </div>
@@ -182,7 +192,7 @@ export const SolidSwiper = (props: Props) => {
             class={clsx(styles.navigation, styles.next, {
               // [styles.disabled]: slideIndex() + 1 === Number(props.slides.length)
             })}
-            onClick={() => mainSwiperEl().swiper.slideNext()}
+            onClick={() => mainSwipeRef.current.swiper.slideNext()}
           >
             <Icon name="swiper-r-arr" class={styles.icon} />
           </div>
@@ -190,32 +200,29 @@ export const SolidSwiper = (props: Props) => {
 
         <div class={styles.thumbs}>
           <swiper-container
-            class="thumbSwiper"
-            id="thumbSwiper"
+            class={'thumbSwiper'}
+            ref={(el) => (thumbSwipeRef.current = el)}
             slides-per-view={'auto'}
             observer={true}
-            space-between={20}
+            space-between={props.editorMode ? 20 : 10}
             centered-slides={true}
+            center-insufficient-slides={true}
             centered-slides-bounds={true}
             watch-overflow={true}
             watch-slides-visibility={true}
             watch-slides-progress={true}
             direction={props.editorMode ? 'horizontal' : 'vertical'}
-            preventClicks={props.editorMode}
-            preventClicksPropagation={props.editorMode}
           >
             <For each={props.images}>
               {(slide, index) => (
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
                   <div class={clsx(styles.imageThumb)} style={{ 'background-image': `url(${slide.url})` }}>
                     <Show when={props.editorMode}>
                       <Popover content={t('Delete')}>
                         {(triggerRef: (el) => void) => (
-                          <div
-                            ref={triggerRef}
-                            class={styles.delete}
-                            onClick={() => props.onImageDelete(index())}
-                          >
+                          <div ref={triggerRef} class={styles.delete} onClick={() => handleDelete(index())}>
                             <Icon class={styles.icon} name="delete-white" />
                           </div>
                         )}

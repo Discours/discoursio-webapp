@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './DropArea.module.scss'
-import { createEffect, createSignal, For, JSX, Show } from 'solid-js'
+import { createSignal, JSX, Show } from 'solid-js'
 import { createDropzone, createFileUploader } from '@solid-primitives/upload'
 import { useLocalize } from '../../../context/localize'
 import { validateFiles } from '../../../utils/validateFile'

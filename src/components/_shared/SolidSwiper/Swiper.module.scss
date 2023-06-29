@@ -133,17 +133,23 @@ $slide-height: 500px;
     margin: 3rem 0;
     max-height: 488px;
     overflow: hidden;
+    position: relative;
 
-    //.upload {
-    //  width: 110px;
-    //  height: 75px;
-    //  display: flex;
-    //  align-items: center;
-    //  justify-content: center;
-    //  border: 1px solid #ccced3;
-    //  box-sizing: border-box;
-    //  cursor: pointer;
-    //}
+    .upload {
+      border: 1px solid #ccced3;
+      box-sizing: border-box;
+      cursor: pointer;
+
+      .inner {
+        position: relative;
+        z-index: 1000;
+        width: 110px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
 
     .imageThumb {
       width: 110px;

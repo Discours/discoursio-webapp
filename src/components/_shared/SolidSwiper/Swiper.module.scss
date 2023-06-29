@@ -72,12 +72,24 @@ $slide-height: 500px;
     padding: 0 $navigation-reserve;
     overflow: hidden;
 
+    .counter {
+      @include font-size(1.2rem);
+
+      position: absolute;
+      top: 476px;
+      right: $navigation-reserve;
+      font-weight: 600;
+      padding: 0.2rem 0.8rem;
+      color: var(--background-color);
+      background-color: var(--default-color);
+    }
+
     .image {
       display: flex;
       align-items: center;
       justify-content: center;
       height: $slide-height;
-      background: #fafafa;
+      background: var(--placeholder-color-semi);
       position: relative;
 
       &:hover .delete {
@@ -132,8 +144,17 @@ $slide-height: 500px;
   .thumbs {
     margin: 3rem 0;
     max-height: 488px;
-    overflow: hidden;
     position: relative;
+
+    .navigation {
+      height: unset;
+      &.prev {
+        left: -$navigation-reserve;
+      }
+      &.next {
+        right: -$navigation-reserve;
+      }
+    }
 
     .upload {
       border: 1px solid #ccced3;
@@ -156,6 +177,7 @@ $slide-height: 500px;
       height: 75px;
       background-size: cover;
       background-position: 50% 50%;
+      background-color: var(--placeholder-color-semi);
       opacity: 0.5;
       filter: grayscale(1);
       transition: filter 0.3s ease-in-out, opacity 0.5s ease-in-out;
@@ -240,16 +262,4 @@ $slide-height: 500px;
     opacity: 1 !important;
     filter: unset !important;
   }
-}
-
-:global(.swiper-pagination) {
-  @include font-size(1.2rem);
-
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-weight: 600;
-  padding: 0.2rem 0.8rem;
-  color: var(--background-color);
-  background-color: var(--default-color);
 }

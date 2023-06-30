@@ -128,9 +128,7 @@ export const SolidSwiper = (props: Props) => {
 
   const handleChangeIndex = (event, direction: 'left' | 'right', index: number) => {
     event.preventDefault()
-    console.log('!!! AAA:')
     const images = [...props.images]
-
     if (direction === 'left' && index > 0) {
       const copy = images.splice(index, 1)[0]
       images.splice(index - 1, 0, copy)
@@ -139,6 +137,9 @@ export const SolidSwiper = (props: Props) => {
       images.splice(index + 1, 0, copy)
     }
     props.onImagesSorted(images)
+    setTimeout(() => {
+      mainSwipeRef.current.swiper.slideTo(direction === 'left' ? index - 1 : index + 1)
+    }, 0)
   }
 
   return (

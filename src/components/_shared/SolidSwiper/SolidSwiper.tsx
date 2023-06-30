@@ -72,8 +72,8 @@ export const SolidSwiper = (props: Props) => {
     on(
       () => props.images.length,
       () => {
-        mainSwipeRef.current.swiper.update()
-        thumbSwipeRef.current.swiper.update()
+        mainSwipeRef.current?.swiper.update()
+        thumbSwipeRef.current?.swiper.update()
       }
     )
   )

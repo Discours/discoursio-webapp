@@ -1,10 +1,10 @@
 import { Show } from 'solid-js'
-import styles from './CommentDate.module.scss'
 import { Icon } from '../_shared/Icon'
 import type { Reaction } from '../../graphql/types.gen'
 import { formatDate } from '../../utils'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
+import styles from './CommentDate.module.scss'
 
 type Props = {
   comment: Reaction
@@ -15,10 +15,13 @@ type Props = {
 export const CommentDate = (props: Props) => {
   const { t } = useLocalize()
 
-  const formattedDate = (date) =>
-    props.isShort
-      ? formatDate(new Date(date), { month: 'long', day: 'numeric', year: 'numeric' })
-      : formatDate(new Date(date), { hour: 'numeric', minute: 'numeric' })
+  const formattedDate = (date) => {
+    const formatDateOptions: Intl.DateTimeFormatOptions = props.isShort
+      ? { month: 'long', day: 'numeric', year: 'numeric' }
+      : { hour: 'numeric', minute: 'numeric' }
+
+    return formatDate(new Date(date), formatDateOptions)
+  }
 
   return (
     <div class={clsx(styles.commentDates, { [styles.commentDatesLastInRow]: props.isLastInRow })}>

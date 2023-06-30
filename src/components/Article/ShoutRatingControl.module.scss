@@ -8,6 +8,25 @@
     border-color: #000;
     color: #fff;
   }
+
+  .ratingControl {
+    align-items: center;
+    border: 2px solid;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    height: 0.9em;
+    line-height: 0;
+    font-size: 1.6em;
+    padding: 0;
+    width: 0.9em;
+
+    &:hover {
+      background: #000;
+      border-color: #000;
+      color: #fff;
+    }
+  }
 }
 
 .ratingValue {
@@ -18,25 +37,6 @@
 
   &:hover {
     background-color: #000;
-    color: #fff;
-  }
-}
-
-.ratingControl {
-  align-items: center;
-  border: 2px solid;
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-  height: 0.9em;
-  line-height: 0;
-  font-size: 1.6em;
-  padding: 0;
-  width: 0.9em;
-
-  &:hover {
-    background: #000;
-    border-color: #000;
     color: #fff;
   }
 }

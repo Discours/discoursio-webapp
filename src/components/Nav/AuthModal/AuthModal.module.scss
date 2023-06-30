@@ -87,6 +87,7 @@
 
 .disclaimer {
   @include font-size(1.2rem);
+
   color: #9fa1a7;
   margin-bottom: 0;
 }
@@ -127,13 +128,15 @@
 }
 
 .authLink {
-  cursor: pointer;
   @include font-size(1.6rem);
+
+  cursor: pointer;
   font-weight: 500;
 }
 
 .authSubtitle {
   @include font-size(1.5rem);
+
   margin-bottom: 1em;
 }
 

@@ -17,13 +17,31 @@
     }
   }
 
-  a {
-    border: none;
+  .icon {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
   }
 
-  .icon {
-    height: 1.5em;
-    width: 100%;
+  .iconHover {
+    display: none;
+  }
+
+  button,
+  a:link {
+    border: none;
+
+    &:hover {
+      color: var(--default-color);
+
+      .icon {
+        display: none;
+      }
+
+      .iconHover {
+        display: inline-block;
+      }
+    }
   }
 
   .feedControlIcon {
@@ -42,7 +60,7 @@
   a:link {
     border: none;
 
-    &:before {
+    &::before {
       content: '';
       height: 100%;
       left: 0;
@@ -54,8 +72,8 @@
 
     &:hover {
       .shoutCardTitle .shoutCardLinkContainer {
-        background-color: #000;
-        color: #fff;
+        background-color: var(--default-color);
+        color: var(--link-hover-color);
       }
     }
   }
@@ -114,12 +132,22 @@
 
 .shoutDetails {
   display: flex;
+  margin-bottom: 1rem;
+}
+
+.shoutDetailsFeedMode {
+  justify-content: space-between;
+
+  .shoutAuthor,
+  .shoutDate {
+    @include font-size(1.2rem);
+  }
 }
 
 .shoutCardTitle {
   @include font-size(2.2rem);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.2;
   margin-bottom: 0.8rem;
 
   :global(.col-md-12) & {
@@ -135,11 +163,16 @@
     /* stylelint-disable-next-line */
     -webkit-box-decoration-break: clone;
   }
+
+  .shoutCardTitlesContainerFeedMode & {
+    @include font-size(3.2rem);
+    line-height: 1.25;
+  }
 }
 
 .shoutCardSubtitle {
-  color: #141414;
   @include font-size(1.8rem);
+  color: #141414;
   font-weight: 400;
   line-height: 1.3;
   margin-bottom: 1.4rem;
@@ -193,8 +226,6 @@
 }
 
 .shoutCardType {
-  background: #fff;
-  border-radius: 100%;
   height: 3.2rem;
   position: absolute;
   right: 0.8rem;
@@ -204,11 +235,19 @@
   width: 3.2rem;
   z-index: 2;
 
-  &:hover {
-    background: #000;
+  a:link {
+    background: #fff;
+    border-radius: 100%;
+    display: block;
+    height: 100%;
+    width: 100%;
 
-    .icon {
-      filter: invert(1);
+    &:hover {
+      background: #000;
+
+      .icon {
+        filter: invert(1);
+      }
     }
   }
 
@@ -269,6 +308,7 @@
     .shoutCardTitle,
     .shoutCardSubtitle {
       @include font-size(2.6rem);
+
       display: inline;
       line-height: 1.2;
     }
@@ -324,11 +364,11 @@
   }
 
   .shoutCardSubtitle {
-    color: rgb(255 255 255 / 0.5);
+    color: rgb(255 255 255 / 50%);
   }
 
   &:global(.swiper-slide-active) .shoutCardCover {
-    &:after {
+    &::after {
       background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 40%, rgb(0 0 0 / 70%) 100%);
     }
   }
@@ -336,7 +376,7 @@
 
 .shoutCardWithCover {
   aspect-ratio: 16/9;
-  padding: 0 2.4rem 0;
+  padding: 0 2.4rem;
   width: 100%;
 
   @include media-breakpoint-down(sm) {
@@ -434,7 +474,11 @@
 }
 
 .shoutCardFeed {
-  margin-bottom: 4em;
+  margin: 4em 0;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
 
   .shoutCardContent {
     margin-bottom: 0;
@@ -473,7 +517,7 @@
 .shoutCardDetailsItem {
   align-items: center;
   display: flex;
-  margin-right: 1.4em;
+  margin-right: 1.2rem;
   white-space: nowrap;
 
   &:last-child {
@@ -484,17 +528,12 @@
     vertical-align: middle;
   }
 
-  a,
-  button {
-    &:hover {
-      img {
-        opacity: 0.5;
-      }
-    }
-  }
-
-  a {
+  a:link {
     border: none;
+
+    &:hover {
+      background: none;
+    }
   }
 }
 
@@ -504,26 +543,18 @@
   display: flex;
 
   .icon {
-    display: inline-block;
     margin: 0 0.5em 0 0;
     vertical-align: middle;
   }
 
-  a {
+  a:link {
     &:hover {
       background: none;
-      color: rgb(0 0 0 / 60%);
 
-      img {
-        filter: none;
+      .shoutCardLinkContainer {
+        background: var(--default-color);
       }
     }
-  }
-}
-
-.shoutCardDetailsViewed {
-  .icon {
-    margin-top: -0.1em;
   }
 }
 
@@ -561,7 +592,7 @@
   }
 
   .shoutDate {
-    color: rgb(255 255 255 / 0.5);
+    color: rgb(255 255 255 / 50%);
   }
 }
 
@@ -596,6 +627,7 @@
 .shoutCardBigTitle {
   .shoutCardTitle {
     @include font-size(3.2rem);
+
     display: block;
     padding-right: 0;
   }
@@ -609,6 +641,7 @@
   .shoutCardTitle,
   .shoutCardSubtitle {
     @include font-size(2.2rem);
+
     display: inline;
     line-height: 1.2;
   }
@@ -634,8 +667,9 @@
 
   .shoutCardTitle,
   .shoutCardSubtitle {
-    display: inline;
     @include font-size(1.8rem);
+
+    display: inline;
   }
 
   .shoutCardSubtitle {
@@ -705,12 +739,14 @@
 
   .shoutCardTitle {
     @include font-size(4rem);
+
     font-weight: 900;
     line-height: 1.1;
   }
 
   .shoutCardSubtitle {
     @include font-size(2.4rem);
+
     flex: 1;
   }
 }

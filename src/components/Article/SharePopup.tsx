@@ -6,6 +6,7 @@ import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 import { useLocalize } from '../../context/localize'
 import { createEffect, createSignal } from 'solid-js'
+import { useSnackbar } from '../../context/snackbar'
 
 type SharePopupProps = {
   title: string
@@ -24,6 +25,9 @@ export const getShareUrl = (params: { pathname?: string } = {}) => {
 export const SharePopup = (props: SharePopupProps) => {
   const { t } = useLocalize()
   const [isVisible, setIsVisible] = createSignal(false)
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   createEffect(() => {
     if (props.isVisible) {
@@ -36,8 +40,10 @@ export const SharePopup = (props: SharePopupProps) => {
     url: props.shareUrl,
     description: props.description
   }))
+
   const copyLink = async () => {
     await navigator.clipboard.writeText(props.shareUrl)
+    showSnackbar({ body: t('Link copied') })
   }
 
   return (

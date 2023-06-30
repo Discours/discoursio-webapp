@@ -11,7 +11,8 @@ import { hideModal } from '../../../stores/ui'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
-import { validateEmail } from '../../../utils/validateEmail'
+import { isValidEmail } from '../../../utils/validators'
+import { generateModalTitleFromSource } from '../../../utils/custom-i18n'
 
 type FormFields = {
   name: string
@@ -39,7 +40,7 @@ export const RegisterForm = () => {
   }
 
   const handleEmailBlur = () => {
-    if (validateEmail(email())) {
+    if (isValidEmail(email())) {
       checkEmail(email())
     }
   }
@@ -92,7 +93,7 @@ export const RegisterForm = () => {
 
     if (!cleanEmail) {
       newValidationErrors.email = t('Please enter email')
-    } else if (!validateEmail(email())) {
+    } else if (!isValidEmail(email())) {
       newValidationErrors.email = t('Invalid email')
     }
 
@@ -136,7 +137,7 @@ export const RegisterForm = () => {
       <Show when={!isSuccess()}>
         <form onSubmit={handleSubmit} class={styles.authForm}>
           <div>
-            <h4>{t('Create account')}</h4>
+            <h4>{generateModalTitleFromSource('register')}</h4>
             <Show when={submitError()}>
               <div class={styles.authInfo}>
                 <ul>

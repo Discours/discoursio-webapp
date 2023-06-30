@@ -9,7 +9,8 @@ import type { AuthModalSearchParams } from './types'
 import { hideModal } from '../../../stores/ui'
 import { useSession } from '../../../context/session'
 import { signSendLink } from '../../../stores/auth'
-import { validateEmail } from '../../../utils/validateEmail'
+import { isValidEmail } from '../../../utils/validators'
+import { generateModalTitleFromSource } from '../../../utils/custom-i18n'
 
 import { useSnackbar } from '../../../context/snackbar'
 import { useLocalize } from '../../../context/localize'
@@ -75,7 +76,7 @@ export const LoginForm = () => {
 
     if (!email()) {
       newValidationErrors.email = t('Please enter email')
-    } else if (!validateEmail(email())) {
+    } else if (!isValidEmail(email())) {
       newValidationErrors.email = t('Invalid email')
     }
 
@@ -117,7 +118,7 @@ export const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit} class={styles.authForm}>
       <div>
-        <h4>{t('Enter the Discours')}</h4>
+        <h4>{generateModalTitleFromSource('login')}</h4>
         <Show when={submitError()}>
           <div class={styles.authInfo}>
             <div class={styles.warn}>{submitError()}</div>

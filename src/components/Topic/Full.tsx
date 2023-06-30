@@ -13,27 +13,35 @@ type Props = {
 }
 
 export const FullTopic = (props: Props) => {
-  const { session } = useSession()
+  const {
+    session,
+    actions: { requireAuthentication }
+  } = useSession()
   const { t } = useLocalize()
   const subscribed = createMemo(() => session()?.news?.topics?.includes(props.topic?.slug))
+
+  const handleSubscribe = (isFollowed: boolean) => {
+    requireAuthentication(() => {
+      if (isFollowed) {
+        unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })
+      } else {
+        follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
+      }
+    }, 'follow')
+  }
+
   return (
     <div class={clsx(styles.topicHeader, 'col-md-16 col-lg-12 offset-md-4 offset-lg-6')}>
       <h1>#{props.topic.title}</h1>
       <p>{props.topic.body}</p>
       <div class={clsx(styles.topicActions)}>
         <Show when={!subscribed()}>
-          <button
-            onClick={() => follow({ what: FollowingEntity.Topic, slug: props.topic.slug })}
-            class="button"
-          >
+          <button onClick={() => handleSubscribe(false)} class="button">
             {t('Follow the topic')}
           </button>
         </Show>
         <Show when={subscribed()}>
-          <button
-            onClick={() => unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })}
-            class="button"
-          >
+          <button onClick={() => handleSubscribe(true)} class="button">
             {t('Unfollow the topic')}
           </button>
         </Show>

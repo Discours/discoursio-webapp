@@ -40,7 +40,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const {
     session,
     isSessionLoaded,
-    actions: { loadSession }
+    actions: { loadSession, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -77,9 +77,18 @@ export const AuthorCard = (props: AuthorCardProps) => {
   // TODO: reimplement AuthorCard
   const { changeSearchParam } = useRouter()
   const initChat = () => {
-    openPage(router, `inbox`)
-    changeSearchParam('initChat', `${props.author.id}`)
+    requireAuthentication(() => {
+      openPage(router, `inbox`)
+      changeSearchParam('initChat', `${props.author.id}`)
+    }, 'discussions')
   }
+
+  const handleSubscribe = () => {
+    requireAuthentication(() => {
+      subscribe(true)
+    }, 'subscribe')
+  }
+
   return (
     <div
       class={clsx(styles.author, props.class)}
@@ -96,6 +105,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
         hasLink={props.hasLink}
         isBig={props.isAuthorPage}
         isAuthorsList={props.isAuthorsList}
+        isFeedMode={props.isFeedMode}
         class={styles.circlewrap}
       />
 
@@ -133,7 +143,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   when={subscribed()}
                   fallback={
                     <button
-                      onClick={() => subscribe(true)}
+                      onClick={handleSubscribe}
                       class={clsx('button', styles.button)}
                       classList={{
                         [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
@@ -171,8 +181,23 @@ export const AuthorCard = (props: AuthorCardProps) => {
                       <Icon name="author-unsubscribe" class={styles.icon} />
                     </Show>
                     <Show when={props.isTextButton}>
-                      <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
+                      <span
+                        class={clsx(
+                          styles.buttonLabel,
+                          styles.buttonLabelVisible,
+                          styles.buttonUnfollowLabel
+                        )}
+                      >
                         {t('Unfollow')}
+                      </span>
+                      <span
+                        class={clsx(
+                          styles.buttonLabel,
+                          styles.buttonLabelVisible,
+                          styles.buttonSubscribedLabel
+                        )}
+                      >
+                        {t('You are subscribed')}
                       </span>
                     </Show>
                   </button>

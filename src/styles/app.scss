@@ -129,13 +129,11 @@ h2 {
 
 h1 {
   @include font-size(4.8rem);
-
   line-height: 1.1;
 }
 
 h2 {
   @include font-size(4rem);
-
   line-height: 1.1;
   margin-bottom: 0.5em;
   margin-top: 1.5em;
@@ -143,7 +141,6 @@ h2 {
 
 h3 {
   @include font-size(3.2rem);
-
   line-height: 1.1;
   margin-bottom: 0.5em;
 }
@@ -188,7 +185,8 @@ a:link {
   cursor: pointer;
 }
 
-a {
+a:visited,
+a:link {
   color: var(--link-color);
   padding-bottom: 0.1em;
   transition: color 0.2s, background-color 0.2s;
@@ -483,7 +481,7 @@ form {
     &:-webkit-autofill,
     &:not(:placeholder-shown) {
       & ~ label {
-        font-size: 60%;
+        font-size: 80%;
         transform: translateY(-1.7em) !important;
       }
     }
@@ -551,12 +549,14 @@ figure {
 
   figcaption {
     @include font-size(1.2rem);
+
     color: #9fa1a7;
   }
 }
 
 .view-switcher {
   @include font-size(1.4rem);
+
   display: flex;
   flex-wrap: wrap;
   font-weight: 500;
@@ -834,6 +834,7 @@ figure {
 
 .content-index {
   @include font-size(1.4rem);
+
   line-height: 1.4;
   margin: 0 3.6rem 2em 0;
 

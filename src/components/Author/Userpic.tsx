@@ -9,6 +9,7 @@ interface UserpicProps {
   isBig?: boolean
   class?: string
   isAuthorsList?: boolean
+  isFeedMode?: boolean
 }
 
 export default (props: UserpicProps) => {
@@ -23,7 +24,8 @@ export default (props: UserpicProps) => {
       class={clsx(styles.circlewrap, props.class)}
       classList={{
         [styles.big]: props.isBig,
-        [styles.authorsList]: props.isAuthorsList
+        [styles.authorsList]: props.isAuthorsList,
+        [styles.feedMode]: props.isFeedMode
       }}
     >
       <Show when={props.hasLink}>

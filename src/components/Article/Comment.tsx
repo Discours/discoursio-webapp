@@ -5,7 +5,6 @@ import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
 import type { Author, Reaction } from '../../graphql/types.gen'
 import MD from './MD'
-import { formatDate } from '../../utils'
 import Userpic from '../Author/Userpic'
 import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
@@ -77,9 +76,6 @@ export const Comment = (props: Props) => {
       console.error('[handleCreate reaction]:', error)
     }
   }
-
-  const formattedDate = (date) =>
-    createMemo(() => formatDate(new Date(date), { hour: 'numeric', minute: 'numeric' }))
 
   const toggleEditMode = () => {
     setEditMode((oldEditMode) => !oldEditMode)

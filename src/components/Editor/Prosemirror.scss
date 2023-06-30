@@ -76,11 +76,13 @@ mark.highlight {
 [data-float] {
   max-width: 50%;
 }
+
 [data-float='left'] {
   max-width: 30%;
   float: left;
   margin: 1rem 1rem 0 0;
 }
+
 [data-float='right'] {
   max-width: 30%;
   float: right;
@@ -93,11 +95,12 @@ mark.highlight {
   float: left;
   margin: 1rem 1rem 0;
 }
+
 [data-float='half-right'] {
   max-width: 50%;
   min-width: 30%;
   float: right;
-  margin: 1rem 0 1rem;
+  margin: 1rem 0;
 }
 
 .ProseMirror blockquote {
@@ -162,16 +165,20 @@ mark.highlight {
     background: #000;
     color: #fff;
   }
+
   &[data-bg='yellow'] {
     background: #f6e3a1;
   }
+
   &[data-bg='pink'] {
     background: #f1b5bc;
   }
+
   &[data-bg='green'] {
     background: #bfe9cb;
     box-shadow: 0 0 0 1px #000;
   }
+
   &[data-bg='white'] {
     background: #fff;
     box-shadow: 0 0 0 1px #000;

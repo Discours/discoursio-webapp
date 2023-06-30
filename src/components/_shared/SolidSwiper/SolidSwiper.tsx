@@ -158,7 +158,6 @@ export const SolidSwiper = (props: Props) => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 <swiper-slide lazy="true" virtual-index={index()}>
-                  <div class="swiper-lazy-preloader swiper-lazy-preloader-white" />
                   <div class={styles.image}>
                     <img src={slide.url} alt={slide.title} />
                     <Show when={props.editorMode}>
@@ -201,19 +200,23 @@ export const SolidSwiper = (props: Props) => {
                       </div>
                     </Match>
                     <Match when={!props.editorMode}>
-                      <Show when={slide?.title}>
-                        <p>
-                          <small>{slide.title}</small>
-                        </p>
-                      </Show>
-                      <Show when={slide?.source}>
-                        <p>
-                          <small>{slide.source}</small>
-                        </p>
-                      </Show>
-                      <Show when={slide?.body}>
-                        <MD body={slide.body} />
-                      </Show>
+                      <div class={styles.slideDescription}>
+                        <Show when={slide?.title}>
+                          <div class={styles.articleTitle}>
+                            <small>{slide.title}</small>
+                          </div>
+                        </Show>
+                        <Show when={slide?.source}>
+                          <div class={styles.source}>
+                            <small>{slide.source}</small>
+                          </div>
+                        </Show>
+                        <Show when={slide?.body}>
+                          <div class={styles.body}>
+                            <MD body={slide.body} />
+                          </div>
+                        </Show>
+                      </div>
                     </Match>
                   </Switch>
                 </swiper-slide>
@@ -241,16 +244,18 @@ export const SolidSwiper = (props: Props) => {
           </div>
         </div>
 
-        <div class={styles.holder}>
+        <div class={clsx(styles.holder, styles.thumbsHolder)}>
           <div class={styles.thumbs}>
             <swiper-container
               class={'thumbSwiper'}
               ref={(el) => (thumbSwipeRef.current = el)}
               slides-per-view={'auto'}
+              free-mode={true}
               observer={true}
-              space-between={props.editorMode ? 20 : 10}
+              space-between={20}
               auto-scroll-offset={1}
               watch-overflow={true}
+              slide-to-clicked-slide={true}
               watch-slides-visibility={true}
               watch-slides-progress={true}
               direction={props.editorMode ? 'horizontal' : 'vertical'}
@@ -293,20 +298,20 @@ export const SolidSwiper = (props: Props) => {
               </Show>
             </swiper-container>
             <div
-              class={clsx(styles.navigation, styles.prev, {
+              class={clsx(styles.navigation, styles.thumbsNav, styles.prev, {
                 [styles.disabled]: slideIndex() === 0
               })}
               onClick={() => thumbSwipeRef.current.swiper.slidePrev()}
             >
-              <Icon name="swiper-l-arr" class={styles.icon} />
+              <Icon iconClassName={styles.icon} name="swiper-l-arr" class={styles.icon} />
             </div>
             <div
-              class={clsx(styles.navigation, styles.next, {
+              class={clsx(styles.navigation, styles.thumbsNav, styles.next, {
                 [styles.disabled]: slideIndex() + 1 === Number(props.images.length)
               })}
               onClick={() => thumbSwipeRef.current.swiper.slideNext()}
             >
-              <Icon name="swiper-r-arr" class={styles.icon} />
+              <Icon name="swiper-r-arr" iconClassName={styles.icon} class={styles.icon} />
             </div>
           </div>
         </div>

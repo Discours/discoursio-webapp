@@ -8,14 +8,16 @@ $slide-height: 500px;
   &.articleMode {
     background: var(--background-color-invert);
     color: var(--default-color-invert);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .container {
       margin: auto;
+      max-width: 800px;
       position: relative;
-      padding: 2rem 0;
-      width: 730px;
+      padding: 24px 0;
       display: flex;
-      overflow: hidden;
       justify-content: center;
       gap: 20px;
 
@@ -23,21 +25,48 @@ $slide-height: 500px;
         width: 600px;
       }
 
+      .thumbsHolder {
+        width: unset;
+      }
+
       .thumbs {
         padding: 52px 0;
         width: 110px;
+        overflow: hidden;
+        height: $slide-height + 40px;
         box-sizing: border-box;
         margin: 0;
         position: relative;
 
-        .navigation {
+        & > swiper-container {
+          position: absolute;
+          top: 52px;
+          bottom: 52px;
+          left: 0;
+        }
+
+        .thumbsNav {
           height: 52px;
           padding: 14px 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 100%;
-          filter: unset;
+          width: 110px;
+          left: 0;
+          right: 0;
+
+          .icon {
+            transform: rotate(45deg);
+          }
+
+          &.prev {
+            top: 0;
+          }
+
+          &.next {
+            top: unset;
+            bottom: 0;
+          }
         }
       }
     }
@@ -76,6 +105,7 @@ $slide-height: 500px;
       @include font-size(1.2rem);
 
       position: absolute;
+      z-index: 2;
       top: 476px;
       right: $navigation-reserve;
       font-weight: 600;
@@ -141,6 +171,24 @@ $slide-height: 500px;
     filter: invert(1);
   }
 
+  .slideDescription {
+    margin-top: 8px;
+    .articleTitle {
+      @include font-size(1.4rem);
+    }
+
+    .source {
+      @include font-size(1.2rem);
+
+      color: var(--secondary-color);
+    }
+    .body {
+      @include font-size(1.7rem);
+
+      margin-top: 24px;
+    }
+  }
+
   .thumbs {
     margin: 3rem 0;
     max-height: 488px;
@@ -148,9 +196,11 @@ $slide-height: 500px;
 
     .navigation {
       height: unset;
+
       &.prev {
         left: -$navigation-reserve;
       }
+
       &.next {
         right: -$navigation-reserve;
       }

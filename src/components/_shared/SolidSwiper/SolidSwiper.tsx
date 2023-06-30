@@ -226,14 +226,10 @@ export const SolidSwiper = (props: Props) => {
                       <Match when={!props.editorMode}>
                         <div class={styles.slideDescription}>
                           <Show when={slide?.title}>
-                            <div class={styles.articleTitle}>
-                              <small>{slide.title}</small>
-                            </div>
+                            <div class={styles.articleTitle}>{slide.title}</div>
                           </Show>
                           <Show when={slide?.source}>
-                            <div class={styles.source}>
-                              <small>{slide.source}</small>
-                            </div>
+                            <div class={styles.source}>{slide.source}</div>
                           </Show>
                           <Show when={slide?.body}>
                             <div class={styles.body}>

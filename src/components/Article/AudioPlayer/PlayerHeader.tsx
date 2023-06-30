@@ -7,7 +7,6 @@ import { Icon } from '../../_shared/Icon'
 import styles from './AudioPlayer.module.scss'
 
 export const PlayerHeader = (props) => {
-  let playButtonRef: HTMLButtonElement
   let volumeRef: HTMLInputElement
   const volumeContainerRef: { current: HTMLDivElement } = {
     current: null
@@ -37,7 +36,6 @@ export const PlayerHeader = (props) => {
       <div class={styles.playerControls}>
         <button
           onClick={onPlayMedia}
-          ref={playButtonRef}
           class={clsx(
             styles.playButton,
             getCurrentTrack().isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay
@@ -50,7 +48,6 @@ export const PlayerHeader = (props) => {
         </button>
         <button
           onClick={playPrevTrack}
-          ref={playButtonRef}
           class={clsx(styles.controlsButton)}
           role="button"
           aria-label="Previous"
@@ -59,7 +56,6 @@ export const PlayerHeader = (props) => {
         </button>
         <button
           onClick={playNextTrack}
-          ref={playButtonRef}
           class={clsx(styles.controlsButton, styles.controlsButtonNext)}
           role="button"
           aria-label="Next"

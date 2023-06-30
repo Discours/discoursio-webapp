@@ -24,21 +24,18 @@ const prepareMedia = (media: MediaItem[]) =>
   }))
 
 const progressUpdate = (audioRef, progressFilledRef, duration) => {
-  const percent = (audioRef.currentTime / duration) * 100
-
-  progressFilledRef.style.width = `${percent || 0}%`
+  progressFilledRef.style.width = `${(audioRef.currentTime / duration) * 100 || 0}%`
 }
 
 const scrub = (event, progressRef, duration, audioRef) => {
-  const scrubTime = (event.offsetX / progressRef.offsetWidth) * duration
-  audioRef.currentTime = scrubTime
+  audioRef.currentTime = (event.offsetX / progressRef.offsetWidth) * duration
 }
+
+const getFormattedTime = (point) => new Date(point * 1000).toISOString().slice(14, -5)
 
 export default (props: { media: MediaItem[]; articleSlug: string; body: string }) => {
   let audioRef: HTMLAudioElement
   let progressRef: HTMLDivElement
-  let timeDurationRef: HTMLSpanElement
-  let timeCurrentRef: HTMLSpanElement
   let progressFilledRef: HTMLDivElement
 
   const [audioContext, setAudioContext] = createSignal<AudioContext>()
@@ -74,8 +71,8 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
   })
 
   createEffect(() => {
-    if (timeDurationRef && getCurrentTrack() && duration()) {
-      setCurrentDurationContent(new Date(duration() * 1000).toISOString().slice(14, -5))
+    if (getCurrentTrack() && duration()) {
+      setCurrentDurationContent(getFormattedTime(duration()))
     }
   })
 
@@ -100,9 +97,7 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
   }
 
   const setTimes = () => {
-    if (timeCurrentRef) {
-      setCurrentTimeContent(new Date(audioRef.currentTime * 1000).toISOString().slice(14, -5))
-    }
+    setCurrentTimeContent(getFormattedTime(audioRef.currentTime))
   }
 
   const handleAudioEnd = () => {
@@ -191,8 +186,8 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
             <div class={styles.progressFilled} ref={progressFilledRef}></div>
           </div>
           <div class={styles.progressTiming}>
-            <span ref={timeCurrentRef}>{currentTimeContent()}</span>
-            <span ref={timeDurationRef}>{currentDurationContent()}</span>
+            <span>{currentTimeContent()}</span>
+            <span>{currentDurationContent()}</span>
           </div>
           <audio
             ref={audioRef}

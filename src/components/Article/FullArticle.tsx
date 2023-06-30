@@ -96,11 +96,8 @@ export const FullArticle = (props: ArticleProps) => {
   }
 
   const body = createMemo(() => props.article.body)
-
   const media = createMemo(() => {
-    const mi = JSON.parse(props.article.media || '[]')
-    console.debug('[media items]:', mi)
-    return mi
+    return JSON.parse(props.article.media || '[]')
   })
 
   const commentsRef: { current: HTMLDivElement } = { current: null }

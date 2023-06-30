@@ -1,4 +1,4 @@
-import { createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -66,11 +66,8 @@ export const EditView = (props: Props) => {
     layout: props.shout.layout
   })
 
-  //TODO: вынести в хэлпер
   const mediaItems = createMemo(() => {
-    const mi = JSON.parse(form.media || '[]')
-    console.debug('[media items]:', mi)
-    return mi
+    return JSON.parse(form.media || '[]')
   })
 
   onMount(async () => {

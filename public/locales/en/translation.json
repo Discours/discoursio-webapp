@@ -335,5 +335,7 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "Move right": "Move right",
+  "Move left": "Move left"
 }

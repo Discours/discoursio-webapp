@@ -76,7 +76,7 @@ $slide-height: 500px;
     color: #0d0d0d;
   }
 
-  .delete {
+  .action {
     border-radius: 50%;
     width: 32px;
     height: 32px;
@@ -122,7 +122,7 @@ $slide-height: 500px;
       background: var(--placeholder-color-semi);
       position: relative;
 
-      &:hover .delete {
+      &:hover .action {
         display: flex;
       }
 
@@ -232,7 +232,7 @@ $slide-height: 500px;
       filter: grayscale(1);
       transition: filter 0.3s ease-in-out, opacity 0.5s ease-in-out;
 
-      .delete {
+      .action {
         width: 18px;
         height: 18px;
         top: 6px;
@@ -242,13 +242,19 @@ $slide-height: 500px;
           width: 8px;
           height: 8px;
         }
+        &.rarr {
+          top: 26px;
+        }
+        &.larr {
+          top: 46px;
+        }
       }
 
       &.active {
         opacity: 1;
         filter: unset;
 
-        .delete {
+        .action {
           display: flex;
         }
       }
@@ -258,7 +264,7 @@ $slide-height: 500px;
         cursor: pointer;
         filter: unset;
 
-        .delete {
+        .action {
           display: flex;
         }
       }
@@ -311,5 +317,9 @@ $slide-height: 500px;
   .imageThumb {
     opacity: 1 !important;
     filter: unset !important;
+
+    .action {
+      display: flex;
+    }
   }
 }

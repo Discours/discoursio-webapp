@@ -22,6 +22,7 @@ type Props = {
   images: MediaItem[]
   editorMode?: boolean
   onImagesAdd?: (value: MediaItem[]) => void
+  onImagesSorted?: (value: MediaItem[]) => void
   onImageDelete?: (mediaItemIndex: number) => void
   onImageChange?: (index: number, value: MediaItem) => void
 }
@@ -125,6 +126,21 @@ export const SolidSwiper = (props: Props) => {
     })
   }
 
+  const handleChangeIndex = (event, direction: 'left' | 'right', index: number) => {
+    event.preventDefault()
+    console.log('!!! AAA:')
+    const images = [...props.images]
+
+    if (direction === 'left' && index > 0) {
+      const copy = images.splice(index, 1)[0]
+      images.splice(index - 1, 0, copy)
+    } else if (direction === 'right' && index < images.length - 1) {
+      const copy = images.splice(index, 1)[0]
+      images.splice(index + 1, 0, copy)
+    }
+    props.onImagesSorted(images)
+  }
+
   return (
     <div class={clsx(styles.Swiper, props.editorMode ? styles.editorMode : styles.articleMode)}>
       <div class={styles.container}>
@@ -163,7 +179,7 @@ export const SolidSwiper = (props: Props) => {
                     <Show when={props.editorMode}>
                       <Popover content={t('Delete')}>
                         {(triggerRef: (el) => void) => (
-                          <div ref={triggerRef} onClick={() => handleDelete(index())} class={styles.delete}>
+                          <div ref={triggerRef} onClick={() => handleDelete(index())} class={styles.action}>
                             <Icon class={styles.icon} name="delete-white" />
                           </div>
                         )}
@@ -271,17 +287,25 @@ export const SolidSwiper = (props: Props) => {
                       style={{ 'background-image': `url(${slide.url})` }}
                     >
                       <Show when={props.editorMode}>
-                        <Popover content={t('Delete')}>
-                          {(triggerRef: (el) => void) => (
-                            <div
-                              ref={triggerRef}
-                              class={styles.delete}
-                              onClick={() => handleDelete(index())}
-                            >
-                              <Icon class={styles.icon} name="delete-white" />
-                            </div>
-                          )}
-                        </Popover>
+                        <div class={clsx(styles.action)} onClick={() => handleDelete(index())}>
+                          <Icon class={styles.icon} name="delete-white" />
+                        </div>
+                        <div
+                          class={clsx(styles.action, styles.larr)}
+                          onClick={() => handleChangeIndex(event, 'left', index())}
+                        >
+                          <Icon
+                            class={styles.icon}
+                            name="arrow-right-white"
+                            style={{ transform: 'rotate(-180deg)' }}
+                          />
+                        </div>
+                        <div
+                          class={clsx(styles.action, styles.rarr)}
+                          onClick={() => handleChangeIndex(event, 'right', index())}
+                        >
+                          <Icon class={styles.icon} name="arrow-right-white" />
+                        </div>
                       </Show>
                     </div>
                   </swiper-slide>

@@ -132,6 +132,9 @@ export const EditView = (props: Props) => {
     const newImages = [...mediaItems(), ...data]
     setForm('media', JSON.stringify(newImages))
   }
+  const handleSortedImages = (data) => {
+    setForm('media', JSON.stringify(data))
+  }
 
   const handleImageDelete = (index) => {
     const copy = [...mediaItems()]
@@ -194,6 +197,7 @@ export const EditView = (props: Props) => {
                       onImageChange={handleImageChange}
                       onImageDelete={(index) => handleImageDelete(index)}
                       onImagesAdd={(value) => handleAddImages(value)}
+                      onImagesSorted={(value) => handleSortedImages(value)}
                     />
                   </Show>
 

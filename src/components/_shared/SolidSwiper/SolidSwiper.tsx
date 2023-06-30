@@ -50,9 +50,11 @@ export const SolidSwiper = (props: Props) => {
   const { t } = useLocalize()
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
+
   const {
     actions: { showSnackbar }
   } = useSnackbar()
+
   const handleSlideDescriptionChange = (index: number, field: string, value) => {
     props.onImageChange(index, { ...props.images[index], [field]: value })
   }
@@ -63,6 +65,7 @@ export const SolidSwiper = (props: Props) => {
   }
   const handleSlideChange = () => {
     thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
+    setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
   }
 
   createEffect(
@@ -126,8 +129,7 @@ export const SolidSwiper = (props: Props) => {
     })
   }
 
-  const handleChangeIndex = (event, direction: 'left' | 'right', index: number) => {
-    event.preventDefault()
+  const handleChangeIndex = (direction: 'left' | 'right', index: number) => {
     const images = [...props.images]
     if (direction === 'left' && index > 0) {
       const copy = images.splice(index, 1)[0]
@@ -288,24 +290,30 @@ export const SolidSwiper = (props: Props) => {
                       style={{ 'background-image': `url(${slide.url})` }}
                     >
                       <Show when={props.editorMode}>
-                        <div class={clsx(styles.action)} onClick={() => handleDelete(index())}>
-                          <Icon class={styles.icon} name="delete-white" />
-                        </div>
-                        <div
-                          class={clsx(styles.action, styles.larr)}
-                          onClick={() => handleChangeIndex(event, 'left', index())}
-                        >
-                          <Icon
-                            class={styles.icon}
-                            name="arrow-right-white"
-                            style={{ transform: 'rotate(-180deg)' }}
-                          />
-                        </div>
-                        <div
-                          class={clsx(styles.action, styles.rarr)}
-                          onClick={() => handleChangeIndex(event, 'right', index())}
-                        >
-                          <Icon class={styles.icon} name="arrow-right-white" />
+                        <div class={styles.thumbAction}>
+                          <div class={clsx(styles.action)} onClick={() => handleDelete(index())}>
+                            <Icon class={styles.icon} name="delete-white" />
+                          </div>
+                          <div
+                            class={clsx(styles.action, {
+                              [styles.hidden]: index() === 0
+                            })}
+                            onClick={() => handleChangeIndex('left', index())}
+                          >
+                            <Icon
+                              class={styles.icon}
+                              name="arrow-right-white"
+                              style={{ transform: 'rotate(-180deg)' }}
+                            />
+                          </div>
+                          <div
+                            class={clsx(styles.action, {
+                              [styles.hidden]: index() + 1 === Number(props.images.length)
+                            })}
+                            onClick={() => handleChangeIndex('right', index())}
+                          >
+                            <Icon class={styles.icon} name="arrow-right-white" />
+                          </div>
                         </div>
                       </Show>
                     </div>

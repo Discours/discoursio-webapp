@@ -232,39 +232,37 @@ $slide-height: 500px;
       filter: grayscale(1);
       transition: filter 0.3s ease-in-out, opacity 0.5s ease-in-out;
 
-      .action {
-        width: 18px;
-        height: 18px;
+      .thumbAction {
+        display: none;
+        position: absolute;
         top: 6px;
         right: 6px;
-
-        .icon {
-          width: 8px;
-          height: 8px;
-        }
-        &.rarr {
-          top: 26px;
-        }
-        &.larr {
-          top: 46px;
-        }
-      }
-
-      &.active {
-        opacity: 1;
-        filter: unset;
+        flex-direction: column;
+        gap: 5px;
 
         .action {
+          position: static;
           display: flex;
+          width: 18px;
+          height: 18px;
+
+          &.hidden {
+            display: none;
+          }
+
+          .icon {
+            width: 8px;
+            height: 8px;
+          }
         }
       }
 
-      &:not(.active):hover {
+      &:hover {
         opacity: 1;
         cursor: pointer;
         filter: unset;
 
-        .action {
+        .thumbAction {
           display: flex;
         }
       }
@@ -318,8 +316,8 @@ $slide-height: 500px;
     opacity: 1 !important;
     filter: unset !important;
 
-    .action {
-      display: flex;
+    .thumbAction {
+      display: flex !important;
     }
   }
 }

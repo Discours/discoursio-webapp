@@ -31,9 +31,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
-  const isH1 = isActive('heading', { level: 1 })
-  const isH2 = isActive('heading', { level: 2 })
-  const isH3 = isActive('heading', { level: 3 })
+  const isH1 = isActive('heading', { level: 2 })
+  const isH2 = isActive('heading', { level: 3 })
+  const isH3 = isActive('heading', { level: 4 })
   const isBlockQuote = isActive('blockquote')
   const isOrderedList = isActive('isOrderedList')
   const isBulletList = isActive('isBulletList')
@@ -117,7 +117,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isH1()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleHeading({ level: 1 }).run()
+                                props.editor.chain().focus().toggleHeading({ level: 2 }).run()
                                 toggleTextSizePopup()
                               }}
                             >
@@ -134,7 +134,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isH2()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleHeading({ level: 2 }).run()
+                                props.editor.chain().focus().toggleHeading({ level: 3 }).run()
                                 toggleTextSizePopup()
                               }}
                             >
@@ -151,7 +151,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isH3()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleHeading({ level: 3 }).run()
+                                props.editor.chain().focus().toggleHeading({ level: 4 }).run()
                                 toggleTextSizePopup()
                               }}
                             >

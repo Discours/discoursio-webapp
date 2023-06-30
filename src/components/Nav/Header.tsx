@@ -101,13 +101,13 @@ export const Header = (props: Props) => {
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
-        <nav class={clsx(styles.headerInner, 'row')} classList={{ fixed: fixed() }}>
-          <div class={clsx(styles.mainLogo, 'col-auto col-md-4')}>
+        <nav class={clsx('row', styles.headerInner, { ['fixed']: fixed() })}>
+          <div class={clsx('col-md-5 col-xl-4 col-auto', styles.mainLogo)}>
             <a href={getPagePath(router, 'home')}>
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx(styles.mainNavigationWrapper, 'col offset-md-1')}>
+          <div class={clsx('col offset-xl-1', styles.mainNavigationWrapper)}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>

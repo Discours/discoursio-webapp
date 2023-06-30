@@ -119,6 +119,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
             <div class={styles.userControlItem}>
               <a href="#">
                 <Icon name="search" class={styles.icon} />
+                <Icon name="search" class={clsx(styles.icon, styles.iconHover)} />
               </a>
             </div>
 
@@ -130,6 +131,11 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                       name="bell-white"
                       counter={isAuthenticated() ? warnings().length : 1}
                       class={styles.icon}
+                    />
+                    <Icon
+                      name="bell-white-hover"
+                      counter={isAuthenticated() ? warnings().length : 1}
+                      class={clsx(styles.icon, styles.iconHover)}
                     />
                   </div>
                 </a>
@@ -189,6 +195,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                   {/*FIXME: replace with route*/}
                   <div classList={{ entered: page().path === '/inbox' }}>
                     <Icon name="inbox-white" counter={session()?.news?.unread || 0} class={styles.icon} />
+                    <Icon name="inbox-white-hover" counter={session()?.news?.unread || 0} class={clsx(styles.icon, styles.iconHover)} />
                   </div>
                 </a>
               </div>

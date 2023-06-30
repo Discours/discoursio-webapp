@@ -17,6 +17,7 @@ import { validateFiles } from '../../../utils/validateFile'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { useSnackbar } from '../../../context/snackbar'
 import { Loading } from '../Loading'
+import { imageProxy } from '../../../utils/imageProxy'
 
 type Props = {
   images: MediaItem[]
@@ -178,7 +179,7 @@ export const SolidSwiper = (props: Props) => {
                   // @ts-ignore
                   <swiper-slide lazy="true" virtual-index={index()}>
                     <div class={styles.image}>
-                      <img src={slide.url} alt={slide.title} />
+                      <img src={imageProxy(slide.url)} alt={slide.title} />
                       <Show when={props.editorMode}>
                         <Popover content={t('Delete')}>
                           {(triggerRef: (el) => void) => (
@@ -291,7 +292,7 @@ export const SolidSwiper = (props: Props) => {
                     <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
                       <div
                         class={clsx(styles.imageThumb)}
-                        style={{ 'background-image': `url(${slide.url})` }}
+                        style={{ 'background-image': `url(${imageProxy(slide.url)})` }}
                       >
                         <Show when={props.editorMode}>
                           <div class={styles.thumbAction}>

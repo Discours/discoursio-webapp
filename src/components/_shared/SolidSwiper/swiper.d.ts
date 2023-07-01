@@ -1,5 +1,4 @@
 import 'solid-js'
-import type { SwiperSlide, SwiperContainer } from 'swiper/element/bundle'
 import { SwiperOptions } from 'swiper'
 import { SwiperSlideProps } from 'swiper/react'
 

@@ -7,17 +7,16 @@ import { register } from 'swiper/element/bundle'
 import { DropArea } from '../DropArea'
 import { GrowingTextarea } from '../GrowingTextarea'
 import MD from '../../Article/MD'
-import { createDropzone, createFileUploader } from '@solid-primitives/upload'
-
+import { createFileUploader } from '@solid-primitives/upload'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { SwiperRef } from './swiper'
-import { clsx } from 'clsx'
-import styles from './Swiper.module.scss'
 import { validateFiles } from '../../../utils/validateFile'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { useSnackbar } from '../../../context/snackbar'
 import { Loading } from '../Loading'
 import { imageProxy } from '../../../utils/imageProxy'
+import { clsx } from 'clsx'
+import styles from './Swiper.module.scss'
 
 type Props = {
   images: MediaItem[]
@@ -43,14 +42,14 @@ register()
 
 SwiperCore.use([Pagination, Navigation, Manipulation])
 
-const dropAreaRef: { current: HTMLElement } = { current: null }
-const mainSwipeRef: { current: SwiperRef } = { current: null }
-const thumbSwipeRef: { current: SwiperRef } = { current: null }
-
 export const SolidSwiper = (props: Props) => {
   const { t } = useLocalize()
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
+
+  const dropAreaRef: { current: HTMLElement } = { current: null }
+  const mainSwipeRef: { current: SwiperRef } = { current: null }
+  const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
   const {
     actions: { showSnackbar }
@@ -94,7 +93,7 @@ export const SolidSwiper = (props: Props) => {
     }
   }
 
-  const { files, selectFiles } = createFileUploader({
+  const { selectFiles } = createFileUploader({
     multiple: true,
     accept: `image/*`
   })
@@ -123,10 +122,7 @@ export const SolidSwiper = (props: Props) => {
   }
   const handleUploadThumb = async () => {
     selectFiles((selectedFiles) => {
-      const filesArray = selectedFiles.map((file) => {
-        return file
-      })
-      initUpload(filesArray)
+      initUpload(selectedFiles)
     })
   }
 
@@ -341,7 +337,7 @@ export const SolidSwiper = (props: Props) => {
               </div>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.next, {
-                  [styles.disabled]: slideIndex() + 1 === Number(props.images.length)
+                  [styles.disabled]: slideIndex() + 1 === props.images.length
                 })}
                 onClick={() => thumbSwipeRef.current.swiper.slideNext()}
               >

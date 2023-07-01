@@ -18,7 +18,6 @@ import styles from './Feed.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { CommentDate } from '../Article/CommentDate'
-import { Beside } from '../Feed/Beside'
 
 export const FEED_PAGE_SIZE = 20
 

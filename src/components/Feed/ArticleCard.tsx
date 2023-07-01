@@ -1,7 +1,6 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { capitalize, formatDate } from '../../utils'
-import { translit } from '../../utils/ru2en'
 import { Icon } from '../_shared/Icon'
 import styles from './ArticleCard.module.scss'
 import { clsx } from 'clsx'

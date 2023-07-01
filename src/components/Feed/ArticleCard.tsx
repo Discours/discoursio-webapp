@@ -196,7 +196,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
               >
                 <div class={styles.shoutCardType}>
                   <a href={`/expo/${layout}`}>
-                    <Icon name={layout} class={styles.icon} />
                     <Icon name={layout} class={clsx(styles.icon, styles.iconHover)} />
                   </a>
                 </div>

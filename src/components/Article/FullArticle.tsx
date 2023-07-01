@@ -1,7 +1,7 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
-import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
+import AudioPlayer from './AudioPlayer/AudioPlayer'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -22,6 +22,7 @@ import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import article from '../Editor/extensions/Article'
 import { SolidSwiper } from '../_shared/SolidSwiper'
+import { createEffect, For, createMemo, Match, onMount, Show, Switch, createSignal } from 'solid-js'
 
 interface ArticleProps {
   article: Shout
@@ -136,13 +137,13 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
-  console.log('!!! props.article:', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>
       <div class="wide-container">
         <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
+            {/*TODO: Check styles.shoutTopic*/}
             <div class={styles.shoutHeader}>
               <Show when={mainTopic()}>
                 <div class={styles.shoutTopic}>
@@ -192,13 +193,13 @@ export const FullArticle = (props: ArticleProps) => {
                 </For>
               </div>
             </Show>
-          </article>
 
-          <Show when={media() && props.article.layout === 'image'}>
-            <SolidSwiper images={media()} />
-          </Show>
+            <Show when={media().length > 0 && props.article.layout !== 'image'}>
+              <div class="media-items">
+                <AudioPlayer media={media()} articleSlug={props.article.slug} body={body()} />
+              </div>
+            </Show>
 
-          <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             <Show when={body()}>
               <div class={styles.shoutBody}>
                 <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>

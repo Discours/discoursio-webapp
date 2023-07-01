@@ -1,9 +1,9 @@
-import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { createSignal, For, onMount, Show } from 'solid-js'
 import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { AuthorCard } from '../Author/AuthorCard'
 import { Sidebar } from '../Feed/Sidebar'
-import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
+import { loadShouts, loadMyFeed, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
@@ -12,18 +12,22 @@ import { clsx } from 'clsx'
 import { useReactions } from '../../context/reactions'
 import type { Author, Reaction } from '../../graphql/types.gen'
 import { getPagePath } from '@nanostores/router'
-import { router } from '../../stores/router'
+import { router, useRouter } from '../../stores/router'
 import { useLocalize } from '../../context/localize'
 import styles from './Feed.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { CommentDate } from '../Article/CommentDate'
-import {Beside} from "../Feed/Beside";
 
 export const FEED_PAGE_SIZE = 20
 
+type FeedSearchParams = {
+  by: 'views' | 'rating' | 'comments'
+}
+
 export const FeedView = () => {
   const { t } = useLocalize()
+  const { page } = useRouter<FeedSearchParams>()
 
   // state
   const { sortedArticles } = useArticlesStore()
@@ -38,30 +42,24 @@ export const FeedView = () => {
     actions: { loadReactionsBy }
   } = useReactions()
 
-  // TODO:
-  // const collaborativeShouts = createMemo(() =>
-  //   sortedArticles().filter((shout) => shout.visibility === 'authors')
-  // )
-
-  // createEffect(async () => {
-  //   if (collaborativeShouts()) {
-  //     await loadReactionsBy({ by: { shouts: collaborativeShouts().map((shout) => shout.slug) }, limit: 5 })
-  //   }
-  // })
-
-  createEffect(async () => {
-    if (user()) {
-      // load recent editing shouts ( visibility = authors )
-      await loadShouts({ filters: { author: user().slug, visibility: 'authors' }, limit: 15 })
+  const loadFeedShouts = () => {
+    if (page().route === 'feedMy') {
+      return loadMyFeed({
+        limit: FEED_PAGE_SIZE,
+        offset: sortedArticles().length
+      })
     }
-  })
 
-  const loadMore = async () => {
-    const { hasMore, newShouts } = await loadShouts({
+    // default feed
+    return loadShouts({
       filters: { visibility: 'community' },
       limit: FEED_PAGE_SIZE,
       offset: sortedArticles().length
     })
+  }
+
+  const loadMore = async () => {
+    const { hasMore, newShouts } = await loadFeedShouts()
 
     loadReactionsBy({
       by: {
@@ -84,7 +82,7 @@ export const FeedView = () => {
     <div>
       <div class="wide-container feed">
         <div class="row">
-          <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
+          <div class={clsx('col-md-5 col-xl-4')}>
             <Sidebar authors={sortedAuthors()} />
           </div>
 
@@ -149,7 +147,7 @@ export const FeedView = () => {
             </Show>
           </div>
 
-          <aside class={clsx('col-md-7 col-xl-6 offset-xl-1', styles.feedAside)}>
+          <aside class={clsx('col-md-7', 'col-xl-6', 'offset-xl-1')}>
             <section class={styles.asideSection}>
               <h4>{t('Comments')}</h4>
               <For each={topComments()}>

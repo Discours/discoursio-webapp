@@ -10,23 +10,18 @@ import { useLocalize } from '../../../context/localize'
 import styles from './Sidebar.module.scss'
 import { clsx } from 'clsx'
 import Userpic from '../../Author/Userpic'
+import { getPagePath } from '@nanostores/router'
+import { router, useRouter } from '../../../stores/router'
 
 type FeedSidebarProps = {
   authors: Author[]
-}
-
-type ListItem = {
-  title: string
-  icon?: string
-  counter?: number
-  href?: string
-  isBold?: boolean
 }
 
 export const Sidebar = (props: FeedSidebarProps) => {
   const { t } = useLocalize()
   const { seen } = useSeenStore()
   const { session } = useSession()
+  const { page } = useRouter()
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
   const { topicEntities } = useTopicsStore()
@@ -40,68 +35,75 @@ export const Sidebar = (props: FeedSidebarProps) => {
     return Boolean(seen()[authorSlug])
   }
 
-  const menuItems: ListItem[] = [
-    {
-      icon: 'feed-all',
-      title: t('general feed')
-    },
-    {
-      icon: 'feed-my',
-      title: t('My feed')
-    },
-    {
-      icon: 'feed-collaborate',
-      title: t('Accomplices')
-    },
-    {
-      icon: 'feed-discussion',
-      title: t('Discussions'),
-      counter: 4
-    },
-    {
-      icon: 'feed-drafts',
-      title: t('Drafts'),
-      counter: 14
-    },
-    {
-      icon: 'bookmark',
-      title: t('Bookmarks'),
-      counter: 6
-    },
-    {
-      icon: 'feed-notifications',
-      title: t('Notifications')
-    }
-  ]
-
   return (
     <div class={styles.sidebar}>
       <ul>
-        <For each={menuItems}>
-          {(item: ListItem, index) => (
-            <li>
-              {/* TODO: implement selection logic */}
-              <Show when={index() === 0}>
-                <strong>
-                  <span class={styles.sidebarItemName}>
-                    {item.icon && <Icon name={item.icon} class={styles.icon} />}
-                    {item.title}
-                  </span>
-                  {item.counter && <span class={styles.counter}>18</span>}
-                </strong>
-              </Show>
-              <Show when={index() > 0}>
-                <a href="#">
-                  <span class={styles.sidebarItemName}>
-                    {item.icon && <Icon name={item.icon} class={styles.icon} />}
-                    {item.title}
-                  </span>
-                  {item.counter && <span class={styles.counter}>18</span>}
-                </a>
-              </Show>
-            </li>
-          )}
-        </For>
+        <li>
+          <a
+            href={getPagePath(router, 'feed')}
+            class={clsx(styles.sidebarItemName, {
+              [styles.selected]: page().route === 'feed'
+            })}
+          >
+            <Icon name="feed-all" class={styles.icon} />
+            {t('general feed')}
+          </a>
+        </li>
+        <li>
+          <a
+            href={getPagePath(router, 'feedMy')}
+            class={clsx(styles.sidebarItemName, {
+              [styles.selected]: page().route === 'feedMy'
+            })}
+          >
+            <Icon name="feed-my" class={styles.icon} />
+            {t('My feed')}
+          </a>
+        </li>
+        <li>
+          <a
+            href={getPagePath(router, 'feedCollaborations')}
+            class={clsx(styles.sidebarItemName, {
+              [styles.selected]: page().route === 'feedCollaborations'
+            })}
+          >
+            <Icon name="feed-collaborate" class={styles.icon} />
+            {t('Accomplices')}
+          </a>
+        </li>
+        <li>
+          <a
+            href={getPagePath(router, 'feedDiscussions')}
+            class={clsx(styles.sidebarItemName, {
+              [styles.selected]: page().route === 'feedDiscussions'
+            })}
+          >
+            <Icon name="feed-discussion" class={styles.icon} />
+            {t('Discussions')}
+          </a>
+        </li>
+        <li>
+          <a
+            href={getPagePath(router, 'feedBookmarks')}
+            class={clsx(styles.sidebarItemName, {
+              [styles.selected]: page().route === 'feedBookmarks'
+            })}
+          >
+            <Icon name="bookmark" class={styles.icon} />
+            {t('Bookmarks')}
+          </a>
+        </li>
+        <li>
+          <a
+            href={getPagePath(router, 'feedNotifications')}
+            class={clsx(styles.sidebarItemName, {
+              [styles.selected]: page().route === 'feedNotifications'
+            })}
+          >
+            <Icon name="feed-notifications" class={styles.icon} />
+            {t('Notifications')}
+          </a>
+        </li>
       </ul>
 
       <Show when={session()?.news?.authors || session()?.news?.topics}>

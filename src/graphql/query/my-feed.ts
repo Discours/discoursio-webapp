@@ -12,15 +12,10 @@ export default gql`
       # community
       mainTopic
       topics {
-        # id
+        id
         title
         body
         slug
-        stat {
-          shouts
-          authors
-          followers
-        }
       }
       authors {
         id

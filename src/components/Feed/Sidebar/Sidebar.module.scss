@@ -14,10 +14,15 @@
     position: relative;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    .selected {
+      font-weight: 500;
+    }
   }
 
   .counter {
     @include font-size(1.2rem);
+
     align-items: center;
     align-self: flex-start;
     background: #f6f6f6;

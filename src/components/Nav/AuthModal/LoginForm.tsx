@@ -9,7 +9,7 @@ import type { AuthModalSearchParams } from './types'
 import { hideModal } from '../../../stores/ui'
 import { useSession } from '../../../context/session'
 import { signSendLink } from '../../../stores/auth'
-import { isValidEmail } from '../../../utils/validators'
+import { validateEmail } from '../../../utils/validateEmail'
 import { generateModalTitleFromSource } from '../../../utils/custom-i18n'
 
 import { useSnackbar } from '../../../context/snackbar'
@@ -76,7 +76,7 @@ export const LoginForm = () => {
 
     if (!email()) {
       newValidationErrors.email = t('Please enter email')
-    } else if (!isValidEmail(email())) {
+    } else if (!validateEmail(email())) {
       newValidationErrors.email = t('Invalid email')
     }
 

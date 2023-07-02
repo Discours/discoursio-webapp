@@ -14,7 +14,7 @@ export type PageProps = {
   topic?: Topic
   allTopics?: Topic[]
   searchQuery?: string
-  layout?: string // LayoutType
+  layout?: LayoutType
   // other types?
   searchResults?: Shout[]
   chats?: Chat[]
@@ -33,3 +33,12 @@ export type UploadFile = {
 }
 
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
+
+export type FileTypeToUpload = 'image' | 'video' | 'doc'
+
+export type MediaItem = {
+  url: string
+  title: string
+  body: string
+  source?: string
+}

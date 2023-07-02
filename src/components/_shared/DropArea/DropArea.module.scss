@@ -1,0 +1,71 @@
+.DropArea {
+  .field {
+    border: 2px dashed rgba(38, 56, 217, 0.3);
+    border-radius: 16px;
+    color: #2638d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    padding: 24px;
+    transition: background-color 0.3s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+
+    .text {
+      position: relative;
+      z-index: 1;
+    }
+
+    &.active,
+    &:hover {
+      background-color: rgba(#2638d9, 0.3);
+
+      &::after {
+        content: '';
+        top: 0;
+        transform: translateX(100%);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 0;
+        animation: slide 1.8s infinite;
+        background: linear-gradient(
+          to right,
+          rgba(#fff, 0) 0%,
+          rgba(#fff, 0.8) 50%,
+          rgb(128 186 232 / 0%) 99%,
+          rgb(125 185 232 / 0%) 100%
+        );
+      }
+    }
+  }
+
+  .description {
+    @include font-size(1.2rem);
+
+    margin-top: 1.6rem;
+    text-align: center;
+    color: var(--secondary-color);
+  }
+
+  .error {
+    @include font-size(1.4rem);
+
+    color: var(--danger-color);
+    margin-top: 1.6rem;
+    text-align: center;
+    padding: 1rem;
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}

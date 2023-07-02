@@ -8,7 +8,7 @@ import { Row1 } from '../Feed/Row1'
 import Hero from '../Discours/Hero'
 import { Beside } from '../Feed/Beside'
 import RowShort from '../Feed/RowShort'
-import Slider from '../_shared/Slider'
+import { Slider } from '../_shared/Slider'
 import Group from '../Feed/Group'
 import type { Shout, Topic } from '../../graphql/types.gen'
 

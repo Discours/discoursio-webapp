@@ -7,7 +7,7 @@ import type { AuthModalSearchParams } from './types'
 import { ApiError } from '../../../utils/apiClient'
 import { signSendLink } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
-import { isValidEmail } from '../../../utils/validators'
+import { validateEmail } from '../../../utils/validateEmail'
 
 type FormFields = {
   email: string
@@ -38,7 +38,7 @@ export const ForgotPasswordForm = () => {
 
     if (!email()) {
       newValidationErrors.email = t('Please enter email')
-    } else if (!isValidEmail(email())) {
+    } else if (!validateEmail(email())) {
       newValidationErrors.email = t('Invalid email')
     }
 

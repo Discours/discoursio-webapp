@@ -24,4 +24,9 @@
   animation-duration: 2s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
+
+  .small & {
+    width: 32px;
+    height: 32px;
+  }
 }

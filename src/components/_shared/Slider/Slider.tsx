@@ -1,26 +1,28 @@
-import { Swiper, Navigation, Pagination, Lazy, Thumbs } from 'swiper'
+//TODO: Replace with SolidSwiper.tsx
+
+import { Swiper, Navigation, Pagination, Thumbs } from 'swiper'
 import type { SwiperOptions } from 'swiper'
 import 'swiper/scss'
 import 'swiper/scss/navigation'
 import 'swiper/scss/pagination'
-import 'swiper/scss/lazy'
 import 'swiper/scss/thumbs'
 import './Slider.scss'
 import { createEffect, createSignal, JSX, Show } from 'solid-js'
-import { Icon } from './Icon'
+import { Icon } from '../Icon'
 import { clsx } from 'clsx'
 
-interface SliderProps {
+interface Props {
   title?: string
   slidesPerView?: number
   isCardsWithCover?: boolean
   children?: JSX.Element
-  class?: string
   isPageGallery?: boolean
   hasThumbs?: boolean
+  variant?: 'uploadPreview'
+  slideIndex?: (value: number) => void
 }
 
-export default (props: SliderProps) => {
+export const Slider = (props: Props) => {
   let el: HTMLDivElement | undefined
   let thumbsEl: HTMLDivElement | undefined
   let pagEl: HTMLDivElement | undefined
@@ -31,15 +33,20 @@ export default (props: SliderProps) => {
 
   const [swiper, setSwiper] = createSignal<Swiper>()
   const [swiperThumbs, setSwiperThumbs] = createSignal<Swiper>()
-
   const opts: SwiperOptions = {
-    lazy: true,
     roundLengths: true,
     loop: true,
     centeredSlides: true,
     slidesPerView: 1,
-    modules: [Navigation, Pagination, Lazy, Thumbs],
+    modules: [Navigation, Pagination, Thumbs],
     speed: 500,
+    on: {
+      slideChange: () => {
+        if (swiper()) {
+          props.slideIndex(swiper().realIndex || 0)
+        }
+      }
+    },
     navigation: { nextEl, prevEl },
     breakpoints: {
       768: {
@@ -62,8 +69,7 @@ export default (props: SliderProps) => {
         setSwiperThumbs(
           new Swiper(thumbsEl, {
             slidesPerView: 'auto',
-            modules: [Lazy, Thumbs],
-            lazy: true,
+            modules: [Thumbs],
             roundLengths: true,
             spaceBetween: 20,
             freeMode: true,
@@ -98,14 +104,16 @@ export default (props: SliderProps) => {
   })
 
   return (
-    <div class="floor floor--important">
+    <div class={clsx('floor', 'floor--important', props.variant)}>
       <div class="wide-container">
         <div class="row">
-          <h2 class="col-24">{props.title}</h2>
+          <Show when={props.title}>
+            <h2 class="col-24">{props.title}</h2>
+          </Show>
 
           <div class="sliders-container">
             <div
-              class={clsx('swiper', props.class)}
+              class={clsx('swiper')}
               classList={{
                 'cards-with-cover': isCardsWithCover,
                 'swiper--page-gallery': props.isPageGallery
@@ -113,13 +121,15 @@ export default (props: SliderProps) => {
               ref={el}
             >
               <div class="swiper-wrapper">{props.children}</div>
-              <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
-                <Icon name="slider-arrow" class={'icon'} />
-              </div>
-              <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
-                <Icon name="slider-arrow" class={'icon'} />
-              </div>
-              <div class="swiper-pagination" ref={pagEl} />
+              <Show when={!(props.variant === 'uploadPreview')}>
+                <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
+                  <Icon name="slider-arrow" class={'icon'} />
+                </div>
+                <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
+                  <Icon name="slider-arrow" class={'icon'} />
+                </div>
+              </Show>
+              {/*<div class="swiper-pagination" ref={pagEl} />*/}
             </div>
 
             <Show when={props.hasThumbs}>
@@ -132,6 +142,14 @@ export default (props: SliderProps) => {
           </div>
         </div>
       </div>
+      <Show when={props.variant === 'uploadPreview'}>
+        <div class="slider-arrow-next" ref={nextEl} onClick={() => swiper()?.slideNext()}>
+          <Icon name="slider-arrow" class={'icon'} />
+        </div>
+        <div class="slider-arrow-prev" ref={prevEl} onClick={() => swiper()?.slidePrev()}>
+          <Icon name="slider-arrow" class={'icon'} />
+        </div>
+      </Show>
     </div>
   )
 }

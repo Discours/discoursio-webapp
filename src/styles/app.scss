@@ -10,10 +10,14 @@
 :root {
   --background-color: #fff;
   --default-color: #121416;
+  --background-color-invert: #000;
+  --default-color-invert: #fff;
   --link-color: #000;
   --link-hover-color: #fff;
   --link-hover-background: #000;
   --secondary-color: #85878a;
+  --placeholder-color: #9fa1a7;
+  --placeholder-color-semi: rgba(159, 169, 167, 0.2);
   --danger-color: #fc6847;
   --lightgray-color: rgb(84 16 17 / 6%);
   --font: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu, cantarell, 'Open Sans',
@@ -28,6 +32,8 @@
 [data-editor-dark-mode='true'] {
   --background-color: #121416;
   --default-color: #fff;
+  --background-color-invert: #fff;
+  --default-color-invert: #121416;
   --link-color: #fff;
   --link-hover-color: #000;
   --link-hover-background: #fff;

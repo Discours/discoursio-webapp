@@ -35,33 +35,6 @@ interface MediaItem {
   body?: string
 }
 
-const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
-  const { t } = useLocalize()
-
-  return (
-    <>
-      <Switch fallback={<a href={props.media.url}>{t('Cannot show this media type')}</a>}>
-        <Match when={props.kind === 'video'}>
-          <VideoPlayer
-            videoUrl={props.media.url}
-            title={props.media.title}
-            description={props.media.body}
-          />
-        </Match>
-        <Match when={props.kind === 'audio'}>
-          <div>
-            <h5>{props.media.title}</h5>
-            <audio controls>
-              <source src={props.media.url} />
-            </audio>
-            <hr />
-          </div>
-        </Match>
-      </Switch>
-    </>
-  )
-}
-
 export const FullArticle = (props: ArticleProps) => {
   const { t } = useLocalize()
   const {
@@ -179,12 +152,12 @@ export const FullArticle = (props: ArticleProps) => {
               </Show>
             </div>
 
-            <Show when={media() && props.article.layout !== 'image'}>
+            <Show when={media() && props.article.layout === 'video'}>
               <div class="media-items">
                 <For each={media() || []}>
                   {(m: MediaItem) => (
                     <div class={styles.shoutMediaBody}>
-                      <MediaView media={m} kind={props.article.layout} />
+                      <VideoPlayer videoUrl={m.url} title={m.title} description={m.body} />
                       <Show when={m?.body}>
                         <MD body={m.body} />
                       </Show>

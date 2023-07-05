@@ -1,5 +1,3 @@
-import { createEffect, createMemo, createSignal, For, Match, onMount, Show, Switch } from 'solid-js'
-
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
@@ -13,7 +11,6 @@ import { clsx } from 'clsx'
 import { CommentsTree } from './CommentsTree'
 import { useSession } from '../../context/session'
 import { VideoPlayer } from '../_shared/VideoPlayer'
-import Slider from '../_shared/Slider'
 import { getPagePath } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
 import { useReactions } from '../../context/reactions'
@@ -23,6 +20,9 @@ import stylesHeader from '../Nav/Header.module.scss'
 import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
+import article from '../Editor/extensions/Article'
+import { SolidSwiper } from '../_shared/SolidSwiper'
+import { createEffect, For, createMemo, Match, onMount, Show, Switch, createSignal } from 'solid-js'
 
 interface ArticleProps {
   article: Shout
@@ -33,33 +33,6 @@ interface MediaItem {
   url?: string
   title?: string
   body?: string
-}
-
-const MediaView = (props: { media: MediaItem; kind: Shout['layout'] }) => {
-  const { t } = useLocalize()
-
-  return (
-    <>
-      <Switch fallback={<a href={props.media.url}>{t('Cannot show this media type')}</a>}>
-        <Match when={props.kind === 'video'}>
-          <VideoPlayer
-            videoUrl={props.media.url}
-            title={props.media.title}
-            description={props.media.body}
-          />
-        </Match>
-        <Match when={props.kind === 'audio'}>
-          <div>
-            <h5>{props.media.title}</h5>
-            <audio controls>
-              <source src={props.media.url} />
-            </audio>
-            <hr />
-          </div>
-        </Match>
-      </Switch>
-    </>
-  )
 }
 
 export const FullArticle = (props: ArticleProps) => {
@@ -95,8 +68,10 @@ export const FullArticle = (props: ArticleProps) => {
     }, 'bookmark')
   }
 
-  const media = createMemo(() => JSON.parse(props.article.media || '[]'))
-  const body = createMemo(() => props.article.body || '')
+  const body = createMemo(() => props.article.body)
+  const media = createMemo(() => {
+    return JSON.parse(props.article.media || '[]')
+  })
 
   const commentsRef: { current: HTMLDivElement } = { current: null }
   const scrollToComments = () => {
@@ -141,7 +116,8 @@ export const FullArticle = (props: ArticleProps) => {
       <div class="wide-container">
         <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
-            <div class={styles.shoutTopic}>
+            {/*TODO: Check styles.shoutTopic*/}
+            <div class={styles.shoutHeader}>
               <Show when={mainTopic()}>
                 <div class={styles.shoutTopic}>
                   <a
@@ -153,68 +129,60 @@ export const FullArticle = (props: ArticleProps) => {
                 </div>
               </Show>
 
-              <div class={styles.shoutHeader}>
-                <div>
-                  <h1>{props.article.title}</h1>
-                  <div>
-                    <div class={styles.shoutAuthor}>
-                      <For each={props.article.authors}>
-                        {(a: Author, index) => (
-                          <>
-                            <Show when={index() > 0}>, </Show>
-                            <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
-                          </>
-                        )}
-                      </For>
-                    </div>
+              <h1>{props.article.title}</h1>
+              <Show when={props.article.subtitle}>
+                <h4>{capitalize(props.article.subtitle, false)}</h4>
+              </Show>
 
-                    {/* @@TODO add album's year and genre
-                  <div>year</div>
-                  <div>genre</div> */}
-                  </div>
-                </div>
-
-                {/* @@TODO implement image zoom */}
-                <Show when={props.article.cover && props.article.layout !== 'video'}>
-                  <div class={styles.shoutCover}>
-                    <img src={imageProxy(props.article.cover)} alt="Article cover" />
-                  </div>
-                </Show>
+              <div class={styles.shoutAuthor}>
+                <For each={props.article.authors}>
+                  {(a: Author, index) => (
+                    <>
+                      <Show when={index() > 0}>, </Show>
+                      <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
+                    </>
+                  )}
+                </For>
               </div>
-
-              <Show when={body()}>
-                <div class={styles.shoutBody}>
-                  <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
-                    <MD body={body()} />
-                  </Show>
-                </div>
+              <Show when={props.article.cover && props.article.layout !== 'video'}>
+                <div
+                  class={styles.shoutCover}
+                  style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}
+                />
               </Show>
             </div>
+
+            <Show when={media() && props.article.layout === 'video'}>
+              <div class="media-items">
+                <For each={media() || []}>
+                  {(m: MediaItem) => (
+                    <div class={styles.shoutMediaBody}>
+                      <VideoPlayer videoUrl={m.url} title={m.title} description={m.body} />
+                      <Show when={m?.body}>
+                        <MD body={m.body} />
+                      </Show>
+                    </div>
+                  )}
+                </For>
+              </div>
+            </Show>
 
             <Show when={media().length > 0 && props.article.layout !== 'image'}>
               <div class="media-items">
                 <AudioPlayer media={media()} articleSlug={props.article.slug} body={body()} />
               </div>
             </Show>
+
+            <Show when={body()}>
+              <div class={styles.shoutBody}>
+                <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
+                  <MD body={body()} />
+                </Show>
+              </div>
+            </Show>
           </article>
         </div>
       </div>
-
-      <Show when={media() && props.article.layout === 'image'}>
-        <Slider slidesPerView={1} isPageGallery={true} isCardsWithCover={true} hasThumbs={true}>
-          <For each={media() || []}>
-            {(m) => (
-              <div class="swiper-slide">
-                <div class="swiper-slide__inner">
-                  <img src={m.url || m.pic} alt={m.title} loading="lazy" />
-                  <div class="swiper-lazy-preloader swiper-lazy-preloader-white" />
-                  <div class="image-description" innerHTML={m.title} />
-                </div>
-              </div>
-            )}
-          </For>
-        </Slider>
-      </Show>
 
       <div class="wide-container">
         <div class="row">

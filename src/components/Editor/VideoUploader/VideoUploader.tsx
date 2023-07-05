@@ -6,32 +6,27 @@ import { createEffect, createSignal, Show } from 'solid-js'
 import { useSnackbar } from '../../../context/snackbar'
 import { validateUrl } from '../../../utils/validateUrl'
 import { VideoPlayer } from '../../_shared/VideoPlayer'
+import type { MediaItem } from '../../../pages/types'
 // import { handleFileUpload } from '../../../utils/handleFileUpload'
-
-type VideoItem = {
-  url: string
-  title: string
-  body: string
-}
 
 type Props = {
   class?: string
-  data: (value: VideoItem) => void
+  data: (value: MediaItem[]) => void
 }
 
 export const VideoUploader = (props: Props) => {
   const { t } = useLocalize()
   const [dragActive, setDragActive] = createSignal(false)
-  const [dragError, setDragError] = createSignal<string | undefined>()
+  const [dragError, setDragError] = createSignal<string>()
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
-  const [data, setData] = createSignal<VideoItem>()
+  const [data, setData] = createSignal<MediaItem>()
 
   const updateData = (key, value) => {
     setData((prev) => ({ ...prev, [key]: value }))
   }
 
   createEffect(() => {
-    props.data(data())
+    props.data([data()])
   })
 
   const {

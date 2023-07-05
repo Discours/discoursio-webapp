@@ -80,7 +80,7 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
     setTracks(
       tracks().map((track) => ({
         ...track,
-        isCurrent: track.id === m.id ? true : false,
+        isCurrent: track.id === m.id,
         isPlaying: track.id === m.id ? !track.isPlaying : false
       }))
     )

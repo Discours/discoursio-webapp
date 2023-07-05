@@ -211,3 +211,43 @@
   padding: 1rem;
   width: auto;
 }
+
+.uploadPreview {
+  background: unset;
+  position: relative;
+  padding: 0 40px;
+
+  .sliders-container {
+    position: relative;
+  }
+
+  .swiper {
+    background: unset;
+
+    .swiper-wrapper {
+      min-height: 400px;
+    }
+  }
+
+  .slider-arrow-next,
+  .slider-arrow-prev {
+    background: none;
+    filter: invert(1);
+    width: 40px;
+    max-height: 540px;
+
+    .icon {
+      margin: auto;
+      width: 12px;
+      height: 20px;
+    }
+  }
+
+  //
+  //.slider-arrow-prev {
+  //  margin-left: -40px;
+  //}
+  //.slider-arrow-next {
+  //  margin-right: -40px;
+  //}
+}

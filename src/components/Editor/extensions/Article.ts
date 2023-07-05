@@ -48,6 +48,7 @@ export default Node.create({
     return {
       toggleArticle:
         () =>
+        // eslint-disable-next-line unicorn/consistent-function-scoping
         ({ commands }) => {
           return commands.toggleWrap('article')
         },

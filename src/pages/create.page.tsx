@@ -7,8 +7,9 @@ import styles from '../styles/Create.module.scss'
 import { apiClient } from '../utils/apiClient'
 import { redirectPage } from '@nanostores/router'
 import { router } from '../stores/router'
+import { LayoutType } from './types'
 
-const handleCreate = async (layout: 'article' | 'video') => {
+const handleCreate = async (layout: LayoutType) => {
   const shout = await apiClient.createArticle({ article: { layout: layout } })
   redirectPage(router, 'edit', {
     shoutId: shout.id.toString()
@@ -35,10 +36,10 @@ export const CreatePage = () => {
             </a>
           </li>
           <li>
-            <a href="#">
+            <div class={styles.link} onClick={() => handleCreate('image')}>
               <Icon name="create-images" class={styles.icon} />
               <div>{t('images')}</div>
-            </a>
+            </div>
           </li>
           <li>
             <a href="#">

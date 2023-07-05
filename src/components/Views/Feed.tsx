@@ -94,7 +94,7 @@ export const FeedView = () => {
     <div>
       <div class="wide-container feed">
         <div class="row">
-          <div class={clsx('col-md-5 col-xl-4')}>
+          <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
             <Sidebar authors={sortedAuthors()} />
           </div>
 
@@ -159,7 +159,7 @@ export const FeedView = () => {
             </Show>
           </div>
 
-          <aside class={clsx('col-md-7', 'col-xl-6', 'offset-xl-1')}>
+          <aside class={clsx('col-md-7 col-xl-6 offset-xl-1', styles.feedAside)}>
             <section class={styles.asideSection}>
               <h4>{t('Comments')}</h4>
               <For each={topComments()}>

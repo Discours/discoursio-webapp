@@ -2,6 +2,51 @@
   margin: 0.2em 0 1.6rem;
 }
 
+.feedNavigation {
+  @include font-size(1.6rem);
+  font-weight: 500;
+
+  h4 {
+    margin-bottom: 0.8em;
+  }
+
+  ul,
+  li {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul {
+    margin: 0 0 3rem;
+  }
+
+  li {
+    margin: 0 0 1rem;
+    white-space: nowrap;
+    width: 100%;
+
+    a,
+    strong {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  a {
+    border: none;
+  }
+}
+
+.feedAside {
+  margin-top: -1.1em;
+
+  h4 {
+    @include font-size(2.2rem);
+    font-weight: bold;
+    margin-bottom: 2rem;
+  }
+}
+
 .asideSection {
   border: 1px solid #e9e9ee;
   margin-bottom: 0.8em;

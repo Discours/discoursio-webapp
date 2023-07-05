@@ -67,9 +67,9 @@ export const Sidebar = (props: FeedSidebarProps) => {
         <li>
           <a
             href={getPagePath(router, 'feedCollaborations')}
-            class={{
+            class={clsx({
               [styles.selected]: page().route === 'feedCollaborations'
-            }}
+            })}
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-collaborate" class={styles.icon} />

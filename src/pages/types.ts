@@ -34,7 +34,7 @@ export type UploadFile = {
 
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
-export type FileTypeToUpload = 'image' | 'video' | 'doc'
+export type FileTypeToUpload = 'image' | 'video' | 'doc' | 'audio'
 
 export type MediaItem = {
   url: string

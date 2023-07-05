@@ -17,6 +17,7 @@ import { Loading } from '../Loading'
 import { imageProxy } from '../../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
+import { mediaItemsFromStringArray } from '../../../utils/mediaItemsFromStringArray'
 
 type Props = {
   images: MediaItem[]
@@ -25,17 +26,6 @@ type Props = {
   onImagesSorted?: (value: MediaItem[]) => void
   onImageDelete?: (mediaItemIndex: number) => void
   onImageChange?: (index: number, value: MediaItem) => void
-}
-
-const composeMediaItem = (value) => {
-  return value.map((url) => {
-    return {
-      url: url,
-      source: '',
-      title: '',
-      body: ''
-    }
-  })
 }
 
 register()
@@ -79,7 +69,7 @@ export const SolidSwiper = (props: Props) => {
   )
 
   const handleDropAreaUpload = (value: string[]) => {
-    props.onImagesAdd(composeMediaItem(value))
+    props.onImagesAdd(mediaItemsFromStringArray(value))
     swipeToUploaded()
   }
 
@@ -108,7 +98,7 @@ export const SolidSwiper = (props: Props) => {
           const result = await handleFileUpload(file)
           results.push(result)
         }
-        props.onImagesAdd(composeMediaItem(results))
+        props.onImagesAdd(mediaItemsFromStringArray(results))
         setLoading(false)
         swipeToUploaded()
       } catch (error) {

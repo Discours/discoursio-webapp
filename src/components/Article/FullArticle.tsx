@@ -23,16 +23,11 @@ import { Popover } from '../_shared/Popover'
 import article from '../Editor/extensions/Article'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { createEffect, For, createMemo, Match, onMount, Show, Switch, createSignal } from 'solid-js'
+import { MediaItem } from '../../pages/types'
 
 interface ArticleProps {
   article: Shout
   scrollToComments?: boolean
-}
-
-interface MediaItem {
-  url?: string
-  title?: string
-  body?: string
 }
 
 export const FullArticle = (props: ArticleProps) => {
@@ -109,6 +104,8 @@ export const FullArticle = (props: ArticleProps) => {
   const {
     actions: { loadReactionsBy }
   } = useReactions()
+
+  console.table('!!! props:', JSON.parse(props.article.media))
 
   return (
     <>

@@ -10,10 +10,11 @@ import { handleFileUpload } from '../../../utils/handleFileUpload'
 type Props = {
   class?: string
   placeholder: string
-  description?: string | JSX.Element
-  fileType: FileTypeToUpload
   isMultiply: boolean
+  fileType: FileTypeToUpload
   onUpload: (value: string[]) => void
+  description?: string | JSX.Element
+  isSquare?: boolean
 }
 
 export const DropArea = (props: Props) => {
@@ -81,7 +82,7 @@ export const DropArea = (props: Props) => {
   }
 
   return (
-    <div class={clsx(styles.DropArea, props.class)}>
+    <div class={clsx(styles.DropArea, props.class, props.isSquare && styles['square'])}>
       <div
         class={clsx(styles.field, { [styles.active]: dragActive() })}
         onDragEnter={handleDrag}
@@ -91,11 +92,14 @@ export const DropArea = (props: Props) => {
         onClick={handleDropFieldClick}
       >
         <div class={styles.text}>{loading() ? 'Loading...' : props.placeholder}</div>
+        <Show when={!loading() && props.isSquare && props.description}>
+          <div class={styles.description}>{props.description}</div>
+        </Show>
       </div>
       <Show when={dropAreaError()}>
         <div class={styles.error}>{dropAreaError()}</div>
       </Show>
-      <Show when={!dropAreaError() && props.description}>
+      <Show when={!dropAreaError() && props.description && !props.isSquare}>
         <div class={styles.description}>{props.description}</div>
       </Show>
     </div>

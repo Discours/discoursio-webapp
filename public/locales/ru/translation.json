@@ -362,5 +362,15 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал"
+  "zine": "журнал",
+  "Add cover": "Добавить обложку",
+  "min. 1400×1400 pix": "мин. 1400×1400 пикс.",
+  "jpg, .png, max. 10 mb.": "jpg, .png, макс. 10 мб.",
+  "Album name": "Название альбома",
+  "Gallery name": "Название галереи",
+  "Artist...": "Исполнитель...",
+  "Release date...": "Дата выхода...",
+  "Genre...": "Жанр...",
+  "Add audio": "Добавить аудио",
+  "You can download multiple tracks at once in .mp3, .wav or .flac formats": "Можно загрузить сразу несколько треков в форматах .mp3, .wav или .flac"
 }

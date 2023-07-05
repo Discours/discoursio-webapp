@@ -16,9 +16,12 @@ import { hideModal, showModal } from '../../stores/ui'
 import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
+import { AudioUploader } from '../Editor/AudioUploader'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
+import { DropArea } from '../_shared/DropArea'
+import DatePicker, { PickerValue } from '@rnwonder/solid-date-picker'
 
 type Props = {
   shout: Shout
@@ -43,6 +46,12 @@ export const EditView = (props: Props) => {
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
+  const [date, setDate] = createSignal<PickerValue>({
+    value: {
+      selected: new Date().toLocaleDateString()
+    },
+    label: ''
+  })
 
   const { page } = useRouter()
   const {
@@ -144,6 +153,20 @@ export const EditView = (props: Props) => {
     setForm('media', JSON.stringify(updated))
   }
 
+  const articleTitle = () => {
+    switch (props.shout.layout) {
+      case 'audio': {
+        return 'Album name'
+      }
+      case 'image': {
+        return 'Gallery name'
+      }
+      default: {
+        return t('Header')
+      }
+    }
+  }
+
   return (
     <>
       <div class={styles.container}>
@@ -167,25 +190,82 @@ export const EditView = (props: Props) => {
                     [styles.visible]: page().route === 'edit'
                   })}
                 >
-                  <div class={styles.inputContainer}>
-                    <GrowingTextarea
-                      value={(value) => handleTitleInputChange(value)}
-                      class={styles.titleInput}
-                      placeholder={t('Header')}
-                      initialValue={form.title}
-                      maxLength={100}
-                    />
-                    <Show when={formErrors.title}>
-                      <div class={styles.validationError}>{formErrors.title}</div>
+                  <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'audio' })}>
+                    <div class={styles.inputContainer}>
+                      <GrowingTextarea
+                        value={(value) => handleTitleInputChange(value)}
+                        class={styles.titleInput}
+                        placeholder={articleTitle()}
+                        initialValue={form.title}
+                        maxLength={100}
+                      />
+
+                      <Show when={formErrors.title}>
+                        <div class={styles.validationError}>{formErrors.title}</div>
+                      </Show>
+
+                      <Show when={props.shout.layout === 'audio'}>
+                        <div class={styles.additional}>
+                          <input type="text" placeholder={t('Artist...')} class={styles.additionalInput} />
+                          <DatePicker
+                            value={date}
+                            setValue={setDate}
+                            inputClass={styles.additionalInput}
+                            locale="ru"
+                            type="single"
+                            renderInput={({ showDate, value }) => (
+                              <div class={styles.datepicker}>
+                                <input
+                                  value={value().label}
+                                  class={styles.additionalInput}
+                                  readOnly
+                                  placeholder={t('Release date...')}
+                                />
+                                <button type="button" onClick={showDate}>
+                                  <Icon name="datepicker" />
+                                </button>
+                              </div>
+                            )}
+                          />
+                          <input type="text" placeholder={t('Genre...')} class={styles.additionalInput} />
+                        </div>
+                      </Show>
+
+                      <Show when={props.shout.layout !== 'audio'}>
+                        <GrowingTextarea
+                          value={(value) => setForm('subtitle', value)}
+                          class={styles.subtitleInput}
+                          placeholder={t('Subheader')}
+                          initialValue={form.subtitle}
+                          maxLength={100}
+                        />
+                      </Show>
+                    </div>
+                    <Show
+                      when={form.coverImageUrl}
+                      fallback={
+                        <DropArea
+                          isSquare={true}
+                          placeholder={t('Add cover')}
+                          description={
+                            <>
+                              {t('min. 1400×1400 pix')}
+                              <br />
+                              {t('jpg, .png, max. 10 mb.')}
+                            </>
+                          }
+                          isMultiply={false}
+                          fileType={'image'}
+                          onUpload={(val) => setForm('coverImageUrl', val[0])}
+                        />
+                      }
+                    >
+                      <div
+                        class={styles.cover}
+                        style={{ 'background-image': `url(${imageProxy(form.coverImageUrl)})` }}
+                      />
                     </Show>
                   </div>
-                  <GrowingTextarea
-                    value={(value) => setForm('subtitle', value)}
-                    class={styles.subtitleInput}
-                    placeholder={t('Subheader')}
-                    initialValue={form.subtitle}
-                    maxLength={100}
-                  />
 
                   <Show when={props.shout.layout === 'image'}>
                     <SolidSwiper
@@ -222,6 +302,10 @@ export const EditView = (props: Props) => {
                         )}
                       </For>
                     </Show>
+                  </Show>
+
+                  <Show when={props.shout.layout === 'audio'}>
+                    <AudioUploader />
                   </Show>
 
                   <Editor

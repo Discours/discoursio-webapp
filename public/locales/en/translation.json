@@ -339,5 +339,12 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "Add cover": "Add cover",
+  "min. 1400×1400 pix": "мин. 1400×1400 пикс.",
+  "jpg, .png, max. 10 mb.": "jpg, .png, макс. 10 мб.",
+  "Album name": "Название aльбома",
+  "Gallery name": "Gallery name",
+  "Add audio": "Add audio",
+  "You can download multiple tracks at once in .mp3, .wav or .flac formats": "You can download multiple tracks at once in .mp3, .wav or .flac formats"
 }

@@ -73,34 +73,36 @@ mark.highlight {
 
 // custom atibutes fro TipTap Nodes
 
-[data-float] {
-  max-width: 50%;
-}
+@include media-breakpoint-up(sm) {
+  [data-float] {
+    max-width: 50%;
+  }
 
-[data-float='left'] {
-  max-width: 30%;
-  float: left;
-  margin: 1rem 1rem 0 0;
-}
+  [data-float='left'] {
+    float: left;
+    max-width: 35%;
+    margin: 1rem 2.2em 0 0;
+  }
 
-[data-float='right'] {
-  max-width: 30%;
-  float: right;
-  margin: 1rem 0 1rem 1rem;
-}
+  [data-float='right'] {
+    float: right;
+    margin: 1rem 0 1rem 2.2em;
+    max-width: 35%;
+  }
 
-[data-float='half-left'] {
-  max-width: 50%;
-  min-width: 30%;
-  float: left;
-  margin: 1rem 1rem 0;
-}
+  [data-float='half-left'] {
+    max-width: 50%;
+    min-width: 30%;
+    float: left;
+    margin: 1rem 1rem 0;
+  }
 
-[data-float='half-right'] {
-  max-width: 50%;
-  min-width: 30%;
-  float: right;
-  margin: 1rem 0;
+  [data-float='half-right'] {
+    max-width: 50%;
+    min-width: 30%;
+    float: right;
+    margin: 1rem 0;
+  }
 }
 
 .ProseMirror blockquote {
@@ -110,11 +112,10 @@ mark.highlight {
 
   &[data-type='quote'] {
     @include font-size(1.6rem);
-
     border: solid #000;
     border-width: 0 0 0 2px;
     margin: 1.6rem 0;
-    padding: 1rem;
+    padding: 0 0 0 1.5em;
 
     &[data-float='left'] {
       padding-left: 0;
@@ -130,31 +131,96 @@ mark.highlight {
   }
 
   &[data-type='punchline'] {
-    padding: 1.6rem 0 0;
     border: solid #000;
     border-width: 2px 0;
-    font-size: 3.2rem;
+    @include font-size(3.2rem);
     font-weight: 700;
-    margin: 0;
+    line-height: 1.2;
+    margin: 1em 0;
+    padding: 2.4rem 0;
 
     &[data-float='left'],
     &[data-float='right'] {
-      font-size: 2.2rem;
+      @include font-size(2.2rem);
+      line-height: 1.4;
+    }
+
+    @include media-breakpoint-up(sm) {
+      &[data-float='left'] {
+        margin-right: 1.5em;
+      }
+
+      &[data-float='right'] {
+        margin-left: 1.5em;
+      }
     }
   }
 }
 
 .ProseMirror article[data-type='incut'] {
   background: #f1f2f3;
-  padding: 1.6rem;
-  font-size: 1.4rem;
+  @include font-size(1.6rem);
+  margin: 1em -1rem;
+  padding: 2em 2rem;
   transition: background 0.3s ease-in-out;
+
+  @include media-breakpoint-up(sm) {
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    margin-right: -6%;
+    padding-left: 3em;
+    padding-right: 3em;
+  }
+
+  @include media-breakpoint-up(lg) {
+    margin-left: -3em;
+    margin-right: -3em;
+  }
 
   &[data-float] img {
     float: none;
     max-width: unset;
     width: 100% !important;
     margin: 0;
+  }
+
+  &[data-float='left'],
+  &[data-float='half-left'] {
+    margin-left: -1rem;
+
+    @include media-breakpoint-up(sm) {
+      margin-left: -2rem;
+      margin-right: 2rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      margin-left: -6%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      margin-left: -12.5%;
+    }
+  }
+
+  &[data-float='right'],
+  &[data-float='half-right'] {
+    margin-right: -1rem;
+
+    @include media-breakpoint-up(sm) {
+      margin-left: 2rem;
+      margin-right: -2rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      margin-right: -6%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      margin-right: -12.5%;
+    }
   }
 
   *:last-child {
@@ -175,8 +241,7 @@ mark.highlight {
   }
 
   &[data-bg='green'] {
-    background: #bfe9cb;
-    box-shadow: 0 0 0 1px #000;
+    background: #eafff2;
   }
 
   &[data-bg='white'] {

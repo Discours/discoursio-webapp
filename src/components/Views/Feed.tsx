@@ -1,9 +1,9 @@
-import { createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
 import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { AuthorCard } from '../Author/AuthorCard'
 import { Sidebar } from '../Feed/Sidebar'
-import { loadShouts, loadMyFeed, useArticlesStore } from '../../stores/zine/articles'
+import { loadShouts, loadMyFeed, useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
@@ -18,6 +18,7 @@ import styles from './Feed.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { CommentDate } from '../Article/CommentDate'
+import { Loading } from '../_shared/Loading'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -28,19 +29,29 @@ type FeedSearchParams = {
 export const FeedView = () => {
   const { t } = useLocalize()
   const { page } = useRouter<FeedSearchParams>()
+  const [isLoading, setIsLoading] = createSignal<boolean>(false)
 
   // state
   const { sortedArticles } = useArticlesStore()
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
-  const { session, user } = useSession()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
 
   const {
     actions: { loadReactionsBy }
   } = useReactions()
+
+  createEffect(
+    on(
+      () => page().route,
+      () => {
+        resetSortedArticles()
+        loadMore()
+      }
+    )
+  )
 
   const loadFeedShouts = () => {
     if (page().route === 'feedMy') {
@@ -59,7 +70,9 @@ export const FeedView = () => {
   }
 
   const loadMore = async () => {
+    setIsLoading(true)
     const { hasMore, newShouts } = await loadFeedShouts()
+    setIsLoading(false)
 
     loadReactionsBy({
       by: {
@@ -71,7 +84,6 @@ export const FeedView = () => {
   }
 
   onMount(async () => {
-    // load recent shouts not only published ( visibility = community )
     await loadMore()
     // load 5 recent comments overall
     const comments = await loadReactionsBy({ by: { comment: true }, limit: 5 })
@@ -88,14 +100,12 @@ export const FeedView = () => {
 
           <div class="col-md-12 offset-xl-1">
             <ul class={clsx(styles.feedFilter, 'view-switcher')}>
-              <Show when={!!session()?.user?.slug}>
-                <li class="view-switcher__item--selected">
-                  <a href="/feed/my">{t('My feed')}</a>
-                </li>
-              </Show>
-              <li>
-                <a href="/feed/?by=views">{t('Most read')}</a>
+              <li class="view-switcher__item--selected">
+                <a href="?by=">{t('My feed')}</a>
               </li>
+              {/*<li>*/}
+              {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
+              {/*</li>*/}
               <li>
                 <a href="/feed/?by=rating">{t('Top rated')}</a>
               </li>
@@ -104,46 +114,48 @@ export const FeedView = () => {
               </li>
             </ul>
 
-            <Show when={sortedArticles().length > 0}>
-              <For each={sortedArticles().slice(0, 4)}>
-                {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
-              </For>
-
-              <div class={stylesBeside.besideColumnTitle}>
-                <h4>{t('Popular authors')}</h4>
-                <a href="/authors">
-                  {t('All authors')}
-                  <Icon name="arrow-right" class={stylesBeside.icon} />
-                </a>
-              </div>
-
-              <ul class={stylesBeside.besideColumn}>
-                <For each={topAuthors().slice(0, 5)}>
-                  {(author) => (
-                    <li>
-                      <AuthorCard
-                        author={author}
-                        hideWriteButton={true}
-                        hasLink={true}
-                        truncateBio={true}
-                        isTextButton={true}
-                      />
-                    </li>
-                  )}
+            <Show when={!isLoading()} fallback={<Loading />}>
+              <Show when={sortedArticles().length > 0}>
+                <For each={sortedArticles().slice(0, 4)}>
+                  {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
                 </For>
-              </ul>
 
-              <For each={sortedArticles().slice(4)}>
-                {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
-              </For>
-            </Show>
+                <div class={stylesBeside.besideColumnTitle}>
+                  <h4>{t('Popular authors')}</h4>
+                  <a href="/authors">
+                    {t('All authors')}
+                    <Icon name="arrow-right" class={stylesBeside.icon} />
+                  </a>
+                </div>
 
-            <Show when={isLoadMoreButtonVisible()}>
-              <p class="load-more-container">
-                <button class="button" onClick={loadMore}>
-                  {t('Load more')}
-                </button>
-              </p>
+                <ul class={stylesBeside.besideColumn}>
+                  <For each={topAuthors().slice(0, 5)}>
+                    {(author) => (
+                      <li>
+                        <AuthorCard
+                          author={author}
+                          hideWriteButton={true}
+                          hasLink={true}
+                          truncateBio={true}
+                          isTextButton={true}
+                        />
+                      </li>
+                    )}
+                  </For>
+                </ul>
+
+                <For each={sortedArticles().slice(4)}>
+                  {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
+                </For>
+              </Show>
+
+              <Show when={isLoadMoreButtonVisible()}>
+                <p class="load-more-container">
+                  <button class="button" onClick={loadMore}>
+                    {t('Load more')}
+                  </button>
+                </p>
+              </Show>
             </Show>
           </div>
 

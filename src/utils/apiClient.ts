@@ -332,7 +332,7 @@ export const apiClient = {
   },
 
   getMyFeed: async (options: LoadShoutsOptions) => {
-    const resp = await publicGraphQLClient.query(myFeed, { options }).toPromise()
+    const resp = await privateGraphQLClient.query(myFeed, { options }).toPromise()
 
     if (resp.error) {
       console.error(resp)

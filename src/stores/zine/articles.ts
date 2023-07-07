@@ -154,6 +154,26 @@ export const loadShouts = async (
   return { hasMore, newShouts }
 }
 
+export const loadMyFeed = async (
+  options: LoadShoutsOptions
+): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
+  const newShouts = await apiClient.getMyFeed({
+    ...options,
+    limit: options.limit + 1
+  })
+
+  const hasMore = newShouts.length === options.limit + 1
+
+  if (hasMore) {
+    newShouts.splice(-1)
+  }
+
+  addArticles(newShouts)
+  addSortedArticles(newShouts)
+
+  return { hasMore, newShouts }
+}
+
 export const resetSortedArticles = () => {
   setSortedArticles([])
 }

@@ -48,6 +48,7 @@ import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
 import draftsLoad from '../graphql/query/drafts-load'
 import shoutLoad from '../graphql/query/article-load'
+import myFeed from '../graphql/query/my-feed'
 import loadRecipients from '../graphql/query/chat-recipients'
 import createMessage from '../graphql/mutation/create-chat-message'
 import updateProfile from '../graphql/mutation/update-profile'
@@ -328,6 +329,16 @@ export const apiClient = {
     }
 
     return resp.data.loadShouts
+  },
+
+  getMyFeed: async (options: LoadShoutsOptions) => {
+    const resp = await privateGraphQLClient.query(myFeed, { options }).toPromise()
+
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.myFeed
   },
 
   getReactionsBy: async ({ by, limit }: { by: ReactionBy; limit?: number }) => {

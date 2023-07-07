@@ -40,7 +40,7 @@ const getOrderBy = (by: FeedSearchParams['by']) => {
 export const FeedView = () => {
   const { t } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
-  const [isLoading, setIsLoading] = createSignal<boolean>(false)
+  const [isLoading, setIsLoading] = createSignal(false)
 
   // state
   const { sortedArticles } = useArticlesStore()

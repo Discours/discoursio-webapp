@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { AuthorCard } from '../Author/AuthorCard'
@@ -7,10 +7,9 @@ import { loadShouts, loadMyFeed, useArticlesStore, resetSortedArticles } from '.
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { useSession } from '../../context/session'
 import { clsx } from 'clsx'
 import { useReactions } from '../../context/reactions'
-import type { Author, Reaction } from '../../graphql/types.gen'
+import type { Author, LoadShoutsOptions, Reaction } from '../../graphql/types.gen'
 import { getPagePath } from '@nanostores/router'
 import { router, useRouter } from '../../stores/router'
 import { useLocalize } from '../../context/localize'
@@ -23,12 +22,24 @@ import { Loading } from '../_shared/Loading'
 export const FEED_PAGE_SIZE = 20
 
 type FeedSearchParams = {
-  by: 'views' | 'rating' | 'comments'
+  by: 'publish_date' | 'rating' | 'last_comment'
+}
+
+const getOrderBy = (by: FeedSearchParams['by']) => {
+  if (by === 'rating') {
+    return 'rating_stat'
+  }
+
+  if (by === 'last_comment') {
+    return 'last_comment'
+  }
+
+  return ''
 }
 
 export const FeedView = () => {
   const { t } = useLocalize()
-  const { page } = useRouter<FeedSearchParams>()
+  const { page, searchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal<boolean>(false)
 
   // state
@@ -45,7 +56,7 @@ export const FeedView = () => {
 
   createEffect(
     on(
-      () => page().route,
+      () => page().route + searchParams().by,
       () => {
         resetSortedArticles()
         loadMore()
@@ -54,18 +65,25 @@ export const FeedView = () => {
   )
 
   const loadFeedShouts = () => {
+    const options: LoadShoutsOptions = {
+      limit: FEED_PAGE_SIZE,
+      offset: sortedArticles().length
+    }
+
+    const orderBy = getOrderBy(searchParams().by)
+
+    if (orderBy) {
+      options.order_by = orderBy
+    }
+
     if (page().route === 'feedMy') {
-      return loadMyFeed({
-        limit: FEED_PAGE_SIZE,
-        offset: sortedArticles().length
-      })
+      return loadMyFeed(options)
     }
 
     // default feed
     return loadShouts({
-      filters: { visibility: 'community' },
-      limit: FEED_PAGE_SIZE,
-      offset: sortedArticles().length
+      ...options,
+      filters: { visibility: 'community' }
     })
   }
 
@@ -84,7 +102,6 @@ export const FeedView = () => {
   }
 
   onMount(async () => {
-    await loadMore()
     // load 5 recent comments overall
     const comments = await loadReactionsBy({ by: { comment: true }, limit: 5 })
     setTopComments(comments)
@@ -100,17 +117,30 @@ export const FeedView = () => {
 
           <div class="col-md-12 offset-xl-1">
             <ul class={clsx(styles.feedFilter, 'view-switcher')}>
-              <li class="view-switcher__item--selected">
-                <a href="?by=">{t('My feed')}</a>
+              <li
+                class={clsx({
+                  'view-switcher__item--selected':
+                    searchParams().by === 'publish_date' || !searchParams().by
+                })}
+              >
+                <a href={getPagePath(router, page().route)}>{t('My feed')}</a>
               </li>
               {/*<li>*/}
               {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
               {/*</li>*/}
-              <li>
-                <a href="/feed/?by=rating">{t('Top rated')}</a>
+              <li
+                class={clsx({
+                  'view-switcher__item--selected': searchParams().by === 'rating'
+                })}
+              >
+                <a href={`${getPagePath(router, page().route)}?by=rating`}>{t('Top rated')}</a>
               </li>
-              <li>
-                <a href="/feed/?by=comments">{t('Most commented')}</a>
+              <li
+                class={clsx({
+                  'view-switcher__item--selected': searchParams().by === 'last_comment'
+                })}
+              >
+                <a href={`${getPagePath(router, page().route)}?by=last_comment`}>{t('Most commented')}</a>
               </li>
             </ul>
 

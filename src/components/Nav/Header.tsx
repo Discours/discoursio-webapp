@@ -130,16 +130,24 @@ export const Header = (props: Props) => {
                   setIsSharePopupVisible(isVisible)
                 }}
                 containerCssClass={styles.control}
-                trigger={<Icon name="share-outline" class={styles.icon} />}
+                trigger={
+                  <>
+                    <Icon name="share-outline" class={styles.icon} />
+                    <Icon name="share-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
+                  </>
+                }
               />
               <div onClick={(event) => scrollToComments(event, true)} class={styles.control}>
-                <Icon name="comments-outline" class={styles.icon} />
+                <Icon name="comment" class={styles.icon} />
+                <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
               </div>
               <a href={getPagePath(router, 'create')} class={styles.control}>
                 <Icon name="pencil-outline" class={styles.icon} />
+                <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
               </a>
               <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
                 <Icon name="bookmark" class={styles.icon} />
+                <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
               </a>
             </div>
           </Show>

@@ -196,10 +196,20 @@ export const FullArticle = (props: ArticleProps) => {
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutStatsItem} ref={triggerRef} onClick={scrollToComments}>
                     <Icon name="comment" class={styles.icon} />
+                    <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
                     {props.article.stat?.commented ?? ''}
                   </div>
                 )}
               </Popover>
+
+              <Show when={props.article.stat?.viewed}>
+                <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
+                  <Icon name="eye" class={styles.icon} />
+                  <Icon name="eye" class={clsx(styles.icon, styles.iconHover)} />
+                  {props.article.stat?.viewed}
+                </div>
+              </Show>
+
               <Popover content={t('Share')}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
@@ -211,6 +221,7 @@ export const FullArticle = (props: ArticleProps) => {
                       trigger={
                         <div class={styles.shoutStatsItemInner}>
                           <Icon name="share-outline" class={styles.icon} />
+                          <Icon name="share-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
                         </div>
                       }
                     />
@@ -222,6 +233,7 @@ export const FullArticle = (props: ArticleProps) => {
                   <div class={styles.shoutStatsItem} ref={triggerRef} onClick={handleBookmarkButtonClick}>
                     <div class={styles.shoutStatsItemInner}>
                       <Icon name="bookmark" class={styles.icon} />
+                      <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
                     </div>
                   </div>
                 )}
@@ -235,6 +247,7 @@ export const FullArticle = (props: ArticleProps) => {
                         class={styles.shoutStatsItemInner}
                       >
                         <Icon name="pencil-outline" class={styles.icon} />
+                        <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
                       </a>
                     </div>
                   )}
@@ -244,12 +257,6 @@ export const FullArticle = (props: ArticleProps) => {
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
                   {formattedDate()}
                 </div>
-                <Show when={props.article.stat?.viewed}>
-                  <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
-                    <Icon name="eye" class={clsx(styles.icon, styles.iconEye)} />
-                    {props.article.stat?.viewed}
-                  </div>
-                </Show>
               </div>
             </div>
             <div class={styles.help}>

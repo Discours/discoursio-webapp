@@ -177,10 +177,10 @@ img {
 }
 
 .shoutStatsItem {
+  align-items: center;
   @include font-size(1.5rem);
-
   font-weight: 500;
-  display: inline-block;
+  display: flex;
   margin: 0 6% 1em 0;
   vertical-align: baseline;
   cursor: pointer;
@@ -190,23 +190,28 @@ img {
   }
 
   .icon {
-    height: 1.6em;
     display: inline-block;
     margin-right: 0.2em;
-    max-width: 1.4em;
-    max-height: 1.4em;
     transition: filter 0.2s;
     vertical-align: middle;
   }
 
-  .iconEye {
-    height: 1.8em;
-    max-width: 1.8em;
-    max-height: 1.8em;
-  }
-
   img {
     display: block;
+  }
+
+  .iconHover {
+    display: none;
+  }
+
+  &:hover {
+    .icon {
+      display: none;
+    }
+
+    .iconHover {
+      display: inline-block;
+    }
   }
 
   a {
@@ -225,20 +230,10 @@ img {
 }
 
 .shoutStatsItemInner {
-  margin: -0.3em -0.3em 0;
-  padding: 0.3em;
   cursor: pointer;
 
   .icon {
     margin-right: 0;
-  }
-
-  &:hover {
-    background: #000;
-
-    img {
-      filter: invert(1);
-    }
   }
 }
 
@@ -275,8 +270,6 @@ img {
 }
 
 .shoutStatsItemViews {
-  margin-left: 2rem;
-  margin-right: 0;
   cursor: default;
 }
 
@@ -285,6 +278,7 @@ img {
   display: inline-block;
   margin-left: 2rem;
   margin-right: 0;
+  margin-bottom: 0;
   cursor: default;
 
   @include media-breakpoint-down(sm) {

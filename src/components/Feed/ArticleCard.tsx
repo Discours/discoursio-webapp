@@ -37,6 +37,7 @@ interface ArticleCardProps {
     isCompact?: boolean
     isSingle?: boolean
     isBeside?: boolean
+    withViewed?: boolean
   }
   article: Shout
 }
@@ -123,7 +124,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <div class={styles.shoutCardType}>
             <a href={`/expo/${layout}`}>
               <Icon name={layout} class={styles.icon} />
-              <Icon name={layout} class={clsx(styles.icon, styles.iconHover)} />
+              {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
             </a>
           </div>
         </Show>
@@ -147,7 +148,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
         >
           <a href={`/${slug || ''}`}>
             <div class={styles.shoutCardTitle}>
-              <span class={styles.shoutCardLinkContainer}>{title}</span>
+              <span class={styles.shoutCardLinkWrapper}>
+                <span class={styles.shoutCardLinkContainer}>{title}</span>
+              </span>
             </div>
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
@@ -195,7 +198,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
               >
                 <div class={styles.shoutCardType}>
                   <a href={`/expo/${layout}`}>
-                    <Icon name={layout} class={clsx(styles.icon, styles.iconHover)} />
+                    <Icon name={layout} class={styles.icon} />
+                    {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
                   </a>
                 </div>
               </Show>
@@ -212,11 +216,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
             <div class={styles.shoutCardDetailsContent}>
               <ShoutRatingControl shout={props.article} class={styles.shoutCardDetailsItem} />
 
-              <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardDetailsViewed)}>
-                <Icon name="eye" class={clsx(styles.icon, styles.feedControlIcon)} />
-                {stat?.viewed}
-              </div>
-
               <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardComments)}>
                 <a href="#" onClick={(event) => scrollToComments(event)}>
                   <Icon name="comment" class={clsx(styles.icon, styles.feedControlIcon)} />
@@ -227,6 +226,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   <span class={styles.shoutCardLinkContainer}>{stat?.commented || t('Add comment')}</span>
                 </a>
               </div>
+
+              <Show when={props.settings?.withViewed}>
+                <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardDetailsViewed)}>
+                  <Icon name="eye" class={clsx(styles.icon, styles.feedControlIcon)} />
+                  {stat?.viewed}
+                </div>
+              </Show>
             </div>
 
             <div class={styles.shoutCardDetailsContent}>

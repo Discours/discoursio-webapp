@@ -8,6 +8,7 @@ import { useReactions } from '../../context/reactions'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
 import { useLocalize } from '../../context/localize'
+import { Icon } from '../_shared/Icon'
 
 interface ShoutRatingControlProps {
   shout: Shout
@@ -80,17 +81,14 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   }
 
   return (
-    <div
-      class={clsx(styles.rating, props.class, {
-        [styles.isUpvoted]: isUpvoted(),
-        [styles.isDownvoted]: isDownvoted()
-      })}
-    >
-      <button
-        class={clsx(styles.ratingControl, styles.downvoteButton)}
-        onClick={() => handleRatingChange(false)}
-      >
-        &minus;
+    <div class={clsx(styles.rating, props.class)}>
+      <button class={styles.ratingControl} onClick={() => handleRatingChange(false)}>
+        <Show when={!isDownvoted()}>
+          <Icon name="rating-control-less" />
+        </Show>
+        <Show when={isDownvoted()}>
+          <Icon name="rating-control-checked" />
+        </Show>
       </button>
 
       <Popup trigger={<span class={styles.ratingValue}>{props.shout.stat.rating}</span>} variant="tiny">
@@ -100,11 +98,13 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         />
       </Popup>
 
-      <button
-        class={clsx(styles.ratingControl, styles.upvoteButton)}
-        onClick={() => handleRatingChange(true)}
-      >
-        +
+      <button class={styles.ratingControl} onClick={() => handleRatingChange(true)}>
+        <Show when={!isUpvoted()}>
+          <Icon name="rating-control-more" />
+        </Show>
+        <Show when={isUpvoted()}>
+          <Icon name="rating-control-checked" />
+        </Show>
       </button>
     </div>
   )

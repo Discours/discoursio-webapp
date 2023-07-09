@@ -315,16 +315,15 @@
     cursor: pointer;
     border: 0;
 
-    .icon {
-      opacity: 0.6;
-      transition: opacity 0.3s;
-    }
-
     &:hover {
       background: none;
 
       .icon {
-        opacity: 1;
+        display: none;
+      }
+
+      .iconHover {
+        display: block;
       }
     }
   }

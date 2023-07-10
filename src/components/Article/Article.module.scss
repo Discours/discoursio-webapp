@@ -13,7 +13,7 @@ img {
   max-width: 100%;
 }
 
-.shoutTopic {
+.shoutHeader {
   margin-bottom: 2em;
 
   @include media-breakpoint-up(md) {
@@ -21,34 +21,15 @@ img {
   }
 }
 
-.shoutHeader {
-  display: flex;
-  flex-flow: row wrap;
-}
-
 .shoutCover {
-  width: 40%;
-  margin-left: auto;
-
-  & img {
-    width: 100%;
-    height: auto;
-  }
-
-  @include media-breakpoint-down(sm) {
-    width: 100%;
-    margin-left: 0;
-  }
+  background-size: cover;
+  height: 0;
+  padding-bottom: 56.2%;
 }
 
 .shoutBody {
-  margin-top: 32px;
-
-  font-weight: 400;
-  font-size: 17px;
-  line-height: 28px;
-  letter-spacing: -0.01em;
-  color: #404040;
+  font-size: 1.7rem;
+  line-height: 1.6;
 
   img {
     display: block;

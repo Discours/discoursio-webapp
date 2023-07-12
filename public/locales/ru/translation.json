@@ -372,5 +372,9 @@
   "Release date...": "Дата выхода...",
   "Genre...": "Жанр...",
   "Add audio": "Добавить аудио",
-  "You can download multiple tracks at once in .mp3, .wav or .flac formats": "Можно загрузить сразу несколько треков в форматах .mp3, .wav или .flac"
+  "You can download multiple tracks at once in .mp3, .wav or .flac formats": "Можно загрузить сразу несколько треков в форматах .mp3, .wav или .flac",
+  "Unknown artist": "Неизвестный артист",
+  "Enter artist and song title": "Введите исполнителя и название песни",
+  "Description": "Описание...",
+  "Song lyrics": "Текст песни..."
 }

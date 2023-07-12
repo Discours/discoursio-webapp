@@ -46,12 +46,7 @@ export const EditView = (props: Props) => {
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
-  const [date, setDate] = createSignal<PickerValue>({
-    value: {
-      selected: new Date().toLocaleDateString()
-    },
-    label: ''
-  })
+  const [date, setDate] = createSignal<PickerValue>({ value: {}, label: '' })
 
   const { page } = useRouter()
   const {
@@ -134,9 +129,10 @@ export const EditView = (props: Props) => {
     setForm('selectedTopics', newSelectedTopics)
   }
 
-  const handleAddImages = (data) => {
-    const newImages = [...mediaItems(), ...data]
-    setForm('media', JSON.stringify(newImages))
+  const handleAddMedia = (data) => {
+    const newMedia = [...mediaItems(), ...data]
+    setForm('media', JSON.stringify(newMedia))
+    console.log('!!! newMedia:', newMedia)
   }
   const handleSortedImages = (data) => {
     setForm('media', JSON.stringify(data))
@@ -148,7 +144,8 @@ export const EditView = (props: Props) => {
     setForm('media', JSON.stringify(copy))
   }
 
-  const handleImageChange = (index, value) => {
+  const handleMediaChange = (index, value) => {
+    console.log('!!! handleMediaChange:', value)
     const updated = mediaItems().map((item, idx) => (idx === index ? value : item))
     setForm('media', JSON.stringify(updated))
   }
@@ -271,9 +268,9 @@ export const EditView = (props: Props) => {
                     <SolidSwiper
                       editorMode={true}
                       images={mediaItems()}
-                      onImageChange={handleImageChange}
+                      onImageChange={handleMediaChange}
                       onImageDelete={(index) => handleImageDelete(index)}
-                      onImagesAdd={(value) => handleAddImages(value)}
+                      onImagesAdd={(value) => handleAddMedia(value)}
                       onImagesSorted={(value) => handleSortedImages(value)}
                     />
                   </Show>
@@ -284,7 +281,7 @@ export const EditView = (props: Props) => {
                       fallback={
                         <VideoUploader
                           data={(data) => {
-                            handleAddImages(data)
+                            handleAddMedia(data)
                           }}
                         />
                       }
@@ -305,7 +302,11 @@ export const EditView = (props: Props) => {
                   </Show>
 
                   <Show when={props.shout.layout === 'audio'}>
-                    <AudioUploader />
+                    <AudioUploader
+                      audio={mediaItems()}
+                      onAudioAdd={(value) => handleAddMedia(value)}
+                      onAudioChange={handleMediaChange}
+                    />
                   </Show>
 
                   <Editor

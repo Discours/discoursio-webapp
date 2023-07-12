@@ -1,7 +1,7 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
-import AudioPlayer from './AudioPlayer/AudioPlayer'
+import { AudioPlayer } from './AudioPlayer'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -21,8 +21,7 @@ import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import article from '../Editor/extensions/Article'
-import { SolidSwiper } from '../_shared/SolidSwiper'
-import { createEffect, For, createMemo, Match, onMount, Show, Switch, createSignal } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
 import { MediaItem } from '../../pages/types'
 
 interface ArticleProps {
@@ -104,9 +103,10 @@ export const FullArticle = (props: ArticleProps) => {
   const {
     actions: { loadReactionsBy }
   } = useReactions()
-
-  console.table('!!! props:', JSON.parse(props.article.media))
-
+  createEffect(() => {
+    console.log('INITIAL', JSON.parse(props.article.media))
+    console.log('INITIAL', props.article)
+  })
   return (
     <>
       <Title>{props.article.title}</Title>

@@ -35,29 +35,29 @@ export const PlayerHeader = (props) => {
       <div class={styles.playerTitle}>{getCurrentTrack().title}</div>
       <div class={styles.playerControls}>
         <button
+          type="button"
           onClick={onPlayMedia}
           class={clsx(
             styles.playButton,
             getCurrentTrack().isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay
           )}
-          role="button"
           aria-label="Play"
           data-playing="false"
         >
           <Icon name={getCurrentTrack().isPlaying ? 'pause' : 'play'} />
         </button>
         <button
+          type="button"
           onClick={playPrevTrack}
           class={clsx(styles.controlsButton)}
-          role="button"
           aria-label="Previous"
         >
           <Icon name="player-arrow" />
         </button>
         <button
+          type="button"
           onClick={playNextTrack}
           class={clsx(styles.controlsButton, styles.controlsButtonNext)}
-          role="button"
           aria-label="Next"
         >
           <Icon name="player-arrow" />

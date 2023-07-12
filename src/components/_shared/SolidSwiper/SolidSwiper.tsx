@@ -37,7 +37,6 @@ export const SolidSwiper = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
 
-  const dropAreaRef: { current: HTMLElement } = { current: null }
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
@@ -136,7 +135,6 @@ export const SolidSwiper = (props: Props) => {
       <div class={styles.container}>
         <Show when={props.editorMode && props.images.length === 0}>
           <DropArea
-            ref={(el) => (dropAreaRef.current = el)}
             fileType="image"
             isMultiply={true}
             placeholder={t('Add images')}

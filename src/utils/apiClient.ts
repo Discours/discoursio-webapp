@@ -245,7 +245,6 @@ export const apiClient = {
   },
   createArticle: async ({ article }: { article: ShoutInput }): Promise<Shout> => {
     const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()
-    console.log('!!! [createArticle]:', response.data)
     return response.data.createShout.shout
   },
   updateArticle: async ({

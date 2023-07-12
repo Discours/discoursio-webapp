@@ -46,20 +46,20 @@
     margin-top: 20px;
     margin-left: 0;
   }
-}
 
-.playButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  .playButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  width: 40px;
-  height: 40px;
-  background-color: #141414;
+    width: 40px;
+    height: 40px;
+    background: #141414;
 
-  & img {
-    width: 14px;
-    height: auto;
+    & img {
+      width: 14px;
+      height: auto;
+    }
   }
 }
 
@@ -243,6 +243,11 @@
   padding: 16px 0;
 }
 
+.description {
+  display: flex;
+  flex-direction: column;
+}
+
 .playlistItemPlayButton {
   border: none;
   cursor: pointer;
@@ -251,17 +256,25 @@
 }
 
 .playlistItemTitle {
-  max-width: 254px;
+  @include font-size(1.6rem);
+
+  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0 16px;
+  color: var(--default-color);
 
-  margin-left: 17px;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 22px;
-  letter-spacing: -0.01em;
-  color: #000000;
+  .titleInput {
+    @include font-size(1.6rem);
+
+    padding: 0;
+    margin: 0;
+    border: none;
+    &::placeholder {
+      color: var(--secondary-color);
+    }
+  }
 }
 
 .playlistItemControls {
@@ -275,7 +288,7 @@
   font-size: 16px;
   line-height: 22px;
   letter-spacing: -0.01em;
-  color: #000000;
+  color: var(--default-color);
 }
 
 .timelinePlaceholder {
@@ -295,4 +308,24 @@
 
 .shareMedia {
   margin-left: auto;
+}
+
+.descriptionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 8px 0 24px 0;
+
+  .description,
+  .lyrics {
+    @include font-size(1.4rem);
+  }
+
+  .description {
+    font-weight: 500;
+
+    & > textarea::placeholder {
+      font-weight: 400;
+    }
+  }
 }

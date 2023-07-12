@@ -346,5 +346,9 @@
   "Album name": "Название aльбома",
   "Gallery name": "Gallery name",
   "Add audio": "Add audio",
-  "You can download multiple tracks at once in .mp3, .wav or .flac formats": "You can download multiple tracks at once in .mp3, .wav or .flac formats"
+  "You can download multiple tracks at once in .mp3, .wav or .flac formats": "You can download multiple tracks at once in .mp3, .wav or .flac formats",
+  "Unknown artist": "Unknown artist",
+  "Enter artist and song title": "Enter artist and song title",
+  "Description": "Description...",
+  "Song lyrics": "Song lyrics..."
 }

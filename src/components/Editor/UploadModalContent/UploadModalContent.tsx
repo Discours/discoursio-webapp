@@ -26,8 +26,8 @@ export const UploadModalContent = (props: Props) => {
   const runUpload = async (file) => {
     try {
       setIsUploading(true)
-      const fileUrl = await handleFileUpload(file)
-      props.onClose(fileUrl)
+      const result = await handleFileUpload(file)
+      props.onClose(result.url)
       setIsUploading(false)
     } catch (error) {
       setIsUploading(false)

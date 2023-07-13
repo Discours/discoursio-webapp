@@ -56,7 +56,16 @@
   padding-top: 2.4rem;
 }
 
+.shoutCardLinkWrapper {
+  background-color: transparent;
+  transition: background-color 0.3s;
+}
+
 .shoutCardTitlesContainer {
+  &.shoutCardTitlesContainerFeedMode {
+    margin-bottom: 1.4rem;
+  }
+
   a:link {
     border: none;
 
@@ -71,7 +80,7 @@
     }
 
     &:hover {
-      .shoutCardTitle .shoutCardLinkContainer {
+      .shoutCardTitle .shoutCardLinkWrapper {
         background-color: var(--default-color);
         color: var(--link-hover-color);
       }
@@ -166,7 +175,7 @@
 
   .shoutCardTitlesContainerFeedMode & {
     @include font-size(3.2rem);
-    line-height: 1.25;
+    line-height: 1.1;
   }
 }
 
@@ -246,6 +255,7 @@
       background: #000;
 
       .icon {
+        display: inline-block;
         filter: invert(1);
       }
     }
@@ -511,6 +521,10 @@
 
   &:first-child {
     padding: 0 1em 1em 0;
+
+    .shoutCardDetailsItem {
+      margin-right: 2rem;
+    }
   }
 }
 

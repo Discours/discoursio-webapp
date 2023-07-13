@@ -28,11 +28,13 @@
   .button {
     border: 3px solid;
     border-radius: 1.2em;
+    color: inherit;
     cursor: pointer;
     display: inline-block;
     font-weight: bold;
     margin-right: 0.8rem;
     margin-bottom: 0.8em;
+    padding-bottom: 0.6rem;
     transition: all 0.2s;
 
     &:hover {

@@ -30,7 +30,7 @@ export const DropArea = (props: Props) => {
       const results: string[] = []
       for (const file of files) {
         const result = await handleFileUpload(file)
-        results.push(result)
+        results.push(result.url)
       }
       props.onUpload(results)
       setLoading(false)

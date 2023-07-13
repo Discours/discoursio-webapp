@@ -19,9 +19,11 @@
   }
 
   .userpic {
+    background-color: white;
     border-radius: 50%;
+    border: 1.5px solid black;
+    color: #000;
     font-size: small;
-    border: 2px solid black;
     text-align: center;
     line-height: 28px;
     min-width: 32px;
@@ -34,12 +36,17 @@
     width: 20px !important;
   }
 
-  a:link {
+  a:link,
+  a:visited {
+    border: none;
     display: block;
     height: 100%;
-    padding: 0;
+    padding: 0 !important;
+    text-align: center;
+    width: 100%;
 
     &:hover {
+      background: none;
       color: #000;
     }
   }
@@ -78,6 +85,8 @@
 
 .feedMode {
   .userpic {
+    font-size: 0.8rem;
+    line-height: 14px;
     min-width: 16px;
     max-width: 16px;
   }

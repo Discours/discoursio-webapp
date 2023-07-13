@@ -25,11 +25,6 @@ type Props = {
 export const Header = (props: Props) => {
   const { t } = useLocalize()
 
-  const resources: { name: string; route: keyof typeof ROUTES }[] = [
-    { name: t('zine'), route: 'home' },
-    { name: t('feed'), route: 'feed' },
-    { name: t('topics'), route: 'topics' }
-  ]
   // signals
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -112,13 +107,15 @@ export const Header = (props: Props) => {
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
             <ul class={clsx('view-switcher', styles.mainNavigation)} classList={{ fixed: fixed() }}>
-              <For each={resources}>
-                {(r) => (
-                  <li classList={{ 'view-switcher__item--selected': r.route === page().route }}>
-                    <a href={getPagePath(router, r.route)}>{r.name}</a>
-                  </li>
-                )}
-              </For>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
+                <a href={getPagePath(router, 'home')}>{t('zine')}</a>
+              </li>
+              <li classList={{ 'view-switcher__item--selected': page().route.startsWith('feed') }}>
+                <a href={getPagePath(router, 'feed')}>{t('feed')}</a>
+              </li>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'topics' }}>
+                <a href={getPagePath(router, 'topics')}>{t('topics')}</a>
+              </li>
             </ul>
           </div>
           <HeaderAuth setIsProfilePopupVisible={setIsProfilePopupVisible} />
@@ -133,16 +130,24 @@ export const Header = (props: Props) => {
                   setIsSharePopupVisible(isVisible)
                 }}
                 containerCssClass={styles.control}
-                trigger={<Icon name="share-outline" class={styles.icon} />}
+                trigger={
+                  <>
+                    <Icon name="share-outline" class={styles.icon} />
+                    <Icon name="share-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
+                  </>
+                }
               />
               <div onClick={(event) => scrollToComments(event, true)} class={styles.control}>
-                <Icon name="comments-outline" class={styles.icon} />
+                <Icon name="comment" class={styles.icon} />
+                <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
               </div>
               <a href={getPagePath(router, 'create')} class={styles.control}>
                 <Icon name="pencil-outline" class={styles.icon} />
+                <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
               </a>
               <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
                 <Icon name="bookmark" class={styles.icon} />
+                <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
               </a>
             </div>
           </Show>

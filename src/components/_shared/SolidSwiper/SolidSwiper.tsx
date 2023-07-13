@@ -95,7 +95,7 @@ export const SolidSwiper = (props: Props) => {
         const results: string[] = []
         for (const file of selectedFiles) {
           const result = await handleFileUpload(file)
-          results.push(result)
+          results.push(result.url)
         }
         props.onImagesAdd(mediaItemsFromStringArray(results))
         setLoading(false)

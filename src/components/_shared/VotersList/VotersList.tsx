@@ -16,11 +16,7 @@ export const VotersList = (props: Props) => {
       <ul class={clsx('nodash', styles.users)}>
         <Show
           when={props.reactions.length > 0}
-          fallback={
-            <li class={styles.item}>
-              <small>{props.fallbackMessage}</small>
-            </li>
-          }
+          fallback={<li class={clsx(styles.item, styles.fallbackMessage)}>{props.fallbackMessage}</li>}
         >
           <For each={props.reactions}>
             {(reaction) => (

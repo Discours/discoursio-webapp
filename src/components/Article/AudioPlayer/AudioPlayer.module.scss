@@ -258,22 +258,36 @@
 .playlistItemTitle {
   @include font-size(1.6rem);
 
+  display: flex;
+  flex-direction: row;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0 16px;
+  gap: 16px;
   color: var(--default-color);
 
-  .titleInput {
+  .artist,
+  .title {
     @include font-size(1.6rem);
 
     padding: 0;
     margin: 0;
     border: none;
+
+    &:focus {
+      outline: none;
+    }
+
     &::placeholder {
+      font-weight: 400;
       color: var(--secondary-color);
     }
+  }
+
+  .title {
+    font-weight: 500;
   }
 }
 
@@ -306,15 +320,18 @@
   height: 67px;
 }
 
-.shareMedia {
+.actions {
   margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
 }
 
 .descriptionBlock {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin: 8px 0 24px 0;
+  padding: 8px 0 24px 0;
 
   .description,
   .lyrics {

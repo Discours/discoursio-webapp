@@ -11,6 +11,14 @@ export type Audio = {
   isPlaying?: boolean
 } & MediaItem
 
+type Props = {
+  media: Audio[]
+  articleSlug?: string
+  body?: string
+  editorMode?: boolean
+  onAudioChange?: (index: number, value: MediaItem) => void
+}
+
 const prepareMedia = (media: Audio[]) =>
   media.map((item, index) => ({
     ...item,
@@ -20,22 +28,15 @@ const prepareMedia = (media: Audio[]) =>
   }))
 
 const progressUpdate = (audioRef, progressFilledRef, duration) => {
-  progressFilledRef.current.style.width = `${(audioRef.currentTime / duration) * 100 || 0}%`
+  progressFilledRef.current.style.width = `${(audioRef.current.currentTime / duration) * 100 || 0}%`
 }
 
 const scrub = (event, progressRef, duration, audioRef) => {
-  audioRef.currentTime.currentTime = (event.offsetX / progressRef.offsetWidth) * duration
+  audioRef.current.currentTime.currentTime =
+    (event.current.offsetX / progressRef.current.offsetWidth) * duration
 }
 
 const getFormattedTime = (point) => new Date(point * 1000).toISOString().slice(14, -5)
-
-type Props = {
-  media: Audio[]
-  articleSlug?: string
-  body?: string
-  editorMode?: boolean
-  onAudioChange?: (index: number, value: MediaItem) => void
-}
 
 export const AudioPlayer = (props: Props) => {
   const audioRef: { current: HTMLAudioElement } = { current: null }
@@ -162,6 +163,14 @@ export const AudioPlayer = (props: Props) => {
     setDuration(target.duration)
   }
 
+  // const handleRefreshTracks = (index, key, value):MediaItem => {
+  //   const updatedMedia = props.media[index]
+  //   console.log("!!! AUDIO PLAYER index:", index);
+  //   console.log("!!! AUDIO PLAYER key:", key);
+  //   console.log("!!! AUDIO PLAYER value:", value);
+  //   return {...updatedMedia, [key]: value}
+  // }
+
   return (
     <div>
       <Show when={getCurrentTrack()}>
@@ -212,11 +221,7 @@ export const AudioPlayer = (props: Props) => {
           currentTrack={getCurrentTrack()}
           articleSlug={props.articleSlug}
           body={props.body}
-          changedAudio={(val) => {
-            props.onAudioChange(val.index, val)
-            console.log('!!! val.index:', val.index)
-            console.log('!!! val:', val)
-          }}
+          // onAudioChange={handleRefreshTracks}
         />
       </Show>
     </div>

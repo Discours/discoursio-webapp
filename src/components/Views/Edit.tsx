@@ -145,8 +145,9 @@ export const EditView = (props: Props) => {
   }
 
   const handleMediaChange = (index, value) => {
-    console.log('!!! handleMediaChange:', value)
+    console.log('!!! EDIT:', value)
     const updated = mediaItems().map((item, idx) => (idx === index ? value : item))
+    console.log('!!! handleMediaChange:', updated)
     setForm('media', JSON.stringify(updated))
   }
 
@@ -204,25 +205,10 @@ export const EditView = (props: Props) => {
                       <Show when={props.shout.layout === 'audio'}>
                         <div class={styles.additional}>
                           <input type="text" placeholder={t('Artist...')} class={styles.additionalInput} />
-                          <DatePicker
-                            value={date}
-                            setValue={setDate}
-                            inputClass={styles.additionalInput}
-                            locale="ru"
-                            type="single"
-                            renderInput={({ showDate, value }) => (
-                              <div class={styles.datepicker}>
-                                <input
-                                  value={value().label}
-                                  class={styles.additionalInput}
-                                  readOnly
-                                  placeholder={t('Release date...')}
-                                />
-                                <button type="button" onClick={showDate}>
-                                  <Icon name="datepicker" />
-                                </button>
-                              </div>
-                            )}
+                          <input
+                            class={styles.additionalInput}
+                            readOnly
+                            placeholder={t('Release date...')}
                           />
                           <input type="text" placeholder={t('Genre...')} class={styles.additionalInput} />
                         </div>

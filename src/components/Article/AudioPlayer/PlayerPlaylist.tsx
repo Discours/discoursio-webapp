@@ -15,28 +15,19 @@ type Props = {
   articleSlug?: string
   body?: string
   editorMode?: boolean
-  changedAudio?: (value: Audio) => void
+  onAudioChange?: (index: number, field: string, value: string) => void
 }
 
 export const PlayerPlaylist = (props: Props) => {
   const { t } = useLocalize()
   const [activeEditIndex, setActiveEditIndex] = createSignal(-1)
-  const [changedData, setChangedData] = createSignal<Audio>()
 
-  const toggleEditMode = (index, audio) => {
+  const toggleDropDown = (index) => {
     setActiveEditIndex(activeEditIndex() === index ? -1 : index)
-    setChangedData(audio)
   }
   const updateData = (key, value) => {
-    setChangedData((prev) => ({ ...prev, [key]: value }))
+    props.onAudioChange(activeEditIndex(), key, value)
   }
-
-  createEffect(() => {
-    console.log('!!! changedData():', changedData())
-    if (props.changedAudio && changedData()) {
-      props.changedAudio(changedData())
-    }
-  })
 
   return (
     <ul class={styles.playlist}>
@@ -63,25 +54,44 @@ export const PlayerPlaylist = (props: Props) => {
               <div class={styles.playlistItemTitle}>
                 <Show
                   when={activeEditIndex() === index()}
-                  fallback={m.title.trim() === '' ? t('Unknown artist') : m.title}
+                  fallback={
+                    <>
+                      <div class={styles.title}>{m.title || t('Song title')}</div>
+                      <div class={styles.artist}>{m.artist || t('Artist')}</div>
+                    </>
+                  }
                 >
                   <input
                     type="text"
-                    class={styles.titleInput}
-                    placeholder={m.title.trim() === '' ? t('Enter artist and song title') : m.title}
+                    class={styles.title}
+                    placeholder={m.title || t('Song title')}
                     onChange={(e) => updateData('title', e.target.value)}
-                    autofocus={true}
+                  />
+                  <input
+                    type="text"
+                    class={styles.artist}
+                    placeholder={m.artist || t('Artist')}
+                    onChange={(e) => updateData('artist', e.target.value)}
                   />
                 </Show>
               </div>
-              <div class={styles.shareMedia}>
+              <div class={styles.actions}>
+                <Show when={m.lyrics && !props.editorMode}>
+                  <Popover content={t('Show lyrics')}>
+                    {(triggerRef: (el) => void) => (
+                      <button ref={triggerRef} type="button" onClick={() => toggleDropDown(index())}>
+                        <Icon name="list" />
+                      </button>
+                    )}
+                  </Popover>
+                </Show>
                 <Popover content={props.editorMode ? t('Edit') : t('Share')}>
                   {(triggerRef: (el) => void) => (
                     <div ref={triggerRef}>
                       <Show
                         when={!props.editorMode}
                         fallback={
-                          <button type="button" onClick={() => toggleEditMode(index(), m)}>
+                          <button type="button" onClick={() => toggleDropDown(index())}>
                             <Icon name="pencil-stroke" />
                           </button>
                         }
@@ -104,20 +114,34 @@ export const PlayerPlaylist = (props: Props) => {
               </div>
             </div>
             <Show when={activeEditIndex() === index()}>
-              <div class={styles.descriptionBlock}>
-                <GrowingTextarea
-                  class={styles.description}
-                  placeholder={t('Description')}
-                  value={(value) => updateData('body', value)}
-                  initialValue={''}
-                />
-                <GrowingTextarea
-                  class={styles.lyrics}
-                  initialValue={''}
-                  placeholder={t('Song lyrics')}
-                  value={(value) => updateData('lyrics', value)}
-                />
-              </div>
+              <Show
+                when={props.editorMode}
+                fallback={
+                  <div class={styles.descriptionBlock}>
+                    <Show when={m.body}>
+                      <div class={styles.description}>{m.body}</div>
+                    </Show>
+                    <Show when={m.lyrics}>
+                      <div class={styles.lyrics}>{m.lyrics}</div>
+                    </Show>
+                  </div>
+                }
+              >
+                <div class={styles.descriptionBlock}>
+                  <GrowingTextarea
+                    class={styles.description}
+                    placeholder={t('Description')}
+                    value={(value) => updateData('body', value)}
+                    initialValue={''}
+                  />
+                  <GrowingTextarea
+                    class={styles.lyrics}
+                    initialValue={''}
+                    placeholder={t('Song lyrics')}
+                    value={(value) => updateData('lyrics', value)}
+                  />
+                </div>
+              </Show>
             </Show>
           </li>
         )}

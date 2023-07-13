@@ -32,8 +32,7 @@ const progressUpdate = (audioRef, progressFilledRef, duration) => {
 }
 
 const scrub = (event, progressRef, duration, audioRef) => {
-  audioRef.current.currentTime.currentTime =
-    (event.current.offsetX / progressRef.current.offsetWidth) * duration
+  audioRef.current.currentTime = (event.offsetX / progressRef.current.offsetWidth) * duration
 }
 
 const getFormattedTime = (point) => new Date(point * 1000).toISOString().slice(14, -5)

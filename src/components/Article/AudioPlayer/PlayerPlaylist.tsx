@@ -76,7 +76,7 @@ export const PlayerPlaylist = (props: Props) => {
                 </Show>
               </div>
               <div class={styles.actions}>
-                <Show when={m.lyrics && !props.editorMode}>
+                <Show when={(m.lyrics || m.body) && !props.editorMode}>
                   <Popover content={t('Show lyrics')}>
                     {(triggerRef: (el) => void) => (
                       <button ref={triggerRef} type="button" onClick={() => toggleDropDown(index())}>
@@ -132,13 +132,13 @@ export const PlayerPlaylist = (props: Props) => {
                     class={styles.description}
                     placeholder={t('Description')}
                     value={(value) => updateData('body', value)}
-                    initialValue={''}
+                    initialValue={m.body || ''}
                   />
                   <GrowingTextarea
                     class={styles.lyrics}
-                    initialValue={''}
                     placeholder={t('Song lyrics')}
                     value={(value) => updateData('lyrics', value)}
+                    initialValue={m.lyrics || ''}
                   />
                 </div>
               </Show>

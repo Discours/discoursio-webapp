@@ -21,7 +21,7 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
-import DatePicker, { PickerValue } from '@rnwonder/solid-date-picker'
+import { PickerValue } from '@rnwonder/solid-date-picker'
 
 type Props = {
   shout: Shout
@@ -132,7 +132,6 @@ export const EditView = (props: Props) => {
   const handleAddMedia = (data) => {
     const newMedia = [...mediaItems(), ...data]
     setForm('media', JSON.stringify(newMedia))
-    console.log('!!! newMedia:', newMedia)
   }
   const handleSortedImages = (data) => {
     setForm('media', JSON.stringify(data))
@@ -145,19 +144,17 @@ export const EditView = (props: Props) => {
   }
 
   const handleMediaChange = (index, value) => {
-    console.log('!!! EDIT:', value)
     const updated = mediaItems().map((item, idx) => (idx === index ? value : item))
-    console.log('!!! handleMediaChange:', updated)
     setForm('media', JSON.stringify(updated))
   }
 
   const articleTitle = () => {
     switch (props.shout.layout) {
       case 'audio': {
-        return 'Album name'
+        return t('Album name')
       }
       case 'image': {
-        return 'Gallery name'
+        return t('Gallery name')
       }
       default: {
         return t('Header')

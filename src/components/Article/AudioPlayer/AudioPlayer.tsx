@@ -16,7 +16,7 @@ type Props = {
   articleSlug?: string
   body?: string
   editorMode?: boolean
-  onAudioChange?: (index: number, value: MediaItem) => void
+  onAudioChange?: (index: number, field: string, value: string) => void
 }
 
 const prepareMedia = (media: Audio[]) =>
@@ -163,13 +163,14 @@ export const AudioPlayer = (props: Props) => {
     setDuration(target.duration)
   }
 
-  // const handleRefreshTracks = (index, key, value):MediaItem => {
-  //   const updatedMedia = props.media[index]
-  //   console.log("!!! AUDIO PLAYER index:", index);
-  //   console.log("!!! AUDIO PLAYER key:", key);
-  //   console.log("!!! AUDIO PLAYER value:", value);
-  //   return {...updatedMedia, [key]: value}
-  // }
+  const handleAudioDescriptionChange = (index: number, field: string, value) => {
+    props.onAudioChange(index, field, value)
+    setTracks(
+      tracks().map((track, idx) => {
+        return idx === index ? { ...track, [field]: value } : track
+      })
+    )
+  }
 
   return (
     <div>
@@ -221,7 +222,7 @@ export const AudioPlayer = (props: Props) => {
           currentTrack={getCurrentTrack()}
           articleSlug={props.articleSlug}
           body={props.body}
-          // onAudioChange={handleRefreshTracks}
+          onAudioChange={handleAudioDescriptionChange}
         />
       </Show>
     </div>

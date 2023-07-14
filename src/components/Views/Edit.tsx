@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -21,7 +21,7 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
-import { PickerValue } from '@rnwonder/solid-date-picker'
+import { MediaItem } from '../../pages/types'
 
 type Props = {
   shout: Shout
@@ -46,7 +46,6 @@ export const EditView = (props: Props) => {
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [topics, setTopics] = createSignal<Topic[]>(null)
   const [coverImage, setCoverImage] = createSignal<string>(null)
-  const [date, setDate] = createSignal<PickerValue>({ value: {}, label: '' })
 
   const { page } = useRouter()
   const {
@@ -70,7 +69,7 @@ export const EditView = (props: Props) => {
     layout: props.shout.layout
   })
 
-  const mediaItems = createMemo(() => {
+  const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
     return JSON.parse(form.media || '[]')
   })
 
@@ -148,6 +147,11 @@ export const EditView = (props: Props) => {
     setForm('media', JSON.stringify(updated))
   }
 
+  const handleBaseFieldsChange = (key, value) => {
+    const updated = mediaItems().map((media) => ({ ...media, [key]: value }))
+    setForm('media', JSON.stringify(updated))
+  }
+
   const articleTitle = () => {
     switch (props.shout.layout) {
       case 'audio': {
@@ -162,10 +166,29 @@ export const EditView = (props: Props) => {
     }
   }
 
+  const pageTitle = () => {
+    switch (props.shout.layout) {
+      case 'audio': {
+        return t('Publish Album')
+      }
+      case 'image': {
+        return t('Create gallery')
+      }
+      case 'video': {
+        return t('Create video')
+      }
+      case 'literary': {
+        return t('New literary work')
+      }
+      default: {
+        return t('Write an article')
+      }
+    }
+  }
   return (
     <>
       <div class={styles.container}>
-        <Title>{t('Write an article')}</Title>
+        <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
             <button
@@ -188,6 +211,7 @@ export const EditView = (props: Props) => {
                   <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'audio' })}>
                     <div class={styles.inputContainer}>
                       <GrowingTextarea
+                        allowEnterKey={true}
                         value={(value) => handleTitleInputChange(value)}
                         class={styles.titleInput}
                         placeholder={articleTitle()}
@@ -201,18 +225,30 @@ export const EditView = (props: Props) => {
 
                       <Show when={props.shout.layout === 'audio'}>
                         <div class={styles.additional}>
-                          <input type="text" placeholder={t('Artist...')} class={styles.additionalInput} />
+                          <input
+                            type="text"
+                            placeholder={t('Artist...')}
+                            class={styles.additionalInput}
+                            value={mediaItems()[0].artist || null}
+                            onChange={(event) => handleBaseFieldsChange('artist', event.target.value)}
+                          />
                           <input
                             class={styles.additionalInput}
-                            readOnly
                             placeholder={t('Release date...')}
+                            onChange={(event) => handleBaseFieldsChange('date', event.target.value)}
                           />
-                          <input type="text" placeholder={t('Genre...')} class={styles.additionalInput} />
+                          <input
+                            type="text"
+                            placeholder={t('Genre...')}
+                            class={styles.additionalInput}
+                            onChange={(event) => handleBaseFieldsChange('genre', event.target.value)}
+                          />
                         </div>
                       </Show>
 
                       <Show when={props.shout.layout !== 'audio'}>
                         <GrowingTextarea
+                          allowEnterKey={false}
                           value={(value) => setForm('subtitle', value)}
                           class={styles.subtitleInput}
                           placeholder={t('Subheader')}

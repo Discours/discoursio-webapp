@@ -7,6 +7,7 @@ import { Popover } from '../../_shared/Popover'
 import { Icon } from '../../_shared/Icon'
 import styles from './AudioPlayer.module.scss'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
+import MD from '../MD'
 
 type Props = {
   tracks: Audio[]
@@ -53,7 +54,7 @@ export const PlayerPlaylist = (props: Props) => {
               </button>
               <div class={styles.playlistItemTitle}>
                 <Show
-                  when={activeEditIndex() === index()}
+                  when={activeEditIndex() === index() && props.editorMode}
                   fallback={
                     <>
                       <div class={styles.title}>{m.title || t('Song title')}</div>
@@ -119,22 +120,28 @@ export const PlayerPlaylist = (props: Props) => {
                 fallback={
                   <div class={styles.descriptionBlock}>
                     <Show when={m.body}>
-                      <div class={styles.description}>{m.body}</div>
+                      <div class={styles.description}>
+                        <MD body={m.body} />
+                      </div>
                     </Show>
                     <Show when={m.lyrics}>
-                      <div class={styles.lyrics}>{m.lyrics}</div>
+                      <div class={styles.lyrics}>
+                        <MD body={m.lyrics} />
+                      </div>
                     </Show>
                   </div>
                 }
               >
                 <div class={styles.descriptionBlock}>
                   <GrowingTextarea
+                    allowEnterKey={true}
                     class={styles.description}
                     placeholder={t('Description')}
                     value={(value) => updateData('body', value)}
                     initialValue={m.body || ''}
                   />
                   <GrowingTextarea
+                    allowEnterKey={true}
                     class={styles.lyrics}
                     placeholder={t('Song lyrics')}
                     value={(value) => updateData('lyrics', value)}

@@ -200,6 +200,7 @@ export const SolidSwiper = (props: Props) => {
                             }
                           />
                           <GrowingTextarea
+                            allowEnterKey={true}
                             class={styles.descriptionText}
                             placeholder={t('Enter image description')}
                             initialValue={slide.body}

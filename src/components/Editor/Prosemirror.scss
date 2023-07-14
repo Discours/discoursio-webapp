@@ -1,4 +1,5 @@
 .ProseMirror {
+  font-size: 1.6rem;
   outline: none;
   min-height: 300px;
 }
@@ -68,7 +69,7 @@
 
 mark.highlight {
   box-decoration-break: clone;
-  padding: 0.125em 0;
+  padding: 0.2em 0;
 }
 
 // custom atibutes fro TipTap Nodes
@@ -91,17 +92,23 @@ mark.highlight {
   }
 
   [data-float='half-left'] {
-    max-width: 50%;
-    min-width: 30%;
     float: left;
     margin: 1rem 1rem 0;
+
+    @include media-breakpoint-up(md) {
+      max-width: 50%;
+      min-width: 30%;
+    }
   }
 
   [data-float='half-right'] {
-    max-width: 50%;
-    min-width: 30%;
     float: right;
     margin: 1rem 0;
+
+    @include media-breakpoint-up(md) {
+      max-width: 50%;
+      min-width: 30%;
+    }
   }
 }
 
@@ -111,7 +118,7 @@ mark.highlight {
   }
 
   &[data-type='quote'] {
-    @include font-size(1.6rem);
+    @include font-size(1.4rem);
     border: solid #000;
     border-width: 0 0 0 2px;
     margin: 1.6rem 0;
@@ -159,7 +166,7 @@ mark.highlight {
 
 .ProseMirror article[data-type='incut'] {
   background: #f1f2f3;
-  @include font-size(1.6rem);
+  @include font-size(1.4rem);
   margin: 1em -1rem;
   padding: 2em 2rem;
   transition: background 0.3s ease-in-out;

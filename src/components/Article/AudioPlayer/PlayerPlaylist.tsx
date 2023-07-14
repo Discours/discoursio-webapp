@@ -52,7 +52,7 @@ export const PlayerPlaylist = (props: Props) => {
                   }
                 />
               </button>
-              <div class={styles.playlistItemTitle}>
+              <div class={styles.playlistItemText}>
                 <Show
                   when={activeEditIndex() === index() && props.editorMode}
                   fallback={

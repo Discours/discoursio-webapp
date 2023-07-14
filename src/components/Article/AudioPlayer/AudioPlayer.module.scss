@@ -258,7 +258,7 @@
   height: auto;
 }
 
-.playlistItemTitle {
+.playlistItemText {
   @include font-size(1.6rem);
 
   display: flex;
@@ -266,7 +266,6 @@
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
   margin: 0 16px;
   gap: 16px;
   color: var(--default-color);
@@ -275,6 +274,9 @@
   .title {
     @include font-size(1.6rem);
 
+    overflow: hidden;
+    max-width: calc(50% - 16px);
+    text-overflow: ellipsis;
     padding: 0;
     margin: 0;
     border: none;

@@ -1,5 +1,5 @@
 import { createEffect, createSignal, For, Match, Show, Switch, on } from 'solid-js'
-import { MediaItem } from '../../../pages/types'
+import { MediaItem, UploadedFile } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
@@ -17,6 +17,7 @@ import { Loading } from '../Loading'
 import { imageProxy } from '../../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
+import { composeMediaItems } from '../../../utils/composeMediaItems'
 
 type Props = {
   images: MediaItem[]
@@ -25,17 +26,6 @@ type Props = {
   onImagesSorted?: (value: MediaItem[]) => void
   onImageDelete?: (mediaItemIndex: number) => void
   onImageChange?: (index: number, value: MediaItem) => void
-}
-
-const composeMediaItem = (value) => {
-  return value.map((url) => {
-    return {
-      url: url,
-      source: '',
-      title: '',
-      body: ''
-    }
-  })
 }
 
 register()
@@ -47,7 +37,6 @@ export const SolidSwiper = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
 
-  const dropAreaRef: { current: HTMLElement } = { current: null }
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
@@ -78,8 +67,8 @@ export const SolidSwiper = (props: Props) => {
     )
   )
 
-  const handleDropAreaUpload = (value: string[]) => {
-    props.onImagesAdd(composeMediaItem(value))
+  const handleDropAreaUpload = (value: UploadedFile[]) => {
+    props.onImagesAdd(composeMediaItems(value))
     swipeToUploaded()
   }
 
@@ -108,7 +97,7 @@ export const SolidSwiper = (props: Props) => {
           const result = await handleFileUpload(file)
           results.push(result.url)
         }
-        props.onImagesAdd(composeMediaItem(results))
+        props.onImagesAdd(composeMediaItems(results))
         setLoading(false)
         swipeToUploaded()
       } catch (error) {
@@ -146,7 +135,6 @@ export const SolidSwiper = (props: Props) => {
       <div class={styles.container}>
         <Show when={props.editorMode && props.images.length === 0}>
           <DropArea
-            ref={(el) => (dropAreaRef.current = el)}
             fileType="image"
             isMultiply={true}
             placeholder={t('Add images')}
@@ -212,6 +200,7 @@ export const SolidSwiper = (props: Props) => {
                             }
                           />
                           <GrowingTextarea
+                            allowEnterKey={true}
                             class={styles.descriptionText}
                             placeholder={t('Enter image description')}
                             initialValue={slide.body}

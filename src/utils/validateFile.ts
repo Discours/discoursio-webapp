@@ -23,6 +23,10 @@ export const validateFiles = (fileType: FileTypeToUpload, files: UploadFile[]): 
         isValid = docExtension ? docExtensions.has(docExtension) : false
         break
       }
+      case 'audio': {
+        isValid = file.file.type.startsWith('audio/')
+        break
+      }
       default: {
         isValid = false
       }

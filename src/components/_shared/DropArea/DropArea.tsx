@@ -6,14 +6,16 @@ import { useLocalize } from '../../../context/localize'
 import { validateFiles } from '../../../utils/validateFile'
 import type { FileTypeToUpload } from '../../../pages/types'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
+import { UploadedFile } from '../../../pages/types'
 
 type Props = {
   class?: string
   placeholder: string
-  description?: string | JSX.Element
-  fileType: FileTypeToUpload
   isMultiply: boolean
-  onUpload: (value: string[]) => void
+  fileType: FileTypeToUpload
+  onUpload: (value: UploadedFile[]) => void
+  description?: string | JSX.Element
+  isSquare?: boolean
 }
 
 export const DropArea = (props: Props) => {
@@ -26,15 +28,16 @@ export const DropArea = (props: Props) => {
     try {
       setLoading(true)
 
-      const results: string[] = []
+      const results: UploadedFile[] = []
       for (const file of files) {
         const result = await handleFileUpload(file)
-        results.push(result.url)
+        results.push(result)
       }
       props.onUpload(results)
       setLoading(false)
     } catch (error) {
-      setDropAreaError('Error')
+      setLoading(false)
+      setDropAreaError(t('Upload error'))
       console.error('[runUpload]', error)
     }
   }
@@ -81,7 +84,7 @@ export const DropArea = (props: Props) => {
   }
 
   return (
-    <div class={clsx(styles.DropArea, props.class)}>
+    <div class={clsx(styles.DropArea, props.class, props.isSquare && styles['square'])}>
       <div
         class={clsx(styles.field, { [styles.active]: dragActive() })}
         onDragEnter={handleDrag}
@@ -91,11 +94,14 @@ export const DropArea = (props: Props) => {
         onClick={handleDropFieldClick}
       >
         <div class={styles.text}>{loading() ? 'Loading...' : props.placeholder}</div>
+        <Show when={!loading() && props.isSquare && props.description}>
+          <div class={styles.description}>{props.description}</div>
+        </Show>
       </div>
       <Show when={dropAreaError()}>
         <div class={styles.error}>{dropAreaError()}</div>
       </Show>
-      <Show when={!dropAreaError() && props.description}>
+      <Show when={!dropAreaError() && props.description && !props.isSquare}>
         <div class={styles.description}>{props.description}</div>
       </Show>
     </div>

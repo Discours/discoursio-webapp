@@ -1,7 +1,7 @@
 import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
-import AudioPlayer from './AudioPlayer/AudioPlayer'
+import { AudioPlayer } from './AudioPlayer'
 import type { Author, Shout } from '../../graphql/types.gen'
 import MD from './MD'
 import { SharePopup } from './SharePopup'
@@ -21,18 +21,13 @@ import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import article from '../Editor/extensions/Article'
-import { SolidSwiper } from '../_shared/SolidSwiper'
-import { createEffect, For, createMemo, Match, onMount, Show, Switch, createSignal } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal, Switch, Match } from 'solid-js'
+import { MediaItem } from '../../pages/types'
+import { AudioHeader } from './AudioHeader'
 
 interface ArticleProps {
   article: Shout
   scrollToComments?: boolean
-}
-
-interface MediaItem {
-  url?: string
-  title?: string
-  body?: string
 }
 
 export const FullArticle = (props: ArticleProps) => {
@@ -117,40 +112,52 @@ export const FullArticle = (props: ArticleProps) => {
         <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             {/*TODO: Check styles.shoutTopic*/}
-            <div class={styles.shoutHeader}>
-              <Show when={mainTopic()}>
-                <div class={styles.shoutTopic}>
-                  <a
-                    href={getPagePath(router, 'topic', { slug: props.article.mainTopic })}
-                    class={styles.mainTopicLink}
-                  >
-                    {mainTopic().title}
-                  </a>
+            <Switch>
+              <Match when={props.article.layout !== 'audio'}>
+                <div class={styles.shoutHeader}>
+                  <Show when={mainTopic()}>
+                    <div class={styles.shoutTopic}>
+                      <a
+                        href={getPagePath(router, 'topic', { slug: props.article.mainTopic })}
+                        class={styles.mainTopicLink}
+                      >
+                        {mainTopic().title}
+                      </a>
+                    </div>
+                  </Show>
+
+                  <h1>{props.article.title}</h1>
+                  <Show when={props.article.subtitle}>
+                    <h4>{capitalize(props.article.subtitle, false)}</h4>
+                  </Show>
+
+                  <div class={styles.shoutAuthor}>
+                    <For each={props.article.authors}>
+                      {(a: Author, index) => (
+                        <>
+                          <Show when={index() > 0}>, </Show>
+                          <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
+                        </>
+                      )}
+                    </For>
+                  </div>
+                  <Show when={props.article.cover && props.article.layout !== 'video'}>
+                    <div
+                      class={styles.shoutCover}
+                      style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}
+                    />
+                  </Show>
                 </div>
-              </Show>
-
-              <h1>{props.article.title}</h1>
-              <Show when={props.article.subtitle}>
-                <h4>{capitalize(props.article.subtitle, false)}</h4>
-              </Show>
-
-              <div class={styles.shoutAuthor}>
-                <For each={props.article.authors}>
-                  {(a: Author, index) => (
-                    <>
-                      <Show when={index() > 0}>, </Show>
-                      <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
-                    </>
-                  )}
-                </For>
-              </div>
-              <Show when={props.article.cover && props.article.layout !== 'video'}>
-                <div
-                  class={styles.shoutCover}
-                  style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}
+              </Match>
+              <Match when={props.article.layout === 'audio'}>
+                <AudioHeader
+                  title={props.article.title}
+                  cover={props.article.cover}
+                  artistData={media()[0]}
+                  topic={mainTopic()}
                 />
-              </Show>
-            </div>
+              </Match>
+            </Switch>
 
             <Show when={media() && props.article.layout === 'video'}>
               <div class="media-items">

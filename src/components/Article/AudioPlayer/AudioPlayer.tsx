@@ -1,54 +1,63 @@
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
-
+import { createEffect, createSignal, on, onMount, Show } from 'solid-js'
 import { PlayerHeader } from './PlayerHeader'
 import { PlayerPlaylist } from './PlayerPlaylist'
-
 import styles from './AudioPlayer.module.scss'
+import { MediaItem } from '../../../pages/types'
 
-export type MediaItem = {
-  id?: number
-  body: string
-  pic: string
-  title: string
-  url: string
-  isCurrent: boolean
-  isPlaying: boolean
+export type Audio = {
+  pic?: string
+  index?: number
+  isCurrent?: boolean
+  isPlaying?: boolean
+} & MediaItem
+
+type Props = {
+  media: Audio[]
+  articleSlug?: string
+  body?: string
+  editorMode?: boolean
+  onAudioChange?: (index: number, field: string, value: string) => void
 }
 
-const prepareMedia = (media: MediaItem[]) =>
+const prepareMedia = (media: Audio[]) =>
   media.map((item, index) => ({
     ...item,
-    id: index,
+    index: index,
     isCurrent: false,
     isPlaying: false
   }))
 
 const progressUpdate = (audioRef, progressFilledRef, duration) => {
-  progressFilledRef.style.width = `${(audioRef.currentTime / duration) * 100 || 0}%`
+  progressFilledRef.current.style.width = `${(audioRef.current.currentTime / duration) * 100 || 0}%`
 }
 
 const scrub = (event, progressRef, duration, audioRef) => {
-  audioRef.currentTime = (event.offsetX / progressRef.offsetWidth) * duration
+  audioRef.current.currentTime = (event.offsetX / progressRef.current.offsetWidth) * duration
 }
 
 const getFormattedTime = (point) => new Date(point * 1000).toISOString().slice(14, -5)
 
-export default (props: { media: MediaItem[]; articleSlug: string; body: string }) => {
-  let audioRef: HTMLAudioElement
-  let progressRef: HTMLDivElement
-  let progressFilledRef: HTMLDivElement
+export const AudioPlayer = (props: Props) => {
+  const audioRef: { current: HTMLAudioElement } = { current: null }
+  const progressRef: { current: HTMLDivElement } = { current: null }
+  const progressFilledRef: { current: HTMLDivElement } = { current: null }
 
   const [audioContext, setAudioContext] = createSignal<AudioContext>()
   const [gainNode, setGainNode] = createSignal<GainNode>()
-
-  const [tracks, setTracks] = createSignal<MediaItem[] | null>(prepareMedia(props.media))
-
+  const [tracks, setTracks] = createSignal<Audio[] | null>(prepareMedia(props.media))
   const [duration, setDuration] = createSignal<number>(0)
   const [currentTimeContent, setCurrentTimeContent] = createSignal<string>('00:00')
   const [currentDurationContent, setCurrentDurationContent] = createSignal<string>('00:00')
-
   const [mousedown, setMousedown] = createSignal<boolean>(false)
 
+  createEffect(
+    on(
+      () => props.media,
+      () => {
+        setTracks(prepareMedia(props.media))
+      }
+    )
+  )
   const getCurrentTrack = () =>
     tracks().find((track) => track.isCurrent) ||
     (() => {
@@ -63,10 +72,10 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
     })()
 
   createEffect(() => {
-    if (audioRef.src !== getCurrentTrack().url) {
-      audioRef.src = getCurrentTrack().url
+    if (audioRef.current.src !== getCurrentTrack().url) {
+      audioRef.current.src = getCurrentTrack().url
 
-      audioRef.load()
+      audioRef.current.load()
     }
   })
 
@@ -76,33 +85,33 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
     }
   })
 
-  const playMedia = async (m: MediaItem) => {
+  const playMedia = async (m: Audio) => {
     setTracks(
       tracks().map((track) => ({
         ...track,
-        isCurrent: track.id === m.id,
-        isPlaying: track.id === m.id ? !track.isPlaying : false
+        isCurrent: track.index === m.index,
+        isPlaying: track.index === m.index ? !track.isPlaying : false
       }))
     )
 
     progressUpdate(audioRef, progressFilledRef, duration())
 
-    if (audioContext().state === 'suspended') audioContext().resume()
+    if (audioContext().state === 'suspended') await audioContext().resume()
 
     if (getCurrentTrack().isPlaying) {
-      await audioRef.play()
+      await audioRef.current.play()
     } else {
-      audioRef.pause()
+      audioRef.current.pause()
     }
   }
 
   const setTimes = () => {
-    setCurrentTimeContent(getFormattedTime(audioRef.currentTime))
+    setCurrentTimeContent(getFormattedTime(audioRef.current.currentTime))
   }
 
   const handleAudioEnd = () => {
-    progressFilledRef.style.width = '0%'
-    audioRef.currentTime = 0
+    progressFilledRef.current.style.width = '0%'
+    audioRef.current.currentTime = 0
   }
 
   const handleAudioTimeUpdate = () => {
@@ -117,48 +126,57 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
 
     setTimes()
 
-    const track = audioContext().createMediaElementSource(audioRef)
+    const track = audioContext().createMediaElementSource(audioRef.current)
     track.connect(gainNode()).connect(audioContext().destination)
   })
 
   const playPrevTrack = () => {
-    const { id } = getCurrentTrack()
-    const currIndex = tracks().findIndex((track) => track.id === id)
+    const { index } = getCurrentTrack()
+    const currIndex = tracks().findIndex((track) => track.index === index)
 
     const getUpdatedStatus = (trackId) =>
       currIndex === 0
-        ? trackId === tracks()[tracks().length - 1].id
-        : trackId === tracks()[currIndex - 1].id
+        ? trackId === tracks()[tracks().length - 1].index
+        : trackId === tracks()[currIndex - 1].index
 
     setTracks(
       tracks().map((track) => ({
         ...track,
-        isCurrent: getUpdatedStatus(track.id),
-        isPlaying: getUpdatedStatus(track.id)
+        isCurrent: getUpdatedStatus(track.index),
+        isPlaying: getUpdatedStatus(track.index)
       }))
     )
   }
 
   const playNextTrack = () => {
-    const { id } = getCurrentTrack()
-    const currIndex = tracks().findIndex((track) => track.id === id)
+    const { index } = getCurrentTrack()
+    const currIndex = tracks().findIndex((track) => track.index === index)
 
     const getUpdatedStatus = (trackId) =>
       currIndex === tracks().length - 1
-        ? trackId === tracks()[0].id
-        : trackId === tracks()[currIndex + 1].id
+        ? trackId === tracks()[0].index
+        : trackId === tracks()[currIndex + 1].index
 
     setTracks(
       tracks().map((track) => ({
         ...track,
-        isCurrent: getUpdatedStatus(track.id),
-        isPlaying: getUpdatedStatus(track.id)
+        isCurrent: getUpdatedStatus(track.index),
+        isPlaying: getUpdatedStatus(track.index)
       }))
     )
   }
 
   const handleOnAudioMetadataLoad = ({ target }) => {
     setDuration(target.duration)
+  }
+
+  const handleAudioDescriptionChange = (index: number, field: string, value) => {
+    props.onAudioChange(index, field, value)
+    setTracks(
+      tracks().map((track, idx) => {
+        return idx === index ? { ...track, [field]: value } : track
+      })
+    )
   }
 
   return (
@@ -177,24 +195,24 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
         <div class={styles.timeline}>
           <div
             class={styles.progress}
-            ref={progressRef}
+            ref={(el) => (progressRef.current = el)}
             onClick={(e) => scrub(e, progressRef, duration(), audioRef)}
             onMouseMove={(e) => mousedown() && scrub(e, progressRef, duration(), audioRef)}
             onMouseDown={() => setMousedown(true)}
             onMouseUp={() => setMousedown(false)}
           >
-            <div class={styles.progressFilled} ref={progressFilledRef}></div>
+            <div class={styles.progressFilled} ref={(el) => (progressFilledRef.current = el)} />
           </div>
           <div class={styles.progressTiming}>
             <span>{currentTimeContent()}</span>
             <span>{currentDurationContent()}</span>
           </div>
           <audio
-            ref={audioRef}
+            ref={(el) => (audioRef.current = el)}
             onTimeUpdate={handleAudioTimeUpdate}
             onCanPlay={() => {
               if (getCurrentTrack().isPlaying) {
-                audioRef.play()
+                audioRef.current.play()
               }
             }}
             onLoadedMetadata={handleOnAudioMetadataLoad}
@@ -203,14 +221,15 @@ export default (props: { media: MediaItem[]; articleSlug: string; body: string }
           />
         </div>
       </Show>
-
       <Show when={tracks()}>
         <PlayerPlaylist
+          editorMode={props.editorMode}
           playMedia={playMedia}
           tracks={tracks()}
-          getCurrentTrack={getCurrentTrack}
+          currentTrack={getCurrentTrack()}
           articleSlug={props.articleSlug}
           body={props.body}
+          onAudioChange={handleAudioDescriptionChange}
         />
       </Show>
     </div>

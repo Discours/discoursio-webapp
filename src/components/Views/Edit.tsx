@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -16,9 +16,12 @@ import { hideModal, showModal } from '../../stores/ui'
 import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
+import { AudioUploader } from '../Editor/AudioUploader'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
+import { DropArea } from '../_shared/DropArea'
+import { LayoutType, MediaItem } from '../../pages/types'
 
 type Props = {
   shout: Shout
@@ -66,7 +69,7 @@ export const EditView = (props: Props) => {
     layout: props.shout.layout
   })
 
-  const mediaItems = createMemo(() => {
+  const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
     return JSON.parse(form.media || '[]')
   })
 
@@ -125,9 +128,9 @@ export const EditView = (props: Props) => {
     setForm('selectedTopics', newSelectedTopics)
   }
 
-  const handleAddImages = (data) => {
-    const newImages = [...mediaItems(), ...data]
-    setForm('media', JSON.stringify(newImages))
+  const handleAddMedia = (data) => {
+    const newMedia = [...mediaItems(), ...data]
+    setForm('media', JSON.stringify(newMedia))
   }
   const handleSortedImages = (data) => {
     setForm('media', JSON.stringify(data))
@@ -139,15 +142,54 @@ export const EditView = (props: Props) => {
     setForm('media', JSON.stringify(copy))
   }
 
-  const handleImageChange = (index, value) => {
+  const handleMediaChange = (index, value) => {
     const updated = mediaItems().map((item, idx) => (idx === index ? value : item))
     setForm('media', JSON.stringify(updated))
+  }
+
+  const handleBaseFieldsChange = (key, value) => {
+    const updated = mediaItems().map((media) => ({ ...media, [key]: value }))
+    setForm('media', JSON.stringify(updated))
+  }
+
+  const articleTitle = () => {
+    switch (props.shout.layout as LayoutType) {
+      case 'audio': {
+        return t('Album name')
+      }
+      case 'image': {
+        return t('Gallery name')
+      }
+      default: {
+        return t('Header')
+      }
+    }
+  }
+
+  const pageTitle = () => {
+    switch (props.shout.layout as LayoutType) {
+      case 'audio': {
+        return t('Publish Album')
+      }
+      case 'image': {
+        return t('Create gallery')
+      }
+      case 'video': {
+        return t('Create video')
+      }
+      case 'literature': {
+        return t('New literary work')
+      }
+      default: {
+        return t('Write an article')
+      }
+    }
   }
 
   return (
     <>
       <div class={styles.container}>
-        <Title>{t('Write an article')}</Title>
+        <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
             <button
@@ -167,33 +209,88 @@ export const EditView = (props: Props) => {
                     [styles.visible]: page().route === 'edit'
                   })}
                 >
-                  <div class={styles.inputContainer}>
-                    <GrowingTextarea
-                      value={(value) => handleTitleInputChange(value)}
-                      class={styles.titleInput}
-                      placeholder={t('Header')}
-                      initialValue={form.title}
-                      maxLength={100}
-                    />
-                    <Show when={formErrors.title}>
-                      <div class={styles.validationError}>{formErrors.title}</div>
+                  <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'audio' })}>
+                    <div class={styles.inputContainer}>
+                      <GrowingTextarea
+                        allowEnterKey={true}
+                        value={(value) => handleTitleInputChange(value)}
+                        class={styles.titleInput}
+                        placeholder={articleTitle()}
+                        initialValue={form.title}
+                        maxLength={100}
+                      />
+
+                      <Show when={formErrors.title}>
+                        <div class={styles.validationError}>{formErrors.title}</div>
+                      </Show>
+
+                      <Show when={props.shout.layout === 'audio'}>
+                        <div class={styles.additional}>
+                          <input
+                            type="text"
+                            placeholder={t('Artist...')}
+                            class={styles.additionalInput}
+                            value={mediaItems()[0]?.artist || t('Artist')}
+                            onChange={(event) => handleBaseFieldsChange('artist', event.target.value)}
+                          />
+                          <input
+                            class={styles.additionalInput}
+                            placeholder={t('Release date...')}
+                            onChange={(event) => handleBaseFieldsChange('date', event.target.value)}
+                          />
+                          <input
+                            type="text"
+                            placeholder={t('Genre...')}
+                            class={styles.additionalInput}
+                            onChange={(event) => handleBaseFieldsChange('genre', event.target.value)}
+                          />
+                        </div>
+                      </Show>
+
+                      <Show when={props.shout.layout !== 'audio'}>
+                        <GrowingTextarea
+                          allowEnterKey={false}
+                          value={(value) => setForm('subtitle', value)}
+                          class={styles.subtitleInput}
+                          placeholder={t('Subheader')}
+                          initialValue={form.subtitle}
+                          maxLength={100}
+                        />
+                      </Show>
+                    </div>
+                    <Show
+                      when={form.coverImageUrl}
+                      fallback={
+                        <DropArea
+                          isSquare={true}
+                          placeholder={t('Add cover')}
+                          description={
+                            <>
+                              {t('min. 1400×1400 pix')}
+                              <br />
+                              {t('jpg, .png, max. 10 mb.')}
+                            </>
+                          }
+                          isMultiply={false}
+                          fileType={'image'}
+                          onUpload={(val) => setForm('coverImageUrl', val[0].url)}
+                        />
+                      }
+                    >
+                      <div
+                        class={styles.cover}
+                        style={{ 'background-image': `url(${imageProxy(form.coverImageUrl)})` }}
+                      />
                     </Show>
                   </div>
-                  <GrowingTextarea
-                    value={(value) => setForm('subtitle', value)}
-                    class={styles.subtitleInput}
-                    placeholder={t('Subheader')}
-                    initialValue={form.subtitle}
-                    maxLength={100}
-                  />
 
                   <Show when={props.shout.layout === 'image'}>
                     <SolidSwiper
                       editorMode={true}
                       images={mediaItems()}
-                      onImageChange={handleImageChange}
+                      onImageChange={handleMediaChange}
                       onImageDelete={(index) => handleImageDelete(index)}
-                      onImagesAdd={(value) => handleAddImages(value)}
+                      onImagesAdd={(value) => handleAddMedia(value)}
                       onImagesSorted={(value) => handleSortedImages(value)}
                     />
                   </Show>
@@ -204,7 +301,7 @@ export const EditView = (props: Props) => {
                       fallback={
                         <VideoUploader
                           data={(data) => {
-                            handleAddImages(data)
+                            handleAddMedia(data)
                           }}
                         />
                       }
@@ -222,6 +319,14 @@ export const EditView = (props: Props) => {
                         )}
                       </For>
                     </Show>
+                  </Show>
+
+                  <Show when={props.shout.layout === 'audio'}>
+                    <AudioUploader
+                      audio={mediaItems()}
+                      onAudioAdd={(value) => handleAddMedia(value)}
+                      onAudioChange={handleMediaChange}
+                    />
                   </Show>
 
                   <Editor

@@ -34,11 +34,23 @@ export type UploadFile = {
 
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
-export type FileTypeToUpload = 'image' | 'video' | 'doc'
+export type FileTypeToUpload = 'image' | 'video' | 'doc' | 'audio'
+
+export type AudioDescription = {
+  date?: string
+  genre?: string
+  artist?: string
+  lyrics?: string
+}
 
 export type MediaItem = {
   url: string
   title: string
   body: string
   source?: string
+} & AudioDescription
+
+export type UploadedFile = {
+  url: string
+  originalFilename: string
 }

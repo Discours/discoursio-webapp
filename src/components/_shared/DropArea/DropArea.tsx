@@ -6,13 +6,14 @@ import { useLocalize } from '../../../context/localize'
 import { validateFiles } from '../../../utils/validateFile'
 import type { FileTypeToUpload } from '../../../pages/types'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
+import { UploadedFile } from '../../../pages/types'
 
 type Props = {
   class?: string
   placeholder: string
   isMultiply: boolean
   fileType: FileTypeToUpload
-  onUpload: (value: string[]) => void
+  onUpload: (value: UploadedFile[]) => void
   description?: string | JSX.Element
   isSquare?: boolean
 }
@@ -27,15 +28,16 @@ export const DropArea = (props: Props) => {
     try {
       setLoading(true)
 
-      const results: string[] = []
+      const results: UploadedFile[] = []
       for (const file of files) {
         const result = await handleFileUpload(file)
-        results.push(result.url)
+        results.push(result)
       }
       props.onUpload(results)
       setLoading(false)
     } catch (error) {
-      setDropAreaError('Error')
+      setLoading(false)
+      setDropAreaError(t('Upload error'))
       console.error('[runUpload]', error)
     }
   }

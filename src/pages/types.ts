@@ -49,3 +49,8 @@ export type MediaItem = {
   body: string
   source?: string
 } & AudioDescription
+
+export type UploadedFile = {
+  url: string
+  originalFilename: string
+}

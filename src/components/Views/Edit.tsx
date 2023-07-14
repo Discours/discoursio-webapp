@@ -21,7 +21,7 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
-import { MediaItem } from '../../pages/types'
+import { LayoutType, MediaItem } from '../../pages/types'
 
 type Props = {
   shout: Shout
@@ -153,7 +153,7 @@ export const EditView = (props: Props) => {
   }
 
   const articleTitle = () => {
-    switch (props.shout.layout) {
+    switch (props.shout.layout as LayoutType) {
       case 'audio': {
         return t('Album name')
       }
@@ -167,7 +167,7 @@ export const EditView = (props: Props) => {
   }
 
   const pageTitle = () => {
-    switch (props.shout.layout) {
+    switch (props.shout.layout as LayoutType) {
       case 'audio': {
         return t('Publish Album')
       }
@@ -177,7 +177,7 @@ export const EditView = (props: Props) => {
       case 'video': {
         return t('Create video')
       }
-      case 'literary': {
+      case 'literature': {
         return t('New literary work')
       }
       default: {
@@ -185,6 +185,7 @@ export const EditView = (props: Props) => {
       }
     }
   }
+
   return (
     <>
       <div class={styles.container}>
@@ -229,7 +230,7 @@ export const EditView = (props: Props) => {
                             type="text"
                             placeholder={t('Artist...')}
                             class={styles.additionalInput}
-                            value={mediaItems()[0].artist || null}
+                            value={mediaItems()[0]?.artist || t('Artist')}
                             onChange={(event) => handleBaseFieldsChange('artist', event.target.value)}
                           />
                           <input
@@ -272,7 +273,7 @@ export const EditView = (props: Props) => {
                           }
                           isMultiply={false}
                           fileType={'image'}
-                          onUpload={(val) => setForm('coverImageUrl', val[0])}
+                          onUpload={(val) => setForm('coverImageUrl', val[0].url)}
                         />
                       }
                     >

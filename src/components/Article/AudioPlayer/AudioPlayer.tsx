@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, on, onMount, Show } from 'solid-js'
 import { PlayerHeader } from './PlayerHeader'
 import { PlayerPlaylist } from './PlayerPlaylist'
 import styles from './AudioPlayer.module.scss'
@@ -50,6 +50,14 @@ export const AudioPlayer = (props: Props) => {
   const [currentDurationContent, setCurrentDurationContent] = createSignal<string>('00:00')
   const [mousedown, setMousedown] = createSignal<boolean>(false)
 
+  createEffect(
+    on(
+      () => props.media,
+      () => {
+        setTracks(prepareMedia(props.media))
+      }
+    )
+  )
   const getCurrentTrack = () =>
     tracks().find((track) => track.isCurrent) ||
     (() => {

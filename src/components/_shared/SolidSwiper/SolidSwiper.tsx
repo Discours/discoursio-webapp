@@ -1,5 +1,5 @@
 import { createEffect, createSignal, For, Match, Show, Switch, on } from 'solid-js'
-import { MediaItem } from '../../../pages/types'
+import { MediaItem, UploadedFile } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
@@ -17,7 +17,7 @@ import { Loading } from '../Loading'
 import { imageProxy } from '../../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
-import { mediaItemsFromStringArray } from '../../../utils/mediaItemsFromStringArray'
+import { composeMediaItems } from '../../../utils/composeMediaItems'
 
 type Props = {
   images: MediaItem[]
@@ -67,8 +67,8 @@ export const SolidSwiper = (props: Props) => {
     )
   )
 
-  const handleDropAreaUpload = (value: string[]) => {
-    props.onImagesAdd(mediaItemsFromStringArray(value))
+  const handleDropAreaUpload = (value: UploadedFile[]) => {
+    props.onImagesAdd(composeMediaItems(value))
     swipeToUploaded()
   }
 
@@ -97,7 +97,7 @@ export const SolidSwiper = (props: Props) => {
           const result = await handleFileUpload(file)
           results.push(result.url)
         }
-        props.onImagesAdd(mediaItemsFromStringArray(results))
+        props.onImagesAdd(composeMediaItems(results))
         setLoading(false)
         swipeToUploaded()
       } catch (error) {

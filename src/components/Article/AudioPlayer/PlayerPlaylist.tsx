@@ -57,21 +57,25 @@ export const PlayerPlaylist = (props: Props) => {
                   when={activeEditIndex() === index() && props.editorMode}
                   fallback={
                     <>
-                      <div class={styles.title}>{m.title || t('Song title')}</div>
+                      <div class={styles.title}>
+                        {m.title.replace(/\.(wav|flac|mp3|aac)$/i, '') || t('Song title')}
+                      </div>
                       <div class={styles.artist}>{m.artist || t('Artist')}</div>
                     </>
                   }
                 >
                   <input
                     type="text"
+                    value={m.title}
                     class={styles.title}
-                    placeholder={m.title || t('Song title')}
+                    placeholder={t('Song title')}
                     onChange={(e) => updateData('title', e.target.value)}
                   />
                   <input
                     type="text"
+                    value={m.artist}
                     class={styles.artist}
-                    placeholder={m.artist || t('Artist')}
+                    placeholder={t('Artist')}
                     onChange={(e) => updateData('artist', e.target.value)}
                   />
                 </Show>

@@ -104,10 +104,7 @@ export const FullArticle = (props: ArticleProps) => {
   const {
     actions: { loadReactionsBy }
   } = useReactions()
-  createEffect(() => {
-    console.log('INITIAL', JSON.parse(props.article.media))
-    console.log('INITIAL', props.article)
-  })
+
   return (
     <>
       <Title>{props.article.title}</Title>

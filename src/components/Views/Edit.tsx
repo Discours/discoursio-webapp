@@ -230,18 +230,20 @@ export const EditView = (props: Props) => {
                             type="text"
                             placeholder={t('Artist...')}
                             class={styles.additionalInput}
-                            value={mediaItems()[0]?.artist || t('Artist')}
+                            value={mediaItems()[0]?.artist || ''}
                             onChange={(event) => handleBaseFieldsChange('artist', event.target.value)}
                           />
                           <input
                             class={styles.additionalInput}
                             placeholder={t('Release date...')}
+                            value={mediaItems()[0]?.date || ''}
                             onChange={(event) => handleBaseFieldsChange('date', event.target.value)}
                           />
                           <input
                             type="text"
                             placeholder={t('Genre...')}
                             class={styles.additionalInput}
+                            value={mediaItems()[0]?.genre || ''}
                             onChange={(event) => handleBaseFieldsChange('genre', event.target.value)}
                           />
                         </div>

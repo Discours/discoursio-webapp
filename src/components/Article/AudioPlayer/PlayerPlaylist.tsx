@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
 import { SharePopup, getShareUrl } from '../SharePopup'
 import { getDescription } from '../../../utils/meta'
 import { useLocalize } from '../../../context/localize'

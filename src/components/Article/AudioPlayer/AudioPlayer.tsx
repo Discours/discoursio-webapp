@@ -23,7 +23,6 @@ type Props = {
 const prepareMedia = (media: Audio[]) =>
   media.map((item, index) => ({
     ...item,
-    url: audioProxy(item.url),
     index: index,
     isCurrent: false,
     isPlaying: false
@@ -57,6 +56,7 @@ export const AudioPlayer = (props: Props) => {
       () => props.media,
       () => {
         setTracks(prepareMedia(props.media))
+        console.log('!!! prepareMedia:', prepareMedia(props.media))
       }
     )
   )

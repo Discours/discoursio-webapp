@@ -260,29 +260,31 @@ export const EditView = (props: Props) => {
                         />
                       </Show>
                     </div>
-                    <Show
-                      when={form.coverImageUrl}
-                      fallback={
-                        <DropArea
-                          isSquare={true}
-                          placeholder={t('Add cover')}
-                          description={
-                            <>
-                              {t('min. 1400×1400 pix')}
-                              <br />
-                              {t('jpg, .png, max. 10 mb.')}
-                            </>
-                          }
-                          isMultiply={false}
-                          fileType={'image'}
-                          onUpload={(val) => setForm('coverImageUrl', val[0].url)}
+                    <Show when={props.shout.layout === 'audio'}>
+                      <Show
+                        when={form.coverImageUrl}
+                        fallback={
+                          <DropArea
+                            isSquare={true}
+                            placeholder={t('Add cover')}
+                            description={
+                              <>
+                                {t('min. 1400×1400 pix')}
+                                <br />
+                                {t('jpg, .png, max. 10 mb.')}
+                              </>
+                            }
+                            isMultiply={false}
+                            fileType={'image'}
+                            onUpload={(val) => setForm('coverImageUrl', val[0].url)}
+                          />
+                        }
+                      >
+                        <div
+                          class={styles.cover}
+                          style={{ 'background-image': `url(${imageProxy(form.coverImageUrl)})` }}
                         />
-                      }
-                    >
-                      <div
-                        class={styles.cover}
-                        style={{ 'background-image': `url(${imageProxy(form.coverImageUrl)})` }}
-                      />
+                      </Show>
                     </Show>
                   </div>
 

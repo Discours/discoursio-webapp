@@ -92,7 +92,7 @@ export const SolidSwiper = (props: Props) => {
     if (isValid) {
       try {
         setLoading(true)
-        const results: string[] = []
+        const results: UploadedFile[] = []
         for (const file of selectedFiles) {
           const result = await handleFileUpload(file)
           results.push(result.url)

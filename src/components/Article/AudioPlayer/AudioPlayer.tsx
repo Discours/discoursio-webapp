@@ -3,7 +3,7 @@ import { PlayerHeader } from './PlayerHeader'
 import { PlayerPlaylist } from './PlayerPlaylist'
 import styles from './AudioPlayer.module.scss'
 import { MediaItem } from '../../../pages/types'
-import { audioProxy } from '../../../utils/imageProxy'
+import { imageProxy } from '../../../utils/imageProxy'
 
 export type Audio = {
   pic?: string
@@ -23,7 +23,7 @@ type Props = {
 const prepareMedia = (media: Audio[]) =>
   media.map((item, index) => ({
     ...item,
-    url: audioProxy(item.url),
+    url: imageProxy(item.url),
     index: index,
     isCurrent: false,
     isPlaying: false

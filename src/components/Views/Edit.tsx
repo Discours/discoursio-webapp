@@ -1,4 +1,4 @@
-import { Accessor, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -147,9 +147,19 @@ export const EditView = (props: Props) => {
     setForm('media', JSON.stringify(updated))
   }
 
+  const [baseAudioFields, setBaseAudioFields] = createSignal({
+    artist: '',
+    date: '',
+    genre: ''
+  })
+
   const handleBaseFieldsChange = (key, value) => {
-    const updated = mediaItems().map((media) => ({ ...media, [key]: value }))
-    setForm('media', JSON.stringify(updated))
+    if (mediaItems().length > 0) {
+      const updated = mediaItems().map((media) => ({ ...media, [key]: value }))
+      setForm('media', JSON.stringify(updated))
+    } else {
+      setBaseAudioFields({ ...baseAudioFields(), [key]: value })
+    }
   }
 
   const articleTitle = () => {
@@ -328,6 +338,7 @@ export const EditView = (props: Props) => {
                   <Show when={props.shout.layout === 'audio'}>
                     <AudioUploader
                       audio={mediaItems()}
+                      baseFields={baseAudioFields()}
                       onAudioAdd={(value) => handleAddMedia(value)}
                       onAudioChange={handleMediaChange}
                     />

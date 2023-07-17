@@ -5,20 +5,23 @@ import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 
 import { Icon } from '../../_shared/Icon'
 import styles from './AudioPlayer.module.scss'
+import { MediaItem } from '../../../pages/types'
 
-export const PlayerHeader = (props) => {
-  let volumeRef: HTMLInputElement
+type Props = {
+  onPlayMedia: () => void
+  playPrevTrack: () => void
+  playNextTrack: () => void
+  onVolumeChange: (volume: number) => void
+  isPlaying: boolean
+  currentTrack: MediaItem
+}
+
+export const PlayerHeader = (props: Props) => {
   const volumeContainerRef: { current: HTMLDivElement } = {
     current: null
   }
 
-  const { getCurrentTrack, onPlayMedia, gainNode, playPrevTrack, playNextTrack } = props
-
   const [isVolumeBarOpened, setIsVolumeBarOpened] = createSignal(false)
-
-  const handleVolumeChange = () => {
-    gainNode.gain.value = Number(volumeRef.value)
-  }
 
   const toggleVolumeBar = () => {
     setIsVolumeBarOpened(!isVolumeBarOpened())
@@ -32,23 +35,23 @@ export const PlayerHeader = (props) => {
 
   return (
     <div class={styles.playerHeader}>
-      <div class={styles.playerTitle}>{getCurrentTrack().title}</div>
+      <div class={styles.playerTitle}>{props.currentTrack.title}</div>
       <div class={styles.playerControls}>
         <button
           type="button"
-          onClick={onPlayMedia}
+          onClick={props.onPlayMedia}
           class={clsx(
             styles.playButton,
-            getCurrentTrack().isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay
+            props.isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay
           )}
           aria-label="Play"
           data-playing="false"
         >
-          <Icon name={getCurrentTrack().isPlaying ? 'pause' : 'play'} />
+          <Icon name={props.isPlaying ? 'pause' : 'play'} />
         </button>
         <button
           type="button"
-          onClick={playPrevTrack}
+          onClick={props.playPrevTrack}
           class={clsx(styles.controlsButton)}
           aria-label="Previous"
         >
@@ -56,7 +59,7 @@ export const PlayerHeader = (props) => {
         </button>
         <button
           type="button"
-          onClick={playNextTrack}
+          onClick={props.playNextTrack}
           class={clsx(styles.controlsButton, styles.controlsButtonNext)}
           aria-label="Next"
         >
@@ -65,7 +68,6 @@ export const PlayerHeader = (props) => {
         <div ref={(el) => (volumeContainerRef.current = el)} class={styles.volumeContainer}>
           <Show when={isVolumeBarOpened()}>
             <input
-              ref={volumeRef}
               type="range"
               id="volume"
               min="0"
@@ -73,7 +75,7 @@ export const PlayerHeader = (props) => {
               value="1"
               step="0.01"
               class={styles.volume}
-              onChange={handleVolumeChange}
+              onChange={({ target }) => props.onVolumeChange(Number(target.value))}
             />
           </Show>
           <button onClick={toggleVolumeBar} class={styles.volumeButton} role="button" aria-label="Volume">

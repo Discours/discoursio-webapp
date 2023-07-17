@@ -2,21 +2,22 @@ import { createSignal, For, Show } from 'solid-js'
 import { SharePopup, getShareUrl } from '../SharePopup'
 import { getDescription } from '../../../utils/meta'
 import { useLocalize } from '../../../context/localize'
-import type { Audio } from './AudioPlayer'
 import { Popover } from '../../_shared/Popover'
 import { Icon } from '../../_shared/Icon'
 import styles from './AudioPlayer.module.scss'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import MD from '../MD'
+import { MediaItem } from '../../../pages/types'
 
 type Props = {
-  tracks: Audio[]
-  currentTrack: Audio
-  playMedia: (audio: Audio) => void
+  media: MediaItem[]
+  currentTrackIndex: number
+  isPlaying: boolean
+  onPlayMedia: (trackIndex: number) => void
   articleSlug?: string
   body?: string
   editorMode?: boolean
-  onAudioChange?: (index: number, field: string, value: string) => void
+  onMediaItemFieldChange?: (index: number, field: keyof MediaItem, value: string) => void
 }
 
 export const PlayerPlaylist = (props: Props) => {
@@ -26,62 +27,52 @@ export const PlayerPlaylist = (props: Props) => {
   const toggleDropDown = (index) => {
     setActiveEditIndex(activeEditIndex() === index ? -1 : index)
   }
-  const updateData = (key, value) => {
-    props.onAudioChange(activeEditIndex(), key, value)
+  const handleMediaItemFieldChange = (field: keyof MediaItem, value: string) => {
+    props.onMediaItemFieldChange(activeEditIndex(), field, value)
   }
 
   return (
     <ul class={styles.playlist}>
-      <For each={props.tracks}>
-        {(m: Audio, index) => (
+      <For each={props.media}>
+        {(mi, index) => (
           <li>
             <div class={styles.playlistItem}>
               <button
                 class={styles.playlistItemPlayButton}
-                onClick={() => props.playMedia(m)}
+                onClick={() => props.onPlayMedia(index())}
                 type="button"
                 aria-label="Play"
               >
-                <Icon
-                  name={
-                    props.currentTrack &&
-                    props.currentTrack.index === m.index &&
-                    props.currentTrack.isPlaying
-                      ? 'pause'
-                      : 'play'
-                  }
-                />
+                <Icon name={props.currentTrackIndex === index() && props.isPlaying ? 'pause' : 'play'} />
               </button>
               <div class={styles.playlistItemText}>
                 <Show
                   when={activeEditIndex() === index() && props.editorMode}
                   fallback={
                     <>
-                      <div class={styles.title}>
-                        {m.title.replace(/\.(wav|flac|mp3|aac)$/i, '') || t('Song title')}
-                      </div>
-                      <div class={styles.artist}>{m.artist || t('Artist')}</div>
+                      <div class={styles.title}>{mi.title || t('Song title')}</div>
+                      <div class={styles.artist}>{mi.artist || t('Artist')}</div>
                     </>
                   }
                 >
                   <input
                     type="text"
-                    value={m.title}
+                    value={mi.title}
                     class={styles.title}
                     placeholder={t('Song title')}
-                    onChange={(e) => updateData('title', e.target.value)}
+                    onChange={(e) => handleMediaItemFieldChange('title', e.target.value)}
                   />
                   <input
                     type="text"
-                    value={m.artist}
+                    value={mi.artist}
                     class={styles.artist}
                     placeholder={t('Artist')}
-                    onChange={(e) => updateData('artist', e.target.value)}
+                    onChange={(e) => handleMediaItemFieldChange('artist', e.target.value)}
                   />
                 </Show>
               </div>
               <div class={styles.actions}>
-                <Show when={(m.lyrics || m.body) && !props.editorMode}>
+                <Show when={(mi.lyrics || mi.body) && !props.editorMode}>
                   <Popover content={t('Show lyrics')}>
                     {(triggerRef: (el) => void) => (
                       <button ref={triggerRef} type="button" onClick={() => toggleDropDown(index())}>
@@ -102,9 +93,9 @@ export const PlayerPlaylist = (props: Props) => {
                         }
                       >
                         <SharePopup
-                          title={m.title}
+                          title={mi.title}
                           description={getDescription(props.body)}
-                          imageUrl={m.pic}
+                          imageUrl={mi.pic}
                           shareUrl={getShareUrl({ pathname: `/${props.articleSlug}` })}
                           trigger={
                             <div>
@@ -123,14 +114,15 @@ export const PlayerPlaylist = (props: Props) => {
                 when={props.editorMode}
                 fallback={
                   <div class={styles.descriptionBlock}>
-                    <Show when={m.body}>
+                    <Show when={mi.body}>
                       <div class={styles.description}>
-                        <MD body={m.body} />
+                        {/*FIXME*/}
+                        <MD body={mi.body} />
                       </div>
                     </Show>
-                    <Show when={m.lyrics}>
+                    <Show when={mi.lyrics}>
                       <div class={styles.lyrics}>
-                        <MD body={m.lyrics} />
+                        <MD body={mi.lyrics} />
                       </div>
                     </Show>
                   </div>
@@ -141,15 +133,15 @@ export const PlayerPlaylist = (props: Props) => {
                     allowEnterKey={true}
                     class={styles.description}
                     placeholder={t('Description')}
-                    value={(value) => updateData('body', value)}
-                    initialValue={m.body || ''}
+                    value={(value) => handleMediaItemFieldChange('body', value)}
+                    initialValue={mi.body || ''}
                   />
                   <GrowingTextarea
                     allowEnterKey={true}
                     class={styles.lyrics}
                     placeholder={t('Song lyrics')}
-                    value={(value) => updateData('lyrics', value)}
-                    initialValue={m.lyrics || ''}
+                    value={(value) => handleMediaItemFieldChange('lyrics', value)}
+                    initialValue={mi.lyrics || ''}
                   />
                 </div>
               </Show>

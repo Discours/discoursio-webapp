@@ -1,4 +1,3 @@
-import styles from './ShoutRatingControl.module.scss'
 import { clsx } from 'clsx'
 import { createMemo, Show } from 'solid-js'
 import { ReactionKind, Shout } from '../../graphql/types.gen'
@@ -9,6 +8,7 @@ import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
+import styles from './ShoutRatingControl.module.scss'
 
 interface ShoutRatingControlProps {
   shout: Shout
@@ -82,7 +82,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   return (
     <div class={clsx(styles.rating, props.class)}>
-      <button class={styles.ratingControl} onClick={() => handleRatingChange(false)}>
+      <button onClick={() => handleRatingChange(false)}>
         <Show when={!isDownvoted()}>
           <Icon name="rating-control-less" />
         </Show>
@@ -98,7 +98,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         />
       </Popup>
 
-      <button class={styles.ratingControl} onClick={() => handleRatingChange(true)}>
+      <button onClick={() => handleRatingChange(true)}>
         <Show when={!isUpvoted()}>
           <Icon name="rating-control-more" />
         </Show>

@@ -21,7 +21,7 @@ import styles from './Article.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import article from '../Editor/extensions/Article'
-import { createEffect, For, createMemo, onMount, Show, createSignal, Switch, Match } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
 import { MediaItem } from '../../pages/types'
 import { AudioHeader } from './AudioHeader'
 import { SolidSwiper } from '../_shared/SolidSwiper'
@@ -64,7 +64,19 @@ export const FullArticle = (props: ArticleProps) => {
     }, 'bookmark')
   }
 
-  const body = createMemo(() => props.article.body)
+  const body = createMemo(() => {
+    if (props.article.layout === 'literature') {
+      try {
+        const media = JSON.parse(props.article.media)
+        if (media.length > 0) {
+          return media[0].body
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    return props.article.body
+  })
   const media = createMemo(() => {
     return JSON.parse(props.article.media || '[]')
   })
@@ -106,7 +118,7 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
-  console.log('!!! props.s:', JSON.parse(props.article.media))
+  console.log('!!! props.s:', props.article.layout === 'literature')
   return (
     <>
       <Title>{props.article.title}</Title>
@@ -166,7 +178,6 @@ export const FullArticle = (props: ArticleProps) => {
             <Show when={props.article.layout === 'image'}>
               <SolidSwiper images={media()} />
             </Show>
-
             <Show when={media() && props.article.layout === 'video'}>
               <div class="media-items">
                 <For each={media() || []}>

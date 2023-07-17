@@ -175,9 +175,6 @@ export const FullArticle = (props: ArticleProps) => {
                 </div>
               </Show>
             </Show>
-            <Show when={props.article.layout === 'image'}>
-              <SolidSwiper images={media()} />
-            </Show>
             <Show when={media() && props.article.layout === 'video'}>
               <div class="media-items">
                 <For each={media() || []}>
@@ -202,6 +199,18 @@ export const FullArticle = (props: ArticleProps) => {
           </article>
         </div>
       </div>
+
+      <Show when={props.article.layout === 'image'}>
+        <div class="floor floor--important">
+          <div class="wide-container">
+            <div class="row">
+              <div class="col-md-20 offset-md-2">
+                <SolidSwiper images={media()} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Show>
 
       <div class="wide-container">
         <div class="row">

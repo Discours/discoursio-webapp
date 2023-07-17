@@ -19,11 +19,11 @@ type Props = {
   editorMode?: boolean
   onAudioChange?: (index: number, field: string, value: string) => void
 }
-
+const startsWithHttps = (url) => url.startsWith('https')
 const prepareMedia = (media: Audio[]) =>
   media.map((item, index) => ({
     ...item,
-    url: imageProxy(item.url),
+    url: startsWithHttps(item.url) ? item.url : imageProxy(item.url),
     index: index,
     isCurrent: false,
     isPlaying: false

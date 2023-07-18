@@ -2,8 +2,8 @@ import { clsx } from 'clsx'
 import styles from './AudioUploader.module.scss'
 import { DropArea } from '../../_shared/DropArea'
 import { useLocalize } from '../../../context/localize'
-import { createEffect, createSignal, on, Show } from 'solid-js'
-import { MediaItem, UploadedFile } from '../../../pages/types'
+import { Show } from 'solid-js'
+import { MediaItem } from '../../../pages/types'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
 import { AudioPlayer } from '../../Article/AudioPlayer'
 import { Buffer } from 'buffer'
@@ -20,6 +20,7 @@ type Props = {
   }
   onAudioChange: (index: number, value: MediaItem) => void
   onAudioAdd: (value: MediaItem[]) => void
+  onAudioSorted: (value: MediaItem[]) => void
 }
 
 export const AudioUploader = (props: Props) => {
@@ -29,6 +30,18 @@ export const AudioUploader = (props: Props) => {
     props.onAudioChange(index, { ...props.audio[index], [field]: value })
   }
 
+  const handleChangeIndex = (direction: 'up' | 'down', index: number) => {
+    const media = [...props.audio]
+    if (direction === 'up' && index > 0) {
+      const copy = media.splice(index, 1)[0]
+      media.splice(index - 1, 0, copy)
+    } else if (direction === 'down' && index < media.length - 1) {
+      const copy = media.splice(index, 1)[0]
+      media.splice(index + 1, 0, copy)
+    }
+    props.onAudioSorted(media)
+  }
+
   return (
     <div class={clsx(styles.AudioUploader, props.class)}>
       <Show when={props.audio.length > 0}>
@@ -36,6 +49,7 @@ export const AudioUploader = (props: Props) => {
           editorMode={true}
           media={props.audio}
           onMediaItemFieldChange={handleMediaItemFieldChange}
+          onChangeMediaIndex={handleChangeIndex}
         />
       </Show>
       <DropArea

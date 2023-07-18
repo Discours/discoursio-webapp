@@ -11,6 +11,7 @@ type Props = {
   body?: string
   editorMode?: boolean
   onMediaItemFieldChange?: (index: number, field: keyof MediaItem, value: string) => void
+  onChangeMediaIndex?: (direction: 'up' | 'down', index) => void
 }
 
 const getFormattedTime = (point) => new Date(point * 1000).toISOString().slice(14, -5)
@@ -159,6 +160,7 @@ export const AudioPlayer = (props: Props) => {
         <PlayerPlaylist
           editorMode={props.editorMode}
           onPlayMedia={handlePlayMedia}
+          onChangeMediaIndex={(direction, index) => props.onChangeMediaIndex(direction, index)}
           isPlaying={isPlaying()}
           media={props.media}
           currentTrackIndex={currentTrackIndex()}

@@ -218,7 +218,7 @@ export const AuthorView = (props: AuthorProps) => {
       <Switch>
         <Match when={searchParams().by === 'about'}>
           <div class="wide-container">
-            <p>{author.bio}</p>
+            <p>{author.about}</p>
           </div>
         </Match>
         <Match when={searchParams().by === 'commented'}>

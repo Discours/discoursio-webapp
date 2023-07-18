@@ -7,6 +7,7 @@ import { use as useI18next, init as initI18next } from 'i18next'
 import HttpApi from 'i18next-http-backend'
 import * as Sentry from '@sentry/browser'
 import { SENTRY_DSN } from '../utils/config'
+import { resolveHydrationPromise } from '../utils/hydrationPromise'
 
 let layoutReady = false
 
@@ -48,4 +49,8 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
     )
     layoutReady = true
   }
+}
+
+export const onHydrationEnd = () => {
+  resolveHydrationPromise()
 }

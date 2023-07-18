@@ -123,7 +123,7 @@ export const FeedView = () => {
                     searchParams().by === 'publish_date' || !searchParams().by
                 })}
               >
-                <a href={getPagePath(router, page().route)}>{t('My feed')}</a>
+                <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
               </li>
               {/*<li>*/}
               {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}

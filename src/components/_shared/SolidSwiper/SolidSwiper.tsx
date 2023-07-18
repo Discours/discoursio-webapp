@@ -156,6 +156,7 @@ export const SolidSwiper = (props: Props) => {
               thumbs-swiper={'.thumbSwiper'}
               observer={true}
               onSlideChange={handleSlideChange}
+              space-between={20}
             >
               <For each={props.images}>
                 {(slide, index) => (
@@ -322,7 +323,7 @@ export const SolidSwiper = (props: Props) => {
                 })}
                 onClick={() => thumbSwipeRef.current.swiper.slidePrev()}
               >
-                <Icon iconClassName={styles.icon} name="swiper-l-arr" class={styles.icon} />
+                <Icon name="swiper-l-arr" class={styles.icon} />
               </div>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.next, {
@@ -330,7 +331,7 @@ export const SolidSwiper = (props: Props) => {
                 })}
                 onClick={() => thumbSwipeRef.current.swiper.slideNext()}
               >
-                <Icon name="swiper-r-arr" iconClassName={styles.icon} class={styles.icon} />
+                <Icon name="swiper-r-arr" class={styles.icon} />
               </div>
             </div>
           </div>

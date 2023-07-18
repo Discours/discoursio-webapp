@@ -444,6 +444,16 @@
       width: 2.4rem;
     }
 
+    a:hover {
+      .icon {
+        display: block;
+
+        @include media-breakpoint-up(lg) {
+          display: none;
+        }
+      }
+    }
+
     img {
       max-width: none;
       height: 2.4rem;
@@ -469,6 +479,10 @@
     }
   }
 
+  button {
+    margin: 0 !important;
+  }
+
   a::before {
     display: none;
   }
@@ -484,8 +498,12 @@
     }
 
     .textLabel {
-      background-color: var(--link-hover-background);
+      //background-color: var(--link-hover-background);
       color: var(--link-hover-color);
     }
+  }
+
+  a:hover {
+    background-color: var(--link-hover-background) !important;
   }
 }

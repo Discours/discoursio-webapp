@@ -186,6 +186,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                   <a href="?modal=auth&mode=login">
                     <span class={styles.textLabel}>{t('Enter')}</span>
                     <Icon name="user-default" class={styles.icon} />
+                    {/*<Icon name="user-default" class={clsx(styles.icon, styles.iconHover)} />*/}
                   </a>
                 </div>
               }

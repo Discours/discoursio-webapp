@@ -102,7 +102,7 @@ export const Beside = (props: BesideProps) => {
                 </ul>
               </div>
             </Show>
-            <div class={clsx('col-md-14', styles.shoutCardContainer)}>
+            <div class={clsx('col-md-16', styles.shoutCardContainer)}>
               <ArticleCard
                 article={props.beside}
                 settings={{ isBigTitle: true, isBeside: true, nodate: props.nodate }}

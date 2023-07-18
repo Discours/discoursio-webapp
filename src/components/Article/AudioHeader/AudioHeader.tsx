@@ -36,17 +36,19 @@ export const AudioHeader = (props: Props) => {
           </div>
         </Show>
         <h1>{props.title}</h1>
-        <div class={styles.artistData}>
-          <Show when={props.artistData?.artist}>
-            <div class={styles.item}>{props.artistData.artist}</div>
-          </Show>
-          <Show when={props.artistData?.date}>
-            <div class={styles.item}>{props.artistData.date}</div>
-          </Show>
-          <Show when={props.artistData?.genre}>
-            <div class={styles.item}>{props.artistData.genre}</div>
-          </Show>
-        </div>
+        <Show when={props.artistData}>
+          <div class={styles.artistData}>
+            <Show when={props.artistData?.artist}>
+              <div class={styles.item}>{props.artistData.artist}</div>
+            </Show>
+            <Show when={props.artistData?.date}>
+              <div class={styles.item}>{props.artistData.date}</div>
+            </Show>
+            <Show when={props.artistData?.genre}>
+              <div class={styles.item}>{props.artistData.genre}</div>
+            </Show>
+          </div>
+        </Show>
       </div>
     </div>
   )

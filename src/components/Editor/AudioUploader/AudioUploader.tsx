@@ -25,14 +25,18 @@ type Props = {
 export const AudioUploader = (props: Props) => {
   const { t } = useLocalize()
 
-  const handleAudioDescriptionChange = (index: number, field: string, value) => {
+  const handleMediaItemFieldChange = (index: number, field: keyof MediaItem, value) => {
     props.onAudioChange(index, { ...props.audio[index], [field]: value })
   }
 
   return (
     <div class={clsx(styles.AudioUploader, props.class)}>
       <Show when={props.audio.length > 0}>
-        <AudioPlayer editorMode={true} media={props.audio} onAudioChange={handleAudioDescriptionChange} />
+        <AudioPlayer
+          editorMode={true}
+          media={props.audio}
+          onMediaItemFieldChange={handleMediaItemFieldChange}
+        />
       </Show>
       <DropArea
         isMultiply={true}

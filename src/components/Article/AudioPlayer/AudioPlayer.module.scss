@@ -153,75 +153,56 @@
   align-items: center;
 }
 
+$vendors-track: ('::-webkit-slider-runnable-track', '::-moz-range-track', '::-ms-track');
+$vendors-thumb: ('::-webkit-slider-thumb', '::-moz-moz-range-thumb', '::-ms-thumb');
+
 .volume {
-  position: absolute;
-  z-index: 2;
-  right: 0;
-  bottom: 14px;
-
-  height: 28px;
   -webkit-appearance: none;
-  margin: 10px 0;
-  width: 80px;
-  background: transparent;
+  height: 19px;
+  float: left;
+  outline: none;
+  border: 2px solid black;
+  padding: 16px 8px;
+  position: absolute;
+  bottom: 60px;
+  left: -21px;
+  width: 100px;
+  transform: rotate(-90deg);
+  background: var(--background-color);
 
-  &:focus {
-    outline: none;
+  @each $vendor in $vendors-track {
+    &#{$vendor} {
+      width: 100%;
+      height: 3px;
+      cursor: pointer;
+      background: var(--background-color-invert);
+    }
   }
 
-  &::-moz-range-thumb,
-  &::-webkit-slider-thumb {
-    height: 16px;
-    width: 16px;
-    border-radius: 100px;
-    border: none;
-    cursor: pointer;
-
-    margin-top: -4px;
-  }
-  &:focus::-webkit-slider-runnable-track,
-  &::-moz-range-thumb,
-  &::-webkit-slider-thumb,
-  &::-webkit-slider-runnable-track,
-  &::-moz-range-track,
-  &::-ms-track,
-  &::-ms-fill-lower,
-  &::-ms-fill-upper,
-  &::-ms-thumb {
-    background: #0e0e0e;
+  @each $vendor in $vendors-thumb {
+    &#{$vendor} {
+      position: relative;
+      -webkit-appearance: none;
+      box-sizing: content-box;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 4px solid var(--default-color);
+      background-color: var(--background-color);
+      cursor: pointer;
+      margin: -7px 0 0 0;
+    }
+    &:active#{$vendor} {
+      transform: scale(1.2);
+      background: var(--background-color);
+    }
   }
 
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
+  &::-moz-range-progress {
+    background-color: var(--background-color);
   }
-
-  &::-webkit-slider-runnable-track,
-  &::-moz-range-track,
-  &::-ms-track {
-    width: 100%;
-    height: 6px;
-    cursor: pointer;
-    animate: 0.2s;
-    border-radius: 10px;
-  }
-
-  &::-ms-fill-lower,
-  &::-ms-fill-upper {
-    border-radius: 10px;
-  }
-
-  &::-ms-thumb {
-    margin-top: 1px;
-    height: 15px;
-    width: 15px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-  }
-
-  &:focus::-ms-fill-lower,
-  &:focus::-ms-fill-upper {
-    background: #38bdf8;
+  &::-moz-focus-outer {
+    border: 0;
   }
 }
 

@@ -189,6 +189,13 @@ export const FullArticle = (props: ArticleProps) => {
                 </For>
               </div>
             </Show>
+
+            <Show when={media().length > 0 && props.article.layout === 'audio'}>
+              <div class="media-items">
+                <AudioPlayer media={media()} articleSlug={props.article.slug} body={body()} />
+              </div>
+            </Show>
+
             <Show when={body()}>
               <div class={styles.shoutBody}>
                 <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>

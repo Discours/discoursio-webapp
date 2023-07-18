@@ -15,6 +15,15 @@ type BubbleMenuProps = {
   ref: (el: HTMLDivElement) => void
 }
 
+const checkUrl = (url) => {
+  try {
+    new URL(url)
+    return url
+  } catch {
+    return `https://${url}`
+  }
+}
+
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const { t } = useLocalize()
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal<boolean>(false)
@@ -59,11 +68,11 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   const handleLinkFormSubmit = (value: string) => {
-    const checkUrlProtocol = () => {
-      if (value.startsWith('http://') || value.startsWith('https://')) return
-      return `https://${value}`
-    }
-    props.editor.chain().focus().setLink({ href: checkUrlProtocol() }).run()
+    props.editor
+      .chain()
+      .focus()
+      .setLink({ href: checkUrl(value) })
+      .run()
   }
 
   const currentUrl = createEditorTransaction(

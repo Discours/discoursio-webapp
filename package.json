@@ -47,7 +47,7 @@
     "@nanostores/router": "0.8.3",
     "@nanostores/solid": "0.3.2",
     "@popperjs/core": "2.11.7",
-    "@sentry/browser": "7.59.2",
+    "@sentry/browser": "5.30.0",
     "@solid-primitives/media": "2.2.3",
     "@solid-primitives/memo": "1.2.4",
     "@solid-primitives/share": "2.0.4",

@@ -177,6 +177,9 @@ export const Editor = (props: EditorProps) => {
 
           setIsCommonMarkup(e.isActive('figure'))
           return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
+        },
+        tippyOptions: {
+          sticky: true
         }
       }),
       BubbleMenu.configure({

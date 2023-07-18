@@ -91,10 +91,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         <button
           ref={(el) => (plusButtonRef.current = el)}
           type="button"
-          onClick={() => {
-            console.log('!!! click:')
-            setMenuOpen(!menuOpen())
-          }}
+          onClick={() => setMenuOpen(!menuOpen())}
         >
           <Icon name="editor-plus" />
         </button>

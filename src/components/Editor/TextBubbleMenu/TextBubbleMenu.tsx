@@ -59,7 +59,11 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   const handleLinkFormSubmit = (value: string) => {
-    props.editor.chain().focus().setLink({ href: value }).run()
+    const checkUrlProtocol = () => {
+      if (value.startsWith('http://') || value.startsWith('https://')) return
+      return `https://${value}`
+    }
+    props.editor.chain().focus().setLink({ href: checkUrlProtocol() }).run()
   }
 
   const currentUrl = createEditorTransaction(

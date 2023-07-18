@@ -1,4 +1,4 @@
-import { Accessor, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -244,6 +244,10 @@ export const EditView = (props: Props) => {
                             onChange={(event) => handleBaseFieldsChange('artist', event.target.value)}
                           />
                           <input
+                            type="number"
+                            min="1900"
+                            max={new Date().getFullYear()}
+                            step="1"
                             class={styles.additionalInput}
                             placeholder={t('Release date...')}
                             value={mediaItems()[0]?.date || ''}
@@ -388,7 +392,7 @@ export const EditView = (props: Props) => {
                   {/*  />*/}
                   {/*</div>*/}
 
-                  <h4>Темы</h4>
+                  <h4>{t('Topics')}</h4>
                   {/*<p class="description">*/}
                   {/*  Добавьте несколько тем, чтобы читатель знал, о&nbsp;чем ваш материал, и&nbsp;мог найти*/}
                   {/*  его на&nbsp;страницах интересных ему тем. Темы можно менять местами, первая тема*/}

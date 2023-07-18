@@ -132,7 +132,7 @@ export const EditView = (props: Props) => {
     const newMedia = [...mediaItems(), ...data]
     setForm('media', JSON.stringify(newMedia))
   }
-  const handleSortedImages = (data) => {
+  const handleSortedMedia = (data) => {
     setForm('media', JSON.stringify(data))
   }
 
@@ -305,7 +305,7 @@ export const EditView = (props: Props) => {
                       onImageChange={handleMediaChange}
                       onImageDelete={(index) => handleImageDelete(index)}
                       onImagesAdd={(value) => handleAddMedia(value)}
-                      onImagesSorted={(value) => handleSortedImages(value)}
+                      onImagesSorted={(value) => handleSortedMedia(value)}
                     />
                   </Show>
 
@@ -341,6 +341,7 @@ export const EditView = (props: Props) => {
                       baseFields={baseAudioFields()}
                       onAudioAdd={(value) => handleAddMedia(value)}
                       onAudioChange={handleMediaChange}
+                      onAudioSorted={(value) => handleSortedMedia(value)}
                     />
                   </Show>
 

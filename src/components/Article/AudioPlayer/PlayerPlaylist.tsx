@@ -18,6 +18,7 @@ type Props = {
   body?: string
   editorMode?: boolean
   onMediaItemFieldChange?: (index: number, field: keyof MediaItem, value: string) => void
+  onChangeMediaIndex?: (direction: 'up' | 'down', index) => void
 }
 
 export const PlayerPlaylist = (props: Props) => {
@@ -72,6 +73,34 @@ export const PlayerPlaylist = (props: Props) => {
                 </Show>
               </div>
               <div class={styles.actions}>
+                <Show when={props.editorMode}>
+                  <Popover content={t('Move up')}>
+                    {(triggerRef: (el) => void) => (
+                      <button
+                        type="button"
+                        ref={triggerRef}
+                        class={styles.action}
+                        disabled={index() === 0}
+                        onClick={() => props.onChangeMediaIndex('up', index())}
+                      >
+                        <Icon name="up-button" />
+                      </button>
+                    )}
+                  </Popover>
+                  <Popover content={t('Move down')}>
+                    {(triggerRef: (el) => void) => (
+                      <button
+                        type="button"
+                        ref={triggerRef}
+                        class={styles.action}
+                        disabled={index() + 1 === Number(props.media.length)}
+                        onClick={() => props.onChangeMediaIndex('down', index())}
+                      >
+                        <Icon name="up-button" class={styles.moveIconDown} />
+                      </button>
+                    )}
+                  </Popover>
+                </Show>
                 <Show when={(mi.lyrics || mi.body) && !props.editorMode}>
                   <Popover content={t('Show lyrics')}>
                     {(triggerRef: (el) => void) => (

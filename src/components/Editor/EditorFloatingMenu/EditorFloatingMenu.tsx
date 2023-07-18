@@ -52,10 +52,12 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
       }
       case 'horizontal-rule': {
         props.editor.chain().focus().setHorizontalRule().run()
+        setSelectedMenuItem()
         return
       }
     }
   })
+
   const closeUploadModalHandler = () => {
     setSelectedMenuItem()
     setMenuOpen(false)
@@ -90,6 +92,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
           ref={(el) => (plusButtonRef.current = el)}
           type="button"
           onClick={() => {
+            console.log('!!! click:')
             setMenuOpen(!menuOpen())
           }}
         >

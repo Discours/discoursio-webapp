@@ -295,7 +295,7 @@ export const SolidSwiper = (props: Props) => {
                             </div>
                             <div
                               class={clsx(styles.action, {
-                                [styles.hidden]: index() + 1 === Number(props.images.length)
+                                [styles.hidden]: index() === props.images.length - 1
                               })}
                               onClick={() => handleChangeIndex('right', index())}
                             >

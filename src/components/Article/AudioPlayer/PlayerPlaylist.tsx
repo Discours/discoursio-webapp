@@ -93,7 +93,7 @@ export const PlayerPlaylist = (props: Props) => {
                         type="button"
                         ref={triggerRef}
                         class={styles.action}
-                        disabled={index() + 1 === Number(props.media.length)}
+                        disabled={index() === props.media.length - 1}
                         onClick={() => props.onChangeMediaIndex('down', index())}
                       >
                         <Icon name="up-button" class={styles.moveIconDown} />

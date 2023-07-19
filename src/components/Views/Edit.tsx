@@ -1,4 +1,4 @@
-import { Accessor, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -17,7 +17,6 @@ import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { AudioUploader } from '../Editor/AudioUploader'
-import { VideoPlayer } from '../_shared/VideoPlayer'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
@@ -136,7 +135,7 @@ export const EditView = (props: Props) => {
     setForm('media', JSON.stringify(data))
   }
 
-  const handleImageDelete = (index) => {
+  const handleMediaDelete = (index) => {
     const copy = [...mediaItems()]
     copy.splice(index, 1)
     setForm('media', JSON.stringify(copy))
@@ -307,36 +306,18 @@ export const EditView = (props: Props) => {
                       editorMode={true}
                       images={mediaItems()}
                       onImageChange={handleMediaChange}
-                      onImageDelete={(index) => handleImageDelete(index)}
+                      onImageDelete={(index) => handleMediaDelete(index)}
                       onImagesAdd={(value) => handleAddMedia(value)}
                       onImagesSorted={(value) => handleSortedMedia(value)}
                     />
                   </Show>
 
                   <Show when={props.shout.layout === 'video'}>
-                    <Show
-                      when={form.media}
-                      fallback={
-                        <VideoUploader
-                          data={(data) => {
-                            handleAddMedia(data)
-                          }}
-                        />
-                      }
-                    >
-                      <For each={mediaItems()}>
-                        {(mediaItem) => (
-                          <>
-                            <VideoPlayer
-                              videoUrl={mediaItem?.url}
-                              title={mediaItem?.title}
-                              description={mediaItem?.body}
-                              deleteAction={() => setForm('media', null)}
-                            />
-                          </>
-                        )}
-                      </For>
-                    </Show>
+                    <VideoUploader
+                      video={mediaItems()}
+                      onVideoAdd={(data) => handleAddMedia(data)}
+                      onVideoDelete={(index) => handleMediaDelete(index)}
+                    />
                   </Show>
 
                   <Show when={props.shout.layout === 'audio'}>

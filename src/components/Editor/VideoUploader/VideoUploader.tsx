@@ -2,32 +2,24 @@ import { clsx } from 'clsx'
 import styles from './VideoUploader.module.scss'
 import { useLocalize } from '../../../context/localize'
 import { createDropzone } from '@solid-primitives/upload'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
 import { useSnackbar } from '../../../context/snackbar'
 import { validateUrl } from '../../../utils/validateUrl'
-import { VideoPlayer } from '../../_shared/VideoPlayer'
 import type { MediaItem } from '../../../pages/types'
-// import { handleFileUpload } from '../../../utils/handleFileUpload'
+import { composeMediaItems } from '../../../utils/composeMediaItems'
+import { VideoPlayer } from '../../_shared/VideoPlayer'
 
 type Props = {
-  class?: string
-  data: (value: MediaItem[]) => void
+  video: MediaItem[]
+  onVideoAdd: (value: MediaItem[]) => void
+  onVideoDelete: (mediaItemIndex: number) => void
 }
 
 export const VideoUploader = (props: Props) => {
   const { t } = useLocalize()
   const [dragActive, setDragActive] = createSignal(false)
-  const [dragError, setDragError] = createSignal<string>()
+  const [error, setError] = createSignal<string>()
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
-  const [data, setData] = createSignal<MediaItem>()
-
-  const updateData = (key, value) => {
-    setData((prev) => ({ ...prev, [key]: value }))
-  }
-
-  createEffect(() => {
-    props.data([data()])
-  })
 
   const {
     actions: { showSnackbar }
@@ -39,97 +31,84 @@ export const VideoUploader = (props: Props) => {
     current: null
   }
 
-  // const [videoUrl, setVideoUrl] = createSignal<string | undefined>()
-  // const runUpload = async (file) => {
-  //   try {
-  //     const fileUrl = await handleFileUpload(file)
-  //     setVideoUrl(fileUrl)
-  //   } catch (error) {
-  //     console.error('[runUpload]', error)
-  //   }
-  // }
-
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async () => {
       setDragActive(false)
       if (droppedFiles().length > 1) {
-        setDragError(t('Many files, choose only one'))
+        setError(t('Many files, choose only one'))
       } else if (droppedFiles()[0].file.type.startsWith('video/')) {
         await showSnackbar({
           body: t(
             'This functionality is currently not available, we would like to work on this issue. Use the download link.'
           )
         })
-        // await runUpload(droppedFiles()[0])
       } else {
-        setDragError(t('Video format not supported'))
+        setError(t('Video format not supported'))
       }
     }
   })
   const handleDrag = (event) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {
       setDragActive(true)
-      setDragError()
+      setError()
     } else if (event.type === 'dragleave') {
       setDragActive(false)
     }
   }
 
   const handleUrlInput = async (value: string) => {
+    setError()
     if (validateUrl(value)) {
-      updateData('url', value)
+      props.onVideoAdd(composeMediaItems([{ url: value }]))
     } else {
       setIncorrectUrl(true)
     }
   }
 
   return (
-    <div class={clsx(styles.VideoUploader, props.class)}>
-      <Show
-        when={data() && data().url}
-        fallback={
-          <>
-            <div
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onClick={() =>
-                showSnackbar({
-                  body: t(
-                    'This functionality is currently not available, we would like to work on this issue. Use the download link.'
-                  )
-                })
-              }
-              ref={dropzoneRef}
-              class={clsx(styles.dropArea, { [styles.active]: dragActive() })}
-            >
-              <div class={styles.text}>{t('Upload video')}</div>
-            </div>
-            <Show when={dragError()}>
-              <div class={styles.error}>{dragError()}</div>
-            </Show>
-            <div class={styles.inputHolder}>
-              <input
-                class={clsx(styles.urlInput, { [styles.hasError]: incorrectUrl() })}
-                ref={(el) => (urlInput.current = el)}
-                type="text"
-                placeholder={t('Insert video link')}
-                onChange={(event) => handleUrlInput(event.currentTarget.value)}
-              />
-            </div>
-            <Show when={incorrectUrl()}>
-              <div class={styles.error}>{t('It does not look like url')}</div>
-            </Show>
-          </>
-        }
-      >
-        <VideoPlayer
-          deleteAction={() => setData()}
-          videoUrl={data().url}
-          title={data().title}
-          description={data().body}
-        />
-      </Show>
-    </div>
+    <Show
+      when={props.video.length === 0}
+      fallback={
+        <For each={props.video}>
+          {(mi, index) => (
+            <VideoPlayer onVideoDelete={() => props.onVideoDelete(index())} videoUrl={mi?.url} />
+          )}
+        </For>
+      }
+    >
+      <div class={styles.VideoUploader}>
+        <div
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onClick={() =>
+            showSnackbar({
+              body: t(
+                'This functionality is currently not available, we would like to work on this issue. Use the download link.'
+              )
+            })
+          }
+          ref={dropzoneRef}
+          class={clsx(styles.dropArea, { [styles.active]: dragActive() })}
+        >
+          <div class={styles.text}>{t('Upload video')}</div>
+        </div>
+        <Show when={error()}>
+          <div class={styles.error}>{error()}</div>
+        </Show>
+        <div class={styles.inputHolder}>
+          <input
+            class={clsx(styles.urlInput, { [styles.hasError]: incorrectUrl() })}
+            ref={(el) => (urlInput.current = el)}
+            type="text"
+            placeholder={t('Insert video link')}
+            onChange={(event) => handleUrlInput(event.currentTarget.value)}
+          />
+        </div>
+        <Show when={incorrectUrl()}>
+          <div class={styles.error}>{t('It does not look like url')}</div>
+        </Show>
+      </div>
+    </Show>
   )
 }

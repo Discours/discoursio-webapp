@@ -3,11 +3,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1rem 0;
+  margin: 1rem auto;
   position: relative;
 
-  @include media-breakpoint-up(md) {
-    margin: 1rem -16.6666% 2rem -25%;
+  &.articleView {
+    @include media-breakpoint-up(md) {
+      margin: 1rem -16.6666% 2rem -25%;
+    }
   }
 
   .controls {

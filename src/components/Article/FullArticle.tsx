@@ -180,7 +180,12 @@ export const FullArticle = (props: ArticleProps) => {
                 <For each={media() || []}>
                   {(m: MediaItem) => (
                     <div class={styles.shoutMediaBody}>
-                      <VideoPlayer videoUrl={m.url} title={m.title} description={m.body} />
+                      <VideoPlayer
+                        articleView={true}
+                        videoUrl={m.url}
+                        title={m.title}
+                        description={m.body}
+                      />
                       <Show when={m?.body}>
                         <MD body={m.body} />
                       </Show>

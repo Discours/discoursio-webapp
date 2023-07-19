@@ -45,5 +45,5 @@ export type MediaItem = {
 
 export type UploadedFile = {
   url: string
-  originalFilename: string
+  originalFilename?: string
 }

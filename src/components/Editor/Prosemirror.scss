@@ -15,6 +15,37 @@
   opacity: 0.3;
 }
 
+//
+.ProseMirror p,
+.ProseMirror ul,
+.ProseMirror h4,
+.ProseMirror blockquote {
+  @media (min-width: 768px) {
+    padding-left: calc(21.9% + 3px);
+  }
+}
+
+.ProseMirror h2 {
+  @media (min-width: 768px) {
+    padding-left: calc(21.9% + 2px);
+  }
+}
+
+.ProseMirror h3 {
+  @media (min-width: 768px) {
+    padding-left: calc(21.9% + 2px);
+  }
+}
+
+.ProseMirror * p,
+.ProseMirror * h2,
+.ProseMirror * h3,
+.ProseMirror * h4 {
+  @media (min-width: 768px) {
+    padding-left: unset;
+  }
+}
+
 /* Give a remote user a caret */
 .collaboration-cursor__caret {
   border-left: 1px solid #0d0d0d;

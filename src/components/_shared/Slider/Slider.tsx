@@ -25,7 +25,6 @@ interface Props {
 export const Slider = (props: Props) => {
   let el: HTMLDivElement | undefined
   let thumbsEl: HTMLDivElement | undefined
-  let pagEl: HTMLDivElement | undefined
   let nextEl: HTMLDivElement | undefined
   let prevEl: HTMLDivElement | undefined
 

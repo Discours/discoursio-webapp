@@ -3,7 +3,7 @@ import solidPlugin from 'vite-plugin-solid'
 import ssrPlugin from 'vite-plugin-ssr/plugin'
 import sassDts from 'vite-plugin-sass-dts'
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   return {
     envPrefix: 'PUBLIC_',
     plugins: [solidPlugin({ ssr: true }), ssrPlugin({ includeAssetsImportedByServer: true }), sassDts()],

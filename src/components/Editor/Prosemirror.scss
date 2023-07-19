@@ -15,25 +15,55 @@
   opacity: 0.3;
 }
 
-//
+// Keeping the cursor active when moving outside the editable area
+
 .ProseMirror p,
 .ProseMirror ul,
 .ProseMirror h4,
-.ProseMirror blockquote {
+.ProseMirror ol {
+  box-sizing: content-box;
+  flex: 0 0 auto;
+
   @media (min-width: 768px) {
     padding-left: calc(21.9% + 3px);
+    max-width: 72.7%;
+  }
+  @media (min-width: 1200px) {
+    padding-left: calc(21.5% + 3px);
+    max-width: 64.9%;
+  }
+}
+
+.ProseMirror blockquote,
+.ProseMirror article[data-type='incut'] {
+  @media (min-width: 768px) {
+    margin-left: calc(21.9% + 3px) !important;
+    max-width: 73.6%;
+  }
+  @media (min-width: 1200px) {
+    margin-left: calc(21.4% + 3px) !important;
+    max-width: 65.3%;
   }
 }
 
 .ProseMirror h2 {
   @media (min-width: 768px) {
     padding-left: calc(21.9% + 2px);
+    max-width: 72.7%;
+  }
+  @media (min-width: 1200px) {
+    padding-left: 21.5%;
+    max-width: 87.1%;
   }
 }
 
 .ProseMirror h3 {
   @media (min-width: 768px) {
     padding-left: calc(21.9% + 2px);
+  }
+  @media (min-width: 1200px) {
+    padding-left: 21.5%;
+    max-width: 87.1%;
   }
 }
 
@@ -43,6 +73,7 @@
 .ProseMirror * h4 {
   @media (min-width: 768px) {
     padding-left: unset;
+    max-width: unset;
   }
 }
 

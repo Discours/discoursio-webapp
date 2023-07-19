@@ -106,22 +106,12 @@
       font-weight: 600;
       padding: 0;
       margin: 14px 0 0;
+      width: 100%;
       border: none;
       outline: none;
 
       &::placeholder {
         color: var(--secondary-color);
-      }
-    }
-
-    .datepicker {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      margin: 14px 0 0;
-
-      .additionalInput {
-        margin-top: 0;
       }
     }
   }

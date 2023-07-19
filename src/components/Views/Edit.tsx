@@ -348,12 +348,6 @@ export const EditView = (props: Props) => {
                       onAudioSorted={(value) => handleSortedMedia(value)}
                     />
                   </Show>
-
-                  <Editor
-                    shoutId={props.shout.id}
-                    initialContent={props.shout.body}
-                    onChange={(body) => setForm('body', body)}
-                  />
                 </div>
                 <div
                   class={clsx(styles.editSettings, {
@@ -467,6 +461,12 @@ export const EditView = (props: Props) => {
                 </div>
               </div>
             </div>
+
+            <Editor
+              shoutId={props.shout.id}
+              initialContent={props.shout.body}
+              onChange={(body) => setForm('body', body)}
+            />
           </div>
         </form>
       </div>

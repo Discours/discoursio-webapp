@@ -118,7 +118,6 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { loadReactionsBy }
   } = useReactions()
 
-  console.log('!!! props.s:', props.article.layout === 'literature')
   return (
     <>
       <Title>{props.article.title}</Title>

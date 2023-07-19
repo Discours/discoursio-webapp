@@ -27,13 +27,16 @@ export const LayoutShoutsPage = (props: PageProps) => {
   const { t } = useLocalize()
   const { page: getPage } = useRouter()
 
-  const getLayout = createMemo<LayoutType>(() => {
-    const layout = getPage().params['layout']
-    return layout as LayoutType
-  })
+  const getLayout = createMemo<LayoutType>(() => getPage().params['layout'] as LayoutType)
+
+  const [isLoaded, setIsLoaded] = createSignal(
+    Boolean(props.layoutShouts) &&
+      props.layoutShouts.length > 0 &&
+      props.layoutShouts[0].layout === getLayout()
+  )
 
   const { sortedArticles } = useArticlesStore({
-    shouts: props.layoutShouts
+    shouts: isLoaded() ? props.layoutShouts : []
   })
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
@@ -61,14 +64,13 @@ export const LayoutShoutsPage = (props: PageProps) => {
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
-  const isLoaded = createMemo(() => Boolean(props.layoutShouts))
-
   onMount(() => {
     if (isLoaded()) {
       return
     }
 
     loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
+    setIsLoaded(true)
   })
 
   onMount(() => {

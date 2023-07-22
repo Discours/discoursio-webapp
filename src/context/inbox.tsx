@@ -74,8 +74,8 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   pipe(
     subclient().subscription(newMessage, {}),
     subscribe((result) => {
-      console.info('[subscription]')
-      console.debug(result)
+      // console.info('[subscription]')
+      // console.debug(result)
       // TODO: handle data result
     })
   )

@@ -1,4 +1,4 @@
-import { createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, onMount, Show } from 'solid-js'
 import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useEditorContext } from '../../context/editor'
 import { Document } from '@tiptap/extension-document'
@@ -28,7 +28,7 @@ type Props = {
   quoteEnabled?: boolean
   imageEnabled?: boolean
   onSubmit: (text: string) => void
-  onClear?: () => void
+  setClear?: boolean
 }
 
 const SimplifiedEditor = (props: Props) => {
@@ -105,10 +105,13 @@ const SimplifiedEditor = (props: Props) => {
 
   const handleClear = () => {
     editor().commands.clearContent(true)
-    if (props.onClear) {
-      props.onClear()
-    }
   }
+  createEffect(() => {
+    console.log('!!! props.onClear:', props.setClear)
+    if (props.setClear) {
+      editor().commands.clearContent(true)
+    }
+  })
 
   return (
     <div class={styles.SimplifiedEditor}>
@@ -206,4 +209,4 @@ const SimplifiedEditor = (props: Props) => {
   )
 }
 
-export default SimplifiedEditor
+export default SimplifiedEditor // "export default" need to use for asynchronous (lazy) imports in the comments tree

@@ -226,7 +226,7 @@ export const Comment = (props: Props) => {
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleCreate(value)}
-                  onClear={() => setIsReplyVisible(false)}
+                  clearEditor={() => setIsReplyVisible(false)}
                 />
               </Suspense>
             </Show>

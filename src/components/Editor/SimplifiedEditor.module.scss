@@ -1,24 +1,14 @@
 .SimplifiedEditor {
-  @include font-size(1.4rem);
-
+  width: 100%;
   display: flex;
   flex-direction: column;
   background: var(--black-50);
   border-radius: 16px;
-  padding: 16px;
+  padding: 16px 16px 8px;
 
   .simplifiedEditorField {
+    @include font-size(1.4rem);
     min-height: 100px;
-    // TODO: Make custom styles for the main Editor.tsx through a custom class
-    p,
-    h2,
-    h3,
-    h4,
-    blockquote,
-    article[data-type='incut'] {
-      padding-left: unset !important;
-      max-width: unset !important;
-    }
 
     .emptyNode:first-child::before {
       @include font-size(1.4rem);

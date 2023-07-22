@@ -5,7 +5,6 @@ import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
 import { register } from 'swiper/element/bundle'
 import { DropArea } from '../DropArea'
-import { GrowingTextarea } from '../GrowingTextarea'
 import MD from '../../Article/MD'
 import { createFileUploader } from '@solid-primitives/upload'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
@@ -18,6 +17,7 @@ import { imageProxy } from '../../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
+import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 
 type Props = {
   images: MediaItem[]
@@ -200,12 +200,11 @@ export const SolidSwiper = (props: Props) => {
                               handleSlideDescriptionChange(index(), 'source', event.target.value)
                             }
                           />
-                          <GrowingTextarea
-                            allowEnterKey={true}
-                            class={styles.descriptionText}
+                          <SimplifiedEditor
+                            initialContent={slide.body}
+                            smallHeight={true}
                             placeholder={t('Enter image description')}
-                            initialValue={slide.body}
-                            value={(value) => handleSlideDescriptionChange(index(), 'body', value)}
+                            onSubmit={(value) => handleSlideDescriptionChange(index(), 'body', value)}
                           />
                         </div>
                       </Match>

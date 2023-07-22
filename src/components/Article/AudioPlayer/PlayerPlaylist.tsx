@@ -8,6 +8,7 @@ import styles from './AudioPlayer.module.scss'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import MD from '../MD'
 import { MediaItem } from '../../../pages/types'
+import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 
 type Props = {
   media: MediaItem[]
@@ -145,7 +146,6 @@ export const PlayerPlaylist = (props: Props) => {
                   <div class={styles.descriptionBlock}>
                     <Show when={mi.body}>
                       <div class={styles.description}>
-                        {/*FIXME*/}
                         <MD body={mi.body} />
                       </div>
                     </Show>
@@ -158,12 +158,11 @@ export const PlayerPlaylist = (props: Props) => {
                 }
               >
                 <div class={styles.descriptionBlock}>
-                  <GrowingTextarea
-                    allowEnterKey={true}
-                    class={styles.description}
+                  <SimplifiedEditor
+                    initialContent={mi.body}
+                    onSubmit={(value) => handleMediaItemFieldChange('body', value)}
                     placeholder={t('Description')}
-                    value={(value) => handleMediaItemFieldChange('body', value)}
-                    initialValue={mi.body || ''}
+                    smallHeight={true}
                   />
                   <GrowingTextarea
                     allowEnterKey={true}

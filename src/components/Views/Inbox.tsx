@@ -148,17 +148,6 @@ export const InboxView = () => {
     return messages().find((message) => message.id === messageId)
   }
 
-  // const handleKeyDown = async (event) => {
-  //   if (event.keyCode === 13 && event.shiftKey) {
-  //     return
-  //   }
-  //
-  //   if (event.keyCode === 13 && !event.shiftKey && postMessageText()?.trim().length > 0) {
-  //     event.preventDefault()
-  //     handleSubmit()
-  //   }
-  // }
-
   return (
     <div class={clsx('container', styles.Inbox)}>
       <Modal variant="narrow" name="inviteToChat">
@@ -270,24 +259,13 @@ export const InboxView = () => {
                 />
               </Show>
               <div class={styles.wrapper}>
-                {/*<textarea*/}
-                {/*  class={styles.textInput}*/}
-                {/*  value={postMessageText()}*/}
-                {/*  rows={1}*/}
-                {/*  onKeyDown={handleKeyDown}*/}
-                {/*  onInput={(event) => handleChangeMessage(event)}*/}
-                {/*  placeholder={t('Write message')}*/}
-                {/*/>*/}
                 <SimplifiedEditor
+                  smallHeight={true}
                   imageEnabled={true}
                   placeholder={t('Write message')}
-                  onSubmit={(message) => handleSubmit(message)}
                   setClear={isClear()}
+                  onSubmit={(message) => handleSubmit(message)}
                 />
-
-                {/*<button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>*/}
-                {/*  <Icon name="send-message" />*/}
-                {/*</button>*/}
               </div>
             </div>
           </Show>

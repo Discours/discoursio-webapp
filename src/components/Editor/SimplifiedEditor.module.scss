@@ -13,12 +13,17 @@
     .emptyNode:first-child::before {
       @include font-size(1.4rem);
 
-      color: var(--black-400);
-      content: attr(data-placeholder);
       float: left;
       height: 0;
       pointer-events: none;
+      margin-top: -4px;
+      color: var(--black-400);
+      content: attr(data-placeholder);
     }
+  }
+
+  &.smallHeight .simplifiedEditorField {
+    min-height: 34px;
   }
 
   & * :focus {

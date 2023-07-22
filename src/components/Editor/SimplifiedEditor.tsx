@@ -24,11 +24,12 @@ import { InsertLinkForm } from './InsertLinkForm'
 
 type Props = {
   initialContent?: string
+  onSubmit: (text: string) => void
   placeholder: string
   quoteEnabled?: boolean
   imageEnabled?: boolean
-  onSubmit: (text: string) => void
   setClear?: boolean
+  smallHeight?: boolean
 }
 
 const SimplifiedEditor = (props: Props) => {
@@ -46,7 +47,6 @@ const SimplifiedEditor = (props: Props) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
-
     extensions: [
       Document,
       Text,
@@ -71,6 +71,7 @@ const SimplifiedEditor = (props: Props) => {
         placeholder: props.placeholder
       })
     ],
+    content: props.initialContent ?? null,
     onUpdate: () => {
       setIsEmpty(editor().isEmpty)
     }
@@ -107,14 +108,25 @@ const SimplifiedEditor = (props: Props) => {
     editor().commands.clearContent(true)
   }
   createEffect(() => {
-    console.log('!!! props.onClear:', props.setClear)
     if (props.setClear) {
       editor().commands.clearContent(true)
     }
   })
 
+  // TODO: It is necessary to discuss whether it is worth adding such logic everywhere or only in the messenger?
+  // const handleKeyDown = async (event) => {
+  //   if (event.keyCode === 13 && event.shiftKey) {
+  //     return
+  //   }
+  //
+  //   if (event.keyCode === 13 && !event.shiftKey && !isEmpty()) {
+  //     event.preventDefault()
+  //     props.onSubmit(html())
+  //   }
+  // }
+
   return (
-    <div class={styles.SimplifiedEditor}>
+    <div class={clsx(styles.SimplifiedEditor, { [styles.smallHeight]: props.smallHeight })}>
       <div ref={(el) => (editorElRef.current = el)} />
       <div class={styles.controls}>
         <div class={styles.actions}>

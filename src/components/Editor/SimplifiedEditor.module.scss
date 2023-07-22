@@ -21,7 +21,9 @@
     }
 
     .emptyNode:first-child::before {
-      color: #adb5bd;
+      @include font-size(1.4rem);
+
+      color: var(--black-400);
       content: attr(data-placeholder);
       float: left;
       height: 0;

@@ -9,7 +9,7 @@ import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
-import { SimplifiedEditor } from '../Editor/SimplifiedEditor'
+import SimplifiedEditor from '../Editor/SimplifiedEditor'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 

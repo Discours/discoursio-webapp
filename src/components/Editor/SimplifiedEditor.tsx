@@ -31,7 +31,7 @@ type Props = {
   onClear?: () => void
 }
 
-export const SimplifiedEditor = (props: Props) => {
+const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
   const [isEmpty, setIsEmpty] = createSignal(true)
 
@@ -105,7 +105,9 @@ export const SimplifiedEditor = (props: Props) => {
 
   const handleClear = () => {
     editor().commands.clearContent(true)
-    props.onClear()
+    if (props.onClear) {
+      props.onClear()
+    }
   }
 
   return (
@@ -203,3 +205,5 @@ export const SimplifiedEditor = (props: Props) => {
     </div>
   )
 }
+
+export default SimplifiedEditor

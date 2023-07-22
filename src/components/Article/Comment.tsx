@@ -228,12 +228,6 @@ export const Comment = (props: Props) => {
                   onSubmit={(value) => handleCreate(value)}
                   onClear={() => setIsReplyVisible(false)}
                 />
-                {/*<CommentEditor*/}
-                {/*  placeholder={''}*/}
-                {/*  clear={submitted()}*/}
-                {/*  onSubmit={(value) => handleCreate(value)}*/}
-                {/*  cancel={() => setIsReplyVisible(false)}*/}
-                {/*/>*/}
               </Suspense>
             </Show>
           </Show>

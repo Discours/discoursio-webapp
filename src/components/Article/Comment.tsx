@@ -34,7 +34,6 @@ export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal<boolean>(false)
   const [editMode, setEditMode] = createSignal<boolean>(false)
-  const [submitted, setSubmitted] = createSignal<boolean>(false)
   const { session } = useSession()
 
   const {
@@ -71,7 +70,6 @@ export const Comment = (props: Props) => {
       })
       setIsReplyVisible(false)
       setLoading(false)
-      setSubmitted(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
@@ -226,7 +224,6 @@ export const Comment = (props: Props) => {
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleCreate(value)}
-                  clearEditor={() => setIsReplyVisible(false)}
                 />
               </Suspense>
             </Show>

@@ -8,6 +8,8 @@ import { useLocalize } from '../../../context/localize'
 import { InlineForm } from '../InlineForm'
 import { validateUrl } from '../../../utils/validateUrl'
 import { Popover } from '../../_shared/Popover'
+import { checkUrl } from '../utils/checkUrl'
+// import { isActive } from '../utils/isActive'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -15,20 +17,8 @@ type BubbleMenuProps = {
   ref: (el: HTMLDivElement) => void
 }
 
-const checkUrl = (url) => {
-  try {
-    new URL(url)
-    return url
-  } catch {
-    return `https://${url}`
-  }
-}
-
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const { t } = useLocalize()
-  const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal<boolean>(false)
-  const [listBubbleOpen, setListBubbleOpen] = createSignal<boolean>(false)
-  const [linkEditorOpen, setLinkEditorOpen] = createSignal<boolean>(false)
 
   const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
@@ -37,6 +27,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
         return editor && editor.isActive(name, attributes)
       }
     )
+  const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
+  const [listBubbleOpen, setListBubbleOpen] = createSignal(false)
+  const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
@@ -49,15 +42,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isLink = isActive('link')
   const isHighlight = isActive('highlight')
 
-  const toggleLinkForm = () => {
-    setLinkEditorOpen(true)
-  }
-
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
       setListBubbleOpen(false)
     }
-
     setTextSizeBubbleOpen((prev) => !prev)
   }
   const toggleListPopup = () => {
@@ -287,7 +275,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={toggleLinkForm}
+                  onClick={() => setLinkEditorOpen(true)}
                   class={clsx(styles.bubbleMenuButton, {
                     [styles.bubbleMenuButtonActive]: isLink()
                   })}

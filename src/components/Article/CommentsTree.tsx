@@ -10,6 +10,7 @@ import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
+import { SimplifiedEditor } from '../Editor/SimplifiedEditor'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
@@ -172,11 +173,17 @@ export const CommentsTree = (props: Props) => {
           </div>
         }
       >
-        <CommentEditor
-          placeholder={t('Write a comment...')}
-          clear={submitted()}
-          onSubmit={(value) => handleSubmitComment(value)}
+        <h1>EEEEE</h1>
+        <SimplifiedEditor
+          onChange={(val) => {
+            console.log('!!! val:', val)
+          }}
         />
+        {/*<CommentEditor*/}
+        {/*  placeholder={t('Write a comment...')}*/}
+        {/*  clear={submitted()}*/}
+        {/*  onSubmit={(value) => handleSubmitComment(value)}*/}
+        {/*/>*/}
       </ShowIfAuthenticated>
     </>
   )

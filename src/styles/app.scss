@@ -28,6 +28,9 @@
   --icon-filter-hover: invert(1);
   --editor-bubble-menu-background: #fff;
   --blue-link: #2638d9;
+  // names from figma
+  --black-50: #f7f7f8;
+  --black-500: #141414;
 }
 
 [data-editor-dark-mode='true'] {
@@ -43,6 +46,9 @@
   --icon-filter: invert(1);
   --icon-filter-hover: invert(0);
   --editor-bubble-menu-background: #444;
+  // names from figma
+  --black-50: #080807;
+  --black-500: #ebebeb;
 }
 
 * {

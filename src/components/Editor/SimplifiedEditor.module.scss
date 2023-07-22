@@ -1,0 +1,62 @@
+.SimplifiedEditor {
+  @include font-size(1.4rem);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  background: var(--black-50);
+  border-radius: 16px;
+  padding: 16px;
+
+  & * :focus {
+    outline: none;
+  }
+
+  .blockQuote {
+    font-weight: 500;
+    color: var(--black-500);
+    border-left: 2px solid #696969;
+    padding: 0 0 0 8px;
+    margin: 0;
+
+    p {
+      margin: 0;
+    }
+  }
+  .controls {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .actionButton {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+      transition: opacity ease-in-out 0.3s;
+
+      &.active,
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

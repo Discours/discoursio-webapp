@@ -16,6 +16,7 @@ export type ModalType =
   | 'inviteToChat'
   | 'uploadImage'
   | 'uploadCoverImage'
+  | 'editorInsertLink'
 
 type WarnKind = 'error' | 'warn' | 'info'
 
@@ -33,7 +34,8 @@ export const MODALS: Record<ModalType, ModalType> = {
   donate: 'donate',
   inviteToChat: 'inviteToChat',
   uploadImage: 'uploadImage',
-  uploadCoverImage: 'uploadCoverImage'
+  uploadCoverImage: 'uploadCoverImage',
+  editorInsertLink: 'editorInsertLink'
 }
 
 const [modal, setModal] = createSignal<ModalType | null>(null)

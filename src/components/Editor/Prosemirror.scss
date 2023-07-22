@@ -17,10 +17,10 @@
 
 // Keeping the cursor active when moving outside the editable area
 
-.ProseMirror p,
-.ProseMirror ul,
-.ProseMirror h4,
-.ProseMirror ol {
+.articleEditor p,
+.articleEditor ul,
+.articleEditor h4,
+.articleEditor ol {
   box-sizing: content-box;
   flex: 0 0 auto;
 
@@ -34,8 +34,8 @@
   }
 }
 
-.ProseMirror blockquote,
-.ProseMirror article[data-type='incut'] {
+.articleEditor blockquote,
+.articleEditor article[data-type='incut'] {
   @media (min-width: 768px) {
     margin-left: calc(21.9% + 3px) !important;
     max-width: 73.6%;
@@ -46,7 +46,7 @@
   }
 }
 
-.ProseMirror h2 {
+.articleEditor h2 {
   @media (min-width: 768px) {
     padding-left: calc(21.9% + 2px);
     max-width: 72.7%;
@@ -57,7 +57,7 @@
   }
 }
 
-.ProseMirror h3 {
+.articleEditor h3 {
   @media (min-width: 768px) {
     padding-left: calc(21.9% + 2px);
   }
@@ -67,10 +67,10 @@
   }
 }
 
-.ProseMirror * p,
-.ProseMirror * h2,
-.ProseMirror * h3,
-.ProseMirror * h4 {
+.articleEditor * p,
+.articleEditor * h2,
+.articleEditor * h3,
+.articleEditor * h4 {
   @media (min-width: 768px) {
     padding-left: unset;
     max-width: unset;

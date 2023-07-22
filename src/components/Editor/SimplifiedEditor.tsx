@@ -1,32 +1,39 @@
-import { createEffect, createSignal } from 'solid-js'
+import { createSignal, onMount, Show } from 'solid-js'
 import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useEditorContext } from '../../context/editor'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
 import { Paragraph } from '@tiptap/extension-paragraph'
 import { Bold } from '@tiptap/extension-bold'
-import styles from './SimplifiedEditor.module.scss'
 import { Button } from '../_shared/Button'
 import { useLocalize } from '../../context/localize'
-import { clsx } from 'clsx'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import { Italic } from '@tiptap/extension-italic'
 import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
-import { validateUrl } from '../../utils/validateUrl'
-import { InlineForm } from './InlineForm'
-import { checkUrl } from './utils/checkUrl'
 import { Link } from '@tiptap/extension-link'
 import { Blockquote } from '@tiptap/extension-blockquote'
+import { CustomImage } from './extensions/CustomImage'
+import { UploadModalContent } from './UploadModalContent'
+import { imageProxy } from '../../utils/imageProxy'
+import { clsx } from 'clsx'
+import styles from './SimplifiedEditor.module.scss'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { InsertLinkForm } from './InsertLinkForm'
 
 type Props = {
   initialContent?: string
-  onChange: (text: string) => void
+  placeholder: string
+  quoteEnabled?: boolean
+  imageEnabled?: boolean
+  onSubmit: (text: string) => void
+  onClear?: () => void
 }
 
 export const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
+  const [isEmpty, setIsEmpty] = createSignal(true)
 
   const editorElRef: {
     current: HTMLDivElement
@@ -39,6 +46,7 @@ export const SimplifiedEditor = (props: Props) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
+
     extensions: [
       Document,
       Text,
@@ -52,10 +60,25 @@ export const SimplifiedEditor = (props: Props) => {
         HTMLAttributes: {
           class: styles.blockQuote
         }
+      }),
+      CustomImage.configure({
+        HTMLAttributes: {
+          class: styles.uploadedImage
+        }
+      }),
+      Placeholder.configure({
+        emptyNodeClass: styles.emptyNode,
+        placeholder: props.placeholder
       })
     ],
-    content: `<p>Example Text</p>`
+    onUpdate: () => {
+      setIsEmpty(editor().isEmpty)
+    }
   }))
+
+  onMount(() => {
+    editor().view.dom.classList.add(styles.simplifiedEditorField)
+  })
 
   setEditor(editor)
   const isActive = (name: string, attributes?: unknown) =>
@@ -69,25 +92,20 @@ export const SimplifiedEditor = (props: Props) => {
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
   const isLink = isActive('link')
+  const isBlockquote = isActive('blockquote')
 
-  const currentUrl = createEditorTransaction(
-    () => editor(),
-    (ed) => {
-      return (ed && ed.getAttributes('link').href) || ''
-    }
-  )
-  const handleClearLinkForm = () => {
-    if (currentUrl()) {
-      editor().chain().focus().unsetLink().run()
-    }
-  }
-
-  const handleLinkFormSubmit = (value: string) => {
+  const renderImage = (src: string) => {
     editor()
       .chain()
       .focus()
-      .setLink({ href: checkUrl(value) })
+      .setImage({ src: imageProxy(src) })
       .run()
+    hideModal()
+  }
+
+  const handleClear = () => {
+    editor().commands.clearContent(true)
+    props.onClear()
   }
 
   return (
@@ -131,46 +149,57 @@ export const SimplifiedEditor = (props: Props) => {
               </button>
             )}
           </Popover>
-          <Popover content={t('Add blockquote')}>
-            {(triggerRef: (el) => void) => (
-              <button
-                ref={triggerRef}
-                type="button"
-                onClick={() => editor().chain().focus().toggleBlockquote().run()}
-                class={clsx(styles.actionButton, { [styles.active]: isLink() })}
-              >
-                <Icon name="editor-quote" />
-              </button>
-            )}
-          </Popover>
+          <Show when={props.quoteEnabled}>
+            <Popover content={t('Add blockquote')}>
+              {(triggerRef: (el) => void) => (
+                <button
+                  ref={triggerRef}
+                  type="button"
+                  onClick={() => editor().chain().focus().toggleBlockquote().run()}
+                  class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
+                >
+                  <Icon name="editor-quote" />
+                </button>
+              )}
+            </Popover>
+          </Show>
+          <Show when={props.imageEnabled}>
+            <Popover content={t('Add image')}>
+              {(triggerRef: (el) => void) => (
+                <button
+                  ref={triggerRef}
+                  type="button"
+                  onClick={() => showModal('uploadImage')}
+                  class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
+                >
+                  <Icon name="editor-image-dd-full" />
+                </button>
+              )}
+            </Popover>
+          </Show>
         </div>
         <div class={styles.buttons}>
-          <Button value={t('cancel')} variant="secondary" />
+          <Button value={t('cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
           <Button
             value={t('Send')}
             variant="primary"
-            onClick={() => {
-              console.log('!!! :', html())
-            }}
+            disabled={isEmpty()}
+            onClick={() => props.onSubmit(html())}
           />
         </div>
       </div>
-      <Modal
-        variant="narrow"
-        name="editorInsertLink"
-        onClose={() => {
-          console.log('!!! :')
-        }}
-      >
-        <InlineForm
-          placeholder={t('Enter URL address')}
-          initialValue={currentUrl() ?? ''}
-          onClear={handleClearLinkForm}
-          validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
-          onSubmit={handleLinkFormSubmit}
-          onClose={() => hideModal()}
-        />
+      <Modal variant="narrow" name="editorInsertLink">
+        <InsertLinkForm editor={editor()} />
       </Modal>
+      <Show when={props.imageEnabled}>
+        <Modal variant="narrow" name="uploadImage">
+          <UploadModalContent
+            onClose={(value) => {
+              renderImage(value)
+            }}
+          />
+        </Modal>
+      </Show>
     </div>
   )
 }

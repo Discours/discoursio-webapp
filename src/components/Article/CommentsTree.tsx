@@ -4,7 +4,6 @@ import styles from './Article.module.scss'
 import { clsx } from 'clsx'
 import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
-import CommentEditor from '../_shared/CommentEditor'
 import { Button } from '../_shared/Button'
 import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
@@ -173,17 +172,12 @@ export const CommentsTree = (props: Props) => {
           </div>
         }
       >
-        <h1>EEEEE</h1>
         <SimplifiedEditor
-          onChange={(val) => {
-            console.log('!!! val:', val)
-          }}
+          quoteEnabled={true}
+          imageEnabled={true}
+          placeholder={t('Write a comment...')}
+          onSubmit={(value) => handleSubmitComment(value)}
         />
-        {/*<CommentEditor*/}
-        {/*  placeholder={t('Write a comment...')}*/}
-        {/*  clear={submitted()}*/}
-        {/*  onSubmit={(value) => handleSubmitComment(value)}*/}
-        {/*/>*/}
       </ShowIfAuthenticated>
     </>
   )

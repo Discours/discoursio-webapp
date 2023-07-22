@@ -3,10 +3,31 @@
 
   display: flex;
   flex-direction: column;
-  min-height: 150px;
   background: var(--black-50);
   border-radius: 16px;
   padding: 16px;
+
+  .simplifiedEditorField {
+    min-height: 100px;
+    // TODO: Make custom styles for the main Editor.tsx through a custom class
+    p,
+    h2,
+    h3,
+    h4,
+    blockquote,
+    article[data-type='incut'] {
+      padding-left: unset !important;
+      max-width: unset !important;
+    }
+
+    .emptyNode:first-child::before {
+      color: #adb5bd;
+      content: attr(data-placeholder);
+      float: left;
+      height: 0;
+      pointer-events: none;
+    }
+  }
 
   & * :focus {
     outline: none;
@@ -22,6 +43,12 @@
     p {
       margin: 0;
     }
+  }
+
+  .uploadedImage {
+    max-height: 60vh;
+    margin: auto;
+    display: block;
   }
   .controls {
     margin-top: auto;

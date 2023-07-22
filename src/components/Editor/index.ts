@@ -1,4 +1,5 @@
 export { Editor } from './Editor'
+export { SimplifiedEditor } from './SimplifiedEditor'
 export { Panel } from './Panel'
 export { TopicSelect } from './TopicSelect'
 export { UploadModalContent } from './UploadModalContent'

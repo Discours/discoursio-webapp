@@ -264,14 +264,12 @@
 
 .articleHeader {
   @include font-size(1.4rem);
-
   left: $container-padding-x;
   margin: 0.2em 0;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: calc(100% - 180px);
 
   @include media-breakpoint-down(md) {
     display: none;

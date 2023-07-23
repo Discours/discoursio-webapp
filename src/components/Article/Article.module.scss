@@ -498,10 +498,9 @@ img {
 
   button {
     @include font-size(1.5rem);
-
     border-radius: 0.8rem;
     margin-right: 1.2rem;
-    padding: 1.1rem 1.2rem 0.9rem;
+    padding: 0.9rem 1.2rem;
   }
 }
 

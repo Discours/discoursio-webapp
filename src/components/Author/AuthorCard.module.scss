@@ -37,7 +37,6 @@
 
   @include media-breakpoint-between(md, lg) {
     flex: 1 0 100%;
-    margin-bottom: 0.8rem;
   }
 
   @include media-breakpoint-up(md) {

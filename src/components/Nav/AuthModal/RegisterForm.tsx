@@ -12,7 +12,7 @@ import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
-import { generateModalTitleFromSource } from '../../../utils/custom-i18n'
+import { generateModalTextsFromSource } from '../../../utils/custom-i18n'
 
 type FormFields = {
   name: string
@@ -132,12 +132,18 @@ export const RegisterForm = () => {
     }
   }
 
+  const { title, description } = generateModalTextsFromSource('register')
+
   return (
     <>
       <Show when={!isSuccess()}>
         <form onSubmit={handleSubmit} class={styles.authForm}>
           <div>
-            <h4>{generateModalTitleFromSource('register')}</h4>
+            <h4>{title}</h4>
+            <Show when={description}>
+              <p innerHTML={description} />
+            </Show>
+
             <Show when={submitError()}>
               <div class={styles.authInfo}>
                 <ul>

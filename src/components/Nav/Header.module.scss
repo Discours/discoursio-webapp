@@ -405,7 +405,7 @@
     padding: 0;
 
     &:hover {
-      background: none;
+      background: none !important;
 
       .icon {
         display: none;

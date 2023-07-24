@@ -444,8 +444,8 @@ export const EditView = (props: Props) => {
             </div>
 
             <Editor
-              shoutId={props.shout.id}
-              initialContent={props.shout.body}
+              shoutId={form.shoutId}
+              initialContent={form.body}
               onChange={(body) => setForm('body', body)}
             />
           </div>

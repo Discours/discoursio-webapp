@@ -13,7 +13,8 @@
     .emptyNode:first-child::before {
       @include font-size(1.4rem);
 
-      float: left;
+      position: absolute;
+      top: 4px;
       height: 0;
       pointer-events: none;
       margin-top: -4px;
@@ -47,11 +48,16 @@
     margin: auto;
     display: block;
   }
+
   .controls {
     margin-top: auto;
     display: flex;
     justify-content: space-between;
     width: 100%;
+    position: relative;
+    opacity: 0;
+    bottom: -1rem;
+    transition: 0.3s ease-in-out;
 
     .actions {
       display: flex;
@@ -81,6 +87,14 @@
       &:hover {
         opacity: 1;
       }
+    }
+  }
+
+  &.isFocused {
+    //background: red;
+    .controls {
+      opacity: 1;
+      bottom: 0;
     }
   }
 }

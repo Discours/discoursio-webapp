@@ -1,5 +1,11 @@
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
-import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import { createEffect, onCleanup, onMount, Show } from 'solid-js'
+import {
+  createEditorTransaction,
+  createTiptapEditor,
+  useEditorHTML,
+  useEditorIsEmpty,
+  useEditorIsFocused
+} from 'solid-tiptap'
 import { useEditorContext } from '../../context/editor'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
@@ -30,11 +36,12 @@ type Props = {
   imageEnabled?: boolean
   setClear?: boolean
   smallHeight?: boolean
+  submitByEnter?: boolean
+  submitByShiftEnter?: boolean
 }
 
 const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
-  const [isEmpty, setIsEmpty] = createSignal(true)
 
   const editorElRef: {
     current: HTMLDivElement
@@ -71,24 +78,21 @@ const SimplifiedEditor = (props: Props) => {
         placeholder: props.placeholder
       })
     ],
-    content: props.initialContent ?? null,
-    onUpdate: () => {
-      setIsEmpty(editor().isEmpty)
-    }
+    content: props.initialContent ?? null
   }))
 
-  onMount(() => {
-    editor().view.dom.classList.add(styles.simplifiedEditorField)
-  })
-
   setEditor(editor)
-  const isActive = (name: string, attributes?: unknown) =>
+  const isEmpty = useEditorIsEmpty(() => editor())
+  const isFocused = useEditorIsFocused(() => editor())
+
+  const isActive = (name: string) =>
     createEditorTransaction(
       () => editor(),
       (ed) => {
-        return ed && ed.isActive(name, attributes)
+        return ed && ed.isActive(name)
       }
     )
+
   const html = useEditorHTML(() => editor())
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
@@ -113,20 +117,38 @@ const SimplifiedEditor = (props: Props) => {
     }
   })
 
-  // TODO: It is necessary to discuss whether it is worth adding such logic everywhere or only in the messenger?
-  // const handleKeyDown = async (event) => {
-  //   if (event.keyCode === 13 && event.shiftKey) {
-  //     return
-  //   }
-  //
-  //   if (event.keyCode === 13 && !event.shiftKey && !isEmpty()) {
-  //     event.preventDefault()
-  //     props.onSubmit(html())
-  //   }
-  // }
+  const handleKeyDown = async (event) => {
+    if (props.submitByEnter && event.keyCode === 13 && !event.shiftKey && !isEmpty()) {
+      event.preventDefault()
+      props.onSubmit(html())
+      handleClear()
+    }
+
+    if (props.submitByShiftEnter && event.keyCode === 13 && event.shiftKey && !isEmpty()) {
+      event.preventDefault()
+      props.onSubmit(html())
+      handleClear()
+    }
+  }
+
+  onMount(() => {
+    editor().view.dom.classList.add(styles.simplifiedEditorField)
+    if (props.submitByShiftEnter || props.submitByEnter) {
+      window.addEventListener('keydown', handleKeyDown)
+    }
+  })
+
+  onCleanup(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+  })
 
   return (
-    <div class={clsx(styles.SimplifiedEditor, { [styles.smallHeight]: props.smallHeight })}>
+    <div
+      class={clsx(styles.SimplifiedEditor, {
+        [styles.smallHeight]: props.smallHeight,
+        [styles.isFocused]: isFocused() || !isEmpty()
+      })}
+    >
       <div ref={(el) => (editorElRef.current = el)} />
       <div class={styles.controls}>
         <div class={styles.actions}>

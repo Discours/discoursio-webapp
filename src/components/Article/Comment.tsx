@@ -163,6 +163,7 @@ export const Comment = (props: Props) => {
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleUpdate(value)}
+                  submitByShiftEnter={true}
                 />
               </Suspense>
             </Show>
@@ -224,6 +225,7 @@ export const Comment = (props: Props) => {
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleCreate(value)}
+                  submitByShiftEnter={true}
                 />
               </Suspense>
             </Show>

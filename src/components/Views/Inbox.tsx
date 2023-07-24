@@ -265,6 +265,7 @@ export const InboxView = () => {
                   placeholder={t('Write message')}
                   setClear={isClear()}
                   onSubmit={(message) => handleSubmit(message)}
+                  submitByEnter={true}
                 />
               </div>
             </div>

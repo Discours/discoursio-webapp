@@ -177,6 +177,7 @@ export const CommentsTree = (props: Props) => {
           imageEnabled={true}
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}
+          submitByShiftEnter={true}
         />
       </ShowIfAuthenticated>
     </>

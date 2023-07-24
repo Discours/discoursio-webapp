@@ -216,7 +216,8 @@ export const Editor = (props: EditorProps) => {
       }),
       TrailingNode,
       Article
-    ]
+    ],
+    content: props.initialContent ?? null
   }))
 
   onMount(() => {

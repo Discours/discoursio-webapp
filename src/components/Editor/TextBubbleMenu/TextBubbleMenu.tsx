@@ -5,9 +5,8 @@ import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
-import { InlineForm } from '../InlineForm'
-import { validateUrl } from '../../../utils/validateUrl'
 import { Popover } from '../../_shared/Popover'
+import { InsertLinkForm } from '../InsertLinkForm'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -15,20 +14,8 @@ type BubbleMenuProps = {
   ref: (el: HTMLDivElement) => void
 }
 
-const checkUrl = (url) => {
-  try {
-    new URL(url)
-    return url
-  } catch {
-    return `https://${url}`
-  }
-}
-
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const { t } = useLocalize()
-  const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal<boolean>(false)
-  const [listBubbleOpen, setListBubbleOpen] = createSignal<boolean>(false)
-  const [linkEditorOpen, setLinkEditorOpen] = createSignal<boolean>(false)
 
   const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
@@ -37,6 +24,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
         return editor && editor.isActive(name, attributes)
       }
     )
+  const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
+  const [listBubbleOpen, setListBubbleOpen] = createSignal(false)
+  const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
@@ -49,15 +39,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isLink = isActive('link')
   const isHighlight = isActive('highlight')
 
-  const toggleLinkForm = () => {
-    setLinkEditorOpen(true)
-  }
-
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
       setListBubbleOpen(false)
     }
-
     setTextSizeBubbleOpen((prev) => !prev)
   }
   const toggleListPopup = () => {
@@ -67,40 +52,11 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     setListBubbleOpen((prev) => !prev)
   }
 
-  const handleLinkFormSubmit = (value: string) => {
-    props.editor
-      .chain()
-      .focus()
-      .setLink({ href: checkUrl(value) })
-      .run()
-  }
-
-  const currentUrl = createEditorTransaction(
-    () => props.editor,
-    (editor) => {
-      return (editor && editor.getAttributes('link').href) || ''
-    }
-  )
-
-  const handleClearLinkForm = () => {
-    if (currentUrl()) {
-      props.editor.chain().focus().unsetLink().run()
-    }
-    setLinkEditorOpen(false)
-  }
-
   return (
     <div ref={props.ref} class={styles.TextBubbleMenu}>
       <Switch>
         <Match when={linkEditorOpen()}>
-          <InlineForm
-            placeholder={t('Enter URL address')}
-            initialValue={currentUrl() ?? ''}
-            onClear={handleClearLinkForm}
-            validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
-            onSubmit={handleLinkFormSubmit}
-            onClose={() => setLinkEditorOpen(false)}
-          />
+          <InsertLinkForm editor={props.editor} />
         </Match>
         <Match when={!linkEditorOpen()}>
           <>
@@ -287,7 +243,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={toggleLinkForm}
+                  onClick={() => setLinkEditorOpen(true)}
                   class={clsx(styles.bubbleMenuButton, {
                     [styles.bubbleMenuButtonActive]: isLink()
                   })}

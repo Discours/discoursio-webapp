@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from 'solid-js'
+import { createEffect, createSignal, onMount } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import { Bold } from '@tiptap/extension-bold'
@@ -43,6 +43,7 @@ import type { Doc } from 'yjs/dist/src/utils/Doc'
 import './Prosemirror.scss'
 import { TrailingNode } from './extensions/TrailingNode'
 import Article from './extensions/Article'
+import styles from './SimplifiedEditor.module.scss'
 
 type EditorProps = {
   shoutId: number
@@ -217,6 +218,10 @@ export const Editor = (props: EditorProps) => {
       Article
     ]
   }))
+
+  onMount(() => {
+    editor().view.dom.classList.add('articleEditor')
+  })
 
   const {
     actions: { countWords, setEditor }

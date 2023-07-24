@@ -18,7 +18,10 @@ $navigation-reserve: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-
+    a {
+      color: var(--default-color-invert);
+      border-color: var(--default-color-invert);
+    }
     .container {
       margin: auto;
       //max-width: 800px;
@@ -293,12 +296,6 @@ $navigation-reserve: 32px;
     flex-direction: column;
     gap: 0.5em;
     margin: 1em 0;
-
-    .descriptionText {
-      @include font-size(1.4rem);
-
-      line-height: 1.1;
-    }
 
     .input {
       @include font-size(1.4rem);

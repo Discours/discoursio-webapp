@@ -54,6 +54,11 @@ const SimplifiedEditor = (props: Props) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
+    editorProps: {
+      attributes: {
+        class: styles.simplifiedEditorField
+      }
+    },
     extensions: [
       Document,
       Text,
@@ -132,7 +137,6 @@ const SimplifiedEditor = (props: Props) => {
   }
 
   onMount(() => {
-    editor().view.dom.classList.add(styles.simplifiedEditorField)
     if (props.submitByShiftEnter || props.submitByEnter) {
       window.addEventListener('keydown', handleKeyDown)
     }

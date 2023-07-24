@@ -45,7 +45,7 @@ import { TrailingNode } from './extensions/TrailingNode'
 import Article from './extensions/Article'
 import styles from './SimplifiedEditor.module.scss'
 
-type EditorProps = {
+type Props = {
   shoutId: number
   initialContent?: string
   onChange: (text: string) => void
@@ -55,7 +55,7 @@ const yDocs: Record<string, Doc> = {}
 const persisters: Record<string, IndexeddbPersistence> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
-export const Editor = (props: EditorProps) => {
+export const Editor = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
@@ -114,6 +114,11 @@ export const Editor = (props: EditorProps) => {
 
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
+    editorProps: {
+      attributes: {
+        class: 'articleEditor'
+      }
+    },
     extensions: [
       Document,
       Text,
@@ -219,10 +224,6 @@ export const Editor = (props: EditorProps) => {
     ],
     content: props.initialContent ?? null
   }))
-
-  onMount(() => {
-    editor().view.dom.classList.add('articleEditor')
-  })
 
   const {
     actions: { countWords, setEditor }

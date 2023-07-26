@@ -95,9 +95,9 @@
 
 .usernav {
   display: inline-flex;
-  flex: 0 0 30% !important;
+  flex: 0 0 40% !important;
   font-weight: 500;
-  max-width: 250px !important;
+  max-width: 400px !important;
   position: relative;
 
   @include media-breakpoint-down(md) {

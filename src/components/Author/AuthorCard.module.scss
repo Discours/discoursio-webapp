@@ -29,6 +29,7 @@
 
 .authorDetailsWrapper {
   flex: 1 0;
+  line-height: 2;
   padding-right: 1em;
 
   @include media-breakpoint-up(sm) {
@@ -52,12 +53,14 @@
   border: none !important;
   font-size: 1.6rem;
   font-weight: 500;
+  line-height: 2;
   margin-bottom: 0.8rem;
 }
 
 .authorAbout {
-  font-size: 1.5rem;
   color: rgb(0 0 0 / 60%);
+  font-size: 1.5rem;
+  line-height: 1.4;
   word-break: break-word;
 }
 

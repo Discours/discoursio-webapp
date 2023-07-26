@@ -457,7 +457,7 @@
   }
 
   .shoutTopic a {
-    &,
+    &:link,
     &:visited {
       &:hover {
         background: #fff !important;
@@ -774,4 +774,8 @@
 
 .shoutTopicTop {
   margin-bottom: 0.4rem !important;
+}
+
+.shoutCardNoImage {
+  background: rgb(0 0 0 / 50%);
 }

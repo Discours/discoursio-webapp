@@ -3,7 +3,12 @@ import { For } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
 import { ArticleCard } from './ArticleCard'
 
-export const Row3 = (props: { articles: Shout[]; header?: JSX.Element; nodate?: boolean }) => {
+export const Row3 = (props: {
+  articles: Shout[]
+  header?: JSX.Element
+  nodate?: boolean
+  noAuthorLink?: boolean
+}) => {
   return (
     <div class="floor">
       <div class="wide-container">
@@ -12,7 +17,10 @@ export const Row3 = (props: { articles: Shout[]; header?: JSX.Element; nodate?: 
           <For each={props.articles}>
             {(a) => (
               <div class="col-md-8">
-                <ArticleCard article={a} settings={{ nodate: props.nodate }} />
+                <ArticleCard
+                  article={a}
+                  settings={{ nodate: props.nodate, noAuthorLink: props.noAuthorLink }}
+                />
               </div>
             )}
           </For>

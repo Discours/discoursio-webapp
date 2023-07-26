@@ -38,6 +38,7 @@ interface ArticleCardProps {
     isSingle?: boolean
     isBeside?: boolean
     withViewed?: boolean
+    noAuthorLink?: boolean
   }
   article: Shout
 }
@@ -176,7 +177,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                         hideWriteButton={true}
                         hideFollow={true}
                         isFeedMode={true}
-                        hasLink={props.settings?.isFeedMode}
+                        hasLink={!props.settings?.noAuthorLink}
                       />
                     )
                   }}

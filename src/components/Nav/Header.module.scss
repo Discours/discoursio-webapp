@@ -465,7 +465,7 @@
     width: auto;
 
     .icon {
-      display: none;
+      display: none !important;
     }
 
     .textLabel {
@@ -496,7 +496,7 @@
     }
 
     .textLabel {
-      //background-color: var(--link-hover-background);
+      background-color: var(--link-hover-background);
       color: var(--link-hover-color);
     }
   }

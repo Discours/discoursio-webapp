@@ -18,7 +18,6 @@ import { Popover } from '../_shared/Popover'
 import { Italic } from '@tiptap/extension-italic'
 import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
-import { Link } from '@tiptap/extension-link'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { CustomImage } from './extensions/CustomImage'
 import { UploadModalContent } from './UploadModalContent'
@@ -27,11 +26,13 @@ import { clsx } from 'clsx'
 import styles from './SimplifiedEditor.module.scss'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { InsertLinkForm } from './InsertLinkForm'
+import { Link } from '@tiptap/extension-link'
 
 type Props = {
   initialContent?: string
   onSubmit: (text: string) => void
   placeholder: string
+  submitButtonText?: string
   quoteEnabled?: boolean
   imageEnabled?: boolean
   setClear?: boolean
@@ -137,9 +138,7 @@ const SimplifiedEditor = (props: Props) => {
   }
 
   onMount(() => {
-    if (props.submitByShiftEnter || props.submitByEnter) {
-      window.addEventListener('keydown', handleKeyDown)
-    }
+    window.addEventListener('keydown', handleKeyDown)
   })
 
   onCleanup(() => {
@@ -224,7 +223,7 @@ const SimplifiedEditor = (props: Props) => {
         <div class={styles.buttons}>
           <Button value={t('cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
           <Button
-            value={t('Send')}
+            value={props.submitButtonText ?? t('Send')}
             variant="primary"
             disabled={isEmpty()}
             onClick={() => props.onSubmit(html())}

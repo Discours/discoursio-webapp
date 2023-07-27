@@ -221,8 +221,7 @@ export const Editor = (props: Props) => {
       }),
       TrailingNode,
       Article
-    ],
-    content: props.initialContent ?? null
+    ]
   }))
 
   const {
@@ -240,6 +239,11 @@ export const Editor = (props: Props) => {
         characters: editor().storage.characterCount.characters(),
         words: editor().storage.characterCount.words()
       })
+    }
+  })
+  onMount(() => {
+    if (props.initialContent && editor()) {
+      editor().commands.setContent(props.initialContent)
     }
   })
 

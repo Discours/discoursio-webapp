@@ -205,6 +205,7 @@ export const SolidSwiper = (props: Props) => {
                             smallHeight={true}
                             placeholder={t('Enter image description')}
                             onSubmit={(value) => handleSlideDescriptionChange(index(), 'body', value)}
+                            submitButtonText={t('Save')}
                           />
                         </div>
                       </Match>

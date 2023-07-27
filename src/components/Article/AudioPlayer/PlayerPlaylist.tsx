@@ -163,6 +163,7 @@ export const PlayerPlaylist = (props: Props) => {
                     onSubmit={(value) => handleMediaItemFieldChange('body', value)}
                     placeholder={t('Description')}
                     smallHeight={true}
+                    submitButtonText={t('Save')}
                   />
                   <GrowingTextarea
                     allowEnterKey={true}

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount } from 'solid-js'
+import { createEffect, createSignal, onMount, untrack } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import { Bold } from '@tiptap/extension-bold'
@@ -43,7 +43,6 @@ import type { Doc } from 'yjs/dist/src/utils/Doc'
 import './Prosemirror.scss'
 import { TrailingNode } from './extensions/TrailingNode'
 import Article from './extensions/Article'
-import styles from './SimplifiedEditor.module.scss'
 
 type Props = {
   shoutId: number
@@ -111,7 +110,7 @@ export const Editor = (props: Props) => {
   } = {
     current: null
   }
-
+  const { initialContent } = props
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
@@ -222,7 +221,7 @@ export const Editor = (props: Props) => {
       TrailingNode,
       Article
     ],
-    content: props.initialContent ?? null
+    content: initialContent ?? null
   }))
 
   const {

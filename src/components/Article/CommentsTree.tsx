@@ -43,7 +43,6 @@ export const CommentsTree = (props: Props) => {
   const { t } = useLocalize()
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
-  const [submitted, setSubmitted] = createSignal(false)
   const {
     reactionEntities,
     actions: { createReaction }
@@ -97,7 +96,6 @@ export const CommentsTree = (props: Props) => {
         body: value,
         shout: props.shoutId
       })
-      setSubmitted(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }

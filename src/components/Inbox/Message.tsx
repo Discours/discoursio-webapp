@@ -19,11 +19,6 @@ type Props = {
   replyAuthor?: string
 }
 
-const md = new MarkdownIt({
-  linkify: true,
-  breaks: true
-})
-
 export const Message = (props: Props) => {
   const isOwn = props.ownId === Number(props.content.author)
   const user = props.members?.find((m) => m.id === Number(props.content.author))

@@ -124,31 +124,20 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   const handleKeyDown = async (event) => {
+    if (isEmpty() || !editor().isFocused) {
+      return
+    }
+
     if (
-      props.submitByEnter &&
       event.code === 'Enter' &&
-      !event.shiftKey &&
-      !isEmpty() &&
-      editor().isFocused
+      ((props.submitByEnter && !event.shiftKey) || (props.submitByShiftEnter && event.shiftKey))
     ) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
     }
 
-    if (
-      props.submitByShiftEnter &&
-      event.code === 'Enter' &&
-      event.shiftKey &&
-      !isEmpty() &&
-      editor().isFocused
-    ) {
-      event.preventDefault()
-      props.onSubmit(html())
-      handleClear()
-    }
-
-    if (event.code === 'KeyK' && event.metaKey && !editor().state.selection.empty && editor().isFocused) {
+    if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
       showModal('editorInsertLink')
     }
   }
@@ -160,7 +149,8 @@ const SimplifiedEditor = (props: Props) => {
   onCleanup(() => {
     window.removeEventListener('keydown', handleKeyDown)
   })
-
+  const handleToggleBlockquote = () => editor().chain().focus().toggleBlockquote().run()
+  const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
   return (
     <div
       class={clsx(styles.SimplifiedEditor, {
@@ -200,7 +190,7 @@ const SimplifiedEditor = (props: Props) => {
               <button
                 ref={triggerRef}
                 type="button"
-                onClick={() => !editor().state.selection.empty && showModal('editorInsertLink')}
+                onClick={() => handleInsertLink}
                 class={clsx(styles.actionButton, { [styles.active]: isLink() })}
               >
                 <Icon name="editor-link" />
@@ -213,7 +203,7 @@ const SimplifiedEditor = (props: Props) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={() => editor().chain().focus().toggleBlockquote().run()}
+                  onClick={handleToggleBlockquote}
                   class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
                 >
                   <Icon name="editor-quote" />

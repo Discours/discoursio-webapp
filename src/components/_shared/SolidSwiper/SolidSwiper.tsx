@@ -5,7 +5,6 @@ import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
 import { register } from 'swiper/element/bundle'
 import { DropArea } from '../DropArea'
-import MD from '../../Article/MD'
 import { createFileUploader } from '@solid-primitives/upload'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { SwiperRef } from './swiper'
@@ -300,9 +299,7 @@ export const SolidSwiper = (props: Props) => {
               <div class={styles.source}>{props.images[slideIndex()].source}</div>
             </Show>
             <Show when={props.images[slideIndex()]?.body}>
-              <div class={styles.body}>
-                <MD body={props.images[slideIndex()].body} />
-              </div>
+              <div class={styles.body} innerHTML={props.images[slideIndex()].body} />
             </Show>
           </div>
         }

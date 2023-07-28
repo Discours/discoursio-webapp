@@ -156,7 +156,8 @@ export const FullArticle = (props: ArticleProps) => {
                 <Show
                   when={
                     props.article.cover &&
-                    !(props.article.layout === 'video' || props.article.layout === 'image')
+                    props.article.layout !== 'video' &&
+                    props.article.layout !== 'image'
                   }
                 >
                   <div

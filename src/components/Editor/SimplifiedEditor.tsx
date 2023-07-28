@@ -124,16 +124,20 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   const handleKeyDown = async (event) => {
-    if (props.submitByEnter && event.keyCode === 13 && !event.shiftKey && !isEmpty()) {
+    if (props.submitByEnter && event.code === 'Enter' && !event.shiftKey && !isEmpty()) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
     }
 
-    if (props.submitByShiftEnter && event.keyCode === 13 && event.shiftKey && !isEmpty()) {
+    if (props.submitByShiftEnter && event.code === 'Enter' && event.shiftKey && !isEmpty()) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
+    }
+
+    if (event.code === 'KeyK' && event.metaKey && !editor().state.selection.empty) {
+      showModal('editorInsertLink')
     }
   }
 
@@ -184,7 +188,7 @@ const SimplifiedEditor = (props: Props) => {
               <button
                 ref={triggerRef}
                 type="button"
-                onClick={() => showModal('editorInsertLink')}
+                onClick={() => !editor().state.selection.empty && showModal('editorInsertLink')}
                 class={clsx(styles.actionButton, { [styles.active]: isLink() })}
               >
                 <Icon name="editor-link" />

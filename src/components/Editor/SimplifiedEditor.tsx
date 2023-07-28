@@ -221,7 +221,7 @@ const SimplifiedEditor = (props: Props) => {
           </Show>
         </div>
         <div class={styles.buttons}>
-          <Button value={t('cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
+          <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
           <Button
             value={props.submitButtonText ?? t('Send')}
             variant="primary"

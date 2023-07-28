@@ -179,52 +179,6 @@ export const SolidSwiper = (props: Props) => {
                         </Popover>
                       </Show>
                     </div>
-                    <Switch>
-                      <Match when={props.editorMode}>
-                        <div class={styles.description}>
-                          <input
-                            type="text"
-                            class={clsx(styles.input, styles.title)}
-                            placeholder={t('Enter image title')}
-                            value={slide.title}
-                            onChange={(event) =>
-                              handleSlideDescriptionChange(index(), 'title', event.target.value)
-                            }
-                          />
-                          <input
-                            type="text"
-                            class={styles.input}
-                            placeholder={t('Specify the source and the name of the author')}
-                            value={slide.source}
-                            onChange={(event) =>
-                              handleSlideDescriptionChange(index(), 'source', event.target.value)
-                            }
-                          />
-                          <SimplifiedEditor
-                            initialContent={slide.body}
-                            smallHeight={true}
-                            placeholder={t('Enter image description')}
-                            onSubmit={(value) => handleSlideDescriptionChange(index(), 'body', value)}
-                            submitButtonText={t('Save')}
-                          />
-                        </div>
-                      </Match>
-                      <Match when={!props.editorMode}>
-                        <div class={styles.slideDescription}>
-                          <Show when={slide?.title}>
-                            <div class={styles.articleTitle}>{slide.title}</div>
-                          </Show>
-                          <Show when={slide?.source}>
-                            <div class={styles.source}>{slide.source}</div>
-                          </Show>
-                          <Show when={slide?.body}>
-                            <div class={styles.body}>
-                              <MD body={slide.body} />
-                            </div>
-                          </Show>
-                        </div>
-                      </Match>
-                    </Switch>
                   </swiper-slide>
                 )}
               </For>
@@ -249,7 +203,6 @@ export const SolidSwiper = (props: Props) => {
               {slideIndex() + 1} / {props.images.length}
             </div>
           </div>
-
           <div class={clsx(styles.holder, styles.thumbsHolder)}>
             <div class={styles.thumbs}>
               <swiper-container
@@ -337,6 +290,48 @@ export const SolidSwiper = (props: Props) => {
           </div>
         </Show>
       </div>
+      <Show
+        when={props.editorMode}
+        fallback={
+          <div class={styles.slideDescription}>
+            <Show when={props.images[slideIndex()]?.title}>
+              <div class={styles.articleTitle}>{props.images[slideIndex()].title}</div>
+            </Show>
+            <Show when={props.images[slideIndex()]?.source}>
+              <div class={styles.source}>{props.images[slideIndex()].source}</div>
+            </Show>
+            <Show when={props.images[slideIndex()]?.body}>
+              <div class={styles.body}>
+                <MD body={props.images[slideIndex()].body} />
+              </div>
+            </Show>
+          </div>
+        }
+      >
+        <div class={styles.description}>
+          <input
+            type="text"
+            class={clsx(styles.input, styles.title)}
+            placeholder={t('Enter image title')}
+            value={props.images[slideIndex()].title}
+            onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'title', event.target.value)}
+          />
+          <input
+            type="text"
+            class={styles.input}
+            placeholder={t('Specify the source and the name of the author')}
+            value={props.images[slideIndex()].source}
+            onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'source', event.target.value)}
+          />
+          <SimplifiedEditor
+            initialContent={props.images[slideIndex()].body}
+            smallHeight={true}
+            placeholder={t('Enter image description')}
+            onSubmit={(value) => handleSlideDescriptionChange(slideIndex(), 'body', value)}
+            submitButtonText={t('Save')}
+          />
+        </div>
+      </Show>
     </div>
   )
 }

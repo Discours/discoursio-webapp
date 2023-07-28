@@ -11,6 +11,7 @@ $navigation-reserve: 32px;
 .Swiper {
   display: block;
   margin: 2rem 0;
+  flex-direction: column;
 
   &.articleMode {
     background: var(--background-color-invert);
@@ -137,6 +138,11 @@ $navigation-reserve: 32px;
       }
     }
   }
+  &.editorMode {
+    .holder {
+      width: 100%;
+    }
+  }
 
   .navigation {
     background: rgb(0 0 0 / 40%);
@@ -183,6 +189,7 @@ $navigation-reserve: 32px;
 
   .slideDescription {
     margin-top: 8px;
+    align-self: flex-start;
 
     .articleTitle {
       @include font-size(1.4rem);

@@ -67,7 +67,8 @@ export const Figure = Node.create<FigureOptions>({
     return [
       {
         tag: 'figure',
-        contentElement: 'figcaption'
+        contentElement: (dom: HTMLElement) =>
+          dom.querySelector('figcaption') ?? document.createElement('figcaption')
       }
     ]
   },

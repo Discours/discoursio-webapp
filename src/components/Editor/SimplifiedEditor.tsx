@@ -124,16 +124,21 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   const handleKeyDown = async (event) => {
-    if (props.submitByEnter && event.keyCode === 13 && !event.shiftKey && !isEmpty()) {
+    if (isEmpty() || !editor().isFocused) {
+      return
+    }
+
+    if (
+      event.code === 'Enter' &&
+      ((props.submitByEnter && !event.shiftKey) || (props.submitByShiftEnter && event.shiftKey))
+    ) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
     }
 
-    if (props.submitByShiftEnter && event.keyCode === 13 && event.shiftKey && !isEmpty()) {
-      event.preventDefault()
-      props.onSubmit(html())
-      handleClear()
+    if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
+      showModal('editorInsertLink')
     }
   }
 
@@ -144,7 +149,8 @@ const SimplifiedEditor = (props: Props) => {
   onCleanup(() => {
     window.removeEventListener('keydown', handleKeyDown)
   })
-
+  const handleToggleBlockquote = () => editor().chain().focus().toggleBlockquote().run()
+  const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
   return (
     <div
       class={clsx(styles.SimplifiedEditor, {
@@ -184,7 +190,7 @@ const SimplifiedEditor = (props: Props) => {
               <button
                 ref={triggerRef}
                 type="button"
-                onClick={() => showModal('editorInsertLink')}
+                onClick={() => handleInsertLink}
                 class={clsx(styles.actionButton, { [styles.active]: isLink() })}
               >
                 <Icon name="editor-link" />
@@ -197,7 +203,7 @@ const SimplifiedEditor = (props: Props) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={() => editor().chain().focus().toggleBlockquote().run()}
+                  onClick={handleToggleBlockquote}
                   class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
                 >
                   <Icon name="editor-quote" />
@@ -221,7 +227,7 @@ const SimplifiedEditor = (props: Props) => {
           </Show>
         </div>
         <div class={styles.buttons}>
-          <Button value={t('cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
+          <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
           <Button
             value={props.submitButtonText ?? t('Send')}
             variant="primary"

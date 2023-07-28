@@ -53,6 +53,10 @@ export const InlineForm = (props: Props) => {
     }
   }
 
+  const handleClear = () => {
+    props.initialValue ? props.onClear() : props.onClose()
+  }
+
   return (
     <div class={styles.InlineForm}>
       <div class={styles.form}>
@@ -76,9 +80,9 @@ export const InlineForm = (props: Props) => {
             </button>
           )}
         </Popover>
-        <Popover content={props.initialValue ? t('Unlink') : t('Cancel')}>
+        <Popover content={props.initialValue ? t('Remove link') : t('Cancel')}>
           {(triggerRef: (el) => void) => (
-            <button ref={triggerRef} type="button" onClick={props.onClear}>
+            <button ref={triggerRef} type="button" onClick={handleClear}>
               {props.initialValue ? <Icon name="editor-unlink" /> : <Icon name="status-cancel" />}
             </button>
           )}

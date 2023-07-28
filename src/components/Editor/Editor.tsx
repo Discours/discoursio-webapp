@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount, untrack } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { useLocalize } from '../../context/localize'
 import { Bold } from '@tiptap/extension-bold'

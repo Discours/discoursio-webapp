@@ -153,7 +153,13 @@ export const FullArticle = (props: ArticleProps) => {
                     )}
                   </For>
                 </div>
-                <Show when={props.article.cover && props.article.layout !== 'video'}>
+                <Show
+                  when={
+                    props.article.cover &&
+                    props.article.layout !== 'video' &&
+                    props.article.layout !== 'image'
+                  }
+                >
                   <div
                     class={styles.shoutCover}
                     style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}

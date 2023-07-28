@@ -1,12 +1,12 @@
 import { Editor } from '@tiptap/core'
 import { validateUrl } from '../../../utils/validateUrl'
-import { hideModal } from '../../../stores/ui'
 import { InlineForm } from '../InlineForm'
 import { useLocalize } from '../../../context/localize'
 import { createEditorTransaction } from 'solid-tiptap'
 
 type Props = {
   editor: Editor
+  onClose: () => void
 }
 
 export const checkUrl = (url) => {
@@ -48,7 +48,7 @@ export const InsertLinkForm = (props: Props) => {
         onClear={handleClearLinkForm}
         validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
         onSubmit={handleLinkFormSubmit}
-        onClose={() => hideModal()}
+        onClose={() => props.onClose()}
       />
     </div>
   )

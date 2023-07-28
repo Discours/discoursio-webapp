@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -51,12 +51,26 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
     setListBubbleOpen((prev) => !prev)
   }
+  const handleKeyDown = async (event) => {
+    if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !props.editor.state.selection.empty) {
+      event.preventDefault()
+      setLinkEditorOpen(true)
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener('keydown', handleKeyDown)
+  })
+
+  onCleanup(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+  })
 
   return (
     <div ref={props.ref} class={styles.TextBubbleMenu}>
       <Switch>
         <Match when={linkEditorOpen()}>
-          <InsertLinkForm editor={props.editor} />
+          <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
         </Match>
         <Match when={!linkEditorOpen()}>
           <>

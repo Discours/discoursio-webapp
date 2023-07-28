@@ -304,29 +304,31 @@ export const SolidSwiper = (props: Props) => {
           </div>
         }
       >
-        <div class={styles.description}>
-          <input
-            type="text"
-            class={clsx(styles.input, styles.title)}
-            placeholder={t('Enter image title')}
-            value={props.images[slideIndex()].title}
-            onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'title', event.target.value)}
-          />
-          <input
-            type="text"
-            class={styles.input}
-            placeholder={t('Specify the source and the name of the author')}
-            value={props.images[slideIndex()].source}
-            onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'source', event.target.value)}
-          />
-          <SimplifiedEditor
-            initialContent={props.images[slideIndex()].body}
-            smallHeight={true}
-            placeholder={t('Enter image description')}
-            onSubmit={(value) => handleSlideDescriptionChange(slideIndex(), 'body', value)}
-            submitButtonText={t('Save')}
-          />
-        </div>
+        <Show when={props.images.length > 0}>
+          <div class={styles.description}>
+            <input
+              type="text"
+              class={clsx(styles.input, styles.title)}
+              placeholder={t('Enter image title')}
+              value={props.images[slideIndex()].title}
+              onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'title', event.target.value)}
+            />
+            <input
+              type="text"
+              class={styles.input}
+              placeholder={t('Specify the source and the name of the author')}
+              value={props.images[slideIndex()].source}
+              onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'source', event.target.value)}
+            />
+            <SimplifiedEditor
+              initialContent={props.images[slideIndex()].body}
+              smallHeight={true}
+              placeholder={t('Enter image description')}
+              onSubmit={(value) => handleSlideDescriptionChange(slideIndex(), 'body', value)}
+              submitButtonText={t('Save')}
+            />
+          </div>
+        </Show>
       </Show>
     </div>
   )

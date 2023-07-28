@@ -106,7 +106,6 @@ export const UploadModalContent = (props: Props) => {
           </Show>
           <div class={styles.formHolder}>
             <InlineForm
-              autoFocus={false}
               placeholder={t('Or paste a link to an image')}
               showInput={true}
               onClose={() => {

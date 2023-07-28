@@ -138,6 +138,7 @@ const SimplifiedEditor = (props: Props) => {
     }
 
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
+      event.preventDefault()
       showModal('editorInsertLink')
     }
   }
@@ -149,7 +150,7 @@ const SimplifiedEditor = (props: Props) => {
   onCleanup(() => {
     window.removeEventListener('keydown', handleKeyDown)
   })
-  const handleToggleBlockquote = () => editor().chain().focus().toggleBlockquote().run()
+
   const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
   return (
     <div
@@ -190,7 +191,7 @@ const SimplifiedEditor = (props: Props) => {
               <button
                 ref={triggerRef}
                 type="button"
-                onClick={() => handleInsertLink}
+                onClick={handleInsertLink}
                 class={clsx(styles.actionButton, { [styles.active]: isLink() })}
               >
                 <Icon name="editor-link" />
@@ -203,7 +204,7 @@ const SimplifiedEditor = (props: Props) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={handleToggleBlockquote}
+                  onClick={() => editor().chain().focus().toggleBlockquote().run()}
                   class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
                 >
                   <Icon name="editor-quote" />
@@ -237,7 +238,7 @@ const SimplifiedEditor = (props: Props) => {
         </div>
       </div>
       <Modal variant="narrow" name="editorInsertLink">
-        <InsertLinkForm editor={editor()} />
+        <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
       </Modal>
       <Show when={props.imageEnabled}>
         <Modal variant="narrow" name="uploadImage">

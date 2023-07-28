@@ -103,9 +103,11 @@ export const SolidSwiper = (props: Props) => {
       } catch (error) {
         await showSnackbar({ type: 'error', body: t('Error') })
         console.error('[runUpload]', error)
+        setLoading(false)
       }
     } else {
       await showSnackbar({ type: 'error', body: t('Invalid file type') })
+      setLoading(false)
       return false
     }
   }
@@ -209,16 +211,13 @@ export const SolidSwiper = (props: Props) => {
                 class={'thumbSwiper'}
                 ref={(el) => (thumbSwipeRef.current = el)}
                 slides-per-view={'auto'}
-                free-mode={true}
-                observer={true}
                 space-between={20}
                 auto-scroll-offset={1}
                 watch-overflow={true}
-                slide-to-clicked-slide={true}
                 watch-slides-visibility={true}
-                watch-slides-progress={true}
                 direction={props.editorMode ? 'horizontal' : 'vertical'}
-                slides-offset-after={props.editorMode && 140}
+                slides-offset-after={props.editorMode && 160}
+                slides-offset-before={props.editorMode && 30}
               >
                 <For each={props.images}>
                   {(slide, index) => (

@@ -124,19 +124,31 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   const handleKeyDown = async (event) => {
-    if (props.submitByEnter && event.code === 'Enter' && !event.shiftKey && !isEmpty()) {
+    if (
+      props.submitByEnter &&
+      event.code === 'Enter' &&
+      !event.shiftKey &&
+      !isEmpty() &&
+      editor().isFocused
+    ) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
     }
 
-    if (props.submitByShiftEnter && event.code === 'Enter' && event.shiftKey && !isEmpty()) {
+    if (
+      props.submitByShiftEnter &&
+      event.code === 'Enter' &&
+      event.shiftKey &&
+      !isEmpty() &&
+      editor().isFocused
+    ) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
     }
 
-    if (event.code === 'KeyK' && event.metaKey && !editor().state.selection.empty) {
+    if (event.code === 'KeyK' && event.metaKey && !editor().state.selection.empty && editor().isFocused) {
       showModal('editorInsertLink')
     }
   }

@@ -1,30 +1,39 @@
-import { capitalize, formatDate } from '../../utils'
-import { Icon } from '../_shared/Icon'
-import { AuthorCard } from '../Author/AuthorCard'
-import { AudioPlayer } from './AudioPlayer'
-import type { Author, Shout } from '../../graphql/types.gen'
-import MD from './MD'
-import { SharePopup } from './SharePopup'
-import { getDescription } from '../../utils/meta'
-import { ShoutRatingControl } from './ShoutRatingControl'
-import { clsx } from 'clsx'
-import { CommentsTree } from './CommentsTree'
-import { useSession } from '../../context/session'
-import { VideoPlayer } from '../_shared/VideoPlayer'
-import { getPagePath } from '@nanostores/router'
-import { router, useRouter } from '../../stores/router'
-import { useReactions } from '../../context/reactions'
-import { Title } from '@solidjs/meta'
-import { useLocalize } from '../../context/localize'
-import stylesHeader from '../Nav/Header.module.scss'
-import styles from './Article.module.scss'
-import { imageProxy } from '../../utils/imageProxy'
-import { Popover } from '../_shared/Popover'
-import article from '../Editor/extensions/Article'
 import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
+import { Title } from '@solidjs/meta'
+import { clsx } from 'clsx'
+import { getPagePath } from '@nanostores/router'
+
+import MD from './MD'
+
+import type { Author, Shout } from '../../graphql/types.gen'
+import { useSession } from '../../context/session'
+import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+
 import { MediaItem } from '../../pages/types'
+
+import { router, useRouter } from '../../stores/router'
+
+import { capitalize, formatDate } from '../../utils'
+import { getDescription } from '../../utils/meta'
+import { imageProxy } from '../../utils/imageProxy'
+import { isDesktop } from '../../utils/media-query'
+
+import { AuthorCard } from '../Author/AuthorCard'
+import { TableOfContents } from '../TableOfContents'
+import { AudioPlayer } from './AudioPlayer'
+import { SharePopup } from './SharePopup'
+import { ShoutRatingControl } from './ShoutRatingControl'
+import { CommentsTree } from './CommentsTree'
+import stylesHeader from '../Nav/Header.module.scss'
 import { AudioHeader } from './AudioHeader'
+
+import { Popover } from '../_shared/Popover'
+import { VideoPlayer } from '../_shared/VideoPlayer'
+import { Icon } from '../_shared/Icon'
 import { SolidSwiper } from '../_shared/SolidSwiper'
+
+import styles from './Article.module.scss'
 
 interface ArticleProps {
   article: Shout
@@ -39,6 +48,7 @@ export const FullArticle = (props: ArticleProps) => {
     actions: { requireAuthentication }
   } = useSession()
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
+
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
   const mainTopic = createMemo(
@@ -46,14 +56,6 @@ export const FullArticle = (props: ArticleProps) => {
       props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
       props.article.topics[0]
   )
-
-  onMount(async () => {
-    await loadReactionsBy({
-      by: { shout: props.article.slug }
-    })
-
-    setIsReactionsLoaded(true)
-  })
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
@@ -117,6 +119,14 @@ export const FullArticle = (props: ArticleProps) => {
   const {
     actions: { loadReactionsBy }
   } = useReactions()
+
+  onMount(async () => {
+    await loadReactionsBy({
+      by: { shout: props.article.slug }
+    })
+
+    setIsReactionsLoaded(true)
+  })
 
   return (
     <>
@@ -202,6 +212,9 @@ export const FullArticle = (props: ArticleProps) => {
               </div>
             </Show>
           </article>
+          <Show when={isDesktop() && body()}>
+            <TableOfContents type={'article'} content={body()} />
+          </Show>
         </div>
       </div>
 

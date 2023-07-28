@@ -1,0 +1,124 @@
+.TableOfContentsFixedWrapper {
+  position: fixed;
+  top: 150px;
+  right: 20px;
+
+  width: 281px;
+}
+
+.TableOfContentsFixedWrapperLefted {
+  right: auto;
+  left: 20px;
+}
+
+.TableOfContentsContainer {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  display: flex;
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  flex-direction: column;
+  align-items: flex-start;
+
+  background-color: transparent;
+}
+
+.TableOfContentsHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.TableOfContentsHeading {
+  margin: 0;
+
+  color: #000;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.TableOfContentsPrimaryButton {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.TableOfContentsPrimaryButtonLefted {
+  right: auto;
+  left: 20px;
+}
+
+.TableOfContentsHeadingsList {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+
+  margin: 0;
+  padding: 0 38px 0 0;
+}
+
+.TableOfContentsScrolledIndicator {
+  position: absolute;
+  top: 20px;
+  right: 12px;
+
+  width: 2px;
+  height: 40px;
+  opacity: 0.2;
+  background: #404040;
+}
+
+.TableOfContentsHeadingsItem {
+  margin-top: 20px;
+
+  color: #000;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  letter-spacing: -0.14px;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.TableOfContentsHeadingsItemH3,
+.TableOfContentsHeadingsItemH4 {
+  margin-top: 8px;
+}
+
+.TableOfContentsHeadingsItemH3 {
+  padding-left: 8px;
+}
+
+.TableOfContentsHeadingsItemH4 {
+  padding-left: 16px;
+}
+
+.TableOfContentsIconRotated {
+  transform: rotate(180deg);
+}

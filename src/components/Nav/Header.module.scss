@@ -95,16 +95,14 @@
 
 .usernav {
   display: inline-flex;
+  flex: 0 0 40% !important;
   font-weight: 500;
+  max-width: 400px !important;
   position: relative;
 
-  // flex: 1 100% !important;
-
-  // replace row > * selector to remove !important
-  // width: auto !important;
-
   @include media-breakpoint-down(md) {
-    flex: 1;
+    flex: 1 !important;
+    max-width: 100% !important;
     padding-right: 0 !important;
   }
 }
@@ -264,14 +262,13 @@
 
 .articleHeader {
   @include font-size(1.4rem);
-
   left: $container-padding-x;
   margin: 0.2em 0;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: calc(100% - 180px);
+  width: 100%;
 
   @include media-breakpoint-down(md) {
     display: none;
@@ -405,7 +402,7 @@
     padding: 0;
 
     &:hover {
-      background: none;
+      background: none !important;
 
       .icon {
         display: none;
@@ -444,6 +441,16 @@
       width: 2.4rem;
     }
 
+    a:hover {
+      .icon {
+        display: block;
+
+        @include media-breakpoint-up(lg) {
+          display: none;
+        }
+      }
+    }
+
     img {
       max-width: none;
       height: 2.4rem;
@@ -457,7 +464,7 @@
     width: auto;
 
     .icon {
-      display: none;
+      display: none !important;
     }
 
     .textLabel {
@@ -467,6 +474,10 @@
       position: relative;
       z-index: 1;
     }
+  }
+
+  button {
+    margin: 0 !important;
   }
 
   a::before {
@@ -487,5 +498,9 @@
       background-color: var(--link-hover-background);
       color: var(--link-hover-color);
     }
+  }
+
+  a:hover {
+    background-color: var(--link-hover-background) !important;
   }
 }

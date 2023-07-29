@@ -88,7 +88,7 @@ const CreateModalContent = (props: Props) => {
 
       <div class={styles.footer}>
         <button type="button" class="btn btn-lg fs-3 btn-outline-danger" onClick={reset}>
-          {t('cancel')}
+          {t('Cancel')}
         </button>
         <button
           type="button"

@@ -112,6 +112,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil" class={styles.icon} />
+                  <Icon name="pencil" class={clsx(styles.icon, styles.iconHover)} />
                 </a>
               </div>
             </Show>
@@ -186,6 +187,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                   <a href="?modal=auth&mode=login">
                     <span class={styles.textLabel}>{t('Enter')}</span>
                     <Icon name="user-default" class={styles.icon} />
+                    {/*<Icon name="user-default" class={clsx(styles.icon, styles.iconHover)} />*/}
                   </a>
                 </div>
               }

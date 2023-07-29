@@ -44,7 +44,7 @@ import './Prosemirror.scss'
 import { TrailingNode } from './extensions/TrailingNode'
 import Article from './extensions/Article'
 
-type EditorProps = {
+type Props = {
   shoutId: number
   initialContent?: string
   onChange: (text: string) => void
@@ -54,7 +54,7 @@ const yDocs: Record<string, Doc> = {}
 const persisters: Record<string, IndexeddbPersistence> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
-export const Editor = (props: EditorProps) => {
+export const Editor = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
@@ -110,9 +110,14 @@ export const Editor = (props: EditorProps) => {
   } = {
     current: null
   }
-
+  const { initialContent } = props
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
+    editorProps: {
+      attributes: {
+        class: 'articleEditor'
+      }
+    },
     extensions: [
       Document,
       Text,
@@ -177,6 +182,9 @@ export const Editor = (props: EditorProps) => {
 
           setIsCommonMarkup(e.isActive('figure'))
           return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
+        },
+        tippyOptions: {
+          sticky: true
         }
       }),
       BubbleMenu.configure({
@@ -212,7 +220,8 @@ export const Editor = (props: EditorProps) => {
       }),
       TrailingNode,
       Article
-    ]
+    ],
+    content: initialContent ?? null
   }))
 
   const {

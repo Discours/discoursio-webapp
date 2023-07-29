@@ -1,9 +1,17 @@
 $navigation-reserve: 32px;
-$slide-height: 500px;
+
+:root {
+  --slide-height: 300px;
+
+  @include media-breakpoint-up(md) {
+    --slide-height: 500px;
+  }
+}
 
 .Swiper {
   display: block;
   margin: 2rem 0;
+  flex-direction: column;
 
   &.articleMode {
     background: var(--background-color-invert);
@@ -11,29 +19,29 @@ $slide-height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
-
+    a {
+      color: var(--default-color-invert);
+      border-color: var(--default-color-invert);
+    }
     .container {
       margin: auto;
-      max-width: 800px;
+      //max-width: 800px;
       position: relative;
       padding: 24px 0;
       display: flex;
       justify-content: center;
       gap: 20px;
-
-      .holder {
-        width: 600px;
-      }
+      width: 100%;
 
       .thumbsHolder {
-        width: unset;
+        width: auto;
       }
 
       .thumbs {
         padding: 52px 0;
         width: 110px;
         overflow: hidden;
-        height: $slide-height + 40px;
+        height: calc(var(--slide-height) + 40px);
         box-sizing: border-box;
         margin: 0;
         position: relative;
@@ -56,7 +64,7 @@ $slide-height: 500px;
           right: 0;
 
           .icon {
-            transform: rotate(45deg);
+            transform: rotate(90deg);
           }
 
           &.prev {
@@ -64,7 +72,7 @@ $slide-height: 500px;
           }
 
           &.next {
-            top: unset;
+            top: auto;
             bottom: 0;
           }
         }
@@ -98,16 +106,15 @@ $slide-height: 500px;
   .holder {
     position: relative;
     box-sizing: border-box;
-    padding: 0 $navigation-reserve;
     overflow: hidden;
+    width: calc(100% - 130px);
 
     .counter {
       @include font-size(1.2rem);
-
       position: absolute;
       z-index: 2;
-      top: 476px;
-      right: $navigation-reserve;
+      top: 477px;
+      right: 0;
       font-weight: 600;
       padding: 0.2rem 0.8rem;
       color: var(--background-color);
@@ -118,7 +125,7 @@ $slide-height: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: $slide-height;
+      height: var(--slide-height);
       background: var(--placeholder-color-semi);
       position: relative;
 
@@ -131,17 +138,24 @@ $slide-height: 500px;
       }
     }
   }
+  &.editorMode {
+    .holder {
+      width: 100%;
+    }
+  }
 
   .navigation {
+    background: rgb(0 0 0 / 40%);
     display: flex;
     position: absolute;
     top: 0;
     bottom: 0;
     justify-content: center;
     align-items: center;
-    width: $navigation-reserve;
     cursor: pointer;
-    height: $slide-height;
+    height: var(--slide-height);
+    width: 52px;
+    z-index: 2;
 
     &.disabled {
       opacity: 0.5;
@@ -163,39 +177,47 @@ $slide-height: 500px;
     }
 
     &:not(.disabled):hover .icon {
-      scale: 1.1;
+      opacity: 0.6;
     }
   }
 
   &.articleMode .navigation {
-    filter: invert(1);
+    .icon {
+      filter: invert(1);
+    }
   }
 
   .slideDescription {
     margin-top: 8px;
+    align-self: flex-start;
+
     .articleTitle {
       @include font-size(1.4rem);
     }
 
     .source {
       @include font-size(1.2rem);
-
       color: var(--secondary-color);
     }
+
     .body {
       @include font-size(1.7rem);
-
       margin-top: 24px;
+
+      @include media-breakpoint-up(md) {
+        //margin-left: calc((100% + 130px) * 0.15);
+        margin-left: calc(15% + 24px);
+      }
     }
   }
 
   .thumbs {
     margin: 3rem 0;
-    max-height: 488px;
+    max-height: var(--slide-height);
     position: relative;
 
     .navigation {
-      height: unset;
+      height: auto;
 
       &.prev {
         left: -$navigation-reserve;
@@ -260,7 +282,7 @@ $slide-height: 500px;
       &:hover {
         opacity: 1;
         cursor: pointer;
-        filter: unset;
+        filter: none;
 
         .thumbAction {
           display: flex;
@@ -281,12 +303,6 @@ $slide-height: 500px;
     flex-direction: column;
     gap: 0.5em;
     margin: 1em 0;
-
-    .descriptionText {
-      @include font-size(1.4rem);
-
-      line-height: 1.1;
-    }
 
     .input {
       @include font-size(1.4rem);
@@ -309,12 +325,16 @@ $slide-height: 500px;
       }
     }
   }
+
+  :global(.swiper-lazy-preloader) {
+    top: calc(var(--slide-height) / 2);
+  }
 }
 
 :global(.swiper-slide-thumb-active) {
   .imageThumb {
     opacity: 1 !important;
-    filter: unset !important;
+    filter: none !important;
 
     .thumbAction {
       display: flex !important;

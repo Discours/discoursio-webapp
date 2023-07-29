@@ -101,6 +101,12 @@
   li:last-child & {
     border-bottom: none;
   }
+
+  button {
+    @include media-breakpoint-between(md, lg) {
+      margin-top: 0.8rem;
+    }
+  }
 }
 
 .besideColumnTopic {

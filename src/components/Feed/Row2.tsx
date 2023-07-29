@@ -8,7 +8,12 @@ const x = [
   ['16', '8']
 ]
 
-export const Row2 = (props: { articles: Shout[]; isEqual?: boolean; nodate?: boolean }) => {
+export const Row2 = (props: {
+  articles: Shout[]
+  isEqual?: boolean
+  nodate?: boolean
+  noAuthorLink?: boolean
+}) => {
   const [y, setY] = createSignal(0)
 
   createComputed(() => setY(Math.floor(Math.random() * x.length)))
@@ -26,7 +31,8 @@ export const Row2 = (props: { articles: Shout[]; isEqual?: boolean; nodate?: boo
                       article={a}
                       settings={{
                         isWithCover: props.isEqual || x[y()][i()] === '16',
-                        nodate: props.isEqual || props.nodate
+                        nodate: props.isEqual || props.nodate,
+                        noAuthorLink: props.noAuthorLink
                       }}
                     />
                   </div>

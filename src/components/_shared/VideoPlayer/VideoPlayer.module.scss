@@ -3,8 +3,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1rem 0;
+  margin: 1rem auto;
   position: relative;
+
+  &.articleView {
+    @include media-breakpoint-up(md) {
+      margin: 1rem -16.6666% 2rem -25%;
+    }
+  }
 
   .controls {
     display: flex;
@@ -27,10 +33,6 @@
   .videoContainer {
     width: 100%;
     aspect-ratio: 16/9;
-
-    @include media-breakpoint-up(md) {
-      margin: 0 0 1em -16.6666%;
-    }
 
     iframe {
       height: 100%;

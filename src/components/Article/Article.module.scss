@@ -28,7 +28,7 @@ img {
 }
 
 .shoutBody {
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   line-height: 1.6;
 
   img {
@@ -36,29 +36,175 @@ img {
     margin-bottom: 0.5em;
   }
 
-  blockquote {
-    border-left: 4px solid;
-    font-size: 2rem;
-    font-weight: 500;
-    font-style: italic;
+  blockquote,
+  blockquote[data-type='punchline'] {
+    font-size: 2.6rem;
+    font-weight: bold;
     line-height: 1.4;
-    margin: 1.5em 0;
-    padding: 0 0 0 1em;
+    margin: 3.2rem 0;
+    position: relative;
+
+    &:before {
+      background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNiAyMSIgZmlsbD0ibm9uZSI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0wIDEwLjUwMDFWMjFIMTAuNzA2MVYxMC41MDAxSDQuNTg4MzNDNC41ODgzMyA3LjE4NjU4IDcuMzI3NTggNC41MDAwOCAxMC43MDYxIDQuNTAwMDhWMEM0Ljc5Mjk3IDAgMCA0LjcwMDczIDAgMTAuNDk5OVYxMC41MDAxWk0yNiA0LjUwMDA4VjBDMjAuMDg2OSAwIDE1LjI5MzkgNC43MDA3MyAxNS4yOTM5IDEwLjQ5OTlWMjAuOTk5OUgyNlYxMC41MDA1SDE5Ljg4MjJDMTkuODgyNCA3LjE4NyAyMi42MjE3IDQuNTAwNSAyNiA0LjUwMDVWNC41MDAwOFoiIGZpbGw9ImJsYWNrIi8+PC9zdmc+')
+        no-repeat;
+      content: '';
+      height: 2.1rem;
+      margin-right: 3rem;
+      position: absolute;
+      right: 100%;
+      top: 0.2em;
+      width: 2.6rem;
+    }
+  }
+
+  blockquote[data-type='quote'],
+  ta-quotation {
+    @include font-size(1.4rem);
+    border: solid #000;
+    border-width: 0 0 0 2px;
+    display: block;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 1.6rem 0 0 calc(-8.33333% - 2px);
+    padding: 0 0 0 8.33333%;
+
+    &[data-float='left'],
+    &[data-float='right'] {
+      @include font-size(2.2rem);
+      line-height: 1.4;
+    }
+
+    @include media-breakpoint-up(sm) {
+      &[data-float='left'] {
+        margin-right: 1.5em;
+      }
+
+      &[data-float='right'] {
+        margin-left: 1.5em;
+      }
+    }
+
+    &:before {
+      display: none;
+    }
+  }
+
+  *[data-type='incut'],
+  ta-sub,
+  ta-selection-frame,
+  ta-border-sub {
+    background: #f1f2f3;
+    display: block;
+    @include font-size(1.4rem);
+    margin: 3.2rem 0;
+    padding: 3.2rem;
 
     @include media-breakpoint-up(md) {
-      margin-left: -16.6666%;
+      margin: 3.2rem -8.33333%;
+      padding: 3.2rem 8.33333%;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  *[data-bg='black'] {
+    background: #000;
+    color: #fff;
+  }
+
+  *[data-bg='yellow'] {
+    background: #f6e3a1;
+  }
+
+  *[data-bg='pink'] {
+    background: #f1b5bc;
+  }
+
+  *[data-bg='green'] {
+    background: #eafff2;
+  }
+
+  *[data-bg='white'],
+  ta-selection-frame {
+    background: #fff;
+    box-shadow: 0 0 0 1px #000;
+    display: block;
+  }
+
+  ta-border-sub {
+    box-shadow: 0 0 0 1px #000;
+    display: block;
+  }
+
+  *[data-float='half-left'] {
+    @include media-breakpoint-up(sm) {
+      margin: 1.6rem 1.6rem 1.6rem 0;
+    }
+
+    @include media-breakpoint-up(md) {
+      margin: 0 8.33333% 3.2rem -16.66666%;
+    }
+  }
+
+  *[data-float='half-right'] {
+    @include media-breakpoint-up(sm) {
+      margin: 1.6rem 0 1.6rem 1.6rem;
+    }
+
+    @include media-breakpoint-up(md) {
+      margin: 0 -16.66666% 3.2rem 8.33333%;
     }
   }
 
   mark {
-    background: none;
-    font-size: 2rem;
-    font-weight: bold;
-    line-height: 1.4;
+    background: #f6e3a1;
   }
 
   figure {
     gap: 0;
+  }
+
+  h2 {
+    @include media-breakpoint-up(xl) {
+      margin-left: -16.6666666666%;
+    }
+  }
+
+  :global(.img-align-left) {
+    float: left;
+    margin: 1em 8.333333333% 0.5em 0;
+  }
+
+  :global(.width-30) {
+    width: 30%;
+  }
+
+  :global(.width-50) {
+    width: 50%;
+  }
+
+  :global(.img-align-left.width-50) {
+    @include media-breakpoint-up(xl) {
+      margin-left: -16.6666666666%;
+    }
+  }
+
+  :global(.img-align-right) {
+    float: right;
+    margin: 1em 0 0.5em 8.333333333%;
+  }
+
+  :global(.img-align-right.width-50) {
+    @include media-breakpoint-up(xl) {
+      margin-right: -16.6666666666%;
+    }
+  }
+
+  :global(.ta-insert-video) {
+    aspect-ratio: 16/9;
+    width: 100%;
   }
 }
 
@@ -158,8 +304,9 @@ img {
 }
 
 .shoutStatsItem {
-  align-items: center;
   @include font-size(1.5rem);
+
+  align-items: center;
   font-weight: 500;
   display: flex;
   margin: 0 6% 1em 0;
@@ -351,10 +498,9 @@ img {
 
   button {
     @include font-size(1.5rem);
-
     border-radius: 0.8rem;
     margin-right: 1.2rem;
-    padding: 1.1rem 1.2rem 0.9rem;
+    padding: 0.9rem 1.2rem;
   }
 }
 

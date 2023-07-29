@@ -52,7 +52,9 @@ export const AuthorView = (props: AuthorProps) => {
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
-  const author = authorEntities()[props.authorSlug]
+
+  const author = createMemo(() => authorEntities()[props.authorSlug])
+
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>([])
@@ -78,7 +80,7 @@ export const AuthorView = (props: AuthorProps) => {
       const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
       setFollowers(userSubscribers)
     } catch (error) {
-      console.log('[getAuthorFollowers]', error)
+      console.error('[getAuthorFollowers]', error)
     }
     if (!searchParams().by) {
       changeSearchParam('by', 'rating')
@@ -136,7 +138,9 @@ export const AuthorView = (props: AuthorProps) => {
   return (
     <div class="author-page">
       <div class="wide-container">
-        <AuthorFull author={author} />
+        <Show when={author()}>
+          <AuthorFull author={author()} />
+        </Show>
         <div class="row group__controls">
           <div class="col-md-16">
             <ul class="view-switcher">
@@ -218,7 +222,7 @@ export const AuthorView = (props: AuthorProps) => {
       <Switch>
         <Match when={searchParams().by === 'about'}>
           <div class="wide-container">
-            <p>{author.bio}</p>
+            <p>{author().about}</p>
           </div>
         </Match>
         <Match when={searchParams().by === 'commented'}>
@@ -281,22 +285,22 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </Match>
         <Match when={searchParams().by === 'rating'}>
-          <Row1 article={sortedArticles()[0]} />
-          <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} />
-          <Row1 article={sortedArticles()[3]} />
-          <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} />
-          <Row1 article={sortedArticles()[6]} />
-          <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} />
+          <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
+          <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noAuthorLink={true} />
+          <Row1 article={sortedArticles()[3]} noAuthorLink={true} />
+          <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noAuthorLink={true} />
+          <Row1 article={sortedArticles()[6]} noAuthorLink={true} />
+          <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noAuthorLink={true} />
 
           <For each={pages()}>
             {(page) => (
               <>
-                <Row1 article={page[0]} />
-                <Row2 articles={page.slice(1, 3)} isEqual={true} />
-                <Row1 article={page[3]} />
-                <Row2 articles={page.slice(4, 6)} isEqual={true} />
-                <Row1 article={page[6]} />
-                <Row2 articles={page.slice(7, 9)} isEqual={true} />
+                <Row1 article={page[0]} noAuthorLink={true} />
+                <Row2 articles={page.slice(1, 3)} isEqual={true} noAuthorLink={true} />
+                <Row1 article={page[3]} noAuthorLink={true} />
+                <Row2 articles={page.slice(4, 6)} isEqual={true} noAuthorLink={true} />
+                <Row1 article={page[6]} noAuthorLink={true} />
+                <Row2 articles={page.slice(7, 9)} isEqual={true} noAuthorLink={true} />
               </>
             )}
           </For>

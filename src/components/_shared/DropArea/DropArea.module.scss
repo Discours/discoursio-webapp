@@ -58,6 +58,24 @@
     text-align: center;
     padding: 1rem;
   }
+
+  &.square {
+    .field {
+      @include font-size(1.4rem);
+
+      flex-direction: column;
+      padding: 0;
+      width: 228px;
+      height: 228px;
+      text-align: center;
+    }
+
+    .description {
+      margin-top: 8px;
+      opacity: 0.3;
+      color: var(--default-color);
+    }
+  }
 }
 
 @keyframes slide {

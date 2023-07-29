@@ -1,12 +1,10 @@
 import { createEffect, createSignal, For, Match, Show, Switch, on } from 'solid-js'
-import { MediaItem } from '../../../pages/types'
+import { MediaItem, UploadedFile } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
 import { register } from 'swiper/element/bundle'
 import { DropArea } from '../DropArea'
-import { GrowingTextarea } from '../GrowingTextarea'
-import MD from '../../Article/MD'
 import { createFileUploader } from '@solid-primitives/upload'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { SwiperRef } from './swiper'
@@ -17,6 +15,8 @@ import { Loading } from '../Loading'
 import { imageProxy } from '../../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
+import { composeMediaItems } from '../../../utils/composeMediaItems'
+import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 
 type Props = {
   images: MediaItem[]
@@ -25,17 +25,6 @@ type Props = {
   onImagesSorted?: (value: MediaItem[]) => void
   onImageDelete?: (mediaItemIndex: number) => void
   onImageChange?: (index: number, value: MediaItem) => void
-}
-
-const composeMediaItem = (value) => {
-  return value.map((url) => {
-    return {
-      url: url,
-      source: '',
-      title: '',
-      body: ''
-    }
-  })
 }
 
 register()
@@ -47,7 +36,6 @@ export const SolidSwiper = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
 
-  const dropAreaRef: { current: HTMLElement } = { current: null }
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
@@ -78,8 +66,8 @@ export const SolidSwiper = (props: Props) => {
     )
   )
 
-  const handleDropAreaUpload = (value: string[]) => {
-    props.onImagesAdd(composeMediaItem(value))
+  const handleDropAreaUpload = (value: UploadedFile[]) => {
+    props.onImagesAdd(composeMediaItems(value))
     swipeToUploaded()
   }
 
@@ -103,20 +91,22 @@ export const SolidSwiper = (props: Props) => {
     if (isValid) {
       try {
         setLoading(true)
-        const results: string[] = []
+        const results: UploadedFile[] = []
         for (const file of selectedFiles) {
           const result = await handleFileUpload(file)
-          results.push(result)
+          results.push(result.url)
         }
-        props.onImagesAdd(composeMediaItem(results))
+        props.onImagesAdd(composeMediaItems(results))
         setLoading(false)
         swipeToUploaded()
       } catch (error) {
         await showSnackbar({ type: 'error', body: t('Error') })
         console.error('[runUpload]', error)
+        setLoading(false)
       }
     } else {
       await showSnackbar({ type: 'error', body: t('Invalid file type') })
+      setLoading(false)
       return false
     }
   }
@@ -146,7 +136,6 @@ export const SolidSwiper = (props: Props) => {
       <div class={styles.container}>
         <Show when={props.editorMode && props.images.length === 0}>
           <DropArea
-            ref={(el) => (dropAreaRef.current = el)}
             fileType="image"
             isMultiply={true}
             placeholder={t('Add images')}
@@ -168,6 +157,7 @@ export const SolidSwiper = (props: Props) => {
               thumbs-swiper={'.thumbSwiper'}
               observer={true}
               onSlideChange={handleSlideChange}
+              space-between={20}
             >
               <For each={props.images}>
                 {(slide, index) => (
@@ -190,51 +180,6 @@ export const SolidSwiper = (props: Props) => {
                         </Popover>
                       </Show>
                     </div>
-                    <Switch>
-                      <Match when={props.editorMode}>
-                        <div class={styles.description}>
-                          <input
-                            type="text"
-                            class={clsx(styles.input, styles.title)}
-                            placeholder={t('Enter image title')}
-                            value={slide.title}
-                            onChange={(event) =>
-                              handleSlideDescriptionChange(index(), 'title', event.target.value)
-                            }
-                          />
-                          <input
-                            type="text"
-                            class={styles.input}
-                            placeholder={t('Specify the source and the name of the author')}
-                            value={slide.source}
-                            onChange={(event) =>
-                              handleSlideDescriptionChange(index(), 'source', event.target.value)
-                            }
-                          />
-                          <GrowingTextarea
-                            class={styles.descriptionText}
-                            placeholder={t('Enter image description')}
-                            initialValue={slide.body}
-                            value={(value) => handleSlideDescriptionChange(index(), 'body', value)}
-                          />
-                        </div>
-                      </Match>
-                      <Match when={!props.editorMode}>
-                        <div class={styles.slideDescription}>
-                          <Show when={slide?.title}>
-                            <div class={styles.articleTitle}>{slide.title}</div>
-                          </Show>
-                          <Show when={slide?.source}>
-                            <div class={styles.source}>{slide.source}</div>
-                          </Show>
-                          <Show when={slide?.body}>
-                            <div class={styles.body}>
-                              <MD body={slide.body} />
-                            </div>
-                          </Show>
-                        </div>
-                      </Match>
-                    </Switch>
                   </swiper-slide>
                 )}
               </For>
@@ -259,23 +204,19 @@ export const SolidSwiper = (props: Props) => {
               {slideIndex() + 1} / {props.images.length}
             </div>
           </div>
-
           <div class={clsx(styles.holder, styles.thumbsHolder)}>
             <div class={styles.thumbs}>
               <swiper-container
                 class={'thumbSwiper'}
                 ref={(el) => (thumbSwipeRef.current = el)}
                 slides-per-view={'auto'}
-                free-mode={true}
-                observer={true}
                 space-between={20}
                 auto-scroll-offset={1}
                 watch-overflow={true}
-                slide-to-clicked-slide={true}
                 watch-slides-visibility={true}
-                watch-slides-progress={true}
                 direction={props.editorMode ? 'horizontal' : 'vertical'}
-                slides-offset-after={props.editorMode && 140}
+                slides-offset-after={props.editorMode && 160}
+                slides-offset-before={props.editorMode && 30}
               >
                 <For each={props.images}>
                   {(slide, index) => (
@@ -305,7 +246,7 @@ export const SolidSwiper = (props: Props) => {
                             </div>
                             <div
                               class={clsx(styles.action, {
-                                [styles.hidden]: index() + 1 === Number(props.images.length)
+                                [styles.hidden]: index() === props.images.length - 1
                               })}
                               onClick={() => handleChangeIndex('right', index())}
                             >
@@ -333,7 +274,7 @@ export const SolidSwiper = (props: Props) => {
                 })}
                 onClick={() => thumbSwipeRef.current.swiper.slidePrev()}
               >
-                <Icon iconClassName={styles.icon} name="swiper-l-arr" class={styles.icon} />
+                <Icon name="swiper-l-arr" class={styles.icon} />
               </div>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.next, {
@@ -341,12 +282,54 @@ export const SolidSwiper = (props: Props) => {
                 })}
                 onClick={() => thumbSwipeRef.current.swiper.slideNext()}
               >
-                <Icon name="swiper-r-arr" iconClassName={styles.icon} class={styles.icon} />
+                <Icon name="swiper-r-arr" class={styles.icon} />
               </div>
             </div>
           </div>
         </Show>
       </div>
+      <Show
+        when={props.editorMode}
+        fallback={
+          <div class={styles.slideDescription}>
+            <Show when={props.images[slideIndex()]?.title}>
+              <div class={styles.articleTitle}>{props.images[slideIndex()].title}</div>
+            </Show>
+            <Show when={props.images[slideIndex()]?.source}>
+              <div class={styles.source}>{props.images[slideIndex()].source}</div>
+            </Show>
+            <Show when={props.images[slideIndex()]?.body}>
+              <div class={styles.body} innerHTML={props.images[slideIndex()].body} />
+            </Show>
+          </div>
+        }
+      >
+        <Show when={props.images.length > 0}>
+          <div class={styles.description}>
+            <input
+              type="text"
+              class={clsx(styles.input, styles.title)}
+              placeholder={t('Enter image title')}
+              value={props.images[slideIndex()].title}
+              onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'title', event.target.value)}
+            />
+            <input
+              type="text"
+              class={styles.input}
+              placeholder={t('Specify the source and the name of the author')}
+              value={props.images[slideIndex()].source}
+              onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'source', event.target.value)}
+            />
+            <SimplifiedEditor
+              initialContent={props.images[slideIndex()].body}
+              smallHeight={true}
+              placeholder={t('Enter image description')}
+              onSubmit={(value) => handleSlideDescriptionChange(slideIndex(), 'body', value)}
+              submitButtonText={t('Save')}
+            />
+          </div>
+        </Show>
+      </Show>
     </div>
   )
 }

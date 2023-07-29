@@ -27,6 +27,11 @@
   --icon-filter: invert(0);
   --icon-filter-hover: invert(1);
   --editor-bubble-menu-background: #fff;
+  --blue-link: #2638d9;
+  // names from figma
+  --black-50: #f7f7f8;
+  --black-500: #141414;
+  --black-400: #696969;
 }
 
 [data-editor-dark-mode='true'] {
@@ -42,6 +47,10 @@
   --icon-filter: invert(1);
   --icon-filter-hover: invert(0);
   --editor-bubble-menu-background: #444;
+  // names from figma
+  --black-50: #080807;
+  --black-500: #ebebeb;
+  --black-400: #969696;
 }
 
 * {
@@ -548,9 +557,9 @@ figure {
   }
 
   figcaption {
+    color: rgb(0 0 0 / 60%);
     @include font-size(1.2rem);
-
-    color: #9fa1a7;
+    line-height: 1.5;
   }
 }
 
@@ -955,4 +964,10 @@ details {
 
 iframe {
   border: none;
+}
+
+.lead {
+  @include font-size(2rem);
+  font-weight: bold;
+  line-height: 1.5;
 }

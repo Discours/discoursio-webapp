@@ -154,19 +154,17 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                 {(letter) => (
                   <div class={clsx(styles.group, 'group')}>
                     <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-lg-20">
-                          <div class="row">
-                            <For each={byLetter()[letter]}>
-                              {(topic) => (
-                                <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
-                                  <a href={`/topic/${topic.slug}`}>{topic.title}</a>
-                                  <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
-                                </div>
-                              )}
-                            </For>
-                          </div>
+                    <div class="row">
+                      <div class="col-lg-20">
+                        <div class="row">
+                          <For each={byLetter()[letter]}>
+                            {(topic) => (
+                              <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
+                                <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                                <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
+                              </div>
+                            )}
+                          </For>
                         </div>
                       </div>
                     </div>

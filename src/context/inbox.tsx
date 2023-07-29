@@ -71,14 +71,15 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     return chat
   }
 
-  pipe(
-    subclient().subscription(newMessage, {}),
-    subscribe((result) => {
-      console.info('[subscription]')
-      console.debug(result)
-      // TODO: handle data result
-    })
-  )
+  // pipe(
+  //   subclient().subscription(newMessage, {}),
+  //   subscribe((result) => {
+  //     console.info('[subscription]')
+  //     console.debug(result)
+  //     // TODO: handle data result
+  //   })
+  // )
+
   const actions = {
     createChat,
     loadChats,

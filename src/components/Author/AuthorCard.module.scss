@@ -37,7 +37,6 @@
 
   @include media-breakpoint-between(md, lg) {
     flex: 1 0 100%;
-    margin-bottom: 0.8rem;
   }
 
   @include media-breakpoint-up(md) {
@@ -53,12 +52,14 @@
   border: none !important;
   font-size: 1.6rem;
   font-weight: 500;
+  line-height: 2;
   margin-bottom: 0.8rem;
 }
 
 .authorAbout {
-  font-size: 1.5rem;
   color: rgb(0 0 0 / 60%);
+  font-size: 1.5rem;
+  line-height: 1.4;
   word-break: break-word;
 }
 
@@ -295,6 +296,7 @@
   }
 
   .button {
+    min-height: 4rem;
     margin: 0 0.8rem;
     vertical-align: middle;
 

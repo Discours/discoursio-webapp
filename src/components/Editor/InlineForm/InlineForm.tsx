@@ -1,6 +1,6 @@
 import styles from './InlineForm.module.scss'
 import { Icon } from '../../_shared/Icon'
-import { createSignal } from 'solid-js'
+import { createSignal, onMount } from 'solid-js'
 import { clsx } from 'clsx'
 import { Popover } from '../../_shared/Popover'
 import { useLocalize } from '../../../context/localize'
@@ -13,7 +13,6 @@ type Props = {
   initialValue?: string
   showInput?: boolean
   placeholder: string
-  autoFocus?: boolean
 }
 
 export const InlineForm = (props: Props) => {
@@ -21,6 +20,7 @@ export const InlineForm = (props: Props) => {
   const [formValue, setFormValue] = createSignal(props.initialValue || '')
   const [formValueError, setFormValueError] = createSignal<string | undefined>()
 
+  const inputRef: { current: HTMLInputElement } = { current: null }
   const handleFormInput = (e) => {
     const value = e.currentTarget.value
     setFormValueError()
@@ -53,11 +53,19 @@ export const InlineForm = (props: Props) => {
     }
   }
 
+  const handleClear = () => {
+    props.initialValue ? props.onClear() : props.onClose()
+  }
+
+  onMount(() => {
+    inputRef.current.focus()
+  })
+
   return (
     <div class={styles.InlineForm}>
       <div class={styles.form}>
         <input
-          autofocus={props.autoFocus ?? true}
+          ref={(el) => (inputRef.current = el)}
           type="text"
           value={props.initialValue ?? ''}
           placeholder={props.placeholder}
@@ -76,9 +84,9 @@ export const InlineForm = (props: Props) => {
             </button>
           )}
         </Popover>
-        <Popover content={props.initialValue ? t('Unlink') : t('Cancel')}>
+        <Popover content={props.initialValue ? t('Remove link') : t('Cancel')}>
           {(triggerRef: (el) => void) => (
-            <button ref={triggerRef} type="button" onClick={props.onClear}>
+            <button ref={triggerRef} type="button" onClick={handleClear}>
               {props.initialValue ? <Icon name="editor-unlink" /> : <Icon name="status-cancel" />}
             </button>
           )}

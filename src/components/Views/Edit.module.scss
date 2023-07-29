@@ -90,6 +90,31 @@
   .titleInput {
     font-weight: 700;
   }
+  .additional {
+    margin-top: auto;
+
+    .additionalInput {
+      @include font-size(1.4rem);
+
+      -moz-appearance: textfield;
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      font-weight: 600;
+      padding: 0;
+      margin: 14px 0 0;
+      width: 100%;
+      border: none;
+      outline: none;
+
+      &::placeholder {
+        color: var(--secondary-color);
+      }
+    }
+  }
 }
 
 // Grow input
@@ -215,13 +240,36 @@
 
 .inputContainer {
   position: relative;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
 
   .validationError {
     position: absolute;
     z-index: 1;
-    top: 100%;
+    top: calc(100% + 4px);
     font-size: small;
-    color: #f00;
+    color: var(--danger-color);
+  }
+}
+
+.audioHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 24px;
+
+  .inputContainer {
+    flex: 1;
+  }
+
+  .cover {
+    width: 228px;
+    height: 228px;
+    flex-basis: 228px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 }
 

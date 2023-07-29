@@ -61,8 +61,8 @@ export const ProfileSettingsPage = () => {
     await selectFiles(async ([uploadFile]) => {
       try {
         setIsUserpicUpdating(true)
-        const fileUrl = await handleFileUpload(uploadFile)
-        updateFormField('userpic', fileUrl)
+        const result = await handleFileUpload(uploadFile)
+        updateFormField('userpic', result.url)
         setIsUserpicUpdating(false)
       } catch (error) {
         console.error('[upload avatar] error', error)

@@ -17,7 +17,7 @@ import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
 import { CommentDate } from './CommentDate'
 
-const CommentEditor = lazy(() => import('../_shared/CommentEditor'))
+const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
 type Props = {
   comment: Reaction
@@ -34,7 +34,6 @@ export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal<boolean>(false)
   const [editMode, setEditMode] = createSignal<boolean>(false)
-  const [submitted, setSubmitted] = createSignal<boolean>(false)
   const { session } = useSession()
 
   const {
@@ -71,7 +70,6 @@ export const Comment = (props: Props) => {
       })
       setIsReplyVisible(false)
       setLoading(false)
-      setSubmitted(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
@@ -160,7 +158,15 @@ export const Comment = (props: Props) => {
           <div class={styles.commentBody} id={'comment-' + (comment().id || '')}>
             <Show when={editMode()} fallback={<MD body={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
-                <CommentEditor initialContent={body()} onSubmit={(value) => handleUpdate(value)} />
+                <SimplifiedEditor
+                  initialContent={comment().body}
+                  submitButtonText={t('Save')}
+                  quoteEnabled={true}
+                  imageEnabled={true}
+                  placeholder={t('Write a comment...')}
+                  onSubmit={(value) => handleUpdate(value)}
+                  submitByShiftEnter={true}
+                />
               </Suspense>
             </Show>
           </div>
@@ -216,11 +222,12 @@ export const Comment = (props: Props) => {
 
             <Show when={isReplyVisible()}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
-                <CommentEditor
-                  placeholder={''}
-                  clear={submitted()}
+                <SimplifiedEditor
+                  quoteEnabled={true}
+                  imageEnabled={true}
+                  placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleCreate(value)}
-                  cancel={() => setIsReplyVisible(false)}
+                  submitByShiftEnter={true}
                 />
               </Suspense>
             </Show>

@@ -112,7 +112,7 @@
     border: none;
 
     &::before {
-      background: url(/public/icons/knowledge-base-bullet.svg) no-repeat;
+      background: url(/icons/knowledge-base-bullet.svg) no-repeat;
       content: '';
       height: 2.4rem;
       left: 0;
@@ -123,7 +123,7 @@
 
     &:hover {
       &:before {
-        background-image: url(/public/icons/knowledge-base-bullet-hover.svg);
+        background-image: url(/icons/knowledge-base-bullet-hover.svg);
       }
     }
   }

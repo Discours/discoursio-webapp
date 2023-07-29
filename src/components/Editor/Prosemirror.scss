@@ -1,4 +1,5 @@
 .ProseMirror {
+  font-size: 1.6rem;
   outline: none;
   min-height: 300px;
 }
@@ -12,6 +13,68 @@
   font-size: 20px;
   line-height: 30px;
   opacity: 0.3;
+}
+
+// Keeping the cursor active when moving outside the editable area
+
+.articleEditor p,
+.articleEditor ul,
+.articleEditor h4,
+.articleEditor ol {
+  box-sizing: content-box;
+  flex: 0 0 auto;
+
+  @media (min-width: 768px) {
+    padding-left: calc(21.9% + 3px);
+    max-width: 72.7%;
+  }
+  @media (min-width: 1200px) {
+    padding-left: calc(21.5% + 3px);
+    max-width: 64.9%;
+  }
+}
+
+.articleEditor blockquote,
+.articleEditor article[data-type='incut'] {
+  @media (min-width: 768px) {
+    margin-left: calc(21.9% + 3px) !important;
+    max-width: 73.6%;
+  }
+  @media (min-width: 1200px) {
+    margin-left: calc(21.4% + 3px) !important;
+    max-width: 65.3%;
+  }
+}
+
+.articleEditor h2 {
+  @media (min-width: 768px) {
+    padding-left: calc(21.9% + 2px);
+    max-width: 72.7%;
+  }
+  @media (min-width: 1200px) {
+    padding-left: 21.5%;
+    max-width: 87.1%;
+  }
+}
+
+.articleEditor h3 {
+  @media (min-width: 768px) {
+    padding-left: calc(21.9% + 2px);
+  }
+  @media (min-width: 1200px) {
+    padding-left: 21.5%;
+    max-width: 87.1%;
+  }
+}
+
+.articleEditor * p,
+.articleEditor * h2,
+.articleEditor * h3,
+.articleEditor * h4 {
+  @media (min-width: 768px) {
+    padding-left: unset;
+    max-width: unset;
+  }
 }
 
 /* Give a remote user a caret */
@@ -68,7 +131,7 @@
 
 mark.highlight {
   box-decoration-break: clone;
-  padding: 0.125em 0;
+  padding: 0.2em 0;
 }
 
 // custom atibutes fro TipTap Nodes
@@ -91,17 +154,23 @@ mark.highlight {
   }
 
   [data-float='half-left'] {
-    max-width: 50%;
-    min-width: 30%;
     float: left;
     margin: 1rem 1rem 0;
+
+    @include media-breakpoint-up(md) {
+      max-width: 50%;
+      min-width: 30%;
+    }
   }
 
   [data-float='half-right'] {
-    max-width: 50%;
-    min-width: 30%;
     float: right;
     margin: 1rem 0;
+
+    @include media-breakpoint-up(md) {
+      max-width: 50%;
+      min-width: 30%;
+    }
   }
 }
 
@@ -111,7 +180,7 @@ mark.highlight {
   }
 
   &[data-type='quote'] {
-    @include font-size(1.6rem);
+    @include font-size(1.4rem);
     border: solid #000;
     border-width: 0 0 0 2px;
     margin: 1.6rem 0;
@@ -159,7 +228,7 @@ mark.highlight {
 
 .ProseMirror article[data-type='incut'] {
   background: #f1f2f3;
-  @include font-size(1.6rem);
+  @include font-size(1.4rem);
   margin: 1em -1rem;
   padding: 2em 2rem;
   transition: background 0.3s ease-in-out;

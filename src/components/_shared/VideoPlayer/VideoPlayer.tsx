@@ -11,7 +11,8 @@ type Props = {
   title?: string
   description?: string
   class?: string
-  deleteAction?: () => void
+  onVideoDelete?: () => void
+  articleView?: boolean
 }
 
 export const VideoPlayer = (props: Props) => {
@@ -37,15 +38,15 @@ export const VideoPlayer = (props: Props) => {
   })
 
   return (
-    <div class={clsx(styles.VideoPlayer, props.class)}>
-      <Show when={props.deleteAction}>
+    <div class={clsx(styles.VideoPlayer, props.class, { [styles.articleView]: props.articleView })}>
+      <Show when={props.onVideoDelete}>
         <Popover content={t('Delete')}>
           {(triggerRef: (el) => void) => (
             <Button
               ref={triggerRef}
               size="S"
               class={styles.deleteAction}
-              onClick={props.deleteAction}
+              onClick={() => props.onVideoDelete()}
               value={<Icon class={styles.deleteIcon} name="delete" />}
             />
           )}

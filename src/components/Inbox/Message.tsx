@@ -8,6 +8,7 @@ import formattedTime from '../../utils/formatDateTime'
 import { Icon } from '../_shared/Icon'
 import { MessageActionsPopup } from './MessageActionsPopup'
 import QuotedMessage from './QuotedMessage'
+import MD from '../Article/MD'
 
 type Props = {
   content: MessageType
@@ -17,11 +18,6 @@ type Props = {
   replyBody?: string
   replyAuthor?: string
 }
-
-const md = new MarkdownIt({
-  linkify: true,
-  breaks: true
-})
 
 export const Message = (props: Props) => {
   const isOwn = props.ownId === Number(props.content.author)
@@ -50,7 +46,7 @@ export const Message = (props: Props) => {
           <Show when={props.replyBody}>
             <QuotedMessage body={props.replyBody} variant="inline" isOwn={isOwn} />
           </Show>
-          <div innerHTML={md.render(props.content.body)} />
+          <MD body={props.content.body} />
         </div>
       </div>
       <div class={styles.time}>{formattedTime(props.content.createdAt * 1000)()}</div>

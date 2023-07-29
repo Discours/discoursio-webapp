@@ -25,20 +25,25 @@ export type RootSearchParams = {
   lang: string
 }
 
-export type UploadFile = {
-  source: string
-  name: string
-  size: number
-  file: File
-}
-
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
-export type FileTypeToUpload = 'image' | 'video' | 'doc'
+export type FileTypeToUpload = 'image' | 'video' | 'doc' | 'audio'
 
 export type MediaItem = {
   url: string
   title: string
   body: string
-  source?: string
+  source?: string // for image
+  pic?: string
+
+  // audio specific properties
+  date?: string
+  genre?: string
+  artist?: string
+  lyrics?: string
+}
+
+export type UploadedFile = {
+  url: string
+  originalFilename?: string
 }

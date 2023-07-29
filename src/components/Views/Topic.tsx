@@ -48,7 +48,7 @@ export const TopicView = (props: TopicProps) => {
     saveScrollPosition()
 
     const { hasMore } = await loadShouts({
-      filters: { topic: topic().slug },
+      filters: { topic: props.topicSlug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length
     })

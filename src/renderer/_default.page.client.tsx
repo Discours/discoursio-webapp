@@ -1,16 +1,24 @@
 import { App } from '../components/App'
-
 import { hydrate } from 'solid-js/web'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
+import type { PageContextBuiltInClientWithClientRouting } from 'vite-plugin-ssr/types'
 import type { PageContext } from './types'
 import { MetaProvider } from '@solidjs/meta'
 import { use as useI18next, init as initI18next } from 'i18next'
 import HttpApi from 'i18next-http-backend'
+import * as Sentry from '@sentry/browser'
+import { SENTRY_DSN } from '../utils/config'
+import { resolveHydrationPromise } from '../utils/hydrationPromise'
 
 let layoutReady = false
 
-export const render = async (pageContext: PageContextBuiltInClient & PageContext) => {
+export const render = async (pageContext: PageContextBuiltInClientWithClientRouting & PageContext) => {
   const { lng, pageProps } = pageContext
+
+  if (SENTRY_DSN) {
+    Sentry.init({
+      dsn: SENTRY_DSN
+    })
+  }
 
   useI18next(HttpApi)
   await initI18next({
@@ -41,4 +49,8 @@ export const render = async (pageContext: PageContextBuiltInClient & PageContext
     )
     layoutReady = true
   }
+}
+
+export const onHydrationEnd = () => {
+  resolveHydrationPromise()
 }

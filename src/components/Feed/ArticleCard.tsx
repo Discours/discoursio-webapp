@@ -38,6 +38,7 @@ interface ArticleCardProps {
     isSingle?: boolean
     isBeside?: boolean
     withViewed?: boolean
+    noAuthorLink?: boolean
   }
   article: Shout
 }
@@ -101,7 +102,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardWithBorder]: props.settings?.withBorder,
         [styles.shoutCardCompact]: props.settings?.isCompact,
         [styles.shoutCardSingle]: props.settings?.isSingle,
-        [styles.shoutCardBeside]: props.settings?.isBeside
+        [styles.shoutCardBeside]: props.settings?.isBeside,
+        [styles.shoutCardNoImage]: !cover
       }}
     >
       <Show when={!props.settings?.noimage && cover && !props.settings?.isFeedMode}>
@@ -175,7 +177,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                         hideWriteButton={true}
                         hideFollow={true}
                         isFeedMode={true}
-                        hasLink={props.settings?.isFeedMode}
+                        hasLink={!props.settings?.noAuthorLink}
                       />
                     )
                   }}

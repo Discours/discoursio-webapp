@@ -4,12 +4,12 @@ import styles from './Article.module.scss'
 import { clsx } from 'clsx'
 import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
-import CommentEditor from '../_shared/CommentEditor'
 import { Button } from '../_shared/Button'
 import { useReactions } from '../../context/reactions'
 import { byCreated } from '../../utils/sortby'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
+import SimplifiedEditor from '../Editor/SimplifiedEditor'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
@@ -43,7 +43,6 @@ export const CommentsTree = (props: Props) => {
   const { t } = useLocalize()
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
-  const [submitted, setSubmitted] = createSignal(false)
   const {
     reactionEntities,
     actions: { createReaction }
@@ -97,7 +96,6 @@ export const CommentsTree = (props: Props) => {
         body: value,
         shout: props.shoutId
       })
-      setSubmitted(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
@@ -172,10 +170,12 @@ export const CommentsTree = (props: Props) => {
           </div>
         }
       >
-        <CommentEditor
+        <SimplifiedEditor
+          quoteEnabled={true}
+          imageEnabled={true}
           placeholder={t('Write a comment...')}
-          clear={submitted()}
           onSubmit={(value) => handleSubmitComment(value)}
+          submitByShiftEnter={true}
         />
       </ShowIfAuthenticated>
     </>

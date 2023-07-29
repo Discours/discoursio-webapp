@@ -8,6 +8,7 @@ type Props = {
   initialValue?: string
   value: (string) => void
   maxLength?: number
+  allowEnterKey: boolean
 }
 
 export const GrowingTextarea = (props: Props) => {
@@ -36,7 +37,7 @@ export const GrowingTextarea = (props: Props) => {
           autocomplete="off"
           class={clsx(styles.textInput, props.class)}
           value={props.initialValue}
-          onKeyDown={handleKeyDown}
+          onKeyDown={props.allowEnterKey ? handleKeyDown : null}
           onInput={(event) => handleChangeValue(event)}
           onChange={(event) => props.value(event.target.value)}
           placeholder={props.placeholder}

@@ -18,6 +18,7 @@ import { useRouter } from '../../stores/router'
 import { clsx } from 'clsx'
 import styles from '../../styles/Inbox.module.scss'
 import { useLocalize } from '../../context/localize'
+import SimplifiedEditor from '../Editor/SimplifiedEditor'
 
 type InboxSearchParams = {
   initChat: string
@@ -41,14 +42,14 @@ export const InboxView = () => {
   } = useInbox()
 
   const [recipients, setRecipients] = createSignal<Author[]>([])
-  const [postMessageText, setPostMessageText] = createSignal<string>('')
-  const [sortByGroup, setSortByGroup] = createSignal<boolean>(false)
-  const [sortByPerToPer, setSortByPerToPer] = createSignal<boolean>(false)
+  const [sortByGroup, setSortByGroup] = createSignal(false)
+  const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
   const [messageToReply, setMessageToReply] = createSignal<MessageType | null>(null)
+  const [isClear, setClear] = createSignal(false)
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user.id)
-
+  const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
   // Поиск по диалогам
   const getQuery = (query) => {
     if (query().length >= 2) {
@@ -97,28 +98,19 @@ export const InboxView = () => {
     await loadChats()
   })
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (message: string) => {
     await sendMessage({
-      body: postMessageText().toString(),
+      body: message,
       chat: currentDialog().id.toString(),
       replyTo: messageToReply()?.id
     })
-    setPostMessageText('')
+    setClear(true)
     setMessageToReply(null)
     chatWindow.scrollTop = chatWindow.scrollHeight
+    setClear(false)
   }
-
-  let textareaParent // textarea autoresize ghost element
-  const handleChangeMessage = (event) => {
-    setPostMessageText(event.target.value)
-  }
-
-  const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
 
   createEffect(async () => {
-    if (textareaParent) {
-      textareaParent.dataset.replicatedValue = postMessageText()
-    }
     if (searchParams().chat) {
       const chatToOpen = chats()?.find((chat) => chat.id === searchParams().chat)
       if (!chatToOpen) return
@@ -154,17 +146,6 @@ export const InboxView = () => {
 
   const findToReply = (messageId) => {
     return messages().find((message) => message.id === messageId)
-  }
-
-  const handleKeyDown = async (event) => {
-    if (event.keyCode === 13 && event.shiftKey) {
-      return
-    }
-
-    if (event.keyCode === 13 && !event.shiftKey && postMessageText()?.trim().length > 0) {
-      event.preventDefault()
-      handleSubmit()
-    }
   }
 
   return (
@@ -278,19 +259,14 @@ export const InboxView = () => {
                 />
               </Show>
               <div class={styles.wrapper}>
-                <div class={styles.growWrap} ref={textareaParent}>
-                  <textarea
-                    class={styles.textInput}
-                    value={postMessageText()}
-                    rows={1}
-                    onKeyDown={handleKeyDown}
-                    onInput={(event) => handleChangeMessage(event)}
-                    placeholder={t('Write message')}
-                  />
-                </div>
-                <button type="submit" disabled={postMessageText().length === 0} onClick={handleSubmit}>
-                  <Icon name="send-message" />
-                </button>
+                <SimplifiedEditor
+                  smallHeight={true}
+                  imageEnabled={true}
+                  placeholder={t('Write message')}
+                  setClear={isClear()}
+                  onSubmit={(message) => handleSubmit(message)}
+                  submitByEnter={true}
+                />
               </div>
             </div>
           </Show>

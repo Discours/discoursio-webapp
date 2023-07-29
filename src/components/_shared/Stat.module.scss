@@ -1,6 +1,5 @@
 .statMetrics {
   @include font-size(1.7rem);
-
   color: #9fa1a7;
   display: flex;
   margin: 0 0 1em;
@@ -16,7 +15,6 @@
 
 .statMetricsItem {
   @include font-size(1.5rem);
-
   margin-right: 1.6rem;
   white-space: nowrap;
 

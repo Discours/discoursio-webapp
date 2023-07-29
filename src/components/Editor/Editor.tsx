@@ -253,7 +253,7 @@ export const Editor = (props: Props) => {
     <div class="position-relative">
       <div ref={(el) => (editorElRef.current = el)} />
       <Show when={isDesktop() && html()}>
-        <TableOfContents type={'editor'} content={html()} />
+        <TableOfContents variant={'editor'} content={html()} />
       </Show>
       <TextBubbleMenu
         isCommonMarkup={isCommonMarkup()}

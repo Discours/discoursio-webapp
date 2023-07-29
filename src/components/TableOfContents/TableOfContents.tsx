@@ -7,12 +7,12 @@ import { Icon } from '../_shared/Icon'
 
 import styles from './TableOfContents.module.scss'
 
-interface TableOfContentsProps {
-  type: 'article' | 'editor'
+interface Props {
+  variant: 'article' | 'editor'
   content: string
 }
 
-export const TableOfContents = (props: TableOfContentsProps) => {
+export const TableOfContents = (props: Props) => {
   const { t } = useLocalize()
 
   const [headings, setHeadings] = createSignal<Element[]>([])
@@ -24,7 +24,7 @@ export const TableOfContents = (props: TableOfContentsProps) => {
   }
 
   const scrollToHeader = (id) => {
-    if (props.type !== 'editor') {
+    if (props.variant !== 'editor') {
       window.scrollTo({
         behavior: 'smooth',
         top:
@@ -46,54 +46,43 @@ export const TableOfContents = (props: TableOfContentsProps) => {
   }, props.content)
 
   return (
-    <Show when={headings().length}>
+    <Show when={headings().length && areHeadingsLoaded()}>
       <div
-        class={clsx(
-          styles.TableOfContentsFixedWrapper,
-          props.type === 'editor' && styles.TableOfContentsFixedWrapperLefted
-        )}
+        class={clsx(styles.TableOfContentsFixedWrapper, {
+          [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'
+        })}
       >
         <div class={styles.TableOfContentsContainer}>
           <Show when={isVisible()}>
-            <header class={styles.TableOfContentsHeader}>
-              <p class={styles.TableOfContentsHeading}>{t('Table of contents')}</p>
-            </header>
-            <Show when={areHeadingsLoaded()} fallback={<div>...Loading headings</div>}>
-              <ul class={styles.TableOfContentsHeadingsList}>
-                <For each={headings()}>
-                  {(h) => {
-                    return (
-                      <li>
-                        <button
-                          class={clsx(
-                            styles.TableOfContentsHeadingsItem,
-                            h.nodeName === 'H3' && styles.TableOfContentsHeadingsItemH3,
-                            h.nodeName === 'H4' && styles.TableOfContentsHeadingsItemH4
-                          )}
-                          innerHTML={h.textContent}
-                          onClick={(e) => {
-                            e.preventDefault()
+            <div class={styles.TableOfContentsHeader}>
+              <p class={styles.TableOfContentsHeading}>{t('contents')}</p>
+            </div>
+            <ul class={styles.TableOfContentsHeadingsList}>
+              <For each={headings()}>
+                {(h) => (
+                  <li>
+                    <button
+                      class={clsx(styles.TableOfContentsHeadingsItem, {
+                        [styles.TableOfContentsHeadingsItemH3]: h.nodeName === 'H3',
+                        [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4'
+                      })}
+                      innerHTML={h.textContent}
+                      onClick={(e) => {
+                        e.preventDefault()
 
-                            scrollToHeader(h.getAttribute('id'))
-                          }}
-                        ></button>
-                      </li>
-                    )
-                  }}
-                </For>
-
-                {/* <Show when={props.type !== 'editor'}>
-                  <div class={styles.TableOfContentsScrolledIndicator} />
-                </Show> */}
-              </ul>
-            </Show>
+                        scrollToHeader(h.getAttribute('id'))
+                      }}
+                    ></button>
+                  </li>
+                )}
+              </For>
+            </ul>
           </Show>
 
           <button
-            class={clsx(
-              styles.TableOfContentsPrimaryButton,
-              props.type === 'editor' && !isVisible() && styles.TableOfContentsPrimaryButtonLefted
-            )}
+            class={clsx(styles.TableOfContentsPrimaryButton, {
+              [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible()
+            })}
             onClick={(e) => {
               e.preventDefault()
 
@@ -103,7 +92,9 @@ export const TableOfContents = (props: TableOfContentsProps) => {
             <Show when={isVisible()} fallback={<Icon name="show-table-of-contents" class={'icon'} />}>
               <Icon
                 name="hide-table-of-contents"
-                class={clsx('icon', props.type === 'editor' && styles.TableOfContentsIconRotated)}
+                class={clsx('icon', {
+                  [styles.TableOfContentsIconRotated]: props.variant === 'editor'
+                })}
               />
             </Show>
           </button>

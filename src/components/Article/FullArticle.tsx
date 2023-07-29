@@ -35,12 +35,12 @@ import { SolidSwiper } from '../_shared/SolidSwiper'
 
 import styles from './Article.module.scss'
 
-interface ArticleProps {
+interface Props {
   article: Shout
   scrollToComments?: boolean
 }
 
-export const FullArticle = (props: ArticleProps) => {
+export const FullArticle = (props: Props) => {
   const { t } = useLocalize()
   const {
     user,
@@ -213,7 +213,7 @@ export const FullArticle = (props: ArticleProps) => {
             </Show>
           </article>
           <Show when={isDesktop() && body()}>
-            <TableOfContents type={'article'} content={body()} />
+            <TableOfContents variant={'article'} content={body()} />
           </Show>
         </div>
       </div>

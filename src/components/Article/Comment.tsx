@@ -159,6 +159,8 @@ export const Comment = (props: Props) => {
             <Show when={editMode()} fallback={<MD body={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor
+                  initialContent={comment().body}
+                  submitButtonText={t('Save')}
                   quoteEnabled={true}
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}

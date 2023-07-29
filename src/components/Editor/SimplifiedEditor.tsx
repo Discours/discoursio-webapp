@@ -18,7 +18,6 @@ import { Popover } from '../_shared/Popover'
 import { Italic } from '@tiptap/extension-italic'
 import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
-import { Link } from '@tiptap/extension-link'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { CustomImage } from './extensions/CustomImage'
 import { UploadModalContent } from './UploadModalContent'
@@ -27,11 +26,13 @@ import { clsx } from 'clsx'
 import styles from './SimplifiedEditor.module.scss'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { InsertLinkForm } from './InsertLinkForm'
+import { Link } from '@tiptap/extension-link'
 
 type Props = {
   initialContent?: string
   onSubmit: (text: string) => void
   placeholder: string
+  submitButtonText?: string
   quoteEnabled?: boolean
   imageEnabled?: boolean
   setClear?: boolean
@@ -123,29 +124,34 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   const handleKeyDown = async (event) => {
-    if (props.submitByEnter && event.keyCode === 13 && !event.shiftKey && !isEmpty()) {
+    if (isEmpty() || !editor().isFocused) {
+      return
+    }
+
+    if (
+      event.code === 'Enter' &&
+      ((props.submitByEnter && !event.shiftKey) || (props.submitByShiftEnter && event.shiftKey))
+    ) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
     }
 
-    if (props.submitByShiftEnter && event.keyCode === 13 && event.shiftKey && !isEmpty()) {
+    if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
       event.preventDefault()
-      props.onSubmit(html())
-      handleClear()
+      showModal('editorInsertLink')
     }
   }
 
   onMount(() => {
-    if (props.submitByShiftEnter || props.submitByEnter) {
-      window.addEventListener('keydown', handleKeyDown)
-    }
+    window.addEventListener('keydown', handleKeyDown)
   })
 
   onCleanup(() => {
     window.removeEventListener('keydown', handleKeyDown)
   })
 
+  const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
   return (
     <div
       class={clsx(styles.SimplifiedEditor, {
@@ -185,7 +191,7 @@ const SimplifiedEditor = (props: Props) => {
               <button
                 ref={triggerRef}
                 type="button"
-                onClick={() => showModal('editorInsertLink')}
+                onClick={handleInsertLink}
                 class={clsx(styles.actionButton, { [styles.active]: isLink() })}
               >
                 <Icon name="editor-link" />
@@ -222,9 +228,9 @@ const SimplifiedEditor = (props: Props) => {
           </Show>
         </div>
         <div class={styles.buttons}>
-          <Button value={t('cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
+          <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
           <Button
-            value={t('Send')}
+            value={props.submitButtonText ?? t('Send')}
             variant="primary"
             disabled={isEmpty()}
             onClick={() => props.onSubmit(html())}
@@ -232,7 +238,7 @@ const SimplifiedEditor = (props: Props) => {
         </div>
       </div>
       <Modal variant="narrow" name="editorInsertLink">
-        <InsertLinkForm editor={editor()} />
+        <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
       </Modal>
       <Show when={props.imageEnabled}>
         <Modal variant="narrow" name="uploadImage">

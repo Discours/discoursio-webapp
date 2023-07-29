@@ -30,10 +30,10 @@ export const CreatePage = () => {
             </div>
           </li>
           <li>
-            <a href="#">
+            <div class={styles.link} onClick={() => handleCreate('literature')}>
               <Icon name="create-books" class={styles.icon} />
               <div>{t('literature')}</div>
-            </a>
+            </div>
           </li>
           <li>
             <div class={styles.link} onClick={() => handleCreate('image')}>

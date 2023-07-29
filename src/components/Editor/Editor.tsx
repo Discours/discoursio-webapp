@@ -1,4 +1,5 @@
 import { createEffect, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import uniqolor from 'uniqolor'
@@ -41,6 +42,8 @@ import { TrailingNode } from './extensions/TrailingNode'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { useEditorContext } from '../../context/editor'
+import { TrailingNode } from './extensions/TrailingNode'
+import Article from './extensions/Article'
 
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
@@ -117,7 +120,7 @@ export const Editor = (props: Props) => {
   } = {
     current: null
   }
-
+  const { initialContent } = props
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
@@ -228,7 +231,7 @@ export const Editor = (props: Props) => {
       TrailingNode,
       Article
     ],
-    content: props.initialContent ?? null
+    content: initialContent ?? null
   }))
 
   const {

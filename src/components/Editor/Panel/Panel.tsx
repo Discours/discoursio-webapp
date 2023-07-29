@@ -237,7 +237,7 @@ export const Panel = (props: Props) => {
 
         <section class={styles.shortcutList}>
           <p>
-            {t('cancel_low_caps')}
+            {t('cancel')}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Z</span>

@@ -122,7 +122,7 @@ export const LoginForm = () => {
       <div>
         <h4>{title}</h4>
         <Show when={description}>
-          <p innerHTML={description} />
+          <p class={styles.authFormDescription} innerHTML={description} />
         </Show>
 
         <Show when={submitError()}>

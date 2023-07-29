@@ -22,12 +22,16 @@ type Props = {
   scrollToComments?: (value: boolean) => void
 }
 
+type HeaderSearchParams = {
+  source?: string
+}
+
 export const Header = (props: Props) => {
   const { t } = useLocalize()
 
   const { modal } = useModalStore()
 
-  const { page, searchParams } = useRouter()
+  const { page, searchParams } = useRouter<HeaderSearchParams>()
 
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -76,13 +80,6 @@ export const Header = (props: Props) => {
     props.scrollToComments(value)
   }
 
-  // workaroung to react on `source` change
-  const getIsModalFromSource = () => {
-    const { source } = searchParams()
-
-    return !!source
-  }
-
   return (
     <header
       class={styles.mainHeader}
@@ -94,7 +91,7 @@ export const Header = (props: Props) => {
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
-      <Modal variant={getIsModalFromSource() ? 'narrow' : 'wide'} name="auth" noPadding={true}>
+      <Modal variant={Boolean(searchParams().source) ? 'narrow' : 'wide'} name="auth" noPadding={true}>
         <AuthModal />
       </Modal>
 

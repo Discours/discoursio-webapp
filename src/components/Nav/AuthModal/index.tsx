@@ -39,7 +39,9 @@ export const AuthModal = () => {
   return (
     <div
       ref={rootRef}
-      class={clsx(!source ? 'row' : '', styles.view)}
+      class={clsx(styles.view, {
+        row: !source
+      })}
       classList={{ [styles.signUp]: mode() === 'register' || mode() === 'confirm-email' }}
     >
       <Show when={!source}>
@@ -73,7 +75,11 @@ export const AuthModal = () => {
           </div>
         </div>{' '}
       </Show>
-      <div class={clsx(!source ? 'col-md-12' : '', styles.auth)}>
+      <div
+        class={clsx(styles.auth, {
+          'col-md-12': !source
+        })}
+      >
         <Dynamic component={AUTH_MODAL_MODES[mode()]} />
       </div>
     </div>

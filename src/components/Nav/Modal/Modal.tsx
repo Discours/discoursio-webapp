@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show, on } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import type { JSX } from 'solid-js'
 import { clsx } from 'clsx'
 

@@ -10,11 +10,10 @@ import { hideModal } from '../../../stores/ui'
 import { useSession } from '../../../context/session'
 import { signSendLink } from '../../../stores/auth'
 import { validateEmail } from '../../../utils/validateEmail'
-import { generateModalTextsFromSource } from '../../../utils/custom-i18n'
-
 import { useSnackbar } from '../../../context/snackbar'
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
+import { AuthModalHeader } from './AuthModalHeader'
 
 type FormFields = {
   email: string
@@ -115,16 +114,10 @@ export const LoginForm = () => {
     }
   }
 
-  const { title, description } = generateModalTextsFromSource('login')
-
   return (
     <form onSubmit={handleSubmit} class={styles.authForm}>
       <div>
-        <h4>{title}</h4>
-        <Show when={description}>
-          <p class={styles.authFormDescription} innerHTML={description} />
-        </Show>
-
+        <AuthModalHeader modalType="login" />
         <Show when={submitError()}>
           <div class={styles.authInfo}>
             <div class={styles.warn}>{submitError()}</div>

@@ -91,7 +91,7 @@ export const Header = (props: Props) => {
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
-      <Modal variant={Boolean(searchParams().source) ? 'narrow' : 'wide'} name="auth" noPadding={true}>
+      <Modal variant={searchParams().source ? 'narrow' : 'wide'} name="auth" noPadding={true}>
         <AuthModal />
       </Modal>
 

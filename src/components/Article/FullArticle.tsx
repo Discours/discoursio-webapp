@@ -211,7 +211,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div class={styles.shoutBody}>
+              <div id="shoutBody" class={styles.shoutBody}>
                 <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
                   <MD body={body()} />
                 </Show>
@@ -219,7 +219,7 @@ export const FullArticle = (props: Props) => {
             </Show>
           </article>
           <Show when={isDesktop() && body()}>
-            <TableOfContents variant={'article'} content={body()} />
+            <TableOfContents variant={'article'} parentSelector={'#shoutBody'} />
           </Show>
         </div>
       </div>

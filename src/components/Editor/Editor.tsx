@@ -1,5 +1,4 @@
 import { createEffect, createSignal, Show } from 'solid-js'
-import { createEffect, createSignal } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import uniqolor from 'uniqolor'
@@ -36,8 +35,6 @@ import { CustomImage } from './extensions/CustomImage'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figure } from './extensions/Figure'
 import { Embed } from './extensions/Embed'
-import Article from './extensions/Article'
-import { TrailingNode } from './extensions/TrailingNode'
 
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
@@ -254,9 +251,9 @@ export const Editor = (props: Props) => {
 
   return (
     <div class="position-relative">
-      <div ref={(el) => (editorElRef.current = el)} />
+      <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
       <Show when={isDesktop() && html()}>
-        <TableOfContents variant={'editor'} content={html()} />
+        <TableOfContents variant={'editor'} parentSelector={'#editorBody'} />
       </Show>
       <TextBubbleMenu
         isCommonMarkup={isCommonMarkup()}

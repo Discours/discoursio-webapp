@@ -1,5 +1,7 @@
-import { createEffect, For, Show, createSignal } from 'solid-js'
+import { onMount, For, Show, createSignal } from 'solid-js'
 import { clsx } from 'clsx'
+
+import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
 
 import { useLocalize } from '../../context/localize'
 
@@ -9,7 +11,7 @@ import styles from './TableOfContents.module.scss'
 
 interface Props {
   variant: 'article' | 'editor'
-  content: string
+  parentSelector: string
 }
 
 export const TableOfContents = (props: Props) => {
@@ -23,30 +25,26 @@ export const TableOfContents = (props: Props) => {
     setIsVisible((visible) => !visible)
   }
 
-  const scrollToHeader = (id) => {
-    if (props.variant !== 'editor') {
-      window.scrollTo({
-        behavior: 'smooth',
-        top:
-          document.getElementById(id).getBoundingClientRect().top -
-          document.body.getBoundingClientRect().top -
-          70
-      })
-    }
+  const scrollToHeader = (element) => {
+    window.scrollTo({
+      behavior: 'smooth',
+      top:
+        element.getBoundingClientRect().top -
+        document.body.getBoundingClientRect().top -
+        DEFAULT_HEADER_OFFSET
+    })
   }
 
-  createEffect(() => {
-    if (props.content) {
-      const parser = new window.DOMParser()
-      const htmlDoc = parser.parseFromString(props.content, 'text/html')
+  onMount(() => {
+    const { parentSelector } = props
 
-      setHeadings(Array.from(htmlDoc.querySelectorAll('h2, h3, h4')))
-      setAreHeadingsLoaded(true)
-    }
-  }, props.content)
+    setHeadings(Array.from(document.querySelector(parentSelector).querySelectorAll('h2, h3, h4')))
+
+    setAreHeadingsLoaded(true)
+  })
 
   return (
-    <Show when={headings().length && areHeadingsLoaded()}>
+    <Show when={areHeadingsLoaded()}>
       <div
         class={clsx(styles.TableOfContentsFixedWrapper, {
           [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'
@@ -70,7 +68,7 @@ export const TableOfContents = (props: Props) => {
                       onClick={(e) => {
                         e.preventDefault()
 
-                        scrollToHeader(h.getAttribute('id'))
+                        scrollToHeader(h)
                       }}
                     ></button>
                   </li>

@@ -64,7 +64,7 @@ export const hideModal = () => {
   }
 
   changeSearchParam('modal', null, true)
-  changeSearchParam('source', null, true)
+  changeSearchParam('source', null)
 
   setModal(null)
 }

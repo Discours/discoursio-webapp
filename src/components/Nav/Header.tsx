@@ -22,24 +22,24 @@ type Props = {
   scrollToComments?: (value: boolean) => void
 }
 
+type HeaderSearchParams = {
+  source?: string
+}
+
 export const Header = (props: Props) => {
   const { t } = useLocalize()
 
-  // signals
+  const { modal } = useModalStore()
+
+  const { page, searchParams } = useRouter<HeaderSearchParams>()
+
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   const [isProfilePopupVisible, setIsProfilePopupVisible] = createSignal(false)
 
-  const { modal } = useModalStore()
-
-  const { page } = useRouter()
-
-  // methods
-
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
-  // effects
 
   let windowScrollTop = 0
 
@@ -91,7 +91,7 @@ export const Header = (props: Props) => {
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
-      <Modal variant="wide" name="auth" noPadding={true}>
+      <Modal variant={searchParams().source ? 'narrow' : 'wide'} name="auth" noPadding={true}>
         <AuthModal />
       </Modal>
 

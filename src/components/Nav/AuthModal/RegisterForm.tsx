@@ -12,7 +12,7 @@ import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
-import { generateModalTitleFromSource } from '../../../utils/custom-i18n'
+import { AuthModalHeader } from './AuthModalHeader'
 
 type FormFields = {
   name: string
@@ -137,7 +137,7 @@ export const RegisterForm = () => {
       <Show when={!isSuccess()}>
         <form onSubmit={handleSubmit} class={styles.authForm}>
           <div>
-            <h4>{generateModalTitleFromSource('register')}</h4>
+            <AuthModalHeader modalType="register" />
             <Show when={submitError()}>
               <div class={styles.authInfo}>
                 <ul>

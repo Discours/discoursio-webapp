@@ -1,17 +1,23 @@
 import { Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
-import { Icon } from '../_shared/Icon'
-import { Modal } from './Modal'
-import { AuthModal } from './AuthModal'
-import { useModalStore } from '../../stores/ui'
-import { router, useRouter } from '../../stores/router'
-import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
+
+import { Modal } from './Modal'
+import { AuthModal } from './AuthModal'
 import { HeaderAuth } from './HeaderAuth'
+import { ConfirmModal } from './ConfirmModal'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
-import { getDescription } from '../../utils/meta'
 import { Snackbar } from './Snackbar'
+import { Icon } from '../_shared/Icon'
+
+import { useModalStore } from '../../stores/ui'
+import { router, useRouter } from '../../stores/router'
+
+import { getDescription } from '../../utils/meta'
+
 import { useLocalize } from '../../context/localize'
+
+import styles from './Header.module.scss'
 
 type Props = {
   title?: string
@@ -22,24 +28,24 @@ type Props = {
   scrollToComments?: (value: boolean) => void
 }
 
+type HeaderSearchParams = {
+  source?: string
+}
+
 export const Header = (props: Props) => {
   const { t } = useLocalize()
 
-  // signals
+  const { modal } = useModalStore()
+
+  const { page, searchParams } = useRouter<HeaderSearchParams>()
+
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   const [isProfilePopupVisible, setIsProfilePopupVisible] = createSignal(false)
 
-  const { modal } = useModalStore()
-
-  const { page } = useRouter()
-
-  // methods
-
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
-  // effects
 
   let windowScrollTop = 0
 
@@ -91,8 +97,12 @@ export const Header = (props: Props) => {
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
-      <Modal variant="wide" name="auth" noPadding={true}>
+      <Modal variant={searchParams().source ? 'narrow' : 'wide'} name="auth" noPadding={true}>
         <AuthModal />
+      </Modal>
+
+      <Modal variant="narrow" name="confirm">
+        <ConfirmModal />
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>

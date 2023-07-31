@@ -12,6 +12,7 @@ export type ModalType =
   | 'subscribe'
   | 'feedback'
   | 'thank'
+  | 'confirm'
   | 'donate'
   | 'inviteToChat'
   | 'uploadImage'
@@ -31,6 +32,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   subscribe: 'subscribe',
   feedback: 'feedback',
   thank: 'thank',
+  confirm: 'confirm',
   donate: 'donate',
   inviteToChat: 'inviteToChat',
   uploadImage: 'uploadImage',
@@ -64,7 +66,7 @@ export const hideModal = () => {
   }
 
   changeSearchParam('modal', null, true)
-  changeSearchParam('source', null, true)
+  changeSearchParam('source', null)
 
   setModal(null)
 }

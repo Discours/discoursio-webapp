@@ -38,6 +38,7 @@ import { ProfileSubscriptionsPage } from '../pages/profile/profileSubscriptions.
 import { DraftsPage } from '../pages/drafts.page'
 import { SnackbarProvider } from '../context/snackbar'
 import { LocalizeProvider } from '../context/localize'
+import { ConfirmProvider } from '../context/confirm'
 import { EditorProvider } from '../context/editor'
 
 // TODO: lazy load
@@ -76,7 +77,8 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   thanks: ThanksPage,
   profileSettings: ProfileSettingsPage,
   profileSecurity: ProfileSecurityPage,
-  profileSubscriptions: ProfileSubscriptionsPage
+  profileSubscriptions: ProfileSubscriptionsPage,
+  fourOuFour: FourOuFourPage
 }
 
 export const App = (props: PageProps) => {
@@ -102,11 +104,13 @@ export const App = (props: PageProps) => {
   return (
     <LocalizeProvider>
       <SnackbarProvider>
-        <SessionProvider>
-          <EditorProvider>
-            <Dynamic component={pageComponent()} {...props} />
-          </EditorProvider>
-        </SessionProvider>
+        <ConfirmProvider>
+          <SessionProvider>
+            <EditorProvider>
+              <Dynamic component={pageComponent()} {...props} />
+            </EditorProvider>
+          </SessionProvider>
+        </ConfirmProvider>
       </SnackbarProvider>
     </LocalizeProvider>
   )

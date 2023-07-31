@@ -1,5 +1,4 @@
 import { createSignal, Show } from 'solid-js'
-import MarkdownIt from 'markdown-it'
 import { clsx } from 'clsx'
 import styles from './Message.module.scss'
 import DialogAvatar from './DialogAvatar'

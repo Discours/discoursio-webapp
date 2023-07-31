@@ -14,11 +14,10 @@ import { MediaItem } from '../../pages/types'
 
 import { router, useRouter } from '../../stores/router'
 
-import { capitalize, formatDate } from '../../utils'
+import { formatDate } from '../../utils'
 import { getDescription } from '../../utils/meta'
 import { imageProxy } from '../../utils/imageProxy'
 import { isDesktop } from '../../utils/media-query'
-
 import { AuthorCard } from '../Author/AuthorCard'
 import { TableOfContents } from '../TableOfContents'
 import { AudioPlayer } from './AudioPlayer'
@@ -150,7 +149,7 @@ export const FullArticle = (props: Props) => {
 
                 <h1>{props.article.title}</h1>
                 <Show when={props.article.subtitle}>
-                  <h4>{capitalize(props.article.subtitle, false)}</h4>
+                  <h4>{props.article.subtitle}</h4>
                 </Show>
 
                 <div class={styles.shoutAuthor}>

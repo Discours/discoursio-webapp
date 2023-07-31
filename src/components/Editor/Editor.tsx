@@ -1,6 +1,9 @@
-import { createEffect, createSignal } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
-import { useLocalize } from '../../context/localize'
+import { IndexeddbPersistence } from 'y-indexeddb'
+import uniqolor from 'uniqolor'
+import * as Y from 'yjs'
+import type { Doc } from 'yjs/dist/src/utils/Doc'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
@@ -21,28 +24,32 @@ import { Highlight } from '@tiptap/extension-highlight'
 import { Link } from '@tiptap/extension-link'
 import { Document } from '@tiptap/extension-document'
 import { Text } from '@tiptap/extension-text'
+import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
+import { isTextSelection } from '@tiptap/core'
+import { Paragraph } from '@tiptap/extension-paragraph'
+import Focus from '@tiptap/extension-focus'
+import { Collaboration } from '@tiptap/extension-collaboration'
+import { HocuspocusProvider } from '@hocuspocus/provider'
+
 import { CustomImage } from './extensions/CustomImage'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figure } from './extensions/Figure'
-import { Paragraph } from '@tiptap/extension-paragraph'
-import Focus from '@tiptap/extension-focus'
-import * as Y from 'yjs'
-import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
-import { Collaboration } from '@tiptap/extension-collaboration'
-import { IndexeddbPersistence } from 'y-indexeddb'
-import { useSession } from '../../context/session'
-import uniqolor from 'uniqolor'
-import { HocuspocusProvider } from '@hocuspocus/provider'
 import { Embed } from './extensions/Embed'
+
+import { useSession } from '../../context/session'
+import { useLocalize } from '../../context/localize'
+import { useEditorContext } from '../../context/editor'
+import { TrailingNode } from './extensions/TrailingNode'
+import Article from './extensions/Article'
+
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
-import { useEditorContext } from '../../context/editor'
-import { isTextSelection } from '@tiptap/core'
-import type { Doc } from 'yjs/dist/src/utils/Doc'
+import { TableOfContents } from '../TableOfContents'
+
+import { isDesktop } from '../../utils/media-query'
+
 import './Prosemirror.scss'
-import { TrailingNode } from './extensions/TrailingNode'
-import Article from './extensions/Article'
 
 type Props = {
   shoutId: number
@@ -243,8 +250,11 @@ export const Editor = (props: Props) => {
   })
 
   return (
-    <>
-      <div ref={(el) => (editorElRef.current = el)} />
+    <div class="position-relative">
+      <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
+      <Show when={isDesktop() && html()}>
+        <TableOfContents variant="editor" parentSelector="#editorBody" />
+      </Show>
       <TextBubbleMenu
         isCommonMarkup={isCommonMarkup()}
         editor={editor()}
@@ -269,6 +279,6 @@ export const Editor = (props: Props) => {
         }}
       />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
-    </>
+    </div>
   )
 }

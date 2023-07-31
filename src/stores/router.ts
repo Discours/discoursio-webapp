@@ -49,6 +49,8 @@ const routerStore = createRouter(ROUTES, {
 
 export const router = routerStore
 
+export const DEFAULT_HEADER_OFFSET = 80 // 80px for header
+
 const checkOpenOnClient = (link: HTMLAnchorElement, event) => {
   return (
     link &&
@@ -73,9 +75,8 @@ const scrollToHash = (hash: string) => {
   }
 
   const anchor = document.querySelector(selector)
-  const headerOffset = 80 // 80px for header
   const elementPosition = anchor ? anchor.getBoundingClientRect().top : 0
-  const newScrollTop = elementPosition + window.scrollY - headerOffset
+  const newScrollTop = elementPosition + window.scrollY - DEFAULT_HEADER_OFFSET
 
   window.scrollTo({
     top: newScrollTop,

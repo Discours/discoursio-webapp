@@ -35,6 +35,7 @@
 }
 
 .articleEditor blockquote,
+.articleEditor figure,
 .articleEditor article[data-type='incut'] {
   @media (min-width: 768px) {
     margin-left: calc(21.9% + 3px) !important;

@@ -1,13 +1,11 @@
 import { clsx } from 'clsx'
-
-import { useConfirm } from '../../context/confirm'
-
-import styles from './Confirm.module.scss'
+import { useConfirm } from '../../../context/confirm'
+import styles from './ConfirmModal.module.scss'
 
 export const ConfirmModal = () => {
   const {
     confirmMessage,
-    actions: { showConfirm }
+    actions: { resolveConfirm }
   } = useConfirm()
 
   return (
@@ -15,12 +13,12 @@ export const ConfirmModal = () => {
       <h4 class={styles.confirmModalTitle}>{confirmMessage().confirmBody}</h4>
 
       <div class={styles.confirmModalActions}>
-        <button class={styles.confirmModalButton} onClick={() => showConfirm.reject()}>
+        <button class={styles.confirmModalButton} onClick={() => resolveConfirm(false)}>
           {confirmMessage().declineButtonLabel}
         </button>
         <button
           class={clsx(styles.confirmModalButton, styles.confirmModalButtonPrimary)}
-          onClick={() => showConfirm.resolve()}
+          onClick={() => resolveConfirm(true)}
         >
           {confirmMessage().confirmButtonLabel}
         </button>

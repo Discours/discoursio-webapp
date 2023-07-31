@@ -17,6 +17,7 @@ type ConfirmContextType = {
       confirmButtonLabel?: ConfirmMessage['confirmButtonLabel']
       declineButtonLabel?: ConfirmMessage['declineButtonLabel']
     }) => Promise<boolean>
+    resolveConfirm: (value: boolean) => void
   }
 }
 
@@ -32,7 +33,9 @@ export function useConfirm() {
 export const ConfirmProvider = (props: { children: JSX.Element }) => {
   const [confirmMessage, setConfirmMessage] = createSignal<ConfirmMessage>(null)
 
-  const showConfirm = async (message?: {
+  let resolveFn: (value: boolean) => void
+
+  const showConfirm = (message?: {
     confirmBody: ConfirmMessage['confirmBody']
     confirmButtonLabel: ConfirmMessage['confirmButtonLabel']
     declineButtonLabel: ConfirmMessage['declineButtonLabel']
@@ -46,11 +49,19 @@ export const ConfirmProvider = (props: { children: JSX.Element }) => {
     setConfirmMessage(messageToShow)
     showModal('confirm')
 
-    return new Promise((res, rej) => ({ res, rej }))
+    return new Promise((resolve) => {
+      resolveFn = resolve
+    })
+  }
+
+  const resolveConfirm = (value: boolean) => {
+    resolveFn(value)
+    hideModal()
   }
 
   const actions = {
-    showConfirm
+    showConfirm,
+    resolveConfirm
   }
 
   const value: ConfirmContextType = { confirmMessage, actions }

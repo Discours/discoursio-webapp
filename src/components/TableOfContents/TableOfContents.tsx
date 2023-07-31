@@ -14,6 +14,16 @@ interface Props {
   parentSelector: string
 }
 
+const scrollToHeader = (element) => {
+  window.scrollTo({
+    behavior: 'smooth',
+    top:
+      element.getBoundingClientRect().top -
+      document.body.getBoundingClientRect().top -
+      DEFAULT_HEADER_OFFSET
+  })
+}
+
 export const TableOfContents = (props: Props) => {
   const { t } = useLocalize()
 
@@ -25,19 +35,9 @@ export const TableOfContents = (props: Props) => {
     setIsVisible((visible) => !visible)
   }
 
-  const scrollToHeader = (element) => {
-    window.scrollTo({
-      behavior: 'smooth',
-      top:
-        element.getBoundingClientRect().top -
-        document.body.getBoundingClientRect().top -
-        DEFAULT_HEADER_OFFSET
-    })
-  }
-
   onMount(() => {
     const { parentSelector } = props
-
+    // eslint-disable-next-line unicorn/prefer-spread
     setHeadings(Array.from(document.querySelector(parentSelector).querySelectorAll('h2, h3, h4')))
 
     setAreHeadingsLoaded(true)
@@ -70,7 +70,7 @@ export const TableOfContents = (props: Props) => {
 
                         scrollToHeader(h)
                       }}
-                    ></button>
+                    />
                   </li>
                 )}
               </For>

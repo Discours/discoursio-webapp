@@ -103,15 +103,15 @@ export const App = (props: PageProps) => {
 
   return (
     <LocalizeProvider>
-      <ConfirmProvider>
-        <SnackbarProvider>
+      <SnackbarProvider>
+        <ConfirmProvider>
           <SessionProvider>
             <EditorProvider>
               <Dynamic component={pageComponent()} {...props} />
             </EditorProvider>
           </SessionProvider>
-        </SnackbarProvider>
-      </ConfirmProvider>
+        </ConfirmProvider>
+      </SnackbarProvider>
     </LocalizeProvider>
   )
 }

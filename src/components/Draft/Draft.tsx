@@ -22,6 +22,7 @@ export const Draft = (props: Props) => {
   const {
     actions: { showConfirm }
   } = useConfirm()
+
   const {
     actions: { showSnackbar }
   } = useSnackbar()

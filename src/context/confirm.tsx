@@ -21,9 +21,6 @@ type ConfirmContextType = {
   }
 }
 
-// @@TODO handle res/rej
-// @@TODO add t's
-
 const ConfirmContext = createContext<ConfirmContextType>()
 
 export function useConfirm() {
@@ -35,15 +32,17 @@ export const ConfirmProvider = (props: { children: JSX.Element }) => {
 
   let resolveFn: (value: boolean) => void
 
-  const showConfirm = (message?: {
-    confirmBody: ConfirmMessage['confirmBody']
-    confirmButtonLabel: ConfirmMessage['confirmButtonLabel']
-    declineButtonLabel: ConfirmMessage['declineButtonLabel']
-  }): Promise<boolean> => {
+  const showConfirm = (
+    message: {
+      confirmBody?: ConfirmMessage['confirmBody']
+      confirmButtonLabel?: ConfirmMessage['confirmButtonLabel']
+      declineButtonLabel?: ConfirmMessage['declineButtonLabel']
+    } = {}
+  ): Promise<boolean> => {
     const messageToShow = {
-      confirmBody: message?.confirmBody ?? 'Are you sure you want to to proceed the action?',
-      confirmButtonLabel: message?.confirmButtonLabel ?? 'Confirm',
-      declineButtonLabel: message?.declineButtonLabel ?? 'Decline'
+      confirmBody: message.confirmBody,
+      confirmButtonLabel: message.confirmButtonLabel,
+      declineButtonLabel: message.declineButtonLabel
     }
 
     setConfirmMessage(messageToShow)

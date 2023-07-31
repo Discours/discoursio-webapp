@@ -8,11 +8,20 @@ import HttpApi from 'i18next-http-backend'
 import * as Sentry from '@sentry/browser'
 import { SENTRY_DSN } from '../utils/config'
 import { resolveHydrationPromise } from '../utils/hydrationPromise'
+import { initRouter } from '../stores/router'
 
 let layoutReady = false
 
 export const render = async (pageContext: PageContextBuiltInClientWithClientRouting & PageContext) => {
-  const { lng, pageProps } = pageContext
+  const { lng, pageProps, is404 } = pageContext
+
+  if (is404) {
+    initRouter('/404')
+  } else {
+    const { pathname, search } = window.location
+    const searchParams = Object.fromEntries(new URLSearchParams(search))
+    initRouter(pathname, searchParams)
+  }
 
   if (SENTRY_DSN) {
     Sentry.init({

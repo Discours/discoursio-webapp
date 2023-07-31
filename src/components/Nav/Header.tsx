@@ -1,17 +1,23 @@
 import { Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
-import { Icon } from '../_shared/Icon'
-import { Modal } from './Modal'
-import { AuthModal } from './AuthModal'
-import { useModalStore } from '../../stores/ui'
-import { router, useRouter } from '../../stores/router'
-import styles from './Header.module.scss'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
+
+import { Modal } from './Modal'
+import { AuthModal } from './AuthModal'
 import { HeaderAuth } from './HeaderAuth'
+import { ConfirmModal } from './ConfirmModal'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
-import { getDescription } from '../../utils/meta'
 import { Snackbar } from './Snackbar'
+import { Icon } from '../_shared/Icon'
+
+import { useModalStore } from '../../stores/ui'
+import { router, useRouter } from '../../stores/router'
+
+import { getDescription } from '../../utils/meta'
+
 import { useLocalize } from '../../context/localize'
+
+import styles from './Header.module.scss'
 
 type Props = {
   title?: string
@@ -93,6 +99,10 @@ export const Header = (props: Props) => {
     >
       <Modal variant="wide" name="auth" noPadding={true}>
         <AuthModal />
+      </Modal>
+
+      <Modal variant="narrow" name="confirm">
+        <ConfirmModal />
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>

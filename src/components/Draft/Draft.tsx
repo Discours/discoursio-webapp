@@ -5,6 +5,8 @@ import { Icon } from '../_shared/Icon'
 import { formatDate } from '../../utils'
 import formatDateTime from '../../utils/formatDateTime'
 import { useLocalize } from '../../context/localize'
+import { useConfirm } from '../../context/confirm'
+import { useSnackbar } from '../../context/snackbar'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../stores/router'
 
@@ -17,15 +19,27 @@ type Props = {
 
 export const Draft = (props: Props) => {
   const { t } = useLocalize()
+  const {
+    actions: { showConfirm }
+  } = useConfirm()
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const handlePublishLinkClick = (e) => {
     e.preventDefault()
     props.onPublish(props.shout)
   }
 
-  const handleDeleteLinkClick = (e) => {
+  const handleDeleteLinkClick = async (e) => {
     e.preventDefault()
-    props.onDelete(props.shout)
+
+    const isConfirmed = await showConfirm()
+    if (isConfirmed) {
+      props.onDelete(props.shout)
+
+      await showSnackbar({ type: 'success', body: t('Success') })
+    }
   }
 
   return (

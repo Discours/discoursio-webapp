@@ -1,4 +1,4 @@
-import { capitalize, formatDate } from '../../utils'
+import { formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
 import { AudioPlayer } from './AudioPlayer'

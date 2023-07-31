@@ -30,16 +30,12 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': [
           'warn',
           {
-            argsIgnorePattern: '^_',
-            varsIgnorePattern: '^log$'
+            argsIgnorePattern: '^_'
           }
         ],
-        // TODO: Remove any usage and enable
-        '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'error',
-
-        // solid-js fix
-        'import/no-unresolved': [2, { ignore: ['solid-js/'] }]
+        // TODO: Remove any usage and enable
+        '@typescript-eslint/no-explicit-any': 'off'
       }
     }
   ],

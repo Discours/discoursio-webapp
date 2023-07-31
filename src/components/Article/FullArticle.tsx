@@ -1,4 +1,4 @@
-import { capitalize, formatDate } from '../../utils'
+import { formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import { AuthorCard } from '../Author/AuthorCard'
 import { AudioPlayer } from './AudioPlayer'
@@ -140,7 +140,7 @@ export const FullArticle = (props: ArticleProps) => {
 
                 <h1>{props.article.title}</h1>
                 <Show when={props.article.subtitle}>
-                  <h4>{capitalize(props.article.subtitle, false)}</h4>
+                  <h4>{props.article.subtitle}</h4>
                 </Show>
 
                 <div class={styles.shoutAuthor}>

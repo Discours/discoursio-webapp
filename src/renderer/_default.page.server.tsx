@@ -9,7 +9,7 @@ import ru from '../../public/locales/ru/translation.json'
 import en from '../../public/locales/en/translation.json'
 import type { Language } from '../context/localize'
 
-export const passToClient = ['pageProps', 'lng', 'documentProps']
+export const passToClient = ['pageProps', 'lng', 'documentProps', 'is404']
 
 const metaTags = []
 
@@ -47,7 +47,11 @@ export const render = async (pageContext: PageContext) => {
     await changeLanguage(lng)
   }
 
-  initRouter(pageContext.urlParsed.pathname, pageContext.urlParsed.search)
+  if (pageContext.is404) {
+    initRouter('/404')
+  } else {
+    initRouter(pageContext.urlParsed.pathname, pageContext.urlParsed.search)
+  }
 
   pageContext.lng = lng
 

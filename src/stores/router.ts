@@ -23,7 +23,6 @@ export const ROUTES = {
   feedBookmarks: '/feed/bookmarks',
   feedCollaborations: '/feed/collaborations',
   search: '/search/:q?',
-  article: '/:slug',
   dogma: '/about/dogma',
   discussionRules: '/about/discussion-rules',
   guide: '/about/guide',
@@ -37,7 +36,9 @@ export const ROUTES = {
   expo: '/expo/:layout',
   profileSettings: '/profile/settings',
   profileSecurity: '/profile/security',
-  profileSubscriptions: '/profile/subscriptions'
+  profileSubscriptions: '/profile/subscriptions',
+  fourOuFour: '/404',
+  article: '/:slug'
 } as const
 
 const searchParamsStore = createSearchParams()
@@ -117,7 +118,7 @@ const handleClientRouteLinkClick = async (event) => {
   scrollToHash(url.hash)
 }
 
-export const initRouter = (pathname: string, search: Record<string, string>) => {
+export const initRouter = (pathname: string, search?: Record<string, string>) => {
   routerStore.open(pathname)
   const params = Object.fromEntries(new URLSearchParams(search))
   searchParamsStore.open(params)
@@ -125,12 +126,6 @@ export const initRouter = (pathname: string, search: Record<string, string>) => 
   if (!isServer) {
     document.addEventListener('click', handleClientRouteLinkClick)
   }
-}
-
-if (!isServer) {
-  const { pathname, search } = window.location
-  const searchParams = Object.fromEntries(new URLSearchParams(search))
-  initRouter(pathname, searchParams)
 }
 
 export const useRouter = <TSearchParams extends Record<string, string> = Record<string, string>>() => {

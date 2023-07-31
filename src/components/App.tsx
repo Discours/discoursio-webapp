@@ -77,7 +77,8 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   thanks: ThanksPage,
   profileSettings: ProfileSettingsPage,
   profileSecurity: ProfileSecurityPage,
-  profileSubscriptions: ProfileSubscriptionsPage
+  profileSubscriptions: ProfileSubscriptionsPage,
+  fourOuFour: FourOuFourPage
 }
 
 export const App = (props: PageProps) => {

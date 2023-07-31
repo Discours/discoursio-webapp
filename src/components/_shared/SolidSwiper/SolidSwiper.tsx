@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Match, Show, Switch, on } from 'solid-js'
+import { createEffect, createSignal, For, Show, on } from 'solid-js'
 import { MediaItem, UploadedFile } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'

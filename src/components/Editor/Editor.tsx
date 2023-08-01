@@ -250,7 +250,7 @@ export const Editor = (props: Props) => {
   })
 
   return (
-    <div class="position-relative">
+    <>
       <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
       <Show when={isDesktop() && html()}>
         <TableOfContents variant="editor" parentSelector="#editorBody" />
@@ -279,6 +279,6 @@ export const Editor = (props: Props) => {
         }}
       />
       <EditorFloatingMenu editor={editor()} ref={(el) => (floatingMenuRef.current = el)} />
-    </div>
+    </>
   )
 }

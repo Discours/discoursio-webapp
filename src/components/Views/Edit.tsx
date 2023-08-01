@@ -21,11 +21,12 @@ import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
 import { LayoutType, MediaItem } from '../../pages/types'
+import { useSnackbar } from '../../context/snackbar'
 
 type Props = {
   shout: Shout
 }
-
+const AUTO_SAVE_INTERVAL = 5000
 const handleScrollTopButtonClick = (e) => {
   e.preventDefault()
   window.scrollTo({
@@ -48,25 +49,38 @@ export const EditView = (props: Props) => {
 
   const { page } = useRouter()
   const {
+    actions: { showSnackbar }
+  } = useSnackbar()
+
+  const {
     form,
     formErrors,
-    actions: { setForm, setFormErrors }
+    actions: { setForm, setFormErrors, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage }
   } = useEditorContext()
 
   const shoutTopics = props.shout.topics || []
 
   setForm({
-    shoutId: props.shout.id,
-    slug: props.shout.slug,
-    title: props.shout.title,
-    subtitle: props.shout.subtitle,
-    selectedTopics: shoutTopics,
-    mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
-    body: props.shout.body,
-    coverImageUrl: props.shout.cover,
-    media: props.shout.media,
-    layout: props.shout.layout
+    shoutId: props.shout.id
   })
+
+  const draft = getDraftFromLocalStorage()
+
+  if (draft) {
+    setForm(draft)
+  } else {
+    setForm({
+      slug: props.shout.slug,
+      title: props.shout.title,
+      subtitle: props.shout.subtitle,
+      selectedTopics: shoutTopics,
+      mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
+      body: props.shout.body,
+      coverImageUrl: props.shout.cover,
+      media: props.shout.media,
+      layout: props.shout.layout
+    })
+  }
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
     return JSON.parse(form.media || '[]')
@@ -194,6 +208,31 @@ export const EditView = (props: Props) => {
       }
     }
   }
+
+  let autoSaveTimeOutId
+  const autoSaveRecursive = () => {
+    autoSaveTimeOutId = setTimeout(async () => {
+      showSnackbar({ body: 'Automatically saving...' })
+      if (props.shout.visibility === 'owner') {
+        await saveDraft()
+      } else {
+        saveDraftToLocalStorage()
+      }
+      autoSaveRecursive()
+    }, AUTO_SAVE_INTERVAL)
+  }
+
+  const stopAutoSave = () => {
+    clearTimeout(autoSaveTimeOutId)
+  }
+
+  onMount(() => {
+    autoSaveRecursive()
+  })
+
+  onCleanup(() => {
+    stopAutoSave()
+  })
 
   return (
     <>

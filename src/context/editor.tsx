@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
-import { Topic, TopicInput } from '../graphql/types.gen'
+import { Shout, Topic, TopicInput } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
@@ -36,6 +36,9 @@ type EditorContextType = {
   editorRef: { current: () => Editor }
   actions: {
     saveShout: () => Promise<void>
+    saveDraft: () => Promise<void>
+    saveDraftToLocalStorage: () => void
+    getDraftFromLocalStorage: () => ShoutForm
     publishShout: () => Promise<void>
     publishShoutById: (shoutId: number) => Promise<void>
     deleteShout: (shoutId: number) => Promise<boolean>
@@ -143,6 +146,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
     try {
       const shout = await updateShout({ publish: false })
+      removeDraftFromLocalStorage()
 
       if (shout.visibility === 'owner') {
         openPage(router, 'drafts')
@@ -153,6 +157,21 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       console.error('[saveShout]', error)
       showSnackbar({ type: 'error', body: t('Error') })
     }
+  }
+
+  const saveDraft = async () => {
+    await updateShout({ publish: false })
+  }
+
+  const saveDraftToLocalStorage = () => {
+    localStorage.setItem(`shout-${form.shoutId}`, JSON.stringify(form))
+  }
+  const getDraftFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem(`shout-${form.shoutId}`))
+  }
+
+  const removeDraftFromLocalStorage = () => {
+    localStorage.removeItem(`shout-${form.shoutId}`)
   }
 
   const publishShout = async () => {
@@ -218,6 +237,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const actions = {
     saveShout,
+    saveDraft,
+    saveDraftToLocalStorage,
+    getDraftFromLocalStorage,
     publishShout,
     publishShoutById,
     deleteShout,

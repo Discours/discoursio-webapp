@@ -2,7 +2,7 @@ import styles from './Header.module.scss'
 import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
-import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, onCleanup, onMount, Show, Switch } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -15,7 +15,7 @@ import { Button } from '../_shared/Button'
 import { useEditorContext } from '../../context/editor'
 import { Popover } from '../_shared/Popover'
 
-type HeaderAuthProps = {
+type Props = {
   setIsProfilePopupVisible: (value: boolean) => void
 }
 type IconedButton = {
@@ -25,7 +25,7 @@ type IconedButton = {
 }
 
 const MD_WIDTH_BREAKPOINT = 992
-export const HeaderAuth = (props: HeaderAuthProps) => {
+export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
@@ -144,6 +144,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
             </Show>
 
             <Show when={showSaveButton()}>
+              {/*props.shout.visibility !== 'owner'*/}
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 {renderIconedButton({
                   value: t('Save'),

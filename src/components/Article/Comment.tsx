@@ -10,6 +10,7 @@ import { useSession } from '../../context/session'
 import { ReactionKind } from '../../graphql/types.gen'
 import { useReactions } from '../../context/reactions'
 import { useSnackbar } from '../../context/snackbar'
+import { useConfirm } from '../../context/confirm'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { useLocalize } from '../../context/localize'
 import { CommentRatingControl } from './CommentRatingControl'
@@ -41,6 +42,10 @@ export const Comment = (props: Props) => {
   } = useReactions()
 
   const {
+    actions: { showConfirm }
+  } = useConfirm()
+
+  const {
     actions: { showSnackbar }
   } = useSnackbar()
 
@@ -51,8 +56,13 @@ export const Comment = (props: Props) => {
   const remove = async () => {
     if (comment()?.id) {
       try {
-        await deleteReaction(comment().id)
-        showSnackbar({ body: t('Comment successfully deleted') })
+        const isConfirmed = await showConfirm()
+
+        if (isConfirmed) {
+          await deleteReaction(comment().id)
+
+          await showSnackbar({ body: t('Comment successfully deleted') })
+        }
       } catch (error) {
         console.error('[deleteReaction]', error)
       }

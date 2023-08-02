@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, Show, onMount } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import uniqolor from 'uniqolor'
@@ -247,6 +247,16 @@ export const Editor = (props: Props) => {
         words: editor().storage.characterCount.words()
       })
     }
+  })
+
+  onMount(() => {
+    const initialHTMLValue = html()
+
+    window.addEventListener('beforeunload', (event) => {
+      if (initialHTMLValue !== html()) {
+        event.returnValue = `Are you sure you want to leave?`
+      }
+    })
   })
 
   return (

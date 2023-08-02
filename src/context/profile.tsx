@@ -29,19 +29,23 @@ const useProfileForm = () => {
     userpic: '',
     links: []
   })
+  const [initialFormValues, setInitialFormValues] = createSignal(null)
 
   createEffect(async () => {
     if (!currentSlug()) return
     try {
       await loadAuthor({ slug: currentSlug() })
-      setForm({
+      const updatedFormValues = {
         name: currentAuthor()?.name,
         slug: currentAuthor()?.slug,
         bio: currentAuthor()?.bio,
         about: currentAuthor()?.about,
         userpic: currentAuthor()?.userpic,
         links: currentAuthor()?.links
-      })
+      }
+
+      setForm(updatedFormValues)
+      setInitialFormValues(updatedFormValues)
     } catch (error) {
       console.error(error)
     }
@@ -63,7 +67,7 @@ const useProfileForm = () => {
       })
     }
   }
-  return { form, submit, updateFormField, slugError }
+  return { form, initialFormValues, submit, updateFormField, slugError }
 }
 
 export { useProfileForm }

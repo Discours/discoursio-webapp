@@ -264,7 +264,7 @@ export const Editor = (props: Props) => {
     <>
       <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
       <Show when={isDesktop() && html()}>
-        <TableOfContents variant="editor" parentSelector="#editorBody" isEditor={true} />
+        <TableOfContents variant="editor" parentSelector="#editorBody" />
       </Show>
       <TextBubbleMenu
         isCommonMarkup={isCommonMarkup()}

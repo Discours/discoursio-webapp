@@ -12,7 +12,6 @@ import styles from './TableOfContents.module.scss'
 interface Props {
   variant: 'article' | 'editor'
   parentSelector: string
-  isEditor?: boolean
 }
 
 const scrollToHeader = (element) => {
@@ -46,14 +45,6 @@ export const TableOfContents = (props: Props) => {
 
   onMount(() => {
     updateHeadings()
-
-    if (props.isEditor) {
-      const editorHeadingsCheckingInterval = setInterval(() => updateHeadings(), 2000)
-
-      onCleanup(() => {
-        editorHeadingsCheckingInterval
-      })
-    }
   })
 
   return (

@@ -64,6 +64,7 @@ const providers: Record<string, HocuspocusProvider> = {}
 export const Editor = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
+
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
 
   const docName = `shout-${props.shoutId}`
@@ -263,7 +264,7 @@ export const Editor = (props: Props) => {
     <>
       <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
       <Show when={isDesktop() && html()}>
-        <TableOfContents variant="editor" parentSelector="#editorBody" />
+        <TableOfContents variant="editor" parentSelector="#editorBody" isEditor={true} />
       </Show>
       <TextBubbleMenu
         isCommonMarkup={isCommonMarkup()}

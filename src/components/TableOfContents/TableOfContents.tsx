@@ -1,4 +1,4 @@
-import { onMount, For, Show, createSignal } from 'solid-js'
+import { onMount, For, Show, createSignal, onCleanup } from 'solid-js'
 import { clsx } from 'clsx'
 
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
@@ -12,6 +12,7 @@ import styles from './TableOfContents.module.scss'
 interface Props {
   variant: 'article' | 'editor'
   parentSelector: string
+  isEditor?: boolean
 }
 
 const scrollToHeader = (element) => {
@@ -35,16 +36,28 @@ export const TableOfContents = (props: Props) => {
     setIsVisible((visible) => !visible)
   }
 
-  onMount(() => {
+  const updateHeadings = () => {
     const { parentSelector } = props
+
     // eslint-disable-next-line unicorn/prefer-spread
     setHeadings(Array.from(document.querySelector(parentSelector).querySelectorAll('h2, h3, h4')))
-
     setAreHeadingsLoaded(true)
+  }
+
+  onMount(() => {
+    updateHeadings()
+
+    if (props.isEditor) {
+      const editorHeadingsCheckingInterval = setInterval(() => updateHeadings(), 2000)
+
+      onCleanup(() => {
+        editorHeadingsCheckingInterval
+      })
+    }
   })
 
   return (
-    <Show when={areHeadingsLoaded()}>
+    <Show when={areHeadingsLoaded() && headings().length > 3}>
       <div
         class={clsx(styles.TableOfContentsFixedWrapper, {
           [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'

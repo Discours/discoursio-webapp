@@ -5,7 +5,7 @@ import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { useRouter } from '../../stores/router'
-import { useEditorContext } from '../../context/editor'
+import { ShoutForm, useEditorContext } from '../../context/editor'
 import { Editor, Panel, TopicSelect, UploadModalContent } from '../Editor'
 import { Icon } from '../_shared/Icon'
 import { Button } from '../_shared/Button'
@@ -22,6 +22,9 @@ import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
 import { LayoutType, MediaItem } from '../../pages/types'
 import { useSnackbar } from '../../context/snackbar'
+import { clone } from '../../utils/clone'
+import deepEqual from 'fast-deep-equal'
+import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 
 type Props = {
   shout: Shout
@@ -65,7 +68,6 @@ export const EditView = (props: Props) => {
   })
 
   const draft = getDraftFromLocalStorage()
-
   if (draft) {
     setForm(draft)
   } else {
@@ -81,6 +83,9 @@ export const EditView = (props: Props) => {
       layout: props.shout.layout
     })
   }
+
+  const [prevForm, setPrevForm] = createSignal<ShoutForm>(clone(form)) //TODO: вывести тип
+  const [saving, setSaving] = createSignal(false)
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
     return JSON.parse(form.media || '[]')
@@ -210,13 +215,21 @@ export const EditView = (props: Props) => {
   }
 
   let autoSaveTimeOutId
+
   const autoSaveRecursive = () => {
     autoSaveTimeOutId = setTimeout(async () => {
-      showSnackbar({ body: 'Automatically saving...' })
-      if (props.shout.visibility === 'owner') {
-        await saveDraft()
-      } else {
-        saveDraftToLocalStorage()
+      const hasChanges = !deepEqual(form, prevForm())
+      if (hasChanges) {
+        setSaving(true)
+        if (props.shout.visibility === 'owner') {
+          await saveDraft()
+        } else {
+          saveDraftToLocalStorage()
+        }
+        setPrevForm(clone(form))
+        setTimeout(() => {
+          setSaving(false)
+        }, 2000)
       }
       autoSaveRecursive()
     }, AUTO_SAVE_INTERVAL)
@@ -240,6 +253,7 @@ export const EditView = (props: Props) => {
         <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
+            <AutoSaveNotice active={saving()} />
             <button
               class={clsx(styles.scrollTopButton, {
                 [styles.visible]: isScrolled()

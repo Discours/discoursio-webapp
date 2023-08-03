@@ -2,7 +2,7 @@ import styles from './Header.module.scss'
 import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
-import { createMemo, createSignal, onCleanup, onMount, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup, onMount, Show, Switch } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -34,7 +34,7 @@ export const HeaderAuth = (props: Props) => {
   const { session, isSessionLoaded, isAuthenticated } = useSession()
 
   const {
-    actions: { toggleEditorPanel, saveShout, publishShout }
+    actions: { toggleEditorPanel, saveShout, publishShout, getDraftFromLocalStorage }
   } = useEditorContext()
 
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
@@ -48,6 +48,13 @@ export const HeaderAuth = (props: Props) => {
     }
     toggleWarnings()
   }
+
+  const [isEditExisting, setIsEditExisting] = createSignal(false)
+  createEffect(() => {
+    const shoutId = window.location.href.split('/').pop()
+    const shoutFromLocalStorage = getDraftFromLocalStorage()
+    setIsEditExisting(Number(shoutId) === shoutFromLocalStorage?.shoutId)
+  })
 
   const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
 
@@ -144,14 +151,15 @@ export const HeaderAuth = (props: Props) => {
             </Show>
 
             <Show when={showSaveButton()}>
-              {/*props.shout.visibility !== 'owner'*/}
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                {renderIconedButton({
-                  value: t('Save'),
-                  icon: 'save',
-                  action: handleSaveButtonClick
-                })}
-              </div>
+              <Show when={!isEditExisting()}>
+                <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+                  {renderIconedButton({
+                    value: t('Save'),
+                    icon: 'save',
+                    action: handleSaveButtonClick
+                  })}
+                </div>
+              </Show>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 {renderIconedButton({

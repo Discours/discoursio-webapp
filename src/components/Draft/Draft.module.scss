@@ -24,21 +24,19 @@
 
 .actions {
   @include font-size(1.2rem);
+  display: flex;
+  gap: 12px;
 
   a {
     border: 0;
     display: inline-block;
   }
 
-  a + a {
-    margin-left: 12px;
-  }
-
-  .deleteLink {
+  .delete {
     color: #d00820;
   }
 
-  .publishLink {
+  .publish {
     color: #2bb452;
   }
 }

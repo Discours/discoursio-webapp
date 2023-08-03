@@ -54,12 +54,12 @@ export const Draft = (props: Props) => {
       </div>
       <div class={styles.actions}>
         <a href={getPagePath(router, 'edit', { shoutId: props.shout.id.toString() })}>{t('Edit')}</a>
-        <a href="#" onClick={handlePublishLinkClick} class={styles.publishLink}>
+        <span onClick={handlePublishLinkClick} class={styles.publish}>
           {t('Publish')}
-        </a>
-        <a href="#" onClick={handleDeleteLinkClick} class={styles.deleteLink}>
+        </span>
+        <span onClick={handleDeleteLinkClick} class={styles.delete}>
           {t('Delete')}
-        </a>
+        </span>
       </div>
     </div>
   )

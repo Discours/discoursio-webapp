@@ -51,6 +51,7 @@ export const HeaderAuth = (props: Props) => {
 
   const [isEditExisting, setIsEditExisting] = createSignal(false)
   createEffect(() => {
+    if (!isEditorPage) return
     const shoutId = window.location.href.split('/').pop()
     const shoutFromLocalStorage = getDraftFromLocalStorage()
     setIsEditExisting(Number(shoutId) === shoutFromLocalStorage?.shoutId)

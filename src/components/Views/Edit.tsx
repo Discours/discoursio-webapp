@@ -5,7 +5,7 @@ import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { useRouter } from '../../stores/router'
-import { useEditorContext } from '../../context/editor'
+import { ShoutForm, useEditorContext } from '../../context/editor'
 import { Editor, Panel, TopicSelect, UploadModalContent } from '../Editor'
 import { Icon } from '../_shared/Icon'
 import { Button } from '../_shared/Button'
@@ -21,11 +21,14 @@ import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
 import { LayoutType, MediaItem } from '../../pages/types'
+import { clone } from '../../utils/clone'
+import deepEqual from 'fast-deep-equal'
+import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 
 type Props = {
   shout: Shout
 }
-
+const AUTO_SAVE_INTERVAL = 5000
 const handleScrollTopButtonClick = (e) => {
   e.preventDefault()
   window.scrollTo({
@@ -47,26 +50,35 @@ export const EditView = (props: Props) => {
   const [coverImage, setCoverImage] = createSignal<string>(null)
 
   const { page } = useRouter()
+
   const {
     form,
     formErrors,
-    actions: { setForm, setFormErrors }
+    actions: { setForm, setFormErrors, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage }
   } = useEditorContext()
 
   const shoutTopics = props.shout.topics || []
 
-  setForm({
-    shoutId: props.shout.id,
-    slug: props.shout.slug,
-    title: props.shout.title,
-    subtitle: props.shout.subtitle,
-    selectedTopics: shoutTopics,
-    mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
-    body: props.shout.body,
-    coverImageUrl: props.shout.cover,
-    media: props.shout.media,
-    layout: props.shout.layout
-  })
+  const draft = getDraftFromLocalStorage(props.shout.id)
+  if (draft) {
+    setForm(draft)
+  } else {
+    setForm({
+      slug: props.shout.slug,
+      shoutId: props.shout.id,
+      title: props.shout.title,
+      subtitle: props.shout.subtitle,
+      selectedTopics: shoutTopics,
+      mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
+      body: props.shout.body,
+      coverImageUrl: props.shout.cover,
+      media: props.shout.media,
+      layout: props.shout.layout
+    })
+  }
+
+  const [prevForm, setPrevForm] = createSignal<ShoutForm>(clone(form))
+  const [saving, setSaving] = createSignal(false)
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
     return JSON.parse(form.media || '[]')
@@ -195,12 +207,46 @@ export const EditView = (props: Props) => {
     }
   }
 
+  let autoSaveTimeOutId
+
+  const autoSaveRecursive = () => {
+    autoSaveTimeOutId = setTimeout(async () => {
+      const hasChanges = !deepEqual(form, prevForm())
+      if (hasChanges) {
+        setSaving(true)
+        if (props.shout.visibility === 'owner') {
+          await saveDraft(form)
+        } else {
+          saveDraftToLocalStorage(form)
+        }
+        setPrevForm(clone(form))
+        setTimeout(() => {
+          setSaving(false)
+        }, 2000)
+      }
+      autoSaveRecursive()
+    }, AUTO_SAVE_INTERVAL)
+  }
+
+  const stopAutoSave = () => {
+    clearTimeout(autoSaveTimeOutId)
+  }
+
+  onMount(() => {
+    autoSaveRecursive()
+  })
+
+  onCleanup(() => {
+    stopAutoSave()
+  })
+
   return (
     <>
       <div class={styles.container}>
         <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
+            <AutoSaveNotice active={saving()} />
             <button
               class={clsx(styles.scrollTopButton, {
                 [styles.visible]: isScrolled()

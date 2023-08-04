@@ -24,12 +24,15 @@
 
 .actions {
   @include font-size(1.2rem);
+
   display: flex;
   gap: 12px;
 
-  a {
+  a,
+  span {
     border: 0;
     display: inline-block;
+    cursor: pointer;
   }
 
   .delete {

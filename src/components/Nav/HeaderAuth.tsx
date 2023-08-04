@@ -18,7 +18,8 @@ import { Popover } from '../_shared/Popover'
 type Props = {
   setIsProfilePopupVisible: (value: boolean) => void
 }
-type IconedButton = {
+
+type IconedButtonProps = {
   value: string
   icon: string
   action: () => void
@@ -50,6 +51,7 @@ export const HeaderAuth = (props: Props) => {
   }
 
   const [isEditExisting, setIsEditExisting] = createSignal(false)
+
   createEffect(() => {
     if (!isEditorPage) return
     const shoutId = window.location.href.split('/').pop()
@@ -84,25 +86,25 @@ export const HeaderAuth = (props: Props) => {
     onCleanup(() => window.removeEventListener('resize', handleResize))
   })
 
-  const renderIconedButton = (iconedButtonProps: IconedButton) => {
+  const renderIconedButton = (buttonProps: IconedButtonProps) => {
     return (
       <Show
         when={width() < MD_WIDTH_BREAKPOINT}
         fallback={
           <Button
-            value={<span class={styles.textLabel}>{iconedButtonProps.value}</span>}
+            value={<span class={styles.textLabel}>{buttonProps.value}</span>}
             variant={'outline'}
-            onClick={handleSaveButtonClick}
+            onClick={buttonProps.action}
           />
         }
       >
-        <Popover content={iconedButtonProps.value}>
+        <Popover content={buttonProps.value}>
           {(ref) => (
             <Button
               ref={ref}
               variant={'outline'}
-              onClick={handleSaveButtonClick}
-              value={<Icon name={iconedButtonProps.icon} class={styles.icon} />}
+              onClick={buttonProps.action}
+              value={<Icon name={buttonProps.icon} class={styles.icon} />}
             />
           )}
         </Popover>

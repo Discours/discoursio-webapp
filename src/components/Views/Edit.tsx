@@ -21,7 +21,6 @@ import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
 import { LayoutType, MediaItem } from '../../pages/types'
-import { useSnackbar } from '../../context/snackbar'
 import { clone } from '../../utils/clone'
 import deepEqual from 'fast-deep-equal'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
@@ -51,9 +50,6 @@ export const EditView = (props: Props) => {
   const [coverImage, setCoverImage] = createSignal<string>(null)
 
   const { page } = useRouter()
-  const {
-    actions: { showSnackbar }
-  } = useSnackbar()
 
   const {
     form,
@@ -63,16 +59,13 @@ export const EditView = (props: Props) => {
 
   const shoutTopics = props.shout.topics || []
 
-  setForm({
-    shoutId: props.shout.id
-  })
-
-  const draft = getDraftFromLocalStorage()
+  const draft = getDraftFromLocalStorage(props.shout.id)
   if (draft) {
     setForm(draft)
   } else {
     setForm({
       slug: props.shout.slug,
+      shoutId: props.shout.id,
       title: props.shout.title,
       subtitle: props.shout.subtitle,
       selectedTopics: shoutTopics,
@@ -84,7 +77,7 @@ export const EditView = (props: Props) => {
     })
   }
 
-  const [prevForm, setPrevForm] = createSignal<ShoutForm>(clone(form)) //TODO: вывести тип
+  const [prevForm, setPrevForm] = createSignal<ShoutForm>(clone(form))
   const [saving, setSaving] = createSignal(false)
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
@@ -222,9 +215,9 @@ export const EditView = (props: Props) => {
       if (hasChanges) {
         setSaving(true)
         if (props.shout.visibility === 'owner') {
-          await saveDraft()
+          await saveDraft(form)
         } else {
-          saveDraftToLocalStorage()
+          saveDraftToLocalStorage(form)
         }
         setPrevForm(clone(form))
         setTimeout(() => {

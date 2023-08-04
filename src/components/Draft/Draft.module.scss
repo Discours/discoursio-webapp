@@ -28,18 +28,17 @@
   display: flex;
   gap: 12px;
 
-  a,
-  span {
+  .actionItem {
     border: 0;
     display: inline-block;
     cursor: pointer;
-  }
 
-  .delete {
-    color: #d00820;
-  }
+    &.delete {
+      color: #d00820;
+    }
 
-  .publish {
-    color: #2bb452;
+    &.publish {
+      color: #2bb452;
+    }
   }
 }

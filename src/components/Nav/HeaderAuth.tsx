@@ -2,7 +2,7 @@ import styles from './Header.module.scss'
 import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
-import { createEffect, createMemo, createSignal, onCleanup, onMount, Show, Switch } from 'solid-js'
+import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import Userpic from '../Author/Userpic'
@@ -35,7 +35,8 @@ export const HeaderAuth = (props: Props) => {
   const { session, isSessionLoaded, isAuthenticated } = useSession()
 
   const {
-    actions: { toggleEditorPanel, saveShout, publishShout, getDraftFromLocalStorage }
+    form,
+    actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
 
   const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
@@ -50,15 +51,6 @@ export const HeaderAuth = (props: Props) => {
     toggleWarnings()
   }
 
-  const [isEditExisting, setIsEditExisting] = createSignal(false)
-
-  createEffect(() => {
-    if (!isEditorPage) return
-    const shoutId = window.location.href.split('/').pop()
-    const shoutFromLocalStorage = getDraftFromLocalStorage()
-    setIsEditExisting(Number(shoutId) === shoutFromLocalStorage?.shoutId)
-  })
-
   const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
 
   const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
@@ -71,11 +63,11 @@ export const HeaderAuth = (props: Props) => {
   }
 
   const handleSaveButtonClick = () => {
-    saveShout()
+    saveShout(form)
   }
 
   const handlePublishButtonClick = () => {
-    publishShout()
+    publishShout(form)
   }
 
   const [width, setWidth] = createSignal(0)
@@ -154,15 +146,13 @@ export const HeaderAuth = (props: Props) => {
             </Show>
 
             <Show when={showSaveButton()}>
-              <Show when={!isEditExisting()}>
-                <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                  {renderIconedButton({
-                    value: t('Save'),
-                    icon: 'save',
-                    action: handleSaveButtonClick
-                  })}
-                </div>
-              </Show>
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+                {renderIconedButton({
+                  value: t('Save'),
+                  icon: 'save',
+                  action: handleSaveButtonClick
+                })}
+              </div>
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 {renderIconedButton({

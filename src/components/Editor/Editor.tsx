@@ -1,6 +1,5 @@
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
-import { IndexeddbPersistence } from 'y-indexeddb'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
 import type { Doc } from 'yjs/dist/src/utils/Doc'

@@ -53,11 +53,16 @@ export const Draft = (props: Props) => {
         <span class={styles.title}>{props.shout.title || t('Unnamed draft')}</span> {props.shout.subtitle}
       </div>
       <div class={styles.actions}>
-        <a href={getPagePath(router, 'edit', { shoutId: props.shout.id.toString() })}>{t('Edit')}</a>
-        <span onClick={handlePublishLinkClick} class={styles.publish}>
+        <a
+          class={styles.actionItem}
+          href={getPagePath(router, 'edit', { shoutId: props.shout.id.toString() })}
+        >
+          {t('Edit')}
+        </a>
+        <span onClick={handlePublishLinkClick} class={clsx(styles.actionItem, styles.publish)}>
           {t('Publish')}
         </span>
-        <span onClick={handleDeleteLinkClick} class={styles.delete}>
+        <span onClick={handleDeleteLinkClick} class={clsx(styles.actionItem, styles.delete)}>
           {t('Delete')}
         </span>
       </div>

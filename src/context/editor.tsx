@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
-import { Shout, Topic, TopicInput } from '../graphql/types.gen'
+import { Topic, TopicInput } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
@@ -35,11 +35,11 @@ type EditorContextType = {
   formErrors: Record<keyof ShoutForm, string>
   editorRef: { current: () => Editor }
   actions: {
-    saveShout: () => Promise<void>
-    saveDraft: () => Promise<void>
-    saveDraftToLocalStorage: () => void
-    getDraftFromLocalStorage: () => ShoutForm
-    publishShout: () => Promise<void>
+    saveShout: (form: ShoutForm) => Promise<void>
+    saveDraft: (form: ShoutForm) => Promise<void>
+    saveDraftToLocalStorage: (form: ShoutForm) => void
+    getDraftFromLocalStorage: (shoutId: number) => ShoutForm
+    publishShout: (form: ShoutForm) => Promise<void>
     publishShoutById: (shoutId: number) => Promise<void>
     deleteShout: (shoutId: number) => Promise<boolean>
     toggleEditorPanel: () => void
@@ -112,26 +112,26 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     return true
   }
 
-  const updateShout = async ({ publish }: { publish: boolean }) => {
+  const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
     return apiClient.updateArticle({
-      shoutId: form.shoutId,
+      shoutId: formToUpdate.shoutId,
       shoutInput: {
-        body: form.body,
-        topics: form.selectedTopics.map((topic) => topic2topicInput(topic)),
+        body: formToUpdate.body,
+        topics: formToUpdate.selectedTopics.map((topic) => topic2topicInput(topic)),
         // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
         // community?: InputMaybe<Scalars['Int']>
-        mainTopic: topic2topicInput(form.mainTopic),
-        slug: form.slug,
-        subtitle: form.subtitle,
-        title: form.title,
-        cover: form.coverImageUrl,
-        media: form.media
+        mainTopic: topic2topicInput(formToUpdate.mainTopic),
+        slug: formToUpdate.slug,
+        subtitle: formToUpdate.subtitle,
+        title: formToUpdate.title,
+        cover: formToUpdate.coverImageUrl,
+        media: formToUpdate.media
       },
       publish
     })
   }
 
-  const saveShout = async () => {
+  const saveShout = async (formToSave: ShoutForm) => {
     if (isEditorPanelVisible()) {
       toggleEditorPanel()
     }
@@ -145,8 +145,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
 
     try {
-      const shout = await updateShout({ publish: false })
-      removeDraftFromLocalStorage()
+      const shout = await updateShout(formToSave, { publish: false })
+      removeDraftFromLocalStorage(formToSave.shoutId)
 
       if (shout.visibility === 'owner') {
         openPage(router, 'drafts')
@@ -159,22 +159,22 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const saveDraft = async () => {
-    await updateShout({ publish: false })
+  const saveDraft = async (draftForm: ShoutForm) => {
+    await updateShout(draftForm, { publish: false })
   }
 
-  const saveDraftToLocalStorage = () => {
-    localStorage.setItem(`shout-${form.shoutId}`, JSON.stringify(form))
+  const saveDraftToLocalStorage = (formToSave: ShoutForm) => {
+    localStorage.setItem(`shout-${formToSave.shoutId}`, JSON.stringify(formToSave))
   }
-  const getDraftFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem(`shout-${form.shoutId}`))
-  }
-
-  const removeDraftFromLocalStorage = () => {
-    localStorage.removeItem(`shout-${form.shoutId}`)
+  const getDraftFromLocalStorage = (shoutId: number) => {
+    return JSON.parse(localStorage.getItem(`shout-${shoutId}`))
   }
 
-  const publishShout = async () => {
+  const removeDraftFromLocalStorage = (shoutId: number) => {
+    localStorage.removeItem(`shout-${shoutId}`)
+  }
+
+  const publishShout = async (formToPublish: ShoutForm) => {
     if (isEditorPanelVisible()) {
       toggleEditorPanel()
     }
@@ -184,7 +184,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         return
       }
 
-      await updateShout({ publish: false })
+      await updateShout(formToPublish, { publish: false })
 
       const slug = slugify(form.title)
       setForm('slug', slug)
@@ -197,7 +197,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
 
     try {
-      await updateShout({ publish: true })
+      await updateShout(formToPublish, { publish: true })
       openPage(router, 'feed')
     } catch (error) {
       console.error('[publishShout]', error)

@@ -15,7 +15,7 @@ type WordCounter = {
   words: number
 }
 
-type ShoutForm = {
+export type ShoutForm = {
   layout?: string
   shoutId: number
   slug: string

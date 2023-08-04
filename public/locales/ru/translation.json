@@ -33,6 +33,7 @@
   "Authors": "Авторы",
   "Autotypograph": "Автотипограф",
   "Back": "Назад",
+  "Back to editor": "Вернуться в редактор",
   "Back to main page": "Вернуться на главную",
   "Become an author": "Стать автором",
   "Bold": "Жирный",
@@ -52,6 +53,7 @@
   "By updates": "По обновлениям",
   "By views": "По просмотрам",
   "Cancel": "Отмена",
+  "Cancel changes": "Отменить изменения",
   "Characters": "Знаков",
   "Chat Title": "Тема дискурса",
   "Choose a post type": "Выберите тип публикации",
@@ -76,7 +78,6 @@
   "Create gallery": "Создать галерею",
   "Create post": "Создать публикацию",
   "Create video": "Создать видео",
-  "contents": "оглавление",
   "Date of Birth": "Дата рождения",
   "Decline": "Отмена",
   "Delete": "Удалить",
@@ -267,6 +268,7 @@
   "Short opening": "Небольшое вступление, чтобы заинтересовать читателя",
   "Show": "Показать",
   "Show lyrics": "Текст песни",
+  "Slug": "Постоянная ссылка",
   "Social networks": "Социальные сети",
   "Something went wrong, check email and password": "Что-то пошло не так. Проверьте адрес электронной почты и пароль",
   "Something went wrong, please try again": "Что-то пошло не так, попробуйте еще раз",
@@ -358,6 +360,7 @@
   "cancel": "отменить",
   "collections": "коллекции",
   "community": "сообщество",
+  "contents": "оглавление",
   "create_chat": "Создать чат",
   "create_group": "Создать группу",
   "delimiter": "разделитель",
@@ -398,5 +401,6 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал"
+  "zine": "журнал",
+  "Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title": "Добавьте несколько тем, чтобы читатель знал, о чем ваш материал, и мог найти его на страницах интересных ему тем. Темы можно менять местами, первая тема становится заглавной"
 }

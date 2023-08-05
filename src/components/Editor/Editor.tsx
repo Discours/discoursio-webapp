@@ -3,6 +3,7 @@ import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
+import deepEqual from 'fast-deep-equal'
 import type { Doc } from 'yjs/dist/src/utils/Doc'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
@@ -254,8 +255,10 @@ export const Editor = (props: Props) => {
     const initialHTMLValue = html()
 
     window.addEventListener('beforeunload', (event) => {
-      if (initialHTMLValue !== html()) {
-        event.returnValue = `Are you sure you want to leave?`
+      if (!deepEqual(initialHTMLValue, html())) {
+        event.returnValue = t(
+          `There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?`
+        )
       }
     })
   })

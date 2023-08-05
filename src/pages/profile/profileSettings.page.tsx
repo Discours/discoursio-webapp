@@ -2,8 +2,9 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import { Icon } from '../../components/_shared/Icon'
 import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
 import { For, createSignal, Show, onMount } from 'solid-js'
-
+import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
+
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
 import { validateUrl } from '../../utils/validateUrl'
@@ -22,6 +23,7 @@ export const ProfileSettingsPage = () => {
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
+  const [initialFormValues, setInitialFormValues] = createSignal(null)
 
   const {
     actions: { showSnackbar }
@@ -30,7 +32,7 @@ export const ProfileSettingsPage = () => {
     actions: { loadSession }
   } = useSession()
 
-  const { form, initialFormValues, updateFormField, submit, slugError } = useProfileForm()
+  const { form, updateFormField, submit, slugError } = useProfileForm()
 
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
@@ -74,10 +76,13 @@ export const ProfileSettingsPage = () => {
   const [hostname, setHostname] = createSignal<string | null>(null)
   onMount(() => {
     setHostname(window?.location.host)
+    setInitialFormValues(form)
 
     window.addEventListener('beforeunload', (event) => {
-      if (!Object.keys(form).every((k) => form[k] === initialFormValues()[k])) {
-        event.returnValue = `Are you sure you want to leave?`
+      if (!Object.keys(form).every((k) => deepEqual(form[k], initialFormValues()[k]))) {
+        event.returnValue = t(
+          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
+        )
       }
     })
   })

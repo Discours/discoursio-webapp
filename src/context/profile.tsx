@@ -29,7 +29,6 @@ const useProfileForm = () => {
     userpic: '',
     links: []
   })
-  const [initialFormValues, setInitialFormValues] = createSignal(null)
 
   createEffect(async () => {
     if (!currentSlug()) return
@@ -45,7 +44,6 @@ const useProfileForm = () => {
       }
 
       setForm(updatedFormValues)
-      setInitialFormValues(updatedFormValues)
     } catch (error) {
       console.error(error)
     }
@@ -67,7 +65,7 @@ const useProfileForm = () => {
       })
     }
   }
-  return { form, initialFormValues, submit, updateFormField, slugError }
+  return { form, submit, updateFormField, slugError }
 }
 
 export { useProfileForm }

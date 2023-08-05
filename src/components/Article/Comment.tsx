@@ -1,21 +1,26 @@
-import styles from './Comment.module.scss'
-import { Icon } from '../_shared/Icon'
-import { AuthorCard } from '../Author/AuthorCard'
 import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
-import type { Author, Reaction } from '../../graphql/types.gen'
+import { getPagePath } from '@nanostores/router'
+
 import MD from './MD'
+import { AuthorCard } from '../Author/AuthorCard'
 import Userpic from '../Author/Userpic'
+import { CommentRatingControl } from './CommentRatingControl'
+import { CommentDate } from './CommentDate'
+import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
+import { Icon } from '../_shared/Icon'
+
 import { useSession } from '../../context/session'
-import { ReactionKind } from '../../graphql/types.gen'
+import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSnackbar } from '../../context/snackbar'
-import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
-import { useLocalize } from '../../context/localize'
-import { CommentRatingControl } from './CommentRatingControl'
-import { getPagePath } from '@nanostores/router'
+import { useConfirm } from '../../context/confirm'
+
+import type { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
+
 import { router } from '../../stores/router'
-import { CommentDate } from './CommentDate'
+
+import styles from './Comment.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
@@ -41,6 +46,9 @@ export const Comment = (props: Props) => {
   } = useReactions()
 
   const {
+    actions: { showConfirm }
+  } = useConfirm()
+  const {
     actions: { showSnackbar }
   } = useSnackbar()
 
@@ -51,8 +59,13 @@ export const Comment = (props: Props) => {
   const remove = async () => {
     if (comment()?.id) {
       try {
-        await deleteReaction(comment().id)
-        showSnackbar({ body: t('Comment successfully deleted') })
+        const isConfirmed = await showConfirm()
+
+        if (isConfirmed) {
+          await deleteReaction(comment().id)
+
+          await showSnackbar({ body: t('Comment successfully deleted') })
+        }
       } catch (error) {
         console.error('[deleteReaction]', error)
       }

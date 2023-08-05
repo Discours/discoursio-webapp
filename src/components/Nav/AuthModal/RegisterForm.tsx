@@ -12,6 +12,7 @@ import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
+import { setFocusOn } from '../../../utils/setFocusOn'
 import { AuthModalHeader } from './AuthModalHeader'
 
 type FormFields = {
@@ -33,6 +34,8 @@ export const RegisterForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
+
+  let authFormRef
 
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
@@ -108,6 +111,10 @@ export const RegisterForm = () => {
     const isValid = Object.keys(newValidationErrors).length === 0 && !emailCheckResult
 
     if (!isValid) {
+      Object.keys(newValidationErrors).map((fieldKey) =>
+        setFocusOn(authFormRef, `input[name="${fieldKey}"]`)
+      )
+
       return
     }
 
@@ -135,7 +142,7 @@ export const RegisterForm = () => {
   return (
     <>
       <Show when={!isSuccess()}>
-        <form onSubmit={handleSubmit} class={styles.authForm}>
+        <form onSubmit={handleSubmit} class={styles.authForm} ref={authFormRef}>
           <div>
             <AuthModalHeader modalType="register" />
             <Show when={submitError()}>
@@ -145,20 +152,28 @@ export const RegisterForm = () => {
                 </ul>
               </div>
             </Show>
-            <div class="pretty-form__item">
+            <div
+              class={clsx('pretty-form__item', {
+                ['pretty-form__item--error']: validationErrors().name
+              })}
+            >
               <input
-                name="fullName"
+                name="name"
                 type="text"
                 placeholder={t('Full name')}
                 autocomplete=""
                 onInput={(event) => handleNameInput(event.currentTarget.value)}
               />
-              <label for="fullName">{t('Full name')}</label>
+              <label for="name">{t('Full name')}</label>
             </div>
             <Show when={validationErrors().name}>
               <div class={styles.validationError}>{validationErrors().name}</div>
             </Show>
-            <div class="pretty-form__item">
+            <div
+              class={clsx('pretty-form__item', {
+                ['pretty-form__item--error']: validationErrors().email
+              })}
+            >
               <input
                 id="email"
                 name="email"
@@ -188,7 +203,11 @@ export const RegisterForm = () => {
                 </a>
               </div>
             </Show>
-            <div class="pretty-form__item">
+            <div
+              class={clsx('pretty-form__item', {
+                ['pretty-form__item--error']: validationErrors().password
+              })}
+            >
               <input
                 id="password"
                 name="password"

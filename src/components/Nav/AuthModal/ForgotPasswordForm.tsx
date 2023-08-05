@@ -8,6 +8,7 @@ import { ApiError } from '../../../utils/apiClient'
 import { signSendLink } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
+import { setFocusOn } from '../../../utils/setFocusOn'
 
 type FormFields = {
   email: string
@@ -28,6 +29,8 @@ export const ForgotPasswordForm = () => {
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [isUserNotFount, setIsUserNotFound] = createSignal(false)
 
+  let authFormRef
+
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
 
@@ -47,6 +50,10 @@ export const ForgotPasswordForm = () => {
     const isValid = Object.keys(newValidationErrors).length === 0
 
     if (!isValid) {
+      Object.keys(newValidationErrors).map((fieldKey) =>
+        setFocusOn(authFormRef, `input[name="${fieldKey}"]`)
+      )
+
       return
     }
 
@@ -66,7 +73,11 @@ export const ForgotPasswordForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} class={clsx(styles.authForm, styles.authFormForgetPassword)}>
+    <form
+      onSubmit={handleSubmit}
+      class={clsx(styles.authForm, styles.authFormForgetPassword)}
+      ref={authFormRef}
+    >
       <div>
         <h4>{t('Forgot password?')}</h4>
         <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
@@ -95,7 +106,11 @@ export const ForgotPasswordForm = () => {
         <Show when={validationErrors().email}>
           <div class={styles.validationError}>{validationErrors().email}</div>
         </Show>
-        <div class="pretty-form__item">
+        <div
+          class={clsx('pretty-form__item', {
+            ['pretty-form__item--error']: validationErrors().email
+          })}
+        >
           <input
             id="email"
             name="email"

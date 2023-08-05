@@ -387,42 +387,6 @@ button {
 }
 
 form {
-  .pretty-form__item {
-    position: relative;
-
-    input {
-      padding-top: 1.4em;
-    }
-
-    textarea {
-      line-height: 1.4;
-    }
-  }
-
-  .pretty-form__item--with-button {
-    margin-bottom: 1.6rem;
-
-    @include media-breakpoint-up(sm) {
-      display: flex;
-    }
-
-    input {
-      flex: 1;
-
-      @include media-breakpoint-up(sm) {
-        margin-bottom: 0 !important;
-      }
-    }
-
-    *:first-child {
-      flex: 1;
-
-      @include media-breakpoint-up(sm) {
-        margin-right: 1em;
-      }
-    }
-  }
-
   input[type='text'],
   input[type='email'],
   input[type='password'],
@@ -505,6 +469,48 @@ form {
 
   .form-message {
     @include font-size(1.2rem);
+  }
+
+  .pretty-form__item {
+    position: relative;
+
+    input {
+      padding-top: 1.4em;
+    }
+
+    textarea {
+      line-height: 1.4;
+    }
+  }
+
+  .pretty-form__item--error {
+    input {
+      border-color: #d00820;
+    }
+  }
+
+  .pretty-form__item--with-button {
+    margin-bottom: 1.6rem;
+
+    @include media-breakpoint-up(sm) {
+      display: flex;
+    }
+
+    input {
+      flex: 1;
+
+      @include media-breakpoint-up(sm) {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    *:first-child {
+      flex: 1;
+
+      @include media-breakpoint-up(sm) {
+        margin-right: 1em;
+      }
+    }
   }
 }
 

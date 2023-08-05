@@ -10,6 +10,7 @@ import { hideModal } from '../../../stores/ui'
 import { useSession } from '../../../context/session'
 import { signSendLink } from '../../../stores/auth'
 import { validateEmail } from '../../../utils/validateEmail'
+import { setFocusOn } from '../../../utils/setFocusOn'
 import { useSnackbar } from '../../../context/snackbar'
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
@@ -32,6 +33,8 @@ export const LoginForm = () => {
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
   const [showPassword, setShowPassword] = createSignal(false)
+
+  let authFormRef
 
   const {
     actions: { showSnackbar }
@@ -57,9 +60,11 @@ export const LoginForm = () => {
 
   const handleSendLinkAgainClick = async (event: Event) => {
     event.preventDefault()
+
+    setIsLinkSent(true)
     setIsEmailNotConfirmed(false)
     setSubmitError('')
-    setIsLinkSent(true)
+
     const result = await signSendLink({ email: email(), lang: lang(), template: 'email_confirmation' })
     if (result.error) setSubmitError(result.error)
   }
@@ -85,6 +90,11 @@ export const LoginForm = () => {
 
     if (Object.keys(newValidationErrors).length > 0) {
       setValidationErrors(newValidationErrors)
+
+      Object.keys(newValidationErrors).map((fieldKey) =>
+        setFocusOn(authFormRef, `input[name="${fieldKey}"]`)
+      )
+
       return
     }
 
@@ -92,18 +102,23 @@ export const LoginForm = () => {
 
     try {
       await signIn({ email: email(), password: password() })
+
       hideModal()
+
       showSnackbar({ body: t('Welcome!') })
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.code === 'email_not_confirmed') {
           setSubmitError(t('Please, confirm email'))
+
           setIsEmailNotConfirmed(true)
+
           return
         }
 
         if (error.code === 'user_not_found') {
           setSubmitError(t('Something went wrong, check email and password'))
+
           return
         }
       }
@@ -115,7 +130,7 @@ export const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} class={styles.authForm}>
+    <form onSubmit={handleSubmit} class={styles.authForm} ref={authFormRef}>
       <div>
         <AuthModalHeader modalType="login" />
         <Show when={submitError()}>
@@ -131,7 +146,11 @@ export const LoginForm = () => {
         <Show when={isLinkSent()}>
           <div class={styles.authInfo}>{t('Link sent, check your email')}</div>
         </Show>
-        <div class="pretty-form__item">
+        <div
+          class={clsx('pretty-form__item', {
+            ['pretty-form__item--error']: validationErrors().email
+          })}
+        >
           <input
             id="email"
             name="email"
@@ -147,7 +166,11 @@ export const LoginForm = () => {
           <div class={styles.validationError}>{validationErrors().email}</div>
         </Show>
 
-        <div class="pretty-form__item">
+        <div
+          class={clsx('pretty-form__item', {
+            ['pretty-form__item--error']: validationErrors().password
+          })}
+        >
           <input
             id="password"
             name="password"

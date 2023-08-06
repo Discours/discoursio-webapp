@@ -25,6 +25,7 @@ export const Panel = (props: Props) => {
     isEditorPanelVisible,
     wordCounter,
     editorRef,
+    form,
     actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
 
@@ -48,11 +49,11 @@ export const Panel = (props: Props) => {
   })
 
   const handleSaveClick = () => {
-    saveShout()
+    saveShout(form)
   }
 
   const handlePublishClick = () => {
-    publishShout()
+    publishShout(form)
   }
 
   const handleFixTypographyClick = () => {

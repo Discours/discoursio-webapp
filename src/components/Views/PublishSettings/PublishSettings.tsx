@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './PublishSettings.module.scss'
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createSignal, onMount, Show } from 'solid-js'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Button } from '../../_shared/Button'
 import { hideModal, showModal } from '../../../stores/ui'

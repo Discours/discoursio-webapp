@@ -59,6 +59,7 @@ export const EditView = (props: Props) => {
     coverImageUrl: props.shout.cover,
     media: props.shout.media,
     layout: props.shout.layout
+    // lead: props.shout.lead
   })
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {

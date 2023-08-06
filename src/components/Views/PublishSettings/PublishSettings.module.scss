@@ -25,6 +25,19 @@
     }
   }
 
+  .commonSettings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .settingInput {
+      &::after,
+      textarea {
+        @include font-size(1.6rem);
+      }
+    }
+  }
+
   .articlePreview {
     border: 2px solid #e8e8e8;
     padding: 1rem 1.2rem;

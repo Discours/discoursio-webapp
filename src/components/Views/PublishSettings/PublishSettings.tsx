@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './PublishSettings.module.scss'
-import { createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, onMount, Show } from 'solid-js'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Button } from '../../_shared/Button'
 import { hideModal, showModal } from '../../../stores/ui'
@@ -14,8 +14,9 @@ import { EMPTY_TOPIC } from '../Edit'
 import { useSession } from '../../../context/session'
 import { Icon } from '../../_shared/Icon'
 import stylesBeside from '../../Feed/Beside.module.scss'
-import { getPagePath, redirectPage } from '@nanostores/router'
+import { redirectPage } from '@nanostores/router'
 import { router } from '../../../stores/router'
+import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 
 type Props = {
   shoutId: number
@@ -26,10 +27,12 @@ export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
 
-  const initialData = {
+  const initialData: Partial<ShoutForm> = {
     coverImageUrl: props.form.coverImageUrl,
-    mainTopic: EMPTY_TOPIC,
-    slug: props.form.slug
+    mainTopic: props.form.mainTopic || EMPTY_TOPIC,
+    slug: props.form.slug,
+    title: props.form.title,
+    subtitle: props.form.title
   }
 
   const {
@@ -37,10 +40,18 @@ export const PublishSettings = (props: Props) => {
     actions: { setForm, setFormErrors }
   } = useEditorContext()
 
+  const [settingsForm, setSettingsForm] = createSignal(initialData)
   const [coverImage, setCoverImage] = createSignal<string>(null)
   const [topics, setTopics] = createSignal<Topic[]>(null)
-  const [settingsForm, setSettingsForm] = createSignal(initialData)
 
+  const updateForm = (key: string, value: string) => {
+    setSettingsForm((prev) => {
+      return {
+        ...prev,
+        [key]: value
+      }
+    })
+  }
   const handleUploadModalContentCloseSetCover = (imgUrl: string) => {
     hideModal()
     setCoverImage(imageProxy(imgUrl))
@@ -86,6 +97,14 @@ export const PublishSettings = (props: Props) => {
     // setForm('slug', slug)
   }
 
+  const handleSubmit = () => {
+    console.table(settingsForm())
+  }
+
+  createSignal(() => {
+    console.table(settingsForm())
+  })
+
   return (
     <div class={styles.PublishSettings}>
       <div>
@@ -102,25 +121,25 @@ export const PublishSettings = (props: Props) => {
           <Button
             variant="primary"
             onClick={() => showModal('uploadCoverImage')}
-            value={coverImage() || props.form.coverImageUrl ? t('Add another image') : t('Add image')}
+            value={coverImage() || initialData.coverImageUrl ? t('Add another image') : t('Add image')}
           />
-          <Show when={coverImage() ?? props.form.coverImageUrl}>
+          <Show when={coverImage() ?? initialData.coverImageUrl}>
             <Button variant="secondary" onClick={handleDeleteCoverImage} value={t('Delete')} />
           </Show>
         </div>
-        <Show when={coverImage() ?? props.form.coverImageUrl}>
+        <Show when={coverImage() ?? initialData.coverImageUrl}>
           <div class={styles.shoutCardCoverContainer}>
             <div class={styles.shoutCardCover}>
               <img
-                src={coverImage() || imageProxy(props.form.coverImageUrl)}
-                alt={props.form.title}
+                src={coverImage() || imageProxy(initialData.coverImageUrl)}
+                alt={initialData.title}
                 loading="lazy"
               />
             </div>
           </div>
         </Show>
-        <div class={styles.shoutCardTitle}>{props.form.title}</div>
-        <div class={styles.shoutCardSubtitle}>{props.form.subtitle}</div>
+        <div class={styles.shoutCardTitle}>{initialData.title}</div>
+        <div class={styles.shoutCardSubtitle}>{initialData.subtitle}</div>
         <div class={styles.shoutAuthor}>{user().name}</div>
       </div>
       <p class="description">
@@ -128,6 +147,42 @@ export const PublishSettings = (props: Props) => {
           'Choose a title image for the article. You can immediately see how the publication card will look like.'
         )}
       </p>
+
+      <div class={styles.commonSettings}>
+        <GrowingTextarea
+          class={styles.settingInput}
+          variant="bordered"
+          placeholder={t('Come up with a title for your story')}
+          initialValue={settingsForm().title}
+          value={(value) => updateForm('title', value)}
+          allowEnterKey={false}
+          maxLength={100}
+        />
+        <GrowingTextarea
+          class={styles.settingInput}
+          variant="bordered"
+          placeholder={t('Come up with a subtitle for your story')}
+          initialValue={settingsForm().subtitle}
+          value={(value) => updateForm('subtitle', value)}
+          allowEnterKey={false}
+          maxLength={100}
+        />
+        <GrowingTextarea
+          class={styles.settingInput}
+          variant="bordered"
+          placeholder={t('Write a short introduction')}
+          initialValue={settingsForm().lead}
+          value={(value) => updateForm('lead', value)}
+          allowEnterKey={false}
+          maxLength={500}
+        />
+      </div>
+
+      <h4>{t('Slug')}</h4>
+      <div class="pretty-form__item">
+        <input type="text" name="slug" id="slug" value={settingsForm().slug} />
+        <label for="slug">{t('Slug')}</label>
+      </div>
 
       <h4>{t('Topics')}</h4>
       <p class="description">
@@ -168,10 +223,11 @@ export const PublishSettings = (props: Props) => {
       {/*    <input type="text" name="coauthor" id="coauthor1" class="nolabel" />*/}
       {/*  </div>*/}
       {/*</div>*/}
+
       <div class={styles.formActions}>
         <Button variant="light" value={t('Cancel changes')} class={styles.cancel} />
         <Button variant="secondary" value={t('Save draft')} />
-        <Button variant="primary" value={t('Publish')} />
+        <Button onClick={handleSubmit} variant="primary" value={t('Publish')} />
       </div>
       <Modal variant="narrow" name="uploadCoverImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />

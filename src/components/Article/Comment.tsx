@@ -16,7 +16,7 @@ import { useReactions } from '../../context/reactions'
 import { useSnackbar } from '../../context/snackbar'
 import { useConfirm } from '../../context/confirm'
 
-import type { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
+import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 
 import { router } from '../../stores/router'
 

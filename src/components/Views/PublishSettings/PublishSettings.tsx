@@ -107,14 +107,11 @@ export const PublishSettings = (props: Props) => {
     handleBackClick()
   }
   const handlePublishSubmit = () => {
-    console.log('!!! :', { ...props.form, ...settingsForm() })
     publishShout({ ...props.form, ...settingsForm() })
   }
   const handleSaveDraft = () => {
     saveShout({ ...props.form, ...settingsForm() })
   }
-
-  console.log('!!! fo:', props.form)
 
   return (
     <div class={styles.PublishSettings}>

@@ -4,6 +4,7 @@
   "About myself": "О себе",
   "About the project": "О проекте",
   "Accomplices": "Соучастники",
+  "Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title": "Добавьте несколько тем, чтобы читатель знал, о чем ваш материал, и мог найти его на страницах интересных ему тем. Темы можно менять местами, первая тема становится заглавной",
   "Add another image": "Добавить другое изображение",
   "Add audio": "Добавить аудио",
   "Add comment": "Комментировать",
@@ -60,6 +61,8 @@
   "Choose a title image for the article. You can immediately see how the publication card will look like.": "Выберите заглавное изображение для статьи. Тут же сразу можно увидеть как будет выглядеть карточка публикации.",
   "Choose who you want to write to": "Выберите кому хотите написать",
   "Collaborate": "Помочь редактировать",
+  "Come up with a subtitle for your story": "Придумайте подзаголовок вашей истории",
+  "Come up with a title for your story": "Придумайте заголовок вашей истории",
   "Comments": "Комментарии",
   "Communities": "Сообщества",
   "Confirm": "Подтвердить",
@@ -81,6 +84,7 @@
   "Date of Birth": "Дата рождения",
   "Decline": "Отмена",
   "Delete": "Удалить",
+  "Delete cover": "Удалить обложку",
   "Description": "Описание...",
   "Discours": "Дискурс",
   "Discours is an intellectual environment, a web space and tools that allows authors to collaborate with readers and come together to co-create publications and media projects": "Дискурс — это интеллектуальная среда, веб-пространство и инструменты, которые позволяют авторам сотрудничать с читателями и объединяться для совместного создания публикаций и медиапроектов",
@@ -336,6 +340,7 @@
   "Work with us": "Сотрудничать с Дискурсом",
   "Write": "Написать",
   "Write a comment...": "Написать комментарий...",
+  "Write a short introduction": "Напишите краткое вступление",
   "Write about the topic": "Написать в тему",
   "Write an article": "Написать статью",
   "Write comment": "Написать комментарий",
@@ -402,9 +407,5 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал",
-  "Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title": "Добавьте несколько тем, чтобы читатель знал, о чем ваш материал, и мог найти его на страницах интересных ему тем. Темы можно менять местами, первая тема становится заглавной",
-  "Come up with a title for your story": "Придумайте заголовок вашей истории",
-  "Come up with a subtitle for your story": "Придумайте подзаголовок вашей истории",
-  "Write a short introduction": "Напишите краткое вступление"
+  "zine": "журнал"
 }

@@ -5,7 +5,7 @@ import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { useRouter } from '../../stores/router'
-import { useEditorContext } from '../../context/editor'
+import { ShoutForm, useEditorContext } from '../../context/editor'
 import { Editor, Panel, TopicSelect, UploadModalContent } from '../Editor'
 import { Icon } from '../_shared/Icon'
 import { Button } from '../_shared/Button'
@@ -81,11 +81,6 @@ export const EditView = (props: Props) => {
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
     return JSON.parse(form.media || '[]')
-  })
-
-  onMount(async () => {
-    const allTopics = await apiClient.getAllTopics()
-    setTopics(allTopics)
   })
 
   onMount(() => {

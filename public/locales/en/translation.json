@@ -57,6 +57,8 @@
   "Choose a title image for the article. You can immediately see how the publication card will look like.": "Choose a title image for the article. You can immediately see how the publication card will look like.",
   "Choose who you want to write to": "Choose who you want to write to",
   "Collaborate": "Help Edit",
+  "Come up with a subtitle for your story": "Come up with a subtitle for your story",
+  "Come up with a title for your story": "Come up with a title for your story",
   "Comments": "Comments",
   "Communities": "Communities",
   "Confirm": "Confirm",
@@ -78,6 +80,7 @@
   "Date of Birth": "Date of Birth",
   "Decline": "Decline",
   "Delete": "Delete",
+  "Delete cover": "Delete cover",
   "Description": "Description...",
   "Discours": "Discours",
   "Discours is an intellectual environment, a web space and tools that allows authors to collaborate with readers and come together to co-create publications and media projects": "Discours is an intellectual environment, a web space and tools that allows authors to collaborate with readers and come together to co-create publications and media projects",
@@ -319,6 +322,7 @@
   "Work with us": "Cooperate with Discourse",
   "Write": "Write",
   "Write a comment...": "Write a comment...",
+  "Write a short introduction": "Write a short introduction",
   "Write about the topic": "Write about the topic",
   "Write an article": "Write an article",
   "Write comment": "Write comment",
@@ -378,8 +382,5 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine",
-  "Come up with a title for your story": "Come up with a title for your story",
-  "Come up with a subtitle for your story": "Come up with a subtitle for your story",
-  "Write a short introduction": "Write a short introduction"
+  "zine": "zine"
 }

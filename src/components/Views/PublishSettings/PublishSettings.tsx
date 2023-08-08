@@ -23,25 +23,38 @@ type Props = {
   form: ShoutForm
 }
 
+const MAX_LEAD_LIMIT = 400
+const shorten = (str: string, maxLen: number) => {
+  if (str.length <= maxLen) return str
+  return str.slice(0, Math.max(0, str.lastIndexOf(' ', maxLen))).trim()
+}
+
 export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
+
+  const composeLead = () => {
+    if (!props.form.lead) {
+      return shorten(props.form.body, MAX_LEAD_LIMIT).replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
+    }
+    return props.form.lead
+  }
 
   const initialData: Partial<ShoutForm> = {
     coverImageUrl: props.form.coverImageUrl,
     mainTopic: props.form.mainTopic || EMPTY_TOPIC,
     slug: props.form.slug,
     title: props.form.title,
-    subtitle: props.form.title
+    subtitle: props.form.subtitle,
+    lead: composeLead()
   }
 
   const {
     formErrors,
-    actions: { setForm, setFormErrors }
+    actions: { setForm, setFormErrors, saveShout, publishShout }
   } = useEditorContext()
 
   const [settingsForm, setSettingsForm] = createSignal(initialData)
-  const [coverImage, setCoverImage] = createSignal<string>(null)
   const [topics, setTopics] = createSignal<Topic[]>(null)
 
   const updateForm = (key: string, value: string) => {
@@ -54,12 +67,10 @@ export const PublishSettings = (props: Props) => {
   }
   const handleUploadModalContentCloseSetCover = (imgUrl: string) => {
     hideModal()
-    setCoverImage(imageProxy(imgUrl))
-    // setForm('coverImageUrl', imgUrl)
+    updateForm('coverImageUrl', imageProxy(imgUrl))
   }
   const handleDeleteCoverImage = () => {
-    // setForm('coverImageUrl', '')
-    setCoverImage(null)
+    updateForm('coverImageUrl', '')
   }
 
   const handleTopicSelectChange = (newSelectedTopics) => {
@@ -91,19 +102,19 @@ export const PublishSettings = (props: Props) => {
       shoutId: props.shoutId.toString()
     })
   }
-
-  const handleSlugInputChange = () => {
-    // const slug = e.currentTarget.value
-    // setForm('slug', slug)
+  const handleCancelClick = () => {
+    setSettingsForm(initialData)
+    handleBackClick()
+  }
+  const handlePublishSubmit = () => {
+    console.log('!!! :', { ...props.form, ...settingsForm() })
+    publishShout({ ...props.form, ...settingsForm() })
+  }
+  const handleSaveDraft = () => {
+    saveShout({ ...props.form, ...settingsForm() })
   }
 
-  const handleSubmit = () => {
-    console.table(settingsForm())
-  }
-
-  createSignal(() => {
-    console.table(settingsForm())
-  })
+  console.log('!!! fo:', props.form)
 
   return (
     <div class={styles.PublishSettings}>
@@ -114,33 +125,35 @@ export const PublishSettings = (props: Props) => {
         </button>
       </div>
       <h1>{t('Publish Settings')}</h1>
-
       <h4>{t('Material card')}</h4>
       <div class={styles.articlePreview}>
         <div class={styles.actions}>
           <Button
             variant="primary"
             onClick={() => showModal('uploadCoverImage')}
-            value={coverImage() || initialData.coverImageUrl ? t('Add another image') : t('Add image')}
+            value={settingsForm().coverImageUrl ? t('Add another image') : t('Add image')}
           />
-          <Show when={coverImage() ?? initialData.coverImageUrl}>
-            <Button variant="secondary" onClick={handleDeleteCoverImage} value={t('Delete')} />
+          <Show when={settingsForm().coverImageUrl}>
+            <Button variant="secondary" onClick={handleDeleteCoverImage} value={t('Delete cover')} />
           </Show>
         </div>
-        <Show when={coverImage() ?? initialData.coverImageUrl}>
-          <div class={styles.shoutCardCoverContainer}>
+        <div
+          class={clsx(styles.shoutCardCoverContainer, { [styles.hasImage]: settingsForm().coverImageUrl })}
+        >
+          <Show when={settingsForm().coverImageUrl ?? initialData.coverImageUrl}>
             <div class={styles.shoutCardCover}>
-              <img
-                src={coverImage() || imageProxy(initialData.coverImageUrl)}
-                alt={initialData.title}
-                loading="lazy"
-              />
+              <img src={settingsForm().coverImageUrl} alt={initialData.title} loading="lazy" />
             </div>
+          </Show>
+          <div class={styles.text}>
+            <Show when={settingsForm().mainTopic}>
+              <div class={styles.mainTopic}>{settingsForm().mainTopic.title}</div>
+            </Show>
+            <div class={styles.shoutCardTitle}>{settingsForm().title}</div>
+            <div class={styles.shoutCardSubtitle}>{settingsForm().subtitle}</div>
+            <div class={styles.shoutAuthor}>{user().name}</div>
           </div>
-        </Show>
-        <div class={styles.shoutCardTitle}>{initialData.title}</div>
-        <div class={styles.shoutCardSubtitle}>{initialData.subtitle}</div>
-        <div class={styles.shoutAuthor}>{user().name}</div>
+        </div>
       </div>
       <p class="description">
         {t(
@@ -171,10 +184,10 @@ export const PublishSettings = (props: Props) => {
           class={styles.settingInput}
           variant="bordered"
           placeholder={t('Write a short introduction')}
-          initialValue={settingsForm().lead}
+          initialValue={`${settingsForm().lead}...`}
           value={(value) => updateForm('lead', value)}
           allowEnterKey={false}
-          maxLength={500}
+          maxLength={MAX_LEAD_LIMIT}
         />
       </div>
 
@@ -225,9 +238,14 @@ export const PublishSettings = (props: Props) => {
       {/*</div>*/}
 
       <div class={styles.formActions}>
-        <Button variant="light" value={t('Cancel changes')} class={styles.cancel} />
-        <Button variant="secondary" value={t('Save draft')} />
-        <Button onClick={handleSubmit} variant="primary" value={t('Publish')} />
+        <Button
+          variant="light"
+          value={t('Cancel changes')}
+          class={styles.cancel}
+          onClick={handleCancelClick}
+        />
+        <Button variant="secondary" onClick={handleSaveDraft} value={t('Save draft')} />
+        <Button onClick={handlePublishSubmit} variant="primary" value={t('Publish')} />
       </div>
       <Modal variant="narrow" name="uploadCoverImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />

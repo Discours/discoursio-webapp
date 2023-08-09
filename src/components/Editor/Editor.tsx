@@ -216,8 +216,7 @@ export const Editor = (props: Props) => {
         pluginKey: 'imageBubbleMenu',
         element: figureBubbleMenuRef.current,
         shouldShow: ({ editor: e, view }) => {
-          console.log("!!! e.isActive('figure'):", e.isActive('figure'))
-          return (view.hasFocus() && e.isActive('image')) || (view.hasFocus() && e.isActive('figure'))
+          return view.hasFocus() && e.isActive('image')
         }
       }),
       FloatingMenu.configure({

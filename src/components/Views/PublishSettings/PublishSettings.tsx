@@ -35,7 +35,9 @@ export const PublishSettings = (props: Props) => {
 
   const composeLead = () => {
     if (!props.form.lead) {
-      return shorten(props.form.body, MAX_LEAD_LIMIT).replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
+      return shorten(props.form.body, MAX_LEAD_LIMIT)
+        .replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
+        .trim()
     }
     return props.form.lead
   }
@@ -181,7 +183,7 @@ export const PublishSettings = (props: Props) => {
           class={styles.settingInput}
           variant="bordered"
           placeholder={t('Write a short introduction')}
-          initialValue={`${settingsForm().lead}...`}
+          initialValue={`${settingsForm().lead}${settingsForm().lead.length > MAX_LEAD_LIMIT - 1 && '...'}`}
           value={(value) => updateForm('lead', value)}
           allowEnterKey={false}
           maxLength={MAX_LEAD_LIMIT}

@@ -1,9 +1,11 @@
-import { onMount, For, Show, createSignal, onCleanup } from 'solid-js'
+import { onMount, For, Show, createSignal } from 'solid-js'
 import { clsx } from 'clsx'
 
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
 
 import { useLocalize } from '../../context/localize'
+
+import { debounce } from '../../utils/debounce'
 
 import { Icon } from '../_shared/Icon'
 
@@ -44,13 +46,13 @@ export const TableOfContents = (props: Props) => {
   }
 
   onMount(() => {
-    updateHeadings()
+    debounce(updateHeadings(), 4000)
   })
 
   return (
     <Show
       when={
-        areHeadingsLoaded() && (props.variant === 'article' ? headings().length > 3 : headings().length > 1)
+        areHeadingsLoaded() && (props.variant === 'article' ? headings().length > 2 : headings().length > 1)
       }
     >
       <div

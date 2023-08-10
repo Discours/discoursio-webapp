@@ -1,20 +1,16 @@
 .TableOfContentsFixedWrapper {
-  position: fixed;
-  top: 150px;
-  right: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
 
   width: 281px;
-}
-
-.TableOfContentsFixedWrapperLefted {
-  right: auto;
-  left: 20px;
+  min-height: 100%;
 }
 
 .TableOfContentsContainer {
-  position: absolute;
-  right: 0;
-  top: 0;
+  position: sticky;
+  top: 150px;
+  right: 20px;
 
   display: flex;
   width: 100%;
@@ -24,6 +20,11 @@
   align-items: flex-start;
 
   background-color: transparent;
+}
+
+.TableOfContentsContainerLefted {
+  right: auto;
+  left: 20px;
 }
 
 .TableOfContentsHeader {
@@ -79,8 +80,6 @@
   padding: 0 38px 0 0;
 
   width: 100%;
-  max-height: 40vh;
-  overflow-y: auto;
 }
 
 .TableOfContentsHeadingsItem {
@@ -95,7 +94,7 @@
   letter-spacing: -0.14px;
 
   &:hover {
-    transform: scale(1.05);
+    color: rgba(0, 0, 0, 0.5);
   }
 }
 

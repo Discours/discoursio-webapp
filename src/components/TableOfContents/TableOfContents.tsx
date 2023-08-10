@@ -49,12 +49,15 @@ export const TableOfContents = (props: Props) => {
 
   return (
     <Show when={areHeadingsLoaded() && headings().length > 3}>
-      <div
-        class={clsx(styles.TableOfContentsFixedWrapper, {
-          [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'
-        })}
-      >
-        <div class={styles.TableOfContentsContainer}>
+      <div class={clsx(styles.TableOfContentsFixedWrapper)}>
+        <div
+          class={clsx(
+            (styles.TableOfContentsContainer,
+            {
+              [styles.TableOfContentsContainerLefted]: props.variant === 'editor'
+            })
+          )}
+        >
           <Show when={isVisible()}>
             <div class={styles.TableOfContentsHeader}>
               <p class={styles.TableOfContentsHeading}>{t('contents')}</p>

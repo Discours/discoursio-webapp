@@ -30,7 +30,7 @@ export const TableOfContents = (props: Props) => {
   const [headings, setHeadings] = createSignal<Element[]>([])
   const [areHeadingsLoaded, setAreHeadingsLoaded] = createSignal<boolean>(false)
 
-  const [isVisible, setIsVisible] = createSignal<boolean>(true)
+  const [isVisible, setIsVisible] = createSignal<boolean>(props.variant === 'article')
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
   }
@@ -48,16 +48,17 @@ export const TableOfContents = (props: Props) => {
   })
 
   return (
-    <Show when={areHeadingsLoaded() && headings().length > 3}>
-      <div class={clsx(styles.TableOfContentsFixedWrapper)}>
-        <div
-          class={clsx(
-            (styles.TableOfContentsContainer,
-            {
-              [styles.TableOfContentsContainerLefted]: props.variant === 'editor'
-            })
-          )}
-        >
+    <Show
+      when={
+        areHeadingsLoaded() && (props.variant === 'article' ? headings().length > 3 : headings().length > 1)
+      }
+    >
+      <div
+        class={clsx(styles.TableOfContentsFixedWrapper, {
+          [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'
+        })}
+      >
+        <div class={styles.TableOfContentsContainer}>
           <Show when={isVisible()}>
             <div class={styles.TableOfContentsHeader}>
               <p class={styles.TableOfContentsHeading}>{t('contents')}</p>

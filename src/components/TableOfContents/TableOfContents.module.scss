@@ -7,6 +7,11 @@
   min-height: 100%;
 }
 
+.TableOfContentsFixedWrapperLefted {
+  right: auto;
+  left: 70px;
+}
+
 .TableOfContentsContainer {
   position: sticky;
   top: 150px;
@@ -20,11 +25,6 @@
   align-items: flex-start;
 
   background-color: transparent;
-}
-
-.TableOfContentsContainerLefted {
-  right: auto;
-  left: 20px;
 }
 
 .TableOfContentsHeader {

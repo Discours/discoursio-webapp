@@ -16,6 +16,7 @@ import { router, useRouter } from '../../stores/router'
 import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import { AuthorCard } from '../Author/AuthorCard'
+import { useSession } from '../../context/session'
 
 interface ArticleCardProps {
   settings?: {
@@ -66,7 +67,7 @@ const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string 
 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang } = useLocalize()
-
+  const { user } = useSession()
   const mainTopic =
     props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic) ||
     props.article.topics[0]
@@ -78,6 +79,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const { id, cover, layout, slug, authors, stat, body } = props.article
+
+  const canEdit = () => authors?.some((a) => a.slug === user()?.slug)
 
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {
@@ -238,19 +241,21 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </div>
 
             <div class={styles.shoutCardDetailsContent}>
-              <Popover content={t('Edit')}>
-                {(triggerRef: (el) => void) => (
-                  <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
-                    <a href={getPagePath(router, 'edit', { shoutId: id.toString() })}>
-                      <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
-                      <Icon
-                        name="pencil-outline-hover"
-                        class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
-                      />
-                    </a>
-                  </div>
-                )}
-              </Popover>
+              <Show when={canEdit()}>
+                <Popover content={t('Edit')}>
+                  {(triggerRef: (el) => void) => (
+                    <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
+                      <a href={getPagePath(router, 'edit', { shoutId: id.toString() })}>
+                        <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
+                        <Icon
+                          name="pencil-outline-hover"
+                          class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
+                        />
+                      </a>
+                    </div>
+                  )}
+                </Popover>
+              </Show>
 
               <Popover content={t('Add to bookmarks')}>
                 {(triggerRef: (el) => void) => (
@@ -292,6 +297,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
               <div class={styles.shoutCardDetailsItem}>
                 <FeedArticlePopup
+                  isOwner={canEdit()}
                   containerCssClass={stylesHeader.control}
                   title={title}
                   description={getDescription(body)}

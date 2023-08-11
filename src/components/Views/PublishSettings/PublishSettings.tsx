@@ -59,7 +59,7 @@ export const PublishSettings = (props: Props) => {
   const [settingsForm, setSettingsForm] = createSignal(initialData)
   const [topics, setTopics] = createSignal<Topic[]>(null)
 
-  const updateForm = (key: string, value: string) => {
+  const updateForm = (key: keyof ShoutForm, value: string) => {
     setSettingsForm((prev) => {
       return {
         ...prev,

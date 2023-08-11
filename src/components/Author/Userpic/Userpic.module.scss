@@ -1,4 +1,4 @@
-.circlewrap {
+.Userpic {
   align-items: baseline;
   background: #f7f7f8;
   border-radius: 100%;
@@ -19,7 +19,7 @@
     display: block;
   }
 
-  .userpic {
+  .letters {
     background-color: white;
     border-radius: 50%;
     border: 1.5px solid black;
@@ -53,24 +53,24 @@
       color: #000;
     }
   }
-}
 
-.big.circlewrap {
-  margin-right: 0;
-  max-width: 168px;
-  min-width: 168px;
-  height: 168px;
-  width: 168px;
+  &.big {
+    margin-right: 0;
+    max-width: 168px;
+    min-width: 168px;
+    height: 168px;
+    width: 168px;
 
-  @include media-breakpoint-up(md) {
-    margin-right: 4.8rem;
-  }
+    @include media-breakpoint-up(md) {
+      margin-right: 4.8rem;
+    }
 
-  .userpic {
-    font-size: 2em;
-    line-height: 168px;
-    max-width: 100%;
-    width: 100%;
+    .letters {
+      font-size: 2em;
+      line-height: 168px;
+      max-width: 100%;
+      width: 100%;
+    }
   }
 }
 
@@ -81,16 +81,20 @@
   height: 6.8rem;
   width: 6.8rem;
 
-  .userpic {
+  .letters {
     line-height: 6.4rem;
   }
 }
 
 .feedMode {
-  .userpic {
+  .letters {
     font-size: 0.8rem;
     line-height: 14px;
     min-width: 16px;
     max-width: 16px;
   }
+}
+
+.cursorPointer {
+  cursor: pointer;
 }

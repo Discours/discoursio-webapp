@@ -10,9 +10,10 @@ import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { useLocalize } from '../../../context/localize'
 import { Loading } from '../../_shared/Loading'
 import { verifyImg } from '../../../utils/verifyImg'
+import { UploadedFile } from '../../../pages/types'
 
 type Props = {
-  onClose: (imgUrl?: string) => void
+  onClose: (image?: UploadedFile) => void
 }
 
 export const UploadModalContent = (props: Props) => {
@@ -27,7 +28,7 @@ export const UploadModalContent = (props: Props) => {
     try {
       setIsUploading(true)
       const result = await handleFileUpload(file)
-      props.onClose(result.url)
+      props.onClose(result)
       setIsUploading(false)
     } catch (error) {
       setIsUploading(false)

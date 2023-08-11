@@ -33,6 +33,8 @@ import { HocuspocusProvider } from '@hocuspocus/provider'
 import { CustomImage } from './extensions/CustomImage'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figure } from './extensions/Figure'
+import { Figcaption } from './extensions/Figcaption'
+
 import { Embed } from './extensions/Embed'
 
 import { useSession } from '../../context/session'
@@ -49,6 +51,7 @@ import { TableOfContents } from '../TableOfContents'
 import { isDesktop } from '../../utils/media-query'
 
 import './Prosemirror.scss'
+import { Image } from '@tiptap/extension-image'
 
 type Props = {
   shoutId: number
@@ -111,6 +114,12 @@ export const Editor = (props: Props) => {
   } = {
     current: null
   }
+
+  const ImageFigure = Figure.extend({
+    name: 'capturedImage',
+    content: 'image figcaption'
+  })
+
   const { initialContent } = props
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
@@ -165,12 +174,14 @@ export const Editor = (props: Props) => {
           class: 'highlight'
         }
       }),
-      CustomImage.configure({
-        HTMLAttributes: {
-          class: 'uploadedImage'
-        }
-      }),
-      Figure,
+      // CustomImage.configure({
+      //   HTMLAttributes: {
+      //     class: 'uploadedImage'
+      //   }
+      // }),
+      ImageFigure,
+      Image,
+      Figcaption,
       Embed,
       CharacterCount,
       BubbleMenu.configure({
@@ -180,8 +191,7 @@ export const Editor = (props: Props) => {
           const { doc, selection } = state
           const { empty } = selection
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
-
-          setIsCommonMarkup(e.isActive('figure'))
+          setIsCommonMarkup(e.isActive('figcaption'))
           return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
         },
         tippyOptions: {

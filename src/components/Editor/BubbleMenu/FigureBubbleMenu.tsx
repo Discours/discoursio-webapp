@@ -19,7 +19,7 @@ export const FigureBubbleMenu = (props: Props) => {
             ref={triggerRef}
             type="button"
             class={styles.bubbleMenuButton}
-            onClick={() => props.editor.chain().focus().setImageFloat('left').run()}
+            onClick={() => props.editor.chain().focus().setFigureFloat('left').run()}
           >
             <Icon name="editor-image-align-left" />
           </button>
@@ -31,7 +31,7 @@ export const FigureBubbleMenu = (props: Props) => {
             ref={triggerRef}
             type="button"
             class={styles.bubbleMenuButton}
-            onClick={() => props.editor.chain().focus().setImageFloat(null).run()}
+            onClick={() => props.editor.chain().focus().setFigureFloat(null).run()}
           >
             <Icon name="editor-image-align-center" />
           </button>
@@ -43,7 +43,7 @@ export const FigureBubbleMenu = (props: Props) => {
             ref={triggerRef}
             type="button"
             class={styles.bubbleMenuButton}
-            onClick={() => props.editor.chain().focus().setImageFloat('right').run()}
+            onClick={() => props.editor.chain().focus().setFigureFloat('right').run()}
           >
             <Icon name="editor-image-align-right" />
           </button>

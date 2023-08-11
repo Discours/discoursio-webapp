@@ -2,12 +2,13 @@ import styles from './FeedArticlePopup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 import { useLocalize } from '../../context/localize'
-import { createEffect, createSignal } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 
 type FeedArticlePopupProps = {
   title: string
   shareUrl?: string
   imageUrl: string
+  isOwner: boolean
   description: string
   isVisible?: (value: boolean) => void
 } & Omit<PopupProps, 'children'>
@@ -39,16 +40,18 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
             {t('Share')}
           </button>
         </li>
-        <li>
-          <button
-            role="button"
-            onClick={() => {
-              alert('Help to edit')
-            }}
-          >
-            {t('Help to edit')}
-          </button>
-        </li>
+        <Show when={!props.isOwner}>
+          <li>
+            <button
+              role="button"
+              onClick={() => {
+                alert('Help to edit')
+              }}
+            >
+              {t('Help to edit')}
+            </button>
+          </li>
+        </Show>
         <li>
           <button
             role="button"
@@ -59,16 +62,18 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
             {t('Invite experts')}
           </button>
         </li>
-        <li>
-          <button
-            role="button"
-            onClick={() => {
-              alert('Subscribe to comments')
-            }}
-          >
-            {t('Subscribe to comments')}
-          </button>
-        </li>
+        <Show when={!props.isOwner}>
+          <li>
+            <button
+              role="button"
+              onClick={() => {
+                alert('Subscribe to comments')
+              }}
+            >
+              {t('Subscribe to comments')}
+            </button>
+          </li>
+        </Show>
         <li>
           <button
             role="button"
@@ -79,16 +84,18 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
             {t('Add to bookmarks')}
           </button>
         </li>
-        <li>
-          <button
-            role="button"
-            onClick={() => {
-              alert('Report')
-            }}
-          >
-            {t('Report')}
-          </button>
-        </li>
+        <Show when={!props.isOwner}>
+          <li>
+            <button
+              role="button"
+              onClick={() => {
+                alert('Report')
+              }}
+            >
+              {t('Report')}
+            </button>
+          </li>
+        </Show>
         <li>
           <button
             role="button"

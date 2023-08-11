@@ -1,7 +1,7 @@
-import type { Reaction } from '../../../graphql/types.gen'
-import { Author, ReactionKind } from '../../../graphql/types.gen'
 import { For, Show } from 'solid-js'
-import Userpic from '../../Author/Userpic'
+import type { Reaction } from '../../../graphql/types.gen'
+import { ReactionKind } from '../../../graphql/types.gen'
+import { Userpic } from '../../Author/Userpic'
 import styles from './VotersList.module.scss'
 import { clsx } from 'clsx'
 
@@ -22,7 +22,12 @@ export const VotersList = (props: Props) => {
             {(reaction) => (
               <li class={styles.item}>
                 <div class={styles.user}>
-                  <Userpic user={reaction.createdBy as Author} isBig={false} isAuthorsList={false} />
+                  <Userpic
+                    name={reaction.createdBy.name}
+                    userpic={reaction.createdBy.userpic}
+                    isBig={false}
+                    isAuthorsList={false}
+                  />
                   <a href={`/author/${reaction.createdBy.slug}`}>{reaction.createdBy.name || ''}</a>
                 </div>
                 {reaction.kind === ReactionKind.Like ? (

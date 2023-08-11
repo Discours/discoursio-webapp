@@ -7,13 +7,12 @@ import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
 import { validateUrl } from '../../utils/validateUrl'
 import { createFileUploader } from '@solid-primitives/upload'
-import { Loading } from '../../components/_shared/Loading'
 import { useSession } from '../../context/session'
 import { Button } from '../../components/_shared/Button'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
-import { Image } from '../../components/_shared/Image'
 import { handleFileUpload } from '../../utils/handleFileUpload'
+import { Userpic } from '../../components/Author/Userpic'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -72,6 +71,8 @@ export const ProfileSettingsPage = () => {
 
   const [hostname, setHostname] = createSignal<string | null>(null)
   onMount(() => setHostname(window?.location.host))
+
+  console.log('!!! form:', form)
   return (
     <PageLayout>
       <Show when={form}>
@@ -90,16 +91,13 @@ export const ProfileSettingsPage = () => {
                   <form onSubmit={handleSubmit} enctype="multipart/form-data">
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
-                      <div class={styles.avatarContainer}>
-                        <Show when={!isUserpicUpdating()} fallback={<Loading />}>
-                          <Image
-                            class={styles.avatar}
-                            src={form.userpic}
-                            alt={form.name}
-                            onClick={handleAvatarClick}
-                          />
-                        </Show>
-                      </div>
+                      <Userpic
+                        name={form.name}
+                        userpic={form.userpic}
+                        isBig={true}
+                        onClick={handleAvatarClick}
+                        loading={isUserpicUpdating()}
+                      />
                     </div>
                     <h4>{t('Name')}</h4>
                     <p class="description">

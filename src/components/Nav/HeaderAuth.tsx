@@ -5,7 +5,7 @@ import { Icon } from '../_shared/Icon'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
-import Userpic from '../Author/Userpic'
+import { Userpic } from '../Author/Userpic'
 import { showModal, useWarningsStore } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
@@ -216,7 +216,11 @@ export const HeaderAuth = (props: Props) => {
                   <div class={styles.userControlItem}>
                     <button class={styles.button}>
                       <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
-                        <Userpic user={session().user} class={styles.userpic} />
+                        <Userpic
+                          name={session().user.name}
+                          userpic={session().user.userpic}
+                          class={styles.userpic}
+                        />
                       </div>
                     </button>
                   </div>

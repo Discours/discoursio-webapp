@@ -93,6 +93,7 @@
 }
 
 .shoutCardCover {
+  background: rgb(0 0 0 / 30%);
   height: 0;
   margin-bottom: 1.6rem;
   overflow: hidden;
@@ -136,7 +137,8 @@
 }
 
 .shoutDate {
-  color: rgb(0 0 0 / 50%);
+  color: #9fa1a7;
+  font-weight: 500;
 }
 
 .shoutDetails {
@@ -399,6 +401,10 @@
         padding-left: 10%;
       }
     }
+  }
+
+  &.shoutCardNoImage {
+    background: rgb(0 0 0 / 50%);
   }
 
   &,
@@ -774,8 +780,4 @@
 
 .shoutTopicTop {
   margin-bottom: 0.4rem !important;
-}
-
-.shoutCardNoImage:not(.shoutCardFeed) {
-  background: rgb(0 0 0 / 50%);
 }

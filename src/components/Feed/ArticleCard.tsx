@@ -109,10 +109,12 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardNoImage]: !cover
       }}
     >
-      <Show when={!props.settings?.noimage && cover && !props.settings?.isFeedMode}>
+      <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
-            <img src={imageProxy(cover)} alt={title || ''} loading="lazy" />
+            <Show when={cover}>
+              <img src={imageProxy(cover)} alt={title || ''} loading="lazy" />
+            </Show>
           </div>
         </div>
       </Show>

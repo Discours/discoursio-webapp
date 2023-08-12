@@ -150,29 +150,31 @@ export const FeedView = () => {
                   {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
                 </For>
 
-                <div class={stylesBeside.besideColumnTitle}>
-                  <h4>{t('Popular authors')}</h4>
-                  <a href="/authors">
-                    {t('All authors')}
-                    <Icon name="arrow-right" class={stylesBeside.icon} />
-                  </a>
-                </div>
+                <div class={styles.asideSection}>
+                  <div class={stylesBeside.besideColumnTitle}>
+                    <h4>{t('Popular authors')}</h4>
+                    <a href="/authors">
+                      {t('All authors')}
+                      <Icon name="arrow-right" class={stylesBeside.icon} />
+                    </a>
+                  </div>
 
-                <ul class={stylesBeside.besideColumn}>
-                  <For each={topAuthors().slice(0, 5)}>
-                    {(author) => (
-                      <li>
-                        <AuthorCard
-                          author={author}
-                          hideWriteButton={true}
-                          hasLink={true}
-                          truncateBio={true}
-                          isTextButton={true}
-                        />
-                      </li>
-                    )}
-                  </For>
-                </ul>
+                  <ul class={stylesBeside.besideColumn}>
+                    <For each={topAuthors().slice(0, 5)}>
+                      {(author) => (
+                        <li>
+                          <AuthorCard
+                            author={author}
+                            hideWriteButton={true}
+                            hasLink={true}
+                            truncateBio={true}
+                            isTextButton={true}
+                          />
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </div>
 
                 <For each={sortedArticles().slice(4)}>
                   {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}

@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './PublishSettings.module.scss'
-import { createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, onMount, Show } from 'solid-js'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Button } from '../../_shared/Button'
 import { hideModal, showModal } from '../../../stores/ui'
@@ -17,6 +17,7 @@ import stylesBeside from '../../Feed/Beside.module.scss'
 import { redirectPage } from '@nanostores/router'
 import { router } from '../../../stores/router'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
+import { createStore } from 'solid-js/store'
 
 type Props = {
   shoutId: number
@@ -35,9 +36,8 @@ export const PublishSettings = (props: Props) => {
 
   const composeLead = () => {
     if (!props.form.lead) {
-      return shorten(props.form.body, MAX_LEAD_LIMIT)
-        .replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
-        .trim()
+      const leadText = props.form.body.replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
+      return shorten(leadText, MAX_LEAD_LIMIT).trim()
     }
     return props.form.lead
   }
@@ -56,23 +56,15 @@ export const PublishSettings = (props: Props) => {
     actions: { setForm, setFormErrors, saveShout, publishShout }
   } = useEditorContext()
 
-  const [settingsForm, setSettingsForm] = createSignal(initialData)
+  const [settingsForm, setSettingsForm] = createStore(initialData)
   const [topics, setTopics] = createSignal<Topic[]>(null)
 
-  const updateForm = (key: keyof ShoutForm, value: string) => {
-    setSettingsForm((prev) => {
-      return {
-        ...prev,
-        [key]: value
-      }
-    })
-  }
   const handleUploadModalContentCloseSetCover = (imgUrl: string) => {
     hideModal()
-    updateForm('coverImageUrl', imageProxy(imgUrl))
+    setSettingsForm('coverImageUrl', imgUrl)
   }
   const handleDeleteCoverImage = () => {
-    updateForm('coverImageUrl', '')
+    setSettingsForm('coverImageUrl', '')
   }
 
   const handleTopicSelectChange = (newSelectedTopics) => {
@@ -109,10 +101,10 @@ export const PublishSettings = (props: Props) => {
     handleBackClick()
   }
   const handlePublishSubmit = () => {
-    publishShout({ ...props.form, ...settingsForm() })
+    publishShout({ ...props.form, ...settingsForm })
   }
   const handleSaveDraft = () => {
-    saveShout({ ...props.form, ...settingsForm() })
+    saveShout({ ...props.form, ...settingsForm })
   }
 
   return (
@@ -130,26 +122,26 @@ export const PublishSettings = (props: Props) => {
           <Button
             variant="primary"
             onClick={() => showModal('uploadCoverImage')}
-            value={settingsForm().coverImageUrl ? t('Add another image') : t('Add image')}
+            value={settingsForm.coverImageUrl ? t('Add another image') : t('Add image')}
           />
-          <Show when={settingsForm().coverImageUrl}>
+          <Show when={settingsForm.coverImageUrl}>
             <Button variant="secondary" onClick={handleDeleteCoverImage} value={t('Delete cover')} />
           </Show>
         </div>
         <div
-          class={clsx(styles.shoutCardCoverContainer, { [styles.hasImage]: settingsForm().coverImageUrl })}
+          class={clsx(styles.shoutCardCoverContainer, { [styles.hasImage]: settingsForm.coverImageUrl })}
         >
-          <Show when={settingsForm().coverImageUrl ?? initialData.coverImageUrl}>
+          <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
             <div class={styles.shoutCardCover}>
-              <img src={settingsForm().coverImageUrl} alt={initialData.title} loading="lazy" />
+              <img src={imageProxy(settingsForm.coverImageUrl)} alt={initialData.title} loading="lazy" />
             </div>
           </Show>
           <div class={styles.text}>
-            <Show when={settingsForm().mainTopic}>
-              <div class={styles.mainTopic}>{settingsForm().mainTopic.title}</div>
+            <Show when={settingsForm.mainTopic}>
+              <div class={styles.mainTopic}>{settingsForm.mainTopic.title}</div>
             </Show>
-            <div class={styles.shoutCardTitle}>{settingsForm().title}</div>
-            <div class={styles.shoutCardSubtitle}>{settingsForm().subtitle}</div>
+            <div class={styles.shoutCardTitle}>{settingsForm.title}</div>
+            <div class={styles.shoutCardSubtitle}>{settingsForm.subtitle}</div>
             <div class={styles.shoutAuthor}>{user().name}</div>
           </div>
         </div>
@@ -165,8 +157,8 @@ export const PublishSettings = (props: Props) => {
           class={styles.settingInput}
           variant="bordered"
           placeholder={t('Come up with a title for your story')}
-          initialValue={settingsForm().title}
-          value={(value) => updateForm('title', value)}
+          initialValue={settingsForm.title}
+          value={(value) => setSettingsForm('title', value)}
           allowEnterKey={false}
           maxLength={100}
         />
@@ -174,8 +166,8 @@ export const PublishSettings = (props: Props) => {
           class={styles.settingInput}
           variant="bordered"
           placeholder={t('Come up with a subtitle for your story')}
-          initialValue={settingsForm().subtitle}
-          value={(value) => updateForm('subtitle', value)}
+          initialValue={settingsForm.subtitle}
+          value={(value) => setSettingsForm('subtitle', value)}
           allowEnterKey={false}
           maxLength={100}
         />
@@ -183,8 +175,8 @@ export const PublishSettings = (props: Props) => {
           class={styles.settingInput}
           variant="bordered"
           placeholder={t('Write a short introduction')}
-          initialValue={`${settingsForm().lead}${settingsForm().lead.length > MAX_LEAD_LIMIT - 1 && '...'}`}
-          value={(value) => updateForm('lead', value)}
+          initialValue={`${settingsForm.lead}${settingsForm.lead.length > MAX_LEAD_LIMIT - 1 && '...'}`}
+          value={(value) => setSettingsForm('lead', value)}
           allowEnterKey={false}
           maxLength={MAX_LEAD_LIMIT}
         />
@@ -192,7 +184,7 @@ export const PublishSettings = (props: Props) => {
 
       <h4>{t('Slug')}</h4>
       <div class="pretty-form__item">
-        <input type="text" name="slug" id="slug" value={settingsForm().slug} />
+        <input type="text" name="slug" id="slug" value={settingsForm.slug} />
         <label for="slug">{t('Slug')}</label>
       </div>
 

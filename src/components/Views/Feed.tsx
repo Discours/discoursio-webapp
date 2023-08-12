@@ -210,6 +210,7 @@ export const FeedView = () => {
                           isFeedMode={true}
                           hideWriteButton={true}
                           hideFollow={true}
+                          hasLink={true}
                         />
                         <CommentDate comment={comment} isShort={true} isLastInRow={true} />
                       </div>

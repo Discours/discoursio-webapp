@@ -30,8 +30,10 @@
   --blue-link: #2638d9;
   // names from figma
   --black-50: #f7f7f8;
+  --black-100: #e9e9ee;
   --black-500: #141414;
   --black-400: #696969;
+  --white-500: #fff;
 }
 
 [data-editor-dark-mode='true'] {
@@ -49,8 +51,10 @@
   --editor-bubble-menu-background: #444;
   // names from figma
   --black-50: #080807;
+  --black-100: #161611;
   --black-500: #ebebeb;
   --black-400: #969696;
+  --white-500: #000;
 }
 
 * {

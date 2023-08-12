@@ -776,6 +776,6 @@
   margin-bottom: 0.4rem !important;
 }
 
-.shoutCardNoImage {
+.shoutCardNoImage:not(.shoutCardFeed) {
   background: rgb(0 0 0 / 50%);
 }

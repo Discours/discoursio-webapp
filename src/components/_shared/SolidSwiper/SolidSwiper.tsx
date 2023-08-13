@@ -324,8 +324,7 @@ export const SolidSwiper = (props: Props) => {
               initialContent={props.images[slideIndex()].body}
               smallHeight={true}
               placeholder={t('Enter image description')}
-              onSubmit={(value) => handleSlideDescriptionChange(slideIndex(), 'body', value)}
-              submitButtonText={t('Save')}
+              onAutoSave={(value) => handleSlideDescriptionChange(slideIndex(), 'body', value)}
             />
           </div>
         </Show>

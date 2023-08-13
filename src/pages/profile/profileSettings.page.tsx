@@ -72,7 +72,6 @@ export const ProfileSettingsPage = () => {
   const [hostname, setHostname] = createSignal<string | null>(null)
   onMount(() => setHostname(window?.location.host))
 
-  console.log('!!! form:', form)
   return (
     <PageLayout>
       <Show when={form}>

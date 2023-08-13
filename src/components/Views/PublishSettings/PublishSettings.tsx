@@ -27,7 +27,8 @@ type Props = {
 const MAX_LEAD_LIMIT = 400
 const shorten = (str: string, maxLen: number) => {
   if (str.length <= maxLen) return str
-  return str.slice(0, Math.max(0, str.lastIndexOf(' ', maxLen))).trim()
+  const result = str.slice(0, Math.max(0, str.lastIndexOf(' ', maxLen))).trim()
+  return `${result}...`
 }
 
 export const PublishSettings = (props: Props) => {
@@ -175,7 +176,7 @@ export const PublishSettings = (props: Props) => {
           class={styles.settingInput}
           variant="bordered"
           placeholder={t('Write a short introduction')}
-          initialValue={`${settingsForm.lead}${settingsForm.lead.length > MAX_LEAD_LIMIT - 1 && '...'}`}
+          initialValue={`${settingsForm.lead}`}
           value={(value) => setSettingsForm('lead', value)}
           allowEnterKey={false}
           maxLength={MAX_LEAD_LIMIT}

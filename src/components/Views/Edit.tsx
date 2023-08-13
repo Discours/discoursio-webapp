@@ -3,16 +3,11 @@ import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
-import { apiClient } from '../../utils/apiClient'
 import { useRouter } from '../../stores/router'
 import { ShoutForm, useEditorContext } from '../../context/editor'
-import { Editor, Panel, TopicSelect, UploadModalContent } from '../Editor'
+import { Editor, Panel } from '../Editor'
 import { Icon } from '../_shared/Icon'
-import { Button } from '../_shared/Button'
 import styles from './Edit.module.scss'
-import { useSession } from '../../context/session'
-import { Modal } from '../Nav/Modal'
-import { hideModal, showModal } from '../../stores/ui'
 import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
@@ -25,6 +20,7 @@ import { clone } from '../../utils/clone'
 import deepEqual from 'fast-deep-equal'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 import { PublishSettings } from './PublishSettings'
+import { createStore } from 'solid-js/store'
 
 type Props = {
   shout: Shout
@@ -76,7 +72,7 @@ export const EditView = (props: Props) => {
     })
   }
 
-  const [prevForm, setPrevForm] = createSignal<ShoutForm>(clone(form))
+  const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))
   const [saving, setSaving] = createSignal(false)
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
@@ -92,6 +88,20 @@ export const EditView = (props: Props) => {
     onCleanup(() => {
       window.removeEventListener('scroll', handleScroll)
     })
+  })
+
+  onMount(() => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const handleBeforeUnload = (event) => {
+      if (!deepEqual(prevForm, form)) {
+        event.returnValue = t(
+          `There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?`
+        )
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
 
   const handleTitleInputChange = (value) => {
@@ -174,7 +184,7 @@ export const EditView = (props: Props) => {
 
   const autoSaveRecursive = () => {
     autoSaveTimeOutId = setTimeout(async () => {
-      const hasChanges = !deepEqual(form, prevForm())
+      const hasChanges = !deepEqual(form, prevForm)
       if (hasChanges) {
         setSaving(true)
         if (props.shout.visibility === 'owner') {

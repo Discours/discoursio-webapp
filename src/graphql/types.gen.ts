@@ -295,12 +295,6 @@ export type MutationUpdateTopicArgs = {
   input: TopicInput
 }
 
-export type Notification = {
-  kind: Scalars['String']
-  template: Scalars['String']
-  variables?: Maybe<Array<Maybe<Scalars['String']>>>
-}
-
 export type Operation = {
   id: Scalars['Int']
   name: Scalars['String']
@@ -563,6 +557,7 @@ export type Shout = {
   id: Scalars['Int']
   lang?: Maybe<Scalars['String']>
   layout?: Maybe<Scalars['String']>
+  lead?: Maybe<Scalars['String']>
   mainTopic?: Maybe<Scalars['String']>
   media?: Maybe<Scalars['String']>
   publishedAt?: Maybe<Scalars['DateTime']>
@@ -664,7 +659,6 @@ export type User = {
   links?: Maybe<Array<Maybe<Scalars['String']>>>
   muted?: Maybe<Scalars['Boolean']>
   name?: Maybe<Scalars['String']>
-  notifications?: Maybe<Array<Maybe<Scalars['Int']>>>
   oauth?: Maybe<Scalars['String']>
   oid?: Maybe<Scalars['String']>
   password?: Maybe<Scalars['String']>
@@ -681,11 +675,4 @@ export type UserFollowings = {
   reactions?: Maybe<Array<Maybe<Scalars['Int']>>>
   topics?: Maybe<Array<Maybe<Scalars['String']>>>
   unread?: Maybe<Scalars['Int']>
-}
-
-export type UserNotification = {
-  id: Scalars['Int']
-  kind: Scalars['String']
-  user: Scalars['Int']
-  values?: Maybe<Array<Maybe<Scalars['String']>>>
 }

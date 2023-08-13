@@ -13,34 +13,6 @@ h5 {
   margin: 0 0 0.8rem;
 }
 
-.avatarContainer {
-  border-radius: 100%;
-  overflow: hidden;
-  position: relative;
-  height: 18rem;
-  width: 18rem;
-}
-
-.avatar {
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  cursor: pointer;
-  background: #ccc;
-  border: none;
-  object-fit: cover;
-  object-position: center;
-}
-
-.avatarInput {
-  border-radius: 100%;
-  cursor: pointer;
-  opacity: 0;
-  z-index: 1;
-}
-
 .multipleControls {
   margin-top: 3rem;
 }

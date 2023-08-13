@@ -1,5 +1,5 @@
 export type AuthModalMode = 'login' | 'register' | 'confirm-email' | 'forgot-password'
-export type AuthModalSource = 'discussions' | 'vote' | 'subscribe' | 'bookmark' | 'follow'
+export type AuthModalSource = 'discussions' | 'vote' | 'subscribe' | 'bookmark' | 'follow' | 'create'
 
 export type AuthModalSearchParams = {
   mode: AuthModalMode

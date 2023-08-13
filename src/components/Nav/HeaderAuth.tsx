@@ -5,7 +5,7 @@ import { Icon } from '../_shared/Icon'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
-import Userpic from '../Author/Userpic'
+import { Userpic } from '../Author/Userpic'
 import { showModal, useWarningsStore } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
@@ -15,17 +15,18 @@ import { Button } from '../_shared/Button'
 import { useEditorContext } from '../../context/editor'
 import { Popover } from '../_shared/Popover'
 
-type HeaderAuthProps = {
+type Props = {
   setIsProfilePopupVisible: (value: boolean) => void
 }
-type IconedButton = {
+
+type IconedButtonProps = {
   value: string
   icon: string
   action: () => void
 }
 
 const MD_WIDTH_BREAKPOINT = 992
-export const HeaderAuth = (props: HeaderAuthProps) => {
+export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
   const [visibleWarnings, setVisibleWarnings] = createSignal(false)
@@ -34,6 +35,7 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   const { session, isSessionLoaded, isAuthenticated } = useSession()
 
   const {
+    form,
     actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
 
@@ -61,11 +63,11 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
   }
 
   const handleSaveButtonClick = () => {
-    saveShout()
+    saveShout(form)
   }
 
   const handlePublishButtonClick = () => {
-    publishShout()
+    publishShout(form)
   }
 
   const [width, setWidth] = createSignal(0)
@@ -76,25 +78,25 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
     onCleanup(() => window.removeEventListener('resize', handleResize))
   })
 
-  const renderIconedButton = (iconedButtonProps: IconedButton) => {
+  const renderIconedButton = (buttonProps: IconedButtonProps) => {
     return (
       <Show
         when={width() < MD_WIDTH_BREAKPOINT}
         fallback={
           <Button
-            value={<span class={styles.textLabel}>{iconedButtonProps.value}</span>}
+            value={<span class={styles.textLabel}>{buttonProps.value}</span>}
             variant={'outline'}
-            onClick={handleSaveButtonClick}
+            onClick={buttonProps.action}
           />
         }
       >
-        <Popover content={iconedButtonProps.value}>
+        <Popover content={buttonProps.value}>
           {(ref) => (
             <Button
               ref={ref}
               variant={'outline'}
-              onClick={handleSaveButtonClick}
-              value={<Icon name={iconedButtonProps.icon} class={styles.icon} />}
+              onClick={buttonProps.action}
+              value={<Icon name={buttonProps.icon} class={styles.icon} />}
             />
           )}
         </Popover>
@@ -214,7 +216,11 @@ export const HeaderAuth = (props: HeaderAuthProps) => {
                   <div class={styles.userControlItem}>
                     <button class={styles.button}>
                       <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
-                        <Userpic user={session().user} class={styles.userpic} />
+                        <Userpic
+                          name={session().user.name}
+                          userpic={session().user.userpic}
+                          class={styles.userpic}
+                        />
                       </div>
                     </button>
                   </div>

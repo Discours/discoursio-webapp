@@ -12,7 +12,7 @@ import { splitToPages } from '../../../utils/splitToPages'
 import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
 import { clsx } from 'clsx'
-import Userpic from '../../Author/Userpic'
+import { Userpic } from '../../Author/Userpic'
 import { Popup } from '../../_shared/Popup'
 import { AuthorCard } from '../../Author/AuthorCard'
 import { apiClient } from '../../../utils/apiClient'
@@ -178,12 +178,12 @@ export const AuthorView = (props: AuthorProps) => {
                   <Switch>
                     <Match when={followers().length <= 3}>
                       <For each={followers().slice(0, 3)}>
-                        {(f) => <Userpic user={f} class={styles.userpic} />}
+                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
                       </For>
                     </Match>
                     <Match when={followers().length > 3}>
                       <For each={followers().slice(0, 2)}>
-                        {(f) => <Userpic user={f} class={styles.userpic} />}
+                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
                       </For>
                       <div class={clsx(styles.userpic, styles.subscribersCounter)}>
                         {followers().length}

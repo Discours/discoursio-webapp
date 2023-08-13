@@ -19,29 +19,31 @@ export const Row2 = (props: {
   createComputed(() => setY(Math.floor(Math.random() * x.length)))
 
   return (
-    <div class="floor">
-      <div class="wide-container">
-        <div class="row">
-          <For each={props.articles}>
-            {(a, i) => {
-              return (
-                <Show when={!!a}>
-                  <div class={`col-md-${props.isEqual ? '12' : x[y()][i()]}`}>
-                    <ArticleCard
-                      article={a}
-                      settings={{
-                        isWithCover: props.isEqual || x[y()][i()] === '16',
-                        nodate: props.isEqual || props.nodate,
-                        noAuthorLink: props.noAuthorLink
-                      }}
-                    />
-                  </div>
-                </Show>
-              )
-            }}
-          </For>
+    <Show when={props.articles && props.articles.length > 0}>
+      <div class="floor">
+        <div class="wide-container">
+          <div class="row">
+            <For each={props.articles}>
+              {(a, i) => {
+                return (
+                  <Show when={!!a}>
+                    <div class={`col-md-${props.isEqual ? '12' : x[y()][i()]}`}>
+                      <ArticleCard
+                        article={a}
+                        settings={{
+                          isWithCover: props.isEqual || x[y()][i()] === '16',
+                          nodate: props.isEqual || props.nodate,
+                          noAuthorLink: props.noAuthorLink
+                        }}
+                      />
+                    </div>
+                  </Show>
+                )
+              }}
+            </For>
+          </div>
         </div>
       </div>
-    </div>
+    </Show>
   )
 }

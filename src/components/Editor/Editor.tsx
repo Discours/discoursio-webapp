@@ -1,6 +1,5 @@
 import { createEffect, createSignal, Show, onMount } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
-import { IndexeddbPersistence } from 'y-indexeddb'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
 import deepEqual from 'fast-deep-equal'
@@ -59,7 +58,6 @@ type Props = {
 }
 
 const yDocs: Record<string, Doc> = {}
-const persisters: Record<string, IndexeddbPersistence> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
 export const Editor = (props: Props) => {
@@ -80,10 +78,6 @@ export const Editor = (props: Props) => {
       name: docName,
       document: yDocs[docName]
     })
-  }
-
-  if (!persisters[docName]) {
-    persisters[docName] = new IndexeddbPersistence(docName, yDocs[docName])
   }
 
   const editorElRef: {

@@ -30,7 +30,8 @@ import { Link } from '@tiptap/extension-link'
 
 type Props = {
   initialContent?: string
-  onSubmit: (text: string) => void
+  onSubmit?: (text: string) => void
+  onAutoSave?: (text: string) => void
   placeholder: string
   submitButtonText?: string
   quoteEnabled?: boolean
@@ -117,6 +118,7 @@ const SimplifiedEditor = (props: Props) => {
   const handleClear = () => {
     editor().commands.clearContent(true)
   }
+
   createEffect(() => {
     if (props.setClear) {
       editor().commands.clearContent(true)
@@ -124,7 +126,7 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   const handleKeyDown = async (event) => {
-    if (isEmpty() || !editor().isFocused) {
+    if (isEmpty() || !isFocused()) {
       return
     }
 
@@ -151,7 +153,14 @@ const SimplifiedEditor = (props: Props) => {
     window.removeEventListener('keydown', handleKeyDown)
   })
 
+  if (props.onAutoSave) {
+    createEffect(() => {
+      if (isFocused()) return
+      props.onAutoSave(html())
+    })
+  }
   const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
+
   return (
     <div
       class={clsx(styles.SimplifiedEditor, {
@@ -227,15 +236,17 @@ const SimplifiedEditor = (props: Props) => {
             </Popover>
           </Show>
         </div>
-        <div class={styles.buttons}>
-          <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
-          <Button
-            value={props.submitButtonText ?? t('Send')}
-            variant="primary"
-            disabled={isEmpty()}
-            onClick={() => props.onSubmit(html())}
-          />
-        </div>
+        <Show when={!props.onAutoSave}>
+          <div class={styles.buttons}>
+            <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
+            <Button
+              value={props.submitButtonText ?? t('Send')}
+              variant="primary"
+              disabled={isEmpty()}
+              onClick={() => props.onSubmit(html())}
+            />
+          </div>
+        </Show>
       </div>
       <Modal variant="narrow" name="editorInsertLink">
         <InsertLinkForm editor={editor()} onClose={() => hideModal()} />

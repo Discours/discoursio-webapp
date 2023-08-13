@@ -24,11 +24,12 @@
   box-sizing: content-box;
   flex: 0 0 auto;
 
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     padding-left: calc(21.9% + 3px);
     max-width: 72.7%;
   }
-  @media (min-width: 1200px) {
+
+  @media (width >= 1200px) {
     padding-left: calc(21.5% + 3px);
     max-width: 64.9%;
   }
@@ -38,32 +39,35 @@
 .articleEditor figure,
 .articleEditor .uploadedImage,
 .articleEditor article[data-type='incut'] {
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     margin-left: calc(21.9% + 3px) !important;
     max-width: 73.6%;
   }
-  @media (min-width: 1200px) {
+
+  @media (width >= 1200px) {
     margin-left: calc(21.4% + 3px) !important;
     max-width: 65.3%;
   }
 }
 
 .articleEditor h2 {
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     padding-left: calc(21.9% + 2px);
     max-width: 72.7%;
   }
-  @media (min-width: 1200px) {
+
+  @media (width >= 1200px) {
     padding-left: 21.5%;
     max-width: 87.1%;
   }
 }
 
 .articleEditor h3 {
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     padding-left: calc(21.9% + 2px);
   }
-  @media (min-width: 1200px) {
+
+  @media (width >= 1200px) {
     padding-left: 21.5%;
     max-width: 87.1%;
   }
@@ -73,7 +77,7 @@
 .articleEditor * h2,
 .articleEditor * h3,
 .articleEditor * h4 {
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     padding-left: unset;
     max-width: unset;
   }
@@ -183,6 +187,7 @@ mark.highlight {
 
   &[data-type='quote'] {
     @include font-size(1.4rem);
+
     border: solid #000;
     border-width: 0 0 0 2px;
     margin: 1.6rem 0;
@@ -204,7 +209,9 @@ mark.highlight {
   &[data-type='punchline'] {
     border: solid #000;
     border-width: 2px 0;
+
     @include font-size(3.2rem);
+
     font-weight: 700;
     line-height: 1.2;
     margin: 1em 0;
@@ -213,6 +220,7 @@ mark.highlight {
     &[data-float='left'],
     &[data-float='right'] {
       @include font-size(2.2rem);
+
       line-height: 1.4;
     }
 
@@ -230,7 +238,9 @@ mark.highlight {
 
 .ProseMirror article[data-type='incut'] {
   background: #f1f2f3;
+
   @include font-size(1.4rem);
+
   margin: 1em -1rem;
   padding: 2em 2rem;
   transition: background 0.3s ease-in-out;

@@ -28,7 +28,7 @@ export const ForgotPasswordForm = () => {
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [isUserNotFount, setIsUserNotFound] = createSignal(false)
 
-  let authFormRef
+  const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
@@ -49,7 +49,9 @@ export const ForgotPasswordForm = () => {
     const isValid = Object.keys(newValidationErrors).length === 0
 
     if (!isValid) {
-      authFormRef.querySelector(`input[name="${Object.keys(newValidationErrors)[0]}"]`).focus()
+      authFormRef.current
+        .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
+        .focus()
 
       return
     }
@@ -73,7 +75,7 @@ export const ForgotPasswordForm = () => {
     <form
       onSubmit={handleSubmit}
       class={clsx(styles.authForm, styles.authFormForgetPassword)}
-      ref={authFormRef}
+      ref={(el) => (authFormRef.current = el)}
     >
       <div>
         <h4>{t('Forgot password?')}</h4>
@@ -105,7 +107,7 @@ export const ForgotPasswordForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            ['pretty-form__item--error']: validationErrors().email
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input

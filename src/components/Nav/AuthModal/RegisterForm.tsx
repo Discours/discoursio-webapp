@@ -34,7 +34,7 @@ export const RegisterForm = () => {
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
 
-  let authFormRef
+  const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
@@ -110,7 +110,9 @@ export const RegisterForm = () => {
     const isValid = Object.keys(newValidationErrors).length === 0 && !emailCheckResult
 
     if (!isValid) {
-      authFormRef.querySelector(`input[name="${Object.keys(newValidationErrors)[0]}"]`).focus()
+      authFormRef.current
+        .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
+        .focus()
 
       return
     }
@@ -139,7 +141,7 @@ export const RegisterForm = () => {
   return (
     <>
       <Show when={!isSuccess()}>
-        <form onSubmit={handleSubmit} class={styles.authForm} ref={authFormRef}>
+        <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
           <div>
             <AuthModalHeader modalType="register" />
             <Show when={submitError()}>
@@ -151,7 +153,7 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                ['pretty-form__item--error']: validationErrors().fullName
+                'pretty-form__item--error': validationErrors().fullName
               })}
             >
               <input
@@ -168,7 +170,7 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                ['pretty-form__item--error']: validationErrors().email
+                'pretty-form__item--error': validationErrors().email
               })}
             >
               <input
@@ -202,7 +204,7 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                ['pretty-form__item--error']: validationErrors().password
+                'pretty-form__item--error': validationErrors().password
               })}
             >
               <input

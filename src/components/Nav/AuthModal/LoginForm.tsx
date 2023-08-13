@@ -33,7 +33,7 @@ export const LoginForm = () => {
   const [isLinkSent, setIsLinkSent] = createSignal(false)
   const [showPassword, setShowPassword] = createSignal(false)
 
-  let authFormRef
+  const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const {
     actions: { showSnackbar }
@@ -90,7 +90,9 @@ export const LoginForm = () => {
     if (Object.keys(newValidationErrors).length > 0) {
       setValidationErrors(newValidationErrors)
 
-      authFormRef.querySelector(`input[name="${Object.keys(newValidationErrors)[0]}"]`).focus()
+      authFormRef.current
+        .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
+        .focus()
 
       return
     }
@@ -127,7 +129,7 @@ export const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} class={styles.authForm} ref={authFormRef}>
+    <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
       <div>
         <AuthModalHeader modalType="login" />
         <Show when={submitError()}>
@@ -145,7 +147,7 @@ export const LoginForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            ['pretty-form__item--error']: validationErrors().email
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input
@@ -165,7 +167,7 @@ export const LoginForm = () => {
 
         <div
           class={clsx('pretty-form__item', {
-            ['pretty-form__item--error']: validationErrors().password
+            'pretty-form__item--error': validationErrors().password
           })}
         >
           <input

@@ -12,11 +12,10 @@ import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
-import { setFocusOn } from '../../../utils/setFocusOn'
 import { AuthModalHeader } from './AuthModalHeader'
 
 type FormFields = {
-  name: string
+  fullName: string
   email: string
   password: string
 }
@@ -29,7 +28,7 @@ export const RegisterForm = () => {
   const { emailChecks } = useEmailChecks()
 
   const [submitError, setSubmitError] = createSignal('')
-  const [name, setName] = createSignal('')
+  const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
@@ -76,8 +75,8 @@ export const RegisterForm = () => {
   }
 
   const handleNameInput = (newPasswordCopy: string) => {
-    setValidationErrors(({ name: _notNeeded, ...rest }) => rest)
-    setName(newPasswordCopy)
+    setValidationErrors(({ fullName: _notNeeded, ...rest }) => rest)
+    setFullName(newPasswordCopy)
   }
 
   const handleSubmit = async (event: Event) => {
@@ -87,11 +86,11 @@ export const RegisterForm = () => {
 
     const newValidationErrors: ValidationErrors = {}
 
-    const cleanName = name().trim()
+    const cleanName = fullName().trim()
     const cleanEmail = email().trim()
 
     if (!cleanName) {
-      newValidationErrors.name = t('Please enter a name to sign your comments and publication')
+      newValidationErrors.fullName = t('Please enter a name to sign your comments and publication')
     }
 
     if (!cleanEmail) {
@@ -111,9 +110,7 @@ export const RegisterForm = () => {
     const isValid = Object.keys(newValidationErrors).length === 0 && !emailCheckResult
 
     if (!isValid) {
-      Object.keys(newValidationErrors).map((fieldKey) =>
-        setFocusOn(authFormRef, `input[name="${fieldKey}"]`)
-      )
+      authFormRef.querySelector(`input[name="${Object.keys(newValidationErrors)[0]}"]`).focus()
 
       return
     }
@@ -154,11 +151,11 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                ['pretty-form__item--error']: validationErrors().name
+                ['pretty-form__item--error']: validationErrors().fullName
               })}
             >
               <input
-                name="name"
+                name="fullName"
                 type="text"
                 placeholder={t('Full name')}
                 autocomplete=""
@@ -166,8 +163,8 @@ export const RegisterForm = () => {
               />
               <label for="name">{t('Full name')}</label>
             </div>
-            <Show when={validationErrors().name}>
-              <div class={styles.validationError}>{validationErrors().name}</div>
+            <Show when={validationErrors().fullName}>
+              <div class={styles.validationError}>{validationErrors().fullName}</div>
             </Show>
             <div
               class={clsx('pretty-form__item', {

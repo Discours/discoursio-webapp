@@ -8,7 +8,6 @@ import { ApiError } from '../../../utils/apiClient'
 import { signSendLink } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
-import { setFocusOn } from '../../../utils/setFocusOn'
 
 type FormFields = {
   email: string
@@ -50,9 +49,7 @@ export const ForgotPasswordForm = () => {
     const isValid = Object.keys(newValidationErrors).length === 0
 
     if (!isValid) {
-      Object.keys(newValidationErrors).map((fieldKey) =>
-        setFocusOn(authFormRef, `input[name="${fieldKey}"]`)
-      )
+      authFormRef.querySelector(`input[name="${Object.keys(newValidationErrors)[0]}"]`).focus()
 
       return
     }

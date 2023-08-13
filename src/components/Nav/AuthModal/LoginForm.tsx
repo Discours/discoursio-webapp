@@ -10,7 +10,6 @@ import { hideModal } from '../../../stores/ui'
 import { useSession } from '../../../context/session'
 import { signSendLink } from '../../../stores/auth'
 import { validateEmail } from '../../../utils/validateEmail'
-import { setFocusOn } from '../../../utils/setFocusOn'
 import { useSnackbar } from '../../../context/snackbar'
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
@@ -91,9 +90,7 @@ export const LoginForm = () => {
     if (Object.keys(newValidationErrors).length > 0) {
       setValidationErrors(newValidationErrors)
 
-      Object.keys(newValidationErrors).map((fieldKey) =>
-        setFocusOn(authFormRef, `input[name="${fieldKey}"]`)
-      )
+      authFormRef.querySelector(`input[name="${Object.keys(newValidationErrors)[0]}"]`).focus()
 
       return
     }

@@ -15,7 +15,6 @@ import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSnackbar } from '../../context/snackbar'
 import { useConfirm } from '../../context/confirm'
-import { useConfirm } from '../../context/confirm'
 
 import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { router } from '../../stores/router'

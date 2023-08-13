@@ -1,8 +1,7 @@
-import { createEffect, createSignal, Show, onMount } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
-import deepEqual from 'fast-deep-equal'
 import type { Doc } from 'yjs/dist/src/utils/Doc'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
@@ -245,23 +244,11 @@ export const Editor = (props: Props) => {
     }
   })
 
-  onMount(() => {
-    const initialHTMLValue = html()
-
-    window.addEventListener('beforeunload', (event) => {
-      if (!deepEqual(initialHTMLValue, html())) {
-        event.returnValue = t(
-          `There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?`
-        )
-      }
-    })
-  })
-
   return (
     <>
       <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
       <Show when={isDesktop() && html()}>
-        <TableOfContents variant="editor" parentSelector="#editorBody" />
+        <TableOfContents variant="editor" parentSelector="#editorBody" body={html()} />
       </Show>
       <TextBubbleMenu
         isCommonMarkup={isCommonMarkup()}

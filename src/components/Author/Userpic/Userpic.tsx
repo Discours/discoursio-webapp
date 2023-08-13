@@ -1,5 +1,4 @@
 import { Show } from 'solid-js'
-import type { Author, User } from '../../../graphql/types.gen'
 import styles from './Userpic.module.scss'
 import { clsx } from 'clsx'
 import { imageProxy } from '../../../utils/imageProxy'

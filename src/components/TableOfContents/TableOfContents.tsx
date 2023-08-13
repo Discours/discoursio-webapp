@@ -1,4 +1,4 @@
-import { onMount, For, Show, createSignal, createEffect, on } from 'solid-js'
+import { For, Show, createSignal, createEffect, on } from 'solid-js'
 import { clsx } from 'clsx'
 
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
@@ -14,6 +14,7 @@ import styles from './TableOfContents.module.scss'
 interface Props {
   variant: 'article' | 'editor'
   parentSelector: string
+  body: string
 }
 
 const scrollToHeader = (element) => {
@@ -45,10 +46,10 @@ export const TableOfContents = (props: Props) => {
     setAreHeadingsLoaded(true)
   }
 
-  const debouncedUpdateHeadings = debounce(updateHeadings, 4000, true)
+  const debouncedUpdateHeadings = debounce(updateHeadings, 500)
   createEffect(
     on(
-      () => props.parentSelector,
+      () => props.body,
       () => debouncedUpdateHeadings()
     )
   )

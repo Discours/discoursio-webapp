@@ -1,6 +1,7 @@
 import { Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
+import { redirectPage } from '@nanostores/router'
 
 import { Modal } from './Modal'
 import { AuthModal } from './AuthModal'
@@ -16,6 +17,7 @@ import { router, useRouter } from '../../stores/router'
 import { getDescription } from '../../utils/meta'
 
 import { useLocalize } from '../../context/localize'
+import { useSession } from '../../context/session'
 
 import styles from './Header.module.scss'
 
@@ -36,6 +38,10 @@ export const Header = (props: Props) => {
   const { t } = useLocalize()
 
   const { modal } = useModalStore()
+
+  const {
+    actions: { requireAuthentication }
+  } = useSession()
 
   const { page, searchParams } = useRouter<HeaderSearchParams>()
 
@@ -84,6 +90,21 @@ export const Header = (props: Props) => {
   const scrollToComments = (event, value) => {
     event.preventDefault()
     props.scrollToComments(value)
+  }
+
+  const handleBookmarkButtonClick = (ev) => {
+    requireAuthentication(() => {
+      // TODO: implement bookmark clicked
+      ev.preventDefault()
+    }, 'bookmark')
+  }
+
+  const handleCreateButtonClick = (ev) => {
+    requireAuthentication(() => {
+      ev.preventDefault()
+
+      redirectPage(router, 'create')
+    }, 'create')
   }
 
   return (
@@ -151,11 +172,11 @@ export const Header = (props: Props) => {
                 <Icon name="comment" class={styles.icon} />
                 <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
               </div>
-              <a href={getPagePath(router, 'create')} class={styles.control}>
+              <a href="#" class={styles.control} onClick={handleCreateButtonClick}>
                 <Icon name="pencil-outline" class={styles.icon} />
                 <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
               </a>
-              <a href="#" class={styles.control} onClick={(event) => event.preventDefault()}>
+              <a href="#" class={styles.control} onClick={handleBookmarkButtonClick}>
                 <Icon name="bookmark" class={styles.icon} />
                 <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
               </a>

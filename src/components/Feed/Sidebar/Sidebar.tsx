@@ -146,7 +146,6 @@ export const Sidebar = (props: FeedSidebarProps) => {
                     <Show when={!authorEntities()[authorSlug]}>
                       <Icon name="hash" class={styles.icon} />
                     </Show>
-                    {authorSlug}
                     {authorEntities()[authorSlug]?.name}
                   </div>
                 </a>

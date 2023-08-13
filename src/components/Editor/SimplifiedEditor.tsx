@@ -1,4 +1,4 @@
-import { createEffect, on, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, onCleanup, onMount, Show } from 'solid-js'
 import {
   createEditorTransaction,
   createTiptapEditor,
@@ -27,7 +27,6 @@ import styles from './SimplifiedEditor.module.scss'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { InsertLinkForm } from './InsertLinkForm'
 import { Link } from '@tiptap/extension-link'
-import { resetSortedArticles } from '../../stores/zine/articles'
 
 type Props = {
   initialContent?: string

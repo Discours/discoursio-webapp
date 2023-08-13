@@ -9,7 +9,7 @@ import { useSession } from '../../../context/session'
 import { useLocalize } from '../../../context/localize'
 import styles from './Sidebar.module.scss'
 import { clsx } from 'clsx'
-import Userpic from '../../Author/Userpic'
+import { Userpic } from '../../Author/Userpic'
 import { getPagePath } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
 
@@ -138,12 +138,14 @@ export const Sidebar = (props: FeedSidebarProps) => {
                 >
                   <div class={styles.sidebarItemName}>
                     <Show when={authorEntities()[authorSlug]}>
-                      <Userpic user={authorEntities()[authorSlug]} />
+                      <Userpic
+                        name={authorEntities()[authorSlug].name}
+                        userpic={authorEntities()[authorSlug].userpic}
+                      />
                     </Show>
                     <Show when={!authorEntities()[authorSlug]}>
                       <Icon name="hash" class={styles.icon} />
                     </Show>
-                    {authorSlug}
                     {authorEntities()[authorSlug]?.name}
                   </div>
                 </a>

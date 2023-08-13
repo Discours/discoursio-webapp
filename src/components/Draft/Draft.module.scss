@@ -25,20 +25,20 @@
 .actions {
   @include font-size(1.2rem);
 
-  a {
+  display: flex;
+  gap: 12px;
+
+  .actionItem {
     border: 0;
     display: inline-block;
-  }
+    cursor: pointer;
 
-  a + a {
-    margin-left: 12px;
-  }
+    &.delete {
+      color: #d00820;
+    }
 
-  .deleteLink {
-    color: #d00820;
-  }
-
-  .publishLink {
-    color: #2bb452;
+    &.publish {
+      color: #2bb452;
+    }
   }
 }

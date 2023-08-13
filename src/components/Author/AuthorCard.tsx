@@ -1,5 +1,5 @@
 import type { Author } from '../../graphql/types.gen'
-import Userpic from './Userpic'
+import { Userpic } from './Userpic'
 import { Icon } from '../_shared/Icon'
 import styles from './AuthorCard.module.scss'
 import { createMemo, createSignal, For, Show } from 'solid-js'
@@ -101,7 +101,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
       }}
     >
       <Userpic
-        user={props.author}
+        name={props.author.name}
+        userpic={props.author.userpic}
         hasLink={props.hasLink}
         isBig={props.isAuthorPage}
         isAuthorsList={props.isAuthorsList}

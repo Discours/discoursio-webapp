@@ -85,12 +85,6 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         type: 'capturedImage',
         content: [
           {
-            type: 'image',
-            attrs: {
-              src: imageProxy(image.url)
-            }
-          },
-          {
             type: 'figcaption',
             content: [
               {
@@ -98,6 +92,12 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
                 text: image.originalFilename
               }
             ]
+          },
+          {
+            type: 'image',
+            attrs: {
+              src: imageProxy(image.url)
+            }
           }
         ]
       })

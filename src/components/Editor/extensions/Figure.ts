@@ -29,7 +29,7 @@ export const Figure = Node.create({
   parseHTML() {
     return [
       {
-        tag: `figure`
+        tag: `figure[data-type="${this.name}"]`
       }
     ]
   },
@@ -60,6 +60,7 @@ export const Figure = Node.create({
       })
     ]
   },
+
   addCommands() {
     return {
       setFigureFloat:

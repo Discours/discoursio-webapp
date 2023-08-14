@@ -117,7 +117,7 @@ export const Editor = (props: Props) => {
 
   const ImageFigure = Figure.extend({
     name: 'capturedImage',
-    content: 'image figcaption'
+    content: 'figcaption image'
   })
 
   const { initialContent } = props
@@ -174,11 +174,6 @@ export const Editor = (props: Props) => {
           class: 'highlight'
         }
       }),
-      // CustomImage.configure({
-      //   HTMLAttributes: {
-      //     class: 'uploadedImage'
-      //   }
-      // }),
       ImageFigure,
       Image,
       Figcaption,

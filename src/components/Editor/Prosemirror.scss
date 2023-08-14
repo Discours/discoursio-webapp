@@ -320,3 +320,8 @@ mark.highlight {
     box-shadow: 0 0 0 1px #000;
   }
 }
+
+figure[data-type='capturedImage'] {
+  background: red;
+  flex-direction: column-reverse;
+}

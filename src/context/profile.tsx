@@ -34,16 +34,14 @@ const useProfileForm = () => {
     if (!currentSlug()) return
     try {
       await loadAuthor({ slug: currentSlug() })
-      const updatedFormValues = {
+      setForm({
         name: currentAuthor()?.name,
         slug: currentAuthor()?.slug,
         bio: currentAuthor()?.bio,
         about: currentAuthor()?.about,
         userpic: currentAuthor()?.userpic,
         links: currentAuthor()?.links
-      }
-
-      setForm(updatedFormValues)
+      })
     } catch (error) {
       console.error(error)
     }

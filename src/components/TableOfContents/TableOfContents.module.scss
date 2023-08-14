@@ -1,26 +1,28 @@
 .TableOfContentsFixedWrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: fixed;
+  top: 150px;
+  right: 20px;
+
   width: 281px;
-  min-height: 100%;
 }
 
 .TableOfContentsFixedWrapperLefted {
   right: auto;
-  left: 70px;
+  left: 20px;
 }
 
 .TableOfContentsContainer {
-  position: sticky;
-  top: 150px;
-  right: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+
   display: flex;
   width: 100%;
   height: auto;
   padding: 20px;
   flex-direction: column;
   align-items: flex-start;
+
   background-color: transparent;
 }
 
@@ -32,6 +34,7 @@
 
 .TableOfContentsHeading {
   margin: 0;
+
   color: #000;
   font-size: 22px;
   font-style: normal;
@@ -43,17 +46,20 @@
   position: absolute;
   right: 20px;
   top: 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 40px;
   height: 40px;
+
   background: transparent;
   border: none;
   cursor: pointer;
 
   &:hover {
-    box-shadow: 0 0 1px 1px rgb(0 0 0 / 30%);
+    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -64,16 +70,18 @@
 
 .TableOfContentsHeadingsList {
   position: relative;
+
   display: flex;
   flex-direction: column;
   list-style-type: none;
+
   margin: 0;
   padding: 0 38px 0 0;
-  width: 100%;
 }
 
 .TableOfContentsHeadingsItem {
   margin-top: 20px;
+
   color: #000;
   font-size: 14px;
   font-style: normal;
@@ -83,7 +91,7 @@
   letter-spacing: -0.14px;
 
   &:hover {
-    color: rgb(0 0 0 / 50%);
+    transform: scale(1.05);
   }
 }
 

@@ -1,8 +1,7 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Icon } from '../../components/_shared/Icon'
 import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount, onCleanup } from 'solid-js'
-import deepEqual from 'fast-deep-equal'
+import { For, createSignal, Show, onMount } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
@@ -14,8 +13,6 @@ import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
 import { handleFileUpload } from '../../utils/handleFileUpload'
 import { Userpic } from '../../components/Author/Userpic'
-import { createStore } from 'solid-js/store'
-import { clone } from '../../utils/clone'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -32,7 +29,6 @@ export const ProfileSettingsPage = () => {
     actions: { loadSession }
   } = useSession()
   const { form, updateFormField, submit, slugError } = useProfileForm()
-  const [prevForm, setPrevForm] = createStore(clone(form))
 
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
@@ -49,7 +45,6 @@ export const ProfileSettingsPage = () => {
 
     try {
       await submit(form)
-      setPrevForm(clone(form))
       showSnackbar({ body: t('Profile successfully saved') })
     } catch {
       showSnackbar({ type: 'error', body: t('Error') })
@@ -75,23 +70,9 @@ export const ProfileSettingsPage = () => {
   }
 
   const [hostname, setHostname] = createSignal<string | null>(null)
+  onMount(() => setHostname(window?.location.host))
 
-  onMount(() => {
-    setHostname(window?.location.host)
-
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    const handleBeforeUnload = (event) => {
-      if (!deepEqual(form, prevForm)) {
-        event.returnValue = t(
-          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
-        )
-      }
-    }
-
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
-  })
-
+  console.log('!!! form:', form)
   return (
     <PageLayout>
       <Show when={form}>

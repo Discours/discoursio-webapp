@@ -65,17 +65,6 @@ const topic2topicInput = (topic: Topic): TopicInput => {
   }
 }
 
-const saveDraftToLocalStorage = (formToSave: ShoutForm) => {
-  localStorage.setItem(`shout-${formToSave.shoutId}`, JSON.stringify(formToSave))
-}
-const getDraftFromLocalStorage = (shoutId: number) => {
-  return JSON.parse(localStorage.getItem(`shout-${shoutId}`))
-}
-
-const removeDraftFromLocalStorage = (shoutId: number) => {
-  localStorage.removeItem(`shout-${shoutId}`)
-}
-
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
 
@@ -173,6 +162,17 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const saveDraft = async (draftForm: ShoutForm) => {
     await updateShout(draftForm, { publish: false })
+  }
+
+  const saveDraftToLocalStorage = (formToSave: ShoutForm) => {
+    localStorage.setItem(`shout-${formToSave.shoutId}`, JSON.stringify(formToSave))
+  }
+  const getDraftFromLocalStorage = (shoutId: number) => {
+    return JSON.parse(localStorage.getItem(`shout-${shoutId}`))
+  }
+
+  const removeDraftFromLocalStorage = (shoutId: number) => {
+    localStorage.removeItem(`shout-${shoutId}`)
   }
 
   const publishShout = async (formToPublish: ShoutForm) => {

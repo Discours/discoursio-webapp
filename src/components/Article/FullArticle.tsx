@@ -132,7 +132,7 @@ export const FullArticle = (props: Props) => {
     <>
       <Title>{props.article.title}</Title>
       <div class="wide-container">
-        <div class="row position-relative">
+        <div class="row">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             {/*TODO: Check styles.shoutTopic*/}
             <Show when={props.article.layout !== 'audio'}>
@@ -212,7 +212,7 @@ export const FullArticle = (props: Props) => {
             </Show>
           </article>
           <Show when={isDesktop() && body()}>
-            <TableOfContents variant="article" parentSelector="#shoutBody" body={body()} />
+            <TableOfContents variant="article" parentSelector="#shoutBody" />
           </Show>
         </div>
       </div>

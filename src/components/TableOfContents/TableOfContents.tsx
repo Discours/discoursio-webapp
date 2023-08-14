@@ -1,11 +1,9 @@
-import { For, Show, createSignal, createEffect, on } from 'solid-js'
+import { onMount, For, Show, createSignal } from 'solid-js'
 import { clsx } from 'clsx'
 
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
 
 import { useLocalize } from '../../context/localize'
-
-import { debounce } from 'debounce'
 
 import { Icon } from '../_shared/Icon'
 
@@ -14,7 +12,6 @@ import styles from './TableOfContents.module.scss'
 interface Props {
   variant: 'article' | 'editor'
   parentSelector: string
-  body: string
 }
 
 const scrollToHeader = (element) => {
@@ -33,33 +30,21 @@ export const TableOfContents = (props: Props) => {
   const [headings, setHeadings] = createSignal<Element[]>([])
   const [areHeadingsLoaded, setAreHeadingsLoaded] = createSignal<boolean>(false)
 
-  const [isVisible, setIsVisible] = createSignal<boolean>(props.variant === 'article')
+  const [isVisible, setIsVisible] = createSignal<boolean>(true)
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
   }
 
-  const updateHeadings = () => {
+  onMount(() => {
     const { parentSelector } = props
-
     // eslint-disable-next-line unicorn/prefer-spread
     setHeadings(Array.from(document.querySelector(parentSelector).querySelectorAll('h2, h3, h4')))
-    setAreHeadingsLoaded(true)
-  }
 
-  const debouncedUpdateHeadings = debounce(updateHeadings, 500)
-  createEffect(
-    on(
-      () => props.body,
-      () => debouncedUpdateHeadings()
-    )
-  )
+    setAreHeadingsLoaded(true)
+  })
 
   return (
-    <Show
-      when={
-        areHeadingsLoaded() && (props.variant === 'article' ? headings().length > 2 : headings().length > 1)
-      }
-    >
+    <Show when={areHeadingsLoaded()}>
       <div
         class={clsx(styles.TableOfContentsFixedWrapper, {
           [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'

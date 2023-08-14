@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
 import styles from './GrowingTextarea.module.scss'
-import { createSignal, Show } from 'solid-js'
+import { createSignal, Show, Switch } from 'solid-js'
+import { style } from 'solid-js/web'
 
 type Props = {
   class?: string

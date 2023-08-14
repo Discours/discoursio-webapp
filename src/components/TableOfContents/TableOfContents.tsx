@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createEffect, on } from 'solid-js'
+import { For, Show, createSignal, createEffect, on, onMount } from 'solid-js'
 import { clsx } from 'clsx'
 
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'

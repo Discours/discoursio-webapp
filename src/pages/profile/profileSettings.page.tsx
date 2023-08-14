@@ -4,6 +4,7 @@ import ProfileSettingsNavigation from '../../components/Discours/ProfileSettings
 import { For, createSignal, Show, onMount, onCleanup } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
+
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
 import { validateUrl } from '../../utils/validateUrl'
@@ -27,10 +28,10 @@ export const ProfileSettingsPage = () => {
   const {
     actions: { showSnackbar }
   } = useSnackbar()
-
   const {
     actions: { loadSession }
   } = useSession()
+
   const { form, updateFormField, submit, slugError } = useProfileForm()
   const [prevForm, setPrevForm] = createStore(clone(form))
 

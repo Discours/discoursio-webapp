@@ -160,9 +160,10 @@ export const PlayerPlaylist = (props: Props) => {
                 <div class={styles.descriptionBlock}>
                   <SimplifiedEditor
                     initialContent={mi.body}
+                    onSubmit={(value) => handleMediaItemFieldChange('body', value)}
                     placeholder={t('Description')}
                     smallHeight={true}
-                    onAutoSave={(value) => handleMediaItemFieldChange('body', value)}
+                    submitButtonText={t('Save')}
                   />
                   <GrowingTextarea
                     allowEnterKey={true}

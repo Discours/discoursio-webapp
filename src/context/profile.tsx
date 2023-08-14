@@ -34,6 +34,7 @@ const useProfileForm = () => {
     if (!currentSlug()) return
     try {
       await loadAuthor({ slug: currentSlug() })
+
       setForm({
         name: currentAuthor()?.name,
         slug: currentAuthor()?.slug,

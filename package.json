@@ -29,7 +29,6 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@hocuspocus/provider": "2.0.6",
     "form-data": "4.0.0",
     "i18next": "22.4.15",
     "mailgun.js": "8.2.1",
@@ -44,6 +43,7 @@
     "@graphql-codegen/urql-introspection": "2.2.1",
     "@graphql-tools/url-loader": "7.17.18",
     "@graphql-typed-document-node/core": "3.2.0",
+    "@hocuspocus/provider": "2.0.6",
     "@nanostores/router": "0.8.3",
     "@nanostores/solid": "0.3.2",
     "@popperjs/core": "2.11.7",

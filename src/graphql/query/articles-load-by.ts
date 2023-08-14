@@ -9,6 +9,7 @@ export default gql`
       slug
       layout
       cover
+      lead
       # community
       mainTopic
       topics {

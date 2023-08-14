@@ -78,7 +78,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
-  const { id, cover, layout, slug, authors, stat, body } = props.article
+  const { id, cover, layout, slug, authors, stat, body, lead } = props.article
 
   const canEdit = () => authors?.some((a) => a.slug === user()?.slug)
 
@@ -166,6 +166,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </div>
             </Show>
           </a>
+
+          <Show when={lead}>
+            <div class={styles.shoutCardLead}>{lead}</div>
+          </Show>
         </div>
 
         <Show when={!props.settings?.noauthor || !props.settings?.nodate}>

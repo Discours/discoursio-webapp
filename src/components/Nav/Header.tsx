@@ -1,7 +1,6 @@
 import { Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
-import { getPagePath } from '@nanostores/router'
+import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { redirectPage } from '@nanostores/router'
 
 import { Modal } from './Modal'
 import { AuthModal } from './AuthModal'

@@ -17,7 +17,6 @@ import { useSnackbar } from '../../context/snackbar'
 import { useConfirm } from '../../context/confirm'
 
 import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
-
 import { router } from '../../stores/router'
 
 import styles from './Comment.module.scss'
@@ -48,6 +47,7 @@ export const Comment = (props: Props) => {
   const {
     actions: { showConfirm }
   } = useConfirm()
+
   const {
     actions: { showSnackbar }
   } = useSnackbar()

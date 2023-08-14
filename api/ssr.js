@@ -8,6 +8,7 @@ export default async function handler(req, res) {
   const { httpResponse } = pageContext
 
   if (!httpResponse) {
+    console.log('wtf')
     res.statusCode = 200
     res.end()
     return

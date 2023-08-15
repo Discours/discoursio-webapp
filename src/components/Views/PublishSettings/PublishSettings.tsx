@@ -18,6 +18,7 @@ import { redirectPage } from '@nanostores/router'
 import { router } from '../../../stores/router'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { createStore } from 'solid-js/store'
+import { UploadedFile } from '../../../pages/types'
 
 type Props = {
   shoutId: number
@@ -60,9 +61,9 @@ export const PublishSettings = (props: Props) => {
   const [settingsForm, setSettingsForm] = createStore(initialData)
   const [topics, setTopics] = createSignal<Topic[]>(null)
 
-  const handleUploadModalContentCloseSetCover = (imgUrl: string) => {
+  const handleUploadModalContentCloseSetCover = (image: UploadedFile) => {
     hideModal()
-    setSettingsForm('coverImageUrl', imgUrl)
+    setSettingsForm('coverImageUrl', image.url)
   }
   const handleDeleteCoverImage = () => {
     setSettingsForm('coverImageUrl', '')

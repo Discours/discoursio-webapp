@@ -20,7 +20,7 @@ import { AudioUploader } from '../Editor/AudioUploader'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
-import { LayoutType, MediaItem } from '../../pages/types'
+import { LayoutType, MediaItem, UploadedFile } from '../../pages/types'
 import { clone } from '../../utils/clone'
 import deepEqual from 'fast-deep-equal'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
@@ -113,10 +113,10 @@ export const EditView = (props: Props) => {
     setForm('slug', slug)
   }
 
-  const handleUploadModalContentCloseSetCover = (imgUrl: string) => {
+  const handleUploadModalContentCloseSetCover = (image: UploadedFile) => {
     hideModal()
-    setCoverImage(imageProxy(imgUrl))
-    setForm('coverImageUrl', imgUrl)
+    setCoverImage(imageProxy(image.url))
+    setForm('coverImageUrl', image.url)
   }
   const handleDeleteCoverImage = () => {
     setForm('coverImageUrl', '')

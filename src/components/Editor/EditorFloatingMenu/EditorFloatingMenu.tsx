@@ -12,6 +12,8 @@ import { hideModal, showModal } from '../../../stores/ui'
 import { UploadModalContent } from '../UploadModalContent'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { imageProxy } from '../../../utils/imageProxy'
+import { UploadedFile } from '../../../pages/types'
+import { renderUploadedImage } from '../../../utils/renderUploadedImage'
 
 type FloatingMenuProps = {
   editor: Editor
@@ -76,13 +78,8 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     }
   })
 
-  const renderImage = (src: string) => {
-    props.editor
-      .chain()
-      .focus()
-      .setImage({ src: imageProxy(src) })
-      .run()
-    hideModal()
+  const handleUpload = (image: UploadedFile) => {
+    renderUploadedImage(props.editor, image)
   }
 
   return (
@@ -116,7 +113,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
       <Modal variant="narrow" name="uploadImage" onClose={closeUploadModalHandler}>
         <UploadModalContent
           onClose={(value) => {
-            renderImage(value)
+            handleUpload(value)
             setSelectedMenuItem()
           }}
         />

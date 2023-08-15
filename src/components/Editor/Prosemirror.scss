@@ -37,7 +37,6 @@
 
 .articleEditor blockquote,
 .articleEditor figure,
-.articleEditor .uploadedImage,
 .articleEditor article[data-type='incut'] {
   @media (width >= 768px) {
     margin-left: calc(21.9% + 3px) !important;
@@ -122,13 +121,6 @@
     border: none;
     overflow: hidden;
   }
-}
-
-.uploadedImage {
-  max-height: 80vh;
-  margin: auto;
-  display: block;
-  width: unset !important;
 }
 
 .horizontalRule {
@@ -329,4 +321,8 @@ mark.highlight {
     background: #fff;
     box-shadow: 0 0 0 1px #000;
   }
+}
+
+figure[data-type='capturedImage'] {
+  flex-direction: column-reverse;
 }

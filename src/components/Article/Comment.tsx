@@ -4,7 +4,7 @@ import { getPagePath } from '@nanostores/router'
 
 import MD from './MD'
 import { AuthorCard } from '../Author/AuthorCard'
-import Userpic from '../Author/Userpic'
+import { Userpic } from '../Author/Userpic'
 import { CommentRatingControl } from './CommentRatingControl'
 import { CommentDate } from './CommentDate'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
@@ -17,7 +17,6 @@ import { useSnackbar } from '../../context/snackbar'
 import { useConfirm } from '../../context/confirm'
 
 import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
-
 import { router } from '../../stores/router'
 
 import styles from './Comment.module.scss'
@@ -48,6 +47,7 @@ export const Comment = (props: Props) => {
   const {
     actions: { showConfirm }
   } = useConfirm()
+
   const {
     actions: { showSnackbar }
   } = useSnackbar()
@@ -123,7 +123,8 @@ export const Comment = (props: Props) => {
             fallback={
               <div>
                 <Userpic
-                  user={comment().createdBy as Author}
+                  name={comment().createdBy.name}
+                  userpic={comment().createdBy.userpic}
                   isBig={false}
                   class={clsx({
                     [styles.compactUserpic]: props.compact

@@ -26,6 +26,7 @@ export type ShoutForm = {
   body: string
   coverImageUrl: string
   media?: string
+  lead?: string
 }
 
 type EditorContextType = {

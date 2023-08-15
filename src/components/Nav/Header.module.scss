@@ -103,13 +103,12 @@
   @include media-breakpoint-down(md) {
     flex: 1 !important;
     max-width: 100% !important;
-    padding-right: 0 !important;
+    padding: 0 !important;
   }
 }
 
 .mainNavigationWrapper {
   @include font-size(1.7rem);
-
   position: relative;
 
   @include media-breakpoint-down(md) {
@@ -176,7 +175,7 @@
 .burgerContainer {
   box-sizing: content-box;
   display: inline-flex;
-  float: right;
+  //float: right;
   padding-left: 0;
 
   @include media-breakpoint-up(sm) {
@@ -434,6 +433,10 @@
 
 .userControlItemVerbose {
   margin-left: 1.2em !important;
+
+  &:first-child {
+    margin-left: 0 !important;
+  }
 
   &:global(.loginbtn) {
     .icon {

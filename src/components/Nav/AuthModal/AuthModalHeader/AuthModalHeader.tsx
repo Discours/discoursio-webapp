@@ -19,6 +19,12 @@ export const AuthModalHeader = (props: Props) => {
     const title = modalType === 'login' ? 'Enter the Discours' : 'Create account'
 
     switch (source) {
+      case 'create': {
+        return {
+          title: t(`${title} to publish articles`),
+          description: ''
+        }
+      }
       case 'bookmark': {
         return {
           title: t(`${title} to add to your bookmarks`),

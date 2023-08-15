@@ -60,6 +60,7 @@ const providers: Record<string, HocuspocusProvider> = {}
 export const Editor = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
+
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
 
   const docName = `shout-${props.shoutId}`

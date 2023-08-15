@@ -46,6 +46,7 @@
   .controls {
     margin-top: auto;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     width: 100%;
     position: relative;

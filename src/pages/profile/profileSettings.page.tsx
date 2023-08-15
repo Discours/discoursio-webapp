@@ -1,19 +1,21 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Icon } from '../../components/_shared/Icon'
 import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount } from 'solid-js'
+import { For, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
 import { useProfileForm } from '../../context/profile'
 import { validateUrl } from '../../utils/validateUrl'
 import { createFileUploader } from '@solid-primitives/upload'
-import { Loading } from '../../components/_shared/Loading'
 import { useSession } from '../../context/session'
 import { Button } from '../../components/_shared/Button'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
-import { Image } from '../../components/_shared/Image'
 import { handleFileUpload } from '../../utils/handleFileUpload'
+import { Userpic } from '../../components/Author/Userpic'
+import { createStore } from 'solid-js/store'
+import { clone } from '../../utils/clone'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -30,6 +32,7 @@ export const ProfileSettingsPage = () => {
     actions: { loadSession }
   } = useSession()
   const { form, updateFormField, submit, slugError } = useProfileForm()
+  const [prevForm, setPrevForm] = createStore(clone(form))
 
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
@@ -46,6 +49,7 @@ export const ProfileSettingsPage = () => {
 
     try {
       await submit(form)
+      setPrevForm(clone(form))
       showSnackbar({ body: t('Profile successfully saved') })
     } catch {
       showSnackbar({ type: 'error', body: t('Error') })
@@ -71,7 +75,23 @@ export const ProfileSettingsPage = () => {
   }
 
   const [hostname, setHostname] = createSignal<string | null>(null)
-  onMount(() => setHostname(window?.location.host))
+
+  onMount(() => {
+    setHostname(window?.location.host)
+
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const handleBeforeUnload = (event) => {
+      if (!deepEqual(form, prevForm)) {
+        event.returnValue = t(
+          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
+        )
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
+  })
+
   return (
     <PageLayout>
       <Show when={form}>
@@ -90,16 +110,13 @@ export const ProfileSettingsPage = () => {
                   <form onSubmit={handleSubmit} enctype="multipart/form-data">
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
-                      <div class={styles.avatarContainer}>
-                        <Show when={!isUserpicUpdating()} fallback={<Loading />}>
-                          <Image
-                            class={styles.avatar}
-                            src={form.userpic}
-                            alt={form.name}
-                            onClick={handleAvatarClick}
-                          />
-                        </Show>
-                      </div>
+                      <Userpic
+                        name={form.name}
+                        userpic={form.userpic}
+                        isBig={true}
+                        onClick={handleAvatarClick}
+                        loading={isUserpicUpdating()}
+                      />
                     </div>
                     <h4>{t('Name')}</h4>
                     <p class="description">

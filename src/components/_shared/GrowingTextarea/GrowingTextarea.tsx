@@ -9,6 +9,7 @@ type Props = {
   value: (string) => void
   maxLength?: number
   allowEnterKey: boolean
+  variant?: 'bordered'
 }
 
 export const GrowingTextarea = (props: Props) => {
@@ -29,7 +30,7 @@ export const GrowingTextarea = (props: Props) => {
   }
 
   return (
-    <div class={clsx(styles.GrowingTextarea)}>
+    <div class={clsx(styles.GrowingTextarea, { [styles.bordered]: props.variant === 'bordered' })}>
       <div class={clsx(styles.growWrap, props.class)} data-replicated-value={value()}>
         <textarea
           rows={1}
@@ -45,14 +46,16 @@ export const GrowingTextarea = (props: Props) => {
           onBlur={() => setIsFocused(false)}
         />
       </div>
-      <Show when={props.maxLength && value() && isFocused()}>
+      <Show when={(props.maxLength && value() && isFocused()) || props.variant === 'bordered'}>
         <div
           class={clsx(styles.maxLength, {
             [styles.visible]: isFocused(),
             [styles.limited]: value().length === props.maxLength
           })}
         >
-          {`${value().length} / ${props.maxLength}`}
+          <Show when={props.variant === 'bordered'} fallback={`${value().length} / ${props.maxLength}`}>
+            {`${props.maxLength - value().length}`}
+          </Show>
         </div>
       </Show>
     </div>

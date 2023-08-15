@@ -33,6 +33,7 @@ import { Icon } from '../_shared/Icon'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 
 import styles from './Article.module.scss'
+import { CardTopic } from '../Feed/CardTopic'
 
 interface Props {
   article: Shout
@@ -131,20 +132,13 @@ export const FullArticle = (props: Props) => {
     <>
       <Title>{props.article.title}</Title>
       <div class="wide-container">
-        <div class="row">
+        <div class="row position-relative">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             {/*TODO: Check styles.shoutTopic*/}
             <Show when={props.article.layout !== 'audio'}>
               <div class={styles.shoutHeader}>
                 <Show when={mainTopic()}>
-                  <div class={styles.shoutTopic}>
-                    <a
-                      href={getPagePath(router, 'topic', { slug: props.article.mainTopic })}
-                      class={styles.mainTopicLink}
-                    >
-                      {mainTopic().title}
-                    </a>
-                  </div>
+                  <CardTopic title={mainTopic().title} slug={props.article.mainTopic} />
                 </Show>
 
                 <h1>{props.article.title}</h1>

@@ -29,20 +29,15 @@ import { Paragraph } from '@tiptap/extension-paragraph'
 import Focus from '@tiptap/extension-focus'
 import { Collaboration } from '@tiptap/extension-collaboration'
 import { HocuspocusProvider } from '@hocuspocus/provider'
-
-import { CustomImage } from './extensions/CustomImage'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figure } from './extensions/Figure'
 import { Figcaption } from './extensions/Figcaption'
-
 import { Embed } from './extensions/Embed'
-
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { useEditorContext } from '../../context/editor'
 import { TrailingNode } from './extensions/TrailingNode'
 import Article from './extensions/Article'
-
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'

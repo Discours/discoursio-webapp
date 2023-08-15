@@ -1,5 +1,12 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    Figcaption: {
+      setFigcaptionFocus: (value: boolean) => ReturnType
+    }
+  }
+}
 export const Figcaption = Node.create({
   name: 'figcaption',
 
@@ -25,5 +32,14 @@ export const Figcaption = Node.create({
 
   renderHTML({ HTMLAttributes }) {
     return ['figcaption', mergeAttributes(HTMLAttributes), 0]
+  },
+  addCommands() {
+    return {
+      setFigcaptionFocus:
+        (value) =>
+        ({ commands }) => {
+          return commands.focus(value)
+        }
+    }
   }
 })

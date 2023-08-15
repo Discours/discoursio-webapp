@@ -19,7 +19,6 @@ import { Italic } from '@tiptap/extension-italic'
 import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
 import { Blockquote } from '@tiptap/extension-blockquote'
-import { CustomImage } from './extensions/CustomImage'
 import { UploadModalContent } from './UploadModalContent'
 import { imageProxy } from '../../utils/imageProxy'
 import { clsx } from 'clsx'
@@ -27,6 +26,8 @@ import styles from './SimplifiedEditor.module.scss'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { InsertLinkForm } from './InsertLinkForm'
 import { Link } from '@tiptap/extension-link'
+import { UploadedFile } from '../../pages/types'
+import { Figure } from './extensions/Figure'
 
 type Props = {
   initialContent?: string
@@ -53,6 +54,11 @@ const SimplifiedEditor = (props: Props) => {
     actions: { setEditor }
   } = useEditorContext()
 
+  const ImageFigure = Figure.extend({
+    name: 'capturedImage',
+    content: 'figcaption image'
+  })
+
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
@@ -74,11 +80,7 @@ const SimplifiedEditor = (props: Props) => {
           class: styles.blockQuote
         }
       }),
-      CustomImage.configure({
-        HTMLAttributes: {
-          class: styles.uploadedImage
-        }
-      }),
+      ImageFigure,
       Placeholder.configure({
         emptyNodeClass: styles.emptyNode,
         placeholder: props.placeholder
@@ -105,11 +107,30 @@ const SimplifiedEditor = (props: Props) => {
   const isLink = isActive('link')
   const isBlockquote = isActive('blockquote')
 
-  const renderImage = (src: string) => {
+  const renderImage = (image: UploadedFile) => {
     editor()
       .chain()
       .focus()
-      .setImage({ src: imageProxy(src) })
+      .insertContent({
+        type: 'capturedImage',
+        content: [
+          {
+            type: 'figcaption',
+            content: [
+              {
+                type: 'text',
+                text: image.originalFilename
+              }
+            ]
+          },
+          {
+            type: 'image',
+            attrs: {
+              src: imageProxy(image.url)
+            }
+          }
+        ]
+      })
       .run()
     hideModal()
   }

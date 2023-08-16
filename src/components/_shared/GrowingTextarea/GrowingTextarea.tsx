@@ -10,6 +10,7 @@ type Props = {
   maxLength?: number
   allowEnterKey: boolean
   variant?: 'bordered'
+  fieldName?: string
 }
 
 export const GrowingTextarea = (props: Props) => {
@@ -30,7 +31,15 @@ export const GrowingTextarea = (props: Props) => {
   }
 
   return (
-    <div class={clsx(styles.GrowingTextarea, { [styles.bordered]: props.variant === 'bordered' })}>
+    <div
+      class={clsx(styles.GrowingTextarea, {
+        [styles.bordered]: props.variant === 'bordered',
+        [styles.hasFieldName]: props.fieldName && value().length > 0
+      })}
+    >
+      <Show when={props.fieldName && value().length > 0}>
+        <div class={styles.fieldName}>{props.fieldName}</div>
+      </Show>
       <div class={clsx(styles.growWrap, props.class)} data-replicated-value={value()}>
         <textarea
           rows={1}

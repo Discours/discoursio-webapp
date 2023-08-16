@@ -160,7 +160,7 @@ export const PlayerPlaylist = (props: Props) => {
                 <div class={styles.descriptionBlock}>
                   <SimplifiedEditor
                     initialContent={mi.body}
-                    placeholder={t('Description...')}
+                    placeholder={`${t('Description')}...`}
                     smallHeight={true}
                     onAutoSave={(value) => handleMediaItemFieldChange('body', value)}
                   />

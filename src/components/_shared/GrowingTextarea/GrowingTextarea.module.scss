@@ -2,6 +2,7 @@
   display: block;
   width: 100%;
   position: relative;
+  transition: 0.3s ease-in-out;
 
   &.bordered {
     box-sizing: border-box;
@@ -9,6 +10,19 @@
     border-radius: 2px;
     border: 2px solid var(--black-100);
     background: var(--white-500, #fff);
+  }
+
+  &.hasFieldName {
+    padding-top: 24px;
+  }
+
+  .fieldName {
+    @include font-size(1.2rem);
+
+    position: absolute;
+    top: 6px;
+    left: 12px;
+    color: var(--black-400);
   }
 
   .growWrap {

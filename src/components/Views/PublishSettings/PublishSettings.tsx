@@ -167,6 +167,7 @@ export const PublishSettings = (props: Props) => {
               <GrowingTextarea
                 class={styles.settingInput}
                 variant="bordered"
+                fieldName={t('Header')}
                 placeholder={t('Come up with a title for your story')}
                 initialValue={settingsForm.title}
                 value={(value) => setSettingsForm('title', value)}
@@ -176,6 +177,7 @@ export const PublishSettings = (props: Props) => {
               <GrowingTextarea
                 class={styles.settingInput}
                 variant="bordered"
+                fieldName={t('Subheader')}
                 placeholder={t('Come up with a subtitle for your story')}
                 initialValue={settingsForm.subtitle}
                 value={(value) => setSettingsForm('subtitle', value)}
@@ -185,6 +187,7 @@ export const PublishSettings = (props: Props) => {
               <GrowingTextarea
                 class={styles.settingInput}
                 variant="bordered"
+                fieldName={t('Description')}
                 placeholder={t('Write a short introduction')}
                 initialValue={`${settingsForm.lead}`}
                 value={(value) => setSettingsForm('lead', value)}

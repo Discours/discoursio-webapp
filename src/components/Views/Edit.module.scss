@@ -9,8 +9,23 @@
 .container {
   position: relative;
 
+  .headingActions {
+    @include font-size(1.2rem);
+
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    color: var(--blue-link);
+
+    .action {
+      cursor: pointer;
+    }
+  }
+
   .titleInput,
-  .subtitleInput {
+  .subtitleInput,
+  .leadInput {
     font-size: 36px;
     line-height: 1.1;
     margin-bottom: 1.2rem;
@@ -21,9 +36,14 @@
     }
   }
 
+  .leadInput {
+    font-size: unset;
+  }
+
   .titleInput {
     font-weight: 700;
   }
+
   .additional {
     margin-top: auto;
 

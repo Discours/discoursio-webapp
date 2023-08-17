@@ -10,7 +10,7 @@ import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { Topic } from '../../../graphql/types.gen'
 import { apiClient } from '../../../utils/apiClient'
-import { EMPTY_TOPIC } from '../Edit'
+import { EMPTY_TOPIC, MAX_LEAD_LIMIT } from '../Edit'
 import { useSession } from '../../../context/session'
 import { Icon } from '../../_shared/Icon'
 import stylesBeside from '../../Feed/Beside.module.scss'
@@ -25,7 +25,6 @@ type Props = {
   form: ShoutForm
 }
 
-const MAX_LEAD_LIMIT = 400
 const shorten = (str: string, maxLen: number) => {
   if (str.length <= maxLen) return str
   const result = str.slice(0, Math.max(0, str.lastIndexOf(' ', maxLen))).trim()

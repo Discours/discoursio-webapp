@@ -26,6 +26,8 @@ type Props = {
   shout: Shout
 }
 
+export const MAX_HEADER_LIMIT = 100
+export const MAX_LEAD_LIMIT = 400
 export const EMPTY_TOPIC: Topic = {
   id: -1,
   slug: ''
@@ -72,8 +74,13 @@ export const EditView = (props: Props) => {
     })
   }
 
+  const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
+  const leadInput: { current: HTMLTextAreaElement } = { current: null }
+
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))
   const [saving, setSaving] = createSignal(false)
+  const [isSubtitleVisible, setIsSubtitleVisible] = createSignal(Boolean(form.subtitle))
+  const [isLeadVisible, setIsLeadVisible] = createSignal(Boolean(form.lead))
 
   const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
     return JSON.parse(form.media || '[]')
@@ -213,6 +220,15 @@ export const EditView = (props: Props) => {
     stopAutoSave()
   })
 
+  const showSubtitleInput = () => {
+    setIsSubtitleVisible(true)
+    subtitleInput.current.focus()
+  }
+  const showLeadInput = () => {
+    setIsLeadVisible(true)
+    leadInput.current.focus()
+  }
+
   return (
     <>
       <div class={styles.container}>
@@ -233,6 +249,18 @@ export const EditView = (props: Props) => {
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
                 <Show when={page().route === 'edit'}>
+                  <div class={styles.headingActions}>
+                    <Show when={!isSubtitleVisible()}>
+                      <div class={styles.action} onClick={showSubtitleInput}>
+                        {t('Add subtitle')}
+                      </div>
+                    </Show>
+                    <Show when={!isLeadVisible()}>
+                      <div class={styles.action} onClick={showLeadInput}>
+                        {t('Add intro')}
+                      </div>
+                    </Show>
+                  </div>
                   <>
                     <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'audio' })}>
                       <div class={styles.inputContainer}>
@@ -242,7 +270,7 @@ export const EditView = (props: Props) => {
                           class={styles.titleInput}
                           placeholder={articleTitle()}
                           initialValue={form.title}
-                          maxLength={100}
+                          maxLength={MAX_HEADER_LIMIT}
                         />
 
                         <Show when={formErrors.title}>
@@ -277,16 +305,33 @@ export const EditView = (props: Props) => {
                             />
                           </div>
                         </Show>
-
                         <Show when={props.shout.layout !== 'audio'}>
-                          <GrowingTextarea
-                            allowEnterKey={false}
-                            value={(value) => setForm('subtitle', value)}
-                            class={styles.subtitleInput}
-                            placeholder={t('Subheader')}
-                            initialValue={form.subtitle}
-                            maxLength={100}
-                          />
+                          <Show when={isSubtitleVisible()}>
+                            <GrowingTextarea
+                              textAreaRef={(el) => {
+                                subtitleInput.current = el
+                              }}
+                              allowEnterKey={false}
+                              value={(value) => setForm('subtitle', value)}
+                              class={styles.subtitleInput}
+                              placeholder={t('Subheader')}
+                              initialValue={form.subtitle}
+                              maxLength={MAX_HEADER_LIMIT}
+                            />
+                          </Show>
+                          <Show when={isLeadVisible()}>
+                            <GrowingTextarea
+                              textAreaRef={(el) => {
+                                leadInput.current = el
+                              }}
+                              allowEnterKey={true}
+                              value={(value) => setForm('lead', value)}
+                              class={styles.leadInput}
+                              placeholder={t('Description')}
+                              initialValue={form.subtitle}
+                              maxLength={MAX_LEAD_LIMIT}
+                            />
+                          </Show>
                         </Show>
                       </div>
                       <Show when={props.shout.layout === 'audio'}>

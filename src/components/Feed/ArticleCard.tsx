@@ -83,8 +83,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {
     event.preventDefault()
-    const slug = props.article.slug
-    openPage(router, 'article', { slug })
+    openPage(router, 'article', { slug: props.article.slug })
     changeSearchParam('scrollTo', 'comments')
   }
 

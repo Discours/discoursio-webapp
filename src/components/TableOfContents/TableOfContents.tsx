@@ -38,12 +38,23 @@ export const TableOfContents = (props: Props) => {
     setIsVisible((visible) => !visible)
   }
 
-  onMount(() => {
+  const updateHeadings = () => {
     const { parentSelector } = props
+
     // eslint-disable-next-line unicorn/prefer-spread
     setHeadings(Array.from(document.querySelector(parentSelector).querySelectorAll('h2, h3, h4')))
-
     setAreHeadingsLoaded(true)
+  }
+
+  const debouncedUpdateHeadings = debounce(updateHeadings, 500)
+
+  onMount(() => {
+    createEffect(
+      on(
+        () => props.body,
+        () => debouncedUpdateHeadings()
+      )
+    )
   })
 
   return (

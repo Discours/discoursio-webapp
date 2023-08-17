@@ -5,7 +5,7 @@ import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
 
 import { useLocalize } from '../../context/localize'
 
-import { debounce } from 'debounce'
+import debounce from 'debounce'
 
 import { Icon } from '../_shared/Icon'
 

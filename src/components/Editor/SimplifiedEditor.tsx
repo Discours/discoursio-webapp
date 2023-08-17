@@ -28,11 +28,14 @@ import { InsertLinkForm } from './InsertLinkForm'
 import { Link } from '@tiptap/extension-link'
 import { UploadedFile } from '../../pages/types'
 import { Figure } from './extensions/Figure'
+import { Image } from '@tiptap/extension-image'
+import { Figcaption } from './extensions/Figcaption'
+import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 
 type Props = {
   initialContent?: string
   onSubmit?: (text: string) => void
-  onAutoSave?: (text: string) => void
+  onChange?: (text: string) => void
   placeholder: string
   submitButtonText?: string
   quoteEnabled?: boolean
@@ -46,11 +49,18 @@ type Props = {
 const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
 
-  const editorElRef: {
-    current: HTMLDivElement
+  const wrapperEditorElRef: {
+    current: HTMLElement
   } = {
     current: null
   }
+
+  const editorElRef: {
+    current: HTMLElement
+  } = {
+    current: null
+  }
+
   const {
     actions: { setEditor }
   } = useEditorContext()
@@ -82,6 +92,8 @@ const SimplifiedEditor = (props: Props) => {
         }
       }),
       ImageFigure,
+      Image,
+      Figcaption,
       Placeholder.configure({
         emptyNodeClass: styles.emptyNode,
         placeholder: props.placeholder
@@ -174,16 +186,17 @@ const SimplifiedEditor = (props: Props) => {
     window.removeEventListener('keydown', handleKeyDown)
   })
 
-  if (props.onAutoSave) {
+  if (props.onChange) {
     createEffect(() => {
-      if (isFocused()) return
-      props.onAutoSave(html())
+      props.onChange(html())
     })
   }
+
   const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
 
   return (
     <div
+      ref={(el) => (wrapperEditorElRef.current = el)}
       class={clsx(styles.SimplifiedEditor, {
         [styles.smallHeight]: props.smallHeight,
         [styles.isFocused]: isFocused() || !isEmpty()
@@ -257,7 +270,7 @@ const SimplifiedEditor = (props: Props) => {
             </Popover>
           </Show>
         </div>
-        <Show when={!props.onAutoSave}>
+        <Show when={!props.onChange}>
           <div class={styles.buttons}>
             <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
             <Button

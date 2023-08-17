@@ -35,6 +35,7 @@ declare module 'solid-js' {
       ref?: RefObject<SwiperRef>
       children?: JSX.Element
       onSlideChange?: () => void
+      onBeforeSlideChangeStart?: () => void
       class?: string
     }
     // eslint-disable-next-line @typescript-eslint/no-empty-interface

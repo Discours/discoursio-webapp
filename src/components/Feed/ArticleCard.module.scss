@@ -182,7 +182,8 @@
 
 .shoutCardLead {
   @include font-size(1.6rem);
-  color: gray;
+
+  color: var(--secondary-color);
   font-weight: 400;
   line-height: 1.3;
   margin-bottom: 1.4rem;
@@ -209,8 +210,8 @@
   transition: background-color 0.2s, color 0.2s;
 
   &:hover {
-    background: #000;
-    color: #fff;
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
   }
 }
 
@@ -221,7 +222,7 @@
   a,
   .shoutCardTitle,
   .shoutCardSubtitle {
-    color: #fff;
+    color: var(--default-color-invert);
   }
 
   .shoutCardCover {
@@ -254,14 +255,14 @@
   z-index: 2;
 
   a:link {
-    background: #fff;
+    background: var(--default-color-invert);
     border-radius: 100%;
     display: block;
     height: 100%;
     width: 100%;
 
     &:hover {
-      background: #000;
+      background: var(--background-color-invert);
 
       .icon {
         display: inline-block;
@@ -333,7 +334,7 @@
     }
 
     .shoutCardSubtitle {
-      color: #fff;
+      color: var(--background-color-invert);
     }
 
     .shoutAuthor {
@@ -354,29 +355,29 @@
     }
 
     a:hover {
-      background-color: #fff !important;
+      background-color: var(--background-color) !important;
     }
   }
 
   a:link,
   a:visited {
-    color: #fff;
+    color: var(--default-color-invert);
   }
 
   a:hover {
-    background: #fff;
-    color: #000;
+    background: var(--background-color);
+    color: var(--default-color);
   }
 
   .shoutCardTitlesContainer {
     a:link {
       border: none;
-      color: #fff;
+      color: var(--default-color-invert);
 
       &:hover {
         .shoutCardTitle .shoutCardLinkContainer {
-          background-color: #fff;
-          color: #000;
+          background-color: var(--background-color);
+          color: var(--default-color);
         }
       }
     }
@@ -418,7 +419,7 @@
   a,
   .shoutCardTitle,
   .shoutCardSubtitle {
-    color: #fff !important;
+    color: var(--default-color-invert) !important;
   }
 
   .shoutAuthor,
@@ -426,8 +427,8 @@
     a:hover {
       &,
       .shoutCardTitle .shoutCardLinkContainer {
-        background-color: #fff;
-        color: #000 !important;
+        background-color: var(--background-color);
+        color: var(--default-color) !important;
       }
     }
   }
@@ -473,8 +474,8 @@
     &:link,
     &:visited {
       &:hover {
-        background: #fff !important;
-        color: #000 !important;
+        background: var(--background-color) !important;
+        color: var(--default-color) !important;
       }
     }
   }
@@ -512,7 +513,7 @@
   @include font-size(1.5rem);
 
   align-items: flex-start;
-  border-top: 2px solid #141414;
+  border-top: 2px solid var(--black-500);
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -645,7 +646,7 @@
 
     a:hover {
       .shoutCardLinkContainer {
-        color: #fff;
+        color: var(--default-color-invert);
       }
     }
   }
@@ -700,7 +701,7 @@
   }
 
   .shoutCardSubtitle {
-    color: #000;
+    color: var(--default-color);
   }
 
   .shoutCardTitle {
@@ -715,7 +716,7 @@
 
   a:hover {
     .shoutCardLinkContainer {
-      color: #fff;
+      color: var(--default-color-invert);
     }
   }
 }

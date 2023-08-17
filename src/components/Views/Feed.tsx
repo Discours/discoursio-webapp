@@ -44,6 +44,7 @@ export const FeedView = () => {
 
   // state
   const { sortedArticles } = useArticlesStore()
+
   const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
@@ -90,6 +91,7 @@ export const FeedView = () => {
   const loadMore = async () => {
     setIsLoading(true)
     const { hasMore, newShouts } = await loadFeedShouts()
+
     setIsLoading(false)
 
     loadReactionsBy({

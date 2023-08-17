@@ -78,14 +78,12 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
-  const { id, cover, layout, slug, authors, stat, body } = props.article
-
-  const canEdit = () => authors?.some((a) => a.slug === user()?.slug)
+  const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {
     event.preventDefault()
-    openPage(router, 'article', { slug })
+    openPage(router, 'article', { slug: props.article.slug })
     changeSearchParam('scrollTo', 'comments')
   }
 
@@ -106,14 +104,14 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardCompact]: props.settings?.isCompact,
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
-        [styles.shoutCardNoImage]: !cover
+        [styles.shoutCardNoImage]: !props.article.cover
       }}
     >
       <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
-            <Show when={cover}>
-              <img src={imageProxy(cover)} alt={title || ''} loading="lazy" />
+            <Show when={props.article.cover}>
+              <img src={imageProxy(props.article.cover)} alt={title || ''} loading="lazy" />
             </Show>
           </div>
         </div>
@@ -122,15 +120,15 @@ export const ArticleCard = (props: ArticleCardProps) => {
       <div class={styles.shoutCardContent}>
         <Show
           when={
-            layout &&
-            layout !== 'article' &&
+            props.article.layout &&
+            props.article.layout !== 'article' &&
             !(props.settings?.noicon || props.settings?.noimage) &&
             !props.settings?.isFeedMode
           }
         >
           <div class={styles.shoutCardType}>
-            <a href={`/expo/${layout}`}>
-              <Icon name={layout} class={styles.icon} />
+            <a href={`/expo/${props.article.layout}`}>
+              <Icon name={props.article.layout} class={styles.icon} />
               {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
             </a>
           </div>
@@ -153,7 +151,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <a href={`/${slug || ''}`}>
+          <a href={`/${props.article.slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer}>{title}</span>
@@ -166,6 +164,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </div>
             </Show>
           </a>
+
+          <Show when={props.article.lead}>
+            <div class={styles.shoutCardLead}>{props.article.lead}</div>
+          </Show>
         </div>
 
         <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
@@ -174,7 +176,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           >
             <Show when={!props.settings?.noauthor}>
               <div class={styles.shoutAuthor}>
-                <For each={authors}>
+                <For each={props.article.authors}>
                   {(author) => {
                     return (
                       <AuthorCard
@@ -196,22 +198,24 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
 
         <Show when={props.settings?.isFeedMode}>
-          <Show when={!props.settings?.noimage && cover}>
+          <Show when={!props.settings?.noimage && props.article.cover}>
             <div class={styles.shoutCardCoverContainer}>
               <Show
                 when={
-                  layout && layout !== 'article' && !(props.settings?.noicon || props.settings?.noimage)
+                  props.article.layout &&
+                  props.article.layout !== 'article' &&
+                  !(props.settings?.noicon || props.settings?.noimage)
                 }
               >
                 <div class={styles.shoutCardType}>
-                  <a href={`/expo/${layout}`}>
-                    <Icon name={layout} class={styles.icon} />
+                  <a href={`/expo/${props.article.layout}`}>
+                    <Icon name={props.article.layout} class={styles.icon} />
                     {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
                   </a>
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <img src={imageProxy(cover)} alt={title || ''} loading="lazy" />
+                <img src={imageProxy(props.article.cover)} alt={title || ''} loading="lazy" />
               </div>
             </div>
           </Show>
@@ -230,14 +234,16 @@ export const ArticleCard = (props: ArticleCardProps) => {
                     name="comment-hover"
                     class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
                   />
-                  <span class={styles.shoutCardLinkContainer}>{stat?.commented || t('Add comment')}</span>
+                  <span class={styles.shoutCardLinkContainer}>
+                    {props.article.stat?.commented || t('Add comment')}
+                  </span>
                 </a>
               </div>
 
               <Show when={props.settings?.withViewed}>
                 <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardDetailsViewed)}>
                   <Icon name="eye" class={clsx(styles.icon, styles.feedControlIcon)} />
-                  {stat?.viewed}
+                  {props.article.stat?.viewed}
                 </div>
               </Show>
             </div>
@@ -247,7 +253,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <Popover content={t('Edit')}>
                   {(triggerRef: (el) => void) => (
                     <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
-                      <a href={getPagePath(router, 'edit', { shoutId: id.toString() })}>
+                      <a href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}>
                         <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
                         <Icon
                           name="pencil-outline-hover"
@@ -279,9 +285,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
                     <SharePopup
                       containerCssClass={stylesHeader.control}
                       title={title}
-                      description={getDescription(body)}
-                      imageUrl={cover}
-                      shareUrl={getShareUrl({ pathname: `/${slug}` })}
+                      description={getDescription(props.article.body)}
+                      imageUrl={props.article.cover}
+                      shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                       isVisible={(value) => setIsActionPopupActive(value)}
                       trigger={
                         <button>
@@ -302,9 +308,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   isOwner={canEdit()}
                   containerCssClass={stylesHeader.control}
                   title={title}
-                  description={getDescription(body)}
-                  imageUrl={cover}
-                  shareUrl={getShareUrl({ pathname: `/${slug}` })}
+                  description={getDescription(props.article.body)}
+                  imageUrl={props.article.cover}
+                  shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                   isVisible={(value) => setIsActionPopupActive(value)}
                   trigger={
                     <button>

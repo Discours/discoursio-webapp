@@ -14,6 +14,7 @@ import styles from './TableOfContents.module.scss'
 interface Props {
   variant: 'article' | 'editor'
   parentSelector: string
+  body: string
 }
 
 const scrollToHeader = (element) => {
@@ -32,7 +33,7 @@ export const TableOfContents = (props: Props) => {
   const [headings, setHeadings] = createSignal<Element[]>([])
   const [areHeadingsLoaded, setAreHeadingsLoaded] = createSignal<boolean>(false)
 
-  const [isVisible, setIsVisible] = createSignal<boolean>(true)
+  const [isVisible, setIsVisible] = createSignal<boolean>(props.variant === 'article')
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
   }
@@ -46,7 +47,11 @@ export const TableOfContents = (props: Props) => {
   })
 
   return (
-    <Show when={areHeadingsLoaded()}>
+    <Show
+      when={
+        areHeadingsLoaded() && (props.variant === 'article' ? headings().length > 2 : headings().length > 1)
+      }
+    >
       <div
         class={clsx(styles.TableOfContentsFixedWrapper, {
           [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'

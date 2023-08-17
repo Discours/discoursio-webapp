@@ -205,7 +205,7 @@ a:link {
   transition: color 0.2s, background-color 0.2s;
 
   &:hover {
-    background: var(--link-hover-background);
+    background-color: var(--link-hover-background);
     color: var(--link-hover-color);
   }
 }

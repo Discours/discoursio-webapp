@@ -31,9 +31,9 @@ import { Popover } from '../_shared/Popover'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { Icon } from '../_shared/Icon'
 import { SolidSwiper } from '../_shared/SolidSwiper'
-
 import styles from './Article.module.scss'
 import { CardTopic } from '../Feed/CardTopic'
+import { createPopper } from '@popperjs/core'
 
 interface Props {
   article: Shout
@@ -126,6 +126,26 @@ export const FullArticle = (props: Props) => {
     })
 
     setIsReactionsLoaded(true)
+  })
+
+  onMount(() => {
+    const tooltipElements: NodeListOf<HTMLLinkElement> =
+      document.querySelectorAll('[data-toggle="tooltip"]')
+    if (!tooltipElements) return
+    tooltipElements.forEach((element) => {
+      const tooltip = document.createElement('div')
+      tooltip.classList.add(styles.tooltip)
+      tooltip.textContent = element.dataset.originalTitle
+      document.body.appendChild(tooltip)
+      createPopper(element, tooltip, { placement: 'top' })
+      tooltip.style.visibility = 'hidden'
+      element.addEventListener('mouseenter', () => {
+        tooltip.style.visibility = 'visible'
+      })
+      element.addEventListener('mouseleave', () => {
+        tooltip.style.visibility = 'hidden'
+      })
+    })
   })
 
   return (

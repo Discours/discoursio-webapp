@@ -48,14 +48,12 @@ export const TableOfContents = (props: Props) => {
 
   const debouncedUpdateHeadings = debounce(updateHeadings, 500)
 
-  onMount(() => {
-    createEffect(
-      on(
-        () => props.body,
-        () => debouncedUpdateHeadings()
-      )
+  createEffect(
+    on(
+      () => props.body,
+      () => debouncedUpdateHeadings()
     )
-  })
+  )
 
   return (
     <Show

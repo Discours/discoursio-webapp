@@ -308,7 +308,7 @@ export const EditView = (props: Props) => {
                         <Show when={props.shout.layout !== 'audio'}>
                           <Show when={isSubtitleVisible()}>
                             <GrowingTextarea
-                              ref={(el) => {
+                              textAreaRef={(el) => {
                                 subtitleInput.current = el
                               }}
                               allowEnterKey={false}
@@ -321,7 +321,7 @@ export const EditView = (props: Props) => {
                           </Show>
                           <Show when={isLeadVisible()}>
                             <GrowingTextarea
-                              ref={(el) => {
+                              textAreaRef={(el) => {
                                 leadInput.current = el
                               }}
                               allowEnterKey={true}

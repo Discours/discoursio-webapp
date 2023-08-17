@@ -11,7 +11,7 @@ type Props = {
   allowEnterKey: boolean
   variant?: 'bordered'
   fieldName?: string
-  ref?: (el: HTMLTextAreaElement) => void
+  textAreaRef?: (el: HTMLTextAreaElement) => void
 }
 
 export const GrowingTextarea = (props: Props) => {
@@ -43,7 +43,7 @@ export const GrowingTextarea = (props: Props) => {
       </Show>
       <div class={clsx(styles.growWrap, props.class)} data-replicated-value={value()}>
         <textarea
-          ref={props.ref}
+          ref={props.textAreaRef}
           rows={1}
           maxlength={props.maxLength}
           autocomplete="off"

@@ -162,7 +162,7 @@ export const PlayerPlaylist = (props: Props) => {
                     initialContent={mi.body}
                     placeholder={`${t('Description')}...`}
                     smallHeight={true}
-                    onAutoSave={(value) => handleMediaItemFieldChange('body', value)}
+                    onChange={(value) => handleMediaItemFieldChange('body', value)}
                   />
                   <GrowingTextarea
                     allowEnterKey={true}

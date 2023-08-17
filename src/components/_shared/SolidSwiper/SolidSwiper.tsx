@@ -35,6 +35,7 @@ export const SolidSwiper = (props: Props) => {
   const { t } = useLocalize()
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
+  const [slideBody, setSlideBody] = createSignal<string>()
 
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
@@ -131,6 +132,10 @@ export const SolidSwiper = (props: Props) => {
     }, 0)
   }
 
+  const handleSaveBeforeSlideChange = () => {
+    handleSlideDescriptionChange(slideIndex(), 'body', slideBody())
+  }
+
   return (
     <div class={clsx(styles.Swiper, props.editorMode ? styles.editorMode : styles.articleMode)}>
       <div class={styles.container}>
@@ -157,6 +162,7 @@ export const SolidSwiper = (props: Props) => {
               thumbs-swiper={'.thumbSwiper'}
               observer={true}
               onSlideChange={handleSlideChange}
+              onBeforeSlideChangeStart={handleSaveBeforeSlideChange}
               space-between={20}
             >
               <For each={props.images}>
@@ -324,7 +330,7 @@ export const SolidSwiper = (props: Props) => {
               initialContent={props.images[slideIndex()].body}
               smallHeight={true}
               placeholder={t('Enter image description')}
-              onAutoSave={(value) => handleSlideDescriptionChange(slideIndex(), 'body', value)}
+              onChange={(value) => setSlideBody(value)}
             />
           </div>
         </Show>

@@ -124,11 +124,14 @@
   font-size: 1.4rem !important;
   margin: 0 !important;
   opacity: 1;
-  text-transform: capitalize;
   transition: opacity 0.3s;
 
   li {
     margin-bottom: 0 !important;
+
+    &:first-letter {
+      text-transform: capitalize;
+    }
   }
 
   @include media-breakpoint-down(md) {
@@ -506,4 +509,83 @@
   a:hover {
     background-color: var(--link-hover-background) !important;
   }
+}
+
+.subnavigation {
+  background: #fff;
+  font-weight: 500;
+  left: 0;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    height: 6rem;
+    line-height: 6rem;
+    padding: 0 150px 0 0;
+    position: relative;
+    overflow: hidden;
+
+    @include media-breakpoint-up(xl) {
+      margin: 0 calc(0.5 * var(--bs-gutter-x));
+    }
+
+    li {
+      margin-right: 2.4rem;
+      white-space: nowrap;
+    }
+
+    .rightItem {
+      margin-right: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  a:link,
+  a:visited {
+    border: none;
+
+    &:hover {
+      .subnavigationItemName {
+        background: #000;
+      }
+
+      .icon {
+        filter: invert(1);
+      }
+    }
+  }
+}
+
+.subnavigationItemName {
+  align-items: center;
+  background: #fff;
+  display: flex;
+  transition: background-color 0.3s;
+
+  .subnavigationFeed & {
+    line-height: 1.4;
+  }
+}
+
+.subnavigationFeed {
+  li {
+    align-items: center;
+    display: flex;
+  }
+
+  .icon {
+    margin-right: 0.3em;
+  }
+}
+
+.rightItemIcon {
+  display: inline-block;
+  margin-left: 0.3em;
+  position: relative;
+  top: 0.15em;
 }

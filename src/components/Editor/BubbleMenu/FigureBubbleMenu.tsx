@@ -28,7 +28,7 @@ export const FigureBubbleMenu = (props: Props) => {
             ref={triggerRef}
             type="button"
             class={styles.bubbleMenuButton}
-            onClick={() => props.editor.chain().focus().setFigcaptionFocus(true).run()}
+            onClick={() => props.editor.chain().focus().setFigureFloat('left').run()}
           >
             <Icon name="editor-image-align-left" />
           </button>
@@ -62,9 +62,7 @@ export const FigureBubbleMenu = (props: Props) => {
       <button
         type="button"
         class={styles.bubbleMenuButton}
-        onClick={() => {
-          props.editor.chain().focus().setFigcaptionFocus(true).run()
-        }}
+        onClick={() => props.editor.chain().focus().setFigcaptionFocus(true).run()}
       >
         <span style={{ color: 'white' }}>{t('Add signature')}</span>
       </button>

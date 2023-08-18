@@ -9,7 +9,6 @@ import { useProfileForm } from '../../context/profile'
 import { validateUrl } from '../../utils/validateUrl'
 import { createFileUploader } from '@solid-primitives/upload'
 import { useSession } from '../../context/session'
-import { Button } from '../../components/_shared/Button'
 import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
@@ -22,9 +21,7 @@ export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
-  const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
-
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
 
   const {
@@ -49,7 +46,6 @@ export const ProfileSettingsPage = () => {
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-    setIsSubmitting(true)
 
     try {
       await submit(form)
@@ -60,7 +56,6 @@ export const ProfileSettingsPage = () => {
     }
 
     loadSession()
-    setIsSubmitting(false)
   }
 
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
@@ -72,6 +67,7 @@ export const ProfileSettingsPage = () => {
         const result = await handleFileUpload(uploadFile)
         updateFormField('userpic', result.url)
         setIsUserpicUpdating(false)
+        setIsFloatingPanelVisible(true)
       } catch (error) {
         console.error('[upload avatar] error', error)
       }
@@ -252,11 +248,7 @@ export const ProfileSettingsPage = () => {
                       confirmTitle={t('Save settings')}
                       confirmAction={() => setIsFloatingPanelVisible(false)}
                       declineTitle={t('Cancel')}
-                      declineAction={(e) => {
-                        e.preventDefault()
-
-                        setIsFloatingPanelVisible(false)
-                      }}
+                      declineAction={() => setIsFloatingPanelVisible(false)}
                     />
                   </form>
                 </div>

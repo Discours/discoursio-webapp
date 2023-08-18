@@ -30,7 +30,6 @@ import { UploadedFile } from '../../pages/types'
 import { Figure } from './extensions/Figure'
 import { Image } from '@tiptap/extension-image'
 import { Figcaption } from './extensions/Figcaption'
-import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 
 type Props = {
   initialContent?: string

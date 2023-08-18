@@ -9,7 +9,7 @@ type Props = {
   confirmTitle: string
   confirmAction: () => void
   declineTitle: string
-  declineAction: (e: any) => void
+  declineAction: () => void
 }
 
 export default (props: Props) => {
@@ -24,7 +24,9 @@ export default (props: Props) => {
         size="L"
         variant="bordered"
         value={props.declineTitle}
-        onClick={(e) => props.declineAction(e)}
+        onClick={() => {
+          props.declineAction()
+        }}
       />
 
       <Button type="submit" size="L" value={props.confirmTitle} onClick={props.confirmAction} />

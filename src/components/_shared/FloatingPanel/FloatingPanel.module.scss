@@ -15,7 +15,7 @@
   margin: 0 auto;
   padding: 14px;
 
-  background-color: #fff;
+  background-color: var(--background-color);
   border: 2px solid black;
 
   @include media-breakpoint-down(sm) {

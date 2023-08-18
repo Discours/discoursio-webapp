@@ -9,7 +9,7 @@ type Props = {
   type?: 'submit' | 'button'
   loading?: boolean
   disabled?: boolean
-  onClick?: (e) => void
+  onClick?: (event?: MouseEvent) => void
   class?: string
   ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void)
 }

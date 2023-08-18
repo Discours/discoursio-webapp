@@ -1,0 +1,32 @@
+.PanelWrapper {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+
+  max-width: 430px;
+  width: auto;
+  height: auto;
+
+  margin: 0 auto;
+  padding: 14px;
+
+  background-color: #fff;
+  border: 2px solid black;
+
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+
+    input {
+      min-width: 250px;
+    }
+  }
+}
+
+.PanelWrapperVisible {
+  display: flex;
+}

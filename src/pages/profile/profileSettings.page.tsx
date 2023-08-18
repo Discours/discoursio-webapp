@@ -10,6 +10,7 @@ import { validateUrl } from '../../utils/validateUrl'
 import { createFileUploader } from '@solid-primitives/upload'
 import { useSession } from '../../context/session'
 import { Button } from '../../components/_shared/Button'
+import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
 import { handleFileUpload } from '../../utils/handleFileUpload'
@@ -24,6 +25,8 @@ export const ProfileSettingsPage = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
 
+  const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
+
   const {
     actions: { showSnackbar }
   } = useSnackbar()
@@ -31,6 +34,7 @@ export const ProfileSettingsPage = () => {
   const {
     actions: { loadSession }
   } = useSession()
+
   const { form, updateFormField, submit, slugError } = useProfileForm()
   const [prevForm, setPrevForm] = createStore(clone(form))
 
@@ -107,7 +111,15 @@ export const ProfileSettingsPage = () => {
                 <div class="col-md-20 col-lg-18 col-xl-16">
                   <h1>{t('Profile settings')}</h1>
                   <p class="description">{t('Here you can customize your profile the way you want.')}</p>
-                  <form onSubmit={handleSubmit} enctype="multipart/form-data">
+                  <form
+                    onSubmit={handleSubmit}
+                    onChange={() => {
+                      if (!deepEqual(form, prevForm)) {
+                        setIsFloatingPanelVisible(true)
+                      }
+                    }}
+                    enctype="multipart/form-data"
+                  >
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
                       <Userpic
@@ -235,7 +247,17 @@ export const ProfileSettingsPage = () => {
                       </For>
                     </div>
                     <br />
-                    <Button type="submit" size="L" value={t('Save settings')} loading={isSubmitting()} />
+                    <FloatingPanel
+                      isVisible={isFloatingPanelVisible()}
+                      confirmTitle={t('Save settings')}
+                      confirmAction={() => setIsFloatingPanelVisible(false)}
+                      declineTitle={t('Cancel')}
+                      declineAction={(e) => {
+                        e.preventDefault()
+
+                        setIsFloatingPanelVisible(false)
+                      }}
+                    />
                   </form>
                 </div>
               </div>

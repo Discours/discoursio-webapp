@@ -46,7 +46,6 @@ export const ProfileSettingsPage = () => {
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-
     try {
       await submit(form)
       setPrevForm(clone(form))
@@ -91,6 +90,11 @@ export const ProfileSettingsPage = () => {
     window.addEventListener('beforeunload', handleBeforeUnload)
     onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
+
+  const handleSaveProfile = () => {
+    setIsFloatingPanelVisible(false)
+    setPrevForm(clone(form))
+  }
 
   return (
     <PageLayout>
@@ -246,7 +250,7 @@ export const ProfileSettingsPage = () => {
                     <FloatingPanel
                       isVisible={isFloatingPanelVisible()}
                       confirmTitle={t('Save settings')}
-                      confirmAction={() => setIsFloatingPanelVisible(false)}
+                      confirmAction={handleSaveProfile}
                       declineTitle={t('Cancel')}
                       declineAction={() => setIsFloatingPanelVisible(false)}
                     />

@@ -1,4 +1,4 @@
-import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
@@ -34,7 +34,6 @@ import { SolidSwiper } from '../_shared/SolidSwiper'
 import styles from './Article.module.scss'
 import { CardTopic } from '../Feed/CardTopic'
 import { createPopper } from '@popperjs/core'
-import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 
 interface Props {
   article: Shout

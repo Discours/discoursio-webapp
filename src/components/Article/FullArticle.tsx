@@ -1,4 +1,4 @@
-import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
@@ -34,6 +34,7 @@ import { SolidSwiper } from '../_shared/SolidSwiper'
 import styles from './Article.module.scss'
 import { CardTopic } from '../Feed/CardTopic'
 import { createPopper } from '@popperjs/core'
+import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 
 interface Props {
   article: Shout
@@ -132,18 +133,42 @@ export const FullArticle = (props: Props) => {
     const tooltipElements: NodeListOf<HTMLLinkElement> =
       document.querySelectorAll('[data-toggle="tooltip"]')
     if (!tooltipElements) return
+
     tooltipElements.forEach((element) => {
       const tooltip = document.createElement('div')
       tooltip.classList.add(styles.tooltip)
       tooltip.textContent = element.dataset.originalTitle
       document.body.appendChild(tooltip)
-      createPopper(element, tooltip, { placement: 'top' })
-      tooltip.style.visibility = 'hidden'
-      element.addEventListener('mouseenter', () => {
-        tooltip.style.visibility = 'visible'
+      element.setAttribute('href', 'javascript: void(0);')
+      createPopper(element, tooltip, {
+        placement: 'top',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8]
+            }
+          }
+        ]
       })
-      element.addEventListener('mouseleave', () => {
-        tooltip.style.visibility = 'hidden'
+
+      tooltip.style.visibility = 'hidden'
+      let isTooltipVisible = false
+      element.addEventListener('click', () => {
+        if (isTooltipVisible) {
+          tooltip.style.visibility = 'hidden'
+          isTooltipVisible = false
+        } else {
+          tooltip.style.visibility = 'visible'
+          isTooltipVisible = true
+        }
+      })
+
+      document.addEventListener('click', (e) => {
+        if (isTooltipVisible && e.target !== element && e.target !== tooltip) {
+          tooltip.style.visibility = 'hidden'
+          isTooltipVisible = false
+        }
       })
     })
   })

@@ -80,31 +80,7 @@ export const ForgotPasswordForm = () => {
       <div>
         <h4>{t('Forgot password?')}</h4>
         <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
-        <Show when={submitError()}>
-          <div class={styles.authInfo}>
-            <ul>
-              <li class={styles.warn}>{submitError()}</li>
-            </ul>
-          </div>
-        </Show>
-        <Show when={isUserNotFount()}>
-          <div class={styles.authSubtitle}>
-            {/*TODO: text*/}
-            {t("We can't find you, check email or")}{' '}
-            <a
-              href="#"
-              onClick={(event) => {
-                event.preventDefault()
-                changeSearchParam('mode', 'register')
-              }}
-            >
-              {t('register')}
-            </a>
-          </div>
-        </Show>
-        <Show when={validationErrors().email}>
-          <div class={styles.validationError}>{validationErrors().email}</div>
-        </Show>
+
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email
@@ -122,6 +98,34 @@ export const ForgotPasswordForm = () => {
 
           <label for="email">{t('Email')}</label>
         </div>
+
+        <Show when={submitError()}>
+          <div class={styles.authInfo}>
+            <ul>
+              <li class={styles.warn}>{submitError()}</li>
+            </ul>
+          </div>
+        </Show>
+
+        <Show when={isUserNotFount()}>
+          <div class={styles.authSubtitle}>
+            {/*TODO: text*/}
+            {t("We can't find you, check email or")}{' '}
+            <a
+              href="#"
+              onClick={(event) => {
+                event.preventDefault()
+                changeSearchParam('mode', 'register')
+              }}
+            >
+              {t('register')}
+            </a>
+          </div>
+        </Show>
+
+        <Show when={validationErrors().email}>
+          <div class={styles.validationError}>{validationErrors().email}</div>
+        </Show>
 
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

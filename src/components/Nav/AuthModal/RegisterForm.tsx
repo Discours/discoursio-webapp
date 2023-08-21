@@ -13,6 +13,7 @@ import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
 import { AuthModalHeader } from './AuthModalHeader'
+import { Icon } from '../../_shared/Icon'
 
 type FormFields = {
   fullName: string
@@ -31,13 +32,13 @@ export const RegisterForm = () => {
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
+  const [showPassword, setShowPassword] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const handleEmailInput = (newEmail: string) => {
-    setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail)
   }
 
@@ -65,22 +66,24 @@ export const RegisterForm = () => {
   }
 
   const handlePasswordInput = (newPassword: string) => {
-    const passwordError = isValidPassword(newPassword)
-    if (passwordError) {
-      setValidationErrors((errors) => ({ ...errors, password: passwordError }))
-    } else {
-      setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
-    }
     setPassword(newPassword)
   }
 
   const handleNameInput = (newPasswordCopy: string) => {
-    setValidationErrors(({ fullName: _notNeeded, ...rest }) => rest)
     setFullName(newPasswordCopy)
   }
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
+
+    const passwordError = isValidPassword(password())
+    if (passwordError) {
+      setValidationErrors((errors) => ({ ...errors, password: passwordError }))
+    } else {
+      setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
+    }
+    setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
+    setValidationErrors(({ fullName: _notNeeded, ...rest }) => rest)
 
     setSubmitError('')
 
@@ -211,11 +214,18 @@ export const RegisterForm = () => {
                 id="password"
                 name="password"
                 autocomplete="current-password"
-                type="password"
+                type={showPassword() ? 'text' : 'password'}
                 placeholder={t('Password')}
                 onInput={(event) => handlePasswordInput(event.currentTarget.value)}
               />
               <label for="password">{t('Password')}</label>
+              <button
+                type="button"
+                class={styles.passwordToggle}
+                onClick={() => setShowPassword(!showPassword())}
+              >
+                <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
+              </button>
             </div>
             <Show when={validationErrors().password}>
               <div class={clsx(styles.registerPassword, styles.validationError)}>

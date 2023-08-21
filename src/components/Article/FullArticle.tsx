@@ -1,4 +1,4 @@
-import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
@@ -128,6 +128,9 @@ export const FullArticle = (props: Props) => {
     setIsReactionsLoaded(true)
   })
 
+  const clickHandlers = []
+  const documentClickHandlers = []
+
   onMount(() => {
     const tooltipElements: NodeListOf<HTMLLinkElement> =
       document.querySelectorAll('[data-toggle="tooltip"]')
@@ -153,7 +156,8 @@ export const FullArticle = (props: Props) => {
 
       tooltip.style.visibility = 'hidden'
       let isTooltipVisible = false
-      element.addEventListener('click', () => {
+
+      const handleClick = () => {
         if (isTooltipVisible) {
           tooltip.style.visibility = 'hidden'
           isTooltipVisible = false
@@ -161,14 +165,29 @@ export const FullArticle = (props: Props) => {
           tooltip.style.visibility = 'visible'
           isTooltipVisible = true
         }
-      })
+      }
 
-      document.addEventListener('click', (e) => {
+      const handleDocumentClick = (e) => {
         if (isTooltipVisible && e.target !== element && e.target !== tooltip) {
           tooltip.style.visibility = 'hidden'
           isTooltipVisible = false
         }
-      })
+      }
+
+      element.addEventListener('click', handleClick)
+      document.addEventListener('click', handleDocumentClick)
+
+      clickHandlers.push({ element, handler: handleClick })
+      documentClickHandlers.push(handleDocumentClick)
+    })
+  })
+
+  onCleanup(() => {
+    clickHandlers.forEach(({ element, handler }) => {
+      element.removeEventListener('click', handler)
+    })
+    documentClickHandlers.forEach((handler) => {
+      document.removeEventListener('click', handler)
     })
   })
 

@@ -148,6 +148,7 @@ export const FullArticle = (props: Props) => {
     })
   })
 
+  console.log('!!! :', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>
@@ -189,6 +190,9 @@ export const FullArticle = (props: Props) => {
                   />
                 </Show>
               </div>
+            </Show>
+            <Show when={props.article.lead}>
+              <section class={styles.lead} innerHTML={props.article.lead} />
             </Show>
             <Show when={props.article.layout === 'audio'}>
               <AudioHeader

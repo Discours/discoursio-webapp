@@ -554,6 +554,7 @@ export type Shout = {
   createdAt: Scalars['DateTime']
   deletedAt?: Maybe<Scalars['DateTime']>
   deletedBy?: Maybe<User>
+  description?: Maybe<Scalars['String']>
   id: Scalars['Int']
   lang?: Maybe<Scalars['String']>
   layout?: Maybe<Scalars['String']>

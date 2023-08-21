@@ -560,3 +560,9 @@ a[data-toggle='tooltip'] {
   color: white;
   max-width: 400px;
 }
+
+.lead {
+  @include font-size(1.6rem);
+
+  font-weight: 500;
+}

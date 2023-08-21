@@ -10,7 +10,7 @@ import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { Topic } from '../../../graphql/types.gen'
 import { apiClient } from '../../../utils/apiClient'
-import { EMPTY_TOPIC, MAX_LEAD_LIMIT } from '../Edit'
+import { EMPTY_TOPIC } from '../Edit'
 import { useSession } from '../../../context/session'
 import { Icon } from '../../_shared/Icon'
 import stylesBeside from '../../Feed/Beside.module.scss'
@@ -19,6 +19,7 @@ import { router } from '../../../stores/router'
 import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { createStore } from 'solid-js/store'
 import { UploadedFile } from '../../../pages/types'
+import SimplifiedEditor, { MAX_DESCRIPTION_LIMIT } from '../../Editor/SimplifiedEditor'
 
 type Props = {
   shoutId: number
@@ -35,12 +36,12 @@ export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
 
-  const composeLead = () => {
-    if (!props.form.lead) {
+  const composeDescription = () => {
+    if (!props.form.description) {
       const leadText = props.form.body.replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
-      return shorten(leadText, MAX_LEAD_LIMIT).trim()
+      return shorten(leadText, MAX_DESCRIPTION_LIMIT).trim()
     }
-    return props.form.lead
+    return props.form.description
   }
 
   const initialData: Partial<ShoutForm> = {
@@ -49,7 +50,7 @@ export const PublishSettings = (props: Props) => {
     slug: props.form.slug,
     title: props.form.title,
     subtitle: props.form.subtitle,
-    lead: composeLead()
+    description: composeDescription()
   }
 
   const {
@@ -183,15 +184,15 @@ export const PublishSettings = (props: Props) => {
                 allowEnterKey={false}
                 maxLength={100}
               />
-              <GrowingTextarea
-                class={styles.settingInput}
+              <SimplifiedEditor
                 variant="bordered"
-                fieldName={t('Description')}
+                onlyBubbleControls={true}
+                smallHeight={true}
                 placeholder={t('Write a short introduction')}
-                initialValue={`${settingsForm.lead}`}
-                value={(value) => setSettingsForm('lead', value)}
-                allowEnterKey={false}
-                maxLength={MAX_LEAD_LIMIT}
+                label={t('Description')}
+                initialContent={settingsForm.description}
+                onChange={(value) => setForm('description', value)}
+                maxLength={MAX_DESCRIPTION_LIMIT}
               />
             </div>
 

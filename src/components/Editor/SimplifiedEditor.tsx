@@ -1,4 +1,4 @@
-import { createEffect, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import {
   createEditorTransaction,
   createTiptapEditor,
@@ -30,12 +30,19 @@ import { UploadedFile } from '../../pages/types'
 import { Figure } from './extensions/Figure'
 import { Image } from '@tiptap/extension-image'
 import { Figcaption } from './extensions/Figcaption'
+import { TextBubbleMenu } from './TextBubbleMenu'
+import { BubbleMenu } from '@tiptap/extension-bubble-menu'
+import { CharacterCount } from '@tiptap/extension-character-count'
+import { createStore } from 'solid-js/store'
 
 type Props = {
   initialContent?: string
+  label?: string
   onSubmit?: (text: string) => void
   onChange?: (text: string) => void
   placeholder: string
+  variant?: 'minimal' | 'bordered'
+  maxLength?: number
   submitButtonText?: string
   quoteEnabled?: boolean
   imageEnabled?: boolean
@@ -43,10 +50,13 @@ type Props = {
   smallHeight?: boolean
   submitByEnter?: boolean
   submitByShiftEnter?: boolean
+  onlyBubbleControls?: boolean
 }
 
+export const MAX_DESCRIPTION_LIMIT = 400
 const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
+  const [counter, setCounter] = createSignal<number>()
 
   const wrapperEditorElRef: {
     current: HTMLElement
@@ -60,6 +70,12 @@ const SimplifiedEditor = (props: Props) => {
     current: null
   }
 
+  const textBubbleMenuRef: {
+    current: HTMLDivElement
+  } = {
+    current: null
+  }
+
   const {
     actions: { setEditor }
   } = useEditorContext()
@@ -69,6 +85,7 @@ const SimplifiedEditor = (props: Props) => {
     content: 'figcaption image'
   })
 
+  const content = props.initialContent
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
@@ -85,9 +102,23 @@ const SimplifiedEditor = (props: Props) => {
       Link.configure({
         openOnClick: false
       }),
+
+      CharacterCount.configure({
+        limit: 100
+      }),
       Blockquote.configure({
         HTMLAttributes: {
           class: styles.blockQuote
+        }
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'textBubbleMenu',
+        element: textBubbleMenuRef.current,
+        shouldShow: ({ view, state }) => {
+          if (!props.onlyBubbleControls) return
+          const { selection } = state
+          const { empty } = selection
+          return view.hasFocus() && !empty
         }
       }),
       ImageFigure,
@@ -98,7 +129,7 @@ const SimplifiedEditor = (props: Props) => {
         placeholder: props.placeholder
       })
     ],
-    content: props.initialContent ?? null
+    content: content ?? null
   }))
 
   setEditor(editor)
@@ -193,94 +224,110 @@ const SimplifiedEditor = (props: Props) => {
 
   const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
 
+  createEffect(() => {
+    if (html()) {
+      setCounter(editor().storage.characterCount.characters())
+    }
+  })
   return (
     <div
       ref={(el) => (wrapperEditorElRef.current = el)}
       class={clsx(styles.SimplifiedEditor, {
         [styles.smallHeight]: props.smallHeight,
-        [styles.isFocused]: isFocused() || !isEmpty()
+        [styles.minimal]: props.variant === 'minimal',
+        [styles.bordered]: props.variant === 'bordered',
+        [styles.isFocused]: isFocused() || !isEmpty(),
+        [styles.labelVisible]: props.label && counter() > 0
       })}
     >
+      <Show when={props.maxLength && editor()}>
+        <div class={styles.limit}>{MAX_DESCRIPTION_LIMIT - counter()}</div>
+      </Show>
+      <Show when={props.label && counter() > 0}>
+        <div class={styles.label}>{props.label}</div>
+      </Show>
       <div ref={(el) => (editorElRef.current = el)} />
-      <div class={styles.controls}>
-        <div class={styles.actions}>
-          <Popover content={t('Bold')}>
-            {(triggerRef: (el) => void) => (
-              <button
-                ref={triggerRef}
-                type="button"
-                class={clsx(styles.actionButton, { [styles.active]: isBold() })}
-                onClick={() => editor().chain().focus().toggleBold().run()}
-              >
-                <Icon name="editor-bold" />
-              </button>
-            )}
-          </Popover>
-          <Popover content={t('Italic')}>
-            {(triggerRef: (el) => void) => (
-              <button
-                ref={triggerRef}
-                type="button"
-                class={clsx(styles.actionButton, { [styles.active]: isItalic() })}
-                onClick={() => editor().chain().focus().toggleItalic().run()}
-              >
-                <Icon name="editor-italic" />
-              </button>
-            )}
-          </Popover>
-          <Popover content={t('Add url')}>
-            {(triggerRef: (el) => void) => (
-              <button
-                ref={triggerRef}
-                type="button"
-                onClick={handleInsertLink}
-                class={clsx(styles.actionButton, { [styles.active]: isLink() })}
-              >
-                <Icon name="editor-link" />
-              </button>
-            )}
-          </Popover>
-          <Show when={props.quoteEnabled}>
-            <Popover content={t('Add blockquote')}>
+      <Show when={!props.onlyBubbleControls}>
+        <div class={styles.controls}>
+          <div class={styles.actions}>
+            <Popover content={t('Bold')}>
               {(triggerRef: (el) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={() => editor().chain().focus().toggleBlockquote().run()}
-                  class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
+                  class={clsx(styles.actionButton, { [styles.active]: isBold() })}
+                  onClick={() => editor().chain().focus().toggleBold().run()}
                 >
-                  <Icon name="editor-quote" />
+                  <Icon name="editor-bold" />
                 </button>
               )}
             </Popover>
-          </Show>
-          <Show when={props.imageEnabled}>
-            <Popover content={t('Add image')}>
+            <Popover content={t('Italic')}>
               {(triggerRef: (el) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={() => showModal('uploadImage')}
-                  class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
+                  class={clsx(styles.actionButton, { [styles.active]: isItalic() })}
+                  onClick={() => editor().chain().focus().toggleItalic().run()}
                 >
-                  <Icon name="editor-image-dd-full" />
+                  <Icon name="editor-italic" />
                 </button>
               )}
             </Popover>
+            <Popover content={t('Add url')}>
+              {(triggerRef: (el) => void) => (
+                <button
+                  ref={triggerRef}
+                  type="button"
+                  onClick={handleInsertLink}
+                  class={clsx(styles.actionButton, { [styles.active]: isLink() })}
+                >
+                  <Icon name="editor-link" />
+                </button>
+              )}
+            </Popover>
+            <Show when={props.quoteEnabled}>
+              <Popover content={t('Add blockquote')}>
+                {(triggerRef: (el) => void) => (
+                  <button
+                    ref={triggerRef}
+                    type="button"
+                    onClick={() => editor().chain().focus().toggleBlockquote().run()}
+                    class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
+                  >
+                    <Icon name="editor-quote" />
+                  </button>
+                )}
+              </Popover>
+            </Show>
+            <Show when={props.imageEnabled}>
+              <Popover content={t('Add image')}>
+                {(triggerRef: (el) => void) => (
+                  <button
+                    ref={triggerRef}
+                    type="button"
+                    onClick={() => showModal('uploadImage')}
+                    class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
+                  >
+                    <Icon name="editor-image-dd-full" />
+                  </button>
+                )}
+              </Popover>
+            </Show>
+          </div>
+          <Show when={!props.onChange}>
+            <div class={styles.buttons}>
+              <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
+              <Button
+                value={props.submitButtonText ?? t('Send')}
+                variant="primary"
+                disabled={isEmpty()}
+                onClick={() => props.onSubmit(html())}
+              />
+            </div>
           </Show>
         </div>
-        <Show when={!props.onChange}>
-          <div class={styles.buttons}>
-            <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
-            <Button
-              value={props.submitButtonText ?? t('Send')}
-              variant="primary"
-              disabled={isEmpty()}
-              onClick={() => props.onSubmit(html())}
-            />
-          </div>
-        </Show>
-      </div>
+      </Show>
       <Modal variant="narrow" name="editorInsertLink">
         <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
       </Modal>
@@ -292,6 +339,13 @@ const SimplifiedEditor = (props: Props) => {
             }}
           />
         </Modal>
+      </Show>
+      <Show when={props.onlyBubbleControls}>
+        <TextBubbleMenu
+          isCommonMarkup={true}
+          editor={editor()}
+          ref={(el) => (textBubbleMenuRef.current = el)}
+        />
       </Show>
     </div>
   )

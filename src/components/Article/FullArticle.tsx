@@ -1,4 +1,4 @@
-import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
@@ -128,23 +128,66 @@ export const FullArticle = (props: Props) => {
     setIsReactionsLoaded(true)
   })
 
+  const clickHandlers = []
+  const documentClickHandlers = []
+
   onMount(() => {
     const tooltipElements: NodeListOf<HTMLLinkElement> =
       document.querySelectorAll('[data-toggle="tooltip"]')
     if (!tooltipElements) return
+
     tooltipElements.forEach((element) => {
       const tooltip = document.createElement('div')
       tooltip.classList.add(styles.tooltip)
       tooltip.textContent = element.dataset.originalTitle
       document.body.appendChild(tooltip)
-      createPopper(element, tooltip, { placement: 'top' })
+      element.setAttribute('href', 'javascript: void(0);')
+      createPopper(element, tooltip, {
+        placement: 'top',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8]
+            }
+          }
+        ]
+      })
+
       tooltip.style.visibility = 'hidden'
-      element.addEventListener('mouseenter', () => {
-        tooltip.style.visibility = 'visible'
-      })
-      element.addEventListener('mouseleave', () => {
-        tooltip.style.visibility = 'hidden'
-      })
+      let isTooltipVisible = false
+
+      const handleClick = () => {
+        if (isTooltipVisible) {
+          tooltip.style.visibility = 'hidden'
+          isTooltipVisible = false
+        } else {
+          tooltip.style.visibility = 'visible'
+          isTooltipVisible = true
+        }
+      }
+
+      const handleDocumentClick = (e) => {
+        if (isTooltipVisible && e.target !== element && e.target !== tooltip) {
+          tooltip.style.visibility = 'hidden'
+          isTooltipVisible = false
+        }
+      }
+
+      element.addEventListener('click', handleClick)
+      document.addEventListener('click', handleDocumentClick)
+
+      clickHandlers.push({ element, handler: handleClick })
+      documentClickHandlers.push(handleDocumentClick)
+    })
+  })
+
+  onCleanup(() => {
+    clickHandlers.forEach(({ element, handler }) => {
+      element.removeEventListener('click', handler)
+    })
+    documentClickHandlers.forEach((handler) => {
+      document.removeEventListener('click', handler)
     })
   })
 

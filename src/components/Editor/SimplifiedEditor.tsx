@@ -104,7 +104,7 @@ const SimplifiedEditor = (props: Props) => {
       }),
 
       CharacterCount.configure({
-        limit: 100
+        limit: MAX_DESCRIPTION_LIMIT
       }),
       Blockquote.configure({
         HTMLAttributes: {

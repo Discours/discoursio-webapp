@@ -190,7 +190,7 @@ export const PublishSettings = (props: Props) => {
                 smallHeight={true}
                 placeholder={t('Write a short introduction')}
                 label={t('Description')}
-                initialContent={settingsForm.description}
+                initialContent={composeDescription()}
                 onChange={(value) => setForm('description', value)}
                 maxLength={MAX_DESCRIPTION_LIMIT}
               />

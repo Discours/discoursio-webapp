@@ -562,7 +562,12 @@ a[data-toggle='tooltip'] {
 }
 
 .lead {
-  @include font-size(1.6rem);
+  @include font-size(1.8rem);
 
-  font-weight: 500;
+  font-weight: 600;
+
+  b,
+  strong {
+    font-weight: 700;
+  }
 }

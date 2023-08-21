@@ -137,8 +137,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         slug: formToUpdate.slug,
         subtitle: formToUpdate.subtitle,
         title: formToUpdate.title,
-        // lead: formToUpdate.lead,
-        // description: formToUpdate.description,
+        lead: formToUpdate.lead,
+        description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
         media: formToUpdate.media
       },
@@ -147,7 +147,6 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const saveShout = async (formToSave: ShoutForm) => {
-    console.log('!!! formToSave:', formToSave)
     if (isEditorPanelVisible()) {
       toggleEditorPanel()
     }

@@ -148,7 +148,6 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  console.log('!!! :', props.article)
   return (
     <>
       <Title>{props.article.title}</Title>

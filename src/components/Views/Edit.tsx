@@ -64,6 +64,8 @@ export const EditView = (props: Props) => {
       slug: props.shout.slug,
       shoutId: props.shout.id,
       title: props.shout.title,
+      lead: props.shout.lead,
+      description: props.shout.description,
       subtitle: props.shout.subtitle,
       selectedTopics: shoutTopics,
       mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,

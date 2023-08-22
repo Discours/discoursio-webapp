@@ -5,6 +5,8 @@ export default gql`
     loadShouts(options: $options) {
       id
       title
+      lead
+      description
       subtitle
       slug
       layout

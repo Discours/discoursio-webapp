@@ -554,6 +554,7 @@ export type Shout = {
   createdAt: Scalars['DateTime']
   deletedAt?: Maybe<Scalars['DateTime']>
   deletedBy?: Maybe<User>
+  description?: Maybe<Scalars['String']>
   id: Scalars['Int']
   lang?: Maybe<Scalars['String']>
   layout?: Maybe<Scalars['String']>
@@ -577,7 +578,9 @@ export type ShoutInput = {
   body?: InputMaybe<Scalars['String']>
   community?: InputMaybe<Scalars['Int']>
   cover?: InputMaybe<Scalars['String']>
+  description?: InputMaybe<Scalars['String']>
   layout?: InputMaybe<Scalars['String']>
+  lead?: InputMaybe<Scalars['String']>
   mainTopic?: InputMaybe<TopicInput>
   media?: InputMaybe<Scalars['String']>
   slug?: InputMaybe<Scalars['String']>

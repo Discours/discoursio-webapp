@@ -5,6 +5,8 @@ export default gql`
     loadShout(slug: $slug, shout_id: $shoutId) {
       id
       title
+      lead
+      description
       visibility
       subtitle
       slug

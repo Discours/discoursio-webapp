@@ -577,3 +577,14 @@ a[data-toggle='tooltip'] {
     border-color: var(--black-500) transparent transparent transparent;
   }
 }
+
+.lead {
+  @include font-size(1.8rem);
+
+  font-weight: 600;
+
+  b,
+  strong {
+    font-weight: 700;
+  }
+}

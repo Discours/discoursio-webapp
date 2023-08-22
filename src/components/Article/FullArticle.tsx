@@ -233,6 +233,9 @@ export const FullArticle = (props: Props) => {
                 </Show>
               </div>
             </Show>
+            <Show when={props.article.lead}>
+              <section class={styles.lead} innerHTML={props.article.lead} />
+            </Show>
             <Show when={props.article.layout === 'audio'}>
               <AudioHeader
                 title={props.article.title}

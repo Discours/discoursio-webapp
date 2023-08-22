@@ -174,7 +174,7 @@ export const Editor = (props: Props) => {
       Image,
       Figcaption,
       Embed,
-      CharacterCount,
+      CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
         element: textBubbleMenuRef.current,

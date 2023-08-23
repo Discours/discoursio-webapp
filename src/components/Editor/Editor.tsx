@@ -246,10 +246,17 @@ export const Editor = (props: Props) => {
 
   return (
     <>
-      <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
-      <Show when={isDesktop() && html()}>
-        <TableOfContents variant="editor" parentSelector="#editorBody" body={html()} />
-      </Show>
+      <div class="row">
+        <div class="col-md-5">
+          <Show when={isDesktop() && html()}>
+            <TableOfContents variant="editor" parentSelector="#editorBody" body={html()} />
+          </Show>
+        </div>
+        <div class="col-md-12">
+          <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
+        </div>
+      </div>
+
       <TextBubbleMenu
         isCommonMarkup={isCommonMarkup()}
         editor={editor()}

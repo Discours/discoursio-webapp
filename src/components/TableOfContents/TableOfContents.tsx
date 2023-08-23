@@ -104,12 +104,7 @@ export const TableOfContents = (props: Props) => {
             }}
           >
             <Show when={isVisible()} fallback={<Icon name="show-table-of-contents" class={'icon'} />}>
-              <Icon
-                name="hide-table-of-contents"
-                class={clsx('icon', {
-                  [styles.TableOfContentsIconRotated]: props.variant === 'editor'
-                })}
-              />
+              <Icon name="hide-table-of-contents" class="icon" />
             </Show>
           </button>
         </div>

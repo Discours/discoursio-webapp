@@ -4,7 +4,7 @@ import styles from './Popover.module.scss'
 
 type Props = {
   children: (setTooltipEl: (el: HTMLElement | null) => void) => JSX.Element
-  content: string
+  content: string | JSX.Element
   disabled?: boolean
 }
 

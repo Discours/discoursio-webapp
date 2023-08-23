@@ -252,7 +252,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               </Popover>
               <div class={styles.delimiter} />
             </Show>
-            <Popover content={t('Add url')}>
+            <Popover content={<div class={styles.noWrap}>{t('Add url')}</div>}>
               {(triggerRef: (el) => void) => (
                 <button
                   ref={triggerRef}

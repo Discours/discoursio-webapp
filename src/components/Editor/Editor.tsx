@@ -159,7 +159,7 @@ export const Editor = (props: Props) => {
         }
       }),
       Placeholder.configure({
-        placeholder: t('Short opening')
+        placeholder: t('Add a link or click plus to embed media')
       }),
       Focus,
       Gapcursor,

@@ -9,6 +9,8 @@ export default gql`
         slug
         title
         subtitle
+        lead
+        description
         body
         visibility
       }

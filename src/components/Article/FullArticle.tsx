@@ -132,16 +132,18 @@ export const FullArticle = (props: Props) => {
   const documentClickHandlers = []
 
   onMount(() => {
-    const tooltipElements: NodeListOf<HTMLLinkElement> =
-      document.querySelectorAll('[data-toggle="tooltip"]')
+    const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
+      '[data-toggle="tooltip"], footnote'
+    )
     if (!tooltipElements) return
-
     tooltipElements.forEach((element) => {
       const tooltip = document.createElement('div')
       tooltip.classList.add(styles.tooltip)
-      tooltip.textContent = element.dataset.originalTitle
+      tooltip.innerHTML = element.dataset.originalTitle || element.dataset.value
       document.body.appendChild(tooltip)
-      element.setAttribute('href', 'javascript: void(0);')
+      if (element.tagName === 'a') {
+        element.setAttribute('href', 'javascript: void(0);')
+      }
       createPopper(element, tooltip, {
         placement: 'top',
         modifiers: [

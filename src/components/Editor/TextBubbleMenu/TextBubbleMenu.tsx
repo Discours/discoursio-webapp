@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -61,9 +61,23 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
   }
 
+  const currentFootnoteValue = createEditorTransaction(
+    () => props.editor,
+    (ed) => {
+      //TODO: fix it
+      return (ed && ed.getAttributes('footnote').value) || ''
+    }
+  )
+
   const handleAddFootnote = (value: string) => {
-    console.log('!!! value:', value)
     props.editor.chain().focus().setFootnote({ value }).run()
+    // TODO: add cleanup editor if we need it
+    setFootnoteEditorOpen(false)
+  }
+
+  const handleOpenFootnoteEditor = () => {
+    console.log('!!! open:', currentFootnoteValue().value)
+    setFootnoteEditorOpen(true)
   }
 
   onMount(() => {
@@ -86,6 +100,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             imageEnabled={true}
             onSubmit={(value) => handleAddFootnote(value)}
             variant={'bordered'}
+            // initialContent={currentFootnoteValue()}
             onCancel={() => {
               console.log('!!! AAA:')
             }}
@@ -292,10 +307,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                     <button
                       ref={triggerRef}
                       type="button"
-                      onClick={() => setFootnoteEditorOpen(true)}
                       class={clsx(styles.bubbleMenuButton, {
                         [styles.bubbleMenuButtonActive]: isFootnote()
                       })}
+                      onClick={handleOpenFootnoteEditor}
                     >
                       <Icon name="editor-footnote" />
                     </button>

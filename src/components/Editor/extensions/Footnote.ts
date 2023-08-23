@@ -61,6 +61,7 @@ export const Footnote = Node.create({
 
           const node = this.type.create(attributes)
           tr.insert(position, node)
+          tr.insertText('\u00A0', position + 1) // it's make selection visible
           return true
         },
       deleteFootnote:

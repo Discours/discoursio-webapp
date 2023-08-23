@@ -564,6 +564,10 @@ a[data-toggle='tooltip'] {
   background: var(--black-500);
   color: var(--default-color-invert);
 
+  p:last-child {
+    margin: 0;
+  }
+
   &::after {
     content: '';
     position: absolute;

@@ -7,6 +7,7 @@ import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
 import { Popover } from '../../_shared/Popover'
 import { InsertLinkForm } from '../InsertLinkForm'
+import SimplifiedEditor from '../SimplifiedEditor'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -27,6 +28,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
   const [listBubbleOpen, setListBubbleOpen] = createSignal(false)
   const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
+  const [footnoteEditorOpen, setFootnoteEditorOpen] = createSignal(false)
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
@@ -38,6 +40,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isBulletList = isActive('isBulletList')
   const isLink = isActive('link')
   const isHighlight = isActive('highlight')
+  const isFootnote = isActive('footnote')
 
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
@@ -58,6 +61,11 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
   }
 
+  const handleAddFootnote = (value: string) => {
+    console.log('!!! value:', value)
+    props.editor.chain().focus().setFootnote({ value }).run()
+  }
+
   onMount(() => {
     window.addEventListener('keydown', handleKeyDown)
   })
@@ -67,12 +75,23 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   })
 
   return (
-    <div ref={props.ref} class={styles.TextBubbleMenu}>
+    <div ref={props.ref} class={clsx(styles.TextBubbleMenu, { [styles.growWidth]: footnoteEditorOpen() })}>
       <Switch>
         <Match when={linkEditorOpen()}>
           <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
         </Match>
-        <Match when={!linkEditorOpen()}>
+        <Match when={footnoteEditorOpen()}>
+          <SimplifiedEditor
+            placeholder={t('Enter footnote text')}
+            imageEnabled={true}
+            onSubmit={(value) => handleAddFootnote(value)}
+            variant={'bordered'}
+            onCancel={() => {
+              console.log('!!! AAA:')
+            }}
+          />
+        </Match>
+        <Match when={!linkEditorOpen() || !footnoteEditorOpen()}>
           <>
             <Show when={!props.isCommonMarkup}>
               <>
@@ -270,7 +289,14 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               <>
                 <Popover content={t('Insert footnote')}>
                   {(triggerRef: (el) => void) => (
-                    <button ref={triggerRef} type="button" class={styles.bubbleMenuButton}>
+                    <button
+                      ref={triggerRef}
+                      type="button"
+                      onClick={() => setFootnoteEditorOpen(true)}
+                      class={clsx(styles.bubbleMenuButton, {
+                        [styles.bubbleMenuButtonActive]: isFootnote()
+                      })}
+                    >
                       <Icon name="editor-footnote" />
                     </button>
                   )}

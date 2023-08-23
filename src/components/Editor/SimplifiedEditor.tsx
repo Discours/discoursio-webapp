@@ -36,11 +36,12 @@ import { CharacterCount } from '@tiptap/extension-character-count'
 import { createStore } from 'solid-js/store'
 
 type Props = {
+  placeholder: string
   initialContent?: string
   label?: string
   onSubmit?: (text: string) => void
+  onCancel?: () => void
   onChange?: (text: string) => void
-  placeholder: string
   variant?: 'minimal' | 'bordered'
   maxLength?: number
   submitButtonText?: string
@@ -179,6 +180,9 @@ const SimplifiedEditor = (props: Props) => {
   }
 
   const handleClear = () => {
+    if (props.onCancel) {
+      props.onCancel()
+    }
     editor().commands.clearContent(true)
   }
 
@@ -317,7 +321,7 @@ const SimplifiedEditor = (props: Props) => {
           </div>
           <Show when={!props.onChange}>
             <div class={styles.buttons}>
-              <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
+              <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
               <Button
                 value={props.submitButtonText ?? t('Send')}
                 variant="primary"

@@ -1,10 +1,76 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
-import styles from './Settings.module.scss'
-import { Icon } from '../../components/_shared/Icon'
+import { For, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import { createStore } from 'solid-js/store'
 import { clsx } from 'clsx'
+import deepEqual from 'fast-deep-equal'
+
+import { useSession } from '../../context/session'
+import { useProfileSecurityForm } from '../../context/profileSecurity'
+import { useSnackbar } from '../../context/snackbar'
+import { useLocalize } from '../../context/localize'
+
+import { PageLayout } from '../../components/_shared/PageLayout'
+import { Icon } from '../../components/_shared/Icon'
 import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
+import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
+
+import { clone } from '../../utils/clone'
+
+import styles from './Settings.module.scss'
 
 export const ProfileSecurityPage = () => {
+  const { t } = useLocalize()
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
+
+  const {
+    actions: { loadSession }
+  } = useSession()
+
+  const { form, updateFormField, submit, slugError } = useProfileSecurityForm()
+  const [prevForm, setPrevForm] = createStore(clone(form))
+
+  const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
+
+  const handleSubmit = async (event: Event) => {
+    event.preventDefault()
+    try {
+      await submit(form)
+      setPrevForm(clone(form))
+      showSnackbar({ body: t('Profile successfully saved') })
+    } catch {
+      showSnackbar({ type: 'error', body: t('Error') })
+    }
+
+    loadSession()
+  }
+
+  const [hostname, setHostname] = createSignal<string | null>(null)
+
+  onMount(() => {
+    setHostname(window?.location.host)
+
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const handleBeforeUnload = (event) => {
+      if (!deepEqual(form, prevForm)) {
+        event.returnValue = t(
+          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
+        )
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
+  })
+
+  const handleSaveProfile = () => {
+    setIsFloatingPanelVisible(false)
+    setPrevForm(clone(form))
+  }
+
+  const compareNewPasswords = (newPass: string) => {}
+
   return (
     <PageLayout>
       <div class="wide-container">
@@ -21,10 +87,24 @@ export const ProfileSecurityPage = () => {
                 <h1>Вход и&nbsp;безопасность</h1>
                 <p class="description">Настройки аккаунта, почты, пароля и&nbsp;способов входа.</p>
 
-                <form>
+                <form
+                  onSubmit={handleSubmit}
+                  onChange={() => {
+                    if (!deepEqual(form, prevForm)) {
+                      setIsFloatingPanelVisible(true)
+                    }
+                  }}
+                  enctype="multipart/form-data"
+                >
                   <h4>Почта</h4>
                   <div class="pretty-form__item">
-                    <input type="text" name="email" id="email" placeholder="Почта" />
+                    <input
+                      type="text"
+                      name="email"
+                      id="email"
+                      placeholder="Почта"
+                      onChange={(event) => updateFormField('email', event.currentTarget.value)}
+                    />
                     <label for="email">Почта</label>
                   </div>
 
@@ -36,6 +116,7 @@ export const ProfileSecurityPage = () => {
                       name="password-current"
                       id="password-current"
                       class={clsx(styles.passwordInput, 'nolabel')}
+                      onChange={(event) => updateFormField('old_password', event.currentTarget.value)}
                     />
                     <button type="button" class={styles.passwordToggleControl}>
                       <Icon name="password-hide" />
@@ -49,6 +130,7 @@ export const ProfileSecurityPage = () => {
                       name="password-new"
                       id="password-new"
                       class={clsx(styles.passwordInput, 'nolabel')}
+                      onChange={(event) => updateFormField('new_password', event.currentTarget.value)}
                     />
                     <button type="button" class={styles.passwordToggleControl}>
                       <Icon name="password-open" />
@@ -62,13 +144,14 @@ export const ProfileSecurityPage = () => {
                       name="password-new-confirm"
                       id="password-new-confirm"
                       class={clsx(styles.passwordInput, 'nolabel')}
+                      onChange={(event) => compareNewPasswords(event.currentTarget.value)}
                     />
                     <button type="button" class={styles.passwordToggleControl}>
                       <Icon name="password-open" />
                     </button>
                   </div>
 
-                  <h4>Социальные сети</h4>
+                  {/* <h4>Социальные сети</h4>
                   <h5>Google</h5>
                   <div class="pretty-form__item">
                     <p>
@@ -114,14 +197,16 @@ export const ProfileSecurityPage = () => {
                         Привязать
                       </button>
                     </p>
-                  </div>
+                  </div> */}
 
                   <br />
-                  <p>
-                    <button class="button button--submit" type="submit">
-                      Сохранить настройки
-                    </button>
-                  </p>
+                  <FloatingPanel
+                    isVisible={isFloatingPanelVisible()}
+                    confirmTitle={t('Save settings')}
+                    confirmAction={handleSaveProfile}
+                    declineTitle={t('Cancel')}
+                    declineAction={() => setIsFloatingPanelVisible(false)}
+                  />
                 </form>
               </div>
             </div>

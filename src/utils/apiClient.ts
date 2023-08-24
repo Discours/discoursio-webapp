@@ -12,6 +12,7 @@ import type {
   MutationCreateMessageArgs,
   QueryLoadRecipientsArgs,
   ProfileInput,
+  ProfileSecurityInput,
   ReactionInput,
   Chat,
   ReactionBy,
@@ -237,6 +238,10 @@ export const apiClient = {
     return response.data.userFollowedTopics
   },
   updateProfile: async (input: ProfileInput) => {
+    const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
+    return response.data.updateProfile
+  },
+  updateProfileSecurity: async (input: ProfileSecurityInput) => {
     const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
     return response.data.updateProfile
   },

@@ -5,7 +5,7 @@ import { For, createSignal, Show, onMount, onCleanup } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
-import { useProfileForm } from '../../context/profile'
+import { useProfileFormSettings } from '../../context/profileSettings'
 import { validateUrl } from '../../utils/validateUrl'
 import { createFileUploader } from '@solid-primitives/upload'
 import { useSession } from '../../context/session'
@@ -32,7 +32,7 @@ export const ProfileSettingsPage = () => {
     actions: { loadSession }
   } = useSession()
 
-  const { form, updateFormField, submit, slugError } = useProfileForm()
+  const { form, updateFormField, submit, slugError } = useProfileFormSettings()
   const [prevForm, setPrevForm] = createStore(clone(form))
 
   const handleChangeSocial = (value: string) => {

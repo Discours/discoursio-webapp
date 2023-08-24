@@ -33,6 +33,9 @@ export type Author = {
   slug: Scalars['String']
   stat?: Maybe<AuthorStat>
   userpic?: Maybe<Scalars['String']>
+  email?: Maybe<Scalars['String']>
+  old_password?: InputMaybe<Scalars['String']>
+  new_password?: InputMaybe<Scalars['String']>
 }
 
 export type AuthorStat = {
@@ -312,6 +315,12 @@ export type ProfileInput = {
   name?: InputMaybe<Scalars['String']>
   slug?: InputMaybe<Scalars['String']>
   userpic?: InputMaybe<Scalars['String']>
+}
+
+export type ProfileSecurityInput = {
+  email?: InputMaybe<Scalars['String']>
+  old_password?: InputMaybe<Scalars['String']>
+  new_password?: InputMaybe<Scalars['String']>
 }
 
 export type Query = {

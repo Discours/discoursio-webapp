@@ -5,7 +5,7 @@ import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
 import { apiClient } from '../utils/apiClient'
 import type { ProfileInput } from '../graphql/types.gen'
 
-const useProfileForm = () => {
+const useProfileFormSettings = () => {
   const { session } = useSession()
   const currentSlug = createMemo(() => session()?.user?.slug)
   const { authorEntities } = useAuthorsStore({ authors: [] })
@@ -67,4 +67,4 @@ const useProfileForm = () => {
   return { form, submit, updateFormField, slugError }
 }
 
-export { useProfileForm }
+export { useProfileFormSettings }

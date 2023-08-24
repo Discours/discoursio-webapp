@@ -277,8 +277,11 @@ export const FullArticle = (props: Props) => {
               </div>
             </Show>
           </article>
+
           <Show when={isDesktop() && body()}>
-            <TableOfContents variant="article" parentSelector="#shoutBody" body={body()} />
+            <div class="col-md-6 offset-md-1">
+              <TableOfContents variant="article" parentSelector="#shoutBody" body={body()} />
+            </div>
           </Show>
         </div>
       </div>

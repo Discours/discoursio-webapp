@@ -1,6 +1,10 @@
 .TableOfContentsFixedWrapper {
   min-height: 100%;
   top: 0;
+
+  &:not(.TableOfContentsFixedWrapperLefted) .TableOfContentsPrimaryButton {
+    transform: rotate(180deg);
+  }
 }
 
 .TableOfContentsFixedWrapperLefted {

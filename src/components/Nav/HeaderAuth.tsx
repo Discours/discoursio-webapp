@@ -1,4 +1,4 @@
-import styles from './Header.module.scss'
+import styles from './Header/Header.module.scss'
 import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 import { Icon } from '../_shared/Icon'

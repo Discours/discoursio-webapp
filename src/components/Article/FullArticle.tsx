@@ -2,18 +2,13 @@ import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup }
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
-
 import MD from './MD'
-
 import type { Author, Shout } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
-
 import { MediaItem } from '../../pages/types'
-
 import { router, useRouter } from '../../stores/router'
-
 import { formatDate } from '../../utils'
 import { getDescription } from '../../utils/meta'
 import { imageProxy } from '../../utils/imageProxy'
@@ -26,7 +21,6 @@ import { ShoutRatingControl } from './ShoutRatingControl'
 import { CommentsTree } from './CommentsTree'
 import stylesHeader from '../Nav/Header.module.scss'
 import { AudioHeader } from './AudioHeader'
-
 import { Popover } from '../_shared/Popover'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { Icon } from '../_shared/Icon'
@@ -47,6 +41,7 @@ export const FullArticle = (props: Props) => {
     isAuthenticated,
     actions: { requireAuthentication }
   } = useSession()
+
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
@@ -131,7 +126,11 @@ export const FullArticle = (props: Props) => {
   const clickHandlers = []
   const documentClickHandlers = []
 
-  onMount(() => {
+  createEffect(() => {
+    if (!body()) {
+      return
+    }
+
     const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
       '[data-toggle="tooltip"], footnote'
     )

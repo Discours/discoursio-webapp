@@ -5,7 +5,7 @@ import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { useRouter } from '../../stores/router'
 import { ShoutForm, useEditorContext } from '../../context/editor'
-import { Editor, Panel } from '../Editor'
+import { Editor, Panel, UploadModalContent } from '../Editor'
 import { Icon } from '../_shared/Icon'
 import styles from './Edit.module.scss'
 import { imageProxy } from '../../utils/imageProxy'
@@ -22,6 +22,7 @@ import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 import { PublishSettings } from './PublishSettings'
 import { createStore } from 'solid-js/store'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
+import { Modal } from '../Nav/Modal'
 
 type Props = {
   shout: Shout

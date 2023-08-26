@@ -16,6 +16,7 @@ export type ModalType =
   | 'donate'
   | 'inviteToChat'
   | 'uploadImage'
+  | 'uploadImage2'
   | 'uploadCoverImage'
   | 'editorInsertLink'
 
@@ -36,6 +37,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   donate: 'donate',
   inviteToChat: 'inviteToChat',
   uploadImage: 'uploadImage',
+  uploadImage2: 'uploadImage2',
   uploadCoverImage: 'uploadCoverImage',
   editorInsertLink: 'editorInsertLink'
 }

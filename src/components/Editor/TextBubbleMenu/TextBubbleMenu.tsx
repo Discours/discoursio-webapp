@@ -8,8 +8,8 @@ import { useLocalize } from '../../../context/localize'
 import { Popover } from '../../_shared/Popover'
 import { InsertLinkForm } from '../InsertLinkForm'
 import SimplifiedEditor from '../SimplifiedEditor'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { Button } from '../../_shared/Button'
+import { showModal } from '../../../stores/ui'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -101,7 +101,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
           <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
         </Match>
         <Match when={footnoteEditorOpen()}>
+          <Button size={'S'} onClick={() => showModal('uploadImage')} value={'img'} />
           <SimplifiedEditor
+            imageEnabled={true}
             placeholder={t('Enter footnote text')}
             onSubmit={(value) => handleAddFootnote(value)}
             variant={'bordered'}

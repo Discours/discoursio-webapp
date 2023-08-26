@@ -74,14 +74,6 @@ export const FigureBubbleMenu = (props: Props) => {
           </button>
         )}
       </Popover>
-
-      <Modal variant="narrow" name="uploadImage">
-        <UploadModalContent
-          onClose={(value) => {
-            handleUpload(value)
-          }}
-        />
-      </Modal>
     </div>
   )
 }

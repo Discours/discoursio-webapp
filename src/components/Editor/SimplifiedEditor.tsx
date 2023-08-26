@@ -1,4 +1,5 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Portal } from 'solid-js/web'
 import {
   createEditorTransaction,
   createTiptapEditor,
@@ -310,7 +311,7 @@ const SimplifiedEditor = (props: Props) => {
                   <button
                     ref={triggerRef}
                     type="button"
-                    onClick={() => showModal('uploadImage')}
+                    onClick={() => showModal('uploadImage2')}
                     class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
                   >
                     <Icon name="editor-image-dd-full" />
@@ -336,13 +337,15 @@ const SimplifiedEditor = (props: Props) => {
         <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
       </Modal>
       <Show when={props.imageEnabled}>
-        <Modal variant="narrow" name="uploadImage">
-          <UploadModalContent
-            onClose={(value) => {
-              renderImage(value)
-            }}
-          />
-        </Modal>
+        <Portal>
+          <Modal variant="narrow" name="uploadImage2">
+            <UploadModalContent
+              onClose={(value) => {
+                renderImage(value)
+              }}
+            />
+          </Modal>
+        </Portal>
       </Show>
       <Show when={props.onlyBubbleControls}>
         <TextBubbleMenu

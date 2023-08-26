@@ -67,19 +67,22 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const currentFootnoteValue = createEditorTransaction(
     () => props.editor,
     (ed) => {
-      //TODO: fix it
       return (ed && ed.getAttributes('footnote').value) || ''
     }
   )
 
   const handleAddFootnote = (footnote) => {
-    props.editor.chain().focus().setFootnote({ value: footnote }).run()
-    // TODO: add cleanup editor if we need it
+    if (footNote()) {
+      props.editor.chain().focus().updateFootnote(footnote).run()
+    } else {
+      props.editor.chain().focus().setFootnote({ value: footnote }).run()
+    }
+    setFootNote()
     setFootnoteEditorOpen(false)
   }
 
   const handleOpenFootnoteEditor = () => {
-    console.log('!!! open:', currentFootnoteValue())
+    setFootNote(currentFootnoteValue())
     setFootnoteEditorOpen(true)
   }
 
@@ -100,13 +103,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
         <Match when={footnoteEditorOpen()}>
           <SimplifiedEditor
             placeholder={t('Enter footnote text')}
-            imageEnabled={true}
             onSubmit={(value) => handleAddFootnote(value)}
             variant={'bordered'}
             initialContent={currentFootnoteValue().value ?? null}
             onCancel={() => {
-              console.log('!!! FootNote Cancel:')
+              setFootnoteEditorOpen(false)
             }}
+            submitButtonText={t('Send')}
           />
         </Match>
         <Match when={!linkEditorOpen() || !footnoteEditorOpen()}>

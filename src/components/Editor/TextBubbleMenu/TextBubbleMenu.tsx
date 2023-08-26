@@ -72,8 +72,8 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
   )
 
-  const handleAddFootnote = () => {
-    props.editor.chain().focus().setFootnote({ value: footNote() }).run()
+  const handleAddFootnote = (footnote) => {
+    props.editor.chain().focus().setFootnote({ value: footnote }).run()
     // TODO: add cleanup editor if we need it
     setFootnoteEditorOpen(false)
   }
@@ -98,23 +98,16 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
           <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
         </Match>
         <Match when={footnoteEditorOpen()}>
-          <GrowingTextarea
+          <SimplifiedEditor
             placeholder={t('Enter footnote text')}
-            value={(value) => setFootNote(value)}
-            allowEnterKey={true}
-            initialValue={(currentFootnoteValue().value as string) ?? null}
+            imageEnabled={true}
+            onSubmit={(value) => handleAddFootnote(value)}
+            variant={'bordered'}
+            initialContent={currentFootnoteValue().value ?? null}
+            onCancel={() => {
+              console.log('!!! FootNote Cancel:')
+            }}
           />
-          <Button value={'ADD'} onClick={handleAddFootnote} />
-          {/*<SimplifiedEditor*/}
-          {/*  placeholder={t('Enter footnote text')}*/}
-          {/*  imageEnabled={true}*/}
-          {/*  onSubmit={(value) => handleAddFootnote(value)}*/}
-          {/*  variant={'bordered'}*/}
-          {/*  initialContent={currentFootnoteValue() ?? null}*/}
-          {/*  onCancel={() => {*/}
-          {/*    console.log('!!! AAA:')*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Match>
         <Match when={!linkEditorOpen() || !footnoteEditorOpen()}>
           <>

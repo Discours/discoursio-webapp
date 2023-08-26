@@ -93,8 +93,9 @@ $navigation-reserve: 32px;
     position: absolute;
     top: 16px;
     right: 16px;
-    background: rgba(#000, 0.3);
+    background: rgba(var(--default-color), 0.3);
     cursor: pointer;
+    z-index: 12;
     display: none;
 
     .icon {
@@ -129,13 +130,13 @@ $navigation-reserve: 32px;
       background: var(--placeholder-color-semi);
       position: relative;
 
-      &:hover .action {
-        display: flex;
-      }
-
       img {
         max-height: 100%;
       }
+    }
+
+    &:hover .action {
+      display: flex;
     }
   }
   &.editorMode {

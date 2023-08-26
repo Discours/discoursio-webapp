@@ -59,6 +59,7 @@ export const Footnote = Node.create({
           const { selection } = state
           const position = selection.$to.pos
 
+          console.log('!!! attributes:', attributes)
           const node = this.type.create(attributes)
           tr.insert(position, node)
           tr.insertText('\u00A0', position + 1) // it's make selection visible

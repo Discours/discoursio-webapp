@@ -99,9 +99,9 @@ export const TableOfContents = (props: Props) => {
             })}
             onClick={(e) => {
               e.preventDefault()
-
               toggleIsVisible()
             }}
+            title={isVisible() ? t('Hide table of contents') : t('Show table of contents')}
           >
             <Show when={isVisible()} fallback={<Icon name="show-table-of-contents" class={'icon'} />}>
               <Icon name="hide-table-of-contents" class="icon" />

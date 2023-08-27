@@ -1,12 +1,13 @@
 .errorPageWrapper {
   height: 100vh;
+  margin: -120px 0 -2em;
   padding-top: 100px;
 }
 
 .errorPage {
   position: relative;
   top: 35%;
-  transform: translateY(-45%);
+  transform: translateY(-50%);
 
   .image-link:hover {
     background: none;
@@ -36,6 +37,7 @@
 .errorImage {
   display: block;
   margin: auto;
+  max-height: 60vh;
   width: 85%;
 }
 

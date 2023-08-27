@@ -107,7 +107,7 @@ export const HeaderAuth = (props: Props) => {
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
-        <div class={clsx(styles.usernav, 'col')}>
+        <div class={clsx(styles.usernav, 'col')} classList={{ [styles.usernavEditor]: showSaveButton() }}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
             <Show when={showCreatePostButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

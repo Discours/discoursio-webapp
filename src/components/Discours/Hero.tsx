@@ -1,4 +1,4 @@
-import './Hero.scss'
+import styles from './Hero.module.scss'
 
 import { showModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
@@ -6,10 +6,10 @@ import { useLocalize } from '../../context/localize'
 export default () => {
   const { t } = useLocalize()
   return (
-    <div class="about-discours">
+    <div class={styles.aboutDiscours}>
       <div class="wide-container">
         <div class="row">
-          <div class="col-lg-20 offset-lg-2 col-xl-16 offset-xl-4">
+          <div class="col-lg-20 offset-lg-2 col-xl-18 offset-xl-3">
             <h4>{t('Horizontal collaborative journalistic platform')}</h4>
             <p>
               {t(
@@ -24,15 +24,12 @@ export default () => {
                 .
               </em>
             </p>
-            <div class="about-discours__actions">
+            <div class={styles.aboutDiscoursActions}>
+              <a class="button" href="/create">
+                {t('Create post')}
+              </a>
               <a class="button" onClick={() => showModal('auth')}>
                 {t('Join the community')}
-              </a>
-              <a class="button" href="/create">
-                {t('Become an author')}
-              </a>
-              <a class="button" href="/about/manifest">
-                {t('About the project')}
               </a>
               <a class="button" href="/about/help">
                 {t('Support us')}

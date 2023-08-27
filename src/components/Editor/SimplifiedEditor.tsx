@@ -208,7 +208,7 @@ const SimplifiedEditor = (props: Props) => {
 
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
       event.preventDefault()
-      showModal('editorInsertLink')
+      showModal('simplifiedEditorInsertLink')
     }
   }
 
@@ -226,7 +226,7 @@ const SimplifiedEditor = (props: Props) => {
     })
   }
 
-  const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
+  const handleInsertLink = () => !editor().state.selection.empty && showModal('simplifiedEditorInsertLink')
 
   createEffect(() => {
     if (html()) {
@@ -310,7 +310,7 @@ const SimplifiedEditor = (props: Props) => {
                   <button
                     ref={triggerRef}
                     type="button"
-                    onClick={() => showModal('uploadImage2')}
+                    onClick={() => showModal('simplifiedEditorUploadImage')}
                     class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
                   >
                     <Icon name="editor-image-dd-full" />
@@ -332,12 +332,14 @@ const SimplifiedEditor = (props: Props) => {
           </Show>
         </div>
       </Show>
-      <Modal variant="narrow" name="editorInsertLink">
-        <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
-      </Modal>
+      <Portal>
+        <Modal variant="narrow" name="simplifiedEditorInsertLink">
+          <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
+        </Modal>
+      </Portal>
       <Show when={props.imageEnabled}>
         <Portal>
-          <Modal variant="narrow" name="uploadImage2">
+          <Modal variant="narrow" name="simplifiedEditorUploadImage">
             <UploadModalContent
               onClose={(value) => {
                 renderImage(value)

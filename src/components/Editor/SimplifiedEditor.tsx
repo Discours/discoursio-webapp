@@ -34,7 +34,6 @@ import { Figcaption } from './extensions/Figcaption'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
-import { createStore } from 'solid-js/store'
 
 type Props = {
   placeholder: string

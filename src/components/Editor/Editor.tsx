@@ -232,7 +232,7 @@ export const Editor = (props: Props) => {
   }))
 
   const {
-    actions: { countWords, setEditor, uploadedFile }
+    actions: { countWords, setEditor }
   } = useEditorContext()
 
   setEditor(editor)

@@ -31,14 +31,9 @@ export type ShoutForm = {
   media?: string
 }
 
-type File = {
-  variant: 'big' | 'mini'
-} & UploadedFile
-
 type EditorContextType = {
   isEditorPanelVisible: Accessor<boolean>
   wordCounter: Accessor<WordCounter>
-  uploadedFileData: Accessor<UploadedFile>
   form: ShoutForm
   formErrors: Record<keyof ShoutForm, string>
   editorRef: { current: () => Editor }
@@ -52,7 +47,6 @@ type EditorContextType = {
     deleteShout: (shoutId: number) => Promise<boolean>
     toggleEditorPanel: () => void
     countWords: (value: WordCounter) => void
-    uploadedFile: (value: UploadedFile) => void
     setForm: SetStoreFunction<ShoutForm>
     setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
     setEditor: (editor: () => Editor) => void
@@ -103,12 +97,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     characters: 0,
     words: 0
   })
-  const [uploadedFileData, setUploadedFileData] = createSignal<UploadedFile>(null)
-
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const countWords = (value) => setWordCounter(value)
-  const uploadedFile = (value) => setUploadedFileData(value)
-
   const validate = () => {
     if (!form.title) {
       setFormErrors('title', t('Required'))
@@ -257,7 +247,6 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     deleteShout,
     toggleEditorPanel,
     countWords,
-    uploadedFile,
     setForm,
     setFormErrors,
     setEditor
@@ -269,8 +258,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     formErrors,
     editorRef,
     isEditorPanelVisible,
-    wordCounter,
-    uploadedFileData
+    wordCounter
   }
 
   return <EditorContext.Provider value={value}>{props.children}</EditorContext.Provider>

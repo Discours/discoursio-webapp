@@ -295,7 +295,7 @@ export const AuthorView = (props: AuthorProps) => {
           </Show>
 
           <Show when={sortedArticles().length === 3}>
-            <Row3 articles={sortedArticles()} isEqual={true} noAuthorLink={true} />
+            <Row3 articles={sortedArticles()} noAuthorLink={true} />
           </Show>
 
           <Show when={sortedArticles().length > 3}>

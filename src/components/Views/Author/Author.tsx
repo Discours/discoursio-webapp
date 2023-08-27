@@ -2,6 +2,7 @@ import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffe
 import type { Author, Shout, Topic } from '../../../graphql/types.gen'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
+import { Row3 } from '../../Feed/Row3'
 import { AuthorFull } from '../../Author/Full'
 
 import { useAuthorsStore } from '../../../stores/zine/authors'
@@ -136,12 +137,12 @@ export const AuthorView = (props: AuthorProps) => {
     }
   })
   return (
-    <div class="author-page">
+    <div class={styles.authorPage}>
       <div class="wide-container">
         <Show when={author()}>
           <AuthorFull author={author()} />
         </Show>
-        <div class="row group__controls">
+        <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
             <ul class="view-switcher">
               <li classList={{ 'view-switcher__item--selected': searchParams().by === 'rating' }}>
@@ -285,25 +286,39 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </Match>
         <Match when={searchParams().by === 'rating'}>
-          <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
-          <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noAuthorLink={true} />
-          <Row1 article={sortedArticles()[3]} noAuthorLink={true} />
-          <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noAuthorLink={true} />
-          <Row1 article={sortedArticles()[6]} noAuthorLink={true} />
-          <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noAuthorLink={true} />
+          <Show when={sortedArticles().length === 1}>
+            <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
+          </Show>
 
-          <For each={pages()}>
-            {(page) => (
-              <>
-                <Row1 article={page[0]} noAuthorLink={true} />
-                <Row2 articles={page.slice(1, 3)} isEqual={true} noAuthorLink={true} />
-                <Row1 article={page[3]} noAuthorLink={true} />
-                <Row2 articles={page.slice(4, 6)} isEqual={true} noAuthorLink={true} />
-                <Row1 article={page[6]} noAuthorLink={true} />
-                <Row2 articles={page.slice(7, 9)} isEqual={true} noAuthorLink={true} />
-              </>
-            )}
-          </For>
+          <Show when={sortedArticles().length === 2}>
+            <Row2 articles={sortedArticles()} isEqual={true} noAuthorLink={true} />
+          </Show>
+
+          <Show when={sortedArticles().length === 3}>
+            <Row3 articles={sortedArticles()} isEqual={true} noAuthorLink={true} />
+          </Show>
+
+          <Show when={sortedArticles().length > 3}>
+            <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
+            <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noAuthorLink={true} />
+            <Row1 article={sortedArticles()[3]} noAuthorLink={true} />
+            <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noAuthorLink={true} />
+            <Row1 article={sortedArticles()[6]} noAuthorLink={true} />
+            <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noAuthorLink={true} />
+
+            <For each={pages()}>
+              {(page) => (
+                <>
+                  <Row1 article={page[0]} noAuthorLink={true} />
+                  <Row2 articles={page.slice(1, 3)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={page[3]} noAuthorLink={true} />
+                  <Row2 articles={page.slice(4, 6)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={page[6]} noAuthorLink={true} />
+                  <Row2 articles={page.slice(7, 9)} isEqual={true} noAuthorLink={true} />
+                </>
+              )}
+            </For>
+          </Show>
 
           <Show when={isLoadMoreButtonVisible()}>
             <p class="load-more-container">

@@ -18,6 +18,10 @@
   display: flex;
   flex: 1;
 
+  &.authorDetailsShrinked {
+    flex: 0 0 auto;
+  }
+
   @include media-breakpoint-down(sm) {
     flex-wrap: wrap;
   }
@@ -65,22 +69,21 @@
 
 .authorSubscribe {
   align-items: center;
-  display: flex;
+  //display: flex;
 
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;
   }
 
   a {
-    background: #f7f7f7;
     border: none;
     display: inline-block;
-    height: 32px;
+    height: 24px;
     margin-right: 0.4rem;
     position: relative;
     transition: background-color 0.2s;
     vertical-align: middle;
-    width: 32px;
+    width: 24px;
 
     &::before {
       background-image: url(/icons/user-link-default.svg);
@@ -88,40 +91,39 @@
       background-position: 50% 50%;
       background-size: contain;
       content: '';
-      filter: invert(1);
-      height: 18px;
+      height: 100%;
       left: 50%;
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
       transition: filter 0.2s;
-      width: 18px;
+      width: 100%;
     }
 
     &:hover {
       background: #000;
 
       &::before {
-        filter: invert(0);
+        filter: invert(1);
       }
     }
   }
 
   a[href*='facebook.com/'] {
     &::before {
-      background-image: url(/icons/facebook-white.svg);
+      background-image: url(/icons/user-link-facebook.svg);
     }
   }
 
   a[href*='twitter.com/'] {
     &::before {
-      background-image: url(/icons/twitter-white.svg);
+      background-image: url(/icons/user-link-twitter.svg);
     }
   }
 
   a[href*='telegram.com/'] {
     &::before {
-      background-image: url(/icons/telegram-white.svg);
+      background-image: url(/icons/user-link-telegram.svg);
     }
   }
 
@@ -140,7 +142,7 @@
 
   a[href*='instagram.com/'] {
     &::before {
-      background-image: url(/icons/instagram-white.svg);
+      background-image: url(/icons/user-link-instagram.svg);
     }
   }
 
@@ -171,6 +173,7 @@
 .authorSubscribeSocial {
   align-items: center;
   display: flex;
+  margin: 0 0.8rem 1.6rem;
 
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
@@ -237,8 +240,7 @@
   }
 
   .authorAbout {
-    @include font-size(1.7rem);
-
+    @include font-size(2rem);
     color: #696969;
   }
 

@@ -93,6 +93,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
     <div
       class={clsx(styles.author, props.class)}
       classList={{
+        ['row']: props.isAuthorPage,
         [styles.authorPage]: props.isAuthorPage,
         [styles.authorComments]: props.isComments,
         [styles.authorsListItem]: props.isAuthorsList,
@@ -100,17 +101,40 @@ export const AuthorCard = (props: AuthorCardProps) => {
         [styles.nowrapView]: props.isNowrap
       }}
     >
-      <Userpic
-        name={props.author.name}
-        userpic={props.author.userpic}
-        hasLink={props.hasLink}
-        isBig={props.isAuthorPage}
-        isAuthorsList={props.isAuthorsList}
-        isFeedMode={props.isFeedMode}
-        class={styles.circlewrap}
-      />
+      <Show
+        when={props.isAuthorPage}
+        fallback={
+          <Userpic
+            name={props.author.name}
+            userpic={props.author.userpic}
+            hasLink={props.hasLink}
+            isBig={props.isAuthorPage}
+            isAuthorsList={props.isAuthorsList}
+            isFeedMode={props.isFeedMode}
+            class={styles.circlewrap}
+          />
+        }
+      >
+        <div class="col-md-5">
+          <Userpic
+            name={props.author.name}
+            userpic={props.author.userpic}
+            hasLink={props.hasLink}
+            isBig={props.isAuthorPage}
+            isAuthorsList={props.isAuthorsList}
+            isFeedMode={props.isFeedMode}
+            class={styles.circlewrap}
+          />
+        </div>
+      </Show>
 
-      <div class={styles.authorDetails}>
+      <div
+        class={styles.authorDetails}
+        classList={{
+          'col-md-15 col-xl-13': props.isAuthorPage,
+          [styles.authorDetailsShrinked]: props.isAuthorPage
+        }}
+      >
         <div class={styles.authorDetailsWrapper}>
           <Show when={props.hasLink}>
             <div class={styles.authorNameContainer}>
@@ -140,6 +164,12 @@ export const AuthorCard = (props: AuthorCardProps) => {
           <Show when={isSessionLoaded()}>
             <Show when={canFollow()}>
               <div class={styles.authorSubscribe}>
+                <Show when={!props.noSocialButtons && !props.hideWriteButton}>
+                  <div class={styles.authorSubscribeSocial}>
+                    <For each={props.author.links}>{(link) => <a href={link} />}</For>
+                  </div>
+                </Show>
+
                 <Show
                   when={subscribed()}
                   fallback={
@@ -155,10 +185,10 @@ export const AuthorCard = (props: AuthorCardProps) => {
                       }}
                       disabled={isSubscribing()}
                     >
-                      <Show when={!props.isAuthorsList && !props.isTextButton}>
+                      <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
                         <Icon name="author-subscribe" class={styles.icon} />
                       </Show>
-                      <Show when={props.isTextButton}>
+                      <Show when={props.isTextButton || props.isAuthorPage}>
                         <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
                           {t('Follow')}
                         </span>
@@ -178,10 +208,10 @@ export const AuthorCard = (props: AuthorCardProps) => {
                     }}
                     disabled={isSubscribing()}
                   >
-                    <Show when={!props.isAuthorsList && !props.isTextButton}>
+                    <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
                       <Icon name="author-unsubscribe" class={styles.icon} />
                     </Show>
-                    <Show when={props.isTextButton}>
+                    <Show when={props.isTextButton || props.isAuthorPage}>
                       <span
                         class={clsx(
                           styles.buttonLabel,
@@ -215,17 +245,11 @@ export const AuthorCard = (props: AuthorCardProps) => {
                     }}
                     onClick={initChat}
                   >
-                    <Show when={!props.isTextButton}>
+                    <Show when={!props.isTextButton && !props.isAuthorPage}>
                       <Icon name="comment" class={styles.icon} />
                     </Show>
                     <Show when={!props.liteButtons || props.isTextButton}>{t('Write')}</Show>
                   </button>
-
-                  <Show when={!props.noSocialButtons}>
-                    <div class={styles.authorSubscribeSocial}>
-                      <For each={props.author.links}>{(link) => <a href={link} />}</For>
-                    </div>
-                  </Show>
                 </Show>
               </div>
             </Show>

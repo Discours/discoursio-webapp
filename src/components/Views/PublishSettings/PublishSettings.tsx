@@ -38,7 +38,8 @@ export const PublishSettings = (props: Props) => {
 
   const composeDescription = () => {
     if (!props.form.description) {
-      const leadText = props.form.body.replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
+      const cleanFootnotes = props.form.body.replaceAll(/<footnote data-value=".*?">.*?<\/footnote>/g, '')
+      const leadText = cleanFootnotes.replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
       return shorten(leadText, MAX_DESCRIPTION_LIMIT).trim()
     }
     return props.form.description

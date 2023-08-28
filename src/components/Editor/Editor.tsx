@@ -47,6 +47,7 @@ import { isDesktop } from '../../utils/media-query'
 
 import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
+import { Footnote } from './extensions/Footnote'
 
 type Props = {
   shoutId: number
@@ -173,6 +174,7 @@ export const Editor = (props: Props) => {
       ImageFigure,
       Image,
       Figcaption,
+      Footnote,
       Embed,
       CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
       BubbleMenu.configure({

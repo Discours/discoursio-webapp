@@ -92,15 +92,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const [form, setForm] = createStore<ShoutForm>(null)
   const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
-
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
     words: 0
   })
-
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const countWords = (value) => setWordCounter(value)
-
   const validate = () => {
     if (!form.title) {
       setFormErrors('title', t('Required'))

@@ -1,4 +1,5 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Portal } from 'solid-js/web'
 import {
   createEditorTransaction,
   createTiptapEditor,
@@ -33,14 +34,14 @@ import { Figcaption } from './extensions/Figcaption'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
-import { createStore } from 'solid-js/store'
 
 type Props = {
+  placeholder: string
   initialContent?: string
   label?: string
   onSubmit?: (text: string) => void
+  onCancel?: () => void
   onChange?: (text: string) => void
-  placeholder: string
   variant?: 'minimal' | 'bordered'
   maxLength?: number
   submitButtonText?: string
@@ -179,6 +180,9 @@ const SimplifiedEditor = (props: Props) => {
   }
 
   const handleClear = () => {
+    if (props.onCancel) {
+      props.onCancel()
+    }
     editor().commands.clearContent(true)
   }
 
@@ -204,7 +208,7 @@ const SimplifiedEditor = (props: Props) => {
 
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
       event.preventDefault()
-      showModal('editorInsertLink')
+      showModal('simplifiedEditorInsertLink')
     }
   }
 
@@ -222,7 +226,7 @@ const SimplifiedEditor = (props: Props) => {
     })
   }
 
-  const handleInsertLink = () => !editor().state.selection.empty && showModal('editorInsertLink')
+  const handleInsertLink = () => !editor().state.selection.empty && showModal('simplifiedEditorInsertLink')
 
   createEffect(() => {
     if (html()) {
@@ -306,7 +310,7 @@ const SimplifiedEditor = (props: Props) => {
                   <button
                     ref={triggerRef}
                     type="button"
-                    onClick={() => showModal('uploadImage')}
+                    onClick={() => showModal('simplifiedEditorUploadImage')}
                     class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
                   >
                     <Icon name="editor-image-dd-full" />
@@ -317,7 +321,7 @@ const SimplifiedEditor = (props: Props) => {
           </div>
           <Show when={!props.onChange}>
             <div class={styles.buttons}>
-              <Button value={t('Cancel')} variant="secondary" disabled={isEmpty()} onClick={handleClear} />
+              <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
               <Button
                 value={props.submitButtonText ?? t('Send')}
                 variant="primary"
@@ -328,17 +332,21 @@ const SimplifiedEditor = (props: Props) => {
           </Show>
         </div>
       </Show>
-      <Modal variant="narrow" name="editorInsertLink">
-        <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
-      </Modal>
-      <Show when={props.imageEnabled}>
-        <Modal variant="narrow" name="uploadImage">
-          <UploadModalContent
-            onClose={(value) => {
-              renderImage(value)
-            }}
-          />
+      <Portal>
+        <Modal variant="narrow" name="simplifiedEditorInsertLink">
+          <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
         </Modal>
+      </Portal>
+      <Show when={props.imageEnabled}>
+        <Portal>
+          <Modal variant="narrow" name="simplifiedEditorUploadImage">
+            <UploadModalContent
+              onClose={(value) => {
+                renderImage(value)
+              }}
+            />
+          </Modal>
+        </Portal>
       </Show>
       <Show when={props.onlyBubbleControls}>
         <TextBubbleMenu

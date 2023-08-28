@@ -2,6 +2,10 @@
   background: var(--editor-bubble-menu-background);
   box-shadow: 0 4px 10px rgba(#000, 0.25);
 
+  &.growWidth {
+    min-width: 460px;
+  }
+
   .bubbleMenuButton {
     display: inline-flex;
     align-items: center;

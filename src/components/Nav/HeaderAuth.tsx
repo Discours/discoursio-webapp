@@ -1,4 +1,4 @@
-import styles from './Header.module.scss'
+import styles from './Header/Header.module.scss'
 import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
@@ -107,7 +107,7 @@ export const HeaderAuth = (props: Props) => {
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
-        <div class={clsx(styles.usernav, 'col')}>
+        <div class={clsx(styles.usernav, 'col')} classList={{ [styles.usernavEditor]: showSaveButton() }}>
           <div class={clsx(styles.userControl, styles.userControl, 'col')}>
             <Show when={showCreatePostButton()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>

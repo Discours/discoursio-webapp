@@ -235,7 +235,6 @@ export const EditView = (props: Props) => {
         <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
-            <AutoSaveNotice active={saving()} />
             <button
               class={clsx(styles.scrollTopButton, {
                 [styles.visible]: isScrolled()
@@ -245,6 +244,8 @@ export const EditView = (props: Props) => {
               <Icon name="up-button" class={styles.icon} />
               <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>
             </button>
+
+            <AutoSaveNotice active={saving()} />
 
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">

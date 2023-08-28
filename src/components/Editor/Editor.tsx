@@ -48,9 +48,6 @@ import { isDesktop } from '../../utils/media-query'
 import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
 import { Footnote } from './extensions/Footnote'
-import { UploadModalContent } from './UploadModalContent'
-import { Modal } from '../Nav/Modal'
-import { renderUploadedImage } from '../../utils/renderUploadedImage'
 
 type Props = {
   shoutId: number

@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'

@@ -23,6 +23,10 @@ type FormFields = {
 
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
+const handleEmailInput = (newEmail: string) => {
+  setEmail(newEmail)
+}
+
 export const RegisterForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
@@ -37,10 +41,6 @@ export const RegisterForm = () => {
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
-
-  const handleEmailInput = (newEmail: string) => {
-    setEmail(newEmail)
-  }
 
   const handleEmailBlur = () => {
     if (validateEmail(email())) {

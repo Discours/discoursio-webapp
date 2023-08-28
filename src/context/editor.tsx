@@ -9,7 +9,6 @@ import { openPage } from '@nanostores/router'
 import { router, useRouter } from '../stores/router'
 import { slugify } from '../utils/slugify'
 import { Editor } from '@tiptap/core'
-import { UploadedFile } from '../pages/types'
 
 type WordCounter = {
   characters: number

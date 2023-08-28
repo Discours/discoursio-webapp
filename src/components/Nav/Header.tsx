@@ -111,11 +111,27 @@ export const Header = (props: Props) => {
   }
 
   const toggleSubnavigation = (isShow, signal) => {
+    clearTimer()
     setIsKnowledgeBaseVisible(false)
     setIsTopicsVisible(false)
     setIsZineVisible(false)
     setIsFeedVisible(false)
-    signal(isShow)
+
+    if (signal) {
+      signal(isShow)
+    }
+  }
+
+  let timer = 0
+
+  const clearTimer = () => {
+    clearTimeout(timer)
+  }
+
+  const hideSubnavigation = () => {
+    timer = setTimeout(() => {
+      toggleSubnavigation(false)
+    }, 500)
   }
 
   return (
@@ -144,14 +160,15 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx('col offset-xl-1', styles.mainNavigationWrapper)}>
+          <div class={clsx('offset-xl-1', styles.mainNavigationWrapper)}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
             <ul class={clsx('view-switcher', styles.mainNavigation)} classList={{ fixed: fixed() }}>
               <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
                 <a
-                  onmouseover={() => toggleSubnavigation(true, setIsZineVisible)}
+                  onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
+                  onMouseOut={hideSubnavigation}
                   href={getPagePath(router, 'home')}
                 >
                   {t('zine')}
@@ -159,7 +176,8 @@ export const Header = (props: Props) => {
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route.startsWith('feed') }}>
                 <a
-                  onmouseover={() => toggleSubnavigation(true, setIsFeedVisible)}
+                  onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
+                  onMouseOut={hideSubnavigation}
                   href={getPagePath(router, 'feed')}
                 >
                   {t('feed')}
@@ -167,7 +185,8 @@ export const Header = (props: Props) => {
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'topics' }}>
                 <a
-                  onmouseover={() => toggleSubnavigation(true, setIsTopicsVisible)}
+                  onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
+                  onMouseOut={hideSubnavigation}
                   href={getPagePath(router, 'topics')}
                 >
                   {t('topics')}
@@ -177,7 +196,10 @@ export const Header = (props: Props) => {
                 <a href={getPagePath(router, 'authors')}>{t('community')}</a>
               </li>
               <li>
-                <a onmouseover={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}>
+                <a
+                  onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
+                  onMouseOut={hideSubnavigation}
+                >
                   {t('Knowledge base')}
                 </a>
               </li>
@@ -222,7 +244,12 @@ export const Header = (props: Props) => {
             </div>
           </div>
 
-          <div class={clsx(styles.subnavigation, 'col')} classList={{ hidden: !isKnowledgeBaseVisible() }}>
+          <div
+            class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isKnowledgeBaseVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
+          >
             <ul class="nodash">
               <li>
                 <a href="/about/manifest">Манифест</a>
@@ -257,7 +284,12 @@ export const Header = (props: Props) => {
             </ul>
           </div>
 
-          <div class={clsx(styles.subnavigation, 'col')} classList={{ hidden: !isZineVisible() }}>
+          <div
+            class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isZineVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
+          >
             <ul class="nodash">
               <li>
                 <a href="">Искусство</a>
@@ -298,7 +330,12 @@ export const Header = (props: Props) => {
             </ul>
           </div>
 
-          <div class={clsx(styles.subnavigation, 'col')} classList={{ hidden: !isTopicsVisible() }}>
+          <div
+            class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isTopicsVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
+          >
             <ul class="nodash">
               <li>
                 <a href="">#Интервью</a>
@@ -330,6 +367,8 @@ export const Header = (props: Props) => {
           <div
             class={clsx(styles.subnavigation, styles.subnavigationFeed, 'col')}
             classList={{ hidden: !isFeedVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
               <li>

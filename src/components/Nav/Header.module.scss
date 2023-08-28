@@ -512,18 +512,25 @@
 }
 
 .subnavigation {
-  background: #fff;
+  background: #000;
+  color: #fff;
   font-weight: 500;
   left: 0;
   position: absolute;
   top: 100%;
+  transform: translateY(-2px);
   width: 100%;
+
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
 
   ul {
     display: flex;
     flex-wrap: wrap;
     height: 6rem;
     line-height: 6rem;
+    margin-bottom: 0;
     padding: 0 150px 0 0;
     position: relative;
     overflow: hidden;
@@ -548,31 +555,33 @@
   a:link,
   a:visited {
     border: none;
+    color: #fff;
+
+    .icon {
+      filter: invert(1);
+    }
 
     &:hover {
-      .subnavigationItemName {
-        background: #000;
-      }
-
-      .icon {
-        filter: invert(1);
-      }
+      opacity: 0.5;
     }
   }
 }
 
 .subnavigationItemName {
   align-items: center;
-  background: #fff;
   display: flex;
   transition: background-color 0.3s;
 
   .subnavigationFeed & {
-    line-height: 1.4;
+    line-height: 60px;
   }
 }
 
 .subnavigationFeed {
+  ul {
+    padding-right: 0;
+  }
+
   li {
     align-items: center;
     display: flex;

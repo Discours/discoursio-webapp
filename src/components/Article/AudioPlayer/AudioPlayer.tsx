@@ -35,7 +35,8 @@ export const AudioPlayer = (props: Props) => {
       () => currentTrackIndex(),
       () => {
         setCurrentTrackDuration(0)
-      }
+      },
+      { defer: true }
     )
   )
 

@@ -12,7 +12,6 @@ export const setTopicsSort = (sortBy: TopicsSortBy) => setSortAllBy(sortBy)
 
 const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
 const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
-const [topicsByAuthor, setTopicByAuthor] = createSignal<{ [authorSlug: string]: Topic[] }>({})
 
 const sortedTopics = createLazyMemo<Topic[]>(() => {
   const topics = Object.values(topicEntities())
@@ -68,27 +67,6 @@ const addTopics = (...args: Topic[][]) => {
   })
 }
 
-export const addTopicsByAuthor = (newTopicsByAuthors: { [authorSlug: string]: Topic[] }) => {
-  const allTopics = Object.values(newTopicsByAuthors).flat()
-  addTopics(allTopics)
-
-  setTopicByAuthor((prevTopicsByAuthor) => {
-    return Object.entries(newTopicsByAuthors).reduce((acc, [authorSlug, topics]) => {
-      if (!acc[authorSlug]) {
-        acc[authorSlug] = []
-      }
-
-      topics.forEach((topic) => {
-        if (!acc[authorSlug].some((t) => t.slug === topic.slug)) {
-          acc[authorSlug].push(topic)
-        }
-      })
-
-      return acc
-    }, prevTopicsByAuthor)
-  })
-}
-
 export const loadAllTopics = async (): Promise<void> => {
   const topics = await apiClient.getAllTopics()
   addTopics(topics)
@@ -121,5 +99,5 @@ export const useTopicsStore = (initialState: InitialState = {}) => {
     setRandomTopics(initialState.randomTopics)
   }
 
-  return { topicEntities, sortedTopics, randomTopics, topTopics, topicsByAuthor }
+  return { topicEntities, sortedTopics, randomTopics, topTopics }
 }

@@ -1,7 +1,6 @@
 import type { Author, Shout, ShoutInput, Topic, LoadShoutsOptions } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { addAuthorsByTopic } from './authors'
-import { addTopicsByAuthor } from './topics'
 import { byStat } from '../../utils/sortby'
 import { createSignal } from 'solid-js'
 import { createLazyMemo } from '@solid-primitives/memo'
@@ -97,26 +96,6 @@ const addArticles = (...args: Shout[][]) => {
   }, {} as { [topicSlug: string]: Author[] })
 
   addAuthorsByTopic(authorsByTopic)
-
-  const topicsByAuthor = allArticles.reduce((acc, article) => {
-    const { authors, topics } = article
-
-    authors.forEach((author) => {
-      if (!acc[author.slug]) {
-        acc[author.slug] = []
-      }
-
-      topics.forEach((topic) => {
-        if (!acc[author.slug].some((t) => t.slug === topic.slug)) {
-          acc[author.slug].push(topic)
-        }
-      })
-    })
-
-    return acc
-  }, {} as { [authorSlug: string]: Topic[] })
-
-  addTopicsByAuthor(topicsByAuthor)
 }
 
 const addSortedArticles = (articles: Shout[]) => {

@@ -41,7 +41,8 @@ export const TopicPage = (props: PageProps) => {
         resetSortedArticles()
         await preload()
         setIsLoaded(true)
-      }
+      },
+      { defer: true }
     )
   )
 

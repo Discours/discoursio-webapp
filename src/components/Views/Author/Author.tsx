@@ -3,7 +3,6 @@ import type { Author, Shout, Topic } from '../../../graphql/types.gen'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
-import { AuthorFull } from '../../Author/Full'
 
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
@@ -140,7 +139,7 @@ export const AuthorView = (props: AuthorProps) => {
     <div class={styles.authorPage}>
       <div class="wide-container">
         <Show when={author()}>
-          <AuthorFull author={author()} />
+          <AuthorCard author={author()} isAuthorPage={true} followers={followers()} />
         </Show>
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
@@ -173,45 +172,6 @@ export const AuthorView = (props: AuthorProps) => {
             </ul>
           </div>
           <div class={clsx('col-md-8', styles.additionalControls)}>
-            <Popup
-              trigger={
-                <div class={styles.subscribers}>
-                  <Switch>
-                    <Match when={followers().length <= 3}>
-                      <For each={followers().slice(0, 3)}>
-                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
-                      </For>
-                    </Match>
-                    <Match when={followers().length > 3}>
-                      <For each={followers().slice(0, 2)}>
-                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
-                      </For>
-                      <div class={clsx(styles.userpic, styles.subscribersCounter)}>
-                        {followers().length}
-                      </div>
-                    </Match>
-                  </Switch>
-                </div>
-              }
-              variant="tiny"
-            >
-              <ul class={clsx('nodash', styles.subscribersList)}>
-                <For each={followers()}>
-                  {(item: Author) => (
-                    <li class={styles.subscriber}>
-                      <AuthorCard
-                        author={item}
-                        isNowrap={true}
-                        hideDescription={true}
-                        hideFollow={true}
-                        hasLink={true}
-                      />
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </Popup>
-
             <div class={styles.ratingContainer}>
               {t('Karma')}
               <AuthorRatingControl author={props.author} class={styles.ratingControl} />

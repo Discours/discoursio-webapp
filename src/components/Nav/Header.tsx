@@ -110,7 +110,7 @@ export const Header = (props: Props) => {
     }, 'create')
   }
 
-  const toggleSubnavigation = (isShow, signal) => {
+  const toggleSubnavigation = (isShow, signal?) => {
     clearTimer()
     setIsKnowledgeBaseVisible(false)
     setIsTopicsVisible(false)
@@ -122,7 +122,7 @@ export const Header = (props: Props) => {
     }
   }
 
-  let timer = 0
+  let timer
 
   const clearTimer = () => {
     clearTimeout(timer)

@@ -2,12 +2,11 @@ import type { Author } from '../../../graphql/types.gen'
 import { Userpic } from '../Userpic'
 import { Icon } from '../../_shared/Icon'
 import styles from './AuthorCard.module.scss'
-import { createMemo, createSignal, For, Show, Switch, Match, createEffect } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import { translit } from '../../../utils/ru2en'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../../context/session'
-import { StatMetrics } from '../../_shared/StatMetrics'
 import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { router, useRouter } from '../../../stores/router'
@@ -19,7 +18,8 @@ import { showModal } from '../../../stores/ui'
 import { TopicCard } from '../../Topic/Card'
 import { getNumeralsDeclension } from '../../../utils/getNumeralsDeclension'
 
-interface AuthorCardProps {
+type SubscriptionFilter = 'all' | 'users' | 'topics'
+type AuthorCardProps = {
   caption?: string
   hideWriteButton?: boolean
   hideDescription?: boolean
@@ -55,6 +55,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
+  const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>(props.subscriptions)
+  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
   const subscribed = createMemo<boolean>(() => {
     return session()?.news?.authors?.some((u) => u === props.author.slug) || false
@@ -99,6 +101,18 @@ export const AuthorCard = (props: AuthorCardProps) => {
       subscribe(true)
     }, 'subscribe')
   }
+
+  createEffect(() => {
+    if (props.subscriptions) {
+      if (subscriptionFilter() === 'users') {
+        setSubscriptions(props.subscriptions.filter((s) => 'name' in s))
+      } else if (subscriptionFilter() === 'topics') {
+        setSubscriptions(props.subscriptions.filter((s) => 'title' in s))
+      } else {
+        setSubscriptions(props.subscriptions)
+      }
+    }
+  })
 
   return (
     <div
@@ -183,7 +197,6 @@ export const AuthorCard = (props: AuthorCardProps) => {
               </div>
             </div>
           </Show>
-
           <Show when={props.subscriptions && props.subscriptions.length > 0}>
             <div>
               <div class={styles.subscribers} onClick={() => showModal('subscriptions')}>
@@ -207,9 +220,6 @@ export const AuthorCard = (props: AuthorCardProps) => {
                 </div>
               </div>
             </div>
-          </Show>
-          <Show when={props.author.stat}>
-            <StatMetrics fields={['shouts', 'followers', 'comments']} stat={props.author.stat} />
           </Show>
         </div>
         <ShowOnlyOnClient>
@@ -329,10 +339,27 @@ export const AuthorCard = (props: AuthorCardProps) => {
       <Show when={props.subscriptions}>
         <Modal variant="wide" name="subscriptions">
           <>
-            <h2>{t('Subscriptions')} вв</h2>
+            <h2>{t('Subscriptions')}</h2>
+            <ul class="view-switcher">
+              <li class={clsx({ 'view-switcher__item--selected': true })}>
+                <button type="button" onClick={() => setSubscriptionFilter('all')}>
+                  {t('All')} {props.subscriptions.length}
+                </button>
+              </li>
+              <li class={clsx({ 'view-switcher__item--selected': false })}>
+                <button type="button" onClick={() => setSubscriptionFilter('users')}>
+                  {t('Users')} {props.subscriptions.filter((s) => 'name' in s).length}
+                </button>
+              </li>
+              <li class={clsx({ 'view-switcher__item--selected': false })}>
+                <button type="button" onClick={() => setSubscriptionFilter('topics')}>
+                  {t('Topics')} {props.subscriptions.filter((s) => 'title' in s).length}
+                </button>
+              </li>
+            </ul>
             <div class={styles.listWrapper}>
               <div class="row">
-                <For each={props.subscriptions}>
+                <For each={subscriptions()}>
                   {(subscription: Author | Topic) => (
                     <div class="col-xs-12">
                       {isAuthor(subscription) ? (

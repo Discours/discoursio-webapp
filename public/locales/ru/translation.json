@@ -300,6 +300,7 @@
   "Subscribe what you like to tune your personal feed": "Подпишитесь на интересующие вас темы, чтобы настроить вашу персональную ленту и моментально узнавать о новых публикациях и обсуждениях",
   "Subscribe who you like to tune your personal feed": "Подпишитесь на интересующих вас авторов, чтобы настроить вашу персональную ленту и моментально узнавать о новых публикациях и обсуждениях",
   "Subscription": "Подписка",
+  "subscription": "подписка",
   "Subscriptions": "Подписки",
   "Substrate": "Подложка",
   "Success": "Успешно",
@@ -389,7 +390,6 @@
   "email not confirmed": "email не подтвержден",
   "enter": "войдите",
   "feed": "лента",
-  "follower": "подписчик",
   "general feed": "Общая лента",
   "header 1": "заголовок 1",
   "header 2": "заголовок 2",
@@ -421,5 +421,12 @@
   "video": "видео",
   "view": "просмотр",
   "zine": "журнал",
-  "Enter footnote text": "Введите текст сноски"
+  "Enter footnote text": "Введите текст сноски",
+  "follower": "подписчик",
+  "subscriber": "подписчик",
+  "subscriber_rp": "подписчика",
+  "subscribers": "подписчиков",
+  "subscription": "подписка",
+  "subscription_rp": "подписки",
+  "subscriptions": "подписок"
 }

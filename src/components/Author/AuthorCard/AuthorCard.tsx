@@ -2,18 +2,22 @@ import type { Author } from '../../../graphql/types.gen'
 import { Userpic } from '../Userpic'
 import { Icon } from '../../_shared/Icon'
 import styles from './AuthorCard.module.scss'
-import { createMemo, createSignal, For, Show, Switch, Match } from 'solid-js'
+import { createMemo, createSignal, For, Show, Switch, Match, createEffect } from 'solid-js'
 import { translit } from '../../../utils/ru2en'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { clsx } from 'clsx'
 import { useSession } from '../../../context/session'
 import { StatMetrics } from '../../_shared/StatMetrics'
 import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
-import { FollowingEntity } from '../../../graphql/types.gen'
+import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { router, useRouter } from '../../../stores/router'
 import { openPage } from '@nanostores/router'
 import { useLocalize } from '../../../context/localize'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+import { Modal } from '../../Nav/Modal'
+import { showModal } from '../../../stores/ui'
+import { TopicCard } from '../../Topic/Card'
+import { getNumeralsDeclension } from '../../../utils/getNumeralsDeclension'
 
 interface AuthorCardProps {
   caption?: string
@@ -34,6 +38,11 @@ interface AuthorCardProps {
   isNowrap?: boolean
   class?: string
   followers?: Author[]
+  subscriptions?: Array<Author | Topic>
+}
+
+function isAuthor(value: Author | Topic): value is Author {
+  return 'name' in value
 }
 
 export const AuthorCard = (props: AuthorCardProps) => {
@@ -159,17 +168,46 @@ export const AuthorCard = (props: AuthorCardProps) => {
             />
           </Show>
 
-          <Show when={props.followers}>
-            <div>
-              <div class={styles.subscribers}>
-                <For each={props.followers.slice(0, 3)}>
-                  {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
-                </For>
-                <div>{props.followers.length} подписчики</div>
+          <Show when={props.followers && props.followers.length > 0}>
+            <div class={styles.subscribers} onClick={() => showModal('followers')}>
+              <For each={props.followers.slice(0, 3)}>
+                {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
+              </For>
+              <div>
+                {props.followers.length}&nbsp;
+                {getNumeralsDeclension(props.followers.length, [
+                  t('subscriber'),
+                  t('subscriber_rp'),
+                  t('subscribers')
+                ])}
               </div>
             </div>
           </Show>
 
+          <Show when={props.subscriptions && props.subscriptions.length > 0}>
+            <div>
+              <div class={styles.subscribers} onClick={() => showModal('subscriptions')}>
+                <For each={props.subscriptions.slice(0, 3)}>
+                  {(f) => {
+                    if ('name' in f) {
+                      return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
+                    } else if ('title' in f) {
+                      return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
+                    }
+                    return null
+                  }}
+                </For>
+                <div>
+                  {props.subscriptions.length}&nbsp;
+                  {getNumeralsDeclension(props.subscriptions.length, [
+                    t('subscription'),
+                    t('subscription_rp'),
+                    t('subscriptions')
+                  ])}
+                </div>
+              </div>
+            </div>
+          </Show>
           <Show when={props.author.stat}>
             <StatMetrics fields={['shouts', 'followers', 'comments']} stat={props.author.stat} />
           </Show>
@@ -270,22 +308,51 @@ export const AuthorCard = (props: AuthorCardProps) => {
           </Show>
         </ShowOnlyOnClient>
       </div>
-
-      {/*<ul class={clsx('nodash', styles.subscribersList)}>*/}
-      {/*  <For each={props.followers}>*/}
-      {/*    {(item: Author) => (*/}
-      {/*      <li class={styles.subscriber}>*/}
-      {/*        <AuthorCard*/}
-      {/*          author={item}*/}
-      {/*          isNowrap={true}*/}
-      {/*          hideDescription={true}*/}
-      {/*          hideFollow={true}*/}
-      {/*          hasLink={true}*/}
-      {/*        />*/}
-      {/*      </li>*/}
-      {/*    )}*/}
-      {/*  </For>*/}
-      {/*</ul>*/}
+      <Show when={props.followers}>
+        <Modal variant="wide" name="followers">
+          <>
+            <h2>{t('Followers')}</h2>
+            <div class={styles.listWrapper}>
+              <div class="row">
+                <For each={props.followers}>
+                  {(follower: Author) => (
+                    <div class="col-xs-12">
+                      <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />
+                    </div>
+                  )}
+                </For>
+              </div>
+            </div>
+          </>
+        </Modal>
+      </Show>
+      <Show when={props.subscriptions}>
+        <Modal variant="wide" name="subscriptions">
+          <>
+            <h2>{t('Subscriptions')} вв</h2>
+            <div class={styles.listWrapper}>
+              <div class="row">
+                <For each={props.subscriptions}>
+                  {(subscription: Author | Topic) => (
+                    <div class="col-xs-12">
+                      {isAuthor(subscription) ? (
+                        <AuthorCard
+                          author={subscription}
+                          hideWriteButton={true}
+                          hasLink={true}
+                          isTextButton={true}
+                        />
+                      ) : (
+                        <TopicCard compact isTopicInRow showDescription topic={subscription} />
+                      )}
+                    </div>
+                  )}
+                </For>
+              </div>
+            </div>
+          </>
+        </Modal>
+      </Show>
     </div>
   )
 }

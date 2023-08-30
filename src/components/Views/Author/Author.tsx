@@ -27,24 +27,12 @@ type AuthorProps = {
 }
 
 export type AuthorPageSearchParams = {
-  by:
-    | ''
-    | 'viewed'
-    | 'rating'
-    | 'commented'
-    | 'recent'
-    | 'subscriptions'
-    | 'followers'
-    | 'about'
-    | 'popular'
+  by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'about' | 'popular'
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
-function isAuthor(value: Author | Topic): value is Author {
-  return 'name' in value
-}
 export const AuthorView = (props: AuthorProps) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
@@ -56,7 +44,6 @@ export const AuthorView = (props: AuthorProps) => {
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>([])
-  const [isLoaded, setIsLoaded] = createSignal<boolean>()
 
   const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
     try {
@@ -86,6 +73,8 @@ export const AuthorView = (props: AuthorProps) => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       await loadMore()
     }
+    const { authors, topics } = await fetchSubscriptions()
+    setSubscriptions([...authors, ...topics])
   })
 
   const loadMore = async () => {
@@ -115,13 +104,6 @@ export const AuthorView = (props: AuthorProps) => {
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
-    if (searchParams().by === 'subscriptions') {
-      setIsLoaded(false)
-      const { authors, topics } = await fetchSubscriptions()
-      setSubscriptions([...authors, ...topics])
-      setIsLoaded(true)
-    }
-
     if (searchParams().by === 'commented') {
       try {
         const data = await apiClient.getReactionsBy({
@@ -137,7 +119,12 @@ export const AuthorView = (props: AuthorProps) => {
     <div class={styles.authorPage}>
       <div class="wide-container">
         <Show when={author()}>
-          <AuthorCard author={author()} isAuthorPage={true} followers={followers()} />
+          <AuthorCard
+            author={author()}
+            isAuthorPage={true}
+            followers={followers()}
+            subscriptions={subscriptions()}
+          />
         </Show>
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
@@ -145,16 +132,6 @@ export const AuthorView = (props: AuthorProps) => {
               <li classList={{ 'view-switcher__item--selected': searchParams().by === 'rating' }}>
                 <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
                   {t('Publications')}
-                </button>
-              </li>
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'followers' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'followers')}>
-                  {t('Followers')}
-                </button>
-              </li>
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'subscriptions' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'subscriptions')}>
-                  {t('Subscriptions')}
                 </button>
               </li>
               <li classList={{ 'view-switcher__item--selected': searchParams().by === 'commented' }}>
@@ -197,52 +174,7 @@ export const AuthorView = (props: AuthorProps) => {
             </div>
           </div>
         </Match>
-        <Match when={searchParams().by === 'followers'}>
-          <div class="wide-container">
-            <div class="row">
-              <For each={followers()}>
-                {(follower: Author) => (
-                  <div class="col-md-6 col-lg-4">
-                    <AuthorCard author={follower} hideWriteButton={true} hasLink={true} />
-                  </div>
-                )}
-              </For>
-            </div>
-          </div>
-        </Match>
-        <Match when={searchParams().by === 'subscriptions'}>
-          <div class={clsx('wide-container', styles.subscriptions)}>
-            <div class="row position-relative">
-              <Show
-                when={isLoaded()}
-                fallback={
-                  <div class={styles.loadingWrapper}>
-                    <Loading />
-                  </div>
-                }
-              >
-                <For each={subscriptions()}>
-                  {(subscription: Author | Topic) => (
-                    <div class="col-md-20 col-lg-18">
-                      {isAuthor(subscription) ? (
-                        <div class={styles.authorContainer}>
-                          <AuthorCard
-                            author={subscription}
-                            hideWriteButton={true}
-                            hasLink={true}
-                            isTextButton={true}
-                          />
-                        </div>
-                      ) : (
-                        <TopicCard compact isTopicInRow showDescription topic={subscription} />
-                      )}
-                    </div>
-                  )}
-                </For>
-              </Show>
-            </div>
-          </div>
-        </Match>
+
         <Match when={searchParams().by === 'rating'}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noAuthorLink={true} />

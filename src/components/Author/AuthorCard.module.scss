@@ -130,19 +130,92 @@
   a[href*='vk.cc/'],
   a[href*='vk.com/'] {
     &::before {
-      background-image: url(/icons/vk-white.svg);
+      background-image: url(/icons/user-link-vk.svg);
     }
   }
 
   a[href*='tumblr.com/'] {
     &::before {
-      background-image: url(/icons/tumblr-white.svg);
+      background-image: url(/icons/user-link-tumblr.svg);
     }
   }
 
   a[href*='instagram.com/'] {
     &::before {
       background-image: url(/icons/user-link-instagram.svg);
+    }
+  }
+
+  a[href*='behance.net/'] {
+    &::before {
+      background-image: url(/icons/user-link-behance.svg);
+    }
+  }
+
+  a[href*='dribbble.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-dribbble.svg);
+    }
+  }
+
+  a[href*='github.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-github.svg);
+    }
+  }
+
+  a[href*='linkedin.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-linkedin.svg);
+    }
+  }
+
+  a[href*='medium.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-medium.svg);
+    }
+  }
+
+  a[href*='ok.ru/'] {
+    &::before {
+      background-image: url(/icons/user-link-ok.svg);
+    }
+  }
+
+  a[href*='pinterest.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-pinterest.svg);
+    }
+  }
+
+  a[href*='reddit.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-reddit.svg);
+    }
+  }
+
+  a[href*='tiktok.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-tiktok.svg);
+    }
+  }
+
+  a[href*='vk.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-vk.svg);
+    }
+  }
+
+  a[href*='youtube.com/'],
+  a[href*='youtu.be/'] {
+    &::before {
+      background-image: url(/icons/user-link-youtube.svg);
+    }
+  }
+
+  a[href*='dzen.ru/'] {
+    &::before {
+      background-image: url(/icons/user-link-dzen.svg);
     }
   }
 

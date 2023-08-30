@@ -1,20 +1,19 @@
-import type { Author } from '../../graphql/types.gen'
-import { Userpic } from './Userpic'
-import { Icon } from '../_shared/Icon'
+import type { Author } from '../../../graphql/types.gen'
+import { Userpic } from '../Userpic'
+import { Icon } from '../../_shared/Icon'
 import styles from './AuthorCard.module.scss'
 import { createMemo, createSignal, For, Show, Switch, Match } from 'solid-js'
-import { translit } from '../../utils/ru2en'
-import { follow, unfollow } from '../../stores/zine/common'
+import { translit } from '../../../utils/ru2en'
+import { follow, unfollow } from '../../../stores/zine/common'
 import { clsx } from 'clsx'
-import { useSession } from '../../context/session'
-import { StatMetrics } from '../_shared/StatMetrics'
-import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { FollowingEntity } from '../../graphql/types.gen'
-import { router, useRouter } from '../../stores/router'
+import { useSession } from '../../../context/session'
+import { StatMetrics } from '../../_shared/StatMetrics'
+import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
+import { FollowingEntity } from '../../../graphql/types.gen'
+import { router, useRouter } from '../../../stores/router'
 import { openPage } from '@nanostores/router'
-import { useLocalize } from '../../context/localize'
-import { ConditionalWrapper } from '../_shared/ConditionalWrapper'
-import { Popup } from '../_shared/Popup'
+import { useLocalize } from '../../../context/localize'
+import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 
 interface AuthorCardProps {
   caption?: string
@@ -161,43 +160,14 @@ export const AuthorCard = (props: AuthorCardProps) => {
           </Show>
 
           <Show when={props.followers}>
-            <Popup
-              trigger={
-                <div class={styles.subscribers}>
-                  <Switch>
-                    <Match when={props.followers.length <= 3}>
-                      <For each={props.followers.slice(0, 3)}>
-                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
-                      </For>
-                    </Match>
-                    <Match when={props.followers.length > 3}>
-                      <For each={props.followers.slice(0, 2)}>
-                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
-                      </For>
-                      <div class={clsx(styles.userpic, styles.subscribersCounter)}>
-                        {props.followers.length}
-                      </div>
-                    </Match>
-                  </Switch>
-                </div>
-              }
-            >
-              <ul class={clsx('nodash', styles.subscribersList)}>
-                <For each={props.followers}>
-                  {(item: Author) => (
-                    <li class={styles.subscriber}>
-                      <AuthorCard
-                        author={item}
-                        isNowrap={true}
-                        hideDescription={true}
-                        hideFollow={true}
-                        hasLink={true}
-                      />
-                    </li>
-                  )}
+            <div>
+              <div class={styles.subscribers}>
+                <For each={props.followers.slice(0, 3)}>
+                  {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
                 </For>
-              </ul>
-            </Popup>
+                <div>{props.followers.length} подписчики</div>
+              </div>
+            </div>
           </Show>
 
           <Show when={props.author.stat}>
@@ -300,6 +270,22 @@ export const AuthorCard = (props: AuthorCardProps) => {
           </Show>
         </ShowOnlyOnClient>
       </div>
+
+      {/*<ul class={clsx('nodash', styles.subscribersList)}>*/}
+      {/*  <For each={props.followers}>*/}
+      {/*    {(item: Author) => (*/}
+      {/*      <li class={styles.subscriber}>*/}
+      {/*        <AuthorCard*/}
+      {/*          author={item}*/}
+      {/*          isNowrap={true}*/}
+      {/*          hideDescription={true}*/}
+      {/*          hideFollow={true}*/}
+      {/*          hasLink={true}*/}
+      {/*        />*/}
+      {/*      </li>*/}
+      {/*    )}*/}
+      {/*  </For>*/}
+      {/*</ul>*/}
     </div>
   )
 }

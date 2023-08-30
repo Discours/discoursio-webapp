@@ -371,50 +371,17 @@
 
 .subscribers {
   cursor: pointer;
-  display: inline-block;
-  margin: -0.4rem 2em 0 0;
+  display: inline-flex;
   vertical-align: top;
+  align-items: center;
 
   .userpic {
-    background: #fff;
-    box-shadow: 0 0 0 2px #fff;
-    display: inline-block;
-    margin-right: -1.2rem;
+    background: var(--background-color);
+    box-shadow: 0 0 0 2px var(--background-color);
     vertical-align: top;
-  }
-}
 
-.subscribersCounter {
-  @include font-size(1rem);
-  background: #fff;
-  border: 2px solid #000;
-  border-radius: 100%;
-  font-weight: bold;
-  height: 32px;
-  line-height: 30px;
-  position: relative;
-  text-align: center;
-  width: 32px;
-  z-index: 1;
-}
-
-.subscribersList {
-  max-height: 15em;
-  overflow: auto;
-  position: relative;
-
-  .subscriber {
-    white-space: nowrap;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 0;
-    border-radius: 4px;
-    padding: 8px 4px;
-    transition: background 0.2s ease-in-out;
-
-    &:hover {
-      background: #f7f7f7;
+    &:not(:first-child) {
+      margin-left: -2.2rem;
     }
   }
 }

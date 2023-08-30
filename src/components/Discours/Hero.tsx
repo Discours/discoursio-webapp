@@ -10,20 +10,12 @@ export default () => {
       <div class="wide-container">
         <div class="row">
           <div class="col-lg-20 offset-lg-2 col-xl-18 offset-xl-3">
-            <h4>{t('Horizontal collaborative journalistic platform')}</h4>
-            <p>
-              {t(
+            <h4 innerHTML={t('Horizontal collaborative journalistic platform')} />
+            <p
+              innerHTML={t(
                 'Discours is an intellectual environment, a web space and tools that allows authors to collaborate with readers and come together to co-create publications and media projects'
               )}
-              .
-              <br />
-              <em>
-                {t('We are convinced that one voice is good, but many is better') +
-                  '. ' +
-                  t('We create the most amazing stories together')}
-                .
-              </em>
-            </p>
+            />
             <div class={styles.aboutDiscoursActions}>
               <a class="button" href="/create">
                 {t('Create post')}

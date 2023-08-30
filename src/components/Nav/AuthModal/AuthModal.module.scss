@@ -141,9 +141,10 @@
 }
 
 .authInfo {
-  min-height: 5em;
   font-weight: 400;
   font-size: smaller;
+  margin-top: -2em;
+  position: absolute;
 
   .warn {
     color: #a00;
@@ -158,6 +159,7 @@
 
   h4 {
     font-weight: bold;
+    margin-bottom: 1em;
   }
 }
 
@@ -166,11 +168,11 @@
 }
 
 .validationError {
-  position: relative;
-  top: -8px;
+  position: absolute;
+  top: 100%;
   font-size: 12px;
   line-height: 16px;
-  margin-bottom: 8px;
+  margin-top: 0.3em;
 
   &.registerPassword {
     margin-bottom: -32px;

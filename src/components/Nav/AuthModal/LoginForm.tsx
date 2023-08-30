@@ -160,10 +160,10 @@ export const LoginForm = () => {
             onInput={(event) => handleEmailInput(event.currentTarget.value)}
           />
           <label for="email">{t('Email')}</label>
+          <Show when={validationErrors().email}>
+            <div class={styles.validationError}>{validationErrors().email}</div>
+          </Show>
         </div>
-        <Show when={validationErrors().email}>
-          <div class={styles.validationError}>{validationErrors().email}</div>
-        </Show>
 
         <div
           class={clsx('pretty-form__item', {
@@ -186,11 +186,11 @@ export const LoginForm = () => {
           >
             <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
           </button>
+          <Show when={validationErrors().password}>
+            <div class={styles.validationError}>{validationErrors().password}</div>
+          </Show>
         </div>
 
-        <Show when={validationErrors().password}>
-          <div class={styles.validationError}>{validationErrors().password}</div>
-        </Show>
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
             {isSubmitting() ? '...' : t('Enter')}

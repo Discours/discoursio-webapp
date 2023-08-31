@@ -215,3 +215,12 @@
     background-repeat: no-repeat;
   }
 }
+
+.wrapperTableOfContents {
+  position: sticky;
+  left: 0;
+  top: 0;
+  margin-bottom: -157px;
+  width: 240px;
+  padding-top: 100px;
+}

@@ -19,6 +19,7 @@ import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { TopicCard } from '../../Topic/Card'
 import { Loading } from '../../_shared/Loading'
+import { hideModal } from '../../../stores/ui'
 
 type AuthorProps = {
   shouts: Shout[]
@@ -61,6 +62,7 @@ export const AuthorView = (props: AuthorProps) => {
   }
 
   onMount(async () => {
+    hideModal()
     try {
       const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
       setFollowers(userSubscribers)

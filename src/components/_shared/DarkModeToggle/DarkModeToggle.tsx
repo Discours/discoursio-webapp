@@ -3,7 +3,6 @@ import styles from './DarkModeToggle.module.scss'
 import { Icon } from '../Icon'
 import { useLocalize } from '../../../context/localize'
 import { createSignal, onCleanup, onMount } from 'solid-js'
-import { createPrefersDark } from '@solid-primitives/media'
 
 type Props = {
   class?: string
@@ -14,7 +13,6 @@ const editorDarkModeAttr = document.documentElement.getAttribute('editorDarkMode
 
 export const DarkModeToggle = (props: Props) => {
   const { t } = useLocalize()
-  const prefersDark = createPrefersDark()
   const [editorDarkMode, setEditorDarkMode] = createSignal(false)
 
   onMount(() => {
@@ -27,9 +25,8 @@ export const DarkModeToggle = (props: Props) => {
     }
 
     if (!editorDarkModeAttr && !editorDarkModeSelected) {
-      setEditorDarkMode(prefersDark())
-      localStorage.setItem('editorDarkMode', prefersDark() ? 'true' : 'false')
-      document.documentElement.dataset.editorDarkMode = prefersDark() ? 'true' : 'false'
+      localStorage.setItem('editorDarkMode', 'false')
+      document.documentElement.dataset.editorDarkMode = 'false'
     }
 
     onCleanup(() => {

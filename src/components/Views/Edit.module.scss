@@ -217,10 +217,9 @@
 }
 
 .wrapperTableOfContents {
-  position: sticky;
-  left: 0;
-  top: 0;
-  margin-bottom: -157px;
+  position: fixed;
+  left: 40px;
+  top: 100px;
   width: 240px;
   padding-top: 100px;
 }

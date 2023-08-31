@@ -4,7 +4,7 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     Article: {
       toggleArticle: () => ReturnType
-      setArticleFloat: (float: null | 'left' | 'half-left' | 'right' | 'half-right') => ReturnType
+      setArticleFloat: (float: null | 'half-left' | 'half-right') => ReturnType
       setArticleBg: (bg: null | string) => ReturnType
     }
   }

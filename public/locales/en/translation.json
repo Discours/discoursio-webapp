@@ -393,5 +393,12 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "subscriber": "subscriber",
+  "subscriber_rp": "subscriber",
+  "subscribers": "subscribers",
+  "subscription": "subscription",
+  "subscription_rp": "subscription",
+  "subscriptions": "subscriptions",
+  "Users": "Users"
 }

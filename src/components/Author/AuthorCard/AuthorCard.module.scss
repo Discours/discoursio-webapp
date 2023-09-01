@@ -441,3 +441,25 @@
     width: 1.6rem;
   }
 }
+
+.subscribers {
+  cursor: pointer;
+  display: inline-flex;
+  vertical-align: top;
+  align-items: center;
+
+  .userpic {
+    background: var(--background-color);
+    box-shadow: 0 0 0 2px var(--background-color);
+    vertical-align: top;
+
+    &:not(:first-child) {
+      margin-left: -2.2rem;
+    }
+  }
+}
+
+.listWrapper {
+  overflow: auto;
+  max-height: 70vh;
+}

@@ -55,13 +55,18 @@ export const FeedView = () => {
     actions: { loadReactionsBy }
   } = useReactions()
 
+  onMount(() => {
+    loadMore()
+  })
+
   createEffect(
     on(
       () => page().route + searchParams().by,
       () => {
         resetSortedArticles()
         loadMore()
-      }
+      },
+      { defer: true }
     )
   )
 

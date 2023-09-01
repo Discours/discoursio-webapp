@@ -20,6 +20,8 @@ export type ModalType =
   | 'uploadCoverImage'
   | 'editorInsertLink'
   | 'simplifiedEditorInsertLink'
+  | 'followers'
+  | 'subscriptions'
 
 type WarnKind = 'error' | 'warn' | 'info'
 
@@ -41,7 +43,9 @@ export const MODALS: Record<ModalType, ModalType> = {
   simplifiedEditorUploadImage: 'simplifiedEditorUploadImage',
   uploadCoverImage: 'uploadCoverImage',
   editorInsertLink: 'editorInsertLink',
-  simplifiedEditorInsertLink: 'simplifiedEditorInsertLink'
+  simplifiedEditorInsertLink: 'simplifiedEditorInsertLink',
+  followers: 'followers',
+  subscriptions: 'subscriptions'
 }
 
 const [modal, setModal] = createSignal<ModalType | null>(null)

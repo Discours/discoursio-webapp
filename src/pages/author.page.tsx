@@ -17,14 +17,15 @@ export const AuthorPage = (props: PageProps) => {
     Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug()
   )
 
-  const preload = () =>
-    Promise.all([
+  const preload = () => {
+    return Promise.all([
       loadShouts({
         filters: { author: slug(), visibility: 'community' },
         limit: PRERENDERED_ARTICLES_COUNT
       }),
       loadAuthor({ slug: slug() })
     ])
+  }
 
   onMount(async () => {
     if (isLoaded()) {
@@ -44,7 +45,8 @@ export const AuthorPage = (props: PageProps) => {
         resetSortedArticles()
         await preload()
         setIsLoaded(true)
-      }
+      },
+      { defer: true }
     )
   )
 

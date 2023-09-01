@@ -167,10 +167,11 @@ export const RegisterForm = () => {
                 onInput={(event) => handleNameInput(event.currentTarget.value)}
               />
               <label for="name">{t('Full name')}</label>
+              <Show when={validationErrors().fullName}>
+                <div class={styles.validationError}>{validationErrors().fullName}</div>
+              </Show>
             </div>
-            <Show when={validationErrors().fullName}>
-              <div class={styles.validationError}>{validationErrors().fullName}</div>
-            </Show>
+
             <div
               class={clsx('pretty-form__item', {
                 'pretty-form__item--error': validationErrors().email
@@ -187,10 +188,11 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
+              <Show when={validationErrors().email}>
+                <div class={styles.validationError}>{validationErrors().email}</div>
+              </Show>
             </div>
-            <Show when={validationErrors().email}>
-              <div class={styles.validationError}>{validationErrors().email}</div>
-            </Show>
+
             <Show when={emailChecks()[email()]}>
               <div class={styles.validationError}>
                 {t("This email is already taken. If it's you")},{' '}
@@ -226,12 +228,12 @@ export const RegisterForm = () => {
               >
                 <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
               </button>
+              <Show when={validationErrors().password}>
+                <div class={clsx(styles.registerPassword, styles.validationError)}>
+                  {validationErrors().password}
+                </div>
+              </Show>
             </div>
-            <Show when={validationErrors().password}>
-              <div class={clsx(styles.registerPassword, styles.validationError)}>
-                {validationErrors().password}
-              </div>
-            </Show>
 
             <div>
               <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

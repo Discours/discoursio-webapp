@@ -249,11 +249,7 @@ export const Editor = (props: Props) => {
   return (
     <>
       <div class="row">
-        <div class="col-md-5">
-          <Show when={isDesktop() && html()}>
-            <TableOfContents variant="editor" parentSelector="#editorBody" body={html()} />
-          </Show>
-        </div>
+        <div class="col-md-5" />
         <div class="col-md-12">
           <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
         </div>

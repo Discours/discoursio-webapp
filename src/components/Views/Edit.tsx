@@ -22,6 +22,8 @@ import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 import { PublishSettings } from './PublishSettings'
 import { createStore } from 'solid-js/store'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
+import { isDesktop } from '../../utils/media-query'
+import { TableOfContents } from '../TableOfContents'
 
 type Props = {
   shout: Shout
@@ -246,6 +248,12 @@ export const EditView = (props: Props) => {
             </button>
 
             <AutoSaveNotice active={saving()} />
+
+            <div class={styles.wrapperTableOfContents}>
+              <Show when={isDesktop() && form.body}>
+                <TableOfContents variant="editor" parentSelector="#editorBody" body={form.body} />
+              </Show>
+            </div>
 
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">

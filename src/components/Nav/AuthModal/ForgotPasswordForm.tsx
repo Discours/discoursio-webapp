@@ -120,11 +120,10 @@ export const ForgotPasswordForm = () => {
             >
               {t('register')}
             </a>
+            <Show when={validationErrors().email}>
+              <div class={styles.validationError}>{validationErrors().email}</div>
+            </Show>
           </div>
-        </Show>
-
-        <Show when={validationErrors().email}>
-          <div class={styles.validationError}>{validationErrors().email}</div>
         </Show>
 
         <div>

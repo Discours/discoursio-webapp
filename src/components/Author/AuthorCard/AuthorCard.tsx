@@ -341,17 +341,17 @@ export const AuthorCard = (props: AuthorCardProps) => {
           <>
             <h2>{t('Subscriptions')}</h2>
             <ul class="view-switcher">
-              <li class={clsx({ 'view-switcher__item--selected': true })}>
+              <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('all')}>
                   {t('All')} {props.subscriptions.length}
                 </button>
               </li>
-              <li class={clsx({ 'view-switcher__item--selected': false })}>
+              <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('users')}>
                   {t('Users')} {props.subscriptions.filter((s) => 'name' in s).length}
                 </button>
               </li>
-              <li class={clsx({ 'view-switcher__item--selected': false })}>
+              <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'topics' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('topics')}>
                   {t('Topics')} {props.subscriptions.filter((s) => 'title' in s).length}
                 </button>

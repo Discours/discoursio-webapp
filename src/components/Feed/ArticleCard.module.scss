@@ -398,8 +398,10 @@
   padding: 0 2.4rem;
   width: 100%;
 
-  @include media-breakpoint-down(sm) {
-    padding-top: 100%;
+  @include media-breakpoint-down(xl) {
+    aspect-ratio: auto;
+    height: 100%;
+    padding-top: 30%;
   }
 
   &.swiper-slide {
@@ -450,6 +452,12 @@
     justify-content: end;
     padding: 2.4rem;
     z-index: 1;
+
+    @include media-breakpoint-down(xl) {
+      padding-left: 0;
+      padding-right: 0;
+      position: relative;
+    }
   }
 
   .shoutCardCover {

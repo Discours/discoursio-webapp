@@ -14,9 +14,12 @@
 }
 
 .authorDetails {
-  align-items: baseline;
-  display: flex;
   flex: 1;
+
+  @include media-breakpoint-up(sm) {
+    align-items: baseline;
+    display: flex;
+  }
 
   &.authorDetailsShrinked {
     flex: 0 0 auto;
@@ -62,7 +65,7 @@
 
 .authorAbout {
   color: rgb(0 0 0 / 60%);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   line-height: 1.4;
   word-break: break-word;
 }
@@ -442,11 +445,19 @@
   }
 }
 
+.subscribersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.4rem;
+  margin-top: 1em;
+}
+
 .subscribers {
+  align-items: center;
   cursor: pointer;
   display: inline-flex;
+  margin-right: 3rem;
   vertical-align: top;
-  align-items: center;
 
   .userpic {
     background: var(--background-color);
@@ -459,7 +470,12 @@
   }
 }
 
+.subscribersCounter {
+  margin-left: -0.6rem;
+}
+
 .listWrapper {
-  overflow: auto;
   max-height: 70vh;
+  overflow: auto;
+  padding-right: 2rem;
 }

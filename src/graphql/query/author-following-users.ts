@@ -7,6 +7,7 @@ export default gql`
       slug
       name
       userpic
+      bio
     }
   }
 `

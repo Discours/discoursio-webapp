@@ -173,8 +173,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
               <span class={clsx({ [styles.authorName]: !props.hasLink })}>{name()}</span>
             </ConditionalWrapper>
           </div>
-
-          <Show when={props.author.bio}>
+          {/*TODO: implement plurals by i18n*/}
+          <Show when={props.author.bio} fallback={<div>{props.author.stat?.shouts} публикаций</div>}>
             <div
               class={styles.authorAbout}
               classList={{ 'text-truncate': props.truncateBio }}

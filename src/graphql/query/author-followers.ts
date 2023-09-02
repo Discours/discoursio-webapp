@@ -8,6 +8,9 @@ export default gql`
       name
       userpic
       bio
+      stat {
+        shouts
+      }
     }
   }
 `

@@ -138,13 +138,10 @@ export const FullArticle = (props: Props) => {
     tooltipElements.forEach((element) => {
       const tooltip = document.createElement('div')
       tooltip.classList.add(styles.tooltip)
-
-      // Создаем дочерний элемент tooltipContent
       const tooltipContent = document.createElement('div')
       tooltipContent.classList.add(styles.tooltipContent)
       tooltipContent.innerHTML = element.dataset.originalTitle || element.dataset.value
 
-      // Добавляем tooltipContent в tooltip
       tooltip.appendChild(tooltipContent)
 
       document.body.appendChild(tooltip)

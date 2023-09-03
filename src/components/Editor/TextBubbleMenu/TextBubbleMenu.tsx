@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -44,6 +44,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isLink = isActive('link')
   const isHighlight = isActive('highlight')
   const isFootnote = isActive('footnote')
+
+  createEffect(() => {
+    console.log('!!! isFootnote:', isFootnote())
+  })
 
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
@@ -106,7 +110,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             placeholder={t('Enter footnote text')}
             onSubmit={(value) => handleAddFootnote(value)}
             variant={'bordered'}
-            initialContent={currentFootnoteValue().value ?? null}
+            // initialContent={currentFootnoteValue().value ?? null}
             onCancel={() => {
               setFootnoteEditorOpen(false)
             }}

@@ -185,7 +185,10 @@ export const Editor = (props: Props) => {
           const { empty } = selection
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
           setIsCommonMarkup(e.isActive('figcaption'))
-          return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
+          return (
+            (view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')) ||
+            e.isActive('footnote')
+          )
         },
         tippyOptions: {
           sticky: true

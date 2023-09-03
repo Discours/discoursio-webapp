@@ -1,6 +1,8 @@
 .TextBubbleMenu {
   background: var(--editor-bubble-menu-background);
   box-shadow: 0 4px 10px rgba(#000, 0.25);
+  max-height: 300px;
+  overflow: auto;
 
   &.growWidth {
     min-width: 460px;

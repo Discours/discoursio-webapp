@@ -101,7 +101,6 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
           <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
         </Match>
         <Match when={footnoteEditorOpen()}>
-          <Button size={'S'} onClick={() => showModal('uploadImage')} value={'img'} />
           <SimplifiedEditor
             imageEnabled={true}
             placeholder={t('Enter footnote text')}

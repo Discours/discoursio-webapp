@@ -95,12 +95,11 @@
 
 .usernav {
   display: inline-flex;
-  flex: 0 0 40% !important;
   font-weight: 500;
-  max-width: 400px !important;
+  justify-content: end;
   position: relative;
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(lg) {
     flex: 1 !important;
     max-width: 100% !important;
     padding: 0 !important;
@@ -111,7 +110,7 @@
   @include font-size(1.7rem);
   position: relative;
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(lg) {
     display: none;
   }
 
@@ -122,17 +121,9 @@
 
 .mainNavigation {
   font-size: 1.4rem !important;
-  margin: 0 !important;
+  margin: 0 0 0 -0.4rem !important;
   opacity: 1;
   transition: opacity 0.3s;
-
-  li {
-    margin-bottom: 0 !important;
-
-    &:first-letter {
-      text-transform: capitalize;
-    }
-  }
 
   @include media-breakpoint-down(md) {
     background: var(--background-color);
@@ -166,6 +157,24 @@
       }
     }
   }
+
+  a,
+  button {
+    padding: 0 0.4rem;
+  }
+
+  li {
+    margin-bottom: 0 !important;
+
+    &:first-letter {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.mainNavigationItemActive {
+  background: #000;
+  color: #fff !important;
 }
 
 .headerWithTitle.headerScrolledBottom {
@@ -185,7 +194,7 @@
     padding-left: divide($container-padding-x, 2);
   }
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(lg) {
     display: none;
   }
 }
@@ -302,7 +311,7 @@
   transform: translateY(-50%);
   width: 100%;
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(lg) {
     right: 0;
   }
 
@@ -464,7 +473,7 @@
     }
   }
 
-  @include media-breakpoint-up(lg) {
+  @include media-breakpoint-up(xl) {
     margin-left: 0.5em !important;
     margin-right: 0.5em;
     width: auto;
@@ -475,9 +484,10 @@
 
     .textLabel {
       color: var(--link-color);
-      padding: 0;
       display: inline;
+      padding: 0;
       position: relative;
+      white-space: nowrap;
       z-index: 1;
     }
   }

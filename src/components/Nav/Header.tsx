@@ -128,10 +128,10 @@ export const Header = (props: Props) => {
     clearTimeout(timer)
   }
 
-  const hideSubnavigation = () => {
+  const hideSubnavigation = (ev, time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)
-    }, 500)
+    }, time)
   }
 
   return (
@@ -160,13 +160,14 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx('offset-xl-1', styles.mainNavigationWrapper)}>
+          <div class={clsx('col col-md-13 col-lg-12 offset-xl-1', styles.mainNavigationWrapper)}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
             <ul class={clsx('view-switcher', styles.mainNavigation)} classList={{ fixed: fixed() }}>
               <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
                 <a
+                  classList={{ [styles.mainNavigationItemActive]: isZineVisible() }}
                   onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
                   onMouseOut={hideSubnavigation}
                   href={getPagePath(router, 'home')}
@@ -176,6 +177,7 @@ export const Header = (props: Props) => {
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route.startsWith('feed') }}>
                 <a
+                  classList={{ [styles.mainNavigationItemActive]: isFeedVisible() }}
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
                   onMouseOut={hideSubnavigation}
                   href={getPagePath(router, 'feed')}
@@ -185,6 +187,7 @@ export const Header = (props: Props) => {
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'topics' }}>
                 <a
+                  classList={{ [styles.mainNavigationItemActive]: isTopicsVisible() }}
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
                   onMouseOut={hideSubnavigation}
                   href={getPagePath(router, 'topics')}
@@ -193,10 +196,17 @@ export const Header = (props: Props) => {
                 </a>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'authors' }}>
-                <a href={getPagePath(router, 'authors')}>{t('community')}</a>
+                <a
+                  onMouseOver={(ev) => hideSubnavigation(ev, 0)}
+                  onMouseOut={(ev) => hideSubnavigation(ev, 0)}
+                  href={getPagePath(router, 'authors')}
+                >
+                  {t('community')}
+                </a>
               </li>
               <li>
                 <a
+                  classList={{ [styles.mainNavigationItemActive]: isKnowledgeBaseVisible() }}
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
                   onMouseOut={hideSubnavigation}
                 >

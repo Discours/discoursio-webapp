@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -8,8 +8,6 @@ import { useLocalize } from '../../../context/localize'
 import { Popover } from '../../_shared/Popover'
 import { InsertLinkForm } from '../InsertLinkForm'
 import SimplifiedEditor from '../SimplifiedEditor'
-import { Button } from '../../_shared/Button'
-import { showModal } from '../../../stores/ui'
 
 type BubbleMenuProps = {
   editor: Editor
@@ -45,10 +43,6 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isHighlight = isActive('highlight')
   const isFootnote = isActive('footnote')
 
-  createEffect(() => {
-    console.log('!!! isFootnote:', isFootnote())
-  })
-
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
       setListBubbleOpen(false)
@@ -68,10 +62,14 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
   }
 
-  const currentFootnoteValue = createEditorTransaction(
+  const getCurrentFootnoteValue = createEditorTransaction(
     () => props.editor,
     (ed) => {
-      return (ed && ed.getAttributes('footnote').value) || ''
+      if (!isFootnote()) {
+        return
+      }
+      const value = ed.getAttributes('footnote').value
+      setFootNote(value)
     }
   )
 
@@ -86,7 +84,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   const handleOpenFootnoteEditor = () => {
-    setFootNote(currentFootnoteValue())
+    getCurrentFootnoteValue()
     setFootnoteEditorOpen(true)
   }
 
@@ -110,7 +108,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             placeholder={t('Enter footnote text')}
             onSubmit={(value) => handleAddFootnote(value)}
             variant={'bordered'}
-            // initialContent={currentFootnoteValue().value ?? null}
+            initialContent={footNote()}
             onCancel={() => {
               setFootnoteEditorOpen(false)
             }}

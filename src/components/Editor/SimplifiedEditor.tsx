@@ -55,6 +55,7 @@ type Props = {
 }
 
 export const MAX_DESCRIPTION_LIMIT = 400
+
 const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
   const [counter, setCounter] = createSignal<number>()
@@ -233,6 +234,9 @@ const SimplifiedEditor = (props: Props) => {
       setCounter(editor().storage.characterCount.characters())
     }
   })
+
+  console.log('!!! ini:', props.initialContent)
+
   return (
     <div
       ref={(el) => (wrapperEditorElRef.current = el)}

@@ -26,11 +26,7 @@ export const Footnote = Node.create({
     return {
       value: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            value: element.dataset.value
-          }
-        },
+        parseHTML: (element) => element.dataset.value || null,
         renderHTML: (attributes) => {
           return {
             'data-value': attributes.value

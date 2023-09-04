@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -23,10 +23,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
       () => props.editor,
-      (editor) => {
-        return editor && editor.isActive(name, attributes)
-      }
+      (editor) => editor && editor.isActive(name, attributes)
     )
+
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
   const [listBubbleOpen, setListBubbleOpen] = createSignal(false)
   const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
@@ -38,12 +37,14 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isH1 = isActive('heading', { level: 2 })
   const isH2 = isActive('heading', { level: 3 })
   const isH3 = isActive('heading', { level: 4 })
-  const isBlockQuote = isActive('blockquote')
+  const isQuote = isActive('blockquote', { 'data-type': 'quote' })
+  const isPunchLine = isActive('blockquote', { 'data-type': 'punchline' })
   const isOrderedList = isActive('isOrderedList')
   const isBulletList = isActive('isBulletList')
   const isLink = isActive('link')
   const isHighlight = isActive('highlight')
   const isFootnote = isActive('footnote')
+  const isIncut = isActive('article')
 
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
@@ -66,9 +67,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
   const currentFootnoteValue = createEditorTransaction(
     () => props.editor,
-    (ed) => {
-      return (ed && ed.getAttributes('footnote').value) || ''
-    }
+    (ed) => (ed && ed.getAttributes('footnote').value) || ''
   )
 
   const handleAddFootnote = (footnote) => {
@@ -193,9 +192,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isQuote()
                               })}
                               onClick={() => {
+                                if (isPunchLine()) return
                                 props.editor.chain().focus().toggleBlockquote('quote').run()
                                 toggleTextSizePopup()
                               }}
@@ -210,9 +210,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isPunchLine()
                               })}
                               onClick={() => {
+                                if (isQuote()) return
                                 props.editor.chain().focus().toggleBlockquote('punchline').run()
                                 toggleTextSizePopup()
                               }}
@@ -230,7 +231,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isIncut()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleArticle().run()

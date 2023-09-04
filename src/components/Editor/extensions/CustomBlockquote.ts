@@ -14,10 +14,10 @@ declare module '@tiptap/core' {
 export const CustomBlockquote = Blockquote.extend({
   name: 'blockquote',
   defaultOptions: {
-    HTMLAttributes: {},
-    group: 'block',
-    content: 'block+'
+    HTMLAttributes: {}
   },
+  group: 'block',
+  content: 'block+',
   addAttributes() {
     return {
       'data-float': {

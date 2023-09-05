@@ -2,12 +2,24 @@ import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
 import ssrPlugin from 'vite-plugin-ssr/plugin'
 import sassDts from 'vite-plugin-sass-dts'
+import mkcert from 'vite-plugin-mkcert'
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
+  const plugins = [
+    solidPlugin({ ssr: true }),
+    ssrPlugin({ includeAssetsImportedByServer: true }),
+    sassDts()
+  ]
+
+  if (command === 'serve') {
+    plugins.push(mkcert())
+  }
+
   return {
     envPrefix: 'PUBLIC_',
-    plugins: [solidPlugin({ ssr: true }), ssrPlugin({ includeAssetsImportedByServer: true }), sassDts()],
+    plugins,
     server: {
+      https: true,
       port: 3000
     },
     css: {

@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -13,6 +13,7 @@ type BubbleMenuProps = {
   editor: Editor
   isCommonMarkup: boolean
   ref: (el: HTMLDivElement) => void
+  shouldShow: boolean
 }
 
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
@@ -30,6 +31,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
   const [footnoteEditorOpen, setFootnoteEditorOpen] = createSignal(false)
   const [footNote, setFootNote] = createSignal<string>()
+
+  createEffect(() => {
+    if (!props.shouldShow) {
+      setFootNote()
+      setFootnoteEditorOpen(false)
+    }
+  })
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
@@ -62,7 +70,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
   }
 
-  const getCurrentFootnoteValue = createEditorTransaction(
+  const updateCurrentFootnoteValue = createEditorTransaction(
     () => props.editor,
     (ed) => {
       if (!isFootnote()) {
@@ -84,7 +92,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   const handleOpenFootnoteEditor = () => {
-    getCurrentFootnoteValue()
+    updateCurrentFootnoteValue()
     setFootnoteEditorOpen(true)
   }
 
@@ -104,6 +112,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
         </Match>
         <Match when={footnoteEditorOpen()}>
           <SimplifiedEditor
+            controlsAlwaysVisible={true}
             imageEnabled={true}
             placeholder={t('Enter footnote text')}
             onSubmit={(value) => handleAddFootnote(value)}

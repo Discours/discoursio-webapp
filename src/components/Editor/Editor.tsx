@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, onCleanup, Show } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
@@ -63,6 +63,7 @@ export const Editor = (props: Props) => {
   const { user } = useSession()
 
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
+  const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
 
   const docName = `shout-${props.shoutId}`
 
@@ -185,10 +186,11 @@ export const Editor = (props: Props) => {
           const { empty } = selection
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
           setIsCommonMarkup(e.isActive('figcaption'))
-          return (
+          const result =
             (view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')) ||
             e.isActive('footnote')
-          )
+          setShouldShowTextBubbleMenu(result)
+          return result
         },
         tippyOptions: {
           sticky: true
@@ -249,6 +251,10 @@ export const Editor = (props: Props) => {
     }
   })
 
+  onCleanup(() => {
+    editor().destroy()
+  })
+
   return (
     <>
       <div class="row">
@@ -259,6 +265,7 @@ export const Editor = (props: Props) => {
       </div>
 
       <TextBubbleMenu
+        shouldShow={shouldShowTextBubbleMenu()}
         isCommonMarkup={isCommonMarkup()}
         editor={editor()}
         ref={(el) => (textBubbleMenuRef.current = el)}

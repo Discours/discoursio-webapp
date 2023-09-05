@@ -566,10 +566,7 @@ a[data-toggle='tooltip'] {
   .tooltipContent {
     max-height: 300px;
     overflow: auto;
-
-    & * {
-      color: var(--default-color-invert);
-    }
+    color: var(--default-color-invert);
 
     a {
       text-decoration: underline;

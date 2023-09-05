@@ -1,4 +1,4 @@
-import type { Author, Shout, ShoutInput, Topic, LoadShoutsOptions } from '../../graphql/types.gen'
+import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { addAuthorsByTopic } from './authors'
 import { byStat } from '../../utils/sortby'

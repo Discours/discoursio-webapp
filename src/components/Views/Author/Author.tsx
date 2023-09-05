@@ -3,7 +3,6 @@ import type { Author, Shout, Topic } from '../../../graphql/types.gen'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
-
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { useRouter } from '../../../stores/router'
@@ -17,8 +16,6 @@ import { apiClient } from '../../../utils/apiClient'
 import { Comment } from '../../Article/Comment'
 import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
-import { TopicCard } from '../../Topic/Card'
-import { Loading } from '../../_shared/Loading'
 import { hideModal } from '../../../stores/ui'
 
 type AuthorProps = {

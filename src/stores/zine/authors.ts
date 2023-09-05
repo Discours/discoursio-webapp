@@ -1,6 +1,6 @@
 import { apiClient } from '../../utils/apiClient'
 import type { Author } from '../../graphql/types.gen'
-import { createEffect, createSignal } from 'solid-js'
+import { createSignal } from 'solid-js'
 import { createLazyMemo } from '@solid-primitives/memo'
 import { byStat } from '../../utils/sortby'
 

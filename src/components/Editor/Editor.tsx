@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup, Show } from 'solid-js'
+import { createEffect, createSignal, onCleanup } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
@@ -41,10 +41,6 @@ import Article from './extensions/Article'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
-import { TableOfContents } from '../TableOfContents'
-
-import { isDesktop } from '../../utils/media-query'
-
 import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
 import { Footnote } from './extensions/Footnote'

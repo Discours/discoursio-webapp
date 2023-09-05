@@ -145,7 +145,8 @@ export const FullArticle = (props: Props) => {
       tooltip.appendChild(tooltipContent)
 
       document.body.appendChild(tooltip)
-      if (element.tagName === 'a') {
+
+      if (element.hasAttribute('href')) {
         element.setAttribute('href', 'javascript: void(0);')
       }
       createPopper(element, tooltip, {

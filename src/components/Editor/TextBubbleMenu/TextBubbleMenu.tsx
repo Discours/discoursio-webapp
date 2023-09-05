@@ -97,6 +97,21 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     setFootnoteEditorOpen(true)
   }
 
+  const handleSetPunchline = () => {
+    if (isPunchLine()) {
+      props.editor.chain().focus().toggleBlockquote('punchline').run()
+    }
+    props.editor.chain().focus().toggleBlockquote('quote').run()
+    toggleTextSizePopup()
+  }
+  const handleSetQuote = () => {
+    if (isQuote()) {
+      props.editor.chain().focus().toggleBlockquote('quote').run()
+    }
+    props.editor.chain().focus().toggleBlockquote('punchline').run()
+    toggleTextSizePopup()
+  }
+
   onMount(() => {
     window.addEventListener('keydown', handleKeyDown)
   })
@@ -207,11 +222,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               class={clsx(styles.bubbleMenuButton, {
                                 [styles.bubbleMenuButtonActive]: isQuote()
                               })}
-                              onClick={() => {
-                                if (isPunchLine()) return
-                                props.editor.chain().focus().toggleBlockquote('quote').run()
-                                toggleTextSizePopup()
-                              }}
+                              onClick={handleSetPunchline}
                             >
                               <Icon name="editor-blockquote" />
                             </button>
@@ -225,11 +236,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               class={clsx(styles.bubbleMenuButton, {
                                 [styles.bubbleMenuButtonActive]: isPunchLine()
                               })}
-                              onClick={() => {
-                                if (isQuote()) return
-                                props.editor.chain().focus().toggleBlockquote('punchline').run()
-                                toggleTextSizePopup()
-                              }}
+                              onClick={handleSetQuote}
                             >
                               <Icon name="editor-quote" />
                             </button>

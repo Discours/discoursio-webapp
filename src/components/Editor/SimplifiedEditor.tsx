@@ -52,9 +52,11 @@ type Props = {
   submitByEnter?: boolean
   submitByShiftEnter?: boolean
   onlyBubbleControls?: boolean
+  controlsAlwaysVisible?: boolean
 }
 
 export const MAX_DESCRIPTION_LIMIT = 400
+
 const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
   const [counter, setCounter] = createSignal<number>()
@@ -217,6 +219,7 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   onCleanup(() => {
+    editor().destroy()
     window.removeEventListener('keydown', handleKeyDown)
   })
 
@@ -233,6 +236,7 @@ const SimplifiedEditor = (props: Props) => {
       setCounter(editor().storage.characterCount.characters())
     }
   })
+
   return (
     <div
       ref={(el) => (wrapperEditorElRef.current = el)}
@@ -252,7 +256,7 @@ const SimplifiedEditor = (props: Props) => {
       </Show>
       <div ref={(el) => (editorElRef.current = el)} />
       <Show when={!props.onlyBubbleControls}>
-        <div class={styles.controls}>
+        <div class={clsx(styles.controls, { [styles.alwaysVisible]: props.controlsAlwaysVisible })}>
           <div class={styles.actions}>
             <Popover content={t('Bold')}>
               {(triggerRef: (el) => void) => (
@@ -350,6 +354,7 @@ const SimplifiedEditor = (props: Props) => {
       </Show>
       <Show when={props.onlyBubbleControls}>
         <TextBubbleMenu
+          shouldShow={true}
           isCommonMarkup={true}
           editor={editor()}
           ref={(el) => (textBubbleMenuRef.current = el)}

@@ -562,10 +562,22 @@ a[data-toggle='tooltip'] {
   max-width: 400px;
   box-sizing: border-box;
   background: var(--black-500);
-  color: var(--default-color-invert);
 
-  p:last-child {
-    margin: 0;
+  .tooltipContent {
+    max-height: 300px;
+    overflow: auto;
+
+    & * {
+      color: var(--default-color-invert);
+    }
+
+    a {
+      text-decoration: underline;
+    }
+
+    p:last-child {
+      margin: 0;
+    }
   }
 
   &::after {

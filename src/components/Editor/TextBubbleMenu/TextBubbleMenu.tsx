@@ -8,13 +8,12 @@ import { useLocalize } from '../../../context/localize'
 import { Popover } from '../../_shared/Popover'
 import { InsertLinkForm } from '../InsertLinkForm'
 import SimplifiedEditor from '../SimplifiedEditor'
-import { Button } from '../../_shared/Button'
-import { showModal } from '../../../stores/ui'
 
 type BubbleMenuProps = {
   editor: Editor
   isCommonMarkup: boolean
   ref: (el: HTMLDivElement) => void
+  shouldShow: boolean
 }
 
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
@@ -31,6 +30,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
   const [footnoteEditorOpen, setFootnoteEditorOpen] = createSignal(false)
   const [footNote, setFootNote] = createSignal<string>()
+
+  createEffect(() => {
+    if (!props.shouldShow) {
+      setFootNote()
+      setFootnoteEditorOpen(false)
+    }
+  })
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
@@ -65,9 +71,15 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
   }
 
-  const currentFootnoteValue = createEditorTransaction(
+  const updateCurrentFootnoteValue = createEditorTransaction(
     () => props.editor,
-    (ed) => (ed && ed.getAttributes('footnote').value) || ''
+    (ed) => {
+      if (!isFootnote()) {
+        return
+      }
+      const value = ed.getAttributes('footnote').value
+      setFootNote(value)
+    }
   )
 
   const handleAddFootnote = (footnote) => {
@@ -81,7 +93,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   }
 
   const handleOpenFootnoteEditor = () => {
-    setFootNote(currentFootnoteValue())
+    updateCurrentFootnoteValue()
     setFootnoteEditorOpen(true)
   }
 
@@ -100,13 +112,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
           <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
         </Match>
         <Match when={footnoteEditorOpen()}>
-          <Button size={'S'} onClick={() => showModal('uploadImage')} value={'img'} />
           <SimplifiedEditor
+            controlsAlwaysVisible={true}
             imageEnabled={true}
             placeholder={t('Enter footnote text')}
             onSubmit={(value) => handleAddFootnote(value)}
             variant={'bordered'}
-            initialContent={currentFootnoteValue().value ?? null}
+            initialContent={footNote()}
             onCancel={() => {
               setFootnoteEditorOpen(false)
             }}

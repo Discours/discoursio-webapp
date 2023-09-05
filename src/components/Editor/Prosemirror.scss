@@ -263,6 +263,9 @@ footnote {
   display: inline-flex;
   position: relative;
   cursor: pointer;
+  width: 0.8rem;
+  height: 1em;
+
   &:before {
     content: '';
     position: absolute;

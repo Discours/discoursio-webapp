@@ -138,7 +138,12 @@ export const FullArticle = (props: Props) => {
     tooltipElements.forEach((element) => {
       const tooltip = document.createElement('div')
       tooltip.classList.add(styles.tooltip)
-      tooltip.innerHTML = element.dataset.originalTitle || element.dataset.value
+      const tooltipContent = document.createElement('div')
+      tooltipContent.classList.add(styles.tooltipContent)
+      tooltipContent.innerHTML = element.dataset.originalTitle || element.dataset.value
+
+      tooltip.appendChild(tooltipContent)
+
       document.body.appendChild(tooltip)
       if (element.tagName === 'a') {
         element.setAttribute('href', 'javascript: void(0);')

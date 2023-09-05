@@ -1,5 +1,5 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { Portal, style } from 'solid-js/web'
+import { Portal } from 'solid-js/web'
 import {
   createEditorTransaction,
   createTiptapEditor,

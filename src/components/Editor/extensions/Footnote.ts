@@ -55,8 +55,6 @@ export const Footnote = Node.create({
         ({ tr, state }) => {
           const { selection } = state
           const position = selection.$to.pos
-
-          console.log('!!! attributes:', attributes)
           const node = this.type.create(attributes)
           tr.insert(position, node)
           return true

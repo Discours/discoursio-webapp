@@ -1,4 +1,4 @@
-import { createEffect, createSignal, JSX, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import {
   createEditorTransaction,

@@ -12,7 +12,6 @@ declare module '@tiptap/core' {
 
 export default Node.create({
   name: 'article',
-
   defaultOptions: {
     HTMLAttributes: {
       'data-type': 'incut'

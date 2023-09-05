@@ -104,7 +104,11 @@ export const TableOfContents = (props: Props) => {
             title={isVisible() ? t('Hide table of contents') : t('Show table of contents')}
           >
             <Show when={isVisible()} fallback={<Icon name="show-table-of-contents" class={'icon'} />}>
-              <Icon name="hide-table-of-contents" class="icon" />
+              {props.variant === 'editor' ? (
+                <Icon name="hide-table-of-contents" class="icon" />
+              ) : (
+                <Icon name="hide-table-of-contents-2" class="icon" />
+              )}
             </Show>
           </button>
         </div>

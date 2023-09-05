@@ -22,10 +22,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
       () => props.editor,
-      (editor) => {
-        return editor && editor.isActive(name, attributes)
-      }
+      (editor) => editor && editor.isActive(name, attributes)
     )
+
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
   const [listBubbleOpen, setListBubbleOpen] = createSignal(false)
   const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
@@ -44,12 +43,14 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isH1 = isActive('heading', { level: 2 })
   const isH2 = isActive('heading', { level: 3 })
   const isH3 = isActive('heading', { level: 4 })
-  const isBlockQuote = isActive('blockquote')
+  const isQuote = isActive('blockquote', { 'data-type': 'quote' })
+  const isPunchLine = isActive('blockquote', { 'data-type': 'punchline' })
   const isOrderedList = isActive('isOrderedList')
   const isBulletList = isActive('isBulletList')
   const isLink = isActive('link')
   const isHighlight = isActive('highlight')
   const isFootnote = isActive('footnote')
+  const isIncut = isActive('article')
 
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
@@ -203,9 +204,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isQuote()
                               })}
                               onClick={() => {
+                                if (isPunchLine()) return
                                 props.editor.chain().focus().toggleBlockquote('quote').run()
                                 toggleTextSizePopup()
                               }}
@@ -220,9 +222,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isPunchLine()
                               })}
                               onClick={() => {
+                                if (isQuote()) return
                                 props.editor.chain().focus().toggleBlockquote('punchline').run()
                                 toggleTextSizePopup()
                               }}
@@ -240,7 +243,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isIncut()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleArticle().run()

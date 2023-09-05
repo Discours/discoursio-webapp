@@ -191,22 +191,22 @@ export const RegisterForm = () => {
               <Show when={validationErrors().email}>
                 <div class={styles.validationError}>{validationErrors().email}</div>
               </Show>
+              <Show when={emailChecks()[email()]}>
+                <div class={styles.validationError}>
+                  {t("This email is already taken. If it's you")},{' '}
+                  <a
+                    href="#"
+                    onClick={(event) => {
+                      event.preventDefault()
+                      changeSearchParam('mode', 'login')
+                    }}
+                  >
+                    {t('enter')}
+                  </a>
+                </div>
+              </Show>
             </div>
 
-            <Show when={emailChecks()[email()]}>
-              <div class={styles.validationError}>
-                {t("This email is already taken. If it's you")},{' '}
-                <a
-                  href="#"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    changeSearchParam('mode', 'login')
-                  }}
-                >
-                  {t('enter')}
-                </a>
-              </div>
-            </Show>
             <div
               class={clsx('pretty-form__item', {
                 'pretty-form__item--error': validationErrors().password

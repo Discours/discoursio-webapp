@@ -2,9 +2,13 @@ import styles from './Hero.module.scss'
 
 import { showModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
+import { useRouter } from '../../stores/router'
+import { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
 export default () => {
   const { t } = useLocalize()
+  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+
   return (
     <div class={styles.aboutDiscours}>
       <div class="wide-container">
@@ -20,7 +24,13 @@ export default () => {
               <a class="button" href="/create">
                 {t('Create post')}
               </a>
-              <a class="button" onClick={() => showModal('auth')}>
+              <a
+                class="button"
+                onClick={() => {
+                  showModal('auth')
+                  changeSearchParam('mode', 'register')
+                }}
+              >
                 {t('Join the community')}
               </a>
               <a class="button" href="/about/help">

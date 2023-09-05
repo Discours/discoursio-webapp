@@ -117,15 +117,13 @@ export const GuidePage = () => {
             <p>
               Материалы в&nbsp;Дискурсе объединяются по&nbsp;<b>темам</b>
               &mdash;&nbsp;ключевым словам, которые располагаются в&nbsp;конце материалов и&nbsp;связывают
-              материалы по&nbsp;жанрам (например,
-              <a href="/topic/interview">интервью</a>, <a href="/topic/reportage">репортажи</a>,{' '}
-              <a href="/topic/essay">эссе</a>, <a href="/topic/likbez">ликбезы</a>
+              материалы по&nbsp;жанрам (например, <a href="/topic/interview">интервью</a>,{' '}
+              <a href="/topic/reportage">репортажи</a>, <a href="/topic/essay">эссе</a>,{' '}
+              <a href="/topic/likbez">ликбезы</a>
               ), по&nbsp;тематике (<a href="/topic/cinema">кино</a>,{' '}
               <a href="/topic/philosophy">философия</a>, <a href="/topic/history">история</a>,{' '}
               <a href="/topic/absurdism">абсурдизм</a>, <a href="/topic/sex">секс</a> и&nbsp;т.д.) или
-              в&nbsp;серии (как &laquo;
-              <a href="/topic/zakony-mira">Законы мира</a>
-              &raquo; или &laquo;
+              в&nbsp;серии (как &laquo;<a href="/topic/zakony-mira">Законы мира</a>&raquo; или &laquo;
               <a href="/topic/za-liniey-mannergeyma">За&nbsp;линией Маннергейма</a>
               &raquo;). Темы объединяют сотни публикаций, помогают ориентироваться в&nbsp;журнале
               и&nbsp;следить за&nbsp;интересными материалами.
@@ -136,11 +134,11 @@ export const GuidePage = () => {
               <p>
                 Дискурс объединяет журналистов, активистов, музыкантов, художников, фотографов, режиссеров,
                 философов, ученых и&nbsp;других замечательных людей. Каждый может{' '}
-                <a href="/create">прислать</a>
-                свой материал в&nbsp;журнал. Формат и&nbsp;тематика не&nbsp;имеют значения, единственное,
-                что важно &mdash; <a href="/how-to-write-a-good-article">хороший</a> ли&nbsp;материал. Если
-                сообщество поддержит вашу публикацию, она выйдет в&nbsp;журнале и&nbsp;станет доступна
-                тысячам наших читателей.
+                <a href="/create">прислать</a> свой материал в&nbsp;журнал. Формат и&nbsp;тематика
+                не&nbsp;имеют значения, единственное, что важно &mdash;{' '}
+                <a href="/how-to-write-a-good-article">хороший</a> ли&nbsp;материал. Если сообщество
+                поддержит вашу публикацию, она выйдет в&nbsp;журнале и&nbsp;станет доступна тысячам наших
+                читателей.
               </p>
             </section>
 

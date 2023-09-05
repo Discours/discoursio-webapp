@@ -49,6 +49,10 @@ export const Header = (props: Props) => {
   const [fixed, setFixed] = createSignal(false)
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   const [isProfilePopupVisible, setIsProfilePopupVisible] = createSignal(false)
+  const [isKnowledgeBaseVisible, setIsKnowledgeBaseVisible] = createSignal(false)
+  const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
+  const [isZineVisible, setIsZineVisible] = createSignal(false)
+  const [isFeedVisible, setIsFeedVisible] = createSignal(false)
 
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
 
@@ -106,6 +110,30 @@ export const Header = (props: Props) => {
     }, 'create')
   }
 
+  const toggleSubnavigation = (isShow, signal?) => {
+    clearTimer()
+    setIsKnowledgeBaseVisible(false)
+    setIsTopicsVisible(false)
+    setIsZineVisible(false)
+    setIsFeedVisible(false)
+
+    if (signal) {
+      signal(isShow)
+    }
+  }
+
+  let timer
+
+  const clearTimer = () => {
+    clearTimeout(timer)
+  }
+
+  const hideSubnavigation = (ev, time = 500) => {
+    timer = setTimeout(() => {
+      toggleSubnavigation(false)
+    }, time)
+  }
+
   return (
     <header
       class={styles.mainHeader}
@@ -132,19 +160,58 @@ export const Header = (props: Props) => {
               <img src="/logo.svg" alt={t('Discours')} />
             </a>
           </div>
-          <div class={clsx('col offset-xl-1', styles.mainNavigationWrapper)}>
+          <div class={clsx('col col-md-13 col-lg-12 offset-xl-1', styles.mainNavigationWrapper)}>
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
             <ul class={clsx('view-switcher', styles.mainNavigation)} classList={{ fixed: fixed() }}>
               <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
-                <a href={getPagePath(router, 'home')}>{t('zine')}</a>
+                <a
+                  classList={{ [styles.mainNavigationItemActive]: isZineVisible() }}
+                  onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
+                  onMouseOut={hideSubnavigation}
+                  href={getPagePath(router, 'home')}
+                >
+                  {t('zine')}
+                </a>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route.startsWith('feed') }}>
-                <a href={getPagePath(router, 'feed')}>{t('feed')}</a>
+                <a
+                  classList={{ [styles.mainNavigationItemActive]: isFeedVisible() }}
+                  onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
+                  onMouseOut={hideSubnavigation}
+                  href={getPagePath(router, 'feed')}
+                >
+                  {t('feed')}
+                </a>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'topics' }}>
-                <a href={getPagePath(router, 'topics')}>{t('topics')}</a>
+                <a
+                  classList={{ [styles.mainNavigationItemActive]: isTopicsVisible() }}
+                  onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
+                  onMouseOut={hideSubnavigation}
+                  href={getPagePath(router, 'topics')}
+                >
+                  {t('topics')}
+                </a>
+              </li>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'authors' }}>
+                <a
+                  onMouseOver={(ev) => hideSubnavigation(ev, 0)}
+                  onMouseOut={(ev) => hideSubnavigation(ev, 0)}
+                  href={getPagePath(router, 'authors')}
+                >
+                  {t('community')}
+                </a>
+              </li>
+              <li>
+                <a
+                  classList={{ [styles.mainNavigationItemActive]: isKnowledgeBaseVisible() }}
+                  onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
+                  onMouseOut={hideSubnavigation}
+                >
+                  {t('Knowledge base')}
+                </a>
               </li>
             </ul>
           </div>
@@ -186,7 +253,217 @@ export const Header = (props: Props) => {
               <div />
             </div>
           </div>
+
+          <div
+            class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isKnowledgeBaseVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
+          >
+            <ul class="nodash">
+              <li>
+                <a href="/about/manifest">Манифест</a>
+              </li>
+              <li>
+                <a href="/about/dogma">Догма</a>
+              </li>
+              <li>
+                <a href="/about/principles">Принципы сообщества</a>
+              </li>
+              <li>
+                <a href="/about/guide">Гид по дискурсу</a>
+              </li>
+              <li>
+                <a href="">Частые вопросы</a>
+              </li>
+              <li>
+                <a href="">Энциклопедия</a>
+              </li>
+              <li>
+                <a href="">Как поддержать?</a>
+              </li>
+              <li>
+                <a href="/about/help">Как помочь?</a>
+              </li>
+              <li class={styles.rightItem}>
+                <a href="/connect">
+                  {t('Suggest an idea')}
+                  <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isZineVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
+          >
+            <ul class="nodash">
+              <li>
+                <a href="">Искусство</a>
+              </li>
+              <li>
+                <a href="">Подкасты</a>
+              </li>
+              <li>
+                <a href="">Спецпроекты</a>
+              </li>
+              <li>
+                <a href="">#Интервью</a>
+              </li>
+              <li>
+                <a href="">#Репортажи</a>
+              </li>
+              <li>
+                <a href="">#Личный опыт</a>
+              </li>
+              <li>
+                <a href="">#Общество</a>
+              </li>
+              <li>
+                <a href="">#Культура</a>
+              </li>
+              <li>
+                <a href="">#Теории</a>
+              </li>
+              <li>
+                <a href="">#Поэзия</a>
+              </li>
+              <li class={styles.rightItem}>
+                <a href="/topics">
+                  {t('All topics')}
+                  <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isTopicsVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
+          >
+            <ul class="nodash">
+              <li>
+                <a href="">#Интервью</a>
+              </li>
+              <li>
+                <a href="">#Репортажи</a>
+              </li>
+              <li>
+                <a href="">#Личный опыт</a>
+              </li>
+              <li>
+                <a href="">#Общество</a>
+              </li>
+              <li>
+                <a href="">#Культура</a>
+              </li>
+              <li>
+                <a href="">#Теории</a>
+              </li>
+              <li>
+                <a href="">#Поэзия</a>
+              </li>
+              <li>
+                <a href="">#Теории</a>
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class={clsx(styles.subnavigation, styles.subnavigationFeed, 'col')}
+            classList={{ hidden: !isFeedVisible() }}
+            onMouseOver={clearTimer}
+            onMouseOut={hideSubnavigation}
+          >
+            <ul class="nodash">
+              <li>
+                <a
+                  href={getPagePath(router, 'feed')}
+                  class={clsx({
+                    [styles.selected]: page().route === 'feed'
+                  })}
+                >
+                  <span class={styles.subnavigationItemName}>
+                    <Icon name="feed-all" class={styles.icon} />
+                    {t('general feed')}
+                  </span>
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href={getPagePath(router, 'feedMy')}
+                  class={clsx({
+                    [styles.selected]: page().route === 'feedMy'
+                  })}
+                >
+                  <span class={styles.subnavigationItemName}>
+                    <Icon name="feed-my" class={styles.icon} />
+                    {t('My feed')}
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getPagePath(router, 'feedCollaborations')}
+                  class={clsx({
+                    [styles.selected]: page().route === 'feedCollaborations'
+                  })}
+                >
+                  <span class={styles.subnavigationItemName}>
+                    <Icon name="feed-collaborate" class={styles.icon} />
+                    {t('Accomplices')}
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getPagePath(router, 'feedDiscussions')}
+                  class={clsx({
+                    [styles.selected]: page().route === 'feedDiscussions'
+                  })}
+                >
+                  <span class={styles.subnavigationItemName}>
+                    <Icon name="feed-discussion" class={styles.icon} />
+                    {t('Discussions')}
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getPagePath(router, 'feedBookmarks')}
+                  class={clsx({
+                    [styles.selected]: page().route === 'feedBookmarks'
+                  })}
+                >
+                  <span class={styles.subnavigationItemName}>
+                    <Icon name="bookmark" class={styles.icon} />
+                    {t('Bookmarks')}
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getPagePath(router, 'feedNotifications')}
+                  class={clsx({
+                    [styles.selected]: page().route === 'feedNotifications'
+                  })}
+                >
+                  <span class={styles.subnavigationItemName}>
+                    <Icon name="feed-notifications" class={styles.icon} />
+                    {t('Notifications')}
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </nav>
+
         <Snackbar />
       </div>
     </header>

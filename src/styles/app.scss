@@ -337,7 +337,7 @@ button {
   @include media-breakpoint-up(md) {
     margin-top: -0.5rem;
     position: sticky;
-    top: 90px;
+    top: 135px;
   }
 
   @include media-breakpoint-up(sm) {
@@ -578,7 +578,6 @@ figure {
 
 .view-switcher {
   @include font-size(1.4rem);
-
   display: flex;
   flex-wrap: wrap;
   font-weight: 500;
@@ -777,7 +776,7 @@ figure {
 .main-content {
   flex: 1 100%;
   min-height: 90vh;
-  padding-top: 120px;
+  padding-top: 130px;
   position: relative;
 }
 
@@ -856,13 +855,12 @@ figure {
 
 .content-index {
   @include font-size(1.4rem);
-
   line-height: 1.4;
   margin: 0 3.6rem 2em 0;
 
   @include media-breakpoint-up(md) {
     position: sticky;
-    top: 10rem;
+    top: 14rem;
   }
 
   ul ul {

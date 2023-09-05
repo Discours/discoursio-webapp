@@ -113,6 +113,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
         </Match>
         <Match when={footnoteEditorOpen()}>
           <SimplifiedEditor
+            maxHeight={180}
             controlsAlwaysVisible={true}
             imageEnabled={true}
             placeholder={t('Enter footnote text')}

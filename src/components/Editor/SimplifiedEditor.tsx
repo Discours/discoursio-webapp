@@ -44,6 +44,7 @@ type Props = {
   onChange?: (text: string) => void
   variant?: 'minimal' | 'bordered'
   maxLength?: number
+  maxHeight?: number
   submitButtonText?: string
   quoteEnabled?: boolean
   imageEnabled?: boolean
@@ -237,6 +238,11 @@ const SimplifiedEditor = (props: Props) => {
     }
   })
 
+  const maxHeightStyle = {
+    overflow: 'auto',
+    'max-height': `${props.maxHeight}px`
+  }
+
   return (
     <div
       ref={(el) => (wrapperEditorElRef.current = el)}
@@ -254,7 +260,7 @@ const SimplifiedEditor = (props: Props) => {
       <Show when={props.label && counter() > 0}>
         <div class={styles.label}>{props.label}</div>
       </Show>
-      <div ref={(el) => (editorElRef.current = el)} />
+      <div style={props.maxHeight && maxHeightStyle} ref={(el) => (editorElRef.current = el)} />
       <Show when={!props.onlyBubbleControls}>
         <div class={clsx(styles.controls, { [styles.alwaysVisible]: props.controlsAlwaysVisible })}>
           <div class={styles.actions}>

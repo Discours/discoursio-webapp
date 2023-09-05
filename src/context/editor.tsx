@@ -21,12 +21,13 @@ export type ShoutForm = {
   slug: string
   title: string
   subtitle: string
+  lead?: string
+  description?: string
   selectedTopics: Topic[]
   mainTopic?: Topic
   body: string
   coverImageUrl: string
   media?: string
-  lead?: string
 }
 
 type EditorContextType = {
@@ -91,15 +92,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const [form, setForm] = createStore<ShoutForm>(null)
   const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
-
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
     words: 0
   })
-
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const countWords = (value) => setWordCounter(value)
-
   const validate = () => {
     if (!form.title) {
       setFormErrors('title', t('Required'))
@@ -136,6 +134,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         slug: formToUpdate.slug,
         subtitle: formToUpdate.subtitle,
         title: formToUpdate.title,
+        lead: formToUpdate.lead,
+        description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
         media: formToUpdate.media
       },

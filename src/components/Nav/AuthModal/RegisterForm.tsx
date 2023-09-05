@@ -13,6 +13,7 @@ import { register } from '../../../stores/auth'
 import { useLocalize } from '../../../context/localize'
 import { validateEmail } from '../../../utils/validateEmail'
 import { AuthModalHeader } from './AuthModalHeader'
+import { Icon } from '../../_shared/Icon'
 
 type FormFields = {
   fullName: string
@@ -21,6 +22,10 @@ type FormFields = {
 }
 
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
+
+const handleEmailInput = (newEmail: string) => {
+  setEmail(newEmail)
+}
 
 export const RegisterForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
@@ -31,15 +36,11 @@ export const RegisterForm = () => {
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
+  const [showPassword, setShowPassword] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
-
-  const handleEmailInput = (newEmail: string) => {
-    setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
-    setEmail(newEmail)
-  }
 
   const handleEmailBlur = () => {
     if (validateEmail(email())) {
@@ -65,22 +66,24 @@ export const RegisterForm = () => {
   }
 
   const handlePasswordInput = (newPassword: string) => {
-    const passwordError = isValidPassword(newPassword)
-    if (passwordError) {
-      setValidationErrors((errors) => ({ ...errors, password: passwordError }))
-    } else {
-      setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
-    }
     setPassword(newPassword)
   }
 
   const handleNameInput = (newPasswordCopy: string) => {
-    setValidationErrors(({ fullName: _notNeeded, ...rest }) => rest)
     setFullName(newPasswordCopy)
   }
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
+
+    const passwordError = isValidPassword(password())
+    if (passwordError) {
+      setValidationErrors((errors) => ({ ...errors, password: passwordError }))
+    } else {
+      setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
+    }
+    setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
+    setValidationErrors(({ fullName: _notNeeded, ...rest }) => rest)
 
     setSubmitError('')
 
@@ -164,10 +167,11 @@ export const RegisterForm = () => {
                 onInput={(event) => handleNameInput(event.currentTarget.value)}
               />
               <label for="name">{t('Full name')}</label>
+              <Show when={validationErrors().fullName}>
+                <div class={styles.validationError}>{validationErrors().fullName}</div>
+              </Show>
             </div>
-            <Show when={validationErrors().fullName}>
-              <div class={styles.validationError}>{validationErrors().fullName}</div>
-            </Show>
+
             <div
               class={clsx('pretty-form__item', {
                 'pretty-form__item--error': validationErrors().email
@@ -184,24 +188,25 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
+              <Show when={validationErrors().email}>
+                <div class={styles.validationError}>{validationErrors().email}</div>
+              </Show>
+              <Show when={emailChecks()[email()]}>
+                <div class={styles.validationError}>
+                  {t("This email is already taken. If it's you")},{' '}
+                  <a
+                    href="#"
+                    onClick={(event) => {
+                      event.preventDefault()
+                      changeSearchParam('mode', 'login')
+                    }}
+                  >
+                    {t('enter')}
+                  </a>
+                </div>
+              </Show>
             </div>
-            <Show when={validationErrors().email}>
-              <div class={styles.validationError}>{validationErrors().email}</div>
-            </Show>
-            <Show when={emailChecks()[email()]}>
-              <div class={styles.validationError}>
-                {t("This email is already taken. If it's you")},{' '}
-                <a
-                  href="#"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    changeSearchParam('mode', 'login')
-                  }}
-                >
-                  {t('enter')}
-                </a>
-              </div>
-            </Show>
+
             <div
               class={clsx('pretty-form__item', {
                 'pretty-form__item--error': validationErrors().password
@@ -211,17 +216,24 @@ export const RegisterForm = () => {
                 id="password"
                 name="password"
                 autocomplete="current-password"
-                type="password"
+                type={showPassword() ? 'text' : 'password'}
                 placeholder={t('Password')}
                 onInput={(event) => handlePasswordInput(event.currentTarget.value)}
               />
               <label for="password">{t('Password')}</label>
+              <button
+                type="button"
+                class={styles.passwordToggle}
+                onClick={() => setShowPassword(!showPassword())}
+              >
+                <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
+              </button>
+              <Show when={validationErrors().password}>
+                <div class={clsx(styles.registerPassword, styles.validationError)}>
+                  {validationErrors().password}
+                </div>
+              </Show>
             </div>
-            <Show when={validationErrors().password}>
-              <div class={clsx(styles.registerPassword, styles.validationError)}>
-                {validationErrors().password}
-              </div>
-            </Show>
 
             <div>
               <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

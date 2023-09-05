@@ -133,7 +133,7 @@
   pointer-events: none;
   user-select: none;
   cursor: pointer;
-  left: 2rem;
+  left: 0;
   position: sticky;
   top: calc(100vh - 40px);
   width: 2.8rem;
@@ -151,7 +151,7 @@
   }
 
   @include media-breakpoint-up(xl) {
-    left: 4rem;
+    left: 0;
   }
 
   &:hover {
@@ -214,4 +214,12 @@
     background-size: cover;
     background-repeat: no-repeat;
   }
+}
+
+.wrapperTableOfContents {
+  position: fixed;
+  left: 40px;
+  top: 106px;
+  width: 240px;
+  padding-top: 100px;
 }

@@ -63,7 +63,8 @@ export const SolidSwiper = (props: Props) => {
       () => {
         mainSwipeRef.current?.swiper.update()
         thumbSwipeRef.current?.swiper.update()
-      }
+      },
+      { defer: true }
     )
   )
 
@@ -95,7 +96,7 @@ export const SolidSwiper = (props: Props) => {
         const results: UploadedFile[] = []
         for (const file of selectedFiles) {
           const result = await handleFileUpload(file)
-          results.push(result.url)
+          results.push(result)
         }
         props.onImagesAdd(composeMediaItems(results))
         setLoading(false)
@@ -316,18 +317,18 @@ export const SolidSwiper = (props: Props) => {
               type="text"
               class={clsx(styles.input, styles.title)}
               placeholder={t('Enter image title')}
-              value={props.images[slideIndex()].title}
+              value={props.images[slideIndex()]?.title}
               onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'title', event.target.value)}
             />
             <input
               type="text"
               class={styles.input}
               placeholder={t('Specify the source and the name of the author')}
-              value={props.images[slideIndex()].source}
+              value={props.images[slideIndex()]?.source}
               onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'source', event.target.value)}
             />
             <SimplifiedEditor
-              initialContent={props.images[slideIndex()].body}
+              initialContent={props.images[slideIndex()]?.body}
               smallHeight={true}
               placeholder={t('Enter image description')}
               onChange={(value) => setSlideBody(value)}

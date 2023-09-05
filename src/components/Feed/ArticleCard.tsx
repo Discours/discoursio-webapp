@@ -7,7 +7,7 @@ import { clsx } from 'clsx'
 import { CardTopic } from './CardTopic'
 import { ShoutRatingControl } from '../Article/ShoutRatingControl'
 import { getShareUrl, SharePopup } from '../Article/SharePopup'
-import stylesHeader from '../Nav/Header.module.scss'
+import stylesHeader from '../Nav/Header/Header.module.scss'
 import { getDescription } from '../../utils/meta'
 import { FeedArticlePopup } from './FeedArticlePopup'
 import { useLocalize } from '../../context/localize'
@@ -164,10 +164,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </div>
             </Show>
           </a>
-
-          <Show when={props.article.lead}>
-            <div class={styles.shoutCardLead}>{props.article.lead}</div>
-          </Show>
         </div>
 
         <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
@@ -196,7 +192,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </div>
         </Show>
-
+        <Show when={props.article.description}>
+          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
+        </Show>
         <Show when={props.settings?.isFeedMode}>
           <Show when={!props.settings?.noimage && props.article.cover}>
             <div class={styles.shoutCardCoverContainer}>

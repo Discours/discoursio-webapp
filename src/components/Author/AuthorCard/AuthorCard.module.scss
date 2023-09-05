@@ -14,9 +14,16 @@
 }
 
 .authorDetails {
-  align-items: baseline;
-  display: flex;
   flex: 1;
+
+  @include media-breakpoint-up(sm) {
+    align-items: baseline;
+    display: flex;
+  }
+
+  &.authorDetailsShrinked {
+    flex: 0 0 auto;
+  }
 
   @include media-breakpoint-down(sm) {
     flex-wrap: wrap;
@@ -58,29 +65,28 @@
 
 .authorAbout {
   color: rgb(0 0 0 / 60%);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   line-height: 1.4;
   word-break: break-word;
 }
 
 .authorSubscribe {
   align-items: center;
-  display: flex;
+  //display: flex;
 
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;
   }
 
   a {
-    background: #f7f7f7;
     border: none;
     display: inline-block;
-    height: 32px;
+    height: 24px;
     margin-right: 0.4rem;
     position: relative;
     transition: background-color 0.2s;
     vertical-align: middle;
-    width: 32px;
+    width: 24px;
 
     &::before {
       background-image: url(/icons/user-link-default.svg);
@@ -88,59 +94,131 @@
       background-position: 50% 50%;
       background-size: contain;
       content: '';
-      filter: invert(1);
-      height: 18px;
+      height: 100%;
       left: 50%;
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
       transition: filter 0.2s;
-      width: 18px;
+      width: 100%;
     }
 
     &:hover {
       background: #000;
 
       &::before {
-        filter: invert(0);
+        filter: invert(1);
       }
     }
   }
 
   a[href*='facebook.com/'] {
     &::before {
-      background-image: url(/icons/facebook-white.svg);
+      background-image: url(/icons/user-link-facebook.svg);
     }
   }
 
   a[href*='twitter.com/'] {
     &::before {
-      background-image: url(/icons/twitter-white.svg);
+      background-image: url(/icons/user-link-twitter.svg);
     }
   }
 
   a[href*='telegram.com/'] {
     &::before {
-      background-image: url(/icons/telegram-white.svg);
+      background-image: url(/icons/user-link-telegram.svg);
     }
   }
 
   a[href*='vk.cc/'],
   a[href*='vk.com/'] {
     &::before {
-      background-image: url(/icons/vk-white.svg);
+      background-image: url(/icons/user-link-vk.svg);
     }
   }
 
   a[href*='tumblr.com/'] {
     &::before {
-      background-image: url(/icons/tumblr-white.svg);
+      background-image: url(/icons/user-link-tumblr.svg);
     }
   }
 
   a[href*='instagram.com/'] {
     &::before {
-      background-image: url(/icons/instagram-white.svg);
+      background-image: url(/icons/user-link-instagram.svg);
+    }
+  }
+
+  a[href*='behance.net/'] {
+    &::before {
+      background-image: url(/icons/user-link-behance.svg);
+    }
+  }
+
+  a[href*='dribbble.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-dribbble.svg);
+    }
+  }
+
+  a[href*='github.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-github.svg);
+    }
+  }
+
+  a[href*='linkedin.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-linkedin.svg);
+    }
+  }
+
+  a[href*='medium.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-medium.svg);
+    }
+  }
+
+  a[href*='ok.ru/'] {
+    &::before {
+      background-image: url(/icons/user-link-ok.svg);
+    }
+  }
+
+  a[href*='pinterest.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-pinterest.svg);
+    }
+  }
+
+  a[href*='reddit.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-reddit.svg);
+    }
+  }
+
+  a[href*='tiktok.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-tiktok.svg);
+    }
+  }
+
+  a[href*='vk.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-vk.svg);
+    }
+  }
+
+  a[href*='youtube.com/'],
+  a[href*='youtu.be/'] {
+    &::before {
+      background-image: url(/icons/user-link-youtube.svg);
+    }
+  }
+
+  a[href*='dzen.ru/'] {
+    &::before {
+      background-image: url(/icons/user-link-dzen.svg);
     }
   }
 
@@ -171,6 +249,7 @@
 .authorSubscribeSocial {
   align-items: center;
   display: flex;
+  margin: 0 0.8rem 1.6rem;
 
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
@@ -237,8 +316,7 @@
   }
 
   .authorAbout {
-    @include font-size(1.7rem);
-
+    @include font-size(2rem);
     color: #696969;
   }
 
@@ -365,4 +443,39 @@
     min-width: 1.6rem;
     width: 1.6rem;
   }
+}
+
+.subscribersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.4rem;
+  margin-top: 1em;
+}
+
+.subscribers {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  margin-right: 3rem;
+  vertical-align: top;
+
+  .userpic {
+    background: var(--background-color);
+    box-shadow: 0 0 0 2px var(--background-color);
+    vertical-align: top;
+
+    &:not(:first-child) {
+      margin-left: -2.2rem;
+    }
+  }
+}
+
+.subscribersCounter {
+  margin-left: -0.6rem;
+}
+
+.listWrapper {
+  max-height: 70vh;
+  overflow: auto;
+  padding-right: 2rem;
 }

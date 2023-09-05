@@ -15,19 +15,21 @@ import { AudioUploader } from '../Editor/AudioUploader'
 import { slugify } from '../../utils/slugify'
 import { SolidSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
-import { LayoutType, MediaItem, UploadedFile } from '../../pages/types'
+import { LayoutType, MediaItem } from '../../pages/types'
 import { clone } from '../../utils/clone'
 import deepEqual from 'fast-deep-equal'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 import { PublishSettings } from './PublishSettings'
 import { createStore } from 'solid-js/store'
+import SimplifiedEditor from '../Editor/SimplifiedEditor'
+import { isDesktop } from '../../utils/media-query'
+import { TableOfContents } from '../TableOfContents'
 
 type Props = {
   shout: Shout
 }
 
 export const MAX_HEADER_LIMIT = 100
-export const MAX_LEAD_LIMIT = 400
 export const EMPTY_TOPIC: Topic = {
   id: -1,
   slug: ''
@@ -64,6 +66,8 @@ export const EditView = (props: Props) => {
       slug: props.shout.slug,
       shoutId: props.shout.id,
       title: props.shout.title,
+      lead: props.shout.lead,
+      description: props.shout.description,
       subtitle: props.shout.subtitle,
       selectedTopics: shoutTopics,
       mainTopic: shoutTopics.find((topic) => topic.slug === props.shout.mainTopic) || EMPTY_TOPIC,
@@ -75,7 +79,6 @@ export const EditView = (props: Props) => {
   }
 
   const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
-  const leadInput: { current: HTMLTextAreaElement } = { current: null }
 
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))
   const [saving, setSaving] = createSignal(false)
@@ -226,7 +229,6 @@ export const EditView = (props: Props) => {
   }
   const showLeadInput = () => {
     setIsLeadVisible(true)
-    leadInput.current.focus()
   }
 
   return (
@@ -235,7 +237,6 @@ export const EditView = (props: Props) => {
         <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
-            <AutoSaveNotice active={saving()} />
             <button
               class={clsx(styles.scrollTopButton, {
                 [styles.visible]: isScrolled()
@@ -245,6 +246,14 @@ export const EditView = (props: Props) => {
               <Icon name="up-button" class={styles.icon} />
               <span class={styles.scrollTopButtonLabel}>{t('Scroll up')}</span>
             </button>
+
+            <AutoSaveNotice active={saving()} />
+
+            <div class={styles.wrapperTableOfContents}>
+              <Show when={isDesktop() && form.body}>
+                <TableOfContents variant="editor" parentSelector="#editorBody" body={form.body} />
+              </Show>
+            </div>
 
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
@@ -320,16 +329,13 @@ export const EditView = (props: Props) => {
                             />
                           </Show>
                           <Show when={isLeadVisible()}>
-                            <GrowingTextarea
-                              textAreaRef={(el) => {
-                                leadInput.current = el
-                              }}
-                              allowEnterKey={true}
-                              value={(value) => setForm('lead', value)}
-                              class={styles.leadInput}
-                              placeholder={t('Description')}
-                              initialValue={form.subtitle}
-                              maxLength={MAX_LEAD_LIMIT}
+                            <SimplifiedEditor
+                              variant="minimal"
+                              onlyBubbleControls={true}
+                              smallHeight={true}
+                              placeholder={t('A short introduction to keep the reader interested')}
+                              initialContent={form.lead}
+                              onChange={(value) => setForm('lead', value)}
                             />
                           </Show>
                         </Show>

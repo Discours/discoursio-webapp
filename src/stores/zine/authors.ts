@@ -38,12 +38,18 @@ const addAuthors = (authors: Author[]) => {
     return acc
   }, {} as Record<string, Author>)
 
-  setAuthorEntities((prevAuthorEntities) => {
-    return {
-      ...prevAuthorEntities,
-      ...newAuthorEntities
-    }
-  })
+  setAuthorEntities((prevAuthorEntities) =>
+    Object.keys(newAuthorEntities).reduce(
+      (acc, authorSlug) => {
+        acc[authorSlug] = {
+          ...acc[authorSlug],
+          ...newAuthorEntities[authorSlug]
+        }
+        return acc
+      },
+      { ...prevAuthorEntities }
+    )
+  )
 }
 
 export const loadAuthor = async ({ slug }: { slug: string }): Promise<void> => {

@@ -9,78 +9,10 @@
   float: left;
   height: 0;
   pointer-events: none;
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 30px;
   opacity: 0.3;
 }
 
 // Keeping the cursor active when moving outside the editable area
-
-.articleEditor p,
-.articleEditor ul,
-.articleEditor h4,
-.articleEditor ol {
-  box-sizing: content-box;
-  flex: 0 0 auto;
-
-  @media (width >= 768px) {
-    padding-left: calc(21.9% + 3px);
-    max-width: 72.7%;
-  }
-
-  @media (width >= 1200px) {
-    padding-left: calc(21.5% + 3px);
-    max-width: 64.9%;
-  }
-}
-
-.articleEditor blockquote,
-.articleEditor figure,
-.articleEditor article[data-type='incut'] {
-  @media (width >= 768px) {
-    margin-left: calc(21.9% + 3px) !important;
-    max-width: 73.6%;
-  }
-
-  @media (width >= 1200px) {
-    margin-left: calc(21.4% + 3px) !important;
-    max-width: 65.3%;
-  }
-}
-
-.articleEditor h2 {
-  @media (width >= 768px) {
-    padding-left: calc(21.9% + 2px);
-    max-width: 72.7%;
-  }
-
-  @media (width >= 1200px) {
-    padding-left: 21.5%;
-    max-width: 87.1%;
-  }
-}
-
-.articleEditor h3 {
-  @media (width >= 768px) {
-    padding-left: calc(21.9% + 2px);
-  }
-
-  @media (width >= 1200px) {
-    padding-left: 21.5%;
-    max-width: 87.1%;
-  }
-}
-
-.articleEditor * p,
-.articleEditor * h2,
-.articleEditor * h3,
-.articleEditor * h4 {
-  @media (width >= 768px) {
-    padding-left: unset;
-    max-width: unset;
-  }
-}
 
 /* Give a remote user a caret */
 .collaboration-cursor__caret {
@@ -325,4 +257,28 @@ mark.highlight {
 
 figure[data-type='capturedImage'] {
   flex-direction: column-reverse;
+}
+
+footnote {
+  display: inline-flex;
+  position: relative;
+  cursor: pointer;
+  width: 0.8rem;
+  height: 1em;
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    top: -2px;
+    border: unset;
+    background-size: 10px;
+    background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgY2xhc3M9ImJpIGJpLWluZm8tY2lyY2xlIiBmaWxsPSJjdXJyZW50Q29sb3IiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik04IDE1QTcgNyAwIDEgMSA4IDFhNyA3IDAgMCAxIDAgMTR6bTAgMUE4IDggMCAxIDAgOCAwYTggOCAwIDAgMCAwIDE2eiIvPjxwYXRoIGQ9Im04LjkzIDYuNTg4LTIuMjkuMjg3LS4wODIuMzguNDUuMDgzYy4yOTQuMDcuMzUyLjE3Ni4yODguNDY5bC0uNzM4IDMuNDY4Yy0uMTk0Ljg5Ny4xMDUgMS4zMTkuODA4IDEuMzE5LjU0NSAwIDEuMTc4LS4yNTIgMS40NjUtLjU5OGwuMDg4LS40MTZjLS4yLjE3Ni0uNDkyLjI0Ni0uNjg2LjI0Ni0uMjc1IDAtLjM3NS0uMTkzLS4zMDQtLjUzM0w4LjkzIDYuNTg4ek05IDQuNWExIDEgMCAxIDEtMiAwIDEgMSAwIDAgMSAyIDB6Ii8+PC9zdmc+');
+  }
+
+  &:hover {
+    background-color: unset;
+  }
 }

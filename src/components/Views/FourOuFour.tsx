@@ -8,7 +8,7 @@ export const FourOuFourView = (_props) => {
   return (
     <div class={styles.errorPageWrapper}>
       <div class={styles.errorPage}>
-        <div class="container">
+        <div class="wide-container">
           <div class="row">
             <div class="col-md-14 offset-md-6 col-lg-12">
               <a href="/" class="image-link">

@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createEffect, on, onMount } from 'solid-js'
+import { For, Show, createSignal, createEffect, on } from 'solid-js'
 import { clsx } from 'clsx'
 
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
@@ -99,17 +99,16 @@ export const TableOfContents = (props: Props) => {
             })}
             onClick={(e) => {
               e.preventDefault()
-
               toggleIsVisible()
             }}
+            title={isVisible() ? t('Hide table of contents') : t('Show table of contents')}
           >
             <Show when={isVisible()} fallback={<Icon name="show-table-of-contents" class={'icon'} />}>
-              <Icon
-                name="hide-table-of-contents"
-                class={clsx('icon', {
-                  [styles.TableOfContentsIconRotated]: props.variant === 'editor'
-                })}
-              />
+              {props.variant === 'editor' ? (
+                <Icon name="hide-table-of-contents" class="icon" />
+              ) : (
+                <Icon name="hide-table-of-contents-2" class="icon" />
+              )}
             </Show>
           </button>
         </div>

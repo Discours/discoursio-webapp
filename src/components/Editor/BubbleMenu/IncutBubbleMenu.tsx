@@ -20,13 +20,6 @@ export const IncutBubbleMenu = (props: Props) => {
       <button
         type="button"
         class={styles.bubbleMenuButton}
-        onClick={() => props.editor.chain().focus().setArticleFloat('left').run()}
-      >
-        <Icon name="editor-image-align-left" />
-      </button>
-      <button
-        type="button"
-        class={styles.bubbleMenuButton}
         onClick={() => props.editor.chain().focus().setArticleFloat('half-left').run()}
       >
         <Icon name="editor-image-half-align-left" />
@@ -46,15 +39,6 @@ export const IncutBubbleMenu = (props: Props) => {
       >
         <Icon name="editor-image-half-align-right" />
       </button>
-
-      <button
-        type="button"
-        class={styles.bubbleMenuButton}
-        onClick={() => props.editor.chain().focus().setArticleFloat('right').run()}
-      >
-        <Icon name="editor-image-align-right" />
-      </button>
-
       <div class={styles.delimiter} />
       <div class={styles.dropDownHolder}>
         <button

@@ -1,13 +1,26 @@
+.authorPage {
+  :global(.view-switcher) {
+    margin-top: 0;
+
+    button {
+      font-size: 100%;
+    }
+  }
+
+  .groupControls {
+    margin-bottom: 2em !important;
+    margin-top: 0 !important;
+  }
+}
+
 .ratingContainer {
   @include font-size(1.5rem);
-
   display: inline-flex;
   vertical-align: top;
 }
 
 .ratingControl {
   @include font-size(1.5rem);
-
   display: inline-flex;
   margin-left: 1em;
   vertical-align: middle;
@@ -18,57 +31,6 @@
 
   @include media-breakpoint-up(md) {
     text-align: right;
-  }
-}
-
-.userpic {
-  background: #fff;
-  box-shadow: 0 0 0 2px #fff;
-  display: inline-block;
-  margin-right: -1.2rem;
-  vertical-align: top;
-}
-
-.subscribers {
-  cursor: pointer;
-  display: inline-block;
-  margin: -0.4rem 2em 0 0;
-  vertical-align: top;
-}
-
-.subscribersCounter {
-  @include font-size(1rem);
-
-  background: #fff;
-  border: 2px solid #000;
-  border-radius: 100%;
-  font-weight: bold;
-  height: 32px;
-  line-height: 30px;
-  position: relative;
-  text-align: center;
-  width: 32px;
-  z-index: 1;
-}
-
-.subscribersList {
-  max-height: 15em;
-  overflow: auto;
-  position: relative;
-
-  .subscriber {
-    white-space: nowrap;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 0;
-    border-radius: 4px;
-    padding: 8px 4px;
-    transition: background 0.2s ease-in-out;
-
-    &:hover {
-      background: #f7f7f7;
-    }
   }
 }
 

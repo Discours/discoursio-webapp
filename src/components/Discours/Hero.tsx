@@ -1,38 +1,37 @@
-import './Hero.scss'
+import styles from './Hero.module.scss'
 
 import { showModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
+import { useRouter } from '../../stores/router'
+import { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
 export default () => {
   const { t } = useLocalize()
+  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+
   return (
-    <div class="about-discours">
+    <div class={styles.aboutDiscours}>
       <div class="wide-container">
         <div class="row">
-          <div class="col-lg-20 offset-lg-2 col-xl-16 offset-xl-4">
-            <h4>{t('Horizontal collaborative journalistic platform')}</h4>
-            <p>
-              {t(
+          <div class="col-lg-20 offset-lg-2 col-xl-18 offset-xl-3">
+            <h4 innerHTML={t('Horizontal collaborative journalistic platform')} />
+            <p
+              innerHTML={t(
                 'Discours is an intellectual environment, a web space and tools that allows authors to collaborate with readers and come together to co-create publications and media projects'
               )}
-              .
-              <br />
-              <em>
-                {t('We are convinced that one voice is good, but many is better') +
-                  '. ' +
-                  t('We create the most amazing stories together')}
-                .
-              </em>
-            </p>
-            <div class="about-discours__actions">
-              <a class="button" onClick={() => showModal('auth')}>
-                {t('Join the community')}
-              </a>
+            />
+            <div class={styles.aboutDiscoursActions}>
               <a class="button" href="/create">
-                {t('Become an author')}
+                {t('Create post')}
               </a>
-              <a class="button" href="/about/manifest">
-                {t('About the project')}
+              <a
+                class="button"
+                onClick={() => {
+                  showModal('auth')
+                  changeSearchParam('mode', 'register')
+                }}
+              >
+                {t('Join the community')}
               </a>
               <a class="button" href="/about/help">
                 {t('Support us')}

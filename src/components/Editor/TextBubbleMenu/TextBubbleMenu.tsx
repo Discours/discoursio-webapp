@@ -1,4 +1,4 @@
-import { Switch, Match, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import type { Editor } from '@tiptap/core'
 import styles from './TextBubbleMenu.module.scss'
 import { Icon } from '../../_shared/Icon'
@@ -7,11 +7,13 @@ import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
 import { Popover } from '../../_shared/Popover'
 import { InsertLinkForm } from '../InsertLinkForm'
+import SimplifiedEditor from '../SimplifiedEditor'
 
 type BubbleMenuProps = {
   editor: Editor
   isCommonMarkup: boolean
   ref: (el: HTMLDivElement) => void
+  shouldShow: boolean
 }
 
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
@@ -20,24 +22,35 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
       () => props.editor,
-      (editor) => {
-        return editor && editor.isActive(name, attributes)
-      }
+      (editor) => editor && editor.isActive(name, attributes)
     )
+
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
   const [listBubbleOpen, setListBubbleOpen] = createSignal(false)
   const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
+  const [footnoteEditorOpen, setFootnoteEditorOpen] = createSignal(false)
+  const [footNote, setFootNote] = createSignal<string>()
+
+  createEffect(() => {
+    if (!props.shouldShow) {
+      setFootNote()
+      setFootnoteEditorOpen(false)
+    }
+  })
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')
   const isH1 = isActive('heading', { level: 2 })
   const isH2 = isActive('heading', { level: 3 })
   const isH3 = isActive('heading', { level: 4 })
-  const isBlockQuote = isActive('blockquote')
+  const isQuote = isActive('blockquote', { 'data-type': 'quote' })
+  const isPunchLine = isActive('blockquote', { 'data-type': 'punchline' })
   const isOrderedList = isActive('isOrderedList')
   const isBulletList = isActive('isBulletList')
   const isLink = isActive('link')
   const isHighlight = isActive('highlight')
+  const isFootnote = isActive('footnote')
+  const isIncut = isActive('article')
 
   const toggleTextSizePopup = () => {
     if (listBubbleOpen()) {
@@ -58,6 +71,47 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
   }
 
+  const updateCurrentFootnoteValue = createEditorTransaction(
+    () => props.editor,
+    (ed) => {
+      if (!isFootnote()) {
+        return
+      }
+      const value = ed.getAttributes('footnote').value
+      setFootNote(value)
+    }
+  )
+
+  const handleAddFootnote = (footnote) => {
+    if (footNote()) {
+      props.editor.chain().focus().updateFootnote(footnote).run()
+    } else {
+      props.editor.chain().focus().setFootnote({ value: footnote }).run()
+    }
+    setFootNote()
+    setFootnoteEditorOpen(false)
+  }
+
+  const handleOpenFootnoteEditor = () => {
+    updateCurrentFootnoteValue()
+    setFootnoteEditorOpen(true)
+  }
+
+  const handleSetPunchline = () => {
+    if (isPunchLine()) {
+      props.editor.chain().focus().toggleBlockquote('punchline').run()
+    }
+    props.editor.chain().focus().toggleBlockquote('quote').run()
+    toggleTextSizePopup()
+  }
+  const handleSetQuote = () => {
+    if (isQuote()) {
+      props.editor.chain().focus().toggleBlockquote('quote').run()
+    }
+    props.editor.chain().focus().toggleBlockquote('punchline').run()
+    toggleTextSizePopup()
+  }
+
   onMount(() => {
     window.addEventListener('keydown', handleKeyDown)
   })
@@ -67,12 +121,27 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   })
 
   return (
-    <div ref={props.ref} class={styles.TextBubbleMenu}>
+    <div ref={props.ref} class={clsx(styles.TextBubbleMenu, { [styles.growWidth]: footnoteEditorOpen() })}>
       <Switch>
         <Match when={linkEditorOpen()}>
           <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
         </Match>
-        <Match when={!linkEditorOpen()}>
+        <Match when={footnoteEditorOpen()}>
+          <SimplifiedEditor
+            maxHeight={180}
+            controlsAlwaysVisible={true}
+            imageEnabled={true}
+            placeholder={t('Enter footnote text')}
+            onSubmit={(value) => handleAddFootnote(value)}
+            variant={'bordered'}
+            initialContent={footNote()}
+            onCancel={() => {
+              setFootnoteEditorOpen(false)
+            }}
+            submitButtonText={t('Send')}
+          />
+        </Match>
+        <Match when={!linkEditorOpen() || !footnoteEditorOpen()}>
           <>
             <Show when={!props.isCommonMarkup}>
               <>
@@ -151,12 +220,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isQuote()
                               })}
-                              onClick={() => {
-                                props.editor.chain().focus().toggleBlockquote('quote').run()
-                                toggleTextSizePopup()
-                              }}
+                              onClick={handleSetPunchline}
                             >
                               <Icon name="editor-blockquote" />
                             </button>
@@ -168,12 +234,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isPunchLine()
                               })}
-                              onClick={() => {
-                                props.editor.chain().focus().toggleBlockquote('punchline').run()
-                                toggleTextSizePopup()
-                              }}
+                              onClick={handleSetQuote}
                             >
                               <Icon name="editor-quote" />
                             </button>
@@ -188,7 +251,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBlockQuote()
+                                [styles.bubbleMenuButtonActive]: isIncut()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleArticle().run()
@@ -252,7 +315,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               </Popover>
               <div class={styles.delimiter} />
             </Show>
-            <Popover content={t('Add url')}>
+            <Popover content={<div class={styles.noWrap}>{t('Add url')}</div>}>
               {(triggerRef: (el) => void) => (
                 <button
                   ref={triggerRef}
@@ -270,7 +333,14 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               <>
                 <Popover content={t('Insert footnote')}>
                   {(triggerRef: (el) => void) => (
-                    <button ref={triggerRef} type="button" class={styles.bubbleMenuButton}>
+                    <button
+                      ref={triggerRef}
+                      type="button"
+                      class={clsx(styles.bubbleMenuButton, {
+                        [styles.bubbleMenuButtonActive]: isFootnote()
+                      })}
+                      onClick={handleOpenFootnoteEditor}
+                    >
                       <Icon name="editor-footnote" />
                     </button>
                   )}

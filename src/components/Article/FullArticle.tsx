@@ -1,19 +1,14 @@
-import { createEffect, For, createMemo, onMount, Show, createSignal } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
-
 import MD from './MD'
-
 import type { Author, Shout } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
-
 import { MediaItem } from '../../pages/types'
-
 import { router, useRouter } from '../../stores/router'
-
 import { formatDate } from '../../utils'
 import { getDescription } from '../../utils/meta'
 import { imageProxy } from '../../utils/imageProxy'
@@ -24,9 +19,8 @@ import { AudioPlayer } from './AudioPlayer'
 import { SharePopup } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
 import { CommentsTree } from './CommentsTree'
-import stylesHeader from '../Nav/Header.module.scss'
+import stylesHeader from '../Nav/Header/Header.module.scss'
 import { AudioHeader } from './AudioHeader'
-
 import { Popover } from '../_shared/Popover'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { Icon } from '../_shared/Icon'
@@ -47,6 +41,7 @@ export const FullArticle = (props: Props) => {
     isAuthenticated,
     actions: { requireAuthentication }
   } = useSession()
+
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
@@ -128,23 +123,78 @@ export const FullArticle = (props: Props) => {
     setIsReactionsLoaded(true)
   })
 
-  onMount(() => {
-    const tooltipElements: NodeListOf<HTMLLinkElement> =
-      document.querySelectorAll('[data-toggle="tooltip"]')
+  const clickHandlers = []
+  const documentClickHandlers = []
+
+  createEffect(() => {
+    if (!body()) {
+      return
+    }
+
+    const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
+      '[data-toggle="tooltip"], footnote'
+    )
     if (!tooltipElements) return
     tooltipElements.forEach((element) => {
       const tooltip = document.createElement('div')
       tooltip.classList.add(styles.tooltip)
-      tooltip.textContent = element.dataset.originalTitle
+      const tooltipContent = document.createElement('div')
+      tooltipContent.classList.add(styles.tooltipContent)
+      tooltipContent.innerHTML = element.dataset.originalTitle || element.dataset.value
+
+      tooltip.appendChild(tooltipContent)
+
       document.body.appendChild(tooltip)
-      createPopper(element, tooltip, { placement: 'top' })
+
+      if (element.hasAttribute('href')) {
+        element.setAttribute('href', 'javascript: void(0);')
+      }
+      createPopper(element, tooltip, {
+        placement: 'top',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8]
+            }
+          }
+        ]
+      })
+
       tooltip.style.visibility = 'hidden'
-      element.addEventListener('mouseenter', () => {
-        tooltip.style.visibility = 'visible'
-      })
-      element.addEventListener('mouseleave', () => {
-        tooltip.style.visibility = 'hidden'
-      })
+      let isTooltipVisible = false
+
+      const handleClick = () => {
+        if (isTooltipVisible) {
+          tooltip.style.visibility = 'hidden'
+          isTooltipVisible = false
+        } else {
+          tooltip.style.visibility = 'visible'
+          isTooltipVisible = true
+        }
+      }
+
+      const handleDocumentClick = (e) => {
+        if (isTooltipVisible && e.target !== element && e.target !== tooltip) {
+          tooltip.style.visibility = 'hidden'
+          isTooltipVisible = false
+        }
+      }
+
+      element.addEventListener('click', handleClick)
+      document.addEventListener('click', handleDocumentClick)
+
+      clickHandlers.push({ element, handler: handleClick })
+      documentClickHandlers.push(handleDocumentClick)
+    })
+  })
+
+  onCleanup(() => {
+    clickHandlers.forEach(({ element, handler }) => {
+      element.removeEventListener('click', handler)
+    })
+    documentClickHandlers.forEach((handler) => {
+      document.removeEventListener('click', handler)
     })
   })
 
@@ -190,6 +240,9 @@ export const FullArticle = (props: Props) => {
                 </Show>
               </div>
             </Show>
+            <Show when={props.article.lead}>
+              <section class={styles.lead} innerHTML={props.article.lead} />
+            </Show>
             <Show when={props.article.layout === 'audio'}>
               <AudioHeader
                 title={props.article.title}
@@ -231,8 +284,11 @@ export const FullArticle = (props: Props) => {
               </div>
             </Show>
           </article>
+
           <Show when={isDesktop() && body()}>
-            <TableOfContents variant="article" parentSelector="#shoutBody" body={body()} />
+            <div class="col-md-6 offset-md-1">
+              <TableOfContents variant="article" parentSelector="#shoutBody" body={body()} />
+            </div>
           </Show>
         </div>
       </div>

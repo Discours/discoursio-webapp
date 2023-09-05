@@ -1,34 +1,30 @@
-.about-discours {
-  @include font-size(1.7rem);
-
-  background: #000;
-  color: #fff;
-  font-weight: 400;
+.aboutDiscours {
+  @include font-size(1.6rem);
+  background: #fef2f2;
+  font-weight: 500;
   margin-bottom: 6.4rem;
-  padding: 3.6rem 0;
+  padding: 8rem 0 6.4rem;
   text-align: center;
 
   h4 {
-    margin-bottom: 4rem;
+    @include font-size(4rem);
+    font-weight: bold;
+    line-height: 1.1;
+    margin-bottom: 2rem;
   }
 
   em {
     font-weight: inherit;
   }
-
-  ::selection {
-    background: #fff;
-    color: #000;
-  }
 }
 
-.about-discours__actions {
+.aboutDiscoursActions {
   margin-top: 4.8rem;
 
-  .button {
-    border: 3px solid;
-    border-radius: 1.2em;
-    color: inherit;
+  :global(.button) {
+    border: 3px solid #000;
+    border-radius: 0.8rem;
+    color: #fff;
     cursor: pointer;
     display: inline-block;
     font-weight: bold;
@@ -39,7 +35,6 @@
 
     &:hover {
       background: #fff;
-      border-color: #fff;
       color: #000;
     }
   }

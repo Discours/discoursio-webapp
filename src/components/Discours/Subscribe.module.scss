@@ -1,22 +1,8 @@
-@mixin input-placeholder-overflow($direction: 'down') {
-  @if $direction == 'down' {
-    @media (width <= 1410px) {
-      @content;
-    }
-  } @else if $direction == 'up' {
-    @media (width > 1410px) {
-      @content;
-    }
-  } @else {
-    @error "Unknown direction #{$direction}.";
-  }
-}
-
 .form {
   display: flex;
   flex-direction: column;
 
-  @include input-placeholder-overflow(down) {
+  @include media-breakpoint-down(xxl) {
     margin-bottom: 2.4rem;
   }
 }
@@ -25,13 +11,12 @@
   display: flex;
   width: 100%;
 
-  @include input-placeholder-overflow(down) {
+  @include media-breakpoint-down(xxl) {
     flex-direction: column;
   }
 
   .input {
     @include font-size(2rem);
-
     background: none;
     color: #fff;
     font-family: inherit;
@@ -45,11 +30,11 @@
     border-radius: 0;
     height: 4rem;
 
-    @include input-placeholder-overflow(up) {
+    @include media-breakpoint-up(xxl) {
       border-right: none;
     }
 
-    @include input-placeholder-overflow(down) {
+    @include media-breakpoint-down(xxl) {
       border-bottom: none;
     }
 
@@ -62,7 +47,7 @@
     border-radius: 0;
     flex-shrink: 0;
 
-    @include input-placeholder-overflow(down) {
+    @include media-breakpoint-down(xxl) {
       width: 100%;
     }
   }

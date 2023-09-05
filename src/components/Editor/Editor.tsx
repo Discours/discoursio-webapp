@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, onCleanup } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
@@ -41,12 +41,9 @@ import Article from './extensions/Article'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
-import { TableOfContents } from '../TableOfContents'
-
-import { isDesktop } from '../../utils/media-query'
-
 import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
+import { Footnote } from './extensions/Footnote'
 
 type Props = {
   shoutId: number
@@ -62,6 +59,7 @@ export const Editor = (props: Props) => {
   const { user } = useSession()
 
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
+  const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
 
   const docName = `shout-${props.shoutId}`
 
@@ -159,7 +157,7 @@ export const Editor = (props: Props) => {
         }
       }),
       Placeholder.configure({
-        placeholder: t('Short opening')
+        placeholder: t('Add a link or click plus to embed media')
       }),
       Focus,
       Gapcursor,
@@ -173,8 +171,9 @@ export const Editor = (props: Props) => {
       ImageFigure,
       Image,
       Figcaption,
+      Footnote,
       Embed,
-      CharacterCount,
+      CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
         element: textBubbleMenuRef.current,
@@ -183,7 +182,11 @@ export const Editor = (props: Props) => {
           const { empty } = selection
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
           setIsCommonMarkup(e.isActive('figcaption'))
-          return view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')
+          const result =
+            (view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')) ||
+            e.isActive('footnote')
+          setShouldShowTextBubbleMenu(result)
+          return result
         },
         tippyOptions: {
           sticky: true
@@ -244,13 +247,21 @@ export const Editor = (props: Props) => {
     }
   })
 
+  onCleanup(() => {
+    editor().destroy()
+  })
+
   return (
     <>
-      <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
-      <Show when={isDesktop() && html()}>
-        <TableOfContents variant="editor" parentSelector="#editorBody" body={html()} />
-      </Show>
+      <div class="row">
+        <div class="col-md-5" />
+        <div class="col-md-12">
+          <div ref={(el) => (editorElRef.current = el)} id="editorBody" />
+        </div>
+      </div>
+
       <TextBubbleMenu
+        shouldShow={shouldShowTextBubbleMenu()}
         isCommonMarkup={isCommonMarkup()}
         editor={editor()}
         ref={(el) => (textBubbleMenuRef.current = el)}

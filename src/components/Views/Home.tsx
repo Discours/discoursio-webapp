@@ -106,7 +106,7 @@ export const HomeView = (props: HomeProps) => {
 
   return (
     <Show when={sortedArticles().length > 0}>
-      <NavTopics topics={randomTopics()} />
+      <NavTopics />
 
       <Row5 articles={sortedArticles().slice(0, 5)} nodate={true} />
 

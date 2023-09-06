@@ -53,3 +53,44 @@
 .comment {
   background: #efefef;
 }
+
+.longBio {
+  margin-bottom: 0;
+  max-height: 25em;
+  overflow: hidden;
+  padding-bottom: 4em;
+  position: relative;
+  transition: max-height 0.5s, margin-bottom 0s 0.3s;
+
+  &:after {
+    background-image: linear-gradient(to top, #fff, rgb(255 255 255 / 0.8), rgb(255 255 255 / 0));
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 4em;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+}
+
+.longBioExpanded {
+  max-height: 200em;
+  margin-bottom: -2em;
+
+  &:after {
+    display: none;
+  }
+}
+
+.longBioExpandedControl {
+  border-radius: 1.2rem;
+  display: block;
+  height: auto;
+  @include font-size(1.6rem);
+  padding-bottom: 1.2rem;
+  padding-top: 1.2rem;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}

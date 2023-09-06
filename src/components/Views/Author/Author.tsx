@@ -40,8 +40,12 @@ export const AuthorView = (props: AuthorProps) => {
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>([])
+  const [bioWrapper, setBioWrapper] = createSignal<HTMLElement>()
+  const [bioContainer, setBioContainer] = createSignal<HTMLElement>()
+  const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
 
   const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
     try {
@@ -58,6 +62,12 @@ export const AuthorView = (props: AuthorProps) => {
     }
   }
 
+  const checkBioHeight = () => {
+    if (bioContainer()) {
+      setShowExpandBioControl(bioContainer().offsetHeight > bioWrapper().offsetHeight)
+    }
+  }
+
   onMount(async () => {
     hideModal()
     try {
@@ -66,6 +76,9 @@ export const AuthorView = (props: AuthorProps) => {
     } catch (error) {
       console.error('[getAuthorFollowers]', error)
     }
+
+    checkBioHeight()
+
     if (!searchParams().by) {
       changeSearchParam('by', 'rating')
     }
@@ -139,7 +152,13 @@ export const AuthorView = (props: AuthorProps) => {
                 </button>
               </li>
               <li classList={{ 'view-switcher__item--selected': searchParams().by === 'about' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'about')}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    changeSearchParam('by', 'about')
+                    checkBioHeight()
+                  }}
+                >
                   {t('About myself')}
                 </button>
               </li>
@@ -157,7 +176,26 @@ export const AuthorView = (props: AuthorProps) => {
       <Switch>
         <Match when={searchParams().by === 'about'}>
           <div class="wide-container">
-            <p>{author().about}</p>
+            <div class="row">
+              <div class="col-md-20 col-lg-18">
+                <div
+                  ref={setBioWrapper}
+                  class={styles.longBio}
+                  classList={{ [styles.longBioExpanded]: isBioExpanded() }}
+                >
+                  <div ref={setBioContainer}>{author().about}</div>
+                </div>
+
+                <Show when={showExpandBioControl()}>
+                  <button
+                    class={clsx('button button--subscribe-topic', styles.longBioExpandedControl)}
+                    onClick={() => setIsBioExpanded(!isBioExpanded())}
+                  >
+                    {t('Show more')}
+                  </button>
+                </Show>
+              </div>
+            </div>
           </div>
         </Match>
         <Match when={searchParams().by === 'commented'}>

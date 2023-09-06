@@ -479,3 +479,19 @@
   overflow: auto;
   padding-right: 2rem;
 }
+
+.switcherCounter {
+  background: #f7f7f8;
+  border-radius: 0.8rem;
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-left: 0.4rem;
+  padding: 0.4rem 0.6rem;
+}
+
+:global(.view-switcher__item--selected) .switcherCounter {
+  background: #000;
+  color: #fff;
+}

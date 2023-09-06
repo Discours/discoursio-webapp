@@ -372,18 +372,25 @@ export const AuthorCard = (props: AuthorCardProps) => {
             <ul class="view-switcher">
               <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('all')}>
-                  {t('All')} {props.subscriptions.length}
+                  {t('All')}
                 </button>
+                <span class={styles.switcherCounter}>{props.subscriptions.length}</span>
               </li>
               <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('users')}>
-                  {t('Users')} {props.subscriptions.filter((s) => 'name' in s).length}
+                  {t('Users')}
                 </button>
+                <span class={styles.switcherCounter}>
+                  {props.subscriptions.filter((s) => 'name' in s).length}
+                </span>
               </li>
               <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'topics' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('topics')}>
-                  {t('Topics')} {props.subscriptions.filter((s) => 'title' in s).length}
+                  {t('Topics')}
                 </button>
+                <span class={styles.switcherCounter}>
+                  {props.subscriptions.filter((s) => 'title' in s).length}
+                </span>
               </li>
             </ul>
             <br />

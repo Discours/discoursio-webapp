@@ -274,13 +274,7 @@ export const Header = (props: Props) => {
                 <a href="/about/guide">Гид по дискурсу</a>
               </li>
               <li>
-                <a href="">Частые вопросы</a>
-              </li>
-              <li>
-                <a href="">Энциклопедия</a>
-              </li>
-              <li>
-                <a href="">Как поддержать?</a>
+                <a href="/about/manifest#participation">Как поддержать?</a>
               </li>
               <li>
                 <a href="/about/help">Как помочь?</a>
@@ -302,7 +296,7 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li>
-                <a href="">Искусство</a>
+                <a href="/expo/image">Искусство</a>
               </li>
               <li>
                 <a href="">Подкасты</a>
@@ -370,6 +364,12 @@ export const Header = (props: Props) => {
               </li>
               <li>
                 <a href="">#Теории</a>
+              </li>
+              <li class={styles.rightItem}>
+                <a href="/topics">
+                  {t('All topics')}
+                  <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
+                </a>
               </li>
             </ul>
           </div>

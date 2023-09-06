@@ -1,36 +1,51 @@
-import { For, Show } from 'solid-js'
-import type { Topic } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
 import { useLocalize } from '../../context/localize'
 import './Topics.scss'
 
-export const NavTopics = (props: { topics: Topic[] }) => {
-  const { t, lang } = useLocalize()
-  const tag = (topic: Topic) =>
-    /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
-  // TODO: something about subtopics
+export const NavTopics = () => {
+  const { t } = useLocalize()
+
   return (
     <nav class="subnavigation wide-container text-2xl">
       <ul class="topics">
-        <Show when={props.topics.length > 0}>
-          <For each={props.topics}>
-            {(topic) => (
-              <li class="item">
-                <a href={`/topic/${topic.slug}`}>
-                  <span>#{tag(topic)}</span>
-                </a>
-              </li>
-            )}
-          </For>
-          <li class="item right">
-            <a href={`/topics`}>
-              <span>
-                {t('All topics')}
-                <Icon name="arrow-right-black" class={'icon'} />
-              </span>
-            </a>
-          </li>
-        </Show>
+        <li class="item">
+          <a href="/expo/image">Искусство</a>
+        </li>
+        <li class="item">
+          <a href="">Подкасты</a>
+        </li>
+        <li class="item">
+          <a href="">Спецпроекты</a>
+        </li>
+        <li class="item">
+          <a href="">#Интервью</a>
+        </li>
+        <li class="item">
+          <a href="">#Репортажи</a>
+        </li>
+        <li class="item">
+          <a href="">#Личный опыт</a>
+        </li>
+        <li class="item">
+          <a href="">#Общество</a>
+        </li>
+        <li class="item">
+          <a href="">#Культура</a>
+        </li>
+        <li class="item">
+          <a href="">#Теории</a>
+        </li>
+        <li class="item">
+          <a href="">#Поэзия</a>
+        </li>
+        <li class="item right">
+          <a href={`/topics`}>
+            <span>
+              {t('All topics')}
+              <Icon name="arrow-right-black" class={'icon'} />
+            </span>
+          </a>
+        </li>
       </ul>
     </nav>
   )

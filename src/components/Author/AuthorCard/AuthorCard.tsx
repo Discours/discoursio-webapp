@@ -339,7 +339,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
       </div>
 
       <Show when={props.followers}>
-        <Modal variant="wide" name="followers">
+        <Modal variant="wide" name="followers" maxHeight>
           <>
             <h2>{t('Followers')}</h2>
             <div class={styles.listWrapper}>
@@ -366,7 +366,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
       </Show>
 
       <Show when={props.subscriptions}>
-        <Modal variant="wide" name="subscriptions">
+        <Modal variant="wide" name="subscriptions" maxHeight>
           <>
             <h2>{t('Subscriptions')}</h2>
             <ul class="view-switcher">

@@ -13,6 +13,7 @@ interface ModalProps {
   children: JSX.Element
   onClose?: () => void
   noPadding?: boolean
+  maxHeight?: boolean
 }
 
 export const Modal = (props: ModalProps) => {
@@ -39,7 +40,8 @@ export const Modal = (props: ModalProps) => {
         <div
           class={clsx(styles.modal, {
             [styles.narrow]: props.variant === 'narrow',
-            [styles.noPadding]: props.noPadding
+            [styles.noPadding]: props.noPadding,
+            [styles.maxHeight]: props.maxHeight
           })}
           onClick={(event) => event.stopPropagation()}
         >

@@ -21,7 +21,13 @@ export default (props: GroupProps) => {
             <div class="col-lg-12">
               <ArticleCard
                 article={props.articles[0]}
-                settings={{ nosubtitle: false, noicon: true, isFloorImportant: true, isBigTitle: true }}
+                settings={{
+                  nosubtitle: false,
+                  noicon: true,
+                  isFloorImportant: true,
+                  isBigTitle: true,
+                  nodate: true
+                }}
               />
             </div>
 
@@ -34,7 +40,7 @@ export default (props: GroupProps) => {
                         <div class="col-md-16">
                           <ArticleCard
                             article={a}
-                            settings={{ nosubtitle: false, noicon: true, isBigTitle: true }}
+                            settings={{ nosubtitle: false, noicon: true, isBigTitle: true, nodate: true }}
                           />
                         </div>
                       </div>
@@ -52,7 +58,8 @@ export default (props: GroupProps) => {
                             noimage: true,
                             isBigTitle: true,
                             isCompact: true,
-                            isFloorImportant: true
+                            isFloorImportant: true,
+                            nodate: true
                           }}
                         />
                       )}
@@ -68,7 +75,8 @@ export default (props: GroupProps) => {
                             noimage: true,
                             isBigTitle: true,
                             isCompact: true,
-                            isFloorImportant: true
+                            isFloorImportant: true,
+                            nodate: true
                           }}
                         />
                       )}

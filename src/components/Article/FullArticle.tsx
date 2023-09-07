@@ -134,7 +134,9 @@ export const FullArticle = (props: Props) => {
     const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
       '[data-toggle="tooltip"], footnote'
     )
-    if (!tooltipElements) return
+    if (!tooltipElements) {
+      return
+    }
     tooltipElements.forEach((element) => {
       const tooltip = document.createElement('div')
       tooltip.classList.add(styles.tooltip)
@@ -149,7 +151,8 @@ export const FullArticle = (props: Props) => {
       if (element.hasAttribute('href')) {
         element.setAttribute('href', 'javascript: void(0);')
       }
-      createPopper(element, tooltip, {
+
+      const popperInstance = createPopper(element, tooltip, {
         placement: 'top',
         modifiers: [
           {
@@ -161,13 +164,16 @@ export const FullArticle = (props: Props) => {
             options: {
               offset: [0, 8]
             }
+          },
+          {
+            name: 'flip',
+            options: { fallbackPlacements: ['top'] }
           }
         ]
       })
 
       tooltip.style.visibility = 'hidden'
       let isTooltipVisible = false
-
       const handleClick = () => {
         if (isTooltipVisible) {
           tooltip.style.visibility = 'hidden'
@@ -176,6 +182,8 @@ export const FullArticle = (props: Props) => {
           tooltip.style.visibility = 'visible'
           isTooltipVisible = true
         }
+
+        popperInstance.update()
       }
 
       const handleDocumentClick = (e) => {

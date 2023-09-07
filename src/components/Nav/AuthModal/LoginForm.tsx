@@ -114,14 +114,16 @@ export const LoginForm = () => {
 
           return
         }
-
-        if (error.code === 'user_not_found') {
+        // [GraphQL] 'dict' object has no attribute 'id' <-- has no error.code on backend
+        if (
+          error.code === 'user_not_found' ||
+          error.message === "[GraphQL] 'dict' object has no attribute 'id'"
+        ) {
           setSubmitError(t('Something went wrong, check email and password'))
 
           return
         }
       }
-
       setSubmitError(error.message)
     } finally {
       setIsSubmitting(false)
@@ -197,15 +199,15 @@ export const LoginForm = () => {
           </button>
         </div>
         <div class={styles.authActions}>
-          <a
-            href="#"
+          <span
+            class={'link'}
             onClick={(ev) => {
               ev.preventDefault()
               changeSearchParam('mode', 'forgot-password')
             }}
           >
             {t('Forgot password?')}
-          </a>
+          </span>
         </div>
       </div>
 

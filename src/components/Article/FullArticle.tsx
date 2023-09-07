@@ -153,6 +153,10 @@ export const FullArticle = (props: Props) => {
         placement: 'top',
         modifiers: [
           {
+            name: 'eventListeners',
+            options: { scroll: false }
+          },
+          {
             name: 'offset',
             options: {
               offset: [0, 8]

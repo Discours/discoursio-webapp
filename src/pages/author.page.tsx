@@ -12,6 +12,7 @@ export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()
 
   const slug = createMemo(() => page().params['slug'] as string)
+  console.log('!!! page():', page().route)
 
   const [isLoaded, setIsLoaded] = createSignal(
     Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug()
@@ -54,6 +55,10 @@ export const AuthorPage = (props: PageProps) => {
 
   const usePrerenderedData = props.author?.slug === slug()
 
+  createEffect(() => {
+    console.log('!!! props:', props.test)
+  })
+
   return (
     <PageLayout>
       <ReactionsProvider>
@@ -62,6 +67,7 @@ export const AuthorPage = (props: PageProps) => {
             author={usePrerenderedData ? props.author : null}
             shouts={usePrerenderedData ? props.authorShouts : null}
             authorSlug={slug()}
+            test={props.test}
           />
         </Show>
       </ReactionsProvider>

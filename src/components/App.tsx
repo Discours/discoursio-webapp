@@ -57,6 +57,7 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   topic: TopicPage,
   authors: AllAuthorsPage,
   author: AuthorPage,
+  authorComments: AuthorPage,
   feed: FeedPage,
   feedMy: FeedPage,
   feedNotifications: FeedPage,

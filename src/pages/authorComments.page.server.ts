@@ -12,7 +12,8 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   })
   const author = await apiClient.getAuthor({ slug })
 
-  const pageProps: PageProps = { author, authorShouts }
+  console.log('!!! CAMMMMMMM:')
+  const pageProps: PageProps = { author, authorShouts, test: 'ЕУЫ' }
 
   return {
     pageContext: {

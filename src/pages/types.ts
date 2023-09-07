@@ -18,6 +18,7 @@ export type PageProps = {
   // other types?
   searchResults?: Shout[]
   chats?: Chat[]
+  test?: string
 }
 
 export type RootSearchParams = {

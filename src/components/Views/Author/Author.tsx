@@ -22,6 +22,7 @@ type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
+  test?: string
 }
 
 export type AuthorPageSearchParams = {
@@ -39,6 +40,9 @@ export const AuthorView = (props: AuthorProps) => {
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
+  createEffect(() => {
+    console.log('!!! test Author.tsx:', props.test)
+  })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])

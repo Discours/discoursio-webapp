@@ -19,7 +19,7 @@ import { TopicCard } from '../../Topic/Card'
 import { getNumeralsDeclension } from '../../../utils/getNumeralsDeclension'
 
 type SubscriptionFilter = 'all' | 'users' | 'topics'
-type AuthorCardProps = {
+type Props = {
   caption?: string
   hideWriteButton?: boolean
   hideDescription?: boolean
@@ -46,7 +46,7 @@ function isAuthor(value: Author | Topic): value is Author {
   return 'name' in value
 }
 
-export const AuthorCard = (props: AuthorCardProps) => {
+export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
 
   const {
@@ -58,6 +58,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>(props.subscriptions)
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
+  const [userpicUrl, setUserpicUrl] = createSignal<string>()
 
   const subscribed = createMemo<boolean>(() => {
     return session()?.news?.authors?.some((u) => u === props.author.slug) || false
@@ -115,6 +116,10 @@ export const AuthorCard = (props: AuthorCardProps) => {
     }
   })
 
+  if (props.isAuthorPage) {
+    setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
+  }
+
   return (
     <>
       <div
@@ -145,7 +150,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
           <div class="col-md-5">
             <Userpic
               name={props.author.name}
-              userpic={props.author.userpic}
+              userpic={userpicUrl()}
               hasLink={props.hasLink}
               isBig={props.isAuthorPage}
               isAuthorsList={props.isAuthorsList}

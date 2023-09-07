@@ -220,8 +220,8 @@ const SimplifiedEditor = (props: Props) => {
   })
 
   onCleanup(() => {
-    editor().destroy()
     window.removeEventListener('keydown', handleKeyDown)
+    editor().destroy()
   })
 
   if (props.onChange) {

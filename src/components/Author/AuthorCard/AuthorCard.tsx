@@ -116,7 +116,7 @@ export const AuthorCard = (props: Props) => {
     }
   })
 
-  if (props.isAuthorPage) {
+  if (props.isAuthorPage && props.author.userpic.includes('assets.discours.io')) {
     setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
   }
 

@@ -109,19 +109,16 @@ export const LoginForm = () => {
       if (error instanceof ApiError) {
         if (error.code === 'email_not_confirmed') {
           setSubmitError(t('Please, confirm email'))
-
           setIsEmailNotConfirmed(true)
 
           return
         }
-
         if (error.code === 'user_not_found') {
           setSubmitError(t('Something went wrong, check email and password'))
 
           return
         }
       }
-
       setSubmitError(error.message)
     } finally {
       setIsSubmitting(false)
@@ -197,15 +194,15 @@ export const LoginForm = () => {
           </button>
         </div>
         <div class={styles.authActions}>
-          <a
-            href="#"
+          <span
+            class={'link'}
             onClick={(ev) => {
               ev.preventDefault()
               changeSearchParam('mode', 'forgot-password')
             }}
           >
             {t('Forgot password?')}
-          </a>
+          </span>
         </div>
       </div>
 

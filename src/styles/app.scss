@@ -633,11 +633,6 @@ figure {
       border-bottom: 2px solid #000;
       color: #000;
       cursor: default;
-      pointer-events: none;
-
-      &:hover {
-        background: none;
-      }
     }
   }
 }

@@ -46,7 +46,7 @@ export const HomeView = (props: HomeProps) => {
   } = useArticlesStore({
     shouts: props.shouts
   })
-  const { randomTopics, topTopics } = useTopicsStore({
+  const { topTopics } = useTopicsStore({
     randomTopics: props.randomTopics
   })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)

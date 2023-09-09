@@ -9,6 +9,7 @@ import { ConfirmModal } from '../ConfirmModal'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import { Snackbar } from '../Snackbar'
 import { Icon } from '../../_shared/Icon'
+import type { Topic } from '../../../graphql/types.gen'
 
 import { useModalStore } from '../../../stores/ui'
 import { router, useRouter } from '../../../stores/router'
@@ -57,9 +58,7 @@ export const Header = (props: Props) => {
 
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
 
-  const { randomTopics } = useTopicsStore({
-    randomTopics: props.randomTopics
-  })
+  const { randomTopics } = useTopicsStore()
 
   const tag = (topic: Topic) =>
     /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title

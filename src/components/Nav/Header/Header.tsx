@@ -57,7 +57,7 @@ export const Header = (props: Props) => {
 
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
 
-  const { randomTopics, topTopics } = useTopicsStore({
+  const { randomTopics } = useTopicsStore({
     randomTopics: props.randomTopics
   })
 

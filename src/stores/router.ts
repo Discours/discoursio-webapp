@@ -17,6 +17,8 @@ export const ROUTES = {
   authors: '/authors',
   author: '/author/:slug',
   authorComments: '/author/:slug/comments',
+  authorAbout: '/author/:slug/about',
+  authorPublications: '/author/:slug/publications',
   feed: '/feed',
   feedMy: '/feed/my',
   feedNotifications: '/feed/notifications',

@@ -20,7 +20,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     <Popup {...props} horizontalAnchor="right" variant="bordered">
       <ul class="nodash">
         <li>
-          <a href={getPagePath(router, 'author', { slug: user().slug })}>{t('Profile')}</a>
+          <a href={getPagePath(router, 'authorComments', { slug: user().slug })}>{t('Profile')}</a>
         </li>
         <li>
           <a href={getPagePath(router, 'drafts')}>{t('Drafts')}</a>

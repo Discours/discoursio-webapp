@@ -5,7 +5,7 @@ import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
-import { useRouter } from '../../../stores/router'
+import { router, useRouter } from '../../../stores/router'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
 import styles from './Author.module.scss'
@@ -17,12 +17,13 @@ import { Comment } from '../../Article/Comment'
 import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { hideModal } from '../../../stores/ui'
+import { getPagePath } from '@nanostores/router'
 
 type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  test?: string
+  route?: 'authorPublications' | 'authorComments' | 'authorAbout' | string
 }
 
 export type AuthorPageSearchParams = {
@@ -40,9 +41,6 @@ export const AuthorView = (props: AuthorProps) => {
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
-  createEffect(() => {
-    console.log('!!! test Author.tsx:', props.test)
-  })
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
@@ -131,6 +129,7 @@ export const AuthorView = (props: AuthorProps) => {
       }
     }
   })
+
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">
@@ -145,26 +144,23 @@ export const AuthorView = (props: AuthorProps) => {
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
             <ul class="view-switcher">
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'rating' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
+              <li classList={{ 'view-switcher__item--selected': props.route === 'authorPublications' }}>
+                <a href={getPagePath(router, 'authorPublications', { slug: props.authorSlug })}>
                   {t('Publications')}
-                </button>
+                </a>
               </li>
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'commented' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
+              <li classList={{ 'view-switcher__item--selected': props.route === 'authorComments' }}>
+                <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                   {t('Comments')}
-                </button>
+                </a>
               </li>
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'about' }}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    changeSearchParam('by', 'about')
-                    checkBioHeight()
-                  }}
+              <li classList={{ 'view-switcher__item--selected': props.route === 'authorAbout' }}>
+                <a
+                  onClick={() => checkBioHeight()}
+                  href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
                 >
                   {t('About myself')}
-                </button>
+                </a>
               </li>
             </ul>
           </div>
@@ -178,7 +174,7 @@ export const AuthorView = (props: AuthorProps) => {
       </div>
 
       <Switch>
-        <Match when={searchParams().by === 'about'}>
+        <Match when={props.route === 'authorAbout'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -202,7 +198,7 @@ export const AuthorView = (props: AuthorProps) => {
             </div>
           </div>
         </Match>
-        <Match when={searchParams().by === 'commented'}>
+        <Match when={props.route === 'authorComments'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -216,7 +212,7 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </Match>
 
-        <Match when={searchParams().by === 'rating'}>
+        <Match when={props.route === 'authorPublications'}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
           </Show>

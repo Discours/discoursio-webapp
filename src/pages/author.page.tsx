@@ -8,6 +8,7 @@ import { loadAuthor } from '../stores/zine/authors'
 import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
 
+type RouteKind = 'authorComments' | 'authorAbout'
 export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()
 
@@ -55,10 +56,6 @@ export const AuthorPage = (props: PageProps) => {
 
   const usePrerenderedData = props.author?.slug === slug()
 
-  createEffect(() => {
-    console.log('!!! props:', props.test)
-  })
-
   return (
     <PageLayout>
       <ReactionsProvider>
@@ -67,7 +64,7 @@ export const AuthorPage = (props: PageProps) => {
             author={usePrerenderedData ? props.author : null}
             shouts={usePrerenderedData ? props.authorShouts : null}
             authorSlug={slug()}
-            test={props.test}
+            route={page().route}
           />
         </Show>
       </ReactionsProvider>

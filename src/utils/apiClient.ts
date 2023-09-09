@@ -77,7 +77,10 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authLoginQuery, { email, password }).toPromise()
     // console.debug('[api-client] authLogin', { response })
     if (response.error) {
-      if (response.error.message === '[GraphQL] User not found') {
+      if (
+        response.error.message === '[GraphQL] User not found' ||
+        response.error.message === "[GraphQL] 'dict' object has no attribute 'id'"
+      ) {
         throw new ApiError('user_not_found')
       }
 

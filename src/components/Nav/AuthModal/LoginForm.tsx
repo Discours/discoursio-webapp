@@ -109,16 +109,11 @@ export const LoginForm = () => {
       if (error instanceof ApiError) {
         if (error.code === 'email_not_confirmed') {
           setSubmitError(t('Please, confirm email'))
-
           setIsEmailNotConfirmed(true)
 
           return
         }
-        // [GraphQL] 'dict' object has no attribute 'id' <-- has no error.code on backend
-        if (
-          error.code === 'user_not_found' ||
-          error.message === "[GraphQL] 'dict' object has no attribute 'id'"
-        ) {
+        if (error.code === 'user_not_found') {
           setSubmitError(t('Something went wrong, check email and password'))
 
           return

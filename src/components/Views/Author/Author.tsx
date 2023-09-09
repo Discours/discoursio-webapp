@@ -18,7 +18,7 @@ import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { hideModal } from '../../../stores/ui'
 
-type AuthorProps = {
+type Props = {
   shouts: Shout[]
   author: Author
   authorSlug: string
@@ -31,7 +31,7 @@ export type AuthorPageSearchParams = {
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
-export const AuthorView = (props: AuthorProps) => {
+export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
@@ -127,6 +127,7 @@ export const AuthorView = (props: AuthorProps) => {
       }
     }
   })
+
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">

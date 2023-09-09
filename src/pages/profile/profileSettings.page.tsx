@@ -1,7 +1,7 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Icon } from '../../components/_shared/Icon'
 import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount, onCleanup } from 'solid-js'
+import { For, createSignal, Show, onMount, onCleanup, createEffect, on } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
@@ -16,6 +16,9 @@ import { handleFileUpload } from '../../utils/handleFileUpload'
 import { Userpic } from '../../components/Author/Userpic'
 import { createStore } from 'solid-js/store'
 import { clone } from '../../utils/clone'
+import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
+import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
+import { resetSortedArticles } from '../../stores/zine/articles'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -96,6 +99,12 @@ export const ProfileSettingsPage = () => {
     setPrevForm(clone(form))
   }
 
+  createEffect(() => {
+    if (!deepEqual(form, prevForm)) {
+      setIsFloatingPanelVisible(true)
+    }
+  })
+
   return (
     <PageLayout>
       <Show when={form}>
@@ -111,15 +120,7 @@ export const ProfileSettingsPage = () => {
                 <div class="col-md-20 col-lg-18 col-xl-16">
                   <h1>{t('Profile settings')}</h1>
                   <p class="description">{t('Here you can customize your profile the way you want.')}</p>
-                  <form
-                    onSubmit={handleSubmit}
-                    onChange={() => {
-                      if (!deepEqual(form, prevForm)) {
-                        setIsFloatingPanelVisible(true)
-                      }
-                    }}
-                    enctype="multipart/form-data"
-                  >
+                  <form onSubmit={handleSubmit} enctype="multipart/form-data">
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
                       <Userpic
@@ -169,29 +170,26 @@ export const ProfileSettingsPage = () => {
                     </div>
 
                     <h4>{t('Introduce')}</h4>
-                    <div class="pretty-form__item">
-                      <textarea
-                        name="bio"
-                        id="bio"
-                        placeholder={t('Introduce')}
-                        value={form.bio}
-                        onChange={(event) => updateFormField('bio', event.currentTarget.value)}
-                      />
-                      <label for="presentation">{t('Introduce')}</label>
-                    </div>
+                    <GrowingTextarea
+                      variant="bordered"
+                      placeholder={t('Introduce')}
+                      value={(value) => updateFormField('bio', value)}
+                      initialValue={form.bio}
+                      allowEnterKey={false}
+                      maxLength={80}
+                    />
 
                     <h4>{t('About myself')}</h4>
-                    <div class="pretty-form__item">
-                      <textarea
-                        name="about"
-                        id="about"
-                        placeholder={t('About myself')}
-                        value={form.about}
-                        onChange={(event) => updateFormField('about', event.currentTarget.value)}
-                      />
-                      <label for="about">{t('About myself')}</label>
-                    </div>
-
+                    <SimplifiedEditor
+                      variant="bordered"
+                      onlyBubbleControls={true}
+                      smallHeight={true}
+                      placeholder={t('About myself')}
+                      label={t('About myself')}
+                      initialContent={form.about}
+                      onChange={(value) => updateFormField('about', value)}
+                      maxLength={500}
+                    />
                     {/*Нет реализации полей на бэке*/}
                     {/*<h4>{t('How can I help/skills')}</h4>*/}
                     {/*<div class="pretty-form__item">*/}

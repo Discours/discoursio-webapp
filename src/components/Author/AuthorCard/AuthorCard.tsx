@@ -10,7 +10,7 @@ import { useSession } from '../../../context/session'
 import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { router, useRouter } from '../../../stores/router'
-import { openPage } from '@nanostores/router'
+import { openPage, redirectPage } from '@nanostores/router'
 import { useLocalize } from '../../../context/localize'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Modal } from '../../Nav/Modal'
@@ -201,7 +201,13 @@ export const AuthorCard = (props: AuthorCardProps) => {
             >
               <div class={styles.subscribersContainer}>
                 <Show when={props.followers && props.followers.length > 0}>
-                  <div class={styles.subscribers} onClick={() => showModal('followers')}>
+                  <div
+                    class={styles.subscribers}
+                    onClick={() => {
+                      redirectPage(router, 'authorSubscribers', { slug: props.author.slug })
+                      showModal('followers')
+                    }}
+                  >
                     <For each={props.followers.slice(0, 3)}>
                       {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
                     </For>
@@ -216,7 +222,13 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   </div>
                 </Show>
                 <Show when={props.subscriptions && props.subscriptions.length > 0}>
-                  <div class={styles.subscribers} onClick={() => showModal('subscriptions')}>
+                  <div
+                    class={styles.subscribers}
+                    onClick={() => {
+                      redirectPage(router, 'authorSubscriptions', { slug: props.author.slug })
+                      showModal('subscriptions')
+                    }}
+                  >
                     <For each={props.subscriptions.slice(0, 3)}>
                       {(f) => {
                         if ('name' in f) {

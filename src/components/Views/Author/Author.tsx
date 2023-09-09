@@ -23,7 +23,7 @@ type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  route?: 'authorPublications' | 'authorComments' | 'authorAbout' | string
+  route?: 'authorPublications' | 'authorComments' | 'authorAbout' | 'authorSubscribers' | string
 }
 
 export type AuthorPageSearchParams = {
@@ -118,7 +118,7 @@ export const AuthorView = (props: AuthorProps) => {
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
-    if (searchParams().by === 'commented') {
+    if (props.route === 'authorSubscribers') {
       try {
         const data = await apiClient.getReactionsBy({
           by: { comment: true, createdBy: props.authorSlug }

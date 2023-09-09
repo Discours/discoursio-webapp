@@ -1,4 +1,4 @@
-import { Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
+import { For, Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
 import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 

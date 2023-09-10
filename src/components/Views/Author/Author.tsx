@@ -23,11 +23,7 @@ type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  route?: 'authorPublications' | 'authorComments' | 'authorAbout' | 'authorSubscribers' | string
-}
-
-export type AuthorPageSearchParams = {
-  by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'about' | 'popular'
+  route?: 'author' | 'authorComments' | 'authorAbout' | 'authorFollowing' | 'authorFollowers' | string
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -36,7 +32,6 @@ const LOAD_MORE_PAGE_SIZE = 9
 export const AuthorView = (props: AuthorProps) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
-  const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
   const author = createMemo(() => authorEntities()[props.authorSlug])
@@ -81,9 +76,6 @@ export const AuthorView = (props: AuthorProps) => {
 
     checkBioHeight()
 
-    if (!searchParams().by) {
-      changeSearchParam('by', 'rating')
-    }
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       await loadMore()
     }
@@ -118,7 +110,7 @@ export const AuthorView = (props: AuthorProps) => {
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
-    if (props.route === 'authorSubscribers') {
+    if (props.route === 'authorComments') {
       try {
         const data = await apiClient.getReactionsBy({
           by: { comment: true, createdBy: props.authorSlug }
@@ -138,16 +130,14 @@ export const AuthorView = (props: AuthorProps) => {
             author={author()}
             isAuthorPage={true}
             followers={followers()}
-            subscriptions={subscriptions()}
+            following={subscriptions()}
           />
         </Show>
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
             <ul class="view-switcher">
-              <li classList={{ 'view-switcher__item--selected': props.route === 'authorPublications' }}>
-                <a href={getPagePath(router, 'authorPublications', { slug: props.authorSlug })}>
-                  {t('Publications')}
-                </a>
+              <li classList={{ 'view-switcher__item--selected': props.route === 'author' }}>
+                <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>{t('Publications')}</a>
               </li>
               <li classList={{ 'view-switcher__item--selected': props.route === 'authorComments' }}>
                 <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
@@ -212,7 +202,7 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </Match>
 
-        <Match when={props.route === 'authorPublications'}>
+        <Match when={props.route === 'author'}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
           </Show>

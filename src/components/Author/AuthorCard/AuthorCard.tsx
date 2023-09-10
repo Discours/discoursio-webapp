@@ -38,7 +38,7 @@ type AuthorCardProps = {
   isNowrap?: boolean
   class?: string
   followers?: Author[]
-  subscriptions?: Array<Author | Topic>
+  following?: Array<Author | Topic>
   showPublicationsCounter?: boolean
 }
 
@@ -56,7 +56,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
-  const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>(props.subscriptions)
+  const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>(props.following)
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
   const subscribed = createMemo<boolean>(() => {
@@ -104,13 +104,13 @@ export const AuthorCard = (props: AuthorCardProps) => {
   }
 
   createEffect(() => {
-    if (props.subscriptions) {
+    if (props.following) {
       if (subscriptionFilter() === 'users') {
-        setSubscriptions(props.subscriptions.filter((s) => 'name' in s))
+        setSubscriptions(props.following.filter((s) => 'name' in s))
       } else if (subscriptionFilter() === 'topics') {
-        setSubscriptions(props.subscriptions.filter((s) => 'title' in s))
+        setSubscriptions(props.following.filter((s) => 'title' in s))
       } else {
-        setSubscriptions(props.subscriptions)
+        setSubscriptions(props.following)
       }
     }
   })
@@ -196,7 +196,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
             <Show
               when={
                 (props.followers && props.followers.length > 0) ||
-                (props.subscriptions && props.subscriptions.length > 0)
+                (props.following && props.following.length > 0)
               }
             >
               <div class={styles.subscribersContainer}>
@@ -204,7 +204,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   <div
                     class={styles.subscribers}
                     onClick={() => {
-                      redirectPage(router, 'authorSubscribers', { slug: props.author.slug })
+                      redirectPage(router, 'authorFollowers', { slug: props.author.slug })
                       showModal('followers')
                     }}
                   >
@@ -221,15 +221,15 @@ export const AuthorCard = (props: AuthorCardProps) => {
                     </div>
                   </div>
                 </Show>
-                <Show when={props.subscriptions && props.subscriptions.length > 0}>
+                <Show when={props.following && props.following.length > 0}>
                   <div
                     class={styles.subscribers}
                     onClick={() => {
-                      redirectPage(router, 'authorSubscriptions', { slug: props.author.slug })
+                      redirectPage(router, 'authorFollowing', { slug: props.author.slug })
                       showModal('subscriptions')
                     }}
                   >
-                    <For each={props.subscriptions.slice(0, 3)}>
+                    <For each={props.following.slice(0, 3)}>
                       {(f) => {
                         if ('name' in f) {
                           return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
@@ -240,8 +240,8 @@ export const AuthorCard = (props: AuthorCardProps) => {
                       }}
                     </For>
                     <div class={styles.subscribersCounter}>
-                      {props.subscriptions.length}&nbsp;
-                      {getNumeralsDeclension(props.subscriptions.length, [
+                      {props.following.length}&nbsp;
+                      {getNumeralsDeclension(props.following.length, [
                         t('subscription'),
                         t('subscription_rp'),
                         t('subscriptions')
@@ -351,7 +351,14 @@ export const AuthorCard = (props: AuthorCardProps) => {
       </div>
 
       <Show when={props.followers}>
-        <Modal variant="wide" name="followers" maxHeight>
+        <Modal
+          variant="wide"
+          name="followers"
+          onClose={() => {
+            alert('CHANGE ROUTE')
+          }}
+          maxHeight
+        >
           <>
             <h2>{t('Followers')}</h2>
             <div class={styles.listWrapper}>
@@ -377,7 +384,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
         </Modal>
       </Show>
 
-      <Show when={props.subscriptions}>
+      <Show when={props.following}>
         <Modal variant="wide" name="subscriptions" maxHeight>
           <>
             <h2>{t('Subscriptions')}</h2>
@@ -386,14 +393,14 @@ export const AuthorCard = (props: AuthorCardProps) => {
                 <button type="button" onClick={() => setSubscriptionFilter('all')}>
                   {t('All')}
                 </button>
-                <span class={styles.switcherCounter}>{props.subscriptions.length}</span>
+                <span class={styles.switcherCounter}>{props.following.length}</span>
               </li>
               <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('users')}>
                   {t('Users')}
                 </button>
                 <span class={styles.switcherCounter}>
-                  {props.subscriptions.filter((s) => 'name' in s).length}
+                  {props.following.filter((s) => 'name' in s).length}
                 </span>
               </li>
               <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'topics' })}>
@@ -401,7 +408,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                   {t('Topics')}
                 </button>
                 <span class={styles.switcherCounter}>
-                  {props.subscriptions.filter((s) => 'title' in s).length}
+                  {props.following.filter((s) => 'title' in s).length}
                 </span>
               </li>
             </ul>

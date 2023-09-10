@@ -1,4 +1,4 @@
 import { ROUTES } from '../stores/router'
 import { getServerRoute } from '../utils/getServerRoute'
 
-export default getServerRoute(ROUTES.authorPublications)
+export default getServerRoute(ROUTES.authorFollowers)

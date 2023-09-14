@@ -7,6 +7,7 @@ import { clsx } from 'clsx'
 import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
 import { Meta } from '@solidjs/meta'
+import { Topic } from '../../graphql/types.gen'
 
 type PageLayoutProps = {
   headerTitle?: string
@@ -19,6 +20,7 @@ type PageLayoutProps = {
   class?: string
   withPadding?: boolean
   scrollToComments?: (value: boolean) => void
+  randomTopics?: Topic[]
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
@@ -30,7 +32,7 @@ export const PageLayout = (props: PageLayoutProps) => {
       props.scrollToComments(scrollToComments())
     }
   })
-
+  // const { randomTopics } = useTopicsStore()
   return (
     <>
       <Meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,6 +43,7 @@ export const PageLayout = (props: PageLayoutProps) => {
         cover={props.articleBody}
         isHeaderFixed={isHeaderFixed}
         scrollToComments={(value) => setScrollToComments(value)}
+        randomTopics={props.randomTopics}
       />
       <main
         class={clsx('main-content', {

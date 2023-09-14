@@ -1,11 +1,11 @@
 .subnavigation {
   @include font-size(1.4rem);
-
   height: 6rem;
   line-height: 6rem;
   margin-bottom: 5rem !important;
   overflow: hidden;
   position: relative;
+  transform: translateY(-2px);
 
   @include media-breakpoint-down(sm) {
     padding: 0 divide($container-padding-x, 2);
@@ -22,7 +22,7 @@
   }
 
   .item {
-    margin-right: 2rem;
+    margin-right: 2.4rem;
 
     &.right {
       margin-right: 0;

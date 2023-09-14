@@ -29,6 +29,7 @@ type Props = {
   articleBody?: string
   cover?: string
   scrollToComments?: (value: boolean) => void
+  randomTopics?: Topic[]
 }
 
 type HeaderSearchParams = {
@@ -57,8 +58,6 @@ export const Header = (props: Props) => {
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
 
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
-
-  const { randomTopics } = useTopicsStore()
 
   const tag = (topic: Topic) =>
     /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
@@ -339,8 +338,8 @@ export const Header = (props: Props) => {
             onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
-              <Show when={randomTopics().length > 0}>
-                <For each={randomTopics()}>
+              <Show when={props.randomTopics && props.randomTopics.length > 0}>
+                <For each={props.randomTopics}>
                   {(topic) => (
                     <li class="item">
                       <a href={`/topic/${topic.slug}`}>

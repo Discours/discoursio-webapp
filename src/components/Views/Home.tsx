@@ -46,6 +46,7 @@ export const HomeView = (props: HomeProps) => {
   } = useArticlesStore({
     shouts: props.shouts
   })
+
   const { topTopics } = useTopicsStore({
     randomTopics: props.randomTopics
   })

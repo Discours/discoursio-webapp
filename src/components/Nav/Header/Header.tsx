@@ -18,7 +18,6 @@ import { getDescription } from '../../../utils/meta'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { useTopicsStore } from '../../../stores/zine/topics'
 
 import styles from './Header.module.scss'
 

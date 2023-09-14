@@ -8,7 +8,6 @@ import { loadAuthor } from '../stores/zine/authors'
 import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
 
-type RouteKind = 'authorComments' | 'authorAbout'
 export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()
 

@@ -165,7 +165,7 @@ export const Header = (props: Props) => {
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
-            <div class={styles.mainNavigation} classList={{ [styles.fixed]: fixed() }}>
+            <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
               <ul class="view-switcher">
                 <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
                   <a

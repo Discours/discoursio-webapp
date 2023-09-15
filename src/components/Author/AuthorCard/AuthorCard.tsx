@@ -56,7 +56,7 @@ export const AuthorCard = (props: Props) => {
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
-  const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>(props.following)
+  const [following, setFollowing] = createSignal<Array<Author | Topic>>(props.following)
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [userpicUrl, setUserpicUrl] = createSignal<string>()
 
@@ -107,11 +107,11 @@ export const AuthorCard = (props: Props) => {
   createEffect(() => {
     if (props.following) {
       if (subscriptionFilter() === 'users') {
-        setSubscriptions(props.following.filter((s) => 'name' in s))
+        setFollowing(props.following.filter((s) => 'name' in s))
       } else if (subscriptionFilter() === 'topics') {
-        setSubscriptions(props.following.filter((s) => 'title' in s))
+        setFollowing(props.following.filter((s) => 'title' in s))
       } else {
-        setSubscriptions(props.following)
+        setFollowing(props.following)
       }
     }
   })
@@ -424,7 +424,7 @@ export const AuthorCard = (props: Props) => {
             <div class={styles.listWrapper}>
               <div class="row">
                 <div class="col-24">
-                  <For each={subscriptions()}>
+                  <For each={following()}>
                     {(subscription: Author | Topic) =>
                       isAuthor(subscription) ? (
                         <AuthorCard

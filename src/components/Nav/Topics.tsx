@@ -9,34 +9,25 @@ export const NavTopics = () => {
     <nav class="subnavigation wide-container text-2xl">
       <ul class="topics">
         <li class="item">
-          <a href="/expo/image">Искусство</a>
+          <a href="/topic/interview">#Интервью</a>
         </li>
         <li class="item">
-          <a href="">Подкасты</a>
+          <a href="/topic/reportage">#Репортажи</a>
         </li>
         <li class="item">
-          <a href="">Спецпроекты</a>
+          <a href="/topic/empiric">#Личный опыт</a>
         </li>
         <li class="item">
-          <a href="">#Интервью</a>
+          <a href="/topic/society">#Общество</a>
         </li>
         <li class="item">
-          <a href="">#Репортажи</a>
+          <a href="/topic/culture">#Культура</a>
         </li>
         <li class="item">
-          <a href="">#Личный опыт</a>
+          <a href="/topic/theory">#Теории</a>
         </li>
         <li class="item">
-          <a href="">#Общество</a>
-        </li>
-        <li class="item">
-          <a href="">#Культура</a>
-        </li>
-        <li class="item">
-          <a href="">#Теории</a>
-        </li>
-        <li class="item">
-          <a href="">#Поэзия</a>
+          <a href="/topic/poetry">#Поэзия</a>
         </li>
         <li class="item right">
           <a href={`/topics`}>

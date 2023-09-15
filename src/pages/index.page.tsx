@@ -27,7 +27,7 @@ export const HomePage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <PageLayout withPadding={true}>
+    <PageLayout randomTopics={props.randomTopics} withPadding={true}>
       <ReactionsProvider>
         <Title>{t('Discours')}</Title>
         <Show when={isLoaded()} fallback={<Loading />}>

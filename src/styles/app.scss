@@ -192,14 +192,16 @@ h5 {
 a,
 a:hover,
 a:visited,
-a:link {
+a:link,
+.link {
   border-bottom: 1px solid rgb(0 0 0 / 30%);
   text-decoration: none;
   cursor: pointer;
 }
 
 a:visited,
-a:link {
+a:link,
+.link {
   color: var(--link-color);
   padding-bottom: 0.1em;
   transition: color 0.2s, background-color 0.2s;
@@ -631,11 +633,6 @@ figure {
       border-bottom: 2px solid #000;
       color: #000;
       cursor: default;
-      pointer-events: none;
-
-      &:hover {
-        background: none;
-      }
     }
   }
 }

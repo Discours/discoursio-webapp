@@ -37,7 +37,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
 
   return (
     <div class={styles.sidebar}>
-      <ul>
+      <ul class={styles.feedFilters}>
         <li>
           <a
             href={getPagePath(router, 'feed')}

@@ -40,7 +40,7 @@ const useProfileForm = () => {
         slug: currentAuthor()?.slug,
         bio: currentAuthor()?.bio,
         about: currentAuthor()?.about,
-        userpic: currentAuthor()?.userpic,
+        userpic: currentAuthor()?.userpic.replace('100x', '500x500'),
         links: currentAuthor()?.links
       })
     } catch (error) {

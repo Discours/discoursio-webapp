@@ -10,9 +10,7 @@ import { ReactionsProvider } from '../context/reactions'
 
 export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()
-
   const slug = createMemo(() => page().params['slug'] as string)
-  console.log('!!! page():', page().route)
 
   const [isLoaded, setIsLoaded] = createSignal(
     Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug()
@@ -63,7 +61,6 @@ export const AuthorPage = (props: PageProps) => {
             author={usePrerenderedData ? props.author : null}
             shouts={usePrerenderedData ? props.authorShouts : null}
             authorSlug={slug()}
-            route={page().route}
           />
         </Show>
       </ReactionsProvider>

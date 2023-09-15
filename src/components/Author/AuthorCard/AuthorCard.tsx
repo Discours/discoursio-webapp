@@ -48,7 +48,7 @@ function isAuthor(value: Author | Topic): value is Author {
 
 export const AuthorCard = (props: AuthorCardProps) => {
   const { t, lang } = useLocalize()
-
+  const { page } = useRouter()
   const {
     session,
     isSessionLoaded,
@@ -114,6 +114,16 @@ export const AuthorCard = (props: AuthorCardProps) => {
       }
     }
   })
+
+  createEffect(() => {
+    if (page().route === 'authorFollowing') {
+      showModal('following')
+    }
+  })
+
+  const handleCloseFollowModals = () => {
+    redirectPage(router, 'author', { slug: props.author.slug })
+  }
 
   return (
     <>
@@ -226,7 +236,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
                     class={styles.subscribers}
                     onClick={() => {
                       redirectPage(router, 'authorFollowing', { slug: props.author.slug })
-                      showModal('subscriptions')
+                      showModal('following')
                     }}
                   >
                     <For each={props.following.slice(0, 3)}>
@@ -351,14 +361,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
       </div>
 
       <Show when={props.followers}>
-        <Modal
-          variant="wide"
-          name="followers"
-          onClose={() => {
-            alert('CHANGE ROUTE')
-          }}
-          maxHeight
-        >
+        <Modal variant="wide" name="followers" onClose={handleCloseFollowModals} maxHeight>
           <>
             <h2>{t('Followers')}</h2>
             <div class={styles.listWrapper}>
@@ -385,7 +388,7 @@ export const AuthorCard = (props: AuthorCardProps) => {
       </Show>
 
       <Show when={props.following}>
-        <Modal variant="wide" name="subscriptions" maxHeight>
+        <Modal variant="wide" name="following" onClose={handleCloseFollowModals} maxHeight>
           <>
             <h2>{t('Subscriptions')}</h2>
             <ul class="view-switcher">

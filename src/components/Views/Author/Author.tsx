@@ -23,7 +23,7 @@ type AuthorProps = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  route?: 'author' | 'authorComments' | 'authorAbout' | 'authorFollowing' | 'authorFollowers' | string
+  // route?: 'author' | 'authorComments' | 'authorAbout' | 'authorFollowing' | 'authorFollowers' | string
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -34,6 +34,7 @@ export const AuthorView = (props: AuthorProps) => {
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
+  const { page } = useRouter()
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
@@ -103,14 +104,14 @@ export const AuthorView = (props: AuthorProps) => {
   //   return t('Top recent')
   // })
 
-  const pages = createMemo<Shout[][]>(() =>
+  const shouts = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
-    if (props.route === 'authorComments') {
+    if (page().route === 'authorComments') {
       try {
         const data = await apiClient.getReactionsBy({
           by: { comment: true, createdBy: props.authorSlug }
@@ -136,15 +137,15 @@ export const AuthorView = (props: AuthorProps) => {
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
             <ul class="view-switcher">
-              <li classList={{ 'view-switcher__item--selected': props.route === 'author' }}>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'author' }}>
                 <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>{t('Publications')}</a>
               </li>
-              <li classList={{ 'view-switcher__item--selected': props.route === 'authorComments' }}>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'authorComments' }}>
                 <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                   {t('Comments')}
                 </a>
               </li>
-              <li classList={{ 'view-switcher__item--selected': props.route === 'authorAbout' }}>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'authorAbout' }}>
                 <a
                   onClick={() => checkBioHeight()}
                   href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
@@ -164,7 +165,7 @@ export const AuthorView = (props: AuthorProps) => {
       </div>
 
       <Switch>
-        <Match when={props.route === 'authorAbout'}>
+        <Match when={page().route === 'authorAbout'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -188,7 +189,7 @@ export const AuthorView = (props: AuthorProps) => {
             </div>
           </div>
         </Match>
-        <Match when={props.route === 'authorComments'}>
+        <Match when={page().route === 'authorComments'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -202,7 +203,7 @@ export const AuthorView = (props: AuthorProps) => {
           </div>
         </Match>
 
-        <Match when={props.route === 'author'}>
+        <Match when={page().route === 'author'}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
           </Show>
@@ -223,15 +224,15 @@ export const AuthorView = (props: AuthorProps) => {
             <Row1 article={sortedArticles()[6]} noAuthorLink={true} />
             <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noAuthorLink={true} />
 
-            <For each={pages()}>
-              {(page) => (
+            <For each={shouts()}>
+              {(shout) => (
                 <>
-                  <Row1 article={page[0]} noAuthorLink={true} />
-                  <Row2 articles={page.slice(1, 3)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={page[3]} noAuthorLink={true} />
-                  <Row2 articles={page.slice(4, 6)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={page[6]} noAuthorLink={true} />
-                  <Row2 articles={page.slice(7, 9)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={shout[0]} noAuthorLink={true} />
+                  <Row2 articles={shout.slice(1, 3)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={shout[3]} noAuthorLink={true} />
+                  <Row2 articles={shout.slice(4, 6)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={shout[6]} noAuthorLink={true} />
+                  <Row2 articles={shout.slice(7, 9)} isEqual={true} noAuthorLink={true} />
                 </>
               )}
             </For>

@@ -44,9 +44,9 @@ export const AuthorView = (props: Props) => {
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>([])
   const [bioWrapper, setBioWrapper] = createSignal<HTMLElement>()
-  const [bioContainer, setBioContainer] = createSignal<HTMLElement>()
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
 
+  const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
@@ -63,8 +63,8 @@ export const AuthorView = (props: Props) => {
   }
 
   const checkBioHeight = () => {
-    if (bioContainer()) {
-      setShowExpandBioControl(bioContainer().offsetHeight > bioWrapper().offsetHeight)
+    if (bioContainerRef.current) {
+      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapper().offsetHeight)
     }
   }
 
@@ -184,7 +184,7 @@ export const AuthorView = (props: Props) => {
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >
-                  <div ref={setBioContainer}>{author().about}</div>
+                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author().about} />
                 </div>
 
                 <Show when={showExpandBioControl()}>

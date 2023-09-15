@@ -18,7 +18,7 @@ export const AllTopicsPage = (props: PageProps) => {
   })
 
   return (
-    <PageLayout randomTopics={props.randomTopics}>
+    <PageLayout>
       <Show when={isLoaded()} fallback={<Loading />}>
         <AllTopicsView topics={props.allTopics} />
       </Show>

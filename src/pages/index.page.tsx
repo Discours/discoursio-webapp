@@ -10,7 +10,7 @@ import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 
 export const HomePage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts) && Boolean(props.randomTopics))
+  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts))
   const { t } = useLocalize()
 
   onMount(async () => {
@@ -27,11 +27,11 @@ export const HomePage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <PageLayout randomTopics={props.randomTopics} withPadding={true}>
+    <PageLayout withPadding={true}>
       <ReactionsProvider>
         <Title>{t('Discours')}</Title>
         <Show when={isLoaded()} fallback={<Loading />}>
-          <HomeView randomTopics={props.randomTopics} shouts={props.homeShouts || []} />
+          <HomeView shouts={props.homeShouts || []} />
         </Show>
       </ReactionsProvider>
     </PageLayout>

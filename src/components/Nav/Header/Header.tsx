@@ -20,6 +20,8 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 
 import styles from './Header.module.scss'
+import { apiClient } from '../../../utils/apiClient'
+import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 
 type Props = {
   title?: string
@@ -28,7 +30,6 @@ type Props = {
   articleBody?: string
   cover?: string
   scrollToComments?: (value: boolean) => void
-  randomTopics?: Topic[]
 }
 
 type HeaderSearchParams = {
@@ -46,6 +47,7 @@ export const Header = (props: Props) => {
 
   const { page, searchParams } = useRouter<HeaderSearchParams>()
 
+  const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
@@ -139,6 +141,10 @@ export const Header = (props: Props) => {
     }, time)
   }
 
+  onMount(async () => {
+    const topics = await apiClient.getRandomTopics({ amount: RANDOM_TOPICS_COUNT })
+    setRandomTopics(topics)
+  })
   return (
     <header
       class={styles.mainHeader}
@@ -337,8 +343,8 @@ export const Header = (props: Props) => {
             onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
-              <Show when={props.randomTopics && props.randomTopics.length > 0}>
-                <For each={props.randomTopics}>
+              <Show when={randomTopics().length > 0}>
+                <For each={randomTopics()}>
                   {(topic) => (
                     <li class="item">
                       <a href={`/topic/${topic.slug}`}>

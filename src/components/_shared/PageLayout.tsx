@@ -9,7 +9,7 @@ import styles from './PageLayout.module.scss'
 import { Meta } from '@solidjs/meta'
 import { Topic } from '../../graphql/types.gen'
 
-type PageLayoutProps = {
+type Props = {
   headerTitle?: string
   slug?: string
   articleBody?: string
@@ -20,10 +20,9 @@ type PageLayoutProps = {
   class?: string
   withPadding?: boolean
   scrollToComments?: (value: boolean) => void
-  randomTopics?: Topic[]
 }
 
-export const PageLayout = (props: PageLayoutProps) => {
+export const PageLayout = (props: Props) => {
   const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
 
@@ -43,7 +42,6 @@ export const PageLayout = (props: PageLayoutProps) => {
         cover={props.articleBody}
         isHeaderFixed={isHeaderFixed}
         scrollToComments={(value) => setScrollToComments(value)}
-        randomTopics={props.randomTopics}
       />
       <main
         class={clsx('main-content', {

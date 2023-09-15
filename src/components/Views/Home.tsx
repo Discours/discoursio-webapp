@@ -25,8 +25,7 @@ import { splitToPages } from '../../utils/splitToPages'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { useLocalize } from '../../context/localize'
 
-type HomeProps = {
-  randomTopics: Topic[]
+type Props = {
   shouts: Shout[]
 }
 
@@ -35,7 +34,7 @@ export const RANDOM_TOPICS_COUNT = 12
 const CLIENT_LOAD_ARTICLES_COUNT = 29
 const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + Row 2 + Row3
 
-export const HomeView = (props: HomeProps) => {
+export const HomeView = (props: Props) => {
   const {
     sortedArticles,
     articlesByLayout,
@@ -47,9 +46,7 @@ export const HomeView = (props: HomeProps) => {
     shouts: props.shouts
   })
 
-  const { topTopics } = useTopicsStore({
-    randomTopics: props.randomTopics
-  })
+  const { topTopics } = useTopicsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { topAuthors } = useTopAuthorsStore()
   const { t } = useLocalize()

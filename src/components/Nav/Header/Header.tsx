@@ -1,4 +1,4 @@
-import { Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
+import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
 import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 
@@ -37,7 +37,7 @@ type HeaderSearchParams = {
 }
 
 export const Header = (props: Props) => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
 
   const { modal } = useModalStore()
 

@@ -5,7 +5,7 @@ import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
-import { useRouter } from '../../../stores/router'
+import { router, useRouter } from '../../../stores/router'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
 import styles from './Author.module.scss'
@@ -17,15 +17,13 @@ import { Comment } from '../../Article/Comment'
 import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { hideModal } from '../../../stores/ui'
+import { getPagePath } from '@nanostores/router'
 
 type Props = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-}
-
-export type AuthorPageSearchParams = {
-  by: '' | 'viewed' | 'rating' | 'commented' | 'recent' | 'about' | 'popular'
+  // route?: 'author' | 'authorComments' | 'authorAbout' | 'authorFollowing' | 'authorFollowers' | string
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -34,9 +32,9 @@ const LOAD_MORE_PAGE_SIZE = 9
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
-  const { searchParams, changeSearchParam } = useRouter<AuthorPageSearchParams>()
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
+  const { page } = useRouter()
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
@@ -44,9 +42,9 @@ export const AuthorView = (props: Props) => {
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>([])
   const [bioWrapper, setBioWrapper] = createSignal<HTMLElement>()
-  const [bioContainer, setBioContainer] = createSignal<HTMLElement>()
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
 
+  const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
@@ -63,8 +61,8 @@ export const AuthorView = (props: Props) => {
   }
 
   const checkBioHeight = () => {
-    if (bioContainer()) {
-      setShowExpandBioControl(bioContainer().offsetHeight > bioWrapper().offsetHeight)
+    if (bioContainerRef.current) {
+      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapper().offsetHeight)
     }
   }
 
@@ -79,9 +77,6 @@ export const AuthorView = (props: Props) => {
 
     checkBioHeight()
 
-    if (!searchParams().by) {
-      changeSearchParam('by', 'rating')
-    }
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       await loadMore()
     }
@@ -109,14 +104,14 @@ export const AuthorView = (props: Props) => {
   //   return t('Top recent')
   // })
 
-  const pages = createMemo<Shout[][]>(() =>
+  const shouts = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
-    if (searchParams().by === 'commented') {
+    if (page().route === 'authorComments') {
       try {
         const data = await apiClient.getReactionsBy({
           by: { comment: true, createdBy: props.authorSlug }
@@ -136,32 +131,27 @@ export const AuthorView = (props: Props) => {
             author={author()}
             isAuthorPage={true}
             followers={followers()}
-            subscriptions={subscriptions()}
+            following={subscriptions()}
           />
         </Show>
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
             <ul class="view-switcher">
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'rating' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'rating')}>
-                  {t('Publications')}
-                </button>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'author' }}>
+                <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>{t('Publications')}</a>
               </li>
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'commented' }}>
-                <button type="button" onClick={() => changeSearchParam('by', 'commented')}>
+              <li classList={{ 'view-switcher__item--selected': page().route === 'authorComments' }}>
+                <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                   {t('Comments')}
-                </button>
+                </a>
               </li>
-              <li classList={{ 'view-switcher__item--selected': searchParams().by === 'about' }}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    changeSearchParam('by', 'about')
-                    checkBioHeight()
-                  }}
+              <li classList={{ 'view-switcher__item--selected': page().route === 'authorAbout' }}>
+                <a
+                  onClick={() => checkBioHeight()}
+                  href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
                 >
                   {t('About myself')}
-                </button>
+                </a>
               </li>
             </ul>
           </div>
@@ -175,7 +165,7 @@ export const AuthorView = (props: Props) => {
       </div>
 
       <Switch>
-        <Match when={searchParams().by === 'about'}>
+        <Match when={page().route === 'authorAbout'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -184,7 +174,7 @@ export const AuthorView = (props: Props) => {
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >
-                  <div ref={setBioContainer}>{author().about}</div>
+                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author().about} />
                 </div>
 
                 <Show when={showExpandBioControl()}>
@@ -199,7 +189,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={searchParams().by === 'commented'}>
+        <Match when={page().route === 'authorComments'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -213,7 +203,7 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
 
-        <Match when={searchParams().by === 'rating'}>
+        <Match when={page().route === 'author'}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
           </Show>
@@ -234,15 +224,15 @@ export const AuthorView = (props: Props) => {
             <Row1 article={sortedArticles()[6]} noAuthorLink={true} />
             <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noAuthorLink={true} />
 
-            <For each={pages()}>
-              {(page) => (
+            <For each={shouts()}>
+              {(shout) => (
                 <>
-                  <Row1 article={page[0]} noAuthorLink={true} />
-                  <Row2 articles={page.slice(1, 3)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={page[3]} noAuthorLink={true} />
-                  <Row2 articles={page.slice(4, 6)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={page[6]} noAuthorLink={true} />
-                  <Row2 articles={page.slice(7, 9)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={shout[0]} noAuthorLink={true} />
+                  <Row2 articles={shout.slice(1, 3)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={shout[3]} noAuthorLink={true} />
+                  <Row2 articles={shout.slice(4, 6)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={shout[6]} noAuthorLink={true} />
+                  <Row2 articles={shout.slice(7, 9)} isEqual={true} noAuthorLink={true} />
                 </>
               )}
             </For>

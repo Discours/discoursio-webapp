@@ -7,8 +7,9 @@ import { clsx } from 'clsx'
 import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
 import { Meta } from '@solidjs/meta'
+import { Topic } from '../../graphql/types.gen'
 
-type PageLayoutProps = {
+type Props = {
   headerTitle?: string
   slug?: string
   articleBody?: string
@@ -21,7 +22,7 @@ type PageLayoutProps = {
   scrollToComments?: (value: boolean) => void
 }
 
-export const PageLayout = (props: PageLayoutProps) => {
+export const PageLayout = (props: Props) => {
   const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
 
@@ -30,7 +31,7 @@ export const PageLayout = (props: PageLayoutProps) => {
       props.scrollToComments(scrollToComments())
     }
   })
-
+  // const { randomTopics } = useTopicsStore()
   return (
     <>
       <Meta name="viewport" content="width=device-width, initial-scale=1" />

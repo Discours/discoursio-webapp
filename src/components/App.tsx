@@ -45,6 +45,11 @@ import { EditorProvider } from '../context/editor'
 // const SomePage = lazy(() => import('./Pages/SomePage'))
 
 const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
+  author: AuthorPage,
+  authorComments: AuthorPage,
+  authorAbout: AuthorPage,
+  authorFollowing: AuthorPage,
+  authorFollowers: AuthorPage,
   inbox: InboxPage,
   expo: LayoutShoutsPage,
   connect: ConnectPage,
@@ -56,7 +61,6 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   topics: AllTopicsPage,
   topic: TopicPage,
   authors: AllAuthorsPage,
-  author: AuthorPage,
   feed: FeedPage,
   feedMy: FeedPage,
   feedNotifications: FeedPage,

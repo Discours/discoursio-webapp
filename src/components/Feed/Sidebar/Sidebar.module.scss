@@ -4,18 +4,23 @@
   position: sticky;
   top: 120px;
 
-  ul > li {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  @include media-breakpoint-up(md) {
+    ul > li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .sidebarItemName {
-    position: relative;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    align-items: baseline;
     display: flex;
-    align-items: center;
+    position: relative;
+
+    @include media-breakpoint-up(md) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .selected {
@@ -83,9 +88,9 @@
     height: 2.4rem;
     margin-bottom: 0.2rem;
     margin-right: 0.8rem;
+    min-width: 2.4rem;
     text-align: center;
     vertical-align: middle;
-    width: 2.4rem;
 
     img {
       height: 100%;
@@ -127,7 +132,35 @@
   }
 }
 
+.feedFilters {
+  @include media-breakpoint-down(md) {
+    display: flex;
+    overflow: auto;
+
+    li {
+      margin-right: 3rem !important;
+
+      &:last-child {
+        margin-right: 0 !important;
+      }
+    }
+  }
+
+  .sidebarItemName {
+    align-items: center;
+  }
+}
+
 .subscriptions {
+  @include media-breakpoint-down(md) {
+    display: flex;
+    overflow: auto;
+
+    li {
+      margin-right: 3rem !important;
+    }
+  }
+
   .icon {
     text-align: center;
 

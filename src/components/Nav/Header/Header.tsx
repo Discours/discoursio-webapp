@@ -9,6 +9,7 @@ import { ConfirmModal } from '../ConfirmModal'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import { Snackbar } from '../Snackbar'
 import { Icon } from '../../_shared/Icon'
+import type { Topic } from '../../../graphql/types.gen'
 
 import { useModalStore } from '../../../stores/ui'
 import { router, useRouter } from '../../../stores/router'
@@ -19,7 +20,8 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 
 import styles from './Header.module.scss'
-import { style } from 'solid-js/web'
+import { apiClient } from '../../../utils/apiClient'
+import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 
 type Props = {
   title?: string
@@ -45,6 +47,7 @@ export const Header = (props: Props) => {
 
   const { page, searchParams } = useRouter<HeaderSearchParams>()
 
+  const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
@@ -56,6 +59,9 @@ export const Header = (props: Props) => {
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
 
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
+
+  const tag = (topic: Topic) =>
+    /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
 
   let windowScrollTop = 0
 
@@ -135,6 +141,10 @@ export const Header = (props: Props) => {
     }, time)
   }
 
+  onMount(async () => {
+    const topics = await apiClient.getRandomTopics({ amount: RANDOM_TOPICS_COUNT })
+    setRandomTopics(topics)
+  })
   return (
     <header
       class={styles.mainHeader}
@@ -373,34 +383,25 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li>
-                <a href="/expo/image">Искусство</a>
+                <a href="/topic/interview">#Интервью</a>
               </li>
               <li>
-                <a href="">Подкасты</a>
+                <a href="/topic/reportage">#Репортажи</a>
               </li>
               <li>
-                <a href="">Спецпроекты</a>
+                <a href="/topic/empiric">#Личный опыт</a>
               </li>
               <li>
-                <a href="">#Интервью</a>
+                <a href="/topic/society">#Общество</a>
               </li>
               <li>
-                <a href="">#Репортажи</a>
+                <a href="/topic/culture">#Культура</a>
               </li>
               <li>
-                <a href="">#Личный опыт</a>
+                <a href="/topic/theory">#Теории</a>
               </li>
               <li>
-                <a href="">#Общество</a>
-              </li>
-              <li>
-                <a href="">#Культура</a>
-              </li>
-              <li>
-                <a href="">#Теории</a>
-              </li>
-              <li>
-                <a href="">#Поэзия</a>
+                <a href="/topic/poetry">#Поэзия</a>
               </li>
               <li class={styles.rightItem}>
                 <a href="/topics">
@@ -418,36 +419,23 @@ export const Header = (props: Props) => {
             onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
-              <li>
-                <a href="">#Интервью</a>
-              </li>
-              <li>
-                <a href="">#Репортажи</a>
-              </li>
-              <li>
-                <a href="">#Личный опыт</a>
-              </li>
-              <li>
-                <a href="">#Общество</a>
-              </li>
-              <li>
-                <a href="">#Культура</a>
-              </li>
-              <li>
-                <a href="">#Теории</a>
-              </li>
-              <li>
-                <a href="">#Поэзия</a>
-              </li>
-              <li>
-                <a href="">#Теории</a>
-              </li>
-              <li class={styles.rightItem}>
-                <a href="/topics">
-                  {t('All topics')}
-                  <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
-                </a>
-              </li>
+              <Show when={randomTopics().length > 0}>
+                <For each={randomTopics()}>
+                  {(topic) => (
+                    <li class="item">
+                      <a href={`/topic/${topic.slug}`}>
+                        <span>#{tag(topic)}</span>
+                      </a>
+                    </li>
+                  )}
+                </For>
+                <li class={styles.rightItem}>
+                  <a href="/topics">
+                    {t('All topics')}
+                    <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
+                  </a>
+                </li>
+              </Show>
             </ul>
           </div>
 

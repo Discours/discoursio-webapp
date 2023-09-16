@@ -8,6 +8,10 @@
 
   h4 {
     margin-bottom: 0.8em;
+
+    @include media-breakpoint-down(md) {
+      display: none;
+    }
   }
 
   ul,

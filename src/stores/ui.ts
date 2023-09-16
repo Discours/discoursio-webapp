@@ -21,7 +21,7 @@ export type ModalType =
   | 'editorInsertLink'
   | 'simplifiedEditorInsertLink'
   | 'followers'
-  | 'subscriptions'
+  | 'following'
 
 type WarnKind = 'error' | 'warn' | 'info'
 
@@ -45,7 +45,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   editorInsertLink: 'editorInsertLink',
   simplifiedEditorInsertLink: 'simplifiedEditorInsertLink',
   followers: 'followers',
-  subscriptions: 'subscriptions'
+  following: 'following'
 }
 
 const [modal, setModal] = createSignal<ModalType | null>(null)

@@ -10,7 +10,6 @@ import { ReactionsProvider } from '../context/reactions'
 
 export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()
-
   const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(

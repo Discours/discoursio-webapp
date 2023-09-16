@@ -187,7 +187,6 @@ export const ProfileSettingsPage = () => {
                       label={t('About myself')}
                       initialContent={form.about}
                       onChange={(value) => updateFormField('about', value)}
-                      maxLength={500}
                     />
                     {/*Нет реализации полей на бэке*/}
                     {/*<h4>{t('How can I help/skills')}</h4>*/}

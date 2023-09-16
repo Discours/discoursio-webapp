@@ -217,11 +217,10 @@ const SimplifiedEditor = (props: Props) => {
 
   onMount(() => {
     window.addEventListener('keydown', handleKeyDown)
-  })
-
-  onCleanup(() => {
-    window.removeEventListener('keydown', handleKeyDown)
-    editor().destroy()
+    onCleanup(() => {
+      window.removeEventListener('keydown', handleKeyDown)
+      editor()?.destroy()
+    })
   })
 
   if (props.onChange) {

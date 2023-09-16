@@ -114,10 +114,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
   onMount(() => {
     window.addEventListener('keydown', handleKeyDown)
-  })
-
-  onCleanup(() => {
-    window.removeEventListener('keydown', handleKeyDown)
+    onCleanup(() => {
+      window.removeEventListener('keydown', handleKeyDown)
+    })
   })
 
   return (

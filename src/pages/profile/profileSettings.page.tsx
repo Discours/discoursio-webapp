@@ -1,7 +1,7 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Icon } from '../../components/_shared/Icon'
 import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount, onCleanup, createEffect, on } from 'solid-js'
+import { For, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
@@ -18,7 +18,6 @@ import { createStore } from 'solid-js/store'
 import { clone } from '../../utils/clone'
 import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
-import { resetSortedArticles } from '../../stores/zine/articles'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()

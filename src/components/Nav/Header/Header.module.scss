@@ -56,6 +56,10 @@
     margin: 0;
     padding: 0;
     z-index: 9;
+
+    @include media-breakpoint-down(md) {
+      border-bottom: 2px solid #000;
+    }
   }
 }
 
@@ -121,8 +125,9 @@
 
 .mainNavigation {
   font-size: 1.4rem !important;
-  margin: 0 0 0 -0.4rem !important;
+  //margin: 0 0 0 -0.4rem !important;
   opacity: 1;
+  overflow: auto;
   transition: opacity 0.3s;
 
   @include media-breakpoint-down(md) {
@@ -130,16 +135,48 @@
     bottom: 0;
     display: none;
     font-size: 2.6rem;
-    font-weight: bold;
+    font-weight: 500;
     left: 0;
     padding: $container-padding-x !important;
     position: fixed;
-    top: 74px;
+    top: 64px;
     width: 100%;
     z-index: 1;
 
     li {
       margin-bottom: 2.4rem !important;
+    }
+
+    &.fixed {
+      display: block !important;
+      line-height: 1.1;
+
+      ul {
+        display: block;
+        font-size: 3.2rem !important;
+        font-weight: bold;
+        margin: 0 0 5rem;
+      }
+
+      li {
+        display: block !important;
+        margin: 0 0 1.5rem !important;
+      }
+
+      a,
+      button {
+        border: none !important;
+      }
+
+      .mobileCopyright {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+
+        a {
+          border-bottom: 1px solid !important;
+        }
+      }
     }
   }
 
@@ -147,20 +184,15 @@
     padding: divide($container-padding-x, 2) !important;
   }
 
-  @include media-breakpoint-down(md) {
-    :global(.fixed) & {
-      font-size: 2.2rem !important;
-
-      &,
-      li {
-        display: block !important;
-      }
+  @include media-breakpoint-up(md) {
+    a,
+    button {
+      padding: 0 0.4rem;
     }
   }
 
-  a,
-  button {
-    padding: 0 0.4rem;
+  ul {
+    margin-top: 0;
   }
 
   li {
@@ -169,6 +201,51 @@
     &:first-letter {
       text-transform: capitalize;
     }
+  }
+
+  h4 {
+    color: #9fa1a7;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+}
+
+.mainNavigationMobile {
+  display: none;
+
+  .fixed & {
+    display: block;
+  }
+}
+
+.mainNavigationSocial a {
+  display: flex;
+  justify-content: space-between;
+
+  &:hover {
+    .icon {
+      filter: invert(1);
+    }
+  }
+
+  .icon {
+    height: 3.8rem;
+    width: 3.8rem;
+  }
+}
+
+.mobileDescription {
+  color: #696969;
+}
+
+.mobileSubscription {
+  margin-bottom: 5rem;
+
+  input[type='email'] {
+    background: #f7f7f8;
+    border: none;
+    border-radius: 1.6rem;
   }
 }
 

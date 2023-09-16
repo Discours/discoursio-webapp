@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createEffect, onMount, onCleanup } from 'solid-js'
+import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
 import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 
@@ -175,56 +175,132 @@ export const Header = (props: Props) => {
             <Show when={props.title}>
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
-            <ul class={clsx('view-switcher', styles.mainNavigation)} classList={{ fixed: fixed() }}>
-              <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
-                <a
-                  classList={{ [styles.mainNavigationItemActive]: isZineVisible() }}
-                  onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
-                  onMouseOut={hideSubnavigation}
-                  href={getPagePath(router, 'home')}
-                >
-                  {t('zine')}
-                </a>
-              </li>
-              <li classList={{ 'view-switcher__item--selected': page().route.startsWith('feed') }}>
-                <a
-                  classList={{ [styles.mainNavigationItemActive]: isFeedVisible() }}
-                  onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
-                  onMouseOut={hideSubnavigation}
-                  href={getPagePath(router, 'feed')}
-                >
-                  {t('feed')}
-                </a>
-              </li>
-              <li classList={{ 'view-switcher__item--selected': page().route === 'topics' }}>
-                <a
-                  classList={{ [styles.mainNavigationItemActive]: isTopicsVisible() }}
-                  onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
-                  onMouseOut={hideSubnavigation}
-                  href={getPagePath(router, 'topics')}
-                >
-                  {t('topics')}
-                </a>
-              </li>
-              <li classList={{ 'view-switcher__item--selected': page().route === 'authors' }}>
-                <a
-                  onMouseOver={(ev) => hideSubnavigation(ev, 0)}
-                  onMouseOut={(ev) => hideSubnavigation(ev, 0)}
-                  href={getPagePath(router, 'authors')}
-                >
-                  {t('community')}
-                </a>
-              </li>
-              <li>
-                <a
-                  classList={{ [styles.mainNavigationItemActive]: isKnowledgeBaseVisible() }}
-                  onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
-                  onMouseOut={hideSubnavigation}
-                >
-                  {t('Knowledge base')}
-                </a>
-              </li>
-            </ul>
+            <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
+              <ul class="view-switcher">
+                <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
+                  <a
+                    classList={{ [styles.mainNavigationItemActive]: isZineVisible() }}
+                    onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
+                    onMouseOut={hideSubnavigation}
+                    href={getPagePath(router, 'home')}
+                  >
+                    {t('zine')}
+                  </a>
+                </li>
+                <li classList={{ 'view-switcher__item--selected': page().route.startsWith('feed') }}>
+                  <a
+                    classList={{ [styles.mainNavigationItemActive]: isFeedVisible() }}
+                    onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
+                    onMouseOut={hideSubnavigation}
+                    href={getPagePath(router, 'feed')}
+                  >
+                    {t('feed')}
+                  </a>
+                </li>
+                <li classList={{ 'view-switcher__item--selected': page().route === 'topics' }}>
+                  <a
+                    classList={{ [styles.mainNavigationItemActive]: isTopicsVisible() }}
+                    onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
+                    onMouseOut={hideSubnavigation}
+                    href={getPagePath(router, 'topics')}
+                  >
+                    {t('topics')}
+                  </a>
+                </li>
+                <li classList={{ 'view-switcher__item--selected': page().route === 'authors' }}>
+                  <a
+                    onMouseOver={(ev) => hideSubnavigation(ev, 0)}
+                    onMouseOut={(ev) => hideSubnavigation(ev, 0)}
+                    href={getPagePath(router, 'authors')}
+                  >
+                    {t('community')}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    classList={{ [styles.mainNavigationItemActive]: isKnowledgeBaseVisible() }}
+                    onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
+                    onMouseOut={hideSubnavigation}
+                  >
+                    {t('Knowledge base')}
+                  </a>
+                </li>
+              </ul>
+
+              <div class={styles.mainNavigationMobile}>
+                <h4>{t('Join the community')}</h4>
+                <ul class="view-switcher">
+                  <li>
+                    <a href="/create">{t('Create post')}</a>
+                  </li>
+                  <li>
+                    <a href="/about/manifest#participation">{t('Support us')}</a>
+                  </li>
+                  <li>
+                    <a href="/about/help">{t('How to help')}</a>
+                  </li>
+                </ul>
+
+                <h4 innerHTML={t('Subscribe us')} />
+                <ul class="view-switcher">
+                  <li class={styles.mainNavigationSocial}>
+                    <a href="https://www.instagram.com/discoursio/">
+                      Instagram
+                      <Icon name="user-link-instagram" class={styles.icon} />
+                    </a>
+                  </li>
+                  <li class={styles.mainNavigationSocial}>
+                    <a href="https://facebook.com/discoursio">
+                      Facebook
+                      <Icon name="user-link-facebook" class={styles.icon} />
+                    </a>
+                  </li>
+                  <li class={styles.mainNavigationSocial}>
+                    <a href="https://twitter.com/discours_io">
+                      Twitter
+                      <Icon name="user-link-twitter" class={styles.icon} />
+                    </a>
+                  </li>
+                  <li class={styles.mainNavigationSocial}>
+                    <a href="https://t.me/discoursio">
+                      Telegram
+                      <Icon name="user-link-telegram" class={styles.icon} />
+                    </a>
+                  </li>
+                  <li class={styles.mainNavigationSocial}>
+                    <a href="https://dzen.ru/discoursio">
+                      Dzen
+                      <Icon name="user-link-dzen" class={styles.icon} />
+                    </a>
+                  </li>
+                  <li class={styles.mainNavigationSocial}>
+                    <a href="https://vk.com/discoursio">
+                      VK
+                      <Icon name="user-link-vk" class={styles.icon} />
+                    </a>
+                  </li>
+                </ul>
+
+                <h4>{t('Newsletter')}</h4>
+                <form action="." class={styles.mobileSubscription}>
+                  <div class="pretty-form__item">
+                    <input type="email" placeholder="Ваш email" id="subscription-email" />
+                    <label for="subscription-email">{t('Your email')}</label>
+                  </div>
+                </form>
+
+                <p
+                  class={styles.mobileDescription}
+                  innerHTML={t(
+                    'Independant magazine with an open horizontal cooperation about culture, science and society'
+                  )}
+                />
+                <div class={styles.mobileCopyright}>
+                  {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
+                  <a href="/">{t('Terms of use')}</a>
+                </div>
+              </div>
+            </div>
           </div>
           <HeaderAuth setIsProfilePopupVisible={setIsProfilePopupVisible} />
           <Show when={props.title}>
@@ -285,10 +361,10 @@ export const Header = (props: Props) => {
                 <a href="/about/guide">Гид по дискурсу</a>
               </li>
               <li>
-                <a href="/about/manifest#participation">Как поддержать?</a>
+                <a href="/about/manifest#participation">{t('Support us')}</a>
               </li>
               <li>
-                <a href="/about/help">Как помочь?</a>
+                <a href="/about/help">{t('How to help')}</a>
               </li>
               <li class={styles.rightItem}>
                 <a href="/connect">

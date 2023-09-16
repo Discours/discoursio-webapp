@@ -15,7 +15,7 @@ type Props = {
 }
 
 export const GrowingTextarea = (props: Props) => {
-  const [value, setValue] = createSignal<string>()
+  const [value, setValue] = createSignal<string>('')
   const [isFocused, setIsFocused] = createSignal(false)
 
   createEffect(() => {

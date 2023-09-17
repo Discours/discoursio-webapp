@@ -17,8 +17,9 @@ import { Modal } from '../../Nav/Modal'
 import { showModal } from '../../../stores/ui'
 import { TopicCard } from '../../Topic/Card'
 import { getNumeralsDeclension } from '../../../utils/getNumeralsDeclension'
+import { SubscriptionFilter } from '../../../pages/types'
+import { isAuthor } from '../../../utils/isAuthor'
 
-type SubscriptionFilter = 'all' | 'users' | 'topics'
 type Props = {
   caption?: string
   hideWriteButton?: boolean
@@ -40,10 +41,6 @@ type Props = {
   followers?: Author[]
   following?: Array<Author | Topic>
   showPublicationsCounter?: boolean
-}
-
-function isAuthor(value: Author | Topic): value is Author {
-  return 'name' in value
 }
 
 export const AuthorCard = (props: Props) => {
@@ -425,7 +422,7 @@ export const AuthorCard = (props: Props) => {
               <div class="row">
                 <div class="col-24">
                   <For each={following()}>
-                    {(subscription: Author | Topic) =>
+                    {(subscription) =>
                       isAuthor(subscription) ? (
                         <AuthorCard
                           author={subscription}

@@ -5,6 +5,12 @@ import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
 import { apiClient } from '../utils/apiClient'
 import type { ProfileInput } from '../graphql/types.gen'
 
+const userpicUrl = (userpic: string) => {
+  if (userpic.includes('assets.discours.io')) {
+    return userpic.replace('100x', '500x500')
+  }
+  return userpic
+}
 const useProfileForm = () => {
   const { session } = useSession()
   const currentSlug = createMemo(() => session()?.user?.slug)
@@ -34,13 +40,12 @@ const useProfileForm = () => {
     if (!currentSlug()) return
     try {
       await loadAuthor({ slug: currentSlug() })
-
       setForm({
         name: currentAuthor()?.name,
         slug: currentAuthor()?.slug,
         bio: currentAuthor()?.bio,
         about: currentAuthor()?.about,
-        userpic: currentAuthor()?.userpic.replace('100x', '500x500'),
+        userpic: userpicUrl(currentAuthor()?.userpic),
         links: currentAuthor()?.links
       })
     } catch (error) {

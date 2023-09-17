@@ -23,7 +23,6 @@ type Props = {
   shouts: Shout[]
   author: Author
   authorSlug: string
-  // route?: 'author' | 'authorComments' | 'authorAbout' | 'authorFollowing' | 'authorFollowers' | string
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -40,11 +39,11 @@ export const AuthorView = (props: Props) => {
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
-  const [subscriptions, setSubscriptions] = createSignal<Array<Author | Topic>>([])
-  const [bioWrapper, setBioWrapper] = createSignal<HTMLElement>()
+  const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
 
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
+  const bioWrapperRef: { current: HTMLDivElement } = { current: null }
   const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
@@ -62,7 +61,7 @@ export const AuthorView = (props: Props) => {
 
   const checkBioHeight = () => {
     if (bioContainerRef.current) {
-      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapper().offsetHeight)
+      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
     }
   }
 
@@ -81,7 +80,7 @@ export const AuthorView = (props: Props) => {
       await loadMore()
     }
     const { authors, topics } = await fetchSubscriptions()
-    setSubscriptions([...authors, ...topics])
+    setFollowing([...authors, ...topics])
   })
 
   const loadMore = async () => {
@@ -131,7 +130,7 @@ export const AuthorView = (props: Props) => {
             author={author()}
             isAuthorPage={true}
             followers={followers()}
-            following={subscriptions()}
+            following={following()}
           />
         </Show>
         <div class={clsx(styles.groupControls, 'row')}>
@@ -170,7 +169,7 @@ export const AuthorView = (props: Props) => {
             <div class="row">
               <div class="col-md-20 col-lg-18">
                 <div
-                  ref={setBioWrapper}
+                  ref={(el) => (bioWrapperRef.current = el)}
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >

@@ -699,11 +699,11 @@
 .shoutCardShort {
   font-size: 1.4rem;
   margin-bottom: 0;
+  position: static;
 
   .shoutCardTitle,
   .shoutCardSubtitle {
     @include font-size(1.8rem);
-
     display: inline;
   }
 

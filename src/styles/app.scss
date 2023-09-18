@@ -633,6 +633,10 @@ figure {
       border-bottom: 2px solid #000;
       color: #000;
       cursor: default;
+
+      &:hover {
+        color: #fff;
+      }
     }
   }
 }

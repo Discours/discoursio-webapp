@@ -127,7 +127,6 @@
   font-size: 1.4rem !important;
   //margin: 0 0 0 -0.4rem !important;
   opacity: 1;
-  overflow: auto;
   transition: opacity 0.3s;
 
   @include media-breakpoint-down(md) {
@@ -137,6 +136,7 @@
     font-size: 2.6rem;
     font-weight: 500;
     left: 0;
+    overflow: auto;
     padding: $container-padding-x !important;
     position: fixed;
     top: 64px;

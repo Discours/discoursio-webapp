@@ -382,6 +382,15 @@ export const Header = (props: Props) => {
             onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
+              <li class="item">
+                <a href="/expo/image">Искусство</a>
+              </li>
+              <li class="item">
+                <a href="/podcasts">Подкасты</a>
+              </li>
+              <li class="item">
+                <a href="">Спецпроекты</a>
+              </li>
               <li>
                 <a href="/topic/interview">#Интервью</a>
               </li>

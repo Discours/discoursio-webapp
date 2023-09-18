@@ -11,6 +11,7 @@ import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { useLocalize } from '../../context/localize'
+import { dummyFilter } from '../../utils/dummyFilter'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -69,26 +70,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
 
   const filteredAuthors = createMemo(() => {
-    let q = searchQuery().toLowerCase()
-
-    if (q.length === 0) {
-      return sortedAuthors()
-    }
-
-    if (lang() === 'ru') q = translit(q)
-
-    return sortedAuthors().filter((author) => {
-      if (author.slug.split('-').some((w) => w.startsWith(q))) {
-        return true
-      }
-
-      let name = author.name.toLowerCase()
-      if (lang() === 'ru') {
-        name = translit(name)
-      }
-
-      return name.split(' ').some((word) => word.startsWith(q))
-    })
+    return dummyFilter(sortedAuthors(), searchQuery(), lang())
   })
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
@@ -186,7 +168,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
                 <div class="row">
                   <div class="col-lg-20 col-xl-18">
                     <AuthorCard
-                      author={author}
+                      author={author as Author}
                       hasLink={true}
                       subscribed={subscribed(author.slug)}
                       noSocialButtons={true}

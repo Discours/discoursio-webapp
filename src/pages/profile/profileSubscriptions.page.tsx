@@ -14,20 +14,15 @@ import { SubscriptionFilter } from '../types'
 import { Loading } from '../../components/_shared/Loading'
 import { TopicCard } from '../../components/Topic/Card'
 import { AuthorCard } from '../../components/Author/AuthorCard'
-import { router, useRouter } from '../../stores/router'
-import { redirectPage } from '@nanostores/router'
+import { dummyFilter } from '../../utils/dummyFilter'
 
 export const ProfileSubscriptionsPage = () => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
   const { user, isAuthenticated } = useSession()
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [searchQuery, setSearchQuery] = createSignal('')
-
-  createEffect(() => {
-    console.log('!!! user:', following())
-  })
 
   const fetchSubscriptions = async () => {
     try {
@@ -44,15 +39,12 @@ export const ProfileSubscriptionsPage = () => {
   }
 
   onMount(() => {
-    fetchSubscriptions()
+    if (!isAuthenticated()) {
+      fetchSubscriptions()
+    }
   })
 
   createEffect(() => {
-    if (!isAuthenticated()) {
-      console.log('!!! AAA:')
-      redirectPage(router, 'home')
-    }
-
     if (following()) {
       if (subscriptionFilter() === 'users') {
         setFiltered(following().filter((s) => 'name' in s))
@@ -62,6 +54,7 @@ export const ProfileSubscriptionsPage = () => {
         setFiltered(following())
       }
     }
+    setFiltered(dummyFilter(following(), searchQuery(), lang()))
   })
 
   return (

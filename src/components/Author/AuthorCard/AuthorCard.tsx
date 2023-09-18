@@ -273,7 +273,6 @@ export const AuthorCard = (props: Props) => {
                       <For each={props.author.links}>{(link) => <a href={link} />}</For>
                     </div>
                   </Show>
-
                   <Show
                     when={subscribed()}
                     fallback={

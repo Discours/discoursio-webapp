@@ -1,6 +1,6 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Icon } from '../../components/_shared/Icon'
-import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
+import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { For, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'

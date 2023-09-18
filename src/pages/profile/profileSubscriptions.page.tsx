@@ -2,7 +2,7 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import styles from './Settings.module.scss'
 import stylesSettings from '../../styles/FeedSettings.module.scss'
 import { clsx } from 'clsx'
-import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
+import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { SearchField } from '../../components/_shared/SearchField'
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Author, Topic } from '../../graphql/types.gen'
@@ -39,7 +39,7 @@ export const ProfileSubscriptionsPage = () => {
   }
 
   onMount(() => {
-    if (!isAuthenticated()) {
+    if (isAuthenticated()) {
       fetchSubscriptions()
     }
   })
@@ -113,7 +113,6 @@ export const ProfileSubscriptionsPage = () => {
                                 hasLink={true}
                                 isTextButton={true}
                                 truncateBio={true}
-                                showPublicationsCounter={true}
                               />
                             ) : (
                               <TopicCard

@@ -2,7 +2,7 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import styles from './Settings.module.scss'
 import { Icon } from '../../components/_shared/Icon'
 import { clsx } from 'clsx'
-import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
+import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 
 export const ProfileSecurityPage = () => {
   return (

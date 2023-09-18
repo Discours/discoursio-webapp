@@ -1,6 +1,23 @@
 .searchField {
   display: flex;
   justify-content: flex-end;
+  position: relative;
+
+  &.bordered {
+    border: 2px solid var(--black-100);
+    padding: 10px 0 12px 10px;
+
+    input {
+      width: 100%;
+      display: block;
+      box-sizing: border-box;
+      margin-right: 40px;
+
+      &:focus {
+        box-shadow: unset;
+      }
+    }
+  }
 
   input {
     border: none;

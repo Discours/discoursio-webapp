@@ -38,9 +38,9 @@ export const ProfileSubscriptionsPage = () => {
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
     if (isAuthenticated()) {
-      fetchSubscriptions()
+      await fetchSubscriptions()
     }
   })
 
@@ -94,36 +94,36 @@ export const ProfileSubscriptionsPage = () => {
                   </ul>
 
                   <div class={clsx('pretty-form__item', styles.searchContainer)}>
-                    <SearchField onChange={(value) => setSearchQuery(value)} class={styles.searchField} />
+                    <SearchField
+                      onChange={(value) => setSearchQuery(value)}
+                      class={styles.searchField}
+                      variant="bordered"
+                    />
                   </div>
 
                   <div class={clsx(stylesSettings.settingsList, styles.topicsList)}>
                     <For each={filtered()}>
                       {(followingItem) => (
-                        <div class={stylesSettings.settingsListRow}>
-                          <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                            <input type="checkbox" id={followingItem.slug} />
-                            <label for={followingItem.slug} />
-                          </div>
-                          <label for={followingItem.slug} class={stylesSettings.settingsListCell}>
-                            {isAuthor(followingItem) ? (
-                              <AuthorCard
-                                author={followingItem}
-                                hideWriteButton={true}
-                                hasLink={true}
-                                isTextButton={true}
-                                truncateBio={true}
-                              />
-                            ) : (
-                              <TopicCard
-                                compact
-                                isTopicInRow
-                                showDescription
-                                isCardMode
-                                topic={followingItem}
-                              />
-                            )}
-                          </label>
+                        <div>
+                          {isAuthor(followingItem) ? (
+                            <AuthorCard
+                              author={followingItem}
+                              hideWriteButton={true}
+                              hasLink={true}
+                              isTextButton={true}
+                              truncateBio={true}
+                              minimizeSubscribeButton={true}
+                            />
+                          ) : (
+                            <TopicCard
+                              compact
+                              isTopicInRow
+                              showDescription
+                              isCardMode
+                              topic={followingItem}
+                              minimizeSubscribeButton={true}
+                            />
+                          )}
                         </div>
                       )}
                     </For>

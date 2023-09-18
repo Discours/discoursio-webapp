@@ -1,5 +1,6 @@
 .settingsList {
   display: table;
+  width: 100%;
 
   h2 {
     margin-top: 1em;
@@ -43,18 +44,5 @@
         }
       }
     }
-  }
-}
-
-.settingsListRow {
-  display: table-row;
-}
-
-.settingsListCell {
-  display: table-cell;
-  padding: 0 0.5em 1em 0;
-
-  &:first-child {
-    padding-right: 2em;
   }
 }

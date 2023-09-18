@@ -11,6 +11,7 @@ import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { Icon } from '../_shared/Icon'
 import { useLocalize } from '../../context/localize'
 import { CardTopic } from '../Feed/CardTopic'
+import { CheckButton } from '../_shared/CheckButton'
 
 interface TopicProps {
   topic: Topic
@@ -24,6 +25,7 @@ interface TopicProps {
   showPublications?: boolean
   showDescription?: boolean
   isCardMode?: boolean
+  minimizeSubscribeButton?: boolean
 }
 
 export const TopicCard = (props: TopicProps) => {
@@ -105,27 +107,34 @@ export const TopicCard = (props: TopicProps) => {
         >
           <ShowOnlyOnClient>
             <Show when={isSessionLoaded()}>
-              <button
-                onClick={handleSubscribe}
-                class="button--light button--subscribe-topic"
-                classList={{
-                  [styles.isSubscribing]: isSubscribing(),
-                  [styles.isSubscribed]: subscribed()
-                }}
-                disabled={isSubscribing()}
+              <Show
+                when={!props.minimizeSubscribeButton}
+                fallback={
+                  <CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />
+                }
               >
-                <Show when={props.iconButton}>
-                  <Show when={subscribed()} fallback="+">
-                    <Icon name="check-subscribed" />
+                <button
+                  onClick={handleSubscribe}
+                  class="button--light button--subscribe-topic"
+                  classList={{
+                    [styles.isSubscribing]: isSubscribing(),
+                    [styles.isSubscribed]: subscribed()
+                  }}
+                  disabled={isSubscribing()}
+                >
+                  <Show when={props.iconButton}>
+                    <Show when={subscribed()} fallback="+">
+                      <Icon name="check-subscribed" />
+                    </Show>
                   </Show>
-                </Show>
-                <Show when={!props.iconButton}>
-                  <Show when={subscribed()} fallback={t('Follow')}>
-                    <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
-                    <span class={styles.buttonSubscribedLabel}>{t('You are subscribed')}</span>
+                  <Show when={!props.iconButton}>
+                    <Show when={subscribed()} fallback={t('Follow')}>
+                      <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
+                      <span class={styles.buttonSubscribedLabel}>{t('You are subscribed')}</span>
+                    </Show>
                   </Show>
-                </Show>
-              </button>
+                </button>
+              </Show>
             </Show>
           </ShowOnlyOnClient>
         </div>

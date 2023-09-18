@@ -12,6 +12,7 @@ import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { StatMetrics } from '../_shared/StatMetrics'
 import { useLocalize } from '../../context/localize'
+import { dummyFilter } from '../../utils/dummyFilter'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -66,32 +67,9 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
-
   const [searchQuery, setSearchQuery] = createSignal('')
-
   const filteredResults = createMemo(() => {
-    /* very stupid filter by string algorithm with no deps */
-    let q = searchQuery().toLowerCase()
-    if (q.length === 0) {
-      return sortedTopics()
-    }
-
-    if (lang() === 'ru') {
-      q = translit(q)
-    }
-
-    return sortedTopics().filter((topic) => {
-      if (topic.slug.split('-').some((w) => w.startsWith(q))) {
-        return true
-      }
-
-      let title = topic.title.toLowerCase()
-      if (lang() === 'ru') {
-        title = translit(title)
-      }
-
-      return title.split(' ').some((word) => word.startsWith(q))
-    })
+    return dummyFilter(sortedTopics(), searchQuery(), lang())
   })
 
   const AllTopicsHead = () => (
@@ -180,7 +158,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                     {(topic) => (
                       <>
                         <TopicCard
-                          topic={topic}
+                          topic={topic as Topic}
                           compact={false}
                           subscribed={subscribed(topic.slug)}
                           showPublications={true}

@@ -46,3 +46,5 @@ export type UploadedFile = {
   url: string
   originalFilename?: string
 }
+
+export type SubscriptionFilter = 'all' | 'users' | 'topics'

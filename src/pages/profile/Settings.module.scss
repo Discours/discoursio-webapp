@@ -108,12 +108,12 @@ h5 {
 }
 
 .searchField {
-  display: block;
+  margin-bottom: 2rem;
 
   label:first-child {
     opacity: 0.5;
     position: absolute;
-    right: 1em;
+    right: 12px;
     transform: translateY(-50%);
     top: 50%;
   }

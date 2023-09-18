@@ -2,10 +2,61 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import styles from './Settings.module.scss'
 import stylesSettings from '../../styles/FeedSettings.module.scss'
 import { clsx } from 'clsx'
-import ProfileSettingsNavigation from '../../components/Discours/ProfileSettingsNavigation'
+import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { SearchField } from '../../components/_shared/SearchField'
+import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { Author, Topic } from '../../graphql/types.gen'
+import { apiClient } from '../../utils/apiClient'
+import { useSession } from '../../context/session'
+import { isAuthor } from '../../utils/isAuthor'
+import { useLocalize } from '../../context/localize'
+import { SubscriptionFilter } from '../types'
+import { Loading } from '../../components/_shared/Loading'
+import { TopicCard } from '../../components/Topic/Card'
+import { AuthorCard } from '../../components/Author/AuthorCard'
+import { dummyFilter } from '../../utils/dummyFilter'
 
 export const ProfileSubscriptionsPage = () => {
+  const { t, lang } = useLocalize()
+  const { user, isAuthenticated } = useSession()
+  const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
+  const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
+  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
+  const [searchQuery, setSearchQuery] = createSignal('')
+
+  const fetchSubscriptions = async () => {
+    try {
+      const [getAuthors, getTopics] = await Promise.all([
+        apiClient.getAuthorFollowingUsers({ slug: user().slug }),
+        apiClient.getAuthorFollowingTopics({ slug: user().slug })
+      ])
+      setFollowing([...getAuthors, ...getTopics])
+      setFiltered([...getAuthors, ...getTopics])
+    } catch (error) {
+      console.error('[fetchSubscriptions] :', error)
+      throw error
+    }
+  }
+
+  onMount(async () => {
+    if (isAuthenticated()) {
+      await fetchSubscriptions()
+    }
+  })
+
+  createEffect(() => {
+    if (following()) {
+      if (subscriptionFilter() === 'users') {
+        setFiltered(following().filter((s) => 'name' in s))
+      } else if (subscriptionFilter() === 'topics') {
+        setFiltered(following().filter((s) => 'title' in s))
+      } else {
+        setFiltered(following())
+      }
+    }
+    setFiltered(dummyFilter(following(), searchQuery(), lang()))
+  })
+
   return (
     <PageLayout>
       <div class="wide-container">
@@ -19,112 +70,65 @@ export const ProfileSubscriptionsPage = () => {
           <div class="col-md-19">
             <div class="row">
               <div class="col-md-20 col-lg-18 col-xl-16">
-                <h1>Подписки</h1>
-                <p class="description">Здесь можно управлять всеми своими подписками на&nbsp;сайте.</p>
-
-                <form>
+                <h1>{t('My subscriptions')}</h1>
+                <p class="description">{t('Here you can manage all your Discourse subscriptions')}</p>
+                <Show when={following()} fallback={<Loading />}>
                   <ul class="view-switcher">
-                    <li class="selected">
-                      <a href="src/components/Pages/profile#">Все</a>
+                    <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>
+                      <button type="button" onClick={() => setSubscriptionFilter('all')}>
+                        {t('All')}
+                      </button>
                     </li>
-                    <li>
-                      <a href="src/components/Pages/profile#">Авторы</a>
+                    <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
+                      <button type="button" onClick={() => setSubscriptionFilter('users')}>
+                        {t('Authors')}
+                      </button>
                     </li>
-                    <li>
-                      <a href="src/components/Pages/profile#">Темы</a>
-                    </li>
-                    <li>
-                      <a href="src/components/Pages/profile#">Сообщества</a>
-                    </li>
-                    <li>
-                      <a href="src/components/Pages/profile#">Коллекции</a>
+                    <li
+                      class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'topics' })}
+                    >
+                      <button type="button" onClick={() => setSubscriptionFilter('topics')}>
+                        {t('Topics')}
+                      </button>
                     </li>
                   </ul>
 
                   <div class={clsx('pretty-form__item', styles.searchContainer)}>
-                    <SearchField onChange={() => console.log('nothing')} class={styles.searchField} />
+                    <SearchField
+                      onChange={(value) => setSearchQuery(value)}
+                      class={styles.searchField}
+                      variant="bordered"
+                    />
                   </div>
 
                   <div class={clsx(stylesSettings.settingsList, styles.topicsList)}>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox1" id="checkbox1" />
-                        <label for="checkbox1" />
-                      </div>
-                      <label for="checkbox1" class={stylesSettings.settingsListCell}>
-                        Культура
-                      </label>
-                    </div>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox2" id="checkbox2" />
-                        <label for="checkbox2" />
-                      </div>
-                      <label for="checkbox2" class={stylesSettings.settingsListCell}>
-                        Eto_ya sam
-                      </label>
-                    </div>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox3" id="checkbox3" />
-                        <label for="checkbox3" />
-                      </div>
-                      <label for="checkbox3" class={stylesSettings.settingsListCell}>
-                        Технопарк
-                      </label>
-                    </div>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox4" id="checkbox4" />
-                        <label for="checkbox4" />
-                      </div>
-                      <label for="checkbox4" class={stylesSettings.settingsListCell}>
-                        Лучшее
-                      </label>
-                    </div>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox5" id="checkbox5" />
-                        <label for="checkbox5" />
-                      </div>
-                      <label for="checkbox5" class={stylesSettings.settingsListCell}>
-                        Реклама
-                      </label>
-                    </div>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox6" id="checkbox6" />
-                        <label for="checkbox6" />
-                      </div>
-                      <label for="checkbox6" class={stylesSettings.settingsListCell}>
-                        Искусство
-                      </label>
-                    </div>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox7" id="checkbox7" />
-                        <label for="checkbox7" />
-                      </div>
-                      <label for="checkbox7" class={stylesSettings.settingsListCell}>
-                        Общество
-                      </label>
-                    </div>
-                    <div class={stylesSettings.settingsListRow}>
-                      <div class={clsx(stylesSettings.settingsListCell, styles.topicsListItem)}>
-                        <input type="checkbox" name="checkbox8" id="checkbox8" />
-                        <label for="checkbox8" />
-                      </div>
-                      <label for="checkbox8" class={stylesSettings.settingsListCell}>
-                        Личный опыт
-                      </label>
-                    </div>
+                    <For each={filtered()}>
+                      {(followingItem) => (
+                        <div>
+                          {isAuthor(followingItem) ? (
+                            <AuthorCard
+                              author={followingItem}
+                              hideWriteButton={true}
+                              hasLink={true}
+                              isTextButton={true}
+                              truncateBio={true}
+                              minimizeSubscribeButton={true}
+                            />
+                          ) : (
+                            <TopicCard
+                              compact
+                              isTopicInRow
+                              showDescription
+                              isCardMode
+                              topic={followingItem}
+                              minimizeSubscribeButton={true}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </For>
                   </div>
-
-                  <br />
-                  <p>
-                    <button class="button button--submit">Сохранить настройки</button>
-                  </p>
-                </form>
+                </Show>
               </div>
             </div>
           </div>

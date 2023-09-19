@@ -777,8 +777,12 @@ figure {
 .main-content {
   flex: 1 100%;
   min-height: 90vh;
-  padding-top: 130px;
+  padding-top: 80px;
   position: relative;
+
+  @include media-breakpoint-up(lg) {
+    padding-top: 130px;
+  }
 }
 
 .main-content--no-padding {

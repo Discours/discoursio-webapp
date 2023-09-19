@@ -173,7 +173,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
       <div class={styles.settings}>
         <a href="/feed/settings">
           <Icon name="settings" class={styles.icon} />
-          {t('Feed settings')}
+          <span class={styles.settingsLabel}>{t('Feed settings')}</span>
         </a>
       </div>
     </div>

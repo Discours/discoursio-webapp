@@ -1,10 +1,11 @@
 .sidebar {
   max-height: calc(100vh - 120px);
   overflow: auto;
-  position: sticky;
   top: 120px;
 
   @include media-breakpoint-up(md) {
+    position: sticky;
+
     ul > li {
       white-space: nowrap;
       overflow: hidden;
@@ -64,6 +65,22 @@
     display: flex;
     justify-content: space-between;
     margin: 2em 0;
+
+    @include media-breakpoint-down(md) {
+      margin: 0;
+      position: absolute;
+      right: 12px;
+    }
+
+    @include media-breakpoint-down(sm) {
+      right: 2px;
+    }
+  }
+
+  .settingsLabel {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
   }
 
   a {
@@ -132,7 +149,8 @@
   }
 }
 
-.feedFilters {
+.feedFilters,
+.subscriptions {
   @include media-breakpoint-down(md) {
     display: flex;
     overflow: auto;
@@ -144,6 +162,21 @@
         margin-right: 0 !important;
       }
     }
+
+    &::-webkit-scrollbar {
+      height: 0;
+      width: 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: none;
+    }
+  }
+}
+
+.feedFilters {
+  @include media-breakpoint-down(md) {
+    margin-bottom: 0 !important;
   }
 
   .sidebarItemName {
@@ -152,15 +185,6 @@
 }
 
 .subscriptions {
-  @include media-breakpoint-down(md) {
-    display: flex;
-    overflow: auto;
-
-    li {
-      margin-right: 3rem !important;
-    }
-  }
-
   .icon {
     text-align: center;
 

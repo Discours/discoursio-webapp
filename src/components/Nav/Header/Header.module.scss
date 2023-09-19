@@ -129,7 +129,7 @@
   opacity: 1;
   transition: opacity 0.3s;
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(lg) {
     background: var(--background-color);
     bottom: 0;
     display: none;
@@ -536,10 +536,6 @@
     a:hover {
       .icon {
         display: block;
-
-        @include media-breakpoint-up(lg) {
-          display: none;
-        }
       }
     }
 

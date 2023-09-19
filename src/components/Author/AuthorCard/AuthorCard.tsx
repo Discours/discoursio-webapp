@@ -125,7 +125,7 @@ export const AuthorCard = (props: Props) => {
     redirectPage(router, 'author', { slug: props.author.slug })
   }
 
-  if (props.isAuthorPage && props.author.userpic.includes('assets.discours.io')) {
+  if (props.isAuthorPage && props.author.userpic?.includes('assets.discours.io')) {
     setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
   }
 

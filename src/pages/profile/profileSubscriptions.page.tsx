@@ -45,6 +45,7 @@ export const ProfileSubscriptionsPage = () => {
   })
 
   createEffect(() => {
+    console.log('!!! subscriptionFilter():', subscriptionFilter())
     if (following()) {
       if (subscriptionFilter() === 'users') {
         setFiltered(following().filter((s) => 'name' in s))
@@ -54,7 +55,9 @@ export const ProfileSubscriptionsPage = () => {
         setFiltered(following())
       }
     }
-    setFiltered(dummyFilter(following(), searchQuery(), lang()))
+    if (searchQuery()) {
+      setFiltered(dummyFilter(following(), searchQuery(), lang()))
+    }
   })
 
   return (

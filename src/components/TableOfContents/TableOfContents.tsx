@@ -68,42 +68,48 @@ export const TableOfContents = (props: Props) => {
       >
         <div class={styles.TableOfContentsContainer}>
           <Show when={isVisible()}>
-            <div class={styles.TableOfContentsHeader}>
-              <p class={styles.TableOfContentsHeading}>{t('contents')}</p>
-            </div>
-            <ul class={styles.TableOfContentsHeadingsList}>
-              <For each={headings()}>
-                {(h) => (
-                  <li>
-                    <button
-                      class={clsx(styles.TableOfContentsHeadingsItem, {
-                        [styles.TableOfContentsHeadingsItemH3]: h.nodeName === 'H3',
-                        [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4'
-                      })}
-                      innerHTML={h.textContent}
-                      onClick={(e) => {
-                        e.preventDefault()
+            <div class={styles.TableOfContentsContainerInner}>
+              <div class={styles.TableOfContentsHeader}>
+                <p class={styles.TableOfContentsHeading}>{t('contents')}</p>
+              </div>
+              <ul class={styles.TableOfContentsHeadingsList}>
+                <For each={headings()}>
+                  {(h) => (
+                    <li>
+                      <button
+                        class={clsx(styles.TableOfContentsHeadingsItem, {
+                          [styles.TableOfContentsHeadingsItemH3]: h.nodeName === 'H3',
+                          [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4'
+                        })}
+                        innerHTML={h.textContent}
+                        onClick={(e) => {
+                          e.preventDefault()
 
-                        scrollToHeader(h)
-                      }}
-                    />
-                  </li>
-                )}
-              </For>
-            </ul>
+                          scrollToHeader(h)
+                        }}
+                      />
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </div>
           </Show>
 
           <button
-            class={clsx(styles.TableOfContentsPrimaryButton, {
-              [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible()
-            })}
+            class={clsx(
+              styles.TableOfContentsPrimaryButton,
+              {
+                [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible()
+              },
+              'd-none d-xl-block'
+            )}
             onClick={(e) => {
               e.preventDefault()
               toggleIsVisible()
             }}
             title={isVisible() ? t('Hide table of contents') : t('Show table of contents')}
           >
-            <Show when={isVisible()} fallback={<Icon name="show-table-of-contents" class={'icon'} />}>
+            <Show when={isVisible()} fallback={<Icon name="show-table-of-contents" class="icon" />}>
               {props.variant === 'editor' ? (
                 <Icon name="hide-table-of-contents" class="icon" />
               ) : (
@@ -111,7 +117,39 @@ export const TableOfContents = (props: Props) => {
               )}
             </Show>
           </button>
+
+          <Show when={isVisible()}>
+            <button
+              class={clsx(styles.TableOfContentsCloseButton, 'd-xl-none')}
+              onClick={(e) => {
+                e.preventDefault()
+                toggleIsVisible()
+              }}
+              title={isVisible() ? t('Hide table of contents') : t('Show table of contents')}
+            >
+              <Icon name="close-white" class="icon" />
+            </button>
+          </Show>
         </div>
+
+        <Show when={!isVisible()}>
+          <button
+            class={clsx(
+              styles.TableOfContentsPrimaryButton,
+              {
+                [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible()
+              },
+              'd-xl-none'
+            )}
+            onClick={(e) => {
+              e.preventDefault()
+              toggleIsVisible()
+            }}
+            title={isVisible() ? t('Hide table of contents') : t('Show table of contents')}
+          >
+            <Icon name="hide-table-of-contents-2" class="icon" />
+          </button>
+        </Show>
       </div>
     </Show>
   )

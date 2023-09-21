@@ -10,6 +10,12 @@
   .groupControls {
     margin-bottom: 2em !important;
     margin-top: 0 !important;
+
+    @include media-breakpoint-down(md) {
+      border-top: 2px solid #000;
+      margin-top: -1.6rem;
+      padding-top: 1.6rem;
+    }
   }
 }
 
@@ -27,9 +33,11 @@
 }
 
 .additionalControls {
+  display: none;
   white-space: nowrap;
 
   @include media-breakpoint-up(md) {
+    display: block;
     text-align: right;
   }
 }

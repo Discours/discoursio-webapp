@@ -20,7 +20,7 @@ export const GrowingTextarea = (props: Props) => {
 
   createEffect(() => {
     if (props.maxLength && props.initialValue?.length > props.maxLength) {
-      setValue(props.initialValue.slice(0, props.maxLength))
+      setValue(props.initialValue?.slice(0, props.maxLength))
     } else {
       setValue(props.initialValue ?? '')
     }
@@ -39,6 +39,8 @@ export const GrowingTextarea = (props: Props) => {
     }
   }
 
+  console.log('!!! initialValue:', props.initialValue)
+
   return (
     <div
       class={clsx(styles.GrowingTextarea, {
@@ -56,7 +58,11 @@ export const GrowingTextarea = (props: Props) => {
           maxlength={props.maxLength}
           autocomplete="off"
           class={clsx(styles.textInput, props.class)}
-          value={props.maxLength ? props.initialValue.slice(0, props.maxLength) : props.initialValue}
+          value={
+            props.initialValue && props.maxLength
+              ? props.initialValue?.slice(0, props.maxLength)
+              : props.initialValue
+          }
           onKeyDown={props.allowEnterKey ? handleKeyDown : null}
           onInput={(event) => handleChangeValue(event)}
           onChange={(event) => props.value(event.target.value)}

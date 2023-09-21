@@ -171,7 +171,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
       </Show>
 
       <div class={styles.settings}>
-        <a href="/feed/settings">
+        <a href="/profile/subscriptions">
           <Icon name="settings" class={styles.icon} />
           <span class={styles.settingsLabel}>{t('Feed settings')}</span>
         </a>

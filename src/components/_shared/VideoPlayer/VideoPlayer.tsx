@@ -25,7 +25,7 @@ export const VideoPlayer = (props: Props) => {
     setIsVimeo(!isYoutube)
     if (isYoutube) {
       if (props.videoUrl.includes('youtube.com')) {
-        const videoIdMatch = props.videoUrl.match(/v=(\w+)/)
+        const videoIdMatch = props.videoUrl.match(/watch=(\w+)/)
         setVideoId(videoIdMatch && videoIdMatch[1])
       } else {
         const videoIdMatch = props.videoUrl.match(/youtu.be\/(\w+)/)

@@ -48,7 +48,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   following: 'following'
 }
 
-const [modal, setModal] = createSignal<ModalType | null>()
+const [modal, setModal] = createSignal<ModalType>(null)
 
 const [warnings, setWarnings] = createSignal<Warning[]>([])
 

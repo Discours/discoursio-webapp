@@ -21,13 +21,13 @@ export const Modal = (props: Props) => {
   const [visible, setVisible] = createSignal(false)
   const allowClose = createMemo(() => props.allowClose !== false)
   const handleHide = () => {
-    if (modal()) {
+    if (modal() && allowClose()) {
       hideModal()
       props.onClose && props.onClose()
     }
   }
 
-  useEscKeyDownHandler(allowClose() && handleHide)
+  useEscKeyDownHandler(handleHide)
 
   createEffect(() => {
     setVisible(modal() === props.name)
@@ -35,7 +35,7 @@ export const Modal = (props: Props) => {
 
   return (
     <Show when={visible()}>
-      <div class={styles.backdrop} onClick={allowClose() && handleHide}>
+      <div class={styles.backdrop} onClick={handleHide}>
         <div
           class={clsx(styles.modal, {
             [styles.narrow]: props.variant === 'narrow',

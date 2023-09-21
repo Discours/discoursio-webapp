@@ -18,9 +18,5 @@ export const AuthGuard = (props: Props) => {
     }
   })
 
-  return (
-    <Show when={isSessionLoaded()}>
-      <Show when={isAuthenticated()}>{props.children}</Show>
-    </Show>
-  )
+  return <Show when={isSessionLoaded() && isAuthenticated()}>{props.children}</Show>
 }

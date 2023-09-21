@@ -35,7 +35,6 @@ export const ProfileSubscriptions = (props: Props) => {
         apiClient.getAuthorFollowingUsers({ slug: user().slug }),
         apiClient.getAuthorFollowingTopics({ slug: user().slug })
       ])
-      console.log('!!! try:')
       setFollowing([...getAuthors, ...getTopics])
       setFiltered([...getAuthors, ...getTopics])
     } catch (error) {

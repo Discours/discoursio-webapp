@@ -3,12 +3,12 @@ import styles from './Settings.module.scss'
 import { Icon } from '../../components/_shared/Icon'
 import { clsx } from 'clsx'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
-import { AuthWrapper } from '../../components/AuthWrapper'
+import { AuthGuard } from '../../components/AuthGuard'
 
 export const ProfileSecurityPage = () => {
   return (
     <PageLayout>
-      <AuthWrapper>
+      <AuthGuard>
         <div class="wide-container">
           <div class="row">
             <div class="col-md-5">
@@ -130,7 +130,7 @@ export const ProfileSecurityPage = () => {
             </div>
           </div>
         </div>
-      </AuthWrapper>
+      </AuthGuard>
     </PageLayout>
   )
 }

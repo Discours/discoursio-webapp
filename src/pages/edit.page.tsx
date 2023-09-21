@@ -6,7 +6,7 @@ import { Shout } from '../graphql/types.gen'
 import { useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from '../context/localize'
-import { AuthWrapper } from '../components/AuthWrapper'
+import { AuthGuard } from '../components/AuthGuard'
 
 const Edit = lazy(() => import('../components/Views/Edit'))
 
@@ -27,13 +27,13 @@ export const EditPage = () => {
 
   return (
     <PageLayout>
-      <AuthWrapper>
+      <AuthGuard>
         <Show when={shout()}>
           <Suspense fallback={<Loading />}>
             <Edit shout={shout()} />
           </Suspense>
         </Show>
-      </AuthWrapper>
+      </AuthGuard>
     </PageLayout>
   )
 }

@@ -8,7 +8,7 @@ import { apiClient } from '../utils/apiClient'
 import { redirectPage } from '@nanostores/router'
 import { router } from '../stores/router'
 import { LayoutType } from './types'
-import { AuthWrapper } from '../components/AuthWrapper'
+import { AuthGuard } from '../components/AuthGuard'
 
 const handleCreate = async (layout: LayoutType) => {
   const shout = await apiClient.createArticle({ article: { layout: layout } })
@@ -21,7 +21,7 @@ export const CreatePage = () => {
   const { t } = useLocalize()
   return (
     <PageLayout>
-      <AuthWrapper>
+      <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>
           <h1>{t('Choose a post type')}</h1>
           <ul class={clsx('nodash', styles.list)}>
@@ -58,7 +58,7 @@ export const CreatePage = () => {
           </ul>
           <Button value={t('Back')} onClick={() => window.history.back()} />
         </article>
-      </AuthWrapper>
+      </AuthGuard>
     </PageLayout>
   )
 }

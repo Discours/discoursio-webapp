@@ -18,7 +18,7 @@ import { createStore } from 'solid-js/store'
 import { clone } from '../../utils/clone'
 import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
-import { AuthWrapper } from '../../components/AuthWrapper'
+import { AuthGuard } from '../../components/AuthGuard'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -107,7 +107,7 @@ export const ProfileSettingsPage = () => {
 
   return (
     <PageLayout>
-      <AuthWrapper>
+      <AuthGuard>
         <Show when={form}>
           <div class="wide-container">
             <div class="row">
@@ -263,7 +263,7 @@ export const ProfileSettingsPage = () => {
             </div>
           </div>
         </Show>
-      </AuthWrapper>
+      </AuthGuard>
     </PageLayout>
   )
 }

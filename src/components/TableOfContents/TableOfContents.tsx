@@ -10,6 +10,7 @@ import debounce from 'debounce'
 import { Icon } from '../_shared/Icon'
 
 import styles from './TableOfContents.module.scss'
+import { isDesktop } from '../../utils/media-query'
 
 interface Props {
   variant: 'article' | 'editor'
@@ -37,6 +38,8 @@ export const TableOfContents = (props: Props) => {
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
   }
+
+  setIsVisible(isDesktop())
 
   const updateHeadings = () => {
     const { parentSelector } = props

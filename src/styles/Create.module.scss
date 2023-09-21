@@ -9,9 +9,14 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
+    flex-wrap: wrap;
     gap: 24px;
 
     li {
+      @include media-breakpoint-down(sm) {
+        flex: 1 25%;
+      }
+
       a,
       .link {
         cursor: pointer;

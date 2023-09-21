@@ -145,6 +145,7 @@ export const Header = (props: Props) => {
     const topics = await apiClient.getRandomTopics({ amount: RANDOM_TOPICS_COUNT })
     setRandomTopics(topics)
   })
+
   return (
     <header
       class={styles.mainHeader}
@@ -156,7 +157,12 @@ export const Header = (props: Props) => {
         [styles.headerWithTitle]: Boolean(props.title)
       }}
     >
-      <Modal variant={searchParams().source ? 'narrow' : 'wide'} name="auth" noPadding={true}>
+      <Modal
+        variant={searchParams().source ? 'narrow' : 'wide'}
+        name="auth"
+        allowClose={searchParams().source !== 'authguard'}
+        noPadding={true}
+      >
         <AuthModal />
       </Modal>
 

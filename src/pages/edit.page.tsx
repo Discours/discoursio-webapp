@@ -6,6 +6,7 @@ import { Shout } from '../graphql/types.gen'
 import { useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
 import { useLocalize } from '../context/localize'
+import { AuthGuard } from '../components/AuthGuard'
 
 const Edit = lazy(() => import('../components/Views/Edit'))
 
@@ -26,24 +27,13 @@ export const EditPage = () => {
 
   return (
     <PageLayout>
-      <Show when={isSessionLoaded()}>
-        <Show
-          when={isAuthenticated()}
-          fallback={
-            <div class="wide-container">
-              <div class="row">
-                <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">{t("Let's log in")}</div>
-              </div>
-            </div>
-          }
-        >
-          <Show when={shout()}>
-            <Suspense fallback={<Loading />}>
-              <Edit shout={shout()} />
-            </Suspense>
-          </Show>
+      <AuthGuard>
+        <Show when={shout()}>
+          <Suspense fallback={<Loading />}>
+            <Edit shout={shout()} />
+          </Suspense>
         </Show>
-      </Show>
+      </AuthGuard>
     </PageLayout>
   )
 }

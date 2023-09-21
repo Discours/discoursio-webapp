@@ -4,7 +4,7 @@ import stylesSettings from '../../styles/FeedSettings.module.scss'
 import { clsx } from 'clsx'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { SearchField } from '../../components/_shared/SearchField'
-import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { Author, Topic } from '../../graphql/types.gen'
 import { apiClient } from '../../utils/apiClient'
 import { useSession } from '../../context/session'
@@ -15,10 +15,11 @@ import { Loading } from '../../components/_shared/Loading'
 import { TopicCard } from '../../components/Topic/Card'
 import { AuthorCard } from '../../components/Author/AuthorCard'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { AuthWrapper } from '../../components/AuthWrapper'
 
 export const ProfileSubscriptionsPage = () => {
   const { t, lang } = useLocalize()
-  const { user, isAuthenticated } = useSession()
+  const { user } = useSession()
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
@@ -38,14 +39,7 @@ export const ProfileSubscriptionsPage = () => {
     }
   }
 
-  onMount(async () => {
-    if (isAuthenticated()) {
-      await fetchSubscriptions()
-    }
-  })
-
   createEffect(() => {
-    console.log('!!! subscriptionFilter():', subscriptionFilter())
     if (following()) {
       if (subscriptionFilter() === 'users') {
         setFiltered(following().filter((s) => 'name' in s))
@@ -60,83 +54,91 @@ export const ProfileSubscriptionsPage = () => {
     }
   })
 
+  createEffect(async () => {
+    await fetchSubscriptions()
+  })
+
   return (
     <PageLayout>
-      <div class="wide-container">
-        <div class="row">
-          <div class="col-md-5">
-            <div class={clsx('left-navigation', styles.leftNavigation)}>
-              <ProfileSettingsNavigation />
+      <AuthWrapper>
+        <div class="wide-container">
+          <div class="row">
+            <div class="col-md-5">
+              <div class={clsx('left-navigation', styles.leftNavigation)}>
+                <ProfileSettingsNavigation />
+              </div>
             </div>
-          </div>
 
-          <div class="col-md-19">
-            <div class="row">
-              <div class="col-md-20 col-lg-18 col-xl-16">
-                <h1>{t('My subscriptions')}</h1>
-                <p class="description">{t('Here you can manage all your Discourse subscriptions')}</p>
-                <Show when={following()} fallback={<Loading />}>
-                  <ul class="view-switcher">
-                    <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>
-                      <button type="button" onClick={() => setSubscriptionFilter('all')}>
-                        {t('All')}
-                      </button>
-                    </li>
-                    <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
-                      <button type="button" onClick={() => setSubscriptionFilter('users')}>
-                        {t('Authors')}
-                      </button>
-                    </li>
-                    <li
-                      class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'topics' })}
-                    >
-                      <button type="button" onClick={() => setSubscriptionFilter('topics')}>
-                        {t('Topics')}
-                      </button>
-                    </li>
-                  </ul>
+            <div class="col-md-19">
+              <div class="row">
+                <div class="col-md-20 col-lg-18 col-xl-16">
+                  <h1>{t('My subscriptions')}</h1>
+                  <p class="description">{t('Here you can manage all your Discourse subscriptions')}</p>
+                  <Show when={following()} fallback={<Loading />}>
+                    <ul class="view-switcher">
+                      <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>
+                        <button type="button" onClick={() => setSubscriptionFilter('all')}>
+                          {t('All')}
+                        </button>
+                      </li>
+                      <li
+                        class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}
+                      >
+                        <button type="button" onClick={() => setSubscriptionFilter('users')}>
+                          {t('Authors')}
+                        </button>
+                      </li>
+                      <li
+                        class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'topics' })}
+                      >
+                        <button type="button" onClick={() => setSubscriptionFilter('topics')}>
+                          {t('Topics')}
+                        </button>
+                      </li>
+                    </ul>
 
-                  <div class={clsx('pretty-form__item', styles.searchContainer)}>
-                    <SearchField
-                      onChange={(value) => setSearchQuery(value)}
-                      class={styles.searchField}
-                      variant="bordered"
-                    />
-                  </div>
+                    <div class={clsx('pretty-form__item', styles.searchContainer)}>
+                      <SearchField
+                        onChange={(value) => setSearchQuery(value)}
+                        class={styles.searchField}
+                        variant="bordered"
+                      />
+                    </div>
 
-                  <div class={clsx(stylesSettings.settingsList, styles.topicsList)}>
-                    <For each={filtered()}>
-                      {(followingItem) => (
-                        <div>
-                          {isAuthor(followingItem) ? (
-                            <AuthorCard
-                              author={followingItem}
-                              hideWriteButton={true}
-                              hasLink={true}
-                              isTextButton={true}
-                              truncateBio={true}
-                              minimizeSubscribeButton={true}
-                            />
-                          ) : (
-                            <TopicCard
-                              compact
-                              isTopicInRow
-                              showDescription
-                              isCardMode
-                              topic={followingItem}
-                              minimizeSubscribeButton={true}
-                            />
-                          )}
-                        </div>
-                      )}
-                    </For>
-                  </div>
-                </Show>
+                    <div class={clsx(stylesSettings.settingsList, styles.topicsList)}>
+                      <For each={filtered()}>
+                        {(followingItem) => (
+                          <div>
+                            {isAuthor(followingItem) ? (
+                              <AuthorCard
+                                author={followingItem}
+                                hideWriteButton={true}
+                                hasLink={true}
+                                isTextButton={true}
+                                truncateBio={true}
+                                minimizeSubscribeButton={true}
+                              />
+                            ) : (
+                              <TopicCard
+                                compact
+                                isTopicInRow
+                                showDescription
+                                isCardMode
+                                topic={followingItem}
+                                minimizeSubscribeButton={true}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </Show>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </AuthWrapper>
     </PageLayout>
   )
 }

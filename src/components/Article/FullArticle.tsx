@@ -12,7 +12,6 @@ import { router, useRouter } from '../../stores/router'
 import { formatDate } from '../../utils'
 import { getDescription } from '../../utils/meta'
 import { imageProxy } from '../../utils/imageProxy'
-import { isDesktop } from '../../utils/media-query'
 import { AuthorCard } from '../Author/AuthorCard'
 import { TableOfContents } from '../TableOfContents'
 import { AudioPlayer } from './AudioPlayer'
@@ -61,6 +60,7 @@ export const FullArticle = (props: Props) => {
     }, 'bookmark')
   }
 
+  console.log('!!! props.article.media:', props.article.media)
   const body = createMemo(() => {
     if (props.article.layout === 'literature') {
       try {

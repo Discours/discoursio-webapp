@@ -18,6 +18,9 @@ import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { CommentDate } from '../Article/CommentDate'
 import { Loading } from '../_shared/Loading'
+import { ConditionalWrapper } from '../_shared/ConditionalWrapper'
+import { AuthGuard } from '../AuthGuard'
+import { useSession } from '../../context/session'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -37,9 +40,17 @@ const getOrderBy = (by: FeedSearchParams['by']) => {
   return ''
 }
 
+const routesWithAuthGuard = new Set([
+  'feedMy',
+  'feedNotifications',
+  'feedBookmarks',
+  'feedCollaborations',
+  'feedDiscussions'
+])
 export const FeedView = () => {
   const { t } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
+  const { isAuthenticated } = useSession()
   const [isLoading, setIsLoading] = createSignal(false)
 
   // state
@@ -69,7 +80,6 @@ export const FeedView = () => {
       { defer: true }
     )
   )
-
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
@@ -82,7 +92,7 @@ export const FeedView = () => {
       options.order_by = orderBy
     }
 
-    if (page().route === 'feedMy') {
+    if (routesWithAuthGuard.has(page().route) && isAuthenticated()) {
       return loadMyFeed(options)
     }
 
@@ -116,155 +126,157 @@ export const FeedView = () => {
 
   return (
     <div>
-      <div class="wide-container feed">
-        <div class="row">
-          <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
-            <Sidebar authors={sortedAuthors()} />
-          </div>
+      <AuthGuard disabled={!routesWithAuthGuard.has(page().route)}>
+        <div class="wide-container feed">
+          <div class="row">
+            <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
+              <Sidebar authors={sortedAuthors()} />
+            </div>
 
-          <div class="col-md-12 offset-xl-1">
-            <ul class={clsx(styles.feedFilter, 'view-switcher')}>
-              <li
-                class={clsx({
-                  'view-switcher__item--selected':
-                    searchParams().by === 'publish_date' || !searchParams().by
-                })}
-              >
-                <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
-              </li>
-              {/*<li>*/}
-              {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
-              {/*</li>*/}
-              <li
-                class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'rating'
-                })}
-              >
-                <a href={`${getPagePath(router, page().route)}?by=rating`}>{t('Top rated')}</a>
-              </li>
-              <li
-                class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'last_comment'
-                })}
-              >
-                <a href={`${getPagePath(router, page().route)}?by=last_comment`}>{t('Most commented')}</a>
-              </li>
-            </ul>
-
-            <Show when={!isLoading()} fallback={<Loading />}>
-              <Show when={sortedArticles().length > 0}>
-                <For each={sortedArticles().slice(0, 4)}>
-                  {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
-                </For>
-
-                <div class={styles.asideSection}>
-                  <div class={stylesBeside.besideColumnTitle}>
-                    <h4>{t('Popular authors')}</h4>
-                    <a href="/authors">
-                      {t('All authors')}
-                      <Icon name="arrow-right" class={stylesBeside.icon} />
-                    </a>
-                  </div>
-
-                  <ul class={stylesBeside.besideColumn}>
-                    <For each={topAuthors().slice(0, 5)}>
-                      {(author) => (
-                        <li>
-                          <AuthorCard
-                            author={author}
-                            hideWriteButton={true}
-                            hasLink={true}
-                            truncateBio={true}
-                            isTextButton={true}
-                          />
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-
-                <For each={sortedArticles().slice(4)}>
-                  {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
-                </For>
-              </Show>
-
-              <Show when={isLoadMoreButtonVisible()}>
-                <p class="load-more-container">
-                  <button class="button" onClick={loadMore}>
-                    {t('Load more')}
-                  </button>
-                </p>
-              </Show>
-            </Show>
-          </div>
-
-          <aside class={clsx('col-md-7 col-xl-6 offset-xl-1', styles.feedAside)}>
-            <section class={styles.asideSection}>
-              <h4>{t('Comments')}</h4>
-              <For each={topComments()}>
-                {(comment) => {
-                  return (
-                    <div class={styles.comment}>
-                      <div class={clsx('text-truncate', styles.commentBody)}>
-                        <a
-                          href={`${getPagePath(router, 'article', {
-                            slug: comment.shout.slug
-                          })}?commentId=${comment.id}`}
-                          innerHTML={comment.body}
-                        />
-                      </div>
-                      <div class={styles.commentDetails}>
-                        <AuthorCard
-                          author={comment.createdBy as Author}
-                          isFeedMode={true}
-                          hideWriteButton={true}
-                          hideFollow={true}
-                          hasLink={true}
-                        />
-                        <CommentDate comment={comment} isShort={true} isLastInRow={true} />
-                      </div>
-                      <div class={clsx('text-truncate', styles.commentArticleTitle)}>
-                        <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
-                      </div>
-                    </div>
-                  )
-                }}
-              </For>
-            </section>
-
-            <Show when={topTopics().length > 0}>
-              <section class={styles.asideSection}>
-                <h4>{t('Hot topics')}</h4>
-                <For each={topTopics().slice(0, 7)}>
-                  {(topic) => (
-                    <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
-                      <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
-                    </span>
-                  )}
-                </For>
-              </section>
-            </Show>
-
-            <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
-              <h4>{t('Knowledge base')}</h4>
-              <ul class="nodash">
-                <li>
-                  <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
+            <div class="col-md-12 offset-xl-1">
+              <ul class={clsx(styles.feedFilter, 'view-switcher')}>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected':
+                      searchParams().by === 'publish_date' || !searchParams().by
+                  })}
+                >
+                  <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
                 </li>
-                <li>
-                  <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
+                {/*<li>*/}
+                {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
+                {/*</li>*/}
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': searchParams().by === 'rating'
+                  })}
+                >
+                  <a href={`${getPagePath(router, page().route)}?by=rating`}>{t('Top rated')}</a>
                 </li>
-                <li>
-                  <a href="#">Правила конструктивных дискуссий</a>
-                </li>
-                <li>
-                  <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': searchParams().by === 'last_comment'
+                  })}
+                >
+                  <a href={`${getPagePath(router, page().route)}?by=last_comment`}>{t('Most commented')}</a>
                 </li>
               </ul>
-            </section>
-          </aside>
+
+              <Show when={!isLoading()} fallback={<Loading />}>
+                <Show when={sortedArticles().length > 0}>
+                  <For each={sortedArticles().slice(0, 4)}>
+                    {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
+                  </For>
+
+                  <div class={styles.asideSection}>
+                    <div class={stylesBeside.besideColumnTitle}>
+                      <h4>{t('Popular authors')}</h4>
+                      <a href="/authors">
+                        {t('All authors')}
+                        <Icon name="arrow-right" class={stylesBeside.icon} />
+                      </a>
+                    </div>
+
+                    <ul class={stylesBeside.besideColumn}>
+                      <For each={topAuthors().slice(0, 5)}>
+                        {(author) => (
+                          <li>
+                            <AuthorCard
+                              author={author}
+                              hideWriteButton={true}
+                              hasLink={true}
+                              truncateBio={true}
+                              isTextButton={true}
+                            />
+                          </li>
+                        )}
+                      </For>
+                    </ul>
+                  </div>
+
+                  <For each={sortedArticles().slice(4)}>
+                    {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
+                  </For>
+                </Show>
+
+                <Show when={isLoadMoreButtonVisible()}>
+                  <p class="load-more-container">
+                    <button class="button" onClick={loadMore}>
+                      {t('Load more')}
+                    </button>
+                  </p>
+                </Show>
+              </Show>
+            </div>
+
+            <aside class={clsx('col-md-7 col-xl-6 offset-xl-1', styles.feedAside)}>
+              <section class={styles.asideSection}>
+                <h4>{t('Comments')}</h4>
+                <For each={topComments()}>
+                  {(comment) => {
+                    return (
+                      <div class={styles.comment}>
+                        <div class={clsx('text-truncate', styles.commentBody)}>
+                          <a
+                            href={`${getPagePath(router, 'article', {
+                              slug: comment.shout.slug
+                            })}?commentId=${comment.id}`}
+                            innerHTML={comment.body}
+                          />
+                        </div>
+                        <div class={styles.commentDetails}>
+                          <AuthorCard
+                            author={comment.createdBy as Author}
+                            isFeedMode={true}
+                            hideWriteButton={true}
+                            hideFollow={true}
+                            hasLink={true}
+                          />
+                          <CommentDate comment={comment} isShort={true} isLastInRow={true} />
+                        </div>
+                        <div class={clsx('text-truncate', styles.commentArticleTitle)}>
+                          <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
+                        </div>
+                      </div>
+                    )
+                  }}
+                </For>
+              </section>
+
+              <Show when={topTopics().length > 0}>
+                <section class={styles.asideSection}>
+                  <h4>{t('Hot topics')}</h4>
+                  <For each={topTopics().slice(0, 7)}>
+                    {(topic) => (
+                      <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
+                        <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
+                      </span>
+                    )}
+                  </For>
+                </section>
+              </Show>
+
+              <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
+                <h4>{t('Knowledge base')}</h4>
+                <ul class="nodash">
+                  <li>
+                    <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
+                  </li>
+                  <li>
+                    <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
+                  </li>
+                  <li>
+                    <a href="#">Правила конструктивных дискуссий</a>
+                  </li>
+                  <li>
+                    <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
+                  </li>
+                </ul>
+              </section>
+            </aside>
+          </div>
         </div>
-      </div>
+      </AuthGuard>
     </div>
   )
 }

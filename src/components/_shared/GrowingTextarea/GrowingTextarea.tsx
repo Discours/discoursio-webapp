@@ -39,8 +39,6 @@ export const GrowingTextarea = (props: Props) => {
     }
   }
 
-  console.log('!!! initialValue:', props.initialValue)
-
   return (
     <div
       class={clsx(styles.GrowingTextarea, {

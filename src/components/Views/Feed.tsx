@@ -40,6 +40,13 @@ const getOrderBy = (by: FeedSearchParams['by']) => {
   return ''
 }
 
+const routesWithAuthGuard = new Set([
+  'feedMy',
+  'feedNotifications',
+  'feedBookmarks',
+  'feedCollaborations',
+  'feedDiscussions'
+])
 export const FeedView = () => {
   const { t } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
@@ -73,7 +80,6 @@ export const FeedView = () => {
       { defer: true }
     )
   )
-
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
@@ -86,10 +92,8 @@ export const FeedView = () => {
       options.order_by = orderBy
     }
 
-    if (page().route === 'feedMy') {
-      if (isAuthenticated()) {
-        return loadMyFeed(options)
-      }
+    if (routesWithAuthGuard.has(page().route) && isAuthenticated()) {
+      return loadMyFeed(options)
     }
 
     // default feed
@@ -122,10 +126,7 @@ export const FeedView = () => {
 
   return (
     <div>
-      <ConditionalWrapper
-        condition={page().route === 'feedMy'}
-        wrapper={(children) => <AuthGuard>{children}</AuthGuard>}
-      >
+      <AuthGuard disabled={!routesWithAuthGuard.has(page().route)}>
         <div class="wide-container feed">
           <div class="row">
             <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
@@ -275,7 +276,7 @@ export const FeedView = () => {
             </aside>
           </div>
         </div>
-      </ConditionalWrapper>
+      </AuthGuard>
     </div>
   )
 }

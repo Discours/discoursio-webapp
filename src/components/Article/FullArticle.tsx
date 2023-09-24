@@ -60,7 +60,6 @@ export const FullArticle = (props: Props) => {
     }, 'bookmark')
   }
 
-  console.log('!!! props.article.media:', props.article.media)
   const body = createMemo(() => {
     if (props.article.layout === 'literature') {
       try {

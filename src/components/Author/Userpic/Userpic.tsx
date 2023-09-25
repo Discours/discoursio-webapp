@@ -32,7 +32,7 @@ export const Userpic = (props: Props) => {
         [styles.big]: props.isBig,
         [styles.authorsList]: props.isAuthorsList,
         [styles.feedMode]: props.isFeedMode,
-        [styles.cursorPointer]: props.onClick
+        ['cursorPointer']: props.onClick
       })}
       onClick={props.onClick}
     >

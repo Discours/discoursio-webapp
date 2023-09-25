@@ -22,6 +22,7 @@ import { useSession } from '../../../context/session'
 import styles from './Header.module.scss'
 import { apiClient } from '../../../utils/apiClient'
 import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
+import { Link } from './Link'
 
 type Props = {
   title?: string
@@ -135,7 +136,7 @@ export const Header = (props: Props) => {
     clearTimeout(timer)
   }
 
-  const hideSubnavigation = (ev, time = 500) => {
+  const hideSubnavigation = (event, time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)
     }, time)
@@ -193,44 +194,32 @@ export const Header = (props: Props) => {
                     {t('zine')}
                   </a>
                 </li>
-                <li classList={{ 'view-switcher__item--selected': page().route.startsWith('feed') }}>
-                  <a
-                    classList={{ [styles.mainNavigationItemActive]: isFeedVisible() }}
-                    onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
-                    onMouseOut={hideSubnavigation}
-                    href={getPagePath(router, 'feed')}
-                  >
-                    {t('feed')}
-                  </a>
-                </li>
-                <li classList={{ 'view-switcher__item--selected': page().route === 'topics' }}>
-                  <a
-                    classList={{ [styles.mainNavigationItemActive]: isTopicsVisible() }}
-                    onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
-                    onMouseOut={hideSubnavigation}
-                    href={getPagePath(router, 'topics')}
-                  >
-                    {t('topics')}
-                  </a>
-                </li>
-                <li classList={{ 'view-switcher__item--selected': page().route === 'authors' }}>
-                  <a
-                    onMouseOver={(ev) => hideSubnavigation(ev, 0)}
-                    onMouseOut={(ev) => hideSubnavigation(ev, 0)}
-                    href={getPagePath(router, 'authors')}
-                  >
-                    {t('community')}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    classList={{ [styles.mainNavigationItemActive]: isKnowledgeBaseVisible() }}
-                    onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
-                    onMouseOut={hideSubnavigation}
-                  >
-                    {t('Knowledge base')}
-                  </a>
-                </li>
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
+                  onMouseOut={() => hideSubnavigation}
+                  routeName="feed"
+                  active={isFeedVisible()}
+                  body={t('feed')}
+                />
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
+                  onMouseOut={() => hideSubnavigation}
+                  routeName="topics"
+                  active={isFeedVisible()}
+                  body={t('topics')}
+                />
+                <Link
+                  onMouseOver={(event) => hideSubnavigation(event, 0)}
+                  onMouseOut={(event) => hideSubnavigation(event, 0)}
+                  routeName="authors"
+                  body={t('authors')}
+                />
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
+                  onMouseOut={() => hideSubnavigation}
+                  body={t('Knowledge base')}
+                  active={isKnowledgeBaseVisible()}
+                />
               </ul>
 
               <div class={styles.mainNavigationMobile}>

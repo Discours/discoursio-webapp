@@ -15,6 +15,10 @@ const backgrounds = [null, 'white', 'black', 'yellow', 'pink', 'green']
 export const IncutBubbleMenu = (props: Props) => {
   const { t } = useLocalize()
   const [substratBubbleOpen, setSubstratBubbleOpen] = createSignal(false)
+  const handleChangeBg = (bg) => {
+    props.editor.chain().focus().setArticleBg(bg).run()
+    setSubstratBubbleOpen(false)
+  }
   return (
     <div ref={props.ref} class={styles.BubbleMenu}>
       <button
@@ -49,16 +53,11 @@ export const IncutBubbleMenu = (props: Props) => {
           <span style={{ color: 'white' }}>{t('Substrate')}</span>
           <Icon name="down-triangle" class={styles.triangle} />
         </button>
-        <Show when={!substratBubbleOpen()}>
+        <Show when={substratBubbleOpen()}>
           <div class={styles.dropDown}>
             <div class={styles.actions}>
               <For each={backgrounds}>
-                {(bg) => (
-                  <div
-                    onClick={() => props.editor.chain().focus().setArticleBg(bg).run()}
-                    class={clsx(styles.color, styles[bg])}
-                  />
-                )}
+                {(bg) => <div onClick={() => handleChangeBg(bg)} class={clsx(styles.color, styles[bg])} />}
               </For>
             </div>
           </div>

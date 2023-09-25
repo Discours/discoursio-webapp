@@ -54,6 +54,20 @@ type Props = {
 const yDocs: Record<string, Doc> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
+const fixedTippy = (editor, containerClassName: string) => {
+  return {
+    offset: [0, -16],
+    placement: 'top',
+    getReferenceClientRect: () => {
+      const selectedElement = editor.view.dom.querySelector('.has-focus')
+      if (selectedElement) {
+        return selectedElement.getBoundingClientRect()
+      }
+      return null
+    }
+  }
+}
+
 export const Editor = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
@@ -199,6 +213,16 @@ export const Editor = (props: Props) => {
           const { selection } = state
           const { empty } = selection
           return empty && e.isActive('blockquote')
+        },
+        tippyOptions: {
+          offset: [0, 0],
+          placement: 'top',
+          getReferenceClientRect: () => {
+            const selectedElement = editor().view.dom.querySelector('.has-focus')
+            if (selectedElement) {
+              return selectedElement.getBoundingClientRect()
+            }
+          }
         }
       }),
       BubbleMenu.configure({
@@ -208,6 +232,16 @@ export const Editor = (props: Props) => {
           const { selection } = state
           const { empty } = selection
           return empty && e.isActive('article')
+        },
+        tippyOptions: {
+          offset: [0, -16],
+          placement: 'top',
+          getReferenceClientRect: () => {
+            const selectedElement = editor().view.dom.querySelector('.has-focus')
+            if (selectedElement) {
+              return selectedElement.getBoundingClientRect()
+            }
+          }
         }
       }),
       BubbleMenu.configure({

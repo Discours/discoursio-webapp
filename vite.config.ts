@@ -22,6 +22,9 @@ export default defineConfig(() => {
       },
       chunkSizeWarningLimit: 1024,
       target: 'esnext'
+    },
+    ssr: {
+      noExternal: ['solid-js']
     }
   }
 })

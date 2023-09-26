@@ -451,12 +451,7 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li>
-                <a
-                  href={getPagePath(router, 'feed')}
-                  class={clsx({
-                    [styles.selected]: page().route === 'feed'
-                  })}
-                >
+                <a href={getPagePath(router, 'feed')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-all" class={styles.icon} />
                     {t('general feed')}
@@ -465,12 +460,7 @@ export const Header = (props: Props) => {
               </li>
 
               <li>
-                <a
-                  href={getPagePath(router, 'feedMy')}
-                  class={clsx({
-                    [styles.selected]: page().route === 'feedMy'
-                  })}
-                >
+                <a href={getPagePath(router, 'feedMy')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-my" class={styles.icon} />
                     {t('My feed')}
@@ -478,12 +468,7 @@ export const Header = (props: Props) => {
                 </a>
               </li>
               <li>
-                <a
-                  href={getPagePath(router, 'feedCollaborations')}
-                  class={clsx({
-                    [styles.selected]: page().route === 'feedCollaborations'
-                  })}
-                >
+                <a href={getPagePath(router, 'feedCollaborations')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-collaborate" class={styles.icon} />
                     {t('Accomplices')}
@@ -491,12 +476,7 @@ export const Header = (props: Props) => {
                 </a>
               </li>
               <li>
-                <a
-                  href={getPagePath(router, 'feedDiscussions')}
-                  class={clsx({
-                    [styles.selected]: page().route === 'feedDiscussions'
-                  })}
-                >
+                <a href={getPagePath(router, 'feedDiscussions')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-discussion" class={styles.icon} />
                     {t('Discussions')}
@@ -504,12 +484,7 @@ export const Header = (props: Props) => {
                 </a>
               </li>
               <li>
-                <a
-                  href={getPagePath(router, 'feedBookmarks')}
-                  class={clsx({
-                    [styles.selected]: page().route === 'feedBookmarks'
-                  })}
-                >
+                <a href={getPagePath(router, 'feedBookmarks')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="bookmark" class={styles.icon} />
                     {t('Bookmarks')}
@@ -517,12 +492,7 @@ export const Header = (props: Props) => {
                 </a>
               </li>
               <li>
-                <a
-                  href={getPagePath(router, 'feedNotifications')}
-                  class={clsx({
-                    [styles.selected]: page().route === 'feedNotifications'
-                  })}
-                >
+                <a href={getPagePath(router, 'feedNotifications')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-notifications" class={styles.icon} />
                     {t('Notifications')}

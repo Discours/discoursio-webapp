@@ -19,7 +19,7 @@ export const FeedSettingsView = (_props) => {
           <a href="?by=collections" onClick={() => setBy('collections')}>
             {t('collections')}
           </a>
-  </li>*/}
+        </li>*/}
         <li>
           <a href="?by=authors">{t('authors')}</a>
         </li>
@@ -29,19 +29,17 @@ export const FeedSettingsView = (_props) => {
       </ul>
 
       <div class={styles.settingsList}>
-        <div class={styles.settingsListRow}>
+        <div>
           <h2>Общее</h2>
         </div>
 
-        <div class={styles.settingsListRow}>
-          <label for="checkbox1" class={styles.settingsListCell}>
-            Комментарии к&nbsp;моим постам
-          </label>
-          <div class={styles.settingsListCell}>
+        <div>
+          <label for="checkbox1">Комментарии к&nbsp;моим постам</label>
+          <div>
             <input type="checkbox" name="checkbox1" id="checkbox1" />
             <label for="checkbox1" />
           </div>
-          <div class={styles.settingsListCell}>
+          <div>
             <input
               type="checkbox"
               name="checkbox1-notification"
@@ -52,15 +50,13 @@ export const FeedSettingsView = (_props) => {
           </div>
         </div>
 
-        <div class={styles.settingsListRow}>
-          <label for="checkbox2" class={styles.settingsListCell}>
-            новые подписчики
-          </label>
-          <div class={styles.settingsListCell}>
+        <div>
+          <label for="checkbox2">новые подписчики</label>
+          <div>
             <input type="checkbox" name="checkbox2" id="checkbox2" />
             <label for="checkbox2" />
           </div>
-          <div class={styles.settingsListCell}>
+          <div>
             <input
               type="checkbox"
               name="checkbox2-notification"
@@ -71,15 +67,13 @@ export const FeedSettingsView = (_props) => {
           </div>
         </div>
 
-        <div class={styles.settingsListRow}>
-          <label for="checkbox3" class={styles.settingsListCell}>
-            добавление моих текстов в&nbsp;коллекции
-          </label>
-          <div class={styles.settingsListCell}>
+        <div>
+          <label for="checkbox3">добавление моих текстов в&nbsp;коллекции</label>
+          <div>
             <input type="checkbox" name="checkbox3" id="checkbox3" />
             <label for="checkbox3" />
           </div>
-          <div class={styles.settingsListCell}>
+          <div>
             <input
               type="checkbox"
               name="checkbox3-notification"
@@ -90,19 +84,17 @@ export const FeedSettingsView = (_props) => {
           </div>
         </div>
 
-        <div class={styles.settingsListRow}>
+        <div>
           <h2>Мои подписки</h2>
         </div>
 
-        <div class={styles.settingsListRow}>
-          <label for="checkbox4" class={styles.settingsListCell}>
-            добавление моих текстов в&nbsp;коллекции
-          </label>
-          <div class={styles.settingsListCell}>
+        <div>
+          <label for="checkbox4">добавление моих текстов в&nbsp;коллекции</label>
+          <div>
             <input type="checkbox" name="checkbox4" id="checkbox4" />
             <label for="checkbox4" />
           </div>
-          <div class={styles.settingsListCell}>
+          <div>
             <input
               type="checkbox"
               name="checkbox4-notification"

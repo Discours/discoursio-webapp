@@ -17,11 +17,7 @@ import { dummyFilter } from '../../../utils/dummyFilter'
 import styles from '../../../pages/profile/Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
-type Props = {
-  class?: string
-}
-
-export const ProfileSubscriptions = (props: Props) => {
+export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
   const { user } = useSession()
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])

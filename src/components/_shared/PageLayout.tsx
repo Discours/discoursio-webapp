@@ -7,7 +7,6 @@ import { clsx } from 'clsx'
 import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
 import { Meta } from '@solidjs/meta'
-import { Topic } from '../../graphql/types.gen'
 
 type Props = {
   headerTitle?: string

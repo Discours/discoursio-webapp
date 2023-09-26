@@ -11,9 +11,6 @@ import { AuthGuard } from '../components/AuthGuard'
 const Edit = lazy(() => import('../components/Views/Edit'))
 
 export const EditPage = () => {
-  const { t } = useLocalize()
-  const { isAuthenticated, isSessionLoaded } = useSession()
-
   const { page } = useRouter()
 
   const shoutId = createMemo(() => Number((page().params as Record<'shoutId', string>).shoutId))

@@ -31,7 +31,8 @@ export default defineConfig(() => {
         'wonka',
         'solid-popper',
         'seroval',
-        '@solid-primitives/share'
+        '@solid-primitives/share',
+        'i18next'
       ]
     }
   }

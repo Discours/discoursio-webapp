@@ -38,7 +38,8 @@ export default defineConfig(() => {
         '@solid-primitives/media',
         '@solid-primitives/storage',
         '@solid-primitives/utils',
-        '@solid-primitives/rootless'
+        '@solid-primitives/rootless',
+        'solid-tiptap'
       ]
     }
   }

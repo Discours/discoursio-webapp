@@ -37,7 +37,8 @@ export default defineConfig(() => {
         '@solid-primitives/memo',
         '@solid-primitives/media',
         '@solid-primitives/storage',
-        '@solid-primitives/utils'
+        '@solid-primitives/utils',
+        '@solid-primitives/rootless'
       ]
     }
   }

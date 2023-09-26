@@ -35,7 +35,8 @@ export default defineConfig(() => {
         'i18next',
         'js-cookie',
         '@solid-primitives/memo',
-        '@solid-primitives/media'
+        '@solid-primitives/media',
+        '@solid-primitives/storage'
       ]
     }
   }

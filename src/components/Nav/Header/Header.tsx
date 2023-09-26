@@ -205,7 +205,7 @@ export const Header = (props: Props) => {
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
                   onMouseOut={() => hideSubnavigation}
                   routeName="topics"
-                  active={isFeedVisible()}
+                  active={isTopicsVisible()}
                   body={t('topics')}
                 />
                 <Link

@@ -199,18 +199,18 @@ export const Editor = (props: Props) => {
           const { selection } = state
           const { empty } = selection
           return empty && e.isActive('blockquote')
-        },
-        tippyOptions: {
-          offset: [0, 0],
-          placement: 'top',
-          getReferenceClientRect: () => {
-            const selectedElement = editor().view.dom.querySelector('.has-focus')
-            console.log('!!! selectedElement (blockquoteBubbleMenu):', selectedElement)
-            if (selectedElement) {
-              return selectedElement.getBoundingClientRect()
-            }
-          }
         }
+        // tippyOptions: {
+        //   offset: [0, 0],
+        //   placement: 'top',
+        //   getReferenceClientRect: () => {
+        //     const selectedElement = editor().view.dom.querySelector('.has-focus')
+        //     console.log('!!! selectedElement (blockquoteBubbleMenu):', selectedElement)
+        //     if (selectedElement) {
+        //       return selectedElement.getBoundingClientRect()
+        //     }
+        //   }
+        // }
       }),
       BubbleMenu.configure({
         pluginKey: 'incutBubbleMenu',
@@ -219,18 +219,18 @@ export const Editor = (props: Props) => {
           const { selection } = state
           const { empty } = selection
           return empty && e.isActive('article')
-        },
-        tippyOptions: {
-          offset: [0, -16],
-          placement: 'top',
-          getReferenceClientRect: () => {
-            const selectedElement = editor().view.dom.querySelector('.has-focus')
-            console.log('!!! selectedElement (incutBubbleMenu):', selectedElement)
-            if (selectedElement) {
-              return selectedElement.getBoundingClientRect()
-            }
-          }
         }
+        // tippyOptions: {
+        //   offset: [0, -16],
+        //   placement: 'top',
+        //   getReferenceClientRect: () => {
+        //     const selectedElement = editor().view.dom.querySelector('.has-focus')
+        //     console.log('!!! selectedElement (incutBubbleMenu):', selectedElement)
+        //     if (selectedElement) {
+        //       return selectedElement.getBoundingClientRect()
+        //     }
+        //   }
+        // }
       }),
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',

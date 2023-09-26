@@ -33,7 +33,8 @@ export default defineConfig(() => {
         'seroval',
         '@solid-primitives/share',
         'i18next',
-        'js-cookie'
+        'js-cookie',
+        '@solid-primitives/memo'
       ]
     }
   }

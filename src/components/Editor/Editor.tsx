@@ -54,20 +54,6 @@ type Props = {
 const yDocs: Record<string, Doc> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
-const fixedTippy = (editor, containerClassName: string) => {
-  return {
-    offset: [0, -16],
-    placement: 'top',
-    getReferenceClientRect: () => {
-      const selectedElement = editor.view.dom.querySelector('.has-focus')
-      if (selectedElement) {
-        return selectedElement.getBoundingClientRect()
-      }
-      return null
-    }
-  }
-}
-
 export const Editor = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
@@ -219,6 +205,7 @@ export const Editor = (props: Props) => {
           placement: 'top',
           getReferenceClientRect: () => {
             const selectedElement = editor().view.dom.querySelector('.has-focus')
+            console.log('!!! selectedElement (blockquoteBubbleMenu):', selectedElement)
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }
@@ -238,6 +225,7 @@ export const Editor = (props: Props) => {
           placement: 'top',
           getReferenceClientRect: () => {
             const selectedElement = editor().view.dom.querySelector('.has-focus')
+            console.log('!!! selectedElement (incutBubbleMenu):', selectedElement)
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }

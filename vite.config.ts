@@ -32,7 +32,8 @@ export default defineConfig(() => {
         'solid-popper',
         'seroval',
         '@solid-primitives/share',
-        'i18next'
+        'i18next',
+        'js-cookie'
       ]
     }
   }

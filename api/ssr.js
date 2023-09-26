@@ -1,4 +1,4 @@
-import { renderPage } from 'vite-plugin-ssr/server'
+const { renderPage } = require('vite-plugin-ssr/dist/cjs/node/runtime/renderPage')
 
 export default async function handler(req, res) {
   const { url, cookies } = req

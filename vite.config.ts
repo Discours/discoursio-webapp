@@ -34,7 +34,8 @@ export default defineConfig(() => {
         '@solid-primitives/share',
         'i18next',
         'js-cookie',
-        '@solid-primitives/memo'
+        '@solid-primitives/memo',
+        '@solid-primitives/media'
       ]
     }
   }

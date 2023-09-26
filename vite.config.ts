@@ -24,7 +24,7 @@ export default defineConfig(() => {
       target: 'esnext'
     },
     ssr: {
-      noExternal: ['solid-js', '@nanostores/solid']
+      noExternal: ['solid-js', '@nanostores/solid', '@urql/core']
     }
   }
 })

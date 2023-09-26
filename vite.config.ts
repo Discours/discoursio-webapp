@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
-import ssrPlugin from 'vite-plugin-ssr/plugin'
+import ssrPlugin from 'vike/plugin'
 import sassDts from 'vite-plugin-sass-dts'
 
 export default defineConfig(() => {

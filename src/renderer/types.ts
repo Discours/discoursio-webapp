@@ -1,4 +1,4 @@
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltIn } from 'vike/types'
 import type { PageProps } from '../pages/types'
 import type { Component } from 'solid-js'
 

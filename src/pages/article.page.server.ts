@@ -1,7 +1,7 @@
 import type { PageContext } from '../renderer/types'
 import type { PageProps } from './types'
 import { apiClient } from '../utils/apiClient'
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
+import { RenderErrorPage } from 'vike/RenderErrorPage'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams

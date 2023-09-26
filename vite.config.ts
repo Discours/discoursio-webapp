@@ -36,7 +36,8 @@ export default defineConfig(() => {
         'js-cookie',
         '@solid-primitives/memo',
         '@solid-primitives/media',
-        '@solid-primitives/storage'
+        '@solid-primitives/storage',
+        '@solid-primitives/utils'
       ]
     }
   }

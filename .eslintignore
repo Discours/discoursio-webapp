@@ -1,6 +1,0 @@
-node_modules
-public
-*.cjs
-src/graphql/*.gen.ts
-dist/
-.vercel/

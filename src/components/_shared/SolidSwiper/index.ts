@@ -1,1 +1,0 @@
-export { SolidSwiper } from './SolidSwiper'

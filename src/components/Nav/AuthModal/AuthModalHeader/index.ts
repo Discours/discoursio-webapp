@@ -1,1 +1,0 @@
-export { AuthModalHeader } from './AuthModalHeader'

@@ -46,7 +46,8 @@ export default defineConfig(() => {
         'prosemirror-state',
         'prosemirror-model',
         'prosemirror-transform',
-        'prosemirror-commands'
+        'prosemirror-commands',
+        'prosemirror-schema-list'
       ]
     }
   }

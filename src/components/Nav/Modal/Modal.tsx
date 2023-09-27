@@ -23,11 +23,14 @@ export const Modal = (props: Props) => {
   const [visible, setVisible] = createSignal(false)
   const allowClose = createMemo(() => props.allowClose !== false)
   const handleHide = () => {
-    if (modal() && allowClose()) {
-      props.onClose && props.onClose()
-    } else {
-      redirectPage(router, 'home')
+    if (modal()) {
+      if (allowClose()) {
+        props.onClose && props.onClose()
+      } else {
+        redirectPage(router, 'home')
+      }
     }
+
     hideModal()
   }
 

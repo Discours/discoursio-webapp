@@ -204,7 +204,9 @@ a:link,
 .link {
   color: var(--link-color);
   padding-bottom: 0.1em;
-  transition: color 0.2s, background-color 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 
   &:hover {
     background-color: var(--link-hover-background);
@@ -429,7 +431,10 @@ form {
       top: 50%;
       transform: translateY(-50%);
       transform-origin: 0 0;
-      transition: transform 0.1s 0.1s, color 0.5s, font-size 0.1s 0.1s;
+      transition:
+        transform 0.1s 0.1s,
+        color 0.5s,
+        font-size 0.1s 0.1s;
       transition-timing-function: cubic-bezier(0, 0.25, 0.5, 1);
       user-select: none;
     }
@@ -580,6 +585,7 @@ figure {
 
 .view-switcher {
   @include font-size(1.4rem);
+
   display: flex;
   flex-wrap: wrap;
   font-weight: 500;
@@ -991,5 +997,4 @@ iframe {
 
 .cursorPointer {
   cursor: pointer;
-  color: rgba(255, 255, 255, 0);
 }

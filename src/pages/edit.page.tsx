@@ -1,11 +1,9 @@
 import { createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { Loading } from '../components/_shared/Loading'
-import { useSession } from '../context/session'
 import { Shout } from '../graphql/types.gen'
 import { useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
-import { useLocalize } from '../context/localize'
 import { AuthGuard } from '../components/AuthGuard'
 
 const Edit = lazy(() => import('../components/Views/Edit'))

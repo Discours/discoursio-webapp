@@ -22,6 +22,25 @@ export default defineConfig(() => {
       },
       chunkSizeWarningLimit: 1024,
       target: 'esnext'
+    },
+    ssr: {
+      noExternal: [
+        'solid-js',
+        '@nanostores/solid',
+        '@urql/core',
+        'wonka',
+        'solid-popper',
+        'seroval',
+        '@solid-primitives/share',
+        'i18next',
+        'js-cookie',
+        '@solid-primitives/memo',
+        '@solid-primitives/media',
+        '@solid-primitives/storage',
+        '@solid-primitives/utils',
+        '@solid-primitives/rootless',
+        'solid-tiptap'
+      ]
     }
   }
 })

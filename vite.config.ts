@@ -48,7 +48,8 @@ export default defineConfig(() => {
         'prosemirror-transform',
         'prosemirror-commands',
         'prosemirror-schema-list',
-        '@tiptap/extension-text'
+        '@tiptap/extension-text',
+        '@tiptap/extension-paragraph'
       ]
     }
   }

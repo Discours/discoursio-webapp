@@ -42,7 +42,8 @@ export default defineConfig(() => {
         'solid-tiptap',
         '@tiptap/extension-document',
         '@tiptap/core',
-        '@tiptap/pm'
+        '@tiptap/pm',
+        'prosemirror-state'
       ]
     }
   }

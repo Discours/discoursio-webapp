@@ -56,7 +56,8 @@ export default defineConfig(() => {
         '@solid-primitives/upload',
         '@tiptap/extension-placeholder',
         'prosemirror-view',
-        '@tiptap/extension-link'
+        '@tiptap/extension-link',
+        '@tiptap/extension-image'
       ]
     }
   }

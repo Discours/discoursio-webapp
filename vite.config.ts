@@ -54,7 +54,8 @@ export default defineConfig(() => {
         '@tiptap/extension-italic',
         '@tiptap/extension-blockquote',
         '@solid-primitives/upload',
-        '@tiptap/extension-placeholder'
+        '@tiptap/extension-placeholder',
+        'prosemirror-view'
       ]
     }
   }

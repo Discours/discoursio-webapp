@@ -26,6 +26,7 @@ interface TopicProps {
   showDescription?: boolean
   isCardMode?: boolean
   minimizeSubscribeButton?: boolean
+  isNarrow?: boolean
 }
 
 export const TopicCard = (props: TopicProps) => {
@@ -73,7 +74,14 @@ export const TopicCard = (props: TopicProps) => {
           [styles.topicInRow]: props.isTopicInRow
         }}
       >
-        <div classList={{ 'col-sm-18 col-md-24 col-lg-14 col-xl-15': !props.subscribeButtonBottom }}>
+        <div
+          classList={{
+            [clsx('col-sm-18 col-md-24 col-lg-14 col-xl-15', styles.topicDetails)]: props.isNarrow,
+            [clsx('col-12 col-xs-17 col-md-18', styles.topicDetails)]: props.compact,
+            [clsx('col-sm-17 col-md-18', styles.topicDetails)]:
+              !props.subscribeButtonBottom && !props.isNarrow && !props.compact
+          }}
+        >
           <Show when={props.topic.title && !props.isCardMode}>
             <h3 class={styles.topicTitle}>
               <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
@@ -103,7 +111,11 @@ export const TopicCard = (props: TopicProps) => {
         </div>
         <div
           class={styles.controlContainer}
-          classList={{ 'col-sm-6 col-md-24 col-lg-10 col-xl-9': !props.subscribeButtonBottom }}
+          classList={{
+            'col-sm-6 col-md-24 col-lg-10 col-xl-9': props.isNarrow,
+            'col-12 col-xs-7 col-md-6': props.compact,
+            'col-sm-7 col-md-6': !props.subscribeButtonBottom && !props.isNarrow && !props.compact
+          }}
         >
           <ShowOnlyOnClient>
             <Show when={isSessionLoaded()}>

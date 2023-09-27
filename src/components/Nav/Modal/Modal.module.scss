@@ -33,9 +33,13 @@
     width: 16px;
     opacity: 1;
     padding: 0;
-    right: 1.6rem;
+    right: 2.4rem;
     transition: opacity 0.3s;
     z-index: 1;
+
+    @include media-breakpoint-up(sm) {
+      right: 1.6rem;
+    }
 
     svg {
       display: block;
@@ -57,21 +61,25 @@
   }
 
   &.narrow {
-    max-width: 460px;
-    width: 50%;
+    width: 100%;
 
-    @media (width >= 800px) and (width <= 991px) {
-      width: 80%;
+    @include media-breakpoint-up(sm) {
+      max-width: 460px;
+    }
+
+    @include media-breakpoint-up(md) {
+      width: 50%;
     }
 
     .close {
-      right: 12px;
+      right: 3.6rem;
       top: 12px;
     }
   }
 }
 
 .noPadding {
+  background: none;
   padding: 0 2rem;
 }
 

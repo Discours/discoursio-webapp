@@ -78,7 +78,7 @@ export const AuthModalHeader = (props: Props) => {
 
   return (
     <>
-      <h4>{title}</h4>
+      <h4 class={styles.authFormHeader}>{title}</h4>
       <Show when={description}>
         <p class={styles.authFormDescription} innerHTML={description} />
       </Show>

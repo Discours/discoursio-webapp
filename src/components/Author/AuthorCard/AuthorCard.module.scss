@@ -29,10 +29,6 @@
     flex-wrap: wrap;
   }
 
-  @include media-breakpoint-down(md) {
-    text-align: center;
-  }
-
   @include media-breakpoint-between(md, lg) {
     flex-wrap: wrap;
   }
@@ -353,6 +349,7 @@
 
     @include media-breakpoint-down(md) {
       flex: 1 100%;
+      text-align: center;
     }
   }
 
@@ -509,7 +506,11 @@
 .listWrapper {
   max-height: 70vh;
   overflow: auto;
-  padding-right: 2rem;
+  //padding-right: 2rem;
+
+  :global(.row) {
+    margin-right: 0;
+  }
 }
 
 .switcherCounter {

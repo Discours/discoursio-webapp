@@ -72,6 +72,7 @@ export const Beside = (props: BesideProps) => {
                             iconButton={props.iconButton}
                             showPublications={true}
                             isCardMode={true}
+                            isNarrow={true}
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>

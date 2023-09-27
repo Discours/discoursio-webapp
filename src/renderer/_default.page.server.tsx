@@ -16,13 +16,10 @@ const metaTags = []
 const getLng = (pageContext: PageContext): Language => {
   const { urlParsed, cookies } = pageContext
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (urlParsed.search.lng) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return urlParsed.search.lng === 'en' ? 'en' : 'ru'
-  }
+  console.log('!!! urlParsed:', urlParsed)
+  // if (urlParsed.search.lng) {
+  //   return urlParsed.search.lng === 'en' ? 'en' : 'ru'
+  // }
 
   if (cookies?.lng === 'en') {
     return 'en'

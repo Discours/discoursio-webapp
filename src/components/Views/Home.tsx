@@ -10,7 +10,7 @@ import { Beside } from '../Feed/Beside'
 import RowShort from '../Feed/RowShort'
 import { Slider } from '../_shared/Slider'
 import Group from '../Feed/Group'
-import type { Shout, Topic } from '../../graphql/types.gen'
+import type { Shout } from '../../graphql/types.gen'
 
 import { useTopicsStore } from '../../stores/zine/topics'
 import {

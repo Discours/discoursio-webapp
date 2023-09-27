@@ -152,6 +152,7 @@ export const AuthorCard = (props: Props) => {
               isBig={props.isAuthorPage}
               isAuthorsList={props.isAuthorsList}
               isFeedMode={props.isFeedMode}
+              slug={props.author.slug}
               class={styles.circlewrap}
             />
           }
@@ -164,6 +165,7 @@ export const AuthorCard = (props: Props) => {
               isBig={props.isAuthorPage}
               isAuthorsList={props.isAuthorsList}
               isFeedMode={props.isFeedMode}
+              slug={props.author.slug}
               class={styles.circlewrap}
             />
           </div>

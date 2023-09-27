@@ -16,9 +16,10 @@ const metaTags = []
 const getLng = (pageContext: PageContext): Language => {
   const { urlParsed, cookies } = pageContext
 
-  if (urlParsed.search.lng) {
-    return urlParsed.search.lng === 'en' ? 'en' : 'ru'
-  }
+  console.log('!!! urlParsed:', urlParsed)
+  // if (urlParsed.search.lng) {
+  //   return urlParsed.search.lng === 'en' ? 'en' : 'ru'
+  // }
 
   if (cookies?.lng === 'en') {
     return 'en'
@@ -50,6 +51,8 @@ export const render = async (pageContext: PageContext) => {
   if (pageContext.is404) {
     initRouter('/404')
   } else {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     initRouter(pageContext.urlParsed.pathname, pageContext.urlParsed.search)
   }
 

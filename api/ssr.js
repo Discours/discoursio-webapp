@@ -1,4 +1,4 @@
-const { renderPage } = require('vike/dist/cjs/node/runtime/renderPage')
+import { renderPage } from 'vike/server'
 
 export default async function handler(req, res) {
   const { url, cookies } = req

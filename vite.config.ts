@@ -43,7 +43,8 @@ export default defineConfig(() => {
         '@tiptap/extension-document',
         '@tiptap/core',
         '@tiptap/pm',
-        'prosemirror-state'
+        'prosemirror-state',
+        'prosemirror-model'
       ]
     }
   }

@@ -44,7 +44,8 @@ export default defineConfig(() => {
         '@tiptap/core',
         '@tiptap/pm',
         'prosemirror-state',
-        'prosemirror-model'
+        'prosemirror-model',
+        'prosemirror-transform'
       ]
     }
   }

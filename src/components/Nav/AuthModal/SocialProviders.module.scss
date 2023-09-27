@@ -1,0 +1,47 @@
+.container {
+  border-bottom: 1px solid #dfdfdf;
+  border-top: 1px solid #dfdfdf;
+  margin-top: 1em;
+  padding: 0.8em 0 1em;
+}
+
+.text {
+  @include font-size(1.5rem);
+
+  font-weight: 500;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.social {
+  background-color: white;
+  display: flex;
+  margin: 0 -5px;
+
+  > * {
+    background-color: #f7f7f7;
+    cursor: pointer;
+    flex: 1;
+    margin: 0 5px;
+    padding: 0.5em !important;
+    text-align: center;
+  }
+
+  img {
+    height: 1em;
+    margin: 0 auto;
+    max-width: 1.8em;
+    vertical-align: middle;
+    width: auto;
+  }
+
+  a {
+    border: none !important;
+  }
+
+  .githubAuth:hover {
+    img {
+      filter: invert(1);
+    }
+  }
+}

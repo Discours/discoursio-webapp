@@ -1,0 +1,30 @@
+.topicHeader {
+  @include font-size(1.7rem);
+
+  padding: 2.8rem $container-padding-x 0;
+  text-align: center;
+
+  h1 {
+    @include font-size(2rem);
+
+    color: #2638d9;
+    text-transform: uppercase;
+  }
+}
+
+.topicActions {
+  margin-top: 2.8rem;
+
+  button,
+  a {
+    background: #000;
+    border: none;
+    border-radius: 2px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 100%;
+    margin: 0 1.2rem 1em;
+    padding: 0.8rem 1.6rem;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,179 @@
+[0.8.0]
+[+] i18next for ,solid
+[-] i18n
+[+] custom snackbar
+[+] editor lazy load
+[+] hygen
+[-] astro removed
+[+] vite ssr plugin
+
+[0.7.1]
+[+] reactions CUDL
+[+] api/upload with storj
+[+] api/feedback
+[+] bumped astro pkgs versions
+[+] graphql ws subs
+
+[0.7.0]
+[+] inbox: context provider, chats
+[+] comments: show
+[+] session: context provider
+[+] views tracker: counting for shouts
+
+[0.6.1]
+[+] auth ver. 0.9
+[+] load-by interfaces for shouts, authors and messages
+[+] inbox logix and markup
+[-] old views counting
+
+[0.6.0]
+[+] hybrid routing ssr/spa
+[+] 'expo' pages
+[-] layout term usage with an exception
+[-] less nanostores
+[+] inbox
+[+] css modules
+[+] draft editor
+[+] solid-driven storages
+
+[0.5.1]
+[+] nanostores-base global store
+[-] Root.tsx components
+[+] astro/solid basic hydration
+
+[0.5.0]
+[-] removed solid-primitives/i18n
+[+] added custom dummy utils/intl
+[-] solid-app-router
+[+] astro build and routing
+[-] solid-top-loading-bar
+[+] lint, prettier
+[-] context providers, _cache
+[+] ssr PoW
+
+[0.4.1]
+[-] markdown-it
+[+] remark, rehype, gfm
+[+] api fixes
+
+[0.4.0]
+[+] upload, feedback, newsletter serverless
+[-] ratings
+[-] comments
+[-] proposals
+[+] universal reaction entity
+[+] staged preload
+
+[0.3.1]
+[+] promisisified stores
+[+] prerender based on mdx
+[+] hybryd zine state manager
+
+[0.3.0]
+[+] markup is simpler
+[+] really use mdx
+[+] really use i18n
+[+] refactored queries
+[+] final routing
+
+[0.2.1]
+[+] custom store
+[+] playwright
+[+] mdx
+
+[0.2.0]
+[-] sveltekit
+[-] graphql-request
+[+] migrated to solid
+[+] urql
+[+] graphql caching results
+
+[0.1.0]
+[+] husky, lint-staged
+[+] components refactoring
+[+] 'static' pages fixes
+[+] ShoutFeed's reusable components
+[+] render order revised
+
+[0.0.9]
+[+] lots of visual changes for demo
+[+] cookie-based subscriptions
+[+] prerender fix
+[+] refactor queries
+[+] caching topics with localStorage
+[+] added some 'static' routes
+
+[0.0.8]
+[+] isolated editor codebase
+[+] sveo
+[+] SSG first
+[+] svelte-kit caching fixes
+[+] isolated MD component
+[-] code cleanup
+[-] /auth route
+[-] top nav changes
+
+[0.0.7]
+[+] nav refactoring /[what] /@[who]
+[+] /reset/[code], /reset/password
+[+] modal auth dialog
+[+] Topic.pic field
+[+] internal svelte prerender
+[+] GET_SHOUTS, TOP_SHOUTS_BY_RATING, GET_TOPICS, GET_COMMUNITIES via caching json trick
+[~] User.username -> User.name
+
+[0.0.6]
+[-] organization, org_id
+[+] community entity
+[+] mainpage markup
+[+] topics filter navigation
+[+] monor schema fixes
+[-] gitea.js api
+[-] postcss with plugins
+[-] bootstrap
+[+] windicss
+[+] async sveltekit-styled queries
+[+] login basic markup
+
+[0.0.5]
+[+] migrate to sveltekit
+[-] removed apollo due bug
+[-] removed custom prerender code
+[+] stylelint enabled
+[+] precompiler windows support
+[+] precompiler separated
+
+[0.0.4]
+
+[+] precompiler generated static indexes
+[-] puppeteer switched off
+[+] topic entity added
+[-] i18n switched off
+[+] own signaling server connected
+[-] store-based routing removed
+[+] reset password page
+[+] login/register form
+[+] social auth fb, ggl, vk
+
+[0.0.3]
+
+[~] prerender with puppeteer
+[+] precompiled data.json
+[~] international content support
+[+] auth graphql client
+[-] removed ws yjs-server
+[-] pathfinder replaced
+[+] mdsvex support
+
+[0.0.2]
+
+[+] apollo client with codegen
+[+] ci basics
+[+] code organized
+
+
+[0.0.1]
+
+[+] 3rd party deps: tiptap, apollo,
+[+] boiilerplate with esbuild
+[+] simple structure

@@ -1,0 +1,798 @@
+.shoutCard {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  margin-bottom: 2.4rem;
+  position: relative;
+
+  @include media-breakpoint-up(md) {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &:hover {
+    .shoutCardCover img {
+      transform: scale(1.05);
+    }
+  }
+
+  .icon {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+  }
+
+  .iconHover {
+    display: none;
+  }
+
+  button,
+  a:link {
+    border: none;
+
+    &:hover {
+      color: var(--default-color);
+
+      .icon {
+        display: none;
+      }
+
+      .iconHover {
+        display: inline-block;
+      }
+    }
+  }
+
+  .feedControlIcon {
+    max-width: 2em;
+    vertical-align: text-bottom;
+  }
+}
+
+.shoutCardWithBorder {
+  border-top: 2px solid #141414;
+  margin-top: 2.4rem !important;
+  padding-top: 2.4rem;
+}
+
+.shoutCardLinkWrapper {
+  background-color: transparent;
+  transition: background-color 0.3s;
+}
+
+.shoutCardTitlesContainer {
+  &.shoutCardTitlesContainerFeedMode {
+    margin-bottom: 1.4rem;
+  }
+
+  a:link {
+    border: none;
+
+    &::before {
+      content: '';
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    &:hover {
+      .shoutCardTitle .shoutCardLinkWrapper {
+        background-color: var(--default-color);
+        color: var(--link-hover-color);
+      }
+    }
+  }
+}
+
+.shoutCardCoverContainer {
+  position: relative;
+}
+
+.shoutCardCover {
+  background: rgb(0 0 0 / 30%);
+  height: 0;
+  margin-bottom: 1.6rem;
+  overflow: hidden;
+  padding-bottom: 56.2%;
+  position: relative;
+
+  img {
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    transform-origin: 50% 50%;
+    transition: transform 1s ease-in-out;
+    width: 100%;
+  }
+
+  &:hover img {
+    /* TODO: small zoom on hover */
+    transform: scaleZ(1.1);
+  }
+}
+
+.shoutAuthor,
+.shoutDate {
+  @include font-size(1.4rem);
+}
+
+.shoutAuthor {
+  font-weight: 500;
+  margin-right: 1.6rem;
+
+  a:link {
+    border: none;
+    color: rgb(0 0 0 / 90%);
+    position: relative;
+    z-index: 2;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.shoutDate {
+  color: #9fa1a7;
+  font-weight: 500;
+}
+
+.shoutDetails {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.shoutDetailsFeedMode {
+  justify-content: space-between;
+
+  .shoutAuthor,
+  .shoutDate {
+    @include font-size(1.2rem);
+  }
+}
+
+.shoutCardTitle {
+  @include font-size(2.2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.8rem;
+
+  :global(.col-md-12) & {
+    @include font-size(2.6rem);
+  }
+}
+
+.shoutCardTitle,
+.shoutCardSubtitle {
+  &,
+  .shoutCardLinkContainer {
+    box-decoration-break: clone;
+    /* stylelint-disable-next-line */
+    -webkit-box-decoration-break: clone;
+  }
+
+  .shoutCardTitlesContainerFeedMode & {
+    @include font-size(3.2rem);
+    line-height: 1.1;
+  }
+}
+
+.shoutCardDescription {
+  @include font-size(1.6rem);
+
+  color: var(--default-color);
+  margin-bottom: 1.4rem;
+}
+
+.shoutCardSubtitle {
+  @include font-size(1.8rem);
+  color: #141414;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 1.4rem;
+  transition: color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.shoutCardLinkContainer {
+  position: relative;
+  transition: color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.shoutCardEditControl {
+  border-radius: 2em;
+  min-height: 2.6em;
+  padding: 0 1.4em;
+  transition: background-color 0.2s, color 0.2s;
+
+  &:hover {
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+  }
+}
+
+.shoutCard.withcover {
+  padding: 2.4rem;
+
+  &,
+  a,
+  .shoutCardTitle,
+  .shoutCardSubtitle {
+    color: var(--default-color-invert);
+  }
+
+  .shoutCardCover {
+    height: 100%;
+    left: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+
+    &::after {
+      background: rgb(0 0 0 / 60%);
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      z-index: 1;
+    }
+  }
+}
+
+.shoutCardType {
+  height: 3.2rem;
+  position: absolute;
+  right: 0.8rem;
+  text-align: center;
+  top: 0.8rem;
+  transition: background-color 0.2s;
+  width: 3.2rem;
+  z-index: 2;
+
+  a:link {
+    background: var(--default-color-invert);
+    border-radius: 100%;
+    display: block;
+    height: 100%;
+    width: 100%;
+
+    &:hover {
+      background: var(--background-color-invert);
+
+      .icon {
+        display: inline-block;
+        filter: invert(1);
+      }
+    }
+  }
+
+  img {
+    height: auto;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+  }
+
+  .icon {
+    height: 100%;
+    transition: filter 0.2s;
+  }
+}
+
+.shoutCardContent {
+  margin-bottom: 1em;
+
+  @include media-breakpoint-up(md) {
+    margin-bottom: 2em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.floor--topics-group {
+  h3 {
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  .col-md-12 .col-md-12 {
+    .shoutCard {
+      border-bottom: 1px solid rgb(255 255 255 / 20%);
+      margin: 3.6rem 0 0;
+      padding-bottom: 2rem;
+
+      &:first-child {
+        margin-top: 2rem;
+      }
+
+      &:last-child {
+        border: none;
+        padding-bottom: 0;
+      }
+    }
+
+    .shoutCardCoverContainer {
+      display: none;
+    }
+
+    .shoutCardTitle,
+    .shoutCardSubtitle {
+      @include font-size(2.6rem);
+
+      display: inline;
+      line-height: 1.2;
+    }
+
+    .shoutCardSubtitle {
+      color: var(--background-color-invert);
+    }
+
+    .shoutAuthor {
+      margin-top: 0.6em;
+    }
+  }
+}
+
+.shoutCardFloorImportant {
+  margin-bottom: $grid-gutter-width;
+
+  .shoutAuthor {
+    margin-top: 0.8rem;
+
+    a:link,
+    a:visited {
+      color: rgb(255 255 255 / 50%);
+    }
+
+    a:hover {
+      background-color: var(--background-color) !important;
+    }
+  }
+
+  a:link,
+  a:visited {
+    color: var(--default-color-invert);
+  }
+
+  a:hover {
+    background: var(--background-color);
+    color: var(--default-color);
+  }
+
+  .shoutCardTitlesContainer {
+    a:link {
+      border: none;
+      color: var(--default-color-invert);
+
+      &:hover {
+        .shoutCardTitle .shoutCardLinkContainer {
+          background-color: var(--background-color);
+          color: var(--default-color);
+        }
+      }
+    }
+  }
+
+  .shoutCardSubtitle {
+    color: rgb(255 255 255 / 50%);
+  }
+
+  &:global(.swiper-slide-active) .shoutCardCover {
+    &::after {
+      background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 40%, rgb(0 0 0 / 70%) 100%);
+    }
+  }
+}
+
+.shoutCardWithCover {
+  aspect-ratio: 16/9;
+  padding: 0 2.4rem;
+  width: 100%;
+
+  @include media-breakpoint-down(xl) {
+    aspect-ratio: auto;
+    height: 100%;
+    padding-top: 30%;
+  }
+
+  &.swiper-slide {
+    .shoutCardContent {
+      @include media-breakpoint-down(md) {
+        padding-left: 10%;
+      }
+    }
+  }
+
+  &.shoutCardNoImage {
+    background: rgb(0 0 0 / 50%);
+  }
+
+  &,
+  a,
+  .shoutCardTitle,
+  .shoutCardSubtitle {
+    color: var(--default-color-invert) !important;
+  }
+
+  .shoutAuthor,
+  .shoutCardTitlesContainer {
+    a:hover {
+      &,
+      .shoutCardTitle .shoutCardLinkContainer {
+        background-color: var(--background-color);
+        color: var(--default-color) !important;
+      }
+    }
+  }
+
+  .shoutCardCoverContainer,
+  .shoutCardCover,
+  .shoutCardContent {
+    height: 100%;
+    left: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+  }
+
+  .shoutCardContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    padding: 2.4rem;
+    z-index: 1;
+
+    @include media-breakpoint-down(xl) {
+      padding-left: 0;
+      padding-right: 0;
+      position: relative;
+    }
+  }
+
+  .shoutCardCover {
+    padding: 0;
+
+    &::after {
+      background: rgb(0 0 0 / 60%);
+      content: '';
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      z-index: 1;
+    }
+  }
+
+  .shoutCardTitle {
+    @include font-size(3.2rem);
+  }
+
+  .shoutTopic a {
+    &:link,
+    &:visited {
+      &:hover {
+        background: var(--background-color) !important;
+        color: var(--default-color) !important;
+      }
+    }
+  }
+}
+
+.shoutCardContentTop {
+  .shoutCardContent {
+    justify-content: start;
+  }
+}
+
+.shoutCardPhotoBottom {
+  .shoutCardContent {
+    margin-bottom: 1.6rem;
+  }
+
+  .shoutCardCoverContainer {
+    order: 2;
+  }
+}
+
+.shoutCardFeed {
+  margin: 4em 0;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+
+  .shoutCardContent {
+    margin-bottom: 0;
+  }
+}
+
+.shoutCardDetails {
+  @include font-size(1.5rem);
+
+  align-items: flex-start;
+  border-top: 2px solid var(--black-500);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 1em;
+  padding: 1em 0 0;
+  position: relative;
+  width: 100%;
+  z-index: 3;
+}
+
+.shoutCardDetailsActive {
+  z-index: 4;
+}
+
+.shoutCardDetailsContent {
+  display: flex;
+  font-size: 1.2rem;
+  font-weight: bold;
+
+  &:first-child {
+    padding: 0 1em 1em 0;
+
+    .shoutCardDetailsItem {
+      margin-right: 2rem;
+    }
+  }
+}
+
+.shoutCardDetailsItem {
+  align-items: center;
+  display: flex;
+  margin-right: 1.2rem;
+  white-space: nowrap;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+
+  a:link {
+    border: none;
+
+    &:hover {
+      background: none;
+    }
+  }
+}
+
+.shoutCardComments,
+.shoutCardDetailsViewed {
+  align-items: center;
+  display: flex;
+
+  .icon {
+    margin: 0 0.5em 0 0;
+    vertical-align: middle;
+  }
+
+  a:link {
+    &:hover {
+      background: none;
+
+      .shoutCardLinkContainer {
+        background: var(--default-color);
+      }
+    }
+  }
+}
+
+.shoutCardVertical {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 250px;
+  margin: 0;
+  padding: 0;
+
+  @include media-breakpoint-up(sm) {
+    aspect-ratio: 2/1;
+  }
+
+  @include media-breakpoint-up(md) {
+    aspect-ratio: 1/1;
+  }
+
+  @include media-breakpoint-up(lg) {
+    aspect-ratio: 1/1.6;
+  }
+
+  .shoutCardTitle,
+  .shoutCardSubtitle {
+    font-size: 2.2rem !important;
+
+    @include media-breakpoint-between(lg, xl) {
+      font-size: 1.8rem !important;
+    }
+  }
+
+  .shoutCardContent {
+    justify-content: start;
+    position: relative;
+  }
+
+  .shoutDate {
+    color: rgb(255 255 255 / 50%);
+  }
+}
+
+.floor--9 {
+  /* TODO: refactor these styles */
+  .shoutCardTitle,
+  .shoutCardSubtitle {
+    // display: inline;
+    font-size: 2.2rem;
+  }
+
+  .shoutCardTitle {
+    padding-right: 0.25em;
+  }
+
+  .shoutAuthor,
+  .shoutDate {
+    margin-top: 0.8rem;
+  }
+
+  .beside-column .shoutCardTitlesContainer {
+    position: relative;
+
+    a:hover {
+      .shoutCardLinkContainer {
+        color: var(--default-color-invert);
+      }
+    }
+  }
+}
+
+.shoutCardBigTitle {
+  .shoutCardTitle {
+    @include font-size(3.2rem);
+
+    display: block;
+    padding-right: 0;
+  }
+
+  .shoutCardSubtitle {
+    @include font-size(2.6rem);
+  }
+}
+
+.shoutCardCompact {
+  .shoutCardTitle,
+  .shoutCardSubtitle {
+    @include font-size(2.2rem);
+
+    display: inline;
+    line-height: 1.2;
+  }
+
+  .shoutCardTitle {
+    padding-right: 0.3em;
+  }
+
+  .shoutCardSubtitle {
+    box-decoration-break: slice;
+    /* stylelint-disable-next-line */
+    -webkit-box-decoration-break: slice;
+  }
+
+  a:link {
+    background: none !important;
+  }
+}
+
+.shoutCardShort {
+  font-size: 1.4rem;
+  margin-bottom: 0;
+  position: static;
+
+  .shoutCardTitle,
+  .shoutCardSubtitle {
+    @include font-size(1.8rem);
+    display: inline;
+  }
+
+  .shoutCardSubtitle {
+    color: var(--default-color);
+  }
+
+  .shoutCardTitle {
+    padding-right: 0.25em;
+  }
+
+  .shoutCardTitlesContainer {
+    a {
+      padding: 0.3em 0;
+    }
+  }
+
+  a:hover {
+    .shoutCardLinkContainer {
+      color: var(--default-color-invert);
+    }
+  }
+}
+
+.shoutCardSingle {
+  @include media-breakpoint-up(md) {
+    flex-direction: row;
+
+    .shoutCardTitlesContainer {
+      flex: 1;
+    }
+
+    .shoutCardCover {
+      margin-bottom: 0;
+    }
+
+    .shoutCardCoverContainer {
+      flex: 1 58.3333%;
+    }
+
+    .shoutCardContent {
+      display: flex;
+      flex-direction: column;
+      flex: 1 41.6666%;
+      justify-content: space-between;
+      margin-bottom: 0;
+      padding-left: 4rem;
+    }
+
+    .shoutTopic {
+      margin-bottom: 3.2rem;
+    }
+
+    .shoutCardTitle {
+      margin-bottom: 2.4rem;
+    }
+
+    .shoutAuthor {
+      align-items: end;
+      display: flex;
+      flex: 1;
+    }
+  }
+
+  .shoutCardType {
+    top: 0;
+  }
+
+  .shoutCardTitle {
+    @include font-size(4rem);
+
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  .shoutCardSubtitle {
+    @include font-size(2.4rem);
+
+    flex: 1;
+  }
+}
+
+.shoutCardBeside {
+  &,
+  .shoutCardCoverContainer {
+    flex: 1;
+  }
+}
+
+.shoutTopicTop {
+  margin-bottom: 0.4rem !important;
+}

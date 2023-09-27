@@ -1,0 +1,12 @@
+---
+import { Confirmed } from '../../components/Nav/Confirmed'
+import { t } from 'i18next'
+
+const token = Astro.params.token?.toString() || ''
+---
+<html>
+<head><title>{t('Discours')}</title></head>
+<body>
+  <Confirmed token={token} />
+</body>
+</html>

@@ -1,0 +1,21 @@
+---
+import { Root } from '../../components/Root'
+import Prerendered from '../../main.astro'
+import { apiClient } from '../../utils/apiClient'
+import { PRERENDERED_ARTICLES_COUNT } from '../../components/Views/Topic'
+
+const slug = Astro.params.slug?.toString() || ''
+const shouts = await apiClient.getShouts({ filters: { topic: slug }, limit: PRERENDERED_ARTICLES_COUNT })
+const topic = await apiClient.getTopic({ slug })
+
+import { initRouter } from '../../stores/router'
+
+const { pathname, search } = Astro.url
+initRouter(pathname, search)
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate')
+---
+
+<Prerendered>
+  <Root topicShouts={shouts} topic={topic} client:load />
+</Prerendered>

@@ -1,0 +1,45 @@
+.layout-icon {
+  background: #fff;
+  border-radius: 100%;
+  height: 3.2rem;
+  right: 0.8rem;
+  text-align: center;
+  top: 0.8rem;
+  transition: background-color 0.2s;
+  width: 3.2rem;
+  margin-bottom: 2em;
+  margin-left: 93%;
+  z-index: 2;
+
+  &:hover {
+    background: #000;
+
+    .icon {
+      filter: invert(1);
+    }
+  }
+
+  img {
+    height: auto;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+  }
+
+  .icon {
+    height: 100%;
+    transition: filter 0.2s;
+  }
+}
+
+.floor--group {
+  @include media-breakpoint-down(sm) {
+    .col-lg-12 {
+      .row {
+        margin: 0 0 0 divide(-$container-padding-x, 2);
+      }
+    }
+  }
+}

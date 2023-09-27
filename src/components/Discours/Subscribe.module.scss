@@ -1,0 +1,62 @@
+.form {
+  display: flex;
+  flex-direction: column;
+
+  @include media-breakpoint-down(xxl) {
+    margin-bottom: 2.4rem;
+  }
+}
+
+.controls {
+  display: flex;
+  width: 100%;
+
+  @include media-breakpoint-down(xxl) {
+    flex-direction: column;
+  }
+
+  .input {
+    @include font-size(2rem);
+    background: none;
+    color: #fff;
+    font-family: inherit;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.2em 0.5em;
+    width: 100%;
+    outline: none;
+    border: 1px solid #fff;
+    border-radius: 0;
+    height: 4rem;
+
+    @include media-breakpoint-up(xxl) {
+      border-right: none;
+    }
+
+    @include media-breakpoint-down(xxl) {
+      border-bottom: none;
+    }
+
+    &::placeholder {
+      color: #858585;
+    }
+  }
+
+  .button {
+    border-radius: 0;
+    flex-shrink: 0;
+
+    @include media-breakpoint-down(xxl) {
+      width: 100%;
+    }
+  }
+}
+
+.error {
+  position: relative;
+  top: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #d00820;
+}

@@ -1,0 +1,80 @@
+.AudioHeader {
+  overflow: hidden;
+  margin-bottom: 32px;
+
+  .albumInfo {
+    margin-right: 224px;
+
+    .topic {
+      .link {
+        @include font-size(1.6rem);
+
+        color: var(--blue-link);
+        border: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    & > h1 {
+      margin: 16px 0 0;
+    }
+
+    .artistData {
+      margin: 18px 0 0;
+      display: flex;
+      flex-direction: row;
+
+      .item {
+        @include font-size(1.6rem);
+
+        font-weight: 500;
+        padding: 2px 12px;
+        border-left: 2px solid #e9e9ee;
+
+        &:first-child {
+          border-left: none;
+          padding-left: 0;
+        }
+      }
+    }
+  }
+
+  .cover {
+    display: block;
+    position: relative;
+    float: right;
+    width: 200px;
+    height: 200px;
+    transition: all 0.2s ease-in-out;
+    background: var(--placeholder-color-semi) url('/icons/create-music.svg') no-repeat 50% 50%;
+
+    .image {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .expand {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+  }
+
+  &.expandedImage {
+    .cover {
+      width: 100%;
+      height: auto;
+      margin-bottom: 32px;
+    }
+
+    .albumInfo {
+      margin-right: 0;
+      clear: both;
+    }
+  }
+}

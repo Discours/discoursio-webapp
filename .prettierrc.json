@@ -1,0 +1,17 @@
+{
+  "htmlWhitespaceSensitivity": "ignore",
+  "semi": false,
+  "singleQuote": true,
+  "proseWrap": "always",
+  "printWidth": 108,
+  "trailingComma": "none",
+  "plugins": [],
+  "overrides": [
+    {
+      "files": "*.ts",
+      "options": {
+        "parser": "typescript"
+      }
+    }
+  ]
+}

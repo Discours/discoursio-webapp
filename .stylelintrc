@@ -1,0 +1,37 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "plugins": [
+    "stylelint-order",
+    "stylelint-scss"
+  ],
+  "rules": {
+    "selector-class-pattern": null,
+    "no-descending-specificity": null,
+    "scss/function-no-unknown": null,
+    "scss/no-global-function-names": null,
+    "function-url-quotes": null,
+    "font-family-no-missing-generic-family-keyword": null,
+    "order/order": [
+      "custom-properties",
+      "declarations"
+    ],
+    "scss/dollar-variable-pattern": ["^[a-z][a-zA-Z]+$", {
+      "ignore": "global"
+    }],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global", "export"]
+      }
+    ],
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": ["box-decoration-break"]
+      }
+    ]
+  },
+  "defaultSeverity": "warning"
+}

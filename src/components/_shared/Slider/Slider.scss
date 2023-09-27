@@ -1,0 +1,253 @@
+.swiper-slide {
+  min-height: 0 !important;
+
+  .cards-with-cover & {
+    height: 0 !important;
+    padding-top: 100%;
+
+    @include media-breakpoint-up(sm) {
+      padding-top: 56.2% !important;
+    }
+
+    @include media-breakpoint-up(md) {
+      padding-top: 35% !important;
+    }
+
+    img {
+      height: 100%;
+      left: 0;
+      object-fit: cover;
+      object-position: center;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+}
+
+.slider-arrow-prev,
+.slider-arrow-next {
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  height: 100%;
+  position: absolute;
+  outline: none;
+  border: 0;
+  transform: translate(0);
+  top: 0;
+  width: 21%;
+  z-index: 1;
+
+  @include media-breakpoint-down(md) {
+    width: 8%;
+  }
+
+  &::after {
+    color: #fff;
+  }
+
+  &:hover {
+    .icon {
+      opacity: 0.5;
+    }
+  }
+
+  .icon {
+    height: 36px;
+    opacity: 1;
+    transition: opacity 0.2s;
+    width: 22px;
+  }
+}
+
+.slider-arrow-prev {
+  background: linear-gradient(to left, rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 90%) 100%);
+  justify-content: flex-start;
+  left: 0;
+
+  &::after {
+    margin-left: 5rem;
+  }
+
+  .icon {
+    margin-left: 5rem;
+
+    @include media-breakpoint-down(md) {
+      margin-left: 25%;
+    }
+  }
+}
+
+.slider-arrow-next {
+  background: linear-gradient(to left, rgb(0 0 0 / 90%) 0%, rgb(0 0 0 / 0%) 100%);
+  justify-content: flex-end;
+  right: 0;
+
+  &::after {
+    margin-right: 5rem;
+  }
+
+  .icon {
+    margin-right: 5rem;
+    transform: rotate(180deg);
+
+    @include media-breakpoint-down(md) {
+      margin-right: 25%;
+    }
+  }
+}
+
+.swiper--page-gallery {
+  padding-bottom: 4rem;
+
+  .swiper-wrapper {
+    align-items: center;
+  }
+
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+  }
+
+  .swiper-slide__inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    img {
+      display: block;
+      height: auto;
+      margin: 0 auto;
+      max-height: 80vh;
+      width: auto;
+      position: relative;
+      z-index: 11;
+    }
+  }
+
+  .slider-arrow-prev,
+  .slider-arrow-next {
+    background: rgb(0 0 0 / 20%);
+    width: 5rem;
+  }
+
+  .slider-arrow-next .icon {
+    margin-right: 2rem;
+  }
+
+  .slider-arrow-prev .icon {
+    margin-left: 2rem;
+  }
+
+  .swiper-slide-active {
+    .swiper-lazy-preloader {
+      display: none;
+    }
+  }
+}
+
+.thumbs-container {
+  @include media-breakpoint-up(md) {
+    padding-left: 3.2rem;
+  }
+}
+
+.swiper--thumbs {
+  @include media-breakpoint-up(md) {
+    max-height: 80vh;
+    min-width: 100px;
+    padding: 0 !important;
+    width: 100px !important;
+  }
+
+  .swiper-slide {
+    cursor: pointer;
+    height: 80px;
+    opacity: 0.5;
+    width: 100px;
+
+    @include media-breakpoint-up(md) {
+      height: 52px;
+      width: auto;
+    }
+
+    img {
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      width: 100%;
+    }
+  }
+
+  .swiper-slide-thumb-active {
+    opacity: 1;
+  }
+
+  .swiper-slide__inner {
+    height: 100%;
+    flex: 1;
+  }
+
+  .swiper-lazy-preloader,
+  .image-description {
+    display: none;
+  }
+}
+
+.sliders-container {
+  @include media-breakpoint-up(md) {
+    display: flex;
+  }
+}
+
+.swiper-pagination {
+  background: #141414;
+  bottom: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  left: auto;
+  right: 0;
+  padding: 1rem;
+  width: auto;
+}
+
+.uploadPreview {
+  background: unset;
+  position: relative;
+  padding: 0 40px;
+
+  .sliders-container {
+    position: relative;
+  }
+
+  .swiper {
+    background: unset;
+
+    .swiper-wrapper {
+      min-height: 400px;
+    }
+  }
+
+  .slider-arrow-next,
+  .slider-arrow-prev {
+    background: none;
+    filter: invert(1);
+    width: 40px;
+    max-height: 540px;
+
+    .icon {
+      margin: auto;
+      width: 12px;
+      height: 20px;
+    }
+  }
+
+  //
+  //.slider-arrow-prev {
+  //  margin-left: -40px;
+  //}
+  //.slider-arrow-next {
+  //  margin-right: -40px;
+  //}
+}

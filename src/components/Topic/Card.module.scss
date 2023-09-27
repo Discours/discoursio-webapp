@@ -1,0 +1,159 @@
+.topicContainer {
+  li:last-child & {
+    border: none;
+  }
+}
+
+.topic {
+  align-items: baseline;
+  margin-top: 3.2rem;
+
+  .stats & {
+    .topicDetailsItem {
+      margin-bottom: 1.2rem;
+    }
+  }
+}
+
+.topicInRow {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0;
+
+  button {
+    margin-top: 0;
+  }
+
+  @include media-breakpoint-up(sm) {
+    .topicDescription {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.topicTitle {
+  @include font-size(2.2rem);
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  margin-top: 0.5rem !important;
+
+  a {
+    border: none;
+  }
+}
+
+.topicAvatar {
+  border-radius: 100%;
+  height: 64px;
+  margin-right: 1.2rem;
+  min-width: 64px;
+  max-width: 64px;
+  overflow: hidden;
+  position: relative;
+  width: 64px;
+
+  img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+}
+
+.topicDescription {
+  @include font-size(1.4rem);
+
+  font-weight: 500;
+  color: #696969;
+  line-height: 1.3;
+  margin: 0.2rem 0 1.6rem;
+
+  &.topicDescriptionShort {
+    display: block;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.topicDetails {
+  @include font-size(1.6rem);
+
+  color: #9fa1a7;
+  display: flex;
+  margin-bottom: 1em;
+
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+  }
+}
+
+.topicDetailsItem {
+  @include font-size(1.4rem);
+
+  margin-right: 1.6rem;
+  white-space: nowrap;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &.compact {
+    font-size: small;
+  }
+
+  &.followers {
+    word-break: keep-all;
+  }
+
+  &.button {
+    float: right;
+  }
+}
+
+.controlContainer {
+  margin-bottom: 1.6rem;
+
+  @include media-breakpoint-up(sm) {
+    text-align: right;
+  }
+}
+
+.topicCompact {
+  .topicTitle {
+    @include font-size(1.6rem);
+  }
+}
+
+.isSubscribing {
+  opacity: 0.5;
+}
+
+.isSubscribed {
+  background: #000;
+  color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+  white-space: nowrap;
+  width: 9em;
+
+  &:hover {
+    background: #fff;
+    color: #000;
+
+    .buttonUnfollowLabel {
+      display: block;
+    }
+
+    .buttonSubscribedLabel {
+      display: none;
+    }
+  }
+
+  .buttonUnfollowLabel {
+    display: none;
+  }
+}
+
+.cardMode {
+  margin-bottom: 0;
+}

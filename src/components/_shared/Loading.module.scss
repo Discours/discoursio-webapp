@@ -1,0 +1,36 @@
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.icon {
+  animation-name: spin;
+  width: 64px;
+  height: 64px;
+  background-image: url(/icons/arrows-rotate.svg);
+  background-repeat: no-repeat;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+  .small & {
+    width: 32px;
+    height: 32px;
+  }
+  .tiny & {
+    width: 18px;
+    height: 18px;
+  }
+}

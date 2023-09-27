@@ -1,0 +1,144 @@
+.besideColumn {
+  counter-reset: item;
+  list-style-type: none;
+  padding-left: 0;
+
+  @include media-breakpoint-up(md) {
+    margin-bottom: 0;
+  }
+
+  a {
+    border: none;
+  }
+
+  li {
+    margin-bottom: 1.6rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.top {
+      border-bottom: 1px solid #e1e1e1;
+      display: flex;
+      justify-content: space-between;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      position: relative;
+
+      &:last-child {
+        border: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+
+        .shoutCardContent {
+          margin-bottom: 0;
+        }
+      }
+
+      &::after {
+        content: counter(item, upper-roman);
+        counter-increment: item;
+        flex: 0 1.4em;
+        font-size: 1.4em;
+        font-weight: 900;
+        line-height: 1;
+        min-width: 1.4em;
+        padding-left: 0.3em;
+        text-align: center;
+      }
+    }
+  }
+
+  .top-viewed__topic {
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+}
+
+.besideColumnTitle {
+  align-items: baseline;
+  justify-content: space-between;
+  display: flex;
+  line-height: 1.1;
+
+  .icon {
+    display: inline-block;
+    height: 1em;
+    vertical-align: middle;
+    width: 1em;
+  }
+
+  a:link {
+    @include font-size(1.4rem);
+
+    border: none;
+    font-weight: bold;
+    padding-right: 0.3em;
+    white-space: nowrap;
+
+    img {
+      margin-left: 0.8rem;
+    }
+
+    &:hover {
+      img {
+        filter: invert(1);
+      }
+    }
+  }
+
+  h4 {
+    @include font-size(2.6rem);
+
+    font-weight: bold;
+    padding-right: 1em;
+  }
+}
+
+.author {
+  border-bottom: 1px solid #e1e1e1;
+  padding-bottom: 1.6rem;
+
+  li:last-child & {
+    border-bottom: none;
+  }
+
+  button {
+    @include media-breakpoint-between(md, lg) {
+      margin-top: 0.8rem;
+    }
+  }
+}
+
+.besideColumnTopic {
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+.besideColumnShout {
+  font-size: 1.4rem;
+
+  h4 {
+    display: inline;
+    font-size: 1.4rem;
+  }
+}
+
+button.follow {
+  max-width: 2em;
+  max-height: 2em;
+}
+
+.shoutCardContainer {
+  order: 1;
+}
+
+.besideRatingColumnAuthor {
+  order: 2;
+}

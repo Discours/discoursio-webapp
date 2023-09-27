@@ -1,0 +1,150 @@
+main {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  position: relative;
+}
+
+.Inbox {
+  top: 84px;
+  height: calc(100% - 74px);
+  left: 0;
+  right: 0;
+  padding-left: 42px;
+  padding-right: 26px;
+  background: #fff;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  position: absolute;
+
+  .row {
+    flex: 1;
+  }
+
+  .author__name {
+    font-weight: 500;
+  }
+
+  .author {
+    position: relative;
+  }
+}
+
+// список диалогов и юзеров
+.chatList {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  height: calc(100% - 10px);
+
+  $fadeHeight: 10px;
+
+  .sidebarHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .holder {
+    overflow: hidden;
+    flex: 1;
+    position: relative;
+    padding: $fadeHeight 0;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      right: 0;
+      z-index: 1;
+      height: $fadeHeight;
+    }
+
+    &::before {
+      top: 0;
+      background: linear-gradient(white, transparent $fadeHeight);
+    }
+
+    &::after {
+      bottom: 0;
+      background: linear-gradient(transparent, white $fadeHeight);
+    }
+
+    .dialogs {
+      scroll-behavior: smooth;
+      display: flex;
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      overflow: auto;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.chat-list__search {
+  border-bottom: 3px solid #141414;
+  padding: 1em 0;
+}
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+}
+
+.messageForm {
+  background: #fff;
+  padding: 2px 0 12px;
+
+  .wrapper {
+    border: 2px solid #ccc;
+    border-radius: 16px;
+    padding: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.conversationMessages {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+
+  .messagesContainer {
+    left: 0;
+    height: 100%;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    scroll-behavior: smooth;
+  }
+
+  .conversation__date {
+    position: relative;
+    text-align: center;
+
+    &::before {
+      background: #141414;
+      content: '';
+      height: 1px;
+      left: 0;
+      position: absolute;
+      top: 0.8em;
+      width: 100%;
+      z-index: -1;
+    }
+
+    time {
+      @include font-size(1.5rem);
+
+      background: #fff;
+      color: #9fa1a7;
+      padding: 0 0.5em;
+    }
+  }
+}

@@ -1,0 +1,63 @@
+.subnavigation {
+  @include font-size(1.4rem);
+  height: 6rem;
+  line-height: 6rem;
+  margin-bottom: 5rem !important;
+  overflow: hidden;
+  position: relative;
+  transform: translateY(-2px);
+
+  @include media-breakpoint-down(sm) {
+    padding: 0 divide($container-padding-x, 2);
+  }
+
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    font-weight: 500;
+    list-style: none;
+    margin-top: 0;
+    padding: 0 7em 0 0;
+    position: relative;
+  }
+
+  .item {
+    margin-right: 2.4rem;
+
+    &.right {
+      margin-right: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    a {
+      border-bottom: 0;
+
+      &:hover {
+        .icon {
+          filter: invert(1);
+        }
+      }
+    }
+
+    .icon {
+      display: inline-block;
+      margin-left: 0.3em;
+      position: relative;
+      top: 0.15em;
+    }
+  }
+
+  .selected {
+    color: black;
+  }
+
+  a {
+    color: #141414;
+  }
+
+  a:hover {
+    color: white;
+  }
+}

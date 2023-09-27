@@ -1,0 +1,80 @@
+.allTopicsPage {
+  .group {
+    @include font-size(1.6rem);
+
+    margin: 3em 0 9.6rem;
+
+    @include media-breakpoint-down(sm) {
+      margin-bottom: 6.4rem;
+    }
+
+    h2 {
+      margin-bottom: 3.2rem;
+      text-transform: capitalize;
+
+      @include media-breakpoint-down(sm) {
+        margin-bottom: 1.6rem;
+      }
+    }
+
+    .topic {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  .container {
+    width: auto;
+
+    .search-input {
+      display: inline-block;
+      width: 100px !important;
+    }
+  }
+}
+
+.stats {
+  margin-top: 2.4rem;
+}
+
+.loadMoreContainer {
+  margin-top: 48px;
+  text-align: center;
+
+  .loadMoreButton {
+    padding: 0.6em 3em;
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: auto;
+    }
+  }
+}
+
+.alphabet {
+  @include font-size(1.5rem);
+  color: rgba(0 0 0 / 20%);
+  display: flex;
+  flex-wrap: wrap;
+  font-weight: 700;
+  margin: 1.5em -3% 0 0;
+
+  li {
+    min-width: 1.5em;
+    margin-right: 3%;
+    color: rgb(0 0 0 / 30%);
+  }
+
+  a {
+    border: none;
+  }
+}
+
+.articlesCounter {
+  @include font-size(1.2rem);
+  margin-left: 0.5em;
+  vertical-align: super;
+}
+
+.viewSwitcher {
+  margin-bottom: 2rem;
+}

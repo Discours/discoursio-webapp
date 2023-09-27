@@ -1,0 +1,21 @@
+---
+stages:
+  - deploy
+
+deploy:
+  image:
+    name: alpine/git
+    entrypoint: [""]
+  stage: deploy
+  environment:
+    name: production
+    url: https://new.discours.io
+  only:
+    - main
+  script:
+    - mkdir ~/.ssh
+    - echo "${HOST_KEY}" > ~/.ssh/known_hosts
+    - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+    - chmod 0400 ~/.ssh/id_rsa
+    - git remote add github git@github.com:Discours/discoursio-webapp.git
+    - git push github HEAD:main

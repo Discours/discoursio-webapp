@@ -1,0 +1,43 @@
+.VotersList {
+  .users {
+    margin: 0;
+    min-width: 220px;
+    max-height: 360px;
+    overflow: auto;
+  }
+
+  .item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    .user {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      margin-right: 1.2rem;
+
+      a {
+        text-decoration: none;
+        border: none;
+      }
+
+      .userpic {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
+  .commentRatingPositive {
+    color: #2bb452;
+  }
+
+  .commentRatingNegative {
+    color: #d00820;
+  }
+
+  .fallbackMessage {
+    font-size: 1.2rem;
+  }
+}

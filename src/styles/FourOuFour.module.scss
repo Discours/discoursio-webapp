@@ -1,0 +1,81 @@
+.errorPageWrapper {
+  height: 100vh;
+  margin: -120px 0 -2em;
+  padding-top: 100px;
+}
+
+.errorPage {
+  position: relative;
+  top: 35%;
+  transform: translateY(-50%);
+
+  .image-link:hover {
+    background: none;
+  }
+
+  .prettyForm {
+    margin-top: 0.5em;
+  }
+
+  .prettyFormItem input {
+    padding-right: 2.7em;
+  }
+
+  .textCenter {
+    text-align: center;
+  }
+}
+
+.searchSubmit {
+  height: 100%;
+  padding: 0 1em;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.errorImage {
+  display: block;
+  margin: auto;
+  max-height: 60vh;
+  width: 85%;
+}
+
+.errorText {
+  font-weight: 300;
+  left: 52px;
+  margin: 0 60px 1em 0;
+  position: relative;
+  top: -2.25em;
+
+  @include font-size(3rem);
+
+  @include media-breakpoint-up(sm) {
+    left: 80px;
+    position: absolute;
+    text-align: center;
+  }
+
+  .big {
+    font-weight: 900;
+    letter-spacing: 4px;
+
+    @include font-size(7rem);
+  }
+}
+
+.errorExplain {
+  font-size: 16px;
+  position: absolute;
+  top: -3.4em;
+  left: 65px;
+
+  p {
+    margin: 0 0 0.3em;
+  }
+}
+
+.errorTextContainer,
+.searchFormContainer {
+  position: relative;
+}

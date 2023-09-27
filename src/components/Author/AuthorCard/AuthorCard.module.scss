@@ -1,0 +1,529 @@
+.author {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row nowrap;
+  margin-bottom: 1.6rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @include media-breakpoint-up(md) {
+    margin-bottom: 2.4rem;
+  }
+
+  @include media-breakpoint-down(lg) {
+    flex-wrap: wrap;
+  }
+}
+
+.authorDetails {
+  flex: 1;
+
+  @include media-breakpoint-up(sm) {
+    align-items: baseline;
+    display: flex;
+  }
+
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+  }
+
+  @include media-breakpoint-down(md) {
+    text-align: center;
+  }
+
+  @include media-breakpoint-between(md, lg) {
+    flex-wrap: wrap;
+  }
+
+  &.authorDetailsShrinked {
+    flex: 0 0 auto;
+  }
+}
+
+.authorDetailsWrapper {
+  flex: 1 0;
+
+  @include media-breakpoint-up(sm) {
+    flex: 1;
+  }
+
+  @include media-breakpoint-between(md, lg) {
+    flex: 1 0 100%;
+  }
+
+  @include media-breakpoint-up(md) {
+    padding-right: 1.2rem;
+  }
+}
+
+.authorNameContainer {
+  line-height: 1.1;
+}
+
+.authorName {
+  border: none !important;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 2;
+  margin-bottom: 0.8rem;
+}
+
+.authorAbout {
+  color: rgb(0 0 0 / 60%);
+  font-size: 1.4rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.authorSubscribe {
+  align-items: center;
+  //display: flex;
+
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+  }
+
+  a {
+    border: none;
+    display: inline-block;
+    height: 24px;
+    margin-right: 0.4rem;
+    position: relative;
+    transition: background-color 0.2s;
+    vertical-align: middle;
+    width: 24px;
+
+    &::before {
+      background-image: url(/icons/user-link-default.svg);
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      background-size: contain;
+      content: '';
+      height: 100%;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: filter 0.2s;
+      width: 100%;
+    }
+
+    &:hover {
+      background: #000;
+
+      &::before {
+        filter: invert(1);
+      }
+    }
+  }
+
+  a[href*='facebook.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-facebook.svg);
+    }
+  }
+
+  a[href*='twitter.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-twitter.svg);
+    }
+  }
+
+  a[href*='telegram.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-telegram.svg);
+    }
+  }
+
+  a[href*='vk.cc/'],
+  a[href*='vk.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-vk.svg);
+    }
+  }
+
+  a[href*='tumblr.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-tumblr.svg);
+    }
+  }
+
+  a[href*='instagram.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-instagram.svg);
+    }
+  }
+
+  a[href*='behance.net/'] {
+    &::before {
+      background-image: url(/icons/user-link-behance.svg);
+    }
+  }
+
+  a[href*='dribbble.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-dribbble.svg);
+    }
+  }
+
+  a[href*='github.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-github.svg);
+    }
+  }
+
+  a[href*='linkedin.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-linkedin.svg);
+    }
+  }
+
+  a[href*='medium.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-medium.svg);
+    }
+  }
+
+  a[href*='ok.ru/'] {
+    &::before {
+      background-image: url(/icons/user-link-ok.svg);
+    }
+  }
+
+  a[href*='pinterest.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-pinterest.svg);
+    }
+  }
+
+  a[href*='reddit.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-reddit.svg);
+    }
+  }
+
+  a[href*='tiktok.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-tiktok.svg);
+    }
+  }
+
+  a[href*='vk.com/'] {
+    &::before {
+      background-image: url(/icons/user-link-vk.svg);
+    }
+  }
+
+  a[href*='youtube.com/'],
+  a[href*='youtu.be/'] {
+    &::before {
+      background-image: url(/icons/user-link-youtube.svg);
+    }
+  }
+
+  a[href*='dzen.ru/'] {
+    &::before {
+      background-image: url(/icons/user-link-dzen.svg);
+    }
+  }
+
+  .button {
+    margin-right: 0.5em;
+    width: 9em;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover {
+      .buttonUnfollowLabel {
+        display: block;
+      }
+
+      .buttonSubscribedLabel {
+        display: none;
+      }
+    }
+
+    .buttonUnfollowLabel {
+      display: none;
+    }
+  }
+}
+
+.authorSubscribeSocial {
+  align-items: center;
+  display: flex;
+  margin: 0 0.8rem 2rem;
+
+  @include media-breakpoint-down(sm) {
+    flex: 1 100%;
+    justify-content: center;
+    margin-top: 1em;
+  }
+
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+
+  a:link {
+    border: none;
+  }
+}
+
+.buttonSubscribe {
+  align-items: center;
+  aspect-ratio: 1/1;
+  border-radius: 100%;
+  display: inline-flex;
+  float: right;
+
+  img {
+    display: block;
+  }
+}
+
+.buttonLabel {
+  display: none;
+}
+
+.buttonLabelVisible {
+  display: block;
+}
+
+.buttonWrite {
+  color: #000;
+  display: inline-flex;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+
+    img {
+      filter: invert(1);
+    }
+  }
+
+  .icon {
+    display: inline-block;
+    margin-right: 0.5em;
+  }
+
+  img {
+    height: 15px;
+    transition: filter 0.3s;
+  }
+}
+
+.authorPage {
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+
+  .authorName {
+    @include font-size(3.4rem);
+
+    font-weight: 500;
+    margin-bottom: 0.2em;
+  }
+
+  .authorAbout {
+    @include font-size(2rem);
+    color: #696969;
+  }
+
+  .authorSubscribe {
+    margin: 2rem -0.8rem 0;
+    padding-left: 0;
+
+    @include media-breakpoint-down(md) {
+      justify-content: center;
+    }
+  }
+
+  .authorDetails {
+    display: block;
+
+    @include media-breakpoint-down(md) {
+      flex: 1 100%;
+    }
+  }
+
+  .buttonLabel {
+    display: block;
+  }
+
+  .buttonSubscribe {
+    aspect-ratio: auto;
+    background-color: #000;
+    border-color: #000;
+    border-radius: 0.8rem;
+    color: #fff;
+    float: none;
+    padding-bottom: 0.6rem;
+    padding-top: 0.6rem;
+
+    .icon {
+      margin-right: 0.5em;
+
+      img {
+        filter: invert(1);
+      }
+    }
+
+    &:hover {
+      background: #fff;
+      color: #000;
+
+      .icon img {
+        filter: invert(0);
+      }
+    }
+  }
+
+  .buttonSubscribe img {
+    vertical-align: text-top;
+  }
+
+  .button {
+    min-height: 4rem;
+    margin: 0 0.8rem;
+    vertical-align: middle;
+
+    @include media-breakpoint-down(sm) {
+      margin-bottom: 0.5em;
+    }
+  }
+}
+
+.authorsListItem {
+  margin-bottom: 1em !important;
+
+  .authorName {
+    @include font-size(2.2rem);
+
+    font-weight: bold;
+  }
+
+  .authorSubscribe {
+    align-items: baseline;
+
+    @include media-breakpoint-down(sm) {
+      padding: 1rem 0 0;
+    }
+  }
+
+  .buttonLabel {
+    display: block;
+  }
+}
+
+.nowrapView {
+  flex-wrap: nowrap;
+  align-items: center;
+  margin: 0;
+}
+
+.authorComments {
+  .authorName {
+    @include font-size(1.2rem);
+
+    margin-bottom: 0;
+  }
+
+  .circlewrap {
+    margin-top: -0.6em;
+  }
+}
+
+.isSubscribing {
+  opacity: 0.5;
+}
+
+.feedMode {
+  align-items: center;
+  margin-bottom: 0.4rem;
+
+  .authorName {
+    @include font-size(1.2rem);
+    margin-bottom: 0;
+  }
+
+  .circlewrap {
+    height: 1.6rem;
+    margin-right: 0.4rem;
+    min-width: 1.6rem;
+    width: 1.6rem;
+  }
+}
+
+.subscribersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.4rem;
+  margin-top: 0.5rem;
+
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+}
+
+.subscribers {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  margin-top: 1rem;
+  margin-right: 3rem;
+  vertical-align: top;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  .userpic {
+    background: var(--background-color);
+    box-shadow: 0 0 0 2px var(--background-color);
+    height: 1.8rem;
+    min-width: 1.8rem;
+    max-width: 1.8rem;
+    vertical-align: top;
+    width: 1.8rem;
+
+    &:not(:first-child) {
+      margin-left: -1.8rem;
+    }
+  }
+}
+
+.subscribersCounter {
+  margin-left: -0.6rem;
+}
+
+.listWrapper {
+  max-height: 70vh;
+  overflow: auto;
+  padding-right: 2rem;
+}
+
+.switcherCounter {
+  background: #f7f7f8;
+  border-radius: 0.8rem;
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-left: 0.4rem;
+  padding: 0.4rem 0.6rem;
+}
+
+:global(.view-switcher__item--selected) .switcherCounter {
+  background: #000;
+  color: #fff;
+}

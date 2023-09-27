@@ -149,7 +149,7 @@ export const AuthorView = (props: Props) => {
                   onClick={() => checkBioHeight()}
                   href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
                 >
-                  {t('About myself')}
+                  {t('Profile')}
                 </a>
               </li>
             </ul>

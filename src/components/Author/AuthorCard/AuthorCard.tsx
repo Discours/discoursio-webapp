@@ -272,7 +272,7 @@ export const AuthorCard = (props: Props) => {
             <Show when={isSessionLoaded()}>
               <Show when={canFollow()}>
                 <div class={styles.authorSubscribe}>
-                  <Show when={!props.noSocialButtons && !props.hideWriteButton}>
+                  <Show when={!props.noSocialButtons && !props.hideWriteButton && props.author.links}>
                     <div class={styles.authorSubscribeSocial}>
                       <For each={props.author.links}>{(link) => <a href={link} />}</For>
                     </div>

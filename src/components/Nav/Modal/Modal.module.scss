@@ -41,17 +41,13 @@
       right: 1.6rem;
     }
 
+    &:hover {
+      opacity: 0.5;
+    }
+
     svg {
       display: block;
       pointer-events: none;
-    }
-
-    &:hover {
-      background: #000;
-
-      .icon {
-        filter: invert(1);
-      }
     }
 
     .icon {

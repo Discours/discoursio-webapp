@@ -1,13 +1,14 @@
 .commentDates {
   color: #9fa1a7;
   align-items: center;
+  align-self: center;
   display: flex;
   flex: 1;
   @include font-size(1.2rem);
   font-size: 1.2rem;
   gap: 1rem;
   justify-content: flex-start;
-  margin: 0 1em 4px 0;
+  margin: 0 1em 0 0;
 
   .date {
     font-weight: 500;

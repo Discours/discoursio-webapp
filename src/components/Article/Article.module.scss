@@ -1,13 +1,11 @@
 h1 {
   @include font-size(4rem);
-
   line-height: 1.1;
   margin-top: 0.5em;
 }
 
 h2 {
   @include font-size(4rem);
-
   line-height: 1.1;
 }
 
@@ -72,7 +70,6 @@ img {
     &[data-float='left'],
     &[data-float='right'] {
       @include font-size(2.2rem);
-
       line-height: 1.4;
     }
 
@@ -97,9 +94,7 @@ img {
   ta-border-sub {
     background: #f1f2f3;
     display: block;
-
     @include font-size(1.4rem);
-
     margin: 3.2rem 0;
     padding: 3.2rem;
 
@@ -178,7 +173,7 @@ img {
 
   :global(.img-align-left) {
     float: left;
-    margin: 1em 8.3333% 0.5em 0;
+    margin: 1em 8.3333% 1.5em 0;
   }
 
   :global(.width-30) {
@@ -197,7 +192,7 @@ img {
 
   :global(.img-align-right) {
     float: right;
-    margin: 1em 0 0.5em 8.3333%;
+    margin: 1em 0 1.5em 8.3333%;
   }
 
   :global(.img-align-right.width-50) {
@@ -309,7 +304,6 @@ img {
 
 .shoutStatsItem {
   @include font-size(1.5rem);
-
   align-items: center;
   font-weight: 500;
   display: flex;
@@ -422,7 +416,6 @@ img {
 
 .topicsList {
   @include font-size(1.2rem);
-
   border-bottom: 1px solid #e8e8e8;
   letter-spacing: 0.08em;
   margin-top: 1.6rem;
@@ -468,7 +461,6 @@ img {
 
 .commentsHeader {
   @include font-size(2.4rem);
-
   margin-bottom: 1em;
 
   .newReactions {
@@ -502,7 +494,6 @@ img {
 
   button {
     @include font-size(1.5rem);
-
     border-radius: 0.8rem;
     margin-right: 1.2rem;
     padding: 0.9rem 1.2rem;
@@ -591,7 +582,6 @@ a[data-toggle='tooltip'] {
 
 .lead {
   @include font-size(1.8rem);
-
   font-weight: 600;
 
   b,

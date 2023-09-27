@@ -51,7 +51,8 @@ export default defineConfig(() => {
         '@tiptap/extension-text',
         '@tiptap/extension-paragraph',
         '@tiptap/extension-bold',
-        '@tiptap/extension-italic'
+        '@tiptap/extension-italic',
+        '@tiptap/extension-blockquote'
       ]
     }
   }

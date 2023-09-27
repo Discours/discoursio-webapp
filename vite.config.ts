@@ -50,7 +50,8 @@ export default defineConfig(() => {
         'prosemirror-schema-list',
         '@tiptap/extension-text',
         '@tiptap/extension-paragraph',
-        '@tiptap/extension-bold'
+        '@tiptap/extension-bold',
+        '@tiptap/extension-italic'
       ]
     }
   }

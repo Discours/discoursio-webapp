@@ -1,4 +1,4 @@
-import { Accessor, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'
@@ -231,6 +231,9 @@ export const EditView = (props: Props) => {
     setIsLeadVisible(true)
   }
 
+  createEffect(() => {
+    console.log("!!!  props.shout.layout !== 'audio':", props.shout.layout)
+  })
   return (
     <>
       <div class={styles.container}>
@@ -259,12 +262,12 @@ export const EditView = (props: Props) => {
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
                 <Show when={page().route === 'edit'}>
                   <div class={styles.headingActions}>
-                    <Show when={!isSubtitleVisible()}>
+                    <Show when={!isSubtitleVisible() && props.shout.layout !== 'audio'}>
                       <div class={styles.action} onClick={showSubtitleInput}>
                         {t('Add subtitle')}
                       </div>
                     </Show>
-                    <Show when={!isLeadVisible()}>
+                    <Show when={!isLeadVisible() && props.shout.layout !== 'audio'}>
                       <div class={styles.action} onClick={showLeadInput}>
                         {t('Add intro')}
                       </div>

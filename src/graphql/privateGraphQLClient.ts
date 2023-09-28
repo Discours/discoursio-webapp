@@ -1,16 +1,7 @@
-import {
-  ClientOptions,
-  dedupExchange,
-  fetchExchange,
-  Exchange,
-  subscriptionExchange,
-  createClient
-} from '@urql/core'
-// import { createClient as createSubClient } from 'graphql-sse'
-import { createClient as createWSClient } from 'graphql-ws'
+import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
+
 import { devtoolsExchange } from '@urql/devtools'
 import { isDev, apiBaseUrl } from '../utils/config'
-// import { cache } from './cache'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
@@ -54,25 +45,3 @@ const options: ClientOptions = {
 }
 
 export const privateGraphQLClient = createClient(options)
-
-export const createSubClient = () => {
-  const subClient = createWSClient({
-    url: apiBaseUrl.replace('http', 'ws') // + '/messages'
-  })
-
-  const subExchange = subscriptionExchange({
-    forwardSubscription(operation) {
-      return {
-        subscribe: (sink) => {
-          const dispose = subClient.subscribe(operation, sink)
-          return {
-            unsubscribe: dispose
-          }
-        }
-      }
-    }
-  })
-
-  options.exchanges.unshift(subExchange)
-  return createClient(options)
-}

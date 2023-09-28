@@ -126,12 +126,14 @@ export const AuthorView = (props: Props) => {
     <div class={styles.authorPage}>
       <div class="wide-container">
         <Show when={author()}>
-          <AuthorCard
-            author={author()}
-            isAuthorPage={true}
-            followers={followers()}
-            following={following()}
-          />
+          <div class={styles.authorHeader}>
+            <AuthorCard
+              author={author()}
+              isAuthorPage={true}
+              followers={followers()}
+              following={following()}
+            />
+          </div>
         </Show>
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
@@ -204,33 +206,33 @@ export const AuthorView = (props: Props) => {
 
         <Match when={page().route === 'author'}>
           <Show when={sortedArticles().length === 1}>
-            <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
+            <Row1 article={sortedArticles()[0]} noAuthorLink={true} nodate={true} />
           </Show>
 
           <Show when={sortedArticles().length === 2}>
-            <Row2 articles={sortedArticles()} isEqual={true} noAuthorLink={true} />
+            <Row2 articles={sortedArticles()} isEqual={true} noAuthorLink={true} nodate={true} />
           </Show>
 
           <Show when={sortedArticles().length === 3}>
-            <Row3 articles={sortedArticles()} noAuthorLink={true} />
+            <Row3 articles={sortedArticles()} noAuthorLink={true} nodate={true} />
           </Show>
 
           <Show when={sortedArticles().length > 3}>
-            <Row1 article={sortedArticles()[0]} noAuthorLink={true} />
+            <Row1 article={sortedArticles()[0]} noAuthorLink={true} nodate={true} />
             <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noAuthorLink={true} />
-            <Row1 article={sortedArticles()[3]} noAuthorLink={true} />
+            <Row1 article={sortedArticles()[3]} noAuthorLink={true} nodate={true} />
             <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noAuthorLink={true} />
-            <Row1 article={sortedArticles()[6]} noAuthorLink={true} />
+            <Row1 article={sortedArticles()[6]} noAuthorLink={true} nodate={true} />
             <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noAuthorLink={true} />
 
             <For each={shouts()}>
               {(shout) => (
                 <>
-                  <Row1 article={shout[0]} noAuthorLink={true} />
+                  <Row1 article={shout[0]} noAuthorLink={true} nodate={true} />
                   <Row2 articles={shout.slice(1, 3)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={shout[3]} noAuthorLink={true} />
+                  <Row1 article={shout[3]} noAuthorLink={true} nodate={true} />
                   <Row2 articles={shout.slice(4, 6)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={shout[6]} noAuthorLink={true} />
+                  <Row1 article={shout[6]} noAuthorLink={true} nodate={true} />
                   <Row2 articles={shout.slice(7, 9)} isEqual={true} noAuthorLink={true} />
                 </>
               )}

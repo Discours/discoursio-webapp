@@ -1,5 +1,5 @@
 .author {
-  align-items: baseline;
+  align-items: center;
   display: flex;
   flex-flow: row nowrap;
   margin-bottom: 1.6rem;
@@ -226,8 +226,10 @@
   }
 
   .button {
+    padding-left: 2rem;
+    padding-right: 2rem;
     margin-right: 0.5em;
-    width: 9em;
+    //width: 9em;
 
     &:first-of-type {
       margin-left: 0;
@@ -256,7 +258,7 @@
 .authorSubscribeSocial {
   align-items: center;
   display: flex;
-  margin: 0 0.8rem 2rem;
+  margin: 0 0.8rem 2rem 0;
 
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
@@ -318,25 +320,32 @@
   }
 }
 
+.buttonWriteAuthorPage {
+  background: #f6f6f6 !important;
+  border-radius: 0.8rem;
+}
+
 .authorPage {
+  align-items: center;
+
   @include media-breakpoint-down(md) {
     justify-content: center;
   }
 
   .authorName {
-    @include font-size(3.4rem);
-
-    font-weight: 500;
+    @include font-size(4rem);
+    font-weight: 700;
     margin-bottom: 0.2em;
   }
 
   .authorAbout {
-    @include font-size(2rem);
     color: #696969;
+    @include font-size(2rem);
+    font-weight: 500;
   }
 
   .authorSubscribe {
-    margin: 2rem -0.8rem 0;
+    margin: 2rem -0.8rem 0 0;
     padding-left: 0;
 
     @include media-breakpoint-down(md) {
@@ -391,7 +400,7 @@
 
   .button {
     min-height: 4rem;
-    margin: 0 0.8rem;
+    margin: 0 0.8rem 0 0;
     vertical-align: middle;
 
     @include media-breakpoint-down(sm) {
@@ -431,12 +440,12 @@
 .authorComments {
   .authorName {
     @include font-size(1.2rem);
-
+    line-height: 1.2;
     margin-bottom: 0;
   }
 
   .circlewrap {
-    margin-top: -0.6em;
+    margin-top: -0.4em;
   }
 }
 
@@ -496,11 +505,21 @@
     &:not(:first-child) {
       margin-left: -1.8rem;
     }
+
+    > * {
+      line-height: 1.8rem;
+      min-width: auto;
+    }
   }
 }
 
 .subscribersCounter {
+  font-weight: 500;
   margin-left: -0.6rem;
+
+  &:hover {
+    color: #696969;
+  }
 }
 
 .listWrapper {

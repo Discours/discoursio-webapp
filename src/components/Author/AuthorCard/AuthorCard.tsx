@@ -354,7 +354,7 @@ export const AuthorCard = (props: Props) => {
                     <button
                       class={styles.button}
                       classList={{
-                        [styles.buttonSubscribe]: !props.isAuthorsList,
+                        [styles.buttonWriteAuthorPage]: !props.isAuthorsList,
                         'button--subscribe': !props.isAuthorsList,
                         'button--subscribe-topic': props.isAuthorsList,
                         [styles.buttonWrite]: props.liteButtons && props.isAuthorsList

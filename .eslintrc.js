@@ -67,7 +67,7 @@ module.exports = {
     'unicorn/no-array-callback-reference': 'warn',
     'unicorn/no-array-method-this-argument': 'warn',
 
-    'sonarjs/no-duplicate-string': ['warn', 5],
+    'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
 
     // Promise
     // 'promise/catch-or-return': 'off',  // Should be enabled

@@ -33,7 +33,7 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
     changeLanguage(lng)
     setLang(lng)
     Cookie.set('lng', lng)
-    changeSearchParam('lng', null)
+    changeSearchParam({ lng: null })
   })
 
   const value: LocalizeContextType = { t, lang, setLang }

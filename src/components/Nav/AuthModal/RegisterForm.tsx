@@ -198,7 +198,9 @@ export const RegisterForm = () => {
                     href="#"
                     onClick={(event) => {
                       event.preventDefault()
-                      changeSearchParam('mode', 'login')
+                      changeSearchParam({
+                        mode: 'login'
+                      })
                     }}
                   >
                     {t('enter')}
@@ -246,7 +248,14 @@ export const RegisterForm = () => {
             <SocialProviders />
 
             <div class={styles.authControl}>
-              <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'login')}>
+              <span
+                class={styles.authLink}
+                onClick={() =>
+                  changeSearchParam({
+                    mode: 'login'
+                  })
+                }
+              >
                 {t('I have an account')}
               </span>
             </div>

@@ -84,7 +84,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const scrollToComments = (event) => {
     event.preventDefault()
     openPage(router, 'article', { slug: props.article.slug })
-    changeSearchParam('scrollTo', 'comments')
+    changeSearchParam({
+      scrollTo: 'comments'
+    })
   }
 
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)

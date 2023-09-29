@@ -97,7 +97,9 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
-      changeSearchParam('scrollTo', null)
+      changeSearchParam({
+        scrollTo: null
+      })
     }
   })
 

@@ -38,7 +38,9 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
 
   onMount(() => {
     if (!searchParams().by) {
-      changeSearchParam('by', 'shouts')
+      changeSearchParam({
+        by: 'shouts'
+      })
     }
   })
 
@@ -47,16 +49,19 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   })
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
-    return sortedAuthors().reduce((acc, author) => {
-      let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
+    return sortedAuthors().reduce(
+      (acc, author) => {
+        let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
 
-      if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '@'
+        if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '@'
 
-      if (!acc[letter]) acc[letter] = []
+        if (!acc[letter]) acc[letter] = []
 
-      acc[letter].push(author)
-      return acc
-    }, {} as { [letter: string]: Author[] })
+        acc[letter].push(author)
+        return acc
+      },
+      {} as { [letter: string]: Author[] }
+    )
   })
 
   const sortedKeys = createMemo<string[]>(() => {

@@ -58,7 +58,9 @@ const { searchParams, changeSearchParam } = useRouter<
 
 export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
   if (modalSource) {
-    changeSearchParam('source', modalSource)
+    changeSearchParam({
+      source: modalSource
+    })
   }
 
   setModal(modalType)
@@ -66,15 +68,19 @@ export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) =
 
 // TODO: find a better solution
 export const hideModal = () => {
-  if (searchParams().modal === 'auth') {
-    if (searchParams().mode === 'confirm-email') {
-      changeSearchParam('token', null, true)
-    }
-    changeSearchParam('mode', null, true)
+  const newSearchParams: Partial<AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams> = {
+    modal: null,
+    source: null
   }
 
-  changeSearchParam('modal', null, true)
-  changeSearchParam('source', null)
+  if (searchParams().modal === 'auth') {
+    if (searchParams().mode === 'confirm-email') {
+      newSearchParams.token = null
+    }
+    newSearchParams.mode = null
+  }
+
+  changeSearchParam(newSearchParams, true)
 
   setModal(null)
 }

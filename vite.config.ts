@@ -58,7 +58,8 @@ export default defineConfig(() => {
         'prosemirror-view',
         '@tiptap/extension-link',
         '@tiptap/extension-image',
-        '@tiptap/extension-character-count'
+        '@tiptap/extension-character-count',
+        'clsx'
       ]
     }
   }

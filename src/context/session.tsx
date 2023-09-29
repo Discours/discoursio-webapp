@@ -74,8 +74,8 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const signIn = async ({ email, password }: { email: string; password: string }) => {
     const authResult = await apiClient.authLogin({ email, password })
-    mutate(authResult)
     setToken(authResult.token)
+    mutate(authResult)
     console.debug('signed in')
   }
 

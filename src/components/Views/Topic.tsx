@@ -88,7 +88,14 @@ export const TopicView = (props: TopicProps) => {
                     'view-switcher__item--selected': searchParams().by === 'recent' || !searchParams().by
                   }}
                 >
-                  <button type="button" onClick={() => changeSearchParam('by', 'recent')}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      changeSearchParam({
+                        by: 'recent'
+                      })
+                    }
+                  >
                     {t('Recent')}
                   </button>
                 </li>

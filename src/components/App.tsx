@@ -1,7 +1,7 @@
 // FIXME: breaks on vercel, research
 // import 'solid-devtools'
 
-import { MODALS, showModal } from '../stores/ui'
+import { hideModal, MODALS, showModal } from '../stores/ui'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { ROUTES, useRouter } from '../stores/router'
 import { Dynamic } from 'solid-js/web'
@@ -89,6 +89,10 @@ export const App = (props: PageProps) => {
   const { page, searchParams } = useRouter<RootSearchParams>()
 
   createEffect(() => {
+    if (!searchParams().modal) {
+      hideModal()
+    }
+
     const modal = MODALS[searchParams().modal]
     if (modal) {
       showModal(modal)

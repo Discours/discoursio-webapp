@@ -115,7 +115,9 @@ export const ForgotPasswordForm = () => {
               href="#"
               onClick={(event) => {
                 event.preventDefault()
-                changeSearchParam('mode', 'register')
+                changeSearchParam({
+                  mode: 'register'
+                })
               }}
             >
               {t('register')}
@@ -132,7 +134,14 @@ export const ForgotPasswordForm = () => {
           </button>
         </div>
         <div class={styles.authControl}>
-          <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'login')}>
+          <span
+            class={styles.authLink}
+            onClick={() =>
+              changeSearchParam({
+                mode: 'login'
+              })
+            }
+          >
             {t('I know the password')}
           </span>
         </div>

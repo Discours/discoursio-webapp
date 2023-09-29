@@ -1,6 +1,9 @@
 import { createEffect, JSX, Show } from 'solid-js'
 import { useSession } from '../../context/session'
 import { hideModal, showModal } from '../../stores/ui'
+import { useRouter } from '../../stores/router'
+import { RootSearchParams } from '../../pages/types'
+import { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
 type Props = {
   children: JSX.Element
@@ -9,6 +12,7 @@ type Props = {
 
 export const AuthGuard = (props: Props) => {
   const { isAuthenticated, isSessionLoaded } = useSession()
+  const { changeSearchParam } = useRouter<RootSearchParams & AuthModalSearchParams>()
 
   createEffect(() => {
     if (props.disabled) {
@@ -18,7 +22,13 @@ export const AuthGuard = (props: Props) => {
       if (isAuthenticated()) {
         hideModal()
       } else {
-        showModal('auth', 'authguard')
+        changeSearchParam(
+          {
+            source: 'authguard',
+            modal: 'auth'
+          },
+          true
+        )
       }
     }
   })

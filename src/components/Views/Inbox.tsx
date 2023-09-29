@@ -64,7 +64,9 @@ export const InboxView = () => {
 
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
-    changeSearchParam('chat', `${chat.id}`)
+    changeSearchParam({
+      chat: chat.id
+    })
     try {
       await getMessages(chat.id)
     } catch (error) {
@@ -121,8 +123,10 @@ export const InboxView = () => {
       try {
         const newChat = await createChat([Number(searchParams().initChat)], '')
         await loadChats()
-        changeSearchParam('initChat', null)
-        changeSearchParam('chat', newChat.chat.id)
+        changeSearchParam({
+          initChat: null,
+          chat: newChat.chat.id
+        })
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen)
       } catch (error) {

@@ -40,15 +40,9 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           <a href={getPagePath(router, 'profileSettings')}>{t('Settings')}</a>
         </li>
         <li class={styles.topBorderItem}>
-          <a
-            href="#"
-            onClick={(event) => {
-              event.preventDefault()
-              signOut()
-            }}
-          >
+          <span class="link" onClick={() => signOut()}>
             {t('Logout')}
-          </a>
+          </span>
         </li>
       </ul>
     </Popup>

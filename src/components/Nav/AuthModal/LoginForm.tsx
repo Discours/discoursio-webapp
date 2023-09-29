@@ -195,11 +195,12 @@ export const LoginForm = () => {
         </div>
         <div class={styles.authActions}>
           <span
-            class={'link'}
-            onClick={(ev) => {
-              ev.preventDefault()
-              changeSearchParam('mode', 'forgot-password')
-            }}
+            class="link"
+            onClick={() =>
+              changeSearchParam({
+                mode: 'forgot-password'
+              })
+            }
           >
             {t('Forgot password?')}
           </span>
@@ -210,7 +211,14 @@ export const LoginForm = () => {
         <SocialProviders />
 
         <div class={styles.authControl}>
-          <span class={styles.authLink} onClick={() => changeSearchParam('mode', 'register')}>
+          <span
+            class={styles.authLink}
+            onClick={() =>
+              changeSearchParam({
+                mode: 'register'
+              })
+            }
+          >
             {t('I have no account yet')}
           </span>
         </div>

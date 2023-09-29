@@ -28,7 +28,9 @@ export default () => {
                 class="button"
                 onClick={() => {
                   showModal('auth')
-                  changeSearchParam('mode', 'register')
+                  changeSearchParam({
+                    mode: 'register'
+                  })
                 }}
               >
                 {t('Join the community')}

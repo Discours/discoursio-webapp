@@ -185,7 +185,7 @@
   }
 
   @include media-breakpoint-up(md) {
-    a,
+    span,
     button {
       padding: 0 0.4rem;
     }
@@ -250,8 +250,8 @@
 }
 
 .mainNavigationItemActive {
-  background: #000;
-  color: #fff !important;
+  background: var(--link-hover-background);
+  color: var(--link-hover-color);
 }
 
 .headerWithTitle.headerScrolledBottom {
@@ -306,7 +306,9 @@
   &::after,
   &::before {
     transform-origin: center !important;
-    transition: top 0.3s, transform 0.3s;
+    transition:
+      top 0.3s,
+      transform 0.3s;
   }
 
   &::after {
@@ -338,7 +340,9 @@
 .articleHeader,
 .articleControls {
   opacity: 0;
-  transition: opacity 0.3s, z-index 0s 0.3s;
+  transition:
+    opacity 0.3s,
+    z-index 0s 0.3s;
   z-index: -1;
 
   .headerScrolledBottom & {
@@ -435,7 +439,9 @@
   z-index: 1;
 
   .headerWithTitle.headerScrolledBottom & {
-    transition: opacity 0.3s, z-index 0s 0.3s;
+    transition:
+      opacity 0.3s,
+      z-index 0s 0.3s;
     opacity: 0;
     z-index: -1;
   }
@@ -590,7 +596,7 @@
   }
 
   a:hover {
-    background-color: var(--link-hover-background) !important;
+    //background-color: var(--link-hover-background) !important;
   }
 }
 

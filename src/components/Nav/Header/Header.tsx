@@ -184,16 +184,13 @@ export const Header = (props: Props) => {
             </Show>
             <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
               <ul class="view-switcher">
-                <li classList={{ 'view-switcher__item--selected': page().route === 'home' }}>
-                  <a
-                    classList={{ [styles.mainNavigationItemActive]: isZineVisible() }}
-                    onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
-                    onMouseOut={hideSubnavigation}
-                    href={getPagePath(router, 'home')}
-                  >
-                    {t('zine')}
-                  </a>
-                </li>
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
+                  onMouseOut={() => hideSubnavigation}
+                  routeName="home"
+                  active={isZineVisible()}
+                  body={t('zine')}
+                />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
                   onMouseOut={() => hideSubnavigation}

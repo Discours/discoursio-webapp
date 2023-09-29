@@ -16,13 +16,13 @@ export const Link = (props: Props) => {
   const { page } = useRouter()
   const isSelected = page().route === props.routeName
   return (
-    <li classList={{ 'view-switcher__item--selected': isSelected }}>
+    <li classList={{ 'view-switcher__item--selected': page().route === props.routeName }}>
       <ConditionalWrapper
         condition={!isSelected && Boolean(props.routeName)}
         wrapper={(children) => <a href={getPagePath(router, props.routeName)}>{children}</a>}
       >
         <span
-          class={clsx('cursorPointer', { [styles.mainNavigationItemActive]: props.active })}
+          class={clsx('cursorPointer linkReplacement', { [styles.mainNavigationItemActive]: props.active })}
           onMouseOver={props.onMouseOver}
           onMouseOut={props.onMouseOut}
         >

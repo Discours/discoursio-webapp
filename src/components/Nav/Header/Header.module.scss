@@ -251,7 +251,7 @@
 
 .mainNavigationItemActive {
   background: var(--link-hover-background);
-  color: var(--link-hover-color);
+  color: var(--link-hover-color) !important;
 }
 
 .headerWithTitle.headerScrolledBottom {

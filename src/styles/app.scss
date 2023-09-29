@@ -619,6 +619,7 @@ figure {
   }
 
   a,
+  .linkReplacement,
   button {
     border-bottom: 2px solid #fff;
     color: var(--link-color);
@@ -635,6 +636,7 @@ figure {
     font-weight: bold;
 
     a,
+    .linkReplacement,
     button {
       border-bottom: 2px solid #000;
       color: #000;

@@ -205,7 +205,6 @@ export const Editor = (props: Props) => {
           placement: 'top',
           getReferenceClientRect: () => {
             const selectedElement = editor().view.dom.querySelector('.has-focus')
-            console.log('!!! selectedElement (blockquoteBubbleMenu):', selectedElement)
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }
@@ -225,7 +224,6 @@ export const Editor = (props: Props) => {
           placement: 'top',
           getReferenceClientRect: () => {
             const selectedElement = editor().view.dom.querySelector('.has-focus')
-            console.log('!!! selectedElement (incutBubbleMenu):', selectedElement)
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }

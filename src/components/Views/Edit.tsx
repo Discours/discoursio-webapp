@@ -231,9 +231,6 @@ export const EditView = (props: Props) => {
     setIsLeadVisible(true)
   }
 
-  createEffect(() => {
-    console.log("!!!  props.shout.layout !== 'audio':", props.shout.layout)
-  })
   return (
     <>
       <div class={styles.container}>

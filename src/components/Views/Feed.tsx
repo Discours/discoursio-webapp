@@ -91,7 +91,7 @@ export const FeedView = () => {
       options.order_by = orderBy
     }
 
-    if (routesWithAuthGuard.has(page().route) && isAuthenticated()) {
+    if (isAuthenticated()) {
       return loadMyFeed(options)
     }
 

@@ -229,7 +229,6 @@
     padding-left: 2rem;
     padding-right: 2rem;
     margin-right: 0.5em;
-    //width: 9em;
 
     &:first-of-type {
       margin-left: 0;
@@ -298,7 +297,9 @@
 .buttonWrite {
   color: #000;
   display: inline-flex;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 
   &:hover {
     background: #000;
@@ -375,6 +376,7 @@
     float: none;
     padding-bottom: 0.6rem;
     padding-top: 0.6rem;
+    width: 10em;
 
     .icon {
       margin-right: 0.5em;

@@ -43,7 +43,7 @@ export const Modal = (props: Props) => {
   return (
     <Show when={visible()}>
       <div class={styles.backdrop} onClick={handleHide}>
-        <div className="wide-container">
+        <div class="wide-container">
           <div
             class={clsx(styles.modal, {
               [styles.narrow]: props.variant === 'narrow',

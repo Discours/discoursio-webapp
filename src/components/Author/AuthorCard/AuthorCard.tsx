@@ -377,7 +377,7 @@ export const AuthorCard = (props: Props) => {
       </div>
 
       <Show when={props.followers}>
-        <Modal variant="wide" name="followers" onClose={handleCloseFollowModals} maxHeight>
+        <Modal variant="medium" name="followers" onClose={handleCloseFollowModals} maxHeight>
           <>
             <h2>{t('Followers')}</h2>
             <div class={styles.listWrapper}>
@@ -404,7 +404,7 @@ export const AuthorCard = (props: Props) => {
       </Show>
 
       <Show when={props.following}>
-        <Modal variant="wide" name="following" onClose={handleCloseFollowModals} maxHeight>
+        <Modal variant="medium" name="following" onClose={handleCloseFollowModals} maxHeight>
           <>
             <h2>{t('Subscriptions')}</h2>
             <ul class="view-switcher">
@@ -447,7 +447,14 @@ export const AuthorCard = (props: Props) => {
                           showPublicationsCounter={true}
                         />
                       ) : (
-                        <TopicCard compact isTopicInRow showDescription isCardMode topic={subscription} />
+                        <TopicCard
+                          compact
+                          isTopicInRow
+                          showDescription
+                          isCardMode
+                          withIcon
+                          topic={subscription}
+                        />
                       )
                     }
                   </For>

@@ -10,12 +10,6 @@
   .groupControls {
     margin-bottom: 6rem !important;
     margin-top: 0 !important;
-
-    @include media-breakpoint-down(md) {
-      border-top: 2px solid #000;
-      margin-top: -1.6rem;
-      padding-top: 1.6rem;
-    }
   }
 }
 
@@ -74,7 +68,9 @@
   overflow: hidden;
   padding-bottom: 4em;
   position: relative;
-  transition: max-height 0.5s, margin-bottom 0s 0.3s;
+  transition:
+    max-height 0.5s,
+    margin-bottom 0s 0.3s;
 
   &:after {
     background-image: linear-gradient(to top, #fff, rgb(255 255 255 / 0.8), rgb(255 255 255 / 0));

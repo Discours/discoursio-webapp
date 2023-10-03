@@ -27,6 +27,7 @@ interface TopicProps {
   isCardMode?: boolean
   minimizeSubscribeButton?: boolean
   isNarrow?: boolean
+  withIcon?: boolean
 }
 
 export const TopicCard = (props: TopicProps) => {
@@ -106,6 +107,14 @@ export const TopicCard = (props: TopicProps) => {
               classList={{ [styles.topicDescriptionShort]: props.shortDescription }}
             >
               {props.topic.body}
+            </div>
+          </Show>
+          <Show when={props.showDescription && !props.topic?.body && props.topic.stat?.shouts > 0}>
+            <div
+              class={clsx(styles.topicDescription)}
+              classList={{ [styles.topicDescriptionShort]: props.shortDescription }}
+            >
+              {props.topic.stat?.shouts} публикаций
             </div>
           </Show>
         </div>

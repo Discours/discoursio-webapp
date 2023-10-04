@@ -167,7 +167,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </a>
         </div>
-
         <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
           <div
             class={clsx(styles.shoutDetails, { [styles.shoutDetailsFeedMode]: props.settings?.isFeedMode })}
@@ -181,6 +180,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                         author={author}
                         hideWriteButton={true}
                         hideFollow={true}
+                        truncateBio={true}
                         isFeedMode={true}
                         hasLink={!props.settings?.noAuthorLink}
                       />

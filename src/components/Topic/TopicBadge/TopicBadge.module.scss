@@ -1,0 +1,60 @@
+.TopicBadge {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .picture {
+    display: block;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 8px;
+    background-color: var(--black-50);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE5LjUgMTQuMjVDMTkuOTE0MSAxNC4yNSAyMC4yNSAxNC41ODU5IDIwLjI1IDE1QzIwLjI1IDE1LjQxNDEgMTkuOTE0MSAxNS43NSAxOS41IDE1Ljc1SDE1Ljc1VjE5LjVDMTUuNzUgMTkuOTE0MSAxNS40MTQxIDIwLjI1IDE1IDIwLjI1QzE0LjU4NTkgMjAuMjUgMTQuMjUgMTkuOTE0MSAxNC4yNSAxOS41VjE1Ljc1SDkuNzVWMTkuNUM5Ljc1IDE5LjkxNDEgOS40MTQwNiAyMC4yNSA5IDIwLjI1QzguNTg1OTQgMjAuMjUgOC4yNSAxOS45MTQxIDguMjUgMTkuNVYxNS43NUg0LjVDNC4wODU5NCAxNS43NSAzLjc1IDE1LjQxNDEgMy43NSAxNUMzLjc1IDE0LjU4NTkgNC4wODU5NCAxNC4yNSA0LjUgMTQuMjVIOC4yNVY5Ljc1SDQuNUM0LjA4NTk0IDkuNzUgMy43NSA5LjQxNDA2IDMuNzUgOUMzLjc1IDguNTg1OTQgNC4wODU5NCA4LjI1IDQuNSA4LjI1SDguMjVWNC41QzguMjUgNC4wODU5NCA4LjU4NTk0IDMuNzUgOSAzLjc1QzkuNDE0MDYgMy43NSA5Ljc1IDQuMDg1OTQgOS43NSA0LjVWOC4yNUgxNC4yNVY0LjVDMTQuMjUgNC4wODU5NCAxNC41ODU5IDMuNzUgMTUgMy43NUMxNS40MTQxIDMuNzUgMTUuNzUgNC4wODU5NCAxNS43NSA0LjVWOC4yNUgxOS41QzE5LjkxNDEgOC4yNSAyMC4yNSA4LjU4NTk0IDIwLjI1IDlDMjAuMjUgOS40MTQwNiAxOS45MTQxIDkuNzUgMTkuNSA5Ljc1SDE1Ljc1VjE0LjI1SDE5LjVaTTkuNzUgMTQuMjVIMTQuMjVWOS43NUg5Ljc1VjE0LjI1WiIgZmlsbD0iIzlGQTFBNyIvPgo8L3N2Zz4K');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    border: none;
+
+    &:hover {
+      background-color: var(--black-50);
+    }
+
+    &.withImage {
+      background-size: cover;
+    }
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    @include font-size(1.4rem);
+
+    &:hover {
+      background: unset;
+    }
+
+    .title {
+      color: var(--blue-500);
+      font-weight: 700;
+    }
+
+    .description {
+      color: var(--black-400);
+    }
+
+    .stat {
+      display: flex;
+      gap: 1rem;
+      flex-direction: row;
+      color: var(--default-color);
+    }
+  }
+
+  .actions {
+    margin-left: auto;
+    padding-left: 1rem;
+  }
+}

@@ -1,12 +1,9 @@
 import { clsx } from 'clsx'
-// import styles from './ProfileSubscriptions.module.scss'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
 import { isAuthor } from '../../../utils/isAuthor'
-import { AuthorCard } from '../../Author/AuthorCard'
-import { TopicCard } from '../../Topic/Card'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { Author, Topic } from '../../../graphql/types.gen'
@@ -16,6 +13,8 @@ import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
 import styles from '../../../pages/profile/Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { TopicBadge } from '../../Topic/TopicBadge'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
@@ -104,23 +103,9 @@ export const ProfileSubscriptions = () => {
                     {(followingItem) => (
                       <div>
                         {isAuthor(followingItem) ? (
-                          <AuthorCard
-                            author={followingItem}
-                            hideWriteButton={true}
-                            hasLink={true}
-                            isTextButton={true}
-                            truncateBio={true}
-                            minimizeSubscribeButton={true}
-                          />
+                          <AuthorBadge minimizeSubscribeButton={true} author={followingItem} />
                         ) : (
-                          <TopicCard
-                            compact
-                            isTopicInRow
-                            showDescription
-                            isCardMode
-                            topic={followingItem}
-                            minimizeSubscribeButton={true}
-                          />
+                          <TopicBadge minimizeSubscribeButton={true} topic={followingItem} />
                         )}
                       </div>
                     )}

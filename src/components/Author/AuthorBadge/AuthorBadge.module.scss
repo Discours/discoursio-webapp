@@ -1,0 +1,32 @@
+.AuthorBadge {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+
+  .info {
+    @include font-size(1.4rem);
+
+    display: flex;
+    flex-direction: column;
+    border: none;
+
+    &:hover {
+      background: unset;
+    }
+
+    .name {
+      color: var(--default-color);
+      font-weight: 500;
+    }
+
+    .bio {
+      color: var(--black-400);
+    }
+  }
+
+  .actions {
+    margin-left: auto;
+    padding-left: 1rem;
+  }
+}

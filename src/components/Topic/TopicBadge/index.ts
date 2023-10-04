@@ -1,0 +1,1 @@
+export { TopicBadge } from './TopicBadge'

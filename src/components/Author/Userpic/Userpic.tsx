@@ -13,8 +13,8 @@ type Props = {
   onClick?: () => void
   loading?: boolean
   isBig?: boolean
+  isMedium?: boolean
   hasLink?: boolean
-
   isAuthorsList?: boolean
   isFeedMode?: boolean
 }
@@ -30,6 +30,7 @@ export const Userpic = (props: Props) => {
     <div
       class={clsx(styles.Userpic, props.class, {
         [styles.big]: props.isBig,
+        [styles.medium]: props.isMedium,
         [styles.authorsList]: props.isAuthorsList,
         [styles.feedMode]: props.isFeedMode,
         ['cursorPointer']: props.onClick

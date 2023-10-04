@@ -12,6 +12,27 @@
     margin-bottom: 2.4rem;
   }
 
+  .listWrapper & {
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    @include media-breakpoint-down(sm) {
+      margin-bottom: 3rem;
+    }
+
+    @include media-breakpoint-between(md, lg) {
+      margin-bottom: 3rem;
+    }
+
+    .circlewrap {
+      margin-top: 1rem;
+    }
+
+    .authorDetailsWrapper {
+      margin-bottom: 1rem;
+    }
+  }
+
   @include media-breakpoint-down(lg) {
     flex-wrap: wrap;
   }
@@ -40,6 +61,7 @@
 
 .authorDetailsWrapper {
   flex: 1 0;
+  position: relative;
 
   @include media-breakpoint-up(sm) {
     flex: 1;
@@ -64,18 +86,28 @@
   font-weight: 500;
   line-height: 2;
   margin-bottom: 0.8rem;
+
+  .listWrapper &:before {
+    content: '';
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+  }
 }
 
 .authorAbout {
   color: rgb(0 0 0 / 60%);
   font-size: 1.4rem;
-  line-height: 1.4;
+  font-weight: 500;
+  line-height: 1.3;
   word-break: break-word;
 }
 
 .authorSubscribe {
   align-items: center;
-  //display: flex;
 
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;
@@ -229,7 +261,6 @@
     padding-left: 2rem;
     padding-right: 2rem;
     margin-right: 0.5em;
-    //width: 9em;
 
     &:first-of-type {
       margin-left: 0;
@@ -298,7 +329,9 @@
 .buttonWrite {
   color: #000;
   display: inline-flex;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 
   &:hover {
     background: #000;
@@ -375,6 +408,7 @@
     float: none;
     padding-bottom: 0.6rem;
     padding-top: 0.6rem;
+    width: 10em;
 
     .icon {
       margin-right: 0.5em;
@@ -524,7 +558,6 @@
 
 .listWrapper {
   max-height: 70vh;
-  overflow: auto;
   //padding-right: 2rem;
 
   :global(.row) {
@@ -533,14 +566,19 @@
 }
 
 .switcherCounter {
+  align-items: center;
   background: #f7f7f8;
   border-radius: 0.8rem;
-  display: inline-block;
+  display: inline-flex;
   font-size: 1.2rem;
   font-weight: bold;
-  line-height: 1.2;
+  height: 2.2rem;
+  justify-content: center;
+  line-height: 2.2rem;
   margin-left: 0.4rem;
-  padding: 0.4rem 0.6rem;
+  min-width: 2.2rem;
+  padding: 0 0.6rem;
+  text-align: center;
 }
 
 :global(.view-switcher__item--selected) .switcherCounter {

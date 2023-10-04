@@ -16,18 +16,16 @@
 .modal {
   background: #fff;
   max-width: 1000px;
-  padding: 5.4rem 2.4rem 2.4rem;
   position: relative;
   width: 100%;
 
   @include media-breakpoint-up(sm) {
-    padding: 4.2rem;
     width: 80%;
   }
 
   .close {
     position: absolute;
-    top: 1.6rem;
+    top: 2rem;
     cursor: pointer;
     height: 18px;
     width: 16px;
@@ -38,7 +36,7 @@
     z-index: 1;
 
     @include media-breakpoint-up(sm) {
-      right: 1.6rem;
+      right: 2rem;
     }
 
     &:hover {
@@ -74,9 +72,30 @@
   }
 }
 
+.modalInner {
+  overflow: auto;
+  padding: 5.4rem 2.4rem 2.4rem;
+  position: relative;
+
+  @include media-breakpoint-up(sm) {
+    padding: 5rem;
+  }
+}
+
 .noPadding {
   background: none;
-  padding: 0 2rem;
+  left: 50%;
+  padding: 0;
+  transform: translateX(-50%);
+
+  .modalInner {
+    padding: 0 2rem;
+  }
+
+  .close {
+    right: 2rem;
+    top: 2rem;
+  }
 }
 
 .maxHeight {

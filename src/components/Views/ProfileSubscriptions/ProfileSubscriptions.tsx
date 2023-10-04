@@ -106,22 +106,9 @@ export const ProfileSubscriptions = () => {
                     {(followingItem) => (
                       <div>
                         {isAuthor(followingItem) ? (
-                          <AuthorBadge author={followingItem} />
+                          <AuthorBadge minimizeSubscribeButton={true} author={followingItem} />
                         ) : (
-                          //   author={followingItem}
-                          //   hideWriteButton={true}
-                          //   hasLink={true}
-                          //   isTextButton={true}
-                          //   truncateBio={true}
-                          //   minimizeSubscribeButton={true}
-                          // />
-                          <TopicBadge topic={followingItem} />
-                          // compact
-                          // isTopicInRow
-                          // showDescription
-                          // isCardMode
-                          // topic={followingItem}
-                          // minimizeSubscribeButton={true}
+                          <TopicBadge minimizeSubscribeButton={true} topic={followingItem} />
                         )}
                       </div>
                     )}

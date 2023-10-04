@@ -8,10 +8,11 @@ import { Button } from '../../_shared/Button'
 import { useSession } from '../../../context/session'
 import { useLocalize } from '../../../context/localize'
 import { follow, unfollow } from '../../../stores/zine/common'
+import { CheckButton } from '../../_shared/CheckButton'
 
 type Props = {
-  class?: string
   topic: Topic
+  minimizeSubscribeButton?: boolean
 }
 
 export const TopicBadge = (props: Props) => {
@@ -42,9 +43,8 @@ export const TopicBadge = (props: Props) => {
     setIsSubscribing(false)
   }
 
-  console.log('!!! :', props.topic.stat)
   return (
-    <div class={clsx(styles.TopicBadge, props.class)}>
+    <div class={styles.TopicBadge}>
       <a
         href={`/topic/${props.topic.slug}`}
         class={clsx(styles.picture, { [styles.withImage]: props.topic.pic })}
@@ -76,22 +76,33 @@ export const TopicBadge = (props: Props) => {
       <Show when={isAuthenticated()}>
         <div class={styles.actions}>
           <Show
-            when={subscribed()}
+            when={!props.minimizeSubscribeButton}
             fallback={
-              <Button
-                variant="primary"
-                size="S"
-                value={isSubscribing() ? t('...subscribing') : t('Subscribe')}
-                onClick={() => subscribe(true)}
+              <CheckButton
+                text={t('Follow')}
+                checked={subscribed()}
+                onClick={() => subscribe(!subscribed)}
               />
             }
           >
-            <Button
-              onClick={() => subscribe(false)}
-              variant="secondary"
-              size="S"
-              value={t('You are subscribed')}
-            />
+            <Show
+              when={subscribed()}
+              fallback={
+                <Button
+                  variant="primary"
+                  size="S"
+                  value={isSubscribing() ? t('...subscribing') : t('Subscribe')}
+                  onClick={() => subscribe(true)}
+                />
+              }
+            >
+              <Button
+                onClick={() => subscribe(false)}
+                variant="secondary"
+                size="S"
+                value={t('You are subscribed')}
+              />
+            </Show>
           </Show>
         </div>
       </Show>

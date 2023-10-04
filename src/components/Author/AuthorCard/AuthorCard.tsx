@@ -20,6 +20,8 @@ import { getNumeralsDeclension } from '../../../utils/getNumeralsDeclension'
 import { SubscriptionFilter } from '../../../pages/types'
 import { isAuthor } from '../../../utils/isAuthor'
 import { CheckButton } from '../../_shared/CheckButton'
+import { AuthorBadge } from '../AuthorBadge'
+import { TopicBadge } from '../../Topic/TopicBadge'
 
 type Props = {
   caption?: string
@@ -42,7 +44,6 @@ type Props = {
   followers?: Author[]
   following?: Array<Author | Topic>
   showPublicationsCounter?: boolean
-  minimizeSubscribeButton?: boolean
 }
 
 export const AuthorCard = (props: Props) => {
@@ -279,35 +280,12 @@ export const AuthorCard = (props: Props) => {
                       <For each={props.author.links}>{(link) => <a href={link} />}</For>
                     </div>
                   </Show>
-                  <Show when={!props.minimizeSubscribeButton}>
-                    <Show
-                      when={subscribed()}
-                      fallback={
-                        <button
-                          onClick={handleSubscribe}
-                          class={clsx('button', styles.button)}
-                          classList={{
-                            [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
-                            'button--subscribe': !props.isAuthorsList,
-                            'button--subscribe-topic': props.isAuthorsList || props.isTextButton,
-                            [styles.buttonWrite]: props.isAuthorsList || props.isTextButton,
-                            [styles.isSubscribing]: isSubscribing()
-                          }}
-                          disabled={isSubscribing()}
-                        >
-                          <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
-                            <Icon name="author-subscribe" class={styles.icon} />
-                          </Show>
-                          <Show when={props.isTextButton || props.isAuthorPage}>
-                            <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
-                              {t('Follow')}
-                            </span>
-                          </Show>
-                        </button>
-                      }
-                    >
+
+                  <Show
+                    when={subscribed()}
+                    fallback={
                       <button
-                        onClick={() => subscribe(false)}
+                        onClick={handleSubscribe}
                         class={clsx('button', styles.button)}
                         classList={{
                           [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
@@ -319,37 +297,52 @@ export const AuthorCard = (props: Props) => {
                         disabled={isSubscribing()}
                       >
                         <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
-                          <Icon name="author-unsubscribe" class={styles.icon} />
+                          <Icon name="author-subscribe" class={styles.icon} />
                         </Show>
                         <Show when={props.isTextButton || props.isAuthorPage}>
-                          <span
-                            class={clsx(
-                              styles.buttonLabel,
-                              styles.buttonLabelVisible,
-                              styles.buttonUnfollowLabel
-                            )}
-                          >
-                            {t('Unfollow')}
-                          </span>
-                          <span
-                            class={clsx(
-                              styles.buttonLabel,
-                              styles.buttonLabelVisible,
-                              styles.buttonSubscribedLabel
-                            )}
-                          >
-                            {t('You are subscribed')}
+                          <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
+                            {t('Follow')}
                           </span>
                         </Show>
                       </button>
-                    </Show>
-                  </Show>
-                  <Show when={props.minimizeSubscribeButton}>
-                    <CheckButton
-                      text={t('Follow')}
-                      checked={subscribed()}
+                    }
+                  >
+                    <button
                       onClick={() => subscribe(false)}
-                    />
+                      class={clsx('button', styles.button)}
+                      classList={{
+                        [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
+                        'button--subscribe': !props.isAuthorsList,
+                        'button--subscribe-topic': props.isAuthorsList || props.isTextButton,
+                        [styles.buttonWrite]: props.isAuthorsList || props.isTextButton,
+                        [styles.isSubscribing]: isSubscribing()
+                      }}
+                      disabled={isSubscribing()}
+                    >
+                      <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
+                        <Icon name="author-unsubscribe" class={styles.icon} />
+                      </Show>
+                      <Show when={props.isTextButton || props.isAuthorPage}>
+                        <span
+                          class={clsx(
+                            styles.buttonLabel,
+                            styles.buttonLabelVisible,
+                            styles.buttonUnfollowLabel
+                          )}
+                        >
+                          {t('Unfollow')}
+                        </span>
+                        <span
+                          class={clsx(
+                            styles.buttonLabel,
+                            styles.buttonLabelVisible,
+                            styles.buttonSubscribedLabel
+                          )}
+                        >
+                          {t('You are subscribed')}
+                        </span>
+                      </Show>
+                    </button>
                   </Show>
 
                   <Show when={!props.hideWriteButton}>
@@ -384,17 +377,7 @@ export const AuthorCard = (props: Props) => {
               <div class="row">
                 <div class="col-24">
                   <For each={props.followers}>
-                    {(follower: Author) => (
-                      <AuthorCard
-                        author={follower}
-                        hideWriteButton={true}
-                        hasLink={true}
-                        isTextButton={true}
-                        liteButtons={true}
-                        truncateBio={true}
-                        showPublicationsCounter={true}
-                      />
-                    )}
+                    {(follower: Author) => <AuthorBadge author={follower} />}
                   </For>
                 </div>
               </div>
@@ -438,16 +421,9 @@ export const AuthorCard = (props: Props) => {
                   <For each={following()}>
                     {(subscription) =>
                       isAuthor(subscription) ? (
-                        <AuthorCard
-                          author={subscription}
-                          hideWriteButton={true}
-                          hasLink={true}
-                          isTextButton={true}
-                          truncateBio={true}
-                          showPublicationsCounter={true}
-                        />
+                        <AuthorBadge author={subscription} />
                       ) : (
-                        <TopicCard compact isTopicInRow showDescription isCardMode topic={subscription} />
+                        <TopicBadge topic={subscription} />
                       )
                     }
                   </For>

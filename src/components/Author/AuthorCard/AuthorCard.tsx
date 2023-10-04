@@ -276,7 +276,13 @@ export const AuthorCard = (props: Props) => {
                 <div class={styles.authorSubscribe}>
                   <Show when={!props.noSocialButtons && !props.hideWriteButton && props.author.links}>
                     <div class={styles.authorSubscribeSocial}>
-                      <For each={props.author.links}>{(link) => <a href={link} />}</For>
+                      <For each={props.author.links}>
+                        {(link) => (
+                          <a href={link}>
+                            <span class={styles.authorSubscribeSocialLabel}>{link}</span>
+                          </a>
+                        )}
+                      </For>
                     </div>
                   </Show>
                   <Show when={!props.minimizeSubscribeButton}>

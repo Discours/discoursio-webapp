@@ -144,6 +144,15 @@
       &::before {
         filter: invert(1);
       }
+
+      .authorSubscribeSocialLabel {
+        color: #000;
+        display: block;
+        @include font-size(1.6rem);
+        left: 100%;
+        padding-left: 0.4rem;
+        position: absolute;
+      }
     }
   }
 
@@ -151,17 +160,35 @@
     &::before {
       background-image: url(/icons/user-link-facebook.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='twitter.com/'] {
     &::before {
       background-image: url(/icons/user-link-twitter.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='telegram.com/'] {
     &::before {
       background-image: url(/icons/user-link-telegram.svg);
+    }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -170,11 +197,23 @@
     &::before {
       background-image: url(/icons/user-link-vk.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='tumblr.com/'] {
     &::before {
       background-image: url(/icons/user-link-tumblr.svg);
+    }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -182,11 +221,23 @@
     &::before {
       background-image: url(/icons/user-link-instagram.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='behance.net/'] {
     &::before {
       background-image: url(/icons/user-link-behance.svg);
+    }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -194,11 +245,23 @@
     &::before {
       background-image: url(/icons/user-link-dribbble.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='github.com/'] {
     &::before {
       background-image: url(/icons/user-link-github.svg);
+    }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -206,11 +269,23 @@
     &::before {
       background-image: url(/icons/user-link-linkedin.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='medium.com/'] {
     &::before {
       background-image: url(/icons/user-link-medium.svg);
+    }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -218,11 +293,23 @@
     &::before {
       background-image: url(/icons/user-link-ok.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='pinterest.com/'] {
     &::before {
       background-image: url(/icons/user-link-pinterest.svg);
+    }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -230,17 +317,23 @@
     &::before {
       background-image: url(/icons/user-link-reddit.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='tiktok.com/'] {
     &::before {
       background-image: url(/icons/user-link-tiktok.svg);
     }
-  }
 
-  a[href*='vk.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-vk.svg);
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -249,11 +342,23 @@
     &::before {
       background-image: url(/icons/user-link-youtube.svg);
     }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
+    }
   }
 
   a[href*='dzen.ru/'] {
     &::before {
       background-image: url(/icons/user-link-dzen.svg);
+    }
+
+    &:hover {
+      .authorSubscribeSocialLabel {
+        display: none;
+      }
     }
   }
 
@@ -284,6 +389,10 @@
       display: none;
     }
   }
+}
+
+.authorSubscribeSocialLabel {
+  display: none;
 }
 
 .authorSubscribeSocial {

@@ -75,17 +75,20 @@ mark.highlight {
     float: left;
     max-width: 35%;
     margin: 1rem 2.2em 0 0;
+    clear: left;
   }
 
   [data-float='right'] {
     float: right;
     margin: 1rem 0 1rem 2.2em;
     max-width: 35%;
+    clear: right;
   }
 
   [data-float='half-left'] {
     float: left;
     margin: 1rem 1rem 0;
+    clear: left;
 
     @include media-breakpoint-up(md) {
       max-width: 50%;
@@ -96,6 +99,7 @@ mark.highlight {
   [data-float='half-right'] {
     float: right;
     margin: 1rem 0;
+    clear: right;
 
     @include media-breakpoint-up(md) {
       max-width: 50%;
@@ -122,11 +126,13 @@ mark.highlight {
       padding-right: 0;
       margin-right: 1.6rem;
       border-width: 0 2px 0 0;
+      clear: left;
     }
 
     &[data-float='right'] {
       margin-left: 1.6rem;
       border-width: 0 0 0 2px;
+      clear: right;
     }
   }
 
@@ -151,10 +157,12 @@ mark.highlight {
     @include media-breakpoint-up(sm) {
       &[data-float='left'] {
         margin-right: 1.5em;
+        clear: left;
       }
 
       &[data-float='right'] {
         margin-left: 1.5em;
+        clear: right;
       }
     }
   }
@@ -195,6 +203,7 @@ mark.highlight {
   &[data-float='left'],
   &[data-float='half-left'] {
     margin-left: -1rem;
+    clear: left;
 
     @include media-breakpoint-up(sm) {
       margin-left: -2rem;
@@ -213,6 +222,7 @@ mark.highlight {
   &[data-float='right'],
   &[data-float='half-right'] {
     margin-right: -1rem;
+    clear: right;
 
     @include media-breakpoint-up(sm) {
       margin-left: 2rem;

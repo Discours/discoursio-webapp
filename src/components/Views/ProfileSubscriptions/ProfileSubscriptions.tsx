@@ -16,6 +16,8 @@ import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
 import styles from '../../../pages/profile/Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { TopicBadge } from '../../Topic/TopicBadge'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
@@ -104,23 +106,22 @@ export const ProfileSubscriptions = () => {
                     {(followingItem) => (
                       <div>
                         {isAuthor(followingItem) ? (
-                          <AuthorCard
-                            author={followingItem}
-                            hideWriteButton={true}
-                            hasLink={true}
-                            isTextButton={true}
-                            truncateBio={true}
-                            minimizeSubscribeButton={true}
-                          />
+                          <AuthorBadge author={followingItem} />
                         ) : (
-                          <TopicCard
-                            compact
-                            isTopicInRow
-                            showDescription
-                            isCardMode
-                            topic={followingItem}
-                            minimizeSubscribeButton={true}
-                          />
+                          //   author={followingItem}
+                          //   hideWriteButton={true}
+                          //   hasLink={true}
+                          //   isTextButton={true}
+                          //   truncateBio={true}
+                          //   minimizeSubscribeButton={true}
+                          // />
+                          <TopicBadge topic={followingItem} />
+                          // compact
+                          // isTopicInRow
+                          // showDescription
+                          // isCardMode
+                          // topic={followingItem}
+                          // minimizeSubscribeButton={true}
                         )}
                       </div>
                     )}

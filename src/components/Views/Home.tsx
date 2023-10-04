@@ -49,6 +49,7 @@ export const HomeView = (props: Props) => {
   const { topTopics } = useTopicsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { topAuthors } = useTopAuthorsStore()
+  console.log('!!! topAuthors:', topAuthors())
   const { t } = useLocalize()
 
   onMount(async () => {

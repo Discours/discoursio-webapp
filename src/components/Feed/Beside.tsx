@@ -10,6 +10,7 @@ import { Icon } from '../_shared/Icon'
 
 import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'
+import { AuthorBadge } from '../Author/AuthorBadge'
 
 interface BesideProps {
   title?: string
@@ -76,14 +77,15 @@ export const Beside = (props: BesideProps) => {
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>
-                          <AuthorCard
-                            author={value as Author}
-                            hideWriteButton={true}
-                            hasLink={true}
-                            truncateBio={true}
-                            isTextButton={true}
-                            class={styles.author}
-                          />
+                          <AuthorBadge bioLength={80} author={value as Author} />
+                          {/*<AuthorCard*/}
+                          {/*  author={value as Author}*/}
+                          {/*  hideWriteButton={true}*/}
+                          {/*  hasLink={true}*/}
+                          {/*  truncateBio={true}*/}
+                          {/*  isTextButton={true}*/}
+                          {/*  class={styles.author}*/}
+                          {/*/>*/}
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>
                           <ArticleCard

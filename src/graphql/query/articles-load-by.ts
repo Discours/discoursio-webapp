@@ -30,6 +30,8 @@ export default gql`
         name
         slug
         userpic
+        createdAt
+        bio
       }
       createdAt
       publishedAt

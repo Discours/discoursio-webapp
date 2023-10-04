@@ -25,6 +25,7 @@ export type Author = {
   about?: Maybe<Scalars['String']>
   bio?: Maybe<Scalars['String']>
   caption?: Maybe<Scalars['String']>
+  createdAt?: Maybe<Scalars['DateTime']>
   id: Scalars['Int']
   lastSeen?: Maybe<Scalars['DateTime']>
   links?: Maybe<Array<Maybe<Scalars['String']>>>
@@ -116,6 +117,7 @@ export type LoadShoutsFilters = {
   author?: InputMaybe<Scalars['String']>
   body?: InputMaybe<Scalars['String']>
   days?: InputMaybe<Scalars['Int']>
+  excludeLayout?: InputMaybe<Scalars['String']>
   layout?: InputMaybe<Scalars['String']>
   reacted?: InputMaybe<Scalars['Boolean']>
   title?: InputMaybe<Scalars['String']>
@@ -587,20 +589,6 @@ export type ShoutInput = {
   subtitle?: InputMaybe<Scalars['String']>
   title?: InputMaybe<Scalars['String']>
   topics?: InputMaybe<Array<InputMaybe<TopicInput>>>
-}
-
-export type ShoutsFilterBy = {
-  author?: InputMaybe<Scalars['String']>
-  authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-  body?: InputMaybe<Scalars['String']>
-  days?: InputMaybe<Scalars['Int']>
-  layout?: InputMaybe<Scalars['String']>
-  slug?: InputMaybe<Scalars['String']>
-  stat?: InputMaybe<Scalars['String']>
-  title?: InputMaybe<Scalars['String']>
-  topic?: InputMaybe<Scalars['String']>
-  topics?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-  visibility?: InputMaybe<Scalars['String']>
 }
 
 export type Stat = {

@@ -177,7 +177,7 @@ export const ProfileSettingsPage = () => {
                         value={(value) => updateFormField('bio', value)}
                         initialValue={form.bio}
                         allowEnterKey={false}
-                        maxLength={80}
+                        maxLength={120}
                       />
 
                       <h4>{t('About myself')}</h4>

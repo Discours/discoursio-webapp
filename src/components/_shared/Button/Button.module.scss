@@ -5,6 +5,7 @@
   justify-content: center;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
 
   &.primary {
     background: #000;
@@ -57,7 +58,10 @@
     margin-right: 0.8em;
     min-width: auto !important;
     padding: 0;
-    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+    transition:
+      border-color 0.3s,
+      background-color 0.3s,
+      color 0.3s;
 
     &:hover,
     &:active {

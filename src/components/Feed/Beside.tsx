@@ -2,17 +2,15 @@
 
 import { For, Show } from 'solid-js'
 import { ArticleCard } from './ArticleCard'
-import { AuthorCard } from '../Author/AuthorCard'
 import { TopicCard } from '../Topic/Card'
 import styles from './Beside.module.scss'
 import type { Author, Shout, Topic, User } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
-
 import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'
 import { AuthorBadge } from '../Author/AuthorBadge'
 
-interface BesideProps {
+type Props = {
   title?: string
   values: (Shout | User | Topic | Author)[]
   beside: Shout
@@ -25,7 +23,7 @@ interface BesideProps {
   nodate?: boolean
 }
 
-export const Beside = (props: BesideProps) => {
+export const Beside = (props: Props) => {
   const { t } = useLocalize()
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
@@ -77,15 +75,7 @@ export const Beside = (props: BesideProps) => {
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>
-                          <AuthorBadge bioLength={80} author={value as Author} />
-                          {/*<AuthorCard*/}
-                          {/*  author={value as Author}*/}
-                          {/*  hideWriteButton={true}*/}
-                          {/*  hasLink={true}*/}
-                          {/*  truncateBio={true}*/}
-                          {/*  isTextButton={true}*/}
-                          {/*  class={styles.author}*/}
-                          {/*/>*/}
+                          <AuthorBadge author={value as Author} />
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>
                           <ArticleCard

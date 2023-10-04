@@ -1,4 +1,4 @@
-import { Accessor, createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import { Title } from '@solidjs/meta'

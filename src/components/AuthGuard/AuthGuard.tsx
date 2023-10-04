@@ -1,6 +1,6 @@
 import { createEffect, JSX, Show } from 'solid-js'
 import { useSession } from '../../context/session'
-import { hideModal, showModal } from '../../stores/ui'
+import { hideModal } from '../../stores/ui'
 import { useRouter } from '../../stores/router'
 import { RootSearchParams } from '../../pages/types'
 import { AuthModalSearchParams } from '../Nav/AuthModal/types'

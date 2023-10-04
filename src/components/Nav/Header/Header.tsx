@@ -46,7 +46,7 @@ export const Header = (props: Props) => {
     actions: { requireAuthentication }
   } = useSession()
 
-  const { page, searchParams } = useRouter<HeaderSearchParams>()
+  const { searchParams } = useRouter<HeaderSearchParams>()
 
   const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)

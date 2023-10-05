@@ -179,6 +179,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                       <AuthorCard
                         author={author}
                         hideWriteButton={true}
+                        hideBio={true}
                         hideFollow={true}
                         truncateBio={true}
                         isFeedMode={true}

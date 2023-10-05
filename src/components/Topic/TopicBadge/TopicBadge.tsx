@@ -51,7 +51,7 @@ export const TopicBadge = (props: Props) => {
         style={props.topic.pic && { 'background-image': `url('${imageProxy(props.topic.pic)}')` }}
       />
       <a href={`/topic/${props.topic.slug}`} class={styles.info}>
-        <span class={styles.title}>{capitalize(props.topic.title)}</span>
+        <span class={styles.title}>{props.topic.title}</span>
         <Show
           when={props.topic.body}
           fallback={

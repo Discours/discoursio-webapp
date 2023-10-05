@@ -42,6 +42,7 @@ type Props = {
   followers?: Author[]
   following?: Array<Author | Topic>
   showPublicationsCounter?: boolean
+  hideBio?: boolean
 }
 
 export const AuthorCard = (props: Props) => {
@@ -194,7 +195,7 @@ export const AuthorCard = (props: Props) => {
             </div>
             {/*TODO: implement plurals by i18n*/}
             <Show
-              when={props.author.bio}
+              when={props.author.bio && !props.hideBio}
               fallback={
                 props.showPublicationsCounter ? (
                   <div class={styles.authorAbout}>{props.author.stat?.shouts} публикаций</div>

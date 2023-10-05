@@ -17,9 +17,8 @@ type Props = {
 export const AuthorBadge = (props: Props) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const {
-    isAuthenticated,
     session,
-    actions: { loadSession }
+    actions: { loadSession, requireAuthentication }
   } = useSession()
 
   const { t } = useLocalize()
@@ -37,6 +36,11 @@ export const AuthorBadge = (props: Props) => {
     await loadSession()
     setIsSubscribing(false)
   }
+  const handleSubscribe = (really: boolean) => {
+    requireAuthentication(() => {
+      subscribe(really)
+    }, 'subscribe')
+  }
 
   return (
     <div class={clsx(styles.AuthorBadge)}>
@@ -51,10 +55,10 @@ export const AuthorBadge = (props: Props) => {
             </div>
           }
         >
-          <div class={clsx('text-truncate', styles.bio)}>{props.author.bio}</div>
+          <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
         </Show>
       </a>
-      <Show when={isAuthenticated() && props.author.slug !== session().user.slug}>
+      <Show when={props.author.slug !== session()?.user.slug}>
         <div class={styles.actions}>
           <Show
             when={!props.minimizeSubscribeButton}
@@ -62,7 +66,7 @@ export const AuthorBadge = (props: Props) => {
               <CheckButton
                 text={t('Follow')}
                 checked={subscribed()}
-                onClick={() => subscribe(!subscribed)}
+                onClick={() => handleSubscribe(!subscribed())}
               />
             }
           >
@@ -73,15 +77,15 @@ export const AuthorBadge = (props: Props) => {
                   variant="primary"
                   size="S"
                   value={isSubscribing() ? t('...subscribing') : t('Subscribe')}
-                  onClick={() => subscribe(true)}
+                  onClick={() => handleSubscribe(true)}
                 />
               }
             >
               <Button
-                onClick={() => subscribe(false)}
                 variant="secondary"
                 size="S"
                 value={t('You are subscribed')}
+                onClick={() => handleSubscribe(false)}
               />
             </Show>
           </Show>

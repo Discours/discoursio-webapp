@@ -8,6 +8,7 @@ export default gql`
       name
       bio
       userpic
+      createdAt
       stat {
         shouts
         followers

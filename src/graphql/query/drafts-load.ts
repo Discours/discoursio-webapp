@@ -28,6 +28,7 @@ export default gql`
         name
         slug
         userpic
+        createdAt
       }
       createdAt
       publishedAt

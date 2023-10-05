@@ -10,7 +10,7 @@ export default gql`
       userpic
       # communities
       links
-      # createdAt
+      createdAt
       lastSeen
       # ratings {
       #  rater

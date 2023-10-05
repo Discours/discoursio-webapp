@@ -51,27 +51,17 @@ export const TopicBadge = (props: Props) => {
         style={props.topic.pic && { 'background-image': `url('${imageProxy(props.topic.pic)}')` }}
       />
       <a href={`/topic/${props.topic.slug}`} class={styles.info}>
-        <span class={styles.title}>{capitalize(props.topic.title)}</span>
-        <Show when={props.topic.body}>
+        <span class={styles.title}>{props.topic.title}</span>
+        <Show
+          when={props.topic.body}
+          fallback={
+            <div class={styles.description}>
+              {props.topic.stat.shouts ?? 0}&nbsp;{t('Publications')}
+            </div>
+          }
+        >
           <div class={clsx('text-truncate', styles.description)}>{props.topic.body}</div>
         </Show>
-        <span class={styles.stat}>
-          <Show when={props.topic.stat.authors}>
-            <div>
-              {t('Authors')}: {props.topic.stat.authors}
-            </div>
-          </Show>
-          <Show when={props.topic.stat.followers}>
-            <div>
-              {t('Followers')}: {props.topic.stat.followers}
-            </div>
-          </Show>
-          <Show when={props.topic.stat.shouts}>
-            <div>
-              {t('Publications')}: {props.topic.stat.shouts}
-            </div>
-          </Show>
-        </span>
       </a>
       <Show when={isAuthenticated()}>
         <div class={styles.actions}>

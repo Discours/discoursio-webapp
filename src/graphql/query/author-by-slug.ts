@@ -9,14 +9,17 @@ export default gql`
       bio
       about
       userpic
-      communities
+      # communities
       links
       createdAt
       lastSeen
-      # ratings {
-      #  rater
-      #  value
-      # }
+      stat {
+        shouts
+        followers
+        followings
+        rating
+        commented
+      }
     }
   }
 `

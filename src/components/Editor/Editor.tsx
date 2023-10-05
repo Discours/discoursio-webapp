@@ -44,6 +44,8 @@ import { EditorFloatingMenu } from './EditorFloatingMenu'
 import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
 import { Footnote } from './extensions/Footnote'
+import { handleFileUpload } from '../../utils/handleFileUpload'
+import { UploadFile } from '@solid-primitives/upload'
 
 type Props = {
   shoutId: number
@@ -133,40 +135,45 @@ export const Editor = (props: Props) => {
       attributes: {
         class: 'articleEditor'
       },
-      handlePaste: () => {
-        console.log('!!! ПАСТА БУДЕТ РАБОЧЕЙ')
-
-        void (async () => {
-          const clipboardItems = await navigator.clipboard.read()
-
-          const clipboardItem = clipboardItems[0]
-          const { types } = clipboardItem
-          const type = types[0]
-          const blob = await clipboardItems[0].getType(type)
-
-          if (allowedImageTypes.has(type)) {
-            // const extension = type.split("/")[1];
-            // const formData = new FormData();
-            // const file = new File([blob], `image.${extension}`)
-            // await handleFileUpload(file)
-
-            try {
-              // do upload here and setFigure
-
-              editor()
-                .chain()
-                .focus()
-                .setImage({
-                  //
-                  src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
-                })
-                .run()
-            } catch (error) {
-              console.log('!!! Paste Error:', error)
-            }
-          }
-        })()
+      handlePaste: function (view, event, slice) {
+        // we will do something here!
+        console.log('!!! AAAA:')
+        return false // not handled use default behaviour
       }
+      // handlePaste: () => {
+      //   console.log('!!! ПАСТА БУДЕТ РАБОЧЕЙ')
+      //
+      //   void (async () => {
+      //     const clipboardItems = await navigator.clipboard.read()
+      //
+      //     const clipboardItem = clipboardItems[0]
+      //     const { types } = clipboardItem
+      //     const type = types[0]
+      //     const blob = await clipboardItems[0].getType(type)
+      //
+      //     if (allowedImageTypes.has(type)) {
+      //       const extension = type.split("/")[1];
+      //       const file = new File([blob], `image.${extension}`)
+      //       console.log("!!! file:", file);
+      //       // await handleFileUpload(file)
+      //
+      //       try {
+      //         // do upload here and setFigure
+      //
+      //         editor()
+      //           .chain()
+      //           .focus()
+      //           .setImage({
+      //             src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
+      //           })
+      //           .run()
+      //       } catch (error) {
+      //         console.log('!!! Paste Error:', error)
+      //       }
+      //     }
+      //   })()
+      //   return false
+      // }
     },
     extensions: [
       Document,

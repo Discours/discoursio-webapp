@@ -51,6 +51,17 @@ type Props = {
   onChange: (text: string) => void
 }
 
+const allowedImageTypes = new Set([
+  'image/bmp',
+  'image/gif',
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/tiff',
+  'image/webp',
+  'image/x-icon'
+])
+
 const yDocs: Record<string, Doc> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
@@ -115,11 +126,46 @@ export const Editor = (props: Props) => {
   })
 
   const { initialContent } = props
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
       attributes: {
         class: 'articleEditor'
+      },
+      handlePaste: () => {
+        console.log('!!! ПАСТА БУДЕТ РАБОЧЕЙ')
+
+        void (async () => {
+          const clipboardItems = await navigator.clipboard.read()
+
+          const clipboardItem = clipboardItems[0]
+          const { types } = clipboardItem
+          const type = types[0]
+          const blob = await clipboardItems[0].getType(type)
+
+          if (allowedImageTypes.has(type)) {
+            // const extension = type.split("/")[1];
+            // const formData = new FormData();
+            // const file = new File([blob], `image.${extension}`)
+            // await handleFileUpload(file)
+
+            try {
+              // do upload here and setFigure
+
+              editor()
+                .chain()
+                .focus()
+                .setImage({
+                  //
+                  src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
+                })
+                .run()
+            } catch (error) {
+              console.log('!!! Paste Error:', error)
+            }
+          }
+        })()
       }
     },
     extensions: [

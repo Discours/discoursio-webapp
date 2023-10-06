@@ -46,6 +46,7 @@ import { Image } from '@tiptap/extension-image'
 import { Footnote } from './extensions/Footnote'
 import { handleFileUpload } from '../../utils/handleFileUpload'
 import { UploadFile } from '@solid-primitives/upload'
+import { imageProxy } from '../../utils/imageProxy'
 
 type Props = {
   shoutId: number
@@ -135,45 +136,65 @@ export const Editor = (props: Props) => {
       attributes: {
         class: 'articleEditor'
       },
-      handlePaste: function (view, event, slice) {
-        // we will do something here!
-        console.log('!!! AAAA:')
-        return false // not handled use default behaviour
+      transformPastedHTML(html) {
+        return html.replaceAll(/<img.*?>/g, '')
+      },
+      handlePaste: () => {
+        console.log('!!! ПАСТА БУДЕТ РАБОЧЕЙ')
+
+        void (async () => {
+          const clipboardItems = await navigator.clipboard.read()
+
+          const clipboardItem = clipboardItems[0]
+          const { types } = clipboardItem
+          const type = types[0]
+          const blob = await clipboardItems[0].getType(type)
+
+          if (!allowedImageTypes.has(type)) {
+            const extension = type.split('/')[1]
+            const file = new File([blob], `image.${extension}`)
+            console.log('!!! file:', file)
+            const uplFile = {
+              source: 'handlePaste',
+              name: file.name,
+              size: file.size,
+              file: file
+            }
+            const result = await handleFileUpload(uplFile)
+            console.log('!!! result:', result)
+
+            // try {
+            //   editor()
+            //     .chain()
+            //     .focus()
+            //     .insertContent({
+            //       type: 'capturedImage',
+            //       content: [
+            //         {
+            //           type: 'figcaption',
+            //           content: [
+            //             {
+            //               type: 'text',
+            //               text: 'test image'
+            //             }
+            //           ]
+            //         },
+            //         {
+            //           type: 'image',
+            //           attrs: {
+            //             src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
+            //           }
+            //         }
+            //       ]
+            //     })
+            //     .run()
+            // } catch (error) {
+            //   console.log('!!! Paste Error:', error)
+            // }
+          }
+        })()
+        return false
       }
-      // handlePaste: () => {
-      //   console.log('!!! ПАСТА БУДЕТ РАБОЧЕЙ')
-      //
-      //   void (async () => {
-      //     const clipboardItems = await navigator.clipboard.read()
-      //
-      //     const clipboardItem = clipboardItems[0]
-      //     const { types } = clipboardItem
-      //     const type = types[0]
-      //     const blob = await clipboardItems[0].getType(type)
-      //
-      //     if (allowedImageTypes.has(type)) {
-      //       const extension = type.split("/")[1];
-      //       const file = new File([blob], `image.${extension}`)
-      //       console.log("!!! file:", file);
-      //       // await handleFileUpload(file)
-      //
-      //       try {
-      //         // do upload here and setFigure
-      //
-      //         editor()
-      //           .chain()
-      //           .focus()
-      //           .setImage({
-      //             src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
-      //           })
-      //           .run()
-      //       } catch (error) {
-      //         console.log('!!! Paste Error:', error)
-      //       }
-      //     }
-      //   })()
-      //   return false
-      // }
     },
     extensions: [
       Document,
@@ -299,6 +320,7 @@ export const Editor = (props: Props) => {
       TrailingNode,
       Article
     ],
+    enablePasteRules: [Link],
     content: initialContent ?? null
   }))
 

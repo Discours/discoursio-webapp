@@ -144,15 +144,16 @@ export const Editor = (props: Props) => {
 
         void (async () => {
           const clipboardItems = await navigator.clipboard.read()
+          console.log('!!! clipboardItems:', clipboardItems)
 
           const clipboardItem = clipboardItems[0]
           const { types } = clipboardItem
           const type = types[0]
-          const blob = await clipboardItems[0].getType(type)
+          const blob = await clipboardItems[1].getType(type)
 
           if (!allowedImageTypes.has(type)) {
             const extension = type.split('/')[1]
-            const file = new File([blob], `image.${extension}`)
+            const file = new File([blob], `clipboardImage.${extension}`)
             console.log('!!! file:', file)
             const uplFile = {
               source: 'handlePaste',

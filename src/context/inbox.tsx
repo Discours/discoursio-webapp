@@ -1,9 +1,8 @@
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
-// import { createSubClient } from '../graphql/privateGraphQLClient'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
-// import type { Client } from '@urql/core'
+
 import { loadMessages } from '../stores/inbox'
 
 type InboxContextType = {
@@ -27,7 +26,20 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
-  // const subclient = createMemo<Client>(() => createSubClient())
+  const eventSource = new EventSource('testapi.discours.io/connect')
+  // TODO: call /disconnect some time
+  // eslint-disable-next-line unicorn/prefer-add-event-listener
+  eventSource.onmessage = function (event) {
+    const message = JSON.parse(event.data)
+    // TODO: Do something with the message
+
+    console.log(message)
+  }
+
+  eventSource.onerror = function (event) {
+    console.error('EventSource failed:', event)
+    // TODO: Implement reconnection logic if needed
+  }
   const loadChats = async () => {
     try {
       const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
@@ -68,15 +80,6 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     })
     return chat
   }
-
-  // pipe(
-  //   subclient().subscription(newMessage, {}),
-  //   subscribe((result) => {
-  //     console.info('[subscription]')
-  //     console.debug(result)
-  //     // TODO: handle data result
-  //   })
-  // )
 
   const actions = {
     createChat,

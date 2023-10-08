@@ -148,15 +148,15 @@ export const Editor = (props: Props) => {
 
           const clipboardItem = clipboardItems[0]
           const { types } = clipboardItem
-          const type = types[0]
-          const blob = await clipboardItems[1].getType(type)
+          const type = types[1]
+          const blob = await clipboardItems[0].getType(type)
 
-          if (!allowedImageTypes.has(type)) {
+          if (allowedImageTypes.has(type)) {
             const extension = type.split('/')[1]
             const file = new File([blob], `clipboardImage.${extension}`)
             console.log('!!! file:', file)
             const uplFile = {
-              source: 'handlePaste',
+              source: blob.toString(),
               name: file.name,
               size: file.size,
               file: file
@@ -183,7 +183,7 @@ export const Editor = (props: Props) => {
                     {
                       type: 'image',
                       attrs: {
-                        src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
+                        src: ''
                       }
                     }
                   ]

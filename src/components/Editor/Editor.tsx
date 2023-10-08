@@ -45,8 +45,8 @@ import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
 import { Footnote } from './extensions/Footnote'
 import { handleFileUpload } from '../../utils/handleFileUpload'
-import { UploadFile } from '@solid-primitives/upload'
 import { imageProxy } from '../../utils/imageProxy'
+import { useSnackbar } from '../../context/snackbar'
 
 type Props = {
   shoutId: number
@@ -74,6 +74,10 @@ export const Editor = (props: Props) => {
 
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const docName = `shout-${props.shoutId}`
 
@@ -165,10 +169,9 @@ export const Editor = (props: Props) => {
               size: file.size,
               file: file
             }
-
+            await showSnackbar({ body: t('Uploading image') })
             const result = await handleFileUpload(uplFile)
-            console.log('!!! RESULT:', result)
-            console.log('Before editor call')
+
             editor()
               .chain()
               .focus()

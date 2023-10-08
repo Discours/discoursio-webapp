@@ -146,6 +146,8 @@ export const Editor = (props: Props) => {
 
             if (clipboardItems.length === 0) return
 
+            console.log('!!! clipboardItems:', clipboardItems)
+
             const clipboardItem = clipboardItems[0]
             const { types } = clipboardItem
             const imageType = types.find((type) => allowedImageTypes.has(type))
@@ -159,12 +161,13 @@ export const Editor = (props: Props) => {
 
             const uplFile = {
               source: blob.toString(),
-              name: 'WTF',
+              name: file.name,
               size: file.size,
               file: file
             }
 
             const result = await handleFileUpload(uplFile)
+            console.log('!!! RESULT:', result)
 
             editor()
               .chain()

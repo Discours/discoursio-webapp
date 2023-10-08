@@ -168,7 +168,7 @@ export const Editor = (props: Props) => {
 
             const result = await handleFileUpload(uplFile)
             console.log('!!! RESULT:', result)
-
+            console.log('Before editor call')
             editor()
               .chain()
               .focus()
@@ -180,7 +180,7 @@ export const Editor = (props: Props) => {
                     content: [
                       {
                         type: 'text',
-                        text: ''
+                        text: result.originalFilename
                       }
                     ]
                   },

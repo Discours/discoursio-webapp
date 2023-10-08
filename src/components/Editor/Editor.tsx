@@ -159,7 +159,7 @@ export const Editor = (props: Props) => {
 
             const uplFile = {
               source: blob.toString(),
-              name: file.name,
+              name: 'WTF',
               size: file.size,
               file: file
             }

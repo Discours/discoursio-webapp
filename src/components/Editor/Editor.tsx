@@ -176,14 +176,14 @@ export const Editor = (props: Props) => {
                       content: [
                         {
                           type: 'text',
-                          text: 'test image'
+                          text: result.originalFilename
                         }
                       ]
                     },
                     {
                       type: 'image',
                       attrs: {
-                        src: ''
+                        src: imageProxy(result.url)
                       }
                     }
                   ]

@@ -140,58 +140,58 @@ export const Editor = (props: Props) => {
         return html.replaceAll(/<img.*?>/g, '')
       },
       handlePaste: () => {
-        console.log('!!! ПАСТА БУДЕТ РАБОЧЕЙ')
+        ;(async () => {
+          try {
+            const clipboardItems = await navigator.clipboard.read()
 
-        void (async () => {
-          const clipboardItems = await navigator.clipboard.read()
-          console.log('!!! clipboardItems:', clipboardItems)
+            if (clipboardItems.length === 0) return
 
-          const clipboardItem = clipboardItems[0]
-          const { types } = clipboardItem
-          const type = types[1]
-          const blob = await clipboardItems[0].getType(type)
+            const clipboardItem = clipboardItems[0]
+            const { types } = clipboardItem
+            const imageType = types.find((type) => allowedImageTypes.has(type))
 
-          if (allowedImageTypes.has(type)) {
-            const extension = type.split('/')[1]
+            if (!imageType) return
+
+            const blob = await clipboardItem.getType(imageType)
+
+            const extension = imageType.split('/')[1]
             const file = new File([blob], `clipboardImage.${extension}`)
-            console.log('!!! file:', file)
+
             const uplFile = {
               source: blob.toString(),
               name: file.name,
               size: file.size,
               file: file
             }
-            const result = await handleFileUpload(uplFile)
-            console.log('!!! result:', result)
 
-            try {
-              editor()
-                .chain()
-                .focus()
-                .insertContent({
-                  type: 'capturedImage',
-                  content: [
-                    {
-                      type: 'figcaption',
-                      content: [
-                        {
-                          type: 'text',
-                          text: result.originalFilename
-                        }
-                      ]
-                    },
-                    {
-                      type: 'image',
-                      attrs: {
-                        src: imageProxy(result.url)
+            const result = await handleFileUpload(uplFile)
+
+            editor()
+              .chain()
+              .focus()
+              .insertContent({
+                type: 'capturedImage',
+                content: [
+                  {
+                    type: 'figcaption',
+                    content: [
+                      {
+                        type: 'text',
+                        text: ''
                       }
+                    ]
+                  },
+                  {
+                    type: 'image',
+                    attrs: {
+                      src: imageProxy(result.url)
                     }
-                  ]
-                })
-                .run()
-            } catch (error) {
-              console.log('!!! Paste Error:', error)
-            }
+                  }
+                ]
+              })
+              .run()
+          } catch (error) {
+            console.log('!!! Paste Error:', error)
           }
         })()
         return false

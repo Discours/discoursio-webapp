@@ -164,34 +164,34 @@ export const Editor = (props: Props) => {
             const result = await handleFileUpload(uplFile)
             console.log('!!! result:', result)
 
-            // try {
-            //   editor()
-            //     .chain()
-            //     .focus()
-            //     .insertContent({
-            //       type: 'capturedImage',
-            //       content: [
-            //         {
-            //           type: 'figcaption',
-            //           content: [
-            //             {
-            //               type: 'text',
-            //               text: 'test image'
-            //             }
-            //           ]
-            //         },
-            //         {
-            //           type: 'image',
-            //           attrs: {
-            //             src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
-            //           }
-            //         }
-            //       ]
-            //     })
-            //     .run()
-            // } catch (error) {
-            //   console.log('!!! Paste Error:', error)
-            // }
+            try {
+              editor()
+                .chain()
+                .focus()
+                .insertContent({
+                  type: 'capturedImage',
+                  content: [
+                    {
+                      type: 'figcaption',
+                      content: [
+                        {
+                          type: 'text',
+                          text: 'test image'
+                        }
+                      ]
+                    },
+                    {
+                      type: 'image',
+                      attrs: {
+                        src: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
+                      }
+                    }
+                  ]
+                })
+                .run()
+            } catch (error) {
+              console.log('!!! Paste Error:', error)
+            }
           }
         })()
         return false

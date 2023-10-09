@@ -263,7 +263,7 @@
   "Quotes": "Цитаты",
   "Reason uknown": "Причина неизвестна",
   "Recent": "Свежее",
-  "Registered since {{date}}": "На сайте c {{date}}",
+  "Registered since {date}": "На сайте c {date}",
   "Release date...": "Дата выхода...",
   "Remove link": "Убрать ссылку",
   "Reply": "Ответить",
@@ -435,5 +435,6 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал"
+  "zine": "журнал",
+  "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}"
 }

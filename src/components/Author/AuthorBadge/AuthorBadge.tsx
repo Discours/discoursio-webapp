@@ -2,7 +2,7 @@ import { clsx } from 'clsx'
 import styles from './AuthorBadge.module.scss'
 import { Userpic } from '../Userpic'
 import { Author, FollowingEntity } from '../../../graphql/types.gen'
-import { createMemo, createSignal, Show } from 'solid-js'
+import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
 import { formatDate } from '../../../utils'
 import { useLocalize } from '../../../context/localize'
 import { Button } from '../../_shared/Button'
@@ -47,16 +47,22 @@ export const AuthorBadge = (props: Props) => {
       <Userpic hasLink={true} isMedium={true} name={props.author.name} userpic={props.author.userpic} />
       <a href={`/author/${props.author.slug}`} class={styles.info}>
         <div class={styles.name}>{props.author.name}</div>
-        <Show
-          when={props.author.bio}
+        <Switch
           fallback={
             <div class={styles.bio}>
-              {t('Registered since {{date}}', { date: formatDate(new Date(props.author.createdAt)) })}
+              {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
             </div>
           }
         >
-          <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
-        </Show>
+          <Match when={props.author.bio}>
+            <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
+          </Match>
+          <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
+            <div class={styles.bio}>
+              {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
+            </div>
+          </Match>
+        </Switch>
       </a>
       <Show when={props.author.slug !== session()?.user.slug}>
         <div class={styles.actions}>

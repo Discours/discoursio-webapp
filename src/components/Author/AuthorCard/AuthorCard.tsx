@@ -401,13 +401,13 @@ export const AuthorCard = (props: Props) => {
                 <button type="button" onClick={() => setSubscriptionFilter('all')}>
                   {t('All')}
                 </button>
-                <span class={styles.switcherCounter}>{props.following.length}</span>
+                <span class="view-switcher__counter">{props.following.length}</span>
               </li>
               <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
                 <button type="button" onClick={() => setSubscriptionFilter('users')}>
                   {t('Users')}
                 </button>
-                <span class={styles.switcherCounter}>
+                <span class="view-switcher__counter">
                   {props.following.filter((s) => 'name' in s).length}
                 </span>
               </li>
@@ -415,7 +415,7 @@ export const AuthorCard = (props: Props) => {
                 <button type="button" onClick={() => setSubscriptionFilter('topics')}>
                   {t('Topics')}
                 </button>
-                <span class={styles.switcherCounter}>
+                <span class="view-switcher__counter">
                   {props.following.filter((s) => 'title' in s).length}
                 </span>
               </li>

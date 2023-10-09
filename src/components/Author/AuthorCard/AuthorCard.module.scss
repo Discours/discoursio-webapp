@@ -90,9 +90,9 @@
 
 .authorName {
   border: none !important;
+  display: block;
   font-size: 1.6rem;
   font-weight: 500;
-  line-height: 2;
   margin-bottom: 0.8rem;
 
   .listWrapper &:before {
@@ -677,25 +677,4 @@
 
 .listWrapper {
   max-height: 70vh;
-}
-
-.switcherCounter {
-  align-items: center;
-  background: #f7f7f8;
-  border-radius: 0.8rem;
-  display: inline-flex;
-  font-size: 1.2rem;
-  font-weight: bold;
-  height: 2.2rem;
-  justify-content: center;
-  line-height: 2.2rem;
-  margin-left: 0.4rem;
-  min-width: 2.2rem;
-  padding: 0 0.6rem;
-  text-align: center;
-}
-
-:global(.view-switcher__item--selected) .switcherCounter {
-  background: #000;
-  color: #fff;
 }

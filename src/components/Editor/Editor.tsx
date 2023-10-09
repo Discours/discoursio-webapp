@@ -181,7 +181,7 @@ export const Editor = (props: Props) => {
         })
         .run()
     } catch (error) {
-      console.log('!!! Paste image Error:', error)
+      console.error('[Paste Image Error]:', error)
     }
   }
 

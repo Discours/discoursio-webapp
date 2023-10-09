@@ -35,8 +35,6 @@ export const AuthorView = (props: Props) => {
 
   const { page } = useRouter()
   const author = createMemo(() => authorEntities()[props.authorSlug])
-
-  console.log('!!! author:', author())
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
@@ -141,7 +139,7 @@ export const AuthorView = (props: Props) => {
             <ul class="view-switcher">
               <li classList={{ 'view-switcher__item--selected': page().route === 'author' }}>
                 <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
-                  {t('Publications')}&nbsp;({author().stat.shouts})
+                  {t('PublicationsWithCount', { count: author().stat?.shouts ?? 0 })}
                 </a>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'authorComments' }}>

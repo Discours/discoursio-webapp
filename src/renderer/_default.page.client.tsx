@@ -32,7 +32,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
 
   useI18next(HttpApi)
   await i18next.use(ICU).init({
-    debug: true,
+    // debug: true,
     supportedLngs: ['ru', 'en'],
     fallbackLng: lng,
     lng,

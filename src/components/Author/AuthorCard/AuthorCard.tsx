@@ -193,9 +193,6 @@ export const AuthorCard = (props: Props) => {
                 <span class={clsx({ [styles.authorName]: !props.hasLink })}>{name()}</span>
               </ConditionalWrapper>
             </div>
-            <div style={{ color: 'red' }}>
-              {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
-            </div>
             <Show
               when={props.author.bio && !props.hideBio}
               fallback={

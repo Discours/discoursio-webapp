@@ -132,8 +132,65 @@ export const Editor = (props: Props) => {
     content: 'figcaption image'
   })
 
+  const handleClipboardPaste = async () => {
+    try {
+      const clipboardItems = await navigator.clipboard.read()
+
+      if (clipboardItems.length === 0) return
+
+      console.log('!!! clipboardItems:', clipboardItems)
+
+      const [clipboardItem] = clipboardItems
+      const { types } = clipboardItem
+      const imageType = types.find((type) => allowedImageTypes.has(type))
+
+      if (!imageType) return
+
+      const blob = await clipboardItem.getType(imageType)
+      const extension = imageType.split('/')[1]
+      const file = new File([blob], `clipboardImage.${extension}`)
+
+      const uplFile = {
+        source: blob.toString(),
+        name: file.name,
+        size: file.size,
+        file
+      }
+
+      await showSnackbar({ body: t('Uploading image') })
+      const result = await handleFileUpload(uplFile)
+
+      editor()
+        .chain()
+        .focus()
+        .insertContent({
+          type: 'capturedImage',
+          content: [
+            {
+              type: 'figcaption',
+              content: [
+                {
+                  type: 'text',
+                  text: result.originalFilename
+                }
+              ]
+            },
+            {
+              type: 'image',
+              attrs: {
+                src: imageProxy(result.url)
+              }
+            }
+          ]
+        })
+        .run()
+    } catch (error) {
+      console.log('!!! Paste Error:', error)
+    }
+  }
+
   const { initialContent } = props
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
@@ -144,62 +201,7 @@ export const Editor = (props: Props) => {
         return html.replaceAll(/<img.*?>/g, '')
       },
       handlePaste: () => {
-        ;(async () => {
-          try {
-            const clipboardItems = await navigator.clipboard.read()
-
-            if (clipboardItems.length === 0) return
-
-            console.log('!!! clipboardItems:', clipboardItems)
-
-            const clipboardItem = clipboardItems[0]
-            const { types } = clipboardItem
-            const imageType = types.find((type) => allowedImageTypes.has(type))
-
-            if (!imageType) return
-
-            const blob = await clipboardItem.getType(imageType)
-
-            const extension = imageType.split('/')[1]
-            const file = new File([blob], `clipboardImage.${extension}`)
-
-            const uplFile = {
-              source: blob.toString(),
-              name: file.name,
-              size: file.size,
-              file: file
-            }
-            await showSnackbar({ body: t('Uploading image') })
-            const result = await handleFileUpload(uplFile)
-
-            editor()
-              .chain()
-              .focus()
-              .insertContent({
-                type: 'capturedImage',
-                content: [
-                  {
-                    type: 'figcaption',
-                    content: [
-                      {
-                        type: 'text',
-                        text: result.originalFilename
-                      }
-                    ]
-                  },
-                  {
-                    type: 'image',
-                    attrs: {
-                      src: imageProxy(result.url)
-                    }
-                  }
-                ]
-              })
-              .run()
-          } catch (error) {
-            console.log('!!! Paste Error:', error)
-          }
-        })()
+        handleClipboardPaste()
         return false
       }
     },

@@ -51,7 +51,7 @@ export const AuthorBadge = (props: Props) => {
           when={props.author.bio}
           fallback={
             <div class={styles.bio}>
-              {t('Registered since {{date}}', { date: formatDate(new Date(props.author.createdAt)) })}
+              {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
             </div>
           }
         >

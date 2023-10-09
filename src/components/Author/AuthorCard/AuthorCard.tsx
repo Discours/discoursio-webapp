@@ -193,12 +193,16 @@ export const AuthorCard = (props: Props) => {
                 <span class={clsx({ [styles.authorName]: !props.hasLink })}>{name()}</span>
               </ConditionalWrapper>
             </div>
-            {/*TODO: implement plurals by i18n*/}
+            <div style={{ color: 'red' }}>
+              {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
+            </div>
             <Show
               when={props.author.bio && !props.hideBio}
               fallback={
                 props.showPublicationsCounter ? (
-                  <div class={styles.authorAbout}>{props.author.stat?.shouts} публикаций</div>
+                  <div class={styles.authorAbout}>
+                    {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
+                  </div>
                 ) : (
                   ''
                 )

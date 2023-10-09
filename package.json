@@ -31,6 +31,8 @@
   "dependencies": {
     "form-data": "4.0.0",
     "i18next": "22.4.15",
+    "i18next-icu": "2.3.0",
+    "intl-messageformat": "10.5.3",
     "mailgun.js": "8.2.1",
     "node-fetch": "3.3.1"
   },

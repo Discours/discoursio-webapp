@@ -3,7 +3,8 @@ import { hydrate } from 'solid-js/web'
 import type { PageContextBuiltInClientWithClientRouting } from 'vite-plugin-ssr/types'
 import type { PageContext } from './types'
 import { MetaProvider } from '@solidjs/meta'
-import { use as useI18next, init as initI18next } from 'i18next'
+import i18next, { use as useI18next, init as initI18next } from 'i18next'
+import ICU from 'i18next-icu'
 import HttpApi from 'i18next-http-backend'
 import * as Sentry from '@sentry/browser'
 import { SENTRY_DSN } from '../utils/config'
@@ -30,8 +31,8 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
   }
 
   useI18next(HttpApi)
-  await initI18next({
-    // debug: true,
+  await i18next.use(ICU).init({
+    debug: true,
     supportedLngs: ['ru', 'en'],
     fallbackLng: lng,
     lng,

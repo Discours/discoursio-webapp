@@ -249,7 +249,7 @@
   "Quotes": "Quotes",
   "Reason uknown": "Reason unknown",
   "Recent": "Fresh",
-  "Registered since {{date}}": "Registered since {{date}}",
+  "Registered since {date}": "Registered since {date}",
   "Remove link": "Remove link",
   "Reply": "Reply",
   "Report": "Complain",
@@ -409,5 +409,6 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}"
 }

@@ -42,7 +42,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   }
   const loadChats = async () => {
     try {
-      const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
+      const newChats = await inboxClient.getChats({ limit: 50, offset: 0 })
       setChats(newChats)
     } catch (error) {
       console.log(error)
@@ -61,7 +61,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
 
   const sendMessage = async (args) => {
     try {
-      const message = await apiClient.createMessage(args)
+      const message = await inboxClient.createMessage(args)
       setMessages((prev) => [...prev, message])
       const currentChat = chats().find((chat) => chat.id === args.chat)
       setChats((prev) => [
@@ -74,7 +74,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   }
 
   const createChat = async (members: number[], title: string) => {
-    const chat = await apiClient.createChat({ members, title })
+    const chat = await inboxClient.createChat({ members, title })
     setChats((prevChats) => {
       return [chat, ...prevChats]
     })

@@ -55,6 +55,8 @@
   }
 
   &.narrow {
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
 
     @include media-breakpoint-up(sm) {
@@ -73,6 +75,7 @@
 }
 
 .modalInner {
+  height: 100%;
   overflow: auto;
   padding: 5.4rem 2.4rem 2.4rem;
   position: relative;

@@ -18,7 +18,7 @@ import type {
   Shout
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
-import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
+import { getToken, privateGraphQLClient, privateInboxGraphQLClient } from '../graphql/privateGraphQLClient'
 import topicsAll from '../graphql/query/topics-all'
 import mySession from '../graphql/mutation/my-session'
 import authLogoutQuery from '../graphql/mutation/auth-logout'
@@ -349,30 +349,31 @@ export const apiClient = {
       .toPromise()
     // console.debug(resp)
     return resp.data.loadReactionsBy
-  },
+  }
+}
 
-  // inbox
+export const inboxClient = {
   getChats: async (options: QueryLoadChatsArgs): Promise<Chat[]> => {
-    const resp = await privateGraphQLClient.query(myChats, options).toPromise()
+    const resp = await privateInboxGraphQLClient.query(myChats, options).toPromise()
     return resp.data.loadChats.chats
   },
 
   createChat: async (options: MutationCreateChatArgs) => {
-    const resp = await privateGraphQLClient.mutation(createChat, options).toPromise()
+    const resp = await privateInboxGraphQLClient.mutation(createChat, options).toPromise()
     return resp.data.createChat
   },
 
   createMessage: async (options: MutationCreateMessageArgs) => {
-    const resp = await privateGraphQLClient.mutation(createMessage, options).toPromise()
+    const resp = await privateInboxGraphQLClient.mutation(createMessage, options).toPromise()
     return resp.data.createMessage.message
   },
 
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {
-    const resp = await privateGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
+    const resp = await privateInboxGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
     return resp.data.loadMessagesBy.messages
   },
   getRecipients: async (options: QueryLoadRecipientsArgs) => {
-    const resp = await privateGraphQLClient.query(loadRecipients, options).toPromise()
+    const resp = await privateInboxGraphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members
   }
 }

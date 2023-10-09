@@ -45,3 +45,8 @@ const options: ClientOptions = {
 }
 
 export const privateGraphQLClient = createClient(options)
+
+export const privateInboxGraphQLClient = createClient({
+  ...options,
+  url: 'https://chat.discours.io'
+})

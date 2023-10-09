@@ -1,7 +1,7 @@
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
-import { apiClient } from '../utils/apiClient'
+import { inboxClient } from '../utils/apiClient'
 
 import { loadMessages } from '../stores/inbox'
 
@@ -26,7 +26,7 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
-  const eventSource = new EventSource('testapi.discours.io/connect')
+  const eventSource = new EventSource('chat.discours.io/connect')
   // TODO: call /disconnect some time
   // eslint-disable-next-line unicorn/prefer-add-event-listener
   eventSource.onmessage = function (event) {

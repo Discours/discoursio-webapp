@@ -44,7 +44,13 @@ export const AuthorBadge = (props: Props) => {
 
   return (
     <div class={clsx(styles.AuthorBadge)}>
-      <Userpic hasLink={true} isMedium={true} name={props.author.name} userpic={props.author.userpic} />
+      <Userpic
+        hasLink={true}
+        isMedium={true}
+        name={props.author.name}
+        userpic={props.author.userpic}
+        slug={props.author.slug}
+      />
       <a href={`/author/${props.author.slug}`} class={styles.info}>
         <div class={styles.name}>{props.author.name}</div>
         <Switch
@@ -84,14 +90,16 @@ export const AuthorBadge = (props: Props) => {
                   size="S"
                   value={isSubscribing() ? t('...subscribing') : t('Subscribe')}
                   onClick={() => handleSubscribe(true)}
+                  class={styles.subscribeButton}
                 />
               }
             >
               <Button
-                variant="secondary"
+                variant="bordered"
                 size="S"
                 value={t('You are subscribed')}
                 onClick={() => handleSubscribe(false)}
+                class={styles.subscribeButton}
               />
             </Show>
           </Show>

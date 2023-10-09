@@ -52,6 +52,10 @@
 
   @include media-breakpoint-between(md, lg) {
     flex-wrap: wrap;
+
+    .listWrapper & {
+      flex-wrap: nowrap;
+    }
   }
 
   &.authorDetailsShrinked {
@@ -69,6 +73,10 @@
 
   @include media-breakpoint-between(md, lg) {
     flex: 1 0 100%;
+
+    .listWrapper & {
+      flex: 1;
+    }
   }
 
   @include media-breakpoint-up(md) {
@@ -669,11 +677,6 @@
 
 .listWrapper {
   max-height: 70vh;
-  //padding-right: 2rem;
-
-  :global(.row) {
-    margin-right: 0;
-  }
 }
 
 .switcherCounter {

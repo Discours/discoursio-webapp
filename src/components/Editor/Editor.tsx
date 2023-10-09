@@ -44,12 +44,26 @@ import { EditorFloatingMenu } from './EditorFloatingMenu'
 import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
 import { Footnote } from './extensions/Footnote'
+import { handleFileUpload } from '../../utils/handleFileUpload'
+import { imageProxy } from '../../utils/imageProxy'
+import { useSnackbar } from '../../context/snackbar'
 
 type Props = {
   shoutId: number
   initialContent?: string
   onChange: (text: string) => void
 }
+
+const allowedImageTypes = new Set([
+  'image/bmp',
+  'image/gif',
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/tiff',
+  'image/webp',
+  'image/x-icon'
+])
 
 const yDocs: Record<string, Doc> = {}
 const providers: Record<string, HocuspocusProvider> = {}
@@ -60,6 +74,10 @@ export const Editor = (props: Props) => {
 
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
+
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const docName = `shout-${props.shoutId}`
 
@@ -114,12 +132,73 @@ export const Editor = (props: Props) => {
     content: 'figcaption image'
   })
 
+  const handleClipboardPaste = async () => {
+    try {
+      const clipboardItems = await navigator.clipboard.read()
+
+      if (clipboardItems.length === 0) return
+      const [clipboardItem] = clipboardItems
+      const { types } = clipboardItem
+      const imageType = types.find((type) => allowedImageTypes.has(type))
+
+      if (!imageType) return
+      const blob = await clipboardItem.getType(imageType)
+      const extension = imageType.split('/')[1]
+      const file = new File([blob], `clipboardImage.${extension}`)
+
+      const uplFile = {
+        source: blob.toString(),
+        name: file.name,
+        size: file.size,
+        file
+      }
+
+      showSnackbar({ body: t('Uploading image') })
+      const result = await handleFileUpload(uplFile)
+
+      editor()
+        .chain()
+        .focus()
+        .insertContent({
+          type: 'capturedImage',
+          content: [
+            {
+              type: 'figcaption',
+              content: [
+                {
+                  type: 'text',
+                  text: result.originalFilename
+                }
+              ]
+            },
+            {
+              type: 'image',
+              attrs: {
+                src: imageProxy(result.url)
+              }
+            }
+          ]
+        })
+        .run()
+    } catch (error) {
+      console.log('!!! Paste image Error:', error)
+    }
+  }
+
   const { initialContent } = props
+
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
       attributes: {
         class: 'articleEditor'
+      },
+      transformPastedHTML(html) {
+        return html.replaceAll(/<img.*?>/g, '')
+      },
+      handlePaste: () => {
+        handleClipboardPaste()
+        return false
       }
     },
     extensions: [
@@ -246,6 +325,7 @@ export const Editor = (props: Props) => {
       TrailingNode,
       Article
     ],
+    enablePasteRules: [Link],
     content: initialContent ?? null
   }))
 

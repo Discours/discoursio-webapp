@@ -139,7 +139,7 @@ export const AuthorView = (props: Props) => {
             <ul class="view-switcher">
               <li classList={{ 'view-switcher__item--selected': page().route === 'author' }}>
                 <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
-                  {t('PublicationsWithCount', { count: author().stat?.shouts ?? 0 })}
+                  {t('Publications')}&nbsp;({author().stat.shouts})
                 </a>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'authorComments' }}>

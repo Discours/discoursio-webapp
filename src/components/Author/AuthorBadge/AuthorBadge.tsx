@@ -57,7 +57,7 @@ export const AuthorBadge = (props: Props) => {
           <Match when={props.author.bio}>
             <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
           </Match>
-          <Match when={props.author?.stat.shouts > 0}>
+          <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
             <div class={styles.bio}>
               {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
             </div>

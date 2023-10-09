@@ -98,6 +98,10 @@
   }
 }
 
+.commentControlDelete {
+  align-items: center;
+}
+
 .commentControl {
   border: none;
   color: #696969;
@@ -106,7 +110,10 @@
   line-height: 1.2;
   margin-right: 0.8rem;
   padding: 0.2em 0.3em;
-  transition: opacity 0.2s, color 0.3s, background-color 0.3s;
+  transition:
+    opacity 0.2s,
+    color 0.3s,
+    background-color 0.3s;
   vertical-align: top;
 
   &:hover {
@@ -123,7 +130,9 @@
     filter: invert(0);
     margin-right: 0.3em;
     opacity: 0.6;
-    transition: filter 0.3s, opacity 0.2s;
+    transition:
+      filter 0.3s,
+      opacity 0.2s;
 
     img {
       margin-bottom: -0.1em;

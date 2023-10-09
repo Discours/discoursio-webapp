@@ -137,15 +137,11 @@ export const Editor = (props: Props) => {
       const clipboardItems = await navigator.clipboard.read()
 
       if (clipboardItems.length === 0) return
-
-      console.log('!!! clipboardItems:', clipboardItems)
-
       const [clipboardItem] = clipboardItems
       const { types } = clipboardItem
       const imageType = types.find((type) => allowedImageTypes.has(type))
 
       if (!imageType) return
-
       const blob = await clipboardItem.getType(imageType)
       const extension = imageType.split('/')[1]
       const file = new File([blob], `clipboardImage.${extension}`)
@@ -157,7 +153,7 @@ export const Editor = (props: Props) => {
         file
       }
 
-      await showSnackbar({ body: t('Uploading image') })
+      showSnackbar({ body: t('Uploading image') })
       const result = await handleFileUpload(uplFile)
 
       editor()
@@ -185,7 +181,7 @@ export const Editor = (props: Props) => {
         })
         .run()
     } catch (error) {
-      console.log('!!! Paste Error:', error)
+      console.log('!!! Paste image Error:', error)
     }
   }
 

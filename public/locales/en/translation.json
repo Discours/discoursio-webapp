@@ -212,7 +212,6 @@
   "Nothing here yet": "There's nothing here yet",
   "Nothing is here": "There is nothing here",
   "Notifications": "Notifications",
-  "Registered since {{date}}": "Registered since {{date}}",
   "Or continue with social network": "Or continue with social network",
   "Or paste a link to an image": "Or paste a link to an image",
   "Ordered list": "Ordered list",
@@ -250,6 +249,7 @@
   "Quotes": "Quotes",
   "Reason uknown": "Reason unknown",
   "Recent": "Fresh",
+  "Registered since {date}": "Registered since {date}",
   "Remove link": "Remove link",
   "Reply": "Reply",
   "Report": "Complain",
@@ -327,6 +327,7 @@
   "Upload": "Upload",
   "Upload error": "Upload error",
   "Upload video": "Upload video",
+  "Uploading image": "Uploading image",
   "Username": "Username",
   "Userpic": "Userpic",
   "Users": "Users",
@@ -408,5 +409,6 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "PublicationsWithCount": "{count, plural, =0 {no publications} one {{count} publication} other {{count} publications}}"
 }

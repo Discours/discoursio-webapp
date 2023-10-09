@@ -123,7 +123,7 @@ export const ProfileSettingsPage = () => {
                     <p class="description">{t('Here you can customize your profile the way you want.')}</p>
                     <form onSubmit={handleSubmit} enctype="multipart/form-data">
                       <h4>{t('Userpic')}</h4>
-                      <div class="pretty-form__item">
+                      <div class="pretty-form__item" style={{ 'max-width': '50%' }}>
                         <Userpic
                           name={form.name}
                           userpic={form.userpic}

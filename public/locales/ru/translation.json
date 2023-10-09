@@ -222,7 +222,6 @@
   "Nothing here yet": "Здесь пока ничего нет",
   "Nothing is here": "Здесь ничего нет",
   "Notifications": "Уведомления",
-  "Registered since {{date}}": "На сайте c {{date}}",
   "Or continue with social network": "Или войдите через соцсеть",
   "Or paste a link to an image": "Или вставьте ссылку на изображение",
   "Ordered list": "Нумерованный список",
@@ -264,6 +263,7 @@
   "Quotes": "Цитаты",
   "Reason uknown": "Причина неизвестна",
   "Recent": "Свежее",
+  "Registered since {date}": "На сайте c {date}",
   "Release date...": "Дата выхода...",
   "Remove link": "Убрать ссылку",
   "Reply": "Ответить",
@@ -345,6 +345,7 @@
   "Upload": "Загрузить",
   "Upload error": "Ошибка загрузки",
   "Upload video": "Загрузить видео",
+  "Uploading image": "Загружаем изображение",
   "Username": "Имя пользователя",
   "Userpic": "Аватар",
   "Users": "Пользователи",
@@ -434,5 +435,6 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал"
+  "zine": "журнал",
+  "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}"
 }

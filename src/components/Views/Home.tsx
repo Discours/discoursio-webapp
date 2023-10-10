@@ -1,6 +1,6 @@
 import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import Banner from '../Discours/Banner'
-import { NavTopics } from '../Nav/Topics'
+import { Topics } from '../Nav/Topics'
 import { Row5 } from '../Feed/Row5'
 import { Row3 } from '../Feed/Row3'
 import { Row2 } from '../Feed/Row2'
@@ -104,7 +104,7 @@ export const HomeView = (props: Props) => {
 
   return (
     <Show when={sortedArticles().length > 0}>
-      <NavTopics />
+      <Topics />
 
       <Row5 articles={sortedArticles().slice(0, 5)} nodate={true} />
 

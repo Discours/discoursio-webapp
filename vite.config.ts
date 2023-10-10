@@ -2,18 +2,65 @@ import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
 import ssrPlugin from 'vite-plugin-ssr/plugin'
 import sassDts from 'vite-plugin-sass-dts'
+import mkcert from 'vite-plugin-mkcert'
 
-export default defineConfig(() => {
+const cssModuleHMR = () => {
+  return {
+    enforce: 'post',
+    name: 'css-module-hmr',
+    apply: 'serve',
+    handleHotUpdate(context) {
+      const { modules } = context
+
+      modules.forEach((module) => {
+        if (module.id.includes('.module.scss')) {
+          module.isSelfAccepting = true
+        }
+      })
+    }
+  }
+}
+
+const PATH_PREFIX = '/src/'
+
+const getDevCssClassPrefix = (filename: string): string => {
+  return filename
+    .slice(filename.indexOf(PATH_PREFIX) + PATH_PREFIX.length)
+    .replace('.module.scss', '')
+    .replaceAll(/[/?\\]/g, '-')
+}
+
+const devGenerateScopedName = (name: string, filename: string, _css: string) =>
+  getDevCssClassPrefix(filename) + '__' + name
+
+export default defineConfig(({ mode, command }) => {
+  const plugins = [
+    solidPlugin({ ssr: true }),
+    ssrPlugin({ includeAssetsImportedByServer: true }),
+    sassDts(),
+    cssModuleHMR()
+  ]
+
+  if (command === 'serve') {
+    plugins.push(mkcert())
+  }
+
+  const isDev = mode === 'development'
+
   return {
     envPrefix: 'PUBLIC_',
-    plugins: [solidPlugin({ ssr: true }), ssrPlugin({ includeAssetsImportedByServer: true }), sassDts()],
+    plugins,
     server: {
+      https: true,
       port: 3000
     },
     css: {
-      devSourcemap: true,
+      devSourcemap: isDev,
       preprocessorOptions: {
         scss: { additionalData: '@import "src/styles/imports";\n' }
+      },
+      modules: {
+        generateScopedName: isDev ? devGenerateScopedName : '[hash:base64:5]'
       }
     },
     build: {

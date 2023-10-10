@@ -4,7 +4,7 @@ import type { Author, Chat, Shout, Topic } from '../graphql/types.gen'
 // all the things (she said) that could be passed from the server
 export type PageProps = {
   article?: Shout
-  layoutShouts?: Shout[]
+  expoShouts?: Shout[]
   authorShouts?: Shout[]
   topicShouts?: Shout[]
   homeShouts?: Shout[]

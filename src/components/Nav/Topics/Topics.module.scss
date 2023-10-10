@@ -1,8 +1,9 @@
-.subnavigation {
+.Topics {
   @include font-size(1.4rem);
+
   height: 6rem;
   line-height: 6rem;
-  margin-bottom: 5rem !important;
+  margin-bottom: 3rem;
   overflow: hidden;
   position: relative;
   transform: translateY(-2px);
@@ -11,7 +12,7 @@
     padding: 0 divide($container-padding-x, 2);
   }
 
-  .topics {
+  .list {
     display: flex;
     flex-wrap: wrap;
     font-weight: 500;
@@ -32,32 +33,11 @@
     }
 
     a {
-      border-bottom: 0;
-
-      &:hover {
-        .icon {
-          filter: invert(1);
-        }
+      border-bottom: unset;
+      &.selected {
+        font-weight: 500;
+        border-bottom: 2px solid var(--default-color);
       }
     }
-
-    .icon {
-      display: inline-block;
-      margin-left: 0.3em;
-      position: relative;
-      top: 0.15em;
-    }
-  }
-
-  .selected {
-    color: black;
-  }
-
-  a {
-    color: #141414;
-  }
-
-  a:hover {
-    color: white;
   }
 }

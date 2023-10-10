@@ -325,7 +325,7 @@ export const apiClient = {
 
   getShouts: async (options: LoadShoutsOptions) => {
     const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
-
+    console.log('!!! re:', resp)
     if (resp.error) {
       console.error(resp)
     }

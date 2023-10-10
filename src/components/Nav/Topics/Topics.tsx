@@ -7,7 +7,6 @@ import { useRouter } from '../../../stores/router'
 export const Topics = () => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  console.debug('!!! page:', page())
   return (
     <nav class={clsx('wide-container text-2xl', styles.Topics)}>
       <ul class={styles.list}>

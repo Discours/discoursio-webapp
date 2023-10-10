@@ -23,12 +23,17 @@ const sseService = new SSEService()
 export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const { isAuthenticated, user } = useSession()
 
+  const getNotifications = () => {}
+
   createEffect(() => {
     if (isAuthenticated()) {
-      console.log(user())
       sseService.connect(`${apiBaseUrl}/subscribe/${user().id}`)
       sseService.subscribeToEvent('message', (data: EventData) => {
-        console.log(data)
+        if (data.type === 'newNotifications') {
+          getNotifications()
+        } else {
+          console.error(`[NotificationsProvider] unknown message type: ${JSON.stringify(data)}`)
+        }
       })
     } else {
       sseService.disconnect()

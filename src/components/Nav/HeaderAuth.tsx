@@ -3,10 +3,9 @@ import { clsx } from 'clsx'
 import { router, useRouter } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
 import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import Notifications from './Notifications'
 import { ProfilePopup } from './ProfilePopup'
 import { Userpic } from '../Author/Userpic'
-import { showModal, useWarningsStore } from '../../stores/ui'
+import { showModal } from '../../stores/ui'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
@@ -14,6 +13,7 @@ import { getPagePath } from '@nanostores/router'
 import { Button } from '../_shared/Button'
 import { useEditorContext } from '../../context/editor'
 import { Popover } from '../_shared/Popover'
+import { useNotifications } from '../../context/notifications'
 
 type Props = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -29,17 +29,16 @@ const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const [visibleWarnings, setVisibleWarnings] = createSignal(false)
-  const { warnings } = useWarningsStore()
-
   const { session, isSessionLoaded, isAuthenticated } = useSession()
+  const {
+    unreadNotificationsCount,
+    actions: { showNotificationsPanel }
+  } = useNotifications()
 
   const {
     form,
     actions: { toggleEditorPanel, saveShout, publishShout }
   } = useEditorContext()
-
-  const toggleWarnings = () => setVisibleWarnings(!visibleWarnings())
 
   const handleBellIconClick = (event: Event) => {
     event.preventDefault()
@@ -48,15 +47,16 @@ export const HeaderAuth = (props: Props) => {
       showModal('auth')
       return
     }
-    toggleWarnings()
+
+    showNotificationsPanel()
   }
 
   const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
 
-  const showNotifications = createMemo(() => isAuthenticated() && !isEditorPage())
-  const showSaveButton = createMemo(() => isAuthenticated() && isEditorPage())
-  const showCreatePostButton = createMemo(() => isAuthenticated() && !isEditorPage())
-  const showAuthenticatedControls = createMemo(() => isAuthenticated())
+  const isNotificationsVisible = createMemo(() => isAuthenticated() && !isEditorPage())
+  const isSaveButtonVisible = createMemo(() => isAuthenticated() && isEditorPage())
+  const isCreatePostButtonVisible = createMemo(() => isAuthenticated() && !isEditorPage())
+  const isAuthenticatedControlsVisible = createMemo(() => isAuthenticated())
 
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
@@ -109,7 +109,7 @@ export const HeaderAuth = (props: Props) => {
       <Show when={isSessionLoaded()} keyed={true}>
         <div class={clsx('col-sm-6 col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
-            <Show when={showCreatePostButton()}>
+            <Show when={isCreatePostButtonVisible()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
@@ -126,26 +126,18 @@ export const HeaderAuth = (props: Props) => {
               </a>
             </div>
 
-            <Show when={showNotifications()}>
-              <div class={styles.userControlItem}>
-                <a href="#" onClick={handleBellIconClick}>
-                  <div>
-                    <Icon
-                      name="bell-white"
-                      counter={isAuthenticated() ? warnings().length : 1}
-                      class={styles.icon}
-                    />
-                    <Icon
-                      name="bell-white-hover"
-                      counter={isAuthenticated() ? warnings().length : 1}
-                      class={clsx(styles.icon, styles.iconHover)}
-                    />
-                  </div>
-                </a>
+            <Show when={isNotificationsVisible()}>
+              <div class={styles.userControlItem} onClick={handleBellIconClick}>
+                <Icon name="bell-white" counter={unreadNotificationsCount()} class={styles.icon} />
+                <Icon
+                  name="bell-white-hover"
+                  counter={unreadNotificationsCount()}
+                  class={clsx(styles.icon, styles.iconHover)}
+                />
               </div>
             </Show>
 
-            <Show when={showSaveButton()}>
+            <Show when={isSaveButtonVisible()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 {renderIconedButton({
                   value: t('Save'),
@@ -175,15 +167,8 @@ export const HeaderAuth = (props: Props) => {
                 </Popover>
               </div>
             </Show>
-
-            <Show when={visibleWarnings()}>
-              <div class={clsx(styles.userControlItem, 'notifications')}>
-                <Notifications />
-              </div>
-            </Show>
-
             <Show
-              when={showAuthenticatedControls()}
+              when={isAuthenticatedControlsVisible()}
               fallback={
                 <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                   <a href="?modal=auth&mode=login">

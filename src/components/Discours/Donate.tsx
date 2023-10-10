@@ -1,7 +1,8 @@
 import '../../styles/help.scss'
 import { createSignal, onMount } from 'solid-js'
-import { showModal, warn } from '../../stores/ui'
+import { showModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
+import { useSnackbar } from '../../context/snackbar'
 
 export const Donate = () => {
   const { t } = useLocalize()
@@ -20,6 +21,9 @@ export const Donate = () => {
   const [showingPayment, setShowingPayment] = createSignal<boolean>()
   const [period, setPeriod] = createSignal(monthly)
   const [amount, setAmount] = createSignal(0)
+  const {
+    actions: { showSnackbar }
+  } = useSnackbar()
 
   const initiated = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,10 +108,10 @@ export const Donate = () => {
         // fail
         // действие при неуспешной оплате
         console.debug('[donate] options', options)
-        warn({
-          kind: 'error',
-          body: reason,
-          seen: false
+
+        showSnackbar({
+          type: 'error',
+          body: reason
         })
       }
     )

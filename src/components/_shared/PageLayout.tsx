@@ -30,7 +30,7 @@ export const PageLayout = (props: Props) => {
       props.scrollToComments(scrollToComments())
     }
   })
-  // const { randomTopics } = useTopicsStore()
+
   return (
     <>
       <Meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  z-index: 10000;
+  background-color: rgb(0 0 0 / 60%);
+  overflow: hidden;
+
+  &.isOpened {
+    width: 100%;
+  }
+}
+
+.panel {
+  background-color: #fff;
+  width: 700px;
+  padding: 48px 96px 96px 48px;
+}
+
+.title {
+  // TODO: check markup
+  color: var(--black-500, #141414);
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 36px;
+}

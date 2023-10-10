@@ -1,6 +1,6 @@
 import { PageLayout } from '../components/_shared/PageLayout'
 import type { LayoutType, PageProps } from './types'
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../stores/zine/articles'
 import { router, useRouter } from '../stores/router'
 import { Loading } from '../components/_shared/Loading'
@@ -19,6 +19,7 @@ import { ArticleCard } from '../components/Feed/ArticleCard'
 import { useLocalize } from '../context/localize'
 import { getPagePath } from '@nanostores/router'
 import { Title } from '@solidjs/meta'
+import { LoadShoutsOptions } from '../graphql/types.gen'
 
 export const PRERENDERED_ARTICLES_COUNT = 27
 const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3

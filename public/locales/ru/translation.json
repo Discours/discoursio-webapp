@@ -254,6 +254,7 @@
   "Profile successfully saved": "Профиль успешно сохранён",
   "Publication settings": "Настройки публикации",
   "Publications": "Публикации",
+  "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}",
   "Publish": "Опубликовать",
   "Publish Album": "Опубликовать альбом",
   "Publish Settings": "Настройки публикации",
@@ -435,6 +436,5 @@
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
-  "zine": "журнал",
-  "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}"
+  "zine": "журнал"
 }

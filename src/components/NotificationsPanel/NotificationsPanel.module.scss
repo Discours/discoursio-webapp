@@ -30,3 +30,11 @@
   font-weight: 700;
   line-height: 36px;
 }
+
+.closeButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 20px;
+  cursor: pointer;
+}

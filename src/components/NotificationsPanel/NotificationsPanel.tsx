@@ -3,6 +3,7 @@ import styles from './NotificationsPanel.module.scss'
 import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 import { useLocalize } from '../../context/localize'
+import { Icon } from '../_shared/Icon'
 
 type Props = {
   isOpen: boolean
@@ -32,6 +33,10 @@ export const NotificationsPanel = (props: Props) => {
         [styles.isOpened]: props.isOpen
       })}
     >
+      <div class={styles.closeButton}>
+        {/*TODO: check markup (hover)*/}
+        <Icon name="close" />
+      </div>
       <div ref={(el) => (panelRef.current = el)} class={styles.panel}>
         <div class={styles.title}>{t('Notifications')}</div>
       </div>

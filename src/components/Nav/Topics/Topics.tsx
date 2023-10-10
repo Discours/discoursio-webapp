@@ -2,7 +2,8 @@ import { Icon } from '../../_shared/Icon'
 import { useLocalize } from '../../../context/localize'
 import styles from './Topics.module.scss'
 import { clsx } from 'clsx'
-import { useRouter } from '../../../stores/router'
+import { router, useRouter } from '../../../stores/router'
+import { getPagePath } from '@nanostores/router'
 
 export const Topics = () => {
   const { t } = useLocalize()
@@ -11,7 +12,7 @@ export const Topics = () => {
     <nav class={clsx('wide-container text-2xl', styles.Topics)}>
       <ul class={styles.list}>
         <li class={styles.item}>
-          <a class={clsx({ [styles.selected]: page().path.includes('expo') })} href="/expo">
+          <a class={clsx({ [styles.selected]: page().route === 'expo' })} href="/expo">
             {t('Art')}
           </a>
         </li>
@@ -43,7 +44,7 @@ export const Topics = () => {
           <a href="/topic/poetry">#Поэзия</a>
         </li>
         <li class={clsx(styles.item, styles.right)}>
-          <a href={`/topics`}>
+          <a href={getPagePath(router, 'topics')}>
             <span>
               {t('All topics')}
               <Icon name="arrow-right-black" class={'icon'} />

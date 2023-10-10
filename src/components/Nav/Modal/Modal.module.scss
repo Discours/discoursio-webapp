@@ -17,10 +17,13 @@
   background: #fff;
   max-width: 1000px;
   position: relative;
-  width: 100%;
 
-  @include media-breakpoint-up(sm) {
-    width: 80%;
+  &:not([class*='col-']) {
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: 80%;
+    }
   }
 
   .close {

@@ -12,7 +12,7 @@ export const Topics = () => {
     <nav class={clsx('wide-container text-2xl', styles.Topics)}>
       <ul class={styles.list}>
         <li class={styles.item}>
-          <a class={clsx({ [styles.selected]: page().route === 'expo' })} href="/expo">
+          <a class={clsx({ [styles.selected]: page().path.includes('expo') })} href="/expo">
             {t('Art')}
           </a>
         </li>

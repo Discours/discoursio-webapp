@@ -623,7 +623,7 @@ figure {
   a,
   .linkReplacement,
   button {
-    border-bottom: 2px solid #fff;
+    border-bottom: 2px solid transparent;
     color: var(--link-color);
     cursor: pointer;
     font-weight: inherit;
@@ -673,6 +673,7 @@ figure {
     }
   }
 }
+
 .floor {
   @include media-breakpoint-up(md) {
     margin-bottom: 6.4rem;

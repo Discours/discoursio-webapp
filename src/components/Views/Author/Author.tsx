@@ -35,8 +35,6 @@ export const AuthorView = (props: Props) => {
 
   const { page } = useRouter()
   const author = createMemo(() => authorEntities()[props.authorSlug])
-
-  console.log('!!! author:', author())
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])

@@ -218,7 +218,7 @@ export const FullArticle = (props: Props) => {
         <div class="row position-relative">
           <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
             {/*TODO: Check styles.shoutTopic*/}
-            <Show when={props.article.layout !== 'audio'}>
+            <Show when={props.article.layout !== 'music'}>
               <div class={styles.shoutHeader}>
                 <Show when={mainTopic()}>
                   <CardTopic title={mainTopic().title} slug={props.article.mainTopic} />
@@ -256,7 +256,7 @@ export const FullArticle = (props: Props) => {
             <Show when={props.article.lead}>
               <section class={styles.lead} innerHTML={props.article.lead} />
             </Show>
-            <Show when={props.article.layout === 'audio'}>
+            <Show when={props.article.layout === 'music'}>
               <AudioHeader
                 title={props.article.title}
                 cover={props.article.cover}

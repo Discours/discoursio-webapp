@@ -38,7 +38,7 @@ export const ROUTES = {
   termsOfUse: '/about/terms-of-use',
   thanks: '/about/thanks',
   expo: '/expo',
-  expoLiterature: '/expo/literature',
+  expoLayout: '/expo/:layout',
   profileSettings: '/profile/settings',
   profileSecurity: '/profile/security',
   profileSubscriptions: '/profile/subscriptions',

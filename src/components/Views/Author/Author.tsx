@@ -138,14 +138,14 @@ export const AuthorView = (props: Props) => {
           <div class="col-md-16">
             <ul class="view-switcher">
               <li classList={{ 'view-switcher__item--selected': page().route === 'author' }}>
-                <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
-                  {t('Publications')}&nbsp;({author().stat.shouts})
-                </a>
+                <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>{t('Publications')}</a>
+                <span class="view-switcher__counter">{author().stat.shouts}</span>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'authorComments' }}>
                 <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
-                  {t('Comments')}&nbsp;({author().stat.commented})
+                  {t('Comments')}
                 </a>
+                <span class="view-switcher__counter">{author().stat.commented}</span>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'authorAbout' }}>
                 <a

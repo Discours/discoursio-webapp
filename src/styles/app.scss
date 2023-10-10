@@ -651,6 +651,27 @@ figure {
   }
 }
 
+.view-switcher__counter {
+  align-items: center;
+  background: #f7f7f8;
+  border-radius: 0.8rem;
+  display: inline-flex;
+  font-size: 1.2rem;
+  font-weight: bold;
+  height: 2.2rem;
+  justify-content: center;
+  line-height: 2.2rem;
+  margin-left: 0.4rem;
+  min-width: 2.2rem;
+  padding: 0 0.6rem;
+  text-align: center;
+
+  .view-switcher__item--selected & {
+    background: #000;
+    color: #fff;
+  }
+}
+
 .view-switcher__search {
   flex: 1 100%;
   text-align: right;

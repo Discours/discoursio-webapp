@@ -13,6 +13,7 @@ export const Row2 = (props: {
   isEqual?: boolean
   nodate?: boolean
   noAuthorLink?: boolean
+  noauthor?: boolean
 }) => {
   const [y, setY] = createSignal(0)
 
@@ -33,7 +34,8 @@ export const Row2 = (props: {
                         settings={{
                           isWithCover: props.isEqual || x[y()][i()] === '16',
                           nodate: props.isEqual || props.nodate,
-                          noAuthorLink: props.noAuthorLink
+                          noAuthorLink: props.noAuthorLink,
+                          noauthor: props.noauthor
                         }}
                       />
                     </div>

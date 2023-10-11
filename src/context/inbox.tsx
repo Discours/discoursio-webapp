@@ -28,32 +28,34 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
 
-  fetchEventSource('https://chat.discours.io/connect', {
+  fetchEventSource('https://connect.discours.io', {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json',
-        'Authorization': getToken()
+      'Content-Type': 'application/json',
+      Authorization: getToken()
     },
     body: JSON.stringify({
-        foo: 'bar'
+      foo: 'bar'
     }),
-    // signal: signal, TODO: sometimes need to call /disconnect
     onmessage(event) {
       const message = JSON.parse(event.data)
 
       // TODO: Do something with the message
-  
+
       console.log(message)
     },
     onclose() {
       // if no error thrown - it will reconnect
-      console.log("sse connection closed")
+      console.log('sse connection closed by server')
     },
     onerror(err) {
       console.warn(err)
+      console.error('sse connection closed by error')
       throw new Error() // hack to close the connection
     }
   })
+
+  // TODO: maybe sometimes need to call /disconnect
 
   const loadChats = async () => {
     try {
@@ -101,7 +103,6 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     loadChats,
     getMessages,
     sendMessage
-    // unsubscribe // TODO: call unsubscribe some time!
   }
 
   const value: InboxContextType = { chats, messages, actions }

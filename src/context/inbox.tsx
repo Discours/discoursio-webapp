@@ -46,11 +46,12 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       console.log(message)
     },
     onclose() {
-      // if the server closes the connection unexpectedly, retry:
+      // if no error thrown - it will reconnect
       console.log("sse connection closed")
     },
     onerror(err) {
       console.warn(err)
+      throw new Error() // hack to close the connection
     }
   })
 

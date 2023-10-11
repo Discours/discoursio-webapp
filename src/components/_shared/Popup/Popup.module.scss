@@ -73,7 +73,8 @@
     padding-top: 1em;
   }
 
-  a {
+  a:link,
+  :global(.link) {
     border: none;
     white-space: nowrap;
 
@@ -100,7 +101,9 @@
 
   .shareControl {
     text-align: left;
-    transition: color 0.3s, background-color 0.3s;
+    transition:
+      color 0.3s,
+      background-color 0.3s;
     white-space: nowrap;
 
     &:hover {

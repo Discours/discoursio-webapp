@@ -7,6 +7,7 @@ import { Icon } from '../../_shared/Icon'
 import { Topic } from '../../../graphql/types.gen'
 import { getPagePath } from '@nanostores/router'
 import { router } from '../../../stores/router'
+import { CardTopic } from '../../Feed/CardTopic'
 
 type Props = {
   title: string
@@ -29,11 +30,7 @@ export const AudioHeader = (props: Props) => {
       </div>
       <div class={styles.albumInfo}>
         <Show when={props.topic}>
-          <div class={styles.topic}>
-            <a href={getPagePath(router, 'topic', { slug: props.topic.slug })} class={styles.link}>
-              {props.topic.title}
-            </a>
-          </div>
+          <CardTopic title={props.topic.title} slug={props.topic.slug} />
         </Show>
         <h1>{props.title}</h1>
         <Show when={props.artistData}>

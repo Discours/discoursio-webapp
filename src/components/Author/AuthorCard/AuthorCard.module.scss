@@ -90,19 +90,22 @@
 
 .authorName {
   border: none !important;
-  display: block;
   font-size: 1.6rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
 
-  .listWrapper &:before {
-    content: '';
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 2;
+  .listWrapper & {
+    display: block;
+
+    &:before {
+      content: '';
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 2;
+    }
   }
 }
 
@@ -467,21 +470,6 @@
   img {
     height: 15px;
     transition: filter 0.3s;
-  }
-}
-
-.buttonWriteAuthorPage {
-  background: #f6f6f6 !important;
-  border-radius: 0.8rem;
-
-  &:hover {
-    background: #e9e9ee !important;
-    border-color: #e9e9ee;
-  }
-
-  &:active {
-    background: #ccc !important;
-    border-color: #ccc;
   }
 }
 

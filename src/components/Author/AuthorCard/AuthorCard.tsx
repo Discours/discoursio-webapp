@@ -277,7 +277,7 @@ export const AuthorCard = (props: Props) => {
                 <div class={styles.authorSubscribeSocial}>
                   <For each={props.author.links}>
                     {(link) => (
-                      <a class={styles.item} href={link} target="_blank" rel="nofollow noopener">
+                      <a class={styles.socialLink} href={link} target="_blank" rel="nofollow noopener">
                         <span class={styles.authorSubscribeSocialLabel}>{link}</span>
                       </a>
                     )}

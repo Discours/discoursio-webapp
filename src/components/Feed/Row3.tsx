@@ -8,6 +8,7 @@ export const Row3 = (props: {
   header?: JSX.Element
   nodate?: boolean
   noAuthorLink?: boolean
+  noauthor?: boolean
 }) => {
   return (
     <Show when={props.articles && props.articles.length > 0}>
@@ -20,7 +21,11 @@ export const Row3 = (props: {
                 <div class="col-md-8">
                   <ArticleCard
                     article={a}
-                    settings={{ nodate: props.nodate, noAuthorLink: props.noAuthorLink }}
+                    settings={{
+                      nodate: props.nodate,
+                      noAuthorLink: props.noAuthorLink,
+                      noauthor: props.noauthor
+                    }}
                   />
                 </div>
               )}

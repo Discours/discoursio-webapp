@@ -207,34 +207,34 @@ export const AuthorView = (props: Props) => {
 
         <Match when={page().route === 'author'}>
           <Show when={sortedArticles().length === 1}>
-            <Row1 article={sortedArticles()[0]} noAuthorLink={true} nodate={true} />
+            <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
           </Show>
 
           <Show when={sortedArticles().length === 2}>
-            <Row2 articles={sortedArticles()} isEqual={true} noAuthorLink={true} nodate={true} />
+            <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
           </Show>
 
           <Show when={sortedArticles().length === 3}>
-            <Row3 articles={sortedArticles()} noAuthorLink={true} nodate={true} />
+            <Row3 articles={sortedArticles()} noauthor={true} nodate={true} />
           </Show>
 
           <Show when={sortedArticles().length > 3}>
-            <Row1 article={sortedArticles()[0]} noAuthorLink={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noAuthorLink={true} />
-            <Row1 article={sortedArticles()[3]} noAuthorLink={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noAuthorLink={true} />
-            <Row1 article={sortedArticles()[6]} noAuthorLink={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noAuthorLink={true} />
+            <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
+            <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noauthor={true} />
+            <Row1 article={sortedArticles()[3]} noauthor={true} nodate={true} />
+            <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noauthor={true} />
+            <Row1 article={sortedArticles()[6]} noauthor={true} nodate={true} />
+            <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noauthor={true} />
 
             <For each={shouts()}>
               {(shout) => (
                 <>
-                  <Row1 article={shout[0]} noAuthorLink={true} nodate={true} />
-                  <Row2 articles={shout.slice(1, 3)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={shout[3]} noAuthorLink={true} nodate={true} />
-                  <Row2 articles={shout.slice(4, 6)} isEqual={true} noAuthorLink={true} />
-                  <Row1 article={shout[6]} noAuthorLink={true} nodate={true} />
-                  <Row2 articles={shout.slice(7, 9)} isEqual={true} noAuthorLink={true} />
+                  <Row1 article={shout[0]} noauthor={true} nodate={true} />
+                  <Row2 articles={shout.slice(1, 3)} isEqual={true} noauthor={true} />
+                  <Row1 article={shout[3]} noauthor={true} nodate={true} />
+                  <Row2 articles={shout.slice(4, 6)} isEqual={true} noauthor={true} />
+                  <Row1 article={shout[6]} noauthor={true} nodate={true} />
+                  <Row2 articles={shout.slice(7, 9)} isEqual={true} noauthor={true} />
                 </>
               )}
             </For>

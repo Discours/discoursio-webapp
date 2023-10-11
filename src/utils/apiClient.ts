@@ -352,7 +352,7 @@ export const apiClient = {
 }
 
 export const inboxClient = {
-  getChats: async (options: QueryLoadChatsArgs): Promise<Chat[]> => {
+  loadChats: async (options: QueryLoadChatsArgs): Promise<Chat[]> => {
     const resp = await privateInboxGraphQLClient.query(myChats, options).toPromise()
     return resp.data.loadChats.chats
   },
@@ -367,11 +367,11 @@ export const inboxClient = {
     return resp.data.createMessage.message
   },
 
-  getChatMessages: async (options: QueryLoadMessagesByArgs) => {
+  loadChatMessages: async (options: QueryLoadMessagesByArgs) => {
     const resp = await privateInboxGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
     return resp.data.loadMessagesBy.messages
   },
-  getRecipients: async (options: QueryLoadRecipientsArgs) => {
+  loadRecipients: async (options: QueryLoadRecipientsArgs) => {
     const resp = await privateInboxGraphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members
   }

@@ -59,7 +59,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
 
   const loadChats = async () => {
     try {
-      const newChats = await inboxClient.getChats({ limit: 50, offset: 0 })
+      const newChats = await inboxClient.loadChats({ limit: 50, offset: 0 })
       setChats(newChats)
     } catch (error) {
       console.log(error)

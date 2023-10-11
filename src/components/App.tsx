@@ -30,7 +30,7 @@ import { CreatePage } from '../pages/create.page'
 import { EditPage } from '../pages/edit.page'
 import { ConnectPage } from '../pages/connect.page'
 import { InboxPage } from '../pages/inbox.page'
-import { LayoutShoutsPage } from '../pages/layoutShouts.page'
+import { ExpoPage } from '../pages/expo/expo.page'
 import { SessionProvider } from '../context/session'
 import { ProfileSettingsPage } from '../pages/profile/profileSettings.page'
 import { ProfileSecurityPage } from '../pages/profile/profileSecurity.page'
@@ -52,7 +52,8 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   authorFollowing: AuthorPage,
   authorFollowers: AuthorPage,
   inbox: InboxPage,
-  expo: LayoutShoutsPage,
+  expo: ExpoPage,
+  expoLayout: ExpoPage,
   connect: ConnectPage,
   create: CreatePage,
   edit: EditPage,

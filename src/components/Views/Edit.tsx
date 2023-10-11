@@ -158,7 +158,7 @@ export const EditView = (props: Props) => {
 
   const articleTitle = () => {
     switch (props.shout.layout as LayoutType) {
-      case 'audio': {
+      case 'music': {
         return t('Album name')
       }
       case 'image': {
@@ -172,7 +172,7 @@ export const EditView = (props: Props) => {
 
   const pageTitle = () => {
     switch (props.shout.layout as LayoutType) {
-      case 'audio': {
+      case 'music': {
         return t('Publish Album')
       }
       case 'image': {
@@ -259,19 +259,19 @@ export const EditView = (props: Props) => {
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
                 <Show when={page().route === 'edit'}>
                   <div class={styles.headingActions}>
-                    <Show when={!isSubtitleVisible() && props.shout.layout !== 'audio'}>
+                    <Show when={!isSubtitleVisible() && props.shout.layout !== 'music'}>
                       <div class={styles.action} onClick={showSubtitleInput}>
                         {t('Add subtitle')}
                       </div>
                     </Show>
-                    <Show when={!isLeadVisible() && props.shout.layout !== 'audio'}>
+                    <Show when={!isLeadVisible() && props.shout.layout !== 'music'}>
                       <div class={styles.action} onClick={showLeadInput}>
                         {t('Add intro')}
                       </div>
                     </Show>
                   </div>
                   <>
-                    <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'audio' })}>
+                    <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'music' })}>
                       <div class={styles.inputContainer}>
                         <GrowingTextarea
                           allowEnterKey={true}
@@ -286,7 +286,7 @@ export const EditView = (props: Props) => {
                           <div class={styles.validationError}>{formErrors.title}</div>
                         </Show>
 
-                        <Show when={props.shout.layout === 'audio'}>
+                        <Show when={props.shout.layout === 'music'}>
                           <div class={styles.additional}>
                             <input
                               type="text"
@@ -314,7 +314,7 @@ export const EditView = (props: Props) => {
                             />
                           </div>
                         </Show>
-                        <Show when={props.shout.layout !== 'audio'}>
+                        <Show when={props.shout.layout !== 'music'}>
                           <Show when={isSubtitleVisible()}>
                             <GrowingTextarea
                               textAreaRef={(el) => {
@@ -340,7 +340,7 @@ export const EditView = (props: Props) => {
                           </Show>
                         </Show>
                       </div>
-                      <Show when={props.shout.layout === 'audio'}>
+                      <Show when={props.shout.layout === 'music'}>
                         <Show
                           when={form.coverImageUrl}
                           fallback={
@@ -387,7 +387,7 @@ export const EditView = (props: Props) => {
                       />
                     </Show>
 
-                    <Show when={props.shout.layout === 'audio'}>
+                    <Show when={props.shout.layout === 'music'}>
                       <AudioUploader
                         audio={mediaItems()}
                         baseFields={baseAudioFields()}

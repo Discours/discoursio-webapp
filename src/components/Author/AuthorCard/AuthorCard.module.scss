@@ -473,6 +473,16 @@
 .buttonWriteAuthorPage {
   background: #f6f6f6 !important;
   border-radius: 0.8rem;
+
+  &:hover {
+    background: #e9e9ee !important;
+    border-color: #e9e9ee;
+  }
+
+  &:active {
+    background: #ccc !important;
+    border-color: #ccc;
+  }
 }
 
 .authorPage {

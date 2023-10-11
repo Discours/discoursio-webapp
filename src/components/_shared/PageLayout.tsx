@@ -18,6 +18,7 @@ type Props = {
   hideFooter?: boolean
   class?: string
   withPadding?: boolean
+  zeroBottomPadding?: boolean
   scrollToComments?: (value: boolean) => void
 }
 
@@ -44,7 +45,8 @@ export const PageLayout = (props: Props) => {
       />
       <main
         class={clsx('main-content', {
-          [styles.withPadding]: props.withPadding
+          [styles.withPadding]: props.withPadding,
+          [styles.zeroBottomPadding]: props.zeroBottomPadding
         })}
         classList={{ 'main-content--no-padding': !isHeaderFixed }}
       >

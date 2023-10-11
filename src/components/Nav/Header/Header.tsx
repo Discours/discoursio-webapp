@@ -375,7 +375,7 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li class="item">
-                <a href="/expo/image">Искусство</a>
+                <a href="/expo">{t('Art')}</a>
               </li>
               <li class="item">
                 <a href="/podcasts">Подкасты</a>

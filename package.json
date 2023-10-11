@@ -146,6 +146,7 @@
     "typograf": "7.1.0",
     "uniqolor": "1.1.0",
     "vite": "4.3.9",
+    "vite-plugin-mkcert": "1.16.0",
     "vite-plugin-sass-dts": "1.3.11",
     "vite-plugin-solid": "2.7.0",
     "vite-plugin-ssr": "0.4.123",

@@ -44,7 +44,7 @@ export const CreatePage = () => {
               </div>
             </li>
             <li>
-              <div class={styles.link} onClick={() => handleCreate('audio')}>
+              <div class={styles.link} onClick={() => handleCreate('music')}>
                 <Icon name="create-music" class={styles.icon} />
                 <div>{t('music')}</div>
               </div>

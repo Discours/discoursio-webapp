@@ -46,6 +46,7 @@
     "@graphql-tools/url-loader": "7.17.18",
     "@graphql-typed-document-node/core": "3.2.0",
     "@hocuspocus/provider": "2.0.6",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@nanostores/router": "0.8.3",
     "@nanostores/solid": "0.3.2",
     "@popperjs/core": "2.11.8",

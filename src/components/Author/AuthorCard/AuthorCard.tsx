@@ -353,9 +353,8 @@ export const AuthorCard = (props: Props) => {
 
                   <Show when={!props.hideWriteButton}>
                     <button
-                      class={styles.button}
+                      class={clsx(styles.button, styles.buttonSubscribe)}
                       classList={{
-                        [styles.buttonWriteAuthorPage]: !props.isAuthorsList,
                         'button--subscribe': !props.isAuthorsList,
                         'button--subscribe-topic': props.isAuthorsList,
                         [styles.buttonWrite]: props.liteButtons && props.isAuthorsList

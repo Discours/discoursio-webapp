@@ -43,6 +43,7 @@ type Props = {
   following?: Array<Author | Topic>
   showPublicationsCounter?: boolean
   hideBio?: boolean
+  showSocial?: boolean
 }
 
 export const AuthorCard = (props: Props) => {
@@ -130,7 +131,6 @@ export const AuthorCard = (props: Props) => {
   if (props.isAuthorPage && props.author.userpic?.includes('assets.discours.io')) {
     setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
   }
-
   return (
     <>
       <div
@@ -273,20 +273,19 @@ export const AuthorCard = (props: Props) => {
           </div>
           <ShowOnlyOnClient>
             <Show when={isSessionLoaded()}>
+              <Show when={props.showSocial}>
+                <div class={styles.authorSubscribeSocial}>
+                  <For each={props.author.links}>
+                    {(link) => (
+                      <a class={styles.item} href={link} target="_blank" rel="nofollow noopener">
+                        <span class={styles.authorSubscribeSocialLabel}>{link}</span>
+                      </a>
+                    )}
+                  </For>
+                </div>
+              </Show>
               <Show when={canFollow()}>
                 <div class={styles.authorSubscribe}>
-                  <Show when={!props.noSocialButtons && !props.hideWriteButton && props.author.links}>
-                    <div class={styles.authorSubscribeSocial}>
-                      <For each={props.author.links}>
-                        {(link) => (
-                          <a href={link}>
-                            <span class={styles.authorSubscribeSocialLabel}>{link}</span>
-                          </a>
-                        )}
-                      </For>
-                    </div>
-                  </Show>
-
                   <Show
                     when={subscribed()}
                     fallback={

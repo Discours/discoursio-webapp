@@ -18,6 +18,7 @@ import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { hideModal } from '../../../stores/ui'
 import { getPagePath } from '@nanostores/router'
+import { useSession } from '../../../context/session'
 
 type Props = {
   shouts: Shout[]
@@ -34,6 +35,7 @@ export const AuthorView = (props: Props) => {
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
   const { page } = useRouter()
+  const { user } = useSession()
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -131,6 +133,7 @@ export const AuthorView = (props: Props) => {
               isAuthorPage={true}
               followers={followers()}
               following={following()}
+              showSocial={author().slug === user()?.slug}
             />
           </div>
         </Show>

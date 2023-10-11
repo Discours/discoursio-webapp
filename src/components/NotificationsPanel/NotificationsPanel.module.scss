@@ -1,3 +1,5 @@
+$transition-duration: 200ms;
+
 .container {
   display: flex;
   align-items: stretch;
@@ -8,18 +10,32 @@
   bottom: 0;
   width: 0;
   z-index: 10000;
-  background-color: rgb(0 0 0 / 60%);
+  background-color: rgb(0 0 0 / 0%);
   overflow: hidden;
+  transition:
+    background-color $transition-duration,
+    width 0ms linear $transition-duration;
+
+  .panel {
+    position: relative;
+    background-color: #fff;
+    width: 700px;
+    padding: 48px 96px 96px 48px;
+    transform: translateX(100%);
+    transition: transform $transition-duration;
+  }
 
   &.isOpened {
     width: 100%;
-  }
-}
+    background-color: rgb(0 0 0 / 60%);
+    transition:
+      background-color $transition-duration,
+      width 0ms;
 
-.panel {
-  background-color: #fff;
-  width: 700px;
-  padding: 48px 96px 96px 48px;
+    .panel {
+      transform: translateX(0);
+    }
+  }
 }
 
 .title {

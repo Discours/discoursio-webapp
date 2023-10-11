@@ -33,11 +33,11 @@ export const NotificationsPanel = (props: Props) => {
         [styles.isOpened]: props.isOpen
       })}
     >
-      <div class={styles.closeButton}>
-        {/*TODO: check markup (hover)*/}
-        <Icon name="close" />
-      </div>
       <div ref={(el) => (panelRef.current = el)} class={styles.panel}>
+        <div class={styles.closeButton} onClick={handleHide}>
+          {/*TODO: check markup (hover)*/}
+          <Icon name="close" />
+        </div>
         <div class={styles.title}>{t('Notifications')}</div>
       </div>
     </div>

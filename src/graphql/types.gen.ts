@@ -318,7 +318,7 @@ export type ProfileInput = {
 
 export type Query = {
   authorsAll: Array<Maybe<Author>>
-  getAuthor?: Maybe<Author>
+  getAuthor?: Maybe<User>
   getTopic?: Maybe<Topic>
   isEmailUsed: Scalars['Boolean']
   loadAuthorsBy: Array<Maybe<Author>>

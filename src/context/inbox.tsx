@@ -26,7 +26,7 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
-  const eventSource = new EventSource('https://chat.discours.io/connect')
+  const eventSource = new EventSource('https://testapi.discours.io/connect')
   // TODO: call /disconnect some time
   // eslint-disable-next-line unicorn/prefer-add-event-listener
   eventSource.onmessage = function (event) {

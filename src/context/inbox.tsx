@@ -27,7 +27,8 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
-  const eventSource = new fetchEventSource('https://testapi.discours.io/connect', {
+
+  fetchEventSource('https://chat.discours.io/connect', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -37,20 +38,22 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
         foo: 'bar'
     }),
     // signal: signal, TODO: sometimes need to call /disconnect
+    onmessage(event) {
+      const message = JSON.parse(event.data)
+
+      // TODO: Do something with the message
+  
+      console.log(message)
+    },
+    onclose() {
+      // if the server closes the connection unexpectedly, retry:
+      console.log("sse connection closed")
+    },
+    onerror(err) {
+      console.warn(err)
+    }
   })
-  // TODO: call /disconnect some time
-  // eslint-disable-next-line unicorn/prefer-add-event-listener
-  eventSource.onmessage = function (event) {
-    const message = JSON.parse(event.data)
-    // TODO: Do something with the message
 
-    console.log(message)
-  }
-
-  eventSource.onerror = function (event) {
-    console.error('EventSource failed:', event)
-    // TODO: Implement reconnection logic if needed
-  }
   const loadChats = async () => {
     try {
       const newChats = await inboxClient.getChats({ limit: 50, offset: 0 })

@@ -133,7 +133,7 @@ export const AuthorView = (props: Props) => {
               isAuthorPage={true}
               followers={followers()}
               following={following()}
-              showSocial={author().slug === user()?.slug}
+              isCurrentUser={author().slug === user()?.slug}
             />
           </div>
         </Show>

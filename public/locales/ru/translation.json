@@ -430,14 +430,14 @@
   "subscriber": "подписчик",
   "subscriber_rp": "подписчика",
   "subscribers": "подписчиков",
-  "subscription": "подписка",
-  "subscription_rp": "подписки",
-  "subscriptions": "подписок",
   "terms of use": "правилами пользования сайтом",
   "topics": "темы",
   "user already exist": "пользователь уже существует",
   "video": "видео",
   "view": "просмотр",
   "zine": "журнал",
-  "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}"
+  "SubscriberWithCount": "{count, plural, =0 {нет подписчиков} one {{count} подписчик} few {{count} подписчика} other {{count} подписчиков}}",
+  "SubscriptionWithCount": "{count, plural, =0 {нет подписок} one {{count} подписка} few {{count} подписки} other {{count} подписок}}",
+  "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}",
+  "Edit profile": "Редактировать профиль"
 }

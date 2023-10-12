@@ -2,7 +2,7 @@ import type { Author } from '../../../graphql/types.gen'
 import { Userpic } from '../Userpic'
 import { Icon } from '../../_shared/Icon'
 import styles from './AuthorCard.module.scss'
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Match, Show, Switch } from 'solid-js'
 import { translit } from '../../../utils/ru2en'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { clsx } from 'clsx'
@@ -15,11 +15,15 @@ import { useLocalize } from '../../../context/localize'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Modal } from '../../Nav/Modal'
 import { showModal } from '../../../stores/ui'
-import { getNumeralsDeclension } from '../../../utils/getNumeralsDeclension'
 import { SubscriptionFilter } from '../../../pages/types'
 import { isAuthor } from '../../../utils/isAuthor'
 import { AuthorBadge } from '../AuthorBadge'
 import { TopicBadge } from '../../Topic/TopicBadge'
+import { Button } from '../../_shared/Button'
+import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import stylesHeader from '../../Nav/Header/Header.module.scss'
+import { getDescription } from '../../../utils/meta'
+import { Popover } from '../../_shared/Popover'
 
 type Props = {
   caption?: string
@@ -43,7 +47,7 @@ type Props = {
   following?: Array<Author | Topic>
   showPublicationsCounter?: boolean
   hideBio?: boolean
-  showSocial?: boolean
+  isCurrentUser?: boolean
 }
 
 export const AuthorCard = (props: Props) => {
@@ -131,6 +135,9 @@ export const AuthorCard = (props: Props) => {
   if (props.isAuthorPage && props.author.userpic?.includes('assets.discours.io')) {
     setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
   }
+
+  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
+
   return (
     <>
       <div
@@ -219,61 +226,72 @@ export const AuthorCard = (props: Props) => {
               }
             >
               <div class={styles.subscribersContainer}>
-                <Show when={props.followers && props.followers.length > 0}>
-                  <div
-                    class={styles.subscribers}
-                    onClick={() => {
-                      redirectPage(router, 'authorFollowers', { slug: props.author.slug })
-                      showModal('followers')
-                    }}
-                  >
-                    <For each={props.followers.slice(0, 3)}>
-                      {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
-                    </For>
-                    <div class={styles.subscribersCounter}>
-                      {props.followers.length}&nbsp;
-                      {getNumeralsDeclension(props.followers.length, [
-                        t('subscriber'),
-                        t('subscriber_rp'),
-                        t('subscribers')
-                      ])}
-                    </div>
-                  </div>
-                </Show>
-                <Show when={props.following && props.following.length > 0}>
-                  <div
-                    class={styles.subscribers}
-                    onClick={() => {
-                      redirectPage(router, 'authorFollowing', { slug: props.author.slug })
-                      showModal('following')
-                    }}
-                  >
-                    <For each={props.following.slice(0, 3)}>
-                      {(f) => {
-                        if ('name' in f) {
-                          return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
-                        } else if ('title' in f) {
-                          return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
-                        }
-                        return null
+                <Switch>
+                  <Match when={props.followers && props.followers.length > 0 && !props.isCurrentUser}>
+                    <div
+                      class={styles.subscribers}
+                      onClick={() => {
+                        redirectPage(router, 'authorFollowers', { slug: props.author.slug })
+                        showModal('followers')
                       }}
-                    </For>
-                    <div class={styles.subscribersCounter}>
-                      {props.following.length}&nbsp;
-                      {getNumeralsDeclension(props.following.length, [
-                        t('subscription'),
-                        t('subscription_rp'),
-                        t('subscriptions')
-                      ])}
+                    >
+                      <For each={props.followers.slice(0, 3)}>
+                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
+                      </For>
+                      <div class={styles.subscribersCounter}>
+                        {t('SubscriptionWithCount', { count: props.followers.length })}
+                      </div>
                     </div>
-                  </div>
-                </Show>
+                  </Match>
+                  <Match when={props.followers && props.followers.length > 0 && props.isCurrentUser}>
+                    <Button
+                      variant="secondary"
+                      onClick={() => redirectPage(router, 'profileSettings')}
+                      value={t('Edit profile')}
+                    />
+                  </Match>
+                </Switch>
+                <Switch>
+                  <Match when={props.following && props.following.length > 0 && !props.isCurrentUser}>
+                    <div
+                      class={styles.subscribers}
+                      onClick={() => {
+                        redirectPage(router, 'authorFollowing', { slug: props.author.slug })
+                        showModal('following')
+                      }}
+                    >
+                      <For each={props.following.slice(0, 3)}>
+                        {(f) => {
+                          if ('name' in f) {
+                            return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
+                          } else if ('title' in f) {
+                            return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
+                          }
+                          return null
+                        }}
+                      </For>
+                      <div class={styles.subscribersCounter}>
+                        {t('SubscriberWithCount', { count: props?.following.length ?? 0 })}
+                      </div>
+                    </div>
+                  </Match>
+                  <Match when={props.following && props.following.length > 0 && props.isCurrentUser}>
+                    <SharePopup
+                      containerCssClass={stylesHeader.control}
+                      title={props.author.name}
+                      description={props.author.bio}
+                      imageUrl={props.author.userpic}
+                      shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
+                      trigger={<Button variant="secondary" value={t('Share')} />}
+                    />
+                  </Match>
+                </Switch>
               </div>
             </Show>
           </div>
           <ShowOnlyOnClient>
             <Show when={isSessionLoaded()}>
-              <Show when={props.showSocial}>
+              <Show when={props.isCurrentUser}>
                 <div class={styles.authorSubscribeSocial}>
                   <For each={props.author.links}>
                     {(link) => (

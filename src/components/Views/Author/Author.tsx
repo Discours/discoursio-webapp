@@ -123,6 +123,7 @@ export const AuthorView = (props: Props) => {
     }
   })
 
+  console.log('!!! author():', author())
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">

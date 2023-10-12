@@ -135,9 +135,6 @@ export const AuthorCard = (props: Props) => {
   if (props.isAuthorPage && props.author.userpic?.includes('assets.discours.io')) {
     setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
   }
-
-  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
-
   return (
     <>
       <div
@@ -291,17 +288,22 @@ export const AuthorCard = (props: Props) => {
           </div>
           <ShowOnlyOnClient>
             <Show when={isSessionLoaded()}>
-              <Show when={props.isCurrentUser}>
-                <div class={styles.authorSubscribeSocial}>
-                  <For each={props.author.links}>
-                    {(link) => (
-                      <a class={styles.socialLink} href={link} target="_blank" rel="nofollow noopener">
-                        <span class={styles.authorSubscribeSocialLabel}>{link}</span>
-                      </a>
-                    )}
-                  </For>
-                </div>
-              </Show>
+              <div class={styles.authorSubscribeSocial}>
+                <For each={props.author.links}>
+                  {(link) => (
+                    <a
+                      class={styles.socialLink}
+                      href={link.startsWith('http') ? link : `https://${link}`}
+                      target="_blank"
+                      rel="nofollow noopener"
+                    >
+                      <span class={styles.authorSubscribeSocialLabel}>
+                        {link.startsWith('http') ? link : `https://${link}`}
+                      </span>
+                    </a>
+                  )}
+                </For>
+              </div>
               <Show when={canFollow()}>
                 <div class={styles.authorSubscribe}>
                   <Show

@@ -34,9 +34,6 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       'Content-Type': 'application/json',
       Authorization: getToken()
     },
-    body: JSON.stringify({
-      foo: 'bar'
-    }),
     onmessage(event) {
       const message = JSON.parse(event.data)
 

@@ -36,8 +36,9 @@ type Props = {
 export const Comment = (props: Props) => {
   const { t } = useLocalize()
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
-  const [loading, setLoading] = createSignal<boolean>(false)
-  const [editMode, setEditMode] = createSignal<boolean>(false)
+  const [loading, setLoading] = createSignal(false)
+  const [editMode, setEditMode] = createSignal(false)
+  const [clearEditor, setClearEditor] = createSignal(false)
   const { session } = useSession()
 
   const {
@@ -81,11 +82,13 @@ export const Comment = (props: Props) => {
         body: value,
         shout: props.comment.shout.id
       })
+      setClearEditor(true)
       setIsReplyVisible(false)
       setLoading(false)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
+    setClearEditor(false)
   }
 
   const toggleEditMode = () => {
@@ -175,11 +178,13 @@ export const Comment = (props: Props) => {
                 <SimplifiedEditor
                   initialContent={comment().body}
                   submitButtonText={t('Save')}
+                  submitByEnter={true}
                   quoteEnabled={true}
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleUpdate(value)}
                   submitByShiftEnter={true}
+                  setClear={clearEditor()}
                 />
               </Suspense>
             </Show>

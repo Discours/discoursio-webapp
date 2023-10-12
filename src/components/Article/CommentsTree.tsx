@@ -33,7 +33,7 @@ const sortCommentsByRating = (a: Reaction, b: Reaction): -1 | 0 | 1 => {
 }
 
 type Props = {
-  commentAuthors: Author[]
+  articleAuthors: Author[]
   shoutSlug: string
   shoutId: number
 }
@@ -149,7 +149,9 @@ export const CommentsTree = (props: Props) => {
           {(reaction) => (
             <Comment
               sortedComments={sortedComments()}
-              isArticleAuthor={Boolean(props.commentAuthors.some((a) => a.slug === session()?.user.slug))}
+              isArticleAuthor={Boolean(
+                props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug)
+              )}
               comment={reaction}
               lastSeen={dateFromLocalStorage}
             />

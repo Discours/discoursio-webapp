@@ -431,7 +431,7 @@ export const FullArticle = (props: Props) => {
                 <CommentsTree
                   shoutId={props.article.id}
                   shoutSlug={props.article.slug}
-                  commentAuthors={props.article.authors}
+                  articleAuthors={props.article.authors}
                 />
               </Show>
             </div>

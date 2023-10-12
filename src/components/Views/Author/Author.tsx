@@ -18,6 +18,7 @@ import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { hideModal } from '../../../stores/ui'
 import { getPagePath } from '@nanostores/router'
+import { useSession } from '../../../context/session'
 
 type Props = {
   shouts: Shout[]
@@ -34,6 +35,7 @@ export const AuthorView = (props: Props) => {
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
   const { page } = useRouter()
+  const { user } = useSession()
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -131,6 +133,7 @@ export const AuthorView = (props: Props) => {
               isAuthorPage={true}
               followers={followers()}
               following={following()}
+              isCurrentUser={author().slug === user()?.slug}
             />
           </div>
         </Show>
@@ -139,13 +142,13 @@ export const AuthorView = (props: Props) => {
             <ul class="view-switcher">
               <li classList={{ 'view-switcher__item--selected': page().route === 'author' }}>
                 <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>{t('Publications')}</a>
-                <span class="view-switcher__counter">{author().stat.shouts}</span>
+                <span class="view-switcher__counter">{author().stat?.shouts}</span>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'authorComments' }}>
                 <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                   {t('Comments')}
                 </a>
-                <span class="view-switcher__counter">{author().stat.commented}</span>
+                <span class="view-switcher__counter">{author().stat?.commented}</span>
               </li>
               <li classList={{ 'view-switcher__item--selected': page().route === 'authorAbout' }}>
                 <a

@@ -413,5 +413,7 @@
   "video": "video",
   "view": "view",
   "zine": "zine",
-  "PublicationsWithCount": "{count, plural, =0 {no publications} one {{count} publication} other {{count} publications}}"
+  "SubscriptionWithPlurals": "{count, plural, =0 {no subscriptions} one {{count} subscription} other {{count} subscriptions}",
+  "PublicationsWithCount": "{count, plural, =0 {no publications} one {{count} publication} other {{count} publications}}",
+  "Edit profile": "Edit profile"
 }

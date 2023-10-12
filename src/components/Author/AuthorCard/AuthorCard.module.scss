@@ -124,7 +124,45 @@
     flex-wrap: wrap;
   }
 
-  a {
+  .button {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin-right: 0.5em;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover {
+      .buttonUnfollowLabel {
+        display: block;
+      }
+
+      .buttonSubscribedLabel {
+        display: none;
+      }
+    }
+
+    .buttonUnfollowLabel {
+      display: none;
+    }
+  }
+}
+
+.authorSubscribeSocialLabel {
+  display: none;
+}
+
+.authorSubscribeSocial {
+  align-items: center;
+  display: flex;
+  margin: 2rem 0;
+
+  .socialLink {
     border: none;
     display: inline-block;
     height: 24px;
@@ -165,251 +203,213 @@
         position: absolute;
       }
     }
-  }
 
-  a[href*='facebook.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-facebook.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='twitter.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-twitter.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='telegram.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-telegram.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='vk.cc/'],
-  a[href*='vk.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-vk.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='tumblr.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-tumblr.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='instagram.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-instagram.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='behance.net/'] {
-    &::before {
-      background-image: url(/icons/user-link-behance.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='dribbble.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-dribbble.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='github.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-github.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='linkedin.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-linkedin.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='medium.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-medium.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='ok.ru/'] {
-    &::before {
-      background-image: url(/icons/user-link-ok.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='pinterest.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-pinterest.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='reddit.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-reddit.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='tiktok.com/'] {
-    &::before {
-      background-image: url(/icons/user-link-tiktok.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='youtube.com/'],
-  a[href*='youtu.be/'] {
-    &::before {
-      background-image: url(/icons/user-link-youtube.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  a[href*='dzen.ru/'] {
-    &::before {
-      background-image: url(/icons/user-link-dzen.svg);
-    }
-
-    &:hover {
-      .authorSubscribeSocialLabel {
-        display: none;
-      }
-    }
-  }
-
-  .button {
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin-right: 0.5em;
-
-    &:first-of-type {
-      margin-left: 0;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &:hover {
-      .buttonUnfollowLabel {
-        display: block;
+    &[href*='facebook.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-facebook.svg);
       }
 
-      .buttonSubscribedLabel {
-        display: none;
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
       }
     }
 
-    .buttonUnfollowLabel {
-      display: none;
+    &[href*='twitter.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-twitter.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='telegram.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-telegram.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='vk.cc/'],
+    &[href*='vk.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-vk.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='tumblr.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-tumblr.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='instagram.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-instagram.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='behance.net/'] {
+      &::before {
+        background-image: url(/icons/user-link-behance.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='dribbble.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-dribbble.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='github.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-github.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='linkedin.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-linkedin.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='medium.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-medium.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='ok.ru/'] {
+      &::before {
+        background-image: url(/icons/user-link-ok.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='pinterest.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-pinterest.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='reddit.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-reddit.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='tiktok.com/'] {
+      &::before {
+        background-image: url(/icons/user-link-tiktok.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='youtube.com/'],
+    &[href*='youtu.be/'] {
+      &::before {
+        background-image: url(/icons/user-link-youtube.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
+    }
+
+    &[href*='dzen.ru/'] {
+      &::before {
+        background-image: url(/icons/user-link-dzen.svg);
+      }
+
+      &:hover {
+        .authorSubscribeSocialLabel {
+          display: none;
+        }
+      }
     }
   }
-}
-
-.authorSubscribeSocialLabel {
-  display: none;
-}
-
-.authorSubscribeSocial {
-  align-items: center;
-  display: flex;
-  margin: 0 0.8rem 2rem 0;
 
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
@@ -626,6 +626,7 @@
   flex-wrap: wrap;
   font-size: 1.4rem;
   margin-top: 0.5rem;
+  gap: 1rem;
 
   @include media-breakpoint-down(md) {
     justify-content: center;

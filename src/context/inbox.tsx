@@ -28,7 +28,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
 
-  fetchEventSource('http://connect.discours.io', {
+  fetchEventSource('https://connect.discours.io', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

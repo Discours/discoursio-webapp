@@ -18,8 +18,6 @@ export const ROUTES = {
   author: '/author/:slug',
   authorComments: '/author/:slug/comments',
   authorAbout: '/author/:slug/about',
-  authorFollowers: '/author/:slug/followers',
-  authorFollowing: '/author/:slug/following',
   feed: '/feed',
   feedMy: '/feed/my',
   feedNotifications: '/feed/notifications',

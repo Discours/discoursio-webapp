@@ -14,7 +14,6 @@ import { openPage, redirectPage } from '@nanostores/router'
 import { useLocalize } from '../../../context/localize'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Modal } from '../../Nav/Modal'
-import { showModal } from '../../../stores/ui'
 import { SubscriptionFilter } from '../../../pages/types'
 import { isAuthor } from '../../../utils/isAuthor'
 import { AuthorBadge } from '../AuthorBadge'
@@ -22,8 +21,6 @@ import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import stylesHeader from '../../Nav/Header/Header.module.scss'
-import { getDescription } from '../../../utils/meta'
-import { Popover } from '../../_shared/Popover'
 
 type Props = {
   caption?: string
@@ -52,7 +49,6 @@ type Props = {
 
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { page } = useRouter()
   const {
     session,
     isSessionLoaded,
@@ -119,12 +115,6 @@ export const AuthorCard = (props: Props) => {
       } else {
         setFollowing(props.following)
       }
-    }
-  })
-
-  createEffect(() => {
-    if (page().route === 'authorFollowing') {
-      showModal('following')
     }
   })
 
@@ -225,20 +215,14 @@ export const AuthorCard = (props: Props) => {
               <div class={styles.subscribersContainer}>
                 <Switch>
                   <Match when={props.followers && props.followers.length > 0 && !props.isCurrentUser}>
-                    <div
-                      class={styles.subscribers}
-                      onClick={() => {
-                        redirectPage(router, 'authorFollowers', { slug: props.author.slug })
-                        showModal('followers')
-                      }}
-                    >
+                    <a href="?modal=followers" class={styles.subscribers}>
                       <For each={props.followers.slice(0, 3)}>
                         {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
                       </For>
                       <div class={styles.subscribersCounter}>
                         {t('SubscriptionWithCount', { count: props.followers.length })}
                       </div>
-                    </div>
+                    </a>
                   </Match>
                   <Match when={props.followers && props.followers.length > 0 && props.isCurrentUser}>
                     <Button
@@ -250,13 +234,7 @@ export const AuthorCard = (props: Props) => {
                 </Switch>
                 <Switch>
                   <Match when={props.following && props.following.length > 0 && !props.isCurrentUser}>
-                    <div
-                      class={styles.subscribers}
-                      onClick={() => {
-                        redirectPage(router, 'authorFollowing', { slug: props.author.slug })
-                        showModal('following')
-                      }}
-                    >
+                    <a href="?modal=following" class={styles.subscribers}>
                       <For each={props.following.slice(0, 3)}>
                         {(f) => {
                           if ('name' in f) {
@@ -270,7 +248,7 @@ export const AuthorCard = (props: Props) => {
                       <div class={styles.subscribersCounter}>
                         {t('SubscriberWithCount', { count: props?.following.length ?? 0 })}
                       </div>
-                    </div>
+                    </a>
                   </Match>
                   <Match when={props.following && props.following.length > 0 && props.isCurrentUser}>
                     <SharePopup

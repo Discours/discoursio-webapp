@@ -207,7 +207,6 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-
         <Match when={page().route === 'author'}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />

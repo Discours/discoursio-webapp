@@ -29,7 +29,7 @@ export function useNotifications() {
 const sseService = new SSEService()
 
 export const NotificationsProvider = (props: { children: JSX.Element }) => {
-  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = createSignal(true)
+  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = createSignal(false)
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const { isAuthenticated, user } = useSession()
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})

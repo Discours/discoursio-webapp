@@ -414,5 +414,7 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "zine": "zine"
+  "zine": "zine",
+  "SubscriptionWithPlurals": "{count, plural, =0 {no subscriptions} one {{count} subscription} other {{count} subscriptions}",
+  "Edit profile": "Edit profile"
 }

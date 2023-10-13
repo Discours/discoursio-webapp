@@ -49,8 +49,6 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   author: AuthorPage,
   authorComments: AuthorPage,
   authorAbout: AuthorPage,
-  authorFollowing: AuthorPage,
-  authorFollowers: AuthorPage,
   inbox: InboxPage,
   expo: ExpoPage,
   expoLayout: ExpoPage,

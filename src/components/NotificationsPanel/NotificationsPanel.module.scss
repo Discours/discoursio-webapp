@@ -23,6 +23,7 @@ $transition-duration: 200ms;
     padding: 48px 96px 96px 48px;
     transform: translateX(100%);
     transition: transform $transition-duration;
+    overflow-y: auto;
   }
 
   &.isOpened {
@@ -45,6 +46,7 @@ $transition-duration: 200ms;
   font-style: normal;
   font-weight: 700;
   line-height: 36px;
+  margin-bottom: 32px;
 }
 
 .closeButton {
@@ -53,4 +55,12 @@ $transition-duration: 200ms;
   right: 0;
   padding: 20px;
   cursor: pointer;
+}
+
+.notificationView + .notificationView {
+  margin-top: 8px;
+}
+
+.emptyMessageContainer {
+  text-align: center;
 }

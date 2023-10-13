@@ -1,0 +1,32 @@
+.NotificationView {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  margin-left: -16px;
+  border-radius: 16px;
+  padding: 16px;
+  background-color: var(--yellow-50);
+  // TODO: check markup
+  font-size: 15px;
+  // font-weight: 700;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background-color 100ms;
+
+  &.seen {
+    background-color: transparent;
+  }
+
+  &:hover {
+    background-color: var(--gray-100);
+  }
+}
+
+.userpic {
+  margin-right: 15px;
+}
+
+.timeContainer {
+  margin-left: auto;
+  padding-left: 16px;
+}

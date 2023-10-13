@@ -4,6 +4,9 @@ import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
+import { createEffect, For, onCleanup, onMount } from 'solid-js'
+import { useNotifications } from '../../context/notifications'
+import { NotificationView } from './NotificationView'
 
 type Props = {
   isOpen: boolean
@@ -12,6 +15,7 @@ type Props = {
 
 export const NotificationsPanel = (props: Props) => {
   const { t } = useLocalize()
+  const { sortedNotifications } = useNotifications()
   const handleHide = () => {
     props.onClose()
   }
@@ -26,7 +30,16 @@ export const NotificationsPanel = (props: Props) => {
     handler: () => handleHide()
   })
 
+  createEffect(() => {
+    document.body.classList.toggle('fixed', props.isOpen)
+  })
+
   useEscKeyDownHandler(handleHide)
+
+  const handleNotificationViewClick = () => {
+    handleHide()
+  }
+
   return (
     <div
       class={clsx(styles.container, {
@@ -39,6 +52,18 @@ export const NotificationsPanel = (props: Props) => {
           <Icon name="close" />
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
+        <For
+          each={sortedNotifications()}
+          fallback={<div class={styles.emptyMessageContainer}>{t('No notifications, yet')}</div>}
+        >
+          {(notification) => (
+            <NotificationView
+              notification={notification}
+              class={styles.notificationView}
+              onClick={handleNotificationViewClick}
+            />
+          )}
+        </For>
       </div>
     </div>
   )

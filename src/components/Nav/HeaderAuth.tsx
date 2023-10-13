@@ -71,8 +71,9 @@ export const HeaderAuth = (props: Props) => {
   }
 
   const [width, setWidth] = createSignal(0)
-  const handleResize = () => setWidth(window.innerWidth)
+
   onMount(() => {
+    const handleResize = () => setWidth(window.innerWidth)
     handleResize()
     window.addEventListener('resize', handleResize)
     onCleanup(() => window.removeEventListener('resize', handleResize))

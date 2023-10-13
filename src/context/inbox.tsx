@@ -14,7 +14,6 @@ type InboxContextType = {
     loadChats: () => Promise<void>
     getMessages?: (chatId: string) => Promise<void>
     sendMessage?: (args: MutationCreateMessageArgs) => void
-    // unsubscribe: () => void
   }
 }
 
@@ -29,37 +28,30 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const [messages, setMessages] = createSignal<Message[]>([])
 
   fetchEventSource('https://chat.discours.io/connect', {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + getToken()
     },
     onmessage(event) {
       const message = JSON.parse(event.data)
-
-      // TODO: Do something with the message
-
-      console.log(message)
+      console.log('Received message:', message)
+      // TODO: Add the message to the appropriate chat
     },
     onclose() {
-      // if no error thrown - it will reconnect
       console.log('sse connection closed by server')
     },
     onerror(err) {
-      console.warn(err)
-      console.error('sse connection closed by error')
-      throw new Error() // hack to close the connection
+      console.error('sse connection closed by error', err)
     }
   })
-
-  // TODO: maybe sometimes need to call /disconnect
 
   const loadChats = async () => {
     try {
       const newChats = await inboxClient.loadChats({ limit: 50, offset: 0 })
       setChats(newChats)
     } catch (error) {
-      console.log(error)
+      console.error('Error loading chats:', error)
     }
   }
 
@@ -69,11 +61,11 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       const response = await loadMessages({ chat: chatId })
       setMessages(response as unknown as Message[])
     } catch (error) {
-      console.error('[loadMessages]', error)
+      console.error('Error loading messages:', error)
     }
   }
 
-  const sendMessage = async (args) => {
+  const sendMessage = async (args: MutationCreateMessageArgs) => {
     try {
       const message = await inboxClient.createMessage(args)
       setMessages((prev) => [...prev, message])
@@ -83,16 +75,18 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
         { ...currentChat, updatedAt: message.createdAt }
       ])
     } catch (error) {
-      console.error('[post message error]:', error)
+      console.error('Error sending message:', error)
     }
   }
 
   const createChat = async (members: number[], title: string) => {
-    const chat = await inboxClient.createChat({ members, title })
-    setChats((prevChats) => {
-      return [chat, ...prevChats]
-    })
-    return chat
+    try {
+      const chat = await inboxClient.createChat({ members, title })
+      setChats((prevChats) => [chat, ...prevChats])
+      return chat
+    } catch (error) {
+      console.error('Error creating chat:', error)
+    }
   }
 
   const actions = {
@@ -103,5 +97,6 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   }
 
   const value: InboxContextType = { chats, messages, actions }
+
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>
 }

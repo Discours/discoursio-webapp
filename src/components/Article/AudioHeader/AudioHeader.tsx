@@ -5,8 +5,6 @@ import { MediaItem } from '../../../pages/types'
 import { createSignal, Show } from 'solid-js'
 import { Icon } from '../../_shared/Icon'
 import { Topic } from '../../../graphql/types.gen'
-import { getPagePath } from '@nanostores/router'
-import { router } from '../../../stores/router'
 import { CardTopic } from '../../Feed/CardTopic'
 
 type Props = {

@@ -38,7 +38,7 @@ const options: ClientOptions = {
     if (!token) {
       console.error('[privateGraphQLClient] fetchOptions: token is null!')
     }
-    const headers = { Authorization: token }
+    const headers = { Authorization: 'Bearer ' + token }
     return { headers }
   },
   exchanges

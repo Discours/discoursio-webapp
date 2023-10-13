@@ -32,7 +32,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: getToken()
+      Authorization: 'Bearer ' + getToken()
     },
     onmessage(event) {
       const message = JSON.parse(event.data)

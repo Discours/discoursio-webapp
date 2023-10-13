@@ -625,7 +625,7 @@
   display: flex;
   flex-wrap: wrap;
   font-size: 1.4rem;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
   gap: 1rem;
 
   @include media-breakpoint-down(md) {
@@ -637,7 +637,6 @@
   align-items: center;
   cursor: pointer;
   display: inline-flex;
-  margin-top: 1rem;
   margin-right: 3rem;
   vertical-align: top;
   border-bottom: unset !important;
@@ -669,10 +668,6 @@
 .subscribersCounter {
   font-weight: 500;
   margin-left: -0.6rem;
-
-  &:hover {
-    color: #696969;
-  }
 }
 
 .listWrapper {

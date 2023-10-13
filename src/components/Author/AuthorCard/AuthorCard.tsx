@@ -231,40 +231,29 @@ export const AuthorCard = (props: Props) => {
                   />
                 </Match>
               </Switch>
-              <Switch>
-                <Match when={props.following && props.following.length > 0 && !props.isCurrentUser}>
-                  <a href="?modal=following" class={styles.subscribers}>
-                    <For each={props.following.slice(0, 3)}>
-                      {(f) => {
-                        if ('name' in f) {
-                          return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
-                        } else if ('title' in f) {
-                          return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
-                        }
-                        return null
-                      }}
-                    </For>
-                    <div class={styles.subscribersCounter}>
-                      {t('SubscriberWithCount', { count: props?.following.length ?? 0 })}
-                    </div>
-                  </a>
-                </Match>
-                <Match when={props.following && props.following.length > 0 && props.isCurrentUser}>
-                  <SharePopup
-                    containerCssClass={stylesHeader.control}
-                    title={props.author.name}
-                    description={props.author.bio}
-                    imageUrl={props.author.userpic}
-                    shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
-                    trigger={<Button variant="secondary" value={t('Share')} />}
-                  />
-                </Match>
-              </Switch>
+
+              <Show when={props.following && props.following.length > 0}>
+                <a href="?modal=following" class={styles.subscribers}>
+                  <For each={props.following.slice(0, 3)}>
+                    {(f) => {
+                      if ('name' in f) {
+                        return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
+                      } else if ('title' in f) {
+                        return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
+                      }
+                      return null
+                    }}
+                  </For>
+                  <div class={styles.subscribersCounter}>
+                    {t('SubscriberWithCount', { count: props?.following.length ?? 0 })}
+                  </div>
+                </a>
+              </Show>
             </div>
           </Show>
         </div>
         <ShowOnlyOnClient>
-          <Show when={isSessionLoaded()}>
+          <Show when={isSessionLoaded() && props.author.links}>
             <div class={styles.authorSubscribeSocial}>
               <For each={props.author.links}>
                 {(link) => (
@@ -382,6 +371,19 @@ export const AuthorCard = (props: Props) => {
               </div>
             </>
           </Modal>
+        </Show>
+
+        <Show when={props.isCurrentUser}>
+          <div class={styles.subscribersContainer}>
+            <SharePopup
+              containerCssClass={stylesHeader.control}
+              title={props.author.name}
+              description={props.author.bio}
+              imageUrl={props.author.userpic}
+              shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
+              trigger={<Button variant="secondary" value={t('Share')} />}
+            />
+          </div>
         </Show>
 
         <Show when={props.following}>

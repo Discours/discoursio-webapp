@@ -205,74 +205,109 @@ export const AuthorCard = (props: Props) => {
             />
           </Show>
 
-          <Show
-            when={
-              (props.followers && props.followers.length > 0) ||
-              (props.following && props.following.length > 0)
-            }
-          >
-            <div class={styles.subscribersContainer}>
-              <Switch>
-                <Match when={props.followers && props.followers.length > 0 && !props.isCurrentUser}>
-                  <a href="?modal=followers" class={styles.subscribers}>
-                    <For each={props.followers.slice(0, 3)}>
-                      {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
-                    </For>
-                    <div class={styles.subscribersCounter}>
-                      {t('SubscriptionWithCount', { count: props.followers.length })}
-                    </div>
-                  </a>
-                </Match>
-                <Match when={props.followers && props.followers.length > 0 && props.isCurrentUser}>
-                  <Button
-                    variant="secondary"
-                    onClick={() => redirectPage(router, 'profileSettings')}
-                    value={t('Edit profile')}
-                  />
-                </Match>
-              </Switch>
-              <Switch>
-                <Match when={props.following && props.following.length > 0 && !props.isCurrentUser}>
-                  <a href="?modal=following" class={styles.subscribers}>
-                    <For each={props.following.slice(0, 3)}>
-                      {(f) => {
-                        if ('name' in f) {
-                          return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
-                        } else if ('title' in f) {
-                          return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
-                        }
-                        return null
-                      }}
-                    </For>
-                    <div class={styles.subscribersCounter}>
-                      {t('SubscriberWithCount', { count: props?.following.length ?? 0 })}
-                    </div>
-                  </a>
-                </Match>
-                <Match when={props.following && props.following.length > 0 && props.isCurrentUser}>
-                  <SharePopup
-                    containerCssClass={stylesHeader.control}
-                    title={props.author.name}
-                    description={props.author.bio}
-                    imageUrl={props.author.userpic}
-                    shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
-                    trigger={<Button variant="secondary" value={t('Share')} />}
-                  />
-                </Match>
-              </Switch>
-            </div>
-          </Show>
-        </div>
-        <ShowOnlyOnClient>
-          <Show when={isSessionLoaded()}>
-            <div class={styles.authorSubscribeSocial}>
-              <For each={props.author.links}>
-                {(link) => (
-                  <a
-                    class={styles.socialLink}
-                    href={link.startsWith('http') ? link : `https://${link}`}
-                    target="_blank"
-                    rel="nofollow noopener"
+            <Show
+              when={
+                (props.followers && props.followers.length > 0) ||
+                (props.following && props.following.length > 0)
+              }
+            >
+              <div class={styles.subscribersContainer}>
+                <Switch>
+                  <Match when={props.followers && props.followers.length > 0 && !props.isCurrentUser}>
+                    <a href="?modal=followers" class={styles.subscribers}>
+                      <For each={props.followers.slice(0, 3)}>
+                        {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
+                      </For>
+                      <div class={styles.subscribersCounter}>
+                        {t('SubscriptionWithCount', { count: props.followers.length })}
+                      </div>
+                    </a>
+                  </Match>
+                  <Match when={props.followers && props.followers.length > 0 && props.isCurrentUser}>
+                    <Button
+                      variant="secondary"
+                      onClick={() => redirectPage(router, 'profileSettings')}
+                      value={t('Edit profile')}
+                    />
+                  </Match>
+                </Switch>
+                <Switch>
+                  <Match when={props.following && props.following.length > 0 && !props.isCurrentUser}>
+                    <a href="?modal=following" class={styles.subscribers}>
+                      <For each={props.following.slice(0, 3)}>
+                        {(f) => {
+                          if ('name' in f) {
+                            return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
+                          } else if ('title' in f) {
+                            return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
+                          }
+                          return null
+                        }}
+                      </For>
+                      <div class={styles.subscribersCounter}>
+                        {t('SubscriberWithCount', { count: props?.following.length ?? 0 })}
+                      </div>
+                    </a>
+                  </Match>
+                  <Match when={props.following && props.following.length > 0 && props.isCurrentUser}>
+                    <SharePopup
+                      containerCssClass={stylesHeader.control}
+                      title={props.author.name}
+                      description={props.author.bio}
+                      imageUrl={props.author.userpic}
+                      shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
+                      trigger={<Button variant="secondary" value={t('Share')} />}
+                    />
+                  </Match>
+                </Switch>
+              </div>
+            </Show>
+          </div>
+          <ShowOnlyOnClient>
+            <Show when={isSessionLoaded()}>
+              <div class={styles.authorSubscribeSocial}>
+                <For each={props.author.links}>
+                  {(link) => (
+                    <a
+                      class={styles.socialLink}
+                      href={link.startsWith('http') ? link : `https://${link}`}
+                      target="_blank"
+                      rel="nofollow noopener"
+                    >
+                      <span class={styles.authorSubscribeSocialLabel}>
+                        {link.startsWith('http') ? link : `https://${link}`}
+                      </span>
+                    </a>
+                  )}
+                </For>
+              </div>
+              <Show when={canFollow()}>
+                <div class={styles.authorSubscribe}>
+                  <Show
+                    when={subscribed()}
+                    fallback={
+                      <button
+                        onClick={handleSubscribe}
+                        class={clsx('button', styles.button)}
+                        classList={{
+                          [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
+                          'button--subscribe': !props.isAuthorsList,
+                          'button--subscribe-topic': props.isAuthorsList || props.isTextButton,
+                          [styles.buttonWrite]: props.isAuthorsList || props.isTextButton,
+                          [styles.isSubscribing]: isSubscribing()
+                        }}
+                        disabled={isSubscribing()}
+                      >
+                        <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
+                          <Icon name="author-subscribe" class={styles.icon} />
+                        </Show>
+                        <Show when={props.isTextButton || props.isAuthorPage}>
+                          <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
+                            {t('Follow')}
+                          </span>
+                        </Show>
+                      </button>
+                    }
                   >
                     <span class={styles.authorSubscribeSocialLabel}>
                       {link.startsWith('http') ? link : `https://${link}`}

@@ -1,11 +1,11 @@
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
+import { createContext, createEffect, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { useSession } from './session'
 import { Portal } from 'solid-js/web'
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
 import { createStore } from 'solid-js/store'
-import { openDB } from 'idb'
+import { IDBPDatabase, openDB } from 'idb'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { getToken } from '../graphql/privateGraphQLClient'
 import { Author, Message, Reaction, Shout } from '../graphql/types.gen'
@@ -42,16 +42,19 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, ServerNotification>>(
     {}
   )
-
-  const dbPromise = openDB('notifications-db', 1, {
-    upgrade(db) {
-      db.createObjectStore('notifications')
-    }
+  const [db, setDb] = createSignal<Promise<IDBPDatabase<unknown>>>()
+  onMount(() => {
+    const dbx = openDB('notifications-db', 1, {
+      upgrade(db) {
+        db.createObjectStore('notifications')
+      }
+    })
+    setDb(dbx)
   })
 
   const loadNotifications = async () => {
-    const db = await dbPromise
-    const notifications = await db.getAll('notifications')
+    const storage = await db()
+    const notifications = await storage.getAll('notifications')
     const totalUnreadCount = notifications.filter((notification) => !notification.read).length
 
     setUnreadNotificationsCount(totalUnreadCount)
@@ -70,16 +73,11 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   })
 
   const storeNotification = async (notification: ServerNotification) => {
-    const db = await dbPromise
-    const tx = db.transaction('notifications', 'readwrite')
+    const storage = await db()
+    const tx = storage.transaction('notifications', 'readwrite')
     const store = tx.objectStore('notifications')
-    const id = Date.now()
-    const data: ServerNotification = {
-      ...notification,
-      timestamp: id,
-      seen: false
-    }
-    await store.put(data, id)
+
+    await store.put(notification)
     await tx.done
     loadNotifications()
   }
@@ -122,8 +120,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   })
 
   const markNotificationAsRead = async (notification: ServerNotification) => {
-    const db = await dbPromise
-    await db.put('notifications', { ...notification, seen: true })
+    const storage = await db()
+    await storage.put('notifications', { ...notification, seen: true })
     loadNotifications()
   }
 

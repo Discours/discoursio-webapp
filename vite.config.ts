@@ -106,7 +106,8 @@ export default defineConfig(({ mode, command }) => {
         '@tiptap/extension-link',
         '@tiptap/extension-image',
         '@tiptap/extension-character-count',
-        'clsx'
+        'clsx',
+        'idb'
       ]
     }
   }

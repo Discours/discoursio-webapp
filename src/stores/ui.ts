@@ -23,14 +23,6 @@ export type ModalType =
   | 'followers'
   | 'following'
 
-type WarnKind = 'error' | 'warn' | 'info'
-
-export interface Warning {
-  body: string
-  kind: WarnKind
-  seen?: boolean
-}
-
 export const MODALS: Record<ModalType, ModalType> = {
   auth: 'auth',
   subscribe: 'subscribe',
@@ -49,8 +41,6 @@ export const MODALS: Record<ModalType, ModalType> = {
 }
 
 const [modal, setModal] = createSignal<ModalType>(null)
-
-const [warnings, setWarnings] = createSignal<Warning[]>([])
 
 const { searchParams, changeSearchParam } = useRouter<
   AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams
@@ -83,15 +73,6 @@ export const hideModal = () => {
   changeSearchParam(newSearchParams, true)
 
   setModal(null)
-}
-
-export const clearWarns = () => setWarnings([])
-export const warn = (warning: Warning) => setWarnings([...warnings(), warning])
-
-export const useWarningsStore = () => {
-  return {
-    warnings
-  }
 }
 
 export const useModalStore = () => {

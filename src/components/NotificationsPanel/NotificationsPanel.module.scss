@@ -1,0 +1,66 @@
+$transition-duration: 200ms;
+
+.container {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  z-index: 10000;
+  background-color: rgb(0 0 0 / 0%);
+  overflow: hidden;
+  transition:
+    background-color $transition-duration,
+    width 0ms linear $transition-duration;
+
+  .panel {
+    position: relative;
+    background-color: #fff;
+    width: 700px;
+    padding: 48px 96px 96px 48px;
+    transform: translateX(100%);
+    transition: transform $transition-duration;
+    overflow-y: auto;
+  }
+
+  &.isOpened {
+    width: 100%;
+    background-color: rgb(0 0 0 / 60%);
+    transition:
+      background-color $transition-duration,
+      width 0ms;
+
+    .panel {
+      transform: translateX(0);
+    }
+  }
+}
+
+.title {
+  // TODO: check markup
+  color: var(--black-500, #141414);
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 36px;
+  margin-bottom: 32px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.notificationView + .notificationView {
+  margin-top: 8px;
+}
+
+.emptyMessageContainer {
+  text-align: center;
+}

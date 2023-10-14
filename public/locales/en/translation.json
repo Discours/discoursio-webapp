@@ -211,6 +211,7 @@
   "New stories every day and even more!": "New stories and more are waiting for you every day!",
   "Newsletter": "Newsletter",
   "Night mode": "Night mode",
+  "No notifications, yet": "No notifications, yet",
   "No such account, please try to register": "No such account found, please try to register",
   "Nothing here yet": "There's nothing here yet",
   "Nothing is here": "There is nothing here",
@@ -244,6 +245,7 @@
   "Profile": "Profile",
   "Profile settings": "Profile settings",
   "Publications": "Publications",
+  "PublicationsWithCount": "{count, plural, =0 {no publications} one {{count} publication} other {{count} publications}}",
   "Publish Album": "Publish Album",
   "Publish Settings": "Publish Settings",
   "Punchline": "Punchline",
@@ -414,6 +416,5 @@
   "view": "view",
   "zine": "zine",
   "SubscriptionWithPlurals": "{count, plural, =0 {no subscriptions} one {{count} subscription} other {{count} subscriptions}",
-  "PublicationsWithCount": "{count, plural, =0 {no publications} one {{count} publication} other {{count} publications}}",
   "Edit profile": "Edit profile"
 }

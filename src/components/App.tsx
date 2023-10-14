@@ -40,6 +40,7 @@ import { SnackbarProvider } from '../context/snackbar'
 import { LocalizeProvider } from '../context/localize'
 import { ConfirmProvider } from '../context/confirm'
 import { EditorProvider } from '../context/editor'
+import { NotificationsProvider } from '../context/notifications'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -48,8 +49,6 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   author: AuthorPage,
   authorComments: AuthorPage,
   authorAbout: AuthorPage,
-  authorFollowing: AuthorPage,
-  authorFollowers: AuthorPage,
   inbox: InboxPage,
   expo: ExpoPage,
   expoLayout: ExpoPage,
@@ -115,9 +114,11 @@ export const App = (props: PageProps) => {
       <SnackbarProvider>
         <ConfirmProvider>
           <SessionProvider>
-            <EditorProvider>
-              <Dynamic component={pageComponent()} {...props} />
-            </EditorProvider>
+            <NotificationsProvider>
+              <EditorProvider>
+                <Dynamic component={pageComponent()} {...props} />
+              </EditorProvider>
+            </NotificationsProvider>
           </SessionProvider>
         </ConfirmProvider>
       </SnackbarProvider>

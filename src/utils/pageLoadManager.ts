@@ -5,7 +5,6 @@ const pageLoadManager: {
 export const getPageLoadManagerPromise = () => {
   return pageLoadManager.promise
 }
-
 export const setPageLoadManagerPromise = (promise: Promise<any>) => {
   pageLoadManager.promise = promise
 }

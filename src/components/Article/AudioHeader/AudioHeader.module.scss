@@ -5,19 +5,6 @@
   .albumInfo {
     margin-right: 224px;
 
-    .topic {
-      .link {
-        @include font-size(1.6rem);
-
-        color: var(--blue-link);
-        border: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
     & > h1 {
       margin: 16px 0 0;
     }

@@ -15,7 +15,9 @@ import type {
   ReactionInput,
   Chat,
   ReactionBy,
-  Shout
+  Shout,
+  NotificationsQueryParams,
+  NotificationsQueryResult
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient, privateInboxGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -54,6 +56,8 @@ import createMessage from '../graphql/mutation/create-chat-message'
 import updateProfile from '../graphql/mutation/update-profile'
 import updateArticle from '../graphql/mutation/article-update'
 import deleteShout from '../graphql/mutation/article-delete'
+// import notifications from '../graphql/query/notifications'
+// import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
 
 type ApiErrorCode =
   | 'unknown'
@@ -349,6 +353,21 @@ export const apiClient = {
     // console.debug(resp)
     return resp.data.loadReactionsBy
   }
+  // TODO: store notifications in browser storage
+  /*
+  getNotifications: async (params: NotificationsQueryParams): Promise<NotificationsQueryResult> => {
+    const resp = await privateGraphQLClient.query(notifications, params).toPromise()
+    console.debug(resp.data)
+    return resp.data.loadNotifications
+  },
+  markNotificationAsRead: async (notificationId: number): Promise<void> => {
+    await privateGraphQLClient
+      .mutation(markNotificationAsRead, {
+        notificationId
+      })
+      .toPromise()
+  },
+  */
 }
 
 export const inboxClient = {

@@ -36,6 +36,8 @@
   --black-400: #696969;
   --white-500: #fff;
   --blue-500: #2638d9;
+  --yellow-50: #fffbeb;
+  --gray-100: #f3f4f6;
 }
 
 [data-editor-dark-mode='true'] {
@@ -645,7 +647,7 @@ figure {
       cursor: default;
 
       &:hover {
-        color: #fff;
+        background: #fff;
       }
     }
   }

@@ -14,10 +14,14 @@
 }
 
 .authorHeader {
-  border-bottom: 2px solid #000;
+  border-bottom: 2px solid var(--default-color);
   margin-bottom: 2.4rem;
-  margin-top: -3.2rem;
+  margin-top: 1.8rem;
   padding-bottom: 4rem;
+
+  @include media-breakpoint-up(lg) {
+    margin-top: -3.2rem;
+  }
 }
 
 .ratingContainer {

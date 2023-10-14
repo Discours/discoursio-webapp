@@ -173,14 +173,15 @@ export type Mutation = {
   destroyTopic: Result
   follow: Result
   getSession: AuthResult
+  markAllNotificationsAsRead: Result
   markAsRead: Result
+  markNotificationAsRead: Result
   rateUser: Result
   registerUser: AuthResult
   sendLink: Result
   unfollow: Result
   updateChat: Result
   updateMessage: Result
-  updateOnlineStatus: Result
   updateProfile: Result
   updateReaction: Result
   updateShout: Result
@@ -245,6 +246,10 @@ export type MutationMarkAsReadArgs = {
   ids: Array<InputMaybe<Scalars['Int']>>
 }
 
+export type MutationMarkNotificationAsReadArgs = {
+  notification_id: Scalars['Int']
+}
+
 export type MutationRateUserArgs = {
   slug: Scalars['String']
   value: Scalars['Int']
@@ -296,6 +301,33 @@ export type MutationUpdateTopicArgs = {
   input: TopicInput
 }
 
+export type Notification = {
+  createdAt: Scalars['DateTime']
+  data?: Maybe<Scalars['String']>
+  id: Scalars['Int']
+  occurrences: Scalars['Int']
+  reaction?: Maybe<Scalars['Int']>
+  seen: Scalars['Boolean']
+  shout?: Maybe<Scalars['Int']>
+  type?: Maybe<NotificationType>
+}
+
+export enum NotificationType {
+  NewComment = 'NEW_COMMENT',
+  NewReply = 'NEW_REPLY'
+}
+
+export type NotificationsQueryParams = {
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+}
+
+export type NotificationsQueryResult = {
+  notifications: Array<Maybe<Notification>>
+  totalCount: Scalars['Int']
+  totalUnreadCount: Scalars['Int']
+}
+
 export type Operation = {
   id: Scalars['Int']
   name: Scalars['String']
@@ -324,6 +356,7 @@ export type Query = {
   loadChats: Result
   loadDrafts: Array<Maybe<Shout>>
   loadMessagesBy: Result
+  loadNotifications: NotificationsQueryResult
   loadReactionsBy: Array<Maybe<Reaction>>
   loadRecipients: Result
   loadShout?: Maybe<Shout>
@@ -370,6 +403,10 @@ export type QueryLoadMessagesByArgs = {
   by: MessagesBy
   limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
+}
+
+export type QueryLoadNotificationsArgs = {
+  params: NotificationsQueryParams
 }
 
 export type QueryLoadReactionsByArgs = {
@@ -596,12 +633,6 @@ export type Stat = {
   rating?: Maybe<Scalars['Int']>
   reacted?: Maybe<Scalars['Int']>
   viewed?: Maybe<Scalars['Int']>
-}
-
-export type Subscription = {
-  newMessage?: Maybe<Message>
-  newReaction?: Maybe<Reaction>
-  newShout?: Maybe<Shout>
 }
 
 export type Token = {

@@ -250,7 +250,7 @@
 }
 
 .mainNavigationItemActive {
-  background: var(--link-hover-background);
+  background: var(--link-hover-background) !important;
   color: var(--link-hover-color) !important;
 }
 

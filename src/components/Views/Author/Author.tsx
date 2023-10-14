@@ -18,6 +18,7 @@ import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { hideModal } from '../../../stores/ui'
 import { getPagePath } from '@nanostores/router'
+import { useSession } from '../../../context/session'
 
 type Props = {
   shouts: Shout[]
@@ -33,7 +34,8 @@ export const AuthorView = (props: Props) => {
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
-  const { page } = useRouter()
+  const { page: getPage } = useRouter()
+  const { user } = useSession()
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -102,14 +104,14 @@ export const AuthorView = (props: Props) => {
   //   return t('Top recent')
   // })
 
-  const shouts = createMemo<Shout[][]>(() =>
+  const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
-    if (page().route === 'authorComments') {
+    if (getPage().route === 'authorComments') {
       try {
         const data = await apiClient.getReactionsBy({
           by: { comment: true, createdBy: props.authorSlug }
@@ -131,23 +133,24 @@ export const AuthorView = (props: Props) => {
               isAuthorPage={true}
               followers={followers()}
               following={following()}
+              isCurrentUser={author().slug === user()?.slug}
             />
           </div>
         </Show>
         <div class={clsx(styles.groupControls, 'row')}>
           <div class="col-md-16">
             <ul class="view-switcher">
-              <li classList={{ 'view-switcher__item--selected': page().route === 'author' }}>
+              <li classList={{ 'view-switcher__item--selected': getPage().route === 'author' }}>
                 <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>{t('Publications')}</a>
-                <span class="view-switcher__counter">{author().stat.shouts}</span>
+                <span class="view-switcher__counter">{author().stat?.shouts}</span>
               </li>
-              <li classList={{ 'view-switcher__item--selected': page().route === 'authorComments' }}>
+              <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
                 <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                   {t('Comments')}
                 </a>
-                <span class="view-switcher__counter">{author().stat.commented}</span>
+                <span class="view-switcher__counter">{author().stat?.commented}</span>
               </li>
-              <li classList={{ 'view-switcher__item--selected': page().route === 'authorAbout' }}>
+              <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
                 <a
                   onClick={() => checkBioHeight()}
                   href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
@@ -167,7 +170,7 @@ export const AuthorView = (props: Props) => {
       </div>
 
       <Switch>
-        <Match when={page().route === 'authorAbout'}>
+        <Match when={getPage().route === 'authorAbout'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -191,7 +194,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={page().route === 'authorComments'}>
+        <Match when={getPage().route === 'authorComments'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -204,8 +207,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-
-        <Match when={page().route === 'author'}>
+        <Match when={getPage().route === 'author'}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
           </Show>
@@ -226,15 +228,15 @@ export const AuthorView = (props: Props) => {
             <Row1 article={sortedArticles()[6]} noauthor={true} nodate={true} />
             <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noauthor={true} />
 
-            <For each={shouts()}>
-              {(shout) => (
+            <For each={pages()}>
+              {(page) => (
                 <>
-                  <Row1 article={shout[0]} noauthor={true} nodate={true} />
-                  <Row2 articles={shout.slice(1, 3)} isEqual={true} noauthor={true} />
-                  <Row1 article={shout[3]} noauthor={true} nodate={true} />
-                  <Row2 articles={shout.slice(4, 6)} isEqual={true} noauthor={true} />
-                  <Row1 article={shout[6]} noauthor={true} nodate={true} />
-                  <Row2 articles={shout.slice(7, 9)} isEqual={true} noauthor={true} />
+                  <Row1 article={page[0]} noauthor={true} nodate={true} />
+                  <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
+                  <Row1 article={page[3]} noauthor={true} nodate={true} />
+                  <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
+                  <Row1 article={page[6]} noauthor={true} nodate={true} />
+                  <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
                 </>
               )}
             </For>

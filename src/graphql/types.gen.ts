@@ -67,7 +67,6 @@ export type Chat = {
   title?: Maybe<Scalars['String']>
   unread?: Maybe<Scalars['Int']>
   updatedAt: Scalars['Int']
-  users?: Maybe<Array<Maybe<Scalars['Int']>>>
 }
 
 export type ChatInput = {
@@ -78,7 +77,7 @@ export type ChatInput = {
 
 export type ChatMember = {
   id: Scalars['Int']
-  lastSeen?: Maybe<Scalars['DateTime']>
+  lastSeen: Maybe<Scalars['Int']>
   name: Scalars['String']
   online?: Maybe<Scalars['Boolean']>
   slug: Scalars['String']

@@ -43,6 +43,8 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     },
     onerror(err) {
       console.error('sse connection closed by error', err)
+
+      throw new Error() // NOTE: simple hack to close the connection
     }
   })
 

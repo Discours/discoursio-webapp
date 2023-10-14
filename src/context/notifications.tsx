@@ -1,22 +1,31 @@
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
 import { useSession } from './session'
-import SSEService, { EventData } from '../utils/sseService'
-import { apiBaseUrl } from '../utils/config'
 import { Portal } from 'solid-js/web'
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
-import { apiClient } from '../utils/apiClient'
 import { createStore } from 'solid-js/store'
-import { Notification } from '../graphql/types.gen'
+import { openDB } from 'idb'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+import { getToken } from '../graphql/privateGraphQLClient'
+import { Author, Message, Reaction, Shout } from '../graphql/types.gen'
 
+export interface ServerNotification {
+  kind: string
+  payload: any // Author | Shout | Reaction | Message
+  timestamp: number
+  seen: boolean
+}
+
+type MessageHandler = (m: Message) => void
 type NotificationsContextType = {
-  notificationEntities: Record<number, Notification>
+  notificationEntities: Record<number, ServerNotification>
   unreadNotificationsCount: Accessor<number>
-  sortedNotifications: Accessor<Notification[]>
+  sortedNotifications: Accessor<ServerNotification[]>
   actions: {
     showNotificationsPanel: () => void
-    markNotificationAsRead: (notification: Notification) => Promise<void>
+    markNotificationAsRead: (notification: ServerNotification) => Promise<void>
+    setMessageHandler: (MessageHandler) => void
   }
 }
 
@@ -26,53 +35,95 @@ export function useNotifications() {
   return useContext(NotificationsContext)
 }
 
-const sseService = new SSEService()
-
 export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = createSignal(false)
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const { isAuthenticated, user } = useSession()
-  const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
+  const [notificationEntities, setNotificationEntities] = createStore<Record<number, ServerNotification>>(
+    {}
+  )
+
+  const dbPromise = openDB('notifications-db', 1, {
+    upgrade(db) {
+      db.createObjectStore('notifications')
+    }
+  })
 
   const loadNotifications = async () => {
-    const { notifications, totalUnreadCount } = await apiClient.getNotifications({
-      limit: 100
-    })
-    const newNotificationEntities = notifications.reduce((acc, notification) => {
-      acc[notification.id] = notification
-      return acc
-    }, {})
+    const db = await dbPromise
+    const notifications = await db.getAll('notifications')
+    const totalUnreadCount = notifications.filter((notification) => !notification.read).length
 
     setUnreadNotificationsCount(totalUnreadCount)
-    setNotificationEntities(newNotificationEntities)
+    setNotificationEntities(
+      notifications.reduce((acc, notification) => {
+        acc[notification.id] = notification
+        return acc
+      }, {})
+    )
+
     return notifications
   }
 
   const sortedNotifications = createMemo(() => {
-    return Object.values(notificationEntities).sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
+    return Object.values(notificationEntities).sort((a, b) => b.timestamp - a.timestamp)
   })
+
+  const storeNotification = async (notification: ServerNotification) => {
+    const db = await dbPromise
+    const tx = db.transaction('notifications', 'readwrite')
+    const store = tx.objectStore('notifications')
+    const id = Date.now()
+    const data: ServerNotification = {
+      ...notification,
+      timestamp: id,
+      seen: false
+    }
+    await store.put(data, id)
+    await tx.done
+    loadNotifications()
+  }
+
+  const [messageHandler, setMessageHandler] = createSignal<(m: Message) => void>()
 
   createEffect(() => {
     if (isAuthenticated()) {
       loadNotifications()
 
-      sseService.connect(`${apiBaseUrl}/subscribe/${user().id}`)
-      sseService.subscribeToEvent('message', (data: EventData) => {
-        if (data.type === 'newNotifications') {
-          loadNotifications()
-        } else {
-          console.error(`[NotificationsProvider] unknown message type: ${JSON.stringify(data)}`)
+      fetchEventSource('https://chat.discours.io/connect', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + getToken()
+        },
+        onmessage(event) {
+          const n: { kind: string; payload: any } = JSON.parse(event.data)
+          if (n.kind === 'new_message') {
+            messageHandler()(n.payload)
+          } else {
+            console.log('[context.notifications] Received notification:', n)
+            storeNotification({
+              kind: n.kind,
+              payload: n.payload,
+              timestamp: Date.now(),
+              seen: false
+            })
+          }
+        },
+        onclose() {
+          console.log('[context.notifications] sse connection closed by server')
+        },
+        onerror(err) {
+          console.error('[context.notifications] sse connection closed by error', err)
+          throw new Error() // NOTE: simple hack to close the connection
         }
       })
-    } else {
-      sseService.disconnect()
     }
   })
 
-  const markNotificationAsRead = async (notification: Notification) => {
-    await apiClient.markNotificationAsRead(notification.id)
+  const markNotificationAsRead = async (notification: ServerNotification) => {
+    const db = await dbPromise
+    await db.put('notifications', { ...notification, seen: true })
     loadNotifications()
   }
 
@@ -80,7 +131,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     setIsNotificationsPanelOpen(true)
   }
 
-  const actions = { showNotificationsPanel, markNotificationAsRead }
+  const actions = { showNotificationsPanel, markNotificationAsRead, setMessageHandler }
 
   const value: NotificationsContextType = {
     notificationEntities,

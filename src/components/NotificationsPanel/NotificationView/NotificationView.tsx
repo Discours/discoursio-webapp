@@ -1,112 +1,113 @@
 import { clsx } from 'clsx'
 import styles from './NotificationView.module.scss'
-import type { Notification } from '../../../graphql/types.gen'
 import { formatDate } from '../../../utils'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
-import { NotificationType } from '../../../graphql/types.gen'
+import { Author } from '../../../graphql/types.gen'
 import { openPage } from '@nanostores/router'
 import { router } from '../../../stores/router'
-import { useNotifications } from '../../../context/notifications'
+import { ServerNotification, useNotifications } from '../../../context/notifications'
 import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
-import notifications from '../../../graphql/query/notifications'
 
 type Props = {
-  notification: Notification
+  notification: ServerNotification
   onClick: () => void
   class?: string
 }
 
-type NotificationData = {
-  shout: {
-    slug: string
-    title: string
-  }
-  users: {
-    id: number
-    name: string
-    slug: string
-    userpic: string
-  }[]
+// NOTE: not a graphql generated type
+export enum NotificationType {
+  NewComment = 'NEW_COMMENT',
+  NewReply = 'NEW_REPLY',
+  NewFollower = 'NEW_FOLLOWER',
+  NewShout = 'NEW_SHOUT',
+  NewLike = 'NEW_LIKE',
+  NewDislike = 'NEW_DISLIKE'
+}
+
+const TEMPLATES = {
+  // FIXME: set proper templates
+  new_follower: 'new follower',
+  new_shout: 'new shout',
+  new_reaction0: 'new like',
+  new_reaction1: 'new dislike',
+  new_reaction2: 'new agreement',
+  new_reaction3: 'new disagreement',
+  new_reaction4: 'new proof',
+  new_reaction5: 'new disproof',
+  new_reaction6: 'new comment',
+  new_reaction7: 'new quote',
+  new_reaction8: 'new proposal',
+  new_reaction9: 'new question',
+  new_reaction10: 'new remark',
+  //"new_reaction11": "new footnote",
+  new_reaction12: 'new acception',
+  new_reaction13: 'new rejection'
 }
 
 export const NotificationView = (props: Props) => {
   const {
     actions: { markNotificationAsRead }
   } = useNotifications()
-
   const { t } = useLocalize()
-
-  const [data, setData] = createSignal<NotificationData>(null)
-
+  const [data, setData] = createSignal<ServerNotification>(null)
+  const [kind, setKind] = createSignal<NotificationType>()
   onMount(() => {
-    setTimeout(() => setData(JSON.parse(props.notification.data)))
+    setTimeout(() => setData(props.notification))
   })
-
   const lastUser = createMemo(() => {
-    if (!data()) {
-      return null
-    }
-
-    return data().users[data().users.length - 1]
+    return props.notification.kind === 'new_follower' ? data().payload : data().payload.author
   })
-
   const content = createMemo(() => {
     if (!data()) {
       return null
     }
+    let caption: string, author: Author, ntype: NotificationType
 
-    let shoutTitle = ''
-    let i = 0
-    const shoutTitleWords = data().shout.title.split(' ')
+    // TODO: count occurencies from in-browser notifications-db
 
-    while (shoutTitle.length <= 30 && i < shoutTitleWords.length) {
-      shoutTitle += shoutTitleWords[i] + ' '
-      i++
-    }
-
-    if (shoutTitle.length < data().shout.title.length) {
-      shoutTitle += '...'
-    }
-
-    switch (props.notification.type) {
-      case NotificationType.NewComment: {
-        return t('NewCommentNotificationText', {
-          commentsCount: props.notification.occurrences,
-          shoutTitle,
-          lastCommenterName: lastUser().name,
-          restUsersCount: data().users.length - 1
-        })
+    switch (props.notification.kind) {
+      case 'new_follower': {
+        caption = ''
+        author = data().payload
+        ntype = NotificationType.NewFollower
+        break
       }
-      case NotificationType.NewReply: {
-        return t('NewReplyNotificationText', {
-          commentsCount: props.notification.occurrences,
-          shoutTitle,
-          lastCommenterName: lastUser().name,
-          restUsersCount: data().users.length - 1
-        })
+      case 'new_shout': {
+        caption = data().payload.title
+        author = data().payload.authors[-1]
+        ntype = NotificationType.NewShout
+        break
+      }
+      case 'new_reaction6': {
+        ntype = data().payload.replyTo ? NotificationType.NewReply : NotificationType.NewComment
+      }
+      case 'new_reaction0': {
+        ntype = NotificationType.NewLike
+      }
+      case 'new_reaction0': {
+        ntype = NotificationType.NewDislike
+      }
+      // TODO: add more reaction types
+      default: {
+        caption = data().payload.shout.title
+        author = data().payload.author
       }
     }
+    setKind(ntype) // FIXME: use it somewhere if needed or remove
+    return t(TEMPLATES[props.notification.kind], { caption, author })
   })
 
   const handleClick = () => {
     if (!props.notification.seen) {
       markNotificationAsRead(props.notification)
     }
-
-    openPage(router, 'article', { slug: data().shout.slug })
+    const subpath = props.notification.kind === 'new_follower' ? 'author' : 'article'
+    const slug = props.notification.kind.startsWith('new_reaction')
+      ? data().payload.shout.slug
+      : data().payload.slug
+    openPage(router, subpath, { slug })
     props.onClick()
-
-    // switch (props.notification.type) {
-    //   case NotificationType.NewComment: {
-    //     openPage(router, 'article', { slug: data().shout.slug })
-    //     break
-    //   }
-    //   case NotificationType.NewReply: {
-    //     openPage(router, 'article', { slug: data().shout.slug })
-    //     break
-    //   }
-    // }
   }
 
   return (
@@ -120,7 +121,7 @@ export const NotificationView = (props: Props) => {
         <Userpic name={lastUser().name} userpic={lastUser().userpic} class={styles.userpic} />
         <div>{content()}</div>
         <div class={styles.timeContainer}>
-          {/*{formatDate(new Date(props.notification.createdAt), { month: 'numeric' })}*/}
+          {/*{formatDate(new Date(props.notification.timestamp), { month: 'numeric' })}*/}
         </div>
       </div>
     </Show>

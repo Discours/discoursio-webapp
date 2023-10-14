@@ -314,7 +314,11 @@ export type Notification = {
 
 export enum NotificationType {
   NewComment = 'NEW_COMMENT',
-  NewReply = 'NEW_REPLY'
+  NewReply = 'NEW_REPLY',
+  NewFollower = 'NEW_FOLLOWER',
+  NewShout = 'NEW_SHOUT',
+  NewLike = 'NEW_LIKE',
+  NewDislike = 'NEW_DISLIKE'
 }
 
 export type NotificationsQueryParams = {

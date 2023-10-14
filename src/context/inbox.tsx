@@ -1,10 +1,9 @@
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
-import { fetchEventSource } from '@microsoft/fetch-event-source'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { inboxClient } from '../utils/apiClient'
-import { getToken } from '../graphql/privateGraphQLClient'
 import { loadMessages } from '../stores/inbox'
+import { ServerNotification, useNotifications } from './notifications'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -26,26 +25,13 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
+  const {
+    actions: { setMessageHandler }
+  } = useNotifications()
 
-  fetchEventSource('https://chat.discours.io/connect', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + getToken()
-    },
-    onmessage(event) {
-      const message = JSON.parse(event.data)
-      console.log('Received message:', message)
-      // TODO: Add the message to the appropriate chat
-    },
-    onclose() {
-      console.log('sse connection closed by server')
-    },
-    onerror(err) {
-      console.error('sse connection closed by error', err)
-
-      throw new Error() // NOTE: simple hack to close the connection
-    }
+  setMessageHandler((n: ServerNotification) => {
+    console.debug(n)
+    // TODO: handle new message
   })
 
   const loadChats = async () => {

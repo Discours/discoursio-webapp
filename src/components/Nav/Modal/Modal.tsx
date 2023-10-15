@@ -39,7 +39,6 @@ export const Modal = (props: Props) => {
   useEscKeyDownHandler(handleHide)
 
   createEffect(() => {
-    console.log('!!! modal:', modal())
     setVisible(modal() === props.name)
   })
 

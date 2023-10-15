@@ -50,10 +50,10 @@ type Props = {
   imageEnabled?: boolean
   setClear?: boolean
   smallHeight?: boolean
-  submitByEnter?: boolean
-  submitByShiftEnter?: boolean
+  submitByCtrlEnter?: boolean
   onlyBubbleControls?: boolean
   controlsAlwaysVisible?: boolean
+  autoFocus?: boolean
 }
 
 export const MAX_DESCRIPTION_LIMIT = 400
@@ -133,6 +133,7 @@ const SimplifiedEditor = (props: Props) => {
         placeholder: props.placeholder
       })
     ],
+    autofocus: props.autoFocus,
     content: content ?? null
   }))
 
@@ -201,8 +202,8 @@ const SimplifiedEditor = (props: Props) => {
     }
 
     if (
-      event.code === 'Enter' &&
-      ((props.submitByEnter && !event.shiftKey) || (props.submitByShiftEnter && event.shiftKey))
+      (event.code === 'Enter' && props.submitByCtrlEnter && event.metaKey) ||
+      (props.submitByCtrlEnter && event.ctrlKey)
     ) {
       event.preventDefault()
       props.onSubmit(html())

@@ -43,6 +43,8 @@ export const CommentsTree = (props: Props) => {
   const { t } = useLocalize()
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
+  const [clearEditor, setClearEditor] = createSignal(false)
+
   const {
     reactionEntities,
     actions: { createReaction }
@@ -88,7 +90,6 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     }
   })
-
   const handleSubmitComment = async (value) => {
     try {
       await createReaction({
@@ -96,9 +97,11 @@ export const CommentsTree = (props: Props) => {
         body: value,
         shout: props.shoutId
       })
+      setClearEditor(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
+    setClearEditor(false)
   }
 
   return (
@@ -175,9 +178,11 @@ export const CommentsTree = (props: Props) => {
         <SimplifiedEditor
           quoteEnabled={true}
           imageEnabled={true}
+          autoFocus={true}
+          submitByCtrlEnter={true}
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}
-          submitByShiftEnter={true}
+          setClear={clearEditor()}
         />
       </ShowIfAuthenticated>
     </>

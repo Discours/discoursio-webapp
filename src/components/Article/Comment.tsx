@@ -1,4 +1,4 @@
-import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
+import { Show, createMemo, createSignal, For, lazy, Suspense, createEffect } from 'solid-js'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
 
@@ -178,12 +178,11 @@ export const Comment = (props: Props) => {
                 <SimplifiedEditor
                   initialContent={comment().body}
                   submitButtonText={t('Save')}
-                  submitByEnter={true}
                   quoteEnabled={true}
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleUpdate(value)}
-                  submitByShiftEnter={true}
+                  submitByCtrlEnter={true}
                   setClear={clearEditor()}
                 />
               </Suspense>
@@ -246,7 +245,7 @@ export const Comment = (props: Props) => {
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleCreate(value)}
-                  submitByShiftEnter={true}
+                  submitByCtrlEnter={true}
                 />
               </Suspense>
             </Show>

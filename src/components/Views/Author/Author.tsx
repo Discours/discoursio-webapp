@@ -67,7 +67,6 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(async () => {
-    hideModal()
     try {
       const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
       setFollowers(userSubscribers)

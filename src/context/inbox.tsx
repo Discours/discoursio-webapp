@@ -33,7 +33,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       const newChats = await apiClient.getChats({ limit: 50, offset: 0 })
       setChats(newChats)
     } catch (error) {
-      console.log(error)
+      console.log('[loadChats]', error)
     }
   }
 

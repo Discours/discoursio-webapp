@@ -45,7 +45,7 @@ export const Message = (props: Props) => {
           <Show when={props.replyBody}>
             <QuotedMessage body={props.replyBody} variant="inline" isOwn={isOwn} />
           </Show>
-          <MD body={props.content.body} />
+          <div innerHTML={props.content.body} />
         </div>
       </div>
       <div class={styles.time}>{formattedTime(props.content.createdAt * 1000)()}</div>

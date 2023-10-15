@@ -118,10 +118,6 @@ export const AuthorCard = (props: Props) => {
     }
   })
 
-  const handleCloseFollowModals = () => {
-    redirectPage(router, 'author', { slug: props.author.slug })
-  }
-
   if (props.isAuthorPage && props.author.userpic?.includes('assets.discours.io')) {
     setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
   }
@@ -219,7 +215,7 @@ export const AuthorCard = (props: Props) => {
                       {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
                     </For>
                     <div class={styles.subscribersCounter}>
-                      {t('SubscriptionWithCount', { count: props.followers.length })}
+                      {t('SubscriberWithCount', { count: props.followers.length })}
                     </div>
                   </a>
                 </Match>
@@ -232,23 +228,35 @@ export const AuthorCard = (props: Props) => {
                 </Match>
               </Switch>
 
-              <Show when={props.following && props.following.length > 0}>
-                <a href="?modal=following" class={styles.subscribers}>
-                  <For each={props.following.slice(0, 3)}>
-                    {(f) => {
-                      if ('name' in f) {
-                        return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
-                      } else if ('title' in f) {
-                        return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
-                      }
-                      return null
-                    }}
-                  </For>
-                  <div class={styles.subscribersCounter}>
-                    {t('SubscriberWithCount', { count: props?.following.length ?? 0 })}
-                  </div>
-                </a>
-              </Show>
+              <Switch>
+                <Match when={!props.isCurrentUser && props.following && props.following.length > 0}>
+                  <a href="?modal=following" class={styles.subscribers}>
+                    <For each={props.following.slice(0, 3)}>
+                      {(f) => {
+                        if ('name' in f) {
+                          return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
+                        } else if ('title' in f) {
+                          return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
+                        }
+                        return null
+                      }}
+                    </For>
+                    <div class={styles.subscribersCounter}>
+                      {t('SubscriptionWithCount', { count: props?.following.length ?? 0 })}
+                    </div>
+                  </a>
+                </Match>
+                <Match when={props.isCurrentUser && props.following && props.following.length > 0}>
+                  <SharePopup
+                    containerCssClass={stylesHeader.control}
+                    title={props.author.name}
+                    description={props.author.bio}
+                    imageUrl={props.author.userpic}
+                    shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
+                    trigger={<Button variant="secondary" value={t('Share')} />}
+                  />
+                </Match>
+              </Switch>
             </div>
           </Show>
         </div>
@@ -357,7 +365,7 @@ export const AuthorCard = (props: Props) => {
           </Show>
         </ShowOnlyOnClient>
         <Show when={props.followers}>
-          <Modal variant="medium" name="followers" onClose={handleCloseFollowModals} maxHeight>
+          <Modal variant="medium" name="followers" maxHeight>
             <>
               <h2>{t('Followers')}</h2>
               <div class={styles.listWrapper}>
@@ -372,22 +380,8 @@ export const AuthorCard = (props: Props) => {
             </>
           </Modal>
         </Show>
-
-        <Show when={props.isCurrentUser}>
-          <div class={styles.subscribersContainer}>
-            <SharePopup
-              containerCssClass={stylesHeader.control}
-              title={props.author.name}
-              description={props.author.bio}
-              imageUrl={props.author.userpic}
-              shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
-              trigger={<Button variant="secondary" value={t('Share')} />}
-            />
-          </div>
-        </Show>
-
         <Show when={props.following}>
-          <Modal variant="medium" name="following" onClose={handleCloseFollowModals} maxHeight>
+          <Modal variant="medium" name="following" maxHeight>
             <>
               <h2>{t('Subscriptions')}</h2>
               <ul class="view-switcher">

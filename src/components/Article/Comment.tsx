@@ -31,6 +31,8 @@ type Props = {
   lastSeen?: Date
   class?: string
   showArticleLink?: boolean
+  clickedReply?: (value: number) => void
+  clickedReplyId?: number
 }
 
 export const Comment = (props: Props) => {
@@ -194,7 +196,10 @@ export const Comment = (props: Props) => {
               <ShowIfAuthenticated>
                 <button
                   disabled={loading()}
-                  onClick={() => setIsReplyVisible(!isReplyVisible())}
+                  onClick={() => {
+                    setIsReplyVisible(!isReplyVisible())
+                    props.clickedReply(props.comment.id)
+                  }}
                   class={clsx(styles.commentControl, styles.commentControlReply)}
                 >
                   <Icon name="reply" class={styles.icon} />
@@ -238,7 +243,7 @@ export const Comment = (props: Props) => {
               {/*</button>*/}
             </div>
 
-            <Show when={isReplyVisible()}>
+            <Show when={isReplyVisible() && props.clickedReplyId === props.comment.id}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor
                   quoteEnabled={true}
@@ -261,6 +266,8 @@ export const Comment = (props: Props) => {
                 isArticleAuthor={props.isArticleAuthor}
                 comment={c}
                 lastSeen={props.lastSeen}
+                clickedReply={props.clickedReply}
+                clickedReplyId={props.clickedReplyId}
               />
             )}
           </For>

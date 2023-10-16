@@ -1,4 +1,4 @@
-import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
+import { Show, createMemo, createSignal, onMount, For, createEffect } from 'solid-js'
 import { Comment } from './Comment'
 import styles from './Article.module.scss'
 import { clsx } from 'clsx'
@@ -104,6 +104,11 @@ export const CommentsTree = (props: Props) => {
     setClearEditor(false)
   }
 
+  const [clicked, setClicked] = createSignal<number>()
+
+  createEffect(() => {
+    console.log('!!! clicked:', clicked())
+  })
   return (
     <>
       <div class={styles.commentsHeaderWrapper}>
@@ -156,6 +161,8 @@ export const CommentsTree = (props: Props) => {
                 props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug)
               )}
               comment={reaction}
+              clickedReply={(val) => setClicked(val)}
+              clickedReplyId={clicked()}
               lastSeen={dateFromLocalStorage}
             />
           )}

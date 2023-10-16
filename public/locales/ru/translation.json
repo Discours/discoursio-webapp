@@ -217,11 +217,19 @@
   "New only": "Только новые",
   "New password": "Новый пароль",
   "New stories every day and even more!": "Каждый день вас ждут новые истории и ещё много всего интересного!",
-  "NewCommentNotificationText": "{commentsCount, plural, one {Новый комментарий} few {{commentsCount} новых комментария} other {{commentsCount} новых комментариев}} к вашей публикации {shoutTitle} от {lastCommenterName}{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
-  "NewReplyNotificationText": "{commentsCount, plural, one {Новый ответ} few {{commentsCount} новых ответа} other {{commentsCount} новых ответов}} к вашему комментарию к публикации {shoutTitle} от {lastCommenterName}{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
+
+  "NotificationNewCommentText1": "{commentsCount, plural, one {Новый комментарий} few {{commentsCount} новых комментария} other {{commentsCount} новых комментариев}} к вашей публикации",
+  "NotificationNewCommentText2": "от",
+  "NotificationNewCommentText3": "{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
+
+  "NotificationNewReplyText1": "{commentsCount, plural, one {Новый ответ} few {{commentsCount} новых ответа} other {{commentsCount} новых ответов}} к вашему комментарию к публикации",
+  "NotificationNewReplyText2": "от",
+  "NotificationNewReplyText3": "{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
+
   "Newsletter": "Рассылка",
   "Night mode": "Ночная тема",
-  "No notifications, yet": "Тут пока пусто",
+  "No notifications yet": "Уведомлений пока нет",
+  "Write good articles, comment\nand it won't be so empty here": "Пишите хорошие статьи, комментируйте,\nи здесь станет не так пусто",
   "No such account, please try to register": "Такой адрес не найден, попробуйте зарегистрироваться",
   "Nothing here yet": "Здесь пока ничего нет",
   "Nothing is here": "Здесь ничего нет",

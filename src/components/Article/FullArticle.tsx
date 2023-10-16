@@ -28,9 +28,14 @@ import styles from './Article.module.scss'
 import { CardTopic } from '../Feed/CardTopic'
 import { createPopper } from '@popperjs/core'
 
-interface Props {
+type Props = {
   article: Shout
   scrollToComments?: boolean
+}
+
+export type ArticlePageSearchParams = {
+  scrollTo: 'comments'
+  commentId: string
 }
 
 export const FullArticle = (props: Props) => {
@@ -78,15 +83,19 @@ export const FullArticle = (props: Props) => {
   })
 
   const commentsRef: { current: HTMLDivElement } = { current: null }
-  const scrollToComments = () => {
+
+  const scrollTo = (el: HTMLElement) => {
     window.scrollTo({
-      top: commentsRef.current.offsetTop - 96,
+      top: el.offsetTop - 96,
       left: 0,
       behavior: 'smooth'
     })
   }
+  const scrollToComments = () => {
+    scrollTo(commentsRef.current)
+  }
 
-  const { searchParams, changeSearchParam } = useRouter()
+  const { searchParams, changeSearchParam } = useRouter<ArticlePageSearchParams>()
 
   createEffect(() => {
     if (props.scrollToComments) {
@@ -105,9 +114,12 @@ export const FullArticle = (props: Props) => {
 
   createEffect(() => {
     if (searchParams().commentId && isReactionsLoaded()) {
-      const commentElement = document.querySelector(`[id='comment_${searchParams().commentId}']`)
+      const commentElement = document.querySelector<HTMLElement>(
+        `[id='comment_${searchParams().commentId}']`
+      )
+      changeSearchParam({ commentId: null })
       if (commentElement) {
-        commentElement.scrollIntoView({ behavior: 'smooth' })
+        scrollTo(commentElement)
       }
     }
   })

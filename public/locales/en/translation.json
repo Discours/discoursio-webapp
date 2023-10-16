@@ -206,12 +206,19 @@
   "New only": "New only",
   "New password": "New password",
   "New stories every day and even more!": "New stories and more are waiting for you every day!",
-  "NewCommentNotificationText": "{commentsCount, plural, one {New comment} other {{commentsCount} comments}} to your publication {shoutTitle} from {lastCommenterName}{restUsersCount, plural, =0 {} one { one more user} other { and more {restUsersCount} users}}",
-  "NewReplyNotificationText": "{commentsCount, plural, one {New reply} other {{commentsCount} replays} other {{commentsCount} новых ответов}} to your publication {shoutTitle} от {lastCommenterName}{restUsersCount, plural, =0 {} one { and one more user} other { and more {restUsersCount} users}}",
+
+  "NotificationNewCommentText1": "{commentsCount, plural, one {New comment} other {{commentsCount} comments}} to your publication {shoutTitle} from {lastCommenterName}{restUsersCount, plural, =0 {} one { one more user} other { and more {restUsersCount} users}}",
+  "NotificationNewCommentText2": "from",
+  "NotificationNewCommentText3": "{restUsersCount, plural, =0 {} one { one more user} other { and more {restUsersCount} users}}",
+
+  "NotificationNewReplyText1": "{commentsCount, plural, one {New reply} other {{commentsCount} replays}} to your publication",
+  "NotificationNewReplyText2": "from",
+  "NotificationNewReplyText3": "{restUsersCount, plural, =0 {} one { and one more user} other { and more {restUsersCount} users}}",
+
   "Newsletter": "Newsletter",
   "Night mode": "Night mode",
-  "No notifications, yet": "No notifications, yet",
-  "No such account, please try to register": "No such account found, please try to register",
+  "No notifications yet": "No notifications yet",
+  "Write good articles, comment\nand it won't be so empty here": "Write good articles, comment\nand it won't be so empty here",
   "Nothing here yet": "There's nothing here yet",
   "Nothing is here": "There is nothing here",
   "Notifications": "Notifications",

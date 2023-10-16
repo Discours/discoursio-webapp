@@ -11,18 +11,9 @@ import { setPageLoadManagerPromise } from '../utils/pageLoadManager'
 
 export const ArticlePage = (props: PageProps) => {
   const shouts = props.article ? [props.article] : []
+  const { page } = useRouter()
 
-  const slug = createMemo(() => {
-    const { page: getPage } = useRouter()
-
-    const page = getPage()
-
-    if (page.route !== 'article') {
-      throw new Error('ts guard')
-    }
-
-    return page.params.slug
-  })
+  const slug = createMemo(() => page().params['slug'] as string)
 
   const { articleEntities } = useArticlesStore({
     shouts

@@ -8,7 +8,7 @@ import { router, useRouter } from '../../../stores/router'
 import { useNotifications } from '../../../context/notifications'
 import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
-import { ArticlePageSearchParams } from '../../Article/FullArticle'
+import type { ArticlePageSearchParams } from '../../Article/FullArticle'
 
 type Props = {
   notification: Notification

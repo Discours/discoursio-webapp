@@ -62,7 +62,12 @@ export const Comment = (props: Props) => {
   const remove = async () => {
     if (comment()?.id) {
       try {
-        const isConfirmed = await showConfirm()
+        const isConfirmed = await showConfirm({
+          confirmBody: t('Are you sure you want to delete this comment?'),
+          confirmButtonLabel: t('Delete'),
+          confirmButtonVariant: 'danger',
+          declineButtonVariant: 'primary'
+        })
 
         if (isConfirmed) {
           await deleteReaction(comment().id)

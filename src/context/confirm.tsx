@@ -2,11 +2,14 @@ import { createContext, createSignal, useContext } from 'solid-js'
 import type { Accessor, JSX } from 'solid-js'
 
 import { hideModal, showModal } from '../stores/ui'
+import { ButtonVariant } from '../components/_shared/Button/Button'
 
 type ConfirmMessage = {
   confirmBody?: string | JSX.Element
   confirmButtonLabel?: string
+  confirmButtonVariant?: ButtonVariant
   declineButtonLabel?: string
+  declineButtonVariant?: ButtonVariant
 }
 
 type ConfirmContextType = {
@@ -15,7 +18,9 @@ type ConfirmContextType = {
     showConfirm: (message?: {
       confirmBody?: ConfirmMessage['confirmBody']
       confirmButtonLabel?: ConfirmMessage['confirmButtonLabel']
+      confirmButtonVariant?: ConfirmMessage['confirmButtonVariant']
       declineButtonLabel?: ConfirmMessage['declineButtonLabel']
+      declineButtonVariant?: ConfirmMessage['declineButtonVariant']
     }) => Promise<boolean>
     resolveConfirm: (value: boolean) => void
   }
@@ -36,13 +41,17 @@ export const ConfirmProvider = (props: { children: JSX.Element }) => {
     message: {
       confirmBody?: ConfirmMessage['confirmBody']
       confirmButtonLabel?: ConfirmMessage['confirmButtonLabel']
+      confirmButtonVariant?: ConfirmMessage['confirmButtonVariant']
       declineButtonLabel?: ConfirmMessage['declineButtonLabel']
+      declineButtonVariant?: ConfirmMessage['declineButtonVariant']
     } = {}
   ): Promise<boolean> => {
     const messageToShow = {
       confirmBody: message.confirmBody,
       confirmButtonLabel: message.confirmButtonLabel,
-      declineButtonLabel: message.declineButtonLabel
+      confirmButtonVariant: message.confirmButtonVariant,
+      declineButtonLabel: message.declineButtonLabel,
+      declineButtonVariant: message.declineButtonVariant
     }
 
     setConfirmMessage(messageToShow)

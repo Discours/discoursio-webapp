@@ -44,6 +44,7 @@ export const CommentsTree = (props: Props) => {
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
   const [clearEditor, setClearEditor] = createSignal(false)
+  const [clickedReplyId, setClickedReplyId] = createSignal<number>()
 
   const {
     reactionEntities,
@@ -104,11 +105,6 @@ export const CommentsTree = (props: Props) => {
     setClearEditor(false)
   }
 
-  const [clicked, setClicked] = createSignal<number>()
-
-  createEffect(() => {
-    console.log('!!! clicked:', clicked())
-  })
   return (
     <>
       <div class={styles.commentsHeaderWrapper}>
@@ -161,8 +157,8 @@ export const CommentsTree = (props: Props) => {
                 props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug)
               )}
               comment={reaction}
-              clickedReply={(val) => setClicked(val)}
-              clickedReplyId={clicked()}
+              clickedReply={(id) => setClickedReplyId(id)}
+              clickedReplyId={clickedReplyId()}
               lastSeen={dateFromLocalStorage}
             />
           )}

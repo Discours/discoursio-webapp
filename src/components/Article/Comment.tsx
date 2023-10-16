@@ -31,7 +31,7 @@ type Props = {
   lastSeen?: Date
   class?: string
   showArticleLink?: boolean
-  clickedReply?: (value: number) => void
+  clickedReply?: (id: number) => void
   clickedReplyId?: number
 }
 

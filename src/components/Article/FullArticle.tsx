@@ -39,8 +39,10 @@ export type ArticlePageSearchParams = {
 }
 
 const scrollTo = (el: HTMLElement) => {
+  const { top } = el.getBoundingClientRect()
+
   window.scrollTo({
-    top: el.offsetTop - 96,
+    top: top + window.scrollY - 96,
     left: 0,
     behavior: 'smooth'
   })
@@ -90,7 +92,9 @@ export const FullArticle = (props: Props) => {
     return JSON.parse(props.article.media || '[]')
   })
 
-  const commentsRef: { current: HTMLDivElement } = { current: null }
+  const commentsRef: {
+    current: HTMLDivElement
+  } = { current: null }
 
   const scrollToComments = () => {
     scrollTo(commentsRef.current)
@@ -118,7 +122,9 @@ export const FullArticle = (props: Props) => {
       const commentElement = document.querySelector<HTMLElement>(
         `[id='comment_${searchParams().commentId}']`
       )
+
       changeSearchParam({ commentId: null })
+
       if (commentElement) {
         scrollTo(commentElement)
       }

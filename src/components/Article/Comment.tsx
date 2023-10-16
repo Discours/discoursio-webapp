@@ -1,4 +1,4 @@
-import { Show, createMemo, createSignal, For, lazy, Suspense, createEffect } from 'solid-js'
+import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
 

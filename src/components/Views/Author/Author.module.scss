@@ -8,8 +8,12 @@
   }
 
   .groupControls {
-    margin-bottom: 6rem !important;
+    margin-bottom: 2rem !important;
     margin-top: 0 !important;
+
+    @include media-breakpoint-up(md) {
+      margin-bottom: 6rem !important;
+    }
   }
 }
 

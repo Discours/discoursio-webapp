@@ -508,6 +508,7 @@
   a,
   a:link {
     border: none;
+    cursor: pointer;
     height: auto;
     margin: 0;
     padding: 0;
@@ -552,6 +553,10 @@
 
   &:global(.loginbtn) {
     background: #e9e9ee;
+
+    @include media-breakpoint-up(xl) {
+      background: none;
+    }
 
     .icon {
       height: 2.4rem;

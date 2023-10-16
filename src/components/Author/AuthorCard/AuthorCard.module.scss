@@ -42,7 +42,7 @@
   flex: 1;
 
   @include media-breakpoint-up(sm) {
-    align-items: baseline;
+    align-items: center;
     display: flex;
   }
 
@@ -490,6 +490,7 @@
     color: #696969;
     @include font-size(2rem);
     font-weight: 500;
+    margin-top: 1.5rem;
   }
 
   .authorSubscribe {

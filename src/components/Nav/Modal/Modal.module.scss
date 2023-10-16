@@ -82,6 +82,7 @@
   overflow: auto;
   padding: 5.4rem 2.4rem 2.4rem;
   position: relative;
+  text-align: left;
 
   @include media-breakpoint-up(sm) {
     padding: 5rem;

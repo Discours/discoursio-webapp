@@ -9,6 +9,10 @@
     margin-bottom: 3rem;
   }
 
+  @include media-breakpoint-down(md) {
+    text-align: left;
+  }
+
   .picture {
     display: block;
     width: 40px;

@@ -201,10 +201,7 @@ const SimplifiedEditor = (props: Props) => {
       return
     }
 
-    if (
-      (event.code === 'Enter' && props.submitByCtrlEnter && event.metaKey) ||
-      (props.submitByCtrlEnter && event.ctrlKey)
-    ) {
+    if (event.code === 'Enter' && props.submitByCtrlEnter && (event.metaKey || event.ctrlKey)) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()

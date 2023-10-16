@@ -19,6 +19,7 @@ import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { hideModal } from '../../../stores/ui'
 import { getPagePath } from '@nanostores/router'
 import { useSession } from '../../../context/session'
+import { Loading } from '../../_shared/Loading'
 
 type Props = {
   shouts: Shout[]
@@ -125,47 +126,51 @@ export const AuthorView = (props: Props) => {
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">
-        <Show when={author()}>
-          <div class={styles.authorHeader}>
-            <AuthorCard
-              author={author()}
-              isAuthorPage={true}
-              followers={followers()}
-              following={following()}
-              isCurrentUser={author().slug === user()?.slug}
-            />
-          </div>
-        </Show>
-        <div class={clsx(styles.groupControls, 'row')}>
-          <div class="col-md-16">
-            <ul class="view-switcher">
-              <li classList={{ 'view-switcher__item--selected': getPage().route === 'author' }}>
-                <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>{t('Publications')}</a>
-                <span class="view-switcher__counter">{author().stat?.shouts}</span>
-              </li>
-              <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
-                <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
-                  {t('Comments')}
-                </a>
-                <span class="view-switcher__counter">{author().stat?.commented}</span>
-              </li>
-              <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
-                <a
-                  onClick={() => checkBioHeight()}
-                  href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
-                >
-                  {t('Profile')}
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div class={clsx('col-md-8', styles.additionalControls)}>
-            <div class={styles.ratingContainer}>
-              {t('Karma')}
-              <AuthorRatingControl author={props.author} class={styles.ratingControl} />
+        <Show when={author()} fallback={<Loading />}>
+          <>
+            <div class={styles.authorHeader}>
+              <AuthorCard
+                author={author()}
+                isAuthorPage={true}
+                followers={followers()}
+                following={following()}
+                isCurrentUser={author().slug === user()?.slug}
+              />
             </div>
-          </div>
-        </div>
+            <div class={clsx(styles.groupControls, 'row')}>
+              <div class="col-md-16">
+                <ul class="view-switcher">
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'author' }}>
+                    <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
+                      {t('Publications')}
+                    </a>
+                    <span class="view-switcher__counter">{author().stat.shouts}</span>
+                  </li>
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
+                    <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
+                      {t('Comments')}
+                    </a>
+                    <span class="view-switcher__counter">{author().stat.commented}</span>
+                  </li>
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
+                    <a
+                      onClick={() => checkBioHeight()}
+                      href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
+                    >
+                      {t('Profile')}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class={clsx('col-md-8', styles.additionalControls)}>
+                <div class={styles.ratingContainer}>
+                  {t('Karma')}
+                  <AuthorRatingControl author={props.author} class={styles.ratingControl} />
+                </div>
+              </div>
+            </div>
+          </>
+        </Show>
       </div>
 
       <Switch>

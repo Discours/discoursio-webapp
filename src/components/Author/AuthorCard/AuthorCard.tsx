@@ -338,7 +338,7 @@ export const AuthorCard = (props: Props) => {
                           styles.buttonSubscribedLabel
                         )}
                       >
-                        {t('You are subscribed')}
+                        {t('Following')}
                       </span>
                     </Show>
                   </button>
@@ -357,7 +357,7 @@ export const AuthorCard = (props: Props) => {
                     <Show when={!props.isTextButton && !props.isAuthorPage}>
                       <Icon name="comment" class={styles.icon} />
                     </Show>
-                    <Show when={!props.liteButtons || props.isTextButton}>{t('Write')}</Show>
+                    <Show when={!props.liteButtons || props.isTextButton}>{t('Message')}</Show>
                   </button>
                 </Show>
               </div>

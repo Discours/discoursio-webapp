@@ -19,7 +19,7 @@ export const SocialProviders = () => {
   const { t } = useLocalize()
   return (
     <div class={styles.container}>
-      <div class={styles.text}>{t('Or continue with social network')}</div>
+      <div class={styles.text}>{t('or sign in with social networks')}</div>
       <div class={styles.social}>
         <a href="#" onClick={(event) => handleSocialAuthLinkClick(event, 'facebook')}>
           <Icon name="facebook" />

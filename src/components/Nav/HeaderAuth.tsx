@@ -108,7 +108,7 @@ export const HeaderAuth = (props: Props) => {
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
-        <div class={clsx('col-sm-6 col-lg-7', styles.usernav)}>
+        <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
             <Show when={isCreatePostButtonVisible()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
@@ -175,7 +175,7 @@ export const HeaderAuth = (props: Props) => {
                 <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                   <a href="?modal=auth&mode=login">
                     <span class={styles.textLabel}>{t('Enter')}</span>
-                    <Icon name="user-default" class={styles.icon} />
+                    <Icon name="key" class={styles.icon} />
                     {/*<Icon name="user-default" class={clsx(styles.icon, styles.iconHover)} />*/}
                   </a>
                 </div>

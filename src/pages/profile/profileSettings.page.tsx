@@ -180,13 +180,13 @@ export const ProfileSettingsPage = () => {
                         maxLength={120}
                       />
 
-                      <h4>{t('About myself')}</h4>
+                      <h4>{t('About')}</h4>
                       <SimplifiedEditor
                         variant="bordered"
                         onlyBubbleControls={true}
                         smallHeight={true}
-                        placeholder={t('About myself')}
-                        label={t('About myself')}
+                        placeholder={t('About')}
+                        label={t('About')}
                         initialContent={form.about}
                         onChange={(value) => updateFormField('about', value)}
                       />

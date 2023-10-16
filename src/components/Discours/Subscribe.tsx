@@ -55,7 +55,7 @@ export default () => {
     const response = await fetch('/api/newsletter', requestOptions)
 
     if (response.ok) {
-      setTitle(t('You are subscribed'))
+      setTitle(t('Following'))
       showSnackbar({ body: t('Thank you for subscribing') })
     } else {
       if (response.status === 400) {

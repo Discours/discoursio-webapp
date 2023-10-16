@@ -1,4 +1,4 @@
-import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
+import { Show, createMemo, createSignal, onMount, For, createEffect } from 'solid-js'
 import { Comment } from './Comment'
 import styles from './Article.module.scss'
 import { clsx } from 'clsx'
@@ -43,6 +43,9 @@ export const CommentsTree = (props: Props) => {
   const { t } = useLocalize()
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
+  const [clearEditor, setClearEditor] = createSignal(false)
+  const [clickedReplyId, setClickedReplyId] = createSignal<number>()
+
   const {
     reactionEntities,
     actions: { createReaction }
@@ -88,7 +91,6 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     }
   })
-
   const handleSubmitComment = async (value) => {
     try {
       await createReaction({
@@ -96,9 +98,11 @@ export const CommentsTree = (props: Props) => {
         body: value,
         shout: props.shoutId
       })
+      setClearEditor(true)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
+    setClearEditor(false)
   }
 
   return (
@@ -153,6 +157,8 @@ export const CommentsTree = (props: Props) => {
                 props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug)
               )}
               comment={reaction}
+              clickedReply={(id) => setClickedReplyId(id)}
+              clickedReplyId={clickedReplyId()}
               lastSeen={dateFromLocalStorage}
             />
           )}
@@ -175,9 +181,11 @@ export const CommentsTree = (props: Props) => {
         <SimplifiedEditor
           quoteEnabled={true}
           imageEnabled={true}
+          autoFocus={true}
+          submitByCtrlEnter={true}
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}
-          submitByShiftEnter={true}
+          setClear={clearEditor()}
         />
       </ShowIfAuthenticated>
     </>

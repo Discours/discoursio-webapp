@@ -309,7 +309,7 @@ export type Notification = {
   reaction?: Maybe<Scalars['Int']>
   seen: Scalars['Boolean']
   shout?: Maybe<Scalars['Int']>
-  type?: Maybe<NotificationType>
+  type: NotificationType
 }
 
 export enum NotificationType {

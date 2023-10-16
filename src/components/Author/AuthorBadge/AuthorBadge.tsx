@@ -97,7 +97,7 @@ export const AuthorBadge = (props: Props) => {
               <Button
                 variant="bordered"
                 size="S"
-                value={t('You are subscribed')}
+                value={t('Following')}
                 onClick={() => handleSubscribe(false)}
                 class={styles.subscribeButton}
               />

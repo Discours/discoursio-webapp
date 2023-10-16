@@ -6,7 +6,6 @@ import formattedTime from '../../utils/formatDateTime'
 import { clsx } from 'clsx'
 import styles from './DialogCard.module.scss'
 import { useLocalize } from '../../context/localize'
-import MD from '../Article/MD'
 
 type DialogProps = {
   online?: boolean
@@ -26,10 +25,11 @@ const DialogCard = (props: DialogProps) => {
     () => props.members && props.members.filter((member) => member.id !== props.ownId)
   )
 
-  const names = createMemo(() =>
-    companions()
-      ?.map((companion) => companion.name)
-      .join(', ')
+  const names = createMemo(
+    () =>
+      companions()
+        ?.map((companion) => companion.name)
+        .join(', ')
   )
 
   return (
@@ -55,7 +55,7 @@ const DialogCard = (props: DialogProps) => {
           <div class={styles.message}>
             <Switch>
               <Match when={props.message && !props.isChatHeader}>
-                <MD body={props.message} />
+                <div innerHTML={props.message} />
               </Match>
               <Match when={props.isChatHeader && companions().length > 1}>{names()}</Match>
             </Switch>

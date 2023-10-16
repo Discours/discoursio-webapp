@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, on, Show } from 'solid-js'
 import type { JSX } from 'solid-js'
 import { clsx } from 'clsx'
 import { hideModal, useModalStore } from '../../../stores/ui'
@@ -8,6 +8,7 @@ import styles from './Modal.module.scss'
 import { redirectPage } from '@nanostores/router'
 import { router } from '../../../stores/router'
 import { Icon } from '../../_shared/Icon'
+import { resetSortedArticles } from '../../../stores/zine/articles'
 
 interface Props {
   name: string

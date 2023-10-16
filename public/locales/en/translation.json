@@ -207,7 +207,7 @@
   "New password": "New password",
   "New stories every day and even more!": "New stories and more are waiting for you every day!",
 
-  "NotificationNewCommentText1": "{commentsCount, plural, one {New comment} other {{commentsCount} comments}} to your publication {shoutTitle} from {lastCommenterName}{restUsersCount, plural, =0 {} one { one more user} other { and more {restUsersCount} users}}",
+  "NotificationNewCommentText1": "{commentsCount, plural, one {New comment} other {{commentsCount} comments}} to your publication",
   "NotificationNewCommentText2": "from",
   "NotificationNewCommentText3": "{restUsersCount, plural, =0 {} one { one more user} other { and more {restUsersCount} users}}",
 

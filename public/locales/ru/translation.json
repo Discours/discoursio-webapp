@@ -442,5 +442,8 @@
   "SubscriptionWithCount": "{count, plural, =0 {нет подписок} one {{count} подписка} few {{count} подписки} other {{count} подписок}}",
   "Edit profile": "Редактировать профиль",
   "NewCommentNotificationText": "{commentsCount, plural, one {Новый комментарий} few {{commentsCount} новых комментария} other {{commentsCount} новых комментариев}} к вашей публикации {shoutTitle} от {lastCommenterName}{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
-  "NewReplyNotificationText": "{commentsCount, plural, one {Новый ответ} few {{commentsCount} новых ответа} other {{commentsCount} новых ответов}} к вашему комментарию к публикации {shoutTitle} от {lastCommenterName}{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}"
+  "NewReplyNotificationText": "{commentsCount, plural, one {Новый ответ} few {{commentsCount} новых ответа} other {{commentsCount} новых ответов}} к вашему комментарию к публикации {shoutTitle} от {lastCommenterName}{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
+  "Manifesto": "Манифест",
+  "Community Principles": "Принципы сообщества",
+  "Platform Guide": "Гид по дискурсу"
 }

@@ -415,6 +415,12 @@
   "video": "video",
   "view": "view",
   "zine": "zine",
-  "SubscriptionWithPlurals": "{count, plural, =0 {no subscriptions} one {{count} subscription} other {{count} subscriptions}",
-  "Edit profile": "Edit profile"
+  "SubscriberWithCount": "{count, plural, =0 {no followers} one {{count} follower} other {{count} followers}",
+  "SubscriptionWithCount": "{count, plural, =0 {no subscriptions} one {{count} subscription} other {{count} subscriptions}",
+  "NewCommentNotificationText": "{commentsCount, plural, one {New comment} other {{commentsCount} comments}} to your publication {shoutTitle} from {lastCommenterName}{restUsersCount, plural, =0 {} one { one more user} other { and more {restUsersCount} users}}",
+  "NewReplyNotificationText": "{commentsCount, plural, one {New reply} other {{commentsCount} replays} other {{commentsCount} новых ответов}} to your publication {shoutTitle} от {lastCommenterName}{restUsersCount, plural, =0 {} one { and one more user} other { and more {restUsersCount} users}}",
+  "Edit profile": "Edit profile",
+  "Manifesto": "Manifesto",
+  "Community Principles": "Community Principles",
+  "Platform Guide": "Platform Guide"
 }

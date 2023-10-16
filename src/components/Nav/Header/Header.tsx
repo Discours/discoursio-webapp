@@ -341,16 +341,16 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li>
-                <a href="/about/manifest">Манифест</a>
+                <a href="/about/manifest">{t('Manifesto')}</a>
               </li>
               <li>
-                <a href="/about/dogma">Догма</a>
+                <a href="/about/dogma">{t('Dogma')}</a>
               </li>
               <li>
-                <a href="/about/principles">Принципы сообщества</a>
+                <a href="/about/principles">{t('Community Principles')}</a>
               </li>
               <li>
-                <a href="/about/guide">Гид по дискурсу</a>
+                <a href="/about/guide">{t('Platform Guide')}</a>
               </li>
               <li>
                 <a href="/about/manifest#participation">{t('Support us')}</a>

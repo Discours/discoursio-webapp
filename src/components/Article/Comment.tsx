@@ -141,7 +141,7 @@ export const Comment = (props: Props) => {
                   })}
                 />
                 <small>
-                  <a href={`#comment-${comment()?.id}`}>{comment()?.shout.title || ''}</a>
+                  <a href={`#comment_${comment()?.id}`}>{comment()?.shout.title || ''}</a>
                 </small>
               </div>
             }
@@ -179,7 +179,7 @@ export const Comment = (props: Props) => {
               <CommentRatingControl comment={comment()} />
             </div>
           </Show>
-          <div class={styles.commentBody} id={'comment-' + (comment().id || '')}>
+          <div class={styles.commentBody}>
             <Show when={editMode()} fallback={<MD body={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor

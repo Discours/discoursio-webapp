@@ -16,6 +16,7 @@ type NotificationsContextType = {
   sortedNotifications: Accessor<Notification[]>
   actions: {
     showNotificationsPanel: () => void
+    hideNotificationsPanel: () => void
     markNotificationAsRead: (notification: Notification) => Promise<void>
   }
 }
@@ -80,7 +81,11 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     setIsNotificationsPanelOpen(true)
   }
 
-  const actions = { showNotificationsPanel, markNotificationAsRead }
+  const hideNotificationsPanel = () => {
+    setIsNotificationsPanelOpen(false)
+  }
+
+  const actions = { showNotificationsPanel, hideNotificationsPanel, markNotificationAsRead }
 
   const value: NotificationsContextType = {
     notificationEntities,

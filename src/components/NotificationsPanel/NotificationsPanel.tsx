@@ -7,6 +7,7 @@ import { Icon } from '../_shared/Icon'
 import { createEffect, For } from 'solid-js'
 import { useNotifications } from '../../context/notifications'
 import { NotificationView } from './NotificationView'
+import { EmptyMessage } from './EmptyMessage'
 
 type Props = {
   isOpen: boolean
@@ -30,8 +31,22 @@ export const NotificationsPanel = (props: Props) => {
     handler: () => handleHide()
   })
 
+  let windowScrollTop = 0
+
   createEffect(() => {
+    const mainContent = document.querySelector<HTMLDivElement>('.main-content')
+
+    if (props.isOpen) {
+      windowScrollTop = window.scrollY
+      mainContent.style.marginTop = `-${windowScrollTop}px`
+    }
+
     document.body.classList.toggle('fixed', props.isOpen)
+
+    if (!props.isOpen) {
+      mainContent.style.marginTop = ''
+      window.scrollTo(0, windowScrollTop)
+    }
   })
 
   useEscKeyDownHandler(handleHide)
@@ -52,10 +67,7 @@ export const NotificationsPanel = (props: Props) => {
           <Icon name="close" />
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
-        <For
-          each={sortedNotifications()}
-          fallback={<div class={styles.emptyMessageContainer}>{t('No notifications, yet')}</div>}
-        >
+        <For each={sortedNotifications()} fallback={<EmptyMessage />}>
           {(notification) => (
             <NotificationView
               notification={notification}

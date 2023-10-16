@@ -31,8 +31,22 @@ export const NotificationsPanel = (props: Props) => {
     handler: () => handleHide()
   })
 
+  let windowScrollTop = 0
+
   createEffect(() => {
+    const mainContent = document.querySelector<HTMLDivElement>('.main-content')
+
+    if (props.isOpen) {
+      windowScrollTop = window.scrollY
+      mainContent.style.marginTop = `-${windowScrollTop}px`
+    }
+
     document.body.classList.toggle('fixed', props.isOpen)
+
+    if (!props.isOpen) {
+      mainContent.style.marginTop = ''
+      window.scrollTo(0, windowScrollTop)
+    }
   })
 
   useEscKeyDownHandler(handleHide)

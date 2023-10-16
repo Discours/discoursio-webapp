@@ -189,7 +189,7 @@ export const Header = (props: Props) => {
                   onMouseOut={() => hideSubnavigation}
                   routeName="home"
                   active={isZineVisible()}
-                  body={t('zine')}
+                  body={t('journal')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}

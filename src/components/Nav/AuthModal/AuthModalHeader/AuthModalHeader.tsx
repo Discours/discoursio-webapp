@@ -16,7 +16,7 @@ export const AuthModalHeader = (props: Props) => {
   const generateModalTextsFromSource = (
     modalType: 'login' | 'register'
   ): { title: string; description: string } => {
-    const title = modalType === 'login' ? 'Enter the Discours' : 'Create account'
+    const title = modalType === 'login' ? 'Welcome to Discours' : 'Create account'
 
     switch (source) {
       case 'create': {

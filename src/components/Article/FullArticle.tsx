@@ -38,6 +38,14 @@ export type ArticlePageSearchParams = {
   commentId: string
 }
 
+const scrollTo = (el: HTMLElement) => {
+  window.scrollTo({
+    top: el.offsetTop - 96,
+    left: 0,
+    behavior: 'smooth'
+  })
+}
+
 export const FullArticle = (props: Props) => {
   const { t } = useLocalize()
   const {
@@ -84,13 +92,6 @@ export const FullArticle = (props: Props) => {
 
   const commentsRef: { current: HTMLDivElement } = { current: null }
 
-  const scrollTo = (el: HTMLElement) => {
-    window.scrollTo({
-      top: el.offsetTop - 96,
-      left: 0,
-      behavior: 'smooth'
-    })
-  }
   const scrollToComments = () => {
     scrollTo(commentsRef.current)
   }

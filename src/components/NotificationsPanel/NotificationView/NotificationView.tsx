@@ -1,7 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './NotificationView.module.scss'
 import type { Notification } from '../../../graphql/types.gen'
-import { formatDate } from '../../../utils'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { NotificationType } from '../../../graphql/types.gen'
 import { getPagePath, openPage } from '@nanostores/router'
@@ -9,7 +8,6 @@ import { router, useRouter } from '../../../stores/router'
 import { useNotifications } from '../../../context/notifications'
 import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
-import notifications from '../../../graphql/query/notifications'
 import { ArticlePageSearchParams } from '../../Article/FullArticle'
 
 type Props = {

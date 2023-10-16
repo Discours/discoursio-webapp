@@ -7,7 +7,6 @@ import formattedTime from '../../utils/formatDateTime'
 import { Icon } from '../_shared/Icon'
 import { MessageActionsPopup } from './MessageActionsPopup'
 import QuotedMessage from './QuotedMessage'
-import MD from '../Article/MD'
 
 type Props = {
   content: MessageType

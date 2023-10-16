@@ -26,7 +26,7 @@ type NotificationsContextType = {
     showNotificationsPanel: () => void
     hideNotificationsPanel: () => void
     markNotificationAsRead: (notification: ServerNotification) => Promise<void>
-    setMessageHandler: (MessageHandler) => void
+    setMessageHandler: (h: MessageHandler) => void
   }
 }
 

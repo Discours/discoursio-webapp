@@ -18,10 +18,6 @@ type Props = {
   class?: string
 }
 
-const stopPropagation = (event: MouseEvent) => {
-  event.stopPropagation()
-}
-
 type NotificationData = {
   shout: {
     slug: string

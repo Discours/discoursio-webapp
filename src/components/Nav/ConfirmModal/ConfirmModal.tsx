@@ -1,8 +1,7 @@
-import { clsx } from 'clsx'
 import { useConfirm } from '../../../context/confirm'
-import styles from './ConfirmModal.module.scss'
 import { useLocalize } from '../../../context/localize'
 import { Button } from '../../_shared/Button'
+import styles from './ConfirmModal.module.scss'
 
 export const ConfirmModal = () => {
   const { t } = useLocalize()

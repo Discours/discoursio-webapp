@@ -31,6 +31,8 @@ type Props = {
   lastSeen?: Date
   class?: string
   showArticleLink?: boolean
+  clickedReply?: (id: number) => void
+  clickedReplyId?: number
 }
 
 export const Comment = (props: Props) => {
@@ -178,12 +180,11 @@ export const Comment = (props: Props) => {
                 <SimplifiedEditor
                   initialContent={comment().body}
                   submitButtonText={t('Save')}
-                  submitByEnter={true}
                   quoteEnabled={true}
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleUpdate(value)}
-                  submitByShiftEnter={true}
+                  submitByCtrlEnter={true}
                   setClear={clearEditor()}
                 />
               </Suspense>
@@ -195,7 +196,10 @@ export const Comment = (props: Props) => {
               <ShowIfAuthenticated>
                 <button
                   disabled={loading()}
-                  onClick={() => setIsReplyVisible(!isReplyVisible())}
+                  onClick={() => {
+                    setIsReplyVisible(!isReplyVisible())
+                    props.clickedReply(props.comment.id)
+                  }}
                   class={clsx(styles.commentControl, styles.commentControlReply)}
                 >
                   <Icon name="reply" class={styles.icon} />
@@ -239,14 +243,14 @@ export const Comment = (props: Props) => {
               {/*</button>*/}
             </div>
 
-            <Show when={isReplyVisible()}>
+            <Show when={isReplyVisible() && props.clickedReplyId === props.comment.id}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor
                   quoteEnabled={true}
                   imageEnabled={true}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleCreate(value)}
-                  submitByShiftEnter={true}
+                  submitByCtrlEnter={true}
                 />
               </Suspense>
             </Show>
@@ -262,6 +266,8 @@ export const Comment = (props: Props) => {
                 isArticleAuthor={props.isArticleAuthor}
                 comment={c}
                 lastSeen={props.lastSeen}
+                clickedReply={props.clickedReply}
+                clickedReplyId={props.clickedReplyId}
               />
             )}
           </For>

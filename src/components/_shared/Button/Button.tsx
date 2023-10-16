@@ -2,10 +2,11 @@ import type { JSX } from 'solid-js'
 import { clsx } from 'clsx'
 import styles from './Button.module.scss'
 
+export type ButtonVariant = 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline' | 'danger'
 type Props = {
   value: string | JSX.Element
   size?: 'S' | 'M' | 'L'
-  variant?: 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline'
+  variant?: ButtonVariant
   type?: 'submit' | 'button'
   loading?: boolean
   disabled?: boolean

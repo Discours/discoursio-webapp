@@ -35,11 +35,16 @@ export const Draft = (props: Props) => {
   const handleDeleteLinkClick = async (e) => {
     e.preventDefault()
 
-    const isConfirmed = await showConfirm()
+    const isConfirmed = await showConfirm({
+      confirmBody: t('Are you sure you want to delete this draft?'),
+      confirmButtonLabel: t('Delete'),
+      confirmButtonVariant: 'danger',
+      declineButtonVariant: 'primary'
+    })
     if (isConfirmed) {
       props.onDelete(props.shout)
 
-      await showSnackbar({ type: 'success', body: t('Success') })
+      await showSnackbar({ body: t('Draft successfully deleted') })
     }
   }
 

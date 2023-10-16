@@ -62,7 +62,12 @@ export const Comment = (props: Props) => {
   const remove = async () => {
     if (comment()?.id) {
       try {
-        const isConfirmed = await showConfirm()
+        const isConfirmed = await showConfirm({
+          confirmBody: t('Are you sure you want to delete this comment?'),
+          confirmButtonLabel: t('Delete'),
+          confirmButtonVariant: 'danger',
+          declineButtonVariant: 'primary'
+        })
 
         if (isConfirmed) {
           await deleteReaction(comment().id)
@@ -136,7 +141,7 @@ export const Comment = (props: Props) => {
                   })}
                 />
                 <small>
-                  <a href={`#comment-${comment()?.id}`}>{comment()?.shout.title || ''}</a>
+                  <a href={`#comment_${comment()?.id}`}>{comment()?.shout.title || ''}</a>
                 </small>
               </div>
             }
@@ -174,7 +179,7 @@ export const Comment = (props: Props) => {
               <CommentRatingControl comment={comment()} />
             </div>
           </Show>
-          <div class={styles.commentBody} id={'comment-' + (comment().id || '')}>
+          <div class={styles.commentBody}>
             <Show when={editMode()} fallback={<MD body={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor

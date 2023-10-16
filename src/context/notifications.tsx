@@ -24,6 +24,7 @@ type NotificationsContextType = {
   sortedNotifications: Accessor<ServerNotification[]>
   actions: {
     showNotificationsPanel: () => void
+    hideNotificationsPanel: () => void
     markNotificationAsRead: (notification: ServerNotification) => Promise<void>
     setMessageHandler: (MessageHandler) => void
   }
@@ -129,7 +130,16 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     setIsNotificationsPanelOpen(true)
   }
 
-  const actions = { showNotificationsPanel, markNotificationAsRead, setMessageHandler }
+  const hideNotificationsPanel = () => {
+    setIsNotificationsPanelOpen(false)
+  }
+
+  const actions = {
+    setMessageHandler,
+    showNotificationsPanel,
+    hideNotificationsPanel,
+    markNotificationAsRead
+  }
 
   const value: NotificationsContextType = {
     notificationEntities,

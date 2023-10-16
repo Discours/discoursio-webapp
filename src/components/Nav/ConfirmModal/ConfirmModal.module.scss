@@ -1,48 +1,22 @@
 .confirmModal {
-  background: #fff;
-  min-height: 550px;
   position: relative;
 
-  @include media-breakpoint-up(md) {
-    min-height: 710px;
+  .confirmModalTitle {
+    @include font-size(2rem);
+
+    font-weight: 700;
+    color: var(--default-color);
+    text-align: center;
   }
-}
 
-.confirmModalTitle {
-  font-size: 26px;
-  line-height: 32px;
-  font-weight: 700;
-  color: #141414;
-  text-align: left;
-}
+  .confirmModalActions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+    gap: 2rem;
 
-.confirmModalActions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-}
-
-.confirmModalButton {
-  display: block;
-  width: 100%;
-  margin-right: 12px;
-  font-weight: 700;
-  margin-top: 32px;
-  padding: 1.6rem !important;
-  border: 1px solid black;
-
-  &:hover {
-    background-color: rgb(0 0 0 / 8%);
-  }
-}
-
-.confirmModalButtonPrimary {
-  margin-right: 0;
-  background-color: black;
-  color: white;
-  border: none;
-
-  &:hover {
-    background-color: rgb(0 0 0 / 60%);
+    .confirmAction {
+      flex: 1;
+    }
   }
 }

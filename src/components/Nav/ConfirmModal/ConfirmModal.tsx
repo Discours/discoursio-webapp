@@ -1,7 +1,7 @@
-import { clsx } from 'clsx'
 import { useConfirm } from '../../../context/confirm'
-import styles from './ConfirmModal.module.scss'
 import { useLocalize } from '../../../context/localize'
+import { Button } from '../../_shared/Button'
+import styles from './ConfirmModal.module.scss'
 
 export const ConfirmModal = () => {
   const { t } = useLocalize()
@@ -12,21 +12,26 @@ export const ConfirmModal = () => {
   } = useConfirm()
 
   return (
-    <div>
+    <div class={styles.confirmModal}>
       <h4 class={styles.confirmModalTitle}>
         {confirmMessage().confirmBody ?? t('Are you sure you want to to proceed the action?')}
       </h4>
 
       <div class={styles.confirmModalActions}>
-        <button class={styles.confirmModalButton} onClick={() => resolveConfirm(false)}>
-          {confirmMessage().declineButtonLabel ?? t('Decline')}
-        </button>
-        <button
-          class={clsx(styles.confirmModalButton, styles.confirmModalButtonPrimary)}
+        <Button
+          onClick={() => resolveConfirm(false)}
+          value={confirmMessage().declineButtonLabel ?? t('Decline')}
+          size="L"
+          variant={confirmMessage().declineButtonVariant ?? 'secondary'}
+          class={styles.confirmAction}
+        />
+        <Button
           onClick={() => resolveConfirm(true)}
-        >
-          {confirmMessage().confirmButtonLabel ?? t('Confirm')}
-        </button>
+          value={confirmMessage().confirmButtonLabel ?? t('Confirm')}
+          size="L"
+          variant={confirmMessage().confirmButtonVariant ?? 'primary'}
+          class={styles.confirmAction}
+        />
       </div>
     </div>
   )

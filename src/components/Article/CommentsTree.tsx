@@ -1,4 +1,4 @@
-import { Show, createMemo, createSignal, onMount, For, createEffect } from 'solid-js'
+import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
 import { Comment } from './Comment'
 import styles from './Article.module.scss'
 import { clsx } from 'clsx'
@@ -181,7 +181,7 @@ export const CommentsTree = (props: Props) => {
         <SimplifiedEditor
           quoteEnabled={true}
           imageEnabled={true}
-          autoFocus={true}
+          autoFocus={false}
           submitByCtrlEnter={true}
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}

@@ -4,7 +4,7 @@ import { App } from '../components/App'
 import { initRouter } from '../stores/router'
 import type { PageContext } from './types'
 import { MetaProvider, renderTags } from '@solidjs/meta'
-import i18next, { changeLanguage, init as initI18next } from 'i18next'
+import i18next from 'i18next'
 import ru from '../../public/locales/ru/translation.json'
 import en from '../../public/locales/en/translation.json'
 import type { Language } from '../context/localize'
@@ -45,7 +45,7 @@ export const render = async (pageContext: PageContext) => {
       }
     })
   } else if (i18next.language !== lng) {
-    await changeLanguage(lng)
+    await i18next.changeLanguage(lng)
   }
 
   if (pageContext.is404) {

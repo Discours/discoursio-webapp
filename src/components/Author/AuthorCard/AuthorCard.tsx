@@ -1,8 +1,7 @@
 import type { Author } from '../../../graphql/types.gen'
 import { Userpic } from '../Userpic'
 import { Icon } from '../../_shared/Icon'
-import styles from './AuthorCard.module.scss'
-import { createEffect, createMemo, createSignal, For, Match, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import { translit } from '../../../utils/ru2en'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { clsx } from 'clsx'
@@ -20,7 +19,7 @@ import { AuthorBadge } from '../AuthorBadge'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import stylesHeader from '../../Nav/Header/Header.module.scss'
+import styles from './AuthorCard.module.scss'
 
 type Props = {
   caption?: string

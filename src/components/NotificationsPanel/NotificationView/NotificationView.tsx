@@ -1,7 +1,6 @@
 import { clsx } from 'clsx'
-import styles from './NotificationView.module.scss'
 import type { Notification } from '../../../graphql/types.gen'
-import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { NotificationType } from '../../../graphql/types.gen'
 import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
@@ -10,6 +9,7 @@ import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
 import type { ArticlePageSearchParams } from '../../Article/FullArticle'
 import { TimeAgo } from '../../_shared/TimeAgo'
+import styles from './NotificationView.module.scss'
 
 type Props = {
   notification: Notification
@@ -39,7 +39,7 @@ export const NotificationView = (props: Props) => {
 
   const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
 
-  const { t, formatDate, formatTime, formatTimeAgo } = useLocalize()
+  const { t, formatDate, formatTime } = useLocalize()
 
   const [data, setData] = createSignal<NotificationData>(null)
 

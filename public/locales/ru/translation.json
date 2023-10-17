@@ -225,7 +225,7 @@
   "NotificationNewCommentText2": "от",
   "NotificationNewCommentText3": "{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
 
-  "NotificationNewReplyText1": "{commentsCount, plural, one {Новый ответ} few {{commentsCount} новых ответа} other {{commentsCount} новых ответов}} к вашему комментарию к публикации",
+  "NotificationNewReplyText1": "{commentsCount, plural, one {Новый ответ} few {{commentsCount} новых ответа} other {{commentsCount} новых ответов}} на ваш комментарий к публикации",
   "NotificationNewReplyText2": "от",
   "NotificationNewReplyText3": "{restUsersCount, plural, =0 {} one { и ещё 1 пользователя} few { и ещё {restUsersCount} пользователей}  other { и ещё {restUsersCount} пользователей}}",
 

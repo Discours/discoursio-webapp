@@ -57,7 +57,35 @@ export const TableOfContents = (props: Props) => {
   const debouncedUpdateHeadings = debounce(updateHeadings, 500)
 
   const updateActiveHeader = throttle(() => {
-    const newActiveIndex = headings().findIndex((heading) => isInViewport(heading))
+    const headingsArray = headings()
+    let newActiveIndex = -1
+
+    for (const [index, element] of headingsArray.entries()) {
+      if (isInViewport(element)) {
+        newActiveIndex = index
+        break
+      }
+    }
+
+    // Находится ли следующий заголовок вне видимости
+    if (
+      newActiveIndex !== -1 &&
+      newActiveIndex < headingsArray.length - 1 &&
+      !isInViewport(headingsArray[newActiveIndex + 1])
+    ) {
+      const nextHeaderTop = headingsArray[newActiveIndex + 1].getBoundingClientRect().top
+      const currentHeaderBottom = headingsArray[newActiveIndex].getBoundingClientRect().bottom
+
+      // Пороговое значение, ниже которого считаем, что между заголовками нет текста.
+      const threshold = 50
+
+      if (nextHeaderTop - currentHeaderBottom < threshold) {
+        // Если между текущим и следующим заголовком небольшое расстояние (меньше порога),
+        // следующий заголовок активный
+        newActiveIndex = newActiveIndex + 1
+      }
+    }
+
     setActiveHeaderIndex(newActiveIndex)
   }, 50)
 
@@ -100,7 +128,7 @@ export const TableOfContents = (props: Props) => {
                           [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4',
                           [styles.active]: index() === activeHeaderIndex()
                         })}
-                        innerHTML={h.textContent}
+                        innerHTML={index() + ' ' + h.textContent}
                         onClick={(e) => {
                           e.preventDefault()
                           scrollToHeader(h)

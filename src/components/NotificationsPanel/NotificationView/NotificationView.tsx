@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import styles from './NotificationView.module.scss'
 import type { Notification } from '../../../graphql/types.gen'
-import { createMemo, createSignal, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { NotificationType } from '../../../graphql/types.gen'
 import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
@@ -9,10 +9,12 @@ import { useNotifications } from '../../../context/notifications'
 import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
 import type { ArticlePageSearchParams } from '../../Article/FullArticle'
+import { TimeAgo } from '../../_shared/TimeAgo'
 
 type Props = {
   notification: Notification
   onClick: () => void
+  dateTimeFormat: 'ago' | 'time' | 'date'
   class?: string
 }
 
@@ -37,7 +39,7 @@ export const NotificationView = (props: Props) => {
 
   const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
 
-  const { t } = useLocalize()
+  const { t, formatDate, formatTime, formatTimeAgo } = useLocalize()
 
   const [data, setData] = createSignal<NotificationData>(null)
 
@@ -136,6 +138,20 @@ export const NotificationView = (props: Props) => {
     }
   }
 
+  const formattedDateTime = createMemo(() => {
+    switch (props.dateTimeFormat) {
+      case 'ago': {
+        return <TimeAgo date={props.notification.createdAt} />
+      }
+      case 'time': {
+        return formatTime(new Date(props.notification.createdAt))
+      }
+      case 'date': {
+        return formatDate(new Date(props.notification.createdAt), { month: 'numeric', year: '2-digit' })
+      }
+    }
+  })
+
   return (
     <Show when={data()}>
       <div
@@ -146,9 +162,7 @@ export const NotificationView = (props: Props) => {
       >
         <Userpic name={lastUser().name} userpic={lastUser().userpic} class={styles.userpic} />
         <div>{content()}</div>
-        <div class={styles.timeContainer}>
-          {/*{formatDate(new Date(props.notification.createdAt), { month: 'numeric' })}*/}
-        </div>
+        <div class={styles.timeContainer}>{formattedDateTime()}</div>
       </div>
     </Show>
   )

@@ -6,11 +6,12 @@ import { useRouter } from '../../stores/router'
 import { AuthorCard } from '../Author/AuthorCard'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { useLocalize } from '../../context/localize'
 import { dummyFilter } from '../../utils/dummyFilter'
+
+import styles from './AllAuthors.module.scss'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -109,7 +110,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   )
 
   return (
-    <div class={clsx(styles.allTopicsPage, 'wide-container')}>
+    <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
       <Show when={sortedAuthors().length > 0}>
         <div class="offset-md-5">
           <AllAuthorsHead />

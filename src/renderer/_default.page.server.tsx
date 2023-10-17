@@ -8,6 +8,7 @@ import i18next, { changeLanguage, init as initI18next } from 'i18next'
 import ru from '../../public/locales/ru/translation.json'
 import en from '../../public/locales/en/translation.json'
 import type { Language } from '../context/localize'
+import ICU from 'i18next-icu'
 
 export const passToClient = ['pageProps', 'lng', 'documentProps', 'is404']
 
@@ -32,7 +33,7 @@ export const render = async (pageContext: PageContext) => {
 
   if (!i18next.isInitialized) {
     // eslint-disable-next-line import/no-named-as-default-member
-    await initI18next({
+    await i18next.use(ICU).init({
       // debug: true,
       supportedLngs: ['ru', 'en'],
       fallbackLng: lng,

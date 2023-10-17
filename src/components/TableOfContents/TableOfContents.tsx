@@ -85,7 +85,6 @@ export const TableOfContents = (props: Props) => {
         newActiveIndex = newActiveIndex + 1
       }
     }
-
     setActiveHeaderIndex(newActiveIndex)
   }, 50)
 

@@ -13,6 +13,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "lib": ["ES2021", "dom"]
+    "lib": ["es2023", "dom"]
   }
 }

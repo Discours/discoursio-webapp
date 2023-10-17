@@ -241,7 +241,7 @@ export const AuthorCard = (props: Props) => {
         </div>
         <ShowOnlyOnClient>
           <Show when={isSessionLoaded()}>
-            <Show when={props.author.links && props.author.links.length}>
+            <Show when={props.author.links && props.author.links.length > 0}>
               <div class={styles.authorSubscribeSocial}>
                 <For each={props.author.links}>
                   {(link) => (

@@ -57,14 +57,9 @@ export const TableOfContents = (props: Props) => {
   const debouncedUpdateHeadings = debounce(updateHeadings, 500)
 
   const updateActiveHeader = throttle(() => {
-    const headingsArray = headings()
-    for (const [index, element] of headingsArray.entries()) {
-      if (isInViewport(element)) {
-        setActiveHeaderIndex(index)
-        break
-      }
-    }
-  }, 500)
+    const newActiveIndex = headings().findIndex((heading) => isInViewport(heading))
+    setActiveHeaderIndex(newActiveIndex)
+  }, 50)
 
   createEffect(
     on(

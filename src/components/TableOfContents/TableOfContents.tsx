@@ -16,12 +16,7 @@ interface Props {
 
 const isInViewport = (el: Element): boolean => {
   const rect = el.getBoundingClientRect()
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  )
+  return rect.top <= DEFAULT_HEADER_OFFSET
 }
 const scrollToHeader = (element) => {
   window.scrollTo({
@@ -57,7 +52,7 @@ export const TableOfContents = (props: Props) => {
   const debouncedUpdateHeadings = debounce(updateHeadings, 500)
 
   const updateActiveHeader = throttle(() => {
-    const newActiveIndex = headings().findIndex((heading) => isInViewport(heading))
+    const newActiveIndex = headings().findLastIndex((heading) => isInViewport(heading))
     setActiveHeaderIndex(newActiveIndex)
   }, 50)
 

@@ -1,14 +1,9 @@
-import { For, Show, createSignal, createEffect, on } from 'solid-js'
+import { For, Show, createSignal, createEffect, on, onMount, onCleanup } from 'solid-js'
 import { clsx } from 'clsx'
-
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
-
 import { useLocalize } from '../../context/localize'
-
 import debounce from 'debounce'
-
 import { Icon } from '../_shared/Icon'
-
 import styles from './TableOfContents.module.scss'
 import { isDesktop } from '../../utils/media-query'
 
@@ -18,6 +13,15 @@ interface Props {
   body: string
 }
 
+const isInViewport = (el: Element): boolean => {
+  const rect = el.getBoundingClientRect()
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  )
+}
 const scrollToHeader = (element) => {
   window.scrollTo({
     behavior: 'smooth',
@@ -31,9 +35,9 @@ const scrollToHeader = (element) => {
 export const TableOfContents = (props: Props) => {
   const { t } = useLocalize()
 
-  const [headings, setHeadings] = createSignal<Element[]>([])
+  const [headings, setHeadings] = createSignal<HTMLElement[]>([])
   const [areHeadingsLoaded, setAreHeadingsLoaded] = createSignal<boolean>(false)
-
+  const [activeHeaderIndex, setActiveHeaderIndex] = createSignal<number | null>(null)
   const [isVisible, setIsVisible] = createSignal<boolean>(props.variant === 'article')
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
@@ -42,14 +46,22 @@ export const TableOfContents = (props: Props) => {
   setIsVisible(isDesktop())
 
   const updateHeadings = () => {
-    const { parentSelector } = props
-
     // eslint-disable-next-line unicorn/prefer-spread
-    setHeadings(Array.from(document.querySelector(parentSelector).querySelectorAll('h2, h3, h4')))
+    setHeadings(
+      Array.from(document.querySelector(props.parentSelector).querySelectorAll<HTMLElement>('h2, h3, h4'))
+    )
     setAreHeadingsLoaded(true)
   }
 
   const debouncedUpdateHeadings = debounce(updateHeadings, 500)
+
+  const updateActiveHeader = () => {
+    headings().forEach((header, index) => {
+      if (isInViewport(header)) {
+        setActiveHeaderIndex(index)
+      }
+    })
+  }
 
   createEffect(
     on(
@@ -57,6 +69,11 @@ export const TableOfContents = (props: Props) => {
       () => debouncedUpdateHeadings()
     )
   )
+
+  onMount(() => {
+    window.addEventListener('scroll', updateActiveHeader)
+    onCleanup(() => window.removeEventListener('scroll', updateActiveHeader))
+  })
 
   return (
     <Show
@@ -77,17 +94,17 @@ export const TableOfContents = (props: Props) => {
               </div>
               <ul class={styles.TableOfContentsHeadingsList}>
                 <For each={headings()}>
-                  {(h) => (
+                  {(h, index) => (
                     <li>
                       <button
                         class={clsx(styles.TableOfContentsHeadingsItem, {
                           [styles.TableOfContentsHeadingsItemH3]: h.nodeName === 'H3',
-                          [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4'
+                          [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4',
+                          [styles.active]: index() === activeHeaderIndex()
                         })}
                         innerHTML={h.textContent}
                         onClick={(e) => {
                           e.preventDefault()
-
                           scrollToHeader(h)
                         }}
                       />

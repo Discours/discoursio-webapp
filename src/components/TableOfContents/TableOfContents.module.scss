@@ -164,6 +164,10 @@
   &:hover {
     color: rgb(0 0 0 / 50%);
   }
+
+  &.active {
+    font-weight: 700 !important;
+  }
 }
 
 .TableOfContentsHeadingsItemH3,

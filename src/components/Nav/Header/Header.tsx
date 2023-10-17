@@ -173,6 +173,11 @@ export const Header = (props: Props) => {
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
         <nav class={clsx('row', styles.headerInner, { ['fixed']: fixed() })}>
+          <div class={clsx(styles.burgerContainer, 'col-auto')}>
+            <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
+              <div />
+            </div>
+          </div>
           <div class={clsx('col-md-5 col-xl-4 col-auto', styles.mainLogo)}>
             <a href={getPagePath(router, 'home')}>
               <img src="/logo.svg" alt={t('Discours')} />
@@ -278,6 +283,9 @@ export const Header = (props: Props) => {
                   <div class="pretty-form__item">
                     <input type="email" placeholder="Ваш email" id="subscription-email" />
                     <label for="subscription-email">{t('Your email')}</label>
+                    <button class={styles.mobileSubscriptionSubmit}>
+                      <Icon name="arrow-right" />
+                    </button>
                   </div>
                 </form>
 
@@ -327,11 +335,6 @@ export const Header = (props: Props) => {
               </a>
             </div>
           </Show>
-          <div class={clsx(styles.burgerContainer, 'col-auto')}>
-            <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
-              <div />
-            </div>
-          </div>
 
           <div
             class={clsx(styles.subnavigation, 'col')}

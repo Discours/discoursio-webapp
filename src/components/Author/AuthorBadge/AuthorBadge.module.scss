@@ -9,6 +9,10 @@
     margin-bottom: 3rem;
   }
 
+  @include media-breakpoint-down(md) {
+    text-align: left;
+  }
+
   .info {
     @include font-size(1.4rem);
     border: none;

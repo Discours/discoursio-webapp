@@ -104,9 +104,9 @@
   position: relative;
 
   @include media-breakpoint-down(lg) {
-    flex: 1 !important;
     max-width: 100% !important;
-    padding: 0 !important;
+    position: absolute;
+    right: 0;
   }
 }
 
@@ -139,7 +139,7 @@
     overflow: auto;
     padding: $container-padding-x !important;
     position: fixed;
-    top: 64px;
+    top: 58px;
     width: 100%;
     z-index: 1;
 
@@ -191,8 +191,9 @@
     }
   }
 
-  ul {
+  :global(.view-switcher) {
     margin-top: 0;
+    overflow: hidden;
   }
 
   li {
@@ -216,6 +217,10 @@
 
   .fixed & {
     display: block;
+  }
+
+  a {
+    padding-top: 0.1em;
   }
 }
 
@@ -246,6 +251,30 @@
     background: #f7f7f8;
     border: none;
     border-radius: 1.6rem;
+    padding-right: 5.6rem;
+
+    &:not(:placeholder-shown) {
+      & ~ .mobileSubscriptionSubmit {
+        display: block;
+      }
+    }
+  }
+}
+
+.mobileSubscriptionSubmit {
+  aspect-ratio: 1/1;
+  display: none;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  img {
+    aspect-ratio: 1/1;
+    left: 50%;
+    position: relative;
+    transform: translateX(-50%);
+    width: 16px !important;
   }
 }
 
@@ -387,18 +416,10 @@
   display: flex;
   justify-content: flex-end;
   position: absolute;
-  right: 5rem;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
-
-  @include media-breakpoint-up(lg) {
-    right: 0;
-  }
-
-  @include media-breakpoint-up(xl) {
-    right: 2rem;
-  }
 
   .control {
     cursor: pointer;
@@ -446,10 +467,6 @@
     z-index: -1;
   }
 
-  @include media-breakpoint-down(md) {
-    padding: divide($container-padding-x, 2);
-  }
-
   .userpic {
     align-items: center;
     margin-right: 0;
@@ -491,6 +508,7 @@
   a,
   a:link {
     border: none;
+    cursor: pointer;
     height: auto;
     margin: 0;
     padding: 0;
@@ -534,6 +552,12 @@
   }
 
   &:global(.loginbtn) {
+    background: #e9e9ee;
+
+    @include media-breakpoint-up(xl) {
+      background: none;
+    }
+
     .icon {
       height: 2.4rem;
       width: 2.4rem;

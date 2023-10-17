@@ -42,7 +42,7 @@
   flex: 1;
 
   @include media-breakpoint-up(sm) {
-    align-items: baseline;
+    align-items: center;
     display: flex;
   }
 
@@ -426,6 +426,10 @@
   }
 }
 
+.shareControl {
+  display: inline-block;
+}
+
 .buttonSubscribe {
   align-items: center;
   aspect-ratio: 1/1;
@@ -490,6 +494,7 @@
     color: #696969;
     @include font-size(2rem);
     font-weight: 500;
+    margin-top: 1.5rem;
   }
 
   .authorSubscribe {

@@ -1,5 +1,5 @@
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createSignal, useContext } from 'solid-js'
+import { createContext, createSignal, onMount, useContext } from 'solid-js'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { inboxClient } from '../utils/apiClient'
 import { loadMessages } from '../stores/inbox'
@@ -29,9 +29,16 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     actions: { setMessageHandler }
   } = useNotifications()
 
-  setMessageHandler((n: ServerNotification) => {
-    console.debug(n)
-    // TODO: handle new message
+  const handleMessage = (n: ServerNotification) => {
+    // TODO: handle notification types here: new_message edit_message del_message
+    const msg = n.payload as Message
+    console.log(msg)
+  }
+
+  onMount(() => {
+    setMessageHandler((_) => {
+      return handleMessage
+    })
   })
 
   const loadChats = async () => {

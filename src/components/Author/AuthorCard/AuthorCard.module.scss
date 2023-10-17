@@ -451,8 +451,10 @@
 }
 
 .buttonWrite {
+  background: #ccc;
   color: #000;
   display: inline-flex;
+  font-weight: 500;
   transition:
     background-color 0.3s,
     color 0.3s;

@@ -219,6 +219,7 @@ export const Header = (props: Props) => {
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
                   onMouseOut={() => hideSubnavigation}
+                  routeName="guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}
                 />

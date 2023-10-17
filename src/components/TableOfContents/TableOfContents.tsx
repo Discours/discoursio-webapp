@@ -47,8 +47,8 @@ export const TableOfContents = (props: Props) => {
   setIsVisible(isDesktop())
 
   const updateHeadings = () => {
-    // eslint-disable-next-line unicorn/prefer-spread
     setHeadings(
+      // eslint-disable-next-line unicorn/prefer-spread
       Array.from(document.querySelector(props.parentSelector).querySelectorAll<HTMLElement>('h2, h3, h4'))
     )
     setAreHeadingsLoaded(true)

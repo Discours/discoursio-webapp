@@ -6,6 +6,7 @@ import debounce from 'debounce'
 import { Icon } from '../_shared/Icon'
 import styles from './TableOfContents.module.scss'
 import { isDesktop } from '../../utils/media-query'
+import throttle from 'just-throttle'
 
 interface Props {
   variant: 'article' | 'editor'
@@ -37,7 +38,7 @@ export const TableOfContents = (props: Props) => {
 
   const [headings, setHeadings] = createSignal<HTMLElement[]>([])
   const [areHeadingsLoaded, setAreHeadingsLoaded] = createSignal<boolean>(false)
-  const [activeHeaderIndex, setActiveHeaderIndex] = createSignal<number | null>(null)
+  const [activeHeaderIndex, setActiveHeaderIndex] = createSignal<number>(-1)
   const [isVisible, setIsVisible] = createSignal<boolean>(props.variant === 'article')
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
@@ -55,13 +56,15 @@ export const TableOfContents = (props: Props) => {
 
   const debouncedUpdateHeadings = debounce(updateHeadings, 500)
 
-  const updateActiveHeader = () => {
-    headings().forEach((header, index) => {
-      if (isInViewport(header)) {
+  const updateActiveHeader = throttle(() => {
+    const headingsArray = headings()
+    for (const [index, element] of headingsArray.entries()) {
+      if (isInViewport(element)) {
         setActiveHeaderIndex(index)
+        break
       }
-    })
-  }
+    }
+  }, 500)
 
   createEffect(
     on(

@@ -98,8 +98,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       const eventSource = new EventSource(`https://chat.discours.io/connect/?token=${token}`)
 
       eventSource.onmessage = (event) => {
+        console.log('[context.notifications] Received event:', event)
         const n: { kind: string; payload: any } = JSON.parse(event.data)
-        console.log('[context.notifications] Received notification:', n)
         if (n.kind === 'new_message') {
           messageHandler()(n.payload)
         } else {

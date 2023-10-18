@@ -90,7 +90,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   const [messageHandler, setMessageHandler] = createSignal<(m: Message) => void>()
 
-  createEffect(async () => {
+  createEffect(() => {
     if (isAuthenticated()) {
       loadNotifications()
 

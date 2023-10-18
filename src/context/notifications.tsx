@@ -95,14 +95,14 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       loadNotifications()
 
       const token = getToken()
-      const eventSource = new EventSource(`https://chat.discours.io/connect/${token}`)
+      const eventSource = new EventSource(`https://chat.discours.io/connect/?token=${token}`)
 
       eventSource.onmessage = (event) => {
         const n: { kind: string; payload: any } = JSON.parse(event.data)
+        console.log('[context.notifications] Received notification:', n)
         if (n.kind === 'new_message') {
           messageHandler()(n.payload)
         } else {
-          console.log('[context.notifications] Received notification:', n)
           storeNotification({
             kind: n.kind,
             payload: n.payload,

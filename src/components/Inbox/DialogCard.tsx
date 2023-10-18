@@ -2,7 +2,6 @@ import { Show, Switch, Match, createMemo } from 'solid-js'
 import DialogAvatar from './DialogAvatar'
 import type { ChatMember } from '../../graphql/types.gen'
 import GroupDialogAvatar from './GroupDialogAvatar'
-import formattedTime from '../../utils/formatDateTime'
 import { clsx } from 'clsx'
 import styles from './DialogCard.module.scss'
 import { useLocalize } from '../../context/localize'
@@ -20,7 +19,7 @@ type DialogProps = {
 }
 
 const DialogCard = (props: DialogProps) => {
-  const { t } = useLocalize()
+  const { t, formatTime } = useLocalize()
   const companions = createMemo(
     () => props.members && props.members.filter((member) => member.id !== props.ownId)
   )
@@ -64,7 +63,7 @@ const DialogCard = (props: DialogProps) => {
         <Show when={!props.isChatHeader}>
           <div class={styles.activity}>
             <Show when={props.lastUpdate}>
-              <div class={styles.time}>{formattedTime(props.lastUpdate * 1000)()}</div>
+              <div class={styles.time}>{formatTime(new Date(props.lastUpdate * 1000))}</div>
             </Show>
             <Show when={props.counter > 0}>
               <div class={styles.counter}>

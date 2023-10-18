@@ -1,6 +1,5 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
-import { capitalize, formatDate } from '../../utils'
 import { Icon } from '../_shared/Icon'
 import styles from './ArticleCard.module.scss'
 import { clsx } from 'clsx'
@@ -17,6 +16,7 @@ import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import { AuthorCard } from '../Author/AuthorCard'
 import { useSession } from '../../context/session'
+import { capitalize } from '../../utils/capitalize'
 
 interface ArticleCardProps {
   settings?: {
@@ -44,7 +44,12 @@ interface ArticleCardProps {
   article: Shout
 }
 
-const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string } => {
+const getTitleAndSubtitle = (
+  article: Shout
+): {
+  title: string
+  subtitle: string
+} => {
   let title = article.title
   let subtitle = article.subtitle
 
@@ -66,14 +71,14 @@ const getTitleAndSubtitle = (article: Shout): { title: string; subtitle: string 
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
-  const { t, lang } = useLocalize()
+  const { t, lang, formatDate } = useLocalize()
   const { user } = useSession()
   const mainTopic =
     props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic) ||
     props.article.topics[0]
 
   const formattedDate = createMemo<string>(() => {
-    return formatDate(new Date(props.article.createdAt), { month: 'long', day: 'numeric', year: 'numeric' })
+    return formatDate(new Date(props.article.createdAt))
   })
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)

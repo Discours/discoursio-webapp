@@ -1,17 +1,19 @@
 import { clsx } from 'clsx'
-import styles from './NotificationView.module.scss'
-import { formatDate } from '../../../utils'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { Author } from '../../../graphql/types.gen'
 import { openPage } from '@nanostores/router'
-import { router } from '../../../stores/router'
+import { router, useRouter } from '../../../stores/router'
 import { ServerNotification, useNotifications } from '../../../context/notifications'
 import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
+import type { ArticlePageSearchParams } from '../../Article/FullArticle'
+import { TimeAgo } from '../../_shared/TimeAgo'
+import styles from './NotificationView.module.scss'
 
 type Props = {
   notification: ServerNotification
   onClick: () => void
+  dateTimeFormat: 'ago' | 'time' | 'date'
   class?: string
 }
 
@@ -49,9 +51,11 @@ export const NotificationView = (props: Props) => {
   const {
     actions: { markNotificationAsRead }
   } = useNotifications()
-  const { t } = useLocalize()
   const [data, setData] = createSignal<ServerNotification>(null)
   const [kind, setKind] = createSignal<NotificationType>()
+  const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
+  const { t, formatDate, formatTime } = useLocalize()
+
   onMount(() => {
     setTimeout(() => setData(props.notification))
   })
@@ -110,6 +114,20 @@ export const NotificationView = (props: Props) => {
     props.onClick()
   }
 
+  const formattedDateTime = createMemo(() => {
+    switch (props.dateTimeFormat) {
+      case 'ago': {
+        return <TimeAgo date={props.notification.timestamp} />
+      }
+      case 'time': {
+        return formatTime(new Date(props.notification.timestamp))
+      }
+      case 'date': {
+        return formatDate(new Date(props.notification.timestamp), { month: 'numeric', year: '2-digit' })
+      }
+    }
+  })
+
   return (
     <Show when={data()}>
       <div
@@ -120,9 +138,7 @@ export const NotificationView = (props: Props) => {
       >
         <Userpic name={lastUser().name} userpic={lastUser().userpic} class={styles.userpic} />
         <div>{content()}</div>
-        <div class={styles.timeContainer}>
-          {/*{formatDate(new Date(props.notification.timestamp), { month: 'numeric' })}*/}
-        </div>
+        <div class={styles.timeContainer}>{formattedDateTime()}</div>
       </div>
     </Show>
   )

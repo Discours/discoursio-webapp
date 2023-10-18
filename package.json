@@ -117,6 +117,7 @@
     "husky": "8.0.3",
     "hygen": "6.2.11",
     "i18next-http-backend": "2.2.0",
+    "javascript-time-ago": "2.5.9",
     "jest": "29.7.0",
     "js-cookie": "3.0.5",
     "lint-staged": "14.0.1",

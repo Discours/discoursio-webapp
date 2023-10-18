@@ -8,8 +8,7 @@ import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { MediaItem } from '../../pages/types'
-import { router, useRouter } from '../../stores/router'
-import { formatDate } from '../../utils'
+import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { getDescription } from '../../utils/meta'
 import { imageProxy } from '../../utils/imageProxy'
 import { AuthorCard } from '../Author/AuthorCard'
@@ -42,14 +41,14 @@ const scrollTo = (el: HTMLElement) => {
   const { top } = el.getBoundingClientRect()
 
   window.scrollTo({
-    top: top + window.scrollY - 96,
+    top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
     left: 0,
     behavior: 'smooth'
   })
 }
 
 export const FullArticle = (props: Props) => {
-  const { t } = useLocalize()
+  const { t, formatDate } = useLocalize()
   const {
     user,
     isAuthenticated,

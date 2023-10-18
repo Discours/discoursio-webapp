@@ -95,7 +95,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       loadNotifications()
 
       const token = getToken()
-      const eventSource = new EventSource(`https://chat.discours.io/connect/?token=${token}`)
+      const eventSource = new EventSource(`https://connect.discours.io/${token}`)
 
       eventSource.onmessage = (event) => {
         console.log('[context.notifications] Received event:', event)

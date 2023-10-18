@@ -115,12 +115,8 @@
   }
 }
 
-.shoutAuthor,
-.shoutDate {
-  @include font-size(1.4rem);
-}
-
 .shoutAuthor {
+  @include font-size(1.4rem);
   font-weight: 500;
   margin-right: 1.6rem;
 
@@ -139,9 +135,11 @@
 .shoutDate {
   color: #9fa1a7;
   font-weight: 500;
+  @include font-size(1.2rem);
 }
 
 .shoutDetails {
+  align-items: end;
   display: flex;
   margin-bottom: 1rem;
 }
@@ -149,8 +147,7 @@
 .shoutDetailsFeedMode {
   justify-content: space-between;
 
-  .shoutAuthor,
-  .shoutDate {
+  .shoutAuthor {
     @include font-size(1.2rem);
   }
 }
@@ -194,19 +191,27 @@
   font-weight: 400;
   line-height: 1.3;
   margin-bottom: 1.4rem;
-  transition: color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .shoutCardLinkContainer {
   position: relative;
-  transition: color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .shoutCardEditControl {
   border-radius: 2em;
   min-height: 2.6em;
   padding: 0 1.4em;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 
   &:hover {
     background: var(--background-color-invert);

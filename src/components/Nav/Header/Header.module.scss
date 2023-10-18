@@ -421,6 +421,10 @@
   transform: translateY(-50%);
   width: 100%;
 
+  @include media-breakpoint-up(xl) {
+    right: 2rem;
+  }
+
   .control {
     cursor: pointer;
     border: 0;

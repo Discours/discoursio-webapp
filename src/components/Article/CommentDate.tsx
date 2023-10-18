@@ -1,7 +1,6 @@
 import { Show } from 'solid-js'
 import { Icon } from '../_shared/Icon'
 import type { Reaction } from '../../graphql/types.gen'
-import { formatDate } from '../../utils'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
 import styles from './CommentDate.module.scss'
@@ -13,9 +12,9 @@ type Props = {
 }
 
 export const CommentDate = (props: Props) => {
-  const { t } = useLocalize()
+  const { t, formatDate } = useLocalize()
 
-  const formattedDate = (date) => {
+  const formattedDate = (date: number) => {
     const formatDateOptions: Intl.DateTimeFormatOptions = props.isShort
       ? { month: 'long', day: 'numeric', year: 'numeric' }
       : { hour: 'numeric', minute: 'numeric' }

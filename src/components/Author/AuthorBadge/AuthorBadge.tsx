@@ -3,7 +3,6 @@ import styles from './AuthorBadge.module.scss'
 import { Userpic } from '../Userpic'
 import { Author, FollowingEntity } from '../../../graphql/types.gen'
 import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
-import { formatDate } from '../../../utils'
 import { useLocalize } from '../../../context/localize'
 import { Button } from '../../_shared/Button'
 import { useSession } from '../../../context/session'
@@ -21,7 +20,7 @@ export const AuthorBadge = (props: Props) => {
     actions: { loadSession, requireAuthentication }
   } = useSession()
 
-  const { t } = useLocalize()
+  const { t, formatDate } = useLocalize()
   const subscribed = createMemo<boolean>(() => {
     return session()?.news?.authors?.some((u) => u === props.author.slug) || false
   })

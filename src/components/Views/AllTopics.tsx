@@ -6,12 +6,12 @@ import { useRouter } from '../../stores/router'
 import { TopicCard } from '../Topic/Card'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
-import { StatMetrics } from '../_shared/StatMetrics'
 import { useLocalize } from '../../context/localize'
 import { dummyFilter } from '../../utils/dummyFilter'
+
+import styles from './AllTopics.module.scss'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -168,7 +168,17 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                           showPublications={true}
                           showDescription={true}
                         />
-                        <StatMetrics fields={['shouts', 'authors', 'followers']} stat={topic.stat} />
+                        <div class={styles.stats}>
+                          <span class={styles.statsItem}>
+                            {t('shoutsWithCount', { count: topic.stat.shouts })}
+                          </span>
+                          <span class={styles.statsItem}>
+                            {t('authorsWithCount', { count: topic.stat.authors })}
+                          </span>
+                          <span class={styles.statsItem}>
+                            {t('followersWithCount', { count: topic.stat.followers })}
+                          </span>
+                        </div>
                       </>
                     )}
                   </For>

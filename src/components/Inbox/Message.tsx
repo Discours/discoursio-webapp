@@ -3,10 +3,10 @@ import { clsx } from 'clsx'
 import styles from './Message.module.scss'
 import DialogAvatar from './DialogAvatar'
 import type { Message as MessageType, ChatMember } from '../../graphql/types.gen'
-import formattedTime from '../../utils/formatDateTime'
 import { Icon } from '../_shared/Icon'
 import { MessageActionsPopup } from './MessageActionsPopup'
 import QuotedMessage from './QuotedMessage'
+import { useLocalize } from '../../context/localize'
 
 type Props = {
   content: MessageType
@@ -18,6 +18,7 @@ type Props = {
 }
 
 export const Message = (props: Props) => {
+  const { formatTime } = useLocalize()
   const isOwn = props.ownId === Number(props.content.author)
   const user = props.members?.find((m) => m.id === Number(props.content.author))
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
@@ -47,7 +48,7 @@ export const Message = (props: Props) => {
           <div innerHTML={props.content.body} />
         </div>
       </div>
-      <div class={styles.time}>{formattedTime(props.content.createdAt * 1000)()}</div>
+      <div class={styles.time}>{formatTime(new Date(props.content.createdAt * 1000))}</div>
     </div>
   )
 }

@@ -14,11 +14,15 @@ type Props = {
 
 export const FullTopic = (props: Props) => {
   const {
-    session,
+    subscriptions,
     actions: { requireAuthentication }
   } = useSession()
+
   const { t } = useLocalize()
-  const subscribed = createMemo(() => session()?.news?.topics?.includes(props.topic?.slug))
+
+  const subscribed = createMemo(() =>
+    subscriptions().topics.some((topic) => topic.slug === props.topic?.slug)
+  )
 
   const handleSubscribe = (isFollowed: boolean) => {
     requireAuthentication(() => {

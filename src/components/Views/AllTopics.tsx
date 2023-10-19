@@ -34,7 +34,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     sortBy: searchParams().by || 'shouts'
   })
 
-  const { session } = useSession()
+  const { session, subscriptions } = useSession()
 
   onMount(() => {
     if (!searchParams().by) {
@@ -68,7 +68,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     return keys
   })
 
-  const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
+  const subscribed = (topicSlug: string) => subscriptions().topics.some((topic) => topic.slug === topicSlug)
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const [searchQuery, setSearchQuery] = createSignal('')

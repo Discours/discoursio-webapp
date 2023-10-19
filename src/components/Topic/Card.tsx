@@ -34,19 +34,15 @@ interface TopicProps {
 export const TopicCard = (props: TopicProps) => {
   const { t } = useLocalize()
   const {
-    session,
+    subscriptions,
     isSessionLoaded,
-    actions: { loadSession, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
 
   const subscribed = createMemo(() => {
-    if (!session()?.user?.slug || !session()?.news?.topics) {
-      return false
-    }
-
-    return session()?.news.topics.includes(props.topic.slug)
+    return subscriptions().topics.some((topic) => topic.slug === props.topic.slug)
   })
 
   const subscribe = async (really = true) => {
@@ -56,7 +52,7 @@ export const TopicCard = (props: TopicProps) => {
       ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
       : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
 

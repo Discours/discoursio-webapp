@@ -17,13 +17,14 @@ export const AuthorBadge = (props: Props) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const {
     session,
-    actions: { loadSession, requireAuthentication }
+    subscriptions,
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
 
   const { t, formatDate } = useLocalize()
-  const subscribed = createMemo<boolean>(() => {
-    return session()?.news?.authors?.some((u) => u === props.author.slug) || false
-  })
+  const subscribed = createMemo(() =>
+    subscriptions().authors.some((author) => author.slug === props.author.slug)
+  )
 
   const subscribe = async (really = true) => {
     setIsSubscribing(true)
@@ -32,7 +33,7 @@ export const AuthorBadge = (props: Props) => {
       ? follow({ what: FollowingEntity.Author, slug: props.author.slug })
       : unfollow({ what: FollowingEntity.Author, slug: props.author.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
   const handleSubscribe = (really: boolean) => {

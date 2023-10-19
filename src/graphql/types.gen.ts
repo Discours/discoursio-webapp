@@ -16,7 +16,6 @@ export type Scalars = {
 
 export type AuthResult = {
   error?: Maybe<Scalars['String']>
-  news?: Maybe<UserFollowings>
   token?: Maybe<Scalars['String']>
   user?: Maybe<User>
 }
@@ -302,6 +301,11 @@ export type MutationUpdateTopicArgs = {
   input: TopicInput
 }
 
+export type MySubscriptionsQueryResult = {
+  authors: Array<Maybe<Author>>
+  topics: Array<Maybe<Topic>>
+}
+
 export type Notification = {
   createdAt: Scalars['DateTime']
   data?: Maybe<Scalars['String']>
@@ -357,6 +361,7 @@ export type Query = {
   loadChats: Result
   loadDrafts: Array<Maybe<Shout>>
   loadMessagesBy: Result
+  loadMySubscriptions?: Maybe<MySubscriptionsQueryResult>
   loadNotifications: NotificationsQueryResult
   loadReactionsBy: Array<Maybe<Reaction>>
   loadRecipients: Result
@@ -689,12 +694,4 @@ export type User = {
   updatedAt?: Maybe<Scalars['DateTime']>
   username: Scalars['String']
   userpic?: Maybe<Scalars['String']>
-}
-
-export type UserFollowings = {
-  authors?: Maybe<Array<Maybe<Scalars['String']>>>
-  communities?: Maybe<Array<Maybe<Scalars['String']>>>
-  reactions?: Maybe<Array<Maybe<Scalars['Int']>>>
-  topics?: Maybe<Array<Maybe<Scalars['String']>>>
-  unread?: Maybe<Scalars['Int']>
 }

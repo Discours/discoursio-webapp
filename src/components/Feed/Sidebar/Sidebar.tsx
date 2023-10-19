@@ -20,7 +20,7 @@ type FeedSidebarProps = {
 export const Sidebar = (props: FeedSidebarProps) => {
   const { t } = useLocalize()
   const { seen } = useSeenStore()
-  const { session } = useSession()
+  const { subscriptions } = useSession()
   const { page } = useRouter()
   const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
@@ -118,7 +118,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
         </li>
       </ul>
 
-      <Show when={session()?.news?.authors || session()?.news?.topics}>
+      <Show when={subscriptions().authors.length > 0 || subscriptions().topics.length > 0}>
         <h4
           classList={{ [styles.opened]: isSubscriptionsVisible() }}
           onClick={() => {
@@ -129,39 +129,31 @@ export const Sidebar = (props: FeedSidebarProps) => {
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
-          <For each={session()?.news?.authors}>
-            {(authorSlug: string) => (
+          <For each={subscriptions().authors}>
+            {(author) => (
               <li>
                 <a
-                  href={`/author/${authorSlug}`}
-                  classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
+                  href={`/author/${author.slug}`}
+                  classList={{ [styles.unread]: checkAuthorIsSeen(author.slug) }}
                 >
                   <div class={styles.sidebarItemName}>
-                    <Show when={authorEntities()[authorSlug]}>
-                      <Userpic
-                        name={authorEntities()[authorSlug].name}
-                        userpic={authorEntities()[authorSlug].userpic}
-                      />
-                    </Show>
-                    <Show when={!authorEntities()[authorSlug]}>
-                      <Icon name="hash" class={styles.icon} />
-                    </Show>
-                    {authorEntities()[authorSlug]?.name}
+                    <Userpic name={author.name} userpic={author.userpic} />
+                    {author.name}
                   </div>
                 </a>
               </li>
             )}
           </For>
-          <For each={session()?.news?.topics}>
-            {(topicSlug: string) => (
+          <For each={subscriptions().topics}>
+            {(topic) => (
               <li>
                 <a
-                  href={`/topic/${topicSlug}`}
-                  classList={{ [styles.unread]: checkTopicIsSeen(topicSlug) }}
+                  href={`/topic/${topic.slug}`}
+                  classList={{ [styles.unread]: checkTopicIsSeen(topic.slug) }}
                 >
                   <div class={styles.sidebarItemName}>
                     <Icon name="hash" class={styles.icon} />
-                    {topicEntities()[topicSlug]?.title ?? topicSlug}
+                    {topic.title}
                   </div>
                 </a>
               </li>

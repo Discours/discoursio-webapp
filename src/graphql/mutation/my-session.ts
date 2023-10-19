@@ -13,13 +13,6 @@ export default gql`
         userpic
         links
       }
-      news {
-        unread
-        topics
-        authors
-        reactions
-        # communities
-      }
     }
   }
 `

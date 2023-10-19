@@ -6,7 +6,7 @@ import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
 import { createStore } from 'solid-js/store'
 import { IDBPDatabase, openDB } from 'idb'
-// import { fetchEventSource } from '@microsoft/fetch-event-source'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { getToken } from '../graphql/privateGraphQLClient'
 import { Author, Message, Reaction, Shout } from '../graphql/types.gen'
 
@@ -90,32 +90,39 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   const [messageHandler, setMessageHandler] = createSignal<(m: Message) => void>()
 
-  createEffect(() => {
+  createEffect(async () => {
     if (isAuthenticated()) {
       loadNotifications()
 
-      const token = getToken()
-      const eventSource = new EventSource(`https://connect.discours.io/${token}`)
-
-      eventSource.onmessage = (event) => {
-        console.log('[context.notifications] Received event:', event)
-        const n: { kind: string; payload: any } = JSON.parse(event.data)
-        if (n.kind === 'new_message') {
-          messageHandler()(n.payload)
-        } else {
-          storeNotification({
-            kind: n.kind,
-            payload: n.payload,
-            timestamp: Date.now(),
-            seen: false
-          })
+      await fetchEventSource('https://chat.discours.io/connect', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + getToken()
+        },
+        onmessage(event) {
+          const n: { kind: string; payload: any } = JSON.parse(event.data)
+          if (n.kind === 'new_message') {
+            console.log('[context.notifications] Received message:', n)
+            messageHandler()(n.payload)
+          } else {
+            console.log('[context.notifications] Received notification:', n)
+            storeNotification({
+              kind: n.kind,
+              payload: n.payload,
+              timestamp: Date.now(),
+              seen: false
+            })
+          }
+        },
+        onclose() {
+          console.log('[context.notifications] sse connection closed by server')
+        },
+        onerror(err) {
+          console.error('[context.notifications] sse connection closed by error', err)
+          throw new Error() // NOTE: simple hack to close the connection
         }
-      }
-
-      eventSource.onerror = (err) => {
-        console.error('[context.notifications] sse connection closed by error', err)
-        eventSource.close()
-      }
+      })
     }
   })
 

@@ -3,7 +3,7 @@ import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { Author } from '../../../graphql/types.gen'
 import { openPage } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
-import { ServerNotification, useNotifications } from '../../../context/notifications'
+import { SSEMessage, useNotifications } from '../../../context/notifications'
 import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
 import type { ArticlePageSearchParams } from '../../Article/FullArticle'
@@ -11,7 +11,7 @@ import { TimeAgo } from '../../_shared/TimeAgo'
 import styles from './NotificationView.module.scss'
 
 type Props = {
-  notification: ServerNotification
+  notification: SSEMessage
   onClick: () => void
   dateTimeFormat: 'ago' | 'time' | 'date'
   class?: string
@@ -29,8 +29,9 @@ export enum NotificationType {
 
 const TEMPLATES = {
   // FIXME: set proper templates
-  new_follower: 'new follower',
-  new_shout: 'new shout',
+  'follower:join': 'new follower',
+  'shout:create': 'new shout'
+  /* 
   new_reaction0: 'new like',
   new_reaction1: 'new dislike',
   new_reaction2: 'new agreement',
@@ -44,14 +45,15 @@ const TEMPLATES = {
   new_reaction10: 'new remark',
   //"new_reaction11": "new footnote",
   new_reaction12: 'new acception',
-  new_reaction13: 'new rejection'
+  new_reaction13: 'new rejection' 
+  */
 }
 
 export const NotificationView = (props: Props) => {
   const {
     actions: { markNotificationAsRead }
   } = useNotifications()
-  const [data, setData] = createSignal<ServerNotification>(null)
+  const [data, setData] = createSignal<SSEMessage>(null)
   const [kind, setKind] = createSignal<NotificationType>()
   const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
   const { t, formatDate, formatTime } = useLocalize()
@@ -60,7 +62,7 @@ export const NotificationView = (props: Props) => {
     setTimeout(() => setData(props.notification))
   })
   const lastUser = createMemo(() => {
-    return props.notification.kind === 'new_follower' ? data().payload : data().payload.author
+    return props.notification.entity === 'follower' ? data().payload : data().payload.author
   })
   const content = createMemo(() => {
     if (!data()) {
@@ -70,46 +72,39 @@ export const NotificationView = (props: Props) => {
 
     // TODO: count occurencies from in-browser notifications-db
 
-    switch (props.notification.kind) {
-      case 'new_follower': {
+    switch (props.notification.entity) {
+      case 'follower': {
         caption = ''
         author = data().payload
         ntype = NotificationType.NewFollower
         break
       }
-      case 'new_shout': {
+      case 'shout': {
         caption = data().payload.title
         author = data().payload.authors[-1]
         ntype = NotificationType.NewShout
         break
       }
-      case 'new_reaction6': {
+      case 'reaction': {
         ntype = data().payload.replyTo ? NotificationType.NewReply : NotificationType.NewComment
+        console.log(data().payload.kind)
+        // TODO: handle all needed reaction kinds
       }
-      case 'new_reaction0': {
-        ntype = NotificationType.NewLike
-      }
-      case 'new_reaction0': {
-        ntype = NotificationType.NewDislike
-      }
-      // TODO: add more reaction types
       default: {
         caption = data().payload.shout.title
         author = data().payload.author
       }
     }
     setKind(ntype) // FIXME: use it somewhere if needed or remove
-    return t(TEMPLATES[props.notification.kind], { caption, author })
+    return t(TEMPLATES[`${props.notification.entity}:${props.notification.action}`], { caption, author })
   })
 
   const handleClick = () => {
     if (!props.notification.seen) {
       markNotificationAsRead(props.notification)
     }
-    const subpath = props.notification.kind === 'new_follower' ? 'author' : 'article'
-    const slug = props.notification.kind.startsWith('new_reaction')
-      ? data().payload.shout.slug
-      : data().payload.slug
+    const subpath = props.notification.entity === 'follower' ? 'author' : 'article'
+    const slug = props.notification.entity === 'reaction' ? data().payload.shout.slug : data().payload.slug
     openPage(router, subpath, { slug })
     props.onClick()
   }

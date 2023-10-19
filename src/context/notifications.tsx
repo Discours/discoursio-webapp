@@ -10,22 +10,23 @@ import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { getToken } from '../graphql/privateGraphQLClient'
 import { Author, Message, Reaction, Shout } from '../graphql/types.gen'
 
-export interface ServerNotification {
-  kind: string
+export interface SSEMessage {
+  entity: string
+  action: string
   payload: any // Author | Shout | Reaction | Message
-  timestamp: number
-  seen: boolean
+  timestamp?: number
+  seen?: boolean
 }
 
 type MessageHandler = (m: Message) => void
 type NotificationsContextType = {
-  notificationEntities: Record<number, ServerNotification>
+  notificationEntities: Record<number, SSEMessage>
   unreadNotificationsCount: Accessor<number>
-  sortedNotifications: Accessor<ServerNotification[]>
+  sortedNotifications: Accessor<SSEMessage[]>
   actions: {
     showNotificationsPanel: () => void
     hideNotificationsPanel: () => void
-    markNotificationAsRead: (notification: ServerNotification) => Promise<void>
+    markNotificationAsRead: (notification: SSEMessage) => Promise<void>
     setMessageHandler: (h: MessageHandler) => void
   }
 }
@@ -40,9 +41,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = createSignal(false)
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const { isAuthenticated, user } = useSession()
-  const [notificationEntities, setNotificationEntities] = createStore<Record<number, ServerNotification>>(
-    {}
-  )
+  const [notificationEntities, setNotificationEntities] = createStore<Record<number, SSEMessage>>({})
   const [db, setDb] = createSignal<Promise<IDBPDatabase<unknown>>>()
   onMount(() => {
     const dbx = openDB('notifications-db', 1, {
@@ -76,7 +75,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     return Object.values(notificationEntities).sort((a, b) => b.timestamp - a.timestamp)
   })
 
-  const storeNotification = async (notification: ServerNotification) => {
+  const storeNotification = async (notification: SSEMessage) => {
     console.log('[context.notifications] Storing notification:', notification)
 
     const storage = await db()
@@ -88,28 +87,27 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     loadNotifications()
   }
 
-  const [messageHandler, setMessageHandler] = createSignal<(m: Message) => void>()
+  const [messageHandler, setMessageHandler] = createSignal<(m: SSEMessage) => void>()
 
   createEffect(async () => {
     if (isAuthenticated()) {
       loadNotifications()
 
-      await fetchEventSource('https://chat.discours.io/connect', {
+      await fetchEventSource('https://chat.discours.io/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + getToken()
         },
         onmessage(event) {
-          const n: { kind: string; payload: any } = JSON.parse(event.data)
-          if (n.kind === 'new_message') {
-            console.log('[context.notifications] Received message:', n)
-            messageHandler()(n.payload)
+          const m: SSEMessage = JSON.parse(event.data)
+          if (m.entity === 'chat') {
+            console.log('[context.notifications] Received message:', m)
+            messageHandler()(m)
           } else {
-            console.log('[context.notifications] Received notification:', n)
+            console.log('[context.notifications] Received notification:', m)
             storeNotification({
-              kind: n.kind,
-              payload: n.payload,
+              ...m,
               timestamp: Date.now(),
               seen: false
             })
@@ -126,7 +124,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     }
   })
 
-  const markNotificationAsRead = async (notification: ServerNotification) => {
+  const markNotificationAsRead = async (notification: SSEMessage) => {
     console.log('[context.notifications] Marking notification as read:', notification)
 
     const storage = await db()

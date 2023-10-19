@@ -3,7 +3,8 @@ import { createContext, createSignal, onMount, useContext } from 'solid-js'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { inboxClient } from '../utils/apiClient'
 import { loadMessages } from '../stores/inbox'
-import { ServerNotification, useNotifications } from './notifications'
+import { SSEMessage, useNotifications } from './notifications'
+import { M } from '../components/_shared/Button/Button.module.scss'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -29,10 +30,16 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     actions: { setMessageHandler }
   } = useNotifications()
 
-  const handleMessage = (n: ServerNotification) => {
-    // TODO: handle notification types here: new_message edit_message del_message
-    const msg = n.payload as Message
-    console.log(msg)
+  const handleMessage = (m: SSEMessage) => {
+    console.log('[context.inbox] ', m)
+    // TODO: handle all action types: create update delete join left
+    if (m.action in ['create', 'update', 'delete']) {
+      const msg = m.payload
+      setMessages((mmm) => [msg, ...mmm])
+    } else if (m.action in ['left', 'join']) {
+      // TODO: set chat members
+      console.debug(m)
+    }
   }
 
   onMount(() => {

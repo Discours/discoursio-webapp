@@ -3,6 +3,7 @@
   display: flex;
   flex-flow: row nowrap;
   margin-bottom: 2rem;
+  gap: 1rem;
 
   @include media-breakpoint-down(sm) {
     flex-wrap: wrap;
@@ -33,6 +34,11 @@
     .name {
       color: var(--default-color);
       font-weight: 500;
+
+      & span:hover {
+        color: var(--default-color-invert);
+        background: var(--background-color-invert);
+      }
     }
 
     .bio {
@@ -42,7 +48,10 @@
 
   .actions {
     flex: 0 20%;
+    display: flex;
+    flex-direction: row;
     margin-left: 5.2rem;
+    gap: 1rem;
 
     @include media-breakpoint-up(sm) {
       margin-left: 2rem;
@@ -56,9 +65,18 @@
     }
   }
 
-  .subscribeButton {
+  .actionButton {
     border-radius: 0.8rem !important;
     margin-right: 0 !important;
     width: 9em;
+
+    &.iconed {
+      padding: 6px !important;
+      min-width: 32px;
+      width: unset;
+      &:hover img {
+        filter: invert(1);
+      }
+    }
   }
 }

@@ -27,6 +27,7 @@ import { SolidSwiper } from '../_shared/SolidSwiper'
 import styles from './Article.module.scss'
 import { CardTopic } from '../Feed/CardTopic'
 import { createPopper } from '@popperjs/core'
+import { AuthorBadge } from '../Author/AuthorBadge'
 
 type Props = {
   article: Shout
@@ -438,9 +439,9 @@ export const FullArticle = (props: Props) => {
                 <h4>{t('Authors')}</h4>
               </Show>
               <For each={props.article.authors}>
-                {(a) => (
+                {(author) => (
                   <div class="col-xl-12">
-                    <AuthorCard author={a} hasLink={true} liteButtons={true} />
+                    <AuthorBadge iconButtons={true} showMessageButton={true} author={author} />
                   </div>
                 )}
               </For>

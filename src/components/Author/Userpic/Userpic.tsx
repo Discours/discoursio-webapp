@@ -12,11 +12,8 @@ type Props = {
   slug?: string
   onClick?: () => void
   loading?: boolean
-  isBig?: boolean
-  isMedium?: boolean
   hasLink?: boolean
-  isAuthorsList?: boolean
-  isFeedMode?: boolean
+  size?: 'S' | 'M' | 'L' | 'XL'
 }
 
 export const Userpic = (props: Props) => {
@@ -29,10 +26,9 @@ export const Userpic = (props: Props) => {
   return (
     <div
       class={clsx(styles.Userpic, props.class, {
-        [styles.big]: props.isBig,
-        [styles.medium]: props.isMedium,
-        [styles.authorsList]: props.isAuthorsList,
-        [styles.feedMode]: props.isFeedMode,
+        [styles.XL]: props.size === 'XL',
+        [styles.M]: props.size === 'M',
+        [styles.S]: props.size === 'S',
         ['cursorPointer']: props.onClick
       })}
       onClick={props.onClick}

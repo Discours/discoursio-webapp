@@ -17,6 +17,8 @@ import { imageProxy } from '../../utils/imageProxy'
 import { Popover } from '../_shared/Popover'
 import { AuthorCard } from '../Author/AuthorCard'
 import { useSession } from '../../context/session'
+import { AuthorBadge } from '../Author/AuthorBadge'
+import { AuthorLink } from '../Author/AhtorLink'
 
 interface ArticleCardProps {
   settings?: {
@@ -175,17 +177,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
                   {(author) => {
-                    return (
-                      <AuthorCard
-                        author={author}
-                        hideWriteButton={true}
-                        hideBio={true}
-                        hideFollow={true}
-                        truncateBio={true}
-                        isFeedMode={true}
-                        hasLink={!props.settings?.noAuthorLink}
-                      />
-                    )
+                    return <AuthorLink size={'S'} author={author} />
                   }}
                 </For>
               </div>

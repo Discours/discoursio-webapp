@@ -18,6 +18,8 @@ import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
 import { CommentDate } from '../Article/CommentDate'
 import { Loading } from '../_shared/Loading'
+import { AuthorBadge } from '../Author/AuthorBadge'
+import { AuthorLink } from '../Author/AhtorLink'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -163,13 +165,7 @@ export const FeedView = (props: Props) => {
                   <For each={topAuthors().slice(0, 5)}>
                     {(author) => (
                       <li>
-                        <AuthorCard
-                          author={author}
-                          hideWriteButton={true}
-                          hasLink={true}
-                          truncateBio={true}
-                          isTextButton={true}
-                        />
+                        <AuthorBadge author={author} />
                       </li>
                     )}
                   </For>
@@ -207,13 +203,7 @@ export const FeedView = (props: Props) => {
                       />
                     </div>
                     <div class={styles.commentDetails}>
-                      <AuthorCard
-                        author={comment.createdBy as Author}
-                        isFeedMode={true}
-                        hideWriteButton={true}
-                        hideFollow={true}
-                        hasLink={true}
-                      />
+                      <AuthorLink author={comment.createdBy as Author} size={'S'} />
                       <CommentDate comment={comment} isShort={true} isLastInRow={true} />
                     </div>
                     <div class={clsx('text-truncate', styles.commentArticleTitle)}>

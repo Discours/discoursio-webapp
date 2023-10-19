@@ -1,16 +1,12 @@
 .Userpic {
-  align-items: baseline;
-  background: #f7f7f8;
+  background: var(--background-color);
   border-radius: 100%;
   display: flex;
   justify-content: center;
-  margin-right: 1.2rem;
-  min-width: 32px;
-  max-width: 32px;
-  height: 32px;
-  width: 32px;
+  align-items: center;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 0 0 1px var(--background-color-invert) inset;
 
   img {
     height: 100%;
@@ -20,17 +16,14 @@
   }
 
   .letters {
-    background-color: white;
-    border-radius: 50%;
-    border: 1.5px solid black;
-    color: #000;
-    font-size: small;
-    text-align: center;
-    text-transform: uppercase;
-    line-height: 32px;
-    width: 100%;
+    display: flex;
     height: 100%;
-    min-width: 32px;
+    width: 100%;
+    padding-top: 2px; // line-height hack
+    justify-content: center;
+    align-items: center;
+    color: var(--default-color);
+    text-transform: uppercase;
   }
 
   .anonymous {
@@ -55,18 +48,28 @@
     }
   }
 
-  &.medium {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    max-width: 40px;
+  &.S {
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    overflow: hidden;
 
     .letters {
-      line-height: 40px;
+      font-size: 0.7rem;
     }
   }
 
-  &.big {
+  &.M {
+    height: 32px;
+    width: 32px;
+    min-width: 32px;
+
+    .letters {
+      font-size: 1.2rem;
+    }
+  }
+
+  &.XL {
     aspect-ratio: 1/1;
     margin: 0 auto 1rem;
     max-width: 168px;
@@ -99,14 +102,5 @@
 
   .letters {
     line-height: 6.4rem;
-  }
-}
-
-.feedMode {
-  .letters {
-    font-size: 0.8rem;
-    line-height: 14px;
-    min-width: 16px;
-    max-width: 16px;
   }
 }

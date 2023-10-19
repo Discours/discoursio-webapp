@@ -21,6 +21,7 @@ import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import stylesHeader from '../../Nav/Header/Header.module.scss'
+import { GroupAvatar } from '../../_shared/GroupAvatar'
 
 type Props = {
   caption?: string
@@ -140,9 +141,9 @@ export const AuthorCard = (props: Props) => {
             name={props.author.name}
             userpic={props.author.userpic}
             hasLink={props.hasLink}
-            isBig={props.isAuthorPage}
-            isAuthorsList={props.isAuthorsList}
-            isFeedMode={props.isFeedMode}
+            // isBig={props.isAuthorPage}
+            // isAuthorsList={props.isAuthorsList}
+            // isFeedMode={props.isFeedMode}
             slug={props.author.slug}
             class={styles.circlewrap}
           />
@@ -153,9 +154,9 @@ export const AuthorCard = (props: Props) => {
             name={props.author.name}
             userpic={userpicUrl()}
             hasLink={props.hasLink}
-            isBig={props.isAuthorPage}
-            isAuthorsList={props.isAuthorsList}
-            isFeedMode={props.isFeedMode}
+            // isBig={props.isAuthorPage}
+            // isAuthorsList={props.isAuthorsList}
+            // isFeedMode={props.isFeedMode}
             slug={props.author.slug}
             class={styles.circlewrap}
           />
@@ -352,7 +353,6 @@ export const AuthorCard = (props: Props) => {
                   value={t('Edit profile')}
                   class={styles.button}
                 />
-
                 <SharePopup
                   containerCssClass={styles.shareControl}
                   title={props.author.name}
@@ -365,6 +365,9 @@ export const AuthorCard = (props: Props) => {
             </Show>
           </Show>
         </ShowOnlyOnClient>
+        {/*<div style={{padding: '4rem'}}>*/}
+        {/*  <GroupAvatar authors={props.followers as Author[]}/>*/}
+        {/*</div>*/}
         <Show when={props.followers}>
           <Modal variant="medium" name="followers" maxHeight>
             <>

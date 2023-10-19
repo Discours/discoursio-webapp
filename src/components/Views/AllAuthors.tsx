@@ -11,6 +11,7 @@ import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { useLocalize } from '../../context/localize'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { AuthorBadge } from '../Author/AuthorBadge'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -83,7 +84,6 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
       <div class="col-lg-20 col-xl-18">
         <h1>{t('Authors')}</h1>
         <p>{t('Subscribe who you like to tune your personal feed')}</p>
-
         <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
           <li
             classList={{
@@ -171,15 +171,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
               {(author) => (
                 <div class="row">
                   <div class="col-lg-20 col-xl-18">
-                    <AuthorCard
-                      author={author as Author}
-                      hasLink={true}
-                      subscribed={subscribed(author.slug)}
-                      noSocialButtons={true}
-                      isAuthorsList={true}
-                      truncateBio={true}
-                      isTextButton={true}
-                    />
+                    <AuthorBadge author={author as Author} />
                   </div>
                 </div>
               )}

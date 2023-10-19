@@ -156,6 +156,7 @@
 .commentDetails {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.5rem;
   justify-content: space-between;
 }
 
@@ -169,6 +170,9 @@
   a {
     border: none;
     padding-bottom: 0.2em;
+    &:hover * {
+      background: var(--background-color-invert);
+    }
   }
 }
 

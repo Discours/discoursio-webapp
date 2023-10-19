@@ -186,12 +186,8 @@ export const HeaderAuth = (props: Props) => {
                 <a href="/inbox">
                   {/*FIXME: replace with route*/}
                   <div classList={{ entered: page().path === '/inbox' }}>
-                    <Icon name="inbox-white" counter={session()?.news?.unread || 0} class={styles.icon} />
-                    <Icon
-                      name="inbox-white-hover"
-                      counter={session()?.news?.unread || 0}
-                      class={clsx(styles.icon, styles.iconHover)}
-                    />
+                    <Icon name="inbox-white" class={styles.icon} />
+                    <Icon name="inbox-white-hover" class={clsx(styles.icon, styles.iconHover)} />
                   </div>
                 </a>
               </div>

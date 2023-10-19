@@ -17,7 +17,8 @@ import type {
   ReactionBy,
   Shout,
   NotificationsQueryParams,
-  NotificationsQueryResult
+  NotificationsQueryResult,
+  MySubscriptionsQueryResult
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -58,6 +59,7 @@ import updateArticle from '../graphql/mutation/article-update'
 import deleteShout from '../graphql/mutation/article-delete'
 import notifications from '../graphql/query/notifications'
 import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
+import mySubscriptions from '../graphql/query/my-subscriptions'
 
 type ApiErrorCode =
   | 'unknown'
@@ -364,6 +366,12 @@ export const apiClient = {
         notificationId
       })
       .toPromise()
+  },
+
+  getMySubscriptions: async (): Promise<MySubscriptionsQueryResult> => {
+    const resp = await privateGraphQLClient.query(mySubscriptions, {}).toPromise()
+    // console.debug(resp.data)
+    return resp.data.loadMySubscriptions
   },
 
   // inbox

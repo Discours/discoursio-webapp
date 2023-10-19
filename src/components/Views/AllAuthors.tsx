@@ -35,7 +35,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
 
   const [searchQuery, setSearchQuery] = createSignal('')
 
-  const { session } = useSession()
+  const { session, subscriptions } = useSession()
 
   onMount(() => {
     if (!searchParams().by) {
@@ -72,7 +72,8 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
     return keys
   })
 
-  const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
+  const subscribed = (authorSlug: string) =>
+    subscriptions().authors.some((author) => author.slug === authorSlug)
 
   const filteredAuthors = createMemo(() => {
     return dummyFilter(sortedAuthors(), searchQuery(), lang())

@@ -50,8 +50,9 @@ export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const {
     session,
+    subscriptions,
     isSessionLoaded,
-    actions: { loadSession, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -59,9 +60,9 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [userpicUrl, setUserpicUrl] = createSignal<string>()
 
-  const subscribed = createMemo<boolean>(() => {
-    return session()?.news?.authors?.some((u) => u === props.author.slug) || false
-  })
+  const subscribed = createMemo<boolean>(() =>
+    subscriptions().authors.some((author) => author.slug === props.author.slug)
+  )
 
   const subscribe = async (really = true) => {
     setIsSubscribing(true)
@@ -70,7 +71,7 @@ export const AuthorCard = (props: Props) => {
       ? follow({ what: FollowingEntity.Author, slug: props.author.slug })
       : unfollow({ what: FollowingEntity.Author, slug: props.author.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
 

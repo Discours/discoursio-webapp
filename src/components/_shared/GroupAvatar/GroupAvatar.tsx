@@ -1,12 +1,12 @@
 import { clsx } from 'clsx'
 import styles from './GroupAvatar.module.scss'
-import { Author, Topic } from '../../../graphql/types.gen'
 import { For } from 'solid-js'
 import { Userpic } from '../../Author/Userpic'
+import { NotificationUser } from '../../NotificationsPanel/NotificationView/NotificationView'
 
 type Props = {
   class?: string
-  authors: any
+  authors: NotificationUser[]
 }
 
 export const GroupAvatar = (props: Props) => {

@@ -18,17 +18,19 @@ type Props = {
   class?: string
 }
 
+export type NotificationUser = {
+  id: number
+  name: string
+  slug: string
+  userpic: string
+}
+
 type NotificationData = {
   shout: {
     slug: string
     title: string
   }
-  users: {
-    id: number
-    name: string
-    slug: string
-    userpic: string
-  }[]
+  users: NotificationUser[]
   reactionIds: number[]
 }
 
@@ -161,7 +163,7 @@ export const NotificationView = (props: Props) => {
         onClick={handleClick}
       >
         <div class={styles.userpic}>
-          <GroupAvatar authors={data().users as Author[]} />
+          <GroupAvatar authors={data().users} />
         </div>
         <div>{content()}</div>
         <div class={styles.timeContainer}>{formattedDateTime()}</div>

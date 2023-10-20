@@ -55,12 +55,12 @@ export const AuthorBadge = (props: Props) => {
       })
     }, 'discussions')
   }
-  const subscribeValue = () => {
+  const subscribeValue = createMemo(() => {
     if (props.iconButtons) {
       return <Icon name="author-subscribe" />
     }
     return isSubscribing() ? t('...subscribing') : t('Subscribe')
-  }
+  })
 
   return (
     <div class={clsx(styles.AuthorBadge)}>

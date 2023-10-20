@@ -25,10 +25,7 @@ export const Userpic = (props: Props) => {
 
   return (
     <div
-      class={clsx(styles.Userpic, props.class, {
-        [styles.XL]: props.size === 'XL',
-        [styles.M]: props.size === 'M',
-        [styles.S]: props.size === 'S',
+      class={clsx(styles.Userpic, props.class, styles[props.size ?? 'M'], {
         ['cursorPointer']: props.onClick
       })}
       onClick={props.onClick}

@@ -1,24 +1,24 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
-import type { Shout } from '../../graphql/types.gen'
-import { capitalize, formatDate } from '../../utils'
-import { Icon } from '../_shared/Icon'
+import type { Shout } from '../../../graphql/types.gen'
+import { capitalize, formatDate } from '../../../utils'
+import { Icon } from '../../_shared/Icon'
 import styles from './ArticleCard.module.scss'
 import { clsx } from 'clsx'
-import { CardTopic } from './CardTopic'
-import { ShoutRatingControl } from '../Article/ShoutRatingControl'
-import { getShareUrl, SharePopup } from '../Article/SharePopup'
-import stylesHeader from '../Nav/Header/Header.module.scss'
-import { getDescription } from '../../utils/meta'
-import { FeedArticlePopup } from './FeedArticlePopup'
-import { useLocalize } from '../../context/localize'
+import { CardTopic } from '../CardTopic'
+import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
+import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import stylesHeader from '../../Nav/Header/Header.module.scss'
+import { getDescription } from '../../../utils/meta'
+import { FeedArticlePopup } from '../FeedArticlePopup'
+import { useLocalize } from '../../../context/localize'
 import { getPagePath, openPage } from '@nanostores/router'
-import { router, useRouter } from '../../stores/router'
-import { imageProxy } from '../../utils/imageProxy'
-import { Popover } from '../_shared/Popover'
-import { AuthorCard } from '../Author/AuthorCard'
-import { useSession } from '../../context/session'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { AuthorLink } from '../Author/AhtorLink'
+import { router, useRouter } from '../../../stores/router'
+import { imageProxy } from '../../../utils/imageProxy'
+import { Popover } from '../../_shared/Popover'
+import { AuthorCard } from '../../Author/AuthorCard'
+import { useSession } from '../../../context/session'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { AuthorLink } from '../../Author/AhtorLink'
 
 interface ArticleCardProps {
   settings?: {
@@ -177,7 +177,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
                   {(author) => {
-                    return <AuthorLink size={'S'} author={author} />
+                    return <AuthorLink size={'XS'} author={author} />
                   }}
                 </For>
               </div>

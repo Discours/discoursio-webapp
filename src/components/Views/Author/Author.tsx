@@ -133,7 +133,6 @@ export const AuthorView = (props: Props) => {
                 isAuthorPage={true}
                 followers={followers()}
                 following={following()}
-                isCurrentUser={author().slug === user()?.slug}
               />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>

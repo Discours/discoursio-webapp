@@ -5,7 +5,7 @@ import { Userpic } from '../Userpic'
 
 type Props = {
   author: Author
-  size?: 'S' | 'M' | 'L'
+  size?: 'XS' | 'M' | 'L'
   class?: string
 }
 

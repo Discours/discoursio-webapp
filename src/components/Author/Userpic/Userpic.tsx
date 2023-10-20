@@ -39,7 +39,7 @@ export const Userpic = (props: Props) => {
         return '336x336'
       }
       default: {
-        return '62x62'
+        return '64x64'
       }
     }
   }

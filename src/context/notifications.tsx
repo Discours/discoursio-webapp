@@ -11,6 +11,7 @@ import { getToken } from '../graphql/privateGraphQLClient'
 import { Author, Message, Reaction, Shout } from '../graphql/types.gen'
 
 export interface SSEMessage {
+  id: string
   entity: string
   action: string
   payload: any // Author | Shout | Reaction | Message
@@ -18,7 +19,8 @@ export interface SSEMessage {
   seen?: boolean
 }
 
-type MessageHandler = (m: Message) => void
+export type MessageHandler = (m: SSEMessage) => void
+
 type NotificationsContextType = {
   notificationEntities: Record<number, SSEMessage>
   unreadNotificationsCount: Accessor<number>
@@ -57,7 +59,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     const notifications = await storage.getAll('notifications')
     console.log('[context.notifications] Loaded notifications:', notifications)
 
-    const totalUnreadCount = notifications.filter((notification) => !notification.read).length
+    const totalUnreadCount = notifications.filter((notification) => !notification.seen).length
     console.log('[context.notifications] Total unread count:', totalUnreadCount)
 
     setUnreadNotificationsCount(totalUnreadCount)
@@ -82,12 +84,12 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     const tx = storage.transaction('notifications', 'readwrite')
     const store = tx.objectStore('notifications')
 
-    await store.put(notification)
+    await store.put(notification, 'id')
     await tx.done
     loadNotifications()
   }
 
-  const [messageHandler, setMessageHandler] = createSignal<(m: SSEMessage) => void>()
+  const [messageHandler, setMessageHandler] = createSignal<MessageHandler>(console.warn)
 
   createEffect(async () => {
     if (isAuthenticated()) {
@@ -108,6 +110,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
             console.log('[context.notifications] Received notification:', m)
             storeNotification({
               ...m,
+              id: event.id,
               timestamp: Date.now(),
               seen: false
             })

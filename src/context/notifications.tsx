@@ -93,7 +93,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     if (isAuthenticated()) {
       loadNotifications()
 
-      await fetchEventSource('https://chat.discours.io/', {
+      await fetchEventSource('https://connect.discours.io', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

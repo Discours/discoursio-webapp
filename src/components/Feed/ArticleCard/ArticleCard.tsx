@@ -1,6 +1,6 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
 import type { Shout } from '../../../graphql/types.gen'
-import { capitalize, formatDate } from '../../../utils'
+import { capitalize } from '../../../utils/capitalize'
 import { Icon } from '../../_shared/Icon'
 import styles from './ArticleCard.module.scss'
 import { clsx } from 'clsx'
@@ -15,9 +15,7 @@ import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
 import { imageProxy } from '../../../utils/imageProxy'
 import { Popover } from '../../_shared/Popover'
-import { AuthorCard } from '../../Author/AuthorCard'
 import { useSession } from '../../../context/session'
-import { AuthorBadge } from '../../Author/AuthorBadge'
 import { AuthorLink } from '../../Author/AhtorLink'
 
 interface ArticleCardProps {

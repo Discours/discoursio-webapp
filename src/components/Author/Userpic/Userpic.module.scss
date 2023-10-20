@@ -1,5 +1,5 @@
 .Userpic {
-  background: var(--background-color);
+  background: #f7f7f7;
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -24,6 +24,7 @@
     align-items: center;
     color: var(--default-color);
     text-transform: uppercase;
+    background: var(--background-color);
     box-shadow: 0 0 0 1px var(--background-color-invert) inset;
   }
 

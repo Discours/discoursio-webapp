@@ -13,7 +13,7 @@ type Props = {
   onClick?: () => void
   loading?: boolean
   hasLink?: boolean
-  size?: 'XS' | 'S' | 'M' | 'L' | 'XL' // 19 | 28 | 32 | 40 | 168
+  size?: 'XS' | 'S' | 'M' | 'L' | 'XL' // 20 | 28 | 32 | 40 | 168
 }
 
 export const Userpic = (props: Props) => {

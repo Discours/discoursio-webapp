@@ -73,9 +73,6 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
     return keys
   })
 
-  const subscribed = (authorSlug: string) =>
-    subscriptions().authors.some((author) => author.slug === authorSlug)
-
   const filteredAuthors = createMemo(() => {
     return dummyFilter(sortedAuthors(), searchQuery(), lang())
   })

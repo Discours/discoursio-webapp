@@ -11,8 +11,6 @@ type Props = {
 
 export const GroupAvatar = (props: Props) => {
   const displayedAvatars = props.authors.length > 4 ? props.authors.slice(0, 3) : props.authors.slice(0, 4)
-
-  console.log('!!! displayedAvatars.length:', displayedAvatars.length)
   const avatarSize = () => {
     switch (props.authors.length) {
       case 1: {

@@ -1,8 +1,6 @@
 import type { Author } from '../../../graphql/types.gen'
 import { Userpic } from '../Userpic'
-import { Icon } from '../../_shared/Icon'
-import styles from './AuthorCard.module.scss'
-import { createEffect, createMemo, createSignal, For, Match, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import { translit } from '../../../utils/ru2en'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { clsx } from 'clsx'
@@ -12,7 +10,6 @@ import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { router, useRouter } from '../../../stores/router'
 import { openPage, redirectPage } from '@nanostores/router'
 import { useLocalize } from '../../../context/localize'
-import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Modal } from '../../Nav/Modal'
 import { SubscriptionFilter } from '../../../pages/types'
 import { isAuthor } from '../../../utils/isAuthor'
@@ -20,8 +17,7 @@ import { AuthorBadge } from '../AuthorBadge'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import stylesHeader from '../../Nav/Header/Header.module.scss'
-import { GroupAvatar } from '../../_shared/GroupAvatar'
+import styles from './AuthorCard.module.scss'
 
 type Props = {
   author: Author
@@ -33,17 +29,18 @@ export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const {
     session,
+    subscriptions,
     isSessionLoaded,
-    actions: { loadSession, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const [following, setFollowing] = createSignal<Array<Author | Topic>>(props.following)
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
-  const subscribed = createMemo<boolean>(() => {
-    return session()?.news?.authors?.some((u) => u === props.author.slug) || false
-  })
+  const subscribed = createMemo<boolean>(() =>
+    subscriptions().authors.some((author) => author.slug === props.author.slug)
+  )
 
   const subscribe = async (really = true) => {
     setIsSubscribing(true)
@@ -52,7 +49,7 @@ export const AuthorCard = (props: Props) => {
       ? follow({ what: FollowingEntity.Author, slug: props.author.slug })
       : unfollow({ what: FollowingEntity.Author, slug: props.author.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
 

@@ -1,5 +1,3 @@
-import { capitalize } from '../../utils'
-import styles from './Card.module.scss'
 import { createMemo, createSignal, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 import { FollowingEntity } from '../../graphql/types.gen'
@@ -12,6 +10,9 @@ import { Icon } from '../_shared/Icon'
 import { useLocalize } from '../../context/localize'
 import { CardTopic } from '../Feed/CardTopic'
 import { CheckButton } from '../_shared/CheckButton'
+import { capitalize } from '../../utils/capitalize'
+
+import styles from './Card.module.scss'
 
 interface TopicProps {
   topic: Topic
@@ -33,19 +34,15 @@ interface TopicProps {
 export const TopicCard = (props: TopicProps) => {
   const { t } = useLocalize()
   const {
-    session,
+    subscriptions,
     isSessionLoaded,
-    actions: { loadSession, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
 
   const subscribed = createMemo(() => {
-    if (!session()?.user?.slug || !session()?.news?.topics) {
-      return false
-    }
-
-    return session()?.news.topics.includes(props.topic.slug)
+    return subscriptions().topics.some((topic) => topic.slug === props.topic.slug)
   })
 
   const subscribe = async (really = true) => {
@@ -55,7 +52,7 @@ export const TopicCard = (props: TopicProps) => {
       ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
       : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
 
@@ -107,14 +104,6 @@ export const TopicCard = (props: TopicProps) => {
               classList={{ [styles.topicDescriptionShort]: props.shortDescription }}
             >
               {props.topic.body}
-            </div>
-          </Show>
-          <Show when={props.showDescription && !props.topic?.body && props.topic.stat?.shouts > 0}>
-            <div
-              class={clsx(styles.topicDescription)}
-              classList={{ [styles.topicDescriptionShort]: props.shortDescription }}
-            >
-              {props.topic.stat?.shouts} публикаций
             </div>
           </Show>
         </div>

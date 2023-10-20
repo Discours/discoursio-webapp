@@ -6,12 +6,13 @@ import { useRouter } from '../../stores/router'
 import { AuthorCard } from '../Author/AuthorCard'
 import { clsx } from 'clsx'
 import { useSession } from '../../context/session'
-import styles from '../../styles/AllTopics.module.scss'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { useLocalize } from '../../context/localize'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { AuthorBadge } from '../Author/AuthorBadge'
+
+import styles from './AllAuthors.module.scss'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -35,7 +36,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
 
   const [searchQuery, setSearchQuery] = createSignal('')
 
-  const { session } = useSession()
+  const { session, subscriptions } = useSession()
 
   onMount(() => {
     if (!searchParams().by) {
@@ -72,7 +73,8 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
     return keys
   })
 
-  const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
+  const subscribed = (authorSlug: string) =>
+    subscriptions().authors.some((author) => author.slug === authorSlug)
 
   const filteredAuthors = createMemo(() => {
     return dummyFilter(sortedAuthors(), searchQuery(), lang())
@@ -109,7 +111,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   )
 
   return (
-    <div class={clsx(styles.allTopicsPage, 'wide-container')}>
+    <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
       <Show when={sortedAuthors().length > 0}>
         <div class="offset-md-5">
           <AllAuthorsHead />

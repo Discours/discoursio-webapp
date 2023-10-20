@@ -3,7 +3,6 @@ import styles from './AuthorBadge.module.scss'
 import { Userpic } from '../Userpic'
 import { Author, FollowingEntity } from '../../../graphql/types.gen'
 import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
-import { formatDate } from '../../../utils'
 import { useLocalize } from '../../../context/localize'
 import { Button } from '../../_shared/Button'
 import { useSession } from '../../../context/session'
@@ -23,13 +22,14 @@ export const AuthorBadge = (props: Props) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const {
     session,
-    actions: { loadSession, requireAuthentication }
+    subscriptions,
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
   const { changeSearchParam } = useRouter()
-  const { t } = useLocalize()
-  const subscribed = createMemo<boolean>(() => {
-    return session()?.news?.authors?.some((u) => u === props.author.slug) || false
-  })
+  const { t, formatDate } = useLocalize()
+  const subscribed = createMemo(() =>
+    subscriptions().authors.some((author) => author.slug === props.author.slug)
+  )
 
   const subscribe = async (really = true) => {
     setIsSubscribing(true)
@@ -38,7 +38,7 @@ export const AuthorBadge = (props: Props) => {
       ? follow({ what: FollowingEntity.Author, slug: props.author.slug })
       : unfollow({ what: FollowingEntity.Author, slug: props.author.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
   const handleSubscribe = (really: boolean) => {

@@ -2,8 +2,6 @@ import { clsx } from 'clsx'
 import styles from './Draft.module.scss'
 import type { Shout } from '../../graphql/types.gen'
 import { Icon } from '../_shared/Icon'
-import { formatDate } from '../../utils'
-import formatDateTime from '../../utils/formatDateTime'
 import { useLocalize } from '../../context/localize'
 import { useConfirm } from '../../context/confirm'
 import { useSnackbar } from '../../context/snackbar'
@@ -18,7 +16,7 @@ type Props = {
 }
 
 export const Draft = (props: Props) => {
-  const { t } = useLocalize()
+  const { t, formatDate } = useLocalize()
   const {
     actions: { showConfirm }
   } = useConfirm()
@@ -51,8 +49,8 @@ export const Draft = (props: Props) => {
   return (
     <div class={clsx(props.class)}>
       <div class={styles.created}>
-        <Icon name="pencil-outline" class={styles.icon} /> {formatDate(new Date(props.shout.createdAt))}
-        &nbsp;{formatDateTime(props.shout.createdAt)()}
+        <Icon name="pencil-outline" class={styles.icon} />{' '}
+        {formatDate(new Date(props.shout.createdAt), { hour: '2-digit', minute: '2-digit' })}
       </div>
       <div class={styles.titleContainer}>
         <span class={styles.title}>{props.shout.title || t('Unnamed draft')}</span> {props.shout.subtitle}

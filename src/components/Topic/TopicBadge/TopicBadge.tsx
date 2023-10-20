@@ -19,17 +19,13 @@ export const TopicBadge = (props: Props) => {
   const { t } = useLocalize()
   const {
     isAuthenticated,
-    session,
-    actions: { loadSession }
+    subscriptions,
+    actions: { loadSubscriptions }
   } = useSession()
 
-  const subscribed = createMemo(() => {
-    if (!session()?.user?.slug || !session()?.news?.topics) {
-      return false
-    }
-
-    return session()?.news.topics.includes(props.topic.slug)
-  })
+  const subscribed = createMemo(() =>
+    subscriptions().topics.some((topic) => topic.slug === props.topic.slug)
+  )
 
   const subscribe = async (really = true) => {
     setIsSubscribing(true)
@@ -38,7 +34,7 @@ export const TopicBadge = (props: Props) => {
       ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
       : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
 

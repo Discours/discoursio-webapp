@@ -68,6 +68,8 @@
 
   a:link {
     border: none;
+    position: relative;
+    overflow: hidden;
 
     &::before {
       content: '';

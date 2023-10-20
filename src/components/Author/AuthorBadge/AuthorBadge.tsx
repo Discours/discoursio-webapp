@@ -8,10 +8,15 @@ import { Button } from '../../_shared/Button'
 import { useSession } from '../../../context/session'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { CheckButton } from '../../_shared/CheckButton'
+import { openPage } from '@nanostores/router'
+import { router, useRouter } from '../../../stores/router'
+import { Icon } from '../../_shared/Icon'
 
 type Props = {
   author: Author
   minimizeSubscribeButton?: boolean
+  showMessageButton?: boolean
+  iconButtons?: boolean
 }
 export const AuthorBadge = (props: Props) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -20,7 +25,7 @@ export const AuthorBadge = (props: Props) => {
     subscriptions,
     actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
-
+  const { changeSearchParam } = useRouter()
   const { t, formatDate } = useLocalize()
   const subscribed = createMemo(() =>
     subscriptions().authors.some((author) => author.slug === props.author.slug)
@@ -42,17 +47,34 @@ export const AuthorBadge = (props: Props) => {
     }, 'subscribe')
   }
 
+  const initChat = () => {
+    requireAuthentication(() => {
+      openPage(router, `inbox`)
+      changeSearchParam({
+        initChat: props.author.id.toString()
+      })
+    }, 'discussions')
+  }
+  const subscribeValue = createMemo(() => {
+    if (props.iconButtons) {
+      return <Icon name="author-subscribe" />
+    }
+    return isSubscribing() ? t('...subscribing') : t('Subscribe')
+  })
+
   return (
     <div class={clsx(styles.AuthorBadge)}>
       <Userpic
         hasLink={true}
-        isMedium={true}
+        size={'M'}
         name={props.author.name}
         userpic={props.author.userpic}
         slug={props.author.slug}
       />
       <a href={`/author/${props.author.slug}`} class={styles.info}>
-        <div class={styles.name}>{props.author.name}</div>
+        <div class={styles.name}>
+          <span>{props.author.name}</span>
+        </div>
         <Switch
           fallback={
             <div class={styles.bio}>
@@ -86,22 +108,31 @@ export const AuthorBadge = (props: Props) => {
               when={subscribed()}
               fallback={
                 <Button
-                  variant="primary"
+                  variant={props.iconButtons ? 'secondary' : 'bordered'}
                   size="S"
-                  value={isSubscribing() ? t('...subscribing') : t('Subscribe')}
+                  value={subscribeValue()}
                   onClick={() => handleSubscribe(true)}
-                  class={styles.subscribeButton}
+                  class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
                 />
               }
             >
               <Button
-                variant="bordered"
+                variant={props.iconButtons ? 'secondary' : 'bordered'}
                 size="S"
-                value={t('Following')}
+                value={props.iconButtons ? <Icon name="author-unsubscribe" /> : t('Following')}
                 onClick={() => handleSubscribe(false)}
-                class={styles.subscribeButton}
+                class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
               />
             </Show>
+          </Show>
+          <Show when={props.showMessageButton}>
+            <Button
+              variant={props.iconButtons ? 'secondary' : 'bordered'}
+              size="S"
+              value={props.iconButtons ? <Icon name="inbox-white" /> : t('Message')}
+              onClick={initChat}
+              class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
+            />
           </Show>
         </div>
       </Show>

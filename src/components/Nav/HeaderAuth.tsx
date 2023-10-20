@@ -201,6 +201,7 @@ export const HeaderAuth = (props: Props) => {
                     <button class={styles.button}>
                       <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
                         <Userpic
+                          size={'M'}
                           name={session().user.name}
                           userpic={session().user.userpic}
                           class={styles.userpic}

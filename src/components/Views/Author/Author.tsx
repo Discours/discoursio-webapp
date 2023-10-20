@@ -128,13 +128,7 @@ export const AuthorView = (props: Props) => {
         <Show when={author()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard
-                author={author()}
-                isAuthorPage={true}
-                followers={followers()}
-                following={following()}
-                isCurrentUser={author().slug === user()?.slug}
-              />
+              <AuthorCard author={author()} followers={followers()} following={following()} />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">

@@ -1,15 +1,15 @@
 import { clsx } from 'clsx'
-import type { Notification } from '../../../graphql/types.gen'
+import type { Author, Notification } from '../../../graphql/types.gen'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { NotificationType } from '../../../graphql/types.gen'
 import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
 import { useNotifications } from '../../../context/notifications'
-import { Userpic } from '../../Author/Userpic'
 import { useLocalize } from '../../../context/localize'
 import type { ArticlePageSearchParams } from '../../Article/FullArticle'
 import { TimeAgo } from '../../_shared/TimeAgo'
 import styles from './NotificationView.module.scss'
+import { GroupAvatar } from '../../_shared/GroupAvatar'
 
 type Props = {
   notification: Notification
@@ -18,17 +18,19 @@ type Props = {
   class?: string
 }
 
+export type NotificationUser = {
+  id: number
+  name: string
+  slug: string
+  userpic: string
+}
+
 type NotificationData = {
   shout: {
     slug: string
     title: string
   }
-  users: {
-    id: number
-    name: string
-    slug: string
-    userpic: string
-  }[]
+  users: NotificationUser[]
   reactionIds: number[]
 }
 
@@ -160,7 +162,9 @@ export const NotificationView = (props: Props) => {
         })}
         onClick={handleClick}
       >
-        <Userpic name={lastUser().name} userpic={lastUser().userpic} class={styles.userpic} />
+        <div class={styles.userpic}>
+          <GroupAvatar authors={data().users} />
+        </div>
         <div>{content()}</div>
         <div class={styles.timeContainer}>{formattedDateTime()}</div>
       </div>

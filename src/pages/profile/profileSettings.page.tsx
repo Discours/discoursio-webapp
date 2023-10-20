@@ -127,7 +127,7 @@ export const ProfileSettingsPage = () => {
                         <Userpic
                           name={form.name}
                           userpic={form.userpic}
-                          isBig={true}
+                          size={'XL'}
                           onClick={handleAvatarClick}
                           loading={isUserpicUpdating()}
                         />

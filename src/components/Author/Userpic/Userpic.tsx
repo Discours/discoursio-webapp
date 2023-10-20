@@ -1,4 +1,4 @@
-import { Show } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 import styles from './Userpic.module.scss'
 import { clsx } from 'clsx'
 import { imageProxy } from '../../../utils/imageProxy'
@@ -12,27 +12,47 @@ type Props = {
   slug?: string
   onClick?: () => void
   loading?: boolean
-  isBig?: boolean
-  isMedium?: boolean
   hasLink?: boolean
-  isAuthorsList?: boolean
-  isFeedMode?: boolean
+  size?: 'XS' | 'S' | 'M' | 'L' | 'XL' // 20 | 28 | 32 | 40 | 168
 }
 
 export const Userpic = (props: Props) => {
+  const [userpicUrl, setUserpicUrl] = createSignal<string>()
   const letters = () => {
     if (!props.name) return
     const names = props.name ? props.name.split(' ') : []
     return names[0][0] + (names.length > 1 ? names[1][0] : '')
   }
 
+  const comutedAvatarSize = () => {
+    switch (props.size) {
+      case 'XS': {
+        return '40x40'
+      }
+      case 'S': {
+        return '56x56'
+      }
+      case 'L': {
+        return '80x80'
+      }
+      case 'XL': {
+        return '336x336'
+      }
+      default: {
+        return '64x64'
+      }
+    }
+  }
+
+  setUserpicUrl(
+    props.userpic && props.userpic.includes('100x')
+      ? props.userpic.replace('100x', comutedAvatarSize())
+      : props.userpic
+  )
+
   return (
     <div
-      class={clsx(styles.Userpic, props.class, {
-        [styles.big]: props.isBig,
-        [styles.medium]: props.isMedium,
-        [styles.authorsList]: props.isAuthorsList,
-        [styles.feedMode]: props.isFeedMode,
+      class={clsx(styles.Userpic, props.class, styles[props.size ?? 'M'], {
         ['cursorPointer']: props.onClick
       })}
       onClick={props.onClick}
@@ -47,7 +67,7 @@ export const Userpic = (props: Props) => {
             fallback={
               <img
                 class={clsx({ [styles.anonymous]: !props.userpic })}
-                src={imageProxy(props.userpic) || '/icons/user-default.svg'}
+                src={imageProxy(userpicUrl()) || '/icons/user-default.svg'}
                 alt={props.name || ''}
                 loading="lazy"
               />

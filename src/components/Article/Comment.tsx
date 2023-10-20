@@ -20,6 +20,7 @@ import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { router } from '../../stores/router'
 
 import styles from './Comment.module.scss'
+import { AuthorLink } from '../Author/AhtorLink'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
@@ -135,7 +136,6 @@ export const Comment = (props: Props) => {
                 <Userpic
                   name={comment().createdBy.name}
                   userpic={comment().createdBy.userpic}
-                  isBig={false}
                   class={clsx({
                     [styles.compactUserpic]: props.compact
                   })}
@@ -148,13 +148,7 @@ export const Comment = (props: Props) => {
           >
             <div class={styles.commentDetails}>
               <div class={styles.commentAuthor}>
-                <AuthorCard
-                  author={comment()?.createdBy as Author}
-                  hideDescription={true}
-                  hideFollow={true}
-                  isComments={true}
-                  hasLink={true}
-                />
+                <AuthorLink author={comment()?.createdBy as Author} />
               </div>
 
               <Show when={props.isArticleAuthor}>

@@ -45,6 +45,10 @@
 
   &.four {
     .item {
+      width: 19px;
+      height: 19px;
+      min-width: 19px;
+
       &:nth-child(1) {
         left: 0;
         top: 0;

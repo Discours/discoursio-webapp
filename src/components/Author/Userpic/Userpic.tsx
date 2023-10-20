@@ -27,7 +27,7 @@ export const Userpic = (props: Props) => {
   const comutedAvatarSize = () => {
     switch (props.size) {
       case 'XS': {
-        return '32x32'
+        return '40x40'
       }
       case 'S': {
         return '56x56'

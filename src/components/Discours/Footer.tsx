@@ -1,7 +1,7 @@
 import { createMemo, For } from 'solid-js'
 import styles from './Footer.module.scss'
 import { Icon } from '../_shared/Icon'
-import Subscribe from './Subscribe'
+import { Subscribe } from '../_shared/Subscribe'
 
 import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'

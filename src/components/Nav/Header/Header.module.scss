@@ -244,40 +244,6 @@
   color: #696969;
 }
 
-.mobileSubscription {
-  margin-bottom: 5rem;
-
-  input[type='email'] {
-    background: #f7f7f8;
-    border: none;
-    border-radius: 1.6rem;
-    padding-right: 5.6rem;
-
-    &:not(:placeholder-shown) {
-      & ~ .mobileSubscriptionSubmit {
-        display: block;
-      }
-    }
-  }
-}
-
-.mobileSubscriptionSubmit {
-  aspect-ratio: 1/1;
-  display: none;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-
-  img {
-    aspect-ratio: 1/1;
-    left: 50%;
-    position: relative;
-    transform: translateX(-50%);
-    width: 16px !important;
-  }
-}
-
 .mainNavigationItemActive {
   background: var(--link-hover-background) !important;
   color: var(--link-hover-color) !important;

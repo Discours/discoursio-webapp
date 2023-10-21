@@ -1,13 +1,15 @@
 import { createSignal, JSX, Show } from 'solid-js'
-
-import { useLocalize } from '../../context/localize'
-import { validateEmail } from '../../utils/validateEmail'
-import { Button } from '../_shared/Button'
-
+import { useLocalize } from '../../../context/localize'
+import { validateEmail } from '../../../utils/validateEmail'
+import { Button } from '../Button'
 import styles from './Subscribe.module.scss'
-import { useSnackbar } from '../../context/snackbar'
+import { useSnackbar } from '../../../context/snackbar'
+import { Icon } from '../Icon'
 
-export default () => {
+type Props = {
+  variant?: 'mobileSubscription'
+}
+export const Subscribe = (props: Props) => {
   const { t } = useLocalize()
 
   const [title, setTitle] = createSignal('')
@@ -69,19 +71,36 @@ export default () => {
   }
 
   return (
-    <form class={styles.form} onSubmit={handleSubmit} novalidate>
+    <form
+      class={props.variant === 'mobileSubscription' ? styles.mobileSubscription : styles.form}
+      onSubmit={handleSubmit}
+      novalidate
+    >
       <Show when={!title()} fallback={title()}>
-        <div class={styles.controls}>
-          <input
-            type="email"
-            name="email"
-            value={email()}
-            onInput={handleInput}
-            class={styles.input}
-            placeholder={t('Fill email')}
-          />
-          <Button class={styles.button} type="submit" variant="secondary" value={t('Subscribe')} />
-        </div>
+        <Show
+          when={props.variant === 'mobileSubscription'}
+          fallback={
+            <div class={styles.controls}>
+              <input
+                type="email"
+                name="email"
+                value={email()}
+                onInput={handleInput}
+                class={styles.input}
+                placeholder={t('Fill email')}
+              />
+              <Button class={styles.button} type="submit" variant="secondary" value={t('Subscribe')} />
+            </div>
+          }
+        >
+          <div class="pretty-form__item">
+            <input type="email" placeholder={t('Your email')} id="subscription-email" />
+            <label for="subscription-email">{t('Your email')}</label>
+            <button type="submit" class={styles.mobileSubscriptionSubmit}>
+              <Icon name="arrow-right" />
+            </button>
+          </div>
+        </Show>
         <Show when={emailError()}>
           <div class={styles.error}>{emailError()}</div>
         </Show>

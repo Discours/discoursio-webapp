@@ -1,9 +1,14 @@
 .comment {
   margin: 0 0 0.5em;
-  padding: 0;
+  padding: 0 1rem;
   transition: background-color 0.3s;
   position: relative;
   list-style: none;
+
+  & .comment {
+    margin-left: 1rem;
+    margin-right: -1rem;
+  }
 
   &.isNew {
     border-radius: 6px;
@@ -106,7 +111,7 @@
 
 .commentControl {
   border: none;
-  color: #696969;
+  color: var(--secondary-color);
   cursor: pointer;
   display: inline-flex;
   line-height: 1.2;
@@ -119,8 +124,8 @@
   vertical-align: top;
 
   &:hover {
-    background: #000;
-    color: #fff;
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
 
     .icon {
       filter: invert(1);

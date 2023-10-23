@@ -189,7 +189,7 @@ export const Comment = (props: Props) => {
           </div>
 
           <Show when={!props.compact}>
-            <div class={styles.commentControls}>
+            <div>
               <ShowIfAuthenticated>
                 <button
                   disabled={loading()}

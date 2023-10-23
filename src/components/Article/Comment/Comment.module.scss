@@ -1,9 +1,13 @@
 .comment {
   margin: 0 0 0.5em;
-  padding: 1rem;
+  padding: 0 1rem;
   transition: background-color 0.3s;
   position: relative;
   list-style: none;
+
+  & .comment {
+    margin-right: -1rem;
+  }
 
   &.isNew {
     border-radius: 6px;
@@ -18,7 +22,7 @@
     &::before,
     &::after {
       content: '';
-      left: 0;
+      left: -14px;
       position: absolute;
     }
 
@@ -26,9 +30,9 @@
       border-bottom: 2px solid #ccc;
       border-left: 2px solid #ccc;
       border-radius: 0 0 0 1.2rem;
-      top: -1rem;
-      height: 2.4rem;
-      width: 1.2rem;
+      top: -24px;
+      height: 50px;
+      width: 12px;
     }
 
     &::after {
@@ -57,6 +61,14 @@
     align-items: center;
     margin-bottom: 1.4rem;
   }
+
+  .commentControl:not(.commentControlReply) {
+    opacity: 0;
+  }
+
+  &:hover .commentControl {
+    opacity: 1;
+  }
 }
 
 .commentContent {
@@ -69,12 +81,6 @@
       opacity: 1;
     }
   }
-}
-
-.commentControls {
-  @include font-size(1.2rem);
-
-  margin-bottom: 0.5em;
 }
 
 .commentControlReply,
@@ -104,7 +110,7 @@
 
 .commentControl {
   border: none;
-  color: #696969;
+  color: var(--secondary-color);
   cursor: pointer;
   display: inline-flex;
   line-height: 1.2;
@@ -117,8 +123,8 @@
   vertical-align: top;
 
   &:hover {
-    background: #000;
-    color: #fff;
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
 
     .icon {
       filter: invert(1);
@@ -173,9 +179,10 @@
 }
 
 .articleAuthor {
-  color: #2638d9;
-  font-size: 12px;
-  margin-right: 12px;
+  @include font-size(1.2rem);
+
+  color: var(--blue-500);
+  margin: 0.3rem 1rem 0;
 }
 
 .articleLink {

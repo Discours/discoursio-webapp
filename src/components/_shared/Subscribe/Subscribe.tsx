@@ -94,7 +94,13 @@ export const Subscribe = (props: Props) => {
           }
         >
           <div class="pretty-form__item">
-            <input type="email" placeholder={t('Your email')} id="subscription-email" />
+            <input
+              value={email()}
+              onInput={handleInput}
+              type="email"
+              placeholder={t('Your email')}
+              id="subscription-email"
+            />
             <label for="subscription-email">{t('Your email')}</label>
             <button type="submit" class={styles.mobileSubscriptionSubmit}>
               <Icon name="arrow-right" />

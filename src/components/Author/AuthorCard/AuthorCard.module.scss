@@ -11,19 +11,22 @@
   @include media-breakpoint-down(md) {
     justify-content: center;
   }
+
   @include media-breakpoint-up(md) {
     margin-bottom: 2.4rem;
   }
 
   .authorName {
     @include font-size(4rem);
+
     font-weight: 700;
     margin-bottom: 0.2em;
   }
 
   .authorAbout {
-    color: #696969;
     @include font-size(2rem);
+
+    color: #696969;
     font-weight: 500;
     margin-top: 1.5rem;
   }
@@ -119,6 +122,7 @@
 
 .authorName {
   @include font-size(4rem);
+
   line-height: 1.1;
 }
 
@@ -172,9 +176,10 @@
       }
 
       .authorSubscribeSocialLabel {
+        @include font-size(1.6rem);
+
         color: #000;
         display: block;
-        @include font-size(1.6rem);
         left: 100%;
         padding-left: 0.4rem;
         position: absolute;
@@ -429,9 +434,11 @@
     &:nth-child(1) {
       z-index: 2;
     }
+
     &:nth-child(2) {
       z-index: 1;
     }
+
     &:not(:last-child) {
       margin-right: -4px;
       box-shadow: 0 0 0 1px var(--background-color);

@@ -35,7 +35,6 @@ export const AuthorView = (props: Props) => {
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
   const { page: getPage } = useRouter()
-  const { user } = useSession()
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)

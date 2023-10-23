@@ -3,7 +3,6 @@ import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
 
 import MD from './MD'
-import { AuthorCard } from '../Author/AuthorCard'
 import { Userpic } from '../Author/Userpic'
 import { CommentRatingControl } from './CommentRatingControl'
 import { CommentDate } from './CommentDate'

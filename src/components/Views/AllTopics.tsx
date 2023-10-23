@@ -34,7 +34,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     sortBy: searchParams().by || 'shouts'
   })
 
-  const { session, subscriptions } = useSession()
+  const { subscriptions } = useSession()
 
   onMount(() => {
     if (!searchParams().by) {

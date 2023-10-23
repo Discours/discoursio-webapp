@@ -1,7 +1,6 @@
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/ArticleCard'
-import { AuthorCard } from '../Author/AuthorCard'
 import { Sidebar } from '../Feed/Sidebar'
 import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'

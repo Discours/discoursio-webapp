@@ -22,9 +22,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
   const { seen } = useSeenStore()
   const { subscriptions } = useSession()
   const { page } = useRouter()
-  const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
-  const { topicEntities } = useTopicsStore()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
 
   const checkTopicIsSeen = (topicSlug: string) => {

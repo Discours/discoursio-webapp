@@ -122,7 +122,7 @@ export const Comment = (props: Props) => {
   return (
     <li
       id={`comment_${comment().id}`}
-      class={clsx(styles.comment, props.class, {
+      class={clsx(styles.comment, props.class, styles.isNew, {
         [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen
       })}
     >

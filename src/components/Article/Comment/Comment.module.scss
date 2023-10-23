@@ -26,9 +26,9 @@
       border-bottom: 2px solid #ccc;
       border-left: 2px solid #ccc;
       border-radius: 0 0 0 1.2rem;
-      top: -2rem;
-      height: 4.65rem;
-      width: 1.2rem;
+      top: -24px;
+      height: 50px;
+      width: 12px;
     }
 
     &::after {
@@ -57,6 +57,14 @@
     align-items: center;
     margin-bottom: 1.4rem;
   }
+
+  .commentControl:not(.commentControlReply) {
+    opacity: 0;
+  }
+
+  &:hover .commentControl {
+    opacity: 1;
+  }
 }
 
 .commentContent {
@@ -69,12 +77,6 @@
       opacity: 1;
     }
   }
-}
-
-.commentControls {
-  @include font-size(1.2rem);
-
-  margin-bottom: 0.5em;
 }
 
 .commentControlReply,
@@ -173,9 +175,10 @@
 }
 
 .articleAuthor {
-  color: #2638d9;
-  font-size: 12px;
-  margin-right: 12px;
+  @include font-size(1.2rem);
+
+  color: var(--blue-500);
+  margin: 0.3rem 1rem 0;
 }
 
 .articleLink {

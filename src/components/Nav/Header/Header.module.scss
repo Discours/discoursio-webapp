@@ -74,8 +74,11 @@
 
   img {
     height: 20px;
+    margin-top: 0.3rem;
     object-fit: contain;
     object-position: left;
+    position: relative;
+    top: 0.3rem;
     transition: height 0.2s;
     vertical-align: middle;
     width: 100px;
@@ -155,7 +158,7 @@
         display: block;
         font-size: 3.2rem !important;
         font-weight: bold;
-        margin: 0 0 5rem;
+        margin: 0 0 4rem;
       }
 
       li {
@@ -192,8 +195,9 @@
   }
 
   :global(.view-switcher) {
-    margin-top: 0;
+    margin: 0 -0.5rem;
     overflow: hidden;
+    padding: 0;
   }
 
   li {
@@ -224,20 +228,51 @@
   }
 }
 
-.mainNavigationSocial a {
-  display: flex;
-  justify-content: space-between;
+.mainNavigationSocial {
+  font-size: 2rem;
+  font-weight: 500;
 
-  &:hover {
+  .mainNavigation .mainNavigationMobile & {
+    margin-bottom: 0 !important;
+  }
+
+  a {
+    align-items: center;
+    display: flex;
+
+    &:hover {
+      .icon {
+        filter: invert(1);
+      }
+    }
+
     .icon {
-      filter: invert(1);
+      height: 3.8rem;
+      margin-right: 0.3em;
+      width: 3.8rem;
     }
   }
+}
 
-  .icon {
-    height: 3.8rem;
-    width: 3.8rem;
-  }
+.languageSelectorMobile {
+  border: 2px solid #e8e8e8;
+  border-radius: 1.6rem;
+  display: block;
+  font-family: inherit;
+  font-size: 1.7rem;
+  height: 5.6rem;
+  margin-bottom: 5rem;
+  padding: 0 1.2rem;
+  width: 100%;
+}
+
+.mainNavigationAdditionalLinks {
+  border-top: 1px solid #ccc;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.6rem 0 2rem;
 }
 
 .mobileDescription {

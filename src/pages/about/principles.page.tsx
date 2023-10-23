@@ -61,7 +61,7 @@ export const PrinciplesPage = () => {
             </ol>
 
             <h2 class="h2" id="participation">
-              <span class="wrapped">Как участвовать в&nbsp;самиздате</span>
+              <span class="wrapped">Как у&nbsp;нас принято себя вести</span>
             </h2>
 
             <p>

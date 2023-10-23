@@ -227,16 +227,16 @@ export const Header = (props: Props) => {
               </ul>
 
               <div class={styles.mainNavigationMobile}>
-                <h4>{t('Join the community')}</h4>
+                <h4>{t('Participating')}</h4>
                 <ul class="view-switcher">
                   <li>
                     <a href="/create">{t('Create post')}</a>
                   </li>
                   <li>
-                    <a href="/about/manifest#participation">{t('Support us')}</a>
+                    <a href="/connect">{t('Suggest an idea')}</a>
                   </li>
                   <li>
-                    <a href="/about/help">{t('How to help')}</a>
+                    <a href="/about/help">{t('Support the project')}</a>
                   </li>
                 </ul>
 
@@ -244,44 +244,57 @@ export const Header = (props: Props) => {
                 <ul class="view-switcher">
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://www.instagram.com/discoursio/">
-                      Instagram
                       <Icon name="user-link-instagram" class={styles.icon} />
+                      Instagram
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://facebook.com/discoursio">
-                      Facebook
                       <Icon name="user-link-facebook" class={styles.icon} />
+                      Facebook
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://twitter.com/discours_io">
-                      Twitter
                       <Icon name="user-link-twitter" class={styles.icon} />
+                      Twitter
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://t.me/discoursio">
-                      Telegram
                       <Icon name="user-link-telegram" class={styles.icon} />
+                      Telegram
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://dzen.ru/discoursio">
-                      Dzen
                       <Icon name="user-link-dzen" class={styles.icon} />
+                      Dzen
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://vk.com/discoursio">
-                      VK
                       <Icon name="user-link-vk" class={styles.icon} />
+                      VK
                     </a>
                   </li>
                 </ul>
 
                 <h4>{t('Newsletter')}</h4>
                 <Subscribe variant={'mobileSubscription'} />
+
+                <h4>{t('Newsletter')}</h4>
+                <select class={styles.languageSelectorMobile}>
+                  <option value="ru">🇷🇺 Русский</option>
+                  <option value="en">🇬🇧 English</option>
+                </select>
+
+                <div class={styles.mainNavigationAdditionalLinks}>
+                  <a href="/about/dogma">{t('Dogma')}</a>
+                  <a href="/about/discussion-rules" innerHTML={t('Discussion rules')} />
+                  <a href="/about/principles">{t('Principles')}</a>
+                </div>
+
                 <p
                   class={styles.mobileDescription}
                   innerHTML={t(

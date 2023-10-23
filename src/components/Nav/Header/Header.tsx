@@ -23,6 +23,7 @@ import styles from './Header.module.scss'
 import { apiClient } from '../../../utils/apiClient'
 import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { Link } from './Link'
+import { Subscribe } from '../../_shared/Subscribe'
 
 type Props = {
   title?: string
@@ -280,16 +281,7 @@ export const Header = (props: Props) => {
                 </ul>
 
                 <h4>{t('Newsletter')}</h4>
-                <form action="." class={styles.mobileSubscription}>
-                  <div class="pretty-form__item">
-                    <input type="email" placeholder="Ваш email" id="subscription-email" />
-                    <label for="subscription-email">{t('Your email')}</label>
-                    <button class={styles.mobileSubscriptionSubmit}>
-                      <Icon name="arrow-right" />
-                    </button>
-                  </div>
-                </form>
-
+                <Subscribe variant={'mobileSubscription'} />
                 <p
                   class={styles.mobileDescription}
                   innerHTML={t(

@@ -3,7 +3,6 @@ import { Icon } from '../_shared/Icon'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { Sidebar } from '../Feed/Sidebar'
 import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
-import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { clsx } from 'clsx'
@@ -49,8 +48,6 @@ export const FeedView = (props: Props) => {
 
   // state
   const { sortedArticles } = useArticlesStore()
-
-  const { sortedAuthors } = useAuthorsStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
@@ -114,7 +111,7 @@ export const FeedView = (props: Props) => {
     <div class="wide-container feed">
       <div class="row">
         <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
-          <Sidebar authors={sortedAuthors()} />
+          <Sidebar />
         </div>
 
         <div class="col-md-12 offset-xl-1">

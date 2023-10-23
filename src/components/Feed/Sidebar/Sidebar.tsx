@@ -1,8 +1,5 @@
 import { createSignal, For, Show } from 'solid-js'
-import type { Author } from '../../../graphql/types.gen'
-import { useAuthorsStore } from '../../../stores/zine/authors'
 import { Icon } from '../../_shared/Icon'
-import { useTopicsStore } from '../../../stores/zine/topics'
 import { useArticlesStore } from '../../../stores/zine/articles'
 import { useSeenStore } from '../../../stores/zine/seen'
 import { useSession } from '../../../context/session'
@@ -13,11 +10,7 @@ import { Userpic } from '../../Author/Userpic'
 import { getPagePath } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
 
-type FeedSidebarProps = {
-  authors: Author[]
-}
-
-export const Sidebar = (props: FeedSidebarProps) => {
+export const Sidebar = () => {
   const { t } = useLocalize()
   const { seen } = useSeenStore()
   const { subscriptions } = useSession()

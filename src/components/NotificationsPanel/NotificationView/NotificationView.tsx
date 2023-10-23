@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import type { Author, Notification } from '../../../graphql/types.gen'
+import type { Notification } from '../../../graphql/types.gen'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 import { NotificationType } from '../../../graphql/types.gen'
 import { getPagePath, openPage } from '@nanostores/router'

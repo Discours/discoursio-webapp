@@ -63,16 +63,20 @@
     width: 100%;
 
     @include media-breakpoint-up(sm) {
-      max-width: 460px;
+      max-width: 600px;
     }
 
     @include media-breakpoint-up(md) {
-      width: 50%;
+      width: 65%;
     }
 
     .close {
       right: 1.6rem;
       top: 1.6rem;
+    }
+
+    .modalInner {
+      padding: 3.8rem 2rem 2rem;
     }
   }
 }

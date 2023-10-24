@@ -143,8 +143,8 @@ export const HeaderAuth = (props: Props) => {
             <Show when={!session()}>
               <div class={styles.userControlItem} onClick={handleBellIconClick}>
                 <div class={styles.button}>
-                  <Icon name="bell-white" counter="1" class={styles.icon} />
-                  <Icon name="bell-white-hover" counter="1" class={clsx(styles.icon, styles.iconHover)} />
+                  <Icon name="bell-white" counter={1} class={styles.icon} />
+                  <Icon name="bell-white-hover" counter={1} class={clsx(styles.icon, styles.iconHover)} />
                 </div>
               </div>
             </Show>

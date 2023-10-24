@@ -63,7 +63,7 @@ export const ProfileSettingsPage = () => {
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
   const handleAvatarClick = async () => {
-    await selectFiles(async ([uploadFile]) => {
+    selectFiles(async ([uploadFile]) => {
       try {
         setIsUserpicUpdating(true)
         const result = await handleFileUpload(uploadFile)

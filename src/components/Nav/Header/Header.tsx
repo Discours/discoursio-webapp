@@ -24,7 +24,6 @@ import { apiClient } from '../../../utils/apiClient'
 import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { Link } from './Link'
 import { Subscribe } from '../../_shared/Subscribe'
-import { AuthModalSearchParams } from '../AuthModal/types'
 
 type Props = {
   title?: string
@@ -41,7 +40,6 @@ type HeaderSearchParams = {
 
 export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { changeSearchParam } = useRouter()
   const { modal } = useModalStore()
   const { page } = useRouter()
   const {

@@ -65,10 +65,6 @@
   .commentControl:not(.commentControlReply) {
     opacity: 0;
   }
-
-  &:hover .commentControl {
-    opacity: 1;
-  }
 }
 
 .commentContent {
@@ -77,7 +73,8 @@
     .commentControlShare,
     .commentControlDelete,
     .commentControlEdit,
-    .commentControlComplain {
+    .commentControlComplain,
+    .commentControl {
       opacity: 1;
     }
   }

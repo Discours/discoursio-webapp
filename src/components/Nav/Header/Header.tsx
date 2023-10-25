@@ -155,7 +155,9 @@ export const Header = (props: Props) => {
       return
     }
     event.preventDefault()
-    page().route === route && toggleFixed()
+    if (page().route === route) {
+      toggleFixed()
+    }
   }
   return (
     <header

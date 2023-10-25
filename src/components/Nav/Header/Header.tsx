@@ -38,6 +38,10 @@ type HeaderSearchParams = {
   source?: string
 }
 
+const handleSwitchLanguage = (event) => {
+  location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${event.target.value}`
+}
+
 export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
   const { modal } = useModalStore()
@@ -154,12 +158,6 @@ export const Header = (props: Props) => {
     event.preventDefault()
     page().route === route && toggleFixed()
   }
-
-  const handleSwitchLanguage = (event) => {
-    setLanguage(event.target.value)
-    location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${language()}`
-  }
-
   return (
     <header
       class={styles.mainHeader}
@@ -304,7 +302,7 @@ export const Header = (props: Props) => {
                 <select
                   class={styles.languageSelectorMobile}
                   onChange={handleSwitchLanguage}
-                  value={language()}
+                  value={lang()}
                 >
                   <option value="ru">🇷🇺 Русский</option>
                   <option value="en">🇬🇧 English</option>

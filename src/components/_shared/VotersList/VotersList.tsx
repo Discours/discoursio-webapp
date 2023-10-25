@@ -22,7 +22,11 @@ export const VotersList = (props: Props) => {
             {(reaction) => (
               <li class={styles.item}>
                 <div class={styles.user}>
-                  <Userpic name={reaction.createdBy.name} userpic={reaction.createdBy.userpic} />
+                  <Userpic
+                    name={reaction.createdBy.name}
+                    userpic={reaction.createdBy.userpic}
+                    class={styles.userpic}
+                  />
                   <a href={`/author/${reaction.createdBy.slug}`}>{reaction.createdBy.name || ''}</a>
                 </div>
                 {reaction.kind === ReactionKind.Like ? (

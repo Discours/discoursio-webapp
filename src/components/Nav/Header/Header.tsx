@@ -12,7 +12,7 @@ import { Icon } from '../../_shared/Icon'
 import type { Topic } from '../../../graphql/types.gen'
 
 import { useModalStore } from '../../../stores/ui'
-import { router, useRouter } from '../../../stores/router'
+import { router, ROUTES, useRouter } from '../../../stores/router'
 
 import { getDescription } from '../../../utils/meta'
 
@@ -62,7 +62,6 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const [language, setLanguage] = createSignal(lang() === 'ru' ? 'en' : 'ru')
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
 
   const tag = (topic: Topic) =>
@@ -151,7 +150,7 @@ export const Header = (props: Props) => {
     setRandomTopics(topics)
   })
 
-  const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
+  const handleToggleMenuByLink = (event: MouseEvent, route: keyof typeof ROUTES) => {
     if (!fixed()) {
       return
     }

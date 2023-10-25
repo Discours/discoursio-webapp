@@ -74,11 +74,10 @@
 
   img {
     height: 20px;
-    margin-top: 0.3rem;
     object-fit: contain;
     object-position: left;
     position: relative;
-    top: 0.3rem;
+    top: 0.1rem;
     transition: height 0.2s;
     vertical-align: middle;
     width: 100px;
@@ -308,7 +307,7 @@
 
 .burger {
   cursor: pointer;
-  height: 1.8rem;
+  height: 1.6rem;
   display: inline-block;
   position: relative;
   vertical-align: middle;
@@ -356,13 +355,13 @@
     }
 
     &::after {
-      bottom: 0.8rem;
+      bottom: 0.7rem;
       transform: rotate(-45deg);
     }
 
     &::before {
       transform: rotate(45deg);
-      top: 0.8rem;
+      top: 0.7rem;
     }
   }
 }

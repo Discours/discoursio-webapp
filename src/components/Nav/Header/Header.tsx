@@ -12,7 +12,7 @@ import { Icon } from '../../_shared/Icon'
 import type { Topic } from '../../../graphql/types.gen'
 
 import { useModalStore } from '../../../stores/ui'
-import { router, useRouter } from '../../../stores/router'
+import { router, ROUTES, useRouter } from '../../../stores/router'
 
 import { getDescription } from '../../../utils/meta'
 
@@ -38,11 +38,14 @@ type HeaderSearchParams = {
   source?: string
 }
 
+const handleSwitchLanguage = (event) => {
+  location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${event.target.value}`
+}
+
 export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
-
   const { modal } = useModalStore()
-
+  const { page } = useRouter()
   const {
     actions: { requireAuthentication }
   } = useSession()
@@ -59,7 +62,6 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
 
   const tag = (topic: Topic) =>
@@ -148,6 +150,15 @@ export const Header = (props: Props) => {
     setRandomTopics(topics)
   })
 
+  const handleToggleMenuByLink = (event: MouseEvent, route: keyof typeof ROUTES) => {
+    if (!fixed()) {
+      return
+    }
+    event.preventDefault()
+    if (page().route === route) {
+      toggleFixed()
+    }
+  }
   return (
     <header
       class={styles.mainHeader}
@@ -196,6 +207,7 @@ export const Header = (props: Props) => {
                   routeName="home"
                   active={isZineVisible()}
                   body={t('journal')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'home')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
@@ -203,6 +215,7 @@ export const Header = (props: Props) => {
                   routeName="feed"
                   active={isFeedVisible()}
                   body={t('feed')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'feed')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
@@ -210,12 +223,14 @@ export const Header = (props: Props) => {
                   routeName="topics"
                   active={isTopicsVisible()}
                   body={t('topics')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'topics')}
                 />
                 <Link
                   onMouseOver={(event) => hideSubnavigation(event, 0)}
                   onMouseOut={(event) => hideSubnavigation(event, 0)}
                   routeName="authors"
                   body={t('authors')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'authors')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
@@ -223,6 +238,7 @@ export const Header = (props: Props) => {
                   routeName="guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}
+                  onClick={(event) => handleToggleMenuByLink(event, 'guide')}
                 />
               </ul>
 
@@ -283,8 +299,12 @@ export const Header = (props: Props) => {
                 <h4>{t('Newsletter')}</h4>
                 <Subscribe variant={'mobileSubscription'} />
 
-                <h4>{t('Newsletter')}</h4>
-                <select class={styles.languageSelectorMobile}>
+                <h4>{t('Language')}</h4>
+                <select
+                  class={styles.languageSelectorMobile}
+                  onChange={handleSwitchLanguage}
+                  value={lang()}
+                >
                   <option value="ru">🇷🇺 Русский</option>
                   <option value="en">🇬🇧 English</option>
                 </select>

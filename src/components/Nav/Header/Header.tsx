@@ -24,6 +24,7 @@ import { apiClient } from '../../../utils/apiClient'
 import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { Link } from './Link'
 import { Subscribe } from '../../_shared/Subscribe'
+import { AuthModalSearchParams } from '../AuthModal/types'
 
 type Props = {
   title?: string
@@ -40,9 +41,9 @@ type HeaderSearchParams = {
 
 export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
-
+  const { changeSearchParam } = useRouter()
   const { modal } = useModalStore()
-
+  const { page } = useRouter()
   const {
     actions: { requireAuthentication }
   } = useSession()
@@ -59,7 +60,7 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-
+  const [language, setLanguage] = createSignal(lang() === 'ru' ? 'en' : 'ru')
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
 
   const tag = (topic: Topic) =>
@@ -148,6 +149,19 @@ export const Header = (props: Props) => {
     setRandomTopics(topics)
   })
 
+  const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
+    if (!fixed()) {
+      return
+    }
+    event.preventDefault()
+    page().route === route && toggleFixed()
+  }
+
+  const handleSwitchLanguage = (event) => {
+    setLanguage(event.target.value)
+    location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${language()}`
+  }
+
   return (
     <header
       class={styles.mainHeader}
@@ -196,9 +210,7 @@ export const Header = (props: Props) => {
                   routeName="home"
                   active={isZineVisible()}
                   body={t('journal')}
-                  onClick={() => {
-                    fixed() && toggleFixed()
-                  }}
+                  onClick={(event) => handleToggleMenuByLink(event, 'home')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
@@ -206,6 +218,7 @@ export const Header = (props: Props) => {
                   routeName="feed"
                   active={isFeedVisible()}
                   body={t('feed')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'feed')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
@@ -213,12 +226,14 @@ export const Header = (props: Props) => {
                   routeName="topics"
                   active={isTopicsVisible()}
                   body={t('topics')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'topics')}
                 />
                 <Link
                   onMouseOver={(event) => hideSubnavigation(event, 0)}
                   onMouseOut={(event) => hideSubnavigation(event, 0)}
                   routeName="authors"
                   body={t('authors')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'authors')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
@@ -226,6 +241,7 @@ export const Header = (props: Props) => {
                   routeName="guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}
+                  onClick={(event) => handleToggleMenuByLink(event, 'guide')}
                 />
               </ul>
 
@@ -286,8 +302,12 @@ export const Header = (props: Props) => {
                 <h4>{t('Newsletter')}</h4>
                 <Subscribe variant={'mobileSubscription'} />
 
-                <h4>{t('Newsletter')}</h4>
-                <select class={styles.languageSelectorMobile}>
+                <h4>{t('Language')}</h4>
+                <select
+                  class={styles.languageSelectorMobile}
+                  onChange={handleSwitchLanguage}
+                  value={language()}
+                >
                   <option value="ru">🇷🇺 Русский</option>
                   <option value="en">🇬🇧 English</option>
                 </select>

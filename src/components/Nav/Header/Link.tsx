@@ -10,7 +10,7 @@ type Props = {
   routeName?: keyof typeof ROUTES
   body: string
   active?: boolean
-  onClick?: () => void
+  onClick?: (event: MouseEvent) => void
 }
 
 export const Link = (props: Props) => {

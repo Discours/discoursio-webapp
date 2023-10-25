@@ -196,6 +196,9 @@ export const Header = (props: Props) => {
                   routeName="home"
                   active={isZineVisible()}
                   body={t('journal')}
+                  onClick={() => {
+                    fixed() && toggleFixed()
+                  }}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}

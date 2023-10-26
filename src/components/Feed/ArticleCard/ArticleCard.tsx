@@ -118,7 +118,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
             <Show when={props.article.cover}>
-              <Image src={props.article.cover} alt={title} width={600} loading="lazy" />
+              <Image src={props.article.cover} alt={title} width={600} />
             </Show>
           </div>
         </div>

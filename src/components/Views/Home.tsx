@@ -129,21 +129,23 @@ export const HomeView = (props: Props) => {
           nodate={true}
         />
 
-        <Slider title={t('Top month articles')}>
-          <For each={topMonthArticles()}>
-            {(a: Shout) => (
-              <ArticleCard
-                article={a}
-                settings={{
-                  additionalClass: 'swiper-slide',
-                  isFloorImportant: true,
-                  isWithCover: true,
-                  nodate: true
-                }}
-              />
-            )}
-          </For>
-        </Slider>
+        <Show when={topMonthArticles()}>
+          <Slider title={t('Top month articles')}>
+            <For each={topMonthArticles()}>
+              {(a: Shout) => (
+                <ArticleCard
+                  article={a}
+                  settings={{
+                    additionalClass: 'swiper-slide',
+                    isFloorImportant: true,
+                    isWithCover: true,
+                    nodate: true
+                  }}
+                />
+              )}
+            </For>
+          </Slider>
+        </Show>
 
         <Row2 articles={sortedArticles().slice(10, 12)} nodate={true} />
 
@@ -159,21 +161,23 @@ export const HomeView = (props: Props) => {
 
         {randomLayout()}
 
-        <Slider title={t('Favorite')}>
-          <For each={topArticles()}>
-            {(a: Shout) => (
-              <ArticleCard
-                article={a}
-                settings={{
-                  additionalClass: 'swiper-slide',
-                  isFloorImportant: true,
-                  isWithCover: true,
-                  nodate: true
-                }}
-              />
-            )}
-          </For>
-        </Slider>
+        <Show when={topArticles()}>
+          <Slider title={t('Favorite')}>
+            <For each={topArticles()}>
+              {(a: Shout) => (
+                <ArticleCard
+                  article={a}
+                  settings={{
+                    additionalClass: 'swiper-slide',
+                    isFloorImportant: true,
+                    isWithCover: true,
+                    nodate: true
+                  }}
+                />
+              )}
+            </For>
+          </Slider>
+        </Show>
 
         <Beside
           beside={sortedArticles()[20]}

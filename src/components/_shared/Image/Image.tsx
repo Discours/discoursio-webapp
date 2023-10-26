@@ -1,9 +1,16 @@
 import { splitProps } from 'solid-js'
 import type { JSX } from 'solid-js'
-import { imageProxy } from '../../../utils/imageProxy'
+import { getImageUrl } from '../../../utils/getImageUrl'
 
-export const Image = (props: JSX.ImgHTMLAttributes<HTMLImageElement>) => {
-  const [local, others] = splitProps(props, ['src'])
+type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
+  width: number
+  alt: string
+}
 
-  return <img src={imageProxy(local.src)} {...others} />
+export const Image = (props: Props) => {
+  const [local, others] = splitProps(props, ['src', 'alt'])
+
+  const src = getImageUrl(local.src, { width: others.width })
+
+  return <img src={src} alt={local.alt} {...others} />
 }

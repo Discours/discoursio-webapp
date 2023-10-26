@@ -3,7 +3,6 @@ import { PlayerHeader } from './PlayerHeader'
 import { PlayerPlaylist } from './PlayerPlaylist'
 import styles from './AudioPlayer.module.scss'
 import { MediaItem } from '../../../pages/types'
-import { imageProxy } from '../../../utils/imageProxy'
 
 type Props = {
   media: MediaItem[]
@@ -145,8 +144,7 @@ export const AudioPlayer = (props: Props) => {
           <audio
             ref={(el) => (audioRef.current = el)}
             onTimeUpdate={handleAudioTimeUpdate}
-            // TEMP SOLUTION for http/https
-            src={currentTack().url.startsWith('https') ? currentTack().url : imageProxy(currentTack().url)}
+            src={currentTack().url}
             onCanPlay={() => {
               // start to play the next track on src change
               if (isPlaying()) {

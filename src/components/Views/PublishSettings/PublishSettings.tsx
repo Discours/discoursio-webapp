@@ -4,7 +4,6 @@ import { createSignal, onMount, Show } from 'solid-js'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Button } from '../../_shared/Button'
 import { hideModal, showModal } from '../../../stores/ui'
-import { imageProxy } from '../../../utils/imageProxy'
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
@@ -20,6 +19,7 @@ import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { createStore } from 'solid-js/store'
 import { UploadedFile } from '../../../pages/types'
 import SimplifiedEditor, { MAX_DESCRIPTION_LIMIT } from '../../Editor/SimplifiedEditor'
+import { Image } from '../../_shared/Image'
 
 type Props = {
   shoutId: number
@@ -141,10 +141,11 @@ export const PublishSettings = (props: Props) => {
               >
                 <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
                   <div class={styles.shoutCardCover}>
-                    <img
-                      src={imageProxy(settingsForm.coverImageUrl)}
+                    <Image
+                      src={settingsForm.coverImageUrl}
                       alt={initialData.title}
                       loading="lazy"
+                      width={1600}
                     />
                   </div>
                 </Show>

@@ -2,12 +2,12 @@ import { clsx } from 'clsx'
 import styles from './TopicBadge.module.scss'
 import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { createMemo, createSignal, Show } from 'solid-js'
-import { imageProxy } from '../../../utils/imageProxy'
 import { Button } from '../../_shared/Button'
 import { useSession } from '../../../context/session'
 import { useLocalize } from '../../../context/localize'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { CheckButton } from '../../_shared/CheckButton'
+import { getImageUrl } from '../../../utils/getImageUrl'
 
 type Props = {
   topic: Topic
@@ -43,7 +43,11 @@ export const TopicBadge = (props: Props) => {
       <a
         href={`/topic/${props.topic.slug}`}
         class={clsx(styles.picture, { [styles.withImage]: props.topic.pic })}
-        style={props.topic.pic && { 'background-image': `url('${imageProxy(props.topic.pic)}')` }}
+        style={
+          props.topic.pic && {
+            'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`
+          }
+        }
       />
       <a href={`/topic/${props.topic.slug}`} class={styles.info}>
         <span class={styles.title}>{props.topic.title}</span>

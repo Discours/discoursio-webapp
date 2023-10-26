@@ -12,13 +12,13 @@ import { useSession } from '../../context/session'
 import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
-import { handleFileUpload } from '../../utils/handleFileUpload'
 import { Userpic } from '../../components/Author/Userpic'
 import { createStore } from 'solid-js/store'
 import { clone } from '../../utils/clone'
 import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { AuthGuard } from '../../components/AuthGuard'
+import { handleImageUpload } from '../../utils/handleImageUpload'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -66,7 +66,7 @@ export const ProfileSettingsPage = () => {
     selectFiles(async ([uploadFile]) => {
       try {
         setIsUserpicUpdating(true)
-        const result = await handleFileUpload(uploadFile)
+        const result = await handleImageUpload(uploadFile)
         updateFormField('userpic', result.url)
         setIsUserpicUpdating(false)
         setIsFloatingPanelVisible(true)

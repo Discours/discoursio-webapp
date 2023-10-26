@@ -9,14 +9,15 @@ import { createFileUploader } from '@solid-primitives/upload'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { SwiperRef } from './swiper'
 import { validateFiles } from '../../../utils/validateFile'
-import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { useSnackbar } from '../../../context/snackbar'
 import { Loading } from '../Loading'
-import { imageProxy } from '../../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './Swiper.module.scss'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
+import { handleImageUpload } from '../../../utils/handleImageUpload'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { Image } from '../Image'
 
 type Props = {
   images: MediaItem[]
@@ -95,7 +96,7 @@ export const SolidSwiper = (props: Props) => {
         setLoading(true)
         const results: UploadedFile[] = []
         for (const file of selectedFiles) {
-          const result = await handleFileUpload(file)
+          const result = await handleImageUpload(file)
           results.push(result)
         }
         props.onImagesAdd(composeMediaItems(results))
@@ -172,7 +173,7 @@ export const SolidSwiper = (props: Props) => {
                   // @ts-ignore
                   <swiper-slide lazy="true" virtual-index={index()}>
                     <div class={styles.image}>
-                      <img src={imageProxy(slide.url)} alt={slide.title} />
+                      <Image src={slide.url} alt={slide.title} width={1600} />
                       <Show when={props.editorMode}>
                         <Popover content={t('Delete')}>
                           {(triggerRef: (el) => void) => (
@@ -232,7 +233,9 @@ export const SolidSwiper = (props: Props) => {
                     <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
                       <div
                         class={clsx(styles.imageThumb)}
-                        style={{ 'background-image': `url(${imageProxy(slide.url)})` }}
+                        style={{
+                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`
+                        }}
                       >
                         <Show when={props.editorMode}>
                           <div class={styles.thumbAction}>

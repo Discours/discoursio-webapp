@@ -1,4 +1,4 @@
-import { createMemo, createSignal, Show } from 'solid-js'
+import { createMemo, Show } from 'solid-js'
 import styles from './Userpic.module.scss'
 import { clsx } from 'clsx'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'

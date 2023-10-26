@@ -323,7 +323,6 @@ export const Header = (props: Props) => {
                 />
                 <div class={styles.mobileCopyright}>
                   {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
-                  <a href="/">{t('Terms of use')}</a>
                 </div>
               </div>
             </div>

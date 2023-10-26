@@ -68,8 +68,6 @@
 
   a:link {
     border: none;
-    position: relative;
-    overflow: hidden;
 
     &::before {
       content: '';
@@ -591,6 +589,7 @@
 
       .shoutCardLinkContainer {
         background: var(--default-color);
+        color: var(--link-hover-color);
       }
     }
   }

@@ -8,6 +8,7 @@ import { createEffect, createMemo, For, Show } from 'solid-js'
 import { useNotifications } from '../../context/notifications'
 import { NotificationView } from './NotificationView'
 import { EmptyMessage } from './EmptyMessage'
+import { Button } from '../_shared/Button'
 
 type Props = {
   isOpen: boolean
@@ -104,45 +105,54 @@ export const NotificationsPanel = (props: Props) => {
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
         <Show when={sortedNotifications().length > 0} fallback={<EmptyMessage />}>
-          <Show when={todayNotifications().length > 0}>
-            <div class={styles.periodTitle}>{t('today')}</div>
-            <For each={todayNotifications()}>
-              {(notification) => (
-                <NotificationView
-                  notification={notification}
-                  class={styles.notificationView}
-                  onClick={handleNotificationViewClick}
-                  dateTimeFormat={'ago'}
-                />
-              )}
-            </For>
-          </Show>
-          <Show when={yesterdayNotifications().length > 0}>
-            <div class={styles.periodTitle}>{t('yesterday')}</div>
-            <For each={yesterdayNotifications()}>
-              {(notification) => (
-                <NotificationView
-                  notification={notification}
-                  class={styles.notificationView}
-                  onClick={handleNotificationViewClick}
-                  dateTimeFormat={'time'}
-                />
-              )}
-            </For>
-          </Show>
-          <Show when={earlierNotifications().length > 0}>
-            <div class={styles.periodTitle}>{t('earlier')}</div>
-            <For each={earlierNotifications()}>
-              {(notification) => (
-                <NotificationView
-                  notification={notification}
-                  class={styles.notificationView}
-                  onClick={handleNotificationViewClick}
-                  dateTimeFormat={'date'}
-                />
-              )}
-            </For>
-          </Show>
+          <div class="wide-container">
+            <div class="row position-relative">
+              <div class={clsx('col-md-4 col-lg-3 col-xl-3', styles.content)}>
+                <Show when={todayNotifications().length > 0}>
+                  <div class={styles.periodTitle}>{t('today')}</div>
+                  <For each={todayNotifications()}>
+                    {(notification) => (
+                      <NotificationView
+                        notification={notification}
+                        class={styles.notificationView}
+                        onClick={handleNotificationViewClick}
+                        dateTimeFormat={'ago'}
+                      />
+                    )}
+                  </For>
+                </Show>
+                <Show when={yesterdayNotifications().length > 0}>
+                  <div class={styles.periodTitle}>{t('yesterday')}</div>
+                  <For each={yesterdayNotifications()}>
+                    {(notification) => (
+                      <NotificationView
+                        notification={notification}
+                        class={styles.notificationView}
+                        onClick={handleNotificationViewClick}
+                        dateTimeFormat={'time'}
+                      />
+                    )}
+                  </For>
+                </Show>
+                <Show when={earlierNotifications().length > 0}>
+                  <div class={styles.periodTitle}>{t('earlier')}</div>
+                  <For each={earlierNotifications()}>
+                    {(notification) => (
+                      <NotificationView
+                        notification={notification}
+                        class={styles.notificationView}
+                        onClick={handleNotificationViewClick}
+                        dateTimeFormat={'date'}
+                      />
+                    )}
+                  </For>
+                </Show>
+              </div>
+              <div class={styles.actions}>
+                <Button variant="secondary" value={t('Mark as read')} />
+              </div>
+            </div>
+          </div>
         </Show>
       </div>
     </div>

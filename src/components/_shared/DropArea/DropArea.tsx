@@ -5,7 +5,7 @@ import { createDropzone, createFileUploader } from '@solid-primitives/upload'
 import { useLocalize } from '../../../context/localize'
 import { validateFiles } from '../../../utils/validateFile'
 import type { FileTypeToUpload } from '../../../pages/types'
-import { handleFileUpload1 } from '../../../utils/handleFileUpload'
+import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { UploadedFile } from '../../../pages/types'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
 
@@ -31,7 +31,7 @@ export const DropArea = (props: Props) => {
 
       const results: UploadedFile[] = []
       for (const file of files) {
-        const handler = file.type.startsWith('image/') ? handleImageUpload : handleFileUpload1
+        const handler = props.fileType === 'image' ? handleImageUpload : handleFileUpload
         const result = await handler(file)
         results.push(result)
       }

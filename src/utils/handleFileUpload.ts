@@ -4,7 +4,7 @@ import { UploadedFile } from '../pages/types'
 
 const apiUrl = `${apiBaseUrl}/upload`
 
-export const handleFileUpload1 = async (uploadFile: UploadFile): Promise<UploadedFile> => {
+export const handleFileUpload = async (uploadFile: UploadFile): Promise<UploadedFile> => {
   const formData = new FormData()
   formData.append('file', uploadFile.file, uploadFile.name)
   const response = await fetch(apiUrl, {

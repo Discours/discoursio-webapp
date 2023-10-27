@@ -25,6 +25,7 @@ export const ProfileSettingsPage = () => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
+  const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
 
   const {
@@ -65,12 +66,14 @@ export const ProfileSettingsPage = () => {
   const handleAvatarClick = async () => {
     selectFiles(async ([uploadFile]) => {
       try {
+        setUploadError(false)
         setIsUserpicUpdating(true)
         const result = await handleImageUpload(uploadFile)
         updateFormField('userpic', result.url)
         setIsUserpicUpdating(false)
         setIsFloatingPanelVisible(true)
       } catch (error) {
+        setUploadError(true)
         console.error('[upload avatar] error', error)
       }
     })
@@ -131,6 +134,9 @@ export const ProfileSettingsPage = () => {
                           onClick={handleAvatarClick}
                           loading={isUserpicUpdating()}
                         />
+                        <Show when={uploadError()}>
+                          <div class={styles.error}>{t('Upload error')}</div>
+                        </Show>
                       </div>
                       <h4>{t('Name')}</h4>
                       <p class="description">

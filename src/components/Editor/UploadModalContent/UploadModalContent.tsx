@@ -6,11 +6,11 @@ import { createSignal, Show } from 'solid-js'
 import { InlineForm } from '../InlineForm'
 import { hideModal } from '../../../stores/ui'
 import { createDropzone, createFileUploader, UploadFile } from '@solid-primitives/upload'
-import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { useLocalize } from '../../../context/localize'
 import { Loading } from '../../_shared/Loading'
 import { verifyImg } from '../../../utils/verifyImg'
 import { UploadedFile } from '../../../pages/types'
+import { handleImageUpload } from '../../../utils/handleImageUpload'
 
 type Props = {
   onClose: (image?: UploadedFile) => void
@@ -24,10 +24,10 @@ export const UploadModalContent = (props: Props) => {
   const [dragError, setDragError] = createSignal<string | undefined>()
 
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
-  const runUpload = async (file) => {
+  const runUpload = async (file: UploadFile) => {
     try {
       setIsUploading(true)
-      const result = await handleFileUpload(file)
+      const result = await handleImageUpload(file)
       props.onClose(result)
       setIsUploading(false)
     } catch (error) {
@@ -41,7 +41,7 @@ export const UploadModalContent = (props: Props) => {
     try {
       const data = await fetch(value)
       const blob = await data.blob()
-      const file = await new File([blob], 'convertedFromUrl', { type: data.headers.get('Content-Type') })
+      const file = new File([blob], 'convertedFromUrl', { type: data.headers.get('Content-Type') })
       const fileToUpload: UploadFile = {
         source: blob.toString(),
         name: file.name,
@@ -55,7 +55,7 @@ export const UploadModalContent = (props: Props) => {
   }
 
   const handleUpload = async () => {
-    await selectFiles(async ([uploadFile]) => {
+    selectFiles(async ([uploadFile]) => {
       await runUpload(uploadFile)
     })
   }
@@ -72,12 +72,21 @@ export const UploadModalContent = (props: Props) => {
       }
     }
   })
-  const handleDrag = (event) => {
+  const handleDrag = (event: MouseEvent) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {
       setDragActive(true)
     } else if (event.type === 'dragleave') {
       setDragActive(false)
     }
+  }
+
+  const handleValidate = async (value: string) => {
+    const validationResult = await verifyImg(value)
+    if (!validationResult) {
+      return t('Invalid image URL')
+    }
+
+    return ''
   }
 
   return (
@@ -113,7 +122,7 @@ export const UploadModalContent = (props: Props) => {
                 hideModal()
                 props.onClose()
               }}
-              validate={async (value) => ((await verifyImg(value)) ? '' : t('Invalid image URL'))}
+              validate={handleValidate}
               onSubmit={handleImageFormSubmit}
             />
           </div>

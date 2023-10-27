@@ -2,21 +2,21 @@ import { createMemo, createSignal, For, Show } from 'solid-js'
 import type { Shout } from '../../../graphql/types.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { Icon } from '../../_shared/Icon'
-import styles from './ArticleCard.module.scss'
 import { clsx } from 'clsx'
 import { CardTopic } from '../CardTopic'
 import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import stylesHeader from '../../Nav/Header/Header.module.scss'
 import { getDescription } from '../../../utils/meta'
 import { FeedArticlePopup } from '../FeedArticlePopup'
 import { useLocalize } from '../../../context/localize'
 import { getPagePath, openPage } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
-import { imageProxy } from '../../../utils/imageProxy'
 import { Popover } from '../../_shared/Popover'
+import { Image } from '../../_shared/Image'
 import { useSession } from '../../../context/session'
 import { AuthorLink } from '../../Author/AhtorLink'
+import stylesHeader from '../../Nav/Header/Header.module.scss'
+import styles from './ArticleCard.module.scss'
 
 interface ArticleCardProps {
   settings?: {
@@ -118,7 +118,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
             <Show when={props.article.cover}>
-              <img src={imageProxy(props.article.cover)} alt={title || ''} loading="lazy" />
+              <Image src={props.article.cover} alt={title} width={600} />
             </Show>
           </div>
         </div>
@@ -211,7 +211,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <img src={imageProxy(props.article.cover)} alt={title || ''} loading="lazy" />
+                <Image src={props.article.cover} alt={title} width={600} loading="lazy" />
               </div>
             </div>
           </Show>

@@ -7,6 +7,7 @@ import { validateFiles } from '../../../utils/validateFile'
 import type { FileTypeToUpload } from '../../../pages/types'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { UploadedFile } from '../../../pages/types'
+import { handleImageUpload } from '../../../utils/handleImageUpload'
 
 type Props = {
   class?: string
@@ -30,7 +31,8 @@ export const DropArea = (props: Props) => {
 
       const results: UploadedFile[] = []
       for (const file of files) {
-        const result = await handleFileUpload(file)
+        const handler = props.fileType === 'image' ? handleImageUpload : handleFileUpload
+        const result = await handler(file)
         results.push(result)
       }
       props.onUpload(results)

@@ -1,5 +1,4 @@
 import { UploadedFile } from '../pages/types'
-import { imageProxy } from './imageProxy'
 import { hideModal } from '../stores/ui'
 import { Editor } from '@tiptap/core'
 
@@ -22,7 +21,7 @@ export const renderUploadedImage = (editor: Editor, image: UploadedFile) => {
         {
           type: 'image',
           attrs: {
-            src: imageProxy(image.url)
+            src: image.url
           }
         }
       ]

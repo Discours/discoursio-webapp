@@ -12,19 +12,20 @@ import { useSession } from '../../context/session'
 import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
-import { handleFileUpload } from '../../utils/handleFileUpload'
 import { Userpic } from '../../components/Author/Userpic'
 import { createStore } from 'solid-js/store'
 import { clone } from '../../utils/clone'
 import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { AuthGuard } from '../../components/AuthGuard'
+import { handleImageUpload } from '../../utils/handleImageUpload'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
+  const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
 
   const {
@@ -63,14 +64,16 @@ export const ProfileSettingsPage = () => {
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
   const handleAvatarClick = async () => {
-    await selectFiles(async ([uploadFile]) => {
+    selectFiles(async ([uploadFile]) => {
       try {
+        setUploadError(false)
         setIsUserpicUpdating(true)
-        const result = await handleFileUpload(uploadFile)
+        const result = await handleImageUpload(uploadFile)
         updateFormField('userpic', result.url)
         setIsUserpicUpdating(false)
         setIsFloatingPanelVisible(true)
       } catch (error) {
+        setUploadError(true)
         console.error('[upload avatar] error', error)
       }
     })
@@ -131,6 +134,9 @@ export const ProfileSettingsPage = () => {
                           onClick={handleAvatarClick}
                           loading={isUserpicUpdating()}
                         />
+                        <Show when={uploadError()}>
+                          <div class={styles.error}>{t('Upload error')}</div>
+                        </Show>
                       </div>
                       <h4>{t('Name')}</h4>
                       <p class="description">

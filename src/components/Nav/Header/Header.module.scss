@@ -114,6 +114,7 @@
 
 .mainNavigationWrapper {
   @include font-size(1.7rem);
+
   position: relative;
 
   @include media-breakpoint-down(lg) {
@@ -127,7 +128,7 @@
 
 .mainNavigation {
   font-size: 1.4rem !important;
-  //margin: 0 0 0 -0.4rem !important;
+  // margin: 0 0 0 -0.4rem !important;
   opacity: 1;
   transition: opacity 0.3s;
 
@@ -202,7 +203,7 @@
   li {
     margin-bottom: 0 !important;
 
-    &:first-letter {
+    &::first-letter {
       text-transform: capitalize;
     }
   }
@@ -293,7 +294,7 @@
 .burgerContainer {
   box-sizing: content-box;
   display: inline-flex;
-  //float: right;
+  // float: right;
   padding-left: 0;
 
   @include media-breakpoint-up(sm) {
@@ -383,6 +384,7 @@
 
 .articleHeader {
   @include font-size(1.4rem);
+
   left: $container-padding-x;
   margin: 0.2em 0;
   overflow: hidden;
@@ -624,7 +626,7 @@
   }
 
   a:hover {
-    //background-color: var(--link-hover-background) !important;
+    // background-color: var(--link-hover-background) !important;
   }
 }
 

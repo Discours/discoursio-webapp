@@ -17,7 +17,6 @@ import { Comment } from '../../Article/Comment'
 import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { getPagePath } from '@nanostores/router'
-import { useSession } from '../../../context/session'
 import { Loading } from '../../_shared/Loading'
 
 type Props = {

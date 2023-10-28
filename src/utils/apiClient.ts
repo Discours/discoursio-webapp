@@ -59,6 +59,7 @@ import updateArticle from '../graphql/mutation/article-update'
 import deleteShout from '../graphql/mutation/article-delete'
 import notifications from '../graphql/query/notifications'
 import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
+import markAllNotificationsAsRead from '../graphql/mutation/mark-all-notifications-as-read'
 import mySubscriptions from '../graphql/query/my-subscriptions'
 
 type ApiErrorCode =
@@ -352,12 +353,10 @@ export const apiClient = {
     const resp = await publicGraphQLClient
       .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: 0 })
       .toPromise()
-    // console.debug(resp)
     return resp.data.loadReactionsBy
   },
   getNotifications: async (params: NotificationsQueryParams): Promise<NotificationsQueryResult> => {
     const resp = await privateGraphQLClient.query(notifications, params).toPromise()
-    // console.debug(resp.data)
     return resp.data.loadNotifications
   },
   markNotificationAsRead: async (notificationId: number): Promise<void> => {
@@ -366,6 +365,10 @@ export const apiClient = {
         notificationId
       })
       .toPromise()
+  },
+
+  markAllNotificationsAsRead: async (): Promise<void> => {
+    await privateGraphQLClient.mutation(markAllNotificationsAsRead, {}).toPromise()
   },
 
   getMySubscriptions: async (): Promise<MySubscriptionsQueryResult> => {

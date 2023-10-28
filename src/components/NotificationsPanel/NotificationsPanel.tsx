@@ -41,7 +41,12 @@ const isEarlier = (date: Date) => {
 
 export const NotificationsPanel = (props: Props) => {
   const { t } = useLocalize()
-  const { sortedNotifications } = useNotifications()
+  const { sortedNotifications, unreadNotificationsCount, actions } = useNotifications()
+
+  createEffect(() => {
+    console.log('!!! sortedNotifications:', sortedNotifications())
+    console.log('!!! unreadNotificationsCount:', unreadNotificationsCount())
+  })
   const handleHide = () => {
     props.onClose()
   }
@@ -150,9 +155,15 @@ export const NotificationsPanel = (props: Props) => {
               </div>
             </div>
           </div>
-          <div class={styles.actions}>
-            <Button variant="secondary" value={t('Mark as read')} />
-          </div>
+          <Show when={unreadNotificationsCount() > 0}>
+            <div class={styles.actions}>
+              <Button
+                onClick={() => actions.markAllNotificationsAsRead()}
+                variant="secondary"
+                value={t('Mark as read')}
+              />
+            </div>
+          </Show>
         </Show>
       </div>
     </div>

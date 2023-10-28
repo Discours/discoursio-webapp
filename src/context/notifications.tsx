@@ -18,6 +18,7 @@ type NotificationsContextType = {
     showNotificationsPanel: () => void
     hideNotificationsPanel: () => void
     markNotificationAsRead: (notification: Notification) => Promise<void>
+    markAllNotificationsAsRead: () => Promise<void>
   }
 }
 
@@ -76,6 +77,11 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     await apiClient.markNotificationAsRead(notification.id)
     loadNotifications()
   }
+  const markAllNotificationsAsRead = async () => {
+    await apiClient.markAllNotificationsAsRead()
+    setNotificationEntities({})
+    loadNotifications()
+  }
 
   const showNotificationsPanel = () => {
     setIsNotificationsPanelOpen(true)
@@ -85,7 +91,12 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     setIsNotificationsPanelOpen(false)
   }
 
-  const actions = { showNotificationsPanel, hideNotificationsPanel, markNotificationAsRead }
+  const actions = {
+    showNotificationsPanel,
+    hideNotificationsPanel,
+    markNotificationAsRead,
+    markAllNotificationsAsRead
+  }
 
   const value: NotificationsContextType = {
     notificationEntities,

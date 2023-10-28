@@ -23,37 +23,34 @@ $x-padding: 0 96px 48px 0;
     height: 100%;
     transform: translateX(100%);
     transition: transform $transition-duration;
-    //padding: 48px 0 0 96px;
+    display: flex;
+    flex-direction: column;
 
     .title {
-      // TODO: check markup
-      color: var(--black-500, #141414);
-      font-size: 32px;
+      @include font-size(2rem);
+
+      color: var(--black-500);
       font-style: normal;
       font-weight: 700;
       line-height: 36px;
-      margin-bottom: 32px;
       position: sticky;
       top: 0;
-      background: green;
-      //padding: $x-padding;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--black-100);
     }
 
     .content {
-      //padding: $x-padding;
-      background: red;
       overflow-y: auto;
       flex: 1;
-      max-height: 100%;
+      padding: 0 38px;
     }
 
     .actions {
-      //position: sticky;
-      background: #fff;
+      padding: 24px 38px;
       width: 100%;
       bottom: 0;
       left: 0;
-      padding: $x-padding;
+      background: var(--background-color);
       border-top: 1px solid var(--black-100);
     }
   }

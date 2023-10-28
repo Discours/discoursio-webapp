@@ -105,9 +105,9 @@ export const NotificationsPanel = (props: Props) => {
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
         <Show when={sortedNotifications().length > 0} fallback={<EmptyMessage />}>
-          <div class="wide-container">
+          <div class={clsx('wide-container', styles.content)}>
             <div class="row position-relative">
-              <div class={clsx('col-md-4 col-lg-3 col-xl-3', styles.content)}>
+              <div class="col-xs-24">
                 <Show when={todayNotifications().length > 0}>
                   <div class={styles.periodTitle}>{t('today')}</div>
                   <For each={todayNotifications()}>
@@ -148,10 +148,10 @@ export const NotificationsPanel = (props: Props) => {
                   </For>
                 </Show>
               </div>
-              <div class={styles.actions}>
-                <Button variant="secondary" value={t('Mark as read')} />
-              </div>
             </div>
+          </div>
+          <div class={styles.actions}>
+            <Button variant="secondary" value={t('Mark as read')} />
           </div>
         </Show>
       </div>

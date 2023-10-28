@@ -82,6 +82,10 @@ $navigation-reserve: 32px;
 
   &.editorMode {
     color: #0d0d0d;
+
+    .holder {
+      width: 100%;
+    }
   }
 
   .action {
@@ -112,6 +116,7 @@ $navigation-reserve: 32px;
 
     .counter {
       @include font-size(1.2rem);
+
       position: absolute;
       z-index: 2;
       top: 477px;
@@ -137,11 +142,6 @@ $navigation-reserve: 32px;
 
     &:hover .action {
       display: flex;
-    }
-  }
-  &.editorMode {
-    .holder {
-      width: 100%;
     }
   }
 
@@ -253,7 +253,9 @@ $navigation-reserve: 32px;
       background-color: var(--placeholder-color-semi);
       opacity: 0.5;
       filter: grayscale(1);
-      transition: filter 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      transition:
+        filter 0.3s ease-in-out,
+        opacity 0.5s ease-in-out;
 
       .thumbAction {
         display: none;

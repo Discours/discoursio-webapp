@@ -44,9 +44,8 @@ import { EditorFloatingMenu } from './EditorFloatingMenu'
 import './Prosemirror.scss'
 import { Image } from '@tiptap/extension-image'
 import { Footnote } from './extensions/Footnote'
-import { handleFileUpload } from '../../utils/handleFileUpload'
-import { imageProxy } from '../../utils/imageProxy'
 import { useSnackbar } from '../../context/snackbar'
+import { handleImageUpload } from '../../utils/handleImageUpload'
 
 type Props = {
   shoutId: number
@@ -154,7 +153,7 @@ export const Editor = (props: Props) => {
       }
 
       showSnackbar({ body: t('Uploading image') })
-      const result = await handleFileUpload(uplFile)
+      const result = await handleImageUpload(uplFile)
 
       editor()
         .chain()
@@ -174,7 +173,7 @@ export const Editor = (props: Props) => {
             {
               type: 'image',
               attrs: {
-                src: imageProxy(result.url)
+                src: result.url
               }
             }
           ]

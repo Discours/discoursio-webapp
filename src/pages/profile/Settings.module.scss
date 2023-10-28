@@ -17,6 +17,14 @@ h5 {
   margin-top: 3rem;
 }
 
+.error {
+  @include font-size(1.6rem);
+
+  text-align: center;
+  color: var(--danger-color);
+  margin-top: 1.6rem;
+}
+
 .multipleControlsItem {
   position: relative;
 
@@ -133,7 +141,9 @@ h5 {
   color: #000;
   display: flex;
   padding: 0.8em 1em;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 
   &:hover {
     background: #000;

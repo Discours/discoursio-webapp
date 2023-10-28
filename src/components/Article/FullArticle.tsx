@@ -10,7 +10,6 @@ import { useReactions } from '../../context/reactions'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { getDescription } from '../../utils/meta'
-import { imageProxy } from '../../utils/imageProxy'
 import { TableOfContents } from '../TableOfContents'
 import { AudioPlayer } from './AudioPlayer'
 import { SharePopup } from './SharePopup'
@@ -26,6 +25,7 @@ import styles from './Article.module.scss'
 import { CardTopic } from '../Feed/CardTopic'
 import { createPopper } from '@popperjs/core'
 import { AuthorBadge } from '../Author/AuthorBadge'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 type Props = {
   article: Shout
@@ -266,7 +266,9 @@ export const FullArticle = (props: Props) => {
                 >
                   <div
                     class={styles.shoutCover}
-                    style={{ 'background-image': `url('${imageProxy(props.article.cover)}')` }}
+                    style={{
+                      'background-image': `url('${getImageUrl(props.article.cover, { width: 1600 })}')`
+                    }}
                   />
                 </Show>
               </div>

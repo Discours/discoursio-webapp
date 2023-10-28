@@ -21,7 +21,6 @@ import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { UploadModalContent } from './UploadModalContent'
-import { imageProxy } from '../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './SimplifiedEditor.module.scss'
 import { Placeholder } from '@tiptap/extension-placeholder'
@@ -174,7 +173,7 @@ const SimplifiedEditor = (props: Props) => {
           {
             type: 'image',
             attrs: {
-              src: imageProxy(image.url)
+              src: image.url
             }
           }
         ]

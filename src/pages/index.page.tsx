@@ -18,8 +18,10 @@ export const HomePage = (props: PageProps) => {
       return
     }
 
-    await loadShouts({ filters: { visibility: 'public' }, limit: PRERENDERED_ARTICLES_COUNT })
-    await loadRandomTopics({ amount: RANDOM_TOPICS_COUNT })
+    await Promise.all([
+      loadShouts({ filters: { visibility: 'public' }, limit: PRERENDERED_ARTICLES_COUNT }),
+      loadRandomTopics({ amount: RANDOM_TOPICS_COUNT })
+    ])
 
     setIsLoaded(true)
   })

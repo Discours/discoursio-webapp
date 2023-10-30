@@ -9,6 +9,7 @@ import { useNotifications } from '../../context/notifications'
 import { NotificationView } from './NotificationView'
 import { EmptyMessage } from './EmptyMessage'
 import { Button } from '../_shared/Button'
+import { InfiniteScroll } from '../_shared/InfiniteScroll'
 
 type Props = {
   isOpen: boolean
@@ -43,10 +44,6 @@ export const NotificationsPanel = (props: Props) => {
   const { t } = useLocalize()
   const { sortedNotifications, unreadNotificationsCount, actions } = useNotifications()
 
-  createEffect(() => {
-    console.log('!!! sortedNotifications:', sortedNotifications())
-    console.log('!!! unreadNotificationsCount:', unreadNotificationsCount())
-  })
   const handleHide = () => {
     props.onClose()
   }
@@ -110,7 +107,13 @@ export const NotificationsPanel = (props: Props) => {
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
         <Show when={sortedNotifications().length > 0} fallback={<EmptyMessage />}>
-          <div class={clsx('wide-container', styles.content)}>
+          <InfiniteScroll
+            pageSize={10}
+            class={clsx('wide-container', styles.content)}
+            callbackOnEnd={() => {
+              console.log('!!! SCROLL:')
+            }}
+          >
             <div class="row position-relative">
               <div class="col-xs-24">
                 <Show when={todayNotifications().length > 0}>
@@ -154,7 +157,8 @@ export const NotificationsPanel = (props: Props) => {
                 </Show>
               </div>
             </div>
-          </div>
+          </InfiniteScroll>
+
           <Show when={unreadNotificationsCount() > 0}>
             <div class={styles.actions}>
               <Button

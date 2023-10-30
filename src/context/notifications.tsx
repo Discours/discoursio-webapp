@@ -19,6 +19,7 @@ type NotificationsContextType = {
     hideNotificationsPanel: () => void
     markNotificationAsRead: (notification: Notification) => Promise<void>
     markAllNotificationsAsRead: () => Promise<void>
+    loadNotifications: (options: { limit: number; offset: number }) => Promise<Notification[]>
   }
 }
 
@@ -36,10 +37,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const { isAuthenticated, user } = useSession()
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
 
-  const loadNotifications = async () => {
-    const { notifications, totalUnreadCount } = await apiClient.getNotifications({
-      limit: 100
-    })
+  const loadNotifications = async (options: { limit: number; offset?: number }) => {
+    const { notifications, totalUnreadCount } = await apiClient.getNotifications(options)
     const newNotificationEntities = notifications.reduce((acc, notification) => {
       acc[notification.id] = notification
       return acc
@@ -58,12 +57,12 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   createEffect(() => {
     if (isAuthenticated()) {
-      loadNotifications()
+      loadNotifications({ limit: 2 })
 
       sseService.connect(`${apiBaseUrl}/subscribe/${user().id}`)
       sseService.subscribeToEvent('message', (data: EventData) => {
         if (data.type === 'newNotifications') {
-          loadNotifications()
+          loadNotifications({ limit: 2 })
         } else {
           console.error(`[NotificationsProvider] unknown message type: ${JSON.stringify(data)}`)
         }
@@ -75,12 +74,12 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   const markNotificationAsRead = async (notification: Notification) => {
     await apiClient.markNotificationAsRead(notification.id)
-    loadNotifications()
+    // loadNotifications({ limit: 3 })
   }
   const markAllNotificationsAsRead = async () => {
     await apiClient.markAllNotificationsAsRead()
     setNotificationEntities({})
-    loadNotifications()
+    // loadNotifications({ limit: 3 })
   }
 
   const showNotificationsPanel = () => {
@@ -95,7 +94,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     showNotificationsPanel,
     hideNotificationsPanel,
     markNotificationAsRead,
-    markAllNotificationsAsRead
+    markAllNotificationsAsRead,
+    loadNotifications
   }
 
   const value: NotificationsContextType = {

@@ -24,6 +24,7 @@ import SimplifiedEditor from '../Editor/SimplifiedEditor'
 import { isDesktop } from '../../utils/media-query'
 import { TableOfContents } from '../TableOfContents'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { Popover } from '../_shared/Popover'
 
 type Props = {
   shout: Shout
@@ -365,7 +366,19 @@ export const EditView = (props: Props) => {
                             style={{
                               'background-image': `url(${getImageUrl(form.coverImageUrl, { width: 1600 })})`
                             }}
-                          />
+                          >
+                            <Popover content={t('Delete cover')}>
+                              {(triggerRef: (el) => void) => (
+                                <div
+                                  ref={triggerRef}
+                                  class={styles.delete}
+                                  onClick={() => setForm('coverImageUrl', null)}
+                                >
+                                  <Icon name="close-white" />
+                                </div>
+                              )}
+                            </Popover>
+                          </div>
                         </Show>
                       </Show>
                     </div>

@@ -379,7 +379,7 @@
   "You've reached a non-existed page": "You've reached a non-existed page",
   "Your email": "Your email",
   "Your name will appear on your profile page and as your signature in publications, comments and responses.": "Your name will appear on your profile page and as your signature in publications, comments and responses",
-  "accomplices": "accomplices",
+  "Participation": "Participation",
   "actions": "actions",
   "add link": "add link",
   "all topics": "all topics",
@@ -403,7 +403,7 @@
   "feed": "feed",
   "follower": "follower",
   "followersWithCount": "{count} {count, plural, one {follower} other {followers}}",
-  "general feed": "general tape",
+
   "header 1": "header 1",
   "header 2": "header 2",
   "header 3": "header 3",
@@ -439,5 +439,14 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
-  "yesterday": "yesterday"
+  "yesterday": "yesterday",
+  "Podcasts": "Podcasts",
+  "Special Projects": "Special Projects",
+  "Interview": "Interview",
+  "Reports": "Reports",
+  "Experience": "Experience",
+  "Society": "Society",
+  "Culture": "Culture",
+  "Theory": "Theory",
+  "Poetry": "Poetry"
 }

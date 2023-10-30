@@ -79,7 +79,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const markAllNotificationsAsRead = async () => {
     await apiClient.markAllNotificationsAsRead()
     setNotificationEntities({})
-    // loadNotifications({ limit: 3 })
+    loadNotifications({ limit: 20 })
   }
 
   const showNotificationsPanel = () => {

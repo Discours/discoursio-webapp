@@ -482,6 +482,28 @@
       width: 100%;
     }
   }
+
+  .editorControl {
+    border-radius: 1.2em;
+
+    &:hover {
+      background: var(--background-color-invert);
+    }
+  }
+
+  .settingsControl {
+    border-radius: 100%;
+    padding: 0.8rem !important;
+    min-width: 4rem !important;
+
+    &:hover {
+      background: var(--background-color-invert);
+
+      img {
+        filter: invert(1);
+      }
+    }
+  }
 }
 
 .userControlItem {
@@ -620,13 +642,14 @@
     }
 
     .textLabel {
-      background-color: var(--link-hover-background);
       color: var(--link-hover-color);
     }
   }
 
   a:hover {
-    // background-color: var(--link-hover-background) !important;
+    .textLabel {
+      background-color: var(--link-hover-background);
+    }
   }
 }
 

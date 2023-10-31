@@ -447,5 +447,6 @@
   "user already exist": "user already exists",
   "video": "video",
   "view": "view",
+  "viewsWithCount": "{count} {count, plural, one {view} other {views}}",
   "yesterday": "yesterday"
 }

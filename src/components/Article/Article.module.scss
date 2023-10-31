@@ -390,12 +390,38 @@ img {
   }
 
   @include media-breakpoint-down(sm) {
-    flex: 1 100%;
+    flex: 1 40%;
   }
 }
 
 .shoutStatsItemViews {
   cursor: default;
+
+  @include media-breakpoint-down(sm) {
+    color: rgb(0 0 0 / 0.4);
+    flex: 1 40%;
+    justify-content: end;
+    margin-right: 0;
+    order: 10;
+
+    .icon {
+      display: none !important;
+    }
+  }
+}
+
+.shoutStatsItemLabel {
+  margin-left: 0.3em;
+
+  @include media-breakpoint-up(sm) {
+    display: none;
+  }
+}
+
+.shoutStatsItemCount {
+  @include media-breakpoint-down(sm) {
+    display: none;
+  }
 }
 
 .shoutStatsItemAdditionalDataItem {

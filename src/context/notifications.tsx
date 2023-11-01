@@ -9,7 +9,6 @@ import { NotificationsPanel } from '../components/NotificationsPanel'
 import { apiClient } from '../utils/apiClient'
 import { createStore } from 'solid-js/store'
 import { Notification } from '../graphql/types.gen'
-import { delay } from '../utils/delay'
 
 type NotificationsContextType = {
   notificationEntities: Record<number, Notification>

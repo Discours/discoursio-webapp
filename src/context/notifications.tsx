@@ -43,7 +43,6 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
 
   const loadNotifications = async (options: { limit: number; offset?: number }) => {
-    await delay(1000)
     const { notifications, totalUnreadCount, totalCount } = await apiClient.getNotifications(options)
     const newNotificationEntities = notifications.reduce((acc, notification) => {
       acc[notification.id] = notification

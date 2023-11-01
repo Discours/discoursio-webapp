@@ -42,7 +42,15 @@ $x-padding: 0 96px 48px 0;
     .content {
       overflow-y: auto;
       flex: 1;
-      padding: 0 38px;
+      padding: 0 38px 1rem;
+
+      .loading {
+        @include font-size(1.2rem);
+
+        text-align: center;
+        padding: 1rem;
+        color: var(--black-300);
+      }
     }
 
     .actions {

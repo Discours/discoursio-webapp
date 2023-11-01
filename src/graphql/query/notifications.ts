@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadNotificationsQuery {
-    loadNotifications(params: { limit: 10, offset: 0 }) {
+  query LoadNotificationsQuery($params: NotificationsQueryParams!) {
+    loadNotifications(params: $params) {
       notifications {
         id
         shout

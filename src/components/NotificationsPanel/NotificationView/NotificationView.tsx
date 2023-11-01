@@ -130,7 +130,7 @@ export const NotificationView = (props: Props) => {
     props.onClick()
 
     if (!props.notification.seen) {
-      // markNotificationAsRead(props.notification)
+      markNotificationAsRead(props.notification)
     }
 
     openPage(router, 'article', { slug: data().shout.slug })

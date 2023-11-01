@@ -4,12 +4,13 @@ import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
-import { createEffect, createMemo, For, Show } from 'solid-js'
-import { useNotifications } from '../../context/notifications'
+import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
+import { PAGE_SIZE, useNotifications } from '../../context/notifications'
 import { NotificationView } from './NotificationView'
 import { EmptyMessage } from './EmptyMessage'
 import { Button } from '../_shared/Button'
-import { InfiniteScroll } from '../_shared/InfiniteScroll'
+import throttle from 'just-throttle'
+import { useSession } from '../../context/session'
 
 type Props = {
   isOpen: boolean
@@ -41,9 +42,17 @@ const isEarlier = (date: Date) => {
 }
 
 export const NotificationsPanel = (props: Props) => {
-  const { t } = useLocalize()
-  const { sortedNotifications, unreadNotificationsCount, actions } = useNotifications()
+  const [isLoading, setIsLoading] = createSignal(false)
 
+  const { isAuthenticated } = useSession()
+  const { t } = useLocalize()
+  const {
+    sortedNotifications,
+    unreadNotificationsCount,
+    loadedNotificationsCount,
+    totalNotificationsCount,
+    actions: { loadNotifications, markAllNotificationsAsRead }
+  } = useNotifications()
   const handleHide = () => {
     props.onClose()
   }
@@ -94,6 +103,57 @@ export const NotificationsPanel = (props: Props) => {
     return sortedNotifications().filter((notification) => isEarlier(new Date(notification.createdAt)))
   })
 
+  const scrollContainerRef: { current: HTMLDivElement } = { current: null }
+  const loadNextPage = async () => {
+    await loadNotifications({ limit: PAGE_SIZE, offset: loadedNotificationsCount() })
+    if (loadedNotificationsCount() < totalNotificationsCount()) {
+      const hasMore = scrollContainerRef.current.scrollHeight <= scrollContainerRef.current.offsetHeight
+
+      if (hasMore) {
+        await loadNextPage()
+      }
+    }
+  }
+  const handleScroll = async () => {
+    if (!scrollContainerRef.current || isLoading()) {
+      return
+    }
+    if (totalNotificationsCount() === loadedNotificationsCount()) {
+      return
+    }
+
+    const isNearBottom =
+      scrollContainerRef.current.scrollHeight - scrollContainerRef.current.scrollTop <=
+      scrollContainerRef.current.clientHeight * 1.5
+
+    if (isNearBottom) {
+      setIsLoading(true)
+      await loadNextPage()
+      setIsLoading(false)
+    }
+  }
+  const handleScrollThrottled = throttle(handleScroll, 50)
+
+  onMount(() => {
+    scrollContainerRef.current.addEventListener('scroll', handleScrollThrottled)
+    onCleanup(() => {
+      scrollContainerRef.current.removeEventListener('scroll', handleScrollThrottled)
+    })
+  })
+
+  createEffect(
+    on(
+      () => isAuthenticated(),
+      async () => {
+        if (isAuthenticated()) {
+          setIsLoading(true)
+          await loadNextPage()
+          setIsLoading(false)
+        }
+      }
+    )
+  )
+
   return (
     <div
       class={clsx(styles.container, {
@@ -106,14 +166,8 @@ export const NotificationsPanel = (props: Props) => {
           <Icon name="close" />
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
-        <Show when={sortedNotifications().length > 0} fallback={<EmptyMessage />}>
-          <InfiniteScroll
-            pageSize={10}
-            class={clsx('wide-container', styles.content)}
-            callbackOnEnd={() => {
-              console.log('!!! SCROLL:')
-            }}
-          >
+        <div class={clsx('wide-container', styles.content)} ref={(el) => (scrollContainerRef.current = el)}>
+          <Show when={sortedNotifications().length > 0} fallback={<EmptyMessage />}>
             <div class="row position-relative">
               <div class="col-xs-24">
                 <Show when={todayNotifications().length > 0}>
@@ -157,17 +211,20 @@ export const NotificationsPanel = (props: Props) => {
                 </Show>
               </div>
             </div>
-          </InfiniteScroll>
-
-          <Show when={unreadNotificationsCount() > 0}>
-            <div class={styles.actions}>
-              <Button
-                onClick={() => actions.markAllNotificationsAsRead()}
-                variant="secondary"
-                value={t('Mark as read')}
-              />
-            </div>
           </Show>
+          <Show when={isLoading()}>
+            <div class={styles.loading}>{t('Loading')}</div>
+          </Show>
+        </div>
+
+        <Show when={unreadNotificationsCount() > 0}>
+          <div class={styles.actions}>
+            <Button
+              onClick={() => markAllNotificationsAsRead()}
+              variant="secondary"
+              value={t('Mark as read')}
+            />
+          </div>
         </Show>
       </div>
     </div>

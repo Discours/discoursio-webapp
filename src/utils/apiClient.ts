@@ -356,7 +356,7 @@ export const apiClient = {
     return resp.data.loadReactionsBy
   },
   getNotifications: async (params: NotificationsQueryParams): Promise<NotificationsQueryResult> => {
-    const resp = await privateGraphQLClient.query(notifications, params).toPromise()
+    const resp = await privateGraphQLClient.query(notifications, { params }).toPromise()
     return resp.data.loadNotifications
   },
   markNotificationAsRead: async (notificationId: number): Promise<void> => {

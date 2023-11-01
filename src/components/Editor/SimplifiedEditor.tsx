@@ -53,6 +53,7 @@ type Props = {
   onlyBubbleControls?: boolean
   controlsAlwaysVisible?: boolean
   autoFocus?: boolean
+  hideCancelButton?: boolean
 }
 
 export const MAX_DESCRIPTION_LIMIT = 400
@@ -327,7 +328,9 @@ const SimplifiedEditor = (props: Props) => {
           </div>
           <Show when={!props.onChange}>
             <div class={styles.buttons}>
-              <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
+              <Show when={!props.hideCancelButton}>
+                <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
+              </Show>
               <Button
                 value={props.submitButtonText ?? t('Send')}
                 variant="primary"

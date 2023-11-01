@@ -5,6 +5,7 @@ import GroupDialogAvatar from './GroupDialogAvatar'
 import { clsx } from 'clsx'
 import styles from './DialogCard.module.scss'
 import { useLocalize } from '../../context/localize'
+import { AuthorBadge } from '../Author/AuthorBadge'
 
 type DialogProps = {
   online?: boolean
@@ -40,27 +41,41 @@ const DialogCard = (props: DialogProps) => {
         })}
         onClick={props.onClick}
       >
-        <div class={styles.avatar}>
-          <Switch fallback={<DialogAvatar name={props.members[0].slug} url={props.members[0].userpic} />}>
-            <Match when={props.members.length >= 3}>
+        <Switch
+          fallback={
+            <Show
+              when={props.isChatHeader}
+              fallback={
+                <div class={styles.avatar}>
+                  <DialogAvatar name={props.members[0].slug} url={props.members[0].userpic} />
+                </div>
+              }
+            >
+              <AuthorBadge nameOnly={true} author={props.members[0]} />
+            </Show>
+          }
+        >
+          <Match when={props.members.length >= 3}>
+            <div class={styles.avatar}>
               <GroupDialogAvatar users={props.members} />
-            </Match>
-          </Switch>
-        </div>
-        <div class={styles.row}>
-          <div class={styles.name}>
-            {companions()?.length > 1 ? t('Group Chat') : companions()[0]?.name}
-          </div>
-          <div class={styles.message}>
-            <Switch>
-              <Match when={props.message && !props.isChatHeader}>
-                <div innerHTML={props.message} />
-              </Match>
-              <Match when={props.isChatHeader && companions().length > 1}>{names()}</Match>
-            </Switch>
-          </div>
-        </div>
+            </div>
+          </Match>
+        </Switch>
+
         <Show when={!props.isChatHeader}>
+          <div class={styles.row}>
+            <div class={styles.name}>
+              {companions()?.length > 1 ? t('Group Chat') : companions()[0]?.name}
+            </div>
+            <div class={styles.message}>
+              <Switch>
+                <Match when={props.message}>
+                  <div innerHTML={props.message} />
+                </Match>
+                <Match when={props.isChatHeader && companions().length > 1}>{names()}</Match>
+              </Switch>
+            </div>
+          </div>
           <div class={styles.activity}>
             <Show when={props.lastUpdate}>
               <div class={styles.time}>{formatTime(new Date(props.lastUpdate * 1000))}</div>

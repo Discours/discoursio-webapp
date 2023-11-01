@@ -167,7 +167,14 @@ export const NotificationsPanel = (props: Props) => {
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
         <div class={clsx('wide-container', styles.content)} ref={(el) => (scrollContainerRef.current = el)}>
-          <Show when={sortedNotifications().length > 0} fallback={<EmptyMessage />}>
+          <Show
+            when={sortedNotifications().length > 0}
+            fallback={
+              <Show when={!isLoading()}>
+                <EmptyMessage />
+              </Show>
+            }
+          >
             <div class="row position-relative">
               <div class="col-xs-24">
                 <Show when={todayNotifications().length > 0}>

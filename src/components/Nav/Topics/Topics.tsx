@@ -17,31 +17,31 @@ export const Topics = () => {
           </a>
         </li>
         <li class={styles.item}>
-          <a href="/podcasts">Подкасты</a>
+          <a href="/podcasts">{t('Podcasts')}</a>
         </li>
         <li class={styles.item}>
-          <a href="">Спецпроекты</a>
+          <a href="">{t('Special Projects')}</a>
         </li>
         <li class={styles.item}>
-          <a href="/topic/interview">#Интервью</a>
+          <a href="/topic/interview">#{t('Interview')}</a>
         </li>
         <li class={styles.item}>
-          <a href="/topic/reportage">#Репортажи</a>
+          <a href="/topic/reportage">#{t('Reports')}</a>
         </li>
         <li class={styles.item}>
-          <a href="/topic/empiric">#Личный опыт</a>
+          <a href="/topic/empiric">#{t('Experience')}</a>
         </li>
         <li class={styles.item}>
-          <a href="/topic/society">#Общество</a>
+          <a href="/topic/society">#{t('Society')}</a>
         </li>
         <li class={styles.item}>
-          <a href="/topic/culture">#Культура</a>
+          <a href="/topic/culture">#{t('Culture')}</a>
         </li>
         <li class={styles.item}>
-          <a href="/topic/theory">#Теории</a>
+          <a href="/topic/theory">#{t('Theory')}</a>
         </li>
         <li class={styles.item}>
-          <a href="/topic/poetry">#Поэзия</a>
+          <a href="/topic/poetry">#{t('Poetry')}</a>
         </li>
         <li class={clsx(styles.item, styles.right)}>
           <a href={getPagePath(router, 'topics')}>

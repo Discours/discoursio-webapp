@@ -202,8 +202,17 @@ export const AuthorCard = (props: Props) => {
               when={isProfileOwner()}
               fallback={
                 <div class={styles.authorActions}>
-                  <Button onClick={handleSubscribe} value={followButtonText()} />
-                  <Button variant={'secondary'} value={t('Message')} onClick={initChat} />
+                  <Button
+                    onClick={handleSubscribe}
+                    value={followButtonText()}
+                    class={styles.buttonSubscribe}
+                  />
+                  <Button
+                    variant={'secondary'}
+                    value={t('Message')}
+                    onClick={initChat}
+                    class={styles.buttonSubscribe}
+                  />
                 </div>
               }
             >

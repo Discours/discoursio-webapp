@@ -86,8 +86,9 @@ export const HeaderAuth = (props: Props) => {
         fallback={
           <Button
             value={<span class={styles.textLabel}>{buttonProps.value}</span>}
-            variant={'outline'}
+            variant={'light'}
             onClick={buttonProps.action}
+            class={styles.editorControl}
           />
         }
       >
@@ -95,9 +96,10 @@ export const HeaderAuth = (props: Props) => {
           {(ref) => (
             <Button
               ref={ref}
-              variant={'outline'}
+              variant={'light'}
               onClick={buttonProps.action}
               value={<Icon name={buttonProps.icon} class={styles.icon} />}
+              class={styles.editorControl}
             />
           )}
         </Popover>
@@ -120,12 +122,14 @@ export const HeaderAuth = (props: Props) => {
               </div>
             </Show>
 
-            <div class={styles.userControlItem}>
-              <a href="#">
-                <Icon name="search" class={styles.icon} />
-                <Icon name="search" class={clsx(styles.icon, styles.iconHover)} />
-              </a>
-            </div>
+            <Show when={!isSaveButtonVisible()}>
+              <div class={styles.userControlItem}>
+                <a href="#">
+                  <Icon name="search" class={styles.icon} />
+                  <Icon name="search" class={clsx(styles.icon, styles.iconHover)} />
+                </a>
+              </div>
+            </Show>
 
             <Show when={isNotificationsVisible()}>
               <div class={styles.userControlItem} onClick={handleBellIconClick}>
@@ -172,8 +176,9 @@ export const HeaderAuth = (props: Props) => {
                     <Button
                       ref={ref}
                       value={<Icon name="burger" />}
-                      variant={'outline'}
+                      variant={'light'}
                       onClick={handleBurgerButtonClick}
+                      class={styles.settingsControl}
                     />
                   )}
                 </Popover>
@@ -191,15 +196,17 @@ export const HeaderAuth = (props: Props) => {
                 </div>
               }
             >
-              <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
-                <a href="/inbox">
-                  {/*FIXME: replace with route*/}
-                  <div classList={{ entered: page().path === '/inbox' }}>
-                    <Icon name="inbox-white" class={styles.icon} />
-                    <Icon name="inbox-white-hover" class={clsx(styles.icon, styles.iconHover)} />
-                  </div>
-                </a>
-              </div>
+              <Show when={!isSaveButtonVisible()}>
+                <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
+                  <a href="/inbox">
+                    {/*FIXME: replace with route*/}
+                    <div classList={{ entered: page().path === '/inbox' }}>
+                      <Icon name="inbox-white" class={styles.icon} />
+                      <Icon name="inbox-white-hover" class={clsx(styles.icon, styles.iconHover)} />
+                    </div>
+                  </a>
+                </div>
+              </Show>
               <ProfilePopup
                 onVisibilityChange={(isVisible) => {
                   props.setIsProfilePopupVisible(isVisible)

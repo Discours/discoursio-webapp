@@ -26,7 +26,7 @@ export type ShoutForm = {
   selectedTopics: Topic[]
   mainTopic?: Topic
   body: string
-  coverImageUrl: string
+  coverImageUrl?: string
   media?: string
 }
 

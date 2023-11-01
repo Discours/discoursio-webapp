@@ -38,7 +38,7 @@ export const Sidebar = () => {
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-all" class={styles.icon} />
-              {t('general feed')}
+              {t('All')}
             </span>
           </a>
         </li>
@@ -64,7 +64,7 @@ export const Sidebar = () => {
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-collaborate" class={styles.icon} />
-              {t('Accomplices')}
+              {t('Participation')}
             </span>
           </a>
         </li>

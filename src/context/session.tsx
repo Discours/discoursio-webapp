@@ -66,7 +66,9 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
       resetToken()
       return null
     } finally {
-      setIsSessionLoaded(true)
+      setTimeout(() => {
+        setIsSessionLoaded(true)
+      }, 0)
     }
   }
 
@@ -123,8 +125,8 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const confirmEmail = async (token: string) => {
     const authResult = await apiClient.confirmEmail({ token })
-    mutate(authResult)
     setToken(authResult.token)
+    mutate(authResult)
   }
 
   const actions = {

@@ -360,7 +360,10 @@ export const FullArticle = (props: Props) => {
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
                   <Icon name="eye" class={styles.icon} />
                   <Icon name="eye" class={clsx(styles.icon, styles.iconHover)} />
-                  {props.article.stat?.viewed}
+                  <span class={styles.shoutStatsItemCount}>{props.article.stat?.viewed}</span>
+                  <span class={styles.shoutStatsItemLabel}>
+                    {t('viewsWithCount', { count: props.article.stat?.viewed })}
+                  </span>
                 </div>
               </Show>
 

@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import Banner from '../Discours/Banner'
 import { Topics } from '../Nav/Topics'
 import { Row5 } from '../Feed/Row5'

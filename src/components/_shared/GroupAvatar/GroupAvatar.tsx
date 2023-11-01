@@ -14,7 +14,7 @@ export const GroupAvatar = (props: Props) => {
   const avatarSize = () => {
     switch (props.authors.length) {
       case 1: {
-        return 'L'
+        return 'M'
       }
       case 2: {
         return 'S'

@@ -10,7 +10,6 @@ $transition-duration: 200ms;
   bottom: 0;
   width: 0;
   z-index: 10000;
-  background-color: rgb(0 0 0 / 0%);
   overflow: hidden;
   transition:
     background-color $transition-duration,
@@ -18,12 +17,49 @@ $transition-duration: 200ms;
 
   .panel {
     position: relative;
-    background-color: #fff;
-    width: 700px;
-    padding: 48px 96px 96px 48px;
+    background-color: var(--background-color);
+    width: 50%;
+    height: 100%;
     transform: translateX(100%);
     transition: transform $transition-duration;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
+    .title {
+      @include font-size(2rem);
+
+      color: var(--black-500);
+      font-style: normal;
+      font-weight: 700;
+      line-height: 36px;
+      position: sticky;
+      top: 0;
+      padding: 16px 38px;
+      border-bottom: 1px solid var(--black-100);
+    }
+
+    .content {
+      overflow-y: auto;
+      flex: 1;
+      padding: 0 38px 1rem;
+
+      .loading {
+        @include font-size(1.2rem);
+
+        text-align: center;
+        padding: 1rem;
+        color: var(--black-300);
+      }
+    }
+
+    .actions {
+      padding: 24px 38px;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      background: var(--background-color);
+      border-top: 1px solid var(--black-100);
+    }
   }
 
   &.isOpened {
@@ -37,16 +73,6 @@ $transition-duration: 200ms;
       transform: translateX(0);
     }
   }
-}
-
-.title {
-  // TODO: check markup
-  color: var(--black-500, #141414);
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 36px;
-  margin-bottom: 32px;
 }
 
 .closeButton {

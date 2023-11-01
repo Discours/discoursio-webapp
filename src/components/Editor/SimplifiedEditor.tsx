@@ -53,7 +53,7 @@ type Props = {
   onlyBubbleControls?: boolean
   controlsAlwaysVisible?: boolean
   autoFocus?: boolean
-  isCancelButtonVisible: boolean
+  isCancelButtonVisible?: boolean
 }
 
 export const MAX_DESCRIPTION_LIMIT = 400

@@ -266,7 +266,7 @@ export const InboxView = () => {
                 <SimplifiedEditor
                   smallHeight={true}
                   imageEnabled={true}
-                  hideCancelButton={true}
+                  isCancelButtonVisible={false}
                   placeholder={t('Write message')}
                   setClear={isClear()}
                   onSubmit={(message) => handleSubmit(message)}

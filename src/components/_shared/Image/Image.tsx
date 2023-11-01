@@ -9,7 +9,6 @@ type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
 
 export const Image = (props: Props) => {
   const [local, others] = splitProps(props, ['src', 'alt'])
-  const src = createMemo(() => getImageUrl(local.src, { width: others.width }))
-
-  return <img src={src()} alt={local.alt} {...others} />
+  const src = getImageUrl(local.src, { width: others.width })
+  return <img src={src} alt={local.alt} {...others} />
 }

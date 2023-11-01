@@ -17,6 +17,7 @@ type Props = {
   minimizeSubscribeButton?: boolean
   showMessageButton?: boolean
   iconButtons?: boolean
+  nameOnly?: boolean
 }
 export const AuthorBadge = (props: Props) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -63,7 +64,7 @@ export const AuthorBadge = (props: Props) => {
   })
 
   return (
-    <div class={clsx(styles.AuthorBadge)}>
+    <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
       <Userpic
         hasLink={true}
         size={'M'}
@@ -75,24 +76,26 @@ export const AuthorBadge = (props: Props) => {
         <div class={styles.name}>
           <span>{props.author.name}</span>
         </div>
-        <Switch
-          fallback={
-            <div class={styles.bio}>
-              {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
-            </div>
-          }
-        >
-          <Match when={props.author.bio}>
-            <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
-          </Match>
-          <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
-            <div class={styles.bio}>
-              {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
-            </div>
-          </Match>
-        </Switch>
+        <Show when={!props.nameOnly}>
+          <Switch
+            fallback={
+              <div class={styles.bio}>
+                {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
+              </div>
+            }
+          >
+            <Match when={props.author.bio}>
+              <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
+            </Match>
+            <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
+              <div class={styles.bio}>
+                {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
+              </div>
+            </Match>
+          </Switch>
+        </Show>
       </a>
-      <Show when={props.author.slug !== session()?.user.slug}>
+      <Show when={props.author.slug !== session()?.user.slug && !props.nameOnly}>
         <div class={styles.actions}>
           <Show
             when={!props.minimizeSubscribeButton}

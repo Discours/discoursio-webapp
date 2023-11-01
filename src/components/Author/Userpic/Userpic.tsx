@@ -57,6 +57,7 @@ export const Userpic = (props: Props) => {
         >
           <Show when={props.userpic} fallback={<div class={styles.letters}>{letters()}</div>}>
             <Image src={props.userpic} width={avatarSize()} height={avatarSize()} alt={props.name} />
+            {/*<img src={props.userpic} width={avatarSize()} height={avatarSize()} alt={props.name} />*/}
           </Show>
         </ConditionalWrapper>
       </Show>

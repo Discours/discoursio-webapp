@@ -12,41 +12,50 @@ const [topArticles, setTopArticles] = createSignal<Shout[]>([])
 const [topMonthArticles, setTopMonthArticles] = createSignal<Shout[]>([])
 
 const articlesByAuthor = createLazyMemo(() => {
-  return Object.values(articleEntities()).reduce((acc, article) => {
-    article.authors.forEach((author) => {
-      if (!acc[author.slug]) {
-        acc[author.slug] = []
-      }
-      acc[author.slug].push(article)
-    })
+  return Object.values(articleEntities()).reduce(
+    (acc, article) => {
+      article.authors.forEach((author) => {
+        if (!acc[author.slug]) {
+          acc[author.slug] = []
+        }
+        acc[author.slug].push(article)
+      })
 
-    return acc
-  }, {} as { [authorSlug: string]: Shout[] })
+      return acc
+    },
+    {} as { [authorSlug: string]: Shout[] }
+  )
 })
 
 const articlesByTopic = createLazyMemo(() => {
-  return Object.values(articleEntities()).reduce((acc, article) => {
-    article.topics.forEach((topic) => {
-      if (!acc[topic.slug]) {
-        acc[topic.slug] = []
-      }
-      acc[topic.slug].push(article)
-    })
+  return Object.values(articleEntities()).reduce(
+    (acc, article) => {
+      article.topics.forEach((topic) => {
+        if (!acc[topic.slug]) {
+          acc[topic.slug] = []
+        }
+        acc[topic.slug].push(article)
+      })
 
-    return acc
-  }, {} as { [authorSlug: string]: Shout[] })
+      return acc
+    },
+    {} as { [authorSlug: string]: Shout[] }
+  )
 })
 
 const articlesByLayout = createLazyMemo(() => {
-  return Object.values(articleEntities()).reduce((acc, article) => {
-    if (!acc[article.layout]) {
-      acc[article.layout] = []
-    }
+  return Object.values(articleEntities()).reduce(
+    (acc, article) => {
+      if (!acc[article.layout]) {
+        acc[article.layout] = []
+      }
 
-    acc[article.layout].push(article)
+      acc[article.layout].push(article)
 
-    return acc
-  }, {} as { [layout: string]: Shout[] })
+      return acc
+    },
+    {} as { [layout: string]: Shout[] }
+  )
 })
 
 const topViewedArticles = createLazyMemo(() => {
@@ -65,10 +74,13 @@ const topCommentedArticles = createLazyMemo(() => {
 const addArticles = (...args: Shout[][]) => {
   const allArticles = args.flatMap((articles) => articles || [])
 
-  const newArticleEntities = allArticles.reduce((acc, article) => {
-    acc[article.slug] = article
-    return acc
-  }, {} as { [articleSLug: string]: Shout })
+  const newArticleEntities = allArticles.reduce(
+    (acc, article) => {
+      acc[article.slug] = article
+      return acc
+    },
+    {} as { [articleSLug: string]: Shout }
+  )
 
   setArticleEntities((prevArticleEntities) => {
     return {
@@ -77,23 +89,26 @@ const addArticles = (...args: Shout[][]) => {
     }
   })
 
-  const authorsByTopic = allArticles.reduce((acc, article) => {
-    const { authors, topics } = article
+  const authorsByTopic = allArticles.reduce(
+    (acc, article) => {
+      const { authors, topics } = article
 
-    topics.forEach((topic) => {
-      if (!acc[topic.slug]) {
-        acc[topic.slug] = []
-      }
-
-      authors.forEach((author) => {
-        if (!acc[topic.slug].some((a) => a.slug === author.slug)) {
-          acc[topic.slug].push(author)
+      topics.forEach((topic) => {
+        if (!acc[topic.slug]) {
+          acc[topic.slug] = []
         }
-      })
-    })
 
-    return acc
-  }, {} as { [topicSlug: string]: Author[] })
+        authors.forEach((author) => {
+          if (!acc[topic.slug].some((a) => a.slug === author.slug)) {
+            acc[topic.slug].push(author)
+          }
+        })
+      })
+
+      return acc
+    },
+    {} as { [topicSlug: string]: Author[] }
+  )
 
   addAuthorsByTopic(authorsByTopic)
 }

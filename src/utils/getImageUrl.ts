@@ -11,19 +11,15 @@ const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
   return `${widthString}x${heightString}/`
 }
 
-// I'm not proud of this
 export const getImageUrl = (src: string, options: { width?: number; height?: number } = {}) => {
   const sizeUrlPart = getSizeUrlPart(options)
 
-  if (!src.startsWith(thumborUrl)) {
-    return `${thumborUrl}/unsafe/${sizeUrlPart}${src}`
-  }
+  const thumborPrefix = `${thumborUrl}/unsafe/`
 
-  if (src.startsWith(`${thumborUrl}/unsafe`)) {
-    const thumborKey = src.replace(`${thumborUrl}/unsafe`, '')
+  if (src.startsWith(thumborPrefix)) {
+    const thumborKey = src.replace(thumborPrefix, '')
     return `${thumborUrl}/unsafe/${sizeUrlPart}${thumborKey}`
   }
 
-  const thumborKey = src.replace(`${thumborUrl}`, '')
-  return `${thumborUrl}/${sizeUrlPart}${thumborKey}`
+  return `${thumborUrl}/unsafe/${sizeUrlPart}${src}`
 }

@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 import Banner from '../Discours/Banner'
 import { Topics } from '../Nav/Topics'
 import { Row5 } from '../Feed/Row5'
@@ -132,7 +132,7 @@ export const HomeView = (props: Props) => {
         <Show when={topMonthArticles()}>
           <Slider title={t('Top month articles')}>
             <For each={topMonthArticles()}>
-              {(a: Shout) => (
+              {(a) => (
                 <ArticleCard
                   article={a}
                   settings={{

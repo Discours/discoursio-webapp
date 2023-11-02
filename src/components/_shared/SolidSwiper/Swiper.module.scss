@@ -13,6 +13,17 @@ $navigation-reserve: 32px;
   margin: 2rem 0;
   flex-direction: column;
 
+  &.ArticleCardSwiper {
+    margin-bottom: 6rem;
+  }
+
+  .sliderTitle {
+    @include font-size(4.5rem);
+
+    text-align: center;
+    padding: 4rem 0 0;
+  }
+
   &.articleMode {
     background: var(--background-color-invert);
     color: var(--default-color-invert);
@@ -113,6 +124,10 @@ $navigation-reserve: 32px;
     box-sizing: border-box;
     overflow: hidden;
     width: calc(100% - 130px);
+
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+    }
 
     .counter {
       @include font-size(1.2rem);

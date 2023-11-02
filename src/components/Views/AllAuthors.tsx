@@ -33,7 +33,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
 
   const [searchQuery, setSearchQuery] = createSignal('')
 
-  onMount(() => {
+  createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
         by: 'shouts'

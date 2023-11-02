@@ -36,7 +36,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const { subscriptions } = useSession()
 
-  onMount(() => {
+  createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
         by: 'shouts'

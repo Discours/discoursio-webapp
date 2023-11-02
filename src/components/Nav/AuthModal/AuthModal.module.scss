@@ -4,7 +4,7 @@
   position: relative;
 
   @include media-breakpoint-up(md) {
-    min-height: 710px;
+    min-height: 600px;
   }
 
   input {
@@ -40,9 +40,9 @@
 .authImage {
   @include font-size(1.5rem);
 
-  background: #141414 url('/auth-page.jpg') center no-repeat;
+  background: var(--background-color-invert) url('/auth-page.jpg') center no-repeat;
   background-size: cover;
-  color: #fff;
+  color: var(--default-color-invert);
   display: flex;
   padding: 3em;
   position: relative;
@@ -69,7 +69,7 @@
   z-index: 1;
 
   a {
-    color: #fff;
+    color: var(--default-color-invert);
 
     &:hover {
       color: rgb(255 255 255 / 70%);
@@ -91,7 +91,7 @@
   margin-bottom: 0;
 
   a {
-    color: #fff !important;
+    color: var(--default-color-invert) !important;
 
     &:hover {
       color: rgb(255, 255, 255, 0.6) !important;
@@ -192,8 +192,8 @@
     border-color: #d00820;
 
     &:hover {
-      color: white;
-      border-color: black;
+      color: var(--default-color-invert);
+      border-color: var(--background-color-invert);
     }
   }
 }

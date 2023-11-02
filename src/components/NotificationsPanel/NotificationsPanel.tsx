@@ -162,8 +162,7 @@ export const NotificationsPanel = (props: Props) => {
     >
       <div ref={(el) => (panelRef.current = el)} class={styles.panel}>
         <div class={styles.closeButton} onClick={handleHide}>
-          {/*TODO: check markup (hover)*/}
-          <Icon name="close" />
+          <Icon class={styles.closeIcon} name="close" />
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
         <div class={clsx('wide-container', styles.content)} ref={(el) => (scrollContainerRef.current = el)}>

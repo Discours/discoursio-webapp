@@ -41,12 +41,14 @@ export function useSession() {
   return useContext(SessionContext)
 }
 
+const EMPTY_SUBSCRIPTIONS = {
+  topics: [],
+  authors: []
+}
+
 export const SessionProvider = (props: { children: JSX.Element }) => {
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
-  const [subscriptions, setSubscriptions] = createSignal<MySubscriptionsQueryResult>({
-    topics: [],
-    authors: []
-  })
+  const [subscriptions, setSubscriptions] = createSignal<MySubscriptionsQueryResult>(EMPTY_SUBSCRIPTIONS)
   const { t } = useLocalize()
   const {
     actions: { showSnackbar }
@@ -74,7 +76,11 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const loadSubscriptions = async (): Promise<void> => {
     const result = await apiClient.getMySubscriptions()
-    setSubscriptions(result)
+    if (result) {
+      setSubscriptions(result)
+    } else {
+      setSubscriptions(EMPTY_SUBSCRIPTIONS)
+    }
   }
 
   const [session, { refetch: loadSession, mutate }] = createResource<AuthResult>(getSession, {
@@ -96,8 +102,10 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const [isAuthWithCallback, setIsAuthWithCallback] = createSignal(null)
 
-  const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
+  const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
     setIsAuthWithCallback(() => callback)
+
+    await loadSession()
 
     if (!isAuthenticated()) {
       showModal('auth', modalSource)
@@ -120,6 +128,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     // TODO: call backend to revoke token
     mutate(null)
     resetToken()
+    setSubscriptions(EMPTY_SUBSCRIPTIONS)
     showSnackbar({ body: t("You've successfully logged out") })
   }
 

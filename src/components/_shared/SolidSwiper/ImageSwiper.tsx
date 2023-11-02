@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show, on } from 'solid-js'
+import { createEffect, createSignal, For, Show, on, JSXElement } from 'solid-js'
 import { MediaItem, UploadedFile } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
@@ -32,7 +32,7 @@ register()
 
 SwiperCore.use([Pagination, Navigation, Manipulation])
 
-export const SolidSwiper = (props: Props) => {
+export const ImageSwiper = (props: Props) => {
   const { t } = useLocalize()
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
@@ -68,7 +68,6 @@ export const SolidSwiper = (props: Props) => {
       { defer: true }
     )
   )
-
   const handleDropAreaUpload = (value: UploadedFile[]) => {
     props.onImagesAdd(composeMediaItems(value))
     swipeToUploaded()

@@ -13,6 +13,17 @@ $navigation-reserve: 32px;
   margin: 2rem 0;
   flex-direction: column;
 
+  &.ArticleCardSwiper {
+    margin-bottom: 6rem;
+  }
+
+  .sliderTitle {
+    @include font-size(4.5rem);
+
+    text-align: center;
+    padding: 4rem 0 0;
+  }
+
   &.articleMode {
     background: var(--background-color-invert);
     color: var(--default-color-invert);

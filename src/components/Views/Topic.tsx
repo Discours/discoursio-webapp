@@ -13,10 +13,10 @@ import { useAuthorsStore } from '../../stores/zine/authors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { clsx } from 'clsx'
-import { Slider } from '../_shared/Slider'
 import { Row1 } from '../Feed/Row1'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { useLocalize } from '../../context/localize'
+import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
@@ -136,21 +136,7 @@ export const TopicView = (props: TopicProps) => {
           wrapper={'author'}
         />
 
-        <Slider title={title()}>
-          <For each={sortedArticles().slice(5, 11)}>
-            {(a: Shout) => (
-              <ArticleCard
-                article={a}
-                settings={{
-                  additionalClass: 'swiper-slide',
-                  isFloorImportant: true,
-                  isWithCover: true,
-                  nodate: true
-                }}
-              />
-            )}
-          </For>
-        </Slider>
+        <ArticleCardSwiper title={title()} slides={sortedArticles().slice(5, 11)} />
 
         <Beside
           beside={sortedArticles()[12]}
@@ -163,22 +149,7 @@ export const TopicView = (props: TopicProps) => {
         <Row1 article={sortedArticles()[15]} />
 
         <Show when={sortedArticles().length > 15}>
-          <Slider slidesPerView={3}>
-            <For each={sortedArticles().slice(16, 22)}>
-              {(a: Shout) => (
-                <ArticleCard
-                  article={a}
-                  settings={{
-                    additionalClass: 'swiper-slide',
-                    isFloorImportant: true,
-                    isWithCover: false,
-                    nodate: true
-                  }}
-                />
-              )}
-            </For>
-          </Slider>
-
+          <ArticleCardSwiper slides={sortedArticles().slice(16, 22)} />
           <Row3 articles={sortedArticles().slice(23, 26)} />
           <Row2 articles={sortedArticles().slice(26, 28)} />
         </Show>

@@ -20,7 +20,7 @@ import { AudioHeader } from './AudioHeader'
 import { Popover } from '../_shared/Popover'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { Icon } from '../_shared/Icon'
-import { SolidSwiper } from '../_shared/SolidSwiper'
+import { ImageSwiper } from '../_shared/SolidSwiper'
 import styles from './Article.module.scss'
 import { CardTopic } from '../Feed/CardTopic'
 import { createPopper } from '@popperjs/core'
@@ -331,7 +331,7 @@ export const FullArticle = (props: Props) => {
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 offset-md-2">
-                <SolidSwiper images={media()} />
+                <ImageSwiper images={media()} />
               </div>
             </div>
           </div>

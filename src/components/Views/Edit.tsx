@@ -12,7 +12,7 @@ import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { AudioUploader } from '../Editor/AudioUploader'
 import { slugify } from '../../utils/slugify'
-import { SolidSwiper } from '../_shared/SolidSwiper'
+import { ImageSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
 import { LayoutType, MediaItem } from '../../pages/types'
 import { clone } from '../../utils/clone'
@@ -384,7 +384,7 @@ export const EditView = (props: Props) => {
                     </div>
 
                     <Show when={props.shout.layout === 'image'}>
-                      <SolidSwiper
+                      <ImageSwiper
                         editorMode={true}
                         images={mediaItems()}
                         onImageChange={handleMediaChange}

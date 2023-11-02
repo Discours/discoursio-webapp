@@ -15,6 +15,24 @@ export const handleImageUpload = async (uploadFile: UploadFile): Promise<Uploade
   const url = `${thumborUrl}/unsafe/production${location.slice(0, location.lastIndexOf('/'))}`
   const originalFilename = location.slice(location.lastIndexOf('/') + 1)
 
+  // check that image is available
+  await new Promise<void>((resolve, reject) => {
+    let retryCount = 0
+    const checkUploadedImage = () => {
+      const uploadedImage = new Image()
+      uploadedImage.addEventListener('load', () => resolve())
+      uploadedImage.addEventListener('error', () => {
+        retryCount++
+        if (retryCount >= 3) {
+          return reject()
+        }
+        setTimeout(() => checkUploadedImage(), 1000)
+      })
+      uploadedImage.src = url
+    }
+    checkUploadedImage()
+  })
+
   return {
     originalFilename,
     url

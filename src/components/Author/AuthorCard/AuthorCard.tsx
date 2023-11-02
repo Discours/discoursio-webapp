@@ -98,7 +98,7 @@ export const AuthorCard = (props: Props) => {
 
   const followButtonText = () => {
     if (isSubscribing()) {
-      return t('...subscribing')
+      return t('subscribing...')
     }
     return t(subscribed() ? 'Unfollow' : 'Follow')
   }
@@ -211,7 +211,7 @@ export const AuthorCard = (props: Props) => {
                     variant={'secondary'}
                     value={t('Message')}
                     onClick={initChat}
-                    class={styles.buttonSubscribe}
+                    class={styles.buttonWriteMessage}
                   />
                 </div>
               }

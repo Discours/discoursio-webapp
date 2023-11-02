@@ -13,6 +13,7 @@ import { CheckButton } from '../_shared/CheckButton'
 import { capitalize } from '../../utils/capitalize'
 
 import styles from './Card.module.scss'
+import { Button } from '../_shared/Button'
 
 interface TopicProps {
   topic: Topic
@@ -60,6 +61,24 @@ export const TopicCard = (props: TopicProps) => {
     requireAuthentication(() => {
       subscribe(!subscribed())
     }, 'subscribe')
+  }
+
+  const subscribeValue = () => {
+    return (
+      <>
+        <Show when={props.iconButton}>
+          <Show when={subscribed()} fallback="+">
+            <Icon name="check-subscribed" />
+          </Show>
+        </Show>
+        <Show when={!props.iconButton}>
+          <Show when={subscribed()} fallback={t('Follow')}>
+            <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
+            <span class={styles.buttonSubscribedLabel}>{t('Following')}</span>
+          </Show>
+        </Show>
+      </>
+    )
   }
 
   return (
@@ -123,27 +142,17 @@ export const TopicCard = (props: TopicProps) => {
                   <CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />
                 }
               >
-                <button
+                <Button
+                  variant="bordered"
+                  size="M"
+                  value={subscribeValue()}
                   onClick={handleSubscribe}
-                  class="button--light button--subscribe-topic"
-                  classList={{
+                  class={clsx(styles.actionButton, {
                     [styles.isSubscribing]: isSubscribing(),
                     [styles.isSubscribed]: subscribed()
-                  }}
+                  })}
                   disabled={isSubscribing()}
-                >
-                  <Show when={props.iconButton}>
-                    <Show when={subscribed()} fallback="+">
-                      <Icon name="check-subscribed" />
-                    </Show>
-                  </Show>
-                  <Show when={!props.iconButton}>
-                    <Show when={subscribed()} fallback={t('Follow')}>
-                      <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
-                      <span class={styles.buttonSubscribedLabel}>{t('Following')}</span>
-                    </Show>
-                  </Show>
-                </button>
+                />
               </Show>
             </Show>
           </ShowOnlyOnClient>

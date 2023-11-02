@@ -60,8 +60,21 @@ export const AuthorBadge = (props: Props) => {
     if (props.iconButtons) {
       return <Icon name="author-subscribe" />
     }
-    return isSubscribing() ? t('...subscribing') : t('Subscribe')
+    return isSubscribing() ? t('subscribing...') : t('Subscribe')
   })
+
+  const unsubscribeValue = () => {
+    if (props.iconButtons) {
+      return <Icon name="author-unsubscribe" />
+    }
+
+    return (
+      <>
+        <span class={styles.actionButtonLabel}>{t('Following')}</span>
+        <span class={styles.actionButtonLabelHovered}>{t('Unfollow')}</span>
+      </>
+    )
+  }
 
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
@@ -112,7 +125,7 @@ export const AuthorBadge = (props: Props) => {
               fallback={
                 <Button
                   variant={props.iconButtons ? 'secondary' : 'bordered'}
-                  size="S"
+                  size="M"
                   value={subscribeValue()}
                   onClick={() => handleSubscribe(true)}
                   class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
@@ -121,8 +134,8 @@ export const AuthorBadge = (props: Props) => {
             >
               <Button
                 variant={props.iconButtons ? 'secondary' : 'bordered'}
-                size="S"
-                value={props.iconButtons ? <Icon name="author-unsubscribe" /> : t('Following')}
+                size="M"
+                value={() => unsubscribeValue()}
                 onClick={() => handleSubscribe(false)}
                 class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
               />
@@ -131,7 +144,7 @@ export const AuthorBadge = (props: Props) => {
           <Show when={props.showMessageButton}>
             <Button
               variant={props.iconButtons ? 'secondary' : 'bordered'}
-              size="S"
+              size="M"
               value={props.iconButtons ? <Icon name="inbox-white" /> : t('Message')}
               onClick={initChat}
               class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}

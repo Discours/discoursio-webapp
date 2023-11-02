@@ -81,9 +81,24 @@
       padding: 6px !important;
       min-width: 32px;
       width: unset;
+
       &:hover img {
         filter: invert(1);
       }
     }
+
+    &:hover {
+      .actionButtonLabel {
+        display: none;
+      }
+
+      .actionButtonLabelHovered {
+        display: block;
+      }
+    }
+  }
+
+  .actionButtonLabelHovered {
+    display: none;
   }
 }

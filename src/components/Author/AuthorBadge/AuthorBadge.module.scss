@@ -1,20 +1,19 @@
 .AuthorBadge {
   align-items: flex-start;
   display: flex;
-  flex-flow: row nowrap;
-  margin-bottom: 2rem;
   gap: 1rem;
+  margin-bottom: 3rem;
 
   &.nameOnly {
     align-items: center;
+
     .info {
       margin-bottom: 0;
     }
   }
 
-  @include media-breakpoint-down(sm) {
-    flex-wrap: wrap;
-    margin-bottom: 3rem;
+  @include media-breakpoint-up(sm) {
+    margin-bottom: 2rem;
   }
 
   @include media-breakpoint-down(md) {

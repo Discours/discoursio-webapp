@@ -22,12 +22,11 @@ export const ArticleCardSwiper = (props: Props) => {
   const [slideIndex, setSlideIndex] = createSignal(0)
 
   const mainSwipeRef: { current: SwiperRef } = { current: null }
-  const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
   const handleSlideChange = () => {
-    thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
     setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
   }
+
   return (
     <div class={clsx(styles.Swiper, styles.articleMode, styles.ArticleCardSwiper)}>
       <Show when={props.title}>

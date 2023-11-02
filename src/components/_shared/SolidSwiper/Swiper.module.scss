@@ -125,6 +125,10 @@ $navigation-reserve: 32px;
     overflow: hidden;
     width: calc(100% - 130px);
 
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+    }
+
     .counter {
       @include font-size(1.2rem);
 

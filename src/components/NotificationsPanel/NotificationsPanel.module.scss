@@ -31,11 +31,10 @@ $transition-duration: 200ms;
       color: var(--black-500);
       font-style: normal;
       font-weight: 700;
-      line-height: 36px;
       position: sticky;
       top: 0;
-      padding: 16px 38px;
-      border-bottom: 1px solid var(--black-100);
+      padding: 1.23rem 38px;
+      border-bottom: 2px solid var(--black-100);
     }
 
     .content {
@@ -77,10 +76,19 @@ $transition-duration: 200ms;
 
 .closeButton {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 20px;
+  top: 1.2rem;
+  right: 1rem;
+  padding: 1rem;
   cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background-color: var(--background-color-invert);
+
+    .closeIcon {
+      filter: invert(1);
+    }
+  }
 }
 
 .notificationView + .notificationView {

@@ -7,7 +7,7 @@ import 'swiper/scss/navigation'
 import 'swiper/scss/pagination'
 import 'swiper/scss/thumbs'
 import './Slider.scss'
-import { createEffect, createSignal, JSX, Show } from 'solid-js'
+import { createEffect, createSignal, JSX, on, Show } from 'solid-js'
 import { Icon } from '../Icon'
 import { clsx } from 'clsx'
 
@@ -33,6 +33,8 @@ export const Slider = (props: Props) => {
   const [swiper, setSwiper] = createSignal<Swiper>()
   const [swiperThumbs, setSwiperThumbs] = createSignal<Swiper>()
   const opts: SwiperOptions = {
+    observer: true,
+    observeParents: true,
     roundLengths: true,
     loop: true,
     centeredSlides: true,
@@ -64,42 +66,43 @@ export const Slider = (props: Props) => {
 
   createEffect(() => {
     if (props.hasThumbs && !!thumbsEl) {
-      setTimeout(() => {
-        setSwiperThumbs(
-          new Swiper(thumbsEl, {
-            slidesPerView: 'auto',
-            modules: [Thumbs],
-            roundLengths: true,
-            spaceBetween: 20,
-            freeMode: true,
-            breakpoints: {
-              768: {
-                direction: 'vertical'
-              }
+      setSwiperThumbs(
+        new Swiper(thumbsEl, {
+          slidesPerView: 'auto',
+          modules: [Thumbs],
+          roundLengths: true,
+          spaceBetween: 20,
+          freeMode: true,
+          breakpoints: {
+            768: {
+              direction: 'vertical'
             }
-          })
-        )
-      }, 500)
+          }
+        })
+      )
     }
   })
 
   createEffect(() => {
     if (!swiper() && !!el) {
-      setTimeout(() => {
-        if (swiperThumbs()) {
-          opts.thumbs = {
-            swiper: swiperThumbs()
-          }
-
-          opts.pagination = {
-            el: '.swiper-pagination',
-            type: 'fraction'
-          }
+      if (swiperThumbs()) {
+        opts.thumbs = {
+          swiper: swiperThumbs()
         }
 
-        setSwiper(new Swiper(el, opts))
-      }, 500)
+        opts.pagination = {
+          el: '.swiper-pagination',
+          type: 'fraction'
+        }
+      }
+
+      setSwiper(new Swiper(el, opts))
+      swiper().update()
     }
+  })
+
+  createEffect(() => {
+    swiper().update()
   })
 
   return (

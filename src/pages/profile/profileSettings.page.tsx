@@ -19,6 +19,7 @@ import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { AuthGuard } from '../../components/AuthGuard'
 import { handleImageUpload } from '../../utils/handleImageUpload'
+import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -253,6 +254,7 @@ export const ProfileSettingsPage = () => {
                             </div>
                           )}
                         </For>
+                        <SocialNetworkInput network={'fb'} handleChange={() => ''} />
                       </div>
                       <br />
                       <FloatingPanel

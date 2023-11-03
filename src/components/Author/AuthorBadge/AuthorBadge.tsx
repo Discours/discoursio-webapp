@@ -135,7 +135,7 @@ export const AuthorBadge = (props: Props) => {
               <Button
                 variant={props.iconButtons ? 'secondary' : 'bordered'}
                 size="M"
-                value={() => unsubscribeValue()}
+                value={unsubscribeValue()}
                 onClick={() => handleSubscribe(false)}
                 class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
               />

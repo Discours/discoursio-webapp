@@ -3,11 +3,12 @@ import type { Shout } from '../graphql/types.gen'
 import { PageLayout } from '../components/_shared/PageLayout'
 import type { PageProps } from './types'
 import { loadShout, useArticlesStore } from '../stores/zine/articles'
-import { useRouter } from '../stores/router'
+import { router, useRouter } from '../stores/router'
 import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
 import { FullArticle } from '../components/Article/FullArticle'
 import { setPageLoadManagerPromise } from '../utils/pageLoadManager'
+import { redirectPage } from '@nanostores/router'
 
 export const ArticlePage = (props: PageProps) => {
   const shouts = props.article ? [props.article] : []
@@ -28,7 +29,10 @@ export const ArticlePage = (props: PageProps) => {
       const loadShoutPromise = loadShout(slug())
       setPageLoadManagerPromise(loadShoutPromise)
       await loadShoutPromise
-      // тут видимо тоже что-то нужно написать
+
+      if (!article()) {
+        redirectPage(router, 'fourOuFour')
+      }
     }
   })
 

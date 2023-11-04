@@ -7,7 +7,8 @@ export default async function handler(req, res) {
 
   const { httpResponse, errorWhileRendering } = pageContext
 
-  console.error(errorWhileRendering)
+  console.error('pageContext', pageContext)
+  console.error('errorWhileRendering', errorWhileRendering)
 
   // if (errorWhileRendering) {
   //   console.error(errorWhileRendering)

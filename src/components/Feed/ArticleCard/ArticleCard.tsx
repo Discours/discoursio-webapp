@@ -158,7 +158,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <a href={`/${props.article.slug || ''}1111`}>
+          <a href={getPagePath(router, 'article', { slug: props.article.slug })}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer}>{title}</span>

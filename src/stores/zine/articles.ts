@@ -119,6 +119,9 @@ const addSortedArticles = (articles: Shout[]) => {
 
 export const loadShout = async (slug: string): Promise<void> => {
   const newArticle = await apiClient.getShoutBySlug(slug)
+  if (!newArticle) {
+    return
+  }
   addArticles([newArticle])
   const newArticleIndex = sortedArticles().findIndex((s) => s.id === newArticle.id)
   if (newArticleIndex >= 0) {

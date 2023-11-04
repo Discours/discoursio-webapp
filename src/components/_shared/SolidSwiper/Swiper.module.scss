@@ -30,13 +30,16 @@ $navigation-reserve: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+
     a {
       color: var(--default-color-invert);
       border-color: var(--default-color-invert);
     }
+
     .container {
       margin: auto;
-      //max-width: 800px;
+
+      // max-width: 800px;
       position: relative;
       padding: 24px 0;
       display: flex;
@@ -108,7 +111,7 @@ $navigation-reserve: 32px;
     position: absolute;
     top: 16px;
     right: 16px;
-    background: rgba(var(--default-color), 0.3);
+    background: rgb(var(--default-color) 0.3);
     cursor: pointer;
     z-index: 12;
     display: none;
@@ -213,15 +216,17 @@ $navigation-reserve: 32px;
 
     .source {
       @include font-size(1.2rem);
+
       color: var(--secondary-color);
     }
 
     .body {
       @include font-size(1.7rem);
+
       margin-top: 24px;
 
       @include media-breakpoint-up(md) {
-        //margin-left: calc((100% + 130px) * 0.15);
+        // margin-left: calc((100% + 130px) * 0.15);
         margin-left: calc(15% + 24px);
       }
     }

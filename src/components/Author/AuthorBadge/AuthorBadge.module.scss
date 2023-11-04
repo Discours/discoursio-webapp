@@ -22,6 +22,7 @@
 
   .info {
     @include font-size(1.4rem);
+
     border: none;
     display: flex;
     flex: 0 calc(100% - 5.2rem);

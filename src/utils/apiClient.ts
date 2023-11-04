@@ -310,9 +310,9 @@ export const apiClient = {
       })
       .toPromise()
 
-    if (resp.error) {
-      console.error(resp)
-    }
+    // if (resp.error) {
+    //   console.error(resp)
+    // }
 
     return resp.data.loadShout
   },

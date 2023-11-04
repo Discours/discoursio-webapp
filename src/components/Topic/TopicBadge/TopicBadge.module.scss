@@ -36,11 +36,12 @@
   }
 
   .info {
+    @include font-size(1.4rem);
+
     border: none;
     display: flex;
     flex: 0 calc(100% - 5.2rem);
     flex-direction: column;
-    @include font-size(1.4rem);
     margin-bottom: 1rem;
 
     @include media-breakpoint-up(sm) {

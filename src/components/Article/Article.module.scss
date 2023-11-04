@@ -1,11 +1,13 @@
 h1 {
   @include font-size(4rem);
+
   line-height: 1.1;
   margin-top: 0.5em;
 }
 
 h2 {
   @include font-size(4rem);
+
   line-height: 1.1;
 }
 
@@ -70,6 +72,7 @@ img {
     &[data-float='left'],
     &[data-float='right'] {
       @include font-size(2.2rem);
+
       line-height: 1.4;
     }
 
@@ -92,9 +95,10 @@ img {
   ta-sub,
   ta-selection-frame,
   ta-border-sub {
+    @include font-size(1.4rem);
+
     background: #f1f2f3;
     display: block;
-    @include font-size(1.4rem);
     margin: 3.2rem 0;
     padding: 3.2rem;
 
@@ -303,6 +307,7 @@ img {
 
 .shoutStatsItem {
   @include font-size(1.5rem);
+
   align-items: center;
   font-weight: 500;
   display: flex;
@@ -398,7 +403,7 @@ img {
   cursor: default;
 
   @include media-breakpoint-down(sm) {
-    color: rgb(0 0 0 / 0.4);
+    color: rgb(0 0 0 / 40%);
     flex: 1 40%;
     justify-content: end;
     margin-right: 0;
@@ -441,6 +446,7 @@ img {
 
 .topicsList {
   @include font-size(1.2rem);
+
   border-bottom: 1px solid #e8e8e8;
   letter-spacing: 0.08em;
   margin-top: 1.6rem;
@@ -486,6 +492,7 @@ img {
 
 .commentsHeader {
   @include font-size(2.4rem);
+
   margin-bottom: 1em;
 
   .newReactions {
@@ -519,6 +526,7 @@ img {
 
   button {
     @include font-size(1.5rem);
+
     border-radius: 0.8rem;
     margin-right: 1.2rem;
     padding: 0.9rem 1.2rem;
@@ -600,13 +608,14 @@ a[data-toggle='tooltip'] {
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 4px 4px 0 4px;
+    border-width: 4px 4px 0;
     border-color: var(--black-500) transparent transparent transparent;
   }
 }
 
 .lead {
   @include font-size(1.8rem);
+
   font-weight: 600;
 
   b,

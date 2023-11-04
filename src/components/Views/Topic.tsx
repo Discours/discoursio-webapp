@@ -14,7 +14,6 @@ import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { clsx } from 'clsx'
 import { Row1 } from '../Feed/Row1'
-import { ArticleCard } from '../Feed/ArticleCard'
 import { useLocalize } from '../../context/localize'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 

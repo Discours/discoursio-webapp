@@ -7,21 +7,21 @@ import { useRouter } from '../stores/router'
 import { AuthGuard } from '../components/AuthGuard'
 import { LoadShoutsOptions } from '../graphql/types.gen'
 
+const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
+  return loadShouts({
+    ...options,
+    filters: { visibility: 'community' }
+  })
+}
+
+const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
+  return loadMyFeed(options)
+}
+
 export const FeedPage = () => {
   onCleanup(() => resetSortedArticles())
 
   const { page } = useRouter()
-
-  const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
-    return loadShouts({
-      ...options,
-      filters: { visibility: 'community' }
-    })
-  }
-
-  const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
-    return loadMyFeed(options)
-  }
 
   createEffect(
     on(

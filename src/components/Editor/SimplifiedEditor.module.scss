@@ -9,6 +9,7 @@
 
   .simplifiedEditorField {
     @include font-size(1.4rem);
+
     min-height: 100px;
 
     .emptyNode:first-child::before {
@@ -92,7 +93,7 @@
   }
 
   &.isFocused {
-    //background: red;
+    // background: red;
     .controls {
       opacity: 1;
       bottom: 0;
@@ -111,7 +112,7 @@
 
   &.bordered {
     box-sizing: border-box;
-    padding: 16px 12px 6px 12px;
+    padding: 16px 12px 6px;
     border-radius: 2px;
     border: 2px solid var(--black-100);
     background: var(--white-500);

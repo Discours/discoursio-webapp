@@ -7,6 +7,7 @@
 
   &.nameOnly {
     align-items: center;
+
     .info {
       margin-bottom: 0;
     }
@@ -23,6 +24,7 @@
 
   .info {
     @include font-size(1.4rem);
+
     border: none;
     display: flex;
     flex: 0 calc(100% - 5.2rem);
@@ -81,6 +83,7 @@
       padding: 6px !important;
       min-width: 32px;
       width: unset;
+
       &:hover img {
         filter: invert(1);
       }

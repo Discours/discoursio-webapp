@@ -7,12 +7,14 @@ export default async function handler(req, res) {
 
   const { httpResponse, errorWhileRendering } = pageContext
 
-  if (errorWhileRendering) {
-    console.error(errorWhileRendering)
-    res.statusCode = 500
-    res.end()
-    return
-  }
+  console.error(errorWhileRendering)
+
+  // if (errorWhileRendering) {
+  //   console.error(errorWhileRendering)
+  //   res.statusCode = 500
+  //   res.end()
+  //   return
+  // }
 
   if (!httpResponse) {
     res.statusCode = 200

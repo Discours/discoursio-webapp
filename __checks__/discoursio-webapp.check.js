@@ -1,4 +1,4 @@
-import { chromium } from 'playwright'
+const { chromium } = require('playwright')
 
 const checkUrl = async (page, targetUrl, pageName) => {
   const response = await page.goto(targetUrl)

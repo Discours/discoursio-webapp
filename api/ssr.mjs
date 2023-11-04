@@ -5,17 +5,14 @@ export default async function handler(req, res) {
 
   const pageContext = await renderPage({ urlOriginal: url, cookies })
 
-  const { httpResponse, errorWhileRendering } = pageContext
+  const { httpResponse, errorWhileRendering, is404 } = pageContext
 
-  console.error('pageContext', pageContext)
-  console.error('errorWhileRendering', errorWhileRendering)
-
-  // if (errorWhileRendering) {
-  //   console.error(errorWhileRendering)
-  //   res.statusCode = 500
-  //   res.end()
-  //   return
-  // }
+  if (errorWhileRendering && !is404) {
+    console.error(errorWhileRendering)
+    res.statusCode = 500
+    res.end()
+    return
+  }
 
   if (!httpResponse) {
     res.statusCode = 200

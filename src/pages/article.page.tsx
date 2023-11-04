@@ -28,6 +28,7 @@ export const ArticlePage = (props: PageProps) => {
       const loadShoutPromise = loadShout(slug())
       setPageLoadManagerPromise(loadShoutPromise)
       await loadShoutPromise
+      // тут видимо тоже что-то нужно написать
     }
   })
 

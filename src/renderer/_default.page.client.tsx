@@ -1,6 +1,6 @@
 import { App } from '../components/App'
 import { hydrate } from 'solid-js/web'
-import type { PageContextBuiltInClientWithClientRouting } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'
 import type { PageContext } from './types'
 import { MetaProvider } from '@solidjs/meta'
 import i18next, { use as useI18next } from 'i18next'

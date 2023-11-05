@@ -4,9 +4,12 @@ import { Icon } from '../Icon'
 
 type Props = {
   class?: string
-  network?: 'twitter' | 'facebook' | 'telegram' | 'vk' | 'instagram' | 'linkedin'
-  handleChange: () => void
-  slug: string
+  network?: string
+  link?: string
+  isExist: boolean
+  handleChange: (value: string) => void
+  slug?: string
+  autofocus?: boolean
 }
 
 export const SocialNetworkInput = (props: Props) => {
@@ -16,10 +19,12 @@ export const SocialNetworkInput = (props: Props) => {
         <Icon name={props.network ? `social-${props.network}` : 'user-link-default'} />
       </div>
       <input
+        autofocus={props.autofocus}
         class={styles.input}
         type="text"
-        onChange={() => props.handleChange}
-        placeholder={`https://${props.network}.com/${props.slug}`}
+        value={props.isExist ? props.link : null}
+        onChange={(event) => props.handleChange(event.currentTarget.value)}
+        placeholder={props.autofocus ? null : `${props.link}/${props.slug}`}
       />
     </div>
   )

@@ -25,6 +25,10 @@
     height: 1em;
     padding: 0;
 
+    &:focus {
+      outline: none;
+    }
+
     &::placeholder {
       color: var(--black-300);
     }

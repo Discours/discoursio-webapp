@@ -20,6 +20,7 @@ import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { AuthGuard } from '../../components/AuthGuard'
 import { handleImageUpload } from '../../utils/handleImageUpload'
 import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
+import { profileSocialLinks } from '../../utils/profileSocialLinks'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -109,14 +110,9 @@ export const ProfileSettingsPage = () => {
     }
   })
 
-  console.log('!!! form.links:', form.links)
-  const links = [
-    'https://facebook/',
-    'https://linked.in/in/',
-    'https://vk.com/',
-    'https://www.instagram.com/',
-    'https://twitter.com/'
-  ]
+  createEffect(() => {
+    console.log('!!! form.links:', profileSocialLinks(form.links))
+  })
 
   return (
     <PageLayout>
@@ -240,15 +236,11 @@ export const ProfileSettingsPage = () => {
                           </button>
                         </div>
                         <Show when={addLinkForm()}>
-                          <div class={styles.multipleControlsItem}>
-                            <input
-                              autofocus={true}
-                              type="text"
-                              name="link"
-                              class="nolabel"
-                              onChange={(event) => handleChangeSocial(event.currentTarget.value)}
-                            />
-                          </div>
+                          <SocialNetworkInput
+                            isExist={false}
+                            autofocus={true}
+                            handleChange={(value) => handleChangeSocial(value)}
+                          />
                           <Show when={incorrectUrl()}>
                             <p class="form-message form-message--error">{t('It does not look like url')}</p>
                           </Show>
@@ -263,7 +255,18 @@ export const ProfileSettingsPage = () => {
                             </div>
                           )}
                         </For>
-                        <SocialNetworkInput network={'facebook'} handleChange={() => ''} slug={form.slug} />
+
+                        <For each={profileSocialLinks(form.links)}>
+                          {(network) => (
+                            <SocialNetworkInput
+                              link={network.link}
+                              network={network.name}
+                              handleChange={(value) => handleChangeSocial(value)}
+                              isExist={network.rly}
+                              slug={form.slug}
+                            />
+                          )}
+                        </For>
                       </div>
                       <br />
                       <FloatingPanel

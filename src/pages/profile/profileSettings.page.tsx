@@ -109,6 +109,15 @@ export const ProfileSettingsPage = () => {
     }
   })
 
+  console.log('!!! form.links:', form.links)
+  const links = [
+    'https://facebook/',
+    'https://linked.in/in/',
+    'https://vk.com/',
+    'https://www.instagram.com/',
+    'https://twitter.com/'
+  ]
+
   return (
     <PageLayout>
       <AuthGuard>
@@ -254,7 +263,7 @@ export const ProfileSettingsPage = () => {
                             </div>
                           )}
                         </For>
-                        <SocialNetworkInput network={'fb'} handleChange={() => ''} />
+                        <SocialNetworkInput network={'facebook'} handleChange={() => ''} slug={form.slug} />
                       </div>
                       <br />
                       <FloatingPanel

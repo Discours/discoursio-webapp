@@ -24,6 +24,8 @@
     border: none;
     height: 1em;
     padding: 0;
+    display: block;
+    flex: 1;
 
     &:focus {
       outline: none;
@@ -31,6 +33,18 @@
 
     &::placeholder {
       color: var(--black-300);
+    }
+  }
+
+  .remove {
+    width: 54px;
+    height: 54px;
+    padding: 16px;
+    &:hover {
+      background: var(--background-color-invert);
+      img {
+        filter: invert(1);
+      }
     }
   }
 }

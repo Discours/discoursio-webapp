@@ -4,14 +4,15 @@
   transition: background-color 0.3s;
   position: relative;
   list-style: none;
+  background: rgb(0 0 0 / 0.1);
+
+  @include media-breakpoint-down(sm) {
+    padding-right: 0;
+  }
 
   &.isNew {
     border-radius: 6px;
     background: rgb(38 56 217 / 5%);
-  }
-
-  @include media-breakpoint-down(sm) {
-    margin-right: -1.2rem;
   }
 
   .comment {
@@ -66,6 +67,8 @@
 }
 
 .commentContent {
+  padding: 0 1rem 1rem 0;
+
   &:hover {
     .commentControlReply,
     .commentControlShare,
@@ -75,6 +78,10 @@
     .commentControl {
       opacity: 1;
     }
+  }
+
+  p:last-child {
+    margin-bottom: 0;
   }
 }
 

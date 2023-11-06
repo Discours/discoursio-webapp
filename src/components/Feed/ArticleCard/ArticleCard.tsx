@@ -230,7 +230,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                     name="comment-hover"
                     class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
                   />
-                  <span class={styles.shoutCardLinkContainer}>
+                  <span class={clsx(styles.shoutCardLinkContainer, styles.shoutCardDetailsItemLabel)}>
                     {props.article.stat?.commented || t('Add comment')}
                   </span>
                 </a>

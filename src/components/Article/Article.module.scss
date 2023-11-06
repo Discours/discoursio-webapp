@@ -299,8 +299,9 @@ img {
   display: flex;
   justify-content: flex-start;
   padding: 3rem 0 0;
+  position: relative;
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(lg) {
     flex-wrap: wrap;
   }
 }
@@ -311,11 +312,11 @@ img {
   align-items: center;
   font-weight: 500;
   display: flex;
-  margin: 0 6% 1em 0;
+  margin: 0 2rem 1em 0;
   vertical-align: baseline;
   cursor: pointer;
 
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(xl) {
     margin-right: 3.2rem;
   }
 
@@ -359,6 +360,14 @@ img {
   }
 }
 
+.shoutStatsItemBookmarks {
+  margin-left: auto;
+
+  @include media-breakpoint-up(lg) {
+    margin-left: 0;
+  }
+}
+
 .shoutStatsItemInner {
   cursor: pointer;
 
@@ -382,32 +391,41 @@ img {
 
 .shoutStatsItemAdditionalData {
   color: rgb(0 0 0 / 40%);
+  cursor: default;
   font-weight: normal;
   justify-self: flex-end;
-  margin-right: 0;
-  margin-left: auto;
   white-space: nowrap;
-  cursor: default;
 
   .icon {
     opacity: 0.4;
     height: 2rem;
   }
 
-  @include media-breakpoint-down(sm) {
-    flex: 1 40%;
+  @include media-breakpoint-down(lg) {
+    flex: 1 100%;
+    order: 9;
+
+    .shoutStatsItemAdditionalDataItem {
+      margin-left: 0;
+    }
   }
 }
 
 .shoutStatsItemViews {
+  color: rgb(0 0 0 / 0.4);
   cursor: default;
+  font-weight: normal;
+  margin-left: auto;
+  white-space: nowrap;
 
-  @include media-breakpoint-down(sm) {
-    color: rgb(0 0 0 / 40%);
+  @include media-breakpoint-down(lg) {
+    bottom: 0;
     flex: 1 40%;
     justify-content: end;
     margin-right: 0;
     order: 10;
+    position: absolute;
+    right: 0;
 
     .icon {
       display: none !important;
@@ -416,15 +434,20 @@ img {
 }
 
 .shoutStatsItemLabel {
+  font-weight: normal;
   margin-left: 0.3em;
+}
+
+.commentsTextLabel {
+  display: none;
 
   @include media-breakpoint-up(sm) {
-    display: none;
+    display: block;
   }
 }
 
 .shoutStatsItemCount {
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(lg) {
     display: none;
   }
 }
@@ -432,7 +455,7 @@ img {
 .shoutStatsItemAdditionalDataItem {
   font-weight: normal;
   display: inline-block;
-  margin-left: 2rem;
+  //margin-left: 2rem;
   margin-right: 0;
   margin-bottom: 0;
   cursor: default;
@@ -486,8 +509,10 @@ img {
 }
 
 .commentsHeaderWrapper {
-  display: flex;
-  justify-content: space-between;
+  @include media-breakpoint-up(sm) {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .commentsHeader {
@@ -621,5 +646,21 @@ a[data-toggle='tooltip'] {
   b,
   strong {
     font-weight: 700;
+  }
+}
+
+.articlePopupOpener {
+  .iconHover {
+    display: none;
+  }
+
+  &:hover {
+    .icon {
+      display: none;
+    }
+
+    .iconHover {
+      display: inline-block;
+    }
   }
 }

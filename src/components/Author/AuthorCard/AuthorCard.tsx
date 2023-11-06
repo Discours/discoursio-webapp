@@ -99,16 +99,16 @@ export const AuthorCard = (props: Props) => {
   const followButtonText = () => {
     if (isSubscribing()) {
       return t('subscribing...')
+    } else if (subscribed()) {
+      return (
+        <>
+          <span class={styles.buttonSubscribeLabel}>{t('Following')}</span>
+          <span class={styles.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+        </>
+      )
+    } else {
+      return t('Follow')
     }
-
-    return !subscribed() ? (
-      t('Follow')
-    ) : (
-      <>
-        <span class={styles.buttonSubscribeLabel}>{t('Following')}</span>
-        <span class={styles.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
-      </>
-    )
   }
 
   return (

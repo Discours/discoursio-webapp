@@ -103,11 +103,23 @@
       .icon img {
         filter: invert(0);
       }
+
+      .buttonSubscribeLabel {
+        display: none;
+      }
+
+      .buttonSubscribeLabelHovered {
+        display: block;
+      }
     }
 
     img {
       vertical-align: text-top;
     }
+  }
+
+  .buttonSubscribeLabelHovered {
+    display: none;
   }
 
   .buttonWriteMessage {

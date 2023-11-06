@@ -1,10 +1,10 @@
-$navigation-reserve: 32px;
-
 :root {
   --slide-height: 300px;
+  --navigation-reserve: 48px;
 
   @include media-breakpoint-up(md) {
     --slide-height: 500px;
+    --navigation-reserve: 56px;
   }
 }
 
@@ -165,16 +165,14 @@ $navigation-reserve: 32px;
   }
 
   .navigation {
-    background: rgb(0 0 0 / 40%);
     display: flex;
     position: absolute;
     top: 0;
     bottom: 0;
-    justify-content: center;
     align-items: center;
     cursor: pointer;
-    height: var(--slide-height);
-    width: 52px;
+    height: 100%;
+    width: 12.5%;
     z-index: 2;
 
     &.disabled {
@@ -183,16 +181,19 @@ $navigation-reserve: 32px;
     }
 
     &.prev {
+      background-image: linear-gradient(to right, #000, rgb(0 0 0 / 0));
       left: 0;
     }
 
     &.next {
+      background-image: linear-gradient(to left, #000, rgb(0 0 0 / 0));
+      justify-content: end;
       right: 0;
     }
 
     .icon {
-      height: $navigation-reserve;
-      width: $navigation-reserve;
+      height: var(--navigation-reserve);
+      width: var(--navigation-reserve);
       transition: 0.3s ease-in-out;
     }
 
@@ -242,11 +243,11 @@ $navigation-reserve: 32px;
       height: auto;
 
       &.prev {
-        left: -$navigation-reserve;
+        left: -var(--navigation-reserve);
       }
 
       &.next {
-        right: -$navigation-reserve;
+        right: -var(--navigation-reserve);
       }
     }
 

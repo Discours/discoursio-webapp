@@ -78,36 +78,38 @@ export const AuthorBadge = (props: Props) => {
 
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
-      <Userpic
-        hasLink={true}
-        size={'M'}
-        name={props.author.name}
-        userpic={props.author.userpic}
-        slug={props.author.slug}
-      />
-      <a href={`/author/${props.author.slug}`} class={styles.info}>
-        <div class={styles.name}>
-          <span>{props.author.name}</span>
-        </div>
-        <Show when={!props.nameOnly}>
-          <Switch
-            fallback={
-              <div class={styles.bio}>
-                {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
-              </div>
-            }
-          >
-            <Match when={props.author.bio}>
-              <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
-            </Match>
-            <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
-              <div class={styles.bio}>
-                {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
-              </div>
-            </Match>
-          </Switch>
-        </Show>
-      </a>
+      <div class={styles.basicInfo}>
+        <Userpic
+          hasLink={true}
+          size={'M'}
+          name={props.author.name}
+          userpic={props.author.userpic}
+          slug={props.author.slug}
+        />
+        <a href={`/author/${props.author.slug}`} class={styles.info}>
+          <div class={styles.name}>
+            <span>{props.author.name}</span>
+          </div>
+          <Show when={!props.nameOnly}>
+            <Switch
+              fallback={
+                <div class={styles.bio}>
+                  {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
+                </div>
+              }
+            >
+              <Match when={props.author.bio}>
+                <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
+              </Match>
+              <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
+                <div class={styles.bio}>
+                  {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
+                </div>
+              </Match>
+            </Switch>
+          </Show>
+        </a>
+      </div>
       <Show when={props.author.slug !== session()?.user.slug && !props.nameOnly}>
         <div class={styles.actions}>
           <Show

@@ -131,4 +131,49 @@
     font-size: 15px;
     padding: 1rem 1.2rem;
   }
+
+  &.subscribeButton {
+    aspect-ratio: auto;
+    background-color: #000;
+    border: 1px solid #000;
+    border-radius: 0.8rem;
+    color: #fff;
+    float: none;
+    padding-bottom: 0.6rem;
+    padding-top: 0.6rem;
+    width: 10em;
+
+    .icon {
+      margin-right: 0.5em;
+
+      img {
+        filter: invert(1);
+      }
+    }
+
+    &:hover {
+      background: #fff;
+      color: #000;
+
+      .icon img {
+        filter: invert(0);
+      }
+
+      .buttonSubscribeLabel {
+        display: none;
+      }
+
+      .buttonSubscribeLabelHovered {
+        display: block;
+      }
+    }
+
+    .buttonSubscribeLabelHovered {
+      display: none;
+    }
+
+    img {
+      vertical-align: text-top;
+    }
+  }
 }

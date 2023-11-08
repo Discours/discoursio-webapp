@@ -147,6 +147,7 @@ export const TopicCard = (props: TopicProps) => {
                   size="M"
                   value={subscribeValue()}
                   onClick={handleSubscribe}
+                  isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.isSubscribing]: isSubscribing(),
                     [styles.isSubscribed]: subscribed()

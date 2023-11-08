@@ -18,6 +18,7 @@ import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import styles from './AuthorCard.module.scss'
+import stylesButton from '../../_shared/Button/Button.module.scss'
 
 type Props = {
   author: Author
@@ -102,8 +103,8 @@ export const AuthorCard = (props: Props) => {
     } else if (subscribed()) {
       return (
         <>
-          <span class={styles.buttonSubscribeLabel}>{t('Following')}</span>
-          <span class={styles.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+          <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+          <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
         </>
       )
     } else {
@@ -210,11 +211,7 @@ export const AuthorCard = (props: Props) => {
               when={isProfileOwner()}
               fallback={
                 <div class={styles.authorActions}>
-                  <Button
-                    onClick={handleSubscribe}
-                    value={followButtonText()}
-                    class={styles.buttonSubscribe}
-                  />
+                  <Button onClick={handleSubscribe} value={followButtonText()} isSubscribeButton={true} />
                   <Button
                     variant={'secondary'}
                     value={t('Message')}

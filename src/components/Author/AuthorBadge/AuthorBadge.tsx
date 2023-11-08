@@ -130,6 +130,7 @@ export const AuthorBadge = (props: Props) => {
                   size="M"
                   value={subscribeValue()}
                   onClick={() => handleSubscribe(true)}
+                  isSubscribeButton={true}
                   class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
                 />
               }
@@ -139,6 +140,7 @@ export const AuthorBadge = (props: Props) => {
                 size="M"
                 value={unsubscribeValue()}
                 onClick={() => handleSubscribe(false)}
+                isSubscribeButton={true}
                 class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
               />
             </Show>

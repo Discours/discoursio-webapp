@@ -1,5 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './AuthorBadge.module.scss'
+import stylesButton from '../../_shared/Button/Button.module.scss'
 import { Userpic } from '../Userpic'
 import { Author, FollowingEntity } from '../../../graphql/types.gen'
 import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
@@ -131,7 +132,10 @@ export const AuthorBadge = (props: Props) => {
                   value={subscribeValue()}
                   onClick={() => handleSubscribe(true)}
                   isSubscribeButton={true}
-                  class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
+                  class={clsx(styles.actionButton, {
+                    [styles.iconed]: props.iconButtons,
+                    [stylesButton.subscribed]: subscribed()
+                  })}
                 />
               }
             >
@@ -141,7 +145,10 @@ export const AuthorBadge = (props: Props) => {
                 value={unsubscribeValue()}
                 onClick={() => handleSubscribe(false)}
                 isSubscribeButton={true}
-                class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
+                class={clsx(styles.actionButton, {
+                  [styles.iconed]: props.iconButtons,
+                  [stylesButton.subscribed]: subscribed()
+                })}
               />
             </Show>
           </Show>

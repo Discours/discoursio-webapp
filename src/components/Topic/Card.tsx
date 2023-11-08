@@ -14,6 +14,7 @@ import { capitalize } from '../../utils/capitalize'
 
 import styles from './Card.module.scss'
 import { Button } from '../_shared/Button'
+import stylesButton from '../_shared/Button/Button.module.scss'
 
 interface TopicProps {
   topic: Topic
@@ -73,8 +74,8 @@ export const TopicCard = (props: TopicProps) => {
         </Show>
         <Show when={!props.iconButton}>
           <Show when={subscribed()} fallback={t('Follow')}>
-            <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
-            <span class={styles.buttonSubscribedLabel}>{t('Following')}</span>
+            <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+            <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
           </Show>
         </Show>
       </>
@@ -150,7 +151,7 @@ export const TopicCard = (props: TopicProps) => {
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.isSubscribing]: isSubscribing(),
-                    [styles.isSubscribed]: subscribed()
+                    [stylesButton.subscribed]: subscribed()
                   })}
                   disabled={isSubscribing()}
                 />

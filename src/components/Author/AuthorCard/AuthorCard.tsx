@@ -215,9 +215,9 @@ export const AuthorCard = (props: Props) => {
                     onClick={handleSubscribe}
                     value={followButtonText()}
                     isSubscribeButton={true}
-                    class={{
+                    class={clsx({
                       [stylesButton.subscribed]: subscribed()
-                    }}
+                    })}
                   />
                   <Button
                     variant={'secondary'}

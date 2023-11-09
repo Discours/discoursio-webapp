@@ -46,7 +46,9 @@ export const ImageSwiper = (props: Props) => {
   } = useSnackbar()
 
   const handleSlideDescriptionChange = (index: number, field: string, value) => {
-    props.onImageChange(index, { ...props.images[index], [field]: value })
+    if (props.onImageChange) {
+      props.onImageChange(index, { ...props.images[index], [field]: value })
+    }
   }
   const swipeToUploaded = () => {
     setTimeout(() => {

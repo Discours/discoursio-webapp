@@ -230,9 +230,16 @@ export const ArticleCard = (props: ArticleCardProps) => {
                     name="comment-hover"
                     class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
                   />
-                  <span class={clsx(styles.shoutCardLinkContainer, styles.shoutCardDetailsItemLabel)}>
-                    {props.article.stat?.commented || t('Add comment')}
-                  </span>
+                  <Show
+                    when={props.article.stat?.commented}
+                    fallback={
+                      <span class={clsx(styles.shoutCardLinkContainer, styles.shoutCardDetailsItemLabel)}>
+                        {t('Add comment')}
+                      </span>
+                    }
+                  >
+                    {props.article.stat?.commented}
+                  </Show>
                 </a>
               </div>
 

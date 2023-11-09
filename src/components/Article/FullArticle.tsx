@@ -354,9 +354,12 @@ export const FullArticle = (props: Props) => {
                   <div class={clsx(styles.shoutStatsItem)} ref={triggerRef} onClick={scrollToComments}>
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
-                    <span class={styles.commentsTextLabel}>
-                      {props.article.stat?.commented || t('Add' + ' comment')}
-                    </span>
+                    <Show
+                      when={props.article.stat?.commented}
+                      fallback={<span class={styles.commentsTextLabel}>{t('Add comment')}</span>}
+                    >
+                      {props.article.stat?.commented}
+                    </Show>
                   </div>
                 )}
               </Popover>

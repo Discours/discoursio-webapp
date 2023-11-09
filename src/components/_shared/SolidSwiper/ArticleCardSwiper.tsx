@@ -45,6 +45,7 @@ export const ArticleCardSwiper = (props: Props) => {
                 576: { spaceBetween: 20, slidesPerView: 1.5 },
                 992: { spaceBetween: 52, slidesPerView: 1.5 }
               }}
+              round-lengths={true}
               loop={true}
               speed={800}
               autoplay={{

@@ -40,6 +40,7 @@ export const ROUTES = {
   profileSettings: '/profile/settings',
   profileSecurity: '/profile/security',
   profileSubscriptions: '/profile/subscriptions',
+  confirm: '/confirm',
   fourOuFour: '/404',
   article: '/:slug'
 } as const

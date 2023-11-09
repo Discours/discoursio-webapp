@@ -41,6 +41,7 @@ import { LocalizeProvider } from '../context/localize'
 import { ConfirmProvider } from '../context/confirm'
 import { EditorProvider } from '../context/editor'
 import { NotificationsProvider } from '../context/notifications'
+import { OAuthConfirmPage } from '../pages/confirm.page'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -82,7 +83,8 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   profileSettings: ProfileSettingsPage,
   profileSecurity: ProfileSecurityPage,
   profileSubscriptions: ProfileSubscriptionsPage,
-  fourOuFour: FourOuFourPage
+  fourOuFour: FourOuFourPage,
+  confirm: OAuthConfirmPage
 }
 
 export const App = (props: PageProps) => {

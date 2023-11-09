@@ -4,19 +4,29 @@ import { hideModal } from '../../../stores/ui'
 import styles from './SocialProviders.module.scss'
 import { apiBaseUrl } from '../../../utils/config'
 import { useLocalize } from '../../../context/localize'
+import { setToken } from '../../../graphql/privateGraphQLClient'
+import { useSession } from '../../../context/session'
 
 type Provider = 'facebook' | 'google' | 'vk' | 'github'
 
 // 3rd party provider auth handler
-const handleSocialAuthLinkClick = (event: MouseEvent, provider: Provider): void => {
-  event.preventDefault()
-  const popup = window.open(`${apiBaseUrl}/oauth/${provider}`, provider, 'width=740, height=420')
-  popup?.focus()
-  hideModal()
-}
-
 export const SocialProviders = () => {
   const { t } = useLocalize()
+  const {
+    actions: { loadSession }
+  } = useSession()
+
+  const handleSocialAuthLinkClick = (event: MouseEvent, provider: Provider): void => {
+    event.preventDefault()
+    const popup = window.open(`${apiBaseUrl}/oauth/${provider}`, provider, 'popup, width=740, height=420')
+    popup.addEventListener('message', (e) => {
+      setToken(e.data)
+      loadSession()
+      hideModal()
+      popup.close()
+    })
+  }
+
   return (
     <div class={styles.container}>
       <div class={styles.text}>{t('or sign in with social networks')}</div>

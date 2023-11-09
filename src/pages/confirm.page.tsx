@@ -6,8 +6,10 @@ import { setToken } from '../graphql/privateGraphQLClient'
 export const OAuthConfirmPage = () => {
   onMount(async () => {
     const token = Cookie.get('token')
+    console.log({ token })
+    console.log(document.cookie)
     setToken(token)
-    window.close()
+    // window.close()
   })
 
   return <Loading />

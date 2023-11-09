@@ -6,6 +6,7 @@ import { apiBaseUrl } from '../../../utils/config'
 import { useLocalize } from '../../../context/localize'
 import { setToken } from '../../../graphql/privateGraphQLClient'
 import { useSession } from '../../../context/session'
+import Cookie from 'js-cookie'
 
 type Provider = 'facebook' | 'google' | 'vk' | 'github'
 
@@ -22,6 +23,8 @@ export const SocialProviders = () => {
 
     const timer = setInterval(() => {
       if (popup.closed) {
+        console.log('cookie', document.cookie)
+        console.log('cookie2', Cookie.get('token'))
         clearInterval(timer)
         loadSession()
         hideModal()

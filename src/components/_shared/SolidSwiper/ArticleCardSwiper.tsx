@@ -10,7 +10,6 @@ import { ArticleCard } from '../../Feed/ArticleCard'
 
 type Props = {
   slides: Shout[]
-  slidesPerView?: number
   title?: string
 }
 
@@ -41,11 +40,10 @@ export const ArticleCardSwiper = (props: Props) => {
               thumbs-swiper={'.thumbSwiper'}
               observer={true}
               onSlideChange={handleSlideChange}
-              slides-per-view={1}
               space-between={26}
               breakpoints={{
-                576: { slidesPerView: props.slidesPerView ?? 1.5 },
-                992: { spaceBetween: 52 }
+                576: { spaceBetween: 20, slidesPerView: 1 },
+                992: { spaceBetween: 52, slidesPerView: 1.5 }
               }}
               loop={true}
               speed={800}
@@ -89,9 +87,9 @@ export const ArticleCardSwiper = (props: Props) => {
             >
               <Icon name="swiper-r-arr" class={styles.icon} />
             </div>
-            <div class={styles.counter}>
-              {slideIndex() + 1} / {props.slides.length}
-            </div>
+            {/*<div class={styles.counter}>*/}
+            {/*  {slideIndex() + 1} / {props.slides.length}*/}
+            {/*</div>*/}
           </div>
         </Show>
       </div>

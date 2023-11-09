@@ -129,8 +129,9 @@
     overflow: hidden;
     width: calc(100% - 130px);
 
-    @include media-breakpoint-down(sm) {
+    @media only screen and (max-width: 576px) {
       width: 100%;
+      background: red;
     }
 
     .counter {

@@ -19,12 +19,16 @@ export const SocialProviders = () => {
   const handleSocialAuthLinkClick = (event: MouseEvent, provider: Provider): void => {
     event.preventDefault()
     const popup = window.open(`${apiBaseUrl}/oauth/${provider}`, provider, 'popup, width=740, height=420')
-    popup.addEventListener('message', (e) => {
-      setToken(e.data)
-      loadSession()
-      hideModal()
-      popup.close()
-    })
+
+    const timer = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(timer)
+        loadSession()
+        hideModal()
+      }
+    }, 1000)
+
+    setTimeout(() => clearInterval(timer), 1000 * 60 * 5)
   }
 
   return (

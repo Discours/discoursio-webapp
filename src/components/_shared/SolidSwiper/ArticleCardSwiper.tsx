@@ -49,7 +49,7 @@ export const ArticleCardSwiper = (props: Props) => {
               speed={800}
               autoplay={{
                 disableOnInteraction: false,
-                delay: 3000,
+                delay: 6000,
                 pauseOnMouseEnter: true
               }}
             >

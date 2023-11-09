@@ -1,5 +1,4 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
-import { Icon } from '../../components/_shared/Icon'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { For, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
@@ -19,11 +18,14 @@ import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { AuthGuard } from '../../components/AuthGuard'
 import { handleImageUpload } from '../../utils/handleImageUpload'
+import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
+import { profileSocialLinks } from '../../utils/profileSocialLinks'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
+
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
   const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
@@ -38,7 +40,7 @@ export const ProfileSettingsPage = () => {
 
   const { form, updateFormField, submit, slugError } = useProfileForm()
   const [prevForm, setPrevForm] = createStore(clone(form))
-
+  const [social, setSocial] = createSignal(form.links)
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
       updateFormField('links', value)
@@ -106,6 +108,14 @@ export const ProfileSettingsPage = () => {
     if (!deepEqual(form, prevForm)) {
       setIsFloatingPanelVisible(true)
     }
+  })
+
+  const handleDeleteSocialLink = (link) => {
+    updateFormField('links', link, true)
+  }
+
+  createEffect(() => {
+    setSocial(form.links)
   })
 
   return (
@@ -230,27 +240,26 @@ export const ProfileSettingsPage = () => {
                           </button>
                         </div>
                         <Show when={addLinkForm()}>
-                          <div class={styles.multipleControlsItem}>
-                            <input
-                              autofocus={true}
-                              type="text"
-                              name="link"
-                              class="nolabel"
-                              onChange={(event) => handleChangeSocial(event.currentTarget.value)}
-                            />
-                          </div>
+                          <SocialNetworkInput
+                            isExist={false}
+                            autofocus={true}
+                            handleChange={(value) => handleChangeSocial(value)}
+                          />
                           <Show when={incorrectUrl()}>
                             <p class="form-message form-message--error">{t('It does not look like url')}</p>
                           </Show>
                         </Show>
-                        <For each={form.links}>
-                          {(link) => (
-                            <div class={styles.multipleControlsItem}>
-                              <input type="text" value={link} readonly={true} name="link" class="nolabel" />
-                              <button type="button" onClick={() => updateFormField('links', link, true)}>
-                                <Icon name="remove" class={styles.icon} />
-                              </button>
-                            </div>
+                        <For each={profileSocialLinks(social())}>
+                          {(network) => (
+                            <SocialNetworkInput
+                              class={styles.socialInput}
+                              link={network.link}
+                              network={network.name}
+                              handleChange={(value) => handleChangeSocial(value)}
+                              isExist={!network.isPlaceholder}
+                              slug={form.slug}
+                              handleDelete={() => handleDeleteSocialLink(network.link)}
+                            />
                           )}
                         </For>
                       </div>

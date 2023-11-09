@@ -1,0 +1,50 @@
+.SocialNetworkInput {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 54px;
+  border: 2px solid var(--black-100);
+  border-radius: 2px;
+
+  .icon {
+    width: 54px;
+    height: 54px;
+    padding: 16px;
+    border-right: 2px solid var(--black-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .input {
+    @include font-size(1.7rem);
+
+    margin: 0 16px;
+    width: 100%;
+    border: none;
+    height: 1em;
+    padding: 0;
+    display: block;
+    flex: 1;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: var(--black-300);
+    }
+  }
+
+  .remove {
+    width: 54px;
+    height: 54px;
+    padding: 16px;
+    &:hover {
+      background: var(--background-color-invert);
+      img {
+        filter: invert(1);
+      }
+    }
+  }
+}

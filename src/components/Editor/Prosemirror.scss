@@ -269,6 +269,7 @@ figure[data-type='capturedImage'] {
   flex-direction: column-reverse;
 }
 
+/* stylelint-disable-next-line selector-type-no-unknown */
 footnote {
   display: inline-flex;
   position: relative;
@@ -276,7 +277,7 @@ footnote {
   width: 0.8rem;
   height: 1em;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     width: 10px;

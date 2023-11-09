@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
@@ -36,7 +36,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const { subscriptions } = useSession()
 
-  onMount(() => {
+  createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
         by: 'shouts'

@@ -118,7 +118,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
             <Show when={props.article.cover}>
-              <Image src={props.article.cover} alt={title} width={600} />
+              <Image src={props.article.cover} alt={title} width={1200} />
             </Show>
           </div>
         </div>
@@ -158,7 +158,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <a href={`/${props.article.slug || ''}`}>
+          <a href={getPagePath(router, 'article', { slug: props.article.slug })}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer}>{title}</span>
@@ -211,7 +211,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <Image src={props.article.cover} alt={title} width={600} loading="lazy" />
+                <Image src={props.article.cover} alt={title} width={1200} loading="lazy" />
               </div>
             </div>
           </Show>
@@ -230,7 +230,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                     name="comment-hover"
                     class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
                   />
-                  <span class={styles.shoutCardLinkContainer}>
+                  <span class={clsx(styles.shoutCardLinkContainer, styles.shoutCardDetailsItemLabel)}>
                     {props.article.stat?.commented || t('Add comment')}
                   </span>
                 </a>

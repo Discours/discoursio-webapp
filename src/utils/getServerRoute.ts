@@ -1,4 +1,4 @@
 // /:slug -> /@slug
-// https://vite-plugin-ssr.com/routing
+// https://vike.dev/routing
 // https://www.npmjs.com/package/@nanostores/router
 export const getServerRoute = (clientRoute: string) => clientRoute.replaceAll(':', '@')

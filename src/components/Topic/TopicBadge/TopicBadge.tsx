@@ -80,7 +80,7 @@ export const TopicBadge = (props: Props) => {
                 <Button
                   variant="primary"
                   size="S"
-                  value={isSubscribing() ? t('...subscribing') : t('Subscribe')}
+                  value={isSubscribing() ? t('subscribing...') : t('Subscribe')}
                   onClick={() => subscribe(true)}
                   class={styles.subscribeButton}
                 />

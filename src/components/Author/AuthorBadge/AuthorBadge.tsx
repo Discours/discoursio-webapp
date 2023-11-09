@@ -1,5 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './AuthorBadge.module.scss'
+import stylesButton from '../../_shared/Button/Button.module.scss'
 import { Userpic } from '../Userpic'
 import { Author, FollowingEntity } from '../../../graphql/types.gen'
 import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
@@ -60,41 +61,56 @@ export const AuthorBadge = (props: Props) => {
     if (props.iconButtons) {
       return <Icon name="author-subscribe" />
     }
-    return isSubscribing() ? t('...subscribing') : t('Subscribe')
+    return isSubscribing() ? t('subscribing...') : t('Subscribe')
   })
+
+  const unsubscribeValue = () => {
+    if (props.iconButtons) {
+      return <Icon name="author-unsubscribe" />
+    }
+
+    return (
+      <>
+        <span class={styles.actionButtonLabel}>{t('Following')}</span>
+        <span class={styles.actionButtonLabelHovered}>{t('Unfollow')}</span>
+      </>
+    )
+  }
 
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
-      <Userpic
-        hasLink={true}
-        size={'M'}
-        name={props.author.name}
-        userpic={props.author.userpic}
-        slug={props.author.slug}
-      />
-      <a href={`/author/${props.author.slug}`} class={styles.info}>
-        <div class={styles.name}>
-          <span>{props.author.name}</span>
-        </div>
-        <Show when={!props.nameOnly}>
-          <Switch
-            fallback={
-              <div class={styles.bio}>
-                {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
-              </div>
-            }
-          >
-            <Match when={props.author.bio}>
-              <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
-            </Match>
-            <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
-              <div class={styles.bio}>
-                {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
-              </div>
-            </Match>
-          </Switch>
-        </Show>
-      </a>
+      <div class={styles.basicInfo}>
+        <Userpic
+          hasLink={true}
+          size={'M'}
+          name={props.author.name}
+          userpic={props.author.userpic}
+          slug={props.author.slug}
+        />
+        <a href={`/author/${props.author.slug}`} class={styles.info}>
+          <div class={styles.name}>
+            <span>{props.author.name}</span>
+          </div>
+          <Show when={!props.nameOnly}>
+            <Switch
+              fallback={
+                <div class={styles.bio}>
+                  {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
+                </div>
+              }
+            >
+              <Match when={props.author.bio}>
+                <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
+              </Match>
+              <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
+                <div class={styles.bio}>
+                  {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
+                </div>
+              </Match>
+            </Switch>
+          </Show>
+        </a>
+      </div>
       <Show when={props.author.slug !== session()?.user.slug && !props.nameOnly}>
         <div class={styles.actions}>
           <Show
@@ -112,26 +128,34 @@ export const AuthorBadge = (props: Props) => {
               fallback={
                 <Button
                   variant={props.iconButtons ? 'secondary' : 'bordered'}
-                  size="S"
+                  size="M"
                   value={subscribeValue()}
                   onClick={() => handleSubscribe(true)}
-                  class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
+                  isSubscribeButton={true}
+                  class={clsx(styles.actionButton, {
+                    [styles.iconed]: props.iconButtons,
+                    [stylesButton.subscribed]: subscribed()
+                  })}
                 />
               }
             >
               <Button
                 variant={props.iconButtons ? 'secondary' : 'bordered'}
-                size="S"
-                value={props.iconButtons ? <Icon name="author-unsubscribe" /> : t('Following')}
+                size="M"
+                value={unsubscribeValue()}
                 onClick={() => handleSubscribe(false)}
-                class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}
+                isSubscribeButton={true}
+                class={clsx(styles.actionButton, {
+                  [styles.iconed]: props.iconButtons,
+                  [stylesButton.subscribed]: subscribed()
+                })}
               />
             </Show>
           </Show>
           <Show when={props.showMessageButton}>
             <Button
               variant={props.iconButtons ? 'secondary' : 'bordered'}
-              size="S"
+              size="M"
               value={props.iconButtons ? <Icon name="inbox-white" /> : t('Message')}
               onClick={initChat}
               class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}

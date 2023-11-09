@@ -13,6 +13,7 @@ type Props = {
   onClick?: (event?: MouseEvent) => void
   class?: string
   ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void)
+  isSubscribeButton?: boolean
 }
 
 export const Button = (props: Props) => {
@@ -33,7 +34,8 @@ export const Button = (props: Props) => {
         styles[props.size ?? 'M'],
         styles[props.variant ?? 'primary'],
         {
-          [styles.loading]: props.loading
+          [styles.loading]: props.loading,
+          [styles.subscribeButton]: props.isSubscribeButton
         },
         props.class
       )}

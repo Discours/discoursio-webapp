@@ -1,14 +1,14 @@
 import type { PageContext } from '../renderer/types'
 import type { PageProps } from './types'
 import { apiClient } from '../utils/apiClient'
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
+import { render } from 'vike/abort'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams
   const article = await apiClient.getShoutBySlug(slug)
 
   if (!article) {
-    throw RenderErrorPage({ pageContext: {} })
+    throw render(404, '/404')
   }
 
   const pageProps: PageProps = { article }

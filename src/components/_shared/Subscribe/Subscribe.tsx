@@ -44,7 +44,7 @@ export const Subscribe = (props: Props) => {
 
     if (!validate()) return
 
-    setTitle(t('...subscribing'))
+    setTitle(t('subscribing...'))
 
     const requestOptions = {
       method: 'POST',
@@ -106,7 +106,7 @@ export const Subscribe = (props: Props) => {
               <Icon name="arrow-right" />
             </button>
           </div>
-          <div class="description">Подпишитесь на рассылку лучших публикаций</div>
+          <div class="description">Подпишитесь на&nbsp;рассылку лучших публикаций</div>
         </Show>
         <Show when={emailError()}>
           <div class={styles.error}>{emailError()}</div>

@@ -17,7 +17,7 @@
   --link-hover-background: #000;
   --secondary-color: #85878a;
   --placeholder-color: #9fa1a7;
-  --placeholder-color-semi: rgba(159, 169, 167, 0.2);
+  --placeholder-color-semi: rgb(159 169 167 / 20%);
   --danger-color: #d00820;
   --lightgray-color: rgb(84 16 17 / 6%);
   --font: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu, cantarell, 'Open Sans',
@@ -28,6 +28,7 @@
   --icon-filter-hover: invert(1);
   --editor-bubble-menu-background: #fff;
   --blue-link: #2638d9;
+
   // names from figma
   --black-50: #f7f7f8;
   --black-100: #e9e9ee;
@@ -53,6 +54,7 @@
   --icon-filter: invert(1);
   --icon-filter-hover: invert(0);
   --editor-bubble-menu-background: #444;
+
   // names from figma
   --black-50: #080807;
   --black-100: #161611;
@@ -146,11 +148,13 @@ h2 {
 
 h1 {
   @include font-size(4.8rem);
+
   line-height: 1.1;
 }
 
 h2 {
   @include font-size(4rem);
+
   line-height: 1.1;
   margin-bottom: 0.5em;
   margin-top: 1.5em;
@@ -158,6 +162,7 @@ h2 {
 
 h3 {
   @include font-size(3.2rem);
+
   line-height: 1.1;
   margin-bottom: 0.5em;
 }
@@ -289,6 +294,7 @@ button {
 
 .button--light {
   @include font-size(1.5rem);
+
   background-color: #f6f6f6;
   border-radius: 0.8rem;
   color: #000;
@@ -586,13 +592,16 @@ figure {
 
   figcaption {
     color: rgb(0 0 0 / 60%);
+
     @include font-size(1.2rem);
+
     line-height: 1.5;
   }
 }
 
 .view-switcher {
   @include font-size(1.4rem);
+
   display: flex;
   font-weight: 500;
   list-style: none;
@@ -810,8 +819,7 @@ figure {
 #root {
   display: flex;
   flex-direction: column;
-  align-content: space-between;
-  justify-content: space-between;
+  place-content: space-between space-between;
   min-height: 100vh;
 }
 
@@ -901,6 +909,7 @@ figure {
 
 .content-index {
   @include font-size(1.4rem);
+
   line-height: 1.4;
   margin: 0 3.6rem 2em 0;
 
@@ -987,6 +996,7 @@ details {
 
 .description {
   @include font-size(1.4rem);
+
   color: rgba(0 0 0 / 40%);
 
   .pretty-form__item + & {
@@ -1024,15 +1034,20 @@ details {
 
 iframe {
   border: none;
-  color: rgba(255, 255, 255, 0);
+  color: rgb(255 255 255 / 0%);
 }
 
 .lead {
   @include font-size(2rem);
+
   font-weight: bold;
   line-height: 1.5;
 }
 
 .cursorPointer {
   cursor: pointer;
+}
+
+.img-align-column {
+  clear: both;
 }

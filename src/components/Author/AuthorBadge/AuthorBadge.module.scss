@@ -1,34 +1,47 @@
 .AuthorBadge {
   align-items: flex-start;
   display: flex;
-  flex-flow: row nowrap;
-  margin-bottom: 2rem;
   gap: 1rem;
+  margin-bottom: 3rem;
 
   &.nameOnly {
     align-items: center;
+
     .info {
       margin-bottom: 0;
     }
   }
-
   @include media-breakpoint-down(sm) {
-    flex-wrap: wrap;
-    margin-bottom: 3rem;
+    flex-direction: column;
+  }
+
+  @include media-breakpoint-up(sm) {
+    margin-bottom: 2rem;
   }
 
   @include media-breakpoint-down(md) {
     text-align: left;
   }
 
+  .basicInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 0 calc(100% - 5.2rem);
+    gap: 1rem;
+
+    @include media-breakpoint-down(sm) {
+      flex: 0 100%;
+    }
+  }
+
   .info {
     @include font-size(1.4rem);
+
     border: none;
     display: flex;
-    flex: 0 calc(100% - 5.2rem);
     flex-direction: column;
     line-height: 1.3;
-    margin-bottom: 1rem;
 
     @include media-breakpoint-up(sm) {
       flex: 1 100%;
@@ -60,6 +73,10 @@
     margin-left: 5.2rem;
     gap: 1rem;
 
+    @include media-breakpoint-down(sm) {
+      margin-left: 0;
+    }
+
     @include media-breakpoint-up(sm) {
       margin-left: 2rem;
     }
@@ -81,9 +98,24 @@
       padding: 6px !important;
       min-width: 32px;
       width: unset;
+
       &:hover img {
         filter: invert(1);
       }
     }
+
+    &:hover {
+      .actionButtonLabel {
+        display: none;
+      }
+
+      .actionButtonLabelHovered {
+        display: block;
+      }
+    }
+  }
+
+  .actionButtonLabelHovered {
+    display: none;
   }
 }

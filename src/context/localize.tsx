@@ -73,7 +73,7 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
 
     let result = date.toLocaleDateString(lang(), opts)
     if (lang() === 'ru') {
-      result = result.replace(' г.', '')
+      result = result.replace(' г.', '').replace('г.', '')
     }
 
     return result

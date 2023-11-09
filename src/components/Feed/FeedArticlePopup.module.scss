@@ -3,8 +3,9 @@
   border: 1px solid rgb(0 0 0 / 15%);
   border-radius: 1.6rem;
   padding: 1.6rem !important;
+  text-align: left;
 
-  @include media-breakpoint-between(sm, md) {
+  @include media-breakpoint-down(md) {
     left: auto !important;
     right: 0;
     transform: none !important;
@@ -13,6 +14,8 @@
   button {
     font-size: inherit;
     font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
 
     &:hover {
       background: #000;

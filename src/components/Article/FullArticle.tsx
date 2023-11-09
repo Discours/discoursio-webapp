@@ -12,7 +12,7 @@ import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { getDescription } from '../../utils/meta'
 import { TableOfContents } from '../TableOfContents'
 import { AudioPlayer } from './AudioPlayer'
-import { SharePopup } from './SharePopup'
+import { getShareUrl, SharePopup } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
 import { CommentsTree } from './CommentsTree'
 import stylesHeader from '../Nav/Header/Header.module.scss'
@@ -26,6 +26,7 @@ import { CardTopic } from '../Feed/CardTopic'
 import { createPopper } from '@popperjs/core'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
 
 type Props = {
   article: Shout
@@ -229,6 +230,8 @@ export const FullArticle = (props: Props) => {
     })
   })
 
+  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
+
   return (
     <>
       <Title>{props.article.title}</Title>
@@ -348,24 +351,42 @@ export const FullArticle = (props: Props) => {
 
               <Popover content={t('Comment')}>
                 {(triggerRef: (el) => void) => (
-                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={scrollToComments}>
+                  <div class={clsx(styles.shoutStatsItem)} ref={triggerRef} onClick={scrollToComments}>
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
-                    {props.article.stat?.commented ?? ''}
+                    <span class={styles.commentsTextLabel}>
+                      {props.article.stat?.commented || t('Add' + ' comment')}
+                    </span>
                   </div>
                 )}
               </Popover>
 
               <Show when={props.article.stat?.viewed}>
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
-                  <Icon name="eye" class={styles.icon} />
-                  <Icon name="eye" class={clsx(styles.icon, styles.iconHover)} />
-                  <span class={styles.shoutStatsItemCount}>{props.article.stat?.viewed}</span>
-                  <span class={styles.shoutStatsItemLabel}>
-                    {t('viewsWithCount', { count: props.article.stat?.viewed })}
-                  </span>
+                  {t('viewsWithCount', { count: props.article.stat?.viewed })}
                 </div>
               </Show>
+
+              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
+                <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
+                  {formattedDate()}
+                </div>
+              </div>
+
+              <Popover content={t('Add to bookmarks')}>
+                {(triggerRef: (el) => void) => (
+                  <div
+                    class={clsx(styles.shoutStatsItem, styles.shoutStatsItemBookmarks)}
+                    ref={triggerRef}
+                    onClick={handleBookmarkButtonClick}
+                  >
+                    <div class={styles.shoutStatsItemInner}>
+                      <Icon name="bookmark" class={styles.icon} />
+                      <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
+                    </div>
+                  </div>
+                )}
+              </Popover>
 
               <Popover content={t('Share')}>
                 {(triggerRef: (el) => void) => (
@@ -385,16 +406,7 @@ export const FullArticle = (props: Props) => {
                   </div>
                 )}
               </Popover>
-              <Popover content={t('Add to bookmarks')}>
-                {(triggerRef: (el) => void) => (
-                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={handleBookmarkButtonClick}>
-                    <div class={styles.shoutStatsItemInner}>
-                      <Icon name="bookmark" class={styles.icon} />
-                      <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
-                    </div>
-                  </div>
-                )}
-              </Popover>
+
               <Show when={canEdit()}>
                 <Popover content={t('Edit')}>
                   {(triggerRef: (el) => void) => (
@@ -410,20 +422,34 @@ export const FullArticle = (props: Props) => {
                   )}
                 </Popover>
               </Show>
-              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
-                <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
-                  {formattedDate()}
-                </div>
-              </div>
+
+              <FeedArticlePopup
+                isOwner={canEdit()}
+                containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
+                title={props.article.title}
+                description={getDescription(props.article.body)}
+                imageUrl={props.article.cover}
+                shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
+                isVisible={(value) => setIsActionPopupActive(value)}
+                trigger={
+                  <button>
+                    <Icon name="ellipsis" class={clsx(styles.icon)} />
+                    <Icon name="ellipsis" class={clsx(styles.icon, styles.iconHover)} />
+                  </button>
+                }
+              />
             </div>
-            <div class={styles.help}>
-              <Show when={isAuthenticated() && !canEdit()}>
+
+            <Show when={isAuthenticated() && !canEdit()}>
+              <div class={styles.help}>
                 <button class="button">{t('Cooperate')}</button>
-              </Show>
-              <Show when={canEdit()}>
+              </div>
+            </Show>
+            <Show when={canEdit()}>
+              <div class={styles.help}>
                 <button class="button button--light">{t('Invite to collab')}</button>
-              </Show>
-            </div>
+              </div>
+            </Show>
 
             <Show when={props.article.topics.length}>
               <div class={styles.topicsList}>

@@ -1,8 +1,8 @@
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import type { PageProps } from '../pages/types'
 import type { Component } from 'solid-js'
+import { PageContextBuiltInClientWithClientRouting } from 'vike/dist/esm/types'
 
-export type PageContext = PageContextBuiltIn & {
+export type PageContext = PageContextBuiltInClientWithClientRouting & {
   Page: (pageProps: PageProps) => Component
   pageProps: PageProps
   lng: string

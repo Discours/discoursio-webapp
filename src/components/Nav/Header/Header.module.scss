@@ -128,9 +128,10 @@
 
 .mainNavigation {
   font-size: 1.4rem !important;
-  // margin: 0 0 0 -0.4rem !important;
   opacity: 1;
   transition: opacity 0.3s;
+
+  // margin: 0 0 0 -0.4rem !important;
 
   @include media-breakpoint-down(lg) {
     background: var(--background-color);
@@ -294,8 +295,9 @@
 .burgerContainer {
   box-sizing: content-box;
   display: inline-flex;
-  // float: right;
   padding-left: 0;
+
+  // float: right;
 
   @include media-breakpoint-up(sm) {
     padding-left: divide($container-padding-x, 2);
@@ -573,7 +575,7 @@
 }
 
 .userControlItemVerbose {
-  margin-left: 1.2em !important;
+  margin-left: 0.9em !important;
 
   &:first-child {
     margin-left: 0 !important;

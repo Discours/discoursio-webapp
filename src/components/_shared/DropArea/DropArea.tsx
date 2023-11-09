@@ -95,7 +95,7 @@ export const DropArea = (props: Props) => {
         ref={dropzoneRef}
         onClick={handleDropFieldClick}
       >
-        <div class={styles.text}>{loading() ? 'Loading...' : props.placeholder}</div>
+        <div class={styles.text}>{loading() ? t('Loading') : props.placeholder}</div>
         <Show when={!loading() && props.isSquare && props.description}>
           <div class={styles.description}>{props.description}</div>
         </Show>

@@ -1,5 +1,6 @@
 .aboutDiscours {
   @include font-size(1.6rem);
+
   background: #fef2f2;
   font-weight: 500;
   margin-bottom: 6.4rem;
@@ -8,6 +9,7 @@
 
   h4 {
     @include font-size(4rem);
+
     font-weight: bold;
     line-height: 1.1;
     margin-bottom: 2rem;

@@ -39,7 +39,6 @@
 
     .container {
       margin: auto;
-
       // max-width: 800px;
       position: relative;
       padding: 24px 0;
@@ -127,10 +126,9 @@
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
-    width: calc(100% - 130px);
 
-    @media only screen and (max-width: 576px) {
-      width: 100%;
+    @include media-breakpoint-up(sm) {
+      //width: calc(100% - 130px);
     }
 
     .counter {
@@ -173,7 +171,7 @@
     align-items: center;
     cursor: pointer;
     height: 100%;
-    width: 12.5%;
+    width: 10%;
     z-index: 2;
 
     &.disabled {

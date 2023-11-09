@@ -412,6 +412,8 @@
   }
 
   swiper-slide & {
+    margin-bottom: 0;
+
     @include media-breakpoint-down(lg) {
       aspect-ratio: 1/1;
     }
@@ -422,12 +424,8 @@
 
     @include media-breakpoint-down(sm) {
       aspect-ratio: 1/1;
-    }
-  }
 
-  &.swiper-slide {
-    .shoutCardContent {
-      @include media-breakpoint-down(md) {
+      .shoutCardContent {
         padding-left: 10%;
       }
     }

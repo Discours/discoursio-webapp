@@ -1,41 +1,50 @@
 type Link = {
   link: string
-  rly: boolean
+  isPlaceholder: boolean
   name?: string
 }
 
 const links: Link[] = [
-  { link: 'https://facebook/', name: 'facebook', rly: false },
-  { link: 'https://linked.in/in/', name: 'linkedin', rly: false },
-  { link: 'https://vk.com/', name: 'vk', rly: false },
-  { link: 'https://instagram.com/', name: 'instagram', rly: false },
-  { link: 'https://t.me/', name: 'telegram', rly: false }
+  { link: 'https://facebook.com/', name: 'facebook', isPlaceholder: true },
+  { link: 'https://linkedin.com/', name: 'linkedin', isPlaceholder: true },
+  { link: 'https://vk.com/', name: 'vk', isPlaceholder: true },
+  { link: 'https://instagram.com/', name: 'instagram', isPlaceholder: true },
+  { link: 'https://t.me/', name: 'telegram', isPlaceholder: true }
 ]
 
 const checkLink = (link: string, keyword: string): boolean => link.includes(keyword)
+
 export const profileSocialLinks = (socialLinks: string[]): Link[] => {
   const processedLinks: Link[] = []
-  let isMatched = false
+  let unmatchedLinks: string[] = [...socialLinks]
 
   links.forEach((linkObj) => {
     let linkMatched = false
 
     socialLinks.forEach((serverLink) => {
       if (checkLink(serverLink, new URL(linkObj.link).hostname.replace('www.', ''))) {
-        processedLinks.push({ ...linkObj, link: serverLink, rly: true })
+        processedLinks.push({ ...linkObj, link: serverLink, isPlaceholder: false })
         linkMatched = true
-        isMatched = true
+        unmatchedLinks = unmatchedLinks.filter((unmatchedLink) => unmatchedLink !== serverLink)
       }
     })
+
     if (!linkMatched) {
-      processedLinks.push({ ...linkObj })
+      processedLinks.push({ ...linkObj, isPlaceholder: true })
     }
   })
-  if (!isMatched) {
-    socialLinks.forEach((serverLink) => {
-      processedLinks.push({ link: serverLink, rly: true })
-    })
-  }
 
-  return processedLinks
+  unmatchedLinks.forEach((unmatchedLink) => {
+    processedLinks.push({ link: unmatchedLink, isPlaceholder: false })
+  })
+
+  return processedLinks.sort((a, b) => {
+    if (a.isPlaceholder && !b.isPlaceholder) {
+      return 1
+    } else if (!a.isPlaceholder && b.isPlaceholder) {
+      return -1
+    } else {
+      return 0
+    }
+  })
 }

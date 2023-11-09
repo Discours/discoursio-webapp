@@ -40,10 +40,9 @@ export const ProfileSettingsPage = () => {
 
   const { form, updateFormField, submit, slugError } = useProfileForm()
   const [prevForm, setPrevForm] = createStore(clone(form))
-  const [socialLinks, setSocialLinks] = createSignal(profileSocialLinks(form.links))
+  const [social, setSocial] = createSignal(form.links)
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
-      setSocialLinks((prev) => [...prev, { link: value, name: '', rly: true }])
       updateFormField('links', value)
       setAddLinkForm(false)
     } else {
@@ -113,8 +112,12 @@ export const ProfileSettingsPage = () => {
 
   const handleDeleteSocialLink = (link) => {
     updateFormField('links', link, true)
-    setSocialLinks((prev) => prev.filter((item) => item.link !== link))
   }
+
+  createEffect(() => {
+    setSocial(form.links)
+  })
+
   return (
     <PageLayout>
       <AuthGuard>
@@ -240,23 +243,20 @@ export const ProfileSettingsPage = () => {
                           <SocialNetworkInput
                             isExist={false}
                             autofocus={true}
-                            handleChange={(value) => {
-                              handleChangeSocial(value)
-                              console.log('!!! handleChange:', value)
-                            }}
+                            handleChange={(value) => handleChangeSocial(value)}
                           />
                           <Show when={incorrectUrl()}>
                             <p class="form-message form-message--error">{t('It does not look like url')}</p>
                           </Show>
                         </Show>
-                        <For each={socialLinks()}>
+                        <For each={profileSocialLinks(social())}>
                           {(network) => (
                             <SocialNetworkInput
                               class={styles.socialInput}
                               link={network.link}
                               network={network.name}
                               handleChange={(value) => handleChangeSocial(value)}
-                              isExist={network.rly}
+                              isExist={!network.isPlaceholder}
                               slug={form.slug}
                               handleDelete={() => handleDeleteSocialLink(network.link)}
                             />

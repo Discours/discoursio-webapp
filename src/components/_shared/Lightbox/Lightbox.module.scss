@@ -1,0 +1,41 @@
+.Lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  .lightbox-image {
+    max-width: 90%;
+    max-height: 80%;
+    cursor: pointer;
+  }
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .zoom-controls button {
+    position: fixed;
+    z-index: 1010;
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+  }
+
+  /* Place the zoom controls in the top right corner */
+  .zoom-controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

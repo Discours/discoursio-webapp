@@ -1,0 +1,11 @@
+.Image {
+  position: relative;
+
+  .openLightBox {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #fff;
+    color: #000;
+  }
+}

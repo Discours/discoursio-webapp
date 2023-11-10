@@ -40,9 +40,8 @@ export const ArticleCardSwiper = (props: Props) => {
               observer={true}
               onSlideChange={handleSlideChange}
               space-between={20}
-              slides-per-view={1.5}
               breakpoints={{
-                576: { spaceBetween: 20, slidesPerView: 1 },
+                576: { spaceBetween: 20, slidesPerView: 1.5 },
                 992: { spaceBetween: 52, slidesPerView: 1.5 }
               }}
               round-lengths={true}

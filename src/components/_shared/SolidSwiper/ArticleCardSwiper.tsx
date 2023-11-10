@@ -37,12 +37,12 @@ export const ArticleCardSwiper = (props: Props) => {
             <swiper-container
               ref={(el) => (mainSwipeRef.current = el)}
               centered-slides={true}
-              thumbs-swiper={'.thumbSwiper'}
               observer={true}
               onSlideChange={handleSlideChange}
               space-between={20}
+              slides-per-view={1.5}
               breakpoints={{
-                576: { spaceBetween: 20, slidesPerView: 1.5 },
+                576: { spaceBetween: 20, slidesPerView: 1 },
                 992: { spaceBetween: 52, slidesPerView: 1.5 }
               }}
               round-lengths={true}
@@ -73,24 +73,17 @@ export const ArticleCardSwiper = (props: Props) => {
               </For>
             </swiper-container>
             <div
-              class={clsx(styles.navigation, styles.prev, {
-                [styles.disabled]: slideIndex() === 0
-              })}
+              class={clsx(styles.navigation, styles.prev)}
               onClick={() => mainSwipeRef.current.swiper.slidePrev()}
             >
               <Icon name="swiper-l-arr" class={styles.icon} />
             </div>
             <div
-              class={clsx(styles.navigation, styles.next, {
-                [styles.disabled]: slideIndex() + 1 === props.slides.length
-              })}
+              class={clsx(styles.navigation, styles.next)}
               onClick={() => mainSwipeRef.current.swiper.slideNext()}
             >
               <Icon name="swiper-r-arr" class={styles.icon} />
             </div>
-            {/*<div class={styles.counter}>*/}
-            {/*  {slideIndex() + 1} / {props.slides.length}*/}
-            {/*</div>*/}
           </div>
         </Show>
       </div>

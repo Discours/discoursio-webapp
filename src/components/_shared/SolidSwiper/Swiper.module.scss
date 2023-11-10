@@ -126,10 +126,7 @@
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
-
-    @include media-breakpoint-up(sm) {
-      //width: calc(100% - 130px);
-    }
+    width: 100%;
 
     .counter {
       @include font-size(1.2rem);

@@ -12,7 +12,7 @@
   }
 
   &:hover {
-    .shoutCardCover img {
+    .shoutCardCover {
       transform: scale(1.05);
     }
   }
@@ -89,6 +89,7 @@
 }
 
 .shoutCardCoverContainer {
+  overflow: hidden;
   position: relative;
 }
 
@@ -99,13 +100,13 @@
   overflow: hidden;
   padding-bottom: 56.2%;
   position: relative;
+  transform-origin: 50% 50%;
+  transition: transform 1s ease-in-out;
 
   img {
     height: 100%;
     object-fit: cover;
     position: absolute;
-    transform-origin: 50% 50%;
-    transition: transform 1s ease-in-out;
     width: 100%;
   }
 

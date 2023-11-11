@@ -47,11 +47,13 @@ export const ArticleCardSwiper = (props: Props) => {
               round-lengths={true}
               loop={true}
               speed={800}
+              /*
               autoplay={{
                 disableOnInteraction: false,
                 delay: 6000,
                 pauseOnMouseEnter: true
               }}
+*/
             >
               <For each={props.slides}>
                 {(slide, index) => (

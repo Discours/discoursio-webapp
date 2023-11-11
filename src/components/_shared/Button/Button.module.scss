@@ -144,8 +144,6 @@
     width: 10em;
 
     .icon {
-      margin-right: 0.5em;
-
       img {
         filter: invert(1);
       }
@@ -156,7 +154,7 @@
       color: #000;
 
       .icon img {
-        filter: invert(0);
+        filter: invert(0) !important;
       }
 
       .buttonSubscribeLabel {
@@ -181,9 +179,17 @@
     background: #fff;
     color: #000;
 
+    .icon img {
+      filter: invert(0);
+    }
+
     &:hover {
       background: #000;
       color: #fff;
+
+      .icon img {
+        filter: invert(1) !important;
+      }
     }
   }
 }

@@ -59,14 +59,14 @@ export const AuthorBadge = (props: Props) => {
   }
   const subscribeValue = createMemo(() => {
     if (props.iconButtons) {
-      return <Icon name="author-subscribe" />
+      return <Icon name="author-subscribe" class={stylesButton.icon} />
     }
     return isSubscribing() ? t('subscribing...') : t('Subscribe')
   })
 
   const unsubscribeValue = () => {
     if (props.iconButtons) {
-      return <Icon name="author-unsubscribe" />
+      return <Icon name="author-unsubscribe" class={stylesButton.icon} />
     }
 
     return (

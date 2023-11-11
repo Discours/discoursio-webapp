@@ -11,9 +11,6 @@
       margin-bottom: 0;
     }
   }
-  @include media-breakpoint-down(sm) {
-    flex-direction: column;
-  }
 
   @include media-breakpoint-up(sm) {
     margin-bottom: 2rem;
@@ -96,7 +93,7 @@
 
     &.iconed {
       padding: 6px !important;
-      min-width: 32px;
+      min-width: 4rem;
       width: unset;
 
       &:hover img {

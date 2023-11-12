@@ -12,8 +12,6 @@ import ICU from 'i18next-icu'
 
 export const passToClient = ['pageProps', 'lng', 'documentProps', 'is404']
 
-const metaTags = []
-
 const getLng = (pageContext: PageContext): Language => {
   const { urlParsed, cookies } = pageContext
 
@@ -57,11 +55,7 @@ export const render = async (pageContext: PageContext) => {
 
   pageContext.lng = lng
 
-  const rootContent = renderToString(() => (
-    <MetaProvider tags={metaTags}>
-      <App {...pageContext.pageProps} />
-    </MetaProvider>
-  ))
+  const rootContent = renderToString(() => <App {...pageContext.pageProps} />)
 
   return escapeInject`<!DOCTYPE html>
     <html lang="${lng}">

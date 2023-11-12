@@ -52,14 +52,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
   const content = document.querySelector('#root')
 
   if (!layoutReady) {
-    hydrate(
-      () => (
-        <MetaProvider>
-          <App {...pageProps} />
-        </MetaProvider>
-      ),
-      content
-    )
+    hydrate(() => <App {...pageProps} />, content)
     layoutReady = true
   }
 }

@@ -34,7 +34,6 @@ export const PageLayout = (props: Props) => {
 
   return (
     <>
-      <Meta name="viewport" content="width=device-width, initial-scale=1" />
       <Header
         slug={props.slug}
         title={props.headerTitle}

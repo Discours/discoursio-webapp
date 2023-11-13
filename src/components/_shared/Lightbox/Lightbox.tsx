@@ -9,6 +9,7 @@ type Props = {
   onClose: () => void
 }
 
+const ZOOM_STEP = 1.08
 export const Lightbox = (props: Props) => {
   const [zoomLevel, setZoomLevel] = createSignal(1)
 
@@ -18,11 +19,11 @@ export const Lightbox = (props: Props) => {
 
   const zoomIn = (event) => {
     event.stopPropagation()
-    setZoomLevel(zoomLevel() * 1.08)
+    setZoomLevel(zoomLevel() * ZOOM_STEP)
   }
   const zoomOut = (event) => {
     event.stopPropagation()
-    setZoomLevel(zoomLevel() / 1.08)
+    setZoomLevel(zoomLevel() / ZOOM_STEP)
   }
 
   const lightboxStyle = () => ({

@@ -51,8 +51,6 @@ const scrollTo = (el: HTMLElement) => {
 
 export const FullArticle = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
-  const [lightboxVisible, setLightboxVisible] = createSignal(false)
-  const shoutBodyRef: { current: HTMLDivElement } = { current: null }
 
   const { t, formatDate } = useLocalize()
   const {
@@ -237,24 +235,17 @@ export const FullArticle = (props: Props) => {
 
   const openLightbox = (image) => {
     setSelectedImage(image)
-    setLightboxVisible(true)
   }
   const handleLightboxClose = () => {
-    setLightboxVisible(false)
+    setSelectedImage()
   }
 
-  const handleImageClick = (event) => {
+  const handleArticleBodyClick = (event) => {
     if (event.target.tagName === 'IMG') {
       const src = event.target.src
-      openLightbox(src.replace('1600x', ''))
+      openLightbox(getImageUrl(src))
     }
   }
-
-  onMount(() => {
-    if (shoutBodyRef.current) {
-      shoutBodyRef.current.addEventListener('click', handleImageClick)
-    }
-  })
 
   return (
     <>
@@ -337,7 +328,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div id="shoutBody" class={styles.shoutBody} ref={(el) => (shoutBodyRef.current = el)}>
+              <div id="shoutBody" class={styles.shoutBody} onClick={handleArticleBodyClick}>
                 <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
                   <MD body={body()} />
                 </Show>
@@ -510,7 +501,7 @@ export const FullArticle = (props: Props) => {
           </div>
         </div>
       </div>
-      <Show when={lightboxVisible()}>
+      <Show when={selectedImage()}>
         <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
       </Show>
     </>

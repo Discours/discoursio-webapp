@@ -26,7 +26,6 @@ export default async function handler(req, res) {
   const { body, statusCode, contentType } = httpResponse
   res.statusCode = statusCode
   res.setHeader('Content-Type', contentType)
-  res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
-  res.setHeader('Test', 'test=1')
+  // res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
   res.end(body)
 }

@@ -27,6 +27,7 @@ export default async function handler(request) {
   }, {})
 
   headers['Cache-Control'] = 's-maxage=1, stale-while-revalidate'
+  headers['TTTest'] = 'ttteeesssttt'
 
   return new Response(body, { status: statusCode, headers })
 }

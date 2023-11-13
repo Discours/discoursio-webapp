@@ -20,6 +20,8 @@ import { AuthGuard } from '../../components/AuthGuard'
 import { handleImageUpload } from '../../utils/handleImageUpload'
 import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
 import { profileSocialLinks } from '../../utils/profileSocialLinks'
+import { Icon } from '../../components/_shared/Icon'
+import { Popover } from '../../components/_shared/Popover'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -136,7 +138,20 @@ export const ProfileSettingsPage = () => {
                     <p class="description">{t('Here you can customize your profile the way you want.')}</p>
                     <form onSubmit={handleSubmit} enctype="multipart/form-data">
                       <h4>{t('Userpic')}</h4>
-                      <div class="pretty-form__item" style={{ 'max-width': '50%' }}>
+                      <div class={clsx('pretty-form__item', styles.userpic)} style={{ 'max-width': '50%' }}>
+                        <Show when={form.userpic}>
+                          <Popover content={t('Delete userpic')}>
+                            {(triggerRef: (el) => void) => (
+                              <button
+                                ref={triggerRef}
+                                class={styles.removeUserpic}
+                                onClick={() => updateFormField('userpic', '')}
+                              >
+                                <Icon name="close" />
+                              </button>
+                            )}
+                          </Popover>
+                        </Show>
                         <Userpic
                           name={form.name}
                           userpic={form.userpic}

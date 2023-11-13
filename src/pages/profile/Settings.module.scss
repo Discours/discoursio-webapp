@@ -216,6 +216,25 @@ h5 {
   }
 }
 
+.userpic {
+  position: relative;
+
+  .removeUserpic {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px;
+    border: 2px solid var(--default-color);
+    background: var(--background-color);
+
+    &:hover {
+      background: var(--background-color-invert);
+      img {
+        filter: invert(1);
+      }
+    }
+  }
+}
 .socialInput {
   margin-top: 1rem;
 }

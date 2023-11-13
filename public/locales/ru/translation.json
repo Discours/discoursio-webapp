@@ -1,5 +1,4 @@
 {
-  "subscribing...": "Подписка...",
   "A short introduction to keep the reader interested": "Добавьте вступление, чтобы заинтересовать читателя",
   "About": "О себе",
   "About the project": "О проекте",
@@ -98,6 +97,7 @@
   "Decline": "Отмена",
   "Delete": "Удалить",
   "Delete cover": "Удалить обложку",
+  "Delete userpic": "Удалить аватар",
   "Description": "Описание",
   "Discours": "Дискурс",
   "Discours is an intellectual environment, a web space and tools that allows authors to collaborate with readers and come together to co-create publications and media projects": "Дискурс&#160;&#8212; это интеллектуальная среда, веб-пространство и&#160;инструменты, которые позволяют авторам сотрудничать&#160;с&#160;читателями и&#160;объединяться для совместного создания публикаций и&#160;медиапроектов.<br/>Мы&#160;убеждены, один голос хорошо, а&#160;много&#160;&#8212; лучше. Самые потрясающиe истории мы создаём вместе.",
@@ -466,6 +466,7 @@
   "subscriber": "подписчик",
   "subscriber_rp": "подписчика",
   "subscribers": "подписчиков",
+  "subscribing...": "Подписка...",
   "terms of use": "правилами пользования сайтом",
   "today": "сегодня",
   "topics": "темы",

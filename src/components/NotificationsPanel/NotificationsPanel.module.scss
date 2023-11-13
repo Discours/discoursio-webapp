@@ -10,7 +10,6 @@ $transition-duration: 200ms;
   bottom: 0;
   width: 0;
   z-index: 10000;
-  background-color: rgb(0 0 0 / 0%);
   overflow: hidden;
   transition:
     background-color $transition-duration,
@@ -18,12 +17,48 @@ $transition-duration: 200ms;
 
   .panel {
     position: relative;
-    background-color: #fff;
-    width: 700px;
-    padding: 48px 96px 96px 48px;
+    background-color: var(--background-color);
+    width: 50%;
+    height: 100%;
     transform: translateX(100%);
     transition: transform $transition-duration;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
+    .title {
+      @include font-size(2rem);
+
+      color: var(--black-500);
+      font-style: normal;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      padding: 1.23rem 38px;
+      border-bottom: 2px solid var(--black-100);
+    }
+
+    .content {
+      overflow-y: auto;
+      flex: 1;
+      padding: 0 38px 1rem;
+
+      .loading {
+        @include font-size(1.2rem);
+
+        text-align: center;
+        padding: 1rem;
+        color: var(--black-300);
+      }
+    }
+
+    .actions {
+      padding: 24px 38px;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      background: var(--background-color);
+      border-top: 1px solid var(--black-100);
+    }
   }
 
   &.isOpened {
@@ -39,22 +74,21 @@ $transition-duration: 200ms;
   }
 }
 
-.title {
-  // TODO: check markup
-  color: var(--black-500, #141414);
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 36px;
-  margin-bottom: 32px;
-}
-
 .closeButton {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 20px;
+  top: 1.2rem;
+  right: 1rem;
+  padding: 1rem;
   cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background-color: var(--background-color-invert);
+
+    .closeIcon {
+      filter: invert(1);
+    }
+  }
 }
 
 .notificationView + .notificationView {
@@ -66,8 +100,7 @@ $transition-duration: 200ms;
 }
 
 .periodTitle {
-  // TODO: check markup
-  margin: 32px 0 16px 0;
+  margin: 32px 0 16px;
   color: var(--black-400);
   font-size: 12px;
   font-weight: 500;

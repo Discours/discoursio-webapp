@@ -30,12 +30,12 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   } = useNotifications()
 
   const handleMessage = (m) => {
-    console.log('[context.inbox] ', m)
+    console.log('[context.inbox]:', m)
     // TODO: handle all action types: create update delete join left
-    if (m.action in ['create', 'update', 'delete']) {
+    if (['create', 'update', 'delete'].includes(m.action)) {
       const msg = m.payload
       setMessages((mmm) => [msg, ...mmm])
-    } else if (m.action in ['left', 'join']) {
+    } else if (['left', 'join'].includes(m.action)) {
       // TODO: set chat members
       console.debug(m)
     }
@@ -50,6 +50,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const loadChats = async () => {
     try {
       const newChats = await inboxClient.loadChats({ limit: 50, offset: 0 })
+      console.log('!!! newChats:', newChats)
       setChats(newChats)
     } catch (error) {
       console.log('[loadChats]', error)

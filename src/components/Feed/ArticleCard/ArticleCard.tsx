@@ -1,22 +1,22 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
-import type { Shout } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
-import styles from './ArticleCard.module.scss'
+import type { Shout } from '../../../graphql/types.gen'
+import { capitalize } from '../../../utils/capitalize'
+import { Icon } from '../../_shared/Icon'
 import { clsx } from 'clsx'
-import { CardTopic } from './CardTopic'
-import { ShoutRatingControl } from '../Article/ShoutRatingControl'
-import { getShareUrl, SharePopup } from '../Article/SharePopup'
-import stylesHeader from '../Nav/Header/Header.module.scss'
-import { getDescription } from '../../utils/meta'
-import { FeedArticlePopup } from './FeedArticlePopup'
-import { useLocalize } from '../../context/localize'
+import { CardTopic } from '../CardTopic'
+import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
+import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import { getDescription } from '../../../utils/meta'
+import { FeedArticlePopup } from '../FeedArticlePopup'
+import { useLocalize } from '../../../context/localize'
 import { getPagePath, openPage } from '@nanostores/router'
-import { router, useRouter } from '../../stores/router'
-import { imageProxy } from '../../utils/imageProxy'
-import { Popover } from '../_shared/Popover'
-import { AuthorCard } from '../Author/AuthorCard'
-import { useSession } from '../../context/session'
-import { capitalize } from '../../utils/capitalize'
+import { router, useRouter } from '../../../stores/router'
+import { Popover } from '../../_shared/Popover'
+import { Image } from '../../_shared/Image'
+import { useSession } from '../../../context/session'
+import { AuthorLink } from '../../Author/AhtorLink'
+import stylesHeader from '../../Nav/Header/Header.module.scss'
+import styles from './ArticleCard.module.scss'
 
 interface ArticleCardProps {
   settings?: {
@@ -118,7 +118,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
             <Show when={props.article.cover}>
-              <img src={imageProxy(props.article.cover)} alt={title || ''} loading="lazy" />
+              <Image src={props.article.cover} alt={title} width={1200} />
             </Show>
           </div>
         </div>
@@ -158,7 +158,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <a href={`/${props.article.slug || ''}`}>
+          <a href={getPagePath(router, 'article', { slug: props.article.slug })}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer}>{title}</span>
@@ -180,17 +180,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
                   {(author) => {
-                    return (
-                      <AuthorCard
-                        author={author}
-                        hideWriteButton={true}
-                        hideBio={true}
-                        hideFollow={true}
-                        truncateBio={true}
-                        isFeedMode={true}
-                        hasLink={!props.settings?.noAuthorLink}
-                      />
-                    )
+                    return <AuthorLink size={'XS'} author={author} />
                   }}
                 </For>
               </div>
@@ -200,10 +190,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </div>
         </Show>
-        <Show when={props.article.description}>
-          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
-        </Show>
         <Show when={props.settings?.isFeedMode}>
+          <Show when={props.article.description}>
+            <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
+          </Show>
           <Show when={!props.settings?.noimage && props.article.cover}>
             <div class={styles.shoutCardCoverContainer}>
               <Show
@@ -221,7 +211,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <img src={imageProxy(props.article.cover)} alt={title || ''} loading="lazy" />
+                <Image src={props.article.cover} alt={title} width={1200} loading="lazy" />
               </div>
             </div>
           </Show>
@@ -240,9 +230,16 @@ export const ArticleCard = (props: ArticleCardProps) => {
                     name="comment-hover"
                     class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
                   />
-                  <span class={styles.shoutCardLinkContainer}>
-                    {props.article.stat?.commented || t('Add comment')}
-                  </span>
+                  <Show
+                    when={props.article.stat?.commented}
+                    fallback={
+                      <span class={clsx(styles.shoutCardLinkContainer, styles.shoutCardDetailsItemLabel)}>
+                        {t('Add comment')}
+                      </span>
+                    }
+                  >
+                    {props.article.stat?.commented}
+                  </Show>
                 </a>
               </div>
 

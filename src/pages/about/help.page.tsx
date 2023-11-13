@@ -15,8 +15,8 @@ export const HelpPage = () => {
   return (
     <PageLayout>
       <Title>{t('Support us')}</Title>
-      <Meta name="description">Здесь можно поддержать Дискурс материально.</Meta>
-      <Meta name="keywords">Discours.io, помощь, благотворительность</Meta>
+      <Meta name="description" content="Здесь можно поддержать Дискурс материально." />
+      <Meta name="keywords" content="Discours.io, помощь, благотворительность" />
 
       {/*<Modal name="thank">Благодарим!</Modal>*/}
 

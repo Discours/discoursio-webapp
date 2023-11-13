@@ -4,7 +4,7 @@ import { Title } from '@solidjs/meta'
 
 export const DiscussionRulesPage = () => {
   const { t } = useLocalize()
-  const title = t('Discussion rules')
+  const title = t('Discussion rules in social networks')
   return (
     <PageLayout>
       <Title>{title}</Title>

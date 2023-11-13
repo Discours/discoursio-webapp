@@ -8,12 +8,25 @@
 .navigation {
   @include font-size(1.4rem);
 
+  @include media-breakpoint-down(md) {
+    display: flex;
+
+    li {
+      margin-right: 2.4rem;
+    }
+  }
+
+  a {
+    border: none;
+  }
+
   .active {
     a {
-      text-decoration: none;
-      color: var(--default-color-invert);
-      background: var(--background-color-invert);
+      border-bottom: 2px solid;
       cursor: inherit;
+      font-weight: bold;
+      pointer-events: none;
+      text-decoration: none;
     }
   }
 }

@@ -2,26 +2,26 @@ import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
 
-import MD from './MD'
-import { AuthorCard } from '../Author/AuthorCard'
-import { Userpic } from '../Author/Userpic'
-import { CommentRatingControl } from './CommentRatingControl'
-import { CommentDate } from './CommentDate'
-import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
-import { Icon } from '../_shared/Icon'
+import MD from '../MD'
+import { Userpic } from '../../Author/Userpic'
+import { CommentRatingControl } from '../CommentRatingControl'
+import { CommentDate } from '../CommentDate'
+import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
+import { Icon } from '../../_shared/Icon'
 
-import { useSession } from '../../context/session'
-import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
-import { useSnackbar } from '../../context/snackbar'
-import { useConfirm } from '../../context/confirm'
+import { useSession } from '../../../context/session'
+import { useLocalize } from '../../../context/localize'
+import { useReactions } from '../../../context/reactions'
+import { useSnackbar } from '../../../context/snackbar'
+import { useConfirm } from '../../../context/confirm'
 
-import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
-import { router } from '../../stores/router'
+import { Author, Reaction, ReactionKind } from '../../../graphql/types.gen'
+import { router } from '../../../stores/router'
 
 import styles from './Comment.module.scss'
+import { AuthorLink } from '../../Author/AhtorLink'
 
-const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type Props = {
   comment: Reaction
@@ -135,7 +135,6 @@ export const Comment = (props: Props) => {
                 <Userpic
                   name={comment().createdBy.name}
                   userpic={comment().createdBy.userpic}
-                  isBig={false}
                   class={clsx({
                     [styles.compactUserpic]: props.compact
                   })}
@@ -148,13 +147,7 @@ export const Comment = (props: Props) => {
           >
             <div class={styles.commentDetails}>
               <div class={styles.commentAuthor}>
-                <AuthorCard
-                  author={comment()?.createdBy as Author}
-                  hideDescription={true}
-                  hideFollow={true}
-                  isComments={true}
-                  hasLink={true}
-                />
+                <AuthorLink author={comment()?.createdBy as Author} />
               </div>
 
               <Show when={props.isArticleAuthor}>
@@ -173,9 +166,7 @@ export const Comment = (props: Props) => {
                   </a>
                 </div>
               </Show>
-
-              <CommentDate comment={comment()} isShort={true} />
-
+              <CommentDate showOnHover={true} comment={comment()} isShort={true} />
               <CommentRatingControl comment={comment()} />
             </div>
           </Show>
@@ -190,6 +181,7 @@ export const Comment = (props: Props) => {
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleUpdate(value)}
                   submitByCtrlEnter={true}
+                  onCancel={() => setEditMode(false)}
                   setClear={clearEditor()}
                 />
               </Suspense>
@@ -197,7 +189,7 @@ export const Comment = (props: Props) => {
           </div>
 
           <Show when={!props.compact}>
-            <div class={styles.commentControls}>
+            <div>
               <ShowIfAuthenticated>
                 <button
                   disabled={loading()}

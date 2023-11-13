@@ -10,6 +10,7 @@ import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { getToken } from '../graphql/privateGraphQLClient'
 import { Author, Message, Reaction, Shout } from '../graphql/types.gen'
 
+export const PAGE_SIZE = 20
 export interface SSEMessage {
   id: string
   entity: string

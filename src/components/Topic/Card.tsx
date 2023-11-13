@@ -13,6 +13,8 @@ import { CheckButton } from '../_shared/CheckButton'
 import { capitalize } from '../../utils/capitalize'
 
 import styles from './Card.module.scss'
+import { Button } from '../_shared/Button'
+import stylesButton from '../_shared/Button/Button.module.scss'
 
 interface TopicProps {
   topic: Topic
@@ -34,19 +36,15 @@ interface TopicProps {
 export const TopicCard = (props: TopicProps) => {
   const { t } = useLocalize()
   const {
-    session,
+    subscriptions,
     isSessionLoaded,
-    actions: { loadSession, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
 
   const subscribed = createMemo(() => {
-    if (!session()?.user?.slug || !session()?.news?.topics) {
-      return false
-    }
-
-    return session()?.news.topics.includes(props.topic.slug)
+    return subscriptions().topics.some((topic) => topic.slug === props.topic.slug)
   })
 
   const subscribe = async (really = true) => {
@@ -56,7 +54,7 @@ export const TopicCard = (props: TopicProps) => {
       ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
       : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
 
@@ -64,6 +62,24 @@ export const TopicCard = (props: TopicProps) => {
     requireAuthentication(() => {
       subscribe(!subscribed())
     }, 'subscribe')
+  }
+
+  const subscribeValue = () => {
+    return (
+      <>
+        <Show when={props.iconButton}>
+          <Show when={subscribed()} fallback="+">
+            <Icon name="check-subscribed" />
+          </Show>
+        </Show>
+        <Show when={!props.iconButton}>
+          <Show when={subscribed()} fallback={t('Follow')}>
+            <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+            <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+          </Show>
+        </Show>
+      </>
+    )
   }
 
   return (
@@ -127,27 +143,18 @@ export const TopicCard = (props: TopicProps) => {
                   <CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />
                 }
               >
-                <button
+                <Button
+                  variant="bordered"
+                  size="M"
+                  value={subscribeValue()}
                   onClick={handleSubscribe}
-                  class="button--light button--subscribe-topic"
-                  classList={{
+                  isSubscribeButton={true}
+                  class={clsx(styles.actionButton, {
                     [styles.isSubscribing]: isSubscribing(),
-                    [styles.isSubscribed]: subscribed()
-                  }}
+                    [stylesButton.subscribed]: subscribed()
+                  })}
                   disabled={isSubscribing()}
-                >
-                  <Show when={props.iconButton}>
-                    <Show when={subscribed()} fallback="+">
-                      <Icon name="check-subscribed" />
-                    </Show>
-                  </Show>
-                  <Show when={!props.iconButton}>
-                    <Show when={subscribed()} fallback={t('Follow')}>
-                      <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
-                      <span class={styles.buttonSubscribedLabel}>{t('Following')}</span>
-                    </Show>
-                  </Show>
-                </button>
+                />
               </Show>
             </Show>
           </ShowOnlyOnClient>

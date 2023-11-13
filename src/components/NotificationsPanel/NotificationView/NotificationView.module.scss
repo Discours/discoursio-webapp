@@ -1,17 +1,17 @@
 .NotificationView {
+  @include font-size(1.5rem);
+
   display: flex;
-  align-items: center;
-  height: 72px;
+  align-items: flex-start;
+  min-height: 72px;
   margin-left: -16px;
   border-radius: 16px;
   padding: 16px;
   background-color: var(--yellow-50);
-  // TODO: check markup
-  font-size: 15px;
-  // font-weight: 700;
   line-height: 20px;
   cursor: pointer;
   transition: background-color 100ms;
+  max-width: 700px;
 
   &.seen {
     background-color: transparent;
@@ -30,7 +30,8 @@
 }
 
 .userpic {
-  margin-right: 15px;
+  min-width: 40px;
+  margin-right: 1rem;
 }
 
 .timeContainer {

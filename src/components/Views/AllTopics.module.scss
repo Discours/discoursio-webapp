@@ -87,6 +87,7 @@
 
 .alphabet {
   @include font-size(1.5rem);
+
   color: rgba(0 0 0 / 20%);
   display: flex;
   flex-wrap: wrap;
@@ -106,6 +107,7 @@
 
 .articlesCounter {
   @include font-size(1.2rem);
+
   margin-left: 0.5em;
   vertical-align: super;
 }

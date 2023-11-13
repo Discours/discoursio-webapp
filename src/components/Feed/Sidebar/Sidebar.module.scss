@@ -16,7 +16,7 @@
   }
 
   .sidebarItemName {
-    align-items: baseline;
+    align-items: center;
     display: flex;
     position: relative;
 
@@ -24,6 +24,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
+
+  .userpic {
+    margin-right: 1.2rem;
   }
 
   .selected {
@@ -121,6 +125,7 @@
 
   h4 {
     @include font-size(1.2rem);
+
     font-weight: bold;
     color: #9fa1a7;
     cursor: pointer;

@@ -1,8 +1,5 @@
 import { createSignal, For, Show } from 'solid-js'
-import type { Author } from '../../../graphql/types.gen'
-import { useAuthorsStore } from '../../../stores/zine/authors'
 import { Icon } from '../../_shared/Icon'
-import { useTopicsStore } from '../../../stores/zine/topics'
 import { useArticlesStore } from '../../../stores/zine/articles'
 import { useSeenStore } from '../../../stores/zine/seen'
 import { useSession } from '../../../context/session'
@@ -13,18 +10,12 @@ import { Userpic } from '../../Author/Userpic'
 import { getPagePath } from '@nanostores/router'
 import { router, useRouter } from '../../../stores/router'
 
-type FeedSidebarProps = {
-  authors: Author[]
-}
-
-export const Sidebar = (props: FeedSidebarProps) => {
+export const Sidebar = () => {
   const { t } = useLocalize()
   const { seen } = useSeenStore()
-  const { session } = useSession()
+  const { subscriptions } = useSession()
   const { page } = useRouter()
-  const { authorEntities } = useAuthorsStore({ authors: props.authors })
   const { articlesByTopic } = useArticlesStore()
-  const { topicEntities } = useTopicsStore()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
 
   const checkTopicIsSeen = (topicSlug: string) => {
@@ -47,7 +38,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-all" class={styles.icon} />
-              {t('general feed')}
+              {t('All')}
             </span>
           </a>
         </li>
@@ -73,7 +64,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-collaborate" class={styles.icon} />
-              {t('Accomplices')}
+              {t('Participation')}
             </span>
           </a>
         </li>
@@ -118,7 +109,7 @@ export const Sidebar = (props: FeedSidebarProps) => {
         </li>
       </ul>
 
-      <Show when={session()?.news?.authors || session()?.news?.topics}>
+      <Show when={subscriptions().authors.length > 0 || subscriptions().topics.length > 0}>
         <h4
           classList={{ [styles.opened]: isSubscriptionsVisible() }}
           onClick={() => {
@@ -129,39 +120,31 @@ export const Sidebar = (props: FeedSidebarProps) => {
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
-          <For each={session()?.news?.authors}>
-            {(authorSlug: string) => (
+          <For each={subscriptions().authors}>
+            {(author) => (
               <li>
                 <a
-                  href={`/author/${authorSlug}`}
-                  classList={{ [styles.unread]: checkAuthorIsSeen(authorSlug) }}
+                  href={`/author/${author.slug}`}
+                  classList={{ [styles.unread]: checkAuthorIsSeen(author.slug) }}
                 >
                   <div class={styles.sidebarItemName}>
-                    <Show when={authorEntities()[authorSlug]}>
-                      <Userpic
-                        name={authorEntities()[authorSlug].name}
-                        userpic={authorEntities()[authorSlug].userpic}
-                      />
-                    </Show>
-                    <Show when={!authorEntities()[authorSlug]}>
-                      <Icon name="hash" class={styles.icon} />
-                    </Show>
-                    {authorEntities()[authorSlug]?.name}
+                    <Userpic name={author.name} userpic={author.userpic} size="XS" class={styles.userpic} />
+                    {author.name}
                   </div>
                 </a>
               </li>
             )}
           </For>
-          <For each={session()?.news?.topics}>
-            {(topicSlug: string) => (
+          <For each={subscriptions().topics}>
+            {(topic) => (
               <li>
                 <a
-                  href={`/topic/${topicSlug}`}
-                  classList={{ [styles.unread]: checkTopicIsSeen(topicSlug) }}
+                  href={`/topic/${topic.slug}`}
+                  classList={{ [styles.unread]: checkTopicIsSeen(topic.slug) }}
                 >
                   <div class={styles.sidebarItemName}>
                     <Icon name="hash" class={styles.icon} />
-                    {topicEntities()[topicSlug]?.title ?? topicSlug}
+                    {topic.title}
                   </div>
                 </a>
               </li>

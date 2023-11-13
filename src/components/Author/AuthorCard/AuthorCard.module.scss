@@ -8,8 +8,48 @@
     margin-bottom: 0;
   }
 
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+
   @include media-breakpoint-up(md) {
     margin-bottom: 2.4rem;
+  }
+
+  .authorName {
+    @include font-size(4rem);
+
+    font-weight: 700;
+    margin-bottom: 0.2em;
+  }
+
+  .authorAbout {
+    @include font-size(2rem);
+
+    color: #696969;
+    font-weight: 500;
+    margin-top: 1.5rem;
+  }
+
+  .authorActions {
+    margin: 2rem -0.8rem 0 0;
+    padding-left: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    @include media-breakpoint-down(md) {
+      justify-content: center;
+    }
+  }
+
+  .authorDetails {
+    display: block;
+
+    @include media-breakpoint-down(md) {
+      flex: 1 100%;
+      text-align: center;
+    }
   }
 
   .listWrapper & {
@@ -36,10 +76,16 @@
   @include media-breakpoint-down(lg) {
     flex-wrap: wrap;
   }
+
+  .buttonWriteMessage {
+    border-radius: 0.8rem;
+    padding-bottom: 0.6rem;
+    padding-top: 0.6rem;
+  }
 }
 
 .authorDetails {
-  flex: 1;
+  flex: 0 0 auto;
 
   @include media-breakpoint-up(sm) {
     align-items: center;
@@ -56,10 +102,6 @@
     .listWrapper & {
       flex-wrap: nowrap;
     }
-  }
-
-  &.authorDetailsShrinked {
-    flex: 0 0 auto;
   }
 }
 
@@ -84,29 +126,10 @@
   }
 }
 
-.authorNameContainer {
-  line-height: 1.1;
-}
-
 .authorName {
-  border: none !important;
-  font-size: 1.6rem;
-  font-weight: 500;
-  margin-bottom: 0.8rem;
+  @include font-size(4rem);
 
-  .listWrapper & {
-    display: block;
-
-    &:before {
-      content: '';
-      height: 100%;
-      left: 0;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      z-index: 2;
-    }
-  }
+  line-height: 1.1;
 }
 
 .authorAbout {
@@ -115,42 +138,6 @@
   font-weight: 500;
   line-height: 1.3;
   word-break: break-word;
-}
-
-.authorSubscribe {
-  align-items: center;
-
-  @include media-breakpoint-down(md) {
-    flex-wrap: wrap;
-  }
-
-  .button {
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin-right: 0.5em;
-
-    &:first-of-type {
-      margin-left: 0;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &:hover {
-      .buttonUnfollowLabel {
-        display: block;
-      }
-
-      .buttonSubscribedLabel {
-        display: none;
-      }
-    }
-
-    .buttonUnfollowLabel {
-      display: none;
-    }
-  }
 }
 
 .authorSubscribeSocialLabel {
@@ -195,9 +182,10 @@
       }
 
       .authorSubscribeSocialLabel {
+        @include font-size(1.6rem);
+
         color: #000;
         display: block;
-        @include font-size(1.6rem);
         left: 100%;
         padding-left: 0.4rem;
         position: absolute;
@@ -228,7 +216,8 @@
       }
     }
 
-    &[href*='telegram.com/'] {
+    &[href*='telegram.com/'],
+    &[href*='t.me/'] {
       &::before {
         background-image: url(/icons/user-link-telegram.svg);
       }
@@ -426,208 +415,6 @@
   }
 }
 
-.shareControl {
-  display: inline-block;
-}
-
-.buttonSubscribe {
-  align-items: center;
-  aspect-ratio: 1/1;
-  border-radius: 100%;
-  display: inline-flex;
-  float: right;
-
-  img {
-    display: block;
-  }
-}
-
-.buttonLabel {
-  display: none;
-}
-
-.buttonLabelVisible {
-  display: block;
-}
-
-.buttonWrite {
-  background: #ccc;
-  color: #000;
-  display: inline-flex;
-  font-weight: 500;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-
-  &:hover {
-    background: #000;
-    color: #fff;
-
-    img {
-      filter: invert(1);
-    }
-  }
-
-  .icon {
-    display: inline-block;
-    margin-right: 0.5em;
-  }
-
-  img {
-    height: 15px;
-    transition: filter 0.3s;
-  }
-}
-
-.authorPage {
-  align-items: center;
-
-  @include media-breakpoint-down(md) {
-    justify-content: center;
-  }
-
-  .authorName {
-    @include font-size(4rem);
-    font-weight: 700;
-    margin-bottom: 0.2em;
-  }
-
-  .authorAbout {
-    color: #696969;
-    @include font-size(2rem);
-    font-weight: 500;
-    margin-top: 1.5rem;
-  }
-
-  .authorSubscribe {
-    margin: 2rem -0.8rem 0 0;
-    padding-left: 0;
-
-    @include media-breakpoint-down(md) {
-      justify-content: center;
-    }
-  }
-
-  .authorDetails {
-    display: block;
-
-    @include media-breakpoint-down(md) {
-      flex: 1 100%;
-      text-align: center;
-    }
-  }
-
-  .buttonLabel {
-    display: block;
-  }
-
-  .buttonSubscribe {
-    aspect-ratio: auto;
-    background-color: #000;
-    border-color: #000;
-    border-radius: 0.8rem;
-    color: #fff;
-    float: none;
-    padding-bottom: 0.6rem;
-    padding-top: 0.6rem;
-    width: 10em;
-
-    .icon {
-      margin-right: 0.5em;
-
-      img {
-        filter: invert(1);
-      }
-    }
-
-    &:hover {
-      background: #fff;
-      color: #000;
-
-      .icon img {
-        filter: invert(0);
-      }
-    }
-  }
-
-  .buttonSubscribe img {
-    vertical-align: text-top;
-  }
-
-  .button {
-    min-height: 4rem;
-    margin: 0 0.8rem 0 0;
-    vertical-align: middle;
-
-    @include media-breakpoint-down(sm) {
-      margin-bottom: 0.5em;
-    }
-  }
-}
-
-.authorsListItem {
-  margin-bottom: 1em !important;
-
-  .authorName {
-    @include font-size(2.2rem);
-
-    font-weight: bold;
-  }
-
-  .authorSubscribe {
-    align-items: baseline;
-
-    @include media-breakpoint-down(sm) {
-      padding: 1rem 0 0;
-    }
-  }
-
-  .buttonLabel {
-    display: block;
-  }
-}
-
-.nowrapView {
-  flex-wrap: nowrap;
-  align-items: center;
-  margin: 0;
-}
-
-.authorComments {
-  .authorName {
-    @include font-size(1.2rem);
-    line-height: 1.2;
-    margin-bottom: 0;
-  }
-
-  .circlewrap {
-    margin-top: -0.4em;
-  }
-}
-
-.isSubscribing {
-  opacity: 0.5;
-}
-
-.feedMode {
-  align-items: center;
-  margin-bottom: 0.4rem;
-
-  .authorName,
-  .authorAbout {
-    @include font-size(1.2rem);
-
-    margin-bottom: 0;
-  }
-
-  .circlewrap {
-    height: 1.6rem;
-    margin-right: 0.4rem;
-    min-width: 1.6rem;
-    width: 1.6rem;
-  }
-}
-
 .subscribersContainer {
   display: flex;
   flex-wrap: wrap;
@@ -648,33 +435,35 @@
   vertical-align: top;
   border-bottom: unset !important;
 
-  &:last-child {
-    margin-right: 0;
-  }
+  .subscribersItem {
+    position: relative;
 
-  .userpic {
-    background: var(--background-color);
-    box-shadow: 0 0 0 2px var(--background-color);
-    height: 1.8rem;
-    min-width: 1.8rem;
-    max-width: 1.8rem;
-    vertical-align: top;
-    width: 1.8rem;
-
-    &:not(:first-child) {
-      margin-left: -1.8rem;
+    &:nth-child(1) {
+      z-index: 2;
     }
 
-    > * {
-      line-height: 1.8rem;
-      min-width: auto;
+    &:nth-child(2) {
+      z-index: 1;
+    }
+
+    &:not(:last-child) {
+      margin-right: -4px;
+      box-shadow: 0 0 0 1px var(--background-color);
     }
   }
-}
 
-.subscribersCounter {
-  font-weight: 500;
-  margin-left: -0.6rem;
+  .subscribersCounter {
+    font-weight: 500;
+    margin-left: 1rem;
+  }
+
+  &:hover {
+    background: none !important;
+
+    .subscribersCounter {
+      background: var(--background-color-invert);
+    }
+  }
 }
 
 .listWrapper {

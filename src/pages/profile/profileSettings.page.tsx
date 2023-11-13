@@ -1,7 +1,6 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
-import { Icon } from '../../components/_shared/Icon'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
+import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Match } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
@@ -12,19 +11,27 @@ import { useSession } from '../../context/session'
 import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
 import { useSnackbar } from '../../context/snackbar'
 import { useLocalize } from '../../context/localize'
-import { handleFileUpload } from '../../utils/handleFileUpload'
 import { Userpic } from '../../components/Author/Userpic'
 import { createStore } from 'solid-js/store'
 import { clone } from '../../utils/clone'
 import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { AuthGuard } from '../../components/AuthGuard'
+import { handleImageUpload } from '../../utils/handleImageUpload'
+import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
+import { profileSocialLinks } from '../../utils/profileSocialLinks'
+import { Icon } from '../../components/_shared/Icon'
+import { Popover } from '../../components/_shared/Popover'
+import { Image } from '../../components/_shared/Image'
+import { Loading } from '../../components/_shared/Loading'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
+
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
+  const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
 
   const {
@@ -37,7 +44,7 @@ export const ProfileSettingsPage = () => {
 
   const { form, updateFormField, submit, slugError } = useProfileForm()
   const [prevForm, setPrevForm] = createStore(clone(form))
-
+  const [social, setSocial] = createSignal(form.links)
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
       updateFormField('links', value)
@@ -62,15 +69,17 @@ export const ProfileSettingsPage = () => {
 
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
-  const handleAvatarClick = async () => {
-    await selectFiles(async ([uploadFile]) => {
+  const handleUploadAvatar = async () => {
+    selectFiles(async ([uploadFile]) => {
       try {
+        setUploadError(false)
         setIsUserpicUpdating(true)
-        const result = await handleFileUpload(uploadFile)
+        const result = await handleImageUpload(uploadFile)
         updateFormField('userpic', result.url)
         setIsUserpicUpdating(false)
         setIsFloatingPanelVisible(true)
       } catch (error) {
+        setUploadError(true)
         console.error('[upload avatar] error', error)
       }
     })
@@ -105,6 +114,14 @@ export const ProfileSettingsPage = () => {
     }
   })
 
+  const handleDeleteSocialLink = (link) => {
+    updateFormField('links', link, true)
+  }
+
+  createEffect(() => {
+    setSocial(form.links)
+  })
+
   return (
     <PageLayout>
       <AuthGuard>
@@ -123,14 +140,51 @@ export const ProfileSettingsPage = () => {
                     <p class="description">{t('Here you can customize your profile the way you want.')}</p>
                     <form onSubmit={handleSubmit} enctype="multipart/form-data">
                       <h4>{t('Userpic')}</h4>
-                      <div class="pretty-form__item" style={{ 'max-width': '50%' }}>
-                        <Userpic
-                          name={form.name}
-                          userpic={form.userpic}
-                          isBig={true}
-                          onClick={handleAvatarClick}
-                          loading={isUserpicUpdating()}
-                        />
+                      <div class="pretty-form__item">
+                        <div
+                          class={clsx(styles.userpic, { [styles.hasControls]: form.userpic })}
+                          onClick={!form.userpic && handleUploadAvatar}
+                        >
+                          <Switch>
+                            <Match when={isUserpicUpdating()}>
+                              <Loading />
+                            </Match>
+                            <Match when={form.userpic}>
+                              <Image width={180} alt={form.name} src={form.userpic} />
+                              <div class={styles.controls}>
+                                <Popover content={t('Delete userpic')}>
+                                  {(triggerRef: (el) => void) => (
+                                    <button
+                                      ref={triggerRef}
+                                      class={styles.control}
+                                      onClick={() => updateFormField('userpic', '')}
+                                    >
+                                      <Icon name="close" />
+                                    </button>
+                                  )}
+                                </Popover>
+                                <Popover content={t('Upload userpic')}>
+                                  {(triggerRef: (el) => void) => (
+                                    <button
+                                      ref={triggerRef}
+                                      class={styles.control}
+                                      onClick={handleUploadAvatar}
+                                    >
+                                      <Icon name="user-image-black" />
+                                    </button>
+                                  )}
+                                </Popover>
+                              </div>
+                            </Match>
+                            <Match when={!form.userpic}>
+                              <Icon name="user-image-gray" />
+                              {t('Here you can upload your photo')}
+                            </Match>
+                          </Switch>
+                        </div>
+                        <Show when={uploadError()}>
+                          <div class={styles.error}>{t('Upload error')}</div>
+                        </Show>
                       </div>
                       <h4>{t('Name')}</h4>
                       <p class="description">
@@ -224,27 +278,26 @@ export const ProfileSettingsPage = () => {
                           </button>
                         </div>
                         <Show when={addLinkForm()}>
-                          <div class={styles.multipleControlsItem}>
-                            <input
-                              autofocus={true}
-                              type="text"
-                              name="link"
-                              class="nolabel"
-                              onChange={(event) => handleChangeSocial(event.currentTarget.value)}
-                            />
-                          </div>
+                          <SocialNetworkInput
+                            isExist={false}
+                            autofocus={true}
+                            handleChange={(value) => handleChangeSocial(value)}
+                          />
                           <Show when={incorrectUrl()}>
                             <p class="form-message form-message--error">{t('It does not look like url')}</p>
                           </Show>
                         </Show>
-                        <For each={form.links}>
-                          {(link) => (
-                            <div class={styles.multipleControlsItem}>
-                              <input type="text" value={link} readonly={true} name="link" class="nolabel" />
-                              <button type="button" onClick={() => updateFormField('links', link, true)}>
-                                <Icon name="remove" class={styles.icon} />
-                              </button>
-                            </div>
+                        <For each={profileSocialLinks(social())}>
+                          {(network) => (
+                            <SocialNetworkInput
+                              class={styles.socialInput}
+                              link={network.link}
+                              network={network.name}
+                              handleChange={(value) => handleChangeSocial(value)}
+                              isExist={!network.isPlaceholder}
+                              slug={form.slug}
+                              handleDelete={() => handleDeleteSocialLink(network.link)}
+                            />
                           )}
                         </For>
                       </div>

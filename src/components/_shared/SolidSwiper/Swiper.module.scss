@@ -1,10 +1,10 @@
-$navigation-reserve: 32px;
-
 :root {
   --slide-height: 300px;
+  --navigation-reserve: 48px;
 
   @include media-breakpoint-up(md) {
     --slide-height: 500px;
+    --navigation-reserve: 56px;
   }
 }
 
@@ -13,19 +13,33 @@ $navigation-reserve: 32px;
   margin: 2rem 0;
   flex-direction: column;
 
+  &.ArticleCardSwiper {
+    margin-bottom: 6rem;
+    padding-bottom: 2rem;
+  }
+
+  .sliderTitle {
+    @include font-size(4.5rem);
+
+    text-align: center;
+    padding: 4rem 0 0;
+  }
+
   &.articleMode {
     background: var(--background-color-invert);
     color: var(--default-color-invert);
     display: flex;
     align-items: center;
     justify-content: center;
+
     a {
       color: var(--default-color-invert);
       border-color: var(--default-color-invert);
     }
+
     .container {
       margin: auto;
-      //max-width: 800px;
+      // max-width: 800px;
       position: relative;
       padding: 24px 0;
       display: flex;
@@ -82,6 +96,10 @@ $navigation-reserve: 32px;
 
   &.editorMode {
     color: #0d0d0d;
+
+    .holder {
+      width: 100%;
+    }
   }
 
   .action {
@@ -93,7 +111,7 @@ $navigation-reserve: 32px;
     position: absolute;
     top: 16px;
     right: 16px;
-    background: rgba(var(--default-color), 0.3);
+    background: rgb(var(--default-color) 0.3);
     cursor: pointer;
     z-index: 12;
     display: none;
@@ -108,10 +126,11 @@ $navigation-reserve: 32px;
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
-    width: calc(100% - 130px);
+    width: 100%;
 
     .counter {
       @include font-size(1.2rem);
+
       position: absolute;
       z-index: 2;
       top: 477px;
@@ -132,6 +151,7 @@ $navigation-reserve: 32px;
 
       img {
         max-height: 100%;
+        width: auto;
       }
     }
 
@@ -139,23 +159,16 @@ $navigation-reserve: 32px;
       display: flex;
     }
   }
-  &.editorMode {
-    .holder {
-      width: 100%;
-    }
-  }
 
   .navigation {
-    background: rgb(0 0 0 / 40%);
     display: flex;
     position: absolute;
     top: 0;
     bottom: 0;
-    justify-content: center;
     align-items: center;
     cursor: pointer;
-    height: var(--slide-height);
-    width: 52px;
+    height: 100%;
+    width: 10%;
     z-index: 2;
 
     &.disabled {
@@ -164,16 +177,19 @@ $navigation-reserve: 32px;
     }
 
     &.prev {
+      background-image: linear-gradient(to right, #000, rgb(0 0 0 / 0));
       left: 0;
     }
 
     &.next {
+      background-image: linear-gradient(to left, #000, rgb(0 0 0 / 0));
+      justify-content: end;
       right: 0;
     }
 
     .icon {
-      height: $navigation-reserve;
-      width: $navigation-reserve;
+      height: var(--navigation-reserve);
+      width: var(--navigation-reserve);
       transition: 0.3s ease-in-out;
     }
 
@@ -198,15 +214,17 @@ $navigation-reserve: 32px;
 
     .source {
       @include font-size(1.2rem);
+
       color: var(--secondary-color);
     }
 
     .body {
       @include font-size(1.7rem);
+
       margin-top: 24px;
 
       @include media-breakpoint-up(md) {
-        //margin-left: calc((100% + 130px) * 0.15);
+        // margin-left: calc((100% + 130px) * 0.15);
         margin-left: calc(15% + 24px);
       }
     }
@@ -221,11 +239,11 @@ $navigation-reserve: 32px;
       height: auto;
 
       &.prev {
-        left: -$navigation-reserve;
+        left: -var(--navigation-reserve);
       }
 
       &.next {
-        right: -$navigation-reserve;
+        right: -var(--navigation-reserve);
       }
     }
 
@@ -253,7 +271,9 @@ $navigation-reserve: 32px;
       background-color: var(--placeholder-color-semi);
       opacity: 0.5;
       filter: grayscale(1);
-      transition: filter 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      transition:
+        filter 0.3s ease-in-out,
+        opacity 0.5s ease-in-out;
 
       .thumbAction {
         display: none;

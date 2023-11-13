@@ -12,7 +12,7 @@ import { Icon } from '../../_shared/Icon'
 import type { Topic } from '../../../graphql/types.gen'
 
 import { useModalStore } from '../../../stores/ui'
-import { router, useRouter } from '../../../stores/router'
+import { router, ROUTES, useRouter } from '../../../stores/router'
 
 import { getDescription } from '../../../utils/meta'
 
@@ -23,6 +23,7 @@ import styles from './Header.module.scss'
 import { apiClient } from '../../../utils/apiClient'
 import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { Link } from './Link'
+import { Subscribe } from '../../_shared/Subscribe'
 
 type Props = {
   title?: string
@@ -37,11 +38,14 @@ type HeaderSearchParams = {
   source?: string
 }
 
+const handleSwitchLanguage = (event) => {
+  location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${event.target.value}`
+}
+
 export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
-
   const { modal } = useModalStore()
-
+  const { page } = useRouter()
   const {
     actions: { requireAuthentication }
   } = useSession()
@@ -58,7 +62,6 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-
   const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
 
   const tag = (topic: Topic) =>
@@ -147,6 +150,15 @@ export const Header = (props: Props) => {
     setRandomTopics(topics)
   })
 
+  const handleToggleMenuByLink = (event: MouseEvent, route: keyof typeof ROUTES) => {
+    if (!fixed()) {
+      return
+    }
+    event.preventDefault()
+    if (page().route === route) {
+      toggleFixed()
+    }
+  }
   return (
     <header
       class={styles.mainHeader}
@@ -195,6 +207,7 @@ export const Header = (props: Props) => {
                   routeName="home"
                   active={isZineVisible()}
                   body={t('journal')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'home')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
@@ -202,6 +215,7 @@ export const Header = (props: Props) => {
                   routeName="feed"
                   active={isFeedVisible()}
                   body={t('feed')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'feed')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
@@ -209,12 +223,14 @@ export const Header = (props: Props) => {
                   routeName="topics"
                   active={isTopicsVisible()}
                   body={t('topics')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'topics')}
                 />
                 <Link
                   onMouseOver={(event) => hideSubnavigation(event, 0)}
                   onMouseOut={(event) => hideSubnavigation(event, 0)}
                   routeName="authors"
                   body={t('authors')}
+                  onClick={(event) => handleToggleMenuByLink(event, 'authors')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
@@ -222,20 +238,21 @@ export const Header = (props: Props) => {
                   routeName="guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}
+                  onClick={(event) => handleToggleMenuByLink(event, 'guide')}
                 />
               </ul>
 
               <div class={styles.mainNavigationMobile}>
-                <h4>{t('Join the community')}</h4>
+                <h4>{t('Participating')}</h4>
                 <ul class="view-switcher">
                   <li>
                     <a href="/create">{t('Create post')}</a>
                   </li>
                   <li>
-                    <a href="/about/manifest#participation">{t('Support us')}</a>
+                    <a href="/connect">{t('Suggest an idea')}</a>
                   </li>
                   <li>
-                    <a href="/about/help">{t('How to help')}</a>
+                    <a href="/about/help">{t('Support the project')}</a>
                   </li>
                 </ul>
 
@@ -243,52 +260,60 @@ export const Header = (props: Props) => {
                 <ul class="view-switcher">
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://www.instagram.com/discoursio/">
-                      Instagram
                       <Icon name="user-link-instagram" class={styles.icon} />
+                      Instagram
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://facebook.com/discoursio">
-                      Facebook
                       <Icon name="user-link-facebook" class={styles.icon} />
+                      Facebook
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://twitter.com/discours_io">
-                      Twitter
                       <Icon name="user-link-twitter" class={styles.icon} />
+                      Twitter
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://t.me/discoursio">
-                      Telegram
                       <Icon name="user-link-telegram" class={styles.icon} />
+                      Telegram
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://dzen.ru/discoursio">
-                      Dzen
                       <Icon name="user-link-dzen" class={styles.icon} />
+                      Dzen
                     </a>
                   </li>
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://vk.com/discoursio">
-                      VK
                       <Icon name="user-link-vk" class={styles.icon} />
+                      VK
                     </a>
                   </li>
                 </ul>
 
                 <h4>{t('Newsletter')}</h4>
-                <form action="." class={styles.mobileSubscription}>
-                  <div class="pretty-form__item">
-                    <input type="email" placeholder="Ваш email" id="subscription-email" />
-                    <label for="subscription-email">{t('Your email')}</label>
-                    <button class={styles.mobileSubscriptionSubmit}>
-                      <Icon name="arrow-right" />
-                    </button>
-                  </div>
-                </form>
+                <Subscribe variant={'mobileSubscription'} />
+
+                <h4>{t('Language')}</h4>
+                <select
+                  class={styles.languageSelectorMobile}
+                  onChange={handleSwitchLanguage}
+                  value={lang()}
+                >
+                  <option value="ru">🇷🇺 Русский</option>
+                  <option value="en">🇬🇧 English</option>
+                </select>
+
+                <div class={styles.mainNavigationAdditionalLinks}>
+                  <a href="/about/dogma">{t('Dogma')}</a>
+                  <a href="/about/discussion-rules" innerHTML={t('Discussion rules')} />
+                  <a href="/about/principles">{t('Principles')}</a>
+                </div>
 
                 <p
                   class={styles.mobileDescription}
@@ -298,7 +323,6 @@ export const Header = (props: Props) => {
                 />
                 <div class={styles.mobileCopyright}>
                   {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
-                  <a href="/">{t('Terms of use')}</a>
                 </div>
               </div>
             </div>
@@ -382,31 +406,31 @@ export const Header = (props: Props) => {
                 <a href="/expo">{t('Art')}</a>
               </li>
               <li class="item">
-                <a href="/podcasts">Подкасты</a>
+                <a href="/podcasts">{t('Podcasts')}</a>
               </li>
               <li class="item">
-                <a href="">Спецпроекты</a>
+                <a href="">{t('Special Projects')}</a>
               </li>
               <li>
-                <a href="/topic/interview">#Интервью</a>
+                <a href="/topic/interview">#{t('Interview')}</a>
               </li>
               <li>
-                <a href="/topic/reportage">#Репортажи</a>
+                <a href="/topic/reportage">#{t('Reports')}</a>
               </li>
               <li>
-                <a href="/topic/empiric">#Личный опыт</a>
+                <a href="/topic/empiric">#{t('Experience')}</a>
               </li>
               <li>
-                <a href="/topic/society">#Общество</a>
+                <a href="/topic/society">#{t('Society')}</a>
               </li>
               <li>
-                <a href="/topic/culture">#Культура</a>
+                <a href="/topic/culture">#{t('Culture')}</a>
               </li>
               <li>
-                <a href="/topic/theory">#Теории</a>
+                <a href="/topic/theory">#{t('Theory')}</a>
               </li>
               <li>
-                <a href="/topic/poetry">#Поэзия</a>
+                <a href="/topic/poetry">#{t('Poetry')}</a>
               </li>
               <li class={styles.rightItem}>
                 <a href="/topics">
@@ -455,7 +479,7 @@ export const Header = (props: Props) => {
                 <a href={getPagePath(router, 'feed')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-all" class={styles.icon} />
-                    {t('general feed')}
+                    {t('All')}
                   </span>
                 </a>
               </li>
@@ -472,7 +496,7 @@ export const Header = (props: Props) => {
                 <a href={getPagePath(router, 'feedCollaborations')}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-collaborate" class={styles.icon} />
-                    {t('Accomplices')}
+                    {t('Participation')}
                   </span>
                 </a>
               </li>

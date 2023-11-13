@@ -252,20 +252,22 @@ export const InboxView = () => {
 
             <div class={styles.messageForm}>
               <Show when={messageToReply()}>
-                <QuotedMessage
-                  variant="reply"
-                  author={
-                    currentDialog().members.find((member) => member.id === Number(messageToReply().author))
-                      .name
-                  }
-                  body={messageToReply().body}
-                  cancel={() => setMessageToReply(null)}
-                />
+                <p>FIXME: messageToReply</p>
+                {/*<QuotedMessage*/}
+                {/*  variant="reply"*/}
+                {/*  author={*/}
+                {/*    currentDialog().members.find((member) => member.id === Number(messageToReply().author))*/}
+                {/*      .name*/}
+                {/*  }*/}
+                {/*  body={messageToReply().body}*/}
+                {/*  cancel={() => setMessageToReply(null)}*/}
+                {/*/>*/}
               </Show>
               <div class={styles.wrapper}>
                 <SimplifiedEditor
                   smallHeight={true}
                   imageEnabled={true}
+                  isCancelButtonVisible={false}
                   placeholder={t('Write message')}
                   setClear={isClear()}
                   onSubmit={(message) => handleSubmit(message)}

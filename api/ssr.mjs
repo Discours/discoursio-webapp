@@ -1,13 +1,13 @@
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 
 export default async function handler(req, res) {
   const { url, cookies } = req
 
   const pageContext = await renderPage({ urlOriginal: url, cookies })
 
-  const { httpResponse, errorWhileRendering } = pageContext
+  const { httpResponse, errorWhileRendering, is404 } = pageContext
 
-  if (errorWhileRendering) {
+  if (errorWhileRendering && !is404) {
     console.error(errorWhileRendering)
     res.statusCode = 500
     res.end()

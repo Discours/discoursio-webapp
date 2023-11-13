@@ -7,7 +7,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams
 
   const authorShouts = await apiClient.getShouts({
-    filters: { author: slug },
+    filters: { author: slug, visibility: 'community' },
     limit: PRERENDERED_ARTICLES_COUNT
   })
   const author = await apiClient.getAuthor({ slug })

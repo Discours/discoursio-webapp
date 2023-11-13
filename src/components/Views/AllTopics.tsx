@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
@@ -34,9 +34,9 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     sortBy: searchParams().by || 'shouts'
   })
 
-  const { session } = useSession()
+  const { subscriptions } = useSession()
 
-  onMount(() => {
+  createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
         by: 'shouts'
@@ -68,7 +68,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     return keys
   })
 
-  const subscribed = (s) => Boolean(session()?.news?.topics && session()?.news?.topics?.includes(s || ''))
+  const subscribed = (topicSlug: string) => subscriptions().topics.some((topic) => topic.slug === topicSlug)
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const [searchQuery, setSearchQuery] = createSignal('')

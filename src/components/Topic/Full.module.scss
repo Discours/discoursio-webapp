@@ -15,16 +15,21 @@
 .topicActions {
   margin-top: 2.8rem;
 
-  button,
-  a {
-    background: #000;
+  .write {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    min-width: 64px;
+    font-size: 17px;
+    padding: 8px 16px;
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
     border: none;
+    font-weight: 500;
     border-radius: 2px;
-    color: #fff;
     cursor: pointer;
-    font-size: 100%;
     margin: 0 1.2rem 1em;
-    padding: 0.8rem 1.6rem;
     white-space: nowrap;
   }
 }

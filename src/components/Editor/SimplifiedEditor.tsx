@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import {
   createEditorTransaction,
@@ -21,7 +21,6 @@ import { Modal } from '../Nav/Modal'
 import { hideModal, showModal } from '../../stores/ui'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { UploadModalContent } from './UploadModalContent'
-import { imageProxy } from '../../utils/imageProxy'
 import { clsx } from 'clsx'
 import styles from './SimplifiedEditor.module.scss'
 import { Placeholder } from '@tiptap/extension-placeholder'
@@ -54,6 +53,7 @@ type Props = {
   onlyBubbleControls?: boolean
   controlsAlwaysVisible?: boolean
   autoFocus?: boolean
+  isCancelButtonVisible?: boolean
 }
 
 export const MAX_DESCRIPTION_LIMIT = 400
@@ -62,6 +62,7 @@ const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
   const [counter, setCounter] = createSignal<number>()
 
+  const isCancelButtonVisible = createMemo(() => props.isCancelButtonVisible !== false)
   const wrapperEditorElRef: {
     current: HTMLElement
   } = {
@@ -174,7 +175,7 @@ const SimplifiedEditor = (props: Props) => {
           {
             type: 'image',
             attrs: {
-              src: imageProxy(image.url)
+              src: image.url
             }
           }
         ]
@@ -328,7 +329,9 @@ const SimplifiedEditor = (props: Props) => {
           </div>
           <Show when={!props.onChange}>
             <div class={styles.buttons}>
-              <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
+              <Show when={isCancelButtonVisible()}>
+                <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
+              </Show>
               <Button
                 value={props.submitButtonText ?? t('Send')}
                 variant="primary"

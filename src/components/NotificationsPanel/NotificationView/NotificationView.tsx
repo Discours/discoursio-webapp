@@ -18,7 +18,8 @@ type Props = {
 }
 
 // NOTE: not a graphql generated type
-export enum NotificationType {
+
+export enum NewNotificationType {
   NewComment = 'NEW_COMMENT',
   NewReply = 'NEW_REPLY',
   NewFollower = 'NEW_FOLLOWER',
@@ -27,11 +28,18 @@ export enum NotificationType {
   NewDislike = 'NEW_DISLIKE'
 }
 
+export type NotificationUser = {
+  id: number
+  name: string
+  slug: string
+  userpic: string
+}
+
 const TEMPLATES = {
   // FIXME: set proper templates
   'follower:join': 'new follower',
   'shout:create': 'new shout'
-  /* 
+  /*
   new_reaction0: 'new like',
   new_reaction1: 'new dislike',
   new_reaction2: 'new agreement',
@@ -45,7 +53,7 @@ const TEMPLATES = {
   new_reaction10: 'new remark',
   //"new_reaction11": "new footnote",
   new_reaction12: 'new acception',
-  new_reaction13: 'new rejection' 
+  new_reaction13: 'new rejection'
   */
 }
 
@@ -54,7 +62,7 @@ export const NotificationView = (props: Props) => {
     actions: { markNotificationAsRead }
   } = useNotifications()
   const [data, setData] = createSignal<SSEMessage>(null)
-  const [kind, setKind] = createSignal<NotificationType>()
+  const [kind, setKind] = createSignal<NewNotificationType>()
   const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
   const { t, formatDate, formatTime } = useLocalize()
 
@@ -68,7 +76,7 @@ export const NotificationView = (props: Props) => {
     if (!data()) {
       return null
     }
-    let caption: string, author: Author, ntype: NotificationType
+    let caption: string, author: Author, ntype: NewNotificationType
 
     // TODO: count occurencies from in-browser notifications-db
 
@@ -76,17 +84,19 @@ export const NotificationView = (props: Props) => {
       case 'follower': {
         caption = ''
         author = data().payload
-        ntype = NotificationType.NewFollower
+        ntype = NewNotificationType.NewFollower
         break
       }
-      case 'shout': {
-        caption = data().payload.title
-        author = data().payload.authors[-1]
-        ntype = NotificationType.NewShout
+      case 'shout':
+        {
+          caption = data().payload.title
+          author = data().payload.authors[-1]
+          ntype = NewNotificationType.NewShout
+          break
+        }
         break
-      }
       case 'reaction': {
-        ntype = data().payload.replyTo ? NotificationType.NewReply : NotificationType.NewComment
+        ntype = data().payload.replyTo ? NewNotificationType.NewReply : NewNotificationType.NewComment
         console.log(data().payload.kind)
         // TODO: handle all needed reaction kinds
       }

@@ -79,6 +79,7 @@ export const Footnote = Node.create({
         },
       deleteFootnote:
         () =>
+        // eslint-disable-next-line unicorn/consistent-function-scoping
         ({ tr, state }) => {
           const { selection } = state
           const { $from, $to } = selection

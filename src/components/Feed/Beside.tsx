@@ -33,7 +33,7 @@ export const Beside = (props: Props) => {
             <Show when={!!props.values}>
               <div
                 class={clsx(
-                  'col-md-8',
+                  'col-lg-8',
                   styles[
                     `besideRatingColumn${props.wrapper.charAt(0).toUpperCase() + props.wrapper.slice(1)}`
                   ]
@@ -95,7 +95,7 @@ export const Beside = (props: Props) => {
                 </ul>
               </div>
             </Show>
-            <div class={clsx('col-md-16', styles.shoutCardContainer)}>
+            <div class={clsx('col-lg-16', styles.shoutCardContainer)}>
               <ArticleCard
                 article={props.beside}
                 settings={{ isBigTitle: true, isBeside: true, nodate: props.nodate }}

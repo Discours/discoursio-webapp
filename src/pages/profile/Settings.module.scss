@@ -17,6 +17,14 @@ h5 {
   margin-top: 3rem;
 }
 
+.error {
+  @include font-size(1.6rem);
+
+  text-align: center;
+  color: var(--danger-color);
+  margin-top: 1.6rem;
+}
+
 .multipleControlsItem {
   position: relative;
 
@@ -133,7 +141,9 @@ h5 {
   color: #000;
   display: flex;
   padding: 0.8em 1em;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 
   &:hover {
     background: #000;
@@ -204,4 +214,64 @@ h5 {
       text-shadow: none !important;
     }
   }
+}
+
+.userpic {
+  @include font-size(1.2rem);
+
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 1rem;
+  color: var(--black-300);
+  border: 1px solid var(--black-100);
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    border-radius: 50%;
+  }
+
+  &.hasControls {
+    overflow: visible;
+  }
+
+  .controls {
+    position: absolute;
+    right: -50px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .control {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--background-color);
+    border: 1px solid var(--black-100);
+
+    img {
+      border-radius: unset;
+    }
+
+    &:hover {
+      background: var(--background-color-invert);
+
+      img {
+        filter: invert(1);
+      }
+    }
+  }
+}
+
+.socialInput {
+  margin-top: 1rem;
 }

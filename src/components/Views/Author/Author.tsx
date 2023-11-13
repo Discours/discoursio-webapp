@@ -17,7 +17,6 @@ import { Comment } from '../../Article/Comment'
 import { useLocalize } from '../../../context/localize'
 import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { getPagePath } from '@nanostores/router'
-import { useSession } from '../../../context/session'
 import { Loading } from '../../_shared/Loading'
 
 type Props = {
@@ -35,7 +34,6 @@ export const AuthorView = (props: Props) => {
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
   const { page: getPage } = useRouter()
-  const { user } = useSession()
   const author = createMemo(() => authorEntities()[props.authorSlug])
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -128,13 +126,7 @@ export const AuthorView = (props: Props) => {
         <Show when={author()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard
-                author={author()}
-                isAuthorPage={true}
-                followers={followers()}
-                following={following()}
-                isCurrentUser={author().slug === user()?.slug}
-              />
+              <AuthorCard author={author()} followers={followers()} following={following()} />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">

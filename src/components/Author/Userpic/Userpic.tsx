@@ -1,9 +1,9 @@
-import { Show } from 'solid-js'
+import { createMemo, Show } from 'solid-js'
 import styles from './Userpic.module.scss'
 import { clsx } from 'clsx'
-import { imageProxy } from '../../../utils/imageProxy'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Loading } from '../../_shared/Loading'
+import { Image } from '../../_shared/Image'
 
 type Props = {
   name: string
@@ -12,11 +12,8 @@ type Props = {
   slug?: string
   onClick?: () => void
   loading?: boolean
-  isBig?: boolean
-  isMedium?: boolean
   hasLink?: boolean
-  isAuthorsList?: boolean
-  isFeedMode?: boolean
+  size?: 'XS' | 'S' | 'M' | 'L' | 'XL' // 20 | 28 | 32 | 40 | 168
 }
 
 export const Userpic = (props: Props) => {
@@ -26,13 +23,29 @@ export const Userpic = (props: Props) => {
     return names[0][0] + (names.length > 1 ? names[1][0] : '')
   }
 
+  const avatarSize = createMemo(() => {
+    switch (props.size) {
+      case 'XS': {
+        return 40
+      }
+      case 'S': {
+        return 56
+      }
+      case 'L': {
+        return 80
+      }
+      case 'XL': {
+        return 336
+      }
+      default: {
+        return 64
+      }
+    }
+  })
+
   return (
     <div
-      class={clsx(styles.Userpic, props.class, {
-        [styles.big]: props.isBig,
-        [styles.medium]: props.isMedium,
-        [styles.authorsList]: props.isAuthorsList,
-        [styles.feedMode]: props.isFeedMode,
+      class={clsx(styles.Userpic, props.class, styles[props.size ?? 'M'], {
         ['cursorPointer']: props.onClick
       })}
       onClick={props.onClick}
@@ -42,18 +55,8 @@ export const Userpic = (props: Props) => {
           condition={props.hasLink}
           wrapper={(children) => <a href={`/author/${props.slug}`}>{children}</a>}
         >
-          <Show
-            when={!props.userpic}
-            fallback={
-              <img
-                class={clsx({ [styles.anonymous]: !props.userpic })}
-                src={imageProxy(props.userpic) || '/icons/user-default.svg'}
-                alt={props.name || ''}
-                loading="lazy"
-              />
-            }
-          >
-            <div class={styles.letters}>{letters()}</div>
+          <Show keyed={true} when={props.userpic} fallback={<div class={styles.letters}>{letters()}</div>}>
+            <Image src={props.userpic} width={avatarSize()} height={avatarSize()} alt={props.name} />
           </Show>
         </ConditionalWrapper>
       </Show>

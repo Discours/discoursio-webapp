@@ -69,6 +69,7 @@ const useProfileForm = () => {
       })
     }
   }
+
   return { form, submit, updateFormField, slugError }
 }
 

@@ -1,0 +1,51 @@
+.AuthorLink {
+  .link {
+    display: inline-flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    padding: 0;
+    border-bottom: none;
+    vertical-align: text-bottom;
+
+    &:hover {
+      background: unset !important;
+      border-bottom: none;
+      color: var(--default-color) !important;
+    }
+
+    .name {
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: -2px;
+
+      &:hover {
+        color: var(--default-color-invert);
+        background: var(--background-color-invert);
+      }
+    }
+  }
+
+  // adjust size
+  &.XS {
+    .link {
+      gap: 0.5rem;
+    }
+
+    .name {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+  }
+
+  &.M {
+    .link {
+      gap: 1rem;
+    }
+
+    .name {
+      font-size: 1.4rem;
+    }
+  }
+}

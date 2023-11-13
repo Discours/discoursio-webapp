@@ -8,10 +8,8 @@ import { Row1 } from '../Feed/Row1'
 import Hero from '../Discours/Hero'
 import { Beside } from '../Feed/Beside'
 import RowShort from '../Feed/RowShort'
-import { Slider } from '../_shared/Slider'
 import Group from '../Feed/Group'
 import type { Shout } from '../../graphql/types.gen'
-
 import { useTopicsStore } from '../../stores/zine/topics'
 import {
   loadShouts,
@@ -22,8 +20,8 @@ import {
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-import { ArticleCard } from '../Feed/ArticleCard'
 import { useLocalize } from '../../context/localize'
+import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
 type Props = {
   shouts: Shout[]
@@ -129,21 +127,9 @@ export const HomeView = (props: Props) => {
           nodate={true}
         />
 
-        <Slider title={t('Top month articles')}>
-          <For each={topMonthArticles()}>
-            {(a: Shout) => (
-              <ArticleCard
-                article={a}
-                settings={{
-                  additionalClass: 'swiper-slide',
-                  isFloorImportant: true,
-                  isWithCover: true,
-                  nodate: true
-                }}
-              />
-            )}
-          </For>
-        </Slider>
+        <Show when={topMonthArticles()}>
+          <ArticleCardSwiper title={t('Top month articles')} slides={topMonthArticles()} />
+        </Show>
 
         <Row2 articles={sortedArticles().slice(10, 12)} nodate={true} />
 
@@ -159,21 +145,9 @@ export const HomeView = (props: Props) => {
 
         {randomLayout()}
 
-        <Slider title={t('Favorite')}>
-          <For each={topArticles()}>
-            {(a: Shout) => (
-              <ArticleCard
-                article={a}
-                settings={{
-                  additionalClass: 'swiper-slide',
-                  isFloorImportant: true,
-                  isWithCover: true,
-                  nodate: true
-                }}
-              />
-            )}
-          </For>
-        </Slider>
+        <Show when={topArticles()}>
+          <ArticleCardSwiper title={t('Favorite')} slides={topArticles()} />
+        </Show>
 
         <Beside
           beside={sortedArticles()[20]}

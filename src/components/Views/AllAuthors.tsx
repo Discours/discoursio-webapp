@@ -1,15 +1,13 @@
-import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-
 import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { useRouter } from '../../stores/router'
-import { AuthorCard } from '../Author/AuthorCard'
 import { clsx } from 'clsx'
-import { useSession } from '../../context/session'
 import { SearchField } from '../_shared/SearchField'
 import { scrollHandler } from '../../utils/scroll'
 import { useLocalize } from '../../context/localize'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { AuthorBadge } from '../Author/AuthorBadge'
 
 import styles from './AllAuthors.module.scss'
 
@@ -35,9 +33,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
 
   const [searchQuery, setSearchQuery] = createSignal('')
 
-  const { session } = useSession()
-
-  onMount(() => {
+  createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
         by: 'shouts'
@@ -52,7 +48,14 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
       (acc, author) => {
-        let letter = author.name.trim().split(' ').pop().at(0).toUpperCase()
+        let letter = ''
+        if (author && author.name) {
+          const nameParts = author.name.trim().split(' ')
+          const lastName = nameParts.pop()
+          if (lastName && lastName.length > 0) {
+            letter = lastName[0].toUpperCase()
+          }
+        }
 
         if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '@'
 
@@ -72,8 +75,6 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
     return keys
   })
 
-  const subscribed = (s) => Boolean(session()?.news?.authors && session()?.news?.authors?.includes(s || ''))
-
   const filteredAuthors = createMemo(() => {
     return dummyFilter(sortedAuthors(), searchQuery(), lang())
   })
@@ -84,7 +85,6 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
       <div class="col-lg-20 col-xl-18">
         <h1>{t('Authors')}</h1>
         <p>{t('Subscribe who you like to tune your personal feed')}</p>
-
         <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
           <li
             classList={{
@@ -172,15 +172,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
               {(author) => (
                 <div class="row">
                   <div class="col-lg-20 col-xl-18">
-                    <AuthorCard
-                      author={author as Author}
-                      hasLink={true}
-                      subscribed={subscribed(author.slug)}
-                      noSocialButtons={true}
-                      isAuthorsList={true}
-                      truncateBio={true}
-                      isTextButton={true}
-                    />
+                    <AuthorBadge author={author as Author} />
                   </div>
                 </div>
               )}

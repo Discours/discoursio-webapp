@@ -17,7 +17,8 @@ import type {
   ReactionBy,
   Shout,
   NotificationsQueryParams,
-  NotificationsQueryResult
+  NotificationsQueryResult,
+  MySubscriptionsQueryResult
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient, privateInboxGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -58,6 +59,8 @@ import updateArticle from '../graphql/mutation/article-update'
 import deleteShout from '../graphql/mutation/article-delete'
 // import notifications from '../graphql/query/notifications'
 // import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
+import markAllNotificationsAsRead from '../graphql/mutation/mark-all-notifications-as-read'
+import mySubscriptions from '../graphql/query/my-subscriptions'
 
 type ApiErrorCode =
   | 'unknown'
@@ -307,9 +310,9 @@ export const apiClient = {
       })
       .toPromise()
 
-    if (resp.error) {
-      console.error(resp)
-    }
+    // if (resp.error) {
+    //   console.error(resp)
+    // }
 
     return resp.data.loadShout
   },
@@ -350,14 +353,12 @@ export const apiClient = {
     const resp = await publicGraphQLClient
       .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: 0 })
       .toPromise()
-    // console.debug(resp)
     return resp.data.loadReactionsBy
-  }
+  },
   // TODO: store notifications in browser storage
   /*
   getNotifications: async (params: NotificationsQueryParams): Promise<NotificationsQueryResult> => {
-    const resp = await privateGraphQLClient.query(notifications, params).toPromise()
-    // console.debug(resp.data)
+    const resp = await privateGraphQLClient.query(notifications, { params }).toPromise()
     return resp.data.loadNotifications
   },
   markNotificationAsRead: async (notificationId: number): Promise<void> => {
@@ -368,6 +369,15 @@ export const apiClient = {
       .toPromise()
   },
   */
+  markAllNotificationsAsRead: async (): Promise<void> => {
+    await privateGraphQLClient.mutation(markAllNotificationsAsRead, {}).toPromise()
+  },
+
+  getMySubscriptions: async (): Promise<MySubscriptionsQueryResult> => {
+    const resp = await privateGraphQLClient.query(mySubscriptions, {}).toPromise()
+    // console.debug(resp.data)
+    return resp.data.loadMySubscriptions
+  }
 }
 
 export const inboxClient = {

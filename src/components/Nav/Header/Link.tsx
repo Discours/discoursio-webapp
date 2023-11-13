@@ -10,13 +10,17 @@ type Props = {
   routeName?: keyof typeof ROUTES
   body: string
   active?: boolean
+  onClick?: (event: MouseEvent) => void
 }
 
 export const Link = (props: Props) => {
   const { page } = useRouter()
   const isSelected = page().route === props.routeName
   return (
-    <li classList={{ 'view-switcher__item--selected': page().route === props.routeName }}>
+    <li
+      onClick={props.onClick}
+      classList={{ 'view-switcher__item--selected': page().route === props.routeName }}
+    >
       <ConditionalWrapper
         condition={!isSelected && Boolean(props.routeName)}
         wrapper={(children) => <a href={getPagePath(router, props.routeName)}>{children}</a>}

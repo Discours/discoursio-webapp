@@ -1,6 +1,5 @@
 import type { Author } from '../../../graphql/types.gen'
 import { Userpic } from '../Userpic'
-import { Icon } from '../../_shared/Icon'
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import { translit } from '../../../utils/ru2en'
 import { follow, unfollow } from '../../../stores/zine/common'
@@ -11,7 +10,6 @@ import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { router, useRouter } from '../../../stores/router'
 import { openPage, redirectPage } from '@nanostores/router'
 import { useLocalize } from '../../../context/localize'
-import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Modal } from '../../Nav/Modal'
 import { SubscriptionFilter } from '../../../pages/types'
 import { isAuthor } from '../../../utils/isAuthor'
@@ -20,48 +18,30 @@ import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import styles from './AuthorCard.module.scss'
+import stylesButton from '../../_shared/Button/Button.module.scss'
 
 type Props = {
-  caption?: string
-  hideWriteButton?: boolean
-  hideDescription?: boolean
-  hideFollow?: boolean
-  hasLink?: boolean
-  subscribed?: boolean
   author: Author
-  isAuthorPage?: boolean
-  noSocialButtons?: boolean
-  isAuthorsList?: boolean
-  truncateBio?: boolean
-  liteButtons?: boolean
-  isTextButton?: boolean
-  isComments?: boolean
-  isFeedMode?: boolean
-  isNowrap?: boolean
-  class?: string
   followers?: Author[]
   following?: Array<Author | Topic>
-  showPublicationsCounter?: boolean
-  hideBio?: boolean
-  isCurrentUser?: boolean
 }
 
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const {
     session,
+    subscriptions,
     isSessionLoaded,
-    actions: { loadSession, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication }
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const [following, setFollowing] = createSignal<Array<Author | Topic>>(props.following)
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
-  const [userpicUrl, setUserpicUrl] = createSignal<string>()
 
-  const subscribed = createMemo<boolean>(() => {
-    return session()?.news?.authors?.some((u) => u === props.author.slug) || false
-  })
+  const subscribed = createMemo<boolean>(() =>
+    subscriptions().authors.some((author) => author.slug === props.author.slug)
+  )
 
   const subscribe = async (really = true) => {
     setIsSubscribing(true)
@@ -70,11 +50,11 @@ export const AuthorCard = (props: Props) => {
       ? follow({ what: FollowingEntity.Author, slug: props.author.slug })
       : unfollow({ what: FollowingEntity.Author, slug: props.author.slug }))
 
-    await loadSession()
+    await loadSubscriptions()
     setIsSubscribing(false)
   }
 
-  const canFollow = createMemo(() => !props.hideFollow && session()?.user?.slug !== props.author.slug)
+  const isProfileOwner = createMemo(() => session()?.user?.slug === props.author.slug)
 
   const name = createMemo(() => {
     if (lang() !== 'ru') {
@@ -101,7 +81,7 @@ export const AuthorCard = (props: Props) => {
 
   const handleSubscribe = () => {
     requireAuthentication(() => {
-      subscribe(true)
+      subscribe(!subscribed())
     }, 'subscribe')
   }
 
@@ -117,89 +97,36 @@ export const AuthorCard = (props: Props) => {
     }
   })
 
-  if (props.isAuthorPage && props.author.userpic?.includes('assets.discours.io')) {
-    setUserpicUrl(props.author.userpic.replace('100x', '500x500'))
+  const followButtonText = () => {
+    if (isSubscribing()) {
+      return t('subscribing...')
+    } else if (subscribed()) {
+      return (
+        <>
+          <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+          <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+        </>
+      )
+    } else {
+      return t('Follow')
+    }
   }
+
   return (
-    <div
-      class={clsx(styles.author, props.class)}
-      classList={{
-        ['row']: props.isAuthorPage,
-        [styles.authorPage]: props.isAuthorPage,
-        [styles.authorComments]: props.isComments,
-        [styles.authorsListItem]: props.isAuthorsList,
-        [styles.feedMode]: props.isFeedMode,
-        [styles.nowrapView]: props.isNowrap
-      }}
-    >
-      <Show
-        when={props.isAuthorPage}
-        fallback={
-          <Userpic
-            name={props.author.name}
-            userpic={props.author.userpic}
-            hasLink={props.hasLink}
-            isBig={props.isAuthorPage}
-            isAuthorsList={props.isAuthorsList}
-            isFeedMode={props.isFeedMode}
-            slug={props.author.slug}
-            class={styles.circlewrap}
-          />
-        }
-      >
-        <div class="col-md-5">
-          <Userpic
-            name={props.author.name}
-            userpic={userpicUrl()}
-            hasLink={props.hasLink}
-            isBig={props.isAuthorPage}
-            isAuthorsList={props.isAuthorsList}
-            isFeedMode={props.isFeedMode}
-            slug={props.author.slug}
-            class={styles.circlewrap}
-          />
-        </div>
-      </Show>
-
-      <div
-        class={styles.authorDetails}
-        classList={{
-          'col-md-15 col-xl-13': props.isAuthorPage,
-          [styles.authorDetailsShrinked]: props.isAuthorPage
-        }}
-      >
+    <div class={clsx(styles.author, 'row')}>
+      <div class="col-md-5">
+        <Userpic
+          size={'XL'}
+          name={props.author.name}
+          userpic={props.author.userpic}
+          slug={props.author.slug}
+          class={styles.circlewrap}
+        />
+      </div>
+      <div class={clsx('col-md-15 col-xl-13', styles.authorDetails)}>
         <div class={styles.authorDetailsWrapper}>
-          <div class={styles.authorNameContainer}>
-            <ConditionalWrapper
-              condition={props.hasLink}
-              wrapper={(children) => (
-                <a class={styles.authorName} href={`/author/${props.author.slug}`}>
-                  {children}
-                </a>
-              )}
-            >
-              <span class={clsx({ [styles.authorName]: !props.hasLink })}>{name()}</span>
-            </ConditionalWrapper>
-          </div>
-          <Show
-            when={props.author.bio && !props.hideBio}
-            fallback={
-              props.showPublicationsCounter ? (
-                <div class={styles.authorAbout}>
-                  {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
-                </div>
-              ) : (
-                ''
-              )
-            }
-          >
-            <div
-              class={styles.authorAbout}
-              classList={{ 'text-truncate': props.truncateBio }}
-              innerHTML={props.author.bio}
-            />
-          </Show>
-
+          <div class={styles.authorName}>{name()}</div>
+          <div class={styles.authorAbout} innerHTML={props.author.bio} />
           <Show
             when={
               (props.followers && props.followers.length > 0) ||
@@ -210,10 +137,17 @@ export const AuthorCard = (props: Props) => {
               <Show when={props.followers && props.followers.length > 0}>
                 <a href="?modal=followers" class={styles.subscribers}>
                   <For each={props.followers.slice(0, 3)}>
-                    {(f) => <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />}
+                    {(f) => (
+                      <Userpic
+                        size={'XS'}
+                        name={f.name}
+                        userpic={f.userpic}
+                        class={styles.subscribersItem}
+                      />
+                    )}
                   </For>
                   <div class={styles.subscribersCounter}>
-                    {t('SubscriberWithCount', { count: props.followers.length })}
+                    {t('SubscriberWithCount', { count: props.followers.length ?? 0 })}
                   </div>
                 </a>
               </Show>
@@ -223,9 +157,23 @@ export const AuthorCard = (props: Props) => {
                   <For each={props.following.slice(0, 3)}>
                     {(f) => {
                       if ('name' in f) {
-                        return <Userpic name={f.name} userpic={f.userpic} class={styles.userpic} />
+                        return (
+                          <Userpic
+                            size={'XS'}
+                            name={f.name}
+                            userpic={f.userpic}
+                            class={styles.subscribersItem}
+                          />
+                        )
                       } else if ('title' in f) {
-                        return <Userpic name={f.title} userpic={f.pic} class={styles.userpic} />
+                        return (
+                          <Userpic
+                            size={'XS'}
+                            name={f.title}
+                            userpic={f.pic}
+                            class={styles.subscribersItem}
+                          />
+                        )
                       }
                       return null
                     }}
@@ -258,102 +206,35 @@ export const AuthorCard = (props: Props) => {
                 </For>
               </div>
             </Show>
-            <Show when={canFollow()}>
-              <div class={styles.authorSubscribe}>
-                <Show
-                  when={subscribed()}
-                  fallback={
-                    <button
-                      onClick={handleSubscribe}
-                      class={clsx('button', styles.button)}
-                      classList={{
-                        [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
-                        'button--subscribe': !props.isAuthorsList,
-                        'button--subscribe-topic': props.isAuthorsList || props.isTextButton,
-                        [styles.buttonWrite]: props.isAuthorsList || props.isTextButton,
-                        [styles.isSubscribing]: isSubscribing()
-                      }}
-                      disabled={isSubscribing()}
-                    >
-                      <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
-                        <Icon name="author-subscribe" class={styles.icon} />
-                      </Show>
-                      <Show when={props.isTextButton || props.isAuthorPage}>
-                        <span class={clsx(styles.buttonLabel, styles.buttonLabelVisible)}>
-                          {t('Follow')}
-                        </span>
-                      </Show>
-                    </button>
-                  }
-                >
-                  <button
-                    onClick={() => subscribe(false)}
-                    class={clsx('button', styles.button)}
-                    classList={{
-                      [styles.buttonSubscribe]: !props.isAuthorsList && !props.isTextButton,
-                      'button--subscribe': !props.isAuthorsList,
-                      'button--subscribe-topic': props.isAuthorsList || props.isTextButton,
-                      [styles.buttonWrite]: props.isAuthorsList || props.isTextButton,
-                      [styles.isSubscribing]: isSubscribing()
-                    }}
-                    disabled={isSubscribing()}
-                  >
-                    <Show when={!props.isAuthorsList && !props.isTextButton && !props.isAuthorPage}>
-                      <Icon name="author-unsubscribe" class={styles.icon} />
-                    </Show>
-                    <Show when={props.isTextButton || props.isAuthorPage}>
-                      <span
-                        class={clsx(
-                          styles.buttonLabel,
-                          styles.buttonLabelVisible,
-                          styles.buttonUnfollowLabel
-                        )}
-                      >
-                        {t('Unfollow')}
-                      </span>
-                      <span
-                        class={clsx(
-                          styles.buttonLabel,
-                          styles.buttonLabelVisible,
-                          styles.buttonSubscribedLabel
-                        )}
-                      >
-                        {t('Following')}
-                      </span>
-                    </Show>
-                  </button>
-                </Show>
 
-                <Show when={!props.hideWriteButton}>
-                  <button
-                    class={styles.button}
-                    classList={{
-                      'button--light': !props.isAuthorsList,
-                      'button--subscribe-topic': props.isAuthorsList,
-                      [styles.buttonWrite]: props.liteButtons && props.isAuthorsList
-                    }}
+            <Show
+              when={isProfileOwner()}
+              fallback={
+                <div class={styles.authorActions}>
+                  <Button
+                    onClick={handleSubscribe}
+                    value={followButtonText()}
+                    isSubscribeButton={true}
+                    class={clsx({
+                      [stylesButton.subscribed]: subscribed()
+                    })}
+                  />
+                  <Button
+                    variant={'secondary'}
+                    value={t('Message')}
                     onClick={initChat}
-                  >
-                    <Show when={!props.isTextButton && !props.isAuthorPage}>
-                      <Icon name="comment" class={styles.icon} />
-                    </Show>
-                    <Show when={!props.liteButtons || props.isTextButton}>{t('Message')}</Show>
-                  </button>
-                </Show>
-              </div>
-            </Show>
-
-            <Show when={props.isCurrentUser}>
-              <div class={styles.authorSubscribe}>
+                    class={styles.buttonWriteMessage}
+                  />
+                </div>
+              }
+            >
+              <div class={styles.authorActions}>
                 <Button
                   variant="secondary"
                   onClick={() => redirectPage(router, 'profileSettings')}
                   value={t('Edit profile')}
-                  class={styles.button}
                 />
-
                 <SharePopup
-                  containerCssClass={styles.shareControl}
                   title={props.author.name}
                   description={props.author.bio}
                   imageUrl={props.author.userpic}

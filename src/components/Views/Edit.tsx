@@ -8,12 +8,11 @@ import { ShoutForm, useEditorContext } from '../../context/editor'
 import { Editor, Panel } from '../Editor'
 import { Icon } from '../_shared/Icon'
 import styles from './Edit.module.scss'
-import { imageProxy } from '../../utils/imageProxy'
 import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { AudioUploader } from '../Editor/AudioUploader'
 import { slugify } from '../../utils/slugify'
-import { SolidSwiper } from '../_shared/SolidSwiper'
+import { ImageSwiper } from '../_shared/SolidSwiper'
 import { DropArea } from '../_shared/DropArea'
 import { LayoutType, MediaItem } from '../../pages/types'
 import { clone } from '../../utils/clone'
@@ -24,6 +23,8 @@ import { createStore } from 'solid-js/store'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
 import { isDesktop } from '../../utils/media-query'
 import { TableOfContents } from '../TableOfContents'
+import { getImageUrl } from '../../utils/getImageUrl'
+import { Popover } from '../_shared/Popover'
 
 type Props = {
   shout: Shout
@@ -362,14 +363,28 @@ export const EditView = (props: Props) => {
                         >
                           <div
                             class={styles.cover}
-                            style={{ 'background-image': `url(${imageProxy(form.coverImageUrl)})` }}
-                          />
+                            style={{
+                              'background-image': `url(${getImageUrl(form.coverImageUrl, { width: 1600 })})`
+                            }}
+                          >
+                            <Popover content={t('Delete cover')}>
+                              {(triggerRef: (el) => void) => (
+                                <div
+                                  ref={triggerRef}
+                                  class={styles.delete}
+                                  onClick={() => setForm('coverImageUrl', null)}
+                                >
+                                  <Icon name="close-white" />
+                                </div>
+                              )}
+                            </Popover>
+                          </div>
                         </Show>
                       </Show>
                     </div>
 
                     <Show when={props.shout.layout === 'image'}>
-                      <SolidSwiper
+                      <ImageSwiper
                         editorMode={true}
                         images={mediaItems()}
                         onImageChange={handleMediaChange}

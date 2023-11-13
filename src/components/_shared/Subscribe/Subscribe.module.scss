@@ -17,6 +17,7 @@
 
   .input {
     @include font-size(2rem);
+
     background: none;
     color: #fff;
     font-family: inherit;
@@ -59,4 +60,38 @@
   font-size: 12px;
   line-height: 16px;
   color: #d00820;
+}
+
+.mobileSubscription {
+  margin-bottom: 5rem;
+
+  input[type='email'] {
+    background: #f7f7f8;
+    border: none;
+    border-radius: 1.6rem;
+    padding-right: 5.6rem;
+
+    &:not(:placeholder-shown) {
+      & ~ .mobileSubscriptionSubmit {
+        display: block;
+      }
+    }
+  }
+}
+
+.mobileSubscriptionSubmit {
+  aspect-ratio: 1/1;
+  display: none;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  img {
+    aspect-ratio: 1/1;
+    left: 50%;
+    position: relative;
+    transform: translateX(-50%);
+    width: 16px !important;
+  }
 }

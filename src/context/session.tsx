@@ -8,7 +8,7 @@ import {
   onMount,
   useContext
 } from 'solid-js'
-import type { AuthResult, User } from '../graphql/types.gen'
+import type { AuthResult, MySubscriptionsQueryResult, User } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { useSnackbar } from './snackbar'
@@ -19,10 +19,12 @@ import type { AuthModalSource } from '../components/Nav/AuthModal/types'
 type SessionContextType = {
   session: Resource<AuthResult>
   isSessionLoaded: Accessor<boolean>
+  subscriptions: Accessor<MySubscriptionsQueryResult>
   user: Accessor<User>
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthResult | Promise<AuthResult>
+    loadSubscriptions: () => Promise<void>
     requireAuthentication: (
       callback: (() => Promise<void>) | (() => void),
       modalSource: AuthModalSource
@@ -39,8 +41,14 @@ export function useSession() {
   return useContext(SessionContext)
 }
 
+const EMPTY_SUBSCRIPTIONS = {
+  topics: [],
+  authors: []
+}
+
 export const SessionProvider = (props: { children: JSX.Element }) => {
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
+  const [subscriptions, setSubscriptions] = createSignal<MySubscriptionsQueryResult>(EMPTY_SUBSCRIPTIONS)
   const { t } = useLocalize()
   const {
     actions: { showSnackbar }
@@ -53,13 +61,25 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
         return null
       }
       setToken(authResult.token)
+      loadSubscriptions()
       return authResult
     } catch (error) {
       console.error('getSession error:', error)
       resetToken()
       return null
     } finally {
-      setIsSessionLoaded(true)
+      setTimeout(() => {
+        setIsSessionLoaded(true)
+      }, 0)
+    }
+  }
+
+  const loadSubscriptions = async (): Promise<void> => {
+    const result = await apiClient.getMySubscriptions()
+    if (result) {
+      setSubscriptions(result)
+    } else {
+      setSubscriptions(EMPTY_SUBSCRIPTIONS)
     }
   }
 
@@ -76,13 +96,16 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     const authResult = await apiClient.authLogin({ email, password })
     setToken(authResult.token)
     mutate(authResult)
-    console.debug('signed in')
+    loadSubscriptions()
+    // console.debug('signed in')
   }
 
   const [isAuthWithCallback, setIsAuthWithCallback] = createSignal(null)
 
-  const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
+  const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
     setIsAuthWithCallback(() => callback)
+
+    await loadSession()
 
     if (!isAuthenticated()) {
       showModal('auth', modalSource)
@@ -105,13 +128,14 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     // TODO: call backend to revoke token
     mutate(null)
     resetToken()
+    setSubscriptions(EMPTY_SUBSCRIPTIONS)
     showSnackbar({ body: t("You've successfully logged out") })
   }
 
   const confirmEmail = async (token: string) => {
     const authResult = await apiClient.confirmEmail({ token })
-    mutate(authResult)
     setToken(authResult.token)
+    mutate(authResult)
   }
 
   const actions = {
@@ -119,10 +143,18 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     requireAuthentication,
     signIn,
     signOut,
-    confirmEmail
+    confirmEmail,
+    loadSubscriptions
   }
 
-  const value: SessionContextType = { session, isSessionLoaded, user, isAuthenticated, actions }
+  const value: SessionContextType = {
+    session,
+    subscriptions,
+    isSessionLoaded,
+    user,
+    isAuthenticated,
+    actions
+  }
 
   onMount(() => {
     loadSession()

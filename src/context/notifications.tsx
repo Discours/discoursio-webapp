@@ -47,8 +47,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [db, setDb] = createSignal<Promise<IDBPDatabase<unknown>>>()
   onMount(() => {
     const dbx = openDB('notifications-db', 1, {
-      upgrade(db) {
-        db.createObjectStore('notifications')
+      upgrade(indexedDb) {
+        indexedDb.createObjectStore('notifications')
       }
     })
     setDb(dbx)
@@ -121,7 +121,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
         },
         onerror(err) {
           console.error('[context.notifications] sse connection closed by error', err)
-          throw new Error() // NOTE: simple hack to close the connection
+          throw new Error(err) // NOTE: simple hack to close the connection
         }
       })
     }

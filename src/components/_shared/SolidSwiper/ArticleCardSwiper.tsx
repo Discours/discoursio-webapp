@@ -1,6 +1,6 @@
-import { For, Show } from 'solid-js'
+import { For, onMount, Show } from 'solid-js'
 import { Icon } from '../Icon'
-import { register } from 'swiper/element'
+import { register } from 'swiper/element/bundle'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { SwiperRef } from './swiper'
 import { clsx } from 'clsx'
@@ -13,13 +13,12 @@ type Props = {
   title?: string
 }
 
-register()
-
-SwiperCore.use([Pagination, Navigation, Manipulation])
-
 export const ArticleCardSwiper = (props: Props) => {
   const mainSwipeRef: { current: SwiperRef } = { current: null }
-
+  onMount(() => {
+    register()
+    SwiperCore.use([Pagination, Navigation, Manipulation])
+  })
   return (
     <div class={clsx(styles.Swiper, styles.articleMode, styles.ArticleCardSwiper)}>
       <Show when={props.title}>

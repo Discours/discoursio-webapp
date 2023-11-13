@@ -1,9 +1,9 @@
-import { createEffect, createSignal, For, Show, on } from 'solid-js'
+import { createEffect, createSignal, For, Show, on, onMount } from 'solid-js'
 import { MediaItem, UploadedFile } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
-import { register } from 'swiper/element'
+import { register } from 'swiper/element/bundle'
 import { DropArea } from '../DropArea'
 import { createFileUploader } from '@solid-primitives/upload'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
@@ -27,10 +27,6 @@ type Props = {
   onImageDelete?: (mediaItemIndex: number) => void
   onImageChange?: (index: number, value: MediaItem) => void
 }
-
-register()
-
-SwiperCore.use([Pagination, Navigation, Manipulation])
 
 export const ImageSwiper = (props: Props) => {
   const { t } = useLocalize()
@@ -138,6 +134,11 @@ export const ImageSwiper = (props: Props) => {
   const handleSaveBeforeSlideChange = () => {
     handleSlideDescriptionChange(slideIndex(), 'body', slideBody())
   }
+
+  onMount(() => {
+    register()
+    SwiperCore.use([Pagination, Navigation, Manipulation])
+  })
 
   return (
     <div class={clsx(styles.Swiper, props.editorMode ? styles.editorMode : styles.articleMode)}>

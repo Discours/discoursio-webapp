@@ -1,6 +1,6 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
+import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Match } from 'solid-js'
 import deepEqual from 'fast-deep-equal'
 import { clsx } from 'clsx'
 import styles from './Settings.module.scss'
@@ -20,6 +20,10 @@ import { AuthGuard } from '../../components/AuthGuard'
 import { handleImageUpload } from '../../utils/handleImageUpload'
 import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
 import { profileSocialLinks } from '../../utils/profileSocialLinks'
+import { Icon } from '../../components/_shared/Icon'
+import { Popover } from '../../components/_shared/Popover'
+import { Image } from '../../components/_shared/Image'
+import { Loading } from '../../components/_shared/Loading'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -65,7 +69,7 @@ export const ProfileSettingsPage = () => {
 
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
-  const handleAvatarClick = async () => {
+  const handleUploadAvatar = async () => {
     selectFiles(async ([uploadFile]) => {
       try {
         setUploadError(false)
@@ -136,14 +140,48 @@ export const ProfileSettingsPage = () => {
                     <p class="description">{t('Here you can customize your profile the way you want.')}</p>
                     <form onSubmit={handleSubmit} enctype="multipart/form-data">
                       <h4>{t('Userpic')}</h4>
-                      <div class="pretty-form__item" style={{ 'max-width': '50%' }}>
-                        <Userpic
-                          name={form.name}
-                          userpic={form.userpic}
-                          size={'XL'}
-                          onClick={handleAvatarClick}
-                          loading={isUserpicUpdating()}
-                        />
+                      <div class="pretty-form__item">
+                        <div
+                          class={clsx(styles.userpic, { [styles.hasControls]: form.userpic })}
+                          onClick={!form.userpic && handleUploadAvatar}
+                        >
+                          <Switch>
+                            <Match when={isUserpicUpdating()}>
+                              <Loading />
+                            </Match>
+                            <Match when={form.userpic}>
+                              <Image width={180} alt={form.name} src={form.userpic} />
+                              <div class={styles.controls}>
+                                <Popover content={t('Delete userpic')}>
+                                  {(triggerRef: (el) => void) => (
+                                    <button
+                                      ref={triggerRef}
+                                      class={styles.control}
+                                      onClick={() => updateFormField('userpic', '')}
+                                    >
+                                      <Icon name="close" />
+                                    </button>
+                                  )}
+                                </Popover>
+                                <Popover content={t('Upload userpic')}>
+                                  {(triggerRef: (el) => void) => (
+                                    <button
+                                      ref={triggerRef}
+                                      class={styles.control}
+                                      onClick={handleUploadAvatar}
+                                    >
+                                      <Icon name="user-image-black" />
+                                    </button>
+                                  )}
+                                </Popover>
+                              </div>
+                            </Match>
+                            <Match when={!form.userpic}>
+                              <Icon name="user-image-gray" />
+                              {t('Here you can upload your photo')}
+                            </Match>
+                          </Switch>
+                        </div>
                         <Show when={uploadError()}>
                           <div class={styles.error}>{t('Upload error')}</div>
                         </Show>

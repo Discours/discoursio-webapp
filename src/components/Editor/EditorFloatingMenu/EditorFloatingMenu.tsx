@@ -1,5 +1,5 @@
 import { createEffect, createSignal, Show } from 'solid-js'
-import type { Editor, JSONContent } from '@tiptap/core'
+import type { Editor } from '@tiptap/core'
 import { Icon } from '../../_shared/Icon'
 import { InlineForm } from '../InlineForm'
 import styles from './EditorFloatingMenu.module.scss'

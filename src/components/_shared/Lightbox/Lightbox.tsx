@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './Lightbox.module.scss'
-import { createSignal } from 'solid-js'
+import { createSignal, onCleanup, onMount } from 'solid-js'
 import { Icon } from '../Icon'
 
 type Props = {
@@ -31,6 +31,19 @@ export const Lightbox = (props: Props) => {
     transition: 'transform 0.3s ease'
   })
 
+  const handleKeyDown = async (e) => {
+    if (e.key === 'Escape') {
+      closeLightbox()
+    }
+  }
+  onMount(() => {
+    window.addEventListener('keydown', handleKeyDown)
+  })
+
+  onCleanup(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+  })
+
   return (
     <div class={clsx(styles.Lightbox, props.class)} onClick={closeLightbox}>
       <span class={styles.close} onClick={closeLightbox}>
@@ -39,6 +52,9 @@ export const Lightbox = (props: Props) => {
       <div class={styles.zoomControls}>
         <button class={styles.control} onClick={(event) => zoomOut(event)}>
           <b>-</b>
+        </button>
+        <button class={styles.control} onClick={() => setZoomLevel(1)}>
+          <b style={{ 'font-size': '10px' }}>1:1</b>
         </button>
         <button class={styles.control} onClick={(event) => zoomIn(event)}>
           <b>+</b>

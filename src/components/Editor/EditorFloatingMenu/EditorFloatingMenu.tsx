@@ -3,7 +3,6 @@ import type { Editor, JSONContent } from '@tiptap/core'
 import { Icon } from '../../_shared/Icon'
 import { InlineForm } from '../InlineForm'
 import styles from './EditorFloatingMenu.module.scss'
-import HTMLParser from 'html-to-json-parser'
 import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { Menu } from './Menu'
@@ -20,10 +19,17 @@ type FloatingMenuProps = {
 }
 
 const embedData = async (data) => {
-  const result = (await HTMLParser(data, false)) as JSONContent
-  if ('type' in result && result.type === 'iframe') {
-    return result.attributes
+  const element = document.createRange().createContextualFragment(data)
+  const { attributes } = element.firstChild as HTMLIFrameElement
+
+  const result: { src: string } = { src: '' }
+
+  for (let i = 0; i < attributes.length; i++) {
+    const attribute = attributes[i]
+    result[attribute.name] = attribute.value
   }
+
+  return result
 }
 
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
@@ -39,8 +45,8 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   }
 
   const validateEmbed = async (value) => {
-    const iframeData = (await HTMLParser(value, false)) as JSONContent
-    if (iframeData.type !== 'iframe') {
+    const element = document.createRange().createContextualFragment(value)
+    if (element.firstChild?.nodeName !== 'IFRAME') {
       return t('Error')
     }
   }

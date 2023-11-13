@@ -15,7 +15,7 @@ const page = await browser.newPage()
 const targetUrl = process.env.ENVIRONMENT_URL || 'https://testing.discours.io'
 
 await checkUrl(page, targetUrl, 'main')
-// await checkUrl(page, `${targetUrl}/authors`, 'authors')
-// await checkUrl(page, `${targetUrl}/topics`, 'topics')
+await checkUrl(page, `${targetUrl}/authors`, 'authors')
+await checkUrl(page, `${targetUrl}/topics`, 'topics')
 await page.close()
 await browser.close()

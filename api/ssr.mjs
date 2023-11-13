@@ -26,7 +26,8 @@ export default async function handler(req, res) {
   const { body, statusCode, headers } = httpResponse
 
   res.statusCode = statusCode
-  headers.forEach(([name, value]) => res.setHeader(name, value))
+
+  // headers.forEach(([name, value]) => res.setHeader(name, value))
   res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
   res.end(body)
 }

@@ -23,9 +23,12 @@ export default async function handler(req, res) {
     return
   }
 
-  const { body, statusCode, contentType } = httpResponse
+  const { body, statusCode, headers } = httpResponse
+
+  console.log('headers:', JSON.stringify(headers))
+
   res.statusCode = statusCode
-  res.setHeader('Content-Type', contentType)
+  res.setHeader('Content-Type', headers['Content-Type'])
   res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
   res.end(body)
 }

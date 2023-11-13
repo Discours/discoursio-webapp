@@ -1,6 +1,6 @@
-import { createSignal, For, Show } from 'solid-js'
+import { For, Show } from 'solid-js'
 import { Icon } from '../Icon'
-import { register } from 'swiper/element/bundle'
+import { register } from 'swiper/element'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { SwiperRef } from './swiper'
 import { clsx } from 'clsx'
@@ -18,13 +18,7 @@ register()
 SwiperCore.use([Pagination, Navigation, Manipulation])
 
 export const ArticleCardSwiper = (props: Props) => {
-  const [slideIndex, setSlideIndex] = createSignal(0)
-
   const mainSwipeRef: { current: SwiperRef } = { current: null }
-
-  const handleSlideChange = () => {
-    setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
-  }
 
   return (
     <div class={clsx(styles.Swiper, styles.articleMode, styles.ArticleCardSwiper)}>
@@ -38,7 +32,6 @@ export const ArticleCardSwiper = (props: Props) => {
               ref={(el) => (mainSwipeRef.current = el)}
               centered-slides={true}
               observer={true}
-              onSlideChange={handleSlideChange}
               space-between={20}
               breakpoints={{
                 576: { spaceBetween: 20, slidesPerView: 1.5 },

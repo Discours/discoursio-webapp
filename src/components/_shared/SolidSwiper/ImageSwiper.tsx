@@ -3,7 +3,6 @@ import { MediaItem, UploadedFile } from '../../../pages/types'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 import { useLocalize } from '../../../context/localize'
-import { register } from 'swiper/element/bundle'
 import { DropArea } from '../DropArea'
 import { createFileUploader } from '@solid-primitives/upload'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
@@ -135,7 +134,8 @@ export const ImageSwiper = (props: Props) => {
     handleSlideDescriptionChange(slideIndex(), 'body', slideBody())
   }
 
-  onMount(() => {
+  onMount(async () => {
+    const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation])
   })

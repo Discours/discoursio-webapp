@@ -24,6 +24,7 @@ import { apiClient } from '../../../utils/apiClient'
 import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { Link } from './Link'
 import { Subscribe } from '../../_shared/Subscribe'
+import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 
 type Props = {
   title?: string
@@ -527,8 +528,9 @@ export const Header = (props: Props) => {
             </ul>
           </div>
         </nav>
-
-        <Snackbar />
+        <ShowOnlyOnClient>
+          <Snackbar />
+        </ShowOnlyOnClient>
       </div>
     </header>
   )

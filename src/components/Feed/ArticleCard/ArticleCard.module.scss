@@ -403,7 +403,6 @@
 }
 
 .shoutCardWithCover {
-  aspect-ratio: 16/9;
   width: 100%;
 
   @include media-breakpoint-down(xl) {
@@ -413,6 +412,7 @@
   }
 
   swiper-slide & {
+    aspect-ratio: 16/9;
     margin-bottom: 0;
 
     @include media-breakpoint-down(lg) {

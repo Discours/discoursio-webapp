@@ -38,8 +38,8 @@
     }
 
     .container {
-      margin: auto;
       // max-width: 800px;
+      margin: auto;
       position: relative;
       padding: 24px 0;
       display: flex;
@@ -177,12 +177,12 @@
     }
 
     &.prev {
-      background-image: linear-gradient(to right, #000, rgb(0 0 0 / 0));
+      background-image: linear-gradient(to right, #000, rgb(0 0 0 / 0%));
       left: 0;
     }
 
     &.next {
-      background-image: linear-gradient(to left, #000, rgb(0 0 0 / 0));
+      background-image: linear-gradient(to left, #000, rgb(0 0 0 / 0%));
       justify-content: end;
       right: 0;
     }
@@ -239,11 +239,11 @@
       height: auto;
 
       &.prev {
-        left: -var(--navigation-reserve);
+        left: calc(0px - var(--navigation-reserve));
       }
 
       &.next {
-        right: -var(--navigation-reserve);
+        right: calc(0px - var(--navigation-reserve));
       }
     }
 

@@ -97,20 +97,22 @@ export const AuthorCard = (props: Props) => {
     }
   })
 
-  const followButtonText = () => {
+  const followButtonText = createMemo(() => {
     if (isSubscribing()) {
       return t('subscribing...')
-    } else if (subscribed()) {
+    }
+
+    if (subscribed()) {
       return (
         <>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
           <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
         </>
       )
-    } else {
-      return t('Follow')
     }
-  }
+
+    return t('Follow')
+  })
 
   return (
     <div class={clsx(styles.author, 'row')}>

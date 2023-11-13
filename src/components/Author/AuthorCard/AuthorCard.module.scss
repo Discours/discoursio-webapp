@@ -216,7 +216,8 @@
       }
     }
 
-    &[href*='telegram.com/'] {
+    &[href*='telegram.com/'],
+    &[href*='t.me/'] {
       &::before {
         background-image: url(/icons/user-link-telegram.svg);
       }

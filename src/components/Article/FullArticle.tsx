@@ -2,7 +2,6 @@ import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup }
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
-import MD from './MD'
 import type { Author, Shout } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
@@ -27,6 +26,8 @@ import { createPopper } from '@popperjs/core'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
+import { Lightbox } from '../_shared/Lightbox'
+import { Image } from '../_shared/Image'
 
 type Props = {
   article: Shout
@@ -49,6 +50,8 @@ const scrollTo = (el: HTMLElement) => {
 }
 
 export const FullArticle = (props: Props) => {
+  const [selectedImage, setSelectedImage] = createSignal('')
+
   const { t, formatDate } = useLocalize()
   const {
     user,
@@ -169,7 +172,7 @@ export const FullArticle = (props: Props) => {
       document.body.appendChild(tooltip)
 
       if (element.hasAttribute('href')) {
-        element.setAttribute('href', 'javascript: void(0);')
+        element.setAttribute('href', 'javascript: void(0)')
       }
 
       const popperInstance = createPopper(element, tooltip, {
@@ -230,14 +233,29 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
+  const openLightbox = (image) => {
+    setSelectedImage(image)
+  }
+  const handleLightboxClose = () => {
+    setSelectedImage()
+  }
+
+  const handleArticleBodyClick = (event) => {
+    if (event.target.tagName === 'IMG') {
+      const src = event.target.src
+      openLightbox(getImageUrl(src))
+    }
+  }
 
   return (
     <>
       <Title>{props.article.title}</Title>
       <div class="wide-container">
         <div class="row position-relative">
-          <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
+          <article
+            class={clsx('col-md-16 col-lg-14 col-xl-12 offset-md-5', styles.articleContent)}
+            onClick={handleArticleBodyClick}
+          >
             {/*TODO: Check styles.shoutTopic*/}
             <Show when={props.article.layout !== 'music'}>
               <div class={styles.shoutHeader}>
@@ -267,12 +285,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <div
-                    class={styles.shoutCover}
-                    style={{
-                      'background-image': `url('${getImageUrl(props.article.cover, { width: 1600 })}')`
-                    }}
-                  />
+                  <Image width={1600} alt={props.article.title} src={props.article.cover} />
                 </Show>
               </div>
             </Show>
@@ -304,7 +317,7 @@ export const FullArticle = (props: Props) => {
                         description={m.body}
                       />
                       <Show when={m?.body}>
-                        <MD body={m.body} />
+                        <div innerHTML={m.body} />
                       </Show>
                     </div>
                   )}
@@ -313,11 +326,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div id="shoutBody" class={styles.shoutBody}>
-                <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
-                  <MD body={body()} />
-                </Show>
-              </div>
+              <div id="shoutBody" class={styles.shoutBody} innerHTML={body()} />
             </Show>
           </article>
 
@@ -433,7 +442,6 @@ export const FullArticle = (props: Props) => {
                 description={getDescription(props.article.body)}
                 imageUrl={props.article.cover}
                 shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
-                isVisible={(value) => setIsActionPopupActive(value)}
                 trigger={
                   <button>
                     <Icon name="ellipsis" class={clsx(styles.icon)} />
@@ -490,6 +498,9 @@ export const FullArticle = (props: Props) => {
           </div>
         </div>
       </div>
+      <Show when={selectedImage()}>
+        <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
+      </Show>
     </>
   )
 }

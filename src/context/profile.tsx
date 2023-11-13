@@ -69,9 +69,6 @@ const useProfileForm = () => {
       })
     }
   }
-  createEffect(() => {
-    console.log('!!! FL:', form.links)
-  })
 
   return { form, submit, updateFormField, slugError }
 }

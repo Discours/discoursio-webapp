@@ -216,6 +216,66 @@ h5 {
   }
 }
 
+.userpic {
+  @include font-size(1.2rem);
+
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 1rem;
+  color: var(--black-300);
+  border: 1px solid var(--black-100);
+  cursor: pointer;
+
+  .userpicImage {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: contain;
+  }
+
+  &.hasControls {
+    overflow: visible;
+  }
+
+  .controls {
+    position: absolute;
+    right: -50px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .control {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    border-radius: 50%;
+    background: var(--background-color);
+    border: 1px solid var(--black-100);
+
+    img {
+      border-radius: unset;
+    }
+
+    &:hover {
+      background: var(--background-color-invert);
+
+      img {
+        filter: invert(1);
+      }
+    }
+  }
+}
+
 .socialInput {
   margin-top: 1rem;
 }

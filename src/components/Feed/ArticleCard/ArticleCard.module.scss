@@ -12,7 +12,7 @@
   }
 
   &:hover {
-    .shoutCardCover img {
+    .shoutCardCover {
       transform: scale(1.05);
     }
   }
@@ -89,6 +89,7 @@
 }
 
 .shoutCardCoverContainer {
+  overflow: hidden;
   position: relative;
 }
 
@@ -99,13 +100,13 @@
   overflow: hidden;
   padding-bottom: 56.2%;
   position: relative;
+  transform-origin: 50% 50%;
+  transition: transform 1s ease-in-out;
 
   img {
     height: 100%;
     object-fit: cover;
     position: absolute;
-    transform-origin: 50% 50%;
-    transition: transform 1s ease-in-out;
     width: 100%;
   }
 
@@ -402,7 +403,6 @@
 }
 
 .shoutCardWithCover {
-  aspect-ratio: 16/9;
   width: 100%;
 
   @include media-breakpoint-down(xl) {
@@ -412,6 +412,7 @@
   }
 
   swiper-slide & {
+    aspect-ratio: 16/9;
     margin-bottom: 0;
 
     @include media-breakpoint-down(lg) {
@@ -483,9 +484,11 @@
     &::after {
       background: rgb(0 0 0 / 60%);
       content: '';
-      height: 100%;
+      height: 102%;
+      left: -1%;
       position: absolute;
-      width: 100%;
+      top: -1%;
+      width: 102%;
       z-index: 1;
     }
   }

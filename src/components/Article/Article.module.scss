@@ -23,23 +23,19 @@ img {
   }
 }
 
-.shoutCover {
-  background-size: cover;
-  height: 0;
-  padding-bottom: 56.2%;
+.articleContent {
+  img {
+    cursor: zoom-in;
+  }
 }
 
 .shoutBody {
   font-size: 1.6rem;
   line-height: 1.6;
 
-  img {
-    display: block;
-    margin-bottom: 0.5em;
-  }
-
   blockquote,
   blockquote[data-type='punchline'] {
+    clear: both;
     font-size: 2.6rem;
     font-weight: bold;
     line-height: 1.4;
@@ -63,6 +59,7 @@ img {
   ta-quotation {
     border: solid #000;
     border-width: 0 0 0 2px;
+    clear: both;
     display: block;
     font-weight: 500;
     line-height: 1.6;
@@ -74,6 +71,10 @@ img {
       @include font-size(2.2rem);
 
       line-height: 1.4;
+
+      @include media-breakpoint-up(sm) {
+        clear: none;
+      }
     }
 
     @include media-breakpoint-up(sm) {
@@ -98,6 +99,7 @@ img {
     @include font-size(1.4rem);
 
     background: #f1f2f3;
+    clear: both;
     display: block;
     margin: 3.2rem 0;
     padding: 3.2rem;
@@ -177,15 +179,17 @@ img {
 
   :global(.img-align-left) {
     float: left;
-    margin: 1em 8.3333% 1.5em 0;
+    margin: 0 8.3333% 1.5em 0;
   }
 
-  :global(.width-30) {
-    width: 30%;
-  }
+  @include media-breakpoint-up(sm) {
+    :global(.width-30) {
+      width: 30%;
+    }
 
-  :global(.width-50) {
-    width: 50%;
+    :global(.width-50) {
+      width: 50%;
+    }
   }
 
   :global(.img-align-left.width-50) {
@@ -195,8 +199,10 @@ img {
   }
 
   :global(.img-align-right) {
-    float: right;
-    margin: 1em 0 1.5em 8.3333%;
+    @include media-breakpoint-up(sm) {
+      float: right;
+      margin: 1em 0 1.5em 8.3333%;
+    }
   }
 
   :global(.img-align-right.width-50) {
@@ -412,7 +418,7 @@ img {
 }
 
 .shoutStatsItemViews {
-  color: rgb(0 0 0 / 0.4);
+  color: rgb(0 0 0 / 40%);
   cursor: default;
   font-weight: normal;
   margin-left: auto;
@@ -455,7 +461,8 @@ img {
 .shoutStatsItemAdditionalDataItem {
   font-weight: normal;
   display: inline-block;
-  //margin-left: 2rem;
+
+  // margin-left: 2rem;
   margin-right: 0;
   margin-bottom: 0;
   cursor: default;

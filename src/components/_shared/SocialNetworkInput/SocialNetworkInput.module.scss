@@ -40,8 +40,10 @@
     width: 54px;
     height: 54px;
     padding: 16px;
+
     &:hover {
       background: var(--background-color-invert);
+
       img {
         filter: invert(1);
       }

@@ -9,7 +9,8 @@ const links: Link[] = [
   { link: 'https://linkedin.com/', name: 'linkedin', isPlaceholder: true },
   { link: 'https://vk.com/', name: 'vk', isPlaceholder: true },
   { link: 'https://instagram.com/', name: 'instagram', isPlaceholder: true },
-  { link: 'https://t.me/', name: 'telegram', isPlaceholder: true }
+  { link: 'https://t.me/', name: 'telegram', isPlaceholder: true },
+  { link: 'https://twitter.com/', name: 'twitter', isPlaceholder: true }
 ]
 
 const checkLink = (link: string, keyword: string): boolean => link.includes(keyword)

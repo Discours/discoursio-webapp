@@ -66,6 +66,7 @@ module.exports = {
     'unicorn/consistent-function-scoping': 'warn',
     'unicorn/no-array-callback-reference': 'warn',
     'unicorn/no-array-method-this-argument': 'warn',
+    'unicorn/no-for-loop': 'off',
 
     'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
 

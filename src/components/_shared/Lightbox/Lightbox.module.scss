@@ -5,15 +5,17 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  .lightbox-image {
+  z-index: 10000;
+
+  .image {
     max-width: 90%;
     max-height: 80%;
     cursor: pointer;
   }
+
   .close {
     position: absolute;
     top: 20px;
@@ -21,21 +23,30 @@
     font-size: 30px;
     color: white;
     cursor: pointer;
+    width: 20px;
+    height: 20px;
   }
 
-  .zoom-controls button {
-    position: fixed;
-    z-index: 1010;
-    font-size: 20px;
-    padding: 10px;
-    margin: 10px;
-    cursor: pointer;
-  }
-
-  /* Place the zoom controls in the top right corner */
-  .zoom-controls {
+  .zoomControls {
+    display: flex;
     position: absolute;
-    top: 0;
-    right: 0;
+    bottom: 16px;
+    left: 50%;
+    height: 24px;
+    gap: 1rem;
+    transform: translateX(-50%);
+
+    .control {
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 20px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      color: #fff;
+    }
   }
 }

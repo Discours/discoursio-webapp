@@ -1,22 +1,29 @@
 import { clsx } from 'clsx'
 import styles from './Lightbox.module.scss'
 import { createSignal } from 'solid-js'
+import { Icon } from '../Icon'
 
 type Props = {
   class?: string
   image: string
-  isOpen: boolean
+  onClose: () => void
 }
 
 export const Lightbox = (props: Props) => {
-  const [visible, setVisible] = createSignal(false)
   const [zoomLevel, setZoomLevel] = createSignal(1)
 
-  setVisible(props.isOpen)
-  const closeLightbox = () => setVisible(false)
+  const closeLightbox = () => {
+    props.onClose()
+  }
 
-  const zoomIn = () => setZoomLevel(zoomLevel() * 1.08)
-  const zoomOut = () => setZoomLevel(zoomLevel() / 1.08)
+  const zoomIn = (event) => {
+    event.stopPropagation()
+    setZoomLevel(zoomLevel() * 1.08)
+  }
+  const zoomOut = (event) => {
+    event.stopPropagation()
+    setZoomLevel(zoomLevel() / 1.08)
+  }
 
   const lightboxStyle = () => ({
     transform: `scale(${zoomLevel()})`,
@@ -24,17 +31,25 @@ export const Lightbox = (props: Props) => {
   })
 
   return (
-    <div class={clsx(styles.Lightbox, props.class)}>
-      <div class="lightbox" style={{ display: visible() ? 'flex' : 'none' }} onClick={closeLightbox}>
-        <span class="close" onClick={closeLightbox}>
-          &times;
-        </span>
-        <div class="zoom-controls">
-          <button onClick={zoomIn}>+</button>
-          <button onClick={zoomOut}>-</button>
-        </div>
-        <img class="lightbox-image" src={props.image} alt="Fullscreen" style={lightboxStyle()} />
+    <div class={clsx(styles.Lightbox, props.class)} onClick={closeLightbox}>
+      <span class={styles.close} onClick={closeLightbox}>
+        <Icon name="close-white" />
+      </span>
+      <div class={styles.zoomControls}>
+        <button class={styles.control} onClick={(event) => zoomOut(event)}>
+          <b>-</b>
+        </button>
+        <button class={styles.control} onClick={(event) => zoomIn(event)}>
+          <b>+</b>
+        </button>
       </div>
+      <img
+        class={styles.image}
+        src={props.image}
+        style={lightboxStyle()}
+        alt={''}
+        onClick={(event) => event.stopPropagation()}
+      />
     </div>
   )
 }

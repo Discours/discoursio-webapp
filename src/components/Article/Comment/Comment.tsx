@@ -2,7 +2,6 @@ import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
 
-import MD from '../MD'
 import { Userpic } from '../../Author/Userpic'
 import { CommentRatingControl } from '../CommentRatingControl'
 import { CommentDate } from '../CommentDate'
@@ -171,7 +170,7 @@ export const Comment = (props: Props) => {
             </div>
           </Show>
           <div class={styles.commentBody}>
-            <Show when={editMode()} fallback={<MD body={body()} />}>
+            <Show when={editMode()} fallback={<div innerHTML={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor
                   initialContent={comment().body}

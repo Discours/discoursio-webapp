@@ -2,11 +2,10 @@ import { For, Show, createSignal, createEffect, on, onMount, onCleanup } from 's
 import { clsx } from 'clsx'
 import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
 import { useLocalize } from '../../context/localize'
-import debounce from 'debounce'
 import { Icon } from '../_shared/Icon'
 import styles from './TableOfContents.module.scss'
 import { isDesktop } from '../../utils/media-query'
-import throttle from 'just-throttle'
+import { throttle, debounce } from 'throttle-debounce'
 
 interface Props {
   variant: 'article' | 'editor'
@@ -49,12 +48,12 @@ export const TableOfContents = (props: Props) => {
     setAreHeadingsLoaded(true)
   }
 
-  const debouncedUpdateHeadings = debounce(updateHeadings, 500)
+  const debouncedUpdateHeadings = debounce(500, updateHeadings)
 
-  const updateActiveHeader = throttle(() => {
+  const updateActiveHeader = throttle(50, () => {
     const newActiveIndex = headings().findLastIndex((heading) => isInViewport(heading))
     setActiveHeaderIndex(newActiveIndex)
-  }, 50)
+  })
 
   createEffect(
     on(

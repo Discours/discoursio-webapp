@@ -64,7 +64,7 @@ export const AuthorBadge = (props: Props) => {
     return isSubscribing() ? t('subscribing...') : t('Subscribe')
   })
 
-  const unsubscribeValue = () => {
+  const unsubscribeValue = createMemo(() => {
     if (props.iconButtons) {
       return <Icon name="author-unsubscribe" class={stylesButton.icon} />
     }
@@ -75,7 +75,7 @@ export const AuthorBadge = (props: Props) => {
         <span class={styles.actionButtonLabelHovered}>{t('Unfollow')}</span>
       </>
     )
-  }
+  })
 
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>

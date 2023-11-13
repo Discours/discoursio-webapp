@@ -9,7 +9,7 @@ import { PAGE_SIZE, useNotifications } from '../../context/notifications'
 import { NotificationView } from './NotificationView'
 import { EmptyMessage } from './EmptyMessage'
 import { Button } from '../_shared/Button'
-import throttle from 'just-throttle'
+import { throttle } from 'throttle-debounce'
 import { useSession } from '../../context/session'
 
 type Props = {
@@ -132,7 +132,7 @@ export const NotificationsPanel = (props: Props) => {
       setIsLoading(false)
     }
   }
-  const handleScrollThrottled = throttle(handleScroll, 50)
+  const handleScrollThrottled = throttle(50, handleScroll)
 
   onMount(() => {
     scrollContainerRef.current.addEventListener('scroll', handleScrollThrottled)

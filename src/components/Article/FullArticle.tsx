@@ -2,7 +2,6 @@ import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup }
 import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
-import MD from './MD'
 import type { Author, Shout } from '../../graphql/types.gen'
 import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
@@ -318,7 +317,7 @@ export const FullArticle = (props: Props) => {
                         description={m.body}
                       />
                       <Show when={m?.body}>
-                        <MD body={m.body} />
+                        <div innerHTML={m.body} />
                       </Show>
                     </div>
                   )}
@@ -327,11 +326,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div id="shoutBody" class={styles.shoutBody}>
-                <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
-                  <MD body={body()} />
-                </Show>
-              </div>
+              <div id="shoutBody" class={styles.shoutBody} innerHTML={body()} />
             </Show>
           </article>
 

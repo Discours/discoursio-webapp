@@ -4,7 +4,6 @@ import styles from './Snackbar.module.scss'
 import { Transition } from 'solid-transition-group'
 import { clsx } from 'clsx'
 import { Icon } from '../_shared/Icon'
-import { isServer } from 'solid-js/web'
 
 export const Snackbar = () => {
   const { snackbarMessage } = useSnackbar()
@@ -16,22 +15,20 @@ export const Snackbar = () => {
         [styles.success]: snackbarMessage()?.type === 'success'
       })}
     >
-      {!isServer && (
-        <Transition
-          enterClass={styles.enter}
-          exitToClass={styles.exitTo}
-          onExit={(el, done) => setTimeout(() => done(), 300)}
-        >
-          <Show when={snackbarMessage()}>
-            <div class={styles.content}>
-              <Show when={snackbarMessage()?.type === 'success'}>
-                <Icon name="check-success" class={styles.icon} />
-              </Show>
-              {snackbarMessage().body}
-            </div>
-          </Show>
-        </Transition>
-      )}
+      <Transition
+        enterClass={styles.enter}
+        exitToClass={styles.exitTo}
+        onExit={(el, done) => setTimeout(() => done(), 300)}
+      >
+        <Show when={snackbarMessage()}>
+          <div class={styles.content}>
+            <Show when={snackbarMessage()?.type === 'success'}>
+              <Icon name="check-success" class={styles.icon} />
+            </Show>
+            {snackbarMessage().body}
+          </div>
+        </Show>
+      </Transition>
     </div>
   )
 }

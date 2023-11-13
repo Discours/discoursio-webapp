@@ -27,6 +27,7 @@ import { createPopper } from '@popperjs/core'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
+import { Lightbox } from '../_shared/Lightbox'
 
 type Props = {
   article: Shout
@@ -49,6 +50,8 @@ const scrollTo = (el: HTMLElement) => {
 }
 
 export const FullArticle = (props: Props) => {
+  const [selectedImage, setSelectedImage] = createSignal('')
+
   const { t, formatDate } = useLocalize()
   const {
     user,
@@ -169,7 +172,7 @@ export const FullArticle = (props: Props) => {
       document.body.appendChild(tooltip)
 
       if (element.hasAttribute('href')) {
-        element.setAttribute('href', 'javascript: void(0);')
+        element.setAttribute('href', 'javascript: void(0)')
       }
 
       const popperInstance = createPopper(element, tooltip, {
@@ -230,7 +233,19 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
+  const openLightbox = (image) => {
+    setSelectedImage(image)
+  }
+  const handleLightboxClose = () => {
+    setSelectedImage()
+  }
+
+  const handleArticleBodyClick = (event) => {
+    if (event.target.tagName === 'IMG') {
+      const src = event.target.src
+      openLightbox(getImageUrl(src))
+    }
+  }
 
   return (
     <>
@@ -313,7 +328,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div id="shoutBody" class={styles.shoutBody}>
+              <div id="shoutBody" class={styles.shoutBody} onClick={handleArticleBodyClick}>
                 <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
                   <MD body={body()} />
                 </Show>
@@ -433,7 +448,6 @@ export const FullArticle = (props: Props) => {
                 description={getDescription(props.article.body)}
                 imageUrl={props.article.cover}
                 shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
-                isVisible={(value) => setIsActionPopupActive(value)}
                 trigger={
                   <button>
                     <Icon name="ellipsis" class={clsx(styles.icon)} />
@@ -490,6 +504,9 @@ export const FullArticle = (props: Props) => {
           </div>
         </div>
       </div>
+      <Show when={selectedImage()}>
+        <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
+      </Show>
     </>
   )
 }

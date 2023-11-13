@@ -373,6 +373,7 @@ export const apiClient = {
 export const inboxClient = {
   loadChats: async (options: QueryLoadChatsArgs): Promise<Chat[]> => {
     const resp = await privateInboxGraphQLClient.query(myChats, options).toPromise()
+    console.log('!!! resp:', resp)
     return resp.data.loadChats.chats
   },
 

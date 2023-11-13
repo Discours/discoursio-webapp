@@ -99,7 +99,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + getToken()
+          Authorization: getToken()
         },
         onmessage(event) {
           const m: SSEMessage = JSON.parse(event.data)

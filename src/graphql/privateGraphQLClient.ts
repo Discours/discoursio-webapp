@@ -48,5 +48,15 @@ export const privateGraphQLClient = createClient(options)
 
 export const privateInboxGraphQLClient = createClient({
   ...options,
+  fetchOptions: () => {
+    // localStorage is the source of truth for now
+    // to change token call setToken, for example after login
+    const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
+    if (!token) {
+      console.error('[privateInboxGraphQLClient] fetchOptions: token is null!')
+    }
+    const headers = { Authorization: token }
+    return { headers }
+  },
   url: 'https://chat.discours.io'
 })

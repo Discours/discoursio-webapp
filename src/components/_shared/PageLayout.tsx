@@ -6,7 +6,6 @@ import { createEffect, createSignal, Show } from 'solid-js'
 import { clsx } from 'clsx'
 import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
-import { Meta } from '@solidjs/meta'
 
 type Props = {
   headerTitle?: string

@@ -21,7 +21,6 @@ import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
 import { profileSocialLinks } from '../../utils/profileSocialLinks'
 import { Icon } from '../../components/_shared/Icon'
 import { Popover } from '../../components/_shared/Popover'
-import { Image } from '../../components/_shared/Image'
 import { Loading } from '../../components/_shared/Loading'
 import { getImageUrl } from '../../utils/getImageUrl'
 

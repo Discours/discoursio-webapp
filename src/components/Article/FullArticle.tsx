@@ -28,6 +28,7 @@ import { AuthorBadge } from '../Author/AuthorBadge'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
 import { Lightbox } from '../_shared/Lightbox'
+import { Image } from '../_shared/Image'
 
 type Props = {
   article: Shout
@@ -252,7 +253,10 @@ export const FullArticle = (props: Props) => {
       <Title>{props.article.title}</Title>
       <div class="wide-container">
         <div class="row position-relative">
-          <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
+          <article
+            class={clsx('col-md-16 col-lg-14 col-xl-12 offset-md-5', styles.articleContent)}
+            onClick={handleArticleBodyClick}
+          >
             {/*TODO: Check styles.shoutTopic*/}
             <Show when={props.article.layout !== 'music'}>
               <div class={styles.shoutHeader}>
@@ -282,12 +286,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <div
-                    class={styles.shoutCover}
-                    style={{
-                      'background-image': `url('${getImageUrl(props.article.cover, { width: 1600 })}')`
-                    }}
-                  />
+                  <Image width={1600} alt={props.article.title} src={props.article.cover} />
                 </Show>
               </div>
             </Show>
@@ -328,7 +327,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div id="shoutBody" class={styles.shoutBody} onClick={handleArticleBodyClick}>
+              <div id="shoutBody" class={styles.shoutBody}>
                 <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
                   <MD body={body()} />
                 </Show>

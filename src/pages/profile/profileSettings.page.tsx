@@ -24,6 +24,7 @@ import { Icon } from '../../components/_shared/Icon'
 import { Popover } from '../../components/_shared/Popover'
 import { Image } from '../../components/_shared/Image'
 import { Loading } from '../../components/_shared/Loading'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -150,7 +151,15 @@ export const ProfileSettingsPage = () => {
                               <Loading />
                             </Match>
                             <Match when={form.userpic}>
-                              <Image width={180} alt={form.name} src={form.userpic} />
+                              <div
+                                class={styles.userpicImage}
+                                style={{
+                                  'background-image': `url(${getImageUrl(form.userpic, {
+                                    width: 180,
+                                    height: 180
+                                  })})`
+                                }}
+                              />
                               <div class={styles.controls}>
                                 <Popover content={t('Delete userpic')}>
                                   {(triggerRef: (el) => void) => (

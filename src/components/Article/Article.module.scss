@@ -23,21 +23,15 @@ img {
   }
 }
 
-.shoutCover {
-  background-size: cover;
-  height: 0;
-  padding-bottom: 56.2%;
+.articleContent {
+  img {
+    cursor: zoom-in;
+  }
 }
 
 .shoutBody {
   font-size: 1.6rem;
   line-height: 1.6;
-
-  img {
-    display: block;
-    margin-bottom: 0.5em;
-    cursor: zoom-in;
-  }
 
   blockquote,
   blockquote[data-type='punchline'] {

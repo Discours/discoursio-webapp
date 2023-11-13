@@ -66,7 +66,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       sseService.connect(`${apiBaseUrl}/subscribe/${user().id}`)
       sseService.subscribeToEvent('message', (data: EventData) => {
         if (data.type === 'newNotifications') {
-          loadNotifications({ limit: loadedNotificationsCount() })
+          loadNotifications({ limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
         } else {
           console.error(`[NotificationsProvider] unknown message type: ${JSON.stringify(data)}`)
         }

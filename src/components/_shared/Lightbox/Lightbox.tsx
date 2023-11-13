@@ -2,6 +2,7 @@ import { clsx } from 'clsx'
 import styles from './Lightbox.module.scss'
 import { createSignal, onCleanup, onMount } from 'solid-js'
 import { Icon } from '../Icon'
+import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 
 type Props = {
   class?: string
@@ -31,18 +32,7 @@ export const Lightbox = (props: Props) => {
     transition: 'transform 0.3s ease'
   })
 
-  const handleKeyDown = async (e) => {
-    if (e.key === 'Escape') {
-      closeLightbox()
-    }
-  }
-  onMount(() => {
-    window.addEventListener('keydown', handleKeyDown)
-  })
-
-  onCleanup(() => {
-    window.removeEventListener('keydown', handleKeyDown)
-  })
+  useEscKeyDownHandler(closeLightbox)
 
   return (
     <div class={clsx(styles.Lightbox, props.class)} onClick={closeLightbox}>

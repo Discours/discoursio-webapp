@@ -1,0 +1,9 @@
+.Image {
+  filter: blur(0);
+  transition: filter 100ms linear;
+
+  .loading {
+    filter: blur(8px);
+    clip-path: inset(0);
+  }
+}

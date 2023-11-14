@@ -112,14 +112,15 @@ const handleClientRouteLinkClick = async (event) => {
     searchParamsStore.open(params)
   }
 
-  if (!url.hash) {
-    window.scrollTo({
-      top: 0,
-      left: 0
-    })
+  if (url.hash) {
+    scrollToHash(url.hash)
     return
   }
-  scrollToHash(url.hash)
+
+  window.scrollTo({
+    top: 0,
+    left: 0
+  })
 }
 
 export const initRouter = (pathname: string, search?: Record<string, string>) => {

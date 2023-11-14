@@ -13,7 +13,7 @@ export const GuidePage = () => {
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
-    <PageLayout>
+    <PageLayout title={title}>
       <Meta name="description" content={title} />
       <Meta name="keywords" content={t('Discours') + ',' + title} />
       <Meta property="og:title" content={title} />

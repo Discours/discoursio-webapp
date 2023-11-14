@@ -1,5 +1,5 @@
 import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
-import { Title } from '@solidjs/meta'
+
 import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
 import type { Author, Shout } from '../../graphql/types.gen'
@@ -28,6 +28,7 @@ import { getImageUrl } from '../../utils/getImageUrl'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
 import { Lightbox } from '../_shared/Lightbox'
 import { Image } from '../_shared/Image'
+import article from '../Editor/extensions/Article'
 
 type Props = {
   article: Shout
@@ -91,8 +92,13 @@ export const FullArticle = (props: Props) => {
     }
     return props.article.body
   })
-  const media = createMemo(() => {
-    return JSON.parse(props.article.media || '[]')
+
+  const media = createMemo<MediaItem[]>(() => {
+    try {
+      return JSON.parse(props.article.media)
+    } catch {
+      return []
+    }
   })
 
   const commentsRef: {
@@ -144,6 +150,10 @@ export const FullArticle = (props: Props) => {
     })
 
     setIsReactionsLoaded(true)
+  })
+
+  onMount(() => {
+    document.title = props.article.title
   })
 
   const clickHandlers = []
@@ -249,7 +259,6 @@ export const FullArticle = (props: Props) => {
 
   return (
     <>
-      <Title>{props.article.title}</Title>
       <div class="wide-container">
         <div class="row position-relative">
           <article

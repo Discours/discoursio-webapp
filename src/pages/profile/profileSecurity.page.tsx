@@ -4,10 +4,13 @@ import { Icon } from '../../components/_shared/Icon'
 import { clsx } from 'clsx'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { AuthGuard } from '../../components/AuthGuard'
+import { useLocalize } from '../../context/localize'
 
 export const ProfileSecurityPage = () => {
+  const { t } = useLocalize()
+
   return (
-    <PageLayout>
+    <PageLayout title={t('Profile')}>
       <AuthGuard>
         <div class="wide-container">
           <div class="row">

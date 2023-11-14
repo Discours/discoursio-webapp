@@ -6,6 +6,7 @@ import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { AuthGuard } from '../components/AuthGuard'
 import { LoadShoutsOptions } from '../graphql/types.gen'
+import { useLocalize } from '../context/localize'
 
 const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
   return loadShouts({
@@ -19,6 +20,8 @@ const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
 }
 
 export const FeedPage = () => {
+  const { t } = useLocalize()
+
   onCleanup(() => resetSortedArticles())
 
   const { page } = useRouter()
@@ -34,7 +37,7 @@ export const FeedPage = () => {
   )
 
   return (
-    <PageLayout>
+    <PageLayout title={t('Feed')}>
       <ReactionsProvider>
         <Switch fallback={<FeedView loadShouts={handleFeedLoadShouts} />}>
           <Match when={page().route === 'feed'}>

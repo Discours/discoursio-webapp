@@ -6,21 +6,16 @@ import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
+import { useLocalize } from '../context/localize'
 
 export const SearchPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
 
-  const q = createMemo(() => {
-    const { page: getPage } = useRouter()
+  const { t } = useLocalize()
 
-    const page = getPage()
+  const { page } = useRouter()
 
-    if (page.route !== 'search') {
-      throw new Error('ts guard')
-    }
-
-    return page.params.q
-  })
+  const q = createMemo(() => page().params['q'] as string)
 
   onMount(async () => {
     if (isLoaded()) {
@@ -34,7 +29,7 @@ export const SearchPage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <PageLayout>
+    <PageLayout title={t('Search')}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <SearchView results={props.searchResults || []} query={props.searchQuery} />

@@ -23,9 +23,7 @@ export const ArticlePage = (props: PageProps) => {
   const article = createMemo<Shout>(() => articleEntities()[slug()])
 
   onMount(async () => {
-    const articleValue = articleEntities()[slug()]
-
-    if (!articleValue || !articleValue.body) {
+    if (!article() || !article().body) {
       const loadShoutPromise = loadShout(slug())
       setPageLoadManagerPromise(loadShoutPromise)
       await loadShoutPromise
@@ -48,6 +46,7 @@ export const ArticlePage = (props: PageProps) => {
 
   return (
     <PageLayout
+      title={props.seo.title}
       headerTitle={article()?.title || ''}
       slug={article()?.slug}
       articleBody={article()?.body}

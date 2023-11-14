@@ -2,7 +2,7 @@ import { createSignal, Show } from 'solid-js'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Icon } from '../../components/_shared/Icon'
 import { useLocalize } from '../../context/localize'
-import { Meta, Title } from '@solidjs/meta'
+import { Meta } from '@solidjs/meta'
 
 export const TermsOfUsePage = () => {
   const { t } = useLocalize()
@@ -12,10 +12,9 @@ export const TermsOfUsePage = () => {
 
   const title = t('Terms of use')
   return (
-    <PageLayout>
-      <Title>{title}</Title>
+    <PageLayout title={title}>
       <Meta name="description" content={title} />
-      <Meta name="keywords" content={`Discours.io, ${t('Terms of use')}, ${t('Terms of use', 'en')}`} />
+      <Meta name="keywords" content={`Discours.io, ${title}`} />
       <Meta property="og:title" content={title} />
       <Meta property="og:description" content={title} />
       <article class="wide-container container--static-page">

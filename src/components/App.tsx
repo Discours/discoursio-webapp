@@ -1,6 +1,3 @@
-// FIXME: breaks on vercel, research
-// import 'solid-devtools'
-
 import { hideModal, MODALS, showModal } from '../stores/ui'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { ROUTES, useRouter } from '../stores/router'
@@ -41,6 +38,7 @@ import { LocalizeProvider } from '../context/localize'
 import { ConfirmProvider } from '../context/confirm'
 import { EditorProvider } from '../context/editor'
 import { NotificationsProvider } from '../context/notifications'
+import { Meta, MetaProvider } from '@solidjs/meta'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -110,18 +108,21 @@ export const App = (props: PageProps) => {
   })
 
   return (
-    <LocalizeProvider>
-      <SnackbarProvider>
-        <ConfirmProvider>
-          <SessionProvider>
-            <NotificationsProvider>
-              <EditorProvider>
-                <Dynamic component={pageComponent()} {...props} />
-              </EditorProvider>
-            </NotificationsProvider>
-          </SessionProvider>
-        </ConfirmProvider>
-      </SnackbarProvider>
-    </LocalizeProvider>
+    <MetaProvider>
+      <Meta name="viewport" content="width=device-width, initial-scale=1" />
+      <LocalizeProvider>
+        <SnackbarProvider>
+          <ConfirmProvider>
+            <SessionProvider>
+              <NotificationsProvider>
+                <EditorProvider>
+                  <Dynamic component={pageComponent()} {...props} />
+                </EditorProvider>
+              </NotificationsProvider>
+            </SessionProvider>
+          </ConfirmProvider>
+        </SnackbarProvider>
+      </LocalizeProvider>
+    </MetaProvider>
   )
 }

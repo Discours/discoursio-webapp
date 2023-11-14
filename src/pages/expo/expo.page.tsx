@@ -6,12 +6,12 @@ import { useLocalize } from '../../context/localize'
 import { createMemo } from 'solid-js'
 import { LayoutType } from '../types'
 import { useRouter } from '../../stores/router'
-import { Title } from '@solidjs/meta'
 
 export const ExpoPage = (props: PageProps) => {
   const { t } = useLocalize()
-  const { page: getPage } = useRouter()
-  const getLayout = createMemo<LayoutType>(() => getPage().params['layout'] as LayoutType)
+  const { page } = useRouter()
+  const getLayout = createMemo<LayoutType>(() => page().params['layout'] as LayoutType)
+
   const title = createMemo(() => {
     switch (getLayout()) {
       case 'music': {
@@ -33,8 +33,7 @@ export const ExpoPage = (props: PageProps) => {
   })
 
   return (
-    <PageLayout withPadding={true} zeroBottomPadding={true}>
-      <Title>{title()}</Title>
+    <PageLayout withPadding={true} zeroBottomPadding={true} title={title()}>
       <Topics />
       <Expo shouts={props.expoShouts} />
     </PageLayout>

@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import styles from './Lightbox.module.scss'
-import { createSignal, onCleanup, onMount } from 'solid-js'
+import { createSignal } from 'solid-js'
 import { Icon } from '../Icon'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 

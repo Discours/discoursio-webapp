@@ -1,7 +1,7 @@
 import { Accessor, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { clsx } from 'clsx'
-import { Title } from '@solidjs/meta'
+
 import type { Shout, Topic } from '../../graphql/types.gen'
 import { useRouter } from '../../stores/router'
 import { ShoutForm, useEditorContext } from '../../context/editor'
@@ -171,26 +171,6 @@ export const EditView = (props: Props) => {
     }
   }
 
-  const pageTitle = () => {
-    switch (props.shout.layout as LayoutType) {
-      case 'music': {
-        return t('Publish Album')
-      }
-      case 'image': {
-        return t('Create gallery')
-      }
-      case 'video': {
-        return t('Create video')
-      }
-      case 'literature': {
-        return t('New literary work')
-      }
-      default: {
-        return t('Write an article')
-      }
-    }
-  }
-
   let autoSaveTimeOutId
 
   const autoSaveRecursive = () => {
@@ -235,7 +215,6 @@ export const EditView = (props: Props) => {
   return (
     <>
       <div class={styles.container}>
-        <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
             <button

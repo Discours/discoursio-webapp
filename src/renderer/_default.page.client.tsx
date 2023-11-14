@@ -2,7 +2,6 @@ import { App } from '../components/App'
 import { hydrate } from 'solid-js/web'
 import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'
 import type { PageContext } from './types'
-import { MetaProvider } from '@solidjs/meta'
 import i18next from 'i18next'
 import ICU from 'i18next-icu'
 import HttpApi from 'i18next-http-backend'
@@ -52,14 +51,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
   const content = document.querySelector('#root')
 
   if (!layoutReady) {
-    hydrate(
-      () => (
-        <MetaProvider>
-          <App {...pageProps} />
-        </MetaProvider>
-      ),
-      content
-    )
+    hydrate(() => <App {...pageProps} />, content)
     layoutReady = true
   }
 }

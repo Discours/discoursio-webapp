@@ -10,7 +10,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
     limit: PRERENDERED_ARTICLES_COUNT
   })
 
-  const pageProps: PageProps = { expoShouts }
+  const pageProps: PageProps = { expoShouts, seo: { title: '' } }
 
   return {
     pageContext: {

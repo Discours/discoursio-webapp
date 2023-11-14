@@ -17,6 +17,9 @@ export type PageProps = {
   // other types?
   searchResults?: Shout[]
   chats?: Chat[]
+  seo: {
+    title: string
+  }
 }
 
 export type RootSearchParams = {

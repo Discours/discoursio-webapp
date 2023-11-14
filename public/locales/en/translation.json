@@ -452,5 +452,6 @@
   "video": "video",
   "view": "view",
   "viewsWithCount": "{count} {count, plural, one {view} other {views}}",
-  "yesterday": "yesterday"
+  "yesterday": "yesterday",
+  "Inbox": "Inbox"
 }

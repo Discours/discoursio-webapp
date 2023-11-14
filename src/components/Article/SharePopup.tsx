@@ -26,7 +26,7 @@ export const SharePopup = (props: SharePopupProps) => {
   const { t } = useLocalize()
   const [isVisible, setIsVisible] = createSignal(false)
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   createEffect(() => {
@@ -38,7 +38,7 @@ export const SharePopup = (props: SharePopupProps) => {
   const [share] = createSocialShare(() => ({
     title: props.title,
     url: props.shareUrl,
-    description: props.description
+    description: props.description,
   }))
 
   const copyLink = async () => {

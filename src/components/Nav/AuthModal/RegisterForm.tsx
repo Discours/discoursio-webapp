@@ -126,7 +126,7 @@ export const RegisterForm = () => {
       await register({
         name: cleanName,
         email: cleanEmail,
-        password: password()
+        password: password(),
       })
 
       setIsSuccess(true)
@@ -156,7 +156,7 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().fullName
+                'pretty-form__item--error': validationErrors().fullName,
               })}
             >
               <input
@@ -174,7 +174,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email
+                'pretty-form__item--error': validationErrors().email,
               })}
             >
               <input
@@ -199,7 +199,7 @@ export const RegisterForm = () => {
                     onClick={(event) => {
                       event.preventDefault()
                       changeSearchParam({
-                        mode: 'login'
+                        mode: 'login',
                       })
                     }}
                   >
@@ -211,7 +211,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().password
+                'pretty-form__item--error': validationErrors().password,
               })}
             >
               <input
@@ -252,7 +252,7 @@ export const RegisterForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParam({
-                    mode: 'login'
+                    mode: 'login',
                   })
                 }
               >

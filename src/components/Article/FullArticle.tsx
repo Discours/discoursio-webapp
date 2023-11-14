@@ -46,7 +46,7 @@ const scrollTo = (el: HTMLElement) => {
   window.scrollTo({
     top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
     left: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
@@ -57,7 +57,7 @@ export const FullArticle = (props: Props) => {
   const {
     user,
     isAuthenticated,
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
 
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
@@ -67,7 +67,7 @@ export const FullArticle = (props: Props) => {
   const mainTopic = createMemo(
     () =>
       props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
-      props.article.topics[0]
+      props.article.topics[0],
   )
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
@@ -121,7 +121,7 @@ export const FullArticle = (props: Props) => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
       changeSearchParam({
-        scrollTo: null
+        scrollTo: null,
       })
     }
   })
@@ -129,7 +129,7 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams().commentId && isReactionsLoaded()) {
       const commentElement = document.querySelector<HTMLElement>(
-        `[id='comment_${searchParams().commentId}']`
+        `[id='comment_${searchParams().commentId}']`,
       )
 
       changeSearchParam({ commentId: null })
@@ -141,12 +141,12 @@ export const FullArticle = (props: Props) => {
   })
 
   const {
-    actions: { loadReactionsBy }
+    actions: { loadReactionsBy },
   } = useReactions()
 
   onMount(async () => {
     await loadReactionsBy({
-      by: { shout: props.article.slug }
+      by: { shout: props.article.slug },
     })
 
     setIsReactionsLoaded(true)
@@ -165,7 +165,7 @@ export const FullArticle = (props: Props) => {
     }
 
     const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
-      '[data-toggle="tooltip"], footnote'
+      '[data-toggle="tooltip"], footnote',
     )
     if (!tooltipElements) {
       return
@@ -190,19 +190,19 @@ export const FullArticle = (props: Props) => {
         modifiers: [
           {
             name: 'eventListeners',
-            options: { scroll: false }
+            options: { scroll: false },
           },
           {
             name: 'offset',
             options: {
-              offset: [0, 8]
-            }
+              offset: [0, 8],
+            },
           },
           {
             name: 'flip',
-            options: { fallbackPlacements: ['top'] }
-          }
-        ]
+            options: { fallbackPlacements: ['top'] },
+          },
+        ],
       })
 
       tooltip.style.visibility = 'hidden'

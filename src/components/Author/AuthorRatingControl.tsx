@@ -20,7 +20,7 @@ export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
     <div
       class={clsx(styles.rating, props.class, {
         [styles.isUpvoted]: isUpvoted,
-        [styles.isDownvoted]: isDownvoted
+        [styles.isDownvoted]: isDownvoted,
       })}
     >
       <button

@@ -25,12 +25,12 @@ export const AuthorBadge = (props: Props) => {
   const {
     session,
     subscriptions,
-    actions: { loadSubscriptions, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
   const { changeSearchParam } = useRouter()
   const { t, formatDate } = useLocalize()
   const subscribed = createMemo(() =>
-    subscriptions().authors.some((author) => author.slug === props.author.slug)
+    subscriptions().authors.some((author) => author.slug === props.author.slug),
   )
 
   const subscribe = async (really = true) => {
@@ -53,7 +53,7 @@ export const AuthorBadge = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, `inbox`)
       changeSearchParam({
-        initChat: props.author.id.toString()
+        initChat: props.author.id.toString(),
       })
     }, 'discussions')
   }
@@ -126,7 +126,7 @@ export const AuthorBadge = (props: Props) => {
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.iconed]: props.iconButtons,
-                    [stylesButton.subscribed]: subscribed()
+                    [stylesButton.subscribed]: subscribed(),
                   })}
                 />
               }
@@ -151,7 +151,7 @@ export const AuthorBadge = (props: Props) => {
                 isSubscribeButton={true}
                 class={clsx(styles.actionButton, {
                   [styles.iconed]: props.iconButtons,
-                  [stylesButton.subscribed]: subscribed()
+                  [stylesButton.subscribed]: subscribed(),
                 })}
               />
             </Show>

@@ -35,8 +35,8 @@ export const AudioPlayer = (props: Props) => {
       () => {
         setCurrentTrackDuration(0)
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   const handlePlayMedia = async (trackIndex: number) => {
@@ -131,7 +131,7 @@ export const AudioPlayer = (props: Props) => {
             <div
               class={styles.progressFilled}
               style={{
-                width: `${(currentTime() / currentTrackDuration()) * 100 || 0}%`
+                width: `${(currentTime() / currentTrackDuration()) * 100 || 0}%`,
               }}
             />
           </div>

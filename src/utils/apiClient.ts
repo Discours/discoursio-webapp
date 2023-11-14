@@ -18,7 +18,7 @@ import type {
   Shout,
   NotificationsQueryParams,
   NotificationsQueryResult,
-  MySubscriptionsQueryResult
+  MySubscriptionsQueryResult,
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -107,7 +107,7 @@ export const apiClient = {
   authRegister: async ({
     email,
     password,
-    name
+    name,
   }: {
     email: string
     password: string
@@ -261,7 +261,7 @@ export const apiClient = {
   updateArticle: async ({
     shoutId,
     shoutInput,
-    publish
+    publish,
   }: {
     shoutId: number
     shoutInput?: ShoutInput
@@ -306,7 +306,7 @@ export const apiClient = {
   getShoutBySlug: async (slug: string) => {
     const resp = await publicGraphQLClient
       .query(shoutLoad, {
-        slug
+        slug,
       })
       .toPromise()
 
@@ -319,7 +319,7 @@ export const apiClient = {
   getShoutById: async (shoutId: number) => {
     const resp = await publicGraphQLClient
       .query(shoutLoad, {
-        shoutId
+        shoutId,
       })
       .toPromise()
 
@@ -362,7 +362,7 @@ export const apiClient = {
   markNotificationAsRead: async (notificationId: number): Promise<void> => {
     await privateGraphQLClient
       .mutation(markNotificationAsRead, {
-        notificationId
+        notificationId,
       })
       .toPromise()
   },
@@ -400,5 +400,5 @@ export const apiClient = {
   getRecipients: async (options: QueryLoadRecipientsArgs) => {
     const resp = await privateGraphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members
-  }
+  },
 }

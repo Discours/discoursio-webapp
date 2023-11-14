@@ -14,17 +14,17 @@ export const renderUploadedImage = (editor: Editor, image: UploadedFile) => {
           content: [
             {
               type: 'text',
-              text: image.originalFilename ?? ''
-            }
-          ]
+              text: image.originalFilename ?? '',
+            },
+          ],
         },
         {
           type: 'image',
           attrs: {
-            src: image.url
-          }
-        }
-      ]
+            src: image.url,
+          },
+        },
+      ],
     })
     .run()
   hideModal()

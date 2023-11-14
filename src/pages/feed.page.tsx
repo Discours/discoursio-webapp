@@ -11,7 +11,7 @@ import { useLocalize } from '../context/localize'
 const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
   return loadShouts({
     ...options,
-    filters: { visibility: 'community' }
+    filters: { visibility: 'community' },
   })
 }
 
@@ -32,8 +32,8 @@ export const FeedPage = () => {
       () => {
         resetSortedArticles()
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   return (

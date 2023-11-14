@@ -111,7 +111,7 @@ export const ProfileSecurityPage = () => {
                           class={clsx(
                             styles.socialButton,
                             styles.socialButtonApple,
-                            'button' + ' button--light'
+                            'button' + ' button--light',
                           )}
                           type="button"
                         >

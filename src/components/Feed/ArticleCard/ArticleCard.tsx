@@ -45,7 +45,7 @@ interface ArticleCardProps {
 }
 
 const getTitleAndSubtitle = (
-  article: Shout
+  article: Shout,
 ): {
   title: string
   subtitle: string
@@ -90,7 +90,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
     event.preventDefault()
     openPage(router, 'article', { slug: props.article.slug })
     changeSearchParam({
-      scrollTo: 'comments'
+      scrollTo: 'comments',
     })
   }
 
@@ -111,7 +111,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardCompact]: props.settings?.isCompact,
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
-        [styles.shoutCardNoImage]: !props.article.cover
+        [styles.shoutCardNoImage]: !props.article.cover,
       }}
     >
       <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
@@ -155,7 +155,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
         <div
           class={clsx(styles.shoutCardTitlesContainer, {
-            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
+            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode,
           })}
         >
           <a href={getPagePath(router, 'article', { slug: props.article.slug })}>

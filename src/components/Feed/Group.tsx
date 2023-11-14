@@ -26,7 +26,7 @@ export default (props: GroupProps) => {
                   noicon: true,
                   isFloorImportant: true,
                   isBigTitle: true,
-                  nodate: true
+                  nodate: true,
                 }}
               />
             </div>
@@ -59,7 +59,7 @@ export default (props: GroupProps) => {
                             isBigTitle: true,
                             isCompact: true,
                             isFloorImportant: true,
-                            nodate: true
+                            nodate: true,
                           }}
                         />
                       )}
@@ -76,7 +76,7 @@ export default (props: GroupProps) => {
                             isBigTitle: true,
                             isCompact: true,
                             isFloorImportant: true,
-                            nodate: true
+                            nodate: true,
                           }}
                         />
                       )}

@@ -17,7 +17,7 @@ export const ArticlePage = (props: PageProps) => {
   const slug = createMemo(() => page().params['slug'] as string)
 
   const { articleEntities } = useArticlesStore({
-    shouts
+    shouts,
   })
 
   const article = createMemo<Shout>(() => articleEntities()[slug()])

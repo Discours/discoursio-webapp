@@ -25,7 +25,7 @@ const colors = [
   '#668cff',
   '#c34cfe',
   '#e699ff',
-  '#6633ff'
+  '#6633ff',
 ]
 
 const getById = (letter: string) =>
@@ -42,7 +42,7 @@ const DialogAvatar = (props: Props) => {
       class={clsx(styles.DialogAvatar, props.class, {
         [styles.online]: props.online,
         [styles.bordered]: props.bordered,
-        [styles.small]: props.size === 'small'
+        [styles.small]: props.size === 'small',
       })}
       style={{ 'background-color': `${randomBg()}` }}
     >

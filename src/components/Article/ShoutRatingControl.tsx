@@ -19,12 +19,12 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
   const {
     user,
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
 
   const {
     reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy }
+    actions: { createReaction, deleteReaction, loadReactionsBy },
   } = useReactions()
 
   const checkReaction = (reactionKind: ReactionKind) =>
@@ -33,7 +33,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.kind === reactionKind &&
         r.createdBy.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
-        !r.replyTo
+        !r.replyTo,
     )
 
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
@@ -45,8 +45,8 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       (r) =>
         [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
         r.shout.id === props.shout.id &&
-        !r.replyTo
-    )
+        !r.replyTo,
+    ),
   )
 
   const deleteShoutReaction = async (reactionKind: ReactionKind) => {
@@ -55,7 +55,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.kind === reactionKind &&
         r.createdBy.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
-        !r.replyTo
+        !r.replyTo,
     )
     return deleteReaction(reactionToDelete.id)
   }
@@ -69,13 +69,13 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       } else {
         await createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-          shout: props.shout.id
+          shout: props.shout.id,
         })
       }
 
       loadShout(props.shout.slug)
       loadReactionsBy({
-        by: { shout: props.shout.slug }
+        by: { shout: props.shout.slug },
       })
     }, 'vote')
   }

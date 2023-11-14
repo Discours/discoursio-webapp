@@ -18,11 +18,11 @@ type Props = {
 export const Draft = (props: Props) => {
   const { t, formatDate } = useLocalize()
   const {
-    actions: { showConfirm }
+    actions: { showConfirm },
   } = useConfirm()
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const handlePublishLinkClick = (e) => {
@@ -37,7 +37,7 @@ export const Draft = (props: Props) => {
       confirmBody: t('Are you sure you want to delete this draft?'),
       confirmButtonLabel: t('Delete'),
       confirmButtonVariant: 'danger',
-      declineButtonVariant: 'primary'
+      declineButtonVariant: 'primary',
     })
     if (isConfirmed) {
       props.onDelete(props.shout)

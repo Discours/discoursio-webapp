@@ -51,12 +51,12 @@ export const PublishSettings = (props: Props) => {
     slug: props.form.slug,
     title: props.form.title,
     subtitle: props.form.subtitle,
-    description: composeDescription()
+    description: composeDescription(),
   }
 
   const {
     formErrors,
-    actions: { setForm, setFormErrors, saveShout, publishShout }
+    actions: { setForm, setFormErrors, saveShout, publishShout },
   } = useEditorContext()
 
   const [settingsForm, setSettingsForm] = createStore(initialData)
@@ -78,7 +78,7 @@ export const PublishSettings = (props: Props) => {
       setSettingsForm((prev) => {
         return {
           ...prev,
-          mainTopic: newSelectedTopics[0]
+          mainTopic: newSelectedTopics[0],
         }
       })
     }
@@ -96,7 +96,7 @@ export const PublishSettings = (props: Props) => {
 
   const handleBackClick = () => {
     redirectPage(router, 'edit', {
-      shoutId: props.shoutId.toString()
+      shoutId: props.shoutId.toString(),
     })
   }
   const handleCancelClick = () => {
@@ -136,7 +136,7 @@ export const PublishSettings = (props: Props) => {
               </div>
               <div
                 class={clsx(styles.shoutCardCoverContainer, {
-                  [styles.hasImage]: settingsForm.coverImageUrl
+                  [styles.hasImage]: settingsForm.coverImageUrl,
                 })}
               >
                 <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
@@ -156,7 +156,7 @@ export const PublishSettings = (props: Props) => {
             </div>
             <p class="description">
               {t(
-                'Choose a title image for the article. You can immediately see how the publication card will look like.'
+                'Choose a title image for the article. You can immediately see how the publication card will look like.',
               )}
             </p>
 
@@ -202,7 +202,7 @@ export const PublishSettings = (props: Props) => {
             <h4>{t('Topics')}</h4>
             <p class="description">
               {t(
-                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title'
+                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title',
               )}
             </p>
             <div class={styles.inputContainer}>

@@ -27,7 +27,7 @@ export const CommentDate = (props: Props) => {
     <div
       class={clsx(styles.commentDates, {
         [styles.commentDatesLastInRow]: props.isLastInRow,
-        [styles.showOnHover]: props.showOnHover
+        [styles.showOnHover]: props.showOnHover,
       })}
     >
       <time class={styles.date}>{formattedDate(props.comment.createdAt)}</time>

@@ -48,11 +48,11 @@ export const CommentsTree = (props: Props) => {
 
   const {
     reactionEntities,
-    actions: { createReaction }
+    actions: { createReaction },
   } = useReactions()
 
   const comments = createMemo(() =>
-    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
+    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT'),
   )
 
   const sortedComments = createMemo(() => {
@@ -96,7 +96,7 @@ export const CommentsTree = (props: Props) => {
       await createReaction({
         kind: ReactionKind.Comment,
         body: value,
-        shout: props.shoutId
+        shout: props.shoutId,
       })
       setClearEditor(true)
     } catch (error) {
@@ -154,7 +154,7 @@ export const CommentsTree = (props: Props) => {
             <Comment
               sortedComments={sortedComments()}
               isArticleAuthor={Boolean(
-                props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug)
+                props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug),
               )}
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}

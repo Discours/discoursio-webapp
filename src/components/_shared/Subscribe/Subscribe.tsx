@@ -16,7 +16,7 @@ export const Subscribe = (props: Props) => {
   const [email, setEmail] = createSignal('')
   const [emailError, setEmailError] = createSignal<string>(null)
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const validate = (): boolean => {
@@ -49,9 +49,9 @@ export const Subscribe = (props: Props) => {
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: email() })
+      body: JSON.stringify({ email: email() }),
     }
 
     const response = await fetch('/api/newsletter', requestOptions)

@@ -25,14 +25,14 @@ export const Embed = Node.create<IframeOptions>({
     return {
       src: { default: null },
       width: { default: null },
-      height: { default: null }
+      height: { default: null },
     }
   },
   parseHTML() {
     return [
       {
-        tag: 'iframe'
-      }
+        tag: 'iframe',
+      },
     ]
   },
   renderHTML({ HTMLAttributes }) {
@@ -49,7 +49,7 @@ export const Embed = Node.create<IframeOptions>({
       iframe.src = node.attrs.src
       div.append(iframe)
       return {
-        dom: div
+        dom: div,
       }
     }
   },
@@ -64,7 +64,7 @@ export const Embed = Node.create<IframeOptions>({
             tr.replaceRangeWith(selection.from, selection.to, node)
           }
           return true
-        }
+        },
     }
-  }
+  },
 })

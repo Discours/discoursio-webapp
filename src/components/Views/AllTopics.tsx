@@ -31,7 +31,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
-    sortBy: searchParams().by || 'shouts'
+    sortBy: searchParams().by || 'shouts',
   })
 
   const { subscriptions } = useSession()
@@ -39,7 +39,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
-        by: 'shouts'
+        by: 'shouts',
       })
     }
   })
@@ -57,7 +57,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
         acc[letter].push(topic)
         return acc
       },
-      {} as { [letter: string]: Topic[] }
+      {} as { [letter: string]: Topic[] },
     )
   })
 

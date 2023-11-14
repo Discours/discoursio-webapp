@@ -18,7 +18,7 @@ export const MessageActionsPopup = (props: MessageActionsPopupProps) => {
     { name: t('Pin'), action: 'pin' },
     { name: t('Forward'), action: 'forward' },
     { name: t('Select'), action: 'select' },
-    { name: t('Delete'), action: 'delete' }
+    { name: t('Delete'), action: 'delete' },
   ]
   createEffect(() => {
     if (props.actionSelect) props.actionSelect(selectedAction())

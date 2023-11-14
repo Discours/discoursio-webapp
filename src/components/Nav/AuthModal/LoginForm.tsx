@@ -36,11 +36,11 @@ export const LoginForm = () => {
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const {
-    actions: { signIn }
+    actions: { signIn },
   } = useSession()
 
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
@@ -144,7 +144,7 @@ export const LoginForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email
+            'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input
@@ -164,7 +164,7 @@ export const LoginForm = () => {
 
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().password
+            'pretty-form__item--error': validationErrors().password,
           })}
         >
           <input
@@ -198,7 +198,7 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               changeSearchParam({
-                mode: 'forgot-password'
+                mode: 'forgot-password',
               })
             }
           >
@@ -215,7 +215,7 @@ export const LoginForm = () => {
             class={styles.authLink}
             onClick={() =>
               changeSearchParam({
-                mode: 'register'
+                mode: 'register',
               })
             }
           >

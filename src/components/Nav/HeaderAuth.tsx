@@ -32,12 +32,12 @@ export const HeaderAuth = (props: Props) => {
   const { session, isSessionLoaded, isAuthenticated } = useSession()
   const {
     unreadNotificationsCount,
-    actions: { showNotificationsPanel }
+    actions: { showNotificationsPanel },
   } = useNotifications()
 
   const {
     form,
-    actions: { toggleEditorPanel, saveShout, publishShout }
+    actions: { toggleEditorPanel, saveShout, publishShout },
   } = useEditorContext()
 
   const handleBellIconClick = (event: Event) => {
@@ -158,7 +158,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Save'),
                   icon: 'save',
-                  action: handleSaveButtonClick
+                  action: handleSaveButtonClick,
                 })}
               </div>
 
@@ -166,7 +166,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Publish'),
                   icon: 'publish',
-                  action: handlePublishButtonClick
+                  action: handlePublishButtonClick,
                 })}
               </div>
 

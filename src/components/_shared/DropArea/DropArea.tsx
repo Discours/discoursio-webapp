@@ -60,14 +60,14 @@ export const DropArea = (props: Props) => {
 
   const { files, selectFiles } = createFileUploader({
     multiple: true,
-    accept: `${props.fileType}/*`
+    accept: `${props.fileType}/*`,
   })
 
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async () => {
       setDragActive(false)
       await initUpload(droppedFiles())
-    }
+    },
   })
   const handleDrag = (event) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {

@@ -41,7 +41,7 @@ const options: ClientOptions = {
     const headers = { Authorization: token }
     return { headers }
   },
-  exchanges
+  exchanges,
 }
 
 export const privateGraphQLClient = createClient(options)

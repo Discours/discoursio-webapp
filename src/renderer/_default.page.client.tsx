@@ -25,7 +25,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
 
   if (SENTRY_DSN) {
     Sentry.init({
-      dsn: SENTRY_DSN
+      dsn: SENTRY_DSN,
     })
   }
 
@@ -38,7 +38,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
       supportedLngs: ['ru', 'en'],
       fallbackLng: lng,
       lng,
-      load: 'languageOnly'
+      load: 'languageOnly',
     })
 
   const isIOSorMacOSorAndroid = /iphone|ipad|ipod|macintosh|android/i.test(navigator.userAgent)

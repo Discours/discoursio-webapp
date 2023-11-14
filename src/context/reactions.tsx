@@ -26,7 +26,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const loadReactionsBy = async ({
     by,
-    limit
+    limit,
   }: {
     by: ReactionBy
     limit?: number
@@ -44,7 +44,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     const reaction = await apiClient.createReaction(input)
 
     const changes = {
-      [reaction.id]: reaction
+      [reaction.id]: reaction,
     }
 
     if ([ReactionKind.Like, ReactionKind.Dislike].includes(reaction.kind)) {
@@ -56,7 +56,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
           r.kind === oppositeReactionKind &&
           r.createdBy.slug === reaction.createdBy.slug &&
           r.shout.id === reaction.shout.id &&
-          r.replyTo === reaction.replyTo
+          r.replyTo === reaction.replyTo,
       )
 
       if (oppositeReaction) {
@@ -70,7 +70,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const deleteReaction = async (id: number): Promise<void> => {
     const reaction = await apiClient.destroyReaction(id)
     setReactionEntities({
-      [reaction.id]: undefined
+      [reaction.id]: undefined,
     })
   }
 
@@ -85,7 +85,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     loadReactionsBy,
     createReaction,
     updateReaction,
-    deleteReaction
+    deleteReaction,
   }
 
   const value: ReactionsContextType = { reactionEntities, actions }

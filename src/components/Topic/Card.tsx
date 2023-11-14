@@ -38,7 +38,7 @@ export const TopicCard = (props: TopicProps) => {
   const {
     subscriptions,
     isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -89,7 +89,7 @@ export const TopicCard = (props: TopicProps) => {
         classList={{
           row: !props.subscribeButtonBottom,
           [styles.topicCompact]: props.compact,
-          [styles.topicInRow]: props.isTopicInRow
+          [styles.topicInRow]: props.isTopicInRow,
         }}
       >
         <div
@@ -97,7 +97,7 @@ export const TopicCard = (props: TopicProps) => {
             [clsx('col-sm-18 col-md-24 col-lg-14 col-xl-15', styles.topicDetails)]: props.isNarrow,
             [clsx('col-24 col-sm-17 col-md-18', styles.topicDetails)]: props.compact,
             [clsx('col-sm-17 col-md-18', styles.topicDetails)]:
-              !props.subscribeButtonBottom && !props.isNarrow && !props.compact
+              !props.subscribeButtonBottom && !props.isNarrow && !props.compact,
           }}
         >
           <Show when={props.topic.title && !props.isCardMode}>
@@ -132,7 +132,7 @@ export const TopicCard = (props: TopicProps) => {
           classList={{
             'col-sm-6 col-md-24 col-lg-10 col-xl-9': props.isNarrow,
             'col-24 col-sm-7 col-md-6': props.compact,
-            'col-sm-7 col-md-6': !props.subscribeButtonBottom && !props.isNarrow && !props.compact
+            'col-sm-7 col-md-6': !props.subscribeButtonBottom && !props.isNarrow && !props.compact,
           }}
         >
           <ShowOnlyOnClient>
@@ -151,7 +151,7 @@ export const TopicCard = (props: TopicProps) => {
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.isSubscribing]: isSubscribing(),
-                    [stylesButton.subscribed]: subscribed()
+                    [stylesButton.subscribed]: subscribed(),
                   })}
                   disabled={isSubscribing()}
                 />

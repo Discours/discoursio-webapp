@@ -12,7 +12,7 @@ export const EmailConfirm = () => {
   const { t } = useLocalize()
   const {
     session,
-    actions: { confirmEmail }
+    actions: { confirmEmail },
   } = useSession()
 
   const [isTokenExpired, setIsTokenExpired] = createSignal(false)

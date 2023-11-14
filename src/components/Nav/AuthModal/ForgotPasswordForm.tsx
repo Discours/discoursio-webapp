@@ -83,7 +83,7 @@ export const ForgotPasswordForm = () => {
 
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email
+            'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input
@@ -116,7 +116,7 @@ export const ForgotPasswordForm = () => {
               onClick={(event) => {
                 event.preventDefault()
                 changeSearchParam({
-                  mode: 'register'
+                  mode: 'register',
                 })
               }}
             >
@@ -138,7 +138,7 @@ export const ForgotPasswordForm = () => {
             class={styles.authLink}
             onClick={() =>
               changeSearchParam({
-                mode: 'login'
+                mode: 'login',
               })
             }
           >

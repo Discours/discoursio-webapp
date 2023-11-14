@@ -80,7 +80,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
       if (menuOpen()) {
         setMenuOpen(false)
       }
-    }
+    },
   })
 
   const handleUpload = (image: UploadedFile) => {

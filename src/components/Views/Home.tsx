@@ -15,7 +15,7 @@ import {
   loadShouts,
   loadTopArticles,
   loadTopMonthArticles,
-  useArticlesStore
+  useArticlesStore,
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
@@ -39,9 +39,9 @@ export const HomeView = (props: Props) => {
     topArticles,
     topCommentedArticles,
     topMonthArticles,
-    topViewedArticles
+    topViewedArticles,
   } = useArticlesStore({
-    shouts: props.shouts
+    shouts: props.shouts,
   })
 
   const { topTopics } = useTopicsStore()
@@ -56,7 +56,7 @@ export const HomeView = (props: Props) => {
       const { hasMore } = await loadShouts({
         filters: { visibility: 'public' },
         limit: CLIENT_LOAD_ARTICLES_COUNT,
-        offset: sortedArticles().length
+        offset: sortedArticles().length,
       })
 
       setIsLoadMoreButtonVisible(hasMore)
@@ -66,7 +66,7 @@ export const HomeView = (props: Props) => {
   const randomLayout = createMemo(() => {
     const filledLayouts = Object.keys(articlesByLayout()).filter(
       // FIXME: is 7 ok? or more complex logic needed?
-      (layout) => articlesByLayout()[layout].length > 7
+      (layout) => articlesByLayout()[layout].length > 7,
     )
 
     const selectedRandomLayout =
@@ -85,7 +85,7 @@ export const HomeView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { visibility: 'public' },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     })
     setIsLoadMoreButtonVisible(hasMore)
 
@@ -96,8 +96,8 @@ export const HomeView = (props: Props) => {
     splitToPages(
       sortedArticles(),
       PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT,
-      LOAD_MORE_PAGE_SIZE
-    )
+      LOAD_MORE_PAGE_SIZE,
+    ),
   )
 
   return (

@@ -38,8 +38,8 @@ export const render = async (pageContext: PageContext) => {
       lng,
       resources: {
         ru: { translation: ru },
-        en: { translation: en }
-      }
+        en: { translation: en },
+      },
     })
   } else if (i18next.language !== lng) {
     // eslint-disable-next-line import/no-named-as-default-member

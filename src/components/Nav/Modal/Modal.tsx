@@ -50,7 +50,7 @@ export const Modal = (props: Props) => {
               [styles.narrow]: props.variant === 'narrow',
               ['col-auto col-md-20 offset-md-2 col-lg-14 offset-lg-5']: props.variant === 'medium',
               [styles.noPadding]: props.noPadding,
-              [styles.maxHeight]: props.maxHeight
+              [styles.maxHeight]: props.maxHeight,
             })}
             onClick={(event) => event.stopPropagation()}
           >

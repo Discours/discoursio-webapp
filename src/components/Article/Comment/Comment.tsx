@@ -43,15 +43,15 @@ export const Comment = (props: Props) => {
   const { session } = useSession()
 
   const {
-    actions: { createReaction, deleteReaction, updateReaction }
+    actions: { createReaction, deleteReaction, updateReaction },
   } = useReactions()
 
   const {
-    actions: { showConfirm }
+    actions: { showConfirm },
   } = useConfirm()
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const isCommentAuthor = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
@@ -65,7 +65,7 @@ export const Comment = (props: Props) => {
           confirmBody: t('Are you sure you want to delete this comment?'),
           confirmButtonLabel: t('Delete'),
           confirmButtonVariant: 'danger',
-          declineButtonVariant: 'primary'
+          declineButtonVariant: 'primary',
         })
 
         if (isConfirmed) {
@@ -86,7 +86,7 @@ export const Comment = (props: Props) => {
         kind: ReactionKind.Comment,
         replyTo: props.comment.id,
         body: value,
-        shout: props.comment.shout.id
+        shout: props.comment.shout.id,
       })
       setClearEditor(true)
       setIsReplyVisible(false)
@@ -107,7 +107,7 @@ export const Comment = (props: Props) => {
       await updateReaction(props.comment.id, {
         kind: ReactionKind.Comment,
         body: value,
-        shout: props.comment.shout.id
+        shout: props.comment.shout.id,
       })
       setEditMode(false)
       setLoading(false)
@@ -122,7 +122,7 @@ export const Comment = (props: Props) => {
     <li
       id={`comment_${comment().id}`}
       class={clsx(styles.comment, props.class, {
-        [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen
+        [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen,
       })}
     >
       <Show when={!!body()}>
@@ -135,7 +135,7 @@ export const Comment = (props: Props) => {
                   name={comment().createdBy.name}
                   userpic={comment().createdBy.userpic}
                   class={clsx({
-                    [styles.compactUserpic]: props.compact
+                    [styles.compactUserpic]: props.compact,
                   })}
                 />
                 <small>

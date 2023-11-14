@@ -13,7 +13,7 @@ const options: ClientOptions = {
   url: apiBaseUrl,
   maskTypename: true,
   requestPolicy: 'cache-and-network',
-  exchanges
+  exchanges,
 }
 
 export const publicGraphQLClient = createClient(options)

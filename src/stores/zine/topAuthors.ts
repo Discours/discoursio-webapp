@@ -13,11 +13,11 @@ export const useTopAuthorsStore = () => {
       .sort((authorSlug1, authorSlug2) => {
         const author1Rating = articlesByAuthor()[authorSlug1].reduce(
           (acc, article) => acc + article.stat?.rating,
-          0
+          0,
         )
         const author2Rating = articlesByAuthor()[authorSlug2].reduce(
           (acc, article) => acc + article.stat?.rating,
-          0
+          0,
         )
         if (author1Rating === author2Rating) {
           return 0

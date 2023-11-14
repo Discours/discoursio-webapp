@@ -8,7 +8,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
 
   const authorShouts = await apiClient.getShouts({
     filters: { author: slug, visibility: 'community' },
-    limit: PRERENDERED_ARTICLES_COUNT
+    limit: PRERENDERED_ARTICLES_COUNT,
   })
   const author = await apiClient.getAuthor({ slug })
 
@@ -16,7 +16,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
 
   return {
     pageContext: {
-      pageProps
-    }
+      pageProps,
+    },
   }
 }

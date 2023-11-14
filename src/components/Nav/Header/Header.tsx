@@ -47,7 +47,7 @@ export const Header = (props: Props) => {
   const { modal } = useModalStore()
   const { page } = useRouter()
   const {
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
 
   const { searchParams } = useRouter<HeaderSearchParams>()
@@ -167,7 +167,7 @@ export const Header = (props: Props) => {
         [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
         [styles.headerScrolledBottom]:
           (getIsScrollingBottom() && getIsScrolled() && !isProfilePopupVisible()) || isSharePopupVisible(),
-        [styles.headerWithTitle]: Boolean(props.title)
+        [styles.headerWithTitle]: Boolean(props.title),
       }}
     >
       <Modal
@@ -318,7 +318,7 @@ export const Header = (props: Props) => {
                 <p
                   class={styles.mobileDescription}
                   innerHTML={t(
-                    'Independant magazine with an open horizontal cooperation about culture, science and society'
+                    'Independant magazine with an open horizontal cooperation about culture, science and society',
                   )}
                 />
                 <div class={styles.mobileCopyright}>

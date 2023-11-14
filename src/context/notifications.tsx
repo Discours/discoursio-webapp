@@ -56,7 +56,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   const sortedNotifications = createMemo(() => {
     return Object.values(notificationEntities).sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
   })
 
@@ -97,7 +97,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     hideNotificationsPanel,
     markNotificationAsRead,
     markAllNotificationsAsRead,
-    loadNotifications
+    loadNotifications,
   }
 
   const value: NotificationsContextType = {
@@ -106,7 +106,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    actions
+    actions,
   }
 
   const handleNotificationPanelClose = () => {

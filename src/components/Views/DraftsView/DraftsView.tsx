@@ -24,7 +24,7 @@ export const DraftsView = () => {
   })
 
   const {
-    actions: { publishShoutById, deleteShout }
+    actions: { publishShoutById, deleteShout },
   } = useEditorContext()
 
   const handleDraftDelete = (shout: Shout) => {

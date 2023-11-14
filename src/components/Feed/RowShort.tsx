@@ -16,7 +16,7 @@ export default (props: { articles: Shout[] }) => (
                   isWithCover: true,
                   isBigTitle: true,
                   isVertical: true,
-                  nodate: true
+                  nodate: true,
                 }}
               />
             </div>

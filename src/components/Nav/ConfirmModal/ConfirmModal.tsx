@@ -8,7 +8,7 @@ export const ConfirmModal = () => {
 
   const {
     confirmMessage,
-    actions: { resolveConfirm }
+    actions: { resolveConfirm },
   } = useConfirm()
 
   return (

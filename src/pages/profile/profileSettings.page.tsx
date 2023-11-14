@@ -34,11 +34,11 @@ export const ProfileSettingsPage = () => {
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const {
-    actions: { loadSession }
+    actions: { loadSession },
   } = useSession()
 
   const { form, updateFormField, submit, slugError } = useProfileForm()
@@ -93,7 +93,7 @@ export const ProfileSettingsPage = () => {
     const handleBeforeUnload = (event) => {
       if (!deepEqual(form, prevForm)) {
         event.returnValue = t(
-          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
+          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?',
         )
       }
     }
@@ -154,8 +154,8 @@ export const ProfileSettingsPage = () => {
                                 style={{
                                   'background-image': `url(${getImageUrl(form.userpic, {
                                     width: 180,
-                                    height: 180
-                                  })})`
+                                    height: 180,
+                                  })})`,
                                 }}
                               />
                               <div class={styles.controls}>
@@ -196,7 +196,7 @@ export const ProfileSettingsPage = () => {
                       <h4>{t('Name')}</h4>
                       <p class="description">
                         {t(
-                          'Your name will appear on your profile page and as your signature in publications, comments and responses.'
+                          'Your name will appear on your profile page and as your signature in publications, comments and responses.',
                         )}
                       </p>
                       <div class="pretty-form__item">

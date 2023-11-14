@@ -38,7 +38,7 @@ export const InboxView = () => {
   const {
     chats,
     messages,
-    actions: { loadChats, getMessages, sendMessage, createChat }
+    actions: { loadChats, getMessages, sendMessage, createChat },
   } = useInbox()
 
   const [recipients, setRecipients] = createSignal<Author[]>([])
@@ -65,7 +65,7 @@ export const InboxView = () => {
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParam({
-      chat: chat.id
+      chat: chat.id,
     })
     try {
       await getMessages(chat.id)
@@ -104,7 +104,7 @@ export const InboxView = () => {
     await sendMessage({
       body: message,
       chat: currentDialog().id.toString(),
-      replyTo: messageToReply()?.id
+      replyTo: messageToReply()?.id,
     })
     setClear(true)
     setMessageToReply(null)
@@ -125,7 +125,7 @@ export const InboxView = () => {
         await loadChats()
         changeSearchParam({
           initChat: null,
-          chat: newChat.chat.id
+          chat: newChat.chat.id,
         })
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen)

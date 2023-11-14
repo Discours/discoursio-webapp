@@ -47,7 +47,7 @@ export const PageLayout = (props: Props) => {
       <main
         class={clsx('main-content', {
           [styles.withPadding]: props.withPadding,
-          [styles.zeroBottomPadding]: props.zeroBottomPadding
+          [styles.zeroBottomPadding]: props.zeroBottomPadding,
         })}
         classList={{ 'main-content--no-padding': !isHeaderFixed }}
       >

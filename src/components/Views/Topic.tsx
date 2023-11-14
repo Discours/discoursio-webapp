@@ -53,7 +53,7 @@ export const TopicView = (props: TopicProps) => {
     const { hasMore } = await loadShouts({
       filters: { topic: props.topicSlug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     })
     setIsLoadMoreButtonVisible(hasMore)
 
@@ -75,7 +75,7 @@ export const TopicView = (props: TopicProps) => {
   })
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
   return (
@@ -88,14 +88,14 @@ export const TopicView = (props: TopicProps) => {
               <ul class="view-switcher">
                 <li
                   classList={{
-                    'view-switcher__item--selected': searchParams().by === 'recent' || !searchParams().by
+                    'view-switcher__item--selected': searchParams().by === 'recent' || !searchParams().by,
                   }}
                 >
                   <button
                     type="button"
                     onClick={() =>
                       changeSearchParam({
-                        by: 'recent'
+                        by: 'recent',
                       })
                     }
                   >

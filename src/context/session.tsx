@@ -6,7 +6,7 @@ import {
   createResource,
   createSignal,
   onMount,
-  useContext
+  useContext,
 } from 'solid-js'
 import type { AuthResult, MySubscriptionsQueryResult, User } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
@@ -27,7 +27,7 @@ type SessionContextType = {
     loadSubscriptions: () => Promise<void>
     requireAuthentication: (
       callback: (() => Promise<void>) | (() => void),
-      modalSource: AuthModalSource
+      modalSource: AuthModalSource,
     ) => void
     signIn: ({ email, password }: { email: string; password: string }) => Promise<void>
     signOut: () => Promise<void>
@@ -43,7 +43,7 @@ export function useSession() {
 
 const EMPTY_SUBSCRIPTIONS = {
   topics: [],
-  authors: []
+  authors: [],
 }
 
 export const SessionProvider = (props: { children: JSX.Element }) => {
@@ -51,7 +51,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const [subscriptions, setSubscriptions] = createSignal<MySubscriptionsQueryResult>(EMPTY_SUBSCRIPTIONS)
   const { t } = useLocalize()
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const getSession = async (): Promise<AuthResult> => {
@@ -85,7 +85,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const [session, { refetch: loadSession, mutate }] = createResource<AuthResult>(getSession, {
     ssrLoadFrom: 'initial',
-    initialValue: null
+    initialValue: null,
   })
 
   const user = createMemo(() => session()?.user)
@@ -144,7 +144,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     signIn,
     signOut,
     confirmEmail,
-    loadSubscriptions
+    loadSubscriptions,
   }
 
   const value: SessionContextType = {
@@ -153,7 +153,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     isSessionLoaded,
     user,
     isAuthenticated,
-    actions
+    actions,
   }
 
   onMount(() => {

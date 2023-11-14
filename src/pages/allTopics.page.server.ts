@@ -9,7 +9,7 @@ export const onBeforeRender = async (_pageContext: PageContext) => {
 
   return {
     pageContext: {
-      pageProps
-    }
+      pageProps,
+    },
   }
 }

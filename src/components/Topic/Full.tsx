@@ -16,13 +16,13 @@ type Props = {
 export const FullTopic = (props: Props) => {
   const {
     subscriptions,
-    actions: { requireAuthentication, loadSubscriptions }
+    actions: { requireAuthentication, loadSubscriptions },
   } = useSession()
 
   const { t } = useLocalize()
 
   const subscribed = createMemo(() =>
-    subscriptions().topics.some((topic) => topic.slug === props.topic?.slug)
+    subscriptions().topics.some((topic) => topic.slug === props.topic?.slug),
   )
 
   const handleSubscribe = (really: boolean) => {

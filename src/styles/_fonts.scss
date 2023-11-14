@@ -1,7 +1,9 @@
 @font-face {
   font-family: Muller;
   font-display: fallback;
-  src: url('/fonts/Muller-Regular.woff2') format('woff2'), url('/fonts/Muller-Regular.woff') format('woff');
+  src:
+    url('/fonts/Muller-Regular.woff2') format('woff2'),
+    url('/fonts/Muller-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
@@ -9,7 +11,8 @@
 @font-face {
   font-family: Muller;
   font-display: fallback;
-  src: url('/fonts/Muller-RegularItalic.woff2') format('woff2'),
+  src:
+    url('/fonts/Muller-RegularItalic.woff2') format('woff2'),
     url('/fonts/Muller-RegularItalic.woff') format('woff');
   font-weight: 400;
   font-style: italic;
@@ -18,7 +21,9 @@
 @font-face {
   font-family: Muller;
   font-display: fallback;
-  src: url('/fonts/Muller-Medium.woff2') format('woff2'), url('/fonts/Muller-Medium.woff') format('woff');
+  src:
+    url('/fonts/Muller-Medium.woff2') format('woff2'),
+    url('/fonts/Muller-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
 }
@@ -26,7 +31,8 @@
 @font-face {
   font-family: Muller;
   font-display: fallback;
-  src: url('/fonts/Muller-MediumItalic.woff2') format('woff2'),
+  src:
+    url('/fonts/Muller-MediumItalic.woff2') format('woff2'),
     url('/fonts/Muller-MediumItalic.woff') format('woff');
   font-weight: 500;
   font-style: italic;
@@ -35,7 +41,9 @@
 @font-face {
   font-family: Muller;
   font-display: fallback;
-  src: url('/fonts/Muller-Bold.woff2') format('woff2'), url('/fonts/Muller-Bold.woff') format('woff');
+  src:
+    url('/fonts/Muller-Bold.woff2') format('woff2'),
+    url('/fonts/Muller-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
@@ -43,7 +51,8 @@
 @font-face {
   font-family: Muller;
   font-display: fallback;
-  src: url('/fonts/Muller-ExtraBold.woff2') format('woff2'),
+  src:
+    url('/fonts/Muller-ExtraBold.woff2') format('woff2'),
     url('/fonts/Muller-ExtraBold.woff') format('woff');
   font-weight: 800;
   font-style: normal;

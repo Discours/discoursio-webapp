@@ -29,7 +29,7 @@ export const Lightbox = (props: Props) => {
 
   const lightboxStyle = () => ({
     transform: `scale(${zoomLevel()})`,
-    transition: 'transform 0.3s ease'
+    transition: 'transform 0.3s ease',
   })
 
   useEscKeyDownHandler(closeLightbox)

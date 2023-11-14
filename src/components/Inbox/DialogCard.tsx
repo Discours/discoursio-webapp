@@ -22,14 +22,14 @@ type DialogProps = {
 const DialogCard = (props: DialogProps) => {
   const { t, formatTime } = useLocalize()
   const companions = createMemo(
-    () => props.members && props.members.filter((member) => member.id !== props.ownId)
+    () => props.members && props.members.filter((member) => member.id !== props.ownId),
   )
 
   const names = createMemo(
     () =>
       companions()
         ?.map((companion) => companion.name)
-        .join(', ')
+        .join(', '),
   )
 
   return (
@@ -37,7 +37,7 @@ const DialogCard = (props: DialogProps) => {
       <div
         class={clsx(styles.DialogCard, {
           [styles.opened]: props.isOpened,
-          [styles.hovered]: !props.isChatHeader
+          [styles.hovered]: !props.isChatHeader,
         })}
         onClick={props.onClick}
       >

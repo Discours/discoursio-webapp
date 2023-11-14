@@ -20,11 +20,11 @@ export const TopicBadge = (props: Props) => {
   const {
     isAuthenticated,
     subscriptions,
-    actions: { loadSubscriptions }
+    actions: { loadSubscriptions },
   } = useSession()
 
   const subscribed = createMemo(() =>
-    subscriptions().topics.some((topic) => topic.slug === props.topic.slug)
+    subscriptions().topics.some((topic) => topic.slug === props.topic.slug),
   )
 
   const subscribe = async (really = true) => {
@@ -45,7 +45,7 @@ export const TopicBadge = (props: Props) => {
         class={clsx(styles.picture, { [styles.withImage]: props.topic.pic })}
         style={
           props.topic.pic && {
-            'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`
+            'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`,
           }
         }
       />

@@ -56,7 +56,7 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
     const messageToShow = {
       type: message.type ?? 'success',
       body: message.body,
-      duration: message.duration ?? DEFAULT_DURATION
+      duration: message.duration ?? DEFAULT_DURATION,
     }
 
     messagesToShow.push(messageToShow)
@@ -70,7 +70,7 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
   }
 
   const actions = {
-    showSnackbar
+    showSnackbar,
   }
 
   const value: SnackbarContextType = { snackbarMessage, actions }

@@ -54,7 +54,7 @@ export const FeedView = (props: Props) => {
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
 
   const {
-    actions: { loadReactionsBy }
+    actions: { loadReactionsBy },
   } = useReactions()
 
   onMount(() => {
@@ -68,13 +68,13 @@ export const FeedView = (props: Props) => {
         resetSortedArticles()
         loadMore()
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     }
 
     const orderBy = getOrderBy(searchParams().by)
@@ -94,8 +94,8 @@ export const FeedView = (props: Props) => {
 
     loadReactionsBy({
       by: {
-        shouts: newShouts.map((s) => s.slug)
-      }
+        shouts: newShouts.map((s) => s.slug),
+      },
     })
 
     setIsLoadMoreButtonVisible(hasMore)
@@ -118,7 +118,7 @@ export const FeedView = (props: Props) => {
           <ul class={clsx(styles.feedFilter, 'view-switcher')}>
             <li
               class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'publish_date' || !searchParams().by
+                'view-switcher__item--selected': searchParams().by === 'publish_date' || !searchParams().by,
               })}
             >
               <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
@@ -128,14 +128,14 @@ export const FeedView = (props: Props) => {
             {/*</li>*/}
             <li
               class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'rating'
+                'view-switcher__item--selected': searchParams().by === 'rating',
               })}
             >
               <a href={`${getPagePath(router, page().route)}?by=rating`}>{t('Top rated')}</a>
             </li>
             <li
               class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'last_comment'
+                'view-switcher__item--selected': searchParams().by === 'last_comment',
               })}
             >
               <a href={`${getPagePath(router, page().route)}?by=last_comment`}>{t('Most commented')}</a>
@@ -193,7 +193,7 @@ export const FeedView = (props: Props) => {
                     <div class={clsx('text-truncate', styles.commentBody)}>
                       <a
                         href={`${getPagePath(router, 'article', {
-                          slug: comment.shout.slug
+                          slug: comment.shout.slug,
                         })}?commentId=${comment.id}`}
                         innerHTML={comment.body}
                       />

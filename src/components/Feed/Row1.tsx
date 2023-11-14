@@ -19,7 +19,7 @@ export const Row1 = (props: {
                 isSingle: true,
                 nodate: props.nodate,
                 noAuthorLink: props.noAuthorLink,
-                noauthor: props.noauthor
+                noauthor: props.noauthor,
               }}
             />
           </div>

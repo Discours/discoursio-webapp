@@ -33,7 +33,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
     disable: (topic) => {
       return props.selectedTopics.some((selectedTopic) => selectedTopic.slug === topic.slug)
     },
-    createable: createValue
+    createable: createValue,
   })
 
   const handleChange = (selectedTopics: Topic[]) => {
@@ -57,7 +57,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
     return (
       <div
         class={clsx(styles.selectedItem, {
-          [styles.mainTopic]: isMainTopic
+          [styles.mainTopic]: isMainTopic,
         })}
         onClick={() => handleSelectedItemClick(item)}
       >

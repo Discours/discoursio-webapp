@@ -17,7 +17,7 @@ const QuotedMessage = (props: QuotedMessage) => {
       class={clsx(styles.QuotedMessage, {
         [styles.reply]: props.variant === 'reply',
         [styles.inline]: props.variant === 'inline',
-        [styles.own]: props.isOwn
+        [styles.own]: props.isOwn,
       })}
     >
       <Show when={props.variant === 'reply'}>

@@ -36,7 +36,7 @@ export const Beside = (props: Props) => {
                   'col-lg-8',
                   styles[
                     `besideRatingColumn${props.wrapper.charAt(0).toUpperCase() + props.wrapper.slice(1)}`
-                  ]
+                  ],
                 )}
               >
                 <Show when={!!props.title}>

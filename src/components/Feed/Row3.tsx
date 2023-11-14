@@ -24,7 +24,7 @@ export const Row3 = (props: {
                     settings={{
                       nodate: props.nodate,
                       noAuthorLink: props.noAuthorLink,
-                      noauthor: props.noauthor
+                      noauthor: props.noauthor,
                     }}
                   />
                 </div>

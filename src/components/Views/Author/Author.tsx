@@ -47,7 +47,7 @@ export const AuthorView = (props: Props) => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
         apiClient.getAuthorFollowingUsers({ slug: props.authorSlug }),
-        apiClient.getAuthorFollowingTopics({ slug: props.authorSlug })
+        apiClient.getAuthorFollowingTopics({ slug: props.authorSlug }),
       ])
       const authors = getAuthors
       const topics = getTopics
@@ -90,7 +90,7 @@ export const AuthorView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { author: props.authorSlug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     })
     setIsLoadMoreButtonVisible(hasMore)
     restoreScrollPosition()
@@ -106,7 +106,7 @@ export const AuthorView = (props: Props) => {
   // })
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
   const [commented, setCommented] = createSignal([])
@@ -115,7 +115,7 @@ export const AuthorView = (props: Props) => {
     if (getPage().route === 'authorComments') {
       try {
         const data = await apiClient.getReactionsBy({
-          by: { comment: true, createdBy: props.authorSlug }
+          by: { comment: true, createdBy: props.authorSlug },
         })
         setCommented(data)
       } catch (error) {

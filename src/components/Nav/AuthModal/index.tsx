@@ -16,7 +16,7 @@ const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   login: LoginForm,
   register: RegisterForm,
   'forgot-password': ForgotPasswordForm,
-  'confirm-email': EmailConfirm
+  'confirm-email': EmailConfirm,
 }
 
 export const AuthModal = () => {
@@ -40,7 +40,7 @@ export const AuthModal = () => {
     <div
       ref={rootRef}
       class={clsx(styles.view, {
-        row: !source
+        row: !source,
       })}
       classList={{ [styles.signUp]: mode() === 'register' || mode() === 'confirm-email' }}
     >
@@ -54,7 +54,7 @@ export const AuthModal = () => {
               <h4>{t(`Join the global community of authors!`)}</h4>
               <p class={styles.authBenefits}>
                 {t(
-                  'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine'
+                  'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine',
                 )}
                 .&nbsp;
                 {t('New stories every day and even more!')}
@@ -77,7 +77,7 @@ export const AuthModal = () => {
       </Show>
       <div
         class={clsx(styles.auth, {
-          'col-md-12': !source
+          'col-md-12': !source,
         })}
       >
         <Dynamic component={AUTH_MODAL_MODES[mode()]} />

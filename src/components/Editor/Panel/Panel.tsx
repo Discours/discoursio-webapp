@@ -26,11 +26,11 @@ export const Panel = (props: Props) => {
     wordCounter,
     editorRef,
     form,
-    actions: { toggleEditorPanel, saveShout, publishShout }
+    actions: { toggleEditorPanel, saveShout, publishShout },
   } = useEditorContext()
 
   const containerRef: { current: HTMLElement } = {
-    current: null
+    current: null,
   }
 
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
@@ -39,7 +39,7 @@ export const Panel = (props: Props) => {
   useOutsideClickHandler({
     containerRef,
     predicate: () => isEditorPanelVisible(),
-    handler: () => toggleEditorPanel()
+    handler: () => toggleEditorPanel(),
   })
 
   useEscKeyDownHandler(() => {

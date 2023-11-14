@@ -11,7 +11,7 @@ type ProfilePopupProps = Omit<PopupProps, 'children'>
 export const ProfilePopup = (props: ProfilePopupProps) => {
   const {
     user,
-    actions: { signOut }
+    actions: { signOut },
   } = useSession()
 
   const { t } = useLocalize()

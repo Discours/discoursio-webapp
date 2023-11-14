@@ -33,7 +33,7 @@ const useProfileForm = () => {
     about: '',
     slug: '',
     userpic: '',
-    links: []
+    links: [],
   })
 
   createEffect(async () => {
@@ -46,7 +46,7 @@ const useProfileForm = () => {
         bio: currentAuthor()?.bio,
         about: currentAuthor()?.about,
         userpic: userpicUrl(currentAuthor()?.userpic),
-        links: currentAuthor()?.links
+        links: currentAuthor()?.links,
       })
     } catch (error) {
       console.error(error)
@@ -58,14 +58,14 @@ const useProfileForm = () => {
       if (remove) {
         setForm(
           'links',
-          form.links.filter((item) => item !== value)
+          form.links.filter((item) => item !== value),
         )
       } else {
         setForm((prev) => ({ ...prev, links: [...prev.links, value] }))
       }
     } else {
       setForm({
-        [fieldName]: value
+        [fieldName]: value,
       })
     }
   }

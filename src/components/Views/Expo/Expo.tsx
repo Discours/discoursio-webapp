@@ -27,14 +27,14 @@ export const Expo = (props: Props) => {
   const { page: getPage } = useRouter()
   const getLayout = createMemo<LayoutType>(() => getPage().params['layout'] as LayoutType)
   const { sortedArticles } = useArticlesStore({
-    shouts: isLoaded() ? props.shouts : []
+    shouts: isLoaded() ? props.shouts : [],
   })
 
   const loadMore = async (count) => {
     saveScrollPosition()
     const options: LoadShoutsOptions = {
       limit: count,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     }
 
     options.filters = getLayout() ? { layout: getLayout() } : { excludeLayout: 'article' }
@@ -45,7 +45,7 @@ export const Expo = (props: Props) => {
   }
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
   onMount(() => {
@@ -70,8 +70,8 @@ export const Expo = (props: Props) => {
         resetSortedArticles()
         loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   onCleanup(() => {

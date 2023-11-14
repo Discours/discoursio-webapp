@@ -32,7 +32,7 @@ export const AuthorCard = (props: Props) => {
     session,
     subscriptions,
     isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -40,7 +40,7 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
   const subscribed = createMemo<boolean>(() =>
-    subscriptions().authors.some((author) => author.slug === props.author.slug)
+    subscriptions().authors.some((author) => author.slug === props.author.slug),
   )
 
   const subscribe = async (really = true) => {
@@ -74,7 +74,7 @@ export const AuthorCard = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, `inbox`)
       changeSearchParam({
-        initChat: props.author.id.toString()
+        initChat: props.author.id.toString(),
       })
     }, 'discussions')
   }
@@ -218,7 +218,7 @@ export const AuthorCard = (props: Props) => {
                     value={followButtonText()}
                     isSubscribeButton={true}
                     class={clsx({
-                      [stylesButton.subscribed]: subscribed()
+                      [stylesButton.subscribed]: subscribed(),
                     })}
                   />
                   <Button

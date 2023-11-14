@@ -80,7 +80,7 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   profileSettings: ProfileSettingsPage,
   profileSecurity: ProfileSecurityPage,
   profileSubscriptions: ProfileSubscriptionsPage,
-  fourOuFour: FourOuFourPage
+  fourOuFour: FourOuFourPage,
 }
 
 export const App = (props: PageProps) => {

@@ -46,7 +46,7 @@ const CreateModalContent = (props: Props) => {
   const handleClick = (user) => {
     setCollectionToInvite((userCollection) => {
       return userCollection.map((clickedUser) =>
-        user.id === clickedUser.id ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser
+        user.id === clickedUser.id ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser,
       )
     })
   }

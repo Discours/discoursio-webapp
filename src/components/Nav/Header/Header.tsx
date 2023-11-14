@@ -528,9 +528,8 @@ export const Header = (props: Props) => {
             </ul>
           </div>
         </nav>
-        <ShowOnlyOnClient>
-          <Snackbar />
-        </ShowOnlyOnClient>
+
+        <Snackbar />
       </div>
     </header>
   )

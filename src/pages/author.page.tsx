@@ -31,6 +31,7 @@ export const AuthorPage = (props: PageProps) => {
       return
     }
 
+    resetSortedArticles()
     await preload()
 
     setIsLoaded(true)

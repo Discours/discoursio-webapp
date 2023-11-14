@@ -1,5 +1,6 @@
-import { apiClient } from '../utils/apiClient'
 import type { MessagesBy } from '../graphql/types.gen'
+
+import { apiClient } from '../utils/apiClient'
 
 export const loadRecipients = async (by = {}): Promise<void> => {
   return await apiClient.getRecipients(by)

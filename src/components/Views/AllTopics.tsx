@@ -1,15 +1,16 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
 
-import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
-import { useRouter } from '../../stores/router'
-import { TopicCard } from '../Topic/Card'
 import { clsx } from 'clsx'
-import { useSession } from '../../context/session'
-import { SearchField } from '../_shared/SearchField'
-import { scrollHandler } from '../../utils/scroll'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { useSession } from '../../context/session'
+import { useRouter } from '../../stores/router'
+import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { scrollHandler } from '../../utils/scroll'
+import { SearchField } from '../_shared/SearchField'
+import { TopicCard } from '../Topic/Card'
 
 import styles from './AllTopics.module.scss'
 
@@ -31,7 +32,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
-    sortBy: searchParams().by || 'shouts'
+    sortBy: searchParams().by || 'shouts',
   })
 
   const { subscriptions } = useSession()
@@ -39,7 +40,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
-        by: 'shouts'
+        by: 'shouts',
       })
     }
   })
@@ -57,7 +58,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
         acc[letter].push(topic)
         return acc
       },
-      {} as { [letter: string]: Topic[] }
+      {} as { [letter: string]: Topic[] },
     )
   })
 

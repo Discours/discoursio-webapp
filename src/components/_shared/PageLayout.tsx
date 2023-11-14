@@ -1,12 +1,14 @@
 import type { JSX } from 'solid-js'
-import { Header } from '../Nav/Header'
-import { Footer } from '../Discours/Footer'
 
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
+import { createEffect, createSignal, Show } from 'solid-js'
+
+import { Footer } from '../Discours/Footer'
+import { Header } from '../Nav/Header'
+
 import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
-import { Title } from '@solidjs/meta'
 
 type Props = {
   title: string
@@ -47,7 +49,7 @@ export const PageLayout = (props: Props) => {
       <main
         class={clsx('main-content', {
           [styles.withPadding]: props.withPadding,
-          [styles.zeroBottomPadding]: props.zeroBottomPadding
+          [styles.zeroBottomPadding]: props.zeroBottomPadding,
         })}
         classList={{ 'main-content--no-padding': !isHeaderFixed }}
       >

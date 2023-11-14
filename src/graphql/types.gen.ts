@@ -113,7 +113,7 @@ export enum FollowingEntity {
   Author = 'AUTHOR',
   Community = 'COMMUNITY',
   Reactions = 'REACTIONS',
-  Topic = 'TOPIC'
+  Topic = 'TOPIC',
 }
 
 export type LoadShoutsFilters = {
@@ -151,7 +151,7 @@ export type Message = {
 export enum MessageStatus {
   Deleted = 'DELETED',
   New = 'NEW',
-  Updated = 'UPDATED'
+  Updated = 'UPDATED',
 }
 
 export type MessagesBy = {
@@ -323,7 +323,7 @@ export type Notification = {
 
 export enum NotificationType {
   NewComment = 'NEW_COMMENT',
-  NewReply = 'NEW_REPLY'
+  NewReply = 'NEW_REPLY',
 }
 
 export type NotificationsQueryParams = {
@@ -544,7 +544,7 @@ export enum ReactionKind {
   Propose = 'PROPOSE',
   Quote = 'QUOTE',
   Reject = 'REJECT',
-  Remark = 'REMARK'
+  Remark = 'REMARK',
 }
 
 export enum ReactionStatus {
@@ -552,7 +552,7 @@ export enum ReactionStatus {
   Deleted = 'DELETED',
   Explained = 'EXPLAINED',
   New = 'NEW',
-  Updated = 'UPDATED'
+  Updated = 'UPDATED',
 }
 
 export type ReactionUpdating = {

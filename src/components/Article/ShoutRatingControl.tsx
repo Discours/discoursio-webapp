@@ -1,13 +1,15 @@
 import { clsx } from 'clsx'
 import { createMemo, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
 import { ReactionKind, Shout } from '../../graphql/types.gen'
 import { loadShout } from '../../stores/zine/articles'
-import { useSession } from '../../context/session'
-import { useReactions } from '../../context/reactions'
+import { Icon } from '../_shared/Icon'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
-import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
+
 import styles from './ShoutRatingControl.module.scss'
 
 interface ShoutRatingControlProps {
@@ -19,12 +21,12 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
   const {
     user,
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
 
   const {
     reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy }
+    actions: { createReaction, deleteReaction, loadReactionsBy },
   } = useReactions()
 
   const checkReaction = (reactionKind: ReactionKind) =>
@@ -33,7 +35,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.kind === reactionKind &&
         r.createdBy.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
-        !r.replyTo
+        !r.replyTo,
     )
 
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
@@ -45,8 +47,8 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       (r) =>
         [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
         r.shout.id === props.shout.id &&
-        !r.replyTo
-    )
+        !r.replyTo,
+    ),
   )
 
   const deleteShoutReaction = async (reactionKind: ReactionKind) => {
@@ -55,7 +57,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.kind === reactionKind &&
         r.createdBy.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
-        !r.replyTo
+        !r.replyTo,
     )
     return deleteReaction(reactionToDelete.id)
   }
@@ -69,13 +71,13 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       } else {
         await createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-          shout: props.shout.id
+          shout: props.shout.id,
         })
       }
 
       loadShout(props.shout.slug)
       loadReactionsBy({
-        by: { shout: props.shout.slug }
+        by: { shout: props.shout.slug },
       })
     }, 'vote')
   }

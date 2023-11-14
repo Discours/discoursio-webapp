@@ -1,10 +1,12 @@
+import type { PageProps } from './types'
+
+import { createSignal, onMount, Show } from 'solid-js'
+
+import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AllTopicsView } from '../components/Views/AllTopics'
-import type { PageProps } from './types'
-import { createSignal, onMount, Show } from 'solid-js'
-import { loadAllTopics } from '../stores/zine/topics'
-import { Loading } from '../components/_shared/Loading'
 import { useLocalize } from '../context/localize'
+import { loadAllTopics } from '../stores/zine/topics'
 
 export const AllTopicsPage = (props: PageProps) => {
   const { t } = useLocalize()

@@ -1,22 +1,25 @@
-import { createMemo, createSignal, For, Show } from 'solid-js'
 import type { Shout } from '../../../graphql/types.gen'
-import { capitalize } from '../../../utils/capitalize'
-import { Icon } from '../../_shared/Icon'
-import { clsx } from 'clsx'
-import { CardTopic } from '../CardTopic'
-import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
-import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import { getDescription } from '../../../utils/meta'
-import { FeedArticlePopup } from '../FeedArticlePopup'
-import { useLocalize } from '../../../context/localize'
+
 import { getPagePath, openPage } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
-import { Popover } from '../../_shared/Popover'
-import { Image } from '../../_shared/Image'
+import { clsx } from 'clsx'
+import { createMemo, createSignal, For, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { router, useRouter } from '../../../stores/router'
+import { capitalize } from '../../../utils/capitalize'
+import { getDescription } from '../../../utils/meta'
+import { Icon } from '../../_shared/Icon'
+import { Image } from '../../_shared/Image'
+import { Popover } from '../../_shared/Popover'
+import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
 import { AuthorLink } from '../../Author/AhtorLink'
-import stylesHeader from '../../Nav/Header/Header.module.scss'
+import { CardTopic } from '../CardTopic'
+import { FeedArticlePopup } from '../FeedArticlePopup'
+
 import styles from './ArticleCard.module.scss'
+import stylesHeader from '../../Nav/Header/Header.module.scss'
 
 interface ArticleCardProps {
   settings?: {
@@ -45,7 +48,7 @@ interface ArticleCardProps {
 }
 
 const getTitleAndSubtitle = (
-  article: Shout
+  article: Shout,
 ): {
   title: string
   subtitle: string
@@ -90,7 +93,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
     event.preventDefault()
     openPage(router, 'article', { slug: props.article.slug })
     changeSearchParam({
-      scrollTo: 'comments'
+      scrollTo: 'comments',
     })
   }
 
@@ -111,7 +114,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardCompact]: props.settings?.isCompact,
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
-        [styles.shoutCardNoImage]: !props.article.cover
+        [styles.shoutCardNoImage]: !props.article.cover,
       }}
     >
       <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
@@ -155,7 +158,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
         <div
           class={clsx(styles.shoutCardTitlesContainer, {
-            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
+            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode,
           })}
         >
           <a href={getPagePath(router, 'article', { slug: props.article.slug })}>

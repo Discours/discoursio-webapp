@@ -1,5 +1,6 @@
-import { apiClient } from '../utils/apiClient'
 import { createSignal } from 'solid-js'
+
+import { apiClient } from '../utils/apiClient'
 
 const [emailChecks, setEmailChecks] = createSignal<{ [email: string]: boolean }>({})
 

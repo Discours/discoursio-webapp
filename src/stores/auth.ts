@@ -3,7 +3,7 @@ import { apiClient } from '../utils/apiClient'
 export const register = async ({
   name,
   email,
-  password
+  password,
 }: {
   name: string
   email: string
@@ -12,14 +12,14 @@ export const register = async ({
   await apiClient.authRegister({
     name,
     email,
-    password
+    password,
   })
 }
 
 export const signSendLink = async ({
   email,
   lang,
-  template
+  template,
 }: {
   email: string
   lang: string

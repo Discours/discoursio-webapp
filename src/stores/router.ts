@@ -1,7 +1,9 @@
 import type { Accessor } from 'solid-js'
+
 import { createRouter, createSearchParams } from '@nanostores/router'
-import { isServer } from 'solid-js/web'
 import { useStore } from '@nanostores/solid'
+import { isServer } from 'solid-js/web'
+
 import { hydrationPromise } from '../utils/hydrationPromise'
 
 export const ROUTES = {
@@ -41,13 +43,13 @@ export const ROUTES = {
   profileSecurity: '/profile/security',
   profileSubscriptions: '/profile/subscriptions',
   fourOuFour: '/404',
-  article: '/:slug'
+  article: '/:slug',
 } as const
 
 const searchParamsStore = createSearchParams()
 const routerStore = createRouter(ROUTES, {
   search: false,
-  links: false
+  links: false,
 })
 
 export const router = routerStore
@@ -83,7 +85,7 @@ const scrollToHash = (hash: string) => {
 
   window.scrollTo({
     top: newScrollTop,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
@@ -119,7 +121,7 @@ const handleClientRouteLinkClick = async (event) => {
 
   window.scrollTo({
     top: 0,
-    left: 0
+    left: 0,
   })
 }
 
@@ -154,6 +156,6 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   return {
     page,
     searchParams,
-    changeSearchParam
+    changeSearchParam,
   }
 }

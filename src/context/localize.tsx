@@ -1,12 +1,14 @@
 import type { i18n } from 'i18next'
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createEffect, createMemo, createSignal, Show, useContext } from 'solid-js'
-import { useRouter } from '../stores/router'
+
 import i18next, { changeLanguage, t } from 'i18next'
-import Cookie from 'js-cookie'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ru from 'javascript-time-ago/locale/ru'
+import Cookie from 'js-cookie'
+import { createContext, createEffect, createMemo, createSignal, Show, useContext } from 'solid-js'
+
+import { useRouter } from '../stores/router'
 
 TimeAgo.addLocale(en)
 TimeAgo.addLocale(ru)
@@ -52,9 +54,9 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
       {},
       {
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       },
-      options
+      options,
     )
 
     return date.toLocaleTimeString(lang(), opts)
@@ -66,9 +68,9 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
       {
         month: 'long',
         day: 'numeric',
-        year: 'numeric'
+        year: 'numeric',
       },
-      options
+      options,
     )
 
     let result = date.toLocaleDateString(lang(), opts)

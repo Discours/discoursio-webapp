@@ -14,18 +14,18 @@ declare module '@tiptap/core' {
 export const CustomBlockquote = Blockquote.extend({
   name: 'blockquote',
   defaultOptions: {
-    HTMLAttributes: {}
+    HTMLAttributes: {},
   },
   group: 'block',
   content: 'block+',
   addAttributes() {
     return {
       'data-float': {
-        default: null
+        default: null,
       },
       'data-type': {
-        default: null
-      }
+        default: null,
+      },
     }
   },
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -41,7 +41,7 @@ export const CustomBlockquote = Blockquote.extend({
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-float': value })
-        }
+        },
     }
-  }
+  },
 })

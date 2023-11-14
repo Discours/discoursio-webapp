@@ -1,28 +1,30 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
-import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
-import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Match } from 'solid-js'
-import deepEqual from 'fast-deep-equal'
-import { clsx } from 'clsx'
-import styles from './Settings.module.scss'
-import { useProfileForm } from '../../context/profile'
-import { validateUrl } from '../../utils/validateUrl'
 import { createFileUploader } from '@solid-primitives/upload'
-import { useSession } from '../../context/session'
-import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
-import { useSnackbar } from '../../context/snackbar'
-import { useLocalize } from '../../context/localize'
+import { clsx } from 'clsx'
+import deepEqual from 'fast-deep-equal'
+import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Match } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { clone } from '../../utils/clone'
-import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
+
+import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
 import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
-import { AuthGuard } from '../../components/AuthGuard'
-import { handleImageUpload } from '../../utils/handleImageUpload'
-import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
-import { profileSocialLinks } from '../../utils/profileSocialLinks'
 import { Icon } from '../../components/_shared/Icon'
-import { Popover } from '../../components/_shared/Popover'
 import { Loading } from '../../components/_shared/Loading'
+import { PageLayout } from '../../components/_shared/PageLayout'
+import { Popover } from '../../components/_shared/Popover'
+import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
+import { AuthGuard } from '../../components/AuthGuard'
+import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
+import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
+import { useLocalize } from '../../context/localize'
+import { useProfileForm } from '../../context/profile'
+import { useSession } from '../../context/session'
+import { useSnackbar } from '../../context/snackbar'
+import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { handleImageUpload } from '../../utils/handleImageUpload'
+import { profileSocialLinks } from '../../utils/profileSocialLinks'
+import { validateUrl } from '../../utils/validateUrl'
+
+import styles from './Settings.module.scss'
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
@@ -34,11 +36,11 @@ export const ProfileSettingsPage = () => {
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const {
-    actions: { loadSession }
+    actions: { loadSession },
   } = useSession()
 
   const { form, updateFormField, submit, slugError } = useProfileForm()
@@ -93,7 +95,7 @@ export const ProfileSettingsPage = () => {
     const handleBeforeUnload = (event) => {
       if (!deepEqual(form, prevForm)) {
         event.returnValue = t(
-          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
+          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?',
         )
       }
     }
@@ -154,8 +156,8 @@ export const ProfileSettingsPage = () => {
                                 style={{
                                   'background-image': `url(${getImageUrl(form.userpic, {
                                     width: 180,
-                                    height: 180
-                                  })})`
+                                    height: 180,
+                                  })})`,
                                 }}
                               />
                               <div class={styles.controls}>
@@ -196,7 +198,7 @@ export const ProfileSettingsPage = () => {
                       <h4>{t('Name')}</h4>
                       <p class="description">
                         {t(
-                          'Your name will appear on your profile page and as your signature in publications, comments and responses.'
+                          'Your name will appear on your profile page and as your signature in publications, comments and responses.',
                         )}
                       </p>
                       <div class="pretty-form__item">

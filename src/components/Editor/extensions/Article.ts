@@ -14,8 +14,8 @@ export default Node.create({
   name: 'article',
   defaultOptions: {
     HTMLAttributes: {
-      'data-type': 'incut'
-    }
+      'data-type': 'incut',
+    },
   },
   group: 'block',
   content: 'block+',
@@ -23,8 +23,8 @@ export default Node.create({
   parseHTML() {
     return [
       {
-        tag: 'article'
-      }
+        tag: 'article',
+      },
     ]
   },
 
@@ -35,11 +35,11 @@ export default Node.create({
   addAttributes() {
     return {
       'data-float': {
-        default: null
+        default: null,
       },
       'data-bg': {
-        default: null
-      }
+        default: null,
+      },
     }
   },
 
@@ -60,7 +60,7 @@ export default Node.create({
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-bg': value })
-        }
+        },
     }
-  }
+  },
 })

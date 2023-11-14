@@ -1,15 +1,18 @@
-import { clsx } from 'clsx'
 import type { Notification } from '../../../graphql/types.gen'
-import { createMemo, createSignal, onMount, Show } from 'solid-js'
-import { NotificationType } from '../../../graphql/types.gen'
-import { getPagePath, openPage } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
-import { useNotifications } from '../../../context/notifications'
-import { useLocalize } from '../../../context/localize'
 import type { ArticlePageSearchParams } from '../../Article/FullArticle'
-import { TimeAgo } from '../../_shared/TimeAgo'
-import styles from './NotificationView.module.scss'
+
+import { getPagePath, openPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { createMemo, createSignal, onMount, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { useNotifications } from '../../../context/notifications'
+import { NotificationType } from '../../../graphql/types.gen'
+import { router, useRouter } from '../../../stores/router'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
+import { TimeAgo } from '../../_shared/TimeAgo'
+
+import styles from './NotificationView.module.scss'
 
 type Props = {
   notification: Notification
@@ -36,7 +39,7 @@ type NotificationData = {
 
 export const NotificationView = (props: Props) => {
   const {
-    actions: { markNotificationAsRead, hideNotificationsPanel }
+    actions: { markNotificationAsRead, hideNotificationsPanel },
   } = useNotifications()
 
   const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
@@ -89,7 +92,7 @@ export const NotificationView = (props: Props) => {
         return (
           <>
             {t('NotificationNewCommentText1', {
-              commentsCount: props.notification.occurrences
+              commentsCount: props.notification.occurrences,
             })}{' '}
             <a href={getPagePath(router, 'article', { slug: data().shout.slug })} onClick={handleLinkClick}>
               {shoutTitle}
@@ -99,7 +102,7 @@ export const NotificationView = (props: Props) => {
               {lastUser().name}
             </a>{' '}
             {t('NotificationNewCommentText3', {
-              restUsersCount: data().users.length - 1
+              restUsersCount: data().users.length - 1,
             })}
           </>
         )
@@ -108,7 +111,7 @@ export const NotificationView = (props: Props) => {
         return (
           <>
             {t('NotificationNewReplyText1', {
-              commentsCount: props.notification.occurrences
+              commentsCount: props.notification.occurrences,
             })}{' '}
             <a href={getPagePath(router, 'article', { slug: data().shout.slug })} onClick={handleLinkClick}>
               {shoutTitle}
@@ -118,7 +121,7 @@ export const NotificationView = (props: Props) => {
               {lastUser().name}
             </a>{' '}
             {t('NotificationNewReplyText3', {
-              restUsersCount: data().users.length - 1
+              restUsersCount: data().users.length - 1,
             })}
           </>
         )
@@ -158,7 +161,7 @@ export const NotificationView = (props: Props) => {
     <Show when={data()}>
       <div
         class={clsx(styles.NotificationView, props.class, {
-          [styles.seen]: props.notification.seen
+          [styles.seen]: props.notification.seen,
         })}
         onClick={handleClick}
       >

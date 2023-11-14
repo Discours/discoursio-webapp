@@ -1,17 +1,19 @@
+import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
+import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { Author, FollowingEntity } from '../../../graphql/types.gen'
+import { router, useRouter } from '../../../stores/router'
+import { follow, unfollow } from '../../../stores/zine/common'
+import { Button } from '../../_shared/Button'
+import { CheckButton } from '../../_shared/CheckButton'
+import { Icon } from '../../_shared/Icon'
+import { Userpic } from '../Userpic'
+
 import styles from './AuthorBadge.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
-import { Userpic } from '../Userpic'
-import { Author, FollowingEntity } from '../../../graphql/types.gen'
-import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
-import { useLocalize } from '../../../context/localize'
-import { Button } from '../../_shared/Button'
-import { useSession } from '../../../context/session'
-import { follow, unfollow } from '../../../stores/zine/common'
-import { CheckButton } from '../../_shared/CheckButton'
-import { openPage } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
-import { Icon } from '../../_shared/Icon'
 
 type Props = {
   author: Author
@@ -25,12 +27,12 @@ export const AuthorBadge = (props: Props) => {
   const {
     session,
     subscriptions,
-    actions: { loadSubscriptions, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
   const { changeSearchParam } = useRouter()
   const { t, formatDate } = useLocalize()
   const subscribed = createMemo(() =>
-    subscriptions().authors.some((author) => author.slug === props.author.slug)
+    subscriptions().authors.some((author) => author.slug === props.author.slug),
   )
 
   const subscribe = async (really = true) => {
@@ -53,7 +55,7 @@ export const AuthorBadge = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, `inbox`)
       changeSearchParam({
-        initChat: props.author.id.toString()
+        initChat: props.author.id.toString(),
       })
     }, 'discussions')
   }
@@ -126,7 +128,7 @@ export const AuthorBadge = (props: Props) => {
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.iconed]: props.iconButtons,
-                    [stylesButton.subscribed]: subscribed()
+                    [stylesButton.subscribed]: subscribed(),
                   })}
                 />
               }
@@ -151,7 +153,7 @@ export const AuthorBadge = (props: Props) => {
                 isSubscribeButton={true}
                 class={clsx(styles.actionButton, {
                   [styles.iconed]: props.iconButtons,
-                  [stylesButton.subscribed]: subscribed()
+                  [stylesButton.subscribed]: subscribed(),
                 })}
               />
             </Show>

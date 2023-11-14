@@ -11,7 +11,7 @@ export const composeMediaItems = (value: UploadedFile[], optionalParams = {}) =>
       source: '',
       title: fileData.originalFilename ? removeFileExtension(fileData.originalFilename) : '',
       body: '',
-      ...optionalParams
+      ...optionalParams,
     }
   })
 }

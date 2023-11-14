@@ -1,5 +1,6 @@
-import { PageLayout } from '../components/_shared/PageLayout'
 import { createSignal, Show } from 'solid-js'
+
+import { PageLayout } from '../components/_shared/PageLayout'
 
 export const ConnectPage = () => {
   const [state, setState] = createSignal<'initial' | 'loading' | 'success' | 'error'>('initial')
@@ -19,15 +20,15 @@ export const ConnectPage = () => {
 
         return acc
       },
-      {} as Record<string, string>
+      {} as Record<string, string>,
     )
 
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(postData)
+      body: JSON.stringify(postData),
     }
 
     const result = await fetch('/api/feedback', requestOptions)
@@ -40,7 +41,7 @@ export const ConnectPage = () => {
 
     setState('success')
     window.scrollTo({
-      top: 0
+      top: 0,
     })
   }
 

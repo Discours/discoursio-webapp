@@ -1,19 +1,23 @@
-import styles from './AuthModal.module.scss'
-import { clsx } from 'clsx'
-import { SocialProviders } from './SocialProviders'
-import { ApiError } from '../../../utils/apiClient'
-import { createSignal, Show } from 'solid-js'
-import { email, setEmail } from './sharedLogic'
-import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
-import { hideModal } from '../../../stores/ui'
-import { useSession } from '../../../context/session'
-import { signSendLink } from '../../../stores/auth'
-import { validateEmail } from '../../../utils/validateEmail'
-import { useSnackbar } from '../../../context/snackbar'
+
+import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { useSnackbar } from '../../../context/snackbar'
+import { signSendLink } from '../../../stores/auth'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { ApiError } from '../../../utils/apiClient'
+import { validateEmail } from '../../../utils/validateEmail'
 import { Icon } from '../../_shared/Icon'
+
 import { AuthModalHeader } from './AuthModalHeader'
+import { email, setEmail } from './sharedLogic'
+import { SocialProviders } from './SocialProviders'
+
+import styles from './AuthModal.module.scss'
 
 type FormFields = {
   email: string
@@ -36,11 +40,11 @@ export const LoginForm = () => {
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const {
-    actions: { signIn }
+    actions: { signIn },
   } = useSession()
 
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
@@ -144,7 +148,7 @@ export const LoginForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email
+            'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input
@@ -164,7 +168,7 @@ export const LoginForm = () => {
 
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().password
+            'pretty-form__item--error': validationErrors().password,
           })}
         >
           <input
@@ -198,7 +202,7 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               changeSearchParam({
-                mode: 'forgot-password'
+                mode: 'forgot-password',
               })
             }
           >
@@ -215,7 +219,7 @@ export const LoginForm = () => {
             class={styles.authLink}
             onClick={() =>
               changeSearchParam({
-                mode: 'register'
+                mode: 'register',
               })
             }
           >

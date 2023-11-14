@@ -1,13 +1,15 @@
+import type { PageContext } from './types'
+import type { Language } from '../context/localize'
+
+import i18next from 'i18next'
+import ICU from 'i18next-icu'
 import { generateHydrationScript, getAssets, renderToString } from 'solid-js/web'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+
+import en from '../../public/locales/en/translation.json'
+import ru from '../../public/locales/ru/translation.json'
 import { App } from '../components/App'
 import { initRouter } from '../stores/router'
-import type { PageContext } from './types'
-import i18next from 'i18next'
-import ru from '../../public/locales/ru/translation.json'
-import en from '../../public/locales/en/translation.json'
-import type { Language } from '../context/localize'
-import ICU from 'i18next-icu'
 
 export const passToClient = ['pageProps', 'lng', 'documentProps', 'is404']
 
@@ -38,8 +40,8 @@ export const render = async (pageContext: PageContext) => {
       lng,
       resources: {
         ru: { translation: ru },
-        en: { translation: en }
-      }
+        en: { translation: en },
+      },
     })
   } else if (i18next.language !== lng) {
     // eslint-disable-next-line import/no-named-as-default-member

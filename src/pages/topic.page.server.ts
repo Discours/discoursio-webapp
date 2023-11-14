@@ -1,6 +1,7 @@
-import type { PageContext } from '../renderer/types'
-import { apiClient } from '../utils/apiClient'
 import type { PageProps } from './types'
+import type { PageContext } from '../renderer/types'
+
+import { apiClient } from '../utils/apiClient'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams
@@ -11,7 +12,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
 
   return {
     pageContext: {
-      pageProps
-    }
+      pageProps,
+    },
   }
 }

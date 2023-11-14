@@ -18,49 +18,50 @@ import type {
   Shout,
   NotificationsQueryParams,
   NotificationsQueryResult,
-  MySubscriptionsQueryResult
+  MySubscriptionsQueryResult,
 } from '../graphql/types.gen'
-import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
-import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
-import topicsAll from '../graphql/query/topics-all'
-import mySession from '../graphql/mutation/my-session'
-import authLogoutQuery from '../graphql/mutation/auth-logout'
-import authLoginQuery from '../graphql/query/auth-login'
-import authRegisterMutation from '../graphql/mutation/auth-register'
-import authCheckEmailQuery from '../graphql/query/auth-check-email'
+
+import createArticle from '../graphql/mutation/article-create'
+import deleteShout from '../graphql/mutation/article-delete'
+import updateArticle from '../graphql/mutation/article-update'
 import authConfirmEmailMutation from '../graphql/mutation/auth-confirm-email'
+import authLogoutQuery from '../graphql/mutation/auth-logout'
+import authRegisterMutation from '../graphql/mutation/auth-register'
 import authSendLinkMutation from '../graphql/mutation/auth-send-link'
+import createChat from '../graphql/mutation/create-chat'
+import createMessage from '../graphql/mutation/create-chat-message'
 import followMutation from '../graphql/mutation/follow'
-import unfollowMutation from '../graphql/mutation/unfollow'
-import topicsRandomQuery from '../graphql/query/topics-random'
-import authorsAll from '../graphql/query/authors-all'
+import markAllNotificationsAsRead from '../graphql/mutation/mark-all-notifications-as-read'
+import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
+import mySession from '../graphql/mutation/my-session'
 import reactionCreate from '../graphql/mutation/reaction-create'
 import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
-import createArticle from '../graphql/mutation/article-create'
-import myChats from '../graphql/query/chats-load'
-import chatMessagesLoadBy from '../graphql/query/chat-messages-load-by'
+import unfollowMutation from '../graphql/mutation/unfollow'
+import updateProfile from '../graphql/mutation/update-profile'
+import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
+import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
+import shoutLoad from '../graphql/query/article-load'
+import shoutsLoadBy from '../graphql/query/articles-load-by'
+import authCheckEmailQuery from '../graphql/query/auth-check-email'
+import authLoginQuery from '../graphql/query/auth-login'
 import authorBySlug from '../graphql/query/author-by-slug'
 import userSubscribers from '../graphql/query/author-followers'
-import userFollowedAuthors from '../graphql/query/author-following-users'
 import userFollowedTopics from '../graphql/query/author-following-topics'
-import topicBySlug from '../graphql/query/topic-by-slug'
-import createChat from '../graphql/mutation/create-chat'
-import reactionsLoadBy from '../graphql/query/reactions-load-by'
+import userFollowedAuthors from '../graphql/query/author-following-users'
+import authorsAll from '../graphql/query/authors-all'
 import authorsLoadBy from '../graphql/query/authors-load-by'
-import shoutsLoadBy from '../graphql/query/articles-load-by'
-import draftsLoad from '../graphql/query/drafts-load'
-import shoutLoad from '../graphql/query/article-load'
-import myFeed from '../graphql/query/my-feed'
+import chatMessagesLoadBy from '../graphql/query/chat-messages-load-by'
 import loadRecipients from '../graphql/query/chat-recipients'
-import createMessage from '../graphql/mutation/create-chat-message'
-import updateProfile from '../graphql/mutation/update-profile'
-import updateArticle from '../graphql/mutation/article-update'
-import deleteShout from '../graphql/mutation/article-delete'
-import notifications from '../graphql/query/notifications'
-import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
-import markAllNotificationsAsRead from '../graphql/mutation/mark-all-notifications-as-read'
+import myChats from '../graphql/query/chats-load'
+import draftsLoad from '../graphql/query/drafts-load'
+import myFeed from '../graphql/query/my-feed'
 import mySubscriptions from '../graphql/query/my-subscriptions'
+import notifications from '../graphql/query/notifications'
+import reactionsLoadBy from '../graphql/query/reactions-load-by'
+import topicBySlug from '../graphql/query/topic-by-slug'
+import topicsAll from '../graphql/query/topics-all'
+import topicsRandomQuery from '../graphql/query/topics-random'
 
 type ApiErrorCode =
   | 'unknown'
@@ -107,7 +108,7 @@ export const apiClient = {
   authRegister: async ({
     email,
     password,
-    name
+    name,
   }: {
     email: string
     password: string
@@ -261,7 +262,7 @@ export const apiClient = {
   updateArticle: async ({
     shoutId,
     shoutInput,
-    publish
+    publish,
   }: {
     shoutId: number
     shoutInput?: ShoutInput
@@ -306,7 +307,7 @@ export const apiClient = {
   getShoutBySlug: async (slug: string) => {
     const resp = await publicGraphQLClient
       .query(shoutLoad, {
-        slug
+        slug,
       })
       .toPromise()
 
@@ -319,7 +320,7 @@ export const apiClient = {
   getShoutById: async (shoutId: number) => {
     const resp = await publicGraphQLClient
       .query(shoutLoad, {
-        shoutId
+        shoutId,
       })
       .toPromise()
 
@@ -362,7 +363,7 @@ export const apiClient = {
   markNotificationAsRead: async (notificationId: number): Promise<void> => {
     await privateGraphQLClient
       .mutation(markNotificationAsRead, {
-        notificationId
+        notificationId,
       })
       .toPromise()
   },
@@ -400,5 +401,5 @@ export const apiClient = {
   getRecipients: async (options: QueryLoadRecipientsArgs) => {
     const resp = await privateGraphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members
-  }
+  },
 }

@@ -1,6 +1,8 @@
-import type { JSX } from 'solid-js/jsx-runtime'
-import { For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
+import type { JSX } from 'solid-js/jsx-runtime'
+
+import { For, Show } from 'solid-js'
+
 import { ArticleCard } from './ArticleCard'
 import './Group.scss'
 
@@ -26,7 +28,7 @@ export default (props: GroupProps) => {
                   noicon: true,
                   isFloorImportant: true,
                   isBigTitle: true,
-                  nodate: true
+                  nodate: true,
                 }}
               />
             </div>
@@ -59,7 +61,7 @@ export default (props: GroupProps) => {
                             isBigTitle: true,
                             isCompact: true,
                             isFloorImportant: true,
-                            nodate: true
+                            nodate: true,
                           }}
                         />
                       )}
@@ -76,7 +78,7 @@ export default (props: GroupProps) => {
                             isBigTitle: true,
                             isCompact: true,
                             isFloorImportant: true,
-                            nodate: true
+                            nodate: true,
                           }}
                         />
                       )}

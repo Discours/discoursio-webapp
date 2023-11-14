@@ -1,11 +1,13 @@
-import { For, Show, createSignal, createEffect, on, onMount, onCleanup } from 'solid-js'
 import { clsx } from 'clsx'
-import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
-import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
-import styles from './TableOfContents.module.scss'
-import { isDesktop } from '../../utils/media-query'
+import { For, Show, createSignal, createEffect, on, onMount, onCleanup } from 'solid-js'
 import { throttle, debounce } from 'throttle-debounce'
+
+import { useLocalize } from '../../context/localize'
+import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
+import { isDesktop } from '../../utils/media-query'
+import { Icon } from '../_shared/Icon'
+
+import styles from './TableOfContents.module.scss'
 
 interface Props {
   variant: 'article' | 'editor'
@@ -23,7 +25,7 @@ const scrollToHeader = (element) => {
     top:
       element.getBoundingClientRect().top -
       document.body.getBoundingClientRect().top -
-      DEFAULT_HEADER_OFFSET
+      DEFAULT_HEADER_OFFSET,
   })
 }
 
@@ -43,7 +45,7 @@ export const TableOfContents = (props: Props) => {
   const updateHeadings = () => {
     setHeadings(
       // eslint-disable-next-line unicorn/prefer-spread
-      Array.from(document.querySelector(props.parentSelector).querySelectorAll<HTMLElement>('h2, h3, h4'))
+      Array.from(document.querySelector(props.parentSelector).querySelectorAll<HTMLElement>('h2, h3, h4')),
     )
     setAreHeadingsLoaded(true)
   }
@@ -58,8 +60,8 @@ export const TableOfContents = (props: Props) => {
   createEffect(
     on(
       () => props.body,
-      () => debouncedUpdateHeadings()
-    )
+      () => debouncedUpdateHeadings(),
+    ),
   )
 
   onMount(() => {
@@ -75,7 +77,7 @@ export const TableOfContents = (props: Props) => {
     >
       <div
         class={clsx(styles.TableOfContentsFixedWrapper, {
-          [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'
+          [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor',
         })}
       >
         <div class={styles.TableOfContentsContainer}>
@@ -92,7 +94,7 @@ export const TableOfContents = (props: Props) => {
                         class={clsx(styles.TableOfContentsHeadingsItem, {
                           [styles.TableOfContentsHeadingsItemH3]: h.nodeName === 'H3',
                           [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4',
-                          [styles.active]: index() === activeHeaderIndex()
+                          [styles.active]: index() === activeHeaderIndex(),
                         })}
                         innerHTML={h.textContent}
                         onClick={(e) => {
@@ -111,9 +113,9 @@ export const TableOfContents = (props: Props) => {
             class={clsx(
               styles.TableOfContentsPrimaryButton,
               {
-                [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible()
+                [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible(),
               },
-              'd-none d-xl-block'
+              'd-none d-xl-block',
             )}
             onClick={(e) => {
               e.preventDefault()
@@ -149,9 +151,9 @@ export const TableOfContents = (props: Props) => {
             class={clsx(
               styles.TableOfContentsPrimaryButton,
               {
-                [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible()
+                [styles.TableOfContentsPrimaryButtonLefted]: props.variant === 'editor' && !isVisible(),
               },
-              'd-xl-none'
+              'd-xl-none',
             )}
             onClick={(e) => {
               e.preventDefault()

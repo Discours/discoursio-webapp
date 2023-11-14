@@ -1,24 +1,26 @@
-import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
 import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
-import DialogCard from '../Inbox/DialogCard'
-import Search from '../Inbox/Search'
-import { Message } from '../Inbox/Message'
-import CreateModalContent from '../Inbox/CreateModalContent'
-import DialogHeader from '../Inbox/DialogHeader'
-import MessagesFallback from '../Inbox/MessagesFallback'
-import QuotedMessage from '../Inbox/QuotedMessage'
-import { Icon } from '../_shared/Icon'
+
+import { clsx } from 'clsx'
+import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
+
+import { useInbox } from '../../context/inbox'
+import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
 import { loadRecipients } from '../../stores/inbox'
-
-import { Modal } from '../Nav/Modal'
-import { showModal } from '../../stores/ui'
-import { useInbox } from '../../context/inbox'
 import { useRouter } from '../../stores/router'
-import { clsx } from 'clsx'
-import styles from '../../styles/Inbox.module.scss'
-import { useLocalize } from '../../context/localize'
+import { showModal } from '../../stores/ui'
+import { Icon } from '../_shared/Icon'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
+import CreateModalContent from '../Inbox/CreateModalContent'
+import DialogCard from '../Inbox/DialogCard'
+import DialogHeader from '../Inbox/DialogHeader'
+import { Message } from '../Inbox/Message'
+import MessagesFallback from '../Inbox/MessagesFallback'
+import QuotedMessage from '../Inbox/QuotedMessage'
+import Search from '../Inbox/Search'
+import { Modal } from '../Nav/Modal'
+
+import styles from '../../styles/Inbox.module.scss'
 
 type InboxSearchParams = {
   initChat: string
@@ -38,7 +40,7 @@ export const InboxView = () => {
   const {
     chats,
     messages,
-    actions: { loadChats, getMessages, sendMessage, createChat }
+    actions: { loadChats, getMessages, sendMessage, createChat },
   } = useInbox()
 
   const [recipients, setRecipients] = createSignal<Author[]>([])
@@ -65,7 +67,7 @@ export const InboxView = () => {
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParam({
-      chat: chat.id
+      chat: chat.id,
     })
     try {
       await getMessages(chat.id)
@@ -104,7 +106,7 @@ export const InboxView = () => {
     await sendMessage({
       body: message,
       chat: currentDialog().id.toString(),
-      replyTo: messageToReply()?.id
+      replyTo: messageToReply()?.id,
     })
     setClear(true)
     setMessageToReply(null)
@@ -125,7 +127,7 @@ export const InboxView = () => {
         await loadChats()
         changeSearchParam({
           initChat: null,
-          chat: newChat.chat.id
+          chat: newChat.chat.id,
         })
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen)

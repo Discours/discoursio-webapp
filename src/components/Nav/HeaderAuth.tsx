@@ -1,19 +1,22 @@
-import styles from './Header/Header.module.scss'
-import { clsx } from 'clsx'
-import { router, useRouter } from '../../stores/router'
-import { Icon } from '../_shared/Icon'
-import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { ProfilePopup } from './ProfilePopup'
-import { Userpic } from '../Author/Userpic'
-import { showModal } from '../../stores/ui'
-import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { useSession } from '../../context/session'
-import { useLocalize } from '../../context/localize'
 import { getPagePath } from '@nanostores/router'
-import { Button } from '../_shared/Button'
+import { clsx } from 'clsx'
+import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+
 import { useEditorContext } from '../../context/editor'
-import { Popover } from '../_shared/Popover'
+import { useLocalize } from '../../context/localize'
 import { useNotifications } from '../../context/notifications'
+import { useSession } from '../../context/session'
+import { router, useRouter } from '../../stores/router'
+import { showModal } from '../../stores/ui'
+import { Button } from '../_shared/Button'
+import { Icon } from '../_shared/Icon'
+import { Popover } from '../_shared/Popover'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import { Userpic } from '../Author/Userpic'
+
+import { ProfilePopup } from './ProfilePopup'
+
+import styles from './Header/Header.module.scss'
 
 type Props = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -32,12 +35,12 @@ export const HeaderAuth = (props: Props) => {
   const { session, isSessionLoaded, isAuthenticated } = useSession()
   const {
     unreadNotificationsCount,
-    actions: { showNotificationsPanel }
+    actions: { showNotificationsPanel },
   } = useNotifications()
 
   const {
     form,
-    actions: { toggleEditorPanel, saveShout, publishShout }
+    actions: { toggleEditorPanel, saveShout, publishShout },
   } = useEditorContext()
 
   const handleBellIconClick = (event: Event) => {
@@ -158,7 +161,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Save'),
                   icon: 'save',
-                  action: handleSaveButtonClick
+                  action: handleSaveButtonClick,
                 })}
               </div>
 
@@ -166,7 +169,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Publish'),
                   icon: 'publish',
-                  action: handlePublishButtonClick
+                  action: handlePublishButtonClick,
                 })}
               </div>
 

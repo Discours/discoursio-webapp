@@ -1,5 +1,6 @@
 import loglevel from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
+
 import { isDev } from './config'
 
 prefix.reg(loglevel)

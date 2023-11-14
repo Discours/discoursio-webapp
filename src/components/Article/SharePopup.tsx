@@ -1,12 +1,14 @@
-import { Icon } from '../_shared/Icon'
+import type { PopupProps } from '../_shared/Popup'
 
 import { createSocialShare, TWITTER, VK, FACEBOOK, TELEGRAM } from '@solid-primitives/share'
-import styles from '../_shared/Popup/Popup.module.scss'
-import type { PopupProps } from '../_shared/Popup'
-import { Popup } from '../_shared/Popup'
-import { useLocalize } from '../../context/localize'
 import { createEffect, createSignal } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
 import { useSnackbar } from '../../context/snackbar'
+import { Icon } from '../_shared/Icon'
+import { Popup } from '../_shared/Popup'
+
+import styles from '../_shared/Popup/Popup.module.scss'
 
 type SharePopupProps = {
   title: string
@@ -26,7 +28,7 @@ export const SharePopup = (props: SharePopupProps) => {
   const { t } = useLocalize()
   const [isVisible, setIsVisible] = createSignal(false)
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   createEffect(() => {
@@ -38,7 +40,7 @@ export const SharePopup = (props: SharePopupProps) => {
   const [share] = createSocialShare(() => ({
     title: props.title,
     url: props.shareUrl,
-    description: props.description
+    description: props.description,
   }))
 
   const copyLink = async () => {

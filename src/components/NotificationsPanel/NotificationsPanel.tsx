@@ -1,16 +1,19 @@
 import { clsx } from 'clsx'
-import styles from './NotificationsPanel.module.scss'
+import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
+import { throttle } from 'throttle-debounce'
+
+import { useLocalize } from '../../context/localize'
+import { PAGE_SIZE, useNotifications } from '../../context/notifications'
+import { useSession } from '../../context/session'
 import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
-import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
-import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
-import { PAGE_SIZE, useNotifications } from '../../context/notifications'
-import { NotificationView } from './NotificationView'
-import { EmptyMessage } from './EmptyMessage'
 import { Button } from '../_shared/Button'
-import { throttle } from 'throttle-debounce'
-import { useSession } from '../../context/session'
+import { Icon } from '../_shared/Icon'
+
+import { EmptyMessage } from './EmptyMessage'
+import { NotificationView } from './NotificationView'
+
+import styles from './NotificationsPanel.module.scss'
 
 type Props = {
   isOpen: boolean
@@ -51,20 +54,20 @@ export const NotificationsPanel = (props: Props) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    actions: { loadNotifications, markAllNotificationsAsRead }
+    actions: { loadNotifications, markAllNotificationsAsRead },
   } = useNotifications()
   const handleHide = () => {
     props.onClose()
   }
 
   const panelRef: { current: HTMLDivElement } = {
-    current: null
+    current: null,
   }
 
   useOutsideClickHandler({
     containerRef: panelRef,
     predicate: () => props.isOpen,
-    handler: () => handleHide()
+    handler: () => handleHide(),
   })
 
   let windowScrollTop = 0
@@ -150,14 +153,14 @@ export const NotificationsPanel = (props: Props) => {
           await loadNextPage()
           setIsLoading(false)
         }
-      }
-    )
+      },
+    ),
   )
 
   return (
     <div
       class={clsx(styles.container, {
-        [styles.isOpened]: props.isOpen
+        [styles.isOpened]: props.isOpen,
       })}
     >
       <div ref={(el) => (panelRef.current = el)} class={styles.panel}>

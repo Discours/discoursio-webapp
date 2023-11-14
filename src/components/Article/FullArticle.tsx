@@ -1,34 +1,36 @@
+import type { Author, Shout } from '../../graphql/types.gen'
+
+import { getPagePath } from '@nanostores/router'
+import { createPopper } from '@popperjs/core'
+import { clsx } from 'clsx'
 import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
 
-import { clsx } from 'clsx'
-import { getPagePath } from '@nanostores/router'
-import type { Author, Shout } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription } from '../../utils/meta'
+import { Icon } from '../_shared/Icon'
+import { Image } from '../_shared/Image'
+import { Lightbox } from '../_shared/Lightbox'
+import { Popover } from '../_shared/Popover'
+import { ImageSwiper } from '../_shared/SolidSwiper'
+import { VideoPlayer } from '../_shared/VideoPlayer'
+import { AuthorBadge } from '../Author/AuthorBadge'
+import { CardTopic } from '../Feed/CardTopic'
+import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
 import { TableOfContents } from '../TableOfContents'
+
+import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
+import { CommentsTree } from './CommentsTree'
 import { getShareUrl, SharePopup } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
-import { CommentsTree } from './CommentsTree'
-import stylesHeader from '../Nav/Header/Header.module.scss'
-import { AudioHeader } from './AudioHeader'
-import { Popover } from '../_shared/Popover'
-import { VideoPlayer } from '../_shared/VideoPlayer'
-import { Icon } from '../_shared/Icon'
-import { ImageSwiper } from '../_shared/SolidSwiper'
+
 import styles from './Article.module.scss'
-import { CardTopic } from '../Feed/CardTopic'
-import { createPopper } from '@popperjs/core'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
-import { Lightbox } from '../_shared/Lightbox'
-import { Image } from '../_shared/Image'
-import article from '../Editor/extensions/Article'
+import stylesHeader from '../Nav/Header/Header.module.scss'
 
 type Props = {
   article: Shout
@@ -46,7 +48,7 @@ const scrollTo = (el: HTMLElement) => {
   window.scrollTo({
     top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
     left: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
@@ -57,7 +59,7 @@ export const FullArticle = (props: Props) => {
   const {
     user,
     isAuthenticated,
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
 
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
@@ -67,7 +69,7 @@ export const FullArticle = (props: Props) => {
   const mainTopic = createMemo(
     () =>
       props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
-      props.article.topics[0]
+      props.article.topics[0],
   )
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
@@ -121,7 +123,7 @@ export const FullArticle = (props: Props) => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
       changeSearchParam({
-        scrollTo: null
+        scrollTo: null,
       })
     }
   })
@@ -129,7 +131,7 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams().commentId && isReactionsLoaded()) {
       const commentElement = document.querySelector<HTMLElement>(
-        `[id='comment_${searchParams().commentId}']`
+        `[id='comment_${searchParams().commentId}']`,
       )
 
       changeSearchParam({ commentId: null })
@@ -141,12 +143,12 @@ export const FullArticle = (props: Props) => {
   })
 
   const {
-    actions: { loadReactionsBy }
+    actions: { loadReactionsBy },
   } = useReactions()
 
   onMount(async () => {
     await loadReactionsBy({
-      by: { shout: props.article.slug }
+      by: { shout: props.article.slug },
     })
 
     setIsReactionsLoaded(true)
@@ -165,7 +167,7 @@ export const FullArticle = (props: Props) => {
     }
 
     const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
-      '[data-toggle="tooltip"], footnote'
+      '[data-toggle="tooltip"], footnote',
     )
     if (!tooltipElements) {
       return
@@ -190,19 +192,19 @@ export const FullArticle = (props: Props) => {
         modifiers: [
           {
             name: 'eventListeners',
-            options: { scroll: false }
+            options: { scroll: false },
           },
           {
             name: 'offset',
             options: {
-              offset: [0, 8]
-            }
+              offset: [0, 8],
+            },
           },
           {
             name: 'flip',
-            options: { fallbackPlacements: ['top'] }
-          }
-        ]
+            options: { fallbackPlacements: ['top'] },
+          },
+        ],
       })
 
       tooltip.style.visibility = 'hidden'

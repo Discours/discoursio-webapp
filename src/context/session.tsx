@@ -1,4 +1,7 @@
+import type { AuthModalSource } from '../components/Nav/AuthModal/types'
+import type { AuthResult, MySubscriptionsQueryResult, User } from '../graphql/types.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
+
 import {
   createEffect,
   createContext,
@@ -6,15 +9,15 @@ import {
   createResource,
   createSignal,
   onMount,
-  useContext
+  useContext,
 } from 'solid-js'
-import type { AuthResult, MySubscriptionsQueryResult, User } from '../graphql/types.gen'
-import { apiClient } from '../utils/apiClient'
+
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
-import { useSnackbar } from './snackbar'
-import { useLocalize } from './localize'
 import { showModal } from '../stores/ui'
-import type { AuthModalSource } from '../components/Nav/AuthModal/types'
+import { apiClient } from '../utils/apiClient'
+
+import { useLocalize } from './localize'
+import { useSnackbar } from './snackbar'
 
 type SessionContextType = {
   session: Resource<AuthResult>
@@ -27,7 +30,7 @@ type SessionContextType = {
     loadSubscriptions: () => Promise<void>
     requireAuthentication: (
       callback: (() => Promise<void>) | (() => void),
-      modalSource: AuthModalSource
+      modalSource: AuthModalSource,
     ) => void
     signIn: ({ email, password }: { email: string; password: string }) => Promise<void>
     signOut: () => Promise<void>
@@ -43,7 +46,7 @@ export function useSession() {
 
 const EMPTY_SUBSCRIPTIONS = {
   topics: [],
-  authors: []
+  authors: [],
 }
 
 export const SessionProvider = (props: { children: JSX.Element }) => {
@@ -51,7 +54,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const [subscriptions, setSubscriptions] = createSignal<MySubscriptionsQueryResult>(EMPTY_SUBSCRIPTIONS)
   const { t } = useLocalize()
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const getSession = async (): Promise<AuthResult> => {
@@ -85,7 +88,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const [session, { refetch: loadSession, mutate }] = createResource<AuthResult>(getSession, {
     ssrLoadFrom: 'initial',
-    initialValue: null
+    initialValue: null,
   })
 
   const user = createMemo(() => session()?.user)
@@ -144,7 +147,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     signIn,
     signOut,
     confirmEmail,
-    loadSubscriptions
+    loadSubscriptions,
   }
 
   const value: SessionContextType = {
@@ -153,7 +156,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     isSessionLoaded,
     user,
     isAuthenticated,
-    actions
+    actions,
   }
 
   onMount(() => {

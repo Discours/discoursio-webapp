@@ -1,13 +1,15 @@
 import { createSignal, For, Show } from 'solid-js'
-import { SharePopup, getShareUrl } from '../SharePopup'
-import { getDescription } from '../../../utils/meta'
+
 import { useLocalize } from '../../../context/localize'
-import { Popover } from '../../_shared/Popover'
-import { Icon } from '../../_shared/Icon'
-import styles from './AudioPlayer.module.scss'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { MediaItem } from '../../../pages/types'
+import { getDescription } from '../../../utils/meta'
+import { GrowingTextarea } from '../../_shared/GrowingTextarea'
+import { Icon } from '../../_shared/Icon'
+import { Popover } from '../../_shared/Popover'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
+import { SharePopup, getShareUrl } from '../SharePopup'
+
+import styles from './AudioPlayer.module.scss'
 
 type Props = {
   media: MediaItem[]

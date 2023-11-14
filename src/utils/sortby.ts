@@ -15,7 +15,7 @@ export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
 
 export const byLength = (
   a: (Shout | Reaction | Topic | Author)[],
-  b: (Shout | Reaction | Topic | Author)[]
+  b: (Shout | Reaction | Topic | Author)[],
 ) => {
   const x = a.length
   const y = b.length

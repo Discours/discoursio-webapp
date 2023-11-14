@@ -1,10 +1,12 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
-import styles from './Settings.module.scss'
-import { Icon } from '../../components/_shared/Icon'
 import { clsx } from 'clsx'
-import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
+
+import { Icon } from '../../components/_shared/Icon'
+import { PageLayout } from '../../components/_shared/PageLayout'
 import { AuthGuard } from '../../components/AuthGuard'
+import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { useLocalize } from '../../context/localize'
+
+import styles from './Settings.module.scss'
 
 export const ProfileSecurityPage = () => {
   const { t } = useLocalize()
@@ -111,7 +113,7 @@ export const ProfileSecurityPage = () => {
                           class={clsx(
                             styles.socialButton,
                             styles.socialButtonApple,
-                            'button' + ' button--light'
+                            'button' + ' button--light',
                           )}
                           type="button"
                         >

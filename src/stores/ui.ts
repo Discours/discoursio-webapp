@@ -1,11 +1,13 @@
-import { createSignal } from 'solid-js'
-import { useRouter } from './router'
 import type {
   AuthModalSearchParams,
   AuthModalSource,
-  ConfirmEmailSearchParams
+  ConfirmEmailSearchParams,
 } from '../components/Nav/AuthModal/types'
 import type { RootSearchParams } from '../pages/types'
+
+import { createSignal } from 'solid-js'
+
+import { useRouter } from './router'
 
 export type ModalType =
   | 'auth'
@@ -37,7 +39,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   editorInsertLink: 'editorInsertLink',
   simplifiedEditorInsertLink: 'simplifiedEditorInsertLink',
   followers: 'followers',
-  following: 'following'
+  following: 'following',
 }
 
 const [modal, setModal] = createSignal<ModalType>(null)
@@ -49,7 +51,7 @@ const { searchParams, changeSearchParam } = useRouter<
 export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
   if (modalSource) {
     changeSearchParam({
-      source: modalSource
+      source: modalSource,
     })
   }
 
@@ -60,7 +62,7 @@ export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) =
 export const hideModal = () => {
   const newSearchParams: Partial<AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams> = {
     modal: null,
-    source: null
+    source: null,
   }
 
   if (searchParams().modal === 'auth') {
@@ -77,6 +79,6 @@ export const hideModal = () => {
 
 export const useModalStore = () => {
   return {
-    modal
+    modal,
   }
 }

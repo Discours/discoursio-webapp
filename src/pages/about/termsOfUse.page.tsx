@@ -1,8 +1,9 @@
-import { createSignal, Show } from 'solid-js'
-import { PageLayout } from '../../components/_shared/PageLayout'
-import { Icon } from '../../components/_shared/Icon'
-import { useLocalize } from '../../context/localize'
 import { Meta } from '@solidjs/meta'
+import { createSignal, Show } from 'solid-js'
+
+import { Icon } from '../../components/_shared/Icon'
+import { PageLayout } from '../../components/_shared/PageLayout'
+import { useLocalize } from '../../context/localize'
 
 export const TermsOfUsePage = () => {
   const { t } = useLocalize()

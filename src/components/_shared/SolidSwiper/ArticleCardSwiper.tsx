@@ -1,12 +1,14 @@
-import { For, onMount, Show } from 'solid-js'
-import { Icon } from '../Icon'
-
-import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
-import { SwiperRef } from './swiper'
 import { clsx } from 'clsx'
-import styles from './Swiper.module.scss'
+import { For, onMount, Show } from 'solid-js'
+import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
+
 import { Shout } from '../../../graphql/types.gen'
 import { ArticleCard } from '../../Feed/ArticleCard'
+import { Icon } from '../Icon'
+
+import { SwiperRef } from './swiper'
+
+import styles from './Swiper.module.scss'
 
 type Props = {
   slides: Shout[]
@@ -35,7 +37,7 @@ export const ArticleCardSwiper = (props: Props) => {
               space-between={20}
               breakpoints={{
                 576: { spaceBetween: 20, slidesPerView: 1.5 },
-                992: { spaceBetween: 52, slidesPerView: 1.5 }
+                992: { spaceBetween: 52, slidesPerView: 1.5 },
               }}
               round-lengths={true}
               loop={true}
@@ -59,7 +61,7 @@ export const ArticleCardSwiper = (props: Props) => {
                         additionalClass: 'swiper-slide',
                         isFloorImportant: true,
                         isWithCover: true,
-                        nodate: true
+                        nodate: true,
                       }}
                     />
                   </swiper-slide>

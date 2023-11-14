@@ -1,7 +1,9 @@
 import { clsx } from 'clsx'
-import styles from './SocialNetworkInput.module.scss'
-import { Icon } from '../Icon'
 import { onMount, Show } from 'solid-js'
+
+import { Icon } from '../Icon'
+
+import styles from './SocialNetworkInput.module.scss'
 
 type Props = {
   class?: string

@@ -1,8 +1,9 @@
+import { Meta } from '@solidjs/meta'
 import { createSignal, Show } from 'solid-js'
+
+import { Icon } from '../../components/_shared/Icon'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Donate } from '../../components/Discours/Donate'
-import { Icon } from '../../components/_shared/Icon'
-import { Meta } from '@solidjs/meta'
 import { useLocalize } from '../../context/localize'
 
 export const HelpPage = () => {

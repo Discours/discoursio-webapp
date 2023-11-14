@@ -1,5 +1,6 @@
 import { createSignal, JSX, onMount, Show } from 'solid-js'
 import usePopper from 'solid-popper'
+
 import styles from './Popover.module.scss'
 
 type Props = {
@@ -18,16 +19,16 @@ export const Popover = (props: Props) => {
       {
         name: 'offset',
         options: {
-          offset: [0, 8]
-        }
+          offset: [0, 8],
+        },
       },
       {
         name: 'flip',
         options: {
-          fallbackPlacements: ['top', 'bottom']
-        }
-      }
-    ]
+          fallbackPlacements: ['top', 'bottom'],
+        },
+      },
+    ],
   })
 
   const showEvents = ['mouseenter', 'focus']

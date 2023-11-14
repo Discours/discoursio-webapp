@@ -1,22 +1,25 @@
 import type { Author } from '../../../graphql/types.gen'
-import { Userpic } from '../Userpic'
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
-import { translit } from '../../../utils/ru2en'
-import { follow, unfollow } from '../../../stores/zine/common'
-import { clsx } from 'clsx'
-import { useSession } from '../../../context/session'
-import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
-import { FollowingEntity, Topic } from '../../../graphql/types.gen'
-import { router, useRouter } from '../../../stores/router'
+
 import { openPage, redirectPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
-import { Modal } from '../../Nav/Modal'
+import { useSession } from '../../../context/session'
+import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { SubscriptionFilter } from '../../../pages/types'
+import { router, useRouter } from '../../../stores/router'
+import { follow, unfollow } from '../../../stores/zine/common'
 import { isAuthor } from '../../../utils/isAuthor'
-import { AuthorBadge } from '../AuthorBadge'
-import { TopicBadge } from '../../Topic/TopicBadge'
+import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
+import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import { Modal } from '../../Nav/Modal'
+import { TopicBadge } from '../../Topic/TopicBadge'
+import { AuthorBadge } from '../AuthorBadge'
+import { Userpic } from '../Userpic'
+
 import styles from './AuthorCard.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
 
@@ -32,7 +35,7 @@ export const AuthorCard = (props: Props) => {
     session,
     subscriptions,
     isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -40,7 +43,7 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
   const subscribed = createMemo<boolean>(() =>
-    subscriptions().authors.some((author) => author.slug === props.author.slug)
+    subscriptions().authors.some((author) => author.slug === props.author.slug),
   )
 
   const subscribe = async (really = true) => {
@@ -74,7 +77,7 @@ export const AuthorCard = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, `inbox`)
       changeSearchParam({
-        initChat: props.author.id.toString()
+        initChat: props.author.id.toString(),
       })
     }, 'discussions')
   }
@@ -218,7 +221,7 @@ export const AuthorCard = (props: Props) => {
                     value={followButtonText()}
                     isSubscribeButton={true}
                     class={clsx({
-                      [stylesButton.subscribed]: subscribed()
+                      [stylesButton.subscribed]: subscribed(),
                     })}
                   />
                   <Button

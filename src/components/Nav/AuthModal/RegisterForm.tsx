@@ -1,19 +1,23 @@
-import { Show, createSignal } from 'solid-js'
-import type { JSX } from 'solid-js'
-import styles from './AuthModal.module.scss'
-import { clsx } from 'clsx'
-import { SocialProviders } from './SocialProviders'
-import { ApiError } from '../../../utils/apiClient'
-import { email, setEmail } from './sharedLogic'
-import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
-import { hideModal } from '../../../stores/ui'
-import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
-import { register } from '../../../stores/auth'
+import type { JSX } from 'solid-js'
+
+import { clsx } from 'clsx'
+import { Show, createSignal } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { register } from '../../../stores/auth'
+import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { ApiError } from '../../../utils/apiClient'
 import { validateEmail } from '../../../utils/validateEmail'
-import { AuthModalHeader } from './AuthModalHeader'
 import { Icon } from '../../_shared/Icon'
+
+import { AuthModalHeader } from './AuthModalHeader'
+import { email, setEmail } from './sharedLogic'
+import { SocialProviders } from './SocialProviders'
+
+import styles from './AuthModal.module.scss'
 
 type FormFields = {
   fullName: string
@@ -126,7 +130,7 @@ export const RegisterForm = () => {
       await register({
         name: cleanName,
         email: cleanEmail,
-        password: password()
+        password: password(),
       })
 
       setIsSuccess(true)
@@ -156,7 +160,7 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().fullName
+                'pretty-form__item--error': validationErrors().fullName,
               })}
             >
               <input
@@ -174,7 +178,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email
+                'pretty-form__item--error': validationErrors().email,
               })}
             >
               <input
@@ -199,7 +203,7 @@ export const RegisterForm = () => {
                     onClick={(event) => {
                       event.preventDefault()
                       changeSearchParam({
-                        mode: 'login'
+                        mode: 'login',
                       })
                     }}
                   >
@@ -211,7 +215,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().password
+                'pretty-form__item--error': validationErrors().password,
               })}
             >
               <input
@@ -252,7 +256,7 @@ export const RegisterForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParam({
-                    mode: 'login'
+                    mode: 'login',
                   })
                 }
               >

@@ -1,14 +1,16 @@
+import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
 import { createSignal, For, Show } from 'solid-js'
-import { Icon } from '../../_shared/Icon'
+
+import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore } from '../../../stores/zine/articles'
 import { useSeenStore } from '../../../stores/zine/seen'
-import { useSession } from '../../../context/session'
-import { useLocalize } from '../../../context/localize'
-import styles from './Sidebar.module.scss'
-import { clsx } from 'clsx'
+import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../../Author/Userpic'
-import { getPagePath } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
+
+import styles from './Sidebar.module.scss'
 
 export const Sidebar = () => {
   const { t } = useLocalize()
@@ -33,7 +35,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feed')}
             class={clsx({
-              [styles.selected]: page().route === 'feed'
+              [styles.selected]: page().route === 'feed',
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -46,7 +48,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedMy')}
             class={clsx({
-              [styles.selected]: page().route === 'feedMy'
+              [styles.selected]: page().route === 'feedMy',
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -59,7 +61,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedCollaborations')}
             class={clsx({
-              [styles.selected]: page().route === 'feedCollaborations'
+              [styles.selected]: page().route === 'feedCollaborations',
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -72,7 +74,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedDiscussions')}
             class={clsx({
-              [styles.selected]: page().route === 'feedDiscussions'
+              [styles.selected]: page().route === 'feedDiscussions',
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -85,7 +87,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedBookmarks')}
             class={clsx({
-              [styles.selected]: page().route === 'feedBookmarks'
+              [styles.selected]: page().route === 'feedBookmarks',
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -98,7 +100,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedNotifications')}
             class={clsx({
-              [styles.selected]: page().route === 'feedNotifications'
+              [styles.selected]: page().route === 'feedNotifications',
             })}
           >
             <span class={styles.sidebarItemName}>

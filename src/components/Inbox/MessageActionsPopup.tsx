@@ -1,7 +1,9 @@
-import { createEffect, createSignal, For } from 'solid-js'
 import type { PopupProps } from '../_shared/Popup'
-import { Popup } from '../_shared/Popup'
+
+import { createEffect, createSignal, For } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { Popup } from '../_shared/Popup'
 
 export type MessageActionType = 'reply' | 'copy' | 'pin' | 'forward' | 'select' | 'delete'
 
@@ -18,7 +20,7 @@ export const MessageActionsPopup = (props: MessageActionsPopupProps) => {
     { name: t('Pin'), action: 'pin' },
     { name: t('Forward'), action: 'forward' },
     { name: t('Select'), action: 'select' },
-    { name: t('Delete'), action: 'delete' }
+    { name: t('Delete'), action: 'delete' },
   ]
   createEffect(() => {
     if (props.actionSelect) props.actionSelect(selectedAction())

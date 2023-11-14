@@ -10,6 +10,6 @@ export const useSeenStore = (initialData: { [slug: string]: Date } = {}) => {
   return {
     seen,
     setSeen,
-    addSeen
+    addSeen,
   }
 }

@@ -1,6 +1,6 @@
 import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
-
 import { devtoolsExchange } from '@urql/devtools'
+
 import { isDev, apiBaseUrl } from '../utils/config'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
@@ -41,7 +41,7 @@ const options: ClientOptions = {
     const headers = { Authorization: token }
     return { headers }
   },
-  exchanges
+  exchanges,
 }
 
 export const privateGraphQLClient = createClient(options)

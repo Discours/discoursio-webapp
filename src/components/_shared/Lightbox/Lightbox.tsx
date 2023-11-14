@@ -1,8 +1,10 @@
 import { clsx } from 'clsx'
-import styles from './Lightbox.module.scss'
 import { createSignal } from 'solid-js'
-import { Icon } from '../Icon'
+
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { Icon } from '../Icon'
+
+import styles from './Lightbox.module.scss'
 
 type Props = {
   class?: string
@@ -29,7 +31,7 @@ export const Lightbox = (props: Props) => {
 
   const lightboxStyle = () => ({
     transform: `scale(${zoomLevel()})`,
-    transition: 'transform 0.3s ease'
+    transition: 'transform 0.3s ease',
   })
 
   useEscKeyDownHandler(closeLightbox)

@@ -1,23 +1,26 @@
+import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/types.gen'
+
+import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+import { router, useRouter } from '../../stores/router'
+import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
+import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
+import { useTopicsStore } from '../../stores/zine/topics'
 import { Icon } from '../_shared/Icon'
+import { Loading } from '../_shared/Loading'
+import { CommentDate } from '../Article/CommentDate'
+import { AuthorLink } from '../Author/AhtorLink'
+import { AuthorBadge } from '../Author/AuthorBadge'
 import { ArticleCard } from '../Feed/ArticleCard'
 import { Sidebar } from '../Feed/Sidebar'
-import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
-import { useTopicsStore } from '../../stores/zine/topics'
-import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { clsx } from 'clsx'
-import { useReactions } from '../../context/reactions'
-import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/types.gen'
-import { getPagePath } from '@nanostores/router'
-import { router, useRouter } from '../../stores/router'
-import { useLocalize } from '../../context/localize'
+
 import styles from './Feed.module.scss'
-import stylesTopic from '../Feed/CardTopic.module.scss'
 import stylesBeside from '../../components/Feed/Beside.module.scss'
-import { CommentDate } from '../Article/CommentDate'
-import { Loading } from '../_shared/Loading'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { AuthorLink } from '../Author/AhtorLink'
+import stylesTopic from '../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -54,7 +57,7 @@ export const FeedView = (props: Props) => {
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
 
   const {
-    actions: { loadReactionsBy }
+    actions: { loadReactionsBy },
   } = useReactions()
 
   onMount(() => {
@@ -68,13 +71,13 @@ export const FeedView = (props: Props) => {
         resetSortedArticles()
         loadMore()
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     }
 
     const orderBy = getOrderBy(searchParams().by)
@@ -94,8 +97,8 @@ export const FeedView = (props: Props) => {
 
     loadReactionsBy({
       by: {
-        shouts: newShouts.map((s) => s.slug)
-      }
+        shouts: newShouts.map((s) => s.slug),
+      },
     })
 
     setIsLoadMoreButtonVisible(hasMore)
@@ -118,7 +121,7 @@ export const FeedView = (props: Props) => {
           <ul class={clsx(styles.feedFilter, 'view-switcher')}>
             <li
               class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'publish_date' || !searchParams().by
+                'view-switcher__item--selected': searchParams().by === 'publish_date' || !searchParams().by,
               })}
             >
               <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
@@ -128,14 +131,14 @@ export const FeedView = (props: Props) => {
             {/*</li>*/}
             <li
               class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'rating'
+                'view-switcher__item--selected': searchParams().by === 'rating',
               })}
             >
               <a href={`${getPagePath(router, page().route)}?by=rating`}>{t('Top rated')}</a>
             </li>
             <li
               class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'last_comment'
+                'view-switcher__item--selected': searchParams().by === 'last_comment',
               })}
             >
               <a href={`${getPagePath(router, page().route)}?by=last_comment`}>{t('Most commented')}</a>
@@ -193,7 +196,7 @@ export const FeedView = (props: Props) => {
                     <div class={clsx('text-truncate', styles.commentBody)}>
                       <a
                         href={`${getPagePath(router, 'article', {
-                          slug: comment.shout.slug
+                          slug: comment.shout.slug,
                         })}?commentId=${comment.id}`}
                         innerHTML={comment.body}
                       />

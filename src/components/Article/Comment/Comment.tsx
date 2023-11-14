@@ -1,24 +1,22 @@
-import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
-import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 
-import { Userpic } from '../../Author/Userpic'
-import { CommentRatingControl } from '../CommentRatingControl'
-import { CommentDate } from '../CommentDate'
-import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
-import { Icon } from '../../_shared/Icon'
-
-import { useSession } from '../../../context/session'
+import { useConfirm } from '../../../context/confirm'
 import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
+import { useSession } from '../../../context/session'
 import { useSnackbar } from '../../../context/snackbar'
-import { useConfirm } from '../../../context/confirm'
-
 import { Author, Reaction, ReactionKind } from '../../../graphql/types.gen'
 import { router } from '../../../stores/router'
+import { Icon } from '../../_shared/Icon'
+import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
+import { AuthorLink } from '../../Author/AhtorLink'
+import { Userpic } from '../../Author/Userpic'
+import { CommentDate } from '../CommentDate'
+import { CommentRatingControl } from '../CommentRatingControl'
 
 import styles from './Comment.module.scss'
-import { AuthorLink } from '../../Author/AhtorLink'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
@@ -43,15 +41,15 @@ export const Comment = (props: Props) => {
   const { session } = useSession()
 
   const {
-    actions: { createReaction, deleteReaction, updateReaction }
+    actions: { createReaction, deleteReaction, updateReaction },
   } = useReactions()
 
   const {
-    actions: { showConfirm }
+    actions: { showConfirm },
   } = useConfirm()
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const isCommentAuthor = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
@@ -65,7 +63,7 @@ export const Comment = (props: Props) => {
           confirmBody: t('Are you sure you want to delete this comment?'),
           confirmButtonLabel: t('Delete'),
           confirmButtonVariant: 'danger',
-          declineButtonVariant: 'primary'
+          declineButtonVariant: 'primary',
         })
 
         if (isConfirmed) {
@@ -86,7 +84,7 @@ export const Comment = (props: Props) => {
         kind: ReactionKind.Comment,
         replyTo: props.comment.id,
         body: value,
-        shout: props.comment.shout.id
+        shout: props.comment.shout.id,
       })
       setClearEditor(true)
       setIsReplyVisible(false)
@@ -107,7 +105,7 @@ export const Comment = (props: Props) => {
       await updateReaction(props.comment.id, {
         kind: ReactionKind.Comment,
         body: value,
-        shout: props.comment.shout.id
+        shout: props.comment.shout.id,
       })
       setEditMode(false)
       setLoading(false)
@@ -122,7 +120,7 @@ export const Comment = (props: Props) => {
     <li
       id={`comment_${comment().id}`}
       class={clsx(styles.comment, props.class, {
-        [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen
+        [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen,
       })}
     >
       <Show when={!!body()}>
@@ -135,7 +133,7 @@ export const Comment = (props: Props) => {
                   name={comment().createdBy.name}
                   userpic={comment().createdBy.userpic}
                   class={clsx({
-                    [styles.compactUserpic]: props.compact
+                    [styles.compactUserpic]: props.compact,
                   })}
                 />
                 <small>

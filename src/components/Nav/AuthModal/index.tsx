@@ -1,22 +1,26 @@
-import { Dynamic } from 'solid-js/web'
-import { Show, Component, createEffect, createMemo } from 'solid-js'
-import { hideModal } from '../../../stores/ui'
-import { useRouter } from '../../../stores/router'
-import { clsx } from 'clsx'
-import styles from './AuthModal.module.scss'
-import { LoginForm } from './LoginForm'
-import { isMobile } from '../../../utils/media-query'
-import { RegisterForm } from './RegisterForm'
-import { ForgotPasswordForm } from './ForgotPasswordForm'
-import { EmailConfirm } from './EmailConfirm'
 import type { AuthModalMode, AuthModalSearchParams } from './types'
+
+import { clsx } from 'clsx'
+import { Show, Component, createEffect, createMemo } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
+
 import { useLocalize } from '../../../context/localize'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { isMobile } from '../../../utils/media-query'
+
+import { EmailConfirm } from './EmailConfirm'
+import { ForgotPasswordForm } from './ForgotPasswordForm'
+import { LoginForm } from './LoginForm'
+import { RegisterForm } from './RegisterForm'
+
+import styles from './AuthModal.module.scss'
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   login: LoginForm,
   register: RegisterForm,
   'forgot-password': ForgotPasswordForm,
-  'confirm-email': EmailConfirm
+  'confirm-email': EmailConfirm,
 }
 
 export const AuthModal = () => {
@@ -40,7 +44,7 @@ export const AuthModal = () => {
     <div
       ref={rootRef}
       class={clsx(styles.view, {
-        row: !source
+        row: !source,
       })}
       classList={{ [styles.signUp]: mode() === 'register' || mode() === 'confirm-email' }}
     >
@@ -54,7 +58,7 @@ export const AuthModal = () => {
               <h4>{t(`Join the global community of authors!`)}</h4>
               <p class={styles.authBenefits}>
                 {t(
-                  'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine'
+                  'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine',
                 )}
                 .&nbsp;
                 {t('New stories every day and even more!')}
@@ -77,7 +81,7 @@ export const AuthModal = () => {
       </Show>
       <div
         class={clsx(styles.auth, {
-          'col-md-12': !source
+          'col-md-12': !source,
         })}
       >
         <Dynamic component={AUTH_MODAL_MODES[mode()]} />

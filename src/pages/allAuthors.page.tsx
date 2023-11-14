@@ -1,11 +1,12 @@
+import type { PageProps } from './types'
+
+import { createSignal, onMount, Show } from 'solid-js'
+
+import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AllAuthorsView } from '../components/Views/AllAuthors'
-import type { PageProps } from './types'
-import { createSignal, onMount, Show } from 'solid-js'
-import { loadAllAuthors } from '../stores/zine/authors'
-import { Loading } from '../components/_shared/Loading'
-
 import { useLocalize } from '../context/localize'
+import { loadAllAuthors } from '../stores/zine/authors'
 
 export const AllAuthorsPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors))

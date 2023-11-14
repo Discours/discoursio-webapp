@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
-import styles from './GrowingTextarea.module.scss'
 import { createEffect, createSignal, Show } from 'solid-js'
+
+import styles from './GrowingTextarea.module.scss'
 
 type Props = {
   class?: string
@@ -43,7 +44,7 @@ export const GrowingTextarea = (props: Props) => {
     <div
       class={clsx(styles.GrowingTextarea, {
         [styles.bordered]: props.variant === 'bordered',
-        [styles.hasFieldName]: props.fieldName && value().length > 0
+        [styles.hasFieldName]: props.fieldName && value().length > 0,
       })}
     >
       <Show when={props.fieldName && value().length > 0}>
@@ -73,7 +74,7 @@ export const GrowingTextarea = (props: Props) => {
         <div
           class={clsx(styles.maxLength, {
             [styles.visible]: isFocused(),
-            [styles.limited]: value().length === props.maxLength
+            [styles.limited]: value().length === props.maxLength,
           })}
         >
           <Show when={props.variant === 'bordered'} fallback={`${value().length} / ${props.maxLength}`}>

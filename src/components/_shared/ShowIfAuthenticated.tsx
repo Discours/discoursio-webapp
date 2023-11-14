@@ -1,5 +1,7 @@
 import type { JSX } from 'solid-js'
+
 import { Show } from 'solid-js'
+
 import { useSession } from '../../context/session'
 
 type ShowIfAuthenticatedProps = {

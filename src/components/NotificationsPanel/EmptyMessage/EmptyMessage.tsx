@@ -1,6 +1,8 @@
 import { clsx } from 'clsx'
-import styles from './EmptyMessage.module.scss'
+
 import { useLocalize } from '../../../context/localize'
+
+import styles from './EmptyMessage.module.scss'
 
 export const EmptyMessage = () => {
   const { t } = useLocalize()

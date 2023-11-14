@@ -62,7 +62,7 @@ const ru2en: { [key: string]: string } = {
   Ю: 'Yu',
   ю: 'yu',
   Я: 'Ya',
-  я: 'ya'
+  я: 'ya',
 }
 
 export const translit = (str: string) => {

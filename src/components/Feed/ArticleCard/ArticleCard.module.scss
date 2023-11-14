@@ -403,6 +403,7 @@
 }
 
 .shoutCardWithCover {
+  aspect-ratio: 16/9;
   width: 100%;
 
   @include media-breakpoint-down(xl) {

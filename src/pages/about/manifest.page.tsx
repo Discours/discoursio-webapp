@@ -5,16 +5,17 @@ import { Feedback } from '../../components/Discours/Feedback'
 import { Subscribe } from '../../components/_shared/Subscribe'
 import Opener from '../../components/Nav/Modal/Opener'
 import { Icon } from '../../components/_shared/Icon'
-
-// title={t('Manifest')}
+import { useLocalize } from '../../context/localize'
 
 export const ManifestPage = () => {
   const [indexExpanded, setIndexExpanded] = createSignal(true)
 
+  const { t } = useLocalize()
+
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   return (
-    <PageLayout>
+    <PageLayout title={t('Manifest')}>
       <Modal variant="wide" name="feedback">
         <Feedback />
       </Modal>

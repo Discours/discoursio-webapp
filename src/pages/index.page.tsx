@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { Title } from '@solidjs/meta'
+
 import { HomeView, PRERENDERED_ARTICLES_COUNT, RANDOM_TOPICS_COUNT } from '../components/Views/Home'
 import { PageLayout } from '../components/_shared/PageLayout'
 import type { PageProps } from './types'
@@ -29,9 +29,8 @@ export const HomePage = (props: PageProps) => {
   onCleanup(() => resetSortedArticles())
 
   return (
-    <PageLayout withPadding={true}>
+    <PageLayout withPadding={true} title={t('Discours')}>
       <ReactionsProvider>
-        <Title>{t('Discours')}</Title>
         <Show when={isLoaded()} fallback={<Loading />}>
           <HomeView shouts={props.homeShouts || []} />
         </Show>

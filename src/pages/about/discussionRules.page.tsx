@@ -1,13 +1,11 @@
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
-import { Title } from '@solidjs/meta'
 
 export const DiscussionRulesPage = () => {
   const { t } = useLocalize()
   const title = t('Discussion rules in social networks')
   return (
-    <PageLayout>
-      <Title>{title}</Title>
+    <PageLayout title={title}>
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">

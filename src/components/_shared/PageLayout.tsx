@@ -6,8 +6,10 @@ import { createEffect, createSignal, Show } from 'solid-js'
 import { clsx } from 'clsx'
 import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
+import { Title } from '@solidjs/meta'
 
 type Props = {
+  title: string
   headerTitle?: string
   slug?: string
   articleBody?: string
@@ -33,6 +35,7 @@ export const PageLayout = (props: Props) => {
 
   return (
     <>
+      <Title>{props.title}</Title>
       <Header
         slug={props.slug}
         title={props.headerTitle}

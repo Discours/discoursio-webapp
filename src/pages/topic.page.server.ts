@@ -7,7 +7,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
 
   const topic = await apiClient.getTopic({ slug })
 
-  const pageProps: PageProps = { topic }
+  const pageProps: PageProps = { topic, seo: { title: topic.title } }
 
   return {
     pageContext: {

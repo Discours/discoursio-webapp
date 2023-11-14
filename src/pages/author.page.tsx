@@ -54,7 +54,7 @@ export const AuthorPage = (props: PageProps) => {
   const usePrerenderedData = props.author?.slug === slug()
 
   return (
-    <PageLayout>
+    <PageLayout title={props.seo.title}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <AuthorView

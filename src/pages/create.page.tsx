@@ -19,8 +19,9 @@ const handleCreate = async (layout: LayoutType) => {
 
 export const CreatePage = () => {
   const { t } = useLocalize()
+
   return (
-    <PageLayout>
+    <PageLayout title={t('Choose a post type')}>
       <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>
           <h1>{t('Choose a post type')}</h1>

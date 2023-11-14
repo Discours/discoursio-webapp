@@ -7,7 +7,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
 
   const searchResults = await apiClient.getShouts({ filters: { title: q, body: q }, limit: 50 })
 
-  const pageProps: PageProps = { searchResults }
+  const pageProps: PageProps = { searchResults, seo: { title: '' } }
 
   return {
     pageContext: {

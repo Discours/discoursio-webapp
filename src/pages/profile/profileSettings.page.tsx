@@ -122,7 +122,7 @@ export const ProfileSettingsPage = () => {
   })
 
   return (
-    <PageLayout>
+    <PageLayout title={t('Profile')}>
       <AuthGuard>
         <Show when={form}>
           <div class="wide-container">

@@ -12,7 +12,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   })
   const author = await apiClient.getAuthor({ slug })
 
-  const pageProps: PageProps = { author, authorShouts }
+  const pageProps: PageProps = { author, authorShouts, seo: { title: author.name } }
 
   return {
     pageContext: {

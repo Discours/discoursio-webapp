@@ -8,7 +8,7 @@ export const onBeforeRender = async (_pageContext: PageContext) => {
     filters: { excludeLayout: 'article' },
     limit: PRERENDERED_ARTICLES_COUNT
   })
-  const pageProps: PageProps = { expoShouts }
+  const pageProps: PageProps = { expoShouts, seo: { title: '' } }
   return {
     pageContext: {
       pageProps

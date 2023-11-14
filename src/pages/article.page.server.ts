@@ -11,7 +11,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
     throw render(404, '/404')
   }
 
-  const pageProps: PageProps = { article }
+  const pageProps: PageProps = { article, seo: { title: article.title } }
 
   return {
     pageContext: {

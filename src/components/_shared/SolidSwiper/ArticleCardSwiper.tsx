@@ -1,12 +1,14 @@
-import { For, onMount, Show } from 'solid-js'
-import { Icon } from '../Icon'
-
-import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
-import { SwiperRef } from './swiper'
 import { clsx } from 'clsx'
-import styles from './Swiper.module.scss'
+import { For, onMount, Show } from 'solid-js'
+import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
+
 import { Shout } from '../../../graphql/types.gen'
 import { ArticleCard } from '../../Feed/ArticleCard'
+import { Icon } from '../Icon'
+
+import { SwiperRef } from './swiper'
+
+import styles from './Swiper.module.scss'
 
 type Props = {
   slides: Shout[]

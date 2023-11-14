@@ -1,9 +1,12 @@
 import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/types.gen'
-import { apiClient } from '../../utils/apiClient'
-import { addAuthorsByTopic } from './authors'
-import { byStat } from '../../utils/sortby'
-import { createSignal } from 'solid-js'
+
 import { createLazyMemo } from '@solid-primitives/memo'
+import { createSignal } from 'solid-js'
+
+import { apiClient } from '../../utils/apiClient'
+import { byStat } from '../../utils/sortby'
+
+import { addAuthorsByTopic } from './authors'
 
 const [sortedArticles, setSortedArticles] = createSignal<Shout[]>([])
 const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})

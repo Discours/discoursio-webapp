@@ -1,8 +1,9 @@
-import styles from './SearchField.module.scss'
+import { clsx } from 'clsx'
+
+import { useLocalize } from '../../../context/localize'
 import { Icon } from '../Icon'
 
-import { clsx } from 'clsx'
-import { useLocalize } from '../../../context/localize'
+import styles from './SearchField.module.scss'
 
 type Props = {
   onChange: (value: string) => void

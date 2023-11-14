@@ -1,4 +1,5 @@
 import { Meta } from '@solidjs/meta'
+
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 

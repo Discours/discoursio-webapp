@@ -1,13 +1,16 @@
-import { clsx } from 'clsx'
-import styles from './DropArea.module.scss'
-import { createSignal, JSX, Show } from 'solid-js'
-import { createDropzone, createFileUploader } from '@solid-primitives/upload'
-import { useLocalize } from '../../../context/localize'
-import { validateFiles } from '../../../utils/validateFile'
 import type { FileTypeToUpload } from '../../../pages/types'
-import { handleFileUpload } from '../../../utils/handleFileUpload'
+
+import { createDropzone, createFileUploader } from '@solid-primitives/upload'
+import { clsx } from 'clsx'
+import { createSignal, JSX, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
 import { UploadedFile } from '../../../pages/types'
+import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
+import { validateFiles } from '../../../utils/validateFile'
+
+import styles from './DropArea.module.scss'
 
 type Props = {
   class?: string

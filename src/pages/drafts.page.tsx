@@ -1,7 +1,6 @@
 import { PageLayout } from '../components/_shared/PageLayout'
-
-import { useLocalize } from '../context/localize'
 import { DraftsView } from '../components/Views/DraftsView'
+import { useLocalize } from '../context/localize'
 
 export const DraftsPage = () => {
   const { t } = useLocalize()

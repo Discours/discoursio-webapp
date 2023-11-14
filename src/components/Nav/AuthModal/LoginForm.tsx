@@ -1,19 +1,23 @@
-import styles from './AuthModal.module.scss'
-import { clsx } from 'clsx'
-import { SocialProviders } from './SocialProviders'
-import { ApiError } from '../../../utils/apiClient'
-import { createSignal, Show } from 'solid-js'
-import { email, setEmail } from './sharedLogic'
-import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
-import { hideModal } from '../../../stores/ui'
-import { useSession } from '../../../context/session'
-import { signSendLink } from '../../../stores/auth'
-import { validateEmail } from '../../../utils/validateEmail'
-import { useSnackbar } from '../../../context/snackbar'
+
+import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { useSnackbar } from '../../../context/snackbar'
+import { signSendLink } from '../../../stores/auth'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { ApiError } from '../../../utils/apiClient'
+import { validateEmail } from '../../../utils/validateEmail'
 import { Icon } from '../../_shared/Icon'
+
 import { AuthModalHeader } from './AuthModalHeader'
+import { email, setEmail } from './sharedLogic'
+import { SocialProviders } from './SocialProviders'
+
+import styles from './AuthModal.module.scss'
 
 type FormFields = {
   email: string

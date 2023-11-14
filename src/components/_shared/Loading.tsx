@@ -1,5 +1,6 @@
-import styles from './Loading.module.scss'
 import { clsx } from 'clsx'
+
+import styles from './Loading.module.scss'
 
 type Props = {
   size?: 'small' | 'tiny'

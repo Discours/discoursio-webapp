@@ -1,12 +1,13 @@
-import { Show, For, createSignal } from 'solid-js'
-import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
-import { ArticleCard } from '../Feed/ArticleCard'
 
+import { Show, For, createSignal } from 'solid-js'
+
+import '../../styles/Search.scss'
+import { useLocalize } from '../../context/localize'
+import { useRouter } from '../../stores/router'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
-import { useRouter } from '../../stores/router'
-import { useLocalize } from '../../context/localize'
+import { ArticleCard } from '../Feed/ArticleCard'
 
 type SearchPageSearchParams = {
   by: '' | 'relevance' | 'rating'

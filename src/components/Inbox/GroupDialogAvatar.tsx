@@ -1,9 +1,13 @@
-import { For } from 'solid-js'
-import './DialogCard.module.scss'
-import styles from './GroupDialogAvatar.module.scss'
-import { clsx } from 'clsx'
 import type { ChatMember } from '../../graphql/types.gen'
+
+import { clsx } from 'clsx'
+import { For } from 'solid-js'
+
 import DialogAvatar from './DialogAvatar'
+
+import './DialogCard.module.scss'
+
+import styles from './GroupDialogAvatar.module.scss'
 
 type Props = {
   users: ChatMember[]

@@ -1,9 +1,12 @@
-import { createSignal, Show, For } from 'solid-js'
 import type { Editor } from '@tiptap/core'
-import styles from './BubbleMenu.module.scss'
+
 import { clsx } from 'clsx'
-import { Icon } from '../../_shared/Icon'
+import { createSignal, Show, For } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
+
+import styles from './BubbleMenu.module.scss'
 
 type Props = {
   editor: Editor

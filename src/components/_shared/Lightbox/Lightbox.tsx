@@ -1,8 +1,10 @@
 import { clsx } from 'clsx'
-import styles from './Lightbox.module.scss'
 import { createSignal } from 'solid-js'
-import { Icon } from '../Icon'
+
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { Icon } from '../Icon'
+
+import styles from './Lightbox.module.scss'
 
 type Props = {
   class?: string

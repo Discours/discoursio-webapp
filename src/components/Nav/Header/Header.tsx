@@ -1,29 +1,28 @@
-import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
-import { getPagePath, redirectPage } from '@nanostores/router'
-import { clsx } from 'clsx'
-
-import { Modal } from '../Modal'
-import { AuthModal } from '../AuthModal'
-import { HeaderAuth } from '../HeaderAuth'
-import { ConfirmModal } from '../ConfirmModal'
-import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import { Snackbar } from '../Snackbar'
-import { Icon } from '../../_shared/Icon'
 import type { Topic } from '../../../graphql/types.gen'
 
-import { useModalStore } from '../../../stores/ui'
-import { router, ROUTES, useRouter } from '../../../stores/router'
-
-import { getDescription } from '../../../utils/meta'
+import { getPagePath, redirectPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { router, ROUTES, useRouter } from '../../../stores/router'
+import { useModalStore } from '../../../stores/ui'
+import { apiClient } from '../../../utils/apiClient'
+import { getDescription } from '../../../utils/meta'
+import { Icon } from '../../_shared/Icon'
+import { Subscribe } from '../../_shared/Subscribe'
+import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
+import { AuthModal } from '../AuthModal'
+import { ConfirmModal } from '../ConfirmModal'
+import { HeaderAuth } from '../HeaderAuth'
+import { Modal } from '../Modal'
+import { Snackbar } from '../Snackbar'
+
+import { Link } from './Link'
 
 import styles from './Header.module.scss'
-import { apiClient } from '../../../utils/apiClient'
-import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
-import { Link } from './Link'
-import { Subscribe } from '../../_shared/Subscribe'
 
 type Props = {
   title?: string

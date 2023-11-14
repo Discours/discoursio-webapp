@@ -1,17 +1,21 @@
-import { createEffect, createSignal, Show } from 'solid-js'
-import type { Editor } from '@tiptap/core'
-import { Icon } from '../../_shared/Icon'
-import { InlineForm } from '../InlineForm'
-import styles from './EditorFloatingMenu.module.scss'
-import { useLocalize } from '../../../context/localize'
-import { Modal } from '../../Nav/Modal'
-import { Menu } from './Menu'
 import type { MenuItem } from './Menu/Menu'
-import { showModal } from '../../../stores/ui'
-import { UploadModalContent } from '../UploadModalContent'
-import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import type { Editor } from '@tiptap/core'
+
+import { createEffect, createSignal, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
 import { UploadedFile } from '../../../pages/types'
+import { showModal } from '../../../stores/ui'
 import { renderUploadedImage } from '../../../utils/renderUploadedImage'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { Icon } from '../../_shared/Icon'
+import { Modal } from '../../Nav/Modal'
+import { InlineForm } from '../InlineForm'
+import { UploadModalContent } from '../UploadModalContent'
+
+import { Menu } from './Menu'
+
+import styles from './EditorFloatingMenu.module.scss'
 
 type FloatingMenuProps = {
   editor: Editor

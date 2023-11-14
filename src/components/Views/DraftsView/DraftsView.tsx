@@ -1,13 +1,15 @@
+import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import styles from './DraftsView.module.scss'
 import { createSignal, For, onMount, Show } from 'solid-js'
-import { Draft } from '../../Draft'
+
+import { useEditorContext } from '../../../context/editor'
 import { useSession } from '../../../context/session'
 import { Shout } from '../../../graphql/types.gen'
-import { apiClient } from '../../../utils/apiClient'
-import { useEditorContext } from '../../../context/editor'
-import { openPage } from '@nanostores/router'
 import { router } from '../../../stores/router'
+import { apiClient } from '../../../utils/apiClient'
+import { Draft } from '../../Draft'
+
+import styles from './DraftsView.module.scss'
 
 export const DraftsView = () => {
   const { isAuthenticated, isSessionLoaded } = useSession()

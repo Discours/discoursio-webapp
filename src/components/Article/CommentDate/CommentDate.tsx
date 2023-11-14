@@ -1,8 +1,11 @@
-import { Show } from 'solid-js'
-import { Icon } from '../../_shared/Icon'
 import type { Reaction } from '../../../graphql/types.gen'
-import { useLocalize } from '../../../context/localize'
+
 import { clsx } from 'clsx'
+import { Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
+
 import styles from './CommentDate.module.scss'
 
 type Props = {

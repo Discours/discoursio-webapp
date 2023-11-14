@@ -1,19 +1,20 @@
-import { createMemo, createSignal, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { FollowingEntity } from '../../graphql/types.gen'
 
-import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
-import { useSession } from '../../context/session'
-import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { Icon } from '../_shared/Icon'
+import { createMemo, createSignal, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
-import { CardTopic } from '../Feed/CardTopic'
-import { CheckButton } from '../_shared/CheckButton'
+import { useSession } from '../../context/session'
+import { FollowingEntity } from '../../graphql/types.gen'
+import { follow, unfollow } from '../../stores/zine/common'
 import { capitalize } from '../../utils/capitalize'
+import { Button } from '../_shared/Button'
+import { CheckButton } from '../_shared/CheckButton'
+import { Icon } from '../_shared/Icon'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import { CardTopic } from '../Feed/CardTopic'
 
 import styles from './Card.module.scss'
-import { Button } from '../_shared/Button'
 import stylesButton from '../_shared/Button/Button.module.scss'
 
 interface TopicProps {

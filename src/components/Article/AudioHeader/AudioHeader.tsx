@@ -1,11 +1,13 @@
 import { clsx } from 'clsx'
-import styles from './AudioHeader.module.scss'
-import { MediaItem } from '../../../pages/types'
 import { createSignal, Show } from 'solid-js'
-import { Icon } from '../../_shared/Icon'
+
 import { Topic } from '../../../graphql/types.gen'
-import { CardTopic } from '../../Feed/CardTopic'
+import { MediaItem } from '../../../pages/types'
+import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
+import { CardTopic } from '../../Feed/CardTopic'
+
+import styles from './AudioHeader.module.scss'
 
 type Props = {
   title: string

@@ -1,8 +1,10 @@
 import { clsx } from 'clsx'
-import styles from './GroupAvatar.module.scss'
 import { For } from 'solid-js'
+
 import { Userpic } from '../../Author/Userpic'
 import { NotificationUser } from '../../NotificationsPanel/NotificationView/NotificationView'
+
+import styles from './GroupAvatar.module.scss'
 
 type Props = {
   class?: string

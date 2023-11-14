@@ -1,6 +1,8 @@
-import styles from './Search.module.scss'
 import { createSignal } from 'solid-js'
+
 import { Icon } from '../_shared/Icon'
+
+import styles from './Search.module.scss'
 
 type Props = {
   placeholder: string

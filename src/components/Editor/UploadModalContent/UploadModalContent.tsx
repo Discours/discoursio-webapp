@@ -1,16 +1,18 @@
-import styles from './UploadModalContent.module.scss'
-import { clsx } from 'clsx'
-import { Icon } from '../../_shared/Icon'
-import { Button } from '../../_shared/Button'
-import { createSignal, Show } from 'solid-js'
-import { InlineForm } from '../InlineForm'
-import { hideModal } from '../../../stores/ui'
 import { createDropzone, createFileUploader, UploadFile } from '@solid-primitives/upload'
+import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
-import { Loading } from '../../_shared/Loading'
-import { verifyImg } from '../../../utils/verifyImg'
 import { UploadedFile } from '../../../pages/types'
+import { hideModal } from '../../../stores/ui'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
+import { verifyImg } from '../../../utils/verifyImg'
+import { Button } from '../../_shared/Button'
+import { Icon } from '../../_shared/Icon'
+import { Loading } from '../../_shared/Loading'
+import { InlineForm } from '../InlineForm'
+
+import styles from './UploadModalContent.module.scss'
 
 type Props = {
   onClose: (image?: UploadedFile) => void

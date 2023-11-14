@@ -1,4 +1,7 @@
+import type { AuthModalSource } from '../components/Nav/AuthModal/types'
+import type { AuthResult, MySubscriptionsQueryResult, User } from '../graphql/types.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
+
 import {
   createEffect,
   createContext,
@@ -8,13 +11,13 @@ import {
   onMount,
   useContext,
 } from 'solid-js'
-import type { AuthResult, MySubscriptionsQueryResult, User } from '../graphql/types.gen'
-import { apiClient } from '../utils/apiClient'
+
 import { resetToken, setToken } from '../graphql/privateGraphQLClient'
-import { useSnackbar } from './snackbar'
-import { useLocalize } from './localize'
 import { showModal } from '../stores/ui'
-import type { AuthModalSource } from '../components/Nav/AuthModal/types'
+import { apiClient } from '../utils/apiClient'
+
+import { useLocalize } from './localize'
+import { useSnackbar } from './snackbar'
 
 type SessionContextType = {
   session: Resource<AuthResult>

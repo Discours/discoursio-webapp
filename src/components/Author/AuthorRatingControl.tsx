@@ -1,6 +1,8 @@
-import styles from './AuthorRatingControl.module.scss'
-import { clsx } from 'clsx'
 import type { Author } from '../../graphql/types.gen'
+
+import { clsx } from 'clsx'
+
+import styles from './AuthorRatingControl.module.scss'
 
 interface AuthorRatingControlProps {
   author: Author

@@ -1,5 +1,6 @@
 import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
+
 import { isDev, apiBaseUrl } from '../utils/config'
 // import { cache } from './cache'
 

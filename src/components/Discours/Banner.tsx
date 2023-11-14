@@ -1,8 +1,9 @@
-import styles from './Banner.module.scss'
-
-import { showModal } from '../../stores/ui'
 import { clsx } from 'clsx'
+
 import { useLocalize } from '../../context/localize'
+import { showModal } from '../../stores/ui'
+
+import styles from './Banner.module.scss'
 
 export default () => {
   const { t } = useLocalize()

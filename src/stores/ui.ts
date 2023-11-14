@@ -1,11 +1,13 @@
-import { createSignal } from 'solid-js'
-import { useRouter } from './router'
 import type {
   AuthModalSearchParams,
   AuthModalSource,
   ConfirmEmailSearchParams,
 } from '../components/Nav/AuthModal/types'
 import type { RootSearchParams } from '../pages/types'
+
+import { createSignal } from 'solid-js'
+
+import { useRouter } from './router'
 
 export type ModalType =
   | 'auth'

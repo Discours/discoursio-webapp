@@ -1,14 +1,16 @@
-import { App } from '../components/App'
-import { hydrate } from 'solid-js/web'
-import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'
 import type { PageContext } from './types'
-import i18next from 'i18next'
-import ICU from 'i18next-icu'
-import HttpApi from 'i18next-http-backend'
+import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'
+
 import * as Sentry from '@sentry/browser'
+import i18next from 'i18next'
+import HttpApi from 'i18next-http-backend'
+import ICU from 'i18next-icu'
+import { hydrate } from 'solid-js/web'
+
+import { App } from '../components/App'
+import { initRouter } from '../stores/router'
 import { SENTRY_DSN } from '../utils/config'
 import { resolveHydrationPromise } from '../utils/hydrationPromise'
-import { initRouter } from '../stores/router'
 
 let layoutReady = false
 

@@ -1,11 +1,15 @@
-import { Show, Switch, Match, createMemo } from 'solid-js'
-import DialogAvatar from './DialogAvatar'
 import type { ChatMember } from '../../graphql/types.gen'
-import GroupDialogAvatar from './GroupDialogAvatar'
+
 import { clsx } from 'clsx'
-import styles from './DialogCard.module.scss'
+import { Show, Switch, Match, createMemo } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
 import { AuthorBadge } from '../Author/AuthorBadge'
+
+import DialogAvatar from './DialogAvatar'
+import GroupDialogAvatar from './GroupDialogAvatar'
+
+import styles from './DialogCard.module.scss'
 
 type DialogProps = {
   online?: boolean

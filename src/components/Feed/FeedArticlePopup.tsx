@@ -1,8 +1,11 @@
-import styles from './FeedArticlePopup.module.scss'
 import type { PopupProps } from '../_shared/Popup'
-import { Popup } from '../_shared/Popup'
-import { useLocalize } from '../../context/localize'
+
 import { createEffect, createSignal, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
+import { Popup } from '../_shared/Popup'
+
+import styles from './FeedArticlePopup.module.scss'
 
 type FeedArticlePopupProps = {
   title: string

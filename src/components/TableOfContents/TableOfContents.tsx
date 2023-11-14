@@ -1,11 +1,13 @@
-import { For, Show, createSignal, createEffect, on, onMount, onCleanup } from 'solid-js'
 import { clsx } from 'clsx'
-import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
-import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
-import styles from './TableOfContents.module.scss'
-import { isDesktop } from '../../utils/media-query'
+import { For, Show, createSignal, createEffect, on, onMount, onCleanup } from 'solid-js'
 import { throttle, debounce } from 'throttle-debounce'
+
+import { useLocalize } from '../../context/localize'
+import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
+import { isDesktop } from '../../utils/media-query'
+import { Icon } from '../_shared/Icon'
+
+import styles from './TableOfContents.module.scss'
 
 interface Props {
   variant: 'article' | 'editor'

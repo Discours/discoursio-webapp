@@ -1,6 +1,8 @@
 import type { Shout, LoadShoutsOptions } from '../../graphql/types.gen'
-import { apiClient } from '../../utils/apiClient'
+
 import { createSignal } from 'solid-js'
+
+import { apiClient } from '../../utils/apiClient'
 
 export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 

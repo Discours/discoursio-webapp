@@ -1,5 +1,7 @@
-import { For } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
+
+import { For } from 'solid-js'
+
 import { ArticleCard } from './ArticleCard'
 
 export default (props: { articles: Shout[] }) => (

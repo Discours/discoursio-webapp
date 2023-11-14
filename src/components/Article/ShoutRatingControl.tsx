@@ -1,13 +1,15 @@
 import { clsx } from 'clsx'
 import { createMemo, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
 import { ReactionKind, Shout } from '../../graphql/types.gen'
 import { loadShout } from '../../stores/zine/articles'
-import { useSession } from '../../context/session'
-import { useReactions } from '../../context/reactions'
+import { Icon } from '../_shared/Icon'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
-import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
+
 import styles from './ShoutRatingControl.module.scss'
 
 interface ShoutRatingControlProps {

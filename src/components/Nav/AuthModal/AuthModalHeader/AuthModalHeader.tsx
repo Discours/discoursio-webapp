@@ -1,8 +1,10 @@
-import styles from './AuthModalHeader.module.scss'
 import { Show } from 'solid-js'
+
 import { useLocalize } from '../../../../context/localize'
 import { useRouter } from '../../../../stores/router'
 import { AuthModalSearchParams } from '../types'
+
+import styles from './AuthModalHeader.module.scss'
 
 type Props = {
   modalType: 'login' | 'register'

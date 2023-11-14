@@ -1,9 +1,11 @@
-import type { JSX } from 'solid-js'
-import { createContext, onCleanup, useContext } from 'solid-js'
 import type { Reaction, ReactionBy, ReactionInput } from '../graphql/types.gen'
+import type { JSX } from 'solid-js'
+
+import { createContext, onCleanup, useContext } from 'solid-js'
+import { createStore, reconcile } from 'solid-js/store'
+
 import { ReactionKind } from '../graphql/types.gen'
 import { apiClient } from '../utils/apiClient'
-import { createStore, reconcile } from 'solid-js/store'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>

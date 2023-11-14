@@ -1,12 +1,14 @@
+import type { PageProps } from './types'
+
+import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
+
+import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
-import type { PageProps } from './types'
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
-import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
-import { useRouter } from '../stores/router'
-import { loadAuthor } from '../stores/zine/authors'
-import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
+import { useRouter } from '../stores/router'
+import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
+import { loadAuthor } from '../stores/zine/authors'
 
 export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()

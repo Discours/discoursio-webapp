@@ -1,15 +1,18 @@
-import { clsx } from 'clsx'
 import type { Notification } from '../../../graphql/types.gen'
-import { createMemo, createSignal, onMount, Show } from 'solid-js'
-import { NotificationType } from '../../../graphql/types.gen'
-import { getPagePath, openPage } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
-import { useNotifications } from '../../../context/notifications'
-import { useLocalize } from '../../../context/localize'
 import type { ArticlePageSearchParams } from '../../Article/FullArticle'
-import { TimeAgo } from '../../_shared/TimeAgo'
-import styles from './NotificationView.module.scss'
+
+import { getPagePath, openPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { createMemo, createSignal, onMount, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { useNotifications } from '../../../context/notifications'
+import { NotificationType } from '../../../graphql/types.gen'
+import { router, useRouter } from '../../../stores/router'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
+import { TimeAgo } from '../../_shared/TimeAgo'
+
+import styles from './NotificationView.module.scss'
 
 type Props = {
   notification: Notification

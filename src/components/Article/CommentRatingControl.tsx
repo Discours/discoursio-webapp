@@ -1,15 +1,18 @@
-import { clsx } from 'clsx'
-import styles from './CommentRatingControl.module.scss'
 import type { Reaction } from '../../graphql/types.gen'
-import { ReactionKind } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
-import { useReactions } from '../../context/reactions'
+
+import { clsx } from 'clsx'
 import { createMemo } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
+import { useSnackbar } from '../../context/snackbar'
+import { ReactionKind } from '../../graphql/types.gen'
 import { loadShout } from '../../stores/zine/articles'
 import { Popup } from '../_shared/Popup'
-import { useLocalize } from '../../context/localize'
-import { useSnackbar } from '../../context/snackbar'
 import { VotersList } from '../_shared/VotersList'
+
+import styles from './CommentRatingControl.module.scss'
 
 type Props = {
   comment: Reaction

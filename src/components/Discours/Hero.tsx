@@ -1,9 +1,9 @@
-import styles from './Hero.module.scss'
-
-import { showModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
+import { showModal } from '../../stores/ui'
 import { AuthModalSearchParams } from '../Nav/AuthModal/types'
+
+import styles from './Hero.module.scss'
 
 export default () => {
   const { t } = useLocalize()

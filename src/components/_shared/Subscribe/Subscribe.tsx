@@ -1,10 +1,12 @@
 import { createSignal, JSX, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { useSnackbar } from '../../../context/snackbar'
 import { validateEmail } from '../../../utils/validateEmail'
 import { Button } from '../Button'
-import styles from './Subscribe.module.scss'
-import { useSnackbar } from '../../../context/snackbar'
 import { Icon } from '../Icon'
+
+import styles from './Subscribe.module.scss'
 
 type Props = {
   variant?: 'mobileSubscription'

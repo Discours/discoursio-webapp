@@ -1,17 +1,19 @@
+import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
+import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { Author, FollowingEntity } from '../../../graphql/types.gen'
+import { router, useRouter } from '../../../stores/router'
+import { follow, unfollow } from '../../../stores/zine/common'
+import { Button } from '../../_shared/Button'
+import { CheckButton } from '../../_shared/CheckButton'
+import { Icon } from '../../_shared/Icon'
+import { Userpic } from '../Userpic'
+
 import styles from './AuthorBadge.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
-import { Userpic } from '../Userpic'
-import { Author, FollowingEntity } from '../../../graphql/types.gen'
-import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
-import { useLocalize } from '../../../context/localize'
-import { Button } from '../../_shared/Button'
-import { useSession } from '../../../context/session'
-import { follow, unfollow } from '../../../stores/zine/common'
-import { CheckButton } from '../../_shared/CheckButton'
-import { openPage } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
-import { Icon } from '../../_shared/Icon'
 
 type Props = {
   author: Author

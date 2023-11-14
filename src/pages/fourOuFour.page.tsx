@@ -1,5 +1,5 @@
-import { FourOuFourView } from '../components/Views/FourOuFour'
 import { PageLayout } from '../components/_shared/PageLayout'
+import { FourOuFourView } from '../components/Views/FourOuFour'
 import { useLocalize } from '../context/localize'
 
 export const FourOuFourPage = () => {

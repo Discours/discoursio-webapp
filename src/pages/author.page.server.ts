@@ -1,7 +1,8 @@
-import type { PageContext } from '../renderer/types'
-import { apiClient } from '../utils/apiClient'
 import type { PageProps } from './types'
+import type { PageContext } from '../renderer/types'
+
 import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
+import { apiClient } from '../utils/apiClient'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams

@@ -1,10 +1,12 @@
-import type { Accessor, JSX } from 'solid-js'
-import { createContext, createSignal, useContext } from 'solid-js'
-// import { createSubClient } from '../graphql/privateGraphQLClient'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
+import type { Accessor, JSX } from 'solid-js'
+
+import { createContext, createSignal, useContext } from 'solid-js'
+
+// import { createSubClient } from '../graphql/privateGraphQLClient'
+import { loadMessages } from '../stores/inbox'
 import { apiClient } from '../utils/apiClient'
 // import type { Client } from '@urql/core'
-import { loadMessages } from '../stores/inbox'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>

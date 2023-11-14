@@ -1,12 +1,14 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
-import { useRouter } from '../../stores/router'
+
 import { clsx } from 'clsx'
-import { SearchField } from '../_shared/SearchField'
-import { scrollHandler } from '../../utils/scroll'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { useRouter } from '../../stores/router'
+import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { scrollHandler } from '../../utils/scroll'
+import { SearchField } from '../_shared/SearchField'
 import { AuthorBadge } from '../Author/AuthorBadge'
 
 import styles from './AllAuthors.module.scss'

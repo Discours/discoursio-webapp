@@ -1,5 +1,6 @@
-import { PageLayout } from '../components/_shared/PageLayout'
 import { createSignal, Show } from 'solid-js'
+
+import { PageLayout } from '../components/_shared/PageLayout'
 
 export const ConnectPage = () => {
   const [state, setState] = createSignal<'initial' | 'loading' | 'success' | 'error'>('initial')

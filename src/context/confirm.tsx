@@ -1,8 +1,9 @@
-import { createContext, createSignal, useContext } from 'solid-js'
 import type { Accessor, JSX } from 'solid-js'
 
-import { hideModal, showModal } from '../stores/ui'
+import { createContext, createSignal, useContext } from 'solid-js'
+
 import { ButtonVariant } from '../components/_shared/Button/Button'
+import { hideModal, showModal } from '../stores/ui'
 
 type ConfirmMessage = {
   confirmBody?: string | JSX.Element

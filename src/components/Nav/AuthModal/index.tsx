@@ -1,16 +1,20 @@
-import { Dynamic } from 'solid-js/web'
-import { Show, Component, createEffect, createMemo } from 'solid-js'
-import { hideModal } from '../../../stores/ui'
-import { useRouter } from '../../../stores/router'
-import { clsx } from 'clsx'
-import styles from './AuthModal.module.scss'
-import { LoginForm } from './LoginForm'
-import { isMobile } from '../../../utils/media-query'
-import { RegisterForm } from './RegisterForm'
-import { ForgotPasswordForm } from './ForgotPasswordForm'
-import { EmailConfirm } from './EmailConfirm'
 import type { AuthModalMode, AuthModalSearchParams } from './types'
+
+import { clsx } from 'clsx'
+import { Show, Component, createEffect, createMemo } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
+
 import { useLocalize } from '../../../context/localize'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { isMobile } from '../../../utils/media-query'
+
+import { EmailConfirm } from './EmailConfirm'
+import { ForgotPasswordForm } from './ForgotPasswordForm'
+import { LoginForm } from './LoginForm'
+import { RegisterForm } from './RegisterForm'
+
+import styles from './AuthModal.module.scss'
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   login: LoginForm,

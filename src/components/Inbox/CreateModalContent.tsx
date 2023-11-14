@@ -1,11 +1,14 @@
-import { createSignal, For, createEffect } from 'solid-js'
-import styles from './CreateModalContent.module.scss'
-
-import InviteUser from './InviteUser'
 import type { Author } from '../../graphql/types.gen'
-import { hideModal } from '../../stores/ui'
+
+import { createSignal, For, createEffect } from 'solid-js'
+
 import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
+import { hideModal } from '../../stores/ui'
+
+import InviteUser from './InviteUser'
+
+import styles from './CreateModalContent.module.scss'
 
 type inviteUser = Author & { selected: boolean }
 type Props = {

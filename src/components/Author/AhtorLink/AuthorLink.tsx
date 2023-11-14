@@ -1,7 +1,9 @@
 import { clsx } from 'clsx'
-import styles from './AhtorLink.module.scss'
+
 import { Author } from '../../../graphql/types.gen'
 import { Userpic } from '../Userpic'
+
+import styles from './AhtorLink.module.scss'
 
 type Props = {
   author: Author

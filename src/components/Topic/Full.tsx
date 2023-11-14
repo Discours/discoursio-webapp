@@ -1,13 +1,15 @@
-import { createMemo, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { FollowingEntity } from '../../graphql/types.gen'
-import styles from './Full.module.scss'
-import { follow, unfollow } from '../../stores/zine/common'
 
 import { clsx } from 'clsx'
-import { useSession } from '../../context/session'
+import { createMemo, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { useSession } from '../../context/session'
+import { FollowingEntity } from '../../graphql/types.gen'
+import { follow, unfollow } from '../../stores/zine/common'
 import { Button } from '../_shared/Button'
+
+import styles from './Full.module.scss'
 
 type Props = {
   topic: Topic

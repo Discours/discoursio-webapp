@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import solidPlugin from 'vite-plugin-solid'
 import ssrPlugin from 'vike/plugin'
-import sassDts from 'vite-plugin-sass-dts'
+import { defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
+import sassDts from 'vite-plugin-sass-dts'
+import solidPlugin from 'vite-plugin-solid'
 
 const cssModuleHMR = () => {
   return {

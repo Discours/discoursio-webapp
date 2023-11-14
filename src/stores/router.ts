@@ -1,7 +1,9 @@
 import type { Accessor } from 'solid-js'
+
 import { createRouter, createSearchParams } from '@nanostores/router'
-import { isServer } from 'solid-js/web'
 import { useStore } from '@nanostores/solid'
+import { isServer } from 'solid-js/web'
+
 import { hydrationPromise } from '../utils/hydrationPromise'
 
 export const ROUTES = {

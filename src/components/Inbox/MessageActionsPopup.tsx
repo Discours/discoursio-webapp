@@ -1,7 +1,9 @@
-import { createEffect, createSignal, For } from 'solid-js'
 import type { PopupProps } from '../_shared/Popup'
-import { Popup } from '../_shared/Popup'
+
+import { createEffect, createSignal, For } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { Popup } from '../_shared/Popup'
 
 export type MessageActionType = 'reply' | 'copy' | 'pin' | 'forward' | 'select' | 'delete'
 

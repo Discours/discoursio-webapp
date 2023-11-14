@@ -1,10 +1,11 @@
+import { clsx } from 'clsx'
 import { createMemo, For } from 'solid-js'
-import styles from './Footer.module.scss'
+
+import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
 import { Subscribe } from '../_shared/Subscribe'
 
-import { clsx } from 'clsx'
-import { useLocalize } from '../../context/localize'
+import styles from './Footer.module.scss'
 
 export const Footer = () => {
   const { t, lang } = useLocalize()

@@ -1,24 +1,22 @@
-import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
-import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
 
-import { Userpic } from '../../Author/Userpic'
-import { CommentRatingControl } from '../CommentRatingControl'
-import { CommentDate } from '../CommentDate'
-import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
-import { Icon } from '../../_shared/Icon'
-
-import { useSession } from '../../../context/session'
+import { useConfirm } from '../../../context/confirm'
 import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
+import { useSession } from '../../../context/session'
 import { useSnackbar } from '../../../context/snackbar'
-import { useConfirm } from '../../../context/confirm'
-
 import { Author, Reaction, ReactionKind } from '../../../graphql/types.gen'
 import { router } from '../../../stores/router'
+import { Icon } from '../../_shared/Icon'
+import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
+import { AuthorLink } from '../../Author/AhtorLink'
+import { Userpic } from '../../Author/Userpic'
+import { CommentDate } from '../CommentDate'
+import { CommentRatingControl } from '../CommentRatingControl'
 
 import styles from './Comment.module.scss'
-import { AuthorLink } from '../../Author/AhtorLink'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 

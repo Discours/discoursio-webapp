@@ -1,8 +1,10 @@
-import { Show, createMemo } from 'solid-js'
-import './DialogCard.module.scss'
-import styles from './DialogAvatar.module.scss'
 import { clsx } from 'clsx'
+import { Show, createMemo } from 'solid-js'
+
 import { getImageUrl } from '../../utils/getImageUrl'
+import './DialogCard.module.scss'
+
+import styles from './DialogAvatar.module.scss'
 
 type Props = {
   name: string

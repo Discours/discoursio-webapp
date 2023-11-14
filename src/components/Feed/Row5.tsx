@@ -1,4 +1,5 @@
 import type { Shout } from '../../graphql/types.gen'
+
 import { ArticleCard } from './ArticleCard'
 
 export const Row5 = (props: { articles: Shout[]; nodate?: boolean }) => {

@@ -1,11 +1,13 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
 import type { PageProps } from '../types'
+
+import { createMemo } from 'solid-js'
+
+import { PageLayout } from '../../components/_shared/PageLayout'
 import { Topics } from '../../components/Nav/Topics'
 import { Expo } from '../../components/Views/Expo'
 import { useLocalize } from '../../context/localize'
-import { createMemo } from 'solid-js'
-import { LayoutType } from '../types'
 import { useRouter } from '../../stores/router'
+import { LayoutType } from '../types'
 
 export const ExpoPage = (props: PageProps) => {
   const { t } = useLocalize()

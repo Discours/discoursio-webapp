@@ -1,5 +1,7 @@
 import { UploadFile } from '@solid-primitives/upload'
+
 import { UploadedFile } from '../pages/types'
+
 import { thumborUrl } from './config'
 
 export const handleImageUpload = async (uploadFile: UploadFile): Promise<UploadedFile> => {

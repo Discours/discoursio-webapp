@@ -1,8 +1,11 @@
 import { createEffect, createMemo, createSignal, on, onMount, Show } from 'solid-js'
+
+import { MediaItem } from '../../../pages/types'
+
 import { PlayerHeader } from './PlayerHeader'
 import { PlayerPlaylist } from './PlayerPlaylist'
+
 import styles from './AudioPlayer.module.scss'
-import { MediaItem } from '../../../pages/types'
 
 type Props = {
   media: MediaItem[]

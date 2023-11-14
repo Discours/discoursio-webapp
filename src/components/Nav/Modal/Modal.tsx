@@ -1,13 +1,15 @@
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 import type { JSX } from 'solid-js'
+
+import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
+import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+
+import { router } from '../../../stores/router'
 import { hideModal, useModalStore } from '../../../stores/ui'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { Icon } from '../../_shared/Icon'
 
 import styles from './Modal.module.scss'
-import { redirectPage } from '@nanostores/router'
-import { router } from '../../../stores/router'
-import { Icon } from '../../_shared/Icon'
 
 interface Props {
   name: string

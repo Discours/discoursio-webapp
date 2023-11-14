@@ -1,10 +1,12 @@
+import { clsx } from 'clsx'
 import { createEffect, createSignal, Match, Switch, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
 import { Button } from '../Button'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
-import { clsx } from 'clsx'
+
 import styles from './VideoPlayer.module.scss'
-import { useLocalize } from '../../../context/localize'
 
 type Props = {
   videoUrl: string

@@ -1,3 +1,15 @@
+import { Blockquote } from '@tiptap/extension-blockquote'
+import { Bold } from '@tiptap/extension-bold'
+import { BubbleMenu } from '@tiptap/extension-bubble-menu'
+import { CharacterCount } from '@tiptap/extension-character-count'
+import { Document } from '@tiptap/extension-document'
+import { Image } from '@tiptap/extension-image'
+import { Italic } from '@tiptap/extension-italic'
+import { Link } from '@tiptap/extension-link'
+import { Paragraph } from '@tiptap/extension-paragraph'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { Text } from '@tiptap/extension-text'
+import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import {
@@ -7,32 +19,23 @@ import {
   useEditorIsEmpty,
   useEditorIsFocused,
 } from 'solid-tiptap'
+
 import { useEditorContext } from '../../context/editor'
-import { Document } from '@tiptap/extension-document'
-import { Text } from '@tiptap/extension-text'
-import { Paragraph } from '@tiptap/extension-paragraph'
-import { Bold } from '@tiptap/extension-bold'
-import { Button } from '../_shared/Button'
 import { useLocalize } from '../../context/localize'
+import { UploadedFile } from '../../pages/types'
+import { hideModal, showModal } from '../../stores/ui'
+import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
-import { Italic } from '@tiptap/extension-italic'
 import { Modal } from '../Nav/Modal'
-import { hideModal, showModal } from '../../stores/ui'
-import { Blockquote } from '@tiptap/extension-blockquote'
-import { UploadModalContent } from './UploadModalContent'
-import { clsx } from 'clsx'
-import styles from './SimplifiedEditor.module.scss'
-import { Placeholder } from '@tiptap/extension-placeholder'
-import { InsertLinkForm } from './InsertLinkForm'
-import { Link } from '@tiptap/extension-link'
-import { UploadedFile } from '../../pages/types'
-import { Figure } from './extensions/Figure'
-import { Image } from '@tiptap/extension-image'
+
 import { Figcaption } from './extensions/Figcaption'
+import { Figure } from './extensions/Figure'
+import { InsertLinkForm } from './InsertLinkForm'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { BubbleMenu } from '@tiptap/extension-bubble-menu'
-import { CharacterCount } from '@tiptap/extension-character-count'
+import { UploadModalContent } from './UploadModalContent'
+
+import styles from './SimplifiedEditor.module.scss'
 
 type Props = {
   placeholder: string

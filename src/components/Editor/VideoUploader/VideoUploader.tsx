@@ -1,13 +1,16 @@
-import { clsx } from 'clsx'
-import styles from './VideoUploader.module.scss'
-import { useLocalize } from '../../../context/localize'
-import { createDropzone } from '@solid-primitives/upload'
-import { createSignal, For, Show } from 'solid-js'
-import { useSnackbar } from '../../../context/snackbar'
-import { validateUrl } from '../../../utils/validateUrl'
 import type { MediaItem } from '../../../pages/types'
+
+import { createDropzone } from '@solid-primitives/upload'
+import { clsx } from 'clsx'
+import { createSignal, For, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { useSnackbar } from '../../../context/snackbar'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
+import { validateUrl } from '../../../utils/validateUrl'
 import { VideoPlayer } from '../../_shared/VideoPlayer'
+
+import styles from './VideoUploader.module.scss'
 
 type Props = {
   video: MediaItem[]

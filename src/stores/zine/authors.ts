@@ -1,7 +1,9 @@
-import { apiClient } from '../../utils/apiClient'
 import type { Author } from '../../graphql/types.gen'
-import { createSignal } from 'solid-js'
+
 import { createLazyMemo } from '@solid-primitives/memo'
+import { createSignal } from 'solid-js'
+
+import { apiClient } from '../../utils/apiClient'
 import { byStat } from '../../utils/sortby'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'

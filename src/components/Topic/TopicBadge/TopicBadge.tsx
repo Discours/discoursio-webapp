@@ -1,13 +1,15 @@
 import { clsx } from 'clsx'
-import styles from './TopicBadge.module.scss'
-import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { createMemo, createSignal, Show } from 'solid-js'
-import { Button } from '../../_shared/Button'
-import { useSession } from '../../../context/session'
+
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { follow, unfollow } from '../../../stores/zine/common'
-import { CheckButton } from '../../_shared/CheckButton'
 import { getImageUrl } from '../../../utils/getImageUrl'
+import { Button } from '../../_shared/Button'
+import { CheckButton } from '../../_shared/CheckButton'
+
+import styles from './TopicBadge.module.scss'
 
 type Props = {
   topic: Topic

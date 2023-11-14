@@ -1,12 +1,14 @@
-import { Icon } from '../_shared/Icon'
+import type { PopupProps } from '../_shared/Popup'
 
 import { createSocialShare, TWITTER, VK, FACEBOOK, TELEGRAM } from '@solid-primitives/share'
-import styles from '../_shared/Popup/Popup.module.scss'
-import type { PopupProps } from '../_shared/Popup'
-import { Popup } from '../_shared/Popup'
-import { useLocalize } from '../../context/localize'
 import { createEffect, createSignal } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
 import { useSnackbar } from '../../context/snackbar'
+import { Icon } from '../_shared/Icon'
+import { Popup } from '../_shared/Popup'
+
+import styles from '../_shared/Popup/Popup.module.scss'
 
 type SharePopupProps = {
   title: string

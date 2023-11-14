@@ -1,14 +1,17 @@
 import type { Accessor, JSX } from 'solid-js'
+
 import { createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
-import { useSession } from './session'
-import SSEService, { EventData } from '../utils/sseService'
-import { apiBaseUrl } from '../utils/config'
+import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
+
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
-import { apiClient } from '../utils/apiClient'
-import { createStore } from 'solid-js/store'
 import { Notification } from '../graphql/types.gen'
+import { apiClient } from '../utils/apiClient'
+import { apiBaseUrl } from '../utils/config'
+import SSEService, { EventData } from '../utils/sseService'
+
+import { useSession } from './session'
 
 type NotificationsContextType = {
   notificationEntities: Record<number, Notification>

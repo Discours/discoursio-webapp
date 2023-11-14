@@ -1,12 +1,14 @@
+import type { PageProps } from './types'
+
+import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
+
+import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
-import type { PageProps } from './types'
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
-import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
-import { useRouter } from '../stores/router'
-import { loadTopic } from '../stores/zine/topics'
-import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
+import { useRouter } from '../stores/router'
+import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
+import { loadTopic } from '../stores/zine/topics'
 
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()

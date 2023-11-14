@@ -1,21 +1,23 @@
-import { For, Show, createMemo, onMount, createSignal } from 'solid-js'
 import type { Shout, Topic } from '../../graphql/types.gen'
-import { Row3 } from '../Feed/Row3'
-import { Row2 } from '../Feed/Row2'
-import { Beside } from '../Feed/Beside'
-import styles from '../../styles/Topic.module.scss'
-import { FullTopic } from '../Topic/Full'
 
+import { clsx } from 'clsx'
+import { For, Show, createMemo, onMount, createSignal } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
-import { useTopicsStore } from '../../stores/zine/topics'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
+import { useTopicsStore } from '../../stores/zine/topics'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-import { clsx } from 'clsx'
-import { Row1 } from '../Feed/Row1'
-import { useLocalize } from '../../context/localize'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
+import { Beside } from '../Feed/Beside'
+import { Row1 } from '../Feed/Row1'
+import { Row2 } from '../Feed/Row2'
+import { Row3 } from '../Feed/Row3'
+import { FullTopic } from '../Topic/Full'
+
+import styles from '../../styles/Topic.module.scss'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'

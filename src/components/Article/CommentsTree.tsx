@@ -1,15 +1,18 @@
-import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
-import { Comment } from './Comment'
-import styles from './Article.module.scss'
 import { clsx } from 'clsx'
-import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
-import { Button } from '../_shared/Button'
-import { useReactions } from '../../context/reactions'
-import { byCreated } from '../../utils/sortby'
-import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
+import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
+import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
+import { byCreated } from '../../utils/sortby'
+import { Button } from '../_shared/Button'
+import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
+
+import { Comment } from './Comment'
+
+import styles from './Article.module.scss'
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 

@@ -1,13 +1,17 @@
 import type { Topic } from '../../../graphql/types.gen'
+
 import { createOptions, Select } from '@thisbeyond/solid-select'
-import { useLocalize } from '../../../context/localize'
-import '@thisbeyond/solid-select/style.css'
-import './TopicSelect.scss'
-import styles from './TopicSelect.module.scss'
 import { clsx } from 'clsx'
 import { createSignal } from 'solid-js'
-import { slugify } from '../../../utils/slugify'
+
+import { useLocalize } from '../../../context/localize'
 import { clone } from '../../../utils/clone'
+import { slugify } from '../../../utils/slugify'
+
+import '@thisbeyond/solid-select/style.css'
+import './TopicSelect.scss'
+
+import styles from './TopicSelect.module.scss'
 
 type TopicSelectProps = {
   topics: Topic[]

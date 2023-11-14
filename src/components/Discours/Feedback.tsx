@@ -1,5 +1,5 @@
-import { hideModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
+import { hideModal } from '../../stores/ui'
 import { Button } from '../_shared/Button'
 
 export const Feedback = () => {

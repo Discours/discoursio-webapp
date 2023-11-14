@@ -1,9 +1,11 @@
-import { createMemo, Show } from 'solid-js'
-import styles from './Userpic.module.scss'
 import { clsx } from 'clsx'
+import { createMemo, Show } from 'solid-js'
+
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
-import { Loading } from '../../_shared/Loading'
 import { Image } from '../../_shared/Image'
+import { Loading } from '../../_shared/Loading'
+
+import styles from './Userpic.module.scss'
 
 type Props = {
   name: string

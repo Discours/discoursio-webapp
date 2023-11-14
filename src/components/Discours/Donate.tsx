@@ -1,8 +1,9 @@
 import '../../styles/help.scss'
 import { createSignal, onMount } from 'solid-js'
-import { showModal } from '../../stores/ui'
+
 import { useLocalize } from '../../context/localize'
 import { useSnackbar } from '../../context/snackbar'
+import { showModal } from '../../stores/ui'
 
 export const Donate = () => {
   const { t } = useLocalize()

@@ -1,6 +1,8 @@
 import { UploadFile } from '@solid-primitives/upload'
-import { apiBaseUrl } from './config'
+
 import { UploadedFile } from '../pages/types'
+
+import { apiBaseUrl } from './config'
 
 const apiUrl = `${apiBaseUrl}/upload`
 

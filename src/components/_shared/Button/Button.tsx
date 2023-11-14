@@ -1,5 +1,7 @@
 import type { JSX } from 'solid-js'
+
 import { clsx } from 'clsx'
+
 import styles from './Button.module.scss'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline' | 'danger'

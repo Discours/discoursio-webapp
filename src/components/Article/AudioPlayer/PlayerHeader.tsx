@@ -1,11 +1,11 @@
-import { createSignal, Show } from 'solid-js'
 import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
 
-import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
-
-import { Icon } from '../../_shared/Icon'
-import styles from './AudioPlayer.module.scss'
 import { MediaItem } from '../../../pages/types'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { Icon } from '../../_shared/Icon'
+
+import styles from './AudioPlayer.module.scss'
 
 type Props = {
   onPlayMedia: () => void

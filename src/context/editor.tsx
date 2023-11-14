@@ -1,14 +1,17 @@
 import type { JSX } from 'solid-js'
+
+import { openPage } from '@nanostores/router'
+import { Editor } from '@tiptap/core'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
+
 import { Topic, TopicInput } from '../graphql/types.gen'
+import { router, useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
+import { slugify } from '../utils/slugify'
+
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { openPage } from '@nanostores/router'
-import { router, useRouter } from '../stores/router'
-import { slugify } from '../utils/slugify'
-import { Editor } from '@tiptap/core'
 
 type WordCounter = {
   characters: number

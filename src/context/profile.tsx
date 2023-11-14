@@ -1,9 +1,12 @@
+import type { ProfileInput } from '../graphql/types.gen'
+
 import { createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { useSession } from './session'
+
 import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
 import { apiClient } from '../utils/apiClient'
-import type { ProfileInput } from '../graphql/types.gen'
+
+import { useSession } from './session'
 
 const userpicUrl = (userpic: string) => {
   if (userpic.includes('assets.discours.io')) {

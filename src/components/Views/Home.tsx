@@ -1,16 +1,8 @@
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
-import Banner from '../Discours/Banner'
-import { Topics } from '../Nav/Topics'
-import { Row5 } from '../Feed/Row5'
-import { Row3 } from '../Feed/Row3'
-import { Row2 } from '../Feed/Row2'
-import { Row1 } from '../Feed/Row1'
-import Hero from '../Discours/Hero'
-import { Beside } from '../Feed/Beside'
-import RowShort from '../Feed/RowShort'
-import Group from '../Feed/Group'
 import type { Shout } from '../../graphql/types.gen'
-import { useTopicsStore } from '../../stores/zine/topics'
+
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
 import {
   loadShouts,
   loadTopArticles,
@@ -18,10 +10,20 @@ import {
   useArticlesStore,
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
+import { useTopicsStore } from '../../stores/zine/topics'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-import { useLocalize } from '../../context/localize'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
+import Banner from '../Discours/Banner'
+import Hero from '../Discours/Hero'
+import { Beside } from '../Feed/Beside'
+import Group from '../Feed/Group'
+import { Row1 } from '../Feed/Row1'
+import { Row2 } from '../Feed/Row2'
+import { Row3 } from '../Feed/Row3'
+import { Row5 } from '../Feed/Row5'
+import RowShort from '../Feed/RowShort'
+import { Topics } from '../Nav/Topics'
 
 type Props = {
   shouts: Shout[]

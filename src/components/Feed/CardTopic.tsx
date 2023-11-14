@@ -1,6 +1,8 @@
-import { clsx } from 'clsx'
 import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
+
 import { router } from '../../stores/router'
+
 import styles from './CardTopic.module.scss'
 
 type CardTopicProps = {

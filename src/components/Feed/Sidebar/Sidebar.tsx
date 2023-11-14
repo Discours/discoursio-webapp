@@ -1,14 +1,16 @@
+import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
 import { createSignal, For, Show } from 'solid-js'
-import { Icon } from '../../_shared/Icon'
+
+import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore } from '../../../stores/zine/articles'
 import { useSeenStore } from '../../../stores/zine/seen'
-import { useSession } from '../../../context/session'
-import { useLocalize } from '../../../context/localize'
-import styles from './Sidebar.module.scss'
-import { clsx } from 'clsx'
+import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../../Author/Userpic'
-import { getPagePath } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
+
+import styles from './Sidebar.module.scss'
 
 export const Sidebar = () => {
   const { t } = useLocalize()

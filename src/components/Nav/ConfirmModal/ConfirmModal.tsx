@@ -1,6 +1,7 @@
 import { useConfirm } from '../../../context/confirm'
 import { useLocalize } from '../../../context/localize'
 import { Button } from '../../_shared/Button'
+
 import styles from './ConfirmModal.module.scss'
 
 export const ConfirmModal = () => {

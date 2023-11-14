@@ -1,16 +1,19 @@
 import { clsx } from 'clsx'
-import styles from './NotificationsPanel.module.scss'
+import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
+import { throttle } from 'throttle-debounce'
+
+import { useLocalize } from '../../context/localize'
+import { PAGE_SIZE, useNotifications } from '../../context/notifications'
+import { useSession } from '../../context/session'
 import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
-import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
-import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
-import { PAGE_SIZE, useNotifications } from '../../context/notifications'
-import { NotificationView } from './NotificationView'
-import { EmptyMessage } from './EmptyMessage'
 import { Button } from '../_shared/Button'
-import { throttle } from 'throttle-debounce'
-import { useSession } from '../../context/session'
+import { Icon } from '../_shared/Icon'
+
+import { EmptyMessage } from './EmptyMessage'
+import { NotificationView } from './NotificationView'
+
+import styles from './NotificationsPanel.module.scss'
 
 type Props = {
   isOpen: boolean

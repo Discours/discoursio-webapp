@@ -1,18 +1,20 @@
-import styles from './Expo.module.scss'
-import { LoadShoutsOptions, Shout } from '../../../graphql/types.gen'
+import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
-import { ArticleCard } from '../../Feed/ArticleCard'
-import { Loading } from '../../_shared/Loading'
-import { Button } from '../../_shared/Button'
+
 import { useLocalize } from '../../../context/localize'
-import { router, useRouter } from '../../../stores/router'
+import { LoadShoutsOptions, Shout } from '../../../graphql/types.gen'
 import { LayoutType } from '../../../pages/types'
+import { router, useRouter } from '../../../stores/router'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
-import { clsx } from 'clsx'
-import { getPagePath } from '@nanostores/router'
+import { Button } from '../../_shared/Button'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+import { Loading } from '../../_shared/Loading'
+import { ArticleCard } from '../../Feed/ArticleCard'
+
+import styles from './Expo.module.scss'
 
 type Props = {
   shouts: Shout[]

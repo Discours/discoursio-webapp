@@ -1,7 +1,9 @@
-import { Show } from 'solid-js'
-import styles from './QuotedMessage.module.scss'
-import { Icon } from '../_shared/Icon'
 import { clsx } from 'clsx'
+import { Show } from 'solid-js'
+
+import { Icon } from '../_shared/Icon'
+
+import styles from './QuotedMessage.module.scss'
 
 type QuotedMessage = {
   body: string

@@ -1,12 +1,15 @@
-import styles from './AuthModal.module.scss'
-import { clsx } from 'clsx'
-import { hideModal } from '../../../stores/ui'
-import { createMemo, createSignal, onMount, Show } from 'solid-js'
-import { useRouter } from '../../../stores/router'
 import type { ConfirmEmailSearchParams } from './types'
-import { ApiError } from '../../../utils/apiClient'
-import { useSession } from '../../../context/session'
+
+import { clsx } from 'clsx'
+import { createMemo, createSignal, onMount, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { ApiError } from '../../../utils/apiClient'
+
+import styles from './AuthModal.module.scss'
 
 export const EmailConfirm = () => {
   const { t } = useLocalize()

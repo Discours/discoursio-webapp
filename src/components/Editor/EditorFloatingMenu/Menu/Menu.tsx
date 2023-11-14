@@ -1,7 +1,8 @@
-import styles from './Menu.module.scss'
+import { useLocalize } from '../../../../context/localize'
 import { Icon } from '../../../_shared/Icon'
 import { Popover } from '../../../_shared/Popover'
-import { useLocalize } from '../../../../context/localize'
+
+import styles from './Menu.module.scss'
 
 export type MenuItem = 'image' | 'embed' | 'horizontal-rule'
 

@@ -64,18 +64,7 @@ export const AuthorBadge = (props: Props) => {
     return isSubscribing() ? t('subscribing...') : t('Subscribe')
   })
 
-  const unsubscribeValue = createMemo(() => {
-    if (props.iconButtons) {
-      return <Icon name="author-unsubscribe" class={stylesButton.icon} />
-    }
-
-    return (
-      <>
-        <span class={styles.actionButtonLabel}>{t('Following')}</span>
-        <span class={styles.actionButtonLabelHovered}>{t('Unfollow')}</span>
-      </>
-    )
-  })
+  const unsubscribeValue = () => {}
 
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
@@ -142,7 +131,19 @@ export const AuthorBadge = (props: Props) => {
               <Button
                 variant={props.iconButtons ? 'secondary' : 'bordered'}
                 size="M"
-                value={unsubscribeValue()}
+                value={
+                  <Show
+                    when={props.iconButtons}
+                    fallback={
+                      <>
+                        <span class={styles.actionButtonLabel}>{t('Following')}</span>
+                        <span class={styles.actionButtonLabelHovered}>{t('Unfollow')}</span>
+                      </>
+                    }
+                  >
+                    <Icon name="author-unsubscribe" class={stylesButton.icon} />
+                  </Show>
+                }
                 onClick={() => handleSubscribe(false)}
                 isSubscribeButton={true}
                 class={clsx(styles.actionButton, {

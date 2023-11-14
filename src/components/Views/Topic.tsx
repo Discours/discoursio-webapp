@@ -43,6 +43,10 @@ export const TopicView = (props: TopicProps) => {
 
   const topic = createMemo(() => topicEntities()[props.topicSlug])
 
+  onMount(() => {
+    document.title = topic().title
+  })
+
   const loadMore = async () => {
     saveScrollPosition()
 

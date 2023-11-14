@@ -81,6 +81,10 @@ export const AuthorView = (props: Props) => {
     setFollowing([...authors, ...topics])
   })
 
+  onMount(() => {
+    document.title = author().name
+  })
+
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({

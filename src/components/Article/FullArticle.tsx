@@ -28,6 +28,7 @@ import { getImageUrl } from '../../utils/getImageUrl'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
 import { Lightbox } from '../_shared/Lightbox'
 import { Image } from '../_shared/Image'
+import article from '../Editor/extensions/Article'
 
 type Props = {
   article: Shout
@@ -149,6 +150,10 @@ export const FullArticle = (props: Props) => {
     })
 
     setIsReactionsLoaded(true)
+  })
+
+  onMount(() => {
+    document.title = props.article.title
   })
 
   const clickHandlers = []

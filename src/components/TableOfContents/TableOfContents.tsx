@@ -45,7 +45,9 @@ export const TableOfContents = (props: Props) => {
   const updateHeadings = () => {
     setHeadings(
       // eslint-disable-next-line unicorn/prefer-spread
-      Array.from(document.querySelector(props.parentSelector).querySelectorAll<HTMLElement>('h2, h3, h4')),
+      Array.from(
+        document.querySelector(props.parentSelector).querySelectorAll<HTMLElement>('h1, h2, h3, h4'),
+      ),
     )
     setAreHeadingsLoaded(true)
   }

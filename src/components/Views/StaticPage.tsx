@@ -23,7 +23,11 @@ export const StaticPage = (props: {
           </article>
 
           <div class="col-md-6 offset-md-1">
-            <TableOfContents variant="article" parentSelector="#articleBody" body={articleBodyElement} />
+            <TableOfContents
+              variant="article"
+              parentSelector="#articleBody"
+              body={articleBodyElement.outerHTML}
+            />
           </div>
         </div>
       </div>

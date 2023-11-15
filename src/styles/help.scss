@@ -48,12 +48,13 @@
   }
 }
 
-.btn {
+.donate-form .btn {
   cursor: pointer;
   flex: 1;
   padding: 5px 10px;
   text-align: center;
   white-space: nowrap;
+  transform: none !important;
 
   @include media-breakpoint-down(sm) {
     &:last-of-type {
@@ -81,6 +82,7 @@
 }
 
 .donate-buttons-container {
+  align-items: center;
   display: flex;
   flex: 1;
   justify-content: space-between;
@@ -119,15 +121,20 @@
 }
 
 .send-btn {
-  border: 1px solid #000;
+  border: 2px solid #000;
   background-color: #000;
-  color: #fff;
+  color: #fff !important;
   display: block;
   font-weight: 700;
   line-height: 1.8;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   width: 100%;
+
+  &:hover {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
 }
 
 .payment-choose {

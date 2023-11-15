@@ -21,7 +21,6 @@ export type ModalType =
   | 'simplifiedEditorUploadImage'
   | 'uploadCoverImage'
   | 'editorInsertLink'
-  | 'simplifiedEditorInsertLink'
   | 'followers'
   | 'following'
 
@@ -37,7 +36,6 @@ export const MODALS: Record<ModalType, ModalType> = {
   simplifiedEditorUploadImage: 'simplifiedEditorUploadImage',
   uploadCoverImage: 'uploadCoverImage',
   editorInsertLink: 'editorInsertLink',
-  simplifiedEditorInsertLink: 'simplifiedEditorInsertLink',
   followers: 'followers',
   following: 'following',
 }

@@ -131,7 +131,7 @@ export const Sidebar = () => {
                 >
                   <div class={styles.sidebarItemName}>
                     <Userpic name={author.name} userpic={author.userpic} size="XS" class={styles.userpic} />
-                    {author.name}
+                    <div class={styles.sidebarItemNameLabel}>{author.name}</div>
                   </div>
                 </a>
               </li>
@@ -146,7 +146,7 @@ export const Sidebar = () => {
                 >
                   <div class={styles.sidebarItemName}>
                     <Icon name="hash" class={styles.icon} />
-                    {topic.title}
+                    <div class={styles.sidebarItemNameLabel}>{topic.title}</div>
                   </div>
                 </a>
               </li>

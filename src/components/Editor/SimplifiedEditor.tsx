@@ -31,7 +31,7 @@ import { Modal } from '../Nav/Modal'
 
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
-import { InsertLinkForm } from './InsertLinkForm'
+import { LinkBubbleMenuModule } from './LinkBubbleMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { UploadModalContent } from './UploadModalContent'
 
@@ -64,7 +64,7 @@ export const MAX_DESCRIPTION_LIMIT = 400
 const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
   const [counter, setCounter] = createSignal<number>()
-
+  const [shouldShowLinkBubbleMenu, setShouldShowLinkBubbleMenu] = createSignal(false)
   const isCancelButtonVisible = createMemo(() => props.isCancelButtonVisible !== false)
   const wrapperEditorElRef: {
     current: HTMLElement
@@ -79,6 +79,12 @@ const SimplifiedEditor = (props: Props) => {
   }
 
   const textBubbleMenuRef: {
+    current: HTMLDivElement
+  } = {
+    current: null,
+  }
+
+  const linkBubbleMenuRef: {
     current: HTMLDivElement
   } = {
     current: null,
@@ -127,6 +133,15 @@ const SimplifiedEditor = (props: Props) => {
           const { selection } = state
           const { empty } = selection
           return view.hasFocus() && !empty
+        },
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'linkBubbleMenu',
+        element: linkBubbleMenuRef.current,
+        shouldShow: ({ state }) => {
+          const { selection } = state
+          const { empty } = selection
+          return !empty && shouldShowLinkBubbleMenu()
         },
       }),
       ImageFigure,
@@ -213,7 +228,7 @@ const SimplifiedEditor = (props: Props) => {
 
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
       event.preventDefault()
-      showModal('simplifiedEditorInsertLink')
+      setShouldShowLinkBubbleMenu(true)
     }
   }
 
@@ -231,8 +246,6 @@ const SimplifiedEditor = (props: Props) => {
     })
   }
 
-  const handleInsertLink = () => !editor().state.selection.empty && showModal('simplifiedEditorInsertLink')
-
   createEffect(() => {
     if (html()) {
       setCounter(editor().storage.characterCount.characters())
@@ -244,6 +257,10 @@ const SimplifiedEditor = (props: Props) => {
     'max-height': `${props.maxHeight}px`,
   }
 
+  const handleShowLinkBubble = () => {
+    editor().chain().focus().run()
+    setShouldShowLinkBubbleMenu(true)
+  }
   return (
     <div
       ref={(el) => (wrapperEditorElRef.current = el)}
@@ -294,7 +311,7 @@ const SimplifiedEditor = (props: Props) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={handleInsertLink}
+                  onClick={handleShowLinkBubble}
                   class={clsx(styles.actionButton, { [styles.active]: isLink() })}
                 >
                   <Icon name="editor-link" />
@@ -345,11 +362,6 @@ const SimplifiedEditor = (props: Props) => {
           </Show>
         </div>
       </Show>
-      <Portal>
-        <Modal variant="narrow" name="simplifiedEditorInsertLink">
-          <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
-        </Modal>
-      </Portal>
       <Show when={props.imageEnabled}>
         <Portal>
           <Modal variant="narrow" name="simplifiedEditorUploadImage">
@@ -369,6 +381,12 @@ const SimplifiedEditor = (props: Props) => {
           ref={(el) => (textBubbleMenuRef.current = el)}
         />
       </Show>
+      <LinkBubbleMenuModule
+        shouldShow={shouldShowLinkBubbleMenu()}
+        editor={editor()}
+        ref={(el) => (linkBubbleMenuRef.current = el)}
+        onClose={() => setShouldShowLinkBubbleMenu(false)}
+      />
     </div>
   )
 }

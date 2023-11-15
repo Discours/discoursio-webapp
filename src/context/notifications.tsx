@@ -81,6 +81,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   const markNotificationAsRead = async (notification: Notification) => {
     await apiClient.markNotificationAsRead(notification.id)
+    setNotificationEntities(notification.id, 'seen', true)
+    setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
   const markAllNotificationsAsRead = async () => {
     await apiClient.markAllNotificationsAsRead()

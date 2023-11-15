@@ -187,9 +187,9 @@ export const Donate = () => {
       </div>
 
       <div class={styles.formGroup}>
-        <a href={''} class={clsx(styles.btn, styles.sendBtn)} onClick={show}>
+        <button type="button" class={clsx(styles.btn, styles.sendBtn)} onClick={show}>
           {t('Help discours to grow')}
-        </a>
+        </button>
       </div>
     </form>
   )

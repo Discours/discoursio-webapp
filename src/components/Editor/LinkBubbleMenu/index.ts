@@ -1,1 +1,1 @@
-export { LinkBubbleMenu } from './LinkBubbleMenu'
+export { LinkBubbleMenuModule } from './LinkBubbleMenu.module'

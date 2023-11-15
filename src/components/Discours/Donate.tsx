@@ -1,9 +1,11 @@
-import '../../styles/help.scss'
+import { clsx } from 'clsx'
 import { createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useSnackbar } from '../../context/snackbar'
 import { showModal } from '../../stores/ui'
+
+import styles from './Donate.module.scss'
 
 export const Donate = () => {
   const { t } = useLocalize()
@@ -119,27 +121,27 @@ export const Donate = () => {
   }
 
   return (
-    <form class="discours-form donate-form" action="" method="post">
+    <form class={styles.donateForm} action="" method="post">
       <input type="hidden" name="shopId" value="156465" />
       <input value="148805" name="scid" type="hidden" />
       <input value="0" name="customerNumber" type="hidden" />
 
-      <div class="form-group">
-        <div class="donate-buttons-container" ref={amountSwitchElement}>
+      <div class={styles.formGroup}>
+        <div class={styles.donateButtonsContainer} ref={amountSwitchElement}>
           <input type="radio" name="amount" id="fix250" value="250" />
-          <label for="fix250" class="btn donate-value-radio">
+          <label for="fix250" class={styles.btn}>
             250&thinsp;₽
           </label>
           <input type="radio" name="amount" id="fix500" value="500" checked />
-          <label for="fix500" class="btn donate-value-radio">
+          <label for="fix500" class={styles.btn}>
             500&thinsp;₽
           </label>
           <input type="radio" name="amount" id="fix1000" value="1000" />
-          <label for="fix1000" class="btn donate-value-radio">
+          <label for="fix1000" class={styles.btn}>
             1000&thinsp;₽
           </label>
           <input
-            class="form-control donate-input"
+            class={styles.donateInput}
             required
             ref={customAmountElement}
             type="number"
@@ -149,8 +151,8 @@ export const Donate = () => {
         </div>
       </div>
 
-      <div class="form-group" id="payment-type" classList={{ showing: showingPayment() }}>
-        <div class="btn-group payment-choose" data-toggle="buttons">
+      <div class={styles.formGroup} id="payment-type" classList={{ showing: showingPayment() }}>
+        <div class={clsx(styles.btnGroup, styles.paymentChoose)} data-toggle="buttons">
           <input
             type="radio"
             autocomplete="off"
@@ -159,7 +161,11 @@ export const Donate = () => {
             onClick={() => setPeriod(once)}
             checked={period() === once}
           />
-          <label for="once" class="btn payment-type" classList={{ active: period() === once }}>
+          <label
+            for="once"
+            class={clsx(styles.btn, styles.paymentType)}
+            classList={{ active: period() === once }}
+          >
             {t('One time')}
           </label>
           <input
@@ -170,14 +176,18 @@ export const Donate = () => {
             onClick={() => setPeriod(monthly)}
             checked={period() === monthly}
           />
-          <label for="monthly" class="btn payment-type" classList={{ active: period() === monthly }}>
+          <label
+            for="monthly"
+            class={clsx(styles.btn, styles.paymentType)}
+            classList={{ active: period() === monthly }}
+          >
             {t('Every month')}
           </label>
         </div>
       </div>
 
-      <div class="form-group">
-        <a href={''} class="btn send-btn donate" onClick={show}>
+      <div class={styles.formGroup}>
+        <a href={''} class={clsx(styles.btn, styles.sendBtn)} onClick={show}>
           {t('Help discours to grow')}
         </a>
       </div>

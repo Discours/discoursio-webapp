@@ -1,8 +1,8 @@
 import { Meta } from '@solidjs/meta'
 
 import { Donate } from '../../components/Discours/Donate'
-import { useLocalize } from '../../context/localize'
 import { StaticPage } from '../../components/Views/StaticPage'
+import { useLocalize } from '../../context/localize'
 
 export const HelpPage = () => {
   const { t } = useLocalize()

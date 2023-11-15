@@ -1,6 +1,6 @@
-.donate-form input,
-.donate-form label,
-.donate-form .btn {
+.donateForm input,
+.donateForm label,
+.donateForm .btn {
   font-family: Muller, Arial, Helvetica, sans-serif;
   border: solid 1px #595959;
   border-radius: 3px;
@@ -10,7 +10,7 @@
   text-align: center;
 }
 
-.donate-form input {
+.donateForm input {
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     appearance: none;
@@ -48,7 +48,7 @@
   }
 }
 
-.donate-form .btn {
+.donateForm .btn {
   cursor: pointer;
   flex: 1;
   padding: 5px 10px;
@@ -63,7 +63,7 @@
   }
 }
 
-.btn-group {
+.btnGroup {
   input {
     &:first-child + .btn {
       border-top-right-radius: 0;
@@ -76,12 +76,12 @@
     }
   }
 
-  .payment-type {
+  .paymentType {
     width: 50%;
   }
 }
 
-.donate-buttons-container {
+.donateButtonsContainer {
   align-items: center;
   display: flex;
   flex: 1;
@@ -113,14 +113,14 @@
   }
 }
 
-.donate-input {
+.donateInput {
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
     margin: 0 !important;
   }
 }
 
-.send-btn {
+.sendBtn {
   border: 2px solid #000;
   background-color: #000;
   color: #fff !important;
@@ -137,40 +137,10 @@
   }
 }
 
-.payment-choose {
+.paymentChoose {
   display: flex;
 }
 
-.form-group:not(:first-child) {
+.formGroup:not(:first-child) {
   margin-top: 20px;
 }
-
-.discours-help .modalwrap__inner {
-  max-width: 500px;
-}
-
-/*
-
-.payment-form {
-padding: 0 !important;
-
-.button {
-	display: block;
-	padding-bottom: 1.5rem;
-	padding-top: 1.5rem;
-	width: 100%;
-}
-}
-
-.delimiter-container {
-position: relative;
-}
-
-.delimiter {
-left: 100%;
-line-height: 1;
-position: absolute;
-top: 50%;
-transform: translate(-50%, calc(-50% - 0.8rem));
-}
-*/

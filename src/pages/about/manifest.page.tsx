@@ -2,8 +2,8 @@ import { Subscribe } from '../../components/_shared/Subscribe'
 import { Feedback } from '../../components/Discours/Feedback'
 import { Modal } from '../../components/Nav/Modal'
 import Opener from '../../components/Nav/Modal/Opener'
-import { useLocalize } from '../../context/localize'
 import { StaticPage } from '../../components/Views/StaticPage'
+import { useLocalize } from '../../context/localize'
 
 export const ManifestPage = () => {
   const { t } = useLocalize()

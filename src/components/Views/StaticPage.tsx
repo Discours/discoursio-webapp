@@ -1,6 +1,7 @@
+import { JSX } from 'solid-js'
+
 import { PageLayout } from '../_shared/PageLayout'
 import { TableOfContents } from '../TableOfContents'
-import { JSX } from 'solid-js'
 
 export const StaticPage = (props: {
   title: string

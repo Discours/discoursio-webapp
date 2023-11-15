@@ -1,7 +1,7 @@
 import { Meta } from '@solidjs/meta'
 
-import { useLocalize } from '../../context/localize'
 import { StaticPage } from '../../components/Views/StaticPage'
+import { useLocalize } from '../../context/localize'
 
 export const GuidePage = () => {
   const { t } = useLocalize()

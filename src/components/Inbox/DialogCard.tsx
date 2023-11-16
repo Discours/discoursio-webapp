@@ -1,4 +1,4 @@
-import { Show, Switch, Match, createMemo } from 'solid-js'
+import { Show, Switch, Match, createMemo, createEffect } from 'solid-js'
 import DialogAvatar from './DialogAvatar'
 import type { ChatMember } from '../../graphql/types.gen'
 import GroupDialogAvatar from './GroupDialogAvatar'
@@ -41,23 +41,20 @@ const DialogCard = (props: DialogProps) => {
         })}
         onClick={props.onClick}
       >
-        <Switch
-          fallback={
-            <Show
-              when={props.isChatHeader}
-              fallback={
-                <div class={styles.avatar}>
-                  <DialogAvatar name={props.members[0].slug} url={props.members[0].userpic} />
-                </div>
-              }
-            >
-              <AuthorBadge nameOnly={true} author={props.members[0]} />
-            </Show>
-          }
-        >
+        <Switch>
+          <Match when={props.members.length === 2}>
+            <div class={styles.avatar}>
+              <Show
+                when={props.isChatHeader}
+                fallback={<DialogAvatar name={companions()[0].slug} url={companions()[0].userpic} />}
+              >
+                <AuthorBadge nameOnly={true} author={companions()[0]} />
+              </Show>
+            </div>
+          </Match>
           <Match when={props.members.length >= 3}>
             <div class={styles.avatar}>
-              <GroupDialogAvatar users={props.members} />
+              <GroupDialogAvatar users={companions()} />
             </div>
           </Match>
         </Switch>

@@ -19,6 +19,7 @@ import { clsx } from 'clsx'
 import styles from '../../styles/Inbox.module.scss'
 import { useLocalize } from '../../context/localize'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
+import { Popover } from '../_shared/Popover'
 
 type InboxSearchParams = {
   initChat: string
@@ -47,6 +48,7 @@ export const InboxView = () => {
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
   const [messageToReply, setMessageToReply] = createSignal<MessageType | null>(null)
   const [isClear, setClear] = createSignal(false)
+  const [isScrollToNewVisible, setIsScrollToNewVisible] = createSignal(false)
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user.id)
   const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
@@ -82,20 +84,6 @@ export const InboxView = () => {
     }
   }
 
-  /*
-  createEffect(() => {
-    setInterval(async () => {
-      if (!currentDialog()) return
-      try {
-        await getMessages(currentDialog().id)
-      } catch (error) {
-        console.error('[getMessages]', error)
-      } finally {
-        chatWindow.scrollTop = chatWindow.scrollHeight
-      }
-    }, 2000)
-  })
-  */
   onMount(async () => {
     try {
       const response = await loadRecipients({ days: 365 })
@@ -166,7 +154,6 @@ export const InboxView = () => {
           return
         }
         if (messagesContainerRef.current.scrollTop >= messagesContainerRef.current.scrollHeight) {
-          //TODO: show new message arrow - bubble
           return
         }
         messagesContainerRef.current.scroll({
@@ -177,6 +164,24 @@ export const InboxView = () => {
     ),
     { defer: true }
   )
+  const handleScrollMessageContainer = () => {
+    console.log('!!! AAAA:')
+    if (
+      messagesContainerRef.current.scrollHeight - messagesContainerRef.current.scrollTop >
+      messagesContainerRef.current.clientHeight * 1.5
+    ) {
+      setIsScrollToNewVisible(true)
+    } else {
+      setIsScrollToNewVisible(false)
+    }
+  }
+  const handleScrollToNew = () => {
+    messagesContainerRef.current.scroll({
+      top: messagesContainerRef.current.scrollHeight,
+      behavior: 'smooth'
+    })
+    setIsScrollToNewVisible(false)
+  }
 
   return (
     <div class={clsx('container', styles.Inbox)}>
@@ -247,6 +252,7 @@ export const InboxView = () => {
 
         <div class={clsx('col-md-16', styles.conversation)}>
           <Show
+            keyed={true}
             when={currentDialog()}
             fallback={
               <MessagesFallback
@@ -258,7 +264,20 @@ export const InboxView = () => {
           >
             <DialogHeader ownId={currentUserId()} chat={currentDialog()} />
             <div class={styles.conversationMessages}>
-              <div class={styles.messagesContainer} ref={(el) => (messagesContainerRef.current = el)}>
+              <Show when={isScrollToNewVisible()}>
+                <Popover content={t('To new messages')}>
+                  {(triggerRef: (el) => void) => (
+                    <div ref={triggerRef} class={styles.scrollToNew} onClick={handleScrollToNew}>
+                      <Icon name="arrow-right" class={styles.icon} />
+                    </div>
+                  )}
+                </Popover>
+              </Show>
+              <div
+                class={styles.messagesContainer}
+                ref={(el) => (messagesContainerRef.current = el)}
+                onScroll={handleScrollMessageContainer}
+              >
                 <For each={messages()}>
                   {(message) => (
                     <Message

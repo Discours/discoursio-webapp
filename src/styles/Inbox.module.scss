@@ -114,6 +114,25 @@ main {
   overflow: auto;
   position: relative;
 
+  .scrollToNew {
+    osition: absolute;
+    z-index: 2;
+    bottom: 8px;
+    overflow: hidden;
+    right: 0;
+    width: 40px;
+    padding: 1rem;
+    border: 2px solid var(--black-100);
+    border-radius: 50%;
+    height: 40px;
+    cursor: pointer;
+    background: var(--background-color);
+
+    .icon {
+      rotate: 90deg;
+    }
+  }
+
   .messagesContainer {
     left: 0;
     height: 100%;

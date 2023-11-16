@@ -18,7 +18,12 @@ import type {
   Shout,
   NotificationsQueryParams,
   NotificationsQueryResult,
-  MySubscriptionsQueryResult
+  MySubscriptionsQueryResult,
+  MutationUpdateMessageArgs,
+  MutationDeleteMessageArgs,
+  MutationMarkAsReadArgs,
+  MutationDeleteChatArgs,
+  MutationUpdateChatArgs
 } from '../graphql/types.gen'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient, privateInboxGraphQLClient } from '../graphql/privateGraphQLClient'
@@ -45,7 +50,6 @@ import userSubscribers from '../graphql/query/author-followers'
 import userFollowedAuthors from '../graphql/query/author-following-users'
 import userFollowedTopics from '../graphql/query/author-following-topics'
 import topicBySlug from '../graphql/query/topic-by-slug'
-import createChat from '../graphql/mutation/create-chat'
 import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
@@ -53,13 +57,19 @@ import draftsLoad from '../graphql/query/drafts-load'
 import shoutLoad from '../graphql/query/article-load'
 import myFeed from '../graphql/query/my-feed'
 import loadRecipients from '../graphql/query/chat-recipients'
-import createMessage from '../graphql/mutation/create-chat-message'
 import updateProfile from '../graphql/mutation/update-profile'
 import updateArticle from '../graphql/mutation/article-update'
 import deleteShout from '../graphql/mutation/article-delete'
 // import notifications from '../graphql/query/notifications'
 // import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
 import markAllNotificationsAsRead from '../graphql/mutation/mark-all-notifications-as-read'
+import markAsRead from '../graphql/mutation/chat-mark-as-read'
+import createChat from '../graphql/mutation/chat-create'
+import updateChat from '../graphql/mutation/chat-update'
+import deleteChat from '../graphql/mutation/chat-delete'
+import createChatMessage from '../graphql/mutation/chat-message-create'
+import updateChatMessage from '../graphql/mutation/chat-message-update'
+import deleteChatMessage from '../graphql/mutation/chat-message-delete'
 import mySubscriptions from '../graphql/query/my-subscriptions'
 
 type ApiErrorCode =
@@ -391,9 +401,34 @@ export const inboxClient = {
     return resp.data.createChat
   },
 
+  markAsRead: async (options: MutationMarkAsReadArgs) => {
+    const resp = await privateInboxGraphQLClient.mutation(markAsRead, options).toPromise()
+    return resp.data.markAsRead
+  },
+
+  updateChat: async (options: MutationUpdateChatArgs) => {
+    const resp = await privateInboxGraphQLClient.mutation(updateChat, options).toPromise()
+    return resp.data.updateChat
+  },
+
+  deleteChat: async (options: MutationDeleteChatArgs) => {
+    const resp = await privateInboxGraphQLClient.mutation(deleteChat, options).toPromise()
+    return resp.data.deleteChat
+  },
+
   createMessage: async (options: MutationCreateMessageArgs) => {
-    const resp = await privateInboxGraphQLClient.mutation(createMessage, options).toPromise()
+    const resp = await privateInboxGraphQLClient.mutation(createChatMessage, options).toPromise()
     return resp.data.createMessage.message
+  },
+
+  updateMessage: async (options: MutationUpdateMessageArgs) => {
+    const resp = await privateInboxGraphQLClient.mutation(updateChatMessage, options).toPromise()
+    return resp.data.updateMessage.message
+  },
+
+  deleteMessage: async (options: MutationDeleteMessageArgs) => {
+    const resp = await privateInboxGraphQLClient.mutation(deleteChatMessage, options).toPromise()
+    return resp.data.deleteMessage
   },
 
   loadChatMessages: async (options: QueryLoadMessagesByArgs) => {

@@ -12,6 +12,7 @@ import { getDescription } from '../../../utils/meta'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { Popover } from '../../_shared/Popover'
+import { CoverImage } from '../../Article/CoverImage'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
 import { AuthorLink } from '../../Author/AhtorLink'
@@ -120,6 +121,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
         <div class={styles.shoutCardCoverContainer}>
           <div class={styles.shoutCardCover}>
+            <CoverImage class={styles.placeholderCoverImage} />
             <Show when={props.article.cover}>
               <Image src={props.article.cover} alt={title} width={1200} />
             </Show>

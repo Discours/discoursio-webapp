@@ -94,7 +94,7 @@
 }
 
 .shoutCardCover {
-  background: rgb(0 0 0 / 30%);
+  // background: rgb(0 0 0 / 30%);
   height: 0;
   margin-bottom: 1.6rem;
   overflow: hidden;
@@ -824,4 +824,8 @@
 
 .shoutTopicTop {
   margin-bottom: 0.4rem !important;
+}
+
+.placeholderCoverImage {
+  position: absolute;
 }

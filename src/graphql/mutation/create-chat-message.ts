@@ -8,9 +8,9 @@ export default gql`
         id
         body
         author
-        createdAt
-        replyTo
-        updatedAt
+        created_at
+        reply_to
+        updated_at
       }
     }
   }

@@ -29,15 +29,15 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     actions: { setMessageHandler }
   } = useNotifications()
 
-  const handleMessage = (m) => {
-    console.log('[context.inbox]:', m)
+  const handleMessage = (sseMessage) => {
+    console.log('[context.inbox]:', sseMessage)
     // TODO: handle all action types: create update delete join left
-    if (['create', 'update', 'delete'].includes(m.action)) {
-      const msg = m.payload
-      setMessages((mmm) => [msg, ...mmm])
-    } else if (['left', 'join'].includes(m.action)) {
+    if (['create', 'update', 'delete'].includes(sseMessage.action)) {
+      const relivedMessage = sseMessage.payload
+      setMessages((prev) => [...prev, relivedMessage])
+    } else if (['left', 'join'].includes(sseMessage.action)) {
       // TODO: set chat members
-      console.debug(m)
+      console.debug(sseMessage)
     }
   }
 
@@ -50,7 +50,6 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const loadChats = async () => {
     try {
       const newChats = await inboxClient.loadChats({ limit: 50, offset: 0 })
-      console.log('!!! newChats:', newChats)
       setChats(newChats)
     } catch (error) {
       console.log('[loadChats]', error)

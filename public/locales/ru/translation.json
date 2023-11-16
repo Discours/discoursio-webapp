@@ -476,5 +476,6 @@
   "video": "видео",
   "view": "просмотр",
   "viewsWithCount": "{count} {count, plural, one {просмотр} few {просмотрa} other {просмотров}}",
-  "yesterday": "вчера"
+  "yesterday": "вчера",
+  "To new messages": "К новым сообщениям"
 }

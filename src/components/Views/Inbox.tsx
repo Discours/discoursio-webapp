@@ -1,4 +1,4 @@
-import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
+import { For, createSignal, Show, onMount, createEffect, createMemo, on } from 'solid-js'
 import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
 import DialogCard from '../Inbox/DialogCard'
 import Search from '../Inbox/Search'
@@ -50,6 +50,11 @@ export const InboxView = () => {
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user.id)
   const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
+
+  const messagesContainerRef: { current: HTMLDivElement } = {
+    current: null
+  }
+
   // Поиск по диалогам
   const getQuery = (query) => {
     if (query().length >= 2) {
@@ -59,8 +64,6 @@ export const InboxView = () => {
       // setRecipients(cashedRecipients())
     }
   }
-
-  let chatWindow
 
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
@@ -72,7 +75,10 @@ export const InboxView = () => {
     } catch (error) {
       console.error('[getMessages]', error)
     } finally {
-      chatWindow.scrollTop = chatWindow.scrollHeight
+      messagesContainerRef.current.scroll({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'instant'
+      })
     }
   }
 
@@ -108,7 +114,7 @@ export const InboxView = () => {
     })
     setClear(true)
     setMessageToReply(null)
-    chatWindow.scrollTop = chatWindow.scrollHeight
+    messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
     setClear(false)
   }
 
@@ -151,6 +157,26 @@ export const InboxView = () => {
   const findToReply = (messageId) => {
     return messages().find((message) => message.id === messageId)
   }
+
+  createEffect(
+    on(
+      () => messages(),
+      () => {
+        if (!messagesContainerRef.current) {
+          return
+        }
+        if (messagesContainerRef.current.scrollTop >= messagesContainerRef.current.scrollHeight) {
+          //TODO: show new message arrow - bubble
+          return
+        }
+        messagesContainerRef.current.scroll({
+          top: messagesContainerRef.current.scrollHeight,
+          behavior: 'smooth'
+        })
+      }
+    ),
+    { defer: true }
+  )
 
   return (
     <div class={clsx('container', styles.Inbox)}>
@@ -232,7 +258,7 @@ export const InboxView = () => {
           >
             <DialogHeader ownId={currentUserId()} chat={currentDialog()} />
             <div class={styles.conversationMessages}>
-              <div class={styles.messagesContainer} ref={chatWindow}>
+              <div class={styles.messagesContainer} ref={(el) => (messagesContainerRef.current = el)}>
                 <For each={messages()}>
                   {(message) => (
                     <Message

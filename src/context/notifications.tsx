@@ -104,7 +104,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
         },
         onmessage(event) {
           const m: SSEMessage = JSON.parse(event.data)
-          if (m.entity === 'chat') {
+          if (m.entity === 'chat' || m.entity == 'message') {
             console.log('[context.notifications] Received message:', m)
             messageHandler()(m)
           } else {

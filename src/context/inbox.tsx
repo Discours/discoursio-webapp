@@ -32,12 +32,12 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const handleMessage = (sseMessage) => {
     console.log('[context.inbox]:', sseMessage)
     // TODO: handle all action types: create update delete join left
-    if (['create', 'update', 'delete'].includes(sseMessage.action)) {
+    if (sseMessage.entity == 'message') {
       const relivedMessage = sseMessage.payload
       setMessages((prev) => [...prev, relivedMessage])
-    } else if (['left', 'join'].includes(sseMessage.action)) {
-      // TODO: set chat members
-      console.debug(sseMessage)
+    } else if (sseMessage.entity == 'chat') {
+      const relivedChat = sseMessage.payload
+      setChats((prev) => [...prev, relivedChat])
     }
   }
 

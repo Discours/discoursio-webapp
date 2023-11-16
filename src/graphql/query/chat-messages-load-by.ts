@@ -5,13 +5,12 @@ export default gql`
     loadMessagesBy(by: $by, limit: $limit, offset: $offset) {
       error
       messages {
+        id
         author
         body
-        replyTo
-        createdAt
-        id
-        updatedAt
-        replyTo
+        reply_to
+        created_at
+        updated_at
       }
     }
   }

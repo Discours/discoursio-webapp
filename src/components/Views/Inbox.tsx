@@ -165,7 +165,6 @@ export const InboxView = () => {
     { defer: true }
   )
   const handleScrollMessageContainer = () => {
-    console.log('!!! AAAA:')
     if (
       messagesContainerRef.current.scrollHeight - messagesContainerRef.current.scrollTop >
       messagesContainerRef.current.clientHeight * 1.5

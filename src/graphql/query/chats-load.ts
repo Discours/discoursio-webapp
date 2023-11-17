@@ -17,7 +17,6 @@ export default gql`
         unread
         description
         updated_at
-        private
         messages {
           id
           body

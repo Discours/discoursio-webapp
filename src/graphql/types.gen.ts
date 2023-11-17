@@ -66,7 +66,6 @@ export type Chat = {
   id: Scalars['String']['output']
   members?: Maybe<Array<Maybe<ChatMember>>>
   messages?: Maybe<Array<Maybe<Message>>>
-  private?: Maybe<Scalars['Boolean']['output']>
   title?: Maybe<Scalars['String']['output']>
   unread?: Maybe<Scalars['Int']['output']>
   updated_at: Scalars['Int']['output']

@@ -234,9 +234,12 @@ h5 {
   border: 1px solid var(--black-100);
   cursor: pointer;
 
-  img {
-    width: 100%;
+  .userpicImage {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
+    background-position: center;
+    background-size: contain;
   }
 
   &.hasControls {
@@ -254,6 +257,7 @@ h5 {
   .control {
     width: 40px;
     height: 40px;
+    padding: 10px;
     border-radius: 50%;
     background: var(--background-color);
     border: 1px solid var(--black-100);

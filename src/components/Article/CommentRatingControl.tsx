@@ -1,15 +1,18 @@
-import { clsx } from 'clsx'
-import styles from './CommentRatingControl.module.scss'
 import type { Reaction } from '../../graphql/types.gen'
-import { ReactionKind } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
-import { useReactions } from '../../context/reactions'
+
+import { clsx } from 'clsx'
 import { createMemo } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
+import { useSnackbar } from '../../context/snackbar'
+import { ReactionKind } from '../../graphql/types.gen'
 import { loadShout } from '../../stores/zine/articles'
 import { Popup } from '../_shared/Popup'
-import { useLocalize } from '../../context/localize'
-import { useSnackbar } from '../../context/snackbar'
 import { VotersList } from '../_shared/VotersList'
+
+import styles from './CommentRatingControl.module.scss'
 
 type Props = {
   comment: Reaction
@@ -19,11 +22,11 @@ export const CommentRatingControl = (props: Props) => {
   const { t } = useLocalize()
   const { user } = useSession()
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
   const {
     reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy }
+    actions: { createReaction, deleteReaction, loadReactionsBy },
   } = useReactions()
 
   const checkReaction = (reactionKind: ReactionKind) =>
@@ -32,7 +35,7 @@ export const CommentRatingControl = (props: Props) => {
         r.kind === reactionKind &&
         r.createdBy.slug === user()?.slug &&
         r.shout.id === props.comment.shout.id &&
-        r.replyTo === props.comment.id
+        r.replyTo === props.comment.id,
     )
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
@@ -43,8 +46,8 @@ export const CommentRatingControl = (props: Props) => {
       (r) =>
         [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
         r.shout.id === props.comment.shout.id &&
-        r.replyTo === props.comment.id
-    )
+        r.replyTo === props.comment.id,
+    ),
   )
 
   const deleteCommentReaction = async (reactionKind: ReactionKind) => {
@@ -53,7 +56,7 @@ export const CommentRatingControl = (props: Props) => {
         r.kind === reactionKind &&
         r.createdBy.slug === user()?.slug &&
         r.shout.id === props.comment.shout.id &&
-        r.replyTo === props.comment.id
+        r.replyTo === props.comment.id,
     )
     return deleteReaction(reactionToDelete.id)
   }
@@ -68,7 +71,7 @@ export const CommentRatingControl = (props: Props) => {
         await createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
           shout: props.comment.shout.id,
-          replyTo: props.comment.id
+          replyTo: props.comment.id,
         })
       }
     } catch {
@@ -77,7 +80,7 @@ export const CommentRatingControl = (props: Props) => {
 
     await loadShout(props.comment.shout.slug)
     await loadReactionsBy({
-      by: { shout: props.comment.shout.slug }
+      by: { shout: props.comment.shout.slug },
     })
   }
 
@@ -88,7 +91,7 @@ export const CommentRatingControl = (props: Props) => {
         disabled={!canVote() || !user()}
         onClick={() => handleRatingChange(true)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlUp, {
-          [styles.voted]: isUpvoted()
+          [styles.voted]: isUpvoted(),
         })}
       />
       <Popup
@@ -96,7 +99,7 @@ export const CommentRatingControl = (props: Props) => {
           <div
             class={clsx(styles.commentRatingValue, {
               [styles.commentRatingPositive]: props.comment.stat.rating > 0,
-              [styles.commentRatingNegative]: props.comment.stat.rating < 0
+              [styles.commentRatingNegative]: props.comment.stat.rating < 0,
             })}
           >
             {props.comment.stat.rating || 0}
@@ -114,7 +117,7 @@ export const CommentRatingControl = (props: Props) => {
         disabled={!canVote() || !user()}
         onClick={() => handleRatingChange(false)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlDown, {
-          [styles.voted]: isDownvoted()
+          [styles.voted]: isDownvoted(),
         })}
       />
     </div>

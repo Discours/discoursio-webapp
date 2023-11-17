@@ -23,21 +23,15 @@ img {
   }
 }
 
-.shoutCover {
-  background-size: cover;
-  height: 0;
-  padding-bottom: 56.2%;
+.articleContent {
+  img {
+    cursor: zoom-in;
+  }
 }
 
 .shoutBody {
   font-size: 1.6rem;
   line-height: 1.6;
-
-  img {
-    display: block;
-    margin-bottom: 0.5em;
-    cursor: zoom-in;
-  }
 
   blockquote,
   blockquote[data-type='punchline'] {
@@ -75,6 +69,7 @@ img {
     &[data-float='left'],
     &[data-float='right'] {
       @include font-size(2.2rem);
+
       line-height: 1.4;
 
       @include media-breakpoint-up(sm) {
@@ -423,7 +418,7 @@ img {
 }
 
 .shoutStatsItemViews {
-  color: rgb(0 0 0 / 0.4);
+  color: rgb(0 0 0 / 40%);
   cursor: default;
   font-weight: normal;
   margin-left: auto;
@@ -466,7 +461,8 @@ img {
 .shoutStatsItemAdditionalDataItem {
   font-weight: normal;
   display: inline-block;
-  //margin-left: 2rem;
+
+  // margin-left: 2rem;
   margin-right: 0;
   margin-bottom: 0;
   cursor: default;

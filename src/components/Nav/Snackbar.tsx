@@ -1,9 +1,12 @@
-import { Show } from 'solid-js'
-import { useSnackbar } from '../../context/snackbar'
-import styles from './Snackbar.module.scss'
-import { Transition } from 'solid-transition-group'
 import { clsx } from 'clsx'
+import { Show } from 'solid-js'
+import { Transition } from 'solid-transition-group'
+
+import { useSnackbar } from '../../context/snackbar'
 import { Icon } from '../_shared/Icon'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+
+import styles from './Snackbar.module.scss'
 
 export const Snackbar = () => {
   const { snackbarMessage } = useSnackbar()
@@ -12,23 +15,25 @@ export const Snackbar = () => {
     <div
       class={clsx(styles.snackbar, {
         [styles.error]: snackbarMessage()?.type === 'error',
-        [styles.success]: snackbarMessage()?.type === 'success'
+        [styles.success]: snackbarMessage()?.type === 'success',
       })}
     >
-      <Transition
-        enterClass={styles.enter}
-        exitToClass={styles.exitTo}
-        onExit={(el, done) => setTimeout(() => done(), 300)}
-      >
-        <Show when={snackbarMessage()}>
-          <div class={styles.content}>
-            <Show when={snackbarMessage()?.type === 'success'}>
-              <Icon name="check-success" class={styles.icon} />
-            </Show>
-            {snackbarMessage().body}
-          </div>
-        </Show>
-      </Transition>
+      <ShowOnlyOnClient>
+        <Transition
+          enterClass={styles.enter}
+          exitToClass={styles.exitTo}
+          onExit={(el, done) => setTimeout(() => done(), 300)}
+        >
+          <Show when={snackbarMessage()}>
+            <div class={styles.content}>
+              <Show when={snackbarMessage()?.type === 'success'}>
+                <Icon name="check-success" class={styles.icon} />
+              </Show>
+              {snackbarMessage().body}
+            </div>
+          </Show>
+        </Transition>
+      </ShowOnlyOnClient>
     </div>
   )
 }

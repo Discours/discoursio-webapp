@@ -1,33 +1,36 @@
-import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
-import { Title } from '@solidjs/meta'
-import { clsx } from 'clsx'
-import { getPagePath } from '@nanostores/router'
-import MD from './MD'
 import type { Author, Shout } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
+
+import { getPagePath } from '@nanostores/router'
+import { createPopper } from '@popperjs/core'
+import { clsx } from 'clsx'
+import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription } from '../../utils/meta'
+import { Icon } from '../_shared/Icon'
+import { Image } from '../_shared/Image'
+import { Lightbox } from '../_shared/Lightbox'
+import { Popover } from '../_shared/Popover'
+import { ImageSwiper } from '../_shared/SolidSwiper'
+import { VideoPlayer } from '../_shared/VideoPlayer'
+import { AuthorBadge } from '../Author/AuthorBadge'
+import { CardTopic } from '../Feed/CardTopic'
+import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
 import { TableOfContents } from '../TableOfContents'
+
+import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
+import { CommentsTree } from './CommentsTree'
 import { getShareUrl, SharePopup } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
-import { CommentsTree } from './CommentsTree'
-import stylesHeader from '../Nav/Header/Header.module.scss'
-import { AudioHeader } from './AudioHeader'
-import { Popover } from '../_shared/Popover'
-import { VideoPlayer } from '../_shared/VideoPlayer'
-import { Icon } from '../_shared/Icon'
-import { ImageSwiper } from '../_shared/SolidSwiper'
+
 import styles from './Article.module.scss'
-import { CardTopic } from '../Feed/CardTopic'
-import { createPopper } from '@popperjs/core'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
-import { Lightbox } from '../_shared/Lightbox'
+import stylesHeader from '../Nav/Header/Header.module.scss'
 
 type Props = {
   article: Shout
@@ -45,7 +48,7 @@ const scrollTo = (el: HTMLElement) => {
   window.scrollTo({
     top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
     left: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
@@ -56,7 +59,7 @@ export const FullArticle = (props: Props) => {
   const {
     user,
     isAuthenticated,
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
 
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
@@ -66,7 +69,7 @@ export const FullArticle = (props: Props) => {
   const mainTopic = createMemo(
     () =>
       props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
-      props.article.topics[0]
+      props.article.topics[0],
   )
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
@@ -91,8 +94,13 @@ export const FullArticle = (props: Props) => {
     }
     return props.article.body
   })
-  const media = createMemo(() => {
-    return JSON.parse(props.article.media || '[]')
+
+  const media = createMemo<MediaItem[]>(() => {
+    try {
+      return JSON.parse(props.article.media)
+    } catch {
+      return []
+    }
   })
 
   const commentsRef: {
@@ -115,7 +123,7 @@ export const FullArticle = (props: Props) => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
       changeSearchParam({
-        scrollTo: null
+        scrollTo: null,
       })
     }
   })
@@ -123,7 +131,7 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams().commentId && isReactionsLoaded()) {
       const commentElement = document.querySelector<HTMLElement>(
-        `[id='comment_${searchParams().commentId}']`
+        `[id='comment_${searchParams().commentId}']`,
       )
 
       changeSearchParam({ commentId: null })
@@ -135,15 +143,19 @@ export const FullArticle = (props: Props) => {
   })
 
   const {
-    actions: { loadReactionsBy }
+    actions: { loadReactionsBy },
   } = useReactions()
 
   onMount(async () => {
     await loadReactionsBy({
-      by: { shout: props.article.slug }
+      by: { shout: props.article.slug },
     })
 
     setIsReactionsLoaded(true)
+  })
+
+  onMount(() => {
+    document.title = props.article.title
   })
 
   const clickHandlers = []
@@ -155,7 +167,7 @@ export const FullArticle = (props: Props) => {
     }
 
     const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
-      '[data-toggle="tooltip"], footnote'
+      '[data-toggle="tooltip"], footnote',
     )
     if (!tooltipElements) {
       return
@@ -180,19 +192,19 @@ export const FullArticle = (props: Props) => {
         modifiers: [
           {
             name: 'eventListeners',
-            options: { scroll: false }
+            options: { scroll: false },
           },
           {
             name: 'offset',
             options: {
-              offset: [0, 8]
-            }
+              offset: [0, 8],
+            },
           },
           {
             name: 'flip',
-            options: { fallbackPlacements: ['top'] }
-          }
-        ]
+            options: { fallbackPlacements: ['top'] },
+          },
+        ],
       })
 
       tooltip.style.visibility = 'hidden'
@@ -249,10 +261,12 @@ export const FullArticle = (props: Props) => {
 
   return (
     <>
-      <Title>{props.article.title}</Title>
       <div class="wide-container">
         <div class="row position-relative">
-          <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
+          <article
+            class={clsx('col-md-16 col-lg-14 col-xl-12 offset-md-5', styles.articleContent)}
+            onClick={handleArticleBodyClick}
+          >
             {/*TODO: Check styles.shoutTopic*/}
             <Show when={props.article.layout !== 'music'}>
               <div class={styles.shoutHeader}>
@@ -282,12 +296,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <div
-                    class={styles.shoutCover}
-                    style={{
-                      'background-image': `url('${getImageUrl(props.article.cover, { width: 1600 })}')`
-                    }}
-                  />
+                  <Image width={1600} alt={props.article.title} src={props.article.cover} />
                 </Show>
               </div>
             </Show>
@@ -319,7 +328,7 @@ export const FullArticle = (props: Props) => {
                         description={m.body}
                       />
                       <Show when={m?.body}>
-                        <MD body={m.body} />
+                        <div innerHTML={m.body} />
                       </Show>
                     </div>
                   )}
@@ -328,11 +337,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div id="shoutBody" class={styles.shoutBody} onClick={handleArticleBodyClick}>
-                <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
-                  <MD body={body()} />
-                </Show>
-              </div>
+              <div id="shoutBody" class={styles.shoutBody} innerHTML={body()} />
             </Show>
           </article>
 

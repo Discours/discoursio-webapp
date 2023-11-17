@@ -1,27 +1,29 @@
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
-import Banner from '../Discours/Banner'
-import { Topics } from '../Nav/Topics'
-import { Row5 } from '../Feed/Row5'
-import { Row3 } from '../Feed/Row3'
-import { Row2 } from '../Feed/Row2'
-import { Row1 } from '../Feed/Row1'
-import Hero from '../Discours/Hero'
-import { Beside } from '../Feed/Beside'
-import RowShort from '../Feed/RowShort'
-import Group from '../Feed/Group'
 import type { Shout } from '../../graphql/types.gen'
-import { useTopicsStore } from '../../stores/zine/topics'
+
+import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
 import {
   loadShouts,
   loadTopArticles,
   loadTopMonthArticles,
-  useArticlesStore
+  useArticlesStore,
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
+import { useTopicsStore } from '../../stores/zine/topics'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-import { useLocalize } from '../../context/localize'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
+import Banner from '../Discours/Banner'
+import Hero from '../Discours/Hero'
+import { Beside } from '../Feed/Beside'
+import Group from '../Feed/Group'
+import { Row1 } from '../Feed/Row1'
+import { Row2 } from '../Feed/Row2'
+import { Row3 } from '../Feed/Row3'
+import { Row5 } from '../Feed/Row5'
+import RowShort from '../Feed/RowShort'
+import { Topics } from '../Nav/Topics'
 
 type Props = {
   shouts: Shout[]
@@ -39,9 +41,9 @@ export const HomeView = (props: Props) => {
     topArticles,
     topCommentedArticles,
     topMonthArticles,
-    topViewedArticles
+    topViewedArticles,
   } = useArticlesStore({
-    shouts: props.shouts
+    shouts: props.shouts,
   })
 
   const { topTopics } = useTopicsStore()
@@ -56,7 +58,7 @@ export const HomeView = (props: Props) => {
       const { hasMore } = await loadShouts({
         filters: { visibility: 'public' },
         limit: CLIENT_LOAD_ARTICLES_COUNT,
-        offset: sortedArticles().length
+        offset: sortedArticles().length,
       })
 
       setIsLoadMoreButtonVisible(hasMore)
@@ -66,7 +68,7 @@ export const HomeView = (props: Props) => {
   const randomLayout = createMemo(() => {
     const filledLayouts = Object.keys(articlesByLayout()).filter(
       // FIXME: is 7 ok? or more complex logic needed?
-      (layout) => articlesByLayout()[layout].length > 7
+      (layout) => articlesByLayout()[layout].length > 7,
     )
 
     const selectedRandomLayout =
@@ -85,7 +87,7 @@ export const HomeView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { visibility: 'public' },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     })
     setIsLoadMoreButtonVisible(hasMore)
 
@@ -96,8 +98,8 @@ export const HomeView = (props: Props) => {
     splitToPages(
       sortedArticles(),
       PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT,
-      LOAD_MORE_PAGE_SIZE
-    )
+      LOAD_MORE_PAGE_SIZE,
+    ),
   )
 
   return (

@@ -1,8 +1,10 @@
-import styles from './Header.module.scss'
-import { router, ROUTES, useRouter } from '../../../stores/router'
-import { clsx } from 'clsx'
-import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
+
+import { router, ROUTES, useRouter } from '../../../stores/router'
+import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+
+import styles from './Header.module.scss'
 
 type Props = {
   onMouseOver: (event?: MouseEvent, time?: number) => void

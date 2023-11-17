@@ -1,5 +1,7 @@
 import { UploadFile } from '@solid-primitives/upload'
+
 import { UploadedFile } from '../pages/types'
+
 import { thumborUrl } from './config'
 
 export const handleImageUpload = async (uploadFile: UploadFile): Promise<UploadedFile> => {
@@ -7,7 +9,7 @@ export const handleImageUpload = async (uploadFile: UploadFile): Promise<Uploade
   formData.append('media', uploadFile.file, uploadFile.name)
   const response = await fetch(`${thumborUrl}/image`, {
     method: 'POST',
-    body: formData
+    body: formData,
   })
 
   const location = response.headers.get('Location')
@@ -35,6 +37,6 @@ export const handleImageUpload = async (uploadFile: UploadFile): Promise<Uploade
 
   return {
     originalFilename,
-    url
+    url,
   }
 }

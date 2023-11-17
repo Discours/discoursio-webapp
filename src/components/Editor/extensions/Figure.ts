@@ -12,7 +12,7 @@ export const Figure = Node.create({
   name: 'figure',
   addOptions() {
     return {
-      HTMLAttributes: {}
+      HTMLAttributes: {},
     }
   },
   group: 'block',
@@ -22,15 +22,15 @@ export const Figure = Node.create({
 
   addAttributes() {
     return {
-      'data-float': null
+      'data-float': null,
     }
   },
 
   parseHTML() {
     return [
       {
-        tag: `figure[data-type="${this.name}"]`
-      }
+        tag: `figure[data-type="${this.name}"]`,
+      },
     ]
   },
 
@@ -54,10 +54,10 @@ export const Figure = Node.create({
                 event.preventDefault()
               }
               return false
-            }
-          }
-        }
-      })
+            },
+          },
+        },
+      }),
     ]
   },
 
@@ -67,7 +67,7 @@ export const Figure = Node.create({
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-float': value })
-        }
+        },
     }
-  }
+  },
 })

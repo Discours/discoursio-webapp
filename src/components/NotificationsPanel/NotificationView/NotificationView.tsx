@@ -1,31 +1,24 @@
+import type { Notification } from '../../../graphql/types.gen'
+import type { ArticlePageSearchParams } from '../../Article/FullArticle'
+
+import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
-import { Author } from '../../../graphql/types.gen'
-import { openPage } from '@nanostores/router'
-import { router, useRouter } from '../../../stores/router'
-import { SSEMessage, useNotifications } from '../../../context/notifications'
-import { Userpic } from '../../Author/Userpic'
+
 import { useLocalize } from '../../../context/localize'
-import type { ArticlePageSearchParams } from '../../Article/FullArticle'
+import { useNotifications } from '../../../context/notifications'
+import { NotificationType } from '../../../graphql/types.gen'
+import { router, useRouter } from '../../../stores/router'
+import { GroupAvatar } from '../../_shared/GroupAvatar'
 import { TimeAgo } from '../../_shared/TimeAgo'
+
 import styles from './NotificationView.module.scss'
 
 type Props = {
-  notification: SSEMessage
+  notification: Notification
   onClick: () => void
   dateTimeFormat: 'ago' | 'time' | 'date'
   class?: string
-}
-
-// NOTE: not a graphql generated type
-
-export enum NewNotificationType {
-  NewComment = 'NEW_COMMENT',
-  NewReply = 'NEW_REPLY',
-  NewFollower = 'NEW_FOLLOWER',
-  NewShout = 'NEW_SHOUT',
-  NewLike = 'NEW_LIKE',
-  NewDislike = 'NEW_DISLIKE'
 }
 
 export type NotificationUser = {
@@ -35,100 +28,131 @@ export type NotificationUser = {
   userpic: string
 }
 
-const TEMPLATES = {
-  // FIXME: set proper templates
-  'follower:join': 'new follower',
-  'shout:create': 'new shout'
-  /*
-  new_reaction0: 'new like',
-  new_reaction1: 'new dislike',
-  new_reaction2: 'new agreement',
-  new_reaction3: 'new disagreement',
-  new_reaction4: 'new proof',
-  new_reaction5: 'new disproof',
-  new_reaction6: 'new comment',
-  new_reaction7: 'new quote',
-  new_reaction8: 'new proposal',
-  new_reaction9: 'new question',
-  new_reaction10: 'new remark',
-  //"new_reaction11": "new footnote",
-  new_reaction12: 'new acception',
-  new_reaction13: 'new rejection'
-  */
+type NotificationData = {
+  shout: {
+    slug: string
+    title: string
+  }
+  users: NotificationUser[]
+  reactionIds: number[]
 }
 
 export const NotificationView = (props: Props) => {
   const {
-    actions: { markNotificationAsRead }
+    actions: { markNotificationAsRead, hideNotificationsPanel },
   } = useNotifications()
-  const [data, setData] = createSignal<SSEMessage>(null)
-  const [kind, setKind] = createSignal<NewNotificationType>()
+
   const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
+
   const { t, formatDate, formatTime } = useLocalize()
 
+  const [data, setData] = createSignal<NotificationData>(null)
+
   onMount(() => {
-    setTimeout(() => setData(props.notification))
+    setTimeout(() => setData(JSON.parse(props.notification.data)))
   })
+
   const lastUser = createMemo(() => {
-    return props.notification.entity === 'follower' ? data().payload : data().payload.author
+    if (!data()) {
+      return null
+    }
+
+    return data().users[data().users.length - 1]
   })
+
+  const handleLinkClick = (event: MouseEvent) => {
+    event.stopPropagation()
+    hideNotificationsPanel()
+  }
+
   const content = createMemo(() => {
     if (!data()) {
       return null
     }
-    let caption: string, author: Author, ntype: NewNotificationType
 
-    // TODO: count occurencies from in-browser notifications-db
+    let shoutTitle = ''
+    let i = 0
+    const shoutTitleWords = data().shout.title.split(' ')
 
-    switch (props.notification.entity) {
-      case 'follower': {
-        caption = ''
-        author = data().payload
-        ntype = NewNotificationType.NewFollower
-        break
-      }
-      case 'shout':
-        {
-          caption = data().payload.title
-          author = data().payload.authors[-1]
-          ntype = NewNotificationType.NewShout
-          break
-        }
-        break
-      case 'reaction': {
-        ntype = data().payload.replyTo ? NewNotificationType.NewReply : NewNotificationType.NewComment
-        console.log(data().payload.kind)
-        // TODO: handle all needed reaction kinds
-      }
-      default: {
-        caption = data().payload.shout.title
-        author = data().payload.author
+    while (shoutTitle.length <= 30 && i < shoutTitleWords.length) {
+      shoutTitle += shoutTitleWords[i] + ' '
+      i++
+    }
+
+    if (shoutTitle.length < data().shout.title.length) {
+      shoutTitle = `${shoutTitle.trim()}...`
+
+      if (shoutTitle[0] === '«') {
+        shoutTitle += '»'
       }
     }
-    setKind(ntype) // FIXME: use it somewhere if needed or remove
-    return t(TEMPLATES[`${props.notification.entity}:${props.notification.action}`], { caption, author })
+
+    switch (props.notification.type) {
+      case NotificationType.NewComment: {
+        return (
+          <>
+            {t('NotificationNewCommentText1', {
+              commentsCount: props.notification.occurrences,
+            })}{' '}
+            <a href={getPagePath(router, 'article', { slug: data().shout.slug })} onClick={handleLinkClick}>
+              {shoutTitle}
+            </a>{' '}
+            {t('NotificationNewCommentText2')}{' '}
+            <a href={getPagePath(router, 'author', { slug: lastUser().slug })} onClick={handleLinkClick}>
+              {lastUser().name}
+            </a>{' '}
+            {t('NotificationNewCommentText3', {
+              restUsersCount: data().users.length - 1,
+            })}
+          </>
+        )
+      }
+      case NotificationType.NewReply: {
+        return (
+          <>
+            {t('NotificationNewReplyText1', {
+              commentsCount: props.notification.occurrences,
+            })}{' '}
+            <a href={getPagePath(router, 'article', { slug: data().shout.slug })} onClick={handleLinkClick}>
+              {shoutTitle}
+            </a>{' '}
+            {t('NotificationNewReplyText2')}{' '}
+            <a href={getPagePath(router, 'author', { slug: lastUser().slug })} onClick={handleLinkClick}>
+              {lastUser().name}
+            </a>{' '}
+            {t('NotificationNewReplyText3', {
+              restUsersCount: data().users.length - 1,
+            })}
+          </>
+        )
+      }
+    }
   })
 
   const handleClick = () => {
+    props.onClick()
+
     if (!props.notification.seen) {
       markNotificationAsRead(props.notification)
     }
-    const subpath = props.notification.entity === 'follower' ? 'author' : 'article'
-    const slug = props.notification.entity === 'reaction' ? data().payload.shout.slug : data().payload.slug
-    openPage(router, subpath, { slug })
-    props.onClick()
+
+    openPage(router, 'article', { slug: data().shout.slug })
+
+    if (data().reactionIds) {
+      changeSearchParam({ commentId: data().reactionIds[0].toString() })
+    }
   }
 
   const formattedDateTime = createMemo(() => {
     switch (props.dateTimeFormat) {
       case 'ago': {
-        return <TimeAgo date={props.notification.timestamp} />
+        return <TimeAgo date={props.notification.createdAt} />
       }
       case 'time': {
-        return formatTime(new Date(props.notification.timestamp))
+        return formatTime(new Date(props.notification.createdAt))
       }
       case 'date': {
-        return formatDate(new Date(props.notification.timestamp), { month: 'numeric', year: '2-digit' })
+        return formatDate(new Date(props.notification.createdAt), { month: 'numeric', year: '2-digit' })
       }
     }
   })
@@ -137,11 +161,13 @@ export const NotificationView = (props: Props) => {
     <Show when={data()}>
       <div
         class={clsx(styles.NotificationView, props.class, {
-          [styles.seen]: props.notification.seen
+          [styles.seen]: props.notification.seen,
         })}
         onClick={handleClick}
       >
-        <Userpic name={lastUser().name} userpic={lastUser().userpic} class={styles.userpic} />
+        <div class={styles.userpic}>
+          <GroupAvatar authors={data().users} />
+        </div>
         <div>{content()}</div>
         <div class={styles.timeContainer}>{formattedDateTime()}</div>
       </div>

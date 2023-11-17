@@ -1,8 +1,9 @@
 import { createEffect, JSX, Show } from 'solid-js'
+
 import { useSession } from '../../context/session'
-import { hideModal } from '../../stores/ui'
-import { useRouter } from '../../stores/router'
 import { RootSearchParams } from '../../pages/types'
+import { useRouter } from '../../stores/router'
+import { hideModal } from '../../stores/ui'
 import { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
 type Props = {
@@ -25,9 +26,9 @@ export const AuthGuard = (props: Props) => {
         changeSearchParam(
           {
             source: 'authguard',
-            modal: 'auth'
+            modal: 'auth',
           },
-          true
+          true,
         )
       }
     }

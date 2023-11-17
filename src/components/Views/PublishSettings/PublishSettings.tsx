@@ -1,25 +1,27 @@
+import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import styles from './PublishSettings.module.scss'
 import { createSignal, onMount, Show } from 'solid-js'
-import { TopicSelect, UploadModalContent } from '../../Editor'
-import { Button } from '../../_shared/Button'
-import { hideModal, showModal } from '../../../stores/ui'
+import { createStore } from 'solid-js/store'
+
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
-import { Modal } from '../../Nav/Modal'
-import { Topic } from '../../../graphql/types.gen'
-import { apiClient } from '../../../utils/apiClient'
-import { EMPTY_TOPIC } from '../Edit'
 import { useSession } from '../../../context/session'
-import { Icon } from '../../_shared/Icon'
-import stylesBeside from '../../Feed/Beside.module.scss'
-import { redirectPage } from '@nanostores/router'
-import { router } from '../../../stores/router'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
-import { createStore } from 'solid-js/store'
+import { Topic } from '../../../graphql/types.gen'
 import { UploadedFile } from '../../../pages/types'
-import SimplifiedEditor, { MAX_DESCRIPTION_LIMIT } from '../../Editor/SimplifiedEditor'
+import { router } from '../../../stores/router'
+import { hideModal, showModal } from '../../../stores/ui'
+import { apiClient } from '../../../utils/apiClient'
+import { Button } from '../../_shared/Button'
+import { GrowingTextarea } from '../../_shared/GrowingTextarea'
+import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
+import { TopicSelect, UploadModalContent } from '../../Editor'
+import SimplifiedEditor, { MAX_DESCRIPTION_LIMIT } from '../../Editor/SimplifiedEditor'
+import { Modal } from '../../Nav/Modal'
+import { EMPTY_TOPIC } from '../Edit'
+
+import styles from './PublishSettings.module.scss'
+import stylesBeside from '../../Feed/Beside.module.scss'
 
 type Props = {
   shoutId: number
@@ -51,12 +53,12 @@ export const PublishSettings = (props: Props) => {
     slug: props.form.slug,
     title: props.form.title,
     subtitle: props.form.subtitle,
-    description: composeDescription()
+    description: composeDescription(),
   }
 
   const {
     formErrors,
-    actions: { setForm, setFormErrors, saveShout, publishShout }
+    actions: { setForm, setFormErrors, saveShout, publishShout },
   } = useEditorContext()
 
   const [settingsForm, setSettingsForm] = createStore(initialData)
@@ -78,7 +80,7 @@ export const PublishSettings = (props: Props) => {
       setSettingsForm((prev) => {
         return {
           ...prev,
-          mainTopic: newSelectedTopics[0]
+          mainTopic: newSelectedTopics[0],
         }
       })
     }
@@ -96,7 +98,7 @@ export const PublishSettings = (props: Props) => {
 
   const handleBackClick = () => {
     redirectPage(router, 'edit', {
-      shoutId: props.shoutId.toString()
+      shoutId: props.shoutId.toString(),
     })
   }
   const handleCancelClick = () => {
@@ -136,7 +138,7 @@ export const PublishSettings = (props: Props) => {
               </div>
               <div
                 class={clsx(styles.shoutCardCoverContainer, {
-                  [styles.hasImage]: settingsForm.coverImageUrl
+                  [styles.hasImage]: settingsForm.coverImageUrl,
                 })}
               >
                 <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
@@ -156,7 +158,7 @@ export const PublishSettings = (props: Props) => {
             </div>
             <p class="description">
               {t(
-                'Choose a title image for the article. You can immediately see how the publication card will look like.'
+                'Choose a title image for the article. You can immediately see how the publication card will look like.',
               )}
             </p>
 
@@ -202,7 +204,7 @@ export const PublishSettings = (props: Props) => {
             <h4>{t('Topics')}</h4>
             <p class="description">
               {t(
-                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title'
+                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title',
               )}
             </p>
             <div class={styles.inputContainer}>

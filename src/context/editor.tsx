@@ -1,14 +1,17 @@
 import type { JSX } from 'solid-js'
+
+import { openPage } from '@nanostores/router'
+import { Editor } from '@tiptap/core'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
+
 import { Topic, TopicInput } from '../graphql/types.gen'
+import { router, useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
+import { slugify } from '../utils/slugify'
+
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { openPage } from '@nanostores/router'
-import { router, useRouter } from '../stores/router'
-import { slugify } from '../utils/slugify'
-import { Editor } from '@tiptap/core'
 
 type WordCounter = {
   characters: number
@@ -62,7 +65,7 @@ const topic2topicInput = (topic: Topic): TopicInput => {
   return {
     id: topic.id,
     slug: topic.slug,
-    title: topic.title
+    title: topic.title,
   }
 }
 
@@ -83,7 +86,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const { page } = useRouter()
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
@@ -94,7 +97,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
-    words: 0
+    words: 0,
   })
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const countWords = (value) => setWordCounter(value)
@@ -137,9 +140,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         lead: formToUpdate.lead,
         description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
-        media: formToUpdate.media
+        media: formToUpdate.media,
       },
-      publish
+      publish,
     })
   }
 
@@ -210,7 +213,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     try {
       await apiClient.updateArticle({
         shoutId,
-        publish: true
+        publish: true,
       })
 
       openPage(router, 'feed')
@@ -223,7 +226,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const deleteShout = async (shoutId: number) => {
     try {
       await apiClient.deleteShout({
-        shoutId
+        shoutId,
       })
       return true
     } catch {
@@ -248,7 +251,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     countWords,
     setForm,
     setFormErrors,
-    setEditor
+    setEditor,
   }
 
   const value: EditorContextType = {
@@ -257,7 +260,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     formErrors,
     editorRef,
     isEditorPanelVisible,
-    wordCounter
+    wordCounter,
   }
 
   return <EditorContext.Provider value={value}>{props.children}</EditorContext.Provider>

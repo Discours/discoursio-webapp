@@ -1,9 +1,12 @@
 import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/types.gen'
-import { apiClient } from '../../utils/apiClient'
-import { addAuthorsByTopic } from './authors'
-import { byStat } from '../../utils/sortby'
-import { createSignal } from 'solid-js'
+
 import { createLazyMemo } from '@solid-primitives/memo'
+import { createSignal } from 'solid-js'
+
+import { apiClient } from '../../utils/apiClient'
+import { byStat } from '../../utils/sortby'
+
+import { addAuthorsByTopic } from './authors'
 
 const [sortedArticles, setSortedArticles] = createSignal<Shout[]>([])
 const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})
@@ -23,7 +26,7 @@ const articlesByAuthor = createLazyMemo(() => {
 
       return acc
     },
-    {} as { [authorSlug: string]: Shout[] }
+    {} as { [authorSlug: string]: Shout[] },
   )
 })
 
@@ -39,7 +42,7 @@ const articlesByTopic = createLazyMemo(() => {
 
       return acc
     },
-    {} as { [authorSlug: string]: Shout[] }
+    {} as { [authorSlug: string]: Shout[] },
   )
 })
 
@@ -54,7 +57,7 @@ const articlesByLayout = createLazyMemo(() => {
 
       return acc
     },
-    {} as { [layout: string]: Shout[] }
+    {} as { [layout: string]: Shout[] },
   )
 })
 
@@ -79,13 +82,13 @@ const addArticles = (...args: Shout[][]) => {
       acc[article.slug] = article
       return acc
     },
-    {} as { [articleSLug: string]: Shout }
+    {} as { [articleSLug: string]: Shout },
   )
 
   setArticleEntities((prevArticleEntities) => {
     return {
       ...prevArticleEntities,
-      ...newArticleEntities
+      ...newArticleEntities,
     }
   })
 
@@ -107,7 +110,7 @@ const addArticles = (...args: Shout[][]) => {
 
       return acc
     },
-    {} as { [topicSlug: string]: Author[] }
+    {} as { [topicSlug: string]: Author[] },
   )
 
   addAuthorsByTopic(authorsByTopic)
@@ -132,11 +135,11 @@ export const loadShout = async (slug: string): Promise<void> => {
 }
 
 export const loadShouts = async (
-  options: LoadShoutsOptions
+  options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   const newShouts = await apiClient.getShouts({
     ...options,
-    limit: options.limit + 1
+    limit: options.limit + 1,
   })
 
   const hasMore = newShouts.length === options.limit + 1
@@ -152,11 +155,11 @@ export const loadShouts = async (
 }
 
 export const loadMyFeed = async (
-  options: LoadShoutsOptions
+  options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   const newShouts = await apiClient.getMyFeed({
     ...options,
-    limit: options.limit + 1
+    limit: options.limit + 1,
   })
 
   const hasMore = newShouts.length === options.limit + 1
@@ -194,10 +197,10 @@ export const loadTopMonthArticles = async (): Promise<void> => {
     filters: {
       visibility: 'public',
       // TODO: replace with from, to
-      days: 30
+      days: 30,
     },
     order_by: 'rating_stat',
-    limit: TOP_MONTH_ARTICLES_COUNT
+    limit: TOP_MONTH_ARTICLES_COUNT,
   })
   addArticles(articles)
   setTopMonthArticles(articles)
@@ -208,10 +211,10 @@ const TOP_ARTICLES_COUNT = 10
 export const loadTopArticles = async (): Promise<void> => {
   const articles = await apiClient.getShouts({
     filters: {
-      visibility: 'public'
+      visibility: 'public',
     },
     order_by: 'rating_stat',
-    limit: TOP_ARTICLES_COUNT
+    limit: TOP_ARTICLES_COUNT,
   })
   addArticles(articles)
   setTopArticles(articles)
@@ -233,6 +236,6 @@ export const useArticlesStore = (initialState: InitialState = {}) => {
     topMonthArticles,
     topArticles,
     topCommentedArticles,
-    topViewedArticles
+    topViewedArticles,
   }
 }

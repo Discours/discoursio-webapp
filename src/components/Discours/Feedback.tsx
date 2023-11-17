@@ -1,5 +1,5 @@
-import { hideModal } from '../../stores/ui'
 import { useLocalize } from '../../context/localize'
+import { hideModal } from '../../stores/ui'
 import { Button } from '../_shared/Button'
 
 export const Feedback = () => {
@@ -14,9 +14,9 @@ export const Feedback = () => {
       method,
       headers: {
         accept: 'application/json',
-        'content-type': 'application/json; charset=utf-8'
+        'content-type': 'application/json; charset=utf-8',
       },
-      body: JSON.stringify({ contact: contactElement?.value, message: msgElement?.textContent })
+      body: JSON.stringify({ contact: contactElement?.value, message: msgElement?.textContent }),
     })
     hideModal()
   }

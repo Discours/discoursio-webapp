@@ -1,14 +1,12 @@
 import { PageLayout } from '../components/_shared/PageLayout'
-import { Title } from '@solidjs/meta'
-import { useLocalize } from '../context/localize'
 import { DraftsView } from '../components/Views/DraftsView'
+import { useLocalize } from '../context/localize'
 
 export const DraftsPage = () => {
   const { t } = useLocalize()
 
   return (
-    <PageLayout>
-      <Title>{t('Drafts')}</Title>
+    <PageLayout title={t('Drafts')}>
       <DraftsView />
     </PageLayout>
   )

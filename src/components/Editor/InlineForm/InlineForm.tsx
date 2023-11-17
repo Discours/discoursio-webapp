@@ -1,9 +1,11 @@
-import styles from './InlineForm.module.scss'
-import { Icon } from '../../_shared/Icon'
-import { createSignal, onMount } from 'solid-js'
 import { clsx } from 'clsx'
-import { Popover } from '../../_shared/Popover'
+import { createSignal, onMount } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
+import { Popover } from '../../_shared/Popover'
+
+import styles from './InlineForm.module.scss'
 
 type Props = {
   onClose: () => void

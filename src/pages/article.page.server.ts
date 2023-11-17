@@ -1,7 +1,9 @@
-import type { PageContext } from '../renderer/types'
 import type { PageProps } from './types'
-import { apiClient } from '../utils/apiClient'
+import type { PageContext } from '../renderer/types'
+
 import { render } from 'vike/abort'
+
+import { apiClient } from '../utils/apiClient'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams
@@ -11,11 +13,11 @@ export const onBeforeRender = async (pageContext: PageContext) => {
     throw render(404, '/404')
   }
 
-  const pageProps: PageProps = { article }
+  const pageProps: PageProps = { article, seo: { title: article.title } }
 
   return {
     pageContext: {
-      pageProps
-    }
+      pageProps,
+    },
   }
 }

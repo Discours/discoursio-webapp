@@ -1,5 +1,7 @@
 import type { JSX } from 'solid-js'
+
 import { clsx } from 'clsx'
+
 import styles from './Button.module.scss'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline' | 'danger'
@@ -35,9 +37,9 @@ export const Button = (props: Props) => {
         styles[props.variant ?? 'primary'],
         {
           [styles.loading]: props.loading,
-          [styles.subscribeButton]: props.isSubscribeButton
+          [styles.subscribeButton]: props.isSubscribeButton,
         },
-        props.class
+        props.class,
       )}
     >
       {props.value}

@@ -1,16 +1,19 @@
 import { clsx } from 'clsx'
-import styles from './NotificationsPanel.module.scss'
+import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
+import { throttle } from 'throttle-debounce'
+
+import { useLocalize } from '../../context/localize'
+import { PAGE_SIZE, useNotifications } from '../../context/notifications'
+import { useSession } from '../../context/session'
 import { useEscKeyDownHandler } from '../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../utils/useOutsideClickHandler'
-import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
-import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
-import { PAGE_SIZE, useNotifications } from '../../context/notifications'
-import { NotificationView } from './NotificationView'
-import { EmptyMessage } from './EmptyMessage'
 import { Button } from '../_shared/Button'
-import throttle from 'just-throttle'
-import { useSession } from '../../context/session'
+import { Icon } from '../_shared/Icon'
+
+import { EmptyMessage } from './EmptyMessage'
+import { NotificationView } from './NotificationView'
+
+import styles from './NotificationsPanel.module.scss'
 
 type Props = {
   isOpen: boolean
@@ -48,23 +51,23 @@ export const NotificationsPanel = (props: Props) => {
   const { t } = useLocalize()
   const {
     sortedNotifications,
-    unreadNotificationsCount
-    // loadedNotificationsCount,
-    // totalNotificationsCount,
-    // actions: { loadNotifications, markAllNotificationsAsRead }
+    unreadNotificationsCount,
+    loadedNotificationsCount,
+    totalNotificationsCount,
+    actions: { loadNotifications, markAllNotificationsAsRead },
   } = useNotifications()
   const handleHide = () => {
     props.onClose()
   }
 
   const panelRef: { current: HTMLDivElement } = {
-    current: null
+    current: null,
   }
 
   useOutsideClickHandler({
     containerRef: panelRef,
     predicate: () => props.isOpen,
-    handler: () => handleHide()
+    handler: () => handleHide(),
   })
 
   let windowScrollTop = 0
@@ -91,36 +94,36 @@ export const NotificationsPanel = (props: Props) => {
     handleHide()
   }
 
-  // const todayNotifications = createMemo(() => {
-  //   return sortedNotifications().filter((notification) => isToday(new Date(notification.createdAt)))
-  // })
-  //
-  // const yesterdayNotifications = createMemo(() => {
-  //   return sortedNotifications().filter((notification) => isYesterday(new Date(notification.createdAt)))
-  // })
-  //
-  // const earlierNotifications = createMemo(() => {
-  //   return sortedNotifications().filter((notification) => isEarlier(new Date(notification.createdAt)))
-  // })
+  const todayNotifications = createMemo(() => {
+    return sortedNotifications().filter((notification) => isToday(new Date(notification.createdAt)))
+  })
+
+  const yesterdayNotifications = createMemo(() => {
+    return sortedNotifications().filter((notification) => isYesterday(new Date(notification.createdAt)))
+  })
+
+  const earlierNotifications = createMemo(() => {
+    return sortedNotifications().filter((notification) => isEarlier(new Date(notification.createdAt)))
+  })
 
   const scrollContainerRef: { current: HTMLDivElement } = { current: null }
   const loadNextPage = async () => {
-    // await loadNotifications({ limit: PAGE_SIZE, offset: loadedNotificationsCount() })
-    // if (loadedNotificationsCount() < totalNotificationsCount()) {
-    //   const hasMore = scrollContainerRef.current.scrollHeight <= scrollContainerRef.current.offsetHeight
-    //
-    //   if (hasMore) {
-    //     await loadNextPage()
-    //   }
-    // }
+    await loadNotifications({ limit: PAGE_SIZE, offset: loadedNotificationsCount() })
+    if (loadedNotificationsCount() < totalNotificationsCount()) {
+      const hasMore = scrollContainerRef.current.scrollHeight <= scrollContainerRef.current.offsetHeight
+
+      if (hasMore) {
+        await loadNextPage()
+      }
+    }
   }
   const handleScroll = async () => {
     if (!scrollContainerRef.current || isLoading()) {
       return
     }
-    // if (totalNotificationsCount() === loadedNotificationsCount()) {
-    //   return
-    // }
+    if (totalNotificationsCount() === loadedNotificationsCount()) {
+      return
+    }
 
     const isNearBottom =
       scrollContainerRef.current.scrollHeight - scrollContainerRef.current.scrollTop <=
@@ -132,7 +135,7 @@ export const NotificationsPanel = (props: Props) => {
       setIsLoading(false)
     }
   }
-  const handleScrollThrottled = throttle(handleScroll, 50)
+  const handleScrollThrottled = throttle(50, handleScroll)
 
   onMount(() => {
     scrollContainerRef.current.addEventListener('scroll', handleScrollThrottled)
@@ -150,14 +153,14 @@ export const NotificationsPanel = (props: Props) => {
           await loadNextPage()
           setIsLoading(false)
         }
-      }
-    )
+      },
+    ),
   )
 
   return (
     <div
       class={clsx(styles.container, {
-        [styles.isOpened]: props.isOpen
+        [styles.isOpened]: props.isOpen,
       })}
     >
       <div ref={(el) => (panelRef.current = el)} class={styles.panel}>
@@ -176,45 +179,45 @@ export const NotificationsPanel = (props: Props) => {
           >
             <div class="row position-relative">
               <div class="col-xs-24">
-                {/*<Show when={todayNotifications().length > 0}>*/}
-                {/*  <div class={styles.periodTitle}>{t('today')}</div>*/}
-                {/*  <For each={todayNotifications()}>*/}
-                {/*    {(notification) => (*/}
-                {/*      <NotificationView*/}
-                {/*        notification={notification}*/}
-                {/*        class={styles.notificationView}*/}
-                {/*        onClick={handleNotificationViewClick}*/}
-                {/*        dateTimeFormat={'ago'}*/}
-                {/*      />*/}
-                {/*    )}*/}
-                {/*  </For>*/}
-                {/*</Show>*/}
-                {/*<Show when={yesterdayNotifications().length > 0}>*/}
-                {/*  <div class={styles.periodTitle}>{t('yesterday')}</div>*/}
-                {/*  <For each={yesterdayNotifications()}>*/}
-                {/*    {(notification) => (*/}
-                {/*      <NotificationView*/}
-                {/*        notification={notification}*/}
-                {/*        class={styles.notificationView}*/}
-                {/*        onClick={handleNotificationViewClick}*/}
-                {/*        dateTimeFormat={'time'}*/}
-                {/*      />*/}
-                {/*    )}*/}
-                {/*  </For>*/}
-                {/*</Show>*/}
-                {/*<Show when={earlierNotifications().length > 0}>*/}
-                {/*  <div class={styles.periodTitle}>{t('earlier')}</div>*/}
-                {/*  <For each={earlierNotifications()}>*/}
-                {/*    {(notification) => (*/}
-                {/*      <NotificationView*/}
-                {/*        notification={notification}*/}
-                {/*        class={styles.notificationView}*/}
-                {/*        onClick={handleNotificationViewClick}*/}
-                {/*        dateTimeFormat={'date'}*/}
-                {/*      />*/}
-                {/*    )}*/}
-                {/*  </For>*/}
-                {/*</Show>*/}
+                <Show when={todayNotifications().length > 0}>
+                  <div class={styles.periodTitle}>{t('today')}</div>
+                  <For each={todayNotifications()}>
+                    {(notification) => (
+                      <NotificationView
+                        notification={notification}
+                        class={styles.notificationView}
+                        onClick={handleNotificationViewClick}
+                        dateTimeFormat={'ago'}
+                      />
+                    )}
+                  </For>
+                </Show>
+                <Show when={yesterdayNotifications().length > 0}>
+                  <div class={styles.periodTitle}>{t('yesterday')}</div>
+                  <For each={yesterdayNotifications()}>
+                    {(notification) => (
+                      <NotificationView
+                        notification={notification}
+                        class={styles.notificationView}
+                        onClick={handleNotificationViewClick}
+                        dateTimeFormat={'time'}
+                      />
+                    )}
+                  </For>
+                </Show>
+                <Show when={earlierNotifications().length > 0}>
+                  <div class={styles.periodTitle}>{t('earlier')}</div>
+                  <For each={earlierNotifications()}>
+                    {(notification) => (
+                      <NotificationView
+                        notification={notification}
+                        class={styles.notificationView}
+                        onClick={handleNotificationViewClick}
+                        dateTimeFormat={'date'}
+                      />
+                    )}
+                  </For>
+                </Show>
               </div>
             </div>
           </Show>
@@ -225,11 +228,11 @@ export const NotificationsPanel = (props: Props) => {
 
         <Show when={unreadNotificationsCount() > 0}>
           <div class={styles.actions}>
-            {/*<Button*/}
-            {/*  onClick={() => markAllNotificationsAsRead()}*/}
-            {/*  variant="secondary"*/}
-            {/*  value={t('Mark as read')}*/}
-            {/*/>*/}
+            <Button
+              onClick={() => markAllNotificationsAsRead()}
+              variant="secondary"
+              value={t('Mark as read')}
+            />
           </div>
         </Show>
       </div>

@@ -1,8 +1,9 @@
 import { Editor } from '@tiptap/core'
+import { createEditorTransaction } from 'solid-tiptap'
+
+import { useLocalize } from '../../../context/localize'
 import { validateUrl } from '../../../utils/validateUrl'
 import { InlineForm } from '../InlineForm'
-import { useLocalize } from '../../../context/localize'
-import { createEditorTransaction } from 'solid-tiptap'
 
 type Props = {
   editor: Editor
@@ -24,7 +25,7 @@ export const InsertLinkForm = (props: Props) => {
     () => props.editor,
     (ed) => {
       return (ed && ed.getAttributes('link').href) || ''
-    }
+    },
   )
   const handleClearLinkForm = () => {
     if (currentUrl()) {

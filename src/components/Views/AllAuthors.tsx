@@ -1,12 +1,14 @@
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import type { Author } from '../../graphql/types.gen'
-import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
-import { useRouter } from '../../stores/router'
+
 import { clsx } from 'clsx'
-import { SearchField } from '../_shared/SearchField'
-import { scrollHandler } from '../../utils/scroll'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { useRouter } from '../../stores/router'
+import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { scrollHandler } from '../../utils/scroll'
+import { SearchField } from '../_shared/SearchField'
 import { AuthorBadge } from '../Author/AuthorBadge'
 
 import styles from './AllAuthors.module.scss'
@@ -28,7 +30,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   const { searchParams, changeSearchParam } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
-    sortBy: searchParams().by || 'shouts'
+    sortBy: searchParams().by || 'shouts',
   })
 
   const [searchQuery, setSearchQuery] = createSignal('')
@@ -36,7 +38,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   createEffect(() => {
     if (!searchParams().by) {
       changeSearchParam({
-        by: 'shouts'
+        by: 'shouts',
       })
     }
   })
@@ -64,7 +66,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
         acc[letter].push(author)
         return acc
       },
-      {} as { [letter: string]: Author[] }
+      {} as { [letter: string]: Author[] },
     )
   })
 
@@ -88,7 +90,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
         <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
           <li
             classList={{
-              'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts'
+              'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts',
             }}
           >
             <a href="/authors?by=shouts">{t('By shouts')}</a>

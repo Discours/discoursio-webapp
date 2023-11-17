@@ -1,6 +1,7 @@
-import { translit } from './ru2en'
 import { Author, Topic } from '../graphql/types.gen'
+
 import { isAuthor } from './isAuthor'
+import { translit } from './ru2en'
 
 const prepareQuery = (searchQuery, lang) => {
   const q = searchQuery.toLowerCase()
@@ -16,7 +17,7 @@ const stringMatches = (str, q, lang) => {
 export const dummyFilter = <T extends Topic | Author>(
   data: T[],
   searchQuery: string,
-  lang: 'ru' | 'en'
+  lang: 'ru' | 'en',
 ): T[] => {
   const q = prepareQuery(searchQuery, lang)
 

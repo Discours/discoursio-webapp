@@ -1,11 +1,15 @@
-import { Show, Switch, Match, createMemo, createEffect } from 'solid-js'
-import DialogAvatar from './DialogAvatar'
 import type { ChatMember } from '../../graphql/types.gen'
-import GroupDialogAvatar from './GroupDialogAvatar'
+
 import { clsx } from 'clsx'
-import styles from './DialogCard.module.scss'
+import { Show, Switch, Match, createMemo } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
 import { AuthorBadge } from '../Author/AuthorBadge'
+
+import DialogAvatar from './DialogAvatar'
+import GroupDialogAvatar from './GroupDialogAvatar'
+
+import styles from './DialogCard.module.scss'
 
 type DialogProps = {
   online?: boolean
@@ -22,14 +26,14 @@ type DialogProps = {
 const DialogCard = (props: DialogProps) => {
   const { t, formatTime } = useLocalize()
   const companions = createMemo(
-    () => props.members && props.members.filter((member) => member.id !== props.ownId)
+    () => props.members && props.members.filter((member) => member.id !== props.ownId),
   )
 
   const names = createMemo(
     () =>
       companions()
         ?.map((companion) => companion.name)
-        .join(', ')
+        .join(', '),
   )
 
   return (
@@ -37,24 +41,27 @@ const DialogCard = (props: DialogProps) => {
       <div
         class={clsx(styles.DialogCard, {
           [styles.opened]: props.isOpened,
-          [styles.hovered]: !props.isChatHeader
+          [styles.hovered]: !props.isChatHeader,
         })}
         onClick={props.onClick}
       >
-        <Switch>
-          <Match when={props.members.length === 2}>
-            <div class={styles.avatar}>
-              <Show
-                when={props.isChatHeader}
-                fallback={<DialogAvatar name={companions()[0].slug} url={companions()[0].userpic} />}
-              >
-                <AuthorBadge nameOnly={true} author={companions()[0]} />
-              </Show>
-            </div>
-          </Match>
+        <Switch
+          fallback={
+            <Show
+              when={props.isChatHeader}
+              fallback={
+                <div class={styles.avatar}>
+                  <DialogAvatar name={props.members[0].slug} url={props.members[0].userpic} />
+                </div>
+              }
+            >
+              <AuthorBadge nameOnly={true} author={props.members[0]} />
+            </Show>
+          }
+        >
           <Match when={props.members.length >= 3}>
             <div class={styles.avatar}>
-              <GroupDialogAvatar users={companions()} />
+              <GroupDialogAvatar users={props.members} />
             </div>
           </Match>
         </Switch>

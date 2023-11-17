@@ -118,14 +118,14 @@ export enum FollowingEntity {
   Author = 'AUTHOR',
   Community = 'COMMUNITY',
   Reactions = 'REACTIONS',
-  Topic = 'TOPIC'
+  Topic = 'TOPIC',
 }
 
 export type LoadShoutsFilters = {
   author?: InputMaybe<Scalars['String']['input']>
   body?: InputMaybe<Scalars['String']['input']>
   days?: InputMaybe<Scalars['Int']['input']>
-  exclude_layout?: InputMaybe<Scalars['String']['input']>
+  excludeLayout?: InputMaybe<Scalars['String']['input']>
   layout?: InputMaybe<Scalars['String']['input']>
   reacted?: InputMaybe<Scalars['Boolean']['input']>
   title?: InputMaybe<Scalars['String']['input']>
@@ -156,7 +156,7 @@ export type Message = {
 export enum MessageStatus {
   Deleted = 'DELETED',
   New = 'NEW',
-  Updated = 'UPDATED'
+  Updated = 'UPDATED',
 }
 
 export type MessagesBy = {
@@ -326,7 +326,7 @@ export type Notification = {
 
 export enum NotificationType {
   NewComment = 'NEW_COMMENT',
-  NewReply = 'NEW_REPLY'
+  NewReply = 'NEW_REPLY',
 }
 
 export type NotificationsQueryParams = {
@@ -547,7 +547,7 @@ export enum ReactionKind {
   Propose = 'PROPOSE',
   Quote = 'QUOTE',
   Reject = 'REJECT',
-  Remark = 'REMARK'
+  Remark = 'REMARK',
 }
 
 export enum ReactionStatus {
@@ -555,7 +555,7 @@ export enum ReactionStatus {
   Deleted = 'DELETED',
   Explained = 'EXPLAINED',
   New = 'NEW',
-  Updated = 'UPDATED'
+  Updated = 'UPDATED',
 }
 
 export type ReactionUpdating = {
@@ -632,6 +632,7 @@ export type ShoutInput = {
   description?: InputMaybe<Scalars['String']['input']>
   layout?: InputMaybe<Scalars['String']['input']>
   lead?: InputMaybe<Scalars['String']['input']>
+  mainTopic?: InputMaybe<TopicInput>
   media?: InputMaybe<Scalars['String']['input']>
   slug?: InputMaybe<Scalars['String']['input']>
   subtitle?: InputMaybe<Scalars['String']['input']>

@@ -17,7 +17,8 @@
   }
 
   .close {
-    position: absolute;
+    position: fixed;
+    z-index: 1001;
     top: 20px;
     right: 40px;
     font-size: 30px;
@@ -29,12 +30,13 @@
 
   .zoomControls {
     display: flex;
-    position: absolute;
+    position: fixed;
     bottom: 16px;
     left: 50%;
     height: 24px;
     gap: 1rem;
     transform: translateX(-50%);
+    z-index: 1001;
 
     .control {
       border-radius: 50%;

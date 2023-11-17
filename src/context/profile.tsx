@@ -1,9 +1,12 @@
+import type { ProfileInput } from '../graphql/types.gen'
+
 import { createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { useSession } from './session'
+
 import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
 import { apiClient } from '../utils/apiClient'
-import type { ProfileInput } from '../graphql/types.gen'
+
+import { useSession } from './session'
 
 const userpicUrl = (userpic: string) => {
   if (userpic.includes('assets.discours.io')) {
@@ -33,7 +36,7 @@ const useProfileForm = () => {
     about: '',
     slug: '',
     userpic: '',
-    links: []
+    links: [],
   })
 
   createEffect(async () => {
@@ -46,7 +49,7 @@ const useProfileForm = () => {
         bio: currentAuthor()?.bio,
         about: currentAuthor()?.about,
         userpic: userpicUrl(currentAuthor()?.userpic),
-        links: currentAuthor()?.links
+        links: currentAuthor()?.links,
       })
     } catch (error) {
       console.error(error)
@@ -58,14 +61,14 @@ const useProfileForm = () => {
       if (remove) {
         setForm(
           'links',
-          form.links.filter((item) => item !== value)
+          form.links.filter((item) => item !== value),
         )
       } else {
         setForm((prev) => ({ ...prev, links: [...prev.links, value] }))
       }
     } else {
       setForm({
-        [fieldName]: value
+        [fieldName]: value,
       })
     }
   }

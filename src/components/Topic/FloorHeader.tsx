@@ -1,7 +1,9 @@
 import type { Topic } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
-import './FloorHeader.scss'
+
 import { useLocalize } from '../../context/localize'
+import { Icon } from '../_shared/Icon'
+
+import './FloorHeader.scss'
 
 export default (props: { topic: Topic; color: string }) => {
   const { t } = useLocalize()

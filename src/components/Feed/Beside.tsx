@@ -1,14 +1,18 @@
 // TODO: additional entities list column + article
 
-import { For, Show } from 'solid-js'
-import { ArticleCard } from './ArticleCard'
-import { TopicCard } from '../Topic/Card'
-import styles from './Beside.module.scss'
 import type { Author, Shout, Topic, User } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
+
 import { clsx } from 'clsx'
+import { For, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { Icon } from '../_shared/Icon'
 import { AuthorBadge } from '../Author/AuthorBadge'
+import { TopicCard } from '../Topic/Card'
+
+import { ArticleCard } from './ArticleCard'
+
+import styles from './Beside.module.scss'
 
 type Props = {
   title?: string
@@ -36,7 +40,7 @@ export const Beside = (props: Props) => {
                   'col-lg-8',
                   styles[
                     `besideRatingColumn${props.wrapper.charAt(0).toUpperCase() + props.wrapper.slice(1)}`
-                  ]
+                  ],
                 )}
               >
                 <Show when={!!props.title}>

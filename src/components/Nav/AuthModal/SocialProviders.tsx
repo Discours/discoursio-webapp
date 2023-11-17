@@ -1,9 +1,9 @@
-import { Icon } from '../../_shared/Icon'
+import { useLocalize } from '../../../context/localize'
 import { hideModal } from '../../../stores/ui'
+import { apiBaseUrl } from '../../../utils/config'
+import { Icon } from '../../_shared/Icon'
 
 import styles from './SocialProviders.module.scss'
-import { apiBaseUrl } from '../../../utils/config'
-import { useLocalize } from '../../../context/localize'
 
 type Provider = 'facebook' | 'google' | 'vk' | 'github'
 

@@ -1,26 +1,30 @@
-import { PageLayout } from '../components/_shared/PageLayout'
-import { useLocalize } from '../context/localize'
+import { redirectPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+
 import { Button } from '../components/_shared/Button'
 import { Icon } from '../components/_shared/Icon'
-import { clsx } from 'clsx'
-import styles from '../styles/Create.module.scss'
-import { apiClient } from '../utils/apiClient'
-import { redirectPage } from '@nanostores/router'
-import { router } from '../stores/router'
-import { LayoutType } from './types'
+import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthGuard } from '../components/AuthGuard'
+import { useLocalize } from '../context/localize'
+import { router } from '../stores/router'
+import { apiClient } from '../utils/apiClient'
+
+import { LayoutType } from './types'
+
+import styles from '../styles/Create.module.scss'
 
 const handleCreate = async (layout: LayoutType) => {
   const shout = await apiClient.createArticle({ article: { layout: layout } })
   redirectPage(router, 'edit', {
-    shoutId: shout.id.toString()
+    shoutId: shout.id.toString(),
   })
 }
 
 export const CreatePage = () => {
   const { t } = useLocalize()
+
   return (
-    <PageLayout>
+    <PageLayout title={t('Choose a post type')}>
       <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>
           <h1>{t('Choose a post type')}</h1>

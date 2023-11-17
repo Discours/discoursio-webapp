@@ -1,4 +1,5 @@
-import { Meta, Title } from '@solidjs/meta'
+import { Meta } from '@solidjs/meta'
+
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 
@@ -6,10 +7,9 @@ export const ThanksPage = () => {
   const { t } = useLocalize()
   const title = t('Thank you')
   return (
-    <PageLayout>
-      <Title>{title}</Title>
+    <PageLayout title={title}>
       <Meta name="description" content={title} />
-      <Meta name="keywords" content={`Discours.io, ${title}, ${t('Thank you', 'en')}`} />
+      <Meta name="keywords" content={`Discours.io, ${title}`} />
       <Meta property="og:title" content={title} />
       <Meta property="og:description" content={title} />
       <article class="wide-container container--static-page">

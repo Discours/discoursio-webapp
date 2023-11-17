@@ -1,13 +1,15 @@
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 import type { JSX } from 'solid-js'
+
+import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
+import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+
+import { router } from '../../../stores/router'
 import { hideModal, useModalStore } from '../../../stores/ui'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { Icon } from '../../_shared/Icon'
 
 import styles from './Modal.module.scss'
-import { redirectPage } from '@nanostores/router'
-import { router } from '../../../stores/router'
-import { Icon } from '../../_shared/Icon'
 
 interface Props {
   name: string
@@ -50,7 +52,7 @@ export const Modal = (props: Props) => {
               [styles.narrow]: props.variant === 'narrow',
               ['col-auto col-md-20 offset-md-2 col-lg-14 offset-lg-5']: props.variant === 'medium',
               [styles.noPadding]: props.noPadding,
-              [styles.maxHeight]: props.maxHeight
+              [styles.maxHeight]: props.maxHeight,
             })}
             onClick={(event) => event.stopPropagation()}
           >

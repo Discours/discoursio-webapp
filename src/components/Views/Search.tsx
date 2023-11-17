@@ -1,12 +1,13 @@
-import { Show, For, createSignal } from 'solid-js'
-import '../../styles/Search.scss'
 import type { Shout } from '../../graphql/types.gen'
-import { ArticleCard } from '../Feed/ArticleCard'
 
+import { Show, For, createSignal } from 'solid-js'
+
+import '../../styles/Search.scss'
+import { useLocalize } from '../../context/localize'
+import { useRouter } from '../../stores/router'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
-import { useRouter } from '../../stores/router'
-import { useLocalize } from '../../context/localize'
+import { ArticleCard } from '../Feed/ArticleCard'
 
 type SearchPageSearchParams = {
   by: '' | 'relevance' | 'rating'
@@ -37,10 +38,10 @@ export const SearchView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: {
         title: query(),
-        body: query()
+        body: query(),
       },
       offset: offset(),
-      limit: LOAD_MORE_PAGE_SIZE
+      limit: LOAD_MORE_PAGE_SIZE,
     })
     setIsLoadMoreButtonVisible(hasMore)
     setOffset(offset() + LOAD_MORE_PAGE_SIZE)
@@ -69,14 +70,14 @@ export const SearchView = (props: Props) => {
       <ul class="view-switcher">
         <li
           classList={{
-            'view-switcher__item--selected': searchParams().by === 'relevance'
+            'view-switcher__item--selected': searchParams().by === 'relevance',
           }}
         >
           <a href="?by=relevance">{t('By relevance')}</a>
         </li>
         <li
           classList={{
-            'view-switcher__item--selected': searchParams().by === 'rating'
+            'view-switcher__item--selected': searchParams().by === 'rating',
           }}
         >
           <a href="?by=rating">{t('Top rated')}</a>

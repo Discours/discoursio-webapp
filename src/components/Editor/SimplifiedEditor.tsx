@@ -1,3 +1,15 @@
+import { Blockquote } from '@tiptap/extension-blockquote'
+import { Bold } from '@tiptap/extension-bold'
+import { BubbleMenu } from '@tiptap/extension-bubble-menu'
+import { CharacterCount } from '@tiptap/extension-character-count'
+import { Document } from '@tiptap/extension-document'
+import { Image } from '@tiptap/extension-image'
+import { Italic } from '@tiptap/extension-italic'
+import { Link } from '@tiptap/extension-link'
+import { Paragraph } from '@tiptap/extension-paragraph'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { Text } from '@tiptap/extension-text'
+import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import {
@@ -5,34 +17,25 @@ import {
   createTiptapEditor,
   useEditorHTML,
   useEditorIsEmpty,
-  useEditorIsFocused
+  useEditorIsFocused,
 } from 'solid-tiptap'
+
 import { useEditorContext } from '../../context/editor'
-import { Document } from '@tiptap/extension-document'
-import { Text } from '@tiptap/extension-text'
-import { Paragraph } from '@tiptap/extension-paragraph'
-import { Bold } from '@tiptap/extension-bold'
-import { Button } from '../_shared/Button'
 import { useLocalize } from '../../context/localize'
+import { UploadedFile } from '../../pages/types'
+import { hideModal, showModal } from '../../stores/ui'
+import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
-import { Italic } from '@tiptap/extension-italic'
 import { Modal } from '../Nav/Modal'
-import { hideModal, showModal } from '../../stores/ui'
-import { Blockquote } from '@tiptap/extension-blockquote'
-import { UploadModalContent } from './UploadModalContent'
-import { clsx } from 'clsx'
-import styles from './SimplifiedEditor.module.scss'
-import { Placeholder } from '@tiptap/extension-placeholder'
-import { InsertLinkForm } from './InsertLinkForm'
-import { Link } from '@tiptap/extension-link'
-import { UploadedFile } from '../../pages/types'
-import { Figure } from './extensions/Figure'
-import { Image } from '@tiptap/extension-image'
+
 import { Figcaption } from './extensions/Figcaption'
+import { Figure } from './extensions/Figure'
+import { LinkBubbleMenuModule } from './LinkBubbleMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { BubbleMenu } from '@tiptap/extension-bubble-menu'
-import { CharacterCount } from '@tiptap/extension-character-count'
+import { UploadModalContent } from './UploadModalContent'
+
+import styles from './SimplifiedEditor.module.scss'
 
 type Props = {
   placeholder: string
@@ -61,33 +64,39 @@ export const MAX_DESCRIPTION_LIMIT = 400
 const SimplifiedEditor = (props: Props) => {
   const { t } = useLocalize()
   const [counter, setCounter] = createSignal<number>()
-
+  const [shouldShowLinkBubbleMenu, setShouldShowLinkBubbleMenu] = createSignal(false)
   const isCancelButtonVisible = createMemo(() => props.isCancelButtonVisible !== false)
   const wrapperEditorElRef: {
     current: HTMLElement
   } = {
-    current: null
+    current: null,
   }
 
   const editorElRef: {
     current: HTMLElement
   } = {
-    current: null
+    current: null,
   }
 
   const textBubbleMenuRef: {
     current: HTMLDivElement
   } = {
-    current: null
+    current: null,
+  }
+
+  const linkBubbleMenuRef: {
+    current: HTMLDivElement
+  } = {
+    current: null,
   }
 
   const {
-    actions: { setEditor }
+    actions: { setEditor },
   } = useEditorContext()
 
   const ImageFigure = Figure.extend({
     name: 'capturedImage',
-    content: 'figcaption image'
+    content: 'figcaption image',
   })
 
   const content = props.initialContent
@@ -95,8 +104,8 @@ const SimplifiedEditor = (props: Props) => {
     element: editorElRef.current,
     editorProps: {
       attributes: {
-        class: styles.simplifiedEditorField
-      }
+        class: styles.simplifiedEditorField,
+      },
     },
     extensions: [
       Document,
@@ -105,16 +114,16 @@ const SimplifiedEditor = (props: Props) => {
       Bold,
       Italic,
       Link.configure({
-        openOnClick: false
+        openOnClick: false,
       }),
 
       CharacterCount.configure({
-        limit: MAX_DESCRIPTION_LIMIT
+        limit: MAX_DESCRIPTION_LIMIT,
       }),
       Blockquote.configure({
         HTMLAttributes: {
-          class: styles.blockQuote
-        }
+          class: styles.blockQuote,
+        },
       }),
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
@@ -124,18 +133,27 @@ const SimplifiedEditor = (props: Props) => {
           const { selection } = state
           const { empty } = selection
           return view.hasFocus() && !empty
-        }
+        },
+      }),
+      BubbleMenu.configure({
+        pluginKey: 'linkBubbleMenu',
+        element: linkBubbleMenuRef.current,
+        shouldShow: ({ state }) => {
+          const { selection } = state
+          const { empty } = selection
+          return !empty && shouldShowLinkBubbleMenu()
+        },
       }),
       ImageFigure,
       Image,
       Figcaption,
       Placeholder.configure({
         emptyNodeClass: styles.emptyNode,
-        placeholder: props.placeholder
-      })
+        placeholder: props.placeholder,
+      }),
     ],
     autofocus: props.autoFocus,
-    content: content ?? null
+    content: content ?? null,
   }))
 
   setEditor(editor)
@@ -147,7 +165,7 @@ const SimplifiedEditor = (props: Props) => {
       () => editor(),
       (ed) => {
         return ed && ed.isActive(name)
-      }
+      },
     )
 
   const html = useEditorHTML(() => editor())
@@ -168,17 +186,17 @@ const SimplifiedEditor = (props: Props) => {
             content: [
               {
                 type: 'text',
-                text: image.originalFilename
-              }
-            ]
+                text: image.originalFilename,
+              },
+            ],
           },
           {
             type: 'image',
             attrs: {
-              src: image.url
-            }
-          }
-        ]
+              src: image.url,
+            },
+          },
+        ],
       })
       .run()
     hideModal()
@@ -210,7 +228,7 @@ const SimplifiedEditor = (props: Props) => {
 
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
       event.preventDefault()
-      showModal('simplifiedEditorInsertLink')
+      setShouldShowLinkBubbleMenu(true)
     }
   }
 
@@ -228,8 +246,6 @@ const SimplifiedEditor = (props: Props) => {
     })
   }
 
-  const handleInsertLink = () => !editor().state.selection.empty && showModal('simplifiedEditorInsertLink')
-
   createEffect(() => {
     if (html()) {
       setCounter(editor().storage.characterCount.characters())
@@ -238,9 +254,13 @@ const SimplifiedEditor = (props: Props) => {
 
   const maxHeightStyle = {
     overflow: 'auto',
-    'max-height': `${props.maxHeight}px`
+    'max-height': `${props.maxHeight}px`,
   }
 
+  const handleShowLinkBubble = () => {
+    editor().chain().focus().run()
+    setShouldShowLinkBubbleMenu(true)
+  }
   return (
     <div
       ref={(el) => (wrapperEditorElRef.current = el)}
@@ -249,7 +269,7 @@ const SimplifiedEditor = (props: Props) => {
         [styles.minimal]: props.variant === 'minimal',
         [styles.bordered]: props.variant === 'bordered',
         [styles.isFocused]: isFocused() || !isEmpty(),
-        [styles.labelVisible]: props.label && counter() > 0
+        [styles.labelVisible]: props.label && counter() > 0,
       })}
     >
       <Show when={props.maxLength && editor()}>
@@ -291,7 +311,7 @@ const SimplifiedEditor = (props: Props) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={handleInsertLink}
+                  onClick={handleShowLinkBubble}
                   class={clsx(styles.actionButton, { [styles.active]: isLink() })}
                 >
                   <Icon name="editor-link" />
@@ -342,11 +362,6 @@ const SimplifiedEditor = (props: Props) => {
           </Show>
         </div>
       </Show>
-      <Portal>
-        <Modal variant="narrow" name="simplifiedEditorInsertLink">
-          <InsertLinkForm editor={editor()} onClose={() => hideModal()} />
-        </Modal>
-      </Portal>
       <Show when={props.imageEnabled}>
         <Portal>
           <Modal variant="narrow" name="simplifiedEditorUploadImage">
@@ -366,6 +381,12 @@ const SimplifiedEditor = (props: Props) => {
           ref={(el) => (textBubbleMenuRef.current = el)}
         />
       </Show>
+      <LinkBubbleMenuModule
+        shouldShow={shouldShowLinkBubbleMenu()}
+        editor={editor()}
+        ref={(el) => (linkBubbleMenuRef.current = el)}
+        onClose={() => setShouldShowLinkBubbleMenu(false)}
+      />
     </div>
   )
 }

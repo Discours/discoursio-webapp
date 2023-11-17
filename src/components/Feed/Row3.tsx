@@ -1,6 +1,8 @@
-import type { JSX } from 'solid-js/jsx-runtime'
-import { For, Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
+import type { JSX } from 'solid-js/jsx-runtime'
+
+import { For, Show } from 'solid-js'
+
 import { ArticleCard } from './ArticleCard'
 
 export const Row3 = (props: {
@@ -24,7 +26,7 @@ export const Row3 = (props: {
                     settings={{
                       nodate: props.nodate,
                       noAuthorLink: props.noAuthorLink,
-                      noauthor: props.noauthor
+                      noauthor: props.noauthor,
                     }}
                   />
                 </div>

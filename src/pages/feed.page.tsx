@@ -1,16 +1,18 @@
-import { PageLayout } from '../components/_shared/PageLayout'
-import { FeedView } from '../components/Views/Feed'
 import { createEffect, Match, on, onCleanup, Switch } from 'solid-js'
-import { loadMyFeed, loadShouts, resetSortedArticles } from '../stores/zine/articles'
-import { ReactionsProvider } from '../context/reactions'
-import { useRouter } from '../stores/router'
+
+import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthGuard } from '../components/AuthGuard'
+import { FeedView } from '../components/Views/Feed'
+import { useLocalize } from '../context/localize'
+import { ReactionsProvider } from '../context/reactions'
 import { LoadShoutsOptions } from '../graphql/types.gen'
+import { useRouter } from '../stores/router'
+import { loadMyFeed, loadShouts, resetSortedArticles } from '../stores/zine/articles'
 
 const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
   return loadShouts({
     ...options,
-    filters: { visibility: 'community' }
+    filters: { visibility: 'community' },
   })
 }
 
@@ -19,6 +21,8 @@ const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
 }
 
 export const FeedPage = () => {
+  const { t } = useLocalize()
+
   onCleanup(() => resetSortedArticles())
 
   const { page } = useRouter()
@@ -29,12 +33,12 @@ export const FeedPage = () => {
       () => {
         resetSortedArticles()
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   return (
-    <PageLayout>
+    <PageLayout title={t('Feed')}>
       <ReactionsProvider>
         <Switch fallback={<FeedView loadShouts={handleFeedLoadShouts} />}>
           <Match when={page().route === 'feed'}>

@@ -1,7 +1,9 @@
-import styles from './ProfileSettingsNavigation.module.scss'
 import { clsx } from 'clsx'
+
 import { useLocalize } from '../../../context/localize'
 import { useRouter } from '../../../stores/router'
+
+import styles from './ProfileSettingsNavigation.module.scss'
 
 export const ProfileSettingsNavigation = () => {
   const { t } = useLocalize()

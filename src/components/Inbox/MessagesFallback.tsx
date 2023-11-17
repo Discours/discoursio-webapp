@@ -1,4 +1,5 @@
 import { Show } from 'solid-js'
+
 import styles from './MessagesFallback.module.scss'
 
 type MessagesFallback = {

@@ -1,11 +1,13 @@
-import { createComputed, createSignal, Show, For } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
+
+import { createComputed, createSignal, Show, For } from 'solid-js'
+
 import { ArticleCard } from './ArticleCard'
 
 const x = [
   ['12', '12'],
   ['8', '16'],
-  ['16', '8']
+  ['16', '8'],
 ]
 
 export const Row2 = (props: {
@@ -35,7 +37,7 @@ export const Row2 = (props: {
                           isWithCover: props.isEqual || x[y()][i()] === '16',
                           nodate: props.isEqual || props.nodate,
                           noAuthorLink: props.noAuthorLink,
-                          noauthor: props.noauthor
+                          noauthor: props.noauthor,
                         }}
                       />
                     </div>

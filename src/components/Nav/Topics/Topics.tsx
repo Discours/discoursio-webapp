@@ -1,9 +1,11 @@
-import { Icon } from '../../_shared/Icon'
-import { useLocalize } from '../../../context/localize'
-import styles from './Topics.module.scss'
-import { clsx } from 'clsx'
-import { router, useRouter } from '../../../stores/router'
 import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
+
+import { useLocalize } from '../../../context/localize'
+import { router, useRouter } from '../../../stores/router'
+import { Icon } from '../../_shared/Icon'
+
+import styles from './Topics.module.scss'
 
 export const Topics = () => {
   const { t } = useLocalize()

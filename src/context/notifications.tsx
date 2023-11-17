@@ -1,10 +1,19 @@
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createEffect, createMemo, createSignal, onMount, useContext } from 'solid-js'
+
+import { createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
+import { createStore } from 'solid-js/store'
+import { Portal } from 'solid-js/web'
+
+import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
+import { NotificationsPanel } from '../components/NotificationsPanel'
+import { Notification } from '../graphql/types.gen'
+import { apiClient } from '../utils/apiClient'
+import { apiBaseUrl } from '../utils/config'
+import SSEService, { EventData } from '../utils/sseService'
+
 import { useSession } from './session'
 import { Portal } from 'solid-js/web'
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
-import { NotificationsPanel } from '../components/NotificationsPanel'
-import { createStore } from 'solid-js/store'
 import { IDBPDatabase, openDB } from 'idb'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { getToken } from '../graphql/privateGraphQLClient'
@@ -25,50 +34,59 @@ export type MessageHandler = (m: SSEMessage) => void
 type NotificationsContextType = {
   notificationEntities: Record<number, SSEMessage>
   unreadNotificationsCount: Accessor<number>
-  sortedNotifications: Accessor<SSEMessage[]>
+  sortedNotifications: Accessor<Notification[]>
+  loadedNotificationsCount: Accessor<number>
+  totalNotificationsCount: Accessor<number>
   actions: {
     showNotificationsPanel: () => void
     hideNotificationsPanel: () => void
-    markNotificationAsRead: (notification: SSEMessage) => Promise<void>
+    markNotificationAsRead: (notification: Notification) => Promise<void>
+    markAllNotificationsAsRead: () => Promise<void>
+    loadNotifications: (options: { limit: number; offset: number }) => Promise<Notification[]>
     setMessageHandler: (h: MessageHandler) => void
   }
 }
 
+export const PAGE_SIZE = 20
 const NotificationsContext = createContext<NotificationsContextType>()
 
 export function useNotifications() {
   return useContext(NotificationsContext)
 }
 
+const sseService = new SSEService()
+
 export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = createSignal(false)
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
+  const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
   const { isAuthenticated, user } = useSession()
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, SSEMessage>>({})
   const [db, setDb] = createSignal<Promise<IDBPDatabase<unknown>>>()
+
   onMount(() => {
     const dbx = openDB('notifications-db', 1, {
       upgrade(indexedDb) {
         indexedDb.createObjectStore('notifications')
-      }
+      },
     })
     setDb(dbx)
   })
 
-  const loadNotifications = async () => {
-    const storage = await db()
-    const notifications = await storage.getAll('notifications')
-    console.log('[context.notifications] Loaded notifications:', notifications)
+  const loadNotifications = async (options: { limit: number; offset?: number }) => {
+    const { notifications, totalUnreadCount, totalCount } = await apiClient.getNotifications(options)
+    const newNotificationEntities = notifications.reduce((acc, notification) => {
+      acc[notification.id] = notification
+      return acc
+    }, {})
 
-    const totalUnreadCount = notifications.filter((notification) => !notification.seen).length
-    console.log('[context.notifications] Total unread count:', totalUnreadCount)
-
+    setTotalNotificationsCount(totalCount)
     setUnreadNotificationsCount(totalUnreadCount)
     setNotificationEntities(
       notifications.reduce((acc, notification) => {
         acc[notification.id] = notification
         return acc
-      }, {})
+      }, {}),
     )
 
     return notifications
@@ -90,6 +108,22 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     loadNotifications()
   }
 
+  const loadedNotificationsCount = createMemo(() => Object.keys(notificationEntities).length)
+
+  createEffect(() => {
+    if (isAuthenticated()) {
+      sseService.connect(`${apiBaseUrl}/subscribe/${user().id}`)
+      sseService.subscribeToEvent('message', (data: EventData) => {
+        if (data.type === 'newNotifications') {
+          loadNotifications({ limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
+        } else {
+          console.error(`[NotificationsProvider] unknown message type: ${JSON.stringify(data)}`)
+        }
+      })
+    } else {
+      sseService.disconnect()
+    }
+  })
   const [messageHandler, setMessageHandler] = createSignal<MessageHandler>(console.warn)
 
   createEffect(async () => {
@@ -100,7 +134,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: getToken()
+          Authorization: getToken(),
         },
         onmessage(event) {
           const m: SSEMessage = JSON.parse(event.data)
@@ -112,7 +146,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
               ...m,
               id: event.id,
               timestamp: Date.now(),
-              seen: false
+              seen: false,
             })
           }
         },
@@ -122,17 +156,19 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
         onerror(err) {
           console.error('[context.notifications] sse connection closed by error', err)
           throw new Error(err) // NOTE: simple hack to close the connection
-        }
+        },
       })
     }
   })
 
-  const markNotificationAsRead = async (notification: SSEMessage) => {
-    console.log('[context.notifications] Marking notification as read:', notification)
-
-    const storage = await db()
-    await storage.put('notifications', { ...notification, seen: true })
-    loadNotifications()
+  const markNotificationAsRead = async (notification: Notification) => {
+    await apiClient.markNotificationAsRead(notification.id)
+    setNotificationEntities(notification.id, 'seen', true)
+    setUnreadNotificationsCount((oldCount) => oldCount - 1)
+  }
+  const markAllNotificationsAsRead = async () => {
+    await apiClient.markAllNotificationsAsRead()
+    loadNotifications({ limit: loadedNotificationsCount() })
   }
 
   const showNotificationsPanel = () => {
@@ -147,14 +183,18 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     setMessageHandler,
     showNotificationsPanel,
     hideNotificationsPanel,
-    markNotificationAsRead
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+    loadNotifications,
   }
 
   const value: NotificationsContextType = {
     notificationEntities,
     sortedNotifications,
     unreadNotificationsCount,
-    actions
+    loadedNotificationsCount,
+    totalNotificationsCount,
+    actions,
   }
 
   const handleNotificationPanelClose = () => {

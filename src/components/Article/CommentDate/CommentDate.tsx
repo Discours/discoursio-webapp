@@ -1,8 +1,11 @@
-import { Show } from 'solid-js'
-import { Icon } from '../../_shared/Icon'
 import type { Reaction } from '../../../graphql/types.gen'
-import { useLocalize } from '../../../context/localize'
+
 import { clsx } from 'clsx'
+import { Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
+
 import styles from './CommentDate.module.scss'
 
 type Props = {
@@ -27,7 +30,7 @@ export const CommentDate = (props: Props) => {
     <div
       class={clsx(styles.commentDates, {
         [styles.commentDatesLastInRow]: props.isLastInRow,
-        [styles.showOnHover]: props.showOnHover
+        [styles.showOnHover]: props.showOnHover,
       })}
     >
       <time class={styles.date}>{formattedDate(props.comment.createdAt)}</time>

@@ -1,8 +1,10 @@
 import type { Editor } from '@tiptap/core'
-import styles from './BubbleMenu.module.scss'
-import { Icon } from '../../_shared/Icon'
+
 import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
 import { Popover } from '../../_shared/Popover'
+
+import styles from './BubbleMenu.module.scss'
 
 type Props = {
   editor: Editor

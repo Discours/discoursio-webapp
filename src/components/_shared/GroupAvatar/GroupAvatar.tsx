@@ -1,8 +1,10 @@
 import { clsx } from 'clsx'
-import styles from './GroupAvatar.module.scss'
 import { For } from 'solid-js'
+
 import { Userpic } from '../../Author/Userpic'
 import { NotificationUser } from '../../NotificationsPanel/NotificationView/NotificationView'
+
+import styles from './GroupAvatar.module.scss'
 
 type Props = {
   class?: string
@@ -29,7 +31,7 @@ export const GroupAvatar = (props: Props) => {
       class={clsx(styles.GroupAvatar, props.class, {
         [styles.two]: props.authors.length === 2,
         [styles.three]: props.authors.length === 3,
-        [styles.four]: props.authors.length >= 4
+        [styles.four]: props.authors.length >= 4,
       })}
     >
       <For each={displayedAvatars}>

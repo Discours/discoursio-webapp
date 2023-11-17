@@ -1,8 +1,11 @@
-import '../../styles/help.scss'
+import { clsx } from 'clsx'
 import { createSignal, onMount } from 'solid-js'
-import { showModal } from '../../stores/ui'
+
 import { useLocalize } from '../../context/localize'
 import { useSnackbar } from '../../context/snackbar'
+import { showModal } from '../../stores/ui'
+
+import styles from './Donate.module.scss'
 
 export const Donate = () => {
   const { t } = useLocalize()
@@ -11,7 +14,7 @@ export const Donate = () => {
   const cpOptions = {
     publicId: 'pk_0a37bab30ffc6b77b2f93d65f2aed',
     description: t('Help discours to grow'),
-    currency: 'RUB'
+    currency: 'RUB',
   }
 
   let amountSwitchElement: HTMLDivElement | undefined
@@ -22,13 +25,13 @@ export const Donate = () => {
   const [period, setPeriod] = createSignal(monthly)
   const [amount, setAmount] = createSignal(0)
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const initiated = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const {
-      cp: { CloudPayments }
+      cp: { CloudPayments },
     } = window as any // Checkout(cpOptions)
     setWidget(new CloudPayments())
     console.log('[donate] payments initiated')
@@ -42,8 +45,8 @@ export const Donate = () => {
           amount: amount() || 0, //сумма
           vat: 20, //ставка НДС
           method: 0, // тег-1214 признак способа расчета - признак способа расчета
-          object: 0 // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
-        }
+          object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+        },
       ],
       // taxationSystem: 0, //система налогообложения; необязательный, если у вас одна система налогообложения
       // email: 'user@example.com', //e-mail покупателя, если нужно отправить письмо с чеком
@@ -53,8 +56,8 @@ export const Donate = () => {
         electronic: amount(), // Сумма оплаты электронными деньгами
         advancePayment: 0, // Сумма из предоплаты (зачетом аванса) (2 знака после запятой)
         credit: 0, // Сумма постоплатой(в кредит) (2 знака после запятой)
-        provision: 0 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
-      }
+        provision: 0, // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
+      },
     })
   }
 
@@ -93,10 +96,10 @@ export const Donate = () => {
             recurrent: {
               interval: period(), // local solid's signal
               period: 1, // internal widget's
-              CustomerReciept: customerReciept() // чек для регулярных платежей
-            }
-          }
-        }
+              CustomerReciept: customerReciept(), // чек для регулярных платежей
+            },
+          },
+        },
       },
       (opts) => {
         // success
@@ -111,34 +114,34 @@ export const Donate = () => {
 
         showSnackbar({
           type: 'error',
-          body: reason
+          body: reason,
         })
-      }
+      },
     )
   }
 
   return (
-    <form class="discours-form donate-form" action="" method="post">
+    <form class={styles.donateForm} action="" method="post">
       <input type="hidden" name="shopId" value="156465" />
       <input value="148805" name="scid" type="hidden" />
       <input value="0" name="customerNumber" type="hidden" />
 
-      <div class="form-group">
-        <div class="donate-buttons-container" ref={amountSwitchElement}>
+      <div class={styles.formGroup}>
+        <div class={styles.donateButtonsContainer} ref={amountSwitchElement}>
           <input type="radio" name="amount" id="fix250" value="250" />
-          <label for="fix250" class="btn donate-value-radio">
+          <label for="fix250" class={styles.btn}>
             250&thinsp;₽
           </label>
           <input type="radio" name="amount" id="fix500" value="500" checked />
-          <label for="fix500" class="btn donate-value-radio">
+          <label for="fix500" class={styles.btn}>
             500&thinsp;₽
           </label>
           <input type="radio" name="amount" id="fix1000" value="1000" />
-          <label for="fix1000" class="btn donate-value-radio">
+          <label for="fix1000" class={styles.btn}>
             1000&thinsp;₽
           </label>
           <input
-            class="form-control donate-input"
+            class={styles.donateInput}
             required
             ref={customAmountElement}
             type="number"
@@ -148,8 +151,8 @@ export const Donate = () => {
         </div>
       </div>
 
-      <div class="form-group" id="payment-type" classList={{ showing: showingPayment() }}>
-        <div class="btn-group payment-choose" data-toggle="buttons">
+      <div class={styles.formGroup} id="payment-type" classList={{ showing: showingPayment() }}>
+        <div class={clsx(styles.btnGroup, styles.paymentChoose)} data-toggle="buttons">
           <input
             type="radio"
             autocomplete="off"
@@ -158,7 +161,11 @@ export const Donate = () => {
             onClick={() => setPeriod(once)}
             checked={period() === once}
           />
-          <label for="once" class="btn payment-type" classList={{ active: period() === once }}>
+          <label
+            for="once"
+            class={clsx(styles.btn, styles.paymentType)}
+            classList={{ active: period() === once }}
+          >
             {t('One time')}
           </label>
           <input
@@ -169,16 +176,20 @@ export const Donate = () => {
             onClick={() => setPeriod(monthly)}
             checked={period() === monthly}
           />
-          <label for="monthly" class="btn payment-type" classList={{ active: period() === monthly }}>
+          <label
+            for="monthly"
+            class={clsx(styles.btn, styles.paymentType)}
+            classList={{ active: period() === monthly }}
+          >
             {t('Every month')}
           </label>
         </div>
       </div>
 
-      <div class="form-group">
-        <a href={''} class="btn send-btn donate" onClick={show}>
+      <div class={styles.formGroup}>
+        <button type="button" class={clsx(styles.btn, styles.sendBtn)} onClick={show}>
           {t('Help discours to grow')}
-        </a>
+        </button>
       </div>
     </form>
   )

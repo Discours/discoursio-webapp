@@ -1,9 +1,12 @@
-import { For, Show } from 'solid-js'
 import type { Reaction } from '../../../graphql/types.gen'
+
+import { clsx } from 'clsx'
+import { For, Show } from 'solid-js'
+
 import { ReactionKind } from '../../../graphql/types.gen'
 import { Userpic } from '../../Author/Userpic'
+
 import styles from './VotersList.module.scss'
-import { clsx } from 'clsx'
 
 type Props = {
   reactions: Reaction[]

@@ -60,8 +60,8 @@ export type AuthorsBy = {
 
 export type Chat = {
   admins?: Maybe<Array<Maybe<Scalars['Int']['output']>>>
-  createdAt: Scalars['Int']['output']
-  createdBy: Scalars['Int']['output']
+  created_at: Scalars['Int']['output']
+  created_by: Scalars['Int']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   members?: Maybe<Array<Maybe<ChatMember>>>
@@ -69,8 +69,7 @@ export type Chat = {
   private?: Maybe<Scalars['Boolean']['output']>
   title?: Maybe<Scalars['String']['output']>
   unread?: Maybe<Scalars['Int']['output']>
-  updatedAt: Scalars['Int']['output']
-  users?: Maybe<Array<Maybe<Scalars['Int']['output']>>>
+  updated_at: Scalars['Int']['output']
 }
 
 export type ChatInput = {
@@ -79,9 +78,18 @@ export type ChatInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type MessageInput = {
+  author: Scalars['Int']['output']
+  body: Scalars['String']['output']
+  chat_id: Scalars['String']['output']
+  id: Scalars['Int']['output']
+  reply_to?: Maybe<Scalars['Int']['output']>
+  seen?: Maybe<Scalars['Boolean']['output']>
+}
+
 export type ChatMember = {
   id: Scalars['Int']['output']
-  lastSeen?: Maybe<Scalars['DateTime']['output']>
+  last_seen?: Maybe<Scalars['DateTime']['output']>
   name: Scalars['String']['output']
   online?: Maybe<Scalars['Boolean']['output']>
   slug: Scalars['String']['output']
@@ -140,12 +148,12 @@ export type LoadShoutsOptions = {
 export type Message = {
   author: Scalars['Int']['output']
   body: Scalars['String']['output']
-  chatId: Scalars['String']['output']
-  createdAt: Scalars['Int']['output']
+  chat_id: Scalars['String']['output']
+  created_at: Scalars['Int']['output']
   id: Scalars['Int']['output']
-  replyTo?: Maybe<Scalars['Int']['output']>
+  reply_to?: Maybe<Scalars['Int']['output']>
   seen?: Maybe<Scalars['Boolean']['output']>
-  updatedAt?: Maybe<Scalars['Int']['output']>
+  updated_at?: Maybe<Scalars['Int']['output']>
 }
 
 export enum MessageStatus {
@@ -203,8 +211,8 @@ export type MutationCreateChatArgs = {
 
 export type MutationCreateMessageArgs = {
   body: Scalars['String']['input']
-  chat: Scalars['String']['input']
-  replyTo?: InputMaybe<Scalars['Int']['input']>
+  chat_id: Scalars['String']['input']
+  reply_to?: InputMaybe<Scalars['Int']['input']>
 }
 
 export type MutationCreateReactionArgs = {
@@ -281,9 +289,7 @@ export type MutationUpdateChatArgs = {
 }
 
 export type MutationUpdateMessageArgs = {
-  body: Scalars['String']['input']
-  chatId: Scalars['String']['input']
-  id: Scalars['Int']['input']
+  message: MessageInput
 }
 
 export type MutationUpdateProfileArgs = {

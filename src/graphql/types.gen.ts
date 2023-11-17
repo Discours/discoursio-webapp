@@ -128,7 +128,7 @@ export type LoadShoutsFilters = {
   author?: InputMaybe<Scalars['String']['input']>
   body?: InputMaybe<Scalars['String']['input']>
   days?: InputMaybe<Scalars['Int']['input']>
-  excludeLayout?: InputMaybe<Scalars['String']['input']>
+  exclude_layout?: InputMaybe<Scalars['String']['input']>
   layout?: InputMaybe<Scalars['String']['input']>
   reacted?: InputMaybe<Scalars['Boolean']['input']>
   title?: InputMaybe<Scalars['String']['input']>
@@ -146,7 +146,7 @@ export type LoadShoutsOptions = {
 }
 
 export type Message = {
-  author: Scalars['Int']['output']
+  created_by: Scalars['Int']['output']
   body: Scalars['String']['output']
   chat_id: Scalars['String']['output']
   created_at: Scalars['Int']['output']
@@ -163,7 +163,7 @@ export enum MessageStatus {
 }
 
 export type MessagesBy = {
-  author?: InputMaybe<Scalars['String']['input']>
+  created_by?: InputMaybe<Scalars['String']['input']>
   body?: InputMaybe<Scalars['String']['input']>
   chat?: InputMaybe<Scalars['String']['input']>
   days?: InputMaybe<Scalars['Int']['input']>
@@ -635,7 +635,6 @@ export type ShoutInput = {
   description?: InputMaybe<Scalars['String']['input']>
   layout?: InputMaybe<Scalars['String']['input']>
   lead?: InputMaybe<Scalars['String']['input']>
-  mainTopic?: InputMaybe<TopicInput>
   media?: InputMaybe<Scalars['String']['input']>
   slug?: InputMaybe<Scalars['String']['input']>
   subtitle?: InputMaybe<Scalars['String']['input']>

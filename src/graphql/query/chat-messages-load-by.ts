@@ -6,7 +6,7 @@ export default gql`
       error
       messages {
         id
-        author
+        created_by
         body
         reply_to
         created_at

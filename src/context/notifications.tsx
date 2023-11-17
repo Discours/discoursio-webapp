@@ -104,11 +104,10 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
         },
         onmessage(event) {
           const m: SSEMessage = JSON.parse(event.data)
+          console.log('[context.notifications] Received message:', m)
           if (m.entity === 'chat' || m.entity == 'message') {
-            console.log('[context.notifications] Received message:', m)
             messageHandler()(m)
           } else {
-            console.log('[context.notifications] Received notification:', m)
             storeNotification({
               ...m,
               id: event.id,

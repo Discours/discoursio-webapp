@@ -70,7 +70,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     try {
       const message = await inboxClient.createMessage(args)
       setMessages((prev) => [...prev, message])
-      const currentChat = chats().find((chat) => chat.id === args.chat)
+      const currentChat = chats().find((chat) => chat.id === args.chat_id)
       setChats((prev) => [
         ...prev.filter((c) => c.id !== currentChat.id),
         { ...currentChat, updatedAt: message.createdAt }

@@ -19,8 +19,8 @@ type Props = {
 
 export const Message = (props: Props) => {
   const { formatTime } = useLocalize()
-  const isOwn = props.ownId === Number(props.content.author)
-  const user = props.members?.find((m) => m.id === Number(props.content.author))
+  const isOwn = props.ownId === Number(props.content.created_by)
+  const user = props.members?.find((m) => m.id === Number(props.content.created_by))
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
 
   return (
@@ -48,7 +48,7 @@ export const Message = (props: Props) => {
           <div innerHTML={props.content.body} />
         </div>
       </div>
-      <div class={styles.time}>{formatTime(new Date(props.content.createdAt * 1000))}</div>
+      <div class={styles.time}>{formatTime(new Date(props.content.created_at * 1000))}</div>
     </div>
   )
 }

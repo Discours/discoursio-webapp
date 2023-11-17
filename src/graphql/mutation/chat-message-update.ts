@@ -8,7 +8,7 @@ export default gql`
       message {
         id
         body
-        author
+        created_by
         created_at
         reply_to
         updated_at

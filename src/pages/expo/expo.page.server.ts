@@ -5,7 +5,7 @@ import { PRERENDERED_ARTICLES_COUNT } from '../../components/Views/Expo/Expo'
 
 export const onBeforeRender = async (_pageContext: PageContext) => {
   const expoShouts = await apiClient.getShouts({
-    filters: { excludeLayout: 'article' },
+    filters: { exclude_layout: 'article' },
     limit: PRERENDERED_ARTICLES_COUNT
   })
   const pageProps: PageProps = { expoShouts }

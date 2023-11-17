@@ -37,7 +37,7 @@ export const Expo = (props: Props) => {
       offset: sortedArticles().length
     }
 
-    options.filters = getLayout() ? { layout: getLayout() } : { excludeLayout: 'article' }
+    options.filters = getLayout() ? { layout: getLayout() } : { exclude_layout: 'article' }
 
     const { hasMore } = await loadShouts(options)
     setIsLoadMoreButtonVisible(hasMore)

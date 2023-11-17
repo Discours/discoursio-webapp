@@ -97,8 +97,8 @@ export const InboxView = () => {
   const handleSubmit = async (message: string) => {
     await sendMessage({
       body: message,
-      chat: currentDialog().id.toString(),
-      replyTo: messageToReply()?.id
+      chat_id: currentDialog().id.toString(),
+      reply_to: messageToReply()?.id
     })
     setClear(true)
     setMessageToReply(null)
@@ -131,7 +131,7 @@ export const InboxView = () => {
 
   const chatsToShow = () => {
     const sorted = chats().sort((a, b) => {
-      return b.updatedAt - a.updatedAt
+      return b.updated_at - a.updated_at
     })
     if (sortByPerToPer()) {
       return sorted.filter((chat) => (chat.title || '').trim().length === 0)
@@ -239,7 +239,7 @@ export const InboxView = () => {
                     isOpened={chat.id === currentDialog()?.id}
                     members={chat.members}
                     ownId={currentUserId()}
-                    lastUpdate={chat.updatedAt}
+                    lastUpdate={chat.updated_at}
                     counter={chat.unread}
                     message={chat.messages.pop()?.body}
                   />
@@ -283,7 +283,7 @@ export const InboxView = () => {
                       content={message}
                       ownId={currentUserId()}
                       members={currentDialog().members}
-                      replyBody={message.replyTo && findToReply(message.replyTo).body}
+                      replyBody={message.reply_to && findToReply(message.reply_to).body}
                       replyClick={() => setMessageToReply(message)}
                     />
                   )}

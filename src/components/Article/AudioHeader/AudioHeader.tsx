@@ -6,7 +6,6 @@ import { MediaItem } from '../../../pages/types'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { CardTopic } from '../../Feed/CardTopic'
-import { Image } from '../../_shared/Image'
 
 import styles from './AudioHeader.module.scss'
 

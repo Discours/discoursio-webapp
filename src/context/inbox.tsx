@@ -1,9 +1,19 @@
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createSignal, onMount, useContext } from 'solid-js'
+import { createContext, createEffect, createSignal, onMount, useContext } from 'solid-js'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
 import { inboxClient } from '../utils/apiClient'
 import { loadMessages } from '../stores/inbox'
-import { MessageHandler, SSEMessage, useNotifications } from './notifications'
+import { getToken } from '../graphql/privateGraphQLClient'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+
+export interface SSEMessage {
+  id: string
+  entity: string
+  action: string
+  payload: any // Author | Shout | Reaction | Message
+  timestamp?: number
+  seen?: boolean
+}
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -25,9 +35,6 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
-  const {
-    actions: { setMessageHandler }
-  } = useNotifications()
 
   const handleMessage = (sseMessage) => {
     console.log('[context.inbox]:', sseMessage)
@@ -41,11 +48,34 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  onMount(() =>
-    setMessageHandler((_h) => {
-      return handleMessage
-    })
-  )
+  createEffect(async () => {
+    const token = getToken()
+    if (token) {
+      await fetchEventSource('https://chat.discours.io/connect', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        onmessage(event) {
+          const m: SSEMessage = JSON.parse(event.data)
+          console.log('[context.inbox] Received message:', m)
+          if (m.entity === 'chat' || m.entity == 'message') {
+            handleMessage(m)
+          } else {
+            console.debug(m)
+          }
+        },
+        onclose() {
+          console.log('[context.inbox] sse connection closed by server')
+        },
+        onerror(err) {
+          console.error('[context.inbox] sse connection closed by error', err)
+          throw new Error(err) // NOTE: simple hack to close the connection
+        },
+      })
+    }
+  })
 
   const loadChats = async () => {
     try {
@@ -73,7 +103,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       const currentChat = chats().find((chat) => chat.id === args.chat_id)
       setChats((prev) => [
         ...prev.filter((c) => c.id !== currentChat.id),
-        { ...currentChat, updatedAt: message.createdAt }
+        { ...currentChat, updatedAt: message.createdAt },
       ])
     } catch (error) {
       console.error('Error sending message:', error)
@@ -94,7 +124,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     createChat,
     loadChats,
     getMessages,
-    sendMessage
+    sendMessage,
   }
 
   const value: InboxContextType = { chats, messages, actions }

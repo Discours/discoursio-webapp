@@ -28,12 +28,11 @@ import type {
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import { getToken, privateGraphQLClient, privateInboxGraphQLClient } from '../graphql/privateGraphQLClient'
 import topicsAll from '../graphql/query/topics-all'
-import mySession from '../graphql/mutation/my-session'
+import topicsRandomQuery from '../graphql/query/topics-random'
 import authLogoutQuery from '../graphql/mutation/auth-logout'
 import authRegisterMutation from '../graphql/mutation/auth-register'
 import authSendLinkMutation from '../graphql/mutation/auth-send-link'
-import createChat from '../graphql/mutation/create-chat'
-import createMessage from '../graphql/mutation/create-chat-message'
+import authConfirmEmailMutation from '../graphql/mutation/auth-confirm-email'
 import followMutation from '../graphql/mutation/follow'
 import markAllNotificationsAsRead from '../graphql/mutation/mark-all-notifications-as-read'
 import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
@@ -43,8 +42,6 @@ import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import unfollowMutation from '../graphql/mutation/unfollow'
 import updateProfile from '../graphql/mutation/update-profile'
-import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
-import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import shoutLoad from '../graphql/query/article-load'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
 import authCheckEmailQuery from '../graphql/query/auth-check-email'
@@ -58,17 +55,15 @@ import topicBySlug from '../graphql/query/topic-by-slug'
 import reactionsLoadBy from '../graphql/query/reactions-load-by'
 import authorsLoadBy from '../graphql/query/authors-load-by'
 import chatMessagesLoadBy from '../graphql/query/chat-messages-load-by'
-import loadRecipients from '../graphql/query/chat-recipients'
 import myChats from '../graphql/query/chats-load'
 import draftsLoad from '../graphql/query/drafts-load'
 import myFeed from '../graphql/query/my-feed'
 import loadRecipients from '../graphql/query/chat-recipients'
-import updateProfile from '../graphql/mutation/update-profile'
+import createArticle from '../graphql/mutation/article-create'
 import updateArticle from '../graphql/mutation/article-update'
 import deleteShout from '../graphql/mutation/article-delete'
-// import notifications from '../graphql/query/notifications'
-// import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
-import markAllNotificationsAsRead from '../graphql/mutation/mark-all-notifications-as-read'
+import notifications from '../graphql/query/notifications'
+
 import markAsRead from '../graphql/mutation/chat-mark-as-read'
 import createChat from '../graphql/mutation/chat-create'
 import updateChat from '../graphql/mutation/chat-update'
@@ -371,8 +366,7 @@ export const apiClient = {
       .toPromise()
     return resp.data.loadReactionsBy
   },
-  // TODO: store notifications in browser storage
-  /*
+
   getNotifications: async (params: NotificationsQueryParams): Promise<NotificationsQueryResult> => {
     const resp = await privateGraphQLClient.query(notifications, { params }).toPromise()
     return resp.data.loadNotifications
@@ -383,10 +377,6 @@ export const apiClient = {
         notificationId,
       })
       .toPromise()
-  },
-  */
-  markAllNotificationsAsRead: async (): Promise<void> => {
-    await privateGraphQLClient.mutation(markAllNotificationsAsRead, {}).toPromise()
   },
 
   markAllNotificationsAsRead: async (): Promise<void> => {

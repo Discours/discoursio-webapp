@@ -78,11 +78,9 @@ export type ChatInput = {
 }
 
 export type MessageInput = {
-  author: Scalars['Int']['output']
   body: Scalars['String']['output']
   chat_id: Scalars['String']['output']
   id: Scalars['Int']['output']
-  reply_to?: Maybe<Scalars['Int']['output']>
   seen?: Maybe<Scalars['Boolean']['output']>
 }
 

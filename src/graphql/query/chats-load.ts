@@ -20,7 +20,7 @@ export default gql`
         messages {
           id
           body
-          author
+          created_by
         }
       }
     }

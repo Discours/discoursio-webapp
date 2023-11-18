@@ -2,6 +2,7 @@ import { clsx } from 'clsx'
 
 import { useLocalize } from '../../context/localize'
 import { showModal } from '../../stores/ui'
+import { Image } from '../_shared/Image'
 
 import styles from './Banner.module.scss'
 
@@ -22,7 +23,11 @@ export default () => {
             </p>
           </div>
           <div class={clsx(styles.discoursBannerImage, 'col-lg-12 offset-lg-2')}>
-            <img src="/discours-banner.jpg" alt={t('Discours')} />
+            <Image
+              src="https://images.discours.io/unsafe/production/image/discours-banner.jpg"
+              alt={t('Discours')}
+              width={600}
+            />
           </div>
         </div>
       </div>

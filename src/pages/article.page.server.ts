@@ -10,7 +10,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   const article = await apiClient.getShoutBySlug(slug)
 
   if (!article) {
-    throw render(404, '/404')
+    throw render(404)
   }
 
   const pageProps: PageProps = { article, seo: { title: article.title } }

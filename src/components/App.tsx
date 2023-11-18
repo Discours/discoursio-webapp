@@ -84,8 +84,11 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   fourOuFour: FourOuFourPage,
 }
 
-export const App = (props: PageProps) => {
+type Props = PageProps & { is404: boolean }
+
+export const App = (props: Props) => {
   const { page, searchParams } = useRouter<RootSearchParams>()
+  let is404 = props.is404
 
   createEffect(() => {
     if (!searchParams().modal) {
@@ -101,7 +104,8 @@ export const App = (props: PageProps) => {
   const pageComponent = createMemo(() => {
     const result = pagesMap[page()?.route || 'home']
 
-    if (!result || page()?.path === '/404') {
+    if (is404 || !result || page()?.path === '/404') {
+      is404 = false
       return FourOuFourPage
     }
 

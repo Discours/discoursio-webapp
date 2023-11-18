@@ -48,15 +48,11 @@ export const render = async (pageContext: PageContext) => {
     await i18next.changeLanguage(lng)
   }
 
-  if (pageContext.is404) {
-    initRouter('/404')
-  } else {
-    initRouter(pageContext.urlParsed.pathname, pageContext.urlParsed.search)
-  }
+  initRouter(pageContext.urlParsed.pathname, pageContext.urlParsed.search)
 
   pageContext.lng = lng
 
-  const rootContent = renderToString(() => <App {...pageContext.pageProps} />)
+  const rootContent = renderToString(() => <App {...pageContext.pageProps} is404={pageContext.is404} />)
 
   return escapeInject`<!DOCTYPE html>
     <html lang="${lng}">

@@ -17,13 +17,9 @@ let layoutReady = false
 export const render = async (pageContext: PageContextBuiltInClientWithClientRouting & PageContext) => {
   const { lng, pageProps, is404 } = pageContext
 
-  if (is404) {
-    initRouter('/404')
-  } else {
-    const { pathname, search } = window.location
-    const searchParams = Object.fromEntries(new URLSearchParams(search))
-    initRouter(pathname, searchParams)
-  }
+  const { pathname, search } = window.location
+  const searchParams = Object.fromEntries(new URLSearchParams(search))
+  initRouter(pathname, searchParams)
 
   if (SENTRY_DSN) {
     Sentry.init({
@@ -53,7 +49,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
   const content = document.querySelector('#root')
 
   if (!layoutReady) {
-    hydrate(() => <App {...pageProps} />, content)
+    hydrate(() => <App {...pageProps} is404={is404} />, content)
     layoutReady = true
   }
 }

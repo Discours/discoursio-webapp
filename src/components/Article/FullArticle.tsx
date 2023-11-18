@@ -321,7 +321,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <Image width={1600} alt={props.article.title} src={props.article.cover} />
+                  <Image width={800} alt={props.article.title} src={props.article.cover} />
                 </Show>
               </div>
             </Show>

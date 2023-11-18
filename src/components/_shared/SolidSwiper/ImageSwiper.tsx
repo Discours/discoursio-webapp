@@ -178,7 +178,7 @@ export const ImageSwiper = (props: Props) => {
                   // @ts-ignore
                   <swiper-slide lazy="true" virtual-index={index()}>
                     <div class={styles.image}>
-                      <Image src={slide.url} alt={slide.title} width={1600} />
+                      <Image src={slide.url} alt={slide.title} width={800} />
                       <Show when={props.editorMode}>
                         <Popover content={t('Delete')}>
                           {(triggerRef: (el) => void) => (

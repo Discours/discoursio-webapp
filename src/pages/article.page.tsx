@@ -48,7 +48,7 @@ export const ArticlePage = (props: PageProps) => {
 
   return (
     <PageLayout
-      title={props.seo.title}
+      title={props.seo?.title}
       headerTitle={article()?.title || ''}
       slug={article()?.slug}
       articleBody={article()?.body}

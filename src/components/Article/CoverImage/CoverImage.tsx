@@ -4,7 +4,6 @@ import { CoverImage1 } from './images/CoverImage1'
 import { CoverImage10 } from './images/CoverImage10'
 import { CoverImage11 } from './images/CoverImage11'
 import { CoverImage12 } from './images/CoverImage12'
-import { CoverImage13 } from './images/CoverImage13'
 import { CoverImage2 } from './images/CoverImage2'
 import { CoverImage3 } from './images/CoverImage3'
 import { CoverImage4 } from './images/CoverImage4'
@@ -28,7 +27,6 @@ const coverImages = [
   CoverImage10,
   CoverImage11,
   CoverImage12,
-  CoverImage13,
 ]
 
 let counter = 0

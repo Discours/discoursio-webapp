@@ -295,7 +295,7 @@ const SimplifiedEditor = (props: Props) => {
               )}
             </Popover>
             <Popover content={t('Italic')}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef) => (
                 <button
                   ref={triggerRef}
                   type="button"
@@ -307,7 +307,7 @@ const SimplifiedEditor = (props: Props) => {
               )}
             </Popover>
             <Popover content={t('Add url')}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef) => (
                 <button
                   ref={triggerRef}
                   type="button"
@@ -320,7 +320,7 @@ const SimplifiedEditor = (props: Props) => {
             </Popover>
             <Show when={props.quoteEnabled}>
               <Popover content={t('Add blockquote')}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef) => (
                   <button
                     ref={triggerRef}
                     type="button"
@@ -334,7 +334,7 @@ const SimplifiedEditor = (props: Props) => {
             </Show>
             <Show when={props.imageEnabled}>
               <Popover content={t('Add image')}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef) => (
                   <button
                     ref={triggerRef}
                     type="button"

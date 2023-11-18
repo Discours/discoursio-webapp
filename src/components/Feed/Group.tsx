@@ -30,6 +30,7 @@ export default (props: GroupProps) => {
                   isBigTitle: true,
                   nodate: true,
                 }}
+                desktopCoverSize="M"
               />
             </div>
 
@@ -43,6 +44,7 @@ export default (props: GroupProps) => {
                           <ArticleCard
                             article={a}
                             settings={{ nosubtitle: false, noicon: true, isBigTitle: true, nodate: true }}
+                            desktopCoverSize="XS"
                           />
                         </div>
                       </div>
@@ -63,6 +65,7 @@ export default (props: GroupProps) => {
                             isFloorImportant: true,
                             nodate: true,
                           }}
+                          desktopCoverSize="XS"
                         />
                       )}
                     </For>
@@ -80,6 +83,7 @@ export default (props: GroupProps) => {
                             isFloorImportant: true,
                             nodate: true,
                           }}
+                          desktopCoverSize="XS"
                         />
                       )}
                     </For>

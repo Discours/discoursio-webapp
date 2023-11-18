@@ -1,8 +1,7 @@
 import type { JSX } from 'solid-js'
 
 import { Link } from '@solidjs/meta'
-import { clsx } from 'clsx'
-import { createSignal, onMount, splitProps } from 'solid-js'
+import { splitProps } from 'solid-js'
 
 import { getImageUrl } from '../../../utils/getImageUrl'
 
@@ -16,10 +15,17 @@ export const Image = (props: Props) => {
 
   const imageUrl = getImageUrl(local.src, { width: others.width })
 
+  const imageSrcSet = [1, 2, 3]
+    .map(
+      (pixelDensity) =>
+        `${getImageUrl(local.src, { width: others.width * pixelDensity })} ${pixelDensity}x`,
+    )
+    .join(', ')
+
   return (
     <>
-      <Link rel="preload" as="image" href={imageUrl} />
-      <img src={imageUrl} alt={local.alt} {...others} />
+      <Link rel="preload" as="image" imagesrcset={imageSrcSet} />
+      <img src={imageUrl} alt={local.alt} srcSet={imageSrcSet} {...others} />
     </>
   )
 }

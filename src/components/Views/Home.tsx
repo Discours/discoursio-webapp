@@ -105,11 +105,8 @@ export const HomeView = (props: Props) => {
   return (
     <Show when={sortedArticles().length > 0}>
       <Topics />
-
       <Row5 articles={sortedArticles().slice(0, 5)} nodate={true} />
-
       <Hero />
-
       <Show when={sortedArticles().length > PRERENDERED_ARTICLES_COUNT}>
         <Beside
           beside={sortedArticles()[5]}
@@ -169,7 +166,6 @@ export const HomeView = (props: Props) => {
         <Row2 articles={sortedArticles().slice(29, 31)} nodate={true} />
         <Row3 articles={sortedArticles().slice(31, 34)} nodate={true} />
       </Show>
-
       <For each={pages()}>
         {(page) => (
           <>
@@ -183,7 +179,6 @@ export const HomeView = (props: Props) => {
           </>
         )}
       </For>
-
       <Show when={isLoadMoreButtonVisible()}>
         <p class="load-more-container">
           <button class="button" onClick={loadMore}>

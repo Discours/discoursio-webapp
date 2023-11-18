@@ -94,7 +94,6 @@
 }
 
 .shoutCardCover {
-  // background: rgb(0 0 0 / 30%);
   height: 0;
   margin-bottom: 1.6rem;
   overflow: hidden;
@@ -102,6 +101,10 @@
   position: relative;
   transform-origin: 50% 50%;
   transition: transform 1s ease-in-out;
+
+  &.loading {
+    background: rgb(0 0 0 / 20%);
+  }
 
   img {
     height: 100%;

@@ -143,7 +143,7 @@ export const PublishSettings = (props: Props) => {
               >
                 <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
                   <div class={styles.shoutCardCover}>
-                    <Image src={settingsForm.coverImageUrl} alt={initialData.title} width={1600} />
+                    <Image src={settingsForm.coverImageUrl} alt={initialData.title} width={800} />
                   </div>
                 </Show>
                 <div class={styles.text}>

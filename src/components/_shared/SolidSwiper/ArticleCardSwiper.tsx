@@ -17,11 +17,13 @@ type Props = {
 
 export const ArticleCardSwiper = (props: Props) => {
   const mainSwipeRef: { current: SwiperRef } = { current: null }
+
   onMount(async () => {
     const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation])
   })
+
   return (
     <div class={clsx(styles.Swiper, styles.articleMode, styles.ArticleCardSwiper)}>
       <Show when={props.title}>
@@ -63,6 +65,7 @@ export const ArticleCardSwiper = (props: Props) => {
                         isWithCover: true,
                         nodate: true,
                       }}
+                      desktopCoverSize="L"
                     />
                   </swiper-slide>
                 )}

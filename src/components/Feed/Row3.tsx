@@ -28,6 +28,7 @@ export const Row3 = (props: {
                       noAuthorLink: props.noAuthorLink,
                       noauthor: props.noauthor,
                     }}
+                    desktopCoverSize="S"
                   />
                 </div>
               )}

@@ -62,10 +62,10 @@ export const render = async (pageContext: PageContext) => {
     <html lang="${lng}">
       <head>
         ${dangerouslySkipEscape(getAssets())}
-        ${dangerouslySkipEscape(generateHydrationScript())}
       </head>
       <body>
         <div id="root">${dangerouslySkipEscape(rootContent)}</div>
+        ${dangerouslySkipEscape(generateHydrationScript())}
       </body>
     </html>`
 }

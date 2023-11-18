@@ -1,16 +1,17 @@
 import type { Editor } from '@tiptap/core'
 
 import { clsx } from 'clsx'
-import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect } from 'solid-js'
+import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect, lazy } from 'solid-js'
 import { createEditorTransaction } from 'solid-tiptap'
 
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
 import { Popover } from '../../_shared/Popover'
 import { InsertLinkForm } from '../InsertLinkForm'
-import SimplifiedEditor from '../SimplifiedEditor'
 
 import styles from './TextBubbleMenu.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type BubbleMenuProps = {
   editor: Editor

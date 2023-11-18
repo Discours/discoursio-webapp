@@ -2,7 +2,7 @@ import type { Shout, Topic } from '../../graphql/types.gen'
 
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Accessor, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../context/editor'
@@ -21,13 +21,14 @@ import { ImageSwiper } from '../_shared/SolidSwiper'
 import { Editor, Panel } from '../Editor'
 import { AudioUploader } from '../Editor/AudioUploader'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
-import SimplifiedEditor from '../Editor/SimplifiedEditor'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { TableOfContents } from '../TableOfContents'
 
 import { PublishSettings } from './PublishSettings'
 
 import styles from './Edit.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
 type Props = {
   shout: Shout

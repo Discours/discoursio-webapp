@@ -14,7 +14,6 @@ import { getImageUrl } from '../../utils/getImageUrl'
 import { isDesktop } from '../../utils/media-query'
 import { slugify } from '../../utils/slugify'
 import { DropArea } from '../_shared/DropArea'
-import { GrowingTextarea } from '../_shared/GrowingTextarea'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import { ImageSwiper } from '../_shared/SolidSwiper'
@@ -29,6 +28,7 @@ import { PublishSettings } from './PublishSettings'
 import styles from './Edit.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
   shout: Shout

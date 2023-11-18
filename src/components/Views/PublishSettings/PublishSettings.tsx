@@ -12,7 +12,6 @@ import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'
 import { apiClient } from '../../../utils/apiClient'
 import { Button } from '../../_shared/Button'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { TopicSelect, UploadModalContent } from '../../Editor'
@@ -23,6 +22,7 @@ import styles from './PublishSettings.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
 const DESCRIPTION_MAX_LENGTH = 400
 
 type Props = {

@@ -5,7 +5,6 @@ import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Matc
 import { createStore } from 'solid-js/store'
 
 import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
-import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { Icon } from '../../components/_shared/Icon'
 import { Loading } from '../../components/_shared/Loading'
 import { PageLayout } from '../../components/_shared/PageLayout'
@@ -26,6 +25,7 @@ import { validateUrl } from '../../utils/validateUrl'
 import styles from './Settings.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()

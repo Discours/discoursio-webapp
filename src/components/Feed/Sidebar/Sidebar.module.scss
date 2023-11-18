@@ -19,11 +19,12 @@
     align-items: center;
     display: flex;
     position: relative;
+  }
 
-    @include media-breakpoint-up(md) {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .sidebarItemNameLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .userpic {
@@ -109,7 +110,6 @@
     display: inline-block;
     line-height: 1;
     height: 2.4rem;
-    margin-bottom: 0.2rem;
     margin-right: 0.8rem;
     min-width: 2.4rem;
     text-align: center;

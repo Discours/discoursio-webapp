@@ -8,8 +8,7 @@
 }
 
 .feedNavigation {
-  @include font-size(1.6rem);
-
+  @include font-size(1.4rem);
   font-weight: 500;
 
   h4 {
@@ -34,12 +33,6 @@
     margin: 0 0 1rem;
     white-space: nowrap;
     width: 100%;
-
-    a,
-    strong {
-      display: flex;
-      justify-content: space-between;
-    }
   }
 
   a {

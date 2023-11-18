@@ -1,7 +1,7 @@
 import type { Author, Chat, Message as MessageType } from '../../graphql/types.gen'
 
 import { clsx } from 'clsx'
-import { For, createSignal, Show, onMount, createEffect, createMemo } from 'solid-js'
+import { For, createSignal, Show, onMount, createEffect, createMemo, lazy } from 'solid-js'
 
 import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
@@ -10,7 +10,6 @@ import { loadRecipients } from '../../stores/inbox'
 import { useRouter } from '../../stores/router'
 import { showModal } from '../../stores/ui'
 import { Icon } from '../_shared/Icon'
-import SimplifiedEditor from '../Editor/SimplifiedEditor'
 import CreateModalContent from '../Inbox/CreateModalContent'
 import DialogCard from '../Inbox/DialogCard'
 import DialogHeader from '../Inbox/DialogHeader'
@@ -21,6 +20,8 @@ import Search from '../Inbox/Search'
 import { Modal } from '../Nav/Modal'
 
 import styles from '../../styles/Inbox.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
 type InboxSearchParams = {
   initChat: string

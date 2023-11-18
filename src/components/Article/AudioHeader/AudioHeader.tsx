@@ -21,7 +21,7 @@ export const AudioHeader = (props: Props) => {
   return (
     <div class={clsx(styles.AudioHeader, { [styles.expandedImage]: expandedImage() })}>
       <div class={styles.cover}>
-        <Image class={styles.image} src={props.cover} alt={props.title} width={200} />
+        <Image class={styles.image} src={props.cover} alt={props.title} width={100} />
         <Show when={props.cover}>
           <button type="button" class={styles.expand} onClick={() => setExpandedImage(!expandedImage())}>
             <Icon name="expand-circle" />

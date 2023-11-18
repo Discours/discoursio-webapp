@@ -41,7 +41,10 @@ const getOrderBy = (by: FeedSearchParams['by']) => {
 }
 
 type Props = {
-  loadShouts: (options: LoadShoutsOptions) => Promise<{ hasMore: boolean; newShouts: Shout[] }>
+  loadShouts: (options: LoadShoutsOptions) => Promise<{
+    hasMore: boolean
+    newShouts: Shout[]
+  }>
 }
 
 export const FeedView = (props: Props) => {
@@ -148,7 +151,9 @@ export const FeedView = (props: Props) => {
           <Show when={!isLoading()} fallback={<Loading />}>
             <Show when={sortedArticles().length > 0}>
               <For each={sortedArticles().slice(0, 4)}>
-                {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
+                {(article) => (
+                  <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
+                )}
               </For>
 
               <div class={styles.asideSection}>
@@ -172,7 +177,9 @@ export const FeedView = (props: Props) => {
               </div>
 
               <For each={sortedArticles().slice(4)}>
-                {(article) => <ArticleCard article={article} settings={{ isFeedMode: true }} />}
+                {(article) => (
+                  <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
+                )}
               </For>
             </Show>
 

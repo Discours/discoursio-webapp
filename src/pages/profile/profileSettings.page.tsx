@@ -1,18 +1,16 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Match } from 'solid-js'
+import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Match, lazy } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
-import { GrowingTextarea } from '../../components/_shared/GrowingTextarea'
 import { Icon } from '../../components/_shared/Icon'
 import { Loading } from '../../components/_shared/Loading'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Popover } from '../../components/_shared/Popover'
 import { SocialNetworkInput } from '../../components/_shared/SocialNetworkInput'
 import { AuthGuard } from '../../components/AuthGuard'
-import SimplifiedEditor from '../../components/Editor/SimplifiedEditor'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
 import { useLocalize } from '../../context/localize'
 import { useProfileForm } from '../../context/profile'
@@ -25,6 +23,9 @@ import { profileSocialLinks } from '../../utils/profileSocialLinks'
 import { validateUrl } from '../../utils/validateUrl'
 
 import styles from './Settings.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()

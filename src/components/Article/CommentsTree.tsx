@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
+import { Show, createMemo, createSignal, onMount, For, lazy } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
@@ -8,11 +8,12 @@ import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
 import { byCreated } from '../../utils/sortby'
 import { Button } from '../_shared/Button'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
-import SimplifiedEditor from '../Editor/SimplifiedEditor'
 
 import { Comment } from './Comment'
 
 import styles from './Article.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 

@@ -1,5 +1,6 @@
 import type { JSX } from 'solid-js'
 
+import { Link } from '@solidjs/meta'
 import { splitProps } from 'solid-js'
 
 import { getImageUrl } from '../../../utils/getImageUrl'
@@ -11,6 +12,20 @@ type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
 
 export const Image = (props: Props) => {
   const [local, others] = splitProps(props, ['src', 'alt'])
-  const src = getImageUrl(local.src, { width: others.width })
-  return <img src={src} alt={local.alt} {...others} />
+
+  const imageUrl = getImageUrl(local.src, { width: others.width })
+
+  const imageSrcSet = [1, 2, 3]
+    .map(
+      (pixelDensity) =>
+        `${getImageUrl(local.src, { width: others.width * pixelDensity })} ${pixelDensity}x`,
+    )
+    .join(', ')
+
+  return (
+    <>
+      <Link rel="preload" as="image" imagesrcset={imageSrcSet} />
+      <img src={imageUrl} alt={local.alt} srcSet={imageSrcSet} {...others} />
+    </>
+  )
 }

@@ -12,6 +12,7 @@ import { getDescription } from '../../../utils/meta'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { Popover } from '../../_shared/Popover'
+import { CoverImage } from '../../Article/CoverImage'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
 import { AuthorLink } from '../../Author/AhtorLink'
@@ -21,7 +22,8 @@ import { FeedArticlePopup } from '../FeedArticlePopup'
 import styles from './ArticleCard.module.scss'
 import stylesHeader from '../../Nav/Header/Header.module.scss'
 
-interface ArticleCardProps {
+export type ArticleCardProps = {
+  // TODO: refactor this, please
   settings?: {
     noicon?: boolean
     noimage?: boolean
@@ -44,7 +46,15 @@ interface ArticleCardProps {
     withViewed?: boolean
     noAuthorLink?: boolean
   }
+  desktopCoverSize: 'XS' | 'S' | 'M' | 'L'
   article: Shout
+}
+
+const desktopCoverImageWidths: Record<ArticleCardProps['desktopCoverSize'], number> = {
+  XS: 300,
+  S: 400,
+  M: 600,
+  L: 800,
 }
 
 const getTitleAndSubtitle = (
@@ -98,11 +108,12 @@ export const ArticleCard = (props: ArticleCardProps) => {
   }
 
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
+  const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
+  const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
 
   return (
     <section
-      class={clsx(styles.shoutCard, `${props.settings?.additionalClass || ''}`)}
-      classList={{
+      class={clsx(styles.shoutCard, props.settings?.additionalClass, {
         [styles.shoutCardShort]: props.settings?.isShort,
         [styles.shoutCardPhotoBottom]: props.settings?.noimage && props.settings?.photoBottom,
         [styles.shoutCardFeed]: props.settings?.isFeedMode,
@@ -115,13 +126,29 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
         [styles.shoutCardNoImage]: !props.article.cover,
-      }}
+      })}
     >
       <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
         <div class={styles.shoutCardCoverContainer}>
-          <div class={styles.shoutCardCover}>
-            <Show when={props.article.cover}>
-              <Image src={props.article.cover} alt={title} width={1200} />
+          <div
+            class={clsx(styles.shoutCardCover, {
+              [styles.loading]: props.article.cover && isCoverImageLoading(),
+            })}
+          >
+            <Show
+              when={props.article.cover && !isCoverImageLoadError()}
+              fallback={<CoverImage class={styles.placeholderCoverImage} />}
+            >
+              <Image
+                src={props.article.cover}
+                alt={title}
+                width={desktopCoverImageWidths[props.desktopCoverSize]}
+                onError={() => {
+                  setIsCoverImageLoadError(true)
+                  setIsCoverImageLoading(false)
+                }}
+                onLoad={() => setIsCoverImageLoading(false)}
+              />
             </Show>
           </div>
         </div>
@@ -214,7 +241,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <Image src={props.article.cover} alt={title} width={1200} loading="lazy" />
+                <Image src={props.article.cover} alt={title} width={600} loading="lazy" />
               </div>
             </div>
           </Show>

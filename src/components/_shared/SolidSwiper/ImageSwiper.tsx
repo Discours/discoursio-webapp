@@ -1,6 +1,6 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, Show, on, onMount, lazy } from 'solid-js'
+import { createEffect, createSignal, For, Show, on, onMount, lazy, onCleanup } from 'solid-js'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 
 import { useLocalize } from '../../../context/localize'
@@ -24,7 +24,6 @@ const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type Props = {
   images: MediaItem[]
-  editorMode?: boolean
   onImagesAdd?: (value: MediaItem[]) => void
   onImagesSorted?: (value: MediaItem[]) => void
   onImageDelete?: (mediaItemIndex: number) => void
@@ -32,28 +31,11 @@ type Props = {
 }
 
 export const ImageSwiper = (props: Props) => {
-  const { t } = useLocalize()
-  const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
-  const [slideBody, setSlideBody] = createSignal<string>()
-
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
+  const swiperMainContainer: { current: HTMLDivElement } = { current: null }
 
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
-
-  const handleSlideDescriptionChange = (index: number, field: string, value) => {
-    if (props.onImageChange) {
-      props.onImageChange(index, { ...props.images[index], [field]: value })
-    }
-  }
-  const swipeToUploaded = () => {
-    setTimeout(() => {
-      mainSwipeRef.current.swiper.slideTo(props.images.length - 1)
-    }, 0)
-  }
   const handleSlideChange = () => {
     thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
     setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
@@ -69,99 +51,41 @@ export const ImageSwiper = (props: Props) => {
       { defer: true },
     ),
   )
-  const handleDropAreaUpload = (value: UploadedFile[]) => {
-    props.onImagesAdd(composeMediaItems(value))
-    swipeToUploaded()
-  }
-
-  const handleDelete = (index: number) => {
-    props.onImageDelete(index)
-
-    if (index === 0) {
-      mainSwipeRef.current.swiper.update()
-    } else {
-      mainSwipeRef.current.swiper.slideTo(index - 1)
-    }
-  }
-
-  const { selectFiles } = createFileUploader({
-    multiple: true,
-    accept: `image/*`,
-  })
-
-  const initUpload = async (selectedFiles) => {
-    const isValid = validateFiles('image', selectedFiles)
-    if (isValid) {
-      try {
-        setLoading(true)
-        const results: UploadedFile[] = []
-        for (const file of selectedFiles) {
-          const result = await handleImageUpload(file)
-          results.push(result)
-        }
-        props.onImagesAdd(composeMediaItems(results))
-        setLoading(false)
-        swipeToUploaded()
-      } catch (error) {
-        await showSnackbar({ type: 'error', body: t('Error') })
-        console.error('[runUpload]', error)
-        setLoading(false)
-      }
-    } else {
-      await showSnackbar({ type: 'error', body: t('Invalid file type') })
-      setLoading(false)
-      return false
-    }
-  }
-  const handleUploadThumb = async () => {
-    selectFiles((selectedFiles) => {
-      initUpload(selectedFiles)
-    })
-  }
-
-  const handleChangeIndex = (direction: 'left' | 'right', index: number) => {
-    const images = [...props.images]
-    if (direction === 'left' && index > 0) {
-      const copy = images.splice(index, 1)[0]
-      images.splice(index - 1, 0, copy)
-    } else if (direction === 'right' && index < images.length - 1) {
-      const copy = images.splice(index, 1)[0]
-      images.splice(index + 1, 0, copy)
-    }
-    props.onImagesSorted(images)
-    setTimeout(() => {
-      mainSwipeRef.current.swiper.slideTo(direction === 'left' ? index - 1 : index + 1)
-    }, 0)
-  }
-
-  const handleSaveBeforeSlideChange = () => {
-    handleSlideDescriptionChange(slideIndex(), 'body', slideBody())
-  }
 
   onMount(async () => {
     const { register } = await import('swiper/element/bundle')
     register()
-    SwiperCore.use([Pagination, Navigation, Manipulation])
+    SwiperCore.use([Pagination, Navigation, Manipulation, ResizeObserver])
+  })
+
+  const [windowWidth, setWindowWidth] = createSignal(null)
+  const [isMobileView, setIsMobileView] = createSignal(false)
+  onMount(() => {
+    setWindowWidth(window.innerWidth)
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const rect = entries[0].contentRect
+      console.log('!!! rect.width:', rect)
+      const direction = rect.width > 540 ? 'vertical' : 'horizontal'
+
+      if (direction === 'horizontal') {
+        setIsMobileView(true)
+      } else {
+        setIsMobileView(false)
+      }
+
+      thumbSwipeRef.current.swiper.changeDirection(direction)
+    })
+
+    resizeObserver.observe(swiperMainContainer.current)
+    onCleanup(() => {
+      resizeObserver.disconnect()
+    })
   })
 
   return (
-    <div class={clsx(styles.Swiper, props.editorMode ? styles.editorMode : styles.articleMode)}>
-      <div class={styles.container}>
-        <Show when={props.editorMode && props.images.length === 0}>
-          <DropArea
-            fileType="image"
-            isMultiply={true}
-            placeholder={t('Add images')}
-            onUpload={handleDropAreaUpload}
-            description={
-              <div>
-                {t('You can upload up to 100 images in .jpg, .png format.')}
-                <br />
-                {t('Each image must be no larger than 5 MB.')}
-              </div>
-            }
-          />
-        </Show>
+    <div class={clsx(styles.Swiper, styles.articleMode, { [styles.mobileView]: isMobileView() })}>
+      <div class={styles.container} ref={(el) => (swiperMainContainer.current = el)}>
         <Show when={props.images.length > 0}>
           <div class={styles.holder}>
             <swiper-container
@@ -170,7 +94,6 @@ export const ImageSwiper = (props: Props) => {
               thumbs-swiper={'.thumbSwiper'}
               observer={true}
               onSlideChange={handleSlideChange}
-              onBeforeSlideChangeStart={handleSaveBeforeSlideChange}
               space-between={20}
             >
               <For each={props.images}>
@@ -180,19 +103,6 @@ export const ImageSwiper = (props: Props) => {
                   <swiper-slide lazy="true" virtual-index={index()}>
                     <div class={styles.image}>
                       <Image src={slide.url} alt={slide.title} width={800} />
-                      <Show when={props.editorMode}>
-                        <Popover content={t('Delete')}>
-                          {(triggerRef: (el) => void) => (
-                            <div
-                              ref={triggerRef}
-                              onClick={() => handleDelete(index())}
-                              class={styles.action}
-                            >
-                              <Icon class={styles.icon} name="delete-white" />
-                            </div>
-                          )}
-                        </Popover>
-                      </Show>
                     </div>
                   </swiper-slide>
                 )}
@@ -228,9 +138,10 @@ export const ImageSwiper = (props: Props) => {
                 auto-scroll-offset={1}
                 watch-overflow={true}
                 watch-slides-visibility={true}
-                direction={props.editorMode ? 'horizontal' : 'vertical'}
-                slides-offset-after={props.editorMode && 160}
-                slides-offset-before={props.editorMode && 30}
+                direction={windowWidth() && windowWidth() < 760 ? 'vertical' : 'horizontal'}
+
+                // slides-offset-after={props.editorMode && 160}
+                // slides-offset-before={props.editorMode && 30}
               >
                 <For each={props.images}>
                   {(slide, index) => (
@@ -242,47 +153,10 @@ export const ImageSwiper = (props: Props) => {
                         style={{
                           'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`,
                         }}
-                      >
-                        <Show when={props.editorMode}>
-                          <div class={styles.thumbAction}>
-                            <div class={clsx(styles.action)} onClick={() => handleDelete(index())}>
-                              <Icon class={styles.icon} name="delete-white" />
-                            </div>
-                            <div
-                              class={clsx(styles.action, {
-                                [styles.hidden]: index() === 0,
-                              })}
-                              onClick={() => handleChangeIndex('left', index())}
-                            >
-                              <Icon
-                                class={styles.icon}
-                                name="arrow-right-white"
-                                style={{ transform: 'rotate(-180deg)' }}
-                              />
-                            </div>
-                            <div
-                              class={clsx(styles.action, {
-                                [styles.hidden]: index() === props.images.length - 1,
-                              })}
-                              onClick={() => handleChangeIndex('right', index())}
-                            >
-                              <Icon class={styles.icon} name="arrow-right-white" />
-                            </div>
-                          </div>
-                        </Show>
-                      </div>
+                      />
                     </swiper-slide>
                   )}
                 </For>
-                <Show when={props.editorMode}>
-                  <div class={styles.upload}>
-                    <div class={styles.inner} onClick={handleUploadThumb}>
-                      <Show when={!loading()} fallback={<Loading size="small" />}>
-                        <Icon name="swiper-plus" />
-                      </Show>
-                    </div>
-                  </div>
-                </Show>
               </swiper-container>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.prev, {
@@ -304,47 +178,17 @@ export const ImageSwiper = (props: Props) => {
           </div>
         </Show>
       </div>
-      <Show
-        when={props.editorMode}
-        fallback={
-          <div class={styles.slideDescription}>
-            <Show when={props.images[slideIndex()]?.title}>
-              <div class={styles.articleTitle}>{props.images[slideIndex()].title}</div>
-            </Show>
-            <Show when={props.images[slideIndex()]?.source}>
-              <div class={styles.source}>{props.images[slideIndex()].source}</div>
-            </Show>
-            <Show when={props.images[slideIndex()]?.body}>
-              <div class={styles.body} innerHTML={props.images[slideIndex()].body} />
-            </Show>
-          </div>
-        }
-      >
-        <Show when={props.images.length > 0}>
-          <div class={styles.description}>
-            <input
-              type="text"
-              class={clsx(styles.input, styles.title)}
-              placeholder={t('Enter image title')}
-              value={props.images[slideIndex()]?.title}
-              onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'title', event.target.value)}
-            />
-            <input
-              type="text"
-              class={styles.input}
-              placeholder={t('Specify the source and the name of the author')}
-              value={props.images[slideIndex()]?.source}
-              onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'source', event.target.value)}
-            />
-            <SimplifiedEditor
-              initialContent={props.images[slideIndex()]?.body}
-              smallHeight={true}
-              placeholder={t('Enter image description')}
-              onChange={(value) => setSlideBody(value)}
-            />
-          </div>
+      <div class={styles.slideDescription}>
+        <Show when={props.images[slideIndex()]?.title}>
+          <div class={styles.articleTitle}>{props.images[slideIndex()].title}</div>
         </Show>
-      </Show>
+        <Show when={props.images[slideIndex()]?.source}>
+          <div class={styles.source}>{props.images[slideIndex()].source}</div>
+        </Show>
+        <Show when={props.images[slideIndex()]?.body}>
+          <div class={styles.body} innerHTML={props.images[slideIndex()].body} />
+        </Show>
+      </div>
     </div>
   )
 }

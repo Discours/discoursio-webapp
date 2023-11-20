@@ -15,11 +15,12 @@ import { Loading } from '../../_shared/Loading'
 import { ArticleCard } from '../../Feed/ArticleCard'
 
 import styles from './Expo.module.scss'
+import { ArticleCardSwiper } from '../../_shared/SolidSwiper/ArticleCardSwiper'
 
 type Props = {
   shouts: Shout[]
 }
-export const PRERENDERED_ARTICLES_COUNT = 28
+export const PRERENDERED_ARTICLES_COUNT = 48
 const LOAD_MORE_PAGE_SIZE = 16
 export const Expo = (props: Props) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))
@@ -139,7 +140,34 @@ export const Expo = (props: Props) => {
             </li>
           </ul>
           <div class="row">
-            <For each={sortedArticles().slice(0, PRERENDERED_ARTICLES_COUNT)}>
+            <For each={sortedArticles().slice(0, 16)}>
+              {(shout) => (
+                <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
+                  <ArticleCard
+                    article={shout}
+                    settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
+                  />
+                </div>
+              )}
+            </For>
+            {/* TODO: add Favorite request */}
+            <ArticleCardSwiper title={t('Favorite')} slides={sortedArticles().slice(0, 10)} />
+            <For each={sortedArticles().slice(16, 32)}>
+              {(shout) => (
+                <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
+                  <ArticleCard
+                    article={shout}
+                    settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
+                  />
+                </div>
+              )}
+            </For>
+            <h1>Test</h1>
+            {/* TODO: add Top month articles in Expo request */}
+            <ArticleCardSwiper title={t('Top month articles')} slides={sortedArticles().slice(0, 10)} />
+            <For each={sortedArticles().slice(32, 48)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard

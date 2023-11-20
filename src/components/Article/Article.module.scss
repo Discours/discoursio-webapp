@@ -16,11 +16,7 @@ img {
 }
 
 .shoutHeader {
-  margin-bottom: 2em;
-
-  @include media-breakpoint-up(md) {
-    margin: 0 0 2em;
-  }
+  margin-bottom: 1.5em;
 }
 
 .articleContent {
@@ -112,6 +108,10 @@ img {
     p:last-child {
       margin-bottom: 0;
     }
+  }
+
+  ta-sub {
+    font-size: inherit;
   }
 
   *[data-bg='black'] {

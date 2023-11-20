@@ -16,15 +16,23 @@
   }
 
   .sidebarItemName {
+    background: transparent;
     align-items: center;
     display: flex;
     position: relative;
+    transition: background-color 0.2s;
   }
 
   .sidebarItemNameLabel {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  a:hover {
+    .sidebarItemName {
+      background: #000;
+    }
   }
 
   .userpic {

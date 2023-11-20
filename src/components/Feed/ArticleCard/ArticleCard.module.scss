@@ -48,6 +48,12 @@
     max-width: 2em;
     vertical-align: text-bottom;
   }
+
+  :global(.floor--group) &:not(:last-child) {
+    border-bottom: 1px solid;
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+  }
 }
 
 .shoutCardWithBorder {
@@ -62,6 +68,10 @@
 }
 
 .shoutCardTitlesContainer {
+  .shoutCardCompact & {
+    margin-bottom: 0.3em;
+  }
+
   &.shoutCardTitlesContainerFeedMode {
     margin-bottom: 1.4rem;
   }

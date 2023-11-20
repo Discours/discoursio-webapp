@@ -55,10 +55,6 @@ export const Footer = () => {
           slug: '/about/help',
         },
         {
-          title: 'Feedback',
-          slug: '/#feedback',
-        },
-        {
           title: 'Work with us',
           slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform',
         },

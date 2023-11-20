@@ -210,7 +210,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
                   {(author) => {
-                    return <AuthorLink size={'XS'} author={author} />
+                    return (
+                      <AuthorLink
+                        size={'XS'}
+                        author={author}
+                        isFloorImportant={props.settings.isFloorImportant || props.settings?.isWithCover}
+                      />
+                    )
                   }}
                 </For>
               </div>

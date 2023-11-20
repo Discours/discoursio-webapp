@@ -49,3 +49,16 @@
     }
   }
 }
+
+.authorLinkFloorImportant {
+  .link {
+    &:hover {
+      background: #fff !important;
+
+      .name {
+        background: none;
+        color: #000;
+      }
+    }
+  }
+}

@@ -62,7 +62,11 @@ export const Beside = (props: Props) => {
                     </Show>
                   </div>
                 </Show>
-                <ul class={styles.besideColumn}>
+                <ul
+                  class={clsx(styles.besideColumn, {
+                    [styles.besideColumnTopViewed]: props.wrapper === 'top-article',
+                  })}
+                >
                   <For each={[...props.values]}>
                     {(value: Partial<Shout | User | Topic>) => (
                       <li classList={{ [styles.top]: props.wrapper.startsWith('top-') }}>

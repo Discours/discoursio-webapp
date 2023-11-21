@@ -146,6 +146,9 @@ const SimplifiedEditor = (props: Props) => {
           const { empty } = selection
           return !empty && shouldShowLinkBubbleMenu()
         },
+        tippyOptions: {
+          placement: 'bottom',
+        },
       }),
       ImageFigure,
       Image,
@@ -223,16 +226,21 @@ const SimplifiedEditor = (props: Props) => {
       return
     }
 
+    if (event.code === 'Escape' && editor()) {
+      handleHideLinkBubble()
+    }
+
     if (event.code === 'Enter' && props.submitByCtrlEnter && (event.metaKey || event.ctrlKey)) {
       event.preventDefault()
       props.onSubmit(html())
       handleClear()
     }
 
-    if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
-      event.preventDefault()
-      setShouldShowLinkBubbleMenu(true)
-    }
+    // if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
+    //   event.preventDefault()
+    //   handleShowLinkBubble()
+    //
+    // }
   }
 
   onMount(() => {
@@ -264,6 +272,12 @@ const SimplifiedEditor = (props: Props) => {
     editor().chain().focus().run()
     setShouldShowLinkBubbleMenu(true)
   }
+
+  const handleHideLinkBubble = () => {
+    editor().commands.focus()
+    setShouldShowLinkBubbleMenu(false)
+  }
+
   return (
     <ShowOnlyOnClient>
       <div
@@ -386,10 +400,9 @@ const SimplifiedEditor = (props: Props) => {
           />
         </Show>
         <LinkBubbleMenuModule
-          shouldShow={shouldShowLinkBubbleMenu()}
           editor={editor()}
           ref={(el) => (linkBubbleMenuRef.current = el)}
-          onClose={() => setShouldShowLinkBubbleMenu(false)}
+          onClose={handleHideLinkBubble}
         />
       </div>
     </ShowOnlyOnClient>

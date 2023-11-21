@@ -7,7 +7,6 @@ import styles from './LinkBubbleMenu.module.scss'
 type Props = {
   editor: Editor
   ref: (el: HTMLDivElement) => void
-  shouldShow: boolean
   onClose: () => void
 }
 

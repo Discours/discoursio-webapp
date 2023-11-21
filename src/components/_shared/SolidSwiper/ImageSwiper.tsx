@@ -94,7 +94,10 @@ export const ImageSwiper = (props: Props) => {
               thumbs-swiper={'.thumbSwiper'}
               observer={true}
               onSlideChange={handleSlideChange}
-              space-between={20}
+              space-between={10}
+              breakpoints={{
+                576: { spaceBetween: 20 },
+              }}
             >
               <For each={props.images}>
                 {(slide, index) => (
@@ -134,7 +137,10 @@ export const ImageSwiper = (props: Props) => {
                 class={'thumbSwiper'}
                 ref={(el) => (thumbSwipeRef.current = el)}
                 slides-per-view={'auto'}
-                space-between={20}
+                space-between={10}
+                breakpoints={{
+                  576: { spaceBetween: 20 },
+                }}
                 auto-scroll-offset={1}
                 watch-overflow={true}
                 watch-slides-visibility={true}

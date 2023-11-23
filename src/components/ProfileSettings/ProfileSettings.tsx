@@ -299,12 +299,9 @@ export const ProfileSettings = () => {
                       smallHeight={true}
                       placeholder={t('About')}
                       label={t('About')}
-                      initialContent={form.about}
+                      initialContent={form.about || ''}
                       autoFocus={false}
-                      onChange={(value) => {
-                        if (value === '<p></p>') return
-                        updateFormField('about', value)
-                      }}
+                      onChange={(value) => updateFormField('about', value)}
                     />
                     <div class={clsx(styles.multipleControls, 'pretty-form__item')}>
                       <div class={styles.multipleControlsHeader}>

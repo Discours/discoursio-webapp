@@ -456,6 +456,5 @@
   "video": "video",
   "view": "view",
   "viewsWithCount": "{count} {count, plural, one {view} other {views}}",
-  "yesterday": "yesterday",
-  "Это поле обязательно для заполнения": "This field is required"
+  "yesterday": "yesterday"
 }

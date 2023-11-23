@@ -81,12 +81,12 @@ export const ProfileSettings = () => {
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
     if (nameInputRef.current.value.length === 0) {
-      setNameError('Это поле обязательно для заполнения')
+      setNameError(t('Required'))
       nameInputRef.current.focus()
       return
     }
     if (slugInputRef.current.value.length === 0) {
-      setSlugError('Это поле обязательно для заполнения')
+      setSlugError(t('Required'))
       slugInputRef.current.focus()
       return
     }
@@ -150,11 +150,7 @@ export const ProfileSettings = () => {
   })
 
   createEffect(() => {
-    if (!isFormInitialized()) return
-    console.log('!!! deepEqual:', deepEqual(form, prevForm))
     if (!deepEqual(form, prevForm)) {
-      console.log('!!! form:', form)
-      console.log('!!! prevForm:', prevForm)
       setIsFloatingPanelVisible(true)
     }
   })

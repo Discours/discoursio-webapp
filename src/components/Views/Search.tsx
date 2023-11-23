@@ -92,7 +92,7 @@ export const SearchView = (props: Props) => {
             <For each={sortedArticles()}>
               {(article) => (
                 <div class="col-md-6">
-                  <ArticleCard article={article} />
+                  <ArticleCard article={article} desktopCoverSize="L" />
                 </div>
               )}
             </For>

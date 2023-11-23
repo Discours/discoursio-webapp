@@ -14,7 +14,7 @@ interface GroupProps {
 export default (props: GroupProps) => {
   if (!props.articles) props.articles = []
   return (
-    <div class="floor floor--important floor--group">
+    <div class="floor floor--group">
       <Show when={props.articles.length > 4}>
         <div class="wide-container">
           <div class="row">
@@ -26,10 +26,10 @@ export default (props: GroupProps) => {
                 settings={{
                   nosubtitle: false,
                   noicon: true,
-                  isFloorImportant: true,
                   isBigTitle: true,
                   nodate: true,
                 }}
+                desktopCoverSize="M"
               />
             </div>
 
@@ -43,6 +43,7 @@ export default (props: GroupProps) => {
                           <ArticleCard
                             article={a}
                             settings={{ nosubtitle: false, noicon: true, isBigTitle: true, nodate: true }}
+                            desktopCoverSize="XS"
                           />
                         </div>
                       </div>
@@ -60,9 +61,9 @@ export default (props: GroupProps) => {
                             noimage: true,
                             isBigTitle: true,
                             isCompact: true,
-                            isFloorImportant: true,
                             nodate: true,
                           }}
+                          desktopCoverSize="XS"
                         />
                       )}
                     </For>
@@ -77,9 +78,9 @@ export default (props: GroupProps) => {
                             noimage: true,
                             isBigTitle: true,
                             isCompact: true,
-                            isFloorImportant: true,
                             nodate: true,
                           }}
+                          desktopCoverSize="XS"
                         />
                       )}
                     </For>

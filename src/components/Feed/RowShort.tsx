@@ -20,6 +20,7 @@ export default (props: { articles: Shout[] }) => (
                   isVertical: true,
                   nodate: true,
                 }}
+                desktopCoverSize="S"
               />
             </div>
           )}

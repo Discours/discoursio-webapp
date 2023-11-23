@@ -1,6 +1,6 @@
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createSignal, onMount, Show } from 'solid-js'
+import { createSignal, lazy, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
@@ -12,16 +12,18 @@ import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'
 import { apiClient } from '../../../utils/apiClient'
 import { Button } from '../../_shared/Button'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { TopicSelect, UploadModalContent } from '../../Editor'
-import SimplifiedEditor, { MAX_DESCRIPTION_LIMIT } from '../../Editor/SimplifiedEditor'
 import { Modal } from '../../Nav/Modal'
 import { EMPTY_TOPIC } from '../Edit'
 
 import styles from './PublishSettings.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
+const DESCRIPTION_MAX_LENGTH = 400
 
 type Props = {
   shoutId: number
@@ -42,7 +44,7 @@ export const PublishSettings = (props: Props) => {
     if (!props.form.description) {
       const cleanFootnotes = props.form.body.replaceAll(/<footnote data-value=".*?">.*?<\/footnote>/g, '')
       const leadText = cleanFootnotes.replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
-      return shorten(leadText, MAX_DESCRIPTION_LIMIT).trim()
+      return shorten(leadText, DESCRIPTION_MAX_LENGTH).trim()
     }
     return props.form.description
   }
@@ -143,7 +145,7 @@ export const PublishSettings = (props: Props) => {
               >
                 <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
                   <div class={styles.shoutCardCover}>
-                    <Image src={settingsForm.coverImageUrl} alt={initialData.title} width={1600} />
+                    <Image src={settingsForm.coverImageUrl} alt={initialData.title} width={800} />
                   </div>
                 </Show>
                 <div class={styles.text}>
@@ -191,7 +193,7 @@ export const PublishSettings = (props: Props) => {
                 label={t('Description')}
                 initialContent={composeDescription()}
                 onChange={(value) => setForm('description', value)}
-                maxLength={MAX_DESCRIPTION_LIMIT}
+                maxLength={DESCRIPTION_MAX_LENGTH}
               />
             </div>
 

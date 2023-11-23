@@ -62,7 +62,11 @@ export const Beside = (props: Props) => {
                     </Show>
                   </div>
                 </Show>
-                <ul class={styles.besideColumn}>
+                <ul
+                  class={clsx(styles.besideColumn, {
+                    [styles.besideColumnTopViewed]: props.wrapper === 'top-article',
+                  })}
+                >
                   <For each={[...props.values]}>
                     {(value: Partial<Shout | User | Topic>) => (
                       <li classList={{ [styles.top]: props.wrapper.startsWith('top-') }}>
@@ -85,12 +89,14 @@ export const Beside = (props: Props) => {
                           <ArticleCard
                             article={value as Shout}
                             settings={{ noimage: true, nodate: props.nodate }}
+                            desktopCoverSize="XS"
                           />
                         </Show>
                         <Show when={props.wrapper === 'top-article' && value?.slug}>
                           <ArticleCard
                             article={value as Shout}
                             settings={{ noimage: true, noauthor: true, nodate: true, isShort: true }}
+                            desktopCoverSize="XS"
                           />
                         </Show>
                       </li>
@@ -103,6 +109,7 @@ export const Beside = (props: Props) => {
               <ArticleCard
                 article={props.beside}
                 settings={{ isBigTitle: true, isBeside: true, nodate: props.nodate }}
+                desktopCoverSize="L"
               />
             </div>
           </div>

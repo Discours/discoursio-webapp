@@ -1,6 +1,6 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, Show, on, onMount } from 'solid-js'
+import { createEffect, createSignal, For, Show, on, onMount, lazy } from 'solid-js'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 
 import { useLocalize } from '../../../context/localize'
@@ -10,7 +10,6 @@ import { composeMediaItems } from '../../../utils/composeMediaItems'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
 import { validateFiles } from '../../../utils/validateFile'
-import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import { DropArea } from '../DropArea'
 import { Icon } from '../Icon'
 import { Image } from '../Image'
@@ -20,6 +19,8 @@ import { Popover } from '../Popover'
 import { SwiperRef } from './swiper'
 
 import styles from './Swiper.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type Props = {
   images: MediaItem[]
@@ -178,7 +179,7 @@ export const ImageSwiper = (props: Props) => {
                   // @ts-ignore
                   <swiper-slide lazy="true" virtual-index={index()}>
                     <div class={styles.image}>
-                      <Image src={slide.url} alt={slide.title} width={1600} />
+                      <Image src={slide.url} alt={slide.title} width={800} />
                       <Show when={props.editorMode}>
                         <Popover content={t('Delete')}>
                           {(triggerRef: (el) => void) => (

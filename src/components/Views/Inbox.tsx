@@ -21,6 +21,8 @@ import { useLocalize } from '../../context/localize'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
 import { Popover } from '../_shared/Popover'
 
+const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
+
 type InboxSearchParams = {
   initChat: string
   chat: string

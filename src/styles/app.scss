@@ -1,3 +1,4 @@
+@import 'fonts';
 @import 'bootstrap/scss/mixins/lists';
 @import 'bootstrap/scss/mixins/container';
 @import 'bootstrap/scss/mixins/utilities';
@@ -599,6 +600,7 @@ figure {
     @include font-size(1.2rem);
 
     line-height: 1.5;
+    margin-top: 0.5em;
   }
 }
 

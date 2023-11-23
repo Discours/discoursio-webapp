@@ -1,15 +1,16 @@
-import { createSignal, For, Show } from 'solid-js'
+import { createSignal, For, lazy, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { MediaItem } from '../../../pages/types'
 import { getDescription } from '../../../utils/meta'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
 import { Icon } from '../../_shared/Icon'
 import { Popover } from '../../_shared/Popover'
-import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import { SharePopup, getShareUrl } from '../SharePopup'
 
 import styles from './AudioPlayer.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
   media: MediaItem[]

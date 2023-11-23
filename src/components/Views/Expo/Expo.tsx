@@ -145,6 +145,7 @@ export const Expo = (props: Props) => {
                   <ArticleCard
                     article={shout}
                     settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
                   />
                 </div>
               )}
@@ -157,6 +158,7 @@ export const Expo = (props: Props) => {
                       <ArticleCard
                         article={shout}
                         settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                        desktopCoverSize="XS"
                       />
                     </div>
                   )}

@@ -2,8 +2,10 @@ import type { Author, Shout } from '../../graphql/types.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
+import { Link } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
+import { isServer } from 'solid-js/web'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
@@ -52,6 +54,8 @@ const scrollTo = (el: HTMLElement) => {
   })
 }
 
+const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
+
 export const FullArticle = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
 
@@ -93,6 +97,26 @@ export const FullArticle = (props: Props) => {
       }
     }
     return props.article.body
+  })
+
+  const imageUrls = createMemo(() => {
+    if (!body()) {
+      return []
+    }
+
+    if (isServer) {
+      const result: string[] = []
+      let match: RegExpMatchArray
+
+      while ((match = imgSrcRegExp.exec(body())) !== null) {
+        result.push(match[1])
+      }
+      return result
+    }
+
+    const imageElements = document.querySelectorAll<HTMLImageElement>('#shoutBody img')
+    // eslint-disable-next-line unicorn/prefer-spread
+    return Array.from(imageElements).map((img) => img.src)
   })
 
   const media = createMemo<MediaItem[]>(() => {
@@ -261,6 +285,7 @@ export const FullArticle = (props: Props) => {
 
   return (
     <>
+      <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
       <div class="wide-container">
         <div class="row position-relative">
           <article
@@ -296,7 +321,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <Image width={1600} alt={props.article.title} src={props.article.cover} />
+                  <Image width={800} alt={props.article.title} src={props.article.cover} />
                 </Show>
               </div>
             </Show>

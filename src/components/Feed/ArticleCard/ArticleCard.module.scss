@@ -48,6 +48,12 @@
     max-width: 2em;
     vertical-align: text-bottom;
   }
+
+  :global(.floor--group) &:not(:last-child) {
+    border-bottom: 1px solid;
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+  }
 }
 
 .shoutCardWithBorder {
@@ -62,6 +68,10 @@
 }
 
 .shoutCardTitlesContainer {
+  .shoutCardCompact & {
+    margin-bottom: 0.3em;
+  }
+
   &.shoutCardTitlesContainerFeedMode {
     margin-bottom: 1.4rem;
   }
@@ -94,7 +104,6 @@
 }
 
 .shoutCardCover {
-  background: rgb(0 0 0 / 30%);
   height: 0;
   margin-bottom: 1.6rem;
   overflow: hidden;
@@ -102,6 +111,10 @@
   position: relative;
   transform-origin: 50% 50%;
   transition: transform 1s ease-in-out;
+
+  &.loading {
+    background: rgb(0 0 0 / 20%);
+  }
 
   img {
     height: 100%;
@@ -824,4 +837,8 @@
 
 .shoutTopicTop {
   margin-bottom: 0.4rem !important;
+}
+
+.placeholderCoverImage {
+  position: absolute;
 }

@@ -70,6 +70,7 @@ type ApiErrorCode =
   | 'user_already_exists'
   | 'token_expired'
   | 'token_invalid'
+  | 'duplicate_slug'
 
 export class ApiError extends Error {
   code: ApiErrorCode
@@ -249,6 +250,15 @@ export const apiClient = {
   },
   updateProfile: async (input: ProfileInput) => {
     const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
+    if (response.error) {
+      if (
+        response.error.message.includes('duplicate key value violates unique constraint "user_slug_key"')
+      ) {
+        throw new ApiError('duplicate_slug', response.error.message)
+      }
+      throw new ApiError('unknown', response.error.message)
+    }
+
     return response.data.updateProfile
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {

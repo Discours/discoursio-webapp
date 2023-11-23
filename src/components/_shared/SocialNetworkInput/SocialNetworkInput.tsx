@@ -10,7 +10,7 @@ type Props = {
   network?: string
   link?: string
   isExist: boolean
-  handleChange: (value: string) => void
+  handleInput: (value: string) => void
   handleDelete?: () => void
   slug?: string
   autofocus?: boolean
@@ -33,7 +33,7 @@ export const SocialNetworkInput = (props: Props) => {
         class={styles.input}
         type="text"
         value={props.isExist ? props.link : null}
-        onChange={(event) => props.handleChange(event.currentTarget.value)}
+        onInput={(event) => props.handleInput(event.currentTarget.value)}
         placeholder={props.autofocus ? null : `${props.link}${props.slug}`}
       />
       <Show when={props.isExist}>

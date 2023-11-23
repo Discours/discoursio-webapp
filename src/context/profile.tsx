@@ -1,6 +1,6 @@
 import type { ProfileInput } from '../graphql/types.gen'
 
-import { createEffect, createMemo, createSignal } from 'solid-js'
+import { createContext, createEffect, createMemo, JSX, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
@@ -8,54 +8,58 @@ import { apiClient } from '../utils/apiClient'
 
 import { useSession } from './session'
 
+type ProfileFormContextType = {
+  form: ProfileInput
+  actions: {
+    setForm: (profile: ProfileInput) => void
+    submit: (profile: ProfileInput) => Promise<void>
+    updateFormField: (fieldName: string, value: string, remove?: boolean) => void
+  }
+}
+
+const ProfileFormContext = createContext<ProfileFormContextType>()
+
+export function useProfileForm() {
+  return useContext(ProfileFormContext)
+}
+
 const userpicUrl = (userpic: string) => {
   if (userpic.includes('assets.discours.io')) {
     return userpic.replace('100x', '500x500')
   }
   return userpic
 }
-const useProfileForm = () => {
+export const ProfileFormProvider = (props: { children: JSX.Element }) => {
   const { session } = useSession()
+  const [form, setForm] = createStore<ProfileInput>({})
+
   const currentSlug = createMemo(() => session()?.user?.slug)
-  const { authorEntities } = useAuthorsStore({ authors: [] })
-  const currentAuthor = createMemo(() => authorEntities()[currentSlug()])
-  const [slugError, setSlugError] = createSignal<string>()
 
   const submit = async (profile: ProfileInput) => {
-    const response = await apiClient.updateProfile(profile)
-    if (response.error) {
-      setSlugError(response.error)
-      return response.error
+    try {
+      await apiClient.updateProfile(profile)
+    } catch (error) {
+      console.error('[ProfileFormProvider]', error)
+      throw error
     }
-    return response
   }
-
-  const [form, setForm] = createStore<ProfileInput>({
-    name: '',
-    bio: '',
-    about: '',
-    slug: '',
-    userpic: '',
-    links: [],
-  })
 
   createEffect(async () => {
     if (!currentSlug()) return
     try {
-      await loadAuthor({ slug: currentSlug() })
+      const currentAuthor = await loadAuthor({ slug: currentSlug() })
       setForm({
-        name: currentAuthor()?.name,
-        slug: currentAuthor()?.slug,
-        bio: currentAuthor()?.bio,
-        about: currentAuthor()?.about,
-        userpic: userpicUrl(currentAuthor()?.userpic),
-        links: currentAuthor()?.links,
+        name: currentAuthor.name,
+        slug: currentAuthor.slug,
+        bio: currentAuthor.bio,
+        about: currentAuthor.about,
+        userpic: userpicUrl(currentAuthor.userpic),
+        links: currentAuthor.links,
       })
     } catch (error) {
       console.error(error)
     }
   })
-
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
     if (fieldName === 'links') {
       if (remove) {
@@ -73,7 +77,14 @@ const useProfileForm = () => {
     }
   }
 
-  return { form, submit, updateFormField, slugError }
-}
+  const value: ProfileFormContextType = {
+    form,
+    actions: {
+      submit,
+      updateFormField,
+      setForm,
+    },
+  }
 
-export { useProfileForm }
+  return <ProfileFormContext.Provider value={value}>{props.children}</ProfileFormContext.Provider>
+}

@@ -11,7 +11,7 @@ import { useSession } from './session'
 type ProfileFormContextType = {
   form: ProfileInput
   actions: {
-    updateForm: (profile: ProfileInput) => void
+    setForm: (profile: ProfileInput) => void
     submit: (profile: ProfileInput) => Promise<void>
     updateFormField: (fieldName: string, value: string, remove?: boolean) => void
   }
@@ -60,11 +60,6 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
       console.error(error)
     }
   })
-
-  const updateForm = (formValues: ProfileInput) => {
-    console.log('!!! formValues:', formValues)
-    setForm(formValues)
-  }
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
     if (fieldName === 'links') {
       if (remove) {
@@ -87,7 +82,7 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
     actions: {
       submit,
       updateFormField,
-      updateForm,
+      setForm,
     },
   }
 

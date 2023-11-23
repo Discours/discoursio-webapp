@@ -42,7 +42,7 @@ export const ProfileSettings = () => {
 
   const {
     form,
-    actions: { submit, updateFormField, updateForm },
+    actions: { submit, updateFormField, setForm },
   } = useProfileForm()
 
   const {
@@ -112,7 +112,7 @@ export const ProfileSettings = () => {
       declineButtonVariant: 'secondary',
     })
     if (isConfirmed) {
-      updateForm(clone(prevForm))
+      setForm(clone(prevForm))
     }
   }
 

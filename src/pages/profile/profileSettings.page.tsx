@@ -1,6 +1,3 @@
-import { Show } from 'solid-js'
-
-import { Loading } from '../../components/_shared/Loading'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { AuthGuard } from '../../components/AuthGuard'
 import { ProfileSettings } from '../../components/ProfileSettings'

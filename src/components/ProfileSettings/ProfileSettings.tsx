@@ -59,7 +59,6 @@ export const ProfileSettings = () => {
 
   createEffect(() => {
     if (Object.keys(form).length > 0 && !isFormInitialized()) {
-      console.log('!!! nutau:', Object.keys(form).length > 0)
       setPrevForm(form)
       setSocial(form.links)
       setIsFormInitialized(true)
@@ -283,7 +282,7 @@ export const ProfileSettings = () => {
                       variant="bordered"
                       placeholder={t('Introduce')}
                       value={(value) => updateFormField('bio', value)}
-                      initialValue={form.bio}
+                      initialValue={form.bio || ''}
                       allowEnterKey={false}
                       maxLength={120}
                     />

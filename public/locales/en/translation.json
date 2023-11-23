@@ -103,6 +103,7 @@
   "Discussion rules": "Discussion rules",
   "Discussion rules in social networks": "Discussion rules",
   "Discussions": "Discussions",
+  "Do you really want to reset all changes?": "Do you really want to reset all changes?",
   "Dogma": "Dogma",
   "Draft successfully deleted": "Draft successfully deleted",
   "Drafts": "Drafts",
@@ -455,5 +456,6 @@
   "video": "video",
   "view": "view",
   "viewsWithCount": "{count} {count, plural, one {view} other {views}}",
-  "yesterday": "yesterday"
+  "yesterday": "yesterday",
+  "Это поле обязательно для заполнения": "This field is required"
 }

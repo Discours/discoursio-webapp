@@ -57,9 +57,10 @@ const addAuthors = (authors: Author[]) => {
   )
 }
 
-export const loadAuthor = async ({ slug }: { slug: string }): Promise<void> => {
+export const loadAuthor = async ({ slug }: { slug: string }): Promise<Author> => {
   const author = await apiClient.getAuthor({ slug })
   addAuthors([author])
+  return author
 }
 
 export const addAuthorsByTopic = (newAuthorsByTopic: { [topicSlug: string]: Author[] }) => {

@@ -4,7 +4,6 @@ import deepEqual from 'fast-deep-equal'
 import { For, createSignal, Show, onMount, onCleanup, createEffect, Switch, Match, lazy } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import FloatingPanel from '../../components/_shared/FloatingPanel/FloatingPanel'
 import { Icon } from '../../components/_shared/Icon'
 import { Loading } from '../../components/_shared/Loading'
 import { PageLayout } from '../../components/_shared/PageLayout'
@@ -23,18 +22,22 @@ import { profileSocialLinks } from '../../utils/profileSocialLinks'
 import { validateUrl } from '../../utils/validateUrl'
 
 import styles from './Settings.module.scss'
+import { Button } from '../../components/_shared/Button'
 
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))
 
 export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
+  const { form, updateFormField, submit, slugError } = useProfileForm()
+  const [prevForm, setPrevForm] = createStore(clone(form))
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
-
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
   const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
+  const [social, setSocial] = createSignal(form.links)
+  const [hostname, setHostname] = createSignal<string | null>(null)
 
   const {
     actions: { showSnackbar },
@@ -44,9 +47,6 @@ export const ProfileSettingsPage = () => {
     actions: { loadSession },
   } = useSession()
 
-  const { form, updateFormField, submit, slugError } = useProfileForm()
-  const [prevForm, setPrevForm] = createStore(clone(form))
-  const [social, setSocial] = createSignal(form.links)
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
       updateFormField('links', value)
@@ -62,13 +62,12 @@ export const ProfileSettingsPage = () => {
       await submit(form)
       setPrevForm(clone(form))
       showSnackbar({ body: t('Profile successfully saved') })
-    } catch {
+    } catch (error) {
+      console.error(error)
       showSnackbar({ type: 'error', body: t('Error') })
     }
-
     loadSession()
   }
-
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
   const handleUploadAvatar = async () => {
@@ -87,11 +86,8 @@ export const ProfileSettingsPage = () => {
     })
   }
 
-  const [hostname, setHostname] = createSignal<string | null>(null)
-
   onMount(() => {
     setHostname(window?.location.host)
-
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const handleBeforeUnload = (event) => {
       if (!deepEqual(form, prevForm)) {
@@ -105,12 +101,10 @@ export const ProfileSettingsPage = () => {
     onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
 
-  const handleSaveProfile = () => {
-    setIsFloatingPanelVisible(false)
-    setPrevForm(clone(form))
-  }
-
   createEffect(() => {
+    console.log('!!! form:', form)
+    console.log('!!! prevForm:', prevForm)
+    console.log('!!! deepEqual:', deepEqual(form, prevForm))
     if (!deepEqual(form, prevForm)) {
       setIsFloatingPanelVisible(true)
     }
@@ -127,7 +121,7 @@ export const ProfileSettingsPage = () => {
   return (
     <PageLayout title={t('Profile')}>
       <AuthGuard>
-        <Show when={form}>
+        <Show when={form.slug.length > 0} fallback={<Loading />}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-5">
@@ -140,7 +134,7 @@ export const ProfileSettingsPage = () => {
                   <div class="col-md-20 col-lg-18 col-xl-16">
                     <h1>{t('Profile settings')}</h1>
                     <p class="description">{t('Here you can customize your profile the way you want.')}</p>
-                    <form onSubmit={handleSubmit} enctype="multipart/form-data">
+                    <form enctype="multipart/form-data">
                       <h4>{t('Userpic')}</h4>
                       <div class="pretty-form__item">
                         <div
@@ -312,19 +306,41 @@ export const ProfileSettingsPage = () => {
                         </For>
                       </div>
                       <br />
-                      <FloatingPanel
-                        isVisible={isFloatingPanelVisible()}
-                        confirmTitle={t('Save settings')}
-                        confirmAction={handleSaveProfile}
-                        declineTitle={t('Cancel')}
-                        declineAction={() => setIsFloatingPanelVisible(false)}
-                      />
+                      {/*<FloatingPanel*/}
+                      {/*  isVisible={isFloatingPanelVisible()}*/}
+                      {/*  confirmTitle={t('Save settings')}*/}
+                      {/*  confirmAction={handleSaveProfile}*/}
+                      {/*  declineTitle={t('Cancel')}*/}
+                      {/*  declineAction={() => setIsFloatingPanelVisible(false)}*/}
+                      {/*/>*/}
                     </form>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <Show when={isFloatingPanelVisible()}>
+            <div class={styles.formActions}>
+              <div class="wide-container">
+                <div class="row">
+                  <div class="col-md-19 offset-5">
+                    <div class="row">
+                      <div class="col-md-20 col-lg-18 col-xl-16">
+                        <div class={styles.content}>
+                          <Button
+                            variant="light"
+                            value={t('Cancel')}
+                            onClick={() => setIsFloatingPanelVisible(false)}
+                          />
+                          <Button onClick={handleSubmit} variant="primary" value={t('Save settings')} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Show>
         </Show>
       </AuthGuard>
     </PageLayout>

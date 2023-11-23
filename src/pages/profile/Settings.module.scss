@@ -279,3 +279,25 @@ h5 {
 .socialInput {
   margin-top: 1rem;
 }
+
+.formActions {
+  background: var(--background-color);
+  position: sticky;
+  z-index: 12;
+  bottom: 0;
+  border-top: 2px solid var(--black-100);
+  margin-bottom: -40px;
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+
+  .cancel {
+    margin-right: auto;
+  }
+}

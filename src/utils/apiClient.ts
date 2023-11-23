@@ -256,7 +256,6 @@ export const apiClient = {
       ) {
         throw new ApiError('duplicate_slug', response.error.message)
       }
-      // если не согласилось
       throw new ApiError('unknown', response.error.message)
     }
 

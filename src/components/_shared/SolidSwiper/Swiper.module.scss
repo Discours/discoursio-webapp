@@ -60,13 +60,6 @@
         margin: 0;
         position: relative;
 
-        & > swiper-container {
-          position: absolute;
-          top: 52px;
-          bottom: 52px;
-          left: 0;
-        }
-
         .thumbsNav {
           height: 52px;
           padding: 14px 0;
@@ -97,14 +90,14 @@
         flex-direction: column-reverse;
         padding: 0;
 
+        .thumbsHolder {
+          min-width: unset;
+        }
+
         .thumbs {
           width: 100%;
           height: 75px;
           padding: 0;
-
-          & > swiper-container {
-            position: static;
-          }
 
           .thumbsNav {
             height: 100%;

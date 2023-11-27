@@ -315,19 +315,21 @@ export const ProfileSettings = () => {
                           <p class="form-message form-message--error">{t('It does not look like url')}</p>
                         </Show>
                       </Show>
-                      <For each={profileSocialLinks(social())}>
-                        {(network) => (
-                          <SocialNetworkInput
-                            class={styles.socialInput}
-                            link={network.link}
-                            network={network.name}
-                            handleInput={(value) => handleChangeSocial(value)}
-                            isExist={!network.isPlaceholder}
-                            slug={form.slug}
-                            handleDelete={() => handleDeleteSocialLink(network.link)}
-                          />
-                        )}
-                      </For>
+                      <Show when={social()}>
+                        <For each={profileSocialLinks(social())}>
+                          {(network) => (
+                            <SocialNetworkInput
+                              class={styles.socialInput}
+                              link={network.link}
+                              network={network.name}
+                              handleInput={(value) => handleChangeSocial(value)}
+                              isExist={!network.isPlaceholder}
+                              slug={form.slug}
+                              handleDelete={() => handleDeleteSocialLink(network.link)}
+                            />
+                          )}
+                        </For>
+                      </Show>
                     </div>
                   </form>
                 </div>
@@ -343,7 +345,12 @@ export const ProfileSettings = () => {
                   <div class="row">
                     <div class="col-md-20 col-lg-18 col-xl-16">
                       <div class={styles.content}>
-                        <Button variant="light" value={t('Cancel')} onClick={handleCancel} />
+                        <Button
+                          class={styles.cancel}
+                          variant="light"
+                          value={t('Cancel changes')}
+                          onClick={handleCancel}
+                        />
                         <Button onClick={handleSubmit} variant="primary" value={t('Save settings')} />
                       </div>
                     </div>

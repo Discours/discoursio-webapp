@@ -291,13 +291,18 @@ h5 {
   .content {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-direction: row;
     padding: 1rem 0;
     gap: 1rem;
   }
 
   .cancel {
-    margin-right: auto;
+    color: #d00820;
+    padding: 0.8rem 0 !important;
+  }
+
+  :global(.row) > * {
+    margin-bottom: 0;
   }
 }

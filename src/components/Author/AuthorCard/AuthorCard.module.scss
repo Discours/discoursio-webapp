@@ -420,7 +420,6 @@
   flex-wrap: wrap;
   font-size: 1.4rem;
   margin-top: 1.5rem;
-  gap: 1rem;
 
   @include media-breakpoint-down(md) {
     justify-content: center;
@@ -431,7 +430,7 @@
   align-items: center;
   cursor: pointer;
   display: inline-flex;
-  margin-right: 3rem;
+  margin: 0 2% 1rem;
   vertical-align: top;
   border-bottom: unset !important;
 

@@ -3,11 +3,11 @@ import type { AuthModalSearchParams } from './types'
 import { clsx } from 'clsx'
 import { createSignal, Show } from 'solid-js'
 
+import { useAuthorizer } from '../../../context/authorizer'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useSnackbar } from '../../../context/snackbar'
 import { ApiError } from '../../../graphql/error'
-import { signSendLink } from '../../../stores/auth'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 import { validateEmail } from '../../../utils/validateEmail'
@@ -27,7 +27,7 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string>>
 
 export const LoginForm = () => {
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
 
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
@@ -67,9 +67,9 @@ export const LoginForm = () => {
     setIsLinkSent(true)
     setIsEmailNotConfirmed(false)
     setSubmitError('')
-
-    const result = await signSendLink({ email: email(), lang: lang(), template: 'email_confirmation' })
-    if (result.error) setSubmitError(result.error)
+    const [{ token }, { authorizer }] = useAuthorizer()
+    const result = await authorizer().verifyEmail({ token: token.id_token })
+    if (!result) setSubmitError('cant sign send link') // TODO:
   }
 
   const handleSubmit = async (event: Event) => {

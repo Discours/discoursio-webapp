@@ -2,7 +2,7 @@ import markAllNotificationsAsRead from '../mutation/notifier/mark-all-notificati
 import markNotificationAsRead from '../mutation/notifier/mark-notification-as-read'
 import { getPrivateClient } from '../privateGraphQLClient'
 import loadNotifications from '../query/notifier/notifications-load'
-import { Notification, NotificationsResult, QueryLoad_NotificationsArgs } from '../schema/notifier.gen'
+import { NotificationsResult, QueryLoad_NotificationsArgs } from '../schema/notifier.gen'
 
 export const notifierPrivateGraphqlClient = getPrivateClient('notifier')
 

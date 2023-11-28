@@ -1,7 +1,7 @@
 import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
 
-import { isDev, apiBaseUrl } from '../utils/config'
+import { isDev } from '../utils/config'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
@@ -28,7 +28,7 @@ export const resetToken = () => {
 }
 
 const options: ClientOptions = {
-  url: apiBaseUrl,
+  url: '',
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   fetchOptions: () => {

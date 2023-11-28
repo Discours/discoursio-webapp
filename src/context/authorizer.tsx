@@ -142,7 +142,7 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
     } catch {
       setState((prev) => ({ ...prev, user: null, token: null }))
     } finally {
-      setState('config', (config) => ({ ...config, ...metaRes }))
+      setState('config', (cfg) => ({ ...cfg, ...metaRes }))
       setState('loading', false)
     }
   }

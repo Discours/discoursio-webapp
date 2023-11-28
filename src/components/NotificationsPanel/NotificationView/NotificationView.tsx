@@ -6,7 +6,7 @@ import { createMemo, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
-import { Reaction, Shout } from '../../../graphql/schema/core.gen'
+import { Reaction } from '../../../graphql/schema/core.gen'
 import { Notification } from '../../../graphql/schema/notifier.gen'
 import { router, useRouter } from '../../../stores/router'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
@@ -111,17 +111,6 @@ export const NotificationView = (props: Props) => {
           )
         }
       }
-      case 'update':
-
-      case 'delete':
-
-      case 'follow':
-
-      case 'unfollow':
-
-      case 'invited':
-      // TODO: invited for collaborative authoring
-
       default: {
         return <></>
       }

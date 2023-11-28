@@ -38,7 +38,7 @@ const shorten = (str: string, maxLen: number) => {
 
 export const PublishSettings = async (props: Props) => {
   const { t } = useLocalize()
-  const { session, author } = useSession()
+  const { author } = useSession()
 
   const composeDescription = () => {
     if (!props.form.description) {

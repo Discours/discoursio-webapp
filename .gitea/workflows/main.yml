@@ -1,9 +1,30 @@
 name: 'deploy'
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run check
+
   deploy:
     runs-on: ubuntu-latest
+    needs: test  # Ensure 'test' job is completed before deploying
     steps:
       - name: Cloning repo
         uses: actions/checkout@v2

@@ -3,9 +3,9 @@ import type { AuthModalSearchParams } from './types'
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
+import { useAuthorizer } from '../../../context/authorizer'
 import { useLocalize } from '../../../context/localize'
 import { ApiError } from '../../../graphql/error'
-import { signSendLink } from '../../../stores/auth'
 import { useRouter } from '../../../stores/router'
 import { validateEmail } from '../../../utils/validateEmail'
 
@@ -21,12 +21,12 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const ForgotPasswordForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail)
   }
-
+  const [, { authorizer }] = useAuthorizer()
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
@@ -63,7 +63,10 @@ export const ForgotPasswordForm = () => {
     setIsSubmitting(true)
 
     try {
-      await signSendLink({ email: email(), lang: lang(), template: 'forgot_password' })
+      const response = await authorizer().forgotPassword({ email: email() })
+      if (response) {
+        console.debug(response)
+      }
     } catch (error) {
       if (error instanceof ApiError && error.code === 'user_not_found') {
         setIsUserNotFound(true)

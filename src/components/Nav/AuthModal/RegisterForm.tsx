@@ -4,9 +4,9 @@ import type { JSX } from 'solid-js'
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
+import { useAuthorizer } from '../../../context/authorizer'
 import { useLocalize } from '../../../context/localize'
 import { ApiError } from '../../../graphql/error'
-import { register } from '../../../stores/auth'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
@@ -35,7 +35,7 @@ export const RegisterForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const { emailChecks } = useEmailChecks()
-
+  const [, { authorizer }] = useAuthorizer()
   const [submitError, setSubmitError] = createSignal('')
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
@@ -127,10 +127,11 @@ export const RegisterForm = () => {
     setIsSubmitting(true)
 
     try {
-      await register({
-        name: cleanName,
+      await authorizer().signup({
+        given_name: cleanName,
         email: cleanEmail,
         password: password(),
+        confirm_password: password(),
       })
 
       setIsSuccess(true)

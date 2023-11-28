@@ -3,18 +3,10 @@ import type { Author, Result } from '../graphql/schema/core.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
 
 import { VerifyEmailInput, LoginInput, AuthToken, User } from '@authorizerdev/authorizer-js'
-import {
-  createEffect,
-  createContext,
-  createMemo,
-  createResource,
-  createSignal,
-  onMount,
-  useContext,
-} from 'solid-js'
+import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 
 import { apiClient } from '../graphql/client/core'
-import { getToken, resetToken, setToken } from '../graphql/privateGraphQLClient'
+import { getToken, resetToken } from '../graphql/privateGraphQLClient'
 import { showModal } from '../stores/ui'
 
 import { useAuthorizer } from './authorizer'
@@ -75,7 +67,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     try {
       const token = getToken() // FIXME: token in localStorage?
       const authResult = await authorizer().getSession({
-        Authorization: token,
+        Authorization: token, // authToken()
       })
       if (authResult) {
         console.log(authResult)
@@ -105,9 +97,9 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const [author, { refetch: loadAuthor }] = createResource<Author | null>(
     async () => {
-      const user = session()?.user
-      if (user) {
-        return (await apiClient.getAuthor({ user: user.id })) ?? null
+      const u = session()?.user
+      if (u) {
+        return (await apiClient.getAuthor({ user: u.id })) ?? null
       }
       return null
     },
@@ -126,7 +118,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
       mutate(authResult)
     }
     loadSubscriptions()
-    // console.debug('signed in')
+    console.debug('signed in')
   }
 
   const [isAuthWithCallback, setIsAuthWithCallback] = createSignal(null)
@@ -156,10 +148,10 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   }
 
   const confirmEmail = async (input: VerifyEmailInput) => {
-    const authToken: void | AuthToken = await authorizer().verifyEmail(input)
-    if (authToken) {
-      setToken(authToken.access_token)
-      mutate(authToken)
+    const at: void | AuthToken = await authorizer().verifyEmail(input)
+    if (at) {
+      setToken(at.access_token)
+      mutate(at)
     }
   }
 

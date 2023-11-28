@@ -1,10 +1,10 @@
 import type { ProfileInput } from '../graphql/schema/core.gen'
 
-import { createEffect, createMemo, createSignal } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
+import { loadAuthor } from '../stores/zine/authors'
 
 import { useSession } from './session'
 
@@ -15,8 +15,7 @@ const userpicUrl = (userpic: string) => {
   return userpic
 }
 const useProfileForm = () => {
-  const { session } = useSession()
-  const currentAuthor = createMemo(() => session()?.author)
+  const { author: currentAuthor } = useSession()
   const [slugError, setSlugError] = createSignal<string>()
 
   const submit = async (profile: ProfileInput) => {

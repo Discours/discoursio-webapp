@@ -20,8 +20,8 @@ type AuthorizerContextActions = {
   logout: () => Promise<void>
 }
 const config: ConfigType = {
-  authorizerURL: 'http://auth.discours.io',
-  redirectURL: 'http://auth.discours.io',
+  authorizerURL: 'https://auth.discours.io',
+  redirectURL: 'https://auth.discours.io',
   clientID: '9c113377-5eea-4c89-98e1-69302462fc08', // FIXME: use env?
 }
 

@@ -4,12 +4,12 @@ import type {
   Topic,
   Author,
   LoadShoutsOptions,
-  QueryLoadAuthorsByArgs,
   ProfileInput,
   ReactionInput,
   ReactionBy,
   Shout,
   Result,
+  QueryLoad_Authors_ByArgs,
 } from '../schema/core.gen'
 
 import createArticle from '../mutation/core/article-create'
@@ -25,18 +25,18 @@ import { getPrivateClient } from '../privateGraphQLClient'
 import { getPublicClient } from '../publicGraphQLClient'
 import shoutLoad from '../query/core/article-load'
 import shoutsLoadBy from '../query/core/articles-load-by'
-import authorBy from '../query/core/author-by'
-import authorFollowers from '../query/core/author-followers'
-import authorFollowed from '../query/core/authors-followed-by'
-import userFollowedTopics from '../query/core/topics-by-author'
-import authorsAll from '../query/core/authors-all'
-import authorsLoadBy from '../query/core/authors-load-by'
 import draftsLoad from '../query/core/articles-load-drafts'
 import myFeed from '../query/core/articles-load-feed'
+import authorBy from '../query/core/author-by'
+import authorFollowers from '../query/core/author-followers'
+import authorsAll from '../query/core/authors-all'
+import authorFollowed from '../query/core/authors-followed-by'
+import authorsLoadBy from '../query/core/authors-load-by'
 import mySubscriptions from '../query/core/my-followed'
 import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
+import userFollowedTopics from '../query/core/topics-by-author'
 import topicsRandomQuery from '../query/core/topics-random'
 
 export const privateGraphQLClient = getPublicClient('core')
@@ -145,7 +145,7 @@ export const apiClient = {
     console.debug('[graphql.client.core] updateReaction:', response)
     return response.data.update_reaction.reaction
   },
-  getAuthorsBy: async (options: QueryLoadAuthorsByArgs) => {
+  getAuthorsBy: async (options: QueryLoad_Authors_ByArgs) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, options).toPromise()
     return resp.data.load_authors_by
   },

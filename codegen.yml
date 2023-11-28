@@ -36,17 +36,17 @@ generates:
       useTypeImports: true
       outputPath: './src/graphql/types/notifier.gen.ts'
 
-  # Generate types for auth
-  src/graphql/schema/auth.gen.ts:
-    schema: 'https://auth.discours.io/graphql'
-    plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-urql'
-    config:
-      skipTypename: true
-      useTypeImports: true
-      outputPath: './src/graphql/types/auth.gen.ts'
+  # internal types for auth
+  # src/graphql/schema/auth.gen.ts:
+  #  schema: 'https://auth.discours.io/graphql'
+  #  plugins:
+  #    - 'typescript'
+  #    - 'typescript-operations'
+  #    - 'typescript-urql'
+  #  config:
+  #    skipTypename: true
+  #    useTypeImports: true
+  #    outputPath: './src/graphql/types/auth.gen.ts'
 
 hooks:
   afterAllFileWrite:

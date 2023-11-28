@@ -11,67 +11,67 @@ import chatMessagesLoadBy from '../query/chat/chat-messages-load-by'
 import loadRecipients from '../query/chat/chat-recipients'
 import myChats from '../query/chat/chats-load'
 import {
-  QueryLoadChatsArgs,
-  QueryLoadMessagesByArgs,
-  MutationCreateChatArgs,
-  MutationCreateMessageArgs,
-  QueryLoadRecipientsArgs,
   Chat,
-  MutationMarkAsReadArgs,
-  MutationDeleteChatArgs,
-  MutationUpdateChatArgs,
-  MutationUpdateMessageArgs,
-  MutationDeleteMessageArgs,
+  MutationCreate_ChatArgs,
+  MutationCreate_MessageArgs,
+  MutationDelete_ChatArgs,
+  MutationDelete_MessageArgs,
+  MutationMark_As_ReadArgs,
+  MutationUpdate_ChatArgs,
+  MutationUpdate_MessageArgs,
+  QueryLoad_ChatsArgs,
+  QueryLoad_Messages_ByArgs,
+  QueryLoad_RecipientsArgs,
 } from '../schema/chat.gen'
 
 const privateInboxGraphQLClient = getPrivateClient('chat')
 
 export const inboxClient = {
-  loadChats: async (options: QueryLoadChatsArgs): Promise<Chat[]> => {
+  loadChats: async (options: QueryLoad_ChatsArgs): Promise<Chat[]> => {
     const resp = await privateInboxGraphQLClient.query(myChats, options).toPromise()
     return resp.data.load_chats.chats
   },
 
-  createChat: async (options: MutationCreateChatArgs) => {
+  createChat: async (options: MutationCreate_ChatArgs) => {
     const resp = await privateInboxGraphQLClient.mutation(createChat, options).toPromise()
     return resp.data.create_chat
   },
 
-  markAsRead: async (options: MutationMarkAsReadArgs) => {
+  markAsRead: async (options: MutationMark_As_ReadArgs) => {
     const resp = await privateInboxGraphQLClient.mutation(markAsRead, options).toPromise()
     return resp.data.mark_as_read
   },
 
-  updateChat: async (options: MutationUpdateChatArgs) => {
+  updateChat: async (options: MutationUpdate_ChatArgs) => {
     const resp = await privateInboxGraphQLClient.mutation(updateChat, options).toPromise()
     return resp.data.update_chat
   },
 
-  deleteChat: async (options: MutationDeleteChatArgs) => {
+  deleteChat: async (options: MutationDelete_ChatArgs) => {
     const resp = await privateInboxGraphQLClient.mutation(deleteChat, options).toPromise()
     return resp.data.delete_chat
   },
 
-  createMessage: async (options: MutationCreateMessageArgs) => {
+  createMessage: async (options: MutationCreate_MessageArgs) => {
     const resp = await privateInboxGraphQLClient.mutation(createChatMessage, options).toPromise()
     return resp.data.create_message.message
   },
 
-  updateMessage: async (options: MutationUpdateMessageArgs) => {
+  updateMessage: async (options: MutationUpdate_MessageArgs) => {
     const resp = await privateInboxGraphQLClient.mutation(updateChatMessage, options).toPromise()
     return resp.data.update_message.message
   },
 
-  deleteMessage: async (options: MutationDeleteMessageArgs) => {
+  deleteMessage: async (options: MutationDelete_MessageArgs) => {
     const resp = await privateInboxGraphQLClient.mutation(deleteChatMessage, options).toPromise()
     return resp.data.delete_message
   },
 
-  loadChatMessages: async (options: QueryLoadMessagesByArgs) => {
+  loadChatMessages: async (options: QueryLoad_Messages_ByArgs) => {
     const resp = await privateInboxGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
     return resp.data.load_messages_by.messages
   },
-  loadRecipients: async (options: QueryLoadRecipientsArgs) => {
+  loadRecipients: async (options: QueryLoad_RecipientsArgs) => {
     const resp = await privateInboxGraphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.load_recipients.members
   },

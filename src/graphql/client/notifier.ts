@@ -8,7 +8,7 @@ export const notifierPrivateGraphqlClient = getPrivateClient('notifier')
 
 export const notifierClient = {
   getNotifications: async (params: QueryLoad_NotificationsArgs): Promise<NotificationsResult> => {
-    const resp = await notifierPrivateGraphqlClient.query(loadNotifications, { params }).toPromise()
+    const resp = await notifierPrivateGraphqlClient.query(loadNotifications, params).toPromise()
     return resp.data.load_notifications
   },
   markNotificationAsRead: async (notification_id: number): Promise<void> => {

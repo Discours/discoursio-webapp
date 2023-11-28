@@ -5,6 +5,7 @@ import { Component, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 import { ConfirmProvider } from '../context/confirm'
+import { ConnectProvider } from '../context/connect'
 import { EditorProvider } from '../context/editor'
 import { LocalizeProvider } from '../context/localize'
 import { NotificationsProvider } from '../context/notifications'
@@ -40,7 +41,6 @@ import { SearchPage } from '../pages/search.page'
 import { TopicPage } from '../pages/topic.page'
 import { ROUTES, useRouter } from '../stores/router'
 import { hideModal, MODALS, showModal } from '../stores/ui'
-import { ConnectProvider } from '../context/connect'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))

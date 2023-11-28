@@ -2,7 +2,9 @@ import type { Accessor, JSX } from 'solid-js'
 
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { createContext, useContext, createSignal, createEffect } from 'solid-js'
+
 import { getToken } from '../graphql/privateGraphQLClient'
+
 import { useSession } from './session'
 
 export interface SSEMessage {
@@ -28,7 +30,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
   // const [messages, setMessages] = createSignal<Array<SSEMessage>>([]);
 
   const [connected, setConnected] = createSignal(false)
-  const { isAuthenticated, author } = useSession()
+  const { isAuthenticated } = useSession()
 
   const addHandler = (handler: MessageHandler) => {
     setHandlers((hhh) => [...hhh, handler])

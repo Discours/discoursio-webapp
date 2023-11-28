@@ -1,4 +1,7 @@
-import { authApiClient as apiClient } from '../graphql/client/_auth'
+import { MagicLinkLoginInput, SignupInput } from '@authorizerdev/authorizer-js'
+import { useAuthorizer } from '../context/authorizer'
+
+const [, { authorizer }] = useAuthorizer()
 
 export const register = async ({
   name,
@@ -9,11 +12,12 @@ export const register = async ({
   email: string
   password: string
 }) => {
-  await apiClient.authRegister({
-    name,
+  const signupInput: SignupInput = {
     email,
     password,
-  })
+    confirm_password: password,
+  }
+  await authorizer().signup(signupInput)
 }
 
 export const signSendLink = async ({
@@ -25,5 +29,5 @@ export const signSendLink = async ({
   lang: string
   template: string
 }) => {
-  return await apiClient.authSendLink({ email, lang, template })
+  return await authorizer().magicLinkLogin({ email } as MagicLinkLoginInput)
 }

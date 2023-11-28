@@ -1,9 +1,12 @@
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/schema/chat.gen'
 import type { Accessor, JSX } from 'solid-js'
+
 import { createContext, createSignal, useContext } from 'solid-js'
-import { SSEMessage, useConnect } from './connect'
-import { loadMessages } from '../stores/inbox'
+
 import { inboxClient } from '../graphql/client/chat'
+import { loadMessages } from '../stores/inbox'
+
+import { SSEMessage, useConnect } from './connect'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>

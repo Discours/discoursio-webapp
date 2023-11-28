@@ -8,13 +8,16 @@ export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
 const [sortedLayoutShouts, setSortedLayoutShouts] = createSignal<Map<LayoutType, Shout[]>>(new Map())
 
-const addLayoutShouts = (layout: LayoutType, shouts: Shout[]) => {
+const addLayoutShouts = (layouts: LayoutType[], shouts: Shout[]) => {
   setSortedLayoutShouts((prevSorted: Map<LayoutType, Shout[]>) => {
-    const siblings = prevSorted.get(layout)
-    if (siblings) {
-      const uniqued = [...new Set([...siblings, ...shouts])]
-      prevSorted.set(layout, uniqued)
-    }
+    layouts.forEach((layout: LayoutType) => {
+      const siblings = prevSorted.get(layout)
+      if (siblings) {
+        const uniqued = [...new Set([...siblings, ...shouts])]
+        prevSorted.set(layout, uniqued)
+      }
+    })
+
     return prevSorted
   })
 }
@@ -34,13 +37,13 @@ export const loadLayoutShoutsBy = async (options: LoadShoutsOptions): Promise<{ 
   if (hasMore) {
     newLayoutShouts.splice(-1)
   }
-  addLayoutShouts(options.filters.layout as LayoutType, newLayoutShouts)
+  addLayoutShouts(options.filters.layouts as LayoutType[], newLayoutShouts)
 
   return { hasMore }
 }
 
-export const useLayoutsStore = (layout: LayoutType, initialData: Shout[]) => {
-  addLayoutShouts(layout, initialData || [])
+export const useLayoutsStore = (layouts: LayoutType[], initialData: Shout[]) => {
+  addLayoutShouts(layouts, initialData || [])
 
   return {
     addLayoutShouts,

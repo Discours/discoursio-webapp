@@ -20,5 +20,5 @@ const options: ClientOptions = {
 export const getPublicClient = (name: string) =>
   createClient({
     ...options,
-    url: `https://${name.replace('core', 'testapi')}.discours.io`,
+    url: `https://${name}.discours.io`,
   })

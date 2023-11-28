@@ -1,15 +1,12 @@
 import { createSignal } from 'solid-js'
 
-import { authApiClient as apiClient } from '../graphql/client/_auth'
-
 const [emailChecks, setEmailChecks] = createSignal<{ [email: string]: boolean }>({})
 
 export const checkEmail = async (email: string): Promise<boolean> => {
   if (emailChecks()[email]) {
     return true
   }
-
-  const checkResult = await apiClient.authCheckEmail({ email })
+  const checkResult = false // FIXME: secure endpoint for check email
 
   if (checkResult) {
     setEmailChecks((oldEmailChecks) => ({ ...oldEmailChecks, [email]: true }))

@@ -2,6 +2,7 @@ import type { AuthModalSource } from '../components/Nav/AuthModal/types'
 import type { Author, Result } from '../graphql/schema/core.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
 
+import { VerifyEmailInput, LoginInput, AuthToken, User } from '@authorizerdev/authorizer-js'
 import {
   createEffect,
   createContext,
@@ -16,10 +17,9 @@ import { apiClient } from '../graphql/client/core'
 import { getToken, resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { showModal } from '../stores/ui'
 
+import { useAuthorizer } from './authorizer'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { useAuthorizer } from './authorizer'
-import { VerifyEmailInput, LoginInput, AuthToken, User } from '@authorizerdev/authorizer-js'
 
 export type SessionContextType = {
   session: Resource<AuthToken>
@@ -77,13 +77,13 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
       const authResult = await authorizer().getSession({
         Authorization: token,
       })
-      if (!authResult) {
-        return null
-      } else {
+      if (authResult) {
         console.log(authResult)
         setToken(authResult.access_token || authResult.id_token)
         loadSubscriptions()
         return authResult
+      } else {
+        return null
       }
     } catch (error) {
       console.error('getSession error:', error)

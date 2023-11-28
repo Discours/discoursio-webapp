@@ -1,10 +1,9 @@
-import type { Author } from '../../graphql/schema/core.gen'
-
 import { createLazyMemo } from '@solid-primitives/memo'
 import { createSignal } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
 import { byStat } from '../../utils/sortby'
+import { Author } from '../../graphql/schema/core.gen'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
 

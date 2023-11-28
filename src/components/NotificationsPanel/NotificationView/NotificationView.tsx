@@ -6,13 +6,14 @@ import { createMemo, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
+import { apiClient } from '../../../graphql/client/core'
+import { Reaction, Shout } from '../../../graphql/schema/core.gen'
 import { Notification } from '../../../graphql/schema/notifier.gen'
 import { router, useRouter } from '../../../stores/router'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
 import { TimeAgo } from '../../_shared/TimeAgo'
+
 import styles from './NotificationView.module.scss'
-import { apiClient } from '../../../graphql/client/core'
-import { Reaction, Shout } from '../../../graphql/schema/core.gen'
 
 type Props = {
   notification: Notification
@@ -111,19 +112,20 @@ export const NotificationView = (props: Props) => {
           )
         }
       }
-      case 'update': {
-      }
-      case 'delete': {
-      }
-      case 'follow': {
-      }
-      case 'unfollow': {
-      }
-      case 'invited': {
-        // TODO: invited for collaborative authoring
-      }
-      default:
+      case 'update':
+
+      case 'delete':
+
+      case 'follow':
+
+      case 'unfollow':
+
+      case 'invited':
+      // TODO: invited for collaborative authoring
+
+      default: {
         return <></>
+      }
     }
   })
 

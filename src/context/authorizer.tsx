@@ -1,47 +1,14 @@
-import { createContext, createEffect, createMemo, onCleanup, onMount, useContext } from 'solid-js'
 import type { ParentComponent } from 'solid-js'
-import { createStore } from 'solid-js/store'
-import { Authorizer, User, AuthToken } from '@authorizerdev/authorizer-js'
 
-export enum AuthorizerProviderActionType {
-  SET_USER = 'SET_USER',
-  SET_TOKEN = 'SET_TOKEN',
-  SET_LOADING = 'SET_LOADING',
-  SET_AUTH_DATA = 'SET_AUTH_DATA',
-  SET_CONFIG = 'SET_CONFIG',
-}
+import { Authorizer, User, AuthToken, ConfigType } from '@authorizerdev/authorizer-js'
+import { createContext, createEffect, createMemo, onCleanup, onMount, useContext } from 'solid-js'
+import { createStore } from 'solid-js/store'
 
 export type AuthorizerState = {
   user: User | null
   token: AuthToken | null
   loading: boolean
-  config: {
-    authorizerURL: string
-    redirectURL: string
-    client_id: string
-    is_google_login_enabled: boolean
-    is_github_login_enabled: boolean
-    is_facebook_login_enabled: boolean
-    is_linkedin_login_enabled: boolean
-    is_apple_login_enabled: boolean
-    is_twitter_login_enabled: boolean
-    is_microsoft_login_enabled: boolean
-    is_email_verification_enabled: boolean
-    is_basic_authentication_enabled: boolean
-    is_magic_link_login_enabled: boolean
-    is_sign_up_enabled: boolean
-    is_strong_password_enabled: boolean
-  }
-}
-
-export type AuthorizerProviderAction = {
-  type: AuthorizerProviderActionType
-  payload: any
-}
-
-export type OtpDataType = {
-  isScreenVisible: boolean
-  email: string
+  config: ConfigType
 }
 
 type AuthorizerContextActions = {
@@ -52,27 +19,15 @@ type AuthorizerContextActions = {
   authorizer: () => Authorizer
   logout: () => Promise<void>
 }
+const config: ConfigType = {
+  authorizerURL: 'http://auth.discours.io',
+  redirectURL: 'http://auth.discours.io',
+  clientID: '9c113377-5eea-4c89-98e1-69302462fc08', // FIXME: use env?
+}
 
-// TODO: fix types
 const AuthorizerContext = createContext<[AuthorizerState, AuthorizerContextActions]>([
   {
-    config: {
-      authorizerURL: '',
-      redirectURL: '/',
-      client_id: '',
-      is_google_login_enabled: true,
-      is_github_login_enabled: true,
-      is_facebook_login_enabled: true,
-      is_linkedin_login_enabled: false,
-      is_apple_login_enabled: false,
-      is_twitter_login_enabled: true,
-      is_microsoft_login_enabled: false,
-      is_email_verification_enabled: true,
-      is_basic_authentication_enabled: true,
-      is_magic_link_login_enabled: true,
-      is_sign_up_enabled: true,
-      is_strong_password_enabled: true,
-    },
+    config,
     user: null,
     token: null,
     loading: false,
@@ -82,12 +37,7 @@ const AuthorizerContext = createContext<[AuthorizerState, AuthorizerContextActio
     setToken: () => {},
     setUser: () => {},
     setAuthData: () => {},
-    authorizer: () =>
-      new Authorizer({
-        authorizerURL: 'http://auth.discours.io',
-        redirectURL: 'http://auth.discours.io',
-        clientID: '', // FIXME: add real client id
-      }),
+    authorizer: () => new Authorizer(config),
     logout: async () => {},
   },
 ])
@@ -106,21 +56,8 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
     loading: true,
     config: {
       authorizerURL: props.authorizerURL,
-      is_apple_login_enabled: false,
-      is_microsoft_login_enabled: false,
-      redirectURL: props.redirectURL,
-      is_google_login_enabled: true,
-      is_github_login_enabled: true,
-      is_facebook_login_enabled: true,
-      is_linkedin_login_enabled: false,
-      is_twitter_login_enabled: true,
-      is_email_verification_enabled: true,
-      is_basic_authentication_enabled: true,
-      is_magic_link_login_enabled: true,
-      is_sign_up_enabled: false,
-      is_strong_password_enabled: true,
-      client_id: props.clientID,
-    },
+      clientID: props.clientID,
+    } as ConfigType,
   })
 
   const authorizer = createMemo(
@@ -202,7 +139,7 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
       } else {
         setState((prev) => ({ ...prev, user: null, token: null }))
       }
-    } catch (e) {
+    } catch {
       setState((prev) => ({ ...prev, user: null, token: null }))
     } finally {
       setState('config', (config) => ({ ...config, ...metaRes }))

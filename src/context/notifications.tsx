@@ -8,6 +8,7 @@ import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
 import { notifierClient as apiClient } from '../graphql/client/notifier'
 import { Notification } from '../graphql/schema/notifier.gen'
+
 import { SSEMessage, useConnect } from './connect'
 
 type NotificationsContextType = {
@@ -70,7 +71,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const markNotificationAsRead = async (notification: Notification) => {
     await apiClient.markNotificationAsRead(notification.id)
     const nnn = new Set([...notification.seen, notification.id])
-    setNotificationEntities(notification.id, 'seen', Array.from(nnn))
+    setNotificationEntities(notification.id, 'seen', [...nnn])
     setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
   const markAllNotificationsAsRead = async () => {

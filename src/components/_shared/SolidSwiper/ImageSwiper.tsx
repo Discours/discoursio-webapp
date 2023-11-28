@@ -61,26 +61,24 @@ export const ImageSwiper = (props: Props) => {
   const [windowWidth, setWindowWidth] = createSignal(null)
   const [isMobileView, setIsMobileView] = createSignal(false)
   onMount(() => {
+    // Trick to fix Failed to construct 'ResizeObserver' on SSR rerender
     setWindowWidth(window.innerWidth)
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      const rect = entries[0].contentRect
-      console.log('!!! rect.width:', rect)
-      const direction = rect.width > 540 ? 'vertical' : 'horizontal'
-
-      if (direction === 'horizontal') {
-        setIsMobileView(true)
-      } else {
-        setIsMobileView(false)
-      }
-
-      thumbSwipeRef.current.swiper.changeDirection(direction)
-    })
-
-    resizeObserver.observe(swiperMainContainer.current)
-    onCleanup(() => {
-      resizeObserver.disconnect()
-    })
+    setTimeout(() => {
+      const resizeObserver = new ResizeObserver((entries) => {
+        const rect = entries[0].contentRect
+        const direction = rect.width > 540 ? 'vertical' : 'horizontal'
+        if (direction === 'horizontal') {
+          setIsMobileView(true)
+        } else {
+          setIsMobileView(false)
+        }
+        thumbSwipeRef.current?.swiper?.changeDirection(direction)
+      })
+      resizeObserver.observe(swiperMainContainer.current)
+      onCleanup(() => {
+        resizeObserver.disconnect()
+      })
+    }, 100)
   })
 
   return (

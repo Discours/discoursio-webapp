@@ -6,7 +6,6 @@ import { createMemo, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
-import { apiClient } from '../../../graphql/client/core'
 import { Reaction, Shout } from '../../../graphql/schema/core.gen'
 import { Notification } from '../../../graphql/schema/notifier.gen'
 import { router, useRouter } from '../../../stores/router'

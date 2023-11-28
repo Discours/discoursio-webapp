@@ -162,7 +162,7 @@
 .authorSubscribeSocial {
   align-items: center;
   display: flex;
-  margin: 2rem 0;
+  margin: 0.5rem 0 2rem;
 
   .socialLink {
     border: none;
@@ -448,6 +448,14 @@
   margin: 0 2% 1rem;
   vertical-align: top;
   border-bottom: unset !important;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
 
   .subscribersItem {
     position: relative;

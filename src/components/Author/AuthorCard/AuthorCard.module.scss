@@ -43,8 +43,23 @@
     }
   }
 
+  .authorActionsLabel {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  .authorActionsLabelMobile {
+    display: none;
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+    }
+  }
+
   .authorDetails {
     display: block;
+    margin-bottom: 0;
 
     @include media-breakpoint-down(md) {
       flex: 1 100%;
@@ -403,7 +418,7 @@
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
     justify-content: center;
-    margin-top: 1em;
+    margin-top: 1rem;
   }
 
   @include media-breakpoint-down(md) {

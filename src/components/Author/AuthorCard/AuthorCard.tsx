@@ -131,7 +131,9 @@ export const AuthorCard = (props: Props) => {
       <div class={clsx('col-md-15 col-xl-13', styles.authorDetails)}>
         <div class={styles.authorDetailsWrapper}>
           <div class={styles.authorName}>{name()}</div>
-          <div class={styles.authorAbout} innerHTML={props.author.bio} />
+          <Show when={props.author.bio}>
+            <div class={styles.authorAbout} innerHTML={props.author.bio} />
+          </Show>
           <Show
             when={
               (props.followers && props.followers.length > 0) ||
@@ -237,7 +239,12 @@ export const AuthorCard = (props: Props) => {
                 <Button
                   variant="secondary"
                   onClick={() => redirectPage(router, 'profileSettings')}
-                  value={t('Edit profile')}
+                  value={
+                    <>
+                      <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>
+                      <span class={styles.authorActionsLabelMobile}>{t('Edit')}</span>
+                    </>
+                  }
                 />
                 <SharePopup
                   title={props.author.name}

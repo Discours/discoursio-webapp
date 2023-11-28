@@ -12,7 +12,6 @@ import {
   useContext,
 } from 'solid-js'
 
-import { authApiClient } from '../graphql/client/auth'
 import { apiClient } from '../graphql/client/core'
 import { getToken, resetToken, setToken } from '../graphql/privateGraphQLClient'
 import { showModal } from '../stores/ui'

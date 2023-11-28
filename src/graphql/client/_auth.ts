@@ -1,13 +1,13 @@
 import { ApiError } from '../error'
-import authConfirmEmailMutation from '../mutation/auth/auth-confirm-email'
-import authLogoutQuery from '../mutation/auth/auth-logout'
-import authRegisterMutation from '../mutation/auth/auth-register'
-import authSendLinkMutation from '../mutation/auth/auth-send-link'
-import mySession from '../mutation/auth/my-session'
+import authConfirmEmailMutation from '../mutation/_auth/auth-confirm-email'
+import authLogoutQuery from '../mutation/_auth/auth-logout'
+import authRegisterMutation from '../mutation/_auth/auth-register'
+import authSendLinkMutation from '../mutation/_auth/auth-send-link'
+import mySession from '../mutation/_auth/my-session'
 import { getToken, getPrivateClient } from '../privateGraphQLClient'
 import { getPublicClient } from '../publicGraphQLClient'
-import authCheckEmailQuery from '../query/auth/auth-check-email'
-import authLoginQuery from '../query/auth/auth-login'
+import authCheckEmailQuery from '../query/_auth/auth-check-email'
+import authLoginQuery from '../query/_auth/auth-login'
 import {
   ResendVerifyEmailInput,
   ResetPasswordInput,

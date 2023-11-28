@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/sse-connect
 
 jobs:
   test:
@@ -31,13 +32,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Repo Name
-        id: repo_name
-        run: echo "::set-output name=repo::$(echo ${GITHUB_REPOSITORY##*/})"
+      - name: Install Vercel CLI
+      run: |
+        npm install -g vercel
+        vercel --version
 
-      - name: Push to dokku
-        uses: dokku/github-action@master
-        with:
-          branch: 'main'
-          git_remote_url: 'ssh://dokku@staging.discours.io:22/${{ steps.repo_name.outputs.repo }}'
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Deploy to Vercel
+        run: vercel --prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

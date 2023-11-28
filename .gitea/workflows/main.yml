@@ -33,9 +33,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Vercel CLI
-      run: |
-        npm install -g vercel
-        vercel --version
+        run: npm install -g vercel && vercel --version
 
       - name: Deploy to Vercel
         run: vercel --prod

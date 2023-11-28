@@ -3,14 +3,7 @@ import type { Author, Reaction, Shout, Stat, Topic, TopicStat } from '../graphql
 export const byFirstChar = (a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || '')
 
 export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
-  const x = new Date(a?.createdAt)
-  const y = new Date(b?.createdAt)
-
-  if (x > y) return -1
-
-  if (x < y) return 1
-
-  return 0
+  return a?.created_at - b?.created_at
 }
 
 export const byLength = (

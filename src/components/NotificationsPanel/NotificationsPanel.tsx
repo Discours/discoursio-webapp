@@ -95,15 +95,19 @@ export const NotificationsPanel = (props: Props) => {
   }
 
   const todayNotifications = createMemo(() => {
-    return sortedNotifications().filter((notification) => isToday(new Date(notification.createdAt)))
+    return sortedNotifications().filter((notification) => isToday(new Date(notification.created_at * 1000)))
   })
 
   const yesterdayNotifications = createMemo(() => {
-    return sortedNotifications().filter((notification) => isYesterday(new Date(notification.createdAt)))
+    return sortedNotifications().filter((notification) =>
+      isYesterday(new Date(notification.created_at * 1000)),
+    )
   })
 
   const earlierNotifications = createMemo(() => {
-    return sortedNotifications().filter((notification) => isEarlier(new Date(notification.createdAt)))
+    return sortedNotifications().filter((notification) =>
+      isEarlier(new Date(notification.created_at * 1000)),
+    )
   })
 
   const scrollContainerRef: { current: HTMLDivElement } = { current: null }

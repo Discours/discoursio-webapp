@@ -17,4 +17,8 @@ const options: ClientOptions = {
   exchanges,
 }
 
-export const publicGraphQLClient = createClient(options)
+export const getPublicClient = (name: string) =>
+  createClient({
+    ...options,
+    url: `https://${name.replace('core', 'testapi')}.discours.io`,
+  })

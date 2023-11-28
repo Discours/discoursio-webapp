@@ -1,4 +1,4 @@
-import type { ChatMember } from '../../graphql/types.gen'
+import type { ChatMember } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { Show, Switch, Match, createMemo } from 'solid-js'

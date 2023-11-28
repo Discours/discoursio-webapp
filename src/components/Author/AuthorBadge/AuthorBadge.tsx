@@ -4,7 +4,7 @@ import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { Author, FollowingEntity } from '../../../graphql/types.gen'
+import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { Button } from '../../_shared/Button'
@@ -67,7 +67,7 @@ export const AuthorBadge = (props: Props) => {
           hasLink={true}
           size={'M'}
           name={props.author.name}
-          userpic={props.author.userpic}
+          userpic={props.author.pic}
           slug={props.author.slug}
         />
         <a href={`/author/${props.author.slug}`} class={styles.info}>
@@ -78,7 +78,9 @@ export const AuthorBadge = (props: Props) => {
             <Switch
               fallback={
                 <div class={styles.bio}>
-                  {t('Registered since {date}', { date: formatDate(new Date(props.author.createdAt)) })}
+                  {t('Registered since {date}', {
+                    date: formatDate(new Date(props.author.created_at * 1000)),
+                  })}
                 </div>
               }
             >

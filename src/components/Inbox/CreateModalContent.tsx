@@ -1,4 +1,4 @@
-import type { Author } from '../../graphql/types.gen'
+import type { Author } from '../../graphql/schema/core.gen'
 
 import { createSignal, For, createEffect } from 'solid-js'
 

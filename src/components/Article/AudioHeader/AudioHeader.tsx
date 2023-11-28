@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { createSignal, Show } from 'solid-js'
 
-import { Topic } from '../../../graphql/types.gen'
+import { Topic } from '../../../graphql/schema/core.gen'
 import { MediaItem } from '../../../pages/types'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'

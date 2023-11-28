@@ -1,4 +1,4 @@
-import type { Shout, Topic } from '../../graphql/types.gen'
+import type { Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, Show, createMemo, onMount, createSignal } from 'solid-js'

@@ -4,9 +4,9 @@ import { createSignal, For, onMount, Show } from 'solid-js'
 
 import { useEditorContext } from '../../../context/editor'
 import { useSession } from '../../../context/session'
-import { Shout } from '../../../graphql/types.gen'
+import { apiClient } from '../../../graphql/client/core'
+import { Shout } from '../../../graphql/schema/core.gen'
 import { router } from '../../../stores/router'
-import { apiClient } from '../../../utils/apiClient'
 import { Draft } from '../../Draft'
 
 import styles from './DraftsView.module.scss'

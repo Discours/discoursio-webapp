@@ -4,9 +4,9 @@ import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { ApiError } from '../../../graphql/error'
 import { signSendLink } from '../../../stores/auth'
 import { useRouter } from '../../../stores/router'
-import { ApiError } from '../../../utils/apiClient'
 import { validateEmail } from '../../../utils/validateEmail'
 
 import { email, setEmail } from './sharedLogic'

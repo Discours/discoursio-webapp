@@ -40,6 +40,7 @@ import { SearchPage } from '../pages/search.page'
 import { TopicPage } from '../pages/topic.page'
 import { ROUTES, useRouter } from '../stores/router'
 import { hideModal, MODALS, showModal } from '../stores/ui'
+import { ConnectProvider } from '../context/connect'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))
@@ -119,11 +120,13 @@ export const App = (props: Props) => {
         <SnackbarProvider>
           <ConfirmProvider>
             <SessionProvider>
-              <NotificationsProvider>
-                <EditorProvider>
-                  <Dynamic component={pageComponent()} {...props} />
-                </EditorProvider>
-              </NotificationsProvider>
+              <ConnectProvider>
+                <NotificationsProvider>
+                  <EditorProvider>
+                    <Dynamic component={pageComponent()} {...props} />
+                  </EditorProvider>
+                </NotificationsProvider>
+              </ConnectProvider>
             </SessionProvider>
           </ConfirmProvider>
         </SnackbarProvider>

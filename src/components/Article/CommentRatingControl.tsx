@@ -1,5 +1,3 @@
-import type { Reaction } from '../../graphql/types.gen'
-
 import { clsx } from 'clsx'
 import { createMemo } from 'solid-js'
 
@@ -7,7 +5,7 @@ import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
-import { ReactionKind } from '../../graphql/types.gen'
+import { Reaction, ReactionKind } from '../../graphql/schema/core.gen'
 import { loadShout } from '../../stores/zine/articles'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
@@ -33,20 +31,20 @@ export const CommentRatingControl = (props: Props) => {
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.createdBy.slug === user()?.slug &&
+        r.created_by.slug === user()?.slug &&
         r.shout.id === props.comment.shout.id &&
-        r.replyTo === props.comment.id,
+        r.reply_to === props.comment.id,
     )
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
-  const canVote = createMemo(() => user()?.slug !== props.comment.createdBy.slug)
+  const canVote = createMemo(() => user()?.slug !== props.comment.created_by.slug)
 
   const commentRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
       (r) =>
         [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
         r.shout.id === props.comment.shout.id &&
-        r.replyTo === props.comment.id,
+        r.reply_to === props.comment.id,
     ),
   )
 
@@ -54,9 +52,9 @@ export const CommentRatingControl = (props: Props) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
-        r.createdBy.slug === user()?.slug &&
+        r.created_by.slug === user()?.slug &&
         r.shout.id === props.comment.shout.id &&
-        r.replyTo === props.comment.id,
+        r.reply_to === props.comment.id,
     )
     return deleteReaction(reactionToDelete.id)
   }
@@ -71,7 +69,7 @@ export const CommentRatingControl = (props: Props) => {
         await createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
           shout: props.comment.shout.id,
-          replyTo: props.comment.id,
+          reply_to: props.comment.id,
         })
       }
     } catch {

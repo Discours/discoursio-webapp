@@ -1,4 +1,4 @@
-import type { Reaction } from '../../../graphql/types.gen'
+import type { Reaction } from '../../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'
@@ -33,12 +33,12 @@ export const CommentDate = (props: Props) => {
         [styles.showOnHover]: props.showOnHover,
       })}
     >
-      <time class={styles.date}>{formattedDate(props.comment.createdAt)}</time>
-      <Show when={props.comment.updatedAt}>
+      <time class={styles.date}>{formattedDate(props.comment.created_at * 1000)}</time>
+      <Show when={props.comment.updated_at}>
         <time class={styles.date}>
           <Icon name="edit" class={styles.icon} />
           <span class={styles.text}>
-            {t('Edited')} {formattedDate(props.comment.updatedAt)}
+            {t('Edited')} {formattedDate(props.comment.updated_at * 1000)}
           </span>
         </time>
       </Show>

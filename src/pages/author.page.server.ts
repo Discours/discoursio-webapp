@@ -4,7 +4,7 @@ import type { PageContext } from '../renderer/types'
 import { render } from 'vike/abort'
 
 import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
-import { apiClient } from '../utils/apiClient'
+import { apiClient } from '../graphql/client/core'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams

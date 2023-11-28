@@ -11,6 +11,7 @@ pnpm-debug.log*
 .eslint/.eslintcache
 public/upload/*
 src/graphql/introspec.gen.ts
+src/graphql/schema/*.gen.ts
 stats.html
 *.scss.d.ts
 pnpm-lock.yaml

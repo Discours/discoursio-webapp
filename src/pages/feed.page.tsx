@@ -5,7 +5,7 @@ import { AuthGuard } from '../components/AuthGuard'
 import { FeedView } from '../components/Views/Feed'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
-import { LoadShoutsOptions } from '../graphql/types.gen'
+import { LoadShoutsOptions } from '../graphql/schema/core.gen'
 import { useRouter } from '../stores/router'
 import { loadMyFeed, loadShouts, resetSortedArticles } from '../stores/zine/articles'
 

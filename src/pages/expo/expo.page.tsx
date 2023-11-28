@@ -16,7 +16,7 @@ export const ExpoPage = (props: PageProps) => {
 
   const title = createMemo(() => {
     switch (getLayout()) {
-      case 'music': {
+      case 'audio': {
         return t('Audio')
       }
       case 'video': {

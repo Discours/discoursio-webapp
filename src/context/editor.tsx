@@ -5,9 +5,9 @@ import { Editor } from '@tiptap/core'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
 
-import { Topic, TopicInput } from '../graphql/types.gen'
+import { apiClient } from '../graphql/client/core'
+import { ShoutVisibility, Topic, TopicInput } from '../graphql/schema/core.gen'
 import { router, useRouter } from '../stores/router'
-import { apiClient } from '../utils/apiClient'
 import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
@@ -130,10 +130,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       shoutId: formToUpdate.shoutId,
       shoutInput: {
         body: formToUpdate.body,
-        topics: formToUpdate.selectedTopics.map((topic) => topic2topicInput(topic)),
+        topics: formToUpdate.selectedTopics.map((topic) => topic2topicInput(topic)), // NOTE: first is main
         // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
         // community?: InputMaybe<Scalars['Int']>
-        mainTopic: topic2topicInput(formToUpdate.mainTopic),
+        // mainTopic: topic2topicInput(formToUpdate.mainTopic),
         slug: formToUpdate.slug,
         subtitle: formToUpdate.subtitle,
         title: formToUpdate.title,
@@ -163,7 +163,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       const shout = await updateShout(formToSave, { publish: false })
       removeDraftFromLocalStorage(formToSave.shoutId)
 
-      if (shout.visibility === 'owner') {
+      if (shout.visibility === ShoutVisibility.Authors) {
         openPage(router, 'drafts')
       } else {
         openPage(router, 'article', { slug: shout.slug })

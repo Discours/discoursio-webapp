@@ -1,9 +1,9 @@
-import type { Topic } from '../../graphql/types.gen'
+import type { Topic } from '../../graphql/schema/core.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'
 import { createMemo, createSignal } from 'solid-js'
 
-import { apiClient } from '../../utils/apiClient'
+import { apiClient } from '../../graphql/client/core'
 import { byTopicStatDesc } from '../../utils/sortby'
 
 export type TopicsSortBy = 'followers' | 'title' | 'authors' | 'shouts'

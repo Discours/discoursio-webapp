@@ -5,11 +5,11 @@ import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { ApiError } from '../../../graphql/error'
 import { register } from '../../../stores/auth'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
-import { ApiError } from '../../../utils/apiClient'
 import { validateEmail } from '../../../utils/validateEmail'
 import { Icon } from '../../_shared/Icon'
 

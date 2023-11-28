@@ -3,7 +3,7 @@ import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { LoadShoutsOptions, Shout } from '../../../graphql/types.gen'
+import { LoadShoutsOptions, Shout } from '../../../graphql/schema/core.gen'
 import { LayoutType } from '../../../pages/types'
 import { router, useRouter } from '../../../stores/router'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
@@ -39,7 +39,9 @@ export const Expo = (props: Props) => {
       offset: sortedArticles().length,
     }
 
-    options.filters = getLayout() ? { layout: getLayout() } : { exclude_layout: 'article' }
+    options.filters = getLayout()
+      ? { layouts: [getLayout()] }
+      : { layouts: ['audio', 'video', 'image', 'literature'] }
 
     const { hasMore } = await loadShouts(options)
     setIsLoadMoreButtonVisible(hasMore)
@@ -107,11 +109,11 @@ export const Expo = (props: Props) => {
                 <span class={clsx('linkReplacement')}>{t('Literature')}</span>
               </ConditionalWrapper>
             </li>
-            <li class={clsx({ 'view-switcher__item--selected': getLayout() === 'music' })}>
+            <li class={clsx({ 'view-switcher__item--selected': getLayout() === 'audio' })}>
               <ConditionalWrapper
-                condition={getLayout() !== 'music'}
+                condition={getLayout() !== 'audio'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'music' })}>{children}</a>
+                  <a href={getPagePath(router, 'expoLayout', { layout: 'audio' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Music')}</span>

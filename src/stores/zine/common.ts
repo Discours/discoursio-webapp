@@ -1,6 +1,6 @@
-import type { FollowingEntity } from '../../graphql/types.gen'
+import type { FollowingEntity } from '../../graphql/schema/core.gen'
 
-import { apiClient } from '../../utils/apiClient'
+import { apiClient } from '../../graphql/client/core'
 
 export const follow = async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
   await apiClient.follow({ what, slug })

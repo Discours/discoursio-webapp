@@ -4,7 +4,7 @@ import { Show, createMemo, createSignal, onMount, For, lazy } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
-import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
+import { Author, Reaction, ReactionKind } from '../../graphql/schema/core.gen'
 import { byCreated } from '../../utils/sortby'
 import { Button } from '../_shared/Button'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
@@ -18,7 +18,7 @@ const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
 const sortCommentsByRating = (a: Reaction, b: Reaction): -1 | 0 | 1 => {
-  if (a.replyTo && b.replyTo) {
+  if (a.reply_to && b.reply_to) {
     return 0
   }
 
@@ -76,19 +76,19 @@ export const CommentsTree = (props: Props) => {
     return newSortedComments
   })
 
-  const dateFromLocalStorage = new Date(localStorage.getItem(`${props.shoutSlug}`))
+  const dateFromLocalStorage = Number.parseInt(localStorage.getItem(`${props.shoutSlug}`))
   const currentDate = new Date()
   const setCookie = () => localStorage.setItem(`${props.shoutSlug}`, `${currentDate}`)
 
   onMount(() => {
     if (!dateFromLocalStorage) {
       setCookie()
-    } else if (currentDate > dateFromLocalStorage) {
+    } else if (currentDate.getTime() > dateFromLocalStorage) {
       const newComments = comments().filter((c) => {
-        if (c.replyTo || c.createdBy.slug === session()?.user.slug) {
+        if (c.reply_to || c.created_by.slug === session()?.user.slug) {
           return
         }
-        const created = new Date(c.createdAt)
+        const created = c.created_at
         return created > dateFromLocalStorage
       })
       setNewReactions(newComments)
@@ -153,12 +153,12 @@ export const CommentsTree = (props: Props) => {
         </Show>
       </div>
       <ul class={styles.comments}>
-        <For each={sortedComments().filter((r) => !r.replyTo)}>
+        <For each={sortedComments().filter((r) => !r.reply_to)}>
           {(reaction) => (
             <Comment
               sortedComments={sortedComments()}
               isArticleAuthor={Boolean(
-                props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug),
+                props.articleAuthors.some((a) => a.slug === reaction.created_by.slug),
               )}
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}

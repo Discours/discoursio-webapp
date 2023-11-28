@@ -1,4 +1,4 @@
-import type { Topic } from '../../graphql/types.gen'
+import type { Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'

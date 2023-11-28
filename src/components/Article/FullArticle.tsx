@@ -1,4 +1,4 @@
-import type { Author, Shout } from '../../graphql/types.gen'
+import type { Author, Shout } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
@@ -68,13 +68,9 @@ export const FullArticle = (props: Props) => {
 
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
 
-  const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
+  const formattedDate = createMemo(() => formatDate(new Date(props.article.created_at * 1000)))
 
-  const mainTopic = createMemo(
-    () =>
-      props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
-      props.article.topics[0],
-  )
+  const mainTopic = createMemo(() => (props.article.topics.length > 0 ? props.article.topics[0] : null))
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
@@ -293,10 +289,10 @@ export const FullArticle = (props: Props) => {
             onClick={handleArticleBodyClick}
           >
             {/*TODO: Check styles.shoutTopic*/}
-            <Show when={props.article.layout !== 'music'}>
+            <Show when={props.article.layout !== 'audio'}>
               <div class={styles.shoutHeader}>
                 <Show when={mainTopic()}>
-                  <CardTopic title={mainTopic().title} slug={props.article.mainTopic} />
+                  <CardTopic title={mainTopic().title} slug={mainTopic().slug} />
                 </Show>
 
                 <h1>{props.article.title}</h1>
@@ -328,7 +324,7 @@ export const FullArticle = (props: Props) => {
             <Show when={props.article.lead}>
               <section class={styles.lead} innerHTML={props.article.lead} />
             </Show>
-            <Show when={props.article.layout === 'music'}>
+            <Show when={props.article.layout === 'audio'}>
               <AudioHeader
                 title={props.article.title}
                 cover={props.article.cover}

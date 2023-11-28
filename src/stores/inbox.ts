@@ -1,7 +1,6 @@
-import { inboxClient } from '../utils/apiClient'
-import type { MessagesBy } from '../graphql/types.gen'
+import type { MessagesBy } from '../graphql/schema/chat.gen'
 
-import { apiClient } from '../utils/apiClient'
+import { inboxClient } from '../graphql/client/chat'
 
 export const loadRecipients = async (by = {}): Promise<void> => {
   return await inboxClient.loadRecipients(by)

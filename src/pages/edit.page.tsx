@@ -4,9 +4,9 @@ import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthGuard } from '../components/AuthGuard'
 import { useLocalize } from '../context/localize'
-import { Shout } from '../graphql/types.gen'
+import { apiClient } from '../graphql/client/core'
+import { Shout } from '../graphql/schema/core.gen'
 import { useRouter } from '../stores/router'
-import { apiClient } from '../utils/apiClient'
 
 import { LayoutType } from './types'
 
@@ -31,7 +31,7 @@ export const EditPage = () => {
     }
 
     switch (shout().layout as LayoutType) {
-      case 'music': {
+      case 'audio': {
         return t('Publish Album')
       }
       case 'image': {

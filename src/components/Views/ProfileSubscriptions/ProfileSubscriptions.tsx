@@ -3,9 +3,9 @@ import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { Author, Topic } from '../../../graphql/types.gen'
+import { apiClient } from '../../../graphql/client/core'
+import { Author, Topic } from '../../../graphql/schema/core.gen'
 import { SubscriptionFilter } from '../../../pages/types'
-import { apiClient } from '../../../utils/apiClient'
 import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
 import { isAuthor } from '../../../utils/isAuthor'
@@ -20,7 +20,7 @@ import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
-  const { user } = useSession()
+  const { session } = useSession()
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
@@ -29,8 +29,8 @@ export const ProfileSubscriptions = () => {
   const fetchSubscriptions = async () => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
-        apiClient.getAuthorFollowingUsers({ slug: user().slug }),
-        apiClient.getAuthorFollowingTopics({ slug: user().slug }),
+        apiClient.getAuthorFollowingUsers({ slug: session()?.author.slug }),
+        apiClient.getAuthorFollowingTopics({ slug: session()?.author.slug }),
       ])
       setFollowing([...getAuthors, ...getTopics])
       setFiltered([...getAuthors, ...getTopics])

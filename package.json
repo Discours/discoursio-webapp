@@ -1,6 +1,6 @@
 {
   "name": "discoursio-webapp",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -12,6 +12,7 @@
     "dev": "vite",
     "fix": "npm run lint:code:fix && npm run lint:styles:fix",
     "format": "npx prettier \"{,!(node_modules)/**/}*.{js,ts,tsx,json,scss,css}\" --write --ignore-path .gitignore",
+    "postinstall": "npm run codegen",
     "lint": "npm run lint:code && npm run lint:styles",
     "lint:code": "eslint .",
     "lint:code:fix": "eslint . --fix",
@@ -30,6 +31,7 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
+    "@authorizerdev/authorizer-js": "1.2.11",
     "form-data": "4.0.0",
     "i18next": "22.4.15",
     "i18next-icu": "2.3.0",

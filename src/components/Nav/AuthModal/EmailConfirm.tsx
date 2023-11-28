@@ -5,9 +5,9 @@ import { createMemo, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
-import { ApiError } from '../../../utils/apiClient'
 
 import styles from './AuthModal.module.scss'
 

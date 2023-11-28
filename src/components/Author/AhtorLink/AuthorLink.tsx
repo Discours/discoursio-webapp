@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 
-import { Author } from '../../../graphql/types.gen'
+import { Author } from '../../../graphql/schema/core.gen'
 import { Userpic } from '../Userpic'
 
 import styles from './AhtorLink.module.scss'

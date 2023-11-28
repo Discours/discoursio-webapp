@@ -1,6 +1,6 @@
 // in a separate file to avoid circular dependencies
-import type { Author, Chat, Shout, Topic } from '../graphql/types.gen'
-
+import type { Chat } from '../graphql/schema/chat.gen'
+import type { Author, Shout, Topic } from '../graphql/schema/core.gen'
 // all the things (she said) that could be passed from the server
 export type PageProps = {
   article?: Shout
@@ -13,7 +13,7 @@ export type PageProps = {
   topic?: Topic
   allTopics?: Topic[]
   searchQuery?: string
-  layout?: LayoutType
+  layouts?: LayoutType[]
   // other types?
   searchResults?: Shout[]
   chats?: Chat[]
@@ -27,7 +27,7 @@ export type RootSearchParams = {
   lang: string
 }
 
-export type LayoutType = 'article' | 'music' | 'video' | 'image' | 'literature'
+export type LayoutType = 'article' | 'audio' | 'video' | 'image' | 'literature'
 
 export type FileTypeToUpload = 'image' | 'video' | 'doc' | 'audio'
 

@@ -1,4 +1,4 @@
-import type { Shout } from '../../graphql/types.gen'
+import type { Shout } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -53,7 +53,7 @@ export const Draft = (props: Props) => {
     <div class={clsx(props.class)}>
       <div class={styles.created}>
         <Icon name="pencil-outline" class={styles.icon} />{' '}
-        {formatDate(new Date(props.shout.createdAt), { hour: '2-digit', minute: '2-digit' })}
+        {formatDate(new Date(props.shout.created_at * 1000), { hour: '2-digit', minute: '2-digit' })}
       </div>
       <div class={styles.titleContainer}>
         <span class={styles.title}>{props.shout.title || t('Unnamed draft')}</span> {props.shout.subtitle}

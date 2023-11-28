@@ -1,14 +1,14 @@
-import type { Author, Shout, Topic } from '../../../graphql/types.gen'
+import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { useAuthorsStore } from '../../../stores/zine/authors'
-import { apiClient } from '../../../utils/apiClient'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
 import { Loading } from '../../_shared/Loading'
@@ -118,7 +118,7 @@ export const AuthorView = (props: Props) => {
     if (getPage().route === 'authorComments') {
       try {
         const data = await apiClient.getReactionsBy({
-          by: { comment: true, createdBy: props.authorSlug },
+          by: { comment: true, created_by: props.author.id },
         })
         setCommented(data)
       } catch (error) {

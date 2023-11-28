@@ -1,5 +1,5 @@
 import type { PageProps } from './types'
-import type { Shout } from '../graphql/types.gen'
+import type { Shout } from '../graphql/schema/core.gen'
 
 import { redirectPage } from '@nanostores/router'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'

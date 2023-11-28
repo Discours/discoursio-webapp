@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js'
 
-import { apiClient } from '../utils/apiClient'
+import { authApiClient as apiClient } from '../graphql/client/auth'
 
 const [emailChecks, setEmailChecks] = createSignal<{ [email: string]: boolean }>({})
 

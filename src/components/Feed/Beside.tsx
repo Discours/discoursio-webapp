@@ -1,6 +1,6 @@
 // TODO: additional entities list column + article
 
-import type { Author, Shout, Topic, User } from '../../graphql/types.gen'
+import type { Author, Shout, Topic, User } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'

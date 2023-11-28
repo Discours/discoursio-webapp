@@ -1,4 +1,4 @@
-import type { Shout } from '../../../graphql/types.gen'
+import type { Shout } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -86,12 +86,10 @@ const getTitleAndSubtitle = (
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { user } = useSession()
-  const mainTopic =
-    props.article.topics.find((articleTopic) => articleTopic.slug === props.article.mainTopic) ||
-    props.article.topics[0]
+  const mainTopic = props.article.topics[0]
 
   const formattedDate = createMemo<string>(() => {
-    return formatDate(new Date(props.article.createdAt))
+    return formatDate(new Date(props.article.created_at * 1000))
   })
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)

@@ -1,11 +1,11 @@
-import type { Topic } from '../../graphql/types.gen'
+import type { Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { createMemo, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
-import { FollowingEntity } from '../../graphql/types.gen'
+import { FollowingEntity } from '../../graphql/schema/core.gen'
 import { follow, unfollow } from '../../stores/zine/common'
 import { capitalize } from '../../utils/capitalize'
 import { Button } from '../_shared/Button'

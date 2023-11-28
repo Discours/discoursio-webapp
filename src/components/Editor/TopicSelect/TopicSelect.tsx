@@ -1,4 +1,4 @@
-import type { Topic } from '../../../graphql/types.gen'
+import type { Topic } from '../../../graphql/schema/core.gen'
 
 import { createOptions, Select } from '@thisbeyond/solid-select'
 import { clsx } from 'clsx'

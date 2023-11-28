@@ -1,11 +1,10 @@
-import type { Reaction, ReactionBy, ReactionInput } from '../graphql/types.gen'
 import type { JSX } from 'solid-js'
 
 import { createContext, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 
-import { ReactionKind } from '../graphql/types.gen'
-import { apiClient } from '../utils/apiClient'
+import { apiClient } from '../graphql/client/core'
+import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/schema/core.gen'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
@@ -56,9 +55,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
       const oppositeReaction = Object.values(reactionEntities).find(
         (r) =>
           r.kind === oppositeReactionKind &&
-          r.createdBy.slug === reaction.createdBy.slug &&
+          r.created_by.slug === reaction.created_by.slug &&
           r.shout.id === reaction.shout.id &&
-          r.replyTo === reaction.replyTo,
+          r.reply_to === reaction.reply_to,
       )
 
       if (oppositeReaction) {

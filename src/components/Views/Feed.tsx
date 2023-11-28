@@ -1,4 +1,4 @@
-import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/types.gen'
+import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -209,7 +209,7 @@ export const FeedView = (props: Props) => {
                       />
                     </div>
                     <div class={styles.commentDetails}>
-                      <AuthorLink author={comment.createdBy as Author} size={'XS'} />
+                      <AuthorLink author={comment.created_by as Author} size={'XS'} />
                       <CommentDate comment={comment} isShort={true} isLastInRow={true} />
                     </div>
                     <div class={clsx('text-truncate', styles.commentArticleTitle)}>

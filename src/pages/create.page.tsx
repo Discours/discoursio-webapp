@@ -6,8 +6,8 @@ import { Icon } from '../components/_shared/Icon'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthGuard } from '../components/AuthGuard'
 import { useLocalize } from '../context/localize'
+import { apiClient } from '../graphql/client/core'
 import { router } from '../stores/router'
-import { apiClient } from '../utils/apiClient'
 
 import { LayoutType } from './types'
 
@@ -48,7 +48,7 @@ export const CreatePage = () => {
               </div>
             </li>
             <li>
-              <div class={styles.link} onClick={() => handleCreate('music')}>
+              <div class={styles.link} onClick={() => handleCreate('audio')}>
                 <Icon name="create-music" class={styles.icon} />
                 <div>{t('music')}</div>
               </div>

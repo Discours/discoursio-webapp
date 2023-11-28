@@ -1,4 +1,4 @@
-import type { Author } from '../../../graphql/types.gen'
+import type { Author } from '../../../graphql/schema/core.gen'
 
 import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -6,7 +6,7 @@ import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { FollowingEntity, Topic } from '../../../graphql/types.gen'
+import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { SubscriptionFilter } from '../../../pages/types'
 import { router, useRouter } from '../../../stores/router'
 import { follow, unfollow } from '../../../stores/zine/common'

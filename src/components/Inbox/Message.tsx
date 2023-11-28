@@ -1,4 +1,4 @@
-import type { Message as MessageType, ChatMember } from '../../graphql/types.gen'
+import type { Message as MessageType, ChatMember } from '../../graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
 import { createSignal, Show } from 'solid-js'

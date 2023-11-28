@@ -1,4 +1,3 @@
-import type { Notification } from '../../../graphql/types.gen'
 import type { ArticlePageSearchParams } from '../../Article/FullArticle'
 
 import { getPagePath, openPage } from '@nanostores/router'
@@ -7,34 +6,19 @@ import { createMemo, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
-import { NotificationType } from '../../../graphql/types.gen'
+import { Notification } from '../../../graphql/schema/notifier.gen'
 import { router, useRouter } from '../../../stores/router'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
 import { TimeAgo } from '../../_shared/TimeAgo'
-
 import styles from './NotificationView.module.scss'
+import { apiClient } from '../../../graphql/client/core'
+import { Reaction, Shout } from '../../../graphql/schema/core.gen'
 
 type Props = {
   notification: Notification
   onClick: () => void
   dateTimeFormat: 'ago' | 'time' | 'date'
   class?: string
-}
-
-export type NotificationUser = {
-  id: number
-  name: string
-  slug: string
-  userpic: string
-}
-
-type NotificationData = {
-  shout: {
-    slug: string
-    title: string
-  }
-  users: NotificationUser[]
-  reactionIds: number[]
 }
 
 export const NotificationView = (props: Props) => {
@@ -46,19 +30,13 @@ export const NotificationView = (props: Props) => {
 
   const { t, formatDate, formatTime } = useLocalize()
 
-  const [data, setData] = createSignal<NotificationData>(null)
+  const [data, setData] = createSignal<Reaction>(null) // NOTE: supports only SSMessage.entity == "reaction"
 
   onMount(() => {
-    setTimeout(() => setData(JSON.parse(props.notification.data)))
+    setTimeout(() => setData(JSON.parse(props.notification.payload)))
   })
 
-  const lastUser = createMemo(() => {
-    if (!data()) {
-      return null
-    }
-
-    return data().users[data().users.length - 1]
-  })
+  const lastUser = createMemo(() => data().created_by)
 
   const handleLinkClick = (event: MouseEvent) => {
     event.stopPropagation()
@@ -87,45 +65,65 @@ export const NotificationView = (props: Props) => {
       }
     }
 
-    switch (props.notification.type) {
-      case NotificationType.NewComment: {
-        return (
-          <>
-            {t('NotificationNewCommentText1', {
-              commentsCount: props.notification.occurrences,
-            })}{' '}
-            <a href={getPagePath(router, 'article', { slug: data().shout.slug })} onClick={handleLinkClick}>
-              {shoutTitle}
-            </a>{' '}
-            {t('NotificationNewCommentText2')}{' '}
-            <a href={getPagePath(router, 'author', { slug: lastUser().slug })} onClick={handleLinkClick}>
-              {lastUser().name}
-            </a>{' '}
-            {t('NotificationNewCommentText3', {
-              restUsersCount: data().users.length - 1,
-            })}
-          </>
-        )
+    switch (props.notification.action) {
+      case 'create': {
+        if (data()?.reply_to) {
+          return (
+            <>
+              {t('NotificationNewReplyText1', {
+                commentsCount: 0, // FIXME: props.notification.occurrences,
+              })}{' '}
+              <a
+                href={getPagePath(router, 'article', { slug: data().shout.slug })}
+                onClick={handleLinkClick}
+              >
+                {shoutTitle}
+              </a>{' '}
+              {t('NotificationNewReplyText2')}{' '}
+              <a href={getPagePath(router, 'author', { slug: lastUser().slug })} onClick={handleLinkClick}>
+                {lastUser().name}
+              </a>{' '}
+              {t('NotificationNewReplyText3', {
+                restUsersCount: 0, // FIXME: data().users.length - 1,
+              })}
+            </>
+          )
+        } else {
+          return (
+            <>
+              {t('NotificationNewCommentText1', {
+                commentsCount: 0, // FIXME: props.notification.occurrences,
+              })}{' '}
+              <a
+                href={getPagePath(router, 'article', { slug: data().shout.slug })}
+                onClick={handleLinkClick}
+              >
+                {shoutTitle}
+              </a>{' '}
+              {t('NotificationNewCommentText2')}{' '}
+              <a href={getPagePath(router, 'author', { slug: lastUser().slug })} onClick={handleLinkClick}>
+                {lastUser().name}
+              </a>{' '}
+              {t('NotificationNewCommentText3', {
+                restUsersCount: 0, // FIXME: data().users.length - 1,
+              })}
+            </>
+          )
+        }
       }
-      case NotificationType.NewReply: {
-        return (
-          <>
-            {t('NotificationNewReplyText1', {
-              commentsCount: props.notification.occurrences,
-            })}{' '}
-            <a href={getPagePath(router, 'article', { slug: data().shout.slug })} onClick={handleLinkClick}>
-              {shoutTitle}
-            </a>{' '}
-            {t('NotificationNewReplyText2')}{' '}
-            <a href={getPagePath(router, 'author', { slug: lastUser().slug })} onClick={handleLinkClick}>
-              {lastUser().name}
-            </a>{' '}
-            {t('NotificationNewReplyText3', {
-              restUsersCount: data().users.length - 1,
-            })}
-          </>
-        )
+      case 'update': {
       }
+      case 'delete': {
+      }
+      case 'follow': {
+      }
+      case 'unfollow': {
+      }
+      case 'invited': {
+        // TODO: invited for collaborative authoring
+      }
+      default:
+        return <></>
     }
   })
 
@@ -137,22 +135,22 @@ export const NotificationView = (props: Props) => {
     }
 
     openPage(router, 'article', { slug: data().shout.slug })
-
-    if (data().reactionIds) {
-      changeSearchParam({ commentId: data().reactionIds[0].toString() })
-    }
+    // FIXME:
+    // if (data().reactionIds) {
+    //  changeSearchParam({ commentId: data().reactionIds[0].toString() })
+    // }
   }
 
   const formattedDateTime = createMemo(() => {
     switch (props.dateTimeFormat) {
       case 'ago': {
-        return <TimeAgo date={props.notification.createdAt} />
+        return <TimeAgo date={props.notification.created_at} />
       }
       case 'time': {
-        return formatTime(new Date(props.notification.createdAt))
+        return formatTime(new Date(props.notification.created_at))
       }
       case 'date': {
-        return formatDate(new Date(props.notification.createdAt), { month: 'numeric', year: '2-digit' })
+        return formatDate(new Date(props.notification.created_at), { month: 'numeric', year: '2-digit' })
       }
     }
   })
@@ -166,7 +164,7 @@ export const NotificationView = (props: Props) => {
         onClick={handleClick}
       >
         <div class={styles.userpic}>
-          <GroupAvatar authors={data().users} />
+          <GroupAvatar authors={[] /*d FIXME: data().users */} />
         </div>
         <div>{content()}</div>
         <div class={styles.timeContainer}>{formattedDateTime()}</div>

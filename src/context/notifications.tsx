@@ -1,17 +1,14 @@
 import type { Accessor, JSX } from 'solid-js'
 
-import { createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
+import { createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
 
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
-import { Notification } from '../graphql/types.gen'
-import { apiClient } from '../utils/apiClient'
-import { apiBaseUrl } from '../utils/config'
-import SSEService, { EventData } from '../utils/sseService'
-
-import { useSession } from './session'
+import { notifierClient as apiClient } from '../graphql/client/notifier'
+import { Notification } from '../graphql/schema/notifier.gen'
+import { SSEMessage, useConnect } from './connect'
 
 type NotificationsContextType = {
   notificationEntities: Record<number, Notification>
@@ -35,53 +32,45 @@ export function useNotifications() {
   return useContext(NotificationsContext)
 }
 
-const sseService = new SSEService()
-
 export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = createSignal(false)
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
-  const { isAuthenticated, user } = useSession()
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
-
+  const { addHandler } = useConnect()
   const loadNotifications = async (options: { limit: number; offset?: number }) => {
-    const { notifications, totalUnreadCount, totalCount } = await apiClient.getNotifications(options)
+    const { notifications, unread, total } = await apiClient.getNotifications(options)
     const newNotificationEntities = notifications.reduce((acc, notification) => {
       acc[notification.id] = notification
       return acc
     }, {})
 
-    setTotalNotificationsCount(totalCount)
-    setUnreadNotificationsCount(totalUnreadCount)
+    setTotalNotificationsCount(total)
+    setUnreadNotificationsCount(unread)
     setNotificationEntities(newNotificationEntities)
     return notifications
   }
 
   const sortedNotifications = createMemo(() => {
-    return Object.values(notificationEntities).sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
+    return Object.values(notificationEntities).sort((a, b) => b.created_at - a.created_at)
   })
 
   const loadedNotificationsCount = createMemo(() => Object.keys(notificationEntities).length)
-  createEffect(() => {
-    if (isAuthenticated()) {
-      sseService.connect(`${apiBaseUrl}/subscribe/${user().id}`)
-      sseService.subscribeToEvent('message', (data: EventData) => {
-        if (data.type === 'newNotifications') {
-          loadNotifications({ limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
-        } else {
-          console.error(`[NotificationsProvider] unknown message type: ${JSON.stringify(data)}`)
-        }
-      })
-    } else {
-      sseService.disconnect()
-    }
+
+  onMount(() => {
+    addHandler((data: SSEMessage) => {
+      if (data.entity === 'reaction') {
+        loadNotifications({ limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
+      } else {
+        console.error(`[NotificationsProvider] unhandled message type: ${JSON.stringify(data)}`)
+      }
+    })
   })
 
   const markNotificationAsRead = async (notification: Notification) => {
     await apiClient.markNotificationAsRead(notification.id)
-    setNotificationEntities(notification.id, 'seen', true)
+    const nnn = new Set([...notification.seen, notification.id])
+    setNotificationEntities(notification.id, 'seen', Array.from(nnn))
     setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
   const markAllNotificationsAsRead = async () => {

@@ -4,7 +4,7 @@ import { createMemo, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
-import { ReactionKind, Shout } from '../../graphql/types.gen'
+import { ReactionKind, Shout } from '../../graphql/schema/core.gen'
 import { loadShout } from '../../stores/zine/articles'
 import { Icon } from '../_shared/Icon'
 import { Popup } from '../_shared/Popup'
@@ -33,9 +33,9 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.createdBy.slug === user()?.slug &&
+        r.created_by.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
-        !r.replyTo,
+        !r.reply_to,
     )
 
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
@@ -47,7 +47,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       (r) =>
         [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
         r.shout.id === props.shout.id &&
-        !r.replyTo,
+        !r.reply_to,
     ),
   )
 
@@ -55,9 +55,9 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
-        r.createdBy.slug === user()?.slug &&
+        r.created_by.slug === user()?.slug &&
         r.shout.id === props.shout.id &&
-        !r.replyTo,
+        !r.reply_to,
     )
     return deleteReaction(reactionToDelete.id)
   }

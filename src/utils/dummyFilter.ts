@@ -1,4 +1,4 @@
-import { Author, Topic } from '../graphql/types.gen'
+import { Author, Topic } from '../graphql/schema/core.gen'
 
 import { isAuthor } from './isAuthor'
 import { translit } from './ru2en'

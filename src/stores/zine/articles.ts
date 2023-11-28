@@ -1,9 +1,9 @@
-import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/types.gen'
+import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/schema/core.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'
 import { createSignal } from 'solid-js'
 
-import { apiClient } from '../../utils/apiClient'
+import { apiClient } from '../../graphql/client/core'
 import { byStat } from '../../utils/sortby'
 
 import { addAuthorsByTopic } from './authors'
@@ -197,7 +197,7 @@ export const loadTopMonthArticles = async (): Promise<void> => {
     filters: {
       visibility: 'public',
       // TODO: replace with from, to
-      days: 30,
+      time_ago: 30 * 24 * 60 * 60 * 1000,
     },
     order_by: 'rating_stat',
     limit: TOP_MONTH_ARTICLES_COUNT,

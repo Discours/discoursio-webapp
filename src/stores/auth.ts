@@ -1,4 +1,4 @@
-import { apiClient } from '../utils/apiClient'
+import { authApiClient as apiClient } from '../graphql/client/auth'
 
 export const register = async ({
   name,

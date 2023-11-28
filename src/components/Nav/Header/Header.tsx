@@ -1,4 +1,4 @@
-import type { Topic } from '../../../graphql/types.gen'
+import type { Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -6,9 +6,9 @@ import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { apiClient } from '../../../graphql/client/core'
 import { router, ROUTES, useRouter } from '../../../stores/router'
 import { useModalStore } from '../../../stores/ui'
-import { apiClient } from '../../../utils/apiClient'
 import { getDescription } from '../../../utils/meta'
 import { Icon } from '../../_shared/Icon'
 import { Subscribe } from '../../_shared/Subscribe'

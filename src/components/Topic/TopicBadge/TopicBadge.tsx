@@ -3,7 +3,7 @@ import { createMemo, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { FollowingEntity, Topic } from '../../../graphql/types.gen'
+import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { Button } from '../../_shared/Button'

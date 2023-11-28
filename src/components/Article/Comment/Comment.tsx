@@ -7,7 +7,7 @@ import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
 import { useSnackbar } from '../../../context/snackbar'
-import { Author, Reaction, ReactionKind } from '../../../graphql/types.gen'
+import { Author, Reaction, ReactionKind } from '../../../graphql/schema/core.gen'
 import { router } from '../../../stores/router'
 import { Icon } from '../../_shared/Icon'
 import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
@@ -25,7 +25,7 @@ type Props = {
   compact?: boolean
   isArticleAuthor?: boolean
   sortedComments?: Reaction[]
-  lastSeen?: Date
+  lastSeen?: number
   class?: string
   showArticleLink?: boolean
   clickedReply?: (id: number) => void
@@ -52,7 +52,7 @@ export const Comment = (props: Props) => {
     actions: { showSnackbar },
   } = useSnackbar()
 
-  const isCommentAuthor = createMemo(() => props.comment.createdBy?.slug === session()?.user?.slug)
+  const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === session()?.author?.slug)
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
@@ -82,7 +82,7 @@ export const Comment = (props: Props) => {
       setLoading(true)
       await createReaction({
         kind: ReactionKind.Comment,
-        replyTo: props.comment.id,
+        reply_to: props.comment.id,
         body: value,
         shout: props.comment.shout.id,
       })
@@ -114,13 +114,11 @@ export const Comment = (props: Props) => {
     }
   }
 
-  const createdAt = new Date(comment()?.createdAt)
-
   return (
     <li
       id={`comment_${comment().id}`}
       class={clsx(styles.comment, props.class, {
-        [styles.isNew]: !isCommentAuthor() && createdAt > props.lastSeen,
+        [styles.isNew]: !isCommentAuthor() && comment()?.created_at > props.lastSeen,
       })}
     >
       <Show when={!!body()}>
@@ -130,8 +128,8 @@ export const Comment = (props: Props) => {
             fallback={
               <div>
                 <Userpic
-                  name={comment().createdBy.name}
-                  userpic={comment().createdBy.userpic}
+                  name={comment().created_by.name}
+                  userpic={comment().created_by.pic}
                   class={clsx({
                     [styles.compactUserpic]: props.compact,
                   })}
@@ -144,7 +142,7 @@ export const Comment = (props: Props) => {
           >
             <div class={styles.commentDetails}>
               <div class={styles.commentAuthor}>
-                <AuthorLink author={comment()?.createdBy as Author} />
+                <AuthorLink author={comment()?.created_by as Author} />
               </div>
 
               <Show when={props.isArticleAuthor}>
@@ -253,7 +251,7 @@ export const Comment = (props: Props) => {
       </Show>
       <Show when={props.sortedComments}>
         <ul>
-          <For each={props.sortedComments.filter((r) => r.replyTo === props.comment.id)}>
+          <For each={props.sortedComments.filter((r) => r.reply_to === props.comment.id)}>
             {(c) => (
               <Comment
                 sortedComments={props.sortedComments}

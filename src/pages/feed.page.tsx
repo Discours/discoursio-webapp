@@ -12,7 +12,7 @@ import { loadMyFeed, loadShouts, resetSortedArticles } from '../stores/zine/arti
 const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
   return loadShouts({
     ...options,
-    filters: { visibility: 'community' },
+    filters: { published: false },
   })
 }
 

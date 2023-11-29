@@ -2,8 +2,7 @@ import { UploadFile } from '@solid-primitives/upload'
 
 import { UploadedFile } from '../pages/types'
 
-import { apiBaseUrl } from './config'
-
+const apiBaseUrl = 'https://core.discours.io'
 const apiUrl = `${apiBaseUrl}/upload`
 
 export const handleFileUpload = async (uploadFile: UploadFile): Promise<UploadedFile> => {

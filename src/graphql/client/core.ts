@@ -10,6 +10,8 @@ import type {
   Shout,
   Result,
   QueryLoad_Authors_ByArgs,
+  QueryLoad_Shouts_SearchArgs,
+  QueryLoad_Shouts_ByArgs,
 } from '../schema/core.gen'
 
 import createArticle from '../mutation/core/article-create'
@@ -25,6 +27,7 @@ import { getPrivateClient } from '../privateGraphQLClient'
 import { getPublicClient } from '../publicGraphQLClient'
 import shoutLoad from '../query/core/article-load'
 import shoutsLoadBy from '../query/core/articles-load-by'
+import shoutsLoadSearch from '../query/core/articles-load-search'
 import draftsLoad from '../query/core/articles-load-drafts'
 import myFeed from '../query/core/articles-load-feed'
 import authorBy from '../query/core/author-by'
@@ -176,8 +179,8 @@ export const apiClient = {
     return resp.data.get_shout
   },
 
-  getShouts: async (options: LoadShoutsOptions) => {
-    const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
+  getShouts: async (args: QueryLoad_Shouts_ByArgs) => {
+    const resp = await publicGraphQLClient.query(shoutsLoadBy, args).toPromise()
     if (resp.error) {
       console.error(resp)
     }
@@ -185,8 +188,17 @@ export const apiClient = {
     return resp.data.load_shouts_by
   },
 
-  getMyFeed: async (options: LoadShoutsOptions) => {
-    const resp = await privateGraphQLClient.query(myFeed, { options }).toPromise()
+  getShoutsSearch: async (args: QueryLoad_Shouts_SearchArgs) => {
+    const resp = await publicGraphQLClient.query(shoutsLoadSearch, args).toPromise()
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.load_shouts_search
+  },
+
+  getMyFeed: async (args: QueryLoad_Shouts_ByArgs) => {
+    const resp = await privateGraphQLClient.query(myFeed, args).toPromise()
 
     if (resp.error) {
       console.error(resp)

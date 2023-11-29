@@ -6,11 +6,11 @@ import { apiClient } from '../../graphql/client/core'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { layout } = pageContext.routeParams
-  const expoShouts = await apiClient.getShouts({
+  const options = {
     filters: { layouts: [layout] },
     limit: PRERENDERED_ARTICLES_COUNT,
-  })
-
+  }
+  const expoShouts = await apiClient.getShouts({ options })
   const pageProps: PageProps = { expoShouts, seo: { title: '' } }
 
   return {

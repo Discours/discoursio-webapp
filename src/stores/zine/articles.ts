@@ -137,12 +137,9 @@ export const loadShout = async (slug: string): Promise<void> => {
 export const loadShouts = async (
   options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
-  const newShouts = await apiClient.getShouts({
-    ...options,
-    limit: options.limit + 1,
-  })
-
-  const hasMore = newShouts.length === options.limit + 1
+  options.limit += 1
+  const newShouts = await apiClient.getShouts({ options })
+  const hasMore = newShouts ?? newShouts.length === options.limit + 1
 
   if (hasMore) {
     newShouts.splice(-1)
@@ -157,12 +154,9 @@ export const loadShouts = async (
 export const loadMyFeed = async (
   options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
-  const newShouts = await apiClient.getMyFeed({
-    ...options,
-    limit: options.limit + 1,
-  })
-
-  const hasMore = newShouts.length === options.limit + 1
+  options.limit += 1
+  const newShouts = await apiClient.getMyFeed({ options })
+  const hasMore = newShouts ?? newShouts.length === options.limit + 1
 
   if (hasMore) {
     newShouts.splice(-1)
@@ -193,15 +187,17 @@ type InitialState = {
 const TOP_MONTH_ARTICLES_COUNT = 10
 
 export const loadTopMonthArticles = async (): Promise<void> => {
-  const articles = await apiClient.getShouts({
+  const daysago = Date.now() - 30 * 24 * 60 * 60 * 1000
+  const after = Math.floor(daysago / 1000)
+  const options: LoadShoutsOptions = {
     filters: {
       visibility: 'public',
-      // TODO: replace with from, to
-      time_ago: 30 * 24 * 60 * 60 * 1000,
+      after,
     },
     order_by: 'rating_stat',
     limit: TOP_MONTH_ARTICLES_COUNT,
-  })
+  }
+  const articles = await apiClient.getShouts({ options })
   addArticles(articles)
   setTopMonthArticles(articles)
 }
@@ -209,13 +205,14 @@ export const loadTopMonthArticles = async (): Promise<void> => {
 const TOP_ARTICLES_COUNT = 10
 
 export const loadTopArticles = async (): Promise<void> => {
-  const articles = await apiClient.getShouts({
+  const options: LoadShoutsOptions = {
     filters: {
       visibility: 'public',
     },
     order_by: 'rating_stat',
     limit: TOP_ARTICLES_COUNT,
-  })
+  }
+  const articles = await apiClient.getShouts({ options })
   addArticles(articles)
   setTopArticles(articles)
 }

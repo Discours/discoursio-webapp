@@ -5,11 +5,11 @@ import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Home'
 import { apiClient } from '../graphql/client/core'
 
 export const onBeforeRender = async (_pageContext: PageContext) => {
-  const homeShouts = await apiClient.getShouts({
+  const options = {
     filters: { visibility: 'public' },
     limit: PRERENDERED_ARTICLES_COUNT,
-  })
-
+  }
+  const homeShouts = await apiClient.getShouts({ options })
   const pageProps: PageProps = { homeShouts, seo: { title: '' } }
 
   return {

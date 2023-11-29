@@ -6,12 +6,12 @@ import { VerifyEmailInput, LoginInput, AuthToken, User } from '@authorizerdev/au
 import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 
 import { apiClient } from '../graphql/client/core'
-import { getToken, resetToken } from '../graphql/privateGraphQLClient'
 import { showModal } from '../stores/ui'
 
 import { useAuthorizer } from './authorizer'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
+import { cookieStorage, createStorage } from '@solid-primitives/storage'
 
 export type SessionContextType = {
   session: Resource<AuthToken>
@@ -52,7 +52,15 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     actions: { showSnackbar },
   } = useSnackbar()
   const [, { authorizer }] = useAuthorizer()
-  const [authToken, setToken] = createSignal<string>('')
+  // const [getToken, setToken] = createSignal<string>('')
+  // https://start.solidjs.com/api/createCookieSessionStorage
+  const [store, setStore, { remove, clear, toJSON }] = createStorage({
+    api: cookieStorage,
+    prefix: 'discoursio',
+  })
+  const getToken = () => store.token
+  const setToken = (value) => setStore('token', value)
+  const resetToken = () => remove('token')
 
   const loadSubscriptions = async (): Promise<void> => {
     const result = await apiClient.getMySubscriptions()

@@ -15,7 +15,7 @@ generates:
 
   # Generate types for core
   src/graphql/schema/core.gen.ts:
-    schema: 'https://testapi.discours.io'
+    schema: 'https://core.discours.io'
     plugins:
       - 'typescript'
       - 'typescript-operations'

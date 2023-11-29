@@ -1,6 +1,5 @@
 import { useLocalize } from '../../../context/localize'
 import { hideModal } from '../../../stores/ui'
-import { apiBaseUrl } from '../../../utils/config'
 import { Icon } from '../../_shared/Icon'
 
 import styles from './SocialProviders.module.scss'
@@ -10,7 +9,11 @@ type Provider = 'facebook' | 'google' | 'vk' | 'github'
 // 3rd party provider auth handler
 const handleSocialAuthLinkClick = (event: MouseEvent, provider: Provider): void => {
   event.preventDefault()
-  const popup = window.open(`${apiBaseUrl}/oauth/${provider}`, provider, 'width=740, height=420')
+  const popup = window.open(
+    `https://auth.discours.io/oauth_login/${provider}`,
+    provider,
+    'width=740, height=420',
+  ) // TODO: precalculate window size
   popup?.focus()
   hideModal()
 }

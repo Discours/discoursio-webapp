@@ -45,7 +45,7 @@ export const Modal = (props: Props) => {
 
   return (
     <Show when={visible()}>
-      <div class={styles.backdrop} onClick={handleHide}>
+      <div class={clsx(styles.backdrop, [styles[`modal-${props.name}`]])} onClick={handleHide}>
         <div class="wide-container">
           <div
             class={clsx(styles.modal, {

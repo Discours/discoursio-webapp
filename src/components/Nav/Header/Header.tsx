@@ -23,6 +23,11 @@ import { Snackbar } from '../Snackbar'
 import { Link } from './Link'
 
 import styles from './Header.module.scss'
+import { apiClient } from '../../../utils/apiClient'
+import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
+import { Link } from './Link'
+import { Subscribe } from '../../_shared/Subscribe'
+import { SearchModal } from '../SearchModal/SearchModal'
 
 type Props = {
   title?: string
@@ -180,6 +185,10 @@ export const Header = (props: Props) => {
 
       <Modal variant="narrow" name="confirm">
         <ConfirmModal />
+      </Modal>
+
+      <Modal variant="wide" name="search">
+        <SearchModal />
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>

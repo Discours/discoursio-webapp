@@ -14,11 +14,11 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   if (!author) {
     throw render(404)
   }
-  const options = {
-    filters: { author: slug, visibility: 'community' },
+
+  const authorShouts = await apiClient.getShouts({
+    filters: { author: slug, published: false },
     limit: PRERENDERED_ARTICLES_COUNT,
-  }
-  const authorShouts = await apiClient.getShouts({ options })
+  })
   const pageProps: PageProps = { author, authorShouts, seo: { title: author.name } }
 
   return {

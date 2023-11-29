@@ -3,6 +3,7 @@ import type { Author, Result } from '../graphql/schema/core.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
 
 import { VerifyEmailInput, LoginInput, AuthToken, User } from '@authorizerdev/authorizer-js'
+import { cookieStorage, createStorage } from '@solid-primitives/storage'
 import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 
 import { apiClient } from '../graphql/client/core'
@@ -11,7 +12,6 @@ import { showModal } from '../stores/ui'
 import { useAuthorizer } from './authorizer'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { cookieStorage, createStorage } from '@solid-primitives/storage'
 
 export type SessionContextType = {
   session: Resource<AuthToken>

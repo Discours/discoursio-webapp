@@ -28,7 +28,7 @@ export const resetSortedLayoutShouts = () => {
 
 export const loadLayoutShoutsBy = async (options: LoadShoutsOptions): Promise<{ hasMore: boolean }> => {
   options.limit += 1
-  const newLayoutShouts = await apiClient.getShouts({ options })
+  const newLayoutShouts = await apiClient.getShouts(options)
   const hasMore = newLayoutShouts.length === options.limit + 1
 
   if (hasMore) {

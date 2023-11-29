@@ -138,7 +138,7 @@ export const loadShouts = async (
   options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   options.limit += 1
-  const newShouts = await apiClient.getShouts({ options })
+  const newShouts = await apiClient.getShouts(options)
   const hasMore = newShouts ?? newShouts.length === options.limit + 1
 
   if (hasMore) {
@@ -155,7 +155,7 @@ export const loadMyFeed = async (
   options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   options.limit += 1
-  const newShouts = await apiClient.getMyFeed({ options })
+  const newShouts = await apiClient.getMyFeed(options)
   const hasMore = newShouts ?? newShouts.length === options.limit + 1
 
   if (hasMore) {
@@ -197,7 +197,7 @@ export const loadTopMonthArticles = async (): Promise<void> => {
     order_by: 'rating_stat',
     limit: TOP_MONTH_ARTICLES_COUNT,
   }
-  const articles = await apiClient.getShouts({ options })
+  const articles = await apiClient.getShouts(options)
   addArticles(articles)
   setTopMonthArticles(articles)
 }
@@ -210,7 +210,7 @@ export const loadTopArticles = async (): Promise<void> => {
     order_by: 'rating_stat',
     limit: TOP_ARTICLES_COUNT,
   }
-  const articles = await apiClient.getShouts({ options })
+  const articles = await apiClient.getShouts(options)
   addArticles(articles)
   setTopArticles(articles)
 }

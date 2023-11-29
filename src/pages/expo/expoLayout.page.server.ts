@@ -10,7 +10,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
     filters: { layouts: [layout] },
     limit: PRERENDERED_ARTICLES_COUNT,
   }
-  const expoShouts = await apiClient.getShouts({ options })
+  const expoShouts = await apiClient.getShouts(options)
   const pageProps: PageProps = { expoShouts, seo: { title: '' } }
 
   return {

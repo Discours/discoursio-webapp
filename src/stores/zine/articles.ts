@@ -1,4 +1,10 @@
-import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/schema/core.gen'
+import type {
+  Author,
+  Shout,
+  ShoutInput,
+  LoadShoutsOptions,
+  QueryLoad_Shouts_SearchArgs,
+} from '../../graphql/schema/core.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'
 import { createSignal } from 'solid-js'
@@ -156,6 +162,23 @@ export const loadMyFeed = async (
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   options.limit += 1
   const newShouts = await apiClient.getMyFeed(options)
+  const hasMore = newShouts ?? newShouts.length === options.limit + 1
+
+  if (hasMore) {
+    newShouts.splice(-1)
+  }
+
+  addArticles(newShouts)
+  addSortedArticles(newShouts)
+
+  return { hasMore, newShouts }
+}
+
+export const loadShoutsSearch = async (
+  options: QueryLoad_Shouts_SearchArgs,
+): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
+  options.limit += 1
+  const newShouts = await apiClient.getShoutsSearch(options)
   const hasMore = newShouts ?? newShouts.length === options.limit + 1
 
   if (hasMore) {

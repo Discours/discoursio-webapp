@@ -24,7 +24,7 @@ export default () => {
           </div>
           <div class={clsx(styles.discoursBannerImage, 'col-lg-12 offset-lg-2')}>
             <Image
-              src="https://images.discours.io/unsafe/production/image/discours-banner.jpg"
+              src="https://cdn.discours.io/production/image/discours-banner.jpg"
               alt={t('Discours')}
               width={600}
             />

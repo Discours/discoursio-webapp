@@ -32,7 +32,7 @@ const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const { session, isSessionLoaded, isAuthenticated } = useSession()
+  const { author, session, isSessionLoaded, isAuthenticated } = useSession()
   const {
     unreadNotificationsCount,
     actions: { showNotificationsPanel },
@@ -218,11 +218,11 @@ export const HeaderAuth = (props: Props) => {
                 trigger={
                   <div class={styles.userControlItem}>
                     <button class={styles.button}>
-                      <div classList={{ entered: page().path === `/${session().user?.slug}` }}>
+                      <div classList={{ entered: page().path === `/${author()?.slug}` }}>
                         <Userpic
                           size={'M'}
-                          name={session().user.name}
-                          userpic={session().user.userpic}
+                          name={author().name}
+                          userpic={author().pic}
                           class={styles.userpic}
                         />
                       </div>

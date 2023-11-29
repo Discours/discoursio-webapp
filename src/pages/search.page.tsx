@@ -8,7 +8,7 @@ import { SearchView } from '../components/Views/Search'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
-import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
+import { loadShoutsSearch, resetSortedArticles } from '../stores/zine/articles'
 
 export const SearchPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
@@ -24,7 +24,7 @@ export const SearchPage = (props: PageProps) => {
       return
     }
 
-    await loadShouts({ filters: { title: q(), body: q() }, limit: 50, offset: 0 })
+    await loadShoutsSearch({ text: q(), limit: 50, offset: 0 })
     setIsLoaded(true)
   })
 

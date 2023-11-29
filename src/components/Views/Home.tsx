@@ -1,5 +1,3 @@
-import type { Shout } from '../../graphql/schema/core.gen'
-
 import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
@@ -24,6 +22,7 @@ import { Row3 } from '../Feed/Row3'
 import { Row5 } from '../Feed/Row5'
 import RowShort from '../Feed/RowShort'
 import { Topics } from '../Nav/Topics'
+import { Shout } from '../../graphql/schema/core.gen'
 
 type Props = {
   shouts: Shout[]

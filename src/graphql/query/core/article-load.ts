@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadShoutQuery($slug: String, $shoutId: Int) {
-    get_shout(slug: $slug, shout_id: $shoutId) {
+  query LoadShoutQuery($slug: String, $shout_id: Int) {
+    get_shout(slug: $slug, shout_id: $shout_id) {
       id
       title
       lead
@@ -34,7 +34,7 @@ export default gql`
         pic
         created_at
       }
-      createda_at
+      created_at
       published_at
       stat {
         viewed

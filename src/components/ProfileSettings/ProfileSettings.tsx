@@ -348,7 +348,12 @@ export const ProfileSettings = () => {
                         <Button
                           class={styles.cancel}
                           variant="light"
-                          value={t('Cancel changes')}
+                          value={
+                            <>
+                              <span class={styles.cancelLabel}>{t('Cancel changes')}</span>
+                              <span class={styles.cancelLabelMobile}>{t('Cancel')}</span>
+                            </>
+                          }
                           onClick={handleCancel}
                         />
                         <Button onClick={handleSubmit} variant="primary" value={t('Save settings')} />

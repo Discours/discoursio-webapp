@@ -12,8 +12,13 @@ export default gql`
       layout
       cover
       lead
-      # community
-      # mainTopic
+      created_by {
+        id
+        name
+        slug
+        pic
+        created_at
+      }
       topics {
         id
         title

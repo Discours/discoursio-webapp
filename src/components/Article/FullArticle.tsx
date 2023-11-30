@@ -61,7 +61,7 @@ export const FullArticle = (props: Props) => {
 
   const { t, formatDate } = useLocalize()
   const {
-    user,
+    author,
     isAuthenticated,
     actions: { requireAuthentication },
   } = useSession()
@@ -72,7 +72,7 @@ export const FullArticle = (props: Props) => {
 
   const mainTopic = createMemo(() => (props.article.topics.length > 0 ? props.article.topics[0] : null))
 
-  const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
+  const canEdit = () => props.article.authors?.some((a) => a.slug === author()?.slug)
 
   const handleBookmarkButtonClick = (ev) => {
     requireAuthentication(() => {

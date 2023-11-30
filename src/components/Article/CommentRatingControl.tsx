@@ -18,7 +18,7 @@ type Props = {
 
 export const CommentRatingControl = (props: Props) => {
   const { t } = useLocalize()
-  const { user } = useSession()
+  const { author } = useSession()
   const {
     actions: { showSnackbar },
   } = useSnackbar()
@@ -31,13 +31,13 @@ export const CommentRatingControl = (props: Props) => {
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === user()?.slug &&
+        r.created_by.slug === author()?.slug &&
         r.shout.id === props.comment.shout.id &&
         r.reply_to === props.comment.id,
     )
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
-  const canVote = createMemo(() => user()?.slug !== props.comment.created_by.slug)
+  const canVote = createMemo(() => author()?.slug !== props.comment.created_by.slug)
 
   const commentRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
@@ -52,7 +52,7 @@ export const CommentRatingControl = (props: Props) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === user()?.slug &&
+        r.created_by.slug === author()?.slug &&
         r.shout.id === props.comment.shout.id &&
         r.reply_to === props.comment.id,
     )
@@ -86,7 +86,7 @@ export const CommentRatingControl = (props: Props) => {
     <div class={styles.commentRating}>
       <button
         role="button"
-        disabled={!canVote() || !user()}
+        disabled={!canVote() || !author()}
         onClick={() => handleRatingChange(true)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlUp, {
           [styles.voted]: isUpvoted(),
@@ -112,7 +112,7 @@ export const CommentRatingControl = (props: Props) => {
       </Popup>
       <button
         role="button"
-        disabled={!canVote() || !user()}
+        disabled={!canVote() || !author()}
         onClick={() => handleRatingChange(false)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlDown, {
           [styles.voted]: isDownvoted(),

@@ -15,6 +15,13 @@ export default gql`
         body
         slug
       }
+      created_by {
+        id
+        name
+        slug
+        pic
+        created_at
+      }
       authors {
         id
         name

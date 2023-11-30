@@ -43,7 +43,7 @@ type Props = {
 }
 
 export const CommentsTree = (props: Props) => {
-  const { session } = useSession()
+  const { author } = useSession()
   const { t } = useLocalize()
   const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
@@ -85,7 +85,7 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     } else if (currentDate.getTime() > dateFromLocalStorage) {
       const newComments = comments().filter((c) => {
-        if (c.reply_to || c.created_by.slug === session()?.user.slug) {
+        if (c.reply_to || c.created_by.slug === author()?.slug) {
           return
         }
         const created = c.created_at

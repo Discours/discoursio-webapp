@@ -183,9 +183,9 @@ export const apiClient = {
     return resp.data.load_shouts_feed
   },
 
-  getReactionsBy: async ({ by, limit }: { by: ReactionBy; limit?: number }) => {
+  getReactionsBy: async ({ by, limit, offset }: { by: ReactionBy; limit?: number; offset?: number }) => {
     const resp = await publicGraphQLClient
-      .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: 0 })
+      .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: offset ?? 0 })
       .toPromise()
     return resp.data.load_reactions_by
   },

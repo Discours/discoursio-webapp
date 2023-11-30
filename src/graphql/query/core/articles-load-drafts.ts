@@ -10,7 +10,13 @@ export default gql`
       layout
       cover
       # community
-      # mainTopic
+      created_by {
+        id
+        name
+        slug
+        pic
+        created_at
+      }
       media
       topics {
         id

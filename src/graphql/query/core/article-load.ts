@@ -14,8 +14,21 @@ export default gql`
       cover
       body
       media
+      created_by {
+        id
+        name
+        slug
+        pic
+        created_at
+      }
+      updated_by {
+        id
+        name
+        slug
+        pic
+        created_at
+      }
       # community
-      # mainTopic
       topics {
         id
         title
@@ -35,6 +48,7 @@ export default gql`
         created_at
       }
       created_at
+      updated_at
       published_at
       stat {
         viewed

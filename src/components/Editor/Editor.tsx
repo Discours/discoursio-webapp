@@ -73,7 +73,7 @@ const providers: Record<string, HocuspocusProvider> = {}
 
 export const Editor = (props: Props) => {
   const { t } = useLocalize()
-  const { user } = useSession()
+  const { author } = useSession()
 
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
@@ -234,8 +234,8 @@ export const Editor = (props: Props) => {
       CollaborationCursor.configure({
         provider: providers[docName],
         user: {
-          name: user().name,
-          color: uniqolor(user().slug).color,
+          name: author().name,
+          color: uniqolor(author().slug).color,
         },
       }),
       Placeholder.configure({

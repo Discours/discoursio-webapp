@@ -85,7 +85,7 @@ const getTitleAndSubtitle = (
 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
-  const { user } = useSession()
+  const { author } = useSession()
   const mainTopic = props.article.topics[0]
 
   const formattedDate = createMemo<string>(() => {
@@ -94,7 +94,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
-  const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
+  const canEdit = () =>
+    props.article.authors?.some((a) => a.slug === author()?.slug) || props.article.created_by == author().id
 
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {

@@ -9,7 +9,15 @@ import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/sc
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
   actions: {
-    loadReactionsBy: ({ by, limit }: { by: ReactionBy; limit?: number }) => Promise<Reaction[]>
+    loadReactionsBy: ({
+      by,
+      limit,
+      offset,
+    }: {
+      by: ReactionBy
+      limit?: number
+      offset?: number
+    }) => Promise<Reaction[]>
     createReaction: (reaction: ReactionInput) => Promise<void>
     updateReaction: (id: number, reaction: ReactionInput) => Promise<void>
     deleteReaction: (id: number) => Promise<void>
@@ -28,11 +36,13 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const loadReactionsBy = async ({
     by,
     limit,
+    offset,
   }: {
     by: ReactionBy
     limit?: number
+    offset?: number
   }): Promise<Reaction[]> => {
-    const reactions = await apiClient.getReactionsBy({ by, limit })
+    const reactions = await apiClient.getReactionsBy({ by, limit, offset })
     const newReactionEntities = reactions.reduce((acc, reaction) => {
       acc[reaction.id] = reaction
       return acc

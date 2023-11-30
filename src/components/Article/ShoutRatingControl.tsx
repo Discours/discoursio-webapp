@@ -20,7 +20,7 @@ interface ShoutRatingControlProps {
 export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
   const {
-    user,
+    author,
     actions: { requireAuthentication },
   } = useSession()
 
@@ -33,7 +33,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === user()?.slug &&
+        r.created_by.slug === author()?.slug &&
         r.shout.id === props.shout.id &&
         !r.reply_to,
     )
@@ -55,7 +55,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === user()?.slug &&
+        r.created_by.slug === author()?.slug &&
         r.shout.id === props.shout.id &&
         !r.reply_to,
     )

@@ -19,15 +19,9 @@ import { ConfirmModal } from '../ConfirmModal'
 import { HeaderAuth } from '../HeaderAuth'
 import { Modal } from '../Modal'
 import { Snackbar } from '../Snackbar'
-
 import { Link } from './Link'
-
-import styles from './Header.module.scss'
-import { apiClient } from '../../../utils/apiClient'
-import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
-import { Link } from './Link'
-import { Subscribe } from '../../_shared/Subscribe'
 import { SearchModal } from '../SearchModal/SearchModal'
+import styles from './Header.module.scss'
 
 type Props = {
   title?: string

@@ -1,4 +1,4 @@
-import type { Shout } from '../../../graphql/schema/core.gen'
+import type { Author, Shout } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -95,7 +95,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const canEdit = () =>
-    props.article.authors?.some((a) => a.slug === author()?.slug) || props.article.created_by == author().id
+    props.article.authors?.some((a) => a.slug === author()?.slug) ||
+    props.article.created_by.id === author().id
 
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {
@@ -208,11 +209,11 @@ export const ArticleCard = (props: ArticleCardProps) => {
             <Show when={!props.settings?.noauthor}>
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
-                  {(author) => {
+                  {(a: Author) => {
                     return (
                       <AuthorLink
                         size={'XS'}
-                        author={author}
+                        author={a}
                         isFloorImportant={props.settings.isFloorImportant || props.settings?.isWithCover}
                       />
                     )

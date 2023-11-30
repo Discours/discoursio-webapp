@@ -1,9 +1,9 @@
-import { hideModal } from '../../../stores/ui'
-import { useLocalize } from '../../../context/localize'
-import { Button } from '../../_shared/Button'
-import styles from './SearchModal.module.scss'
-import { Icon } from '../../_shared/Icon'
 import clsx from 'clsx'
+
+import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
+
+import styles from './SearchModal.module.scss'
 
 export const SearchModal = () => {
   const { t } = useLocalize()
@@ -33,7 +33,7 @@ export const SearchModal = () => {
         ref={contactElement}
         class={styles.searchField}
       />
-      <button type={submit} class={styles.submitControl}>
+      <button type="submit" class={styles.submitControl}>
         <Icon name="search" />
       </button>
       <p class={styles.searchDescription}>

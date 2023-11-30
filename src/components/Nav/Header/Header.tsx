@@ -18,9 +18,11 @@ import { AuthModal } from '../AuthModal'
 import { ConfirmModal } from '../ConfirmModal'
 import { HeaderAuth } from '../HeaderAuth'
 import { Modal } from '../Modal'
-import { Snackbar } from '../Snackbar'
-import { Link } from './Link'
 import { SearchModal } from '../SearchModal/SearchModal'
+import { Snackbar } from '../Snackbar'
+
+import { Link } from './Link'
+
 import styles from './Header.module.scss'
 
 type Props = {

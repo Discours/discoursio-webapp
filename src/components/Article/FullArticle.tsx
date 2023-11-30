@@ -511,9 +511,9 @@ export const FullArticle = (props: Props) => {
                 <h4>{t('Authors')}</h4>
               </Show>
               <For each={props.article.authors}>
-                {(author) => (
+                {(a: Author) => (
                   <div class="col-xl-12">
-                    <AuthorBadge iconButtons={true} showMessageButton={true} author={author} />
+                    <AuthorBadge iconButtons={true} showMessageButton={true} author={a} />
                   </div>
                 )}
               </For>

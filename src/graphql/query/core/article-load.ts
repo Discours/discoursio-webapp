@@ -14,13 +14,6 @@ export default gql`
       cover
       body
       media
-      created_by {
-        id
-        name
-        slug
-        pic
-        created_at
-      }
       updated_by {
         id
         name

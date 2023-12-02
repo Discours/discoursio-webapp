@@ -10,13 +10,6 @@ export default gql`
       layout
       cover
       # community
-      created_by {
-        id
-        name
-        slug
-        pic
-        created_at
-      }
       topics {
         id
         title

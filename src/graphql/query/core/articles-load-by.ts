@@ -12,13 +12,6 @@ export default gql`
       layout
       cover
       lead
-      created_by {
-        id
-        name
-        slug
-        pic
-        created_at
-      }
       topics {
         id
         title

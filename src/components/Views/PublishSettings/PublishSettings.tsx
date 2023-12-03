@@ -6,7 +6,6 @@ import { createStore } from 'solid-js/store'
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { apiClient } from '../../../graphql/client/core'
 import { Topic } from '../../../graphql/schema/core.gen'
 import { UploadedFile } from '../../../pages/types'
 import { router } from '../../../stores/router'
@@ -20,6 +19,7 @@ import { EMPTY_TOPIC } from '../Edit'
 
 import styles from './PublishSettings.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
+import { useTopicsStore } from '../../../stores/zine/topics'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
@@ -36,9 +36,10 @@ const shorten = (str: string, maxLen: number) => {
   return `${result}...`
 }
 
-export const PublishSettings = async (props: Props) => {
+export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { author } = useSession()
+  const { sortedTopics } = useTopicsStore()
 
   const composeDescription = () => {
     if (!props.form.description) {
@@ -64,7 +65,6 @@ export const PublishSettings = async (props: Props) => {
   } = useEditorContext()
 
   const [settingsForm, setSettingsForm] = createStore(initialData)
-  const [topics, setTopics] = createSignal<Topic[]>(null)
 
   const handleUploadModalContentCloseSetCover = (image: UploadedFile) => {
     hideModal()
@@ -92,11 +92,6 @@ export const PublishSettings = async (props: Props) => {
     }
     setForm('selectedTopics', newSelectedTopics)
   }
-
-  onMount(async () => {
-    const allTopics = await apiClient.getAllTopics()
-    setTopics(allTopics)
-  })
 
   const handleBackClick = () => {
     redirectPage(router, 'edit', {
@@ -211,9 +206,9 @@ export const PublishSettings = async (props: Props) => {
             </p>
             <div class={styles.inputContainer}>
               <div class={clsx('pretty-form__item', styles.topicSelectContainer)}>
-                <Show when={topics()}>
+                <Show when={sortedTopics()}>
                   <TopicSelect
-                    topics={topics()}
+                    topics={sortedTopics()}
                     onChange={handleTopicSelectChange}
                     selectedTopics={props.form.selectedTopics}
                     onMainTopicChange={(mainTopic) => setForm('mainTopic', mainTopic)}

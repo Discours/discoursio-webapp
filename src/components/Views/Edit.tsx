@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show, Suspense } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../context/editor'
@@ -410,7 +410,7 @@ export const EditView = (props: Props) => {
         </form>
       </div>
       <Show when={page().route === 'editSettings'}>
-        <PublishSettings shoutId={props.shout.id} form={form} />
+        <PublishSettings shoutId={props.shout.id} form={form}></PublishSettings>
       </Show>
       <Panel shoutId={props.shout.id} />
     </>

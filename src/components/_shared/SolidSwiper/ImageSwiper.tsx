@@ -179,7 +179,15 @@ export const ImageSwiper = (props: Props) => {
                   // @ts-ignore
                   <swiper-slide lazy="true" virtual-index={index()}>
                     <div class={styles.image}>
-                      <Image src={slide.url} alt={slide.title} width={800} />
+                      <Image
+                        src={
+                          slide.url.startsWith('https://cdn.discours')
+                            ? `https://images.discours.io/${slide.url}`
+                            : slide.url
+                        }
+                        alt={slide.title}
+                        width={800}
+                      />
                       <Show when={props.editorMode}>
                         <Popover content={t('Delete')}>
                           {(triggerRef: (el) => void) => (

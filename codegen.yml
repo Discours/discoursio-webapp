@@ -28,7 +28,7 @@ generates:
 
   # Generate types for notifier
   src/graphql/schema/notifier.gen.ts:
-    schema: 'https://notifier.discours.io' # FIXME: https
+    schema: 'https://notifier.discours.io'
     plugins:
       - 'typescript'
       - 'typescript-operations'

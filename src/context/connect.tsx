@@ -37,32 +37,40 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
   const addHandler = (handler: MessageHandler) => {
     setHandlers((hhh) => [...hhh, handler])
   }
-
+  const [retried, setRetried] = createSignal<number>(0)
   const listen = () => {
-    if (isAuthenticated()) {
-      fetchEventSource('https://connect.discours.io', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: getToken(),
-        },
-        onmessage(event) {
-          const m: SSEMessage = JSON.parse(event.data)
-          console.log('[context.connect] Received message:', m)
+    if (isAuthenticated() && !connected() && retried() < 4) {
+      try {
+        fetchEventSource('https://connect.discours.io', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: getToken(),
+          },
+          onmessage(event) {
+            const m: SSEMessage = JSON.parse(event.data)
+            console.log('[context.connect] Received message:', m)
 
-          // Iterate over all registered handlers and call them
-          messageHandlers().forEach((handler) => handler(m))
-        },
-        onclose() {
-          console.log('[context.connect] sse connection closed by server')
-          setConnected(false)
-        },
-        onerror(err) {
-          console.error('[context.connect] sse connection closed by error', err)
-          setConnected(false)
-          throw new Error(err) // NOTE: simple hack to close the connection
-        },
-      })
+            // Iterate over all registered handlers and call them
+            messageHandlers().forEach((handler) => handler(m))
+          },
+          onclose() {
+            console.log('[context.connect] sse connection closed by server')
+            setConnected(false)
+          },
+          onerror(err) {
+            console.error('[context.connect] sse connection closed by error', err)
+            setConnected(false)
+            throw new Error(err) // NOTE: simple hack to close the connection
+          },
+        })
+      } catch (err) {
+        console.error(err)
+        setRetried((r) => r + 1)
+        if (retried() + 1 > 3) {
+          console.warn('not trying to reconnect anymore, listen() should be called again')
+        }
+      }
     }
   }
 

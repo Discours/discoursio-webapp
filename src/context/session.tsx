@@ -70,7 +70,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
       const authResult = await authorizer().getSession({
         Authorization: token,
       })
-      if (authResult) {
+      if (authResult && authResult.access_token) {
         console.log(authResult)
         setToken(authResult.access_token)
         loadSubscriptions()
@@ -113,13 +113,16 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const isAuthenticated = createMemo(() => Boolean(session()?.user))
 
   const signIn = async (params: LoginInput) => {
-    const authResult = await authorizer().login(params)
-    if (authResult) {
+    const authResult: AuthToken | void = await authorizer().login(params)
+
+    if (authResult && authResult.access_token) {
       setToken(authResult.access_token)
       mutate(authResult)
+      loadSubscriptions()
+      console.debug('signed in')
+    } else {
+      console.info((authResult as AuthToken).message)
     }
-    loadSubscriptions()
-    console.debug('signed in')
   }
 
   const [isAuthWithCallback, setIsAuthWithCallback] = createSignal(null)

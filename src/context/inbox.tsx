@@ -30,7 +30,8 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const [messages, setMessages] = createSignal<Message[]>([])
   const handleMessage = (sseMessage: SSEMessage) => {
     console.log('[context.inbox]:', sseMessage)
-    // TODO: handle all action types: create update delete join left
+
+    // handling all action types: create update delete join left seen
     if (sseMessage.entity === 'message') {
       const relivedMessage = sseMessage.payload
       setMessages((prev) => [...prev, relivedMessage])

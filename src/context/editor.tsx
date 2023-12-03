@@ -2,10 +2,10 @@ import type { JSX } from 'solid-js'
 
 import { openPage } from '@nanostores/router'
 import { Editor } from '@tiptap/core'
-import { Accessor, createContext, createSignal, useContext } from 'solid-js'
+import { Accessor, createContext, createMemo, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
 
-import { apiClient } from '../graphql/client/core'
+import { apiClient as coreClient } from '../graphql/client/core'
 import { ShoutVisibility, Topic, TopicInput } from '../graphql/schema/core.gen'
 import { router, useRouter } from '../stores/router'
 import { slugify } from '../utils/slugify'
@@ -84,7 +84,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
 
   const { page } = useRouter()
-
+  const apiClient = createMemo(() => {
+    if (!coreClient.private) coreClient.connect()
+    return coreClient
+  })
   const {
     actions: { showSnackbar },
   } = useSnackbar()
@@ -126,7 +129,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
-    return apiClient.updateArticle({
+    return apiClient().updateArticle({
       shoutId: formToUpdate.shoutId,
       shoutInput: {
         body: formToUpdate.body,
@@ -211,7 +214,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const publishShoutById = async (shoutId: number) => {
     try {
-      await apiClient.updateArticle({
+      await apiClient().updateArticle({
         shoutId,
         publish: true,
       })
@@ -225,7 +228,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const deleteShout = async (shoutId: number) => {
     try {
-      await apiClient.deleteShout({
+      await apiClient().deleteShout({
         shoutId,
       })
       return true

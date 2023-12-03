@@ -1,9 +1,9 @@
 import type { JSX } from 'solid-js'
 
-import { createContext, onCleanup, useContext } from 'solid-js'
+import { createContext, createMemo, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 
-import { apiClient } from '../graphql/client/core'
+import { apiClient as coreClient } from '../graphql/client/core'
 import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/schema/core.gen'
 
 type ReactionsContextType = {
@@ -33,6 +33,11 @@ export function useReactions() {
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
 
+  const apiClient = createMemo(() => {
+    if (!coreClient.private) coreClient.connect()
+    return coreClient
+  })
+
   const loadReactionsBy = async ({
     by,
     limit,
@@ -42,7 +47,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     limit?: number
     offset?: number
   }): Promise<Reaction[]> => {
-    const reactions = await apiClient.getReactionsBy({ by, limit, offset })
+    const reactions = await coreClient.getReactionsBy({ by, limit, offset })
     const newReactionEntities = reactions.reduce((acc, reaction) => {
       acc[reaction.id] = reaction
       return acc
@@ -52,7 +57,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const createReaction = async (input: ReactionInput): Promise<void> => {
-    const reaction = await apiClient.createReaction(input)
+    const reaction = await apiClient().createReaction(input)
 
     const changes = {
       [reaction.id]: reaction,
@@ -79,14 +84,14 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const deleteReaction = async (id: number): Promise<void> => {
-    const reaction = await apiClient.destroyReaction(id)
+    const reaction = await apiClient().destroyReaction(id)
     setReactionEntities({
       [reaction.id]: undefined,
     })
   }
 
   const updateReaction = async (id: number, input: ReactionInput): Promise<void> => {
-    const reaction = await apiClient.updateReaction(id, input)
+    const reaction = await apiClient().updateReaction(id, input)
     setReactionEntities(reaction.id, reaction)
   }
 

@@ -1,9 +1,9 @@
 import type { ProfileInput } from '../graphql/schema/core.gen'
 
-import { createEffect, createSignal } from 'solid-js'
+import { createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { apiClient } from '../graphql/client/core'
+import { apiClient as coreClient } from '../graphql/client/core'
 import { loadAuthor } from '../stores/zine/authors'
 
 import { useSession } from './session'
@@ -18,8 +18,13 @@ const useProfileForm = () => {
   const { author: currentAuthor } = useSession()
   const [slugError, setSlugError] = createSignal<string>()
 
+  const apiClient = createMemo(() => {
+    if (!coreClient.private) coreClient.connect()
+    return coreClient
+  })
+
   const submit = async (profile: ProfileInput) => {
-    const response = await apiClient.updateProfile(profile)
+    const response = await apiClient().updateProfile(profile)
     if (response.error) {
       setSlugError(response.error)
       return response.error

@@ -1,7 +1,15 @@
 import type { ParentComponent } from 'solid-js'
 
 import { Authorizer, User, AuthToken, ConfigType } from '@authorizerdev/authorizer-js'
-import { createContext, createEffect, createMemo, onCleanup, onMount, useContext } from 'solid-js'
+import {
+  createContext,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  useContext,
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 export type AuthorizerState = {
@@ -21,7 +29,7 @@ type AuthorizerContextActions = {
 }
 const config: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
-  redirectURL: 'https://auth.discours.io',
+  redirectURL: 'https://discoursio-webapp.vercel.app',
   clientID: '9c113377-5eea-4c89-98e1-69302462fc08', // FIXME: use env?
 }
 
@@ -56,15 +64,16 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
     loading: true,
     config: {
       authorizerURL: props.authorizerURL,
+      redirectURL: props.redirectURL,
       clientID: props.clientID,
     } as ConfigType,
   })
-
+  const [redirect, setRedirect] = createSignal<string>()
   const authorizer = createMemo(
     () =>
       new Authorizer({
         authorizerURL: props.authorizerURL,
-        redirectURL: props.redirectURL,
+        redirectURL: redirect(),
         clientID: props.clientID,
       }),
   )
@@ -148,6 +157,7 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
   }
 
   onMount(() => {
+    setRedirect(window.location.origin)
     !state.token && getToken()
   })
 

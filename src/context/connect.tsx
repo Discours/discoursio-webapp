@@ -3,9 +3,8 @@ import type { Accessor, JSX } from 'solid-js'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { createContext, useContext, createSignal, createEffect } from 'solid-js'
 
-import { getToken } from '../graphql/privateGraphQLClient'
-
 import { useSession } from './session'
+import { useAuthorizer } from './authorizer'
 
 export interface SSEMessage {
   id: string
@@ -30,20 +29,22 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
   // const [messages, setMessages] = createSignal<Array<SSEMessage>>([]);
 
   const [connected, setConnected] = createSignal(false)
-  const { isAuthenticated } = useSession()
+  const {
+    isAuthenticated,
+    actions: { getToken },
+  } = useSession()
 
   const addHandler = (handler: MessageHandler) => {
     setHandlers((hhh) => [...hhh, handler])
   }
 
   const listen = () => {
-    const token = getToken()
-    if (token) {
+    if (isAuthenticated()) {
       fetchEventSource('https://connect.discours.io', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token,
+          Authorization: getToken(),
         },
         onmessage(event) {
           const m: SSEMessage = JSON.parse(event.data)
@@ -54,9 +55,11 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
         },
         onclose() {
           console.log('[context.connect] sse connection closed by server')
+          setConnected(false)
         },
         onerror(err) {
           console.error('[context.connect] sse connection closed by error', err)
+          setConnected(false)
           throw new Error(err) // NOTE: simple hack to close the connection
         },
       })

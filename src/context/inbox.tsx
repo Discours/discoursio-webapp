@@ -1,7 +1,7 @@
-import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/schema/chat.gen'
+import type { Chat, Message, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
 import type { Accessor, JSX } from 'solid-js'
 
-import { createContext, createSignal, useContext } from 'solid-js'
+import { createContext, createMemo, createSignal, useContext } from 'solid-js'
 
 import { inboxClient } from '../graphql/client/chat'
 import { loadMessages } from '../stores/inbox'
@@ -15,7 +15,7 @@ type InboxContextType = {
     createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
     loadChats: () => Promise<void>
     getMessages?: (chatId: string) => Promise<void>
-    sendMessage?: (args: MutationCreateMessageArgs) => void
+    sendMessage?: (args: MutationCreate_MessageArgs) => void
   }
 }
 
@@ -39,13 +39,16 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       setChats((prev) => [...prev, relivedChat])
     }
   }
-
+  const apiClient = createMemo(() => {
+    if (!inboxClient.private) inboxClient.connect()
+    return inboxClient
+  })
   const { addHandler } = useConnect()
   addHandler(handleMessage)
 
   const loadChats = async () => {
     try {
-      const newChats = await inboxClient.loadChats({ limit: 50, offset: 0 })
+      const newChats = await apiClient().loadChats({ limit: 50, offset: 0 })
       setChats(newChats)
     } catch (error) {
       console.log('[loadChats]', error)
@@ -62,9 +65,9 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const sendMessage = async (args: MutationCreateMessageArgs) => {
+  const sendMessage = async (args: MutationCreate_MessageArgs) => {
     try {
-      const message = await inboxClient.createMessage(args)
+      const message = await apiClient().createMessage(args)
       setMessages((prev) => [...prev, message])
       const currentChat = chats().find((chat) => chat.id === args.chat_id)
       setChats((prev) => [

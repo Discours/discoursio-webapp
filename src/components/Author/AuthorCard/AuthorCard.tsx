@@ -33,6 +33,7 @@ export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const {
     session,
+    author,
     subscriptions,
     isSessionLoaded,
     actions: { loadSubscriptions, requireAuthentication },
@@ -57,7 +58,7 @@ export const AuthorCard = (props: Props) => {
     setIsSubscribing(false)
   }
 
-  const isProfileOwner = createMemo(() => session()?.user?.slug === props.author.slug)
+  const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
 
   const name = createMemo(() => {
     if (lang() !== 'ru') {
@@ -123,7 +124,7 @@ export const AuthorCard = (props: Props) => {
         <Userpic
           size={'XL'}
           name={props.author.name}
-          userpic={props.author.userpic}
+          userpic={props.author.pic}
           slug={props.author.slug}
           class={styles.circlewrap}
         />
@@ -143,12 +144,7 @@ export const AuthorCard = (props: Props) => {
                 <a href="?modal=followers" class={styles.subscribers}>
                   <For each={props.followers.slice(0, 3)}>
                     {(f) => (
-                      <Userpic
-                        size={'XS'}
-                        name={f.name}
-                        userpic={f.userpic}
-                        class={styles.subscribersItem}
-                      />
+                      <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
                     )}
                   </For>
                   <div class={styles.subscribersCounter}>
@@ -166,7 +162,7 @@ export const AuthorCard = (props: Props) => {
                           <Userpic
                             size={'XS'}
                             name={f.name}
-                            userpic={f.userpic}
+                            userpic={f.pic}
                             class={styles.subscribersItem}
                           />
                         )
@@ -242,7 +238,7 @@ export const AuthorCard = (props: Props) => {
                 <SharePopup
                   title={props.author.name}
                   description={props.author.bio}
-                  imageUrl={props.author.userpic}
+                  imageUrl={props.author.pic}
                   shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
                   trigger={<Button variant="secondary" value={t('Share')} />}
                 />

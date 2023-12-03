@@ -12,6 +12,7 @@ import { showModal } from '../stores/ui'
 import { useAuthorizer } from './authorizer'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
+import { getToken, resetToken, setToken } from '../stores/token'
 
 export type SessionContextType = {
   session: Resource<AuthToken>
@@ -21,6 +22,7 @@ export type SessionContextType = {
   author: Resource<Author | null>
   isAuthenticated: Accessor<boolean>
   actions: {
+    getToken: () => string
     loadSession: () => AuthToken | Promise<AuthToken>
     loadSubscriptions: () => Promise<void>
     requireAuthentication: (
@@ -52,15 +54,6 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     actions: { showSnackbar },
   } = useSnackbar()
   const [, { authorizer }] = useAuthorizer()
-  // const [getToken, setToken] = createSignal<string>('')
-  // https://start.solidjs.com/api/createCookieSessionStorage
-  const [store, setStore, { remove, clear, toJSON }] = createStorage({
-    api: cookieStorage,
-    prefix: 'discoursio',
-  })
-  const getToken = () => store.token
-  const setToken = (value) => setStore('token', value)
-  const resetToken = () => remove('token')
 
   const loadSubscriptions = async (): Promise<void> => {
     const result = await apiClient.getMySubscriptions()
@@ -73,13 +66,13 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const getSession = async (): Promise<AuthToken> => {
     try {
-      const token = getToken() // FIXME: token in localStorage?
+      const token = getToken()
       const authResult = await authorizer().getSession({
-        Authorization: token, // authToken()
+        Authorization: token,
       })
       if (authResult) {
         console.log(authResult)
-        setToken(authResult.access_token || authResult.id_token)
+        setToken(authResult.access_token)
         loadSubscriptions()
         return authResult
       } else {
@@ -122,7 +115,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const signIn = async (params: LoginInput) => {
     const authResult = await authorizer().login(params)
     if (authResult) {
-      setToken(authResult.access_token || authResult.id_token)
+      setToken(authResult.access_token)
       mutate(authResult)
     }
     loadSubscriptions()
@@ -170,6 +163,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     signOut,
     confirmEmail,
     loadSubscriptions,
+    getToken,
   }
   const value: SessionContextType = {
     session,

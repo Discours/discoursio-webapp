@@ -132,6 +132,7 @@ export const RegisterForm = () => {
         email: cleanEmail,
         password: password(),
         confirm_password: password(),
+        redirect_uri: window.location.origin,
       })
 
       setIsSuccess(true)

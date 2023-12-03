@@ -34,6 +34,8 @@ export const ForgotPasswordForm = () => {
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
+  const [message, setMessage] = createSignal<string>('')
+
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
 
@@ -61,11 +63,14 @@ export const ForgotPasswordForm = () => {
     }
 
     setIsSubmitting(true)
-
     try {
-      const response = await authorizer().forgotPassword({ email: email() })
+      const response = await authorizer().forgotPassword({
+        email: email(),
+        redirect_uri: window.location.href + '&success=1', // FIXME: redirect to success page accepting confirmation code
+      })
       if (response) {
         console.debug(response)
+        if (response.message) setMessage(response.message)
       }
     } catch (error) {
       if (error instanceof ApiError && error.code === 'user_not_found') {
@@ -86,7 +91,9 @@ export const ForgotPasswordForm = () => {
     >
       <div>
         <h4>{t('Forgot password?')}</h4>
-        <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
+        <div class={styles.authSubtitle}>
+          {t(message()) || t('Everything is ok, please give us your email address')}
+        </div>
 
         <div
           class={clsx('pretty-form__item', {
@@ -116,7 +123,6 @@ export const ForgotPasswordForm = () => {
 
         <Show when={isUserNotFount()}>
           <div class={styles.authSubtitle}>
-            {/*TODO: text*/}
             {t("We can't find you, check email or")}{' '}
             <a
               href="#"

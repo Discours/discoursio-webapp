@@ -28,7 +28,7 @@ export const EmailConfirm = () => {
   onMount(async () => {
     const token = searchParams().token
     try {
-      await confirmEmail(token)
+      await confirmEmail({ token })
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.code === 'token_expired') {

@@ -6,7 +6,7 @@ import { Portal } from 'solid-js/web'
 
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
-import { notifierClient as apiClient } from '../graphql/client/notifier'
+import { notifierClient } from '../graphql/client/notifier'
 import { Notification } from '../graphql/schema/notifier.gen'
 
 import { SSEMessage, useConnect } from './connect'
@@ -38,9 +38,13 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
+  const apiClient = createMemo(() => {
+    if (!notifierClient.private) notifierClient.connect()
+    return notifierClient
+  })
   const { addHandler } = useConnect()
   const loadNotifications = async (options: { limit: number; offset?: number }) => {
-    const { notifications, unread, total } = await apiClient.getNotifications(options)
+    const { notifications, unread, total } = await apiClient().getNotifications(options)
     const newNotificationEntities = notifications.reduce((acc, notification) => {
       acc[notification.id] = notification
       return acc
@@ -69,13 +73,13 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   })
 
   const markNotificationAsRead = async (notification: Notification) => {
-    await apiClient.markNotificationAsRead(notification.id)
+    await apiClient().markNotificationAsRead(notification.id)
     const nnn = new Set([...notification.seen, notification.id])
     setNotificationEntities(notification.id, 'seen', [...nnn])
     setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
   const markAllNotificationsAsRead = async () => {
-    await apiClient.markAllNotificationsAsRead()
+    await apiClient().markAllNotificationsAsRead()
     loadNotifications({ limit: loadedNotificationsCount() })
   }
 

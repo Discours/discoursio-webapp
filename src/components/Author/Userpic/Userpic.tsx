@@ -22,7 +22,7 @@ export const Userpic = (props: Props) => {
   const letters = () => {
     if (!props.name) return
     const names = props.name ? props.name.split(' ') : []
-    return names[0][0] + '.' + (names.length > 1 ? names[1][0] : '') + '.'
+    return names[0][0 ?? names[0][0]] + '.' + (names.length > 1 ? names[1][0] + '.' : '')
   }
 
   const avatarSize = createMemo(() => {

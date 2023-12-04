@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js'
 
-import { Icon } from '../_shared/Icon'
+import { Icon } from '../Icon'
 
 import styles from './Search.module.scss'
 
@@ -9,7 +9,7 @@ type Props = {
   onChange: (value: () => string) => void
 }
 
-const Search = (props: Props) => {
+export const Search = (props: Props) => {
   const [value, setValue] = createSignal<string>('')
   const search = (event) => {
     event.preventDefault()
@@ -25,5 +25,3 @@ const Search = (props: Props) => {
     </div>
   )
 }
-
-export default Search

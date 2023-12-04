@@ -14,7 +14,7 @@ import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { baseUrl } from '../../utils/config'
 import { getImageUrl } from '../../utils/getImageUrl'
-import { getDescription, getKeywords, getOpenGraphUrl } from '../../utils/meta'
+import { getDescription, getKeywords, getCanonicalUrl } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
 import { Lightbox } from '../_shared/Lightbox'
@@ -285,20 +285,16 @@ export const FullArticle = (props: Props) => {
   }
 
   const ogImage = createMemo(() => getImageUrl(props.article.cover, { width: 1200 }))
-  // const description = createMemo(() => getDescription(props.article.body))
   const description = createMemo(() => getDescription(props.article.body))
   const ogTitle = createMemo(() => props.article.title)
   const keywords = createMemo(() => getKeywords(props.article))
-  const ogUrl = createMemo(() => getOpenGraphUrl(props.article.slug))
-
-  console.log('!!! article:', props.article)
-  console.log('!!! :', getDescription('<p class="asdasd">asdasdasd</p> asdasd <h1>111</h1>'))
+  const canonicalUrl = createMemo(() => getCanonicalUrl(props.article.slug))
 
   return (
     <>
       <Meta name="descprition" content={description()} />
       <Meta name="keywords" content={keywords()} />
-      <Meta name="og:url" content={ogUrl()} />
+      <Meta name="og:url" content={canonicalUrl()} />
       <Meta name="og:type" content="article" />
       <Meta name="og:title" content={ogTitle()} />
       <Meta name="og:image" content={ogImage()} />
@@ -307,6 +303,7 @@ export const FullArticle = (props: Props) => {
       <Meta name="twitter:title" content={ogTitle()} />
       <Meta name="twitter:description" content={description()} />
       <Meta name="twitter:image" content={ogImage()} />
+      <Link rel="canonical" href={canonicalUrl()} />
 
       <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
       <div class="wide-container">

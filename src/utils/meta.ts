@@ -25,7 +25,7 @@ export const getKeywords = (shout: Shout): string => {
   return shout.topics.map((topic) => topic.title).join(', ')
 }
 
-export const getOpenGraphUrl = (shoutSlug: string): string => {
+export const getCanonicalUrl = (shoutSlug: string): string => {
   if (isServer) {
     return `https://${import.meta.env.VERCEL_URL}/${shoutSlug}`
   }

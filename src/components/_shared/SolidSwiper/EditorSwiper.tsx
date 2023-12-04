@@ -90,26 +90,27 @@ export const EditorSwiper = (props: Props) => {
 
   const initUpload = async (selectedFiles) => {
     const isValid = validateFiles('image', selectedFiles)
-    if (isValid) {
-      try {
-        setLoading(true)
-        const results: UploadedFile[] = []
-        for (const file of selectedFiles) {
-          const result = await handleImageUpload(file)
-          results.push(result)
-        }
-        props.onImagesAdd(composeMediaItems(results))
-        setLoading(false)
-        swipeToUploaded()
-      } catch (error) {
-        await showSnackbar({ type: 'error', body: t('Error') })
-        console.error('[runUpload]', error)
-        setLoading(false)
-      }
-    } else {
+
+    if (!isValid) {
       await showSnackbar({ type: 'error', body: t('Invalid file type') })
       setLoading(false)
-      return false
+      return
+    }
+
+    try {
+      setLoading(true)
+      const results: UploadedFile[] = []
+      for (const file of selectedFiles) {
+        const result = await handleImageUpload(file)
+        results.push(result)
+      }
+      props.onImagesAdd(composeMediaItems(results))
+      setLoading(false)
+      swipeToUploaded()
+    } catch (error) {
+      console.error('[runUpload]', error)
+      showSnackbar({ type: 'error', body: t('Error') })
+      setLoading(false)
     }
   }
   const handleUploadThumb = async () => {

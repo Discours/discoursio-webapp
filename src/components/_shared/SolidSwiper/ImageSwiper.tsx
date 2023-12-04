@@ -1,27 +1,16 @@
-import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, Show, on, onMount, lazy, onCleanup } from 'solid-js'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { throttle } from 'throttle-debounce'
 
-import { useLocalize } from '../../../context/localize'
-import { useSnackbar } from '../../../context/snackbar'
-import { MediaItem, UploadedFile } from '../../../pages/types'
-import { composeMediaItems } from '../../../utils/composeMediaItems'
+import { MediaItem } from '../../../pages/types'
 import { getImageUrl } from '../../../utils/getImageUrl'
-import { handleImageUpload } from '../../../utils/handleImageUpload'
-import { validateFiles } from '../../../utils/validateFile'
-import { DropArea } from '../DropArea'
 import { Icon } from '../Icon'
 import { Image } from '../Image'
-import { Loading } from '../Loading'
-import { Popover } from '../Popover'
 
 import { SwiperRef } from './swiper'
 
 import styles from './Swiper.module.scss'
-
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type Props = {
   images: MediaItem[]
@@ -30,6 +19,8 @@ type Props = {
   onImageDelete?: (mediaItemIndex: number) => void
   onImageChange?: (index: number, value: MediaItem) => void
 }
+
+const MIN_WIDTH = 540
 
 export const ImageSwiper = (props: Props) => {
   const [slideIndex, setSlideIndex] = createSignal(0)
@@ -61,22 +52,21 @@ export const ImageSwiper = (props: Props) => {
   })
 
   onMount(() => {
-    const changeDirection = () => {
+    const updateDirection = () => {
       const width = window.innerWidth
-      const direction = width > 540 ? 'vertical' : 'horizontal'
+      const direction = width > MIN_WIDTH ? 'vertical' : 'horizontal'
       if (direction === 'horizontal') {
         setIsMobileView(true)
       } else {
         setIsMobileView(false)
       }
       thumbSwipeRef.current?.swiper?.changeDirection(direction)
-      console.log('!!! RES:')
     }
 
-    changeDirection()
+    updateDirection()
 
     const handleResize = throttle(100, () => {
-      changeDirection()
+      updateDirection()
     })
 
     window.addEventListener('resize', handleResize)

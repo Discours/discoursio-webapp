@@ -16,7 +16,7 @@ import { slugify } from '../../utils/slugify'
 import { DropArea } from '../_shared/DropArea'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
-import { ImageSwiper } from '../_shared/SolidSwiper'
+import { EditorSwiper } from '../_shared/SolidSwiper'
 import { Editor, Panel } from '../Editor'
 import { AudioUploader } from '../Editor/AudioUploader'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
@@ -369,8 +369,7 @@ export const EditView = (props: Props) => {
                     </div>
 
                     <Show when={props.shout.layout === 'image'}>
-                      <ImageSwiper
-                        editorMode={true}
+                      <EditorSwiper
                         images={mediaItems()}
                         onImageChange={handleMediaChange}
                         onImageDelete={(index) => handleMediaDelete(index)}

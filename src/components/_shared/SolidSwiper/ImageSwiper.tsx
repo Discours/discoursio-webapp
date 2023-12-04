@@ -2,6 +2,7 @@ import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, Show, on, onMount, lazy, onCleanup } from 'solid-js'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
+import { throttle } from 'throttle-debounce'
 
 import { useLocalize } from '../../../context/localize'
 import { useSnackbar } from '../../../context/snackbar'
@@ -32,6 +33,7 @@ type Props = {
 
 export const ImageSwiper = (props: Props) => {
   const [slideIndex, setSlideIndex] = createSignal(0)
+  const [isMobileView, setIsMobileView] = createSignal(false)
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
   const swiperMainContainer: { current: HTMLDivElement } = { current: null }
@@ -58,27 +60,30 @@ export const ImageSwiper = (props: Props) => {
     SwiperCore.use([Pagination, Navigation, Manipulation, ResizeObserver])
   })
 
-  const [windowWidth, setWindowWidth] = createSignal(null)
-  const [isMobileView, setIsMobileView] = createSignal(false)
   onMount(() => {
-    // Trick to fix Failed to construct 'ResizeObserver' on SSR rerender
-    setWindowWidth(window.innerWidth)
-    setTimeout(() => {
-      const resizeObserver = new ResizeObserver((entries) => {
-        const rect = entries[0].contentRect
-        const direction = rect.width > 540 ? 'vertical' : 'horizontal'
-        if (direction === 'horizontal') {
-          setIsMobileView(true)
-        } else {
-          setIsMobileView(false)
-        }
-        thumbSwipeRef.current?.swiper?.changeDirection(direction)
-      })
-      resizeObserver.observe(swiperMainContainer.current)
-      onCleanup(() => {
-        resizeObserver.disconnect()
-      })
-    }, 100)
+    const changeDirection = () => {
+      const width = window.innerWidth
+      const direction = width > 540 ? 'vertical' : 'horizontal'
+      if (direction === 'horizontal') {
+        setIsMobileView(true)
+      } else {
+        setIsMobileView(false)
+      }
+      thumbSwipeRef.current?.swiper?.changeDirection(direction)
+      console.log('!!! RES:')
+    }
+
+    changeDirection()
+
+    const handleResize = throttle(100, () => {
+      changeDirection()
+    })
+
+    window.addEventListener('resize', handleResize)
+
+    onCleanup(() => {
+      window.removeEventListener('resize', handleResize)
+    })
   })
 
   return (
@@ -136,10 +141,6 @@ export const ImageSwiper = (props: Props) => {
                 auto-scroll-offset={1}
                 watch-overflow={true}
                 watch-slides-visibility={true}
-                direction={windowWidth() && windowWidth() < 760 ? 'vertical' : 'horizontal'}
-
-                // slides-offset-after={props.editorMode && 160}
-                // slides-offset-before={props.editorMode && 30}
               >
                 <For each={props.images}>
                   {(slide, index) => (

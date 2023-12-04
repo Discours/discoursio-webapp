@@ -2,7 +2,7 @@ import type { Author, Shout } from '../../graphql/types.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
-import { Link } from '@solidjs/meta'
+import { Link, Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
 import { isServer } from 'solid-js/web'
@@ -12,8 +12,9 @@ import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
+import { baseUrl } from '../../utils/config'
 import { getImageUrl } from '../../utils/getImageUrl'
-import { getDescription } from '../../utils/meta'
+import { getDescription, getKeywords, getOpenGraphUrl } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
 import { Lightbox } from '../_shared/Lightbox'
@@ -283,8 +284,30 @@ export const FullArticle = (props: Props) => {
     }
   }
 
+  const ogImage = createMemo(() => getImageUrl(props.article.cover, { width: 1200 }))
+  // const description = createMemo(() => getDescription(props.article.body))
+  const description = createMemo(() => getDescription(props.article.body))
+  const ogTitle = createMemo(() => props.article.title)
+  const keywords = createMemo(() => getKeywords(props.article))
+  const ogUrl = createMemo(() => getOpenGraphUrl(props.article.slug))
+
+  console.log('!!! article:', props.article)
+  console.log('!!! :', getDescription('<p class="asdasd">asdasdasd</p> asdasd <h1>111</h1>'))
+
   return (
     <>
+      <Meta name="descprition" content={description()} />
+      <Meta name="keywords" content={keywords()} />
+      <Meta name="og:url" content={ogUrl()} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle()} />
+      <Meta name="og:image" content={ogImage()} />
+      <Meta name="og:desscription" content={description()} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle()} />
+      <Meta name="twitter:description" content={description()} />
+      <Meta name="twitter:image" content={ogImage()} />
+
       <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
       <div class="wide-container">
         <div class="row position-relative">

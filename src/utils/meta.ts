@@ -27,7 +27,7 @@ export const getKeywords = (shout: Shout): string => {
 
 export const getOpenGraphUrl = (shoutSlug: string): string => {
   if (isServer) {
-    return `https://${import.meta.env.VERSEL_URL}/${shoutSlug}`
+    return `https://${import.meta.env.VERCEL_URL}/${shoutSlug}`
   }
   return `https://${location.host}/${shoutSlug}`
 }

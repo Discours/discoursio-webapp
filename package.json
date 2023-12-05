@@ -23,9 +23,9 @@
     "prepare": "husky install",
     "preview": "vite preview",
     "start": "vite",
-    "start:local": "cross-env VERCEL_URL=localhost:3000 PUBLIC_API_URL=http://127.0.0.1:8080 vite",
-    "start:production": "cross-env VERCEL_URL=localhost:3000 PUBLIC_API_URL=https://v2.discours.io vite",
-    "start:staging": "cross-env VERCEL_URL=localhost:3000 PUBLIC_API_URL=https://testapi.discours.io vite",
+    "start:local": "cross-env PUBLIC_API_URL=http://127.0.0.1:8080 vite",
+    "start:production": "cross-env PUBLIC_API_URL=https://v2.discours.io vite",
+    "start:staging": "cross-env PUBLIC_API_URL=https://testapi.discours.io vite",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },

@@ -457,7 +457,7 @@ export const FullArticle = (props: Props) => {
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
                     <SharePopup
                       title={props.article.title}
-                      description={getDescription(props.article.body)}
+                      description={description}
                       imageUrl={props.article.cover}
                       containerCssClass={stylesHeader.control}
                       trigger={
@@ -491,7 +491,7 @@ export const FullArticle = (props: Props) => {
                 isOwner={canEdit()}
                 containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
                 title={props.article.title}
-                description={getDescription(props.article.body)}
+                description={description}
                 imageUrl={props.article.cover}
                 shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                 trigger={

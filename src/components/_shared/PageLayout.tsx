@@ -38,19 +38,6 @@ export const PageLayout = (props: Props) => {
   return (
     <>
       <Title>{props.title}</Title>
-      <Meta name="descprition" content="" />
-      <Meta name="keywords" content="" />
-      <Meta name="og:url" content="" />
-      <Meta name="og:type" content="" />
-      <Meta name="og:title" content="" />
-      <Meta name="og:image" content="" />
-      <Meta name="og:desscription" content="" />
-      <Meta name="twitter:card" content="" />
-      <Meta name="twitter:title" content="" />
-      <Meta name="twitter:description" content="" />
-      <Meta name="twitter:image" content="" />
-      <Link rel="canonical" href="" />
-
       <Header
         slug={props.slug}
         title={props.headerTitle}

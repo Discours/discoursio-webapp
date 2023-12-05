@@ -24,10 +24,3 @@ export const getDescription = (body: string): string => {
 export const getKeywords = (shout: Shout): string => {
   return shout.topics.map((topic) => topic.title).join(', ')
 }
-
-export const getCanonicalUrl = (shoutSlug: string): string => {
-  if (isServer) {
-    return `https://${import.meta.env.VERCEL_URL}/${shoutSlug}`
-  }
-  return `https://${location.host}/${shoutSlug}`
-}

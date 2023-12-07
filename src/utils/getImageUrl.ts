@@ -14,12 +14,5 @@ const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
 export const getImageUrl = (src: string, options: { width?: number; height?: number } = {}) => {
   const sizeUrlPart = getSizeUrlPart(options)
 
-  const thumborPrefix = `${thumborUrl}/unsafe/`
-
-  if (src.startsWith(thumborPrefix)) {
-    const thumborKey = src.replace(thumborPrefix, '')
-    return `${thumborUrl}/unsafe/${sizeUrlPart}${thumborKey}`
-  }
-
-  return `${thumborUrl}/unsafe/${sizeUrlPart}${src}`
+  return `${thumborUrl}/unsafe/${sizeUrlPart}${src.replace(thumborUrl, '').replace('/unsafe', '')}`
 }

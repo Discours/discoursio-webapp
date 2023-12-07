@@ -70,7 +70,9 @@ export const FullArticle = (props: Props) => {
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.created_at * 1000)))
 
-  const mainTopic = createMemo(() => (props.article.topics.length > 0 ? props.article.topics[0] : null))
+  const mainTopic = createMemo(() =>
+    props.article.topics.length > 0 ? props.article.topics.reverse()[0] : null,
+  )
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === author()?.slug)
 

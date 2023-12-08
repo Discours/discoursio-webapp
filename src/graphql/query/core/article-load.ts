@@ -12,6 +12,7 @@ export default gql`
       slug
       layout
       cover
+      cover_caption
       body
       media
       updated_by {

@@ -13,6 +13,7 @@ import { SearchField } from '../_shared/SearchField'
 import { TopicCard } from '../Topic/Card'
 
 import styles from './AllTopics.module.scss'
+import { capitalize } from '../../utils/capitalize'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -23,12 +24,13 @@ type AllTopicsViewProps = {
 }
 
 const PAGE_SIZE = 20
-const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#']
 
 export const AllTopicsView = (props: AllTopicsViewProps) => {
   const { t, lang } = useLocalize()
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
+  const ALPHABET =
+    lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ#']
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
@@ -52,8 +54,9 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
     return sortedTopics().reduce(
       (acc, topic) => {
-        let letter = topic.title[0].toUpperCase()
+        let letter = lang() == 'en' ? topic.slug[0].toUpperCase() : topic.title[0].toUpperCase()
         if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '#'
+        if (/[^A-z]/.test(letter) && lang() === 'en') letter = '#'
         if (!acc[letter]) acc[letter] = []
         acc[letter].push(topic)
         return acc
@@ -143,7 +146,9 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                           <For each={byLetter()[letter]}>
                             {(topic) => (
                               <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
-                                <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                                <a href={`/topic/${topic.slug}`}>
+                                  {lang() == 'en' ? capitalize(topic.slug.replace(/-/, ' ')) : topic.title}
+                                </a>
                                 <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
                               </div>
                             )}

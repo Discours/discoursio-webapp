@@ -35,7 +35,7 @@ interface TopicProps {
 }
 
 export const TopicCard = (props: TopicProps) => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
   const {
     subscriptions,
     isSessionLoaded,
@@ -83,6 +83,10 @@ export const TopicCard = (props: TopicProps) => {
     )
   }
 
+  const title = createMemo(() =>
+    capitalize(lang() == 'en' ? props.topic.slug.replace(/-/, ' ') : props.topic.title || ''),
+  )
+
   return (
     <div class={styles.topicContainer}>
       <div
@@ -101,9 +105,9 @@ export const TopicCard = (props: TopicProps) => {
               !props.subscribeButtonBottom && !props.isNarrow && !props.compact,
           }}
         >
-          <Show when={props.topic.title && !props.isCardMode}>
+          <Show when={title() && !props.isCardMode}>
             <h3 class={styles.topicTitle}>
-              <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
+              <a href={`/topic/${props.topic.slug}`}>{title()}</a>
             </h3>
           </Show>
 
@@ -114,7 +118,7 @@ export const TopicCard = (props: TopicProps) => {
           <Show when={props.topic.pic}>
             <div class={styles.topicAvatar}>
               <a href={`/topic/${props.topic.slug}`}>
-                <img src={props.topic.pic} alt={props.topic.title} />
+                <img src={props.topic.pic} alt={title()} />
               </a>
             </div>
           </Show>

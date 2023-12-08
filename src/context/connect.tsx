@@ -59,16 +59,16 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
             setConnected(false)
           },
           onerror(err) {
-            console.error('[context.connect] sse connection closed by error', err)
+            console.error('[context.connect] sse connection error', err)
             setConnected(false)
             throw new Error(err) // NOTE: simple hack to close the connection
           },
         })
       } catch (err) {
-        console.error(err)
-        setRetried((r) => r + 1)
-        if (retried() + 1 > 3) {
-          console.warn('not trying to reconnect anymore, listen() should be called again')
+        if (retried() < 4) {
+          setRetried((r) => r + 1)
+        } else {
+          console.warn('Not trying to reconnect anymore; listen() should be called again.')
         }
       }
     }

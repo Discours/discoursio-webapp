@@ -96,7 +96,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const canEdit = () =>
     props.article.authors?.some((a) => a.slug === author()?.slug) ||
-    props.article.created_by.id === author().id
+    props.article.created_by?.id === author().id
 
   const { changeSearchParam } = useRouter()
   const scrollToComments = (event) => {

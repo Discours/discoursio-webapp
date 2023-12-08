@@ -48,7 +48,7 @@ type Props = {
 }
 
 export const FeedView = (props: Props) => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
 
@@ -227,7 +227,9 @@ export const FeedView = (props: Props) => {
               <For each={topTopics().slice(0, 7)}>
                 {(topic) => (
                   <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
-                    <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
+                    <a href={`/topic/${topic.slug}`}>
+                      {lang() == 'en' ? topic.slug.replace(/-/, ' ') : topic.title}
+                    </a>{' '}
                   </span>
                 )}
               </For>

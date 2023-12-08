@@ -221,8 +221,8 @@ export const HeaderAuth = (props: Props) => {
                       <div classList={{ entered: page().path === `/${author()?.slug}` }}>
                         <Userpic
                           size={'M'}
-                          name={author().name}
-                          userpic={author().pic}
+                          name={author()?.name}
+                          userpic={author()?.pic}
                           class={styles.userpic}
                         />
                       </div>

@@ -10,6 +10,7 @@ import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 
 import styles from './TopicBadge.module.scss'
+import { capitalize } from '../../../utils/capitalize'
 
 type Props = {
   topic: Topic
@@ -18,7 +19,7 @@ type Props = {
 
 export const TopicBadge = (props: Props) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
   const {
     isAuthenticated,
     subscriptions,
@@ -52,7 +53,9 @@ export const TopicBadge = (props: Props) => {
         }
       />
       <a href={`/topic/${props.topic.slug}`} class={styles.info}>
-        <span class={styles.title}>{props.topic.title}</span>
+        <span class={styles.title}>
+          {lang() == 'en' ? capitalize(props.topic.slug.replace(/-/, ' ')) : props.topic.title}
+        </span>
         <Show
           when={props.topic.body}
           fallback={

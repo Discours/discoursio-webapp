@@ -33,6 +33,7 @@ import { ShoutRatingControl } from './ShoutRatingControl'
 
 import styles from './Article.module.scss'
 import stylesHeader from '../Nav/Header/Header.module.scss'
+import { capitalize } from '../../utils/capitalize'
 
 type Props = {
   article: Shout
@@ -59,7 +60,7 @@ const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
 export const FullArticle = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
 
-  const { t, formatDate } = useLocalize()
+  const { t, formatDate, lang } = useLocalize()
   const {
     author,
     isAuthenticated,
@@ -70,9 +71,11 @@ export const FullArticle = (props: Props) => {
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.created_at * 1000)))
 
-  const mainTopic = createMemo(() =>
-    props.article.topics.length > 0 ? props.article.topics.reverse()[0] : null,
-  )
+  const mainTopic = createMemo(() => {
+    const mt = props.article.topics.length > 0 ? props.article.topics[0] : null
+    mt.title = lang() == 'en' ? capitalize(mt.slug.replace('-', ' ')) : mt.title
+    return mt
+  })
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === author()?.slug)
 
@@ -319,7 +322,10 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <Image width={800} alt={props.article.cover_caption} src={props.article.cover} />
+                  <figure class="img-align-column">
+                    <Image width={800} alt={props.article.cover_caption} src={props.article.cover} />
+                    <figcaption>{props.article.cover_caption}</figcaption>
+                  </figure>
                 </Show>
               </div>
             </Show>
@@ -501,7 +507,9 @@ export const FullArticle = (props: Props) => {
                 <For each={props.article.topics}>
                   {(topic) => (
                     <div class={styles.shoutTopic}>
-                      <a href={getPagePath(router, 'topic', { slug: topic.slug })}>{topic.title}</a>
+                      <a href={getPagePath(router, 'topic', { slug: topic.slug })}>
+                        {lang() == 'en' ? capitalize(topic.slug) : topic.title}
+                      </a>
                     </div>
                   )}
                 </For>

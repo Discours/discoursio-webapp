@@ -28,8 +28,9 @@ const GrowingTextarea = (props: Props) => {
       setValue(props.initialValue ?? '')
     }
   })
-  const handleChangeValue = (event) => {
-    setValue(event.target.value)
+  const handleChangeValue = (textareaValue) => {
+    setValue(textareaValue)
+    props.value(textareaValue)
   }
 
   const handleKeyDown = async (event) => {
@@ -66,8 +67,7 @@ const GrowingTextarea = (props: Props) => {
                 : props.initialValue
             }
             onKeyDown={props.allowEnterKey ? handleKeyDown : null}
-            onInput={(event) => handleChangeValue(event)}
-            onChange={(event) => props.value(event.target.value)}
+            onInput={(event) => handleChangeValue(event.target.value)}
             placeholder={props.placeholder}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}

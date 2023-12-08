@@ -43,8 +43,23 @@
     }
   }
 
+  .authorActionsLabel {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  .authorActionsLabelMobile {
+    display: none;
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+    }
+  }
+
   .authorDetails {
     display: block;
+    margin-bottom: 0;
 
     @include media-breakpoint-down(md) {
       flex: 1 100%;
@@ -147,7 +162,7 @@
 .authorSubscribeSocial {
   align-items: center;
   display: flex;
-  margin: 2rem 0;
+  margin: 0.5rem 0 2rem -0.4rem;
 
   .socialLink {
     border: none;
@@ -403,7 +418,6 @@
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
     justify-content: center;
-    margin-top: 1em;
   }
 
   @include media-breakpoint-down(md) {
@@ -420,7 +434,6 @@
   flex-wrap: wrap;
   font-size: 1.4rem;
   margin-top: 1.5rem;
-  gap: 1rem;
 
   @include media-breakpoint-down(md) {
     justify-content: center;
@@ -431,9 +444,17 @@
   align-items: center;
   cursor: pointer;
   display: inline-flex;
-  margin-right: 3rem;
+  margin: 0 2% 1rem;
   vertical-align: top;
   border-bottom: unset !important;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
 
   .subscribersItem {
     position: relative;

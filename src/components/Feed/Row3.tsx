@@ -17,7 +17,9 @@ export const Row3 = (props: {
       <div class="floor">
         <div class="wide-container">
           <div class="row">
-            <div class="floor-header">{props.header}</div>
+            <Show when={props.header}>
+              <div class="floor-header">{props.header}</div>
+            </Show>
             <For each={props.articles}>
               {(a) => (
                 <div class="col-md-8">

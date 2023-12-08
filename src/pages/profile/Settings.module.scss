@@ -279,3 +279,44 @@ h5 {
 .socialInput {
   margin-top: 1rem;
 }
+
+.formActions {
+  background: var(--background-color);
+  position: sticky;
+  z-index: 12;
+  bottom: 0;
+  border-top: 2px solid var(--black-100);
+  margin-bottom: -40px;
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+
+  .cancel {
+    color: #d00820;
+    padding: 0.8rem 0 !important;
+  }
+
+  .cancelLabel {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  .cancelLabelMobile {
+    display: none;
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+    }
+  }
+
+  :global(.row) > * {
+    margin-bottom: 0;
+  }
+}

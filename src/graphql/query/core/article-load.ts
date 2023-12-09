@@ -23,6 +23,7 @@ export default gql`
         created_at
       }
       # community
+      main_topic
       topics {
         id
         title

@@ -9,6 +9,7 @@ export default gql`
       slug
       cover
       # community
+      main_topic
       topics {
         # id
         title

@@ -11,6 +11,7 @@ export default gql`
       cover
       # community
       media
+      main_topic
       topics {
         id
         title

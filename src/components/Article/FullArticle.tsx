@@ -72,9 +72,14 @@ export const FullArticle = (props: Props) => {
   const formattedDate = createMemo(() => formatDate(new Date(props.article.created_at * 1000)))
 
   const mainTopic = createMemo(() => {
-    const mt = props.article.topics.length > 0 ? props.article.topics[0] : null
-    mt.title = lang() == 'en' ? capitalize(mt.slug.replace('-', ' ')) : mt.title
-    return mt
+    const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
+    const mt = props.article.topics.find((t) => t.slug === main_topic_slug)
+    if (mt) {
+      mt.title = lang() == 'en' ? capitalize(mt.slug.replace('-', ' ')) : mt.title
+      return mt
+    } else {
+      return props.article.topics[0]
+    }
   })
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === author()?.slug)

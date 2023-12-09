@@ -86,7 +86,10 @@ const getTitleAndSubtitle = (
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { author } = useSession()
-  const mainTopic = props.article.topics[0]
+  const mainTopicSlug = props.article.main_topic
+  const mainTopic = props.article.topics.find((t) => t.slug === mainTopicSlug)
+  const mainTopicTitle =
+    lang() === 'ru' && mainTopic?.title ? mainTopic.title : mainTopicSlug.replace('-', ' ')
 
   const formattedDate = createMemo<string>(() => {
     return formatDate(new Date(props.article.created_at * 1000))
@@ -171,12 +174,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </Show>
 
-        <Show when={!props.settings?.isGroup && mainTopic}>
+        <Show when={!props.settings?.isGroup && mainTopicSlug}>
           <CardTopic
-            title={
-              lang() === 'ru' && mainTopic.title ? mainTopic.title : mainTopic?.slug?.replace('-', ' ')
-            }
-            slug={mainTopic.slug}
+            title={mainTopicTitle}
+            slug={mainTopicSlug}
             isFloorImportant={props.settings?.isFloorImportant}
             isFeedMode={true}
             class={clsx(styles.shoutTopic, { [styles.shoutTopicTop]: props.settings.isShort })}

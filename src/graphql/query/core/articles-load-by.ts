@@ -12,6 +12,7 @@ export default gql`
       layout
       cover
       lead
+      main_topic
       topics {
         id
         title

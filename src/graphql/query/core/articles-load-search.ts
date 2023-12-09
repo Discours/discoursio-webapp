@@ -9,6 +9,7 @@ export default gql`
       slug
       layout
       cover
+      main_topic
       topics {
         id
         title

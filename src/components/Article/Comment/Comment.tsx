@@ -38,7 +38,7 @@ export const Comment = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
-  const { session } = useSession()
+  const { author } = useSession()
 
   const {
     actions: { createReaction, deleteReaction, updateReaction },
@@ -52,7 +52,7 @@ export const Comment = (props: Props) => {
     actions: { showSnackbar },
   } = useSnackbar()
 
-  const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === session()?.author?.slug)
+  const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === author().slug)
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
@@ -216,7 +216,7 @@ export const Comment = (props: Props) => {
               </Show>
 
               {/*<SharePopup*/}
-              {/*  title={'artile.title'}*/}
+              {/*  title={'article.title'}*/}
               {/*  description={getDescription(body())}*/}
               {/*  containerCssClass={stylesHeader.control}*/}
               {/*  trigger={*/}

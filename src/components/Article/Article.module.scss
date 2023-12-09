@@ -29,6 +29,17 @@ img {
   font-size: 1.6rem;
   line-height: 1.6;
 
+  details {
+    text-align: center;
+    background-color: lightgray;
+    line-height: 3em;
+  }
+
+  details p {
+    text-align: left;
+    line-height: normal;
+  }
+
   blockquote,
   blockquote[data-type='punchline'] {
     clear: both;

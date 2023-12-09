@@ -72,12 +72,12 @@ export const apiClient = {
     }
     return response.data.get_topics_all
   },
-  getAllAuthors: async () => {
-    const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
+  getAllAuthors: async (limit: number = 50, offset: number = 0) => {
+    const response = await publicGraphQLClient.query(authorsAll, { limit, offset }).toPromise()
     if (response.error) {
-      console.debug('[graphql.client.core] get_authors_all', response.error)
+      console.debug('[graphql.client.core] load_authors_all', response.error)
     }
-    return response.data.get_authors_all
+    return response.data.load_authors_all
   },
   getAuthor: async (params: { slug?: string; author_id?: number; user?: string }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBy, params).toPromise()

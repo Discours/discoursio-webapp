@@ -52,7 +52,7 @@ export const Comment = (props: Props) => {
     actions: { showSnackbar },
   } = useSnackbar()
 
-  const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === author().slug)
+  const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === author()?.slug)
 
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())

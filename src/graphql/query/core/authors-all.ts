@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query AuthorsAllQuery {
-    get_authors_all {
+  query AuthorsAllQuery($limit: Int, $offset: Int) {
+    load_authors_all(limit: $limit, offset: $offset) {
       id
       slug
       name

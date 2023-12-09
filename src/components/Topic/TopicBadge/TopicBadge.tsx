@@ -54,7 +54,7 @@ export const TopicBadge = (props: Props) => {
       />
       <a href={`/topic/${props.topic.slug}`} class={styles.info}>
         <span class={styles.title}>
-          {lang() == 'en' ? capitalize(props.topic.slug.replace(/-/, ' ')) : props.topic.title}
+          {lang() == 'en' ? capitalize(props.topic.slug.replace(/-/g, ' ')) : props.topic.title}
         </span>
         <Show
           when={props.topic.body}

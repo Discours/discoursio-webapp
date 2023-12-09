@@ -147,7 +147,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                             {(topic) => (
                               <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                 <a href={`/topic/${topic.slug}`}>
-                                  {lang() == 'en' ? capitalize(topic.slug.replace(/-/, ' ')) : topic.title}
+                                  {lang() == 'en' ? capitalize(topic.slug.replace(/-/g, ' ')) : topic.title}
                                 </a>
                                 <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
                               </div>

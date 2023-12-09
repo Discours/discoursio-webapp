@@ -228,7 +228,7 @@ export const FeedView = (props: Props) => {
                 {(topic) => (
                   <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
                     <a href={`/topic/${topic.slug}`}>
-                      {lang() == 'en' ? topic.slug.replace(/-/, ' ') : topic.title}
+                      {lang() == 'en' ? topic.slug.replace(/-/g, ' ') : topic.title}
                     </a>{' '}
                   </span>
                 )}

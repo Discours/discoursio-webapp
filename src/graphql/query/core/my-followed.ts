@@ -16,7 +16,7 @@ export default gql`
         pic
         created_at
       }
-      communitites {
+      communities {
         id
         name
         slug

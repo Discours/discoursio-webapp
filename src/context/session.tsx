@@ -67,17 +67,18 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const getSession = async (): Promise<AuthToken> => {
     try {
       const token = getToken()
-      const authResult = await authorizer().getSession({
-        Authorization: token,
-      })
-      if (authResult && authResult.access_token) {
-        console.log(authResult)
-        setToken(authResult.access_token)
-        loadSubscriptions()
-        return authResult
-      } else {
-        return null
+      if (token) {
+        const authResult = await authorizer().getSession({
+          Authorization: token,
+        })
+        if (authResult && authResult.access_token) {
+          console.log(authResult)
+          setToken(authResult.access_token)
+          loadSubscriptions()
+          return authResult
+        }
       }
+      return null
     } catch (error) {
       console.error('getSession error:', error)
       resetToken()

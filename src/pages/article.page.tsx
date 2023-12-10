@@ -42,7 +42,11 @@ export const ArticlePage = (props: PageProps) => {
     script.src = 'https://ackee.discours.io/increment.js'
     script.dataset.ackeeServer = 'https://ackee.discours.io'
     script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
-    document.body.appendChild(script)
+    try {
+      document.body.appendChild(script)
+    } catch (err) {
+      console.warn(err)
+    }
   })
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
 

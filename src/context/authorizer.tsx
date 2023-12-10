@@ -29,7 +29,7 @@ type AuthorizerContextActions = {
 }
 const config: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
-  redirectURL: 'https://discoursio-webapp.vercel.app',
+  redirectURL: 'https://discoursio-webapp.vercel.app/?modal=auth',
   clientID: '9c113377-5eea-4c89-98e1-69302462fc08', // FIXME: use env?
 }
 
@@ -51,9 +51,6 @@ const AuthorizerContext = createContext<[AuthorizerState, AuthorizerContextActio
 ])
 
 type AuthorizerProviderProps = {
-  authorizerURL: string
-  redirectURL: string
-  clientID: string
   onStateChangeCallback?: (stateData: AuthorizerState) => void
 }
 
@@ -62,19 +59,14 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
     user: null,
     token: null,
     loading: true,
-    config: {
-      authorizerURL: props.authorizerURL,
-      redirectURL: props.redirectURL,
-      clientID: props.clientID,
-    } as ConfigType,
+    config,
   })
-  const [redirect, setRedirect] = createSignal<string>()
   const authorizer = createMemo(
     () =>
       new Authorizer({
-        authorizerURL: props.authorizerURL,
-        redirectURL: redirect(),
-        clientID: props.clientID,
+        authorizerURL: state.config.authorizerURL,
+        redirectURL: state.config.redirectURL,
+        clientID: state.config.clientID,
       }),
   )
 
@@ -157,7 +149,7 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
   }
 
   onMount(() => {
-    setRedirect(window.location.origin)
+    setState('config', { ...config, redirectURL: window.location.origin + '/?modal=auth' })
     !state.token && getToken()
   })
 

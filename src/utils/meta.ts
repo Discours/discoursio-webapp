@@ -12,7 +12,7 @@ export const getDescription = (body: string): string => {
   // ¯\_(ツ)_/¯ maybe need to remove the punctuation
   let description = ''
   let i = 0
-  while (description.length < MAX_DESCRIPTION_LENGTH && description.length < descriptionWordsArray.length) {
+  while (i < descriptionWordsArray.length && description.length < MAX_DESCRIPTION_LENGTH) {
     description += descriptionWordsArray[i] + ' '
     i++
   }

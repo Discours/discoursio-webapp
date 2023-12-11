@@ -283,7 +283,9 @@ export const FullArticle = (props: Props) => {
     }
   }
 
-  const ogImage = getImageUrl(props.article.cover, { width: 1200 })
+  const ogImage = props.article.cover
+    ? getImageUrl(props.article.cover, { width: 1200 })
+    : getImageUrl('production/image/logo_image.png')
   const description = getDescription(props.article.description || body())
   const ogTitle = props.article.title
   const keywords = getKeywords(props.article)

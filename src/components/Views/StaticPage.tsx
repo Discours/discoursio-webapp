@@ -9,6 +9,7 @@ type Props = {
 }
 export const StaticPage = (props: Props) => {
   const articleBodyElement: { current: HTMLElement } = { current: null }
+
   return (
     <PageLayout title={props.title}>
       <div class="wide-container">

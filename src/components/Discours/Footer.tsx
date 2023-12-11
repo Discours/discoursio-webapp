@@ -17,7 +17,7 @@ export const Footer = () => {
       header: 'About the project',
       items: [
         {
-          title: 'Manifest',
+          title: 'Discours Manifest',
           slug: '/about/manifest',
         },
         {

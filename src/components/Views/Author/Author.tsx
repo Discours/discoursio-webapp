@@ -130,7 +130,9 @@ export const AuthorView = (props: Props) => {
     }
   })
 
-  const ogImage = getImageUrl(props.author.userpic, { width: 1200 })
+  const ogImage = props.author.userpic
+    ? getImageUrl(props.author.userpic, { width: 1200 })
+    : getImageUrl('production/image/logo_image.png')
   const description = getDescription(props.author.bio)
   const ogTitle = props.author.name
 

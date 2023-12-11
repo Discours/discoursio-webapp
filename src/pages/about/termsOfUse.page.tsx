@@ -16,27 +16,18 @@ export const TermsOfUsePage = () => {
   const description = t('Rules of the journal Discourse')
 
   return (
-    <StaticPage
-      title={ogTitle}
-      layoutChildren={
-        <>
-          <Meta name="descprition" content={description} />
-          <Meta name="keywords" content={t('terms of use keywords')} />
-          <Meta name="og:type" content="article" />
-          <Meta name="og:title" content={ogTitle} />
-          <Meta name="og:image" content={ogImage} />
-          <Meta name="twitter:image" content={ogImage} />
-          <Meta name="og:desscription" content={description} />
-          <Meta name="twitter:card" content="summary_large_image" />
-          <Meta name="twitter:title" content={ogTitle} />
-          <Meta name="twitter:description" content={description} />
-        </>
-      }
-    >
-      <Meta name="description" content={ogTitle} />
-      <Meta name="keywords" content={`Discours.io, ${ogTitle}`} />
-      <Meta property="og:title" content={ogTitle} />
-      <Meta property="og:description" content={ogTitle} />
+    <StaticPage title={ogTitle}>
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('terms of use keywords')} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="og:desscription" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
+
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-6 col-lg-4 order-md-last">

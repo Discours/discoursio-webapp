@@ -1,8 +1,7 @@
 import type { PageProps } from './types'
 
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 
-import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
 import { useLocalize } from '../context/localize'
@@ -54,17 +53,15 @@ export const TopicPage = (props: PageProps) => {
 
   const usePrerenderedData = props.topic?.slug === slug()
 
-  console.log('!!! test:')
   return (
     <PageLayout title={`${capitalize(props.seo?.title)} — ${t('Discours')} `}>
       <ReactionsProvider>
-        {/*<Show when={isLoaded()} fallback={<Loading />}>*/}
         <TopicView
+          isLoaded={isLoaded()}
           topic={usePrerenderedData ? props.topic : null}
           shouts={usePrerenderedData ? props.topicShouts : null}
           topicSlug={slug()}
         />
-        {/*</Show>*/}
       </ReactionsProvider>
     </PageLayout>
   )

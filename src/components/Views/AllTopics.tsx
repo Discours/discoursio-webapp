@@ -11,6 +11,7 @@ import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { scrollHandler } from '../../utils/scroll'
+import { Loading } from '../_shared/Loading'
 import { SearchField } from '../_shared/SearchField'
 import { TopicCard } from '../Topic/Card'
 
@@ -20,14 +21,15 @@ type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
 }
 
-type AllTopicsViewProps = {
+type Props = {
   topics: Topic[]
+  isLoaded: boolean
 }
 
 const PAGE_SIZE = 20
 const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#']
 
-export const AllTopicsView = (props: AllTopicsViewProps) => {
+export const AllTopicsView = (props: Props) => {
   const { t, lang } = useLocalize()
   const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
@@ -123,98 +125,100 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={ogTitle} />
       <Meta name="twitter:description" content={description} />
-      <div class="row">
-        <div class="col-md-19 offset-md-5">
-          <AllTopicsHead />
+      <Show when={props.isLoaded} fallback={<Loading />}>
+        <div class="row">
+          <div class="col-md-19 offset-md-5">
+            <AllTopicsHead />
 
-          <Show when={filteredResults().length > 0}>
-            <Show when={searchParams().by === 'title'}>
-              <div class="col-lg-20 col-xl-18">
-                <ul class={clsx('nodash', styles.alphabet)}>
-                  <For each={ALPHABET}>
-                    {(letter, index) => (
-                      <li>
-                        <Show when={letter in byLetter()} fallback={letter}>
-                          <a
-                            href={`/topics?by=title#letter-${index()}`}
-                            onClick={(event) => {
-                              event.preventDefault()
-                              scrollHandler(`letter-${index()}`)
-                            }}
-                          >
-                            {letter}
-                          </a>
-                        </Show>
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </div>
+            <Show when={filteredResults().length > 0}>
+              <Show when={searchParams().by === 'title'}>
+                <div class="col-lg-20 col-xl-18">
+                  <ul class={clsx('nodash', styles.alphabet)}>
+                    <For each={ALPHABET}>
+                      {(letter, index) => (
+                        <li>
+                          <Show when={letter in byLetter()} fallback={letter}>
+                            <a
+                              href={`/topics?by=title#letter-${index()}`}
+                              onClick={(event) => {
+                                event.preventDefault()
+                                scrollHandler(`letter-${index()}`)
+                              }}
+                            >
+                              {letter}
+                            </a>
+                          </Show>
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </div>
 
-              <For each={sortedKeys()}>
-                {(letter) => (
-                  <div class={clsx(styles.group, 'group')}>
-                    <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
-                    <div class="row">
-                      <div class="col-lg-20">
-                        <div class="row">
-                          <For each={byLetter()[letter]}>
-                            {(topic) => (
-                              <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
-                                <a href={`/topic/${topic.slug}`}>{topic.title}</a>
-                                <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
-                              </div>
-                            )}
-                          </For>
+                <For each={sortedKeys()}>
+                  {(letter) => (
+                    <div class={clsx(styles.group, 'group')}>
+                      <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
+                      <div class="row">
+                        <div class="col-lg-20">
+                          <div class="row">
+                            <For each={byLetter()[letter]}>
+                              {(topic) => (
+                                <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
+                                  <a href={`/topic/${topic.slug}`}>{topic.title}</a>
+                                  <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
+                                </div>
+                              )}
+                            </For>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  )}
+                </For>
+              </Show>
+
+              <Show when={searchParams().by && searchParams().by !== 'title'}>
+                <div class="row">
+                  <div class="col-lg-20 col-xl-18">
+                    <For each={filteredResults().slice(0, limit())}>
+                      {(topic) => (
+                        <>
+                          <TopicCard
+                            topic={topic as Topic}
+                            compact={false}
+                            subscribed={subscribed(topic.slug)}
+                            showPublications={true}
+                            showDescription={true}
+                          />
+                          <div class={styles.stats}>
+                            <span class={styles.statsItem}>
+                              {t('shoutsWithCount', { count: topic.stat.shouts })}
+                            </span>
+                            <span class={styles.statsItem}>
+                              {t('authorsWithCount', { count: topic.stat.authors })}
+                            </span>
+                            <span class={styles.statsItem}>
+                              {t('followersWithCount', { count: topic.stat.followers })}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </For>
                   </div>
-                )}
-              </For>
-            </Show>
-
-            <Show when={searchParams().by && searchParams().by !== 'title'}>
-              <div class="row">
-                <div class="col-lg-20 col-xl-18">
-                  <For each={filteredResults().slice(0, limit())}>
-                    {(topic) => (
-                      <>
-                        <TopicCard
-                          topic={topic as Topic}
-                          compact={false}
-                          subscribed={subscribed(topic.slug)}
-                          showPublications={true}
-                          showDescription={true}
-                        />
-                        <div class={styles.stats}>
-                          <span class={styles.statsItem}>
-                            {t('shoutsWithCount', { count: topic.stat.shouts })}
-                          </span>
-                          <span class={styles.statsItem}>
-                            {t('authorsWithCount', { count: topic.stat.authors })}
-                          </span>
-                          <span class={styles.statsItem}>
-                            {t('followersWithCount', { count: topic.stat.followers })}
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </For>
                 </div>
-              </div>
-            </Show>
+              </Show>
 
-            <Show when={filteredResults().length > limit() && searchParams().by !== 'title'}>
-              <div class={clsx(styles.loadMoreContainer, 'col-24 col-md-20 col-lg-14 offset-md-2')}>
-                <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                  {t('Load more')}
-                </button>
-              </div>
+              <Show when={filteredResults().length > limit() && searchParams().by !== 'title'}>
+                <div class={clsx(styles.loadMoreContainer, 'col-24 col-md-20 col-lg-14 offset-md-2')}>
+                  <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
+                    {t('Load more')}
+                  </button>
+                </div>
+              </Show>
             </Show>
-          </Show>
+          </div>
         </div>
-      </div>
+      </Show>
     </div>
   )
 }

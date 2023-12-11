@@ -4,6 +4,7 @@ import { createSignal, Show } from 'solid-js'
 import { Icon } from '../../components/_shared/Icon'
 import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 export const TermsOfUsePage = () => {
   const { t } = useLocalize()
@@ -13,7 +14,7 @@ export const TermsOfUsePage = () => {
 
   const ogTitle = t('Terms of use')
   const ogImage = getImageUrl('production/image/logo_image.png')
-  const description = t('Rules of the journal Discourse')
+  const description = t('Rules of the journal Discours')
 
   return (
     <StaticPage title={ogTitle}>

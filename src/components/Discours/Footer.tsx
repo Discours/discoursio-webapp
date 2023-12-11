@@ -51,7 +51,7 @@ export const Footer = () => {
           slug: '/create',
         },
         {
-          title: 'Support Discourse',
+          title: 'Support Discours',
           slug: '/about/help',
         },
         {

@@ -2,13 +2,14 @@ import { Meta } from '@solidjs/meta'
 
 import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 export const PartnersPage = () => {
   const { t } = useLocalize()
 
   const ogTitle = t('Partners')
   const ogImage = getImageUrl('production/image/logo_image.png')
-  const description = t('Discourse Partners')
+  const description = t('Discours Partners')
 
   return (
     <StaticPage title={ogTitle}>

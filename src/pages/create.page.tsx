@@ -9,6 +9,7 @@ import { AuthGuard } from '../components/AuthGuard'
 import { useLocalize } from '../context/localize'
 import { router } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
+import { getImageUrl } from '../utils/getImageUrl'
 
 import { LayoutType } from './types'
 
@@ -25,7 +26,7 @@ export const CreatePage = () => {
   const { t } = useLocalize()
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Choose a post type')
-  const description = t('Participate in the Discourse: share information, join the editorial team')
+  const description = t('Participate in the Discours: share information, join the editorial team')
 
   return (
     <PageLayout title={ogTitle}>

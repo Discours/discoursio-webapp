@@ -6,7 +6,7 @@ import { useLocalize } from '../../context/localize'
 export const DogmaPage = () => {
   const { t } = useLocalize()
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Dogma')
   const description = t('Professional principles that the open editorial team follows in its work')
 

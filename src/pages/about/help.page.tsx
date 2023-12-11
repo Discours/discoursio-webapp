@@ -7,7 +7,7 @@ import { useLocalize } from '../../context/localize'
 export const HelpPage = () => {
   const { t } = useLocalize()
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Support the Discourse')
   const description = t(
     'Contribute to free samizdat. Support Discourse - an independent non-profit publication that works only for you. Become a pillar of the open newsroom',

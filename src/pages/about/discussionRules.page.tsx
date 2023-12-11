@@ -6,7 +6,7 @@ import { useLocalize } from '../../context/localize'
 export const DiscussionRulesPage = () => {
   const { t } = useLocalize()
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Discussion rules in social networks')
   const description = t(
     'Why you can earn a hole in your karma and how to receive rays of gratitude for your contribution to discussions in samizdat communities',

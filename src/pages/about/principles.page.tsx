@@ -6,7 +6,7 @@ import { useLocalize } from '../../context/localize'
 export const PrinciplesPage = () => {
   const { t } = useLocalize()
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('How it works')
   const description = t('Community values and rules of engagement for the open editorial team')
 

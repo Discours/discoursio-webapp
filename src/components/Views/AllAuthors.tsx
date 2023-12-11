@@ -84,7 +84,7 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Authors')
   const description = t('All community authors')
 

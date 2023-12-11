@@ -6,7 +6,7 @@ import { useLocalize } from '../../context/localize'
 export const GuidePage = () => {
   const { t } = useLocalize()
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('How it works')
   const description = t(
     'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board',

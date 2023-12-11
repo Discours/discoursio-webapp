@@ -85,7 +85,7 @@ export const TopicView = (props: TopicProps) => {
 
   const ogImage = topic().pic
     ? getImageUrl(topic().pic, { width: 1200 })
-    : 'https://discours.io/logo_image.png'
+    : getImageUrl('production/image/logo_image.png')
   const description = topic().body
     ? getDescription(topic().body)
     : t('Independent media project about culture, science, art and society with horizontal editing')

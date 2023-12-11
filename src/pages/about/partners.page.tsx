@@ -7,7 +7,7 @@ export const PartnersPage = () => {
   const { t } = useLocalize()
 
   const ogTitle = t('Partners')
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const description = t('Discourse Partners')
 
   return (

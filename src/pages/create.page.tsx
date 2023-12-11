@@ -23,7 +23,7 @@ const handleCreate = async (layout: LayoutType) => {
 
 export const CreatePage = () => {
   const { t } = useLocalize()
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Choose a post type')
   const description = t('Participate in the Discourse: share information, join the editorial team')
 

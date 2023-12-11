@@ -9,6 +9,7 @@ import { useSession } from '../../context/session'
 import { useRouter } from '../../stores/router'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { scrollHandler } from '../../utils/scroll'
 import { SearchField } from '../_shared/SearchField'
 import { TopicCard } from '../Topic/Card'
@@ -104,7 +105,7 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     </div>
   )
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Discourse – an open magazine about culture, science and society')
   const description = t(
     'Independent media project about culture, science, art and society with horizontal editing',

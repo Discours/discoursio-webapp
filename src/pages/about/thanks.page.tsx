@@ -5,7 +5,7 @@ import { useLocalize } from '../../context/localize'
 
 export const ThanksPage = () => {
   const { t } = useLocalize()
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Thank you')
   const description = t('Thank you!')
 

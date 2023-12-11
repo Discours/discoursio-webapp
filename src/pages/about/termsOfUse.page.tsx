@@ -12,7 +12,7 @@ export const TermsOfUsePage = () => {
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
   const ogTitle = t('Terms of use')
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const description = t('Rules of the journal Discourse')
 
   return (

@@ -6,11 +6,12 @@ import { Modal } from '../../components/Nav/Modal'
 import Opener from '../../components/Nav/Modal/Opener'
 import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 export const ManifestPage = () => {
   const { t } = useLocalize()
 
-  const ogImage = 'https://discours.io/logo_image.png'
+  const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Manifest')
   const description = t(
     'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board',

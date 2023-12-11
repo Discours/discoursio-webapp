@@ -1,11 +1,33 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
+import { Meta } from '@solidjs/meta'
+
+import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
 
 export const PrinciplesPage = () => {
   const { t } = useLocalize()
 
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('How it works')
+  const description = t('Community values and rules of engagement for the open editorial team')
+
   return (
-    <PageLayout title={t('Principles')}>
+    <StaticPage
+      title={ogTitle}
+      layoutChildren={
+        <>
+          <Meta name="descprition" content={description} />
+          <Meta name="keywords" content={t('principles keywords')} />
+          <Meta name="og:type" content="article" />
+          <Meta name="og:title" content={ogTitle} />
+          <Meta name="og:image" content={ogImage} />
+          <Meta name="twitter:image" content={ogImage} />
+          <Meta name="og:desscription" content={description} />
+          <Meta name="twitter:card" content="summary_large_image" />
+          <Meta name="twitter:title" content={ogTitle} />
+          <Meta name="twitter:description" content={description} />
+        </>
+      }
+    >
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
@@ -173,7 +195,7 @@ export const PrinciplesPage = () => {
           </div>
         </div>
       </article>
-    </PageLayout>
+    </StaticPage>
   )
 }
 

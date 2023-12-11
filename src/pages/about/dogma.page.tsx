@@ -1,11 +1,33 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
+import { Meta } from '@solidjs/meta'
+
+import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
 
-// TODO: l10n
 export const DogmaPage = () => {
   const { t } = useLocalize()
+
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('Dogma')
+  const description = t('Professional principles that the open editorial team follows in its work')
+
   return (
-    <PageLayout title={t('Dogma')}>
+    <StaticPage
+      title={ogTitle}
+      layoutChildren={
+        <>
+          <Meta name="descprition" content={description} />
+          <Meta name="keywords" content={t('dogma keywords')} />
+          <Meta name="og:type" content="article" />
+          <Meta name="og:title" content={ogTitle} />
+          <Meta name="og:image" content={ogImage} />
+          <Meta name="twitter:image" content={ogImage} />
+          <Meta name="og:desscription" content={description} />
+          <Meta name="twitter:card" content="summary_large_image" />
+          <Meta name="twitter:title" content={ogTitle} />
+          <Meta name="twitter:description" content={description} />
+        </>
+      }
+    >
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
@@ -51,7 +73,7 @@ export const DogmaPage = () => {
           </div>
         </div>
       </article>
-    </PageLayout>
+    </StaticPage>
   )
 }
 

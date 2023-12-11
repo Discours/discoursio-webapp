@@ -5,20 +5,28 @@ import { useLocalize } from '../../context/localize'
 
 export const GuidePage = () => {
   const { t } = useLocalize()
-  const title = t('How it works')
+
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('How it works')
+  const description = t(
+    'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board',
+  )
 
   return (
     <StaticPage
-      title={title}
+      title={ogTitle}
       layoutChildren={
         <>
-          <Meta name="description" content={title} />
-          <Meta name="keywords" content={t('Discours') + ',' + title} />
-          <Meta property="og:title" content={title} />
-          <Meta property="og:description" content={title} />
-          <Meta property="og:image" content="/images/participation.png" />
-          <Meta property="og:image:width" content="1200" />
-          <Meta property="og:image:height" content="630" />
+          <Meta name="descprition" content={description} />
+          <Meta name="keywords" content={t('keywords')} />
+          <Meta name="og:type" content="article" />
+          <Meta name="og:title" content={ogTitle} />
+          <Meta name="og:image" content={ogImage} />
+          <Meta name="twitter:image" content={ogImage} />
+          <Meta name="og:desscription" content={description} />
+          <Meta name="twitter:card" content="summary_large_image" />
+          <Meta name="twitter:title" content={ogTitle} />
+          <Meta name="twitter:description" content={description} />
         </>
       }
     >

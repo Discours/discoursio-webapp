@@ -1,5 +1,6 @@
 import type { Author } from '../../graphql/types.gen'
 
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 
@@ -82,8 +83,23 @@ export const AllAuthorsView = (props: AllAuthorsViewProps) => {
   })
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
+
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('Authors')
+  const description = t('All community authors')
+
   const AllAuthorsHead = () => (
     <div class="row">
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="og:desscription" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
       <div class="col-lg-20 col-xl-18">
         <h1>{t('Authors')}</h1>
         <p>{t('Subscribe who you like to tune your personal feed')}</p>

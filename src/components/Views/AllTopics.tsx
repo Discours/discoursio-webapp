@@ -1,5 +1,6 @@
 import type { Topic } from '../../graphql/types.gen'
 
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 
@@ -8,6 +9,8 @@ import { useSession } from '../../context/session'
 import { useRouter } from '../../stores/router'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { dummyFilter } from '../../utils/dummyFilter'
+import { getImageUrl } from '../../utils/getImageUrl'
+import { getDescription } from '../../utils/meta'
 import { scrollHandler } from '../../utils/scroll'
 import { SearchField } from '../_shared/SearchField'
 import { TopicCard } from '../Topic/Card'
@@ -103,8 +106,24 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
     </div>
   )
 
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('Discourse – an open magazine about culture, science and society')
+  const description = t(
+    'Independent media project about culture, science, art and society with horizontal editing',
+  )
+
   return (
     <div class={clsx(styles.allTopicsPage, 'wide-container')}>
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="og:desscription" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
       <div class="row">
         <div class="col-md-19 offset-md-5">
           <AllTopicsHead />

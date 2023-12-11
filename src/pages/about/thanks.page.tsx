@@ -1,22 +1,37 @@
 import { Meta } from '@solidjs/meta'
 
-import { PageLayout } from '../../components/_shared/PageLayout'
+import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
 
 export const ThanksPage = () => {
   const { t } = useLocalize()
-  const title = t('Thank you')
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('Thank you')
+  const description = t('Thank you!')
+
   return (
-    <PageLayout title={title}>
-      <Meta name="description" content={title} />
-      <Meta name="keywords" content={`Discours.io, ${title}`} />
-      <Meta property="og:title" content={title} />
-      <Meta property="og:description" content={title} />
+    <StaticPage
+      title={ogTitle}
+      layoutChildren={
+        <>
+          <Meta name="descprition" content={description} />
+          <Meta name="keywords" content={t('keywords')} />
+          <Meta name="og:type" content="article" />
+          <Meta name="og:title" content={ogTitle} />
+          <Meta name="og:image" content={ogImage} />
+          <Meta name="twitter:image" content={ogImage} />
+          <Meta name="og:desscription" content={description} />
+          <Meta name="twitter:card" content="summary_large_image" />
+          <Meta name="twitter:title" content={ogTitle} />
+          <Meta name="twitter:description" content={description} />
+        </>
+      }
+    >
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
             <h1>
-              <span class="wrapped">{title}</span>
+              <span class="wrapped">{ogTitle}</span>
             </h1>
             {/*
                 <h3><b>Команда</b></h3>
@@ -83,7 +98,7 @@ export const ThanksPage = () => {
           </div>
         </div>
       </article>
-    </PageLayout>
+    </StaticPage>
   )
 }
 

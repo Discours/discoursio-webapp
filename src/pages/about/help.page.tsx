@@ -7,14 +7,27 @@ import { useLocalize } from '../../context/localize'
 export const HelpPage = () => {
   const { t } = useLocalize()
 
-  // TODO: l10n
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('Support the Discourse')
+  const description = t(
+    'Contribute to free samizdat. Support Discourse - an independent non-profit publication that works only for you. Become a pillar of the open newsroom',
+  )
+
   return (
     <StaticPage
-      title={t('Support us')}
+      title={ogTitle}
       layoutChildren={
         <>
-          <Meta name="description" content="Здесь можно поддержать Дискурс материально." />
-          <Meta name="keywords" content="Discours.io, помощь, благотворительность" />
+          <Meta name="descprition" content={description} />
+          <Meta name="keywords" content={t('keywords')} />
+          <Meta name="og:type" content="article" />
+          <Meta name="og:title" content={ogTitle} />
+          <Meta name="og:image" content={ogImage} />
+          <Meta name="twitter:image" content={ogImage} />
+          <Meta name="og:desscription" content={description} />
+          <Meta name="twitter:card" content="summary_large_image" />
+          <Meta name="twitter:title" content={ogTitle} />
+          <Meta name="twitter:description" content={description} />
         </>
       }
     >

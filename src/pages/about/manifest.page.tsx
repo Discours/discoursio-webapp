@@ -1,3 +1,5 @@
+import { Meta } from '@solidjs/meta'
+
 import { Subscribe } from '../../components/_shared/Subscribe'
 import { Feedback } from '../../components/Discours/Feedback'
 import { Modal } from '../../components/Nav/Modal'
@@ -7,6 +9,12 @@ import { useLocalize } from '../../context/localize'
 
 export const ManifestPage = () => {
   const { t } = useLocalize()
+
+  const ogImage = 'https://discours.io/logo_image.png'
+  const ogTitle = t('Manifest')
+  const description = t(
+    'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board',
+  )
 
   return (
     <StaticPage
@@ -19,6 +27,16 @@ export const ManifestPage = () => {
           <Modal variant="wide" name="subscribe">
             <Subscribe />
           </Modal>
+          <Meta name="descprition" content={description} />
+          <Meta name="keywords" content={t('keywords')} />
+          <Meta name="og:type" content="article" />
+          <Meta name="og:title" content={ogTitle} />
+          <Meta name="og:image" content={ogImage} />
+          <Meta name="twitter:image" content={ogImage} />
+          <Meta name="og:desscription" content={description} />
+          <Meta name="twitter:card" content="summary_large_image" />
+          <Meta name="twitter:title" content={ogTitle} />
+          <Meta name="twitter:description" content={description} />
         </>
       }
     >

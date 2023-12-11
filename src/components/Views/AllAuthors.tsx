@@ -89,7 +89,7 @@ export const AllAuthorsView = (props: Props) => {
 
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Authors')
-  const description = 'All community authors'
+  const description = t('All community authors')
 
   return (
     <div class={clsx(styles.allAuthorsPage, 'wide-container')}>

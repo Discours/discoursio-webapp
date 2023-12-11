@@ -1,5 +1,6 @@
 import type { Shout, Topic } from '../../graphql/types.gen'
 
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createMemo, onMount, createSignal } from 'solid-js'
 
@@ -8,6 +9,8 @@ import { useRouter } from '../../stores/router'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
+import { getImageUrl } from '../../utils/getImageUrl'
+import { getDescription, getKeywords } from '../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
@@ -80,8 +83,24 @@ export const TopicView = (props: TopicProps) => {
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
+  const ogImage = topic().pic && getImageUrl(topic().pic, { width: 1200 })
+  const description = getDescription(topic().body)
+  const ogTitle = topic().title
+
   return (
     <div class={styles.topicPage}>
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('topicKeywords', { topic: topic().title })} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Show when={topic().pic}>
+        <Meta name="og:image" content={ogImage} />
+        <Meta name="twitter:image" content={ogImage} />
+      </Show>
+      <Meta name="og:desscription" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
       <Show when={topic()}>
         <FullTopic topic={topic()} />
         <div class="wide-container">

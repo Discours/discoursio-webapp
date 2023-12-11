@@ -5,6 +5,7 @@ import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } 
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
+import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
@@ -12,6 +13,7 @@ import { loadAuthor } from '../stores/zine/authors'
 
 export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()
+  const { t } = useLocalize()
   const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(

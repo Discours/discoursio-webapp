@@ -3,12 +3,13 @@ import { Meta } from '@solidjs/meta'
 import { Donate } from '../../components/Discours/Donate'
 import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 export const HelpPage = () => {
   const { t } = useLocalize()
 
   const ogImage = getImageUrl('production/image/logo_image.png')
-  const ogTitle = t('Support the Discourse')
+  const ogTitle = t('Support Discourse')
   const description = t(
     'Contribute to free samizdat. Support Discourse - an independent non-profit publication that works only for you. Become a pillar of the open newsroom',
   )

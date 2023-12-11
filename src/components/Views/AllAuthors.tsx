@@ -99,10 +99,10 @@ export const AllAuthorsView = (props: Props) => {
       <Meta name="og:title" content={ogTitle} />
       <Meta name="og:image" content={ogImage} />
       <Meta name="twitter:image" content={ogImage} />
-      <Meta name="og:desscription" content={description} />
+      <Meta name="og:desscription" content={'test'} />
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:description" content={'All community authors'} />
       <Show when={props.isLoaded} fallback={<Loading />}>
         <div class="offset-md-5">
           <div class="row">

@@ -142,7 +142,7 @@ export const AuthorView = (props: Props) => {
       <Meta name="og:type" content="profile" />
       <Meta name="og:title" content={ogTitle} />
       <Meta name="og:image" content={ogImage} />
-      <Meta name="og:desscription" content={description} />
+      <Meta name="og:description" content={description} />
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={ogTitle} />
       <Meta name="twitter:description" content={description} />

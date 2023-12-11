@@ -2,7 +2,7 @@ import { Meta } from '@solidjs/meta'
 import { createSignal, Show } from 'solid-js'
 
 import { Icon } from '../../components/_shared/Icon'
-import { PageLayout } from '../../components/_shared/PageLayout'
+import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
 
 export const TermsOfUsePage = () => {
@@ -11,13 +11,32 @@ export const TermsOfUsePage = () => {
 
   const toggleIndexExpanded = () => setIndexExpanded((oldExpanded) => !oldExpanded)
 
-  const title = t('Terms of use')
+  const ogTitle = t('Terms of use')
+  const ogImage = 'https://discours.io/logo_image.png'
+  const description = t('Rules of the journal Discourse')
+
   return (
-    <PageLayout title={title}>
-      <Meta name="description" content={title} />
-      <Meta name="keywords" content={`Discours.io, ${title}`} />
-      <Meta property="og:title" content={title} />
-      <Meta property="og:description" content={title} />
+    <StaticPage
+      title={ogTitle}
+      layoutChildren={
+        <>
+          <Meta name="descprition" content={description} />
+          <Meta name="keywords" content={t('terms of use keywords')} />
+          <Meta name="og:type" content="article" />
+          <Meta name="og:title" content={ogTitle} />
+          <Meta name="og:image" content={ogImage} />
+          <Meta name="twitter:image" content={ogImage} />
+          <Meta name="og:desscription" content={description} />
+          <Meta name="twitter:card" content="summary_large_image" />
+          <Meta name="twitter:title" content={ogTitle} />
+          <Meta name="twitter:description" content={description} />
+        </>
+      }
+    >
+      <Meta name="description" content={ogTitle} />
+      <Meta name="keywords" content={`Discours.io, ${ogTitle}`} />
+      <Meta property="og:title" content={ogTitle} />
+      <Meta property="og:description" content={ogTitle} />
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-md-6 col-lg-4 order-md-last">
@@ -277,7 +296,7 @@ export const TermsOfUsePage = () => {
           </div>
         </div>
       </article>
-    </PageLayout>
+    </StaticPage>
   )
 }
 

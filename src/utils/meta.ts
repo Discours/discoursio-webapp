@@ -1,5 +1,3 @@
-import { isServer } from 'solid-js/web'
-
 import { Shout } from '../graphql/types.gen'
 
 const MAX_DESCRIPTION_LENGTH = 150

@@ -54,16 +54,17 @@ export const TopicPage = (props: PageProps) => {
 
   const usePrerenderedData = props.topic?.slug === slug()
 
+  console.log('!!! test:')
   return (
     <PageLayout title={`${capitalize(props.seo?.title)} — ${t('Discours')} `}>
       <ReactionsProvider>
-        <Show when={isLoaded()} fallback={<Loading />}>
-          <TopicView
-            topic={usePrerenderedData ? props.topic : null}
-            shouts={usePrerenderedData ? props.topicShouts : null}
-            topicSlug={slug()}
-          />
-        </Show>
+        {/*<Show when={isLoaded()} fallback={<Loading />}>*/}
+        <TopicView
+          topic={usePrerenderedData ? props.topic : null}
+          shouts={usePrerenderedData ? props.topicShouts : null}
+          topicSlug={slug()}
+        />
+        {/*</Show>*/}
       </ReactionsProvider>
     </PageLayout>
   )

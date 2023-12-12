@@ -2,13 +2,14 @@ import type { Shout, Topic } from '../../graphql/types.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, onMount, createSignal } from 'solid-js'
+import { For, Show, createMemo, onMount, createSignal, createEffect } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
 import { useTopicsStore } from '../../stores/zine/topics'
+import { capitalize } from '../../utils/capitalize'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription } from '../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
@@ -32,6 +33,7 @@ interface Props {
   shouts: Shout[]
   topicSlug: string
   isLoaded: boolean
+  title: (val: string) => string
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 28
@@ -85,13 +87,16 @@ export const TopicView = (props: Props) => {
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
+  const pageTitle = `#${capitalize(topic().title)}`
+  createEffect(() => props.title(pageTitle))
+
   const ogImage = topic().pic
     ? getImageUrl(topic().pic, { width: 1200 })
     : getImageUrl('production/image/logo_image.png')
   const description = topic().body
     ? getDescription(topic().body)
-    : t('Independent media project about culture, science, art and society with horizontal editing')
-  const ogTitle = topic().title
+    : t('The most interesting publications on the topic', { topicName: pageTitle })
+  const ogTitle = pageTitle
 
   return (
     <div class={styles.topicPage}>

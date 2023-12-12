@@ -22,7 +22,7 @@ export const AllTopicsPage = (props: PageProps) => {
   })
 
   return (
-    <PageLayout title={t('All topics')}>
+    <PageLayout title={t('Themes and plots')}>
       <AllTopicsView isLoaded={isLoaded()} topics={props.allTopics} />
     </PageLayout>
   )

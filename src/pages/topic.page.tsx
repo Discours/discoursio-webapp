@@ -9,7 +9,6 @@ import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { loadTopic } from '../stores/zine/topics'
-import { capitalize } from '../utils/capitalize'
 
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()
@@ -19,7 +18,7 @@ export const TopicPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(
     Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug(),
   )
-
+  const [pageTitle, setPageTitle] = createSignal<string>()
   const preload = () =>
     Promise.all([
       loadShouts({ filters: { topic: slug() }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 }),
@@ -54,9 +53,10 @@ export const TopicPage = (props: PageProps) => {
   const usePrerenderedData = props.topic?.slug === slug()
 
   return (
-    <PageLayout title={`${capitalize(props.seo?.title)} — ${t('Discours')} `}>
+    <PageLayout title={pageTitle()}>
       <ReactionsProvider>
         <TopicView
+          title={(title) => setPageTitle(title)}
           isLoaded={isLoaded()}
           topic={usePrerenderedData ? props.topic : null}
           shouts={usePrerenderedData ? props.topicShouts : null}

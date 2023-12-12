@@ -108,9 +108,9 @@ export const AllTopicsView = (props: Props) => {
   )
 
   const ogImage = getImageUrl('production/image/logo_image.png')
-  const ogTitle = t('Discours – an open magazine about culture, science and society')
+  const ogTitle = t('Themes and plots')
   const description = t(
-    'Independent media project about culture, science, art and society with horizontal editing',
+    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about',
   )
 
   return (

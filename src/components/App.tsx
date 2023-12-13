@@ -50,7 +50,6 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   authorAbout: AuthorPage,
   inbox: InboxPage,
   expo: ExpoPage,
-  expoLayout: ExpoPage,
   connect: ConnectPage,
   create: CreatePage,
   edit: EditPage,

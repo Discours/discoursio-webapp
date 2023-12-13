@@ -4,6 +4,7 @@ import { createLazyMemo } from '@solid-primitives/memo'
 import { createSignal } from 'solid-js'
 
 import { apiClient } from '../../utils/apiClient'
+import { getServerDate } from '../../utils/getServerDate'
 import { byStat } from '../../utils/sortby'
 
 import { addAuthorsByTopic } from './authors'
@@ -193,11 +194,13 @@ type InitialState = {
 const TOP_MONTH_ARTICLES_COUNT = 10
 
 export const loadTopMonthArticles = async (): Promise<void> => {
+  const now = new Date()
+  const fromDate = getServerDate(new Date(now.setMonth(now.getMonth() - 1)))
+
   const articles = await apiClient.getShouts({
     filters: {
       visibility: 'public',
-      // TODO: replace with from, to
-      days: 30,
+      fromDate,
     },
     order_by: 'rating_stat',
     limit: TOP_MONTH_ARTICLES_COUNT,

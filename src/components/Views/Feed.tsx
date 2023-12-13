@@ -1,6 +1,7 @@
 import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/types.gen'
 
 import { getPagePath } from '@nanostores/router'
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 
@@ -10,6 +11,9 @@ import { router, useRouter } from '../../stores/router'
 import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../stores/zine/topics'
+import { capitalize } from '../../utils/capitalize'
+import { getImageUrl } from '../../utils/getImageUrl'
+import { getDescription } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../_shared/Loading'
 import { CommentDate } from '../Article/CommentDate'
@@ -113,8 +117,24 @@ export const FeedView = (props: Props) => {
     setTopComments(comments)
   })
 
+  const ogImage = getImageUrl('production/image/logo_image.png')
+  const description = t(
+    'Independent media project about culture, science, art and society with horizontal editing',
+  )
+  const ogTitle = t('Feed')
+
   return (
     <div class="wide-container feed">
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
       <div class="row">
         <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
           <Sidebar />

@@ -17,7 +17,7 @@ export const Footer = () => {
       header: 'About the project',
       items: [
         {
-          title: 'Manifest',
+          title: 'Discours Manifest',
           slug: '/about/manifest',
         },
         {
@@ -51,7 +51,7 @@ export const Footer = () => {
           slug: '/create',
         },
         {
-          title: 'Support us',
+          title: 'Support Discours',
           slug: '/about/help',
         },
         {

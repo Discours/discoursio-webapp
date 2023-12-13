@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, Show, on, onMount, lazy, onCleanup } from 'solid-js'
+import { createEffect, createSignal, For, Show, on, onMount, onCleanup } from 'solid-js'
 import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
 import { throttle } from 'throttle-debounce'
 

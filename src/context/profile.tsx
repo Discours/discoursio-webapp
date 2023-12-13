@@ -3,7 +3,7 @@ import type { ProfileInput } from '../graphql/types.gen'
 import { createContext, createEffect, createMemo, JSX, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { loadAuthor, useAuthorsStore } from '../stores/zine/authors'
+import { loadAuthor } from '../stores/zine/authors'
 import { apiClient } from '../utils/apiClient'
 
 import { useSession } from './session'

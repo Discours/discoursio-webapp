@@ -87,7 +87,7 @@ export const TopicView = (props: Props) => {
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
-  const pageTitle = `#${capitalize(topic().title)}`
+  const pageTitle = `#${capitalize(topic().title, true)}`
   createEffect(() => props.title(pageTitle))
 
   const ogImage = topic().pic

@@ -9,6 +9,7 @@ import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { loadTopic } from '../stores/zine/topics'
+import { capitalize } from '../utils/capitalize'
 
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()

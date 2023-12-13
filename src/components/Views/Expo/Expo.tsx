@@ -141,7 +141,7 @@ export const Expo = (props: Props) => {
             <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
               <ConditionalWrapper
                 condition={Boolean(props.layout)}
-                wrapper={(children) => <a href={getPagePath(router, 'expo')}>{children}</a>}
+                wrapper={(children) => <a href={getPagePath(router, 'expo', { layout: '' })}>{children}</a>}
               >
                 <span class={clsx('linkReplacement')}>{t('All')}</span>
               </ConditionalWrapper>
@@ -150,7 +150,7 @@ export const Expo = (props: Props) => {
               <ConditionalWrapper
                 condition={props.layout !== 'literature'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'literature' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'literature' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Literature')}</span>
@@ -160,7 +160,7 @@ export const Expo = (props: Props) => {
               <ConditionalWrapper
                 condition={props.layout !== 'music'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'music' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'music' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Music')}</span>
@@ -170,7 +170,7 @@ export const Expo = (props: Props) => {
               <ConditionalWrapper
                 condition={props.layout !== 'image'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'image' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'image' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Gallery')}</span>
@@ -180,7 +180,7 @@ export const Expo = (props: Props) => {
               <ConditionalWrapper
                 condition={props.layout !== 'video'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'video' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'video' })}>{children}</a>
                 )}
               >
                 <span class={clsx('cursorPointer linkReplacement')}>{t('Video')}</span>

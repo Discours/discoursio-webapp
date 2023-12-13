@@ -24,7 +24,7 @@ export const SearchPage = (props: PageProps) => {
       return
     }
 
-    await loadShouts({ filters: { title: q(), body: q() }, limit: 50, offset: 0 })
+    await loadShouts({ filters: {}, limit: 50, offset: 0 })
     setIsLoaded(true)
   })
 

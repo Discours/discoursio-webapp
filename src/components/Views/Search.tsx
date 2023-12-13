@@ -36,10 +36,7 @@ export const SearchView = (props: Props) => {
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
-      filters: {
-        title: query(),
-        body: query(),
-      },
+      filters: {},
       offset: offset(),
       limit: LOAD_MORE_PAGE_SIZE,
     })

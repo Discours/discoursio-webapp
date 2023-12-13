@@ -116,14 +116,19 @@ export enum FollowingEntity {
   Topic = 'TOPIC',
 }
 
+export type LoadRandomTopShoutsParams = {
+  filters?: InputMaybe<LoadShoutsFilters>
+  fromRandomCount?: InputMaybe<Scalars['Int']['input']>
+  limit: Scalars['Int']['input']
+}
+
 export type LoadShoutsFilters = {
   author?: InputMaybe<Scalars['String']['input']>
-  body?: InputMaybe<Scalars['String']['input']>
-  days?: InputMaybe<Scalars['Int']['input']>
   excludeLayout?: InputMaybe<Scalars['String']['input']>
+  fromDate?: InputMaybe<Scalars['String']['input']>
   layout?: InputMaybe<Scalars['String']['input']>
   reacted?: InputMaybe<Scalars['Boolean']['input']>
-  title?: InputMaybe<Scalars['String']['input']>
+  toDate?: InputMaybe<Scalars['String']['input']>
   topic?: InputMaybe<Scalars['String']['input']>
   visibility?: InputMaybe<Scalars['String']['input']>
 }
@@ -367,6 +372,7 @@ export type Query = {
   loadMessagesBy: Result
   loadMySubscriptions?: Maybe<MySubscriptionsQueryResult>
   loadNotifications: NotificationsQueryResult
+  loadRandomTopShouts: Array<Maybe<Shout>>
   loadReactionsBy: Array<Maybe<Reaction>>
   loadRecipients: Result
   loadShout?: Maybe<Shout>
@@ -417,6 +423,10 @@ export type QueryLoadMessagesByArgs = {
 
 export type QueryLoadNotificationsArgs = {
   params: NotificationsQueryParams
+}
+
+export type QueryLoadRandomTopShoutsArgs = {
+  params?: InputMaybe<LoadRandomTopShoutsParams>
 }
 
 export type QueryLoadReactionsByArgs = {

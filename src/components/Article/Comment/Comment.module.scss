@@ -4,7 +4,6 @@
   transition: background-color 0.3s;
   position: relative;
   list-style: none;
-  background: rgb(0 0 0 / 10%);
 
   @include media-breakpoint-down(sm) {
     padding-right: 0;

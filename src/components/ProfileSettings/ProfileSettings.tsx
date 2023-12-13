@@ -177,18 +177,18 @@ export const ProfileSettings = () => {
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
                       <div
-                        class={clsx(styles.userpic, { [styles.hasControls]: form.userpic })}
-                        onClick={!form.userpic && handleUploadAvatar}
+                        class={clsx(styles.userpic, { [styles.hasControls]: form.pic })}
+                        onClick={!form.pic && handleUploadAvatar}
                       >
                         <Switch>
                           <Match when={isUserpicUpdating()}>
                             <Loading />
                           </Match>
-                          <Match when={form.userpic}>
+                          <Match when={form.pic}>
                             <div
                               class={styles.userpicImage}
                               style={{
-                                'background-image': `url(${getImageUrl(form.userpic, {
+                                'background-image': `url(${getImageUrl(form.pic, {
                                   width: 180,
                                   height: 180,
                                 })})`,
@@ -200,7 +200,7 @@ export const ProfileSettings = () => {
                                   <button
                                     ref={triggerRef}
                                     class={styles.control}
-                                    onClick={() => updateFormField('userpic', '')}
+                                    onClick={() => updateFormField('pic', '')}
                                   >
                                     <Icon name="close" />
                                   </button>
@@ -219,7 +219,7 @@ export const ProfileSettings = () => {
                               </Popover>
                             </div>
                           </Match>
-                          <Match when={!form.userpic}>
+                          <Match when={!form.pic}>
                             <Icon name="user-image-gray" />
                             {t('Here you can upload your photo')}
                           </Match>

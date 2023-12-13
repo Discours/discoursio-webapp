@@ -32,7 +32,7 @@ const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const { author, session, isSessionLoaded, isAuthenticated } = useSession()
+  const { author, isAuthenticated, isSessionLoaded } = useSession()
   const {
     unreadNotificationsCount,
     actions: { showNotificationsPanel },
@@ -147,7 +147,7 @@ export const HeaderAuth = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={!session()}>
+            <Show when={!author()}>
               <div class={styles.userControlItem} onClick={handleBellIconClick}>
                 <div class={styles.button}>
                   <Icon name="bell-white" counter={1} class={styles.icon} />

@@ -101,7 +101,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     async () => {
       const u = session()?.user
       if (u) {
-        return (await apiClient.getAuthor({ user: u.id })) ?? null
+        return (await apiClient.getAuthorId({ user: u.id })) ?? null
       }
       return null
     },

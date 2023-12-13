@@ -1,13 +1,13 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadNotificationsQuery($params: NotificationsQueryParams!) {
-    load_notifications(params: $params) {
+  query LoadNotificationsQuery($limit: Int, $offset: Int) {
+    load_notifications(limit: $limit, offset: $offset) {
       notifications {
         id
         entity
         action
-        paylaod
+        payload
         created_at
         seen
       }

@@ -13,7 +13,7 @@ type ProfilePopupProps = Omit<PopupProps, 'children'>
 
 export const ProfilePopup = (props: ProfilePopupProps) => {
   const {
-    user,
+    author,
     actions: { signOut },
   } = useSession()
 
@@ -23,18 +23,18 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     <Popup {...props} horizontalAnchor="right" variant="bordered">
       <ul class="nodash">
         <li>
-          <a href={getPagePath(router, 'author', { slug: user().slug })}>{t('Profile')}</a>
+          <a href={getPagePath(router, 'author', { slug: author().slug })}>{t('Profile')}</a>
         </li>
         <li>
           <a href={getPagePath(router, 'drafts')}>{t('Drafts')}</a>
         </li>
         <li>
-          <a href={`${getPagePath(router, 'author', { slug: user().slug })}?modal=following`}>
+          <a href={`${getPagePath(router, 'author', { slug: author().slug })}?modal=following`}>
             {t('Subscriptions')}
           </a>
         </li>
         <li>
-          <a href={`${getPagePath(router, 'authorComments', { slug: user().slug })}`}>{t('Comments')}</a>
+          <a href={`${getPagePath(router, 'authorComments', { slug: author().slug })}`}>{t('Comments')}</a>
         </li>
         <li>
           <a href="#">{t('Bookmarks')}</a>

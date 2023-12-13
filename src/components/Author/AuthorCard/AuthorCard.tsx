@@ -32,7 +32,6 @@ type Props = {
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const {
-    session,
     author,
     subscriptions,
     isSessionLoaded,

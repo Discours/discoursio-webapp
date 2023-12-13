@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query GetAuthorBy($slug: String, $author_id: Int, $user: String) {
-    get_author(slug: $slug, author_id: $author_id, user: $user) {
+  query GetAuthorBy($slug: String, $author_id: Int) {
+    get_author(slug: $slug, author_id: $author_id) {
       id
       slug
       name

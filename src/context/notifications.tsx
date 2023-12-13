@@ -10,6 +10,7 @@ import { notifierClient } from '../graphql/client/notifier'
 import { Notification } from '../graphql/schema/notifier.gen'
 
 import { SSEMessage, useConnect } from './connect'
+import { useSession } from './session'
 
 type NotificationsContextType = {
   notificationEntities: Record<number, Notification>
@@ -38,12 +39,13 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
+  const { isAuthenticated } = useSession()
   const apiClient = createMemo(() => {
-    if (!notifierClient.private) notifierClient.connect()
+    if (!notifierClient.private && isAuthenticated()) notifierClient.connect()
     return notifierClient
   })
   const { addHandler } = useConnect()
-  const loadNotifications = async (options: { limit: number; offset?: number }) => {
+  const loadNotifications = async (options: { limit?: number; offset?: number }) => {
     const { notifications, unread, total } = await apiClient().getNotifications(options)
     const newNotificationEntities = notifications.reduce((acc, notification) => {
       acc[notification.id] = notification

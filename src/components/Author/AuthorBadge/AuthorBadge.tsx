@@ -25,7 +25,7 @@ type Props = {
 export const AuthorBadge = (props: Props) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const {
-    session,
+    author,
     subscriptions,
     actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
@@ -96,7 +96,7 @@ export const AuthorBadge = (props: Props) => {
           </Show>
         </a>
       </div>
-      <Show when={props.author.slug !== session()?.user.slug && !props.nameOnly}>
+      <Show when={props.author.slug !== author()?.slug && !props.nameOnly}>
         <div class={styles.actions}>
           <Show
             when={!props.minimizeSubscribeButton}

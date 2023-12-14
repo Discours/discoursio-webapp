@@ -92,8 +92,10 @@ export const SessionProvider = (props: {
 
   const getSession = async (): Promise<AuthToken> => {
     try {
+      const t = getToken()
+      console.debug('[context.session]' + t)
       const authResult = await authorizer().getSession({
-        Authorization: getToken(),
+        Authorization: t,
       })
       if (authResult?.access_token) {
         console.log(authResult)

@@ -18,7 +18,6 @@ import { CommentDate } from '../../Article/CommentDate'
 import { AuthorLink } from '../../Author/AhtorLink'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ArticleCard } from '../../Feed/ArticleCard'
-import { CardTopic } from '../../Feed/CardTopic'
 import { Sidebar } from '../../Feed/Sidebar'
 
 import styles from './Feed.module.scss'

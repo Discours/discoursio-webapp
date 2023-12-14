@@ -24,7 +24,7 @@ type Props = {
   layout: LayoutType
 }
 
-export const PRERENDERED_ARTICLES_COUNT = 32
+export const PRERENDERED_ARTICLES_COUNT = 24
 const LOAD_MORE_PAGE_SIZE = 16
 
 export const Expo = (props: Props) => {

@@ -1,4 +1,4 @@
-import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/types.gen'
+import type { Author, Shout, LoadShoutsOptions } from '../../graphql/types.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'
 import { createSignal } from 'solid-js'

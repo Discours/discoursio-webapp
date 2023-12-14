@@ -29,7 +29,7 @@ export const SearchView = (props: Props) => {
 
   const { searchParams } = useRouter<SearchPageSearchParams>()
   let searchEl: HTMLInputElement
-  const handleQueryChange = (_ev) => {
+  const handleQueryChange = () => {
     setQuery(searchEl.value)
   }
 

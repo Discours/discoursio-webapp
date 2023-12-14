@@ -1,30 +1,29 @@
-import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/types.gen'
+import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/types.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 
-import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
-import { router, useRouter } from '../../stores/router'
-import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
-import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { useTopicsStore } from '../../stores/zine/topics'
-import { capitalize } from '../../utils/capitalize'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { getDescription } from '../../utils/meta'
-import { Icon } from '../_shared/Icon'
-import { Loading } from '../_shared/Loading'
-import { CommentDate } from '../Article/CommentDate'
-import { AuthorLink } from '../Author/AhtorLink'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { ArticleCard } from '../Feed/ArticleCard'
-import { Sidebar } from '../Feed/Sidebar'
+import { useLocalize } from '../../../context/localize'
+import { useReactions } from '../../../context/reactions'
+import { router, useRouter } from '../../../stores/router'
+import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
+import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
+import { useTopicsStore } from '../../../stores/zine/topics'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { Icon } from '../../_shared/Icon'
+import { Loading } from '../../_shared/Loading'
+import { CommentDate } from '../../Article/CommentDate'
+import { AuthorLink } from '../../Author/AhtorLink'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { ArticleCard } from '../../Feed/ArticleCard'
+import { CardTopic } from '../../Feed/CardTopic'
+import { Sidebar } from '../../Feed/Sidebar'
 
 import styles from './Feed.module.scss'
-import stylesBeside from '../../components/Feed/Beside.module.scss'
-import stylesTopic from '../Feed/CardTopic.module.scss'
+import stylesBeside from '../../Feed/Beside.module.scss'
+import stylesTopic from '../../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
 
@@ -51,7 +50,7 @@ type Props = {
   }>
 }
 
-export const FeedView = (props: Props) => {
+export const Feed = (props: Props) => {
   const { t } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
@@ -270,6 +269,12 @@ export const FeedView = (props: Props) => {
                 <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
               </li>
             </ul>
+          </section>
+          <section class={clsx(styles.asideSection)}>
+            <h4>{t('Be the first to rate')}</h4>
+            <For each={sortedArticles().slice(0, 4)}>
+              {(article) => <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />}
+            </For>
           </section>
         </aside>
       </div>

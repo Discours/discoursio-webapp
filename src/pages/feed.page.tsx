@@ -2,7 +2,7 @@ import { createEffect, Match, on, onCleanup, Switch } from 'solid-js'
 
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthGuard } from '../components/AuthGuard'
-import { FeedView } from '../components/Views/Feed'
+import { Feed } from '../components/Views/Feed'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { LoadShoutsOptions } from '../graphql/types.gen'
@@ -40,13 +40,13 @@ export const FeedPage = () => {
   return (
     <PageLayout title={t('Feed')}>
       <ReactionsProvider>
-        <Switch fallback={<FeedView loadShouts={handleFeedLoadShouts} />}>
+        <Switch fallback={<Feed loadShouts={handleFeedLoadShouts} />}>
           <Match when={page().route === 'feed'}>
-            <FeedView loadShouts={handleFeedLoadShouts} />
+            <Feed loadShouts={handleFeedLoadShouts} />
           </Match>
           <Match when={page().route === 'feedMy'}>
             <AuthGuard>
-              <FeedView loadShouts={handleMyFeedLoadShouts} />
+              <Feed loadShouts={handleMyFeedLoadShouts} />
             </AuthGuard>
           </Match>
         </Switch>

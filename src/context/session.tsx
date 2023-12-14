@@ -16,6 +16,7 @@ import {
   createMemo,
   createResource,
   createSignal,
+  on,
   onMount,
   useContext,
 } from 'solid-js'
@@ -93,7 +94,7 @@ export const SessionProvider = (props: {
   const getSession = async (): Promise<AuthToken> => {
     try {
       const t = getToken()
-      console.debug('[context.session]' + t)
+      console.debug(t)
       const authResult = await authorizer().getSession({
         Authorization: t,
       })
@@ -159,11 +160,15 @@ export const SessionProvider = (props: {
       }),
   )
 
-  createEffect(() => {
-    if (props.onStateChangeCallback) {
-      props.onStateChangeCallback(token())
-    }
-  })
+  createEffect(
+    on(
+      () => props.onStateChangeCallback,
+      () => {
+        props.onStateChangeCallback(token())
+      },
+      { defer: true },
+    ),
+  )
 
   const [configuration, setConfig] = createSignal<ConfigType>(config)
 
@@ -174,7 +179,7 @@ export const SessionProvider = (props: {
     setConfig({ ...config, ...metaRes, redirectURL: window.location.origin + '/?modal=auth' })
     console.log('[context.session] refreshing session...')
     const s = await getSession()
-    console.log(`[context.session] ${s}`)
+    console.debug(s)
     setToken(s)
     console.log('[context.session] loading author...')
     await loadAuthor()

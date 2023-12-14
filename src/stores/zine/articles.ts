@@ -179,14 +179,6 @@ export const resetSortedArticles = () => {
   setSortedArticles([])
 }
 
-export const createArticle = async ({ article }: { article: ShoutInput }) => {
-  try {
-    await apiClient.createArticle({ article })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 type InitialState = {
   shouts?: Shout[]
 }

@@ -1,15 +1,7 @@
 import type { ParentComponent } from 'solid-js'
 
 import { Authorizer, User, AuthToken, ConfigType } from '@authorizerdev/authorizer-js'
-import {
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-  onMount,
-  useContext,
-} from 'solid-js'
+import { createContext, createEffect, createMemo, onMount, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 export type AuthorizerState = {
@@ -83,18 +75,6 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
 
   const handleTokenChange = (token: AuthToken | null) => {
     setState('token', token)
-
-    // If we have an access_token, then we clear the interval and create a new interval
-    // to the token expires_in, so we can retrieve the token again before it expires
-    if (token?.access_token) {
-      if (interval) {
-        clearInterval(interval)
-      }
-
-      interval = setInterval(() => {
-        getToken()
-      }, token.expires_in * 1000) as any
-    }
   }
 
   const setUser = (user: User | null) => {
@@ -110,53 +90,17 @@ export const AuthorizerProvider: ParentComponent<AuthorizerProviderProps> = (pro
     setState('user', null)
   }
 
-  let interval: number | null = null
+  const interval: number | null = null
 
   const getToken = async () => {
     setState('loading', true)
     const metaRes = await authorizer().getMetaData()
-
-    try {
-      const res = await authorizer().getSession()
-      if (res.access_token && res.user) {
-        setState((prev) => ({
-          ...prev,
-          token: {
-            access_token: res.access_token,
-            expires_in: res.expires_in,
-            id_token: res.id_token,
-            refresh_token: res.refresh_token || '',
-          },
-          user: res.user,
-        }))
-
-        if (interval) {
-          clearInterval(interval)
-        }
-
-        interval = setInterval(() => {
-          getToken()
-        }, res.expires_in * 1000) as any
-      } else {
-        setState((prev) => ({ ...prev, user: null, token: null }))
-      }
-    } catch {
-      setState((prev) => ({ ...prev, user: null, token: null }))
-    } finally {
-      setState('config', (cfg) => ({ ...cfg, ...metaRes }))
-      setState('loading', false)
-    }
+    setState('config', (cfg) => ({ ...cfg, ...metaRes }))
+    setState('loading', false)
   }
 
   onMount(() => {
     setState('config', { ...config, redirectURL: window.location.origin + '/?modal=auth' })
-    !state.token && getToken()
-  })
-
-  onCleanup(() => {
-    if (interval) {
-      clearInterval(interval)
-    }
   })
 
   return (

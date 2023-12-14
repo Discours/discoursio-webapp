@@ -1,4 +1,4 @@
-import type { Author, Shout } from '../../../graphql/schema/core.gen'
+import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
@@ -87,7 +87,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { author } = useSession()
   const mainTopicSlug = props.article.main_topic
-  const mainTopic = props.article.topics.find((t) => t.slug === mainTopicSlug)
+  const mainTopic = props.article.topics.find((tpc: Topic) => tpc.slug === mainTopicSlug)
   const mainTopicTitle =
     lang() === 'ru' && mainTopic?.title ? mainTopic.title : mainTopicSlug.replace('-', ' ')
 

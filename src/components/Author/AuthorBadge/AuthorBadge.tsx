@@ -32,7 +32,7 @@ export const AuthorBadge = (props: Props) => {
   const { changeSearchParam } = useRouter()
   const { t, formatDate } = useLocalize()
   const subscribed = createMemo(() =>
-    subscriptions().authors.some((author) => author.slug === props.author.slug),
+    subscriptions().authors.some((a: Author) => a.slug === props.author.slug),
   )
 
   const subscribe = async (really = true) => {

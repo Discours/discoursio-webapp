@@ -409,7 +409,7 @@ export const EditView = (props: Props) => {
         </form>
       </div>
       <Show when={page().route === 'editSettings'}>
-        <PublishSettings shoutId={props.shout.id} form={form}></PublishSettings>
+        <PublishSettings shoutId={props.shout.id} form={form} />
       </Show>
       <Panel shoutId={props.shout.id} />
     </>

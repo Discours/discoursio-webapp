@@ -7,13 +7,13 @@ import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
 import { useRouter } from '../../stores/router'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
+import { capitalize } from '../../utils/capitalize'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { scrollHandler } from '../../utils/scroll'
 import { SearchField } from '../_shared/SearchField'
 import { TopicCard } from '../Topic/Card'
 
 import styles from './AllTopics.module.scss'
-import { capitalize } from '../../utils/capitalize'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -147,7 +147,9 @@ export const AllTopicsView = (props: AllTopicsViewProps) => {
                             {(topic) => (
                               <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                 <a href={`/topic/${topic.slug}`}>
-                                  {lang() == 'en' ? capitalize(topic.slug.replace(/-/g, ' ')) : topic.title}
+                                  {lang() == 'en'
+                                    ? capitalize(topic.slug.replaceAll('-', ' '))
+                                    : topic.title}
                                 </a>
                                 <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
                               </div>

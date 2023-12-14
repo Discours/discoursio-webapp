@@ -30,13 +30,17 @@ const userpicUrl = (userpic: string) => {
   return userpic
 }
 export const ProfileFormProvider = (props: { children: JSX.Element }) => {
-  const { author: currentAuthor } = useSession()
+  const {
+    author,
+    actions: { getToken },
+  } = useSession()
   const [form, setForm] = createStore<ProfileInput>({})
 
-  const currentSlug = createMemo(() => session()?.user?.slug)
+  const currentSlug = createMemo(() => author()?.slug)
 
   const apiClient = createMemo(() => {
-    if (!coreClient.private) coreClient.connect()
+    const token = getToken()
+    if (!coreClient.private) coreClient.connect(token)
     return coreClient
   })
 

@@ -4,6 +4,7 @@ import { Meta, MetaProvider } from '@solidjs/meta'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
+import { AuthorizerProvider } from '../context/authorizer'
 import { ConfirmProvider } from '../context/confirm'
 import { ConnectProvider } from '../context/connect'
 import { EditorProvider } from '../context/editor'
@@ -41,7 +42,6 @@ import { SearchPage } from '../pages/search.page'
 import { TopicPage } from '../pages/topic.page'
 import { ROUTES, useRouter } from '../stores/router'
 import { hideModal, MODALS, showModal } from '../stores/ui'
-import { AuthorizerProvider } from '../context/authorizer'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))

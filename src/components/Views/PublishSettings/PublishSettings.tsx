@@ -10,6 +10,7 @@ import { Topic } from '../../../graphql/schema/core.gen'
 import { UploadedFile } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'
+import { useTopicsStore } from '../../../stores/zine/topics'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
@@ -19,7 +20,6 @@ import { EMPTY_TOPIC } from '../Edit'
 
 import styles from './PublishSettings.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
-import { useTopicsStore } from '../../../stores/zine/topics'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))

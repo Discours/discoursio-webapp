@@ -4,10 +4,10 @@ import deepEqual from 'fast-deep-equal'
 import { createEffect, createSignal, For, lazy, Match, onCleanup, onMount, Show, Switch } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
+import { useAuthorizer } from '../../context/authorizer'
 import { useConfirm } from '../../context/confirm'
 import { useLocalize } from '../../context/localize'
 import { useProfileForm } from '../../context/profile'
-import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
 import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
@@ -49,9 +49,7 @@ export const ProfileSettings = () => {
     actions: { showSnackbar },
   } = useSnackbar()
 
-  const {
-    actions: { loadSession },
-  } = useSession()
+  const [, { setUser, authorizer }] = useAuthorizer()
 
   const {
     actions: { showConfirm },
@@ -101,7 +99,10 @@ export const ProfileSettings = () => {
       }
       showSnackbar({ type: 'error', body: t('Error') })
     }
-    loadSession()
+    const profile = await authorizer().getProfile()
+    if (profile) {
+      setUser(profile)
+    }
   }
 
   const handleCancel = async () => {

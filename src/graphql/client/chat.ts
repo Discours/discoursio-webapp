@@ -26,7 +26,7 @@ import {
 
 export const inboxClient = {
   private: null,
-  connect: () => (inboxClient.private = createGraphQLClient('chat')),
+  connect: (token: string) => (inboxClient.private = createGraphQLClient('chat', token)),
 
   loadChats: async (options: QueryLoad_ChatsArgs): Promise<Chat[]> => {
     const resp = await inboxClient.private.query(myChats, options).toPromise()

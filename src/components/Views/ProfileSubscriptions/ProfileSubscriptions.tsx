@@ -20,7 +20,7 @@ import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
-  const { session } = useSession()
+  const { author } = useSession()
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
@@ -29,8 +29,8 @@ export const ProfileSubscriptions = () => {
   const fetchSubscriptions = async () => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
-        apiClient.getAuthorFollowingUsers({ slug: session()?.author.slug }),
-        apiClient.getAuthorFollowingTopics({ slug: session()?.author.slug }),
+        apiClient.getAuthorFollowingUsers({ slug: author()?.slug }),
+        apiClient.getAuthorFollowingTopics({ slug: author()?.slug }),
       ])
       setFollowing([...getAuthors, ...getTopics])
       setFiltered([...getAuthors, ...getTopics])

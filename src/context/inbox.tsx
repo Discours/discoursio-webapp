@@ -7,6 +7,7 @@ import { inboxClient } from '../graphql/client/chat'
 import { loadMessages } from '../stores/inbox'
 
 import { SSEMessage, useConnect } from './connect'
+import { useSession } from './session'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -40,8 +41,12 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       setChats((prev) => [...prev, relivedChat])
     }
   }
+  const {
+    actions: { getToken },
+  } = useSession()
   const apiClient = createMemo(() => {
-    if (!inboxClient.private) inboxClient.connect()
+    const token = getToken()
+    if (!inboxClient.private) inboxClient.connect(token)
     return inboxClient
   })
   const { addHandler } = useConnect()

@@ -29,8 +29,8 @@ import draftsLoad from '../query/core/articles-load-drafts'
 import myFeed from '../query/core/articles-load-feed'
 import shoutsLoadSearch from '../query/core/articles-load-search'
 import authorBy from '../query/core/author-by'
-import authorId from '../query/core/author-id'
 import authorFollowers from '../query/core/author-followers'
+import authorId from '../query/core/author-id'
 import authorsAll from '../query/core/authors-all'
 import authorFollowed from '../query/core/authors-followed-by'
 import authorsLoadBy from '../query/core/authors-load-by'
@@ -45,7 +45,7 @@ const publicGraphQLClient = createGraphQLClient('core')
 
 export const apiClient = {
   private: null,
-  connect: () => (apiClient.private = createGraphQLClient('core')), // NOTE: use it after token appears
+  connect: (token: string) => (apiClient.private = createGraphQLClient('core', token)), // NOTE: use it after token appears
 
   getRandomTopics: async ({ amount }: { amount: number }) => {
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()

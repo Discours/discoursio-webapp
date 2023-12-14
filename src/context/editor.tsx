@@ -12,6 +12,7 @@ import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
+import { useSession } from './session'
 
 type WordCounter = {
   characters: number
@@ -82,10 +83,13 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
-
+  const {
+    actions: { getToken },
+  } = useSession()
   const { page } = useRouter()
   const apiClient = createMemo(() => {
-    if (!coreClient.private) coreClient.connect()
+    const token = getToken()
+    if (!coreClient.private) coreClient.connect(token)
     return coreClient
   })
   const {

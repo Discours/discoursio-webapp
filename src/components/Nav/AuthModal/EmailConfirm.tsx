@@ -3,6 +3,7 @@ import type { ConfirmEmailSearchParams } from './types'
 import { clsx } from 'clsx'
 import { createMemo, createSignal, onMount, Show } from 'solid-js'
 
+import { useAuthorizer } from '../../../context/authorizer'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { ApiError } from '../../../graphql/error'
@@ -14,14 +15,14 @@ import styles from './AuthModal.module.scss'
 export const EmailConfirm = () => {
   const { t } = useLocalize()
   const {
-    session,
     actions: { confirmEmail },
   } = useSession()
+  const [{ user }] = useAuthorizer()
 
   const [isTokenExpired, setIsTokenExpired] = createSignal(false)
   const [isTokenInvalid, setIsTokenInvalid] = createSignal(false)
 
-  const confirmedEmail = createMemo(() => session()?.user?.email || '')
+  const confirmedEmail = createMemo(() => user?.email || '')
 
   const { searchParams } = useRouter<ConfirmEmailSearchParams>()
 

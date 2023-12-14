@@ -3,8 +3,8 @@ import type { Accessor, JSX } from 'solid-js'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { createContext, useContext, createSignal, createEffect } from 'solid-js'
 
-import { useSession } from './session'
 import { useAuthorizer } from './authorizer'
+import { useSession } from './session'
 
 export interface SSEMessage {
   id: string

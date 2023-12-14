@@ -5,12 +5,12 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { follow, unfollow } from '../../../stores/zine/common'
+import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 
 import styles from './TopicBadge.module.scss'
-import { capitalize } from '../../../utils/capitalize'
 
 type Props = {
   topic: Topic
@@ -54,7 +54,7 @@ export const TopicBadge = (props: Props) => {
       />
       <a href={`/topic/${props.topic.slug}`} class={styles.info}>
         <span class={styles.title}>
-          {lang() == 'en' ? capitalize(props.topic.slug.replace(/-/g, ' ')) : props.topic.title}
+          {lang() == 'en' ? capitalize(props.topic.slug.replaceAll('-', ' ')) : props.topic.title}
         </span>
         <Show
           when={props.topic.body}

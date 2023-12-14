@@ -44,8 +44,8 @@ export const ArticlePage = (props: PageProps) => {
     script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
     try {
       document.body.appendChild(script)
-    } catch (err) {
-      console.warn(err)
+    } catch (error) {
+      console.warn(error)
     }
   })
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)

@@ -84,7 +84,7 @@ export const TopicCard = (props: TopicProps) => {
   }
 
   const title = createMemo(() =>
-    capitalize(lang() == 'en' ? props.topic.slug.replace(/-/g, ' ') : props.topic.title || ''),
+    capitalize(lang() == 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
   )
 
   return (

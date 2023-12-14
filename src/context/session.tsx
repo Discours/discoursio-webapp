@@ -3,7 +3,6 @@ import type { Author, Result } from '../graphql/schema/core.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
 
 import { VerifyEmailInput, LoginInput, AuthToken, User } from '@authorizerdev/authorizer-js'
-import { cookieStorage, createStorage } from '@solid-primitives/storage'
 import { createContext, createMemo, createResource, createSignal, onMount, useContext } from 'solid-js'
 
 import { apiClient } from '../graphql/client/core'
@@ -12,13 +11,11 @@ import { showModal } from '../stores/ui'
 import { useAuthorizer } from './authorizer'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { getToken, resetToken, setToken } from '../stores/token'
 
 export type SessionContextType = {
   session: Resource<AuthToken>
   isSessionLoaded: Accessor<boolean>
   subscriptions: Accessor<Result>
-  user: Accessor<User>
   author: Resource<Author | null>
   isAuthenticated: Accessor<boolean>
   actions: {
@@ -53,8 +50,8 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const {
     actions: { showSnackbar },
   } = useSnackbar()
-  const [, { authorizer }] = useAuthorizer()
-
+  const [{ token }, { setUser, setToken, authorizer }] = useAuthorizer()
+  const getToken = () => token.access_token
   const loadSubscriptions = async (): Promise<void> => {
     const result = await apiClient.getMySubscriptions()
     if (result) {
@@ -66,14 +63,12 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
 
   const getSession = async (): Promise<AuthToken> => {
     try {
-      const token = getToken()
       if (token) {
-        const authResult = await authorizer().getSession({
-          Authorization: token,
-        })
+        const authResult = await authorizer().getSession()
         if (authResult && authResult.access_token) {
           console.log(authResult)
-          setToken(authResult.access_token)
+          setToken(authResult)
+          if (authResult.user) setUser(authResult.user)
           loadSubscriptions()
           return authResult
         }
@@ -81,7 +76,8 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
       return null
     } catch (error) {
       console.error('getSession error:', error)
-      resetToken()
+      setToken(null)
+      setUser(null)
       return null
     } finally {
       setTimeout(() => {
@@ -94,8 +90,6 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     ssrLoadFrom: 'initial',
     initialValue: null,
   })
-
-  const user = createMemo(() => session()?.user)
 
   const [author, { refetch: loadAuthor }] = createResource<Author | null>(
     async () => {
@@ -117,7 +111,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     const authResult: AuthToken | void = await authorizer().login(params)
 
     if (authResult && authResult.access_token) {
-      setToken(authResult.access_token)
+      setToken(authResult)
       mutate(authResult)
       loadSubscriptions()
       console.debug('signed in')
@@ -131,7 +125,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
     setIsAuthWithCallback(() => callback)
 
-    await loadSession()
+    await authorizer().getProfile()
 
     if (!isAuthenticated()) {
       showModal('auth', modalSource)
@@ -147,7 +141,8 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const signOut = async () => {
     await authorizer().logout()
     mutate(null)
-    resetToken()
+    setToken(null)
+    setUser(null)
     setSubscriptions(EMPTY_SUBSCRIPTIONS)
     showSnackbar({ body: t("You've successfully logged out") })
   }
@@ -155,7 +150,7 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
   const confirmEmail = async (input: VerifyEmailInput) => {
     const at: void | AuthToken = await authorizer().verifyEmail(input)
     if (at) {
-      setToken(at.access_token)
+      setToken(at)
       mutate(at)
     }
   }
@@ -174,7 +169,6 @@ export const SessionProvider = (props: { children: JSX.Element }) => {
     subscriptions,
     isSessionLoaded,
     author,
-    user,
     isAuthenticated,
     actions,
   }

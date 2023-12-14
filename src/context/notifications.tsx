@@ -39,9 +39,13 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
-  const { isAuthenticated } = useSession()
+  const {
+    isAuthenticated,
+    actions: { getToken },
+  } = useSession()
   const apiClient = createMemo(() => {
-    if (!notifierClient.private && isAuthenticated()) notifierClient.connect()
+    const token = getToken()
+    if (!notifierClient.private && isAuthenticated()) notifierClient.connect(token)
     return notifierClient
   })
   const { addHandler } = useConnect()

@@ -1,4 +1,4 @@
-import type { Author, Shout } from '../../graphql/schema/core.gen'
+import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
@@ -12,6 +12,7 @@ import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
+import { capitalize } from '../../utils/capitalize'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
@@ -33,7 +34,6 @@ import { ShoutRatingControl } from './ShoutRatingControl'
 
 import styles from './Article.module.scss'
 import stylesHeader from '../Nav/Header/Header.module.scss'
-import { capitalize } from '../../utils/capitalize'
 
 type Props = {
   article: Shout
@@ -73,7 +73,7 @@ export const FullArticle = (props: Props) => {
 
   const mainTopic = createMemo(() => {
     const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
-    const mt = props.article.topics.find((t) => t.slug === main_topic_slug)
+    const mt = props.article.topics.find((tpc: Topic) => tpc.slug === main_topic_slug)
     if (mt) {
       mt.title = lang() == 'en' ? capitalize(mt.slug.replace('-', ' ')) : mt.title
       return mt

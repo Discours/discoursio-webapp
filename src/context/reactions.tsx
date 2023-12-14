@@ -6,6 +6,8 @@ import { createStore, reconcile } from 'solid-js/store'
 import { apiClient as coreClient } from '../graphql/client/core'
 import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/schema/core.gen'
 
+import { useSession } from './session'
+
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
   actions: {
@@ -32,9 +34,13 @@ export function useReactions() {
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
+  const {
+    actions: { getToken },
+  } = useSession()
 
   const apiClient = createMemo(() => {
-    if (!coreClient.private) coreClient.connect()
+    const token = getToken()
+    if (!coreClient.private) coreClient.connect(token)
     return coreClient
   })
 

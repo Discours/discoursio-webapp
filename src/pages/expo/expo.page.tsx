@@ -37,7 +37,7 @@ export const ExpoPage = (props: PageProps) => {
   return (
     <PageLayout withPadding={true} zeroBottomPadding={true} title={title()}>
       <Topics />
-      <Expo shouts={props.expoShouts} />
+      <Expo shouts={props.expoShouts} layout={getLayout()} />
     </PageLayout>
   )
 }

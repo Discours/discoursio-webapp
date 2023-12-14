@@ -1,6 +1,7 @@
 import type { Author, Shout, Topic } from '../../../graphql/types.gen'
 
 import { getPagePath } from '@nanostores/router'
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
 
@@ -9,6 +10,8 @@ import { router, useRouter } from '../../../stores/router'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { apiClient } from '../../../utils/apiClient'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
 import { Loading } from '../../_shared/Loading'
@@ -127,8 +130,23 @@ export const AuthorView = (props: Props) => {
     }
   })
 
+  const ogImage = props.author?.userpic
+    ? getImageUrl(props.author.userpic, { width: 1200 })
+    : getImageUrl('production/image/logo_image.png')
+  const description = getDescription(props.author?.bio)
+  const ogTitle = props.author?.name
+
   return (
     <div class={styles.authorPage}>
+      <Meta name="descprition" content={description} />
+      <Meta name="og:type" content="profile" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:image" content={ogImage} />
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

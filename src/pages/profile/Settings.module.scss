@@ -302,6 +302,20 @@ h5 {
     padding: 0.8rem 0 !important;
   }
 
+  .cancelLabel {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  .cancelLabelMobile {
+    display: none;
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+    }
+  }
+
   :global(.row) > * {
     margin-bottom: 0;
   }

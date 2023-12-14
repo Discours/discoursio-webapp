@@ -256,7 +256,7 @@ export const ProfileSettings = () => {
                       </Show>
                     </div>
 
-                    <h4>{t('Address on Discourse')}</h4>
+                    <h4>{t('Address on Discours')}</h4>
                     <div class="pretty-form__item">
                       <div class={styles.discoursName}>
                         <label for="user-address">https://{hostname()}/author/</label>
@@ -348,7 +348,12 @@ export const ProfileSettings = () => {
                         <Button
                           class={styles.cancel}
                           variant="light"
-                          value={t('Cancel changes')}
+                          value={
+                            <>
+                              <span class={styles.cancelLabel}>{t('Cancel changes')}</span>
+                              <span class={styles.cancelLabelMobile}>{t('Cancel')}</span>
+                            </>
+                          }
                           onClick={handleCancel}
                         />
                         <Button onClick={handleSubmit} variant="primary" value={t('Save settings')} />

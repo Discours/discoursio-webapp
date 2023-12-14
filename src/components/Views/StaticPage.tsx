@@ -3,22 +3,21 @@ import { JSX } from 'solid-js'
 import { PageLayout } from '../_shared/PageLayout'
 import { TableOfContents } from '../TableOfContents'
 
-export const StaticPage = (props: {
+type Props = {
   title: string
   children: JSX.Element
-  layoutChildren: JSX.Element
-}) => {
-  let articleBodyElement: HTMLElement | undefined
+}
+export const StaticPage = (props: Props) => {
+  const articleBodyElement: { current: HTMLElement } = { current: null }
 
   return (
     <PageLayout title={props.title}>
-      {props.layoutChildren}
       <div class="wide-container">
         <div class="row">
           <article
             class="col-md-16 col-lg-14 col-xl-12 offset-md-5"
             id="articleBody"
-            ref={articleBodyElement}
+            ref={(el) => (articleBodyElement.current = el)}
           >
             {props.children}
           </article>
@@ -27,7 +26,7 @@ export const StaticPage = (props: {
             <TableOfContents
               variant="article"
               parentSelector="#articleBody"
-              body={articleBodyElement.outerHTML}
+              body={articleBodyElement.current.outerHTML}
             />
           </div>
         </div>

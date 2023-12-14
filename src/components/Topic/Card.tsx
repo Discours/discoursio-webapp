@@ -103,7 +103,7 @@ export const TopicCard = (props: TopicProps) => {
         >
           <Show when={props.topic.title && !props.isCardMode}>
             <h3 class={styles.topicTitle}>
-              <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
+              <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '', true)}</a>
             </h3>
           </Show>
 

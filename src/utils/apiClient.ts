@@ -19,6 +19,7 @@ import type {
   NotificationsQueryParams,
   NotificationsQueryResult,
   MySubscriptionsQueryResult,
+  LoadRandomTopShoutsParams,
 } from '../graphql/types.gen'
 
 import createArticle from '../graphql/mutation/article-create'
@@ -43,6 +44,8 @@ import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import shoutLoad from '../graphql/query/article-load'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
+import shoutsLoadRandomTop from '../graphql/query/articles-load-random-top'
+import articlesLoadRandomTop from '../graphql/query/articles-load-random-top'
 import authCheckEmailQuery from '../graphql/query/auth-check-email'
 import authLoginQuery from '../graphql/query/auth-login'
 import authorBySlug from '../graphql/query/author-by-slug'
@@ -348,6 +351,15 @@ export const apiClient = {
     }
 
     return resp.data.loadShouts
+  },
+
+  getRandomTopShouts: async (params: LoadRandomTopShoutsParams): Promise<Shout[]> => {
+    const resp = await publicGraphQLClient.query(articlesLoadRandomTop, { params }).toPromise()
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.loadRandomTopShouts
   },
 
   getMyFeed: async (options: LoadShoutsOptions) => {

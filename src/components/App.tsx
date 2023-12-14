@@ -4,7 +4,6 @@ import { Meta, MetaProvider } from '@solidjs/meta'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
-import { AuthorizerProvider } from '../context/authorizer'
 import { ConfirmProvider } from '../context/confirm'
 import { ConnectProvider } from '../context/connect'
 import { EditorProvider } from '../context/editor'
@@ -120,17 +119,15 @@ export const App = (props: Props) => {
       <LocalizeProvider>
         <SnackbarProvider>
           <ConfirmProvider>
-            <AuthorizerProvider onStateChangeCallback={console.log}>
-              <SessionProvider>
-                <ConnectProvider>
-                  <NotificationsProvider>
-                    <EditorProvider>
-                      <Dynamic component={pageComponent()} {...props} />
-                    </EditorProvider>
-                  </NotificationsProvider>
-                </ConnectProvider>
-              </SessionProvider>
-            </AuthorizerProvider>
+            <SessionProvider onStateChangeCallback={console.log}>
+              <ConnectProvider>
+                <NotificationsProvider>
+                  <EditorProvider>
+                    <Dynamic component={pageComponent()} {...props} />
+                  </EditorProvider>
+                </NotificationsProvider>
+              </ConnectProvider>
+            </SessionProvider>
           </ConfirmProvider>
         </SnackbarProvider>
       </LocalizeProvider>

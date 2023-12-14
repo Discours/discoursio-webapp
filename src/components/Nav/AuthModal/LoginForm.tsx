@@ -3,7 +3,6 @@ import type { AuthModalSearchParams } from './types'
 import { clsx } from 'clsx'
 import { createSignal, Show } from 'solid-js'
 
-import { useAuthorizer } from '../../../context/authorizer'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useSnackbar } from '../../../context/snackbar'
@@ -67,8 +66,10 @@ export const LoginForm = () => {
     setIsLinkSent(true)
     setIsEmailNotConfirmed(false)
     setSubmitError('')
-    const [{ token }, { authorizer }] = useAuthorizer()
-    const result = await authorizer().verifyEmail({ token: token.id_token })
+    const {
+      actions: { authorizer, getToken },
+    } = useSession()
+    const result = await authorizer().verifyEmail({ token: getToken() })
     if (!result) setSubmitError('cant sign send link') // TODO:
   }
 

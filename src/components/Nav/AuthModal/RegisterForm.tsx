@@ -4,7 +4,6 @@ import type { JSX } from 'solid-js'
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
-import { useAuthorizer } from '../../../context/authorizer'
 import { useLocalize } from '../../../context/localize'
 import { ApiError } from '../../../graphql/error'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
@@ -18,6 +17,7 @@ import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
 
 import styles from './AuthModal.module.scss'
+import { useSession } from '../../../context/session'
 
 type FormFields = {
   fullName: string
@@ -35,7 +35,9 @@ export const RegisterForm = () => {
   const { changeSearchParam } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const { emailChecks } = useEmailChecks()
-  const [, { authorizer }] = useAuthorizer()
+  const {
+    actions: { authorizer },
+  } = useSession()
   const [submitError, setSubmitError] = createSignal('')
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')

@@ -3,7 +3,6 @@ import type { AuthModalSearchParams } from './types'
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
-import { useAuthorizer } from '../../../context/authorizer'
 import { useLocalize } from '../../../context/localize'
 import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
@@ -12,6 +11,7 @@ import { validateEmail } from '../../../utils/validateEmail'
 import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
+import { useSession } from '../../../context/session'
 
 type FormFields = {
   email: string
@@ -26,7 +26,9 @@ export const ForgotPasswordForm = () => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail)
   }
-  const [, { authorizer }] = useAuthorizer()
+  const {
+    actions: { authorizer },
+  } = useSession()
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})

@@ -4,7 +4,7 @@ import deepEqual from 'fast-deep-equal'
 import { createEffect, createSignal, For, lazy, Match, onCleanup, onMount, Show, Switch } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { useAuthorizer } from '../../context/authorizer'
+import { useSession } from '../../context/session'
 import { useConfirm } from '../../context/confirm'
 import { useLocalize } from '../../context/localize'
 import { useProfileForm } from '../../context/profile'
@@ -49,7 +49,9 @@ export const ProfileSettings = () => {
     actions: { showSnackbar },
   } = useSnackbar()
 
-  const [, { setUser, authorizer }] = useAuthorizer()
+  const {
+    actions: { setUser, authorizer },
+  } = useSession()
 
   const {
     actions: { showConfirm },

@@ -11,8 +11,8 @@ import { router, useRouter } from '../stores/router'
 import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
-import { useSnackbar } from './snackbar'
 import { useSession } from './session'
+import { useSnackbar } from './snackbar'
 
 type WordCounter = {
   characters: number

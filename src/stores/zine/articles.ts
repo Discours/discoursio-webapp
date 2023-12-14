@@ -1,4 +1,4 @@
-import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/types.gen'
+import type { Author, Shout, LoadShoutsOptions } from '../../graphql/types.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'
 import { createSignal } from 'solid-js'
@@ -177,14 +177,6 @@ export const loadMyFeed = async (
 
 export const resetSortedArticles = () => {
   setSortedArticles([])
-}
-
-export const createArticle = async ({ article }: { article: ShoutInput }) => {
-  try {
-    await apiClient.createArticle({ article })
-  } catch (error) {
-    console.error(error)
-  }
 }
 
 type InitialState = {

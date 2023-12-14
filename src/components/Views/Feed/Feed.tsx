@@ -1,32 +1,32 @@
-import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/types.gen'
+import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/types.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 
-import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
-import { router, useRouter } from '../../stores/router'
-import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
-import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { useTopicsStore } from '../../stores/zine/topics'
-import { capitalize } from '../../utils/capitalize'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { getDescription } from '../../utils/meta'
-import { Icon } from '../_shared/Icon'
-import { Loading } from '../_shared/Loading'
-import { CommentDate } from '../Article/CommentDate'
-import { AuthorLink } from '../Author/AhtorLink'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { ArticleCard } from '../Feed/ArticleCard'
-import { Sidebar } from '../Feed/Sidebar'
+import { useLocalize } from '../../../context/localize'
+import { useReactions } from '../../../context/reactions'
+import { router, useRouter } from '../../../stores/router'
+import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
+import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
+import { useTopicsStore } from '../../../stores/zine/topics'
+import { apiClient } from '../../../utils/apiClient'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { Icon } from '../../_shared/Icon'
+import { Loading } from '../../_shared/Loading'
+import { CommentDate } from '../../Article/CommentDate'
+import { AuthorLink } from '../../Author/AhtorLink'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { ArticleCard } from '../../Feed/ArticleCard'
+import { Sidebar } from '../../Feed/Sidebar'
 
 import styles from './Feed.module.scss'
-import stylesBeside from '../../components/Feed/Beside.module.scss'
-import stylesTopic from '../Feed/CardTopic.module.scss'
+import stylesBeside from '../../Feed/Beside.module.scss'
+import stylesTopic from '../../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
+const UNRATED_ARTICLES_COUNT = 5
 
 type FeedSearchParams = {
   by: 'publish_date' | 'rating' | 'last_comment'
@@ -51,7 +51,7 @@ type Props = {
   }>
 }
 
-export const FeedView = (props: Props) => {
+export const Feed = (props: Props) => {
   const { t } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
@@ -62,13 +62,20 @@ export const FeedView = (props: Props) => {
   const { topAuthors } = useTopAuthorsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
+  const [unratedArticles, setUnratedArticles] = createSignal<Shout[]>([])
 
   const {
     actions: { loadReactionsBy },
   } = useReactions()
 
+  const loadUnratedArticles = async () => {
+    const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)
+    setUnratedArticles(result)
+  }
+
   onMount(() => {
     loadMore()
+    loadUnratedArticles()
   })
 
   createEffect(
@@ -271,6 +278,14 @@ export const FeedView = (props: Props) => {
               </li>
             </ul>
           </section>
+          <Show when={unratedArticles().length > 0}>
+            <section class={clsx(styles.asideSection)}>
+              <h4>{t('Be the first to rate')}</h4>
+              <For each={unratedArticles()}>
+                {(article) => <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />}
+              </For>
+            </section>
+          </Show>
         </aside>
       </div>
     </div>

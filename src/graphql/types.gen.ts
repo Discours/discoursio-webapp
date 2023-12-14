@@ -377,6 +377,7 @@ export type Query = {
   loadRecipients: Result
   loadShout?: Maybe<Shout>
   loadShouts: Array<Maybe<Shout>>
+  loadUnratedShouts: Array<Maybe<Shout>>
   markdownBody: Scalars['String']['output']
   myFeed?: Maybe<Array<Maybe<Shout>>>
   searchMessages: Result
@@ -447,6 +448,10 @@ export type QueryLoadShoutArgs = {
 
 export type QueryLoadShoutsArgs = {
   options?: InputMaybe<LoadShoutsOptions>
+}
+
+export type QueryLoadUnratedShoutsArgs = {
+  limit: Scalars['Int']['input']
 }
 
 export type QueryMarkdownBodyArgs = {

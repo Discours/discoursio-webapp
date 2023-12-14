@@ -44,8 +44,8 @@ import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
 import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import shoutLoad from '../graphql/query/article-load'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
-import shoutsLoadRandomTop from '../graphql/query/articles-load-random-top'
 import articlesLoadRandomTop from '../graphql/query/articles-load-random-top'
+import articlesLoadUnrated from '../graphql/query/articles-load-unrated'
 import authCheckEmailQuery from '../graphql/query/auth-check-email'
 import authLoginQuery from '../graphql/query/auth-login'
 import authorBySlug from '../graphql/query/author-by-slug'
@@ -360,6 +360,15 @@ export const apiClient = {
     }
 
     return resp.data.loadRandomTopShouts
+  },
+
+  getUnratedShouts: async (limit: number): Promise<Shout[]> => {
+    const resp = await publicGraphQLClient.query(articlesLoadUnrated, { limit }).toPromise()
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.loadUnratedShouts
   },
 
   getMyFeed: async (options: LoadShoutsOptions) => {

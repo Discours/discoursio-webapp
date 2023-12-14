@@ -3,7 +3,12 @@ import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { LoadRandomTopShoutsParams, LoadShoutsOptions, Shout } from '../../../graphql/types.gen'
+import {
+  LoadRandomTopShoutsParams,
+  LoadShoutsFilters,
+  LoadShoutsOptions,
+  Shout,
+} from '../../../graphql/types.gen'
 import { LayoutType } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
@@ -40,14 +45,25 @@ export const Expo = (props: Props) => {
     shouts: isLoaded() ? props.shouts : [],
   })
 
+  const getLoadShoutsFilters = (filters: LoadShoutsFilters = {}): LoadShoutsFilters => {
+    const result = { ...filters }
+
+    if (props.layout) {
+      filters.layout = props.layout
+    } else {
+      filters.excludeLayout = 'article'
+    }
+
+    return result
+  }
+
   const loadMore = async (count: number) => {
     saveScrollPosition()
     const options: LoadShoutsOptions = {
+      filters: getLoadShoutsFilters(),
       limit: count,
       offset: sortedArticles().length,
     }
-
-    options.filters = props.layout ? { layout: props.layout } : { excludeLayout: 'article' }
 
     const { hasMore } = await loadShouts(options)
     setIsLoadMoreButtonVisible(hasMore)
@@ -56,13 +72,10 @@ export const Expo = (props: Props) => {
 
   const loadRandomTopArticles = async () => {
     const params: LoadRandomTopShoutsParams = {
-      filters: {
-        visibility: 'public',
-      },
+      filters: getLoadShoutsFilters(),
       limit: 10,
       fromRandomCount: 100,
     }
-    params.filters = props.layout ? { layout: props.layout } : { excludeLayout: 'article' }
 
     const result = await apiClient.getRandomTopShouts(params)
     setRandomTopArticles(result)
@@ -73,14 +86,10 @@ export const Expo = (props: Props) => {
     const fromDate = getServerDate(new Date(now.setMonth(now.getMonth() - 1)))
 
     const params: LoadRandomTopShoutsParams = {
-      filters: {
-        visibility: 'public',
-        fromDate,
-      },
+      filters: getLoadShoutsFilters({ fromDate }),
       limit: 10,
       fromRandomCount: 10,
     }
-    params.filters = props.layout ? { layout: props.layout } : { excludeLayout: 'article' }
 
     const result = await apiClient.getRandomTopShouts(params)
     setRandomTopMonthArticles(result)
@@ -103,9 +112,7 @@ export const Expo = (props: Props) => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore(LOAD_MORE_PAGE_SIZE)
     }
-  })
 
-  onMount(() => {
     loadRandomTopArticles()
     loadRandomTopMonthArticles()
   })

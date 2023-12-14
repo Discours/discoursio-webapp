@@ -11,6 +11,7 @@ import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
+import { apiClient } from '../../../utils/apiClient'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
@@ -25,6 +26,7 @@ import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
+const UNRATED_ARTICLES_COUNT = 5
 
 type FeedSearchParams = {
   by: 'publish_date' | 'rating' | 'last_comment'
@@ -60,13 +62,20 @@ export const Feed = (props: Props) => {
   const { topAuthors } = useTopAuthorsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
+  const [unratedArticles, setUnratedArticles] = createSignal<Shout[]>([])
 
   const {
     actions: { loadReactionsBy },
   } = useReactions()
 
+  const loadUnratedArticles = async () => {
+    const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)
+    setUnratedArticles(result)
+  }
+
   onMount(() => {
     loadMore()
+    loadUnratedArticles()
   })
 
   createEffect(
@@ -269,12 +278,14 @@ export const Feed = (props: Props) => {
               </li>
             </ul>
           </section>
-          <section class={clsx(styles.asideSection)}>
-            <h4>{t('Be the first to rate')}</h4>
-            <For each={sortedArticles().slice(0, 4)}>
-              {(article) => <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />}
-            </For>
-          </section>
+          <Show when={unratedArticles().length > 0}>
+            <section class={clsx(styles.asideSection)}>
+              <h4>{t('Be the first to rate')}</h4>
+              <For each={unratedArticles()}>
+                {(article) => <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />}
+              </For>
+            </section>
+          </Show>
         </aside>
       </div>
     </div>

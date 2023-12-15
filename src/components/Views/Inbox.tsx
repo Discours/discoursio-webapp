@@ -53,7 +53,7 @@ export const InboxView = () => {
   const [isClear, setClear] = createSignal(false)
   const [isScrollToNewVisible, setIsScrollToNewVisible] = createSignal(false)
   const { author } = useSession()
-  const currentUserId = createMemo(() => author().id)
+  const currentUserId = createMemo(() => author()?.id)
   const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
 
   const messagesContainerRef: { current: HTMLDivElement } = {
@@ -100,7 +100,7 @@ export const InboxView = () => {
   const handleSubmit = async (message: string) => {
     await sendMessage({
       body: message,
-      chat_id: currentDialog().id.toString(),
+      chat_id: currentDialog()?.id.toString(),
       reply_to: messageToReply()?.id,
     })
     setClear(true)

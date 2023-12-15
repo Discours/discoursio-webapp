@@ -10,7 +10,7 @@ export const notifierClient = {
 
   getNotifications: async (params: QueryLoad_NotificationsArgs): Promise<NotificationsResult> => {
     const resp = await notifierClient.private.query(loadNotifications, params).toPromise()
-    return resp.data.load_notifications
+    return resp.data?.load_notifications
   },
   markNotificationAsRead: async (notification_id: number): Promise<void> => {
     await notifierClient.private

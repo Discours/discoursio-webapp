@@ -134,24 +134,19 @@ export const HeaderAuth = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={isNotificationsVisible()}>
+            <Show when={isNotificationsVisible() || !author()}>
               <div class={styles.userControlItem} onClick={handleBellIconClick}>
                 <div class={styles.button}>
-                  <Icon name="bell-white" counter={unreadNotificationsCount()} class={styles.icon} />
+                  <Icon
+                    name="bell-white"
+                    counter={isAuthenticated() ? unreadNotificationsCount() : 1}
+                    class={styles.icon}
+                  />
                   <Icon
                     name="bell-white-hover"
-                    counter={unreadNotificationsCount()}
+                    counter={isAuthenticated() ? unreadNotificationsCount() : 1}
                     class={clsx(styles.icon, styles.iconHover)}
                   />
-                </div>
-              </div>
-            </Show>
-
-            <Show when={!author()}>
-              <div class={styles.userControlItem} onClick={handleBellIconClick}>
-                <div class={styles.button}>
-                  <Icon name="bell-white" counter={1} class={styles.icon} />
-                  <Icon name="bell-white-hover" counter={1} class={clsx(styles.icon, styles.iconHover)} />
                 </div>
               </div>
             </Show>

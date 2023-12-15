@@ -4,6 +4,7 @@ import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
 import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { validateEmail } from '../../../utils/validateEmail'
@@ -11,7 +12,6 @@ import { validateEmail } from '../../../utils/validateEmail'
 import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
-import { useSession } from '../../../context/session'
 
 type FormFields = {
   email: string
@@ -71,7 +71,7 @@ export const ForgotPasswordForm = () => {
         redirect_uri: window.location.href + '&success=1', // FIXME: redirect to success page accepting confirmation code
       })
       if (response) {
-        console.debug(response)
+        console.debug('[ForgotPasswordForm]', response)
         if (response.message) setMessage(response.message)
       }
     } catch (error) {

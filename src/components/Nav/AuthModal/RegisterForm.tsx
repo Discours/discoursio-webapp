@@ -5,6 +5,7 @@ import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
 import { ApiError } from '../../../graphql/error'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { useRouter } from '../../../stores/router'
@@ -17,7 +18,6 @@ import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
 
 import styles from './AuthModal.module.scss'
-import { useSession } from '../../../context/session'
 
 type FormFields = {
   fullName: string

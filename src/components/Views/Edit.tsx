@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show, Suspense } from 'solid-js'
+import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../context/editor'

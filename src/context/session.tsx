@@ -23,6 +23,7 @@ import {
 
 import { apiClient } from '../graphql/client/core'
 import { showModal } from '../stores/ui'
+
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
 
@@ -74,14 +75,16 @@ export const SessionProvider = (props: {
   onStateChangeCallback(state: any): unknown
   children: JSX.Element
 }) => {
-  const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
-  const [subscriptions, setSubscriptions] = createSignal<Result>(EMPTY_SUBSCRIPTIONS)
   const { t } = useLocalize()
   const {
     actions: { showSnackbar },
   } = useSnackbar()
+
+  const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
+  const [subscriptions, setSubscriptions] = createSignal<Result>(EMPTY_SUBSCRIPTIONS)
   const [token, setToken] = createSignal<AuthToken>()
   const [user, setUser] = createSignal<User>()
+
   const loadSubscriptions = async (): Promise<void> => {
     const result = await apiClient.getMySubscriptions()
     if (result) {
@@ -91,24 +94,30 @@ export const SessionProvider = (props: {
     }
   }
 
+  const setAuth = (auth: AuthToken | void) => {
+    if (auth) {
+      setToken(auth)
+      setUser(auth.user)
+      mutate(auth)
+    }
+  }
+
   const getSession = async (): Promise<AuthToken> => {
     try {
-      const t = getToken()
-      console.debug(t)
+      const tkn = getToken()
+      console.debug('[context.session] token before: ', tkn)
       const authResult = await authorizer().getSession({
-        Authorization: t,
+        Authorization: tkn,
       })
       if (authResult?.access_token) {
-        console.log(authResult)
-        setToken(authResult)
-        if (authResult.user) setUser(authResult.user)
-        loadSubscriptions()
+        setAuth(authResult)
+        console.debug('[context.session] token after: ', authResult.access_token)
+        await loadSubscriptions()
         return authResult
       }
     } catch (error) {
-      console.error('getSession error:', error)
-      setToken(null)
-      setUser(null)
+      console.error('[context.session] getSession error:', error)
+      setAuth(null)
       return null
     } finally {
       setTimeout(() => {
@@ -142,10 +151,9 @@ export const SessionProvider = (props: {
     const authResult: AuthToken | void = await authorizer().login(params)
 
     if (authResult && authResult.access_token) {
-      setToken(authResult)
-      mutate(authResult)
-      loadSubscriptions()
-      console.debug('signed in')
+      setAuth(authResult)
+      await loadSubscriptions()
+      console.debug('[context.session] signed in')
     } else {
       console.info((authResult as AuthToken).message)
     }
@@ -179,10 +187,10 @@ export const SessionProvider = (props: {
     setConfig({ ...config, ...metaRes, redirectURL: window.location.origin + '/?modal=auth' })
     console.log('[context.session] refreshing session...')
     const s = await getSession()
-    console.debug(s)
-    setToken(s)
+    console.debug('[context.session] session: ', s)
     console.log('[context.session] loading author...')
-    await loadAuthor()
+    const a = await loadAuthor()
+    console.debug('[context.session] author: ', a)
     setIsSessionLoaded(true)
     console.log('[context.session] loaded')
   })
@@ -191,7 +199,8 @@ export const SessionProvider = (props: {
   const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
     setIsAuthWithCallback(() => callback)
 
-    await authorizer().getProfile()
+    const userdata = await authorizer().getProfile()
+    if (userdata) setUser(userdata)
 
     if (!isAuthenticated()) {
       showModal('auth', modalSource)
@@ -200,19 +209,14 @@ export const SessionProvider = (props: {
 
   const signOut = async () => {
     await authorizer().logout()
-    mutate(null)
-    setToken(null)
-    setUser(null)
+    setAuth(null)
     setSubscriptions(EMPTY_SUBSCRIPTIONS)
     showSnackbar({ body: t("You've successfully logged out") })
   }
 
   const confirmEmail = async (input: VerifyEmailInput) => {
     const at: void | AuthToken = await authorizer().verifyEmail(input)
-    if (at) {
-      setToken(at)
-      mutate(at)
-    }
+    setAuth(at)
   }
 
   const getToken = createMemo(() => token()?.access_token)

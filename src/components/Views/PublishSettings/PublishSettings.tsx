@@ -1,12 +1,11 @@
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createSignal, lazy, onMount, Show } from 'solid-js'
+import { lazy, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { Topic } from '../../../graphql/schema/core.gen'
 import { UploadedFile } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'

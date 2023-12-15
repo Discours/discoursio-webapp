@@ -46,18 +46,23 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   } = useSession()
   const apiClient = createMemo(() => {
     const token = getToken()
-    if (!inboxClient.private) inboxClient.connect(token)
-    return inboxClient
+    if (!inboxClient.private) {
+      inboxClient.connect(token)
+      return inboxClient
+    }
   })
   const { addHandler } = useConnect()
   addHandler(handleMessage)
 
   const loadChats = async () => {
     try {
-      const newChats = await apiClient().loadChats({ limit: 50, offset: 0 })
-      setChats(newChats)
+      const client = apiClient()
+      if (client) {
+        const newChats = await client.loadChats({ limit: 50, offset: 0 })
+        setChats(newChats)
+      }
     } catch (error) {
-      console.log('[loadChats]', error)
+      console.log('[loadChats] error: ', error)
     }
   }
 

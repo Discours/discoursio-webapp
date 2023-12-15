@@ -26,7 +26,7 @@ export const NotificationView = (props: Props) => {
     actions: { markNotificationAsRead, hideNotificationsPanel },
   } = useNotifications()
 
-  const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
+  const { changeSearchParam } = useRouter<ArticlePageSearchParams>() // TODO: use search params
 
   const { t, formatDate, formatTime } = useLocalize()
 

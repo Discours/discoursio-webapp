@@ -75,7 +75,7 @@ export const FullArticle = (props: Props) => {
     const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
     const mt = props.article.topics.find((tpc: Topic) => tpc.slug === main_topic_slug)
     if (mt) {
-      mt.title = lang() == 'en' ? capitalize(mt.slug.replace('-', ' ')) : mt.title
+      mt.title = lang() === 'en' ? capitalize(mt.slug.replace('-', ' ')) : mt.title
       return mt
     } else {
       return props.article.topics[0]
@@ -329,7 +329,7 @@ export const FullArticle = (props: Props) => {
                 >
                   <figure class="img-align-column">
                     <Image width={800} alt={props.article.cover_caption} src={props.article.cover} />
-                    <figcaption>{props.article.cover_caption}</figcaption>
+                    <figcaption innerHTML={props.article.cover_caption} />
                   </figure>
                 </Show>
               </div>
@@ -513,7 +513,7 @@ export const FullArticle = (props: Props) => {
                   {(topic) => (
                     <div class={styles.shoutTopic}>
                       <a href={getPagePath(router, 'topic', { slug: topic.slug })}>
-                        {lang() == 'en' ? capitalize(topic.slug) : topic.title}
+                        {lang() === 'en' ? capitalize(topic.slug) : topic.title}
                       </a>
                     </div>
                   )}

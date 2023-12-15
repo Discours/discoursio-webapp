@@ -1,6 +1,6 @@
 import type { Accessor, JSX } from 'solid-js'
 
-import { createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
+import { createContext, createEffect, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
 
@@ -43,23 +43,35 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     isAuthenticated,
     actions: { getToken },
   } = useSession()
+
   const apiClient = createMemo(() => {
     const token = getToken()
-    if (!notifierClient.private && isAuthenticated()) notifierClient.connect(token)
-    return notifierClient
+    if (!notifierClient.private) {
+      notifierClient.connect(token)
+      return notifierClient
+    }
   })
-  const { addHandler } = useConnect()
-  const loadNotifications = async (options: { limit?: number; offset?: number }) => {
-    const { notifications, unread, total } = await apiClient().getNotifications(options)
-    const newNotificationEntities = notifications.reduce((acc, notification) => {
-      acc[notification.id] = notification
-      return acc
-    }, {})
 
-    setTotalNotificationsCount(total)
-    setUnreadNotificationsCount(unread)
-    setNotificationEntities(newNotificationEntities)
-    return notifications
+  const { addHandler } = useConnect()
+
+  const loadNotifications = async (options: { limit?: number; offset?: number }) => {
+    const client = apiClient()
+    if (isAuthenticated() && client) {
+      console.debug(client)
+      const { notifications, unread, total } = await client.getNotifications(options)
+      const newNotificationEntities = notifications.reduce((acc, notification) => {
+        acc[notification.id] = notification
+        return acc
+      }, {})
+
+      setTotalNotificationsCount(total)
+      setUnreadNotificationsCount(unread)
+      setNotificationEntities(newNotificationEntities)
+      console.debug(`[context.notifications] updated`)
+      return notifications
+    } else {
+      return []
+    }
   }
 
   const sortedNotifications = createMemo(() => {
@@ -70,7 +82,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   onMount(() => {
     addHandler((data: SSEMessage) => {
-      if (data.entity === 'reaction') {
+      if (data.entity === 'reaction' && isAuthenticated()) {
         loadNotifications({ limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
       } else {
         console.error(`[NotificationsProvider] unhandled message type: ${JSON.stringify(data)}`)
@@ -79,14 +91,20 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   })
 
   const markNotificationAsRead = async (notification: Notification) => {
-    await apiClient().markNotificationAsRead(notification.id)
+    const client = apiClient()
+    if (client) {
+      await client.markNotificationAsRead(notification.id)
+    }
     const nnn = new Set([...notification.seen, notification.id])
     setNotificationEntities(notification.id, 'seen', [...nnn])
     setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
   const markAllNotificationsAsRead = async () => {
-    await apiClient().markAllNotificationsAsRead()
-    loadNotifications({ limit: loadedNotificationsCount() })
+    const client = apiClient()
+    if (isAuthenticated() && client) {
+      await client.markAllNotificationsAsRead()
+      await loadNotifications({ limit: loadedNotificationsCount() })
+    }
   }
 
   const showNotificationsPanel = () => {

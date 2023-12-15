@@ -1,9 +1,11 @@
 import type { Accessor, JSX } from 'solid-js'
 
-import { fetchEventSource } from '@microsoft/fetch-event-source'
+import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
 import { createContext, useContext, createSignal, createEffect } from 'solid-js'
 
 import { useSession } from './session'
+
+const RECONNECT_TIMES = 2
 
 export interface SSEMessage {
   id: string
@@ -36,42 +38,53 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
   const addHandler = (handler: MessageHandler) => {
     setHandlers((hhh) => [...hhh, handler])
   }
+
   const [retried, setRetried] = createSignal<number>(0)
-  const listen = () => {
-    const token = getToken()
-    console.log(`[context.connect] token: ${token}`)
-    if (token && !connected() && retried() < 4) {
-      fetchEventSource('https://connect.discours.io', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-        onmessage(event) {
-          const m: SSEMessage = JSON.parse(event.data)
-          console.log('[context.connect] Received message:', m)
-
-          // Iterate over all registered handlers and call them
-          messageHandlers().forEach((handler) => handler(m))
-        },
-        onclose() {
-          console.log('[context.connect] sse connection closed by server')
-          setConnected(false)
-        },
-        onerror(err) {
-          console.error('[context.connect] sse connection error', err)
-          setRetried((r) => r + 1)
-          setConnected(false)
-          throw new Error(err) // NOTE: simple hack to close the connection
-        },
-      })
-    }
-  }
-
-  createEffect(() => {
+  createEffect(async () => {
     if (isAuthenticated() && !connected()) {
-      listen()
-      setConnected(true)
+      const token = getToken()
+      if (token) {
+        await fetchEventSource('https://connect.discours.io', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+          onmessage(event) {
+            const m: SSEMessage = JSON.parse(event.data)
+            console.log('[context.connect] Received message:', m)
+
+            // Iterate over all registered handlers and call them
+            messageHandlers().forEach((handler) => handler(m))
+          },
+          async onopen(response) {
+            console.log('[context.connect] SSE connection opened', response)
+            if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
+              setConnected(true)
+              return
+            } else if (response.status === 401) {
+              throw new Error('unauthorized')
+            } else {
+              setRetried((r) => r + 1)
+              throw new Error()
+            }
+          },
+          onclose() {
+            console.log('[context.connect] SSE connection closed by server')
+            setConnected(false)
+          },
+          onerror(err) {
+            if (err.message == 'unauthorized' || retried() > RECONNECT_TIMES) {
+              throw err // rethrow to stop the operation
+            } else {
+              // do nothing to automatically retry. You can also
+              // return a specific retry interval here.
+            }
+          },
+        })
+
+        return
+      }
     }
   })
 

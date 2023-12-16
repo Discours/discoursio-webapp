@@ -26,6 +26,7 @@ import { showModal } from '../stores/ui'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
+import { useRouter } from '../stores/router'
 
 const config: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
@@ -34,17 +35,18 @@ const config: ConfigType = {
 }
 
 export type SessionContextType = {
-  user: User | null
   config: ConfigType
   session: Resource<AuthToken>
+  author: Resource<Author | null>
   isSessionLoaded: Accessor<boolean>
   subscriptions: Accessor<Result>
-  author: Resource<Author | null>
   isAuthenticated: Accessor<boolean>
   isAuthWithCallback: Accessor<() => void>
   actions: {
     getToken: () => string
     loadSession: () => AuthToken | Promise<AuthToken>
+    setSession: (token: AuthToken | null) => void // setSession
+    loadAuthor: (info?: unknown) => Author | Promise<Author>
     loadSubscriptions: () => Promise<void>
     requireAuthentication: (
       callback: (() => Promise<void>) | (() => void),
@@ -52,10 +54,8 @@ export type SessionContextType = {
     ) => void
     signIn: (params: LoginInput) => Promise<void>
     signOut: () => Promise<void>
-    confirmEmail: (input: VerifyEmailInput) => Promise<void>
+    confirmEmail: (input: VerifyEmailInput) => Promise<void> // email confirm callback is in auth.discours.io
     setIsSessionLoaded: (loaded: boolean) => void
-    setToken: (token: AuthToken | null) => void // setSession
-    setUser: (user: User | null) => void
     authorizer: () => Authorizer
   }
 }
@@ -79,28 +79,9 @@ export const SessionProvider = (props: {
   const {
     actions: { showSnackbar },
   } = useSnackbar()
-
+  const { searchParams, changeSearchParam } = useRouter()
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [subscriptions, setSubscriptions] = createSignal<Result>(EMPTY_SUBSCRIPTIONS)
-  const [token, setToken] = createSignal<AuthToken>()
-  const [user, setUser] = createSignal<User>()
-
-  const loadSubscriptions = async (): Promise<void> => {
-    const result = await apiClient.getMySubscriptions()
-    if (result) {
-      setSubscriptions(result)
-    } else {
-      setSubscriptions(EMPTY_SUBSCRIPTIONS)
-    }
-  }
-
-  const setAuth = (auth: AuthToken | void) => {
-    if (auth) {
-      setToken(auth)
-      setUser(auth.user)
-      mutate(auth)
-    }
-  }
 
   const getSession = async (): Promise<AuthToken> => {
     try {
@@ -110,14 +91,14 @@ export const SessionProvider = (props: {
         Authorization: tkn,
       })
       if (authResult?.access_token) {
-        setAuth(authResult)
+        mutate(authResult)
         console.debug('[context.session] token after: ', authResult.access_token)
         await loadSubscriptions()
         return authResult
       }
     } catch (error) {
       console.error('[context.session] getSession error:', error)
-      setAuth(null)
+      mutate(null)
       return null
     } finally {
       setTimeout(() => {
@@ -130,6 +111,32 @@ export const SessionProvider = (props: {
     ssrLoadFrom: 'initial',
     initialValue: null,
   })
+
+  const user = createMemo(() => session().user)
+
+  createEffect(() => {
+    // detect confirm redirect
+    const params = searchParams()
+    if (params?.access_token) {
+      console.debug('[context.session] access token presented, changing search params')
+      changeSearchParam({ modal: 'auth', mode: 'confirm-email', access_token: params?.access_token })
+    }
+  })
+
+  createEffect(() => {
+    // authorized graphql client
+    const tkn = getToken()
+    if (tkn) apiClient.connect(tkn)
+  })
+
+  const loadSubscriptions = async (): Promise<void> => {
+    const result = await apiClient.private?.getMySubscriptions()
+    if (result) {
+      setSubscriptions(result)
+    } else {
+      setSubscriptions(EMPTY_SUBSCRIPTIONS)
+    }
+  }
 
   const [author, { refetch: loadAuthor }] = createResource<Author | null>(
     async () => {
@@ -151,7 +158,7 @@ export const SessionProvider = (props: {
     const authResult: AuthToken | void = await authorizer().login(params)
 
     if (authResult && authResult.access_token) {
-      setAuth(authResult)
+      mutate(authResult)
       await loadSubscriptions()
       console.debug('[context.session] signed in')
     } else {
@@ -172,7 +179,7 @@ export const SessionProvider = (props: {
     on(
       () => props.onStateChangeCallback,
       () => {
-        props.onStateChangeCallback(token())
+        props.onStateChangeCallback(session())
       },
       { defer: true },
     ),
@@ -200,7 +207,7 @@ export const SessionProvider = (props: {
     setIsAuthWithCallback(() => callback)
 
     const userdata = await authorizer().getProfile()
-    if (userdata) setUser(userdata)
+    if (userdata) mutate({ ...session(), user: userdata })
 
     if (!isAuthenticated()) {
       showModal('auth', modalSource)
@@ -209,17 +216,19 @@ export const SessionProvider = (props: {
 
   const signOut = async () => {
     await authorizer().logout()
-    setAuth(null)
+    mutate(null)
     setSubscriptions(EMPTY_SUBSCRIPTIONS)
     showSnackbar({ body: t("You've successfully logged out") })
   }
 
   const confirmEmail = async (input: VerifyEmailInput) => {
+    console.log(`[context.session] calling authorizer's verify email with ${input}`)
     const at: void | AuthToken = await authorizer().verifyEmail(input)
-    setAuth(at)
+    if (at) mutate(at)
+    console.log(`[context.session] confirmEmail got result ${at}`)
   }
 
-  const getToken = createMemo(() => token()?.access_token)
+  const getToken = createMemo(() => session()?.access_token)
 
   const actions = {
     getToken,
@@ -230,12 +239,11 @@ export const SessionProvider = (props: {
     signOut,
     confirmEmail,
     setIsSessionLoaded,
-    setToken,
-    setUser,
+    setSession: mutate,
     authorizer,
+    loadAuthor,
   }
   const value: SessionContextType = {
-    user: user(),
     config: configuration(),
     session,
     subscriptions,

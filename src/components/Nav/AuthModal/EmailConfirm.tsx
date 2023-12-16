@@ -14,35 +14,37 @@ import styles from './AuthModal.module.scss'
 export const EmailConfirm = () => {
   const { t } = useLocalize()
   const {
-    actions: { confirmEmail },
+    actions: { confirmEmail, loadSession, loadAuthor },
+    session,
   } = useSession()
-  const { user } = useSession()
+  const confirmedEmail = createMemo(() => session()?.user?.email_verified)
 
   const [isTokenExpired, setIsTokenExpired] = createSignal(false)
   const [isTokenInvalid, setIsTokenInvalid] = createSignal(false)
-
-  const confirmedEmail = createMemo(() => user?.email || '')
-
-  const { searchParams } = useRouter<ConfirmEmailSearchParams>()
+  const { searchParams, changeSearchParam } = useRouter<ConfirmEmailSearchParams>()
 
   onMount(async () => {
-    const token = searchParams().token
-    try {
-      await confirmEmail({ token })
-    } catch (error) {
-      if (error instanceof ApiError) {
-        if (error.code === 'token_expired') {
-          setIsTokenExpired(true)
-          return
+    const token = searchParams().access_token
+    if (token) {
+      try {
+        await confirmEmail({ token })
+        await loadSession()
+        await loadAuthor()
+      } catch (error) {
+        if (error instanceof ApiError) {
+          if (error.code === 'token_expired') {
+            setIsTokenExpired(true)
+            return
+          }
+
+          if (error.code === 'token_invalid') {
+            setIsTokenInvalid(true)
+            return
+          }
         }
 
-        if (error.code === 'token_invalid') {
-          setIsTokenInvalid(true)
-          return
-        }
+        console.log(error)
       }
-
-      console.log(error)
     }
   })
 

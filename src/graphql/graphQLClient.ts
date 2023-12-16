@@ -3,13 +3,13 @@ import { devtoolsExchange } from '@urql/devtools'
 
 import { isDev, apiBaseUrl } from '../utils/config'
 
-const TOKEN_LOCAL_STORAGE_KEY = 'token'
-
 const exchanges: Exchange[] = [dedupExchange, fetchExchange]
 
 if (isDev) {
   exchanges.unshift(devtoolsExchange)
 }
+
+const TOKEN_LOCAL_STORAGE_KEY = 'token'
 
 export const getToken = (): string => {
   return localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
@@ -17,7 +17,7 @@ export const getToken = (): string => {
 
 export const setToken = (token: string) => {
   if (!token) {
-    console.error('[privateGraphQLClient] setToken: token is null!')
+    console.error('[graphQLClient] setToken: token is null!')
   }
 
   localStorage.setItem(TOKEN_LOCAL_STORAGE_KEY, token)
@@ -34,14 +34,15 @@ const options: ClientOptions = {
   fetchOptions: () => {
     // localStorage is the source of truth for now
     // to change token call setToken, for example after login
-    const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY)
+    const token = getToken()
     if (!token) {
-      console.error('[privateGraphQLClient] fetchOptions: token is null!')
+      return {}
     }
+
     const headers = { Authorization: token }
     return { headers }
   },
   exchanges,
 }
 
-export const privateGraphQLClient = createClient(options)
+export const graphQLClient = createClient(options)

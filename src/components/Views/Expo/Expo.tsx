@@ -58,7 +58,6 @@ export const Expo = (props: Props) => {
   }
 
   const loadMore = async (count: number) => {
-    saveScrollPosition()
     const options: LoadShoutsOptions = {
       filters: getLoadShoutsFilters(),
       limit: count,
@@ -67,6 +66,11 @@ export const Expo = (props: Props) => {
 
     const { hasMore } = await loadShouts(options)
     setIsLoadMoreButtonVisible(hasMore)
+  }
+
+  const loadMoreWithoutScrolling = async (count: number) => {
+    saveScrollPosition()
+    await loadMore(count)
     restoreScrollPosition()
   }
 
@@ -137,7 +141,7 @@ export const Expo = (props: Props) => {
   })
 
   const handleLoadMoreClick = () => {
-    loadMore(LOAD_MORE_PAGE_SIZE)
+    loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
   }
 
   return (
@@ -206,8 +210,8 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopArticles().length > 0} keyed={true}>
-              <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
+            <Show when={randomTopMonthArticles().length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
             </Show>
             <For each={sortedArticles().slice(PRERENDERED_ARTICLES_COUNT / 2, PRERENDERED_ARTICLES_COUNT)}>
               {(shout) => (
@@ -220,8 +224,8 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopMonthArticles().length > 0} keyed={true}>
-              <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
+            <Show when={randomTopArticles().length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
             </Show>
             <For each={pages()}>
               {(page) => (

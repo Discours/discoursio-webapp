@@ -112,7 +112,7 @@ export const SessionProvider = (props: {
     initialValue: null,
   })
 
-  const user = createMemo(() => session().user)
+  const user = createMemo(() => session()?.user)
 
   createEffect(() => {
     // detect confirm redirect
@@ -130,11 +130,13 @@ export const SessionProvider = (props: {
   })
 
   const loadSubscriptions = async (): Promise<void> => {
-    const result = await apiClient.private?.getMySubscriptions()
-    if (result) {
-      setSubscriptions(result)
-    } else {
-      setSubscriptions(EMPTY_SUBSCRIPTIONS)
+    if (apiClient.private) {
+      const result = await apiClient.getMySubscriptions()
+      if (result) {
+        setSubscriptions(result)
+      } else {
+        setSubscriptions(EMPTY_SUBSCRIPTIONS)
+      }
     }
   }
 

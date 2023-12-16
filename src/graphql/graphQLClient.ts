@@ -1,5 +1,6 @@
 import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
+import { isServer } from 'solid-js/web'
 
 import { isDev, apiBaseUrl } from '../utils/config'
 
@@ -32,6 +33,9 @@ const options: ClientOptions = {
   maskTypename: true,
   requestPolicy: 'cache-and-network',
   fetchOptions: () => {
+    if (isServer) {
+      return {}
+    }
     // localStorage is the source of truth for now
     // to change token call setToken, for example after login
     const token = getToken()

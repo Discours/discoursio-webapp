@@ -6,7 +6,6 @@ import {
   VerifyEmailInput,
   LoginInput,
   AuthToken,
-  User,
   Authorizer,
   ConfigType,
 } from '@authorizerdev/authorizer-js'
@@ -22,11 +21,11 @@ import {
 } from 'solid-js'
 
 import { apiClient } from '../graphql/client/core'
+import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { useRouter } from '../stores/router'
 
 const config: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
@@ -86,13 +85,13 @@ export const SessionProvider = (props: {
   const getSession = async (): Promise<AuthToken> => {
     try {
       const tkn = getToken()
-      console.debug('[context.session] token before: ', tkn)
+      console.debug('[context.session] token before:', tkn)
       const authResult = await authorizer().getSession({
         Authorization: tkn,
       })
       if (authResult?.access_token) {
         mutate(authResult)
-        console.debug('[context.session] token after: ', authResult.access_token)
+        console.debug('[context.session] token after:', authResult.access_token)
         await loadSubscriptions()
         return authResult
       }
@@ -111,8 +110,6 @@ export const SessionProvider = (props: {
     ssrLoadFrom: 'initial',
     initialValue: null,
   })
-
-  const user = createMemo(() => session()?.user)
 
   createEffect(() => {
     // detect confirm redirect
@@ -196,10 +193,10 @@ export const SessionProvider = (props: {
     setConfig({ ...config, ...metaRes, redirectURL: window.location.origin + '/?modal=auth' })
     console.log('[context.session] refreshing session...')
     const s = await getSession()
-    console.debug('[context.session] session: ', s)
+    console.debug('[context.session] session:', s)
     console.log('[context.session] loading author...')
     const a = await loadAuthor()
-    console.debug('[context.session] author: ', a)
+    console.debug('[context.session] author:', a)
     setIsSessionLoaded(true)
     console.log('[context.session] loaded')
   })
@@ -224,7 +221,7 @@ export const SessionProvider = (props: {
   }
 
   const confirmEmail = async (input: VerifyEmailInput) => {
-    console.log(`[context.session] calling authorizer's verify email with ${input}`)
+    console.debug(`[context.session] calling authorizer's verify email with`, input)
     const at: void | AuthToken = await authorizer().verifyEmail(input)
     if (at) mutate(at)
     console.log(`[context.session] confirmEmail got result ${at}`)

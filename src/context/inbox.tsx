@@ -62,7 +62,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
         setChats(newChats)
       }
     } catch (error) {
-      console.log('[loadChats] error: ', error)
+      console.log('[loadChats] error:', error)
     }
   }
 

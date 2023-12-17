@@ -81,11 +81,11 @@ export const AuthorView = (props: Props) => {
       await loadMore()
     }
     const { authors, topics } = await fetchSubscriptions()
-    setFollowing([...authors, ...topics])
+    setFollowing([...(authors || []), ...(topics || [])])
   })
 
-  onMount(() => {
-    document.title = author().name
+  createEffect(() => {
+    document.title = author()?.name
   })
 
   const loadMore = async () => {
@@ -115,7 +115,7 @@ export const AuthorView = (props: Props) => {
   const [commented, setCommented] = createSignal([])
 
   createEffect(async () => {
-    if (getPage().route === 'authorComments') {
+    if (getPage().route === 'authorComments' && props.author) {
       try {
         const data = await apiClient.getReactionsBy({
           by: { comment: true, created_by: props.author.id },

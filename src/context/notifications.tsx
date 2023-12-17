@@ -1,6 +1,6 @@
 import type { Accessor, JSX } from 'solid-js'
 
-import { createContext, createEffect, createMemo, createSignal, onMount, useContext } from 'solid-js'
+import { createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
 

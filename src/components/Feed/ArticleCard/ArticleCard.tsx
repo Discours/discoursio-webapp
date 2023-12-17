@@ -86,10 +86,10 @@ const getTitleAndSubtitle = (
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { author } = useSession()
-  const mainTopicSlug = props.article.main_topic
+  const mainTopicSlug = props.article.main_topic || ''
   const mainTopic = props.article.topics.find((tpc: Topic) => tpc.slug === mainTopicSlug)
   const mainTopicTitle =
-    lang() === 'ru' && mainTopic?.title ? mainTopic.title : mainTopicSlug.replace('-', ' ')
+    mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace('-', ' ') : mainTopic.title
 
   const formattedDate = createMemo<string>(() => {
     return formatDate(new Date(props.article.created_at * 1000))

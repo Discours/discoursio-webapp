@@ -1,7 +1,7 @@
 import type { ConfirmEmailSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createMemo, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -17,7 +17,9 @@ export const EmailConfirm = () => {
     actions: { confirmEmail, loadSession, loadAuthor },
     session,
   } = useSession()
-  const confirmedEmail = createMemo(() => session()?.user?.email_verified)
+  const [confirmedEmail, setConfirmedEmail] = createSignal<boolean>(
+    Boolean(session()?.user?.email_verified),
+  )
 
   const [isTokenExpired, setIsTokenExpired] = createSignal(false)
   const [isTokenInvalid, setIsTokenInvalid] = createSignal(false)
@@ -29,6 +31,7 @@ export const EmailConfirm = () => {
       try {
         await confirmEmail({ token })
         await loadSession()
+        changeSearchParam({})
         await loadAuthor()
       } catch (error) {
         if (error instanceof ApiError) {
@@ -47,6 +50,8 @@ export const EmailConfirm = () => {
       }
     }
   })
+
+  createEffect(() => setConfirmedEmail(session()?.user?.email_verified))
 
   return (
     <div>

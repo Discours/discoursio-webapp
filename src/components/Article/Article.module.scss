@@ -20,7 +20,7 @@ img {
 }
 
 .articleContent {
-  img {
+  img:not([role]) {
     cursor: zoom-in;
   }
 }

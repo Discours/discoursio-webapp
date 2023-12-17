@@ -19,7 +19,12 @@ export const Icon = (passedProps: IconProps) => {
 
   return (
     <div class={clsx('icon', styles.icon, props.class)} style={props.style}>
-      <img src={`/icons/${props.name}.svg`} alt={props.title ?? props.name} class={props.iconClassName} />
+      <img
+        src={`/icons/${props.name}.svg`}
+        alt={props.title ?? props.name}
+        class={props.iconClassName}
+        role="navigation"
+      />
       <Show when={props.counter}>
         <div class={styles.notificationsCounter}>{props.counter}</div>
       </Show>

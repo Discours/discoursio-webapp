@@ -28,9 +28,9 @@ export const SearchView = (props: Props) => {
   const [offset, setOffset] = createSignal(0)
 
   const { searchParams } = useRouter<SearchPageSearchParams>()
-  let searchEl: HTMLInputElement
+  const searchElRef: { current: HTMLInputElement } = { current: null }
   const handleQueryChange = (_ev) => {
-    setQuery(searchEl.value)
+    setQuery(searchElRef.current.value)
   }
 
   const loadMore = async () => {
@@ -52,7 +52,7 @@ export const SearchView = (props: Props) => {
           <input
             type="search"
             name="q"
-            ref={searchEl}
+            ref={(el) => (searchElRef.current = el)}
             onInput={handleQueryChange}
             placeholder={t('Enter text') + '...'}
           />

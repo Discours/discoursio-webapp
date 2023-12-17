@@ -14,7 +14,7 @@ import { apiClient } from '../../../utils/apiClient'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
-import { Search } from '../../_shared/Search'
+import { UserSearch } from '../../_shared/UserSearch'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
 import { EMPTY_TOPIC } from '../Edit'
@@ -259,7 +259,9 @@ export const PublishSettings = (props: Props) => {
       </Modal>
       <Modal variant="medium" name="inviteCoAuthors">
         <h2>{t('Invite collaborators')}</h2>
-        <Search placeholder="Поиск" onChange={() => ''} />
+        <div style={{ 'min-height': '400px' }}>
+          <UserSearch placeholder={t('Write your colleagues name or email')} onChange={() => ''} />
+        </div>
       </Modal>
     </form>
   )

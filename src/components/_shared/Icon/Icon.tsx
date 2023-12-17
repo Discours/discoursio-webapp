@@ -23,7 +23,7 @@ export const Icon = (passedProps: IconProps) => {
         src={`/icons/${props.name}.svg`}
         alt={props.title ?? props.name}
         class={props.iconClassName}
-        role="navigation"
+        data-disable-lightbox="true"
       />
       <Show when={props.counter}>
         <div class={styles.notificationsCounter}>{props.counter}</div>

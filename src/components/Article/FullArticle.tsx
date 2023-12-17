@@ -277,7 +277,7 @@ export const FullArticle = (props: Props) => {
   }
 
   const handleArticleBodyClick = (event) => {
-    if (event.target.tagName === 'IMG' && event.target.role !== 'navigation') {
+    if (event.target.tagName === 'IMG' && !event.target.dataset['disableLightbox']) {
       const src = event.target.src
       openLightbox(getImageUrl(src))
     }

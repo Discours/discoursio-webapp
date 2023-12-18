@@ -20,7 +20,7 @@ img {
 }
 
 .articleContent {
-  img {
+  img:not([data-disable-lightbox='true']) {
     cursor: zoom-in;
   }
 }

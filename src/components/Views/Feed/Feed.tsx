@@ -55,8 +55,8 @@ export const Feed = (props: Props) => {
   const { t } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
+  const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
 
-  // state
   const { sortedArticles } = useArticlesStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
@@ -73,9 +73,15 @@ export const Feed = (props: Props) => {
     setUnratedArticles(result)
   }
 
+  const loadTopComments = async () => {
+    const comments = await loadReactionsBy({ by: { comment: true }, limit: 5 })
+    setTopComments(comments)
+  }
+
   onMount(() => {
     loadMore()
-    loadUnratedArticles()
+    // eslint-disable-next-line promise/catch-or-return
+    Promise.all([loadUnratedArticles(), loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
   })
 
   createEffect(
@@ -117,12 +123,6 @@ export const Feed = (props: Props) => {
 
     setIsLoadMoreButtonVisible(hasMore)
   }
-
-  onMount(async () => {
-    // load 5 recent comments overall
-    const comments = await loadReactionsBy({ by: { comment: true }, limit: 5 })
-    setTopComments(comments)
-  })
 
   const ogImage = getImageUrl('production/image/logo_image.png')
   const description = t(
@@ -221,70 +221,76 @@ export const Feed = (props: Props) => {
         </div>
 
         <aside class={clsx('col-md-7 col-xl-6 offset-xl-1', styles.feedAside)}>
-          <section class={styles.asideSection}>
-            <h4>{t('Comments')}</h4>
-            <For each={topComments()}>
-              {(comment) => {
-                return (
-                  <div class={styles.comment}>
-                    <div class={clsx('text-truncate', styles.commentBody)}>
-                      <a
-                        href={`${getPagePath(router, 'article', {
-                          slug: comment.shout.slug,
-                        })}?commentId=${comment.id}`}
-                        innerHTML={comment.body}
-                      />
-                    </div>
-                    <div class={styles.commentDetails}>
-                      <AuthorLink author={comment.createdBy as Author} size={'XS'} />
-                      <CommentDate comment={comment} isShort={true} isLastInRow={true} />
-                    </div>
-                    <div class={clsx('text-truncate', styles.commentArticleTitle)}>
-                      <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
-                    </div>
-                  </div>
-                )
-              }}
-            </For>
-          </section>
+          <Show when={isRightColumnLoaded()}>
+            <Show when={topComments().length > 0}>
+              <section class={styles.asideSection}>
+                <h4>{t('Comments')}</h4>
+                <For each={topComments()}>
+                  {(comment) => {
+                    return (
+                      <div class={styles.comment}>
+                        <div class={clsx('text-truncate', styles.commentBody)}>
+                          <a
+                            href={`${getPagePath(router, 'article', {
+                              slug: comment.shout.slug,
+                            })}?commentId=${comment.id}`}
+                            innerHTML={comment.body}
+                          />
+                        </div>
+                        <div class={styles.commentDetails}>
+                          <AuthorLink author={comment.createdBy as Author} size={'XS'} />
+                          <CommentDate comment={comment} isShort={true} isLastInRow={true} />
+                        </div>
+                        <div class={clsx('text-truncate', styles.commentArticleTitle)}>
+                          <a href={`/${comment.shout.slug}`}>{comment.shout.title}</a>
+                        </div>
+                      </div>
+                    )
+                  }}
+                </For>
+              </section>
+            </Show>
 
-          <Show when={topTopics().length > 0}>
-            <section class={styles.asideSection}>
-              <h4>{t('Hot topics')}</h4>
-              <For each={topTopics().slice(0, 7)}>
-                {(topic) => (
-                  <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
-                    <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
-                  </span>
-                )}
-              </For>
-            </section>
-          </Show>
+            <Show when={topTopics().length > 0}>
+              <section class={styles.asideSection}>
+                <h4>{t('Hot topics')}</h4>
+                <For each={topTopics().slice(0, 7)}>
+                  {(topic) => (
+                    <span class={clsx(stylesTopic.shoutTopic, styles.topic)}>
+                      <a href={`/topic/${topic.slug}`}>{topic.title}</a>{' '}
+                    </span>
+                  )}
+                </For>
+              </section>
+            </Show>
 
-          <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
-            <h4>{t('Knowledge base')}</h4>
-            <ul class="nodash">
-              <li>
-                <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
-              </li>
-              <li>
-                <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
-              </li>
-              <li>
-                <a href="#">Правила конструктивных дискуссий</a>
-              </li>
-              <li>
-                <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
-              </li>
-            </ul>
-          </section>
-          <Show when={unratedArticles().length > 0}>
-            <section class={clsx(styles.asideSection)}>
-              <h4>{t('Be the first to rate')}</h4>
-              <For each={unratedArticles()}>
-                {(article) => <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />}
-              </For>
+            <section class={clsx(styles.asideSection, styles.pinnedLinks)}>
+              <h4>{t('Knowledge base')}</h4>
+              <ul class="nodash">
+                <li>
+                  <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
+                </li>
+                <li>
+                  <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
+                </li>
+                <li>
+                  <a href="#">Правила конструктивных дискуссий</a>
+                </li>
+                <li>
+                  <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
+                </li>
+              </ul>
             </section>
+            <Show when={unratedArticles().length > 0}>
+              <section class={clsx(styles.asideSection)}>
+                <h4>{t('Be the first to rate')}</h4>
+                <For each={unratedArticles()}>
+                  {(article) => (
+                    <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />
+                  )}
+                </For>
+              </section>
+            </Show>
           </Show>
         </aside>
       </div>

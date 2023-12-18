@@ -45,8 +45,8 @@ export const Expo = (props: Props) => {
     shouts: isLoaded() ? props.shouts : [],
   })
 
-  const getLoadShoutsFilters = (filters: LoadShoutsFilters = {}): LoadShoutsFilters => {
-    const result = { ...filters }
+  const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
+    const filters = { ...additionalFilters }
 
     if (props.layout) {
       filters.layout = props.layout
@@ -54,7 +54,7 @@ export const Expo = (props: Props) => {
       filters.excludeLayout = 'article'
     }
 
-    return result
+    return filters
   }
 
   const loadMore = async (count: number) => {

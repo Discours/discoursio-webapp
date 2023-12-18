@@ -1,6 +1,6 @@
 import type { Accessor, JSX } from 'solid-js'
 
-import { createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
+import { createContext, createEffect, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
 
@@ -44,21 +44,18 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     actions: { getToken },
   } = useSession()
 
-  const apiClient = createMemo(() => {
+  createEffect(() => {
     const token = getToken()
-    if (!notifierClient.private) {
+    if (!notifierClient.private && token) {
       notifierClient.connect(token)
-      return notifierClient
     }
   })
 
   const { addHandler } = useConnect()
 
   const loadNotifications = async (options: { limit?: number; offset?: number }) => {
-    const client = apiClient()
-    if (isAuthenticated() && client) {
-      console.debug(client)
-      const { notifications, unread, total } = await client.getNotifications(options)
+    if (isAuthenticated() && notifierClient?.private) {
+      const { notifications, unread, total } = await notifierClient.getNotifications(options)
       const newNotificationEntities = notifications.reduce((acc, notification) => {
         acc[notification.id] = notification
         return acc
@@ -91,18 +88,14 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   })
 
   const markNotificationAsRead = async (notification: Notification) => {
-    const client = apiClient()
-    if (client) {
-      await client.markNotificationAsRead(notification.id)
-    }
+    if (notifierClient.private) await notifierClient.markNotificationAsRead(notification.id)
     const nnn = new Set([...notification.seen, notification.id])
     setNotificationEntities(notification.id, 'seen', [...nnn])
     setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
   const markAllNotificationsAsRead = async () => {
-    const client = apiClient()
-    if (isAuthenticated() && client) {
-      await client.markAllNotificationsAsRead()
+    if (isAuthenticated() && notifierClient.private) {
+      await notifierClient.markAllNotificationsAsRead()
       await loadNotifications({ limit: loadedNotificationsCount() })
     }
   }

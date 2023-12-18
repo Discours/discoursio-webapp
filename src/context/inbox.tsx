@@ -1,10 +1,10 @@
-import type { Chat, Message, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
+import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
 import type { Accessor, JSX } from 'solid-js'
 
-import { createContext, createMemo, createSignal, useContext } from 'solid-js'
+import { createContext, createEffect, createSignal, useContext } from 'solid-js'
 
 import { inboxClient } from '../graphql/client/chat'
-import { loadMessages } from '../stores/inbox'
+import { Author } from '../graphql/schema/core.gen'
 
 import { SSEMessage, useConnect } from './connect'
 import { useSession } from './session'
@@ -14,8 +14,10 @@ type InboxContextType = {
   messages?: Accessor<Message[]>
   actions: {
     createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
-    loadChats: () => Promise<void>
-    getMessages?: (chatId: string) => Promise<void>
+    loadChats: () => Promise<Array<Chat>>
+    loadRecipients: () => Promise<Array<Author>>
+    loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Array<Message>>
+    getMessages?: (chatId: string) => Promise<Array<Message>>
     sendMessage?: (args: MutationCreate_MessageArgs) => void
   }
 }
@@ -29,6 +31,7 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
+
   const handleMessage = (sseMessage: SSEMessage) => {
     console.log('[context.inbox]:', sseMessage)
 
@@ -41,50 +44,77 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       setChats((prev) => [...prev, relivedChat])
     }
   }
-  const {
-    actions: { getToken },
-  } = useSession()
-  const apiClient = createMemo(() => {
-    const token = getToken()
-    if (!inboxClient.private) {
-      inboxClient.connect(token)
-      return inboxClient
-    }
-  })
+
   const { addHandler } = useConnect()
   addHandler(handleMessage)
 
+  const {
+    actions: { getToken },
+  } = useSession()
+
+  createEffect(() => {
+    const token = getToken()
+    if (!inboxClient.private && token) {
+      inboxClient.connect(token)
+    }
+  })
+
+  const loadRecipients = async (limit = 50, offset = 0): Promise<Array<Author>> => {
+    if (inboxClient.private) {
+      // TODO: perhaps setMembers(authors) ?
+      return await inboxClient.loadRecipients({ limit, offset })
+    }
+    return []
+  }
+
+  const loadMessages = async (
+    by: MessagesBy,
+    limit: number = 50,
+    offset: number = 0,
+  ): Promise<Array<Message>> => {
+    if (inboxClient.private) {
+      const msgs = await inboxClient.loadChatMessages({ by, limit, offset })
+      setMessages((mmm) => [...mmm, ...msgs]) // TODO: check unique
+      return msgs || []
+    }
+    return []
+  }
   const loadChats = async () => {
     try {
-      const client = apiClient()
-      if (client) {
-        const newChats = await client.loadChats({ limit: 50, offset: 0 })
+      if (inboxClient.private) {
+        const newChats = await inboxClient.loadChats({ limit: 50, offset: 0 })
         setChats(newChats)
+        return newChats
       }
     } catch (error) {
       console.log('[loadChats] error:', error)
     }
+    return []
   }
 
   const getMessages = async (chatId: string) => {
-    if (!chatId) return
+    if (!chatId) return []
     try {
-      const response = await loadMessages({ chat: chatId })
-      setMessages(response as unknown as Message[])
+      const msgs: Message[] = await loadMessages({ chat: chatId })
+      setMessages(msgs)
+      return msgs || []
     } catch (error) {
       console.error('Error loading messages:', error)
     }
+    return []
   }
 
   const sendMessage = async (args: MutationCreate_MessageArgs) => {
     try {
-      const message = await apiClient().createMessage(args)
-      setMessages((prev) => [...prev, message])
-      const currentChat = chats().find((chat) => chat.id === args.chat_id)
-      setChats((prev) => [
-        ...prev.filter((c) => c.id !== currentChat.id),
-        { ...currentChat, updated_at: message.created_at },
-      ])
+      if (inboxClient.private) {
+        const message = await inboxClient.createMessage(args)
+        setMessages((prev) => [...prev, message])
+        const currentChat = chats().find((chat) => chat.id === args.chat_id)
+        setChats((prev) => [
+          ...prev.filter((c) => c.id !== currentChat.id),
+          { ...currentChat, updated_at: message.created_at },
+        ])
+      }
     } catch (error) {
       console.error('Error sending message:', error)
     }
@@ -92,9 +122,11 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
 
   const createChat = async (members: number[], title: string) => {
     try {
-      const chat = await inboxClient.createChat({ members, title })
-      setChats((prevChats) => [chat, ...prevChats])
-      return chat
+      if (inboxClient.private) {
+        const chat = await inboxClient.createChat({ members, title })
+        setChats((prevChats) => [chat, ...prevChats])
+        return chat
+      }
     } catch (error) {
       console.error('Error creating chat:', error)
     }
@@ -103,6 +135,8 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const actions = {
     createChat,
     loadChats,
+    loadMessages,
+    loadRecipients,
     getMessages,
     sendMessage,
   }

@@ -1,4 +1,4 @@
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'

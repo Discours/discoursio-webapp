@@ -85,13 +85,13 @@ export const SessionProvider = (props: {
   const getSession = async (): Promise<AuthToken> => {
     try {
       const tkn = getToken()
-      console.debug('[context.session] token before:', tkn)
+      // console.debug('[context.session] token before:', tkn)
       const authResult = await authorizer().getSession({
         Authorization: tkn,
       })
       if (authResult?.access_token) {
         mutate(authResult)
-        console.debug('[context.session] token after:', authResult.access_token)
+        // console.debug('[context.session] token after:', authResult.access_token)
         await loadSubscriptions()
         return authResult
       }

@@ -7,7 +7,6 @@ import { For, createSignal, Show, onMount, createEffect, createMemo, on } from '
 import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
-import { loadRecipients } from '../../stores/inbox'
 import { useRouter } from '../../stores/router'
 import { showModal } from '../../stores/ui'
 import { Icon } from '../_shared/Icon'
@@ -42,7 +41,7 @@ export const InboxView = () => {
   const {
     chats,
     messages,
-    actions: { loadChats, getMessages, sendMessage, createChat },
+    actions: { loadChats, loadRecipients, getMessages, sendMessage, createChat },
   } = useInbox()
 
   const [recipients, setRecipients] = createSignal<Author[]>([])

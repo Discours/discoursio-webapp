@@ -1,7 +1,7 @@
 import type { ConfirmEmailSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -17,9 +17,7 @@ export const EmailConfirm = () => {
     actions: { confirmEmail, loadSession, loadAuthor },
     session,
   } = useSession()
-  const [confirmedEmail, setConfirmedEmail] = createSignal<boolean>(
-    Boolean(session()?.user?.email_verified),
-  )
+  const [confirmedEmail, setConfirmedEmail] = createSignal<boolean>(false)
 
   const [isTokenExpired, setIsTokenExpired] = createSignal(false)
   const [isTokenInvalid, setIsTokenInvalid] = createSignal(false)
@@ -28,12 +26,13 @@ export const EmailConfirm = () => {
   onMount(async () => {
     const token = searchParams().access_token
     if (token) {
+      changeSearchParam({})
       try {
         await confirmEmail({ token })
         await loadSession()
-        changeSearchParam({})
         await loadAuthor()
       } catch (error) {
+        // TODO: adapt this code to authorizer
         if (error instanceof ApiError) {
           if (error.code === 'token_expired') {
             setIsTokenExpired(true)
@@ -51,7 +50,15 @@ export const EmailConfirm = () => {
     }
   })
 
-  createEffect(() => setConfirmedEmail(session()?.user?.email_verified))
+  createEffect(() => {
+    const confirmed = session()?.user?.email_verified
+    if (confirmed) {
+      console.debug(`[EmailConfirm] email successfully verified`)
+      setConfirmedEmail(confirmed)
+    }
+  })
+
+  const email = createMemo(() => session()?.user?.email)
 
   return (
     <div>
@@ -60,7 +67,7 @@ export const EmailConfirm = () => {
         <div class={styles.title}>Ссылка больше не действительна</div>
         <div class={styles.text}>
           <a href="/?modal=auth&mode=login">
-            {/*TODO: temp solution, should be send link again, but we don't have email here*/}
+            {/*TODO: temp solution, should be send link again */}
             Вход
           </a>
         </div>
@@ -69,15 +76,15 @@ export const EmailConfirm = () => {
         <div class={styles.title}>Неправильная ссылка</div>
         <div class={styles.text}>
           <a href="/?modal=auth&mode=login">
-            {/*TODO: temp solution, should be send link again, but we don't have email here*/}
+            {/*TODO: temp solution, should be send link again */}
             Вход
           </a>
         </div>
       </Show>
-      <Show when={Boolean(confirmedEmail())}>
+      <Show when={confirmedEmail()}>
         <div class={styles.title}>{t('Hooray! Welcome!')}</div>
         <div class={styles.text}>
-          {t("You've confirmed email")} {confirmedEmail()}
+          {t("You've confirmed email")} {email()}
         </div>
         <div>
           <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>

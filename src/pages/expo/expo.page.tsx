@@ -1,6 +1,6 @@
 import type { PageProps } from '../types'
 
-import { createMemo } from 'solid-js'
+import { createEffect, createMemo, on } from 'solid-js'
 
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { Topics } from '../../components/Nav/Topics'
@@ -14,7 +14,7 @@ export const ExpoPage = (props: PageProps) => {
   const { page } = useRouter()
   const getLayout = createMemo<LayoutType>(() => page().params['layout'] as LayoutType)
 
-  const title = createMemo(() => {
+  const getTitle = () => {
     switch (getLayout()) {
       case 'audio': {
         return t('Audio')
@@ -32,12 +32,22 @@ export const ExpoPage = (props: PageProps) => {
         return t('Art')
       }
     }
-  })
+  }
+
+  createEffect(
+    on(
+      () => getLayout(),
+      () => {
+        document.title = getTitle()
+      },
+      { defer: true },
+    ),
+  )
 
   return (
-    <PageLayout withPadding={true} zeroBottomPadding={true} title={title()}>
+    <PageLayout withPadding={true} zeroBottomPadding={true} title={getTitle()}>
       <Topics />
-      <Expo shouts={props.expoShouts} />
+      <Expo shouts={props.expoShouts} layout={getLayout()} />
     </PageLayout>
   )
 }

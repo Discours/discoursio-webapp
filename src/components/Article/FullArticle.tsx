@@ -2,7 +2,7 @@ import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
-import { Link } from '@solidjs/meta'
+import { Link, Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
 import { isServer } from 'solid-js/web'
@@ -14,7 +14,7 @@ import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { capitalize } from '../../utils/capitalize'
 import { getImageUrl } from '../../utils/getImageUrl'
-import { getDescription } from '../../utils/meta'
+import { getDescription, getKeywords } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
 import { Lightbox } from '../_shared/Lightbox'
@@ -289,8 +289,26 @@ export const FullArticle = (props: Props) => {
     }
   }
 
+  const ogImage = props.article.cover
+    ? getImageUrl(props.article.cover, { width: 1200 })
+    : getImageUrl('production/image/logo_image.png')
+  const description = getDescription(props.article.description || body())
+  const ogTitle = props.article.title
+  const keywords = getKeywords(props.article)
+
   return (
     <>
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={keywords} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:image" content={ogImage} />
+
       <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
       <div class="wide-container">
         <div class="row position-relative">
@@ -450,7 +468,7 @@ export const FullArticle = (props: Props) => {
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
                     <SharePopup
                       title={props.article.title}
-                      description={getDescription(props.article.body)}
+                      description={description}
                       imageUrl={props.article.cover}
                       containerCssClass={stylesHeader.control}
                       trigger={
@@ -484,7 +502,7 @@ export const FullArticle = (props: Props) => {
                 isOwner={canEdit()}
                 containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
                 title={props.article.title}
-                description={getDescription(props.article.body)}
+                description={description}
                 imageUrl={props.article.cover}
                 shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                 trigger={

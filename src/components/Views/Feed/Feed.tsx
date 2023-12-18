@@ -1,28 +1,32 @@
 import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 
-import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
-import { router, useRouter } from '../../stores/router'
-import { useArticlesStore, resetSortedArticles } from '../../stores/zine/articles'
-import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { useTopicsStore } from '../../stores/zine/topics'
-import { Icon } from '../_shared/Icon'
-import { Loading } from '../_shared/Loading'
-import { CommentDate } from '../Article/CommentDate'
-import { AuthorLink } from '../Author/AhtorLink'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { ArticleCard } from '../Feed/ArticleCard'
-import { Sidebar } from '../Feed/Sidebar'
+import { useLocalize } from '../../../context/localize'
+import { useReactions } from '../../../context/reactions'
+import { router, useRouter } from '../../../stores/router'
+import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
+import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
+import { useTopicsStore } from '../../../stores/zine/topics'
+import { apiClient } from '../../../utils/apiClient'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { Icon } from '../../_shared/Icon'
+import { Loading } from '../../_shared/Loading'
+import { CommentDate } from '../../Article/CommentDate'
+import { AuthorLink } from '../../Author/AhtorLink'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { ArticleCard } from '../../Feed/ArticleCard'
+import { Sidebar } from '../../Feed/Sidebar'
 
 import styles from './Feed.module.scss'
-import stylesBeside from '../../components/Feed/Beside.module.scss'
-import stylesTopic from '../Feed/CardTopic.module.scss'
+import stylesBeside from '../../Feed/Beside.module.scss'
+import stylesTopic from '../../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
+const UNRATED_ARTICLES_COUNT = 5
 
 type FeedSearchParams = {
   by: 'publish_date' | 'rating' | 'last_comment'
@@ -58,13 +62,20 @@ export const FeedView = (props: Props) => {
   const { topAuthors } = useTopAuthorsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
+  const [unratedArticles, setUnratedArticles] = createSignal<Shout[]>([])
 
   const {
     actions: { loadReactionsBy },
   } = useReactions()
 
+  const loadUnratedArticles = async () => {
+    const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)
+    setUnratedArticles(result)
+  }
+
   onMount(() => {
     loadMore()
+    loadUnratedArticles()
   })
 
   createEffect(
@@ -113,8 +124,24 @@ export const FeedView = (props: Props) => {
     setTopComments(comments)
   })
 
+  const ogImage = getImageUrl('production/image/logo_image.png')
+  const description = t(
+    'Independent media project about culture, science, art and society with horizontal editing',
+  )
+  const ogTitle = t('Feed')
+
   return (
     <div class="wide-container feed">
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
       <div class="row">
         <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
           <Sidebar />
@@ -253,6 +280,14 @@ export const FeedView = (props: Props) => {
               </li>
             </ul>
           </section>
+          <Show when={unratedArticles().length > 0}>
+            <section class={clsx(styles.asideSection)}>
+              <h4>{t('Be the first to rate')}</h4>
+              <For each={unratedArticles()}>
+                {(article) => <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />}
+              </For>
+            </section>
+          </Show>
         </aside>
       </div>
     </div>

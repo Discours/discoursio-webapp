@@ -46,7 +46,7 @@ export type ArticleCardProps = {
     withViewed?: boolean
     noAuthorLink?: boolean
   }
-  desktopCoverSize: 'XS' | 'S' | 'M' | 'L'
+  desktopCoverSize?: 'XS' | 'S' | 'M' | 'L'
   article: Shout
 }
 
@@ -114,6 +114,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
 
+  const description = getDescription(props.article.body)
   return (
     <section
       class={clsx(styles.shoutCard, props.settings?.additionalClass, {
@@ -325,7 +326,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                     <SharePopup
                       containerCssClass={stylesHeader.control}
                       title={title}
-                      description={getDescription(props.article.body)}
+                      description={description}
                       imageUrl={props.article.cover}
                       shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                       isVisible={(value) => setIsActionPopupActive(value)}
@@ -348,7 +349,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   isOwner={canEdit()}
                   containerCssClass={stylesHeader.control}
                   title={title}
-                  description={getDescription(props.article.body)}
+                  description={description}
                   imageUrl={props.article.cover}
                   shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                   isVisible={(value) => setIsActionPopupActive(value)}

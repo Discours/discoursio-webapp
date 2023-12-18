@@ -29,17 +29,14 @@ export const SearchView = (props: Props) => {
 
   const { searchParams } = useRouter<SearchPageSearchParams>()
   let searchEl: HTMLInputElement
-  const handleQueryChange = (_ev) => {
+  const handleQueryChange = () => {
     setQuery(searchEl.value)
   }
 
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
-      filters: {
-        title: query(),
-        body: query(),
-      },
+      filters: {},
       offset: offset(),
       limit: LOAD_MORE_PAGE_SIZE,
     })

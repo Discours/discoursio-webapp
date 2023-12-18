@@ -72,7 +72,7 @@ export const ProfileSubscriptions = () => {
           <div class="row">
             <div class="col-md-20 col-lg-18 col-xl-16">
               <h1>{t('My subscriptions')}</h1>
-              <p class="description">{t('Here you can manage all your Discourse subscriptions')}</p>
+              <p class="description">{t('Here you can manage all your Discours subscriptions')}</p>
               <Show when={following()} fallback={<Loading />}>
                 <ul class="view-switcher">
                   <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>

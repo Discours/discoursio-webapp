@@ -1,4 +1,5 @@
 import { redirectPage } from '@nanostores/router'
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 
 import { Button } from '../components/_shared/Button'
@@ -8,6 +9,7 @@ import { AuthGuard } from '../components/AuthGuard'
 import { useLocalize } from '../context/localize'
 import { apiClient } from '../graphql/client/core'
 import { router } from '../stores/router'
+import { getImageUrl } from '../utils/getImageUrl'
 
 import { LayoutType } from './types'
 
@@ -22,9 +24,22 @@ const handleCreate = async (layout: LayoutType) => {
 
 export const CreatePage = () => {
   const { t } = useLocalize()
+  const ogImage = getImageUrl('production/image/logo_image.png')
+  const ogTitle = t('Choose a post type')
+  const description = t('Participate in the Discours: share information, join the editorial team')
 
   return (
-    <PageLayout title={t('Choose a post type')}>
+    <PageLayout title={ogTitle}>
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
       <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>
           <h1>{t('Choose a post type')}</h1>

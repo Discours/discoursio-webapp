@@ -1,4 +1,4 @@
-import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../graphql/schema/core.gen'
+import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
@@ -7,11 +7,11 @@ import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
+import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
-import { apiClient } from '../../../utils/apiClient'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'

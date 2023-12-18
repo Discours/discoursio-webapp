@@ -1,1 +1,1 @@
-export { Feed } from './Feed'
+export { FeedView as Feed } from './Feed'

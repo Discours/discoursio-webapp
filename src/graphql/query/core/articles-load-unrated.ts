@@ -1,19 +1,19 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadRandomTopShoutsQuery($params: LoadRandomTopShoutsParams) {
-    loadRandomTopShouts(params: $params) {
+  query LoadUnratedShoutsQuery($limit: Int!) {
+    loadUnratedShouts(limit: $limit) {
       id
       title
-      lead
+      # lead
       description
       subtitle
       slug
       layout
       cover
-      lead
+      cover_caption
       # community
-      mainTopic
+      main_topic
       topics {
         id
         title
@@ -29,12 +29,12 @@ export default gql`
         id
         name
         slug
-        userpic
-        createdAt
+        pic
+        created_at
         bio
       }
-      createdAt
-      publishedAt
+      created_at
+      published_at
       stat {
         viewed
         reacted

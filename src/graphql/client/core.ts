@@ -11,6 +11,7 @@ import type {
   Result,
   QueryLoad_Authors_ByArgs,
   QueryLoad_Shouts_SearchArgs,
+  QueryLoad_Shouts_Random_TopArgs,
 } from '../schema/core.gen'
 
 import { createGraphQLClient } from '../createGraphQLClient'
@@ -27,7 +28,9 @@ import shoutLoad from '../query/core/article-load'
 import shoutsLoadBy from '../query/core/articles-load-by'
 import draftsLoad from '../query/core/articles-load-drafts'
 import myFeed from '../query/core/articles-load-feed'
+import loadShoutsTopRandom from '../query/core/articles-load-random-top'
 import shoutsLoadSearch from '../query/core/articles-load-search'
+import loadShoutsUnrated from '../query/core/articles-load-unrated'
 import authorBy from '../query/core/author-by'
 import authorFollowers from '../query/core/author-followers'
 import authorId from '../query/core/author-id'
@@ -46,6 +49,24 @@ const publicGraphQLClient = createGraphQLClient('core')
 export const apiClient = {
   private: null,
   connect: (token: string) => (apiClient.private = createGraphQLClient('core', token)), // NOTE: use it after token appears
+
+  getRandomTopShouts: async (params: QueryLoad_Shouts_Random_TopArgs) => {
+    const response = await publicGraphQLClient.query(loadShoutsTopRandom, params).toPromise()
+    if (!response.data) {
+      console.error('[graphql.core] getRandomTopShouts error', response.error)
+    }
+    return response.data.load_shouts_top_random
+  },
+
+  getUnratedShouts: async (limit = 50, offset = 0) => {
+    const response = await apiClient.private.query(loadShoutsUnrated, { limit, offset }).toPromise()
+
+    if (!response.data) {
+      console.error('[graphql.core] getUnratedShouts error', response.error)
+    }
+
+    return response.data.load_shouts_unrated
+  },
 
   getRandomTopics: async ({ amount }: { amount: number }) => {
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()

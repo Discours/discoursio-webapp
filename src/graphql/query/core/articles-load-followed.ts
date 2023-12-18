@@ -8,7 +8,7 @@ export default gql`
       layout
       slug
       cover
-      # community
+      # cover_caption
       main_topic
       topics {
         # id

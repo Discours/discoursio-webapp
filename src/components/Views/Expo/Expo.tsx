@@ -3,17 +3,12 @@ import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import {
-  LoadRandomTopShoutsParams,
-  LoadShoutsFilters,
-  LoadShoutsOptions,
-  Shout,
-} from '../../../graphql/schema/core.gen'
+import { apiClient } from '../../../graphql/client/core'
+import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '../../../graphql/schema/core.gen'
 import { LayoutType } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
-import { apiClient } from '../../../utils/apiClient'
-import { getServerDate } from '../../../utils/getServerDate'
+import { getUnixtime } from '../../../utils/getServerDate'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
 import { Button } from '../../_shared/Button'
@@ -48,10 +43,11 @@ export const Expo = (props: Props) => {
   const getLoadShoutsFilters = (filters: LoadShoutsFilters = {}): LoadShoutsFilters => {
     const result = { ...filters }
 
+    filters.layouts = []
     if (props.layout) {
-      filters.layout = props.layout
+      filters.layouts.push(props.layout)
     } else {
-      filters.excludeLayout = 'article'
+      filters.layouts.push('article')
     }
 
     return result
@@ -64,8 +60,8 @@ export const Expo = (props: Props) => {
       offset: sortedArticles().length,
     }
 
-    options.filters = getLayout()
-      ? { layouts: [getLayout()] }
+    options.filters = props.layout
+      ? { layouts: [props.layout] }
       : { layouts: ['audio', 'video', 'image', 'literature'] }
 
     const { hasMore } = await loadShouts(options)
@@ -79,27 +75,27 @@ export const Expo = (props: Props) => {
   }
 
   const loadRandomTopArticles = async () => {
-    const params: LoadRandomTopShoutsParams = {
+    const options: LoadShoutsOptions = {
       filters: getLoadShoutsFilters(),
       limit: 10,
-      fromRandomCount: 100,
+      random_limit: 100,
     }
 
-    const result = await apiClient.getRandomTopShouts(params)
+    const result = await apiClient.getRandomTopShouts({ options })
     setRandomTopArticles(result)
   }
 
   const loadRandomTopMonthArticles = async () => {
     const now = new Date()
-    const fromDate = getServerDate(new Date(now.setMonth(now.getMonth() - 1)))
+    const after = getUnixtime(new Date(now.setMonth(now.getMonth() - 1)))
 
-    const params: LoadRandomTopShoutsParams = {
-      filters: getLoadShoutsFilters({ fromDate }),
+    const options: LoadShoutsOptions = {
+      filters: getLoadShoutsFilters({ after }),
       limit: 10,
-      fromRandomCount: 10,
+      random_limit: 10,
     }
 
-    const result = await apiClient.getRandomTopShouts(params)
+    const result = await apiClient.getRandomTopShouts({ options })
     setRandomTopMonthArticles(result)
   }
 
@@ -171,11 +167,11 @@ export const Expo = (props: Props) => {
                 <span class={clsx('linkReplacement')}>{t('Literature')}</span>
               </ConditionalWrapper>
             </li>
-            <li class={clsx({ 'view-switcher__item--selected': getLayout() === 'audio' })}>
+            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'audio' })}>
               <ConditionalWrapper
-                condition={getLayout() !== 'audio'}
+                condition={props.layout !== 'audio'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'audio' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'audio' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Music')}</span>

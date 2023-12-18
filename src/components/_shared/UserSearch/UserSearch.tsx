@@ -1,7 +1,13 @@
 import { clsx } from 'clsx'
+import { createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { Author } from '../../../graphql/types.gen'
+import { apiClient } from '../../../utils/apiClient'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
+import { Loading } from '../Loading'
 
 import styles from './UserSearch.module.scss'
 
@@ -30,17 +36,35 @@ export const UserSearch = (props: Props) => {
   const handleInputChange = (value: string) => {
     props.onChange(value)
   }
+
+  const [authors, setAuthors] = createSignal<Author[]>()
+  onMount(async () => {
+    const allAuthors = await apiClient.getAllAuthors()
+    setAuthors(allAuthors)
+  })
+
   return (
     <div class={clsx(styles.UserSearch, props.class)}>
-      <div class={styles.field}>
-        <input
-          class={styles.input}
-          type="text"
-          placeholder={props.placeholder ?? t('Search')}
-          onChange={(e) => handleInputChange(e.target.value)}
-        />
-        <DropdownSelect selectItems={roles} />
+      <div class={styles.searchHeader}>
+        <div class={styles.field}>
+          <input
+            class={styles.input}
+            type="text"
+            placeholder={props.placeholder ?? t('Search')}
+            onChange={(e) => handleInputChange(e.target.value)}
+          />
+          <DropdownSelect selectItems={roles} />
+        </div>
+
+        <Button variant={'bordered'} size={'M'} value={t('Add')} />
       </div>
+
+      <Show when={authors()} fallback={<Loading />}>
+        <div class={styles.authors}>
+          <For each={authors()}>{(author) => <AuthorBadge author={author} nameOnly={true} />}</For>
+        </div>
+      </Show>
+      <Button value={t('Coming soon')} />
     </div>
   )
 }

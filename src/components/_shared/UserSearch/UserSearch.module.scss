@@ -1,10 +1,20 @@
 .UserSearch {
+  .searchHeader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 1rem;
+  }
+
   .field {
     border-bottom: 2px solid var(--background-color-invert);
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     padding: 4px 0;
+    align-items: center;
+    width: 100%;
   }
 
   .input {
@@ -20,5 +30,11 @@
     &:focus {
       outline: none;
     }
+  }
+
+  .authors {
+    height: 400px;
+    overflow: auto;
+    padding: 1rem 0;
   }
 }

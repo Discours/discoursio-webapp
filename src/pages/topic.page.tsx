@@ -4,16 +4,13 @@ import { createEffect, createMemo, createSignal, on, onCleanup, onMount } from '
 
 import { PageLayout } from '../components/_shared/PageLayout'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
-import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { loadTopic } from '../stores/zine/topics'
-import { capitalize } from '../utils/capitalize'
 
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()
-  const { t } = useLocalize()
   const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(

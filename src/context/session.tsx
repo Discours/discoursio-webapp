@@ -12,7 +12,7 @@ import {
   useContext,
 } from 'solid-js'
 
-import { resetToken, setToken } from '../graphql/privateGraphQLClient'
+import { resetToken, setToken } from '../graphql/graphQLClient'
 import { showModal } from '../stores/ui'
 import { apiClient } from '../utils/apiClient'
 

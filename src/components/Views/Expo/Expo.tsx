@@ -3,7 +3,12 @@ import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { LoadRandomTopShoutsParams, LoadShoutsOptions, Shout } from '../../../graphql/types.gen'
+import {
+  LoadRandomTopShoutsParams,
+  LoadShoutsFilters,
+  LoadShoutsOptions,
+  Shout,
+} from '../../../graphql/types.gen'
 import { LayoutType } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
@@ -24,7 +29,7 @@ type Props = {
   layout: LayoutType
 }
 
-export const PRERENDERED_ARTICLES_COUNT = 32
+export const PRERENDERED_ARTICLES_COUNT = 24
 const LOAD_MORE_PAGE_SIZE = 16
 
 export const Expo = (props: Props) => {
@@ -40,29 +45,41 @@ export const Expo = (props: Props) => {
     shouts: isLoaded() ? props.shouts : [],
   })
 
+  const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
+    const filters = { ...additionalFilters }
+
+    if (props.layout) {
+      filters.layout = props.layout
+    } else {
+      filters.excludeLayout = 'article'
+    }
+
+    return filters
+  }
+
   const loadMore = async (count: number) => {
-    saveScrollPosition()
     const options: LoadShoutsOptions = {
+      filters: getLoadShoutsFilters(),
       limit: count,
       offset: sortedArticles().length,
     }
 
-    options.filters = props.layout ? { layout: props.layout } : { excludeLayout: 'article' }
-
     const { hasMore } = await loadShouts(options)
     setIsLoadMoreButtonVisible(hasMore)
+  }
+
+  const loadMoreWithoutScrolling = async (count: number) => {
+    saveScrollPosition()
+    await loadMore(count)
     restoreScrollPosition()
   }
 
   const loadRandomTopArticles = async () => {
     const params: LoadRandomTopShoutsParams = {
-      filters: {
-        visibility: 'public',
-      },
+      filters: getLoadShoutsFilters(),
       limit: 10,
       fromRandomCount: 100,
     }
-    params.filters = props.layout ? { layout: props.layout } : { excludeLayout: 'article' }
 
     const result = await apiClient.getRandomTopShouts(params)
     setRandomTopArticles(result)
@@ -73,14 +90,10 @@ export const Expo = (props: Props) => {
     const fromDate = getServerDate(new Date(now.setMonth(now.getMonth() - 1)))
 
     const params: LoadRandomTopShoutsParams = {
-      filters: {
-        visibility: 'public',
-        fromDate,
-      },
+      filters: getLoadShoutsFilters({ fromDate }),
       limit: 10,
       fromRandomCount: 10,
     }
-    params.filters = props.layout ? { layout: props.layout } : { excludeLayout: 'article' }
 
     const result = await apiClient.getRandomTopShouts(params)
     setRandomTopMonthArticles(result)
@@ -103,9 +116,7 @@ export const Expo = (props: Props) => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore(LOAD_MORE_PAGE_SIZE)
     }
-  })
 
-  onMount(() => {
     loadRandomTopArticles()
     loadRandomTopMonthArticles()
   })
@@ -130,7 +141,7 @@ export const Expo = (props: Props) => {
   })
 
   const handleLoadMoreClick = () => {
-    loadMore(LOAD_MORE_PAGE_SIZE)
+    loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
   }
 
   return (
@@ -199,8 +210,8 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopArticles().length > 0} keyed={true}>
-              <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
+            <Show when={randomTopMonthArticles().length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
             </Show>
             <For each={sortedArticles().slice(PRERENDERED_ARTICLES_COUNT / 2, PRERENDERED_ARTICLES_COUNT)}>
               {(shout) => (
@@ -213,8 +224,8 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopMonthArticles().length > 0} keyed={true}>
-              <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
+            <Show when={randomTopArticles().length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
             </Show>
             <For each={pages()}>
               {(page) => (

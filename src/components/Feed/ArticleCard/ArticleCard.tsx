@@ -46,7 +46,7 @@ export type ArticleCardProps = {
     withViewed?: boolean
     noAuthorLink?: boolean
   }
-  desktopCoverSize: 'XS' | 'S' | 'M' | 'L'
+  desktopCoverSize?: 'XS' | 'S' | 'M' | 'L'
   article: Shout
 }
 

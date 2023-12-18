@@ -22,6 +22,7 @@ import type {
   LoadRandomTopShoutsParams,
 } from '../graphql/types.gen'
 
+import { getToken, graphQLClient } from '../graphql/graphQLClient'
 import createArticle from '../graphql/mutation/article-create'
 import deleteShout from '../graphql/mutation/article-delete'
 import updateArticle from '../graphql/mutation/article-update'
@@ -40,12 +41,10 @@ import reactionDestroy from '../graphql/mutation/reaction-destroy'
 import reactionUpdate from '../graphql/mutation/reaction-update'
 import unfollowMutation from '../graphql/mutation/unfollow'
 import updateProfile from '../graphql/mutation/update-profile'
-import { getToken, privateGraphQLClient } from '../graphql/privateGraphQLClient'
-import { publicGraphQLClient } from '../graphql/publicGraphQLClient'
 import shoutLoad from '../graphql/query/article-load'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
-import shoutsLoadRandomTop from '../graphql/query/articles-load-random-top'
 import articlesLoadRandomTop from '../graphql/query/articles-load-random-top'
+import articlesLoadUnrated from '../graphql/query/articles-load-unrated'
 import authCheckEmailQuery from '../graphql/query/auth-check-email'
 import authLoginQuery from '../graphql/query/auth-login'
 import authorBySlug from '../graphql/query/author-by-slug'
@@ -86,7 +85,7 @@ export class ApiError extends Error {
 
 export const apiClient = {
   authLogin: async ({ email, password }: { email: string; password: string }): Promise<AuthResult> => {
-    const response = await publicGraphQLClient.query(authLoginQuery, { email, password }).toPromise()
+    const response = await graphQLClient.query(authLoginQuery, { email, password }).toPromise()
     // console.debug('[api-client] authLogin', { response })
     if (response.error) {
       if (
@@ -118,7 +117,7 @@ export const apiClient = {
     password: string
     name: string
   }): Promise<void> => {
-    const response = await publicGraphQLClient
+    const response = await graphQLClient
       .mutation(authRegisterMutation, { email, password, name })
       .toPromise()
 
@@ -131,17 +130,17 @@ export const apiClient = {
     }
   },
   authSignOut: async () => {
-    const response = await publicGraphQLClient.query(authLogoutQuery, {}).toPromise()
+    const response = await graphQLClient.query(authLogoutQuery, {}).toPromise()
     return response.data.signOut
   },
   authCheckEmail: async ({ email }) => {
     // check if email is used
-    const response = await publicGraphQLClient.query(authCheckEmailQuery, { email }).toPromise()
+    const response = await graphQLClient.query(authCheckEmailQuery, { email }).toPromise()
     return response.data.isEmailUsed
   },
   authSendLink: async ({ email, lang, template }) => {
     // send link with code on email
-    const response = await publicGraphQLClient
+    const response = await graphQLClient
       .mutation(authSendLinkMutation, { email, lang, template })
       .toPromise()
 
@@ -161,7 +160,7 @@ export const apiClient = {
   },
   confirmEmail: async ({ token }: { token: string }) => {
     // confirm email with code from link
-    const response = await publicGraphQLClient.mutation(authConfirmEmailMutation, { token }).toPromise()
+    const response = await graphQLClient.mutation(authConfirmEmailMutation, { token }).toPromise()
     if (response.error) {
       // TODO: better error communication
       if (response.error.message === '[GraphQL] check token lifetime') {
@@ -183,7 +182,7 @@ export const apiClient = {
   },
 
   getRandomTopics: async ({ amount }: { amount: number }) => {
-    const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
+    const response = await graphQLClient.query(topicsRandomQuery, { amount }).toPromise()
 
     if (!response.data) {
       console.error('[api-client] getRandomTopics', response.error)
@@ -195,11 +194,11 @@ export const apiClient = {
   // subscribe
 
   follow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
-    const response = await privateGraphQLClient.mutation(followMutation, { what, slug }).toPromise()
+    const response = await graphQLClient.mutation(followMutation, { what, slug }).toPromise()
     return response.data.follow
   },
   unfollow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
-    const response = await privateGraphQLClient.mutation(unfollowMutation, { what, slug }).toPromise()
+    const response = await graphQLClient.mutation(unfollowMutation, { what, slug }).toPromise()
     return response.data.unfollow
   },
 
@@ -209,7 +208,7 @@ export const apiClient = {
     }
 
     // renew session with auth token in header (!)
-    const response = await privateGraphQLClient.mutation(mySession, {}).toPromise()
+    const response = await graphQLClient.mutation(mySession, {}).toPromise()
 
     if (response.error) {
       throw new ApiError('unknown', response.error.message)
@@ -222,37 +221,37 @@ export const apiClient = {
     return response.data.getSession
   },
   getAllTopics: async () => {
-    const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
+    const response = await graphQLClient.query(topicsAll, {}).toPromise()
     if (response.error) {
       console.debug('[api-client] getAllTopics', response.error)
     }
     return response.data.topicsAll
   },
   getAllAuthors: async () => {
-    const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
+    const response = await graphQLClient.query(authorsAll, {}).toPromise()
     if (response.error) {
       console.debug('[api-client] getAllAuthors', response.error)
     }
     return response.data.authorsAll
   },
   getAuthor: async ({ slug }: { slug: string }): Promise<Author> => {
-    const response = await publicGraphQLClient.query(authorBySlug, { slug }).toPromise()
+    const response = await graphQLClient.query(authorBySlug, { slug }).toPromise()
     return response.data.getAuthor
   },
   getAuthorFollowers: async ({ slug }: { slug: string }): Promise<Author[]> => {
-    const response = await publicGraphQLClient.query(userSubscribers, { slug }).toPromise()
+    const response = await graphQLClient.query(userSubscribers, { slug }).toPromise()
     return response.data.userFollowers
   },
   getAuthorFollowingUsers: async ({ slug }: { slug: string }): Promise<Author[]> => {
-    const response = await publicGraphQLClient.query(userFollowedAuthors, { slug }).toPromise()
+    const response = await graphQLClient.query(userFollowedAuthors, { slug }).toPromise()
     return response.data.userFollowedAuthors
   },
   getAuthorFollowingTopics: async ({ slug }: { slug: string }): Promise<Topic[]> => {
-    const response = await publicGraphQLClient.query(userFollowedTopics, { slug }).toPromise()
+    const response = await graphQLClient.query(userFollowedTopics, { slug }).toPromise()
     return response.data.userFollowedTopics
   },
   updateProfile: async (input: ProfileInput) => {
-    const response = await privateGraphQLClient.mutation(updateProfile, { profile: input }).toPromise()
+    const response = await graphQLClient.mutation(updateProfile, { profile: input }).toPromise()
     if (response.error) {
       if (
         response.error.message.includes('duplicate key value violates unique constraint "user_slug_key"')
@@ -265,11 +264,11 @@ export const apiClient = {
     return response.data.updateProfile
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
-    const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
+    const response = await graphQLClient.query(topicBySlug, { slug }).toPromise()
     return response.data.getTopic
   },
   createArticle: async ({ article }: { article: ShoutInput }): Promise<Shout> => {
-    const response = await privateGraphQLClient.mutation(createArticle, { shout: article }).toPromise()
+    const response = await graphQLClient.mutation(createArticle, { shout: article }).toPromise()
     return response.data.createShout.shout
   },
   updateArticle: async ({
@@ -281,57 +280,55 @@ export const apiClient = {
     shoutInput?: ShoutInput
     publish: boolean
   }): Promise<Shout> => {
-    const response = await privateGraphQLClient
+    const response = await graphQLClient
       .mutation(updateArticle, { shoutId, shoutInput, publish })
       .toPromise()
     console.debug('[updateArticle]:', response.data)
     return response.data.updateShout.shout
   },
   deleteShout: async ({ shoutId }: { shoutId: number }): Promise<void> => {
-    const response = await privateGraphQLClient.mutation(deleteShout, { shoutId }).toPromise()
+    const response = await graphQLClient.mutation(deleteShout, { shoutId }).toPromise()
     console.debug('[deleteShout]:', response)
   },
   getDrafts: async (): Promise<Shout[]> => {
-    const response = await privateGraphQLClient.query(draftsLoad, {}).toPromise()
+    const response = await graphQLClient.query(draftsLoad, {}).toPromise()
     console.debug('[getDrafts]:', response)
     return response.data.loadDrafts
   },
   createReaction: async (input: ReactionInput) => {
-    const response = await privateGraphQLClient.mutation(reactionCreate, { reaction: input }).toPromise()
+    const response = await graphQLClient.mutation(reactionCreate, { reaction: input }).toPromise()
     console.debug('[createReaction]:', response)
     return response.data.createReaction.reaction
   },
   destroyReaction: async (id: number) => {
-    const response = await privateGraphQLClient.mutation(reactionDestroy, { id: id }).toPromise()
+    const response = await graphQLClient.mutation(reactionDestroy, { id: id }).toPromise()
     console.debug('[destroyReaction]:', response)
     return response.data.deleteReaction.reaction
   },
   updateReaction: async (id: number, input: ReactionInput) => {
-    const response = await privateGraphQLClient
-      .mutation(reactionUpdate, { id: id, reaction: input })
-      .toPromise()
+    const response = await graphQLClient.mutation(reactionUpdate, { id: id, reaction: input }).toPromise()
     console.debug('[updateReaction]:', response)
     return response.data.updateReaction.reaction
   },
   getAuthorsBy: async (options: QueryLoadAuthorsByArgs) => {
-    const resp = await publicGraphQLClient.query(authorsLoadBy, options).toPromise()
+    const resp = await graphQLClient.query(authorsLoadBy, options).toPromise()
     return resp.data.loadAuthorsBy
   },
   getShoutBySlug: async (slug: string) => {
-    const resp = await publicGraphQLClient
+    const resp = await graphQLClient
       .query(shoutLoad, {
         slug,
       })
       .toPromise()
 
-    // if (resp.error) {
-    //   console.error(resp)
-    // }
+    if (resp.error) {
+      console.error(resp)
+    }
 
     return resp.data.loadShout
   },
   getShoutById: async (shoutId: number) => {
-    const resp = await publicGraphQLClient
+    const resp = await graphQLClient
       .query(shoutLoad, {
         shoutId,
       })
@@ -345,7 +342,7 @@ export const apiClient = {
   },
 
   getShouts: async (options: LoadShoutsOptions) => {
-    const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
+    const resp = await graphQLClient.query(shoutsLoadBy, { options }).toPromise()
     if (resp.error) {
       console.error(resp)
     }
@@ -354,7 +351,7 @@ export const apiClient = {
   },
 
   getRandomTopShouts: async (params: LoadRandomTopShoutsParams): Promise<Shout[]> => {
-    const resp = await publicGraphQLClient.query(articlesLoadRandomTop, { params }).toPromise()
+    const resp = await graphQLClient.query(articlesLoadRandomTop, { params }).toPromise()
     if (resp.error) {
       console.error(resp)
     }
@@ -362,8 +359,17 @@ export const apiClient = {
     return resp.data.loadRandomTopShouts
   },
 
+  getUnratedShouts: async (limit: number): Promise<Shout[]> => {
+    const resp = await graphQLClient.query(articlesLoadUnrated, { limit }).toPromise()
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.loadUnratedShouts
+  },
+
   getMyFeed: async (options: LoadShoutsOptions) => {
-    const resp = await privateGraphQLClient.query(myFeed, { options }).toPromise()
+    const resp = await graphQLClient.query(myFeed, { options }).toPromise()
 
     if (resp.error) {
       console.error(resp)
@@ -373,17 +379,17 @@ export const apiClient = {
   },
 
   getReactionsBy: async ({ by, limit }: { by: ReactionBy; limit?: number }) => {
-    const resp = await publicGraphQLClient
+    const resp = await graphQLClient
       .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: 0 })
       .toPromise()
     return resp.data.loadReactionsBy
   },
   getNotifications: async (params: NotificationsQueryParams): Promise<NotificationsQueryResult> => {
-    const resp = await privateGraphQLClient.query(notifications, { params }).toPromise()
+    const resp = await graphQLClient.query(notifications, { params }).toPromise()
     return resp.data.loadNotifications
   },
   markNotificationAsRead: async (notificationId: number): Promise<void> => {
-    await privateGraphQLClient
+    await graphQLClient
       .mutation(markNotificationAsRead, {
         notificationId,
       })
@@ -391,37 +397,37 @@ export const apiClient = {
   },
 
   markAllNotificationsAsRead: async (): Promise<void> => {
-    await privateGraphQLClient.mutation(markAllNotificationsAsRead, {}).toPromise()
+    await graphQLClient.mutation(markAllNotificationsAsRead, {}).toPromise()
   },
 
   getMySubscriptions: async (): Promise<MySubscriptionsQueryResult> => {
-    const resp = await privateGraphQLClient.query(mySubscriptions, {}).toPromise()
+    const resp = await graphQLClient.query(mySubscriptions, {}).toPromise()
     // console.debug(resp.data)
     return resp.data.loadMySubscriptions
   },
 
   // inbox
   getChats: async (options: QueryLoadChatsArgs): Promise<Chat[]> => {
-    const resp = await privateGraphQLClient.query(myChats, options).toPromise()
+    const resp = await graphQLClient.query(myChats, options).toPromise()
     return resp.data.loadChats.chats
   },
 
   createChat: async (options: MutationCreateChatArgs) => {
-    const resp = await privateGraphQLClient.mutation(createChat, options).toPromise()
+    const resp = await graphQLClient.mutation(createChat, options).toPromise()
     return resp.data.createChat
   },
 
   createMessage: async (options: MutationCreateMessageArgs) => {
-    const resp = await privateGraphQLClient.mutation(createMessage, options).toPromise()
+    const resp = await graphQLClient.mutation(createMessage, options).toPromise()
     return resp.data.createMessage.message
   },
 
   getChatMessages: async (options: QueryLoadMessagesByArgs) => {
-    const resp = await privateGraphQLClient.query(chatMessagesLoadBy, options).toPromise()
+    const resp = await graphQLClient.query(chatMessagesLoadBy, options).toPromise()
     return resp.data.loadMessagesBy.messages
   },
   getRecipients: async (options: QueryLoadRecipientsArgs) => {
-    const resp = await privateGraphQLClient.query(loadRecipients, options).toPromise()
+    const resp = await graphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members
   },
 }

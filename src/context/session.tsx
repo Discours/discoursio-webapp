@@ -20,7 +20,9 @@ import {
   useContext,
 } from 'solid-js'
 
+import { inboxClient } from '../graphql/client/chat'
 import { apiClient } from '../graphql/client/core'
+import { notifierClient } from '../graphql/client/notifier'
 import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 
@@ -121,9 +123,12 @@ export const SessionProvider = (props: {
   })
 
   createEffect(() => {
-    // authorized graphql client
-    const tkn = getToken()
-    if (tkn) apiClient.connect(tkn)
+    const token = getToken()
+    if (!inboxClient.private && token) {
+      apiClient.connect(token)
+      notifierClient.connect(token)
+      inboxClient.connect(token)
+    }
   })
 
   const loadSubscriptions = async (): Promise<void> => {

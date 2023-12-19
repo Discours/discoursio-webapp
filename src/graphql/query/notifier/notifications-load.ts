@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadNotificationsQuery($limit: Int, $offset: Int) {
-    load_notifications(limit: $limit, offset: $offset) {
+  query LoadNotificationsQuery($after: Int!, $limit: Int, $offset: Int) {
+    load_notifications(after: $after, limit: $limit, offset: $offset) {
       notifications {
         id
         entity

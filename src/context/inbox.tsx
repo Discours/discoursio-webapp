@@ -5,6 +5,7 @@ import { createContext, createEffect, createSignal, useContext } from 'solid-js'
 
 import { inboxClient } from '../graphql/client/chat'
 import { Author } from '../graphql/schema/core.gen'
+import { useAuthorsStore } from '../stores/zine/authors'
 
 import { SSEMessage, useConnect } from './connect'
 import { useSession } from './session'
@@ -15,7 +16,7 @@ type InboxContextType = {
   actions: {
     createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
     loadChats: () => Promise<Array<Chat>>
-    loadRecipients: () => Promise<Array<Author>>
+    loadRecipients: () => Array<Author>
     loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Array<Message>>
     getMessages?: (chatId: string) => Promise<Array<Message>>
     sendMessage?: (args: MutationCreate_MessageArgs) => void
@@ -31,6 +32,7 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
+  const { sortedAuthors } = useAuthorsStore()
 
   const handleMessage = (sseMessage: SSEMessage) => {
     console.log('[context.inbox]:', sseMessage)
@@ -47,25 +49,6 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
 
   const { addHandler } = useConnect()
   addHandler(handleMessage)
-
-  const {
-    actions: { getToken },
-  } = useSession()
-
-  createEffect(() => {
-    const token = getToken()
-    if (!inboxClient.private && token) {
-      inboxClient.connect(token)
-    }
-  })
-
-  const loadRecipients = async (limit = 50, offset = 0): Promise<Array<Author>> => {
-    if (inboxClient.private) {
-      // TODO: perhaps setMembers(authors) ?
-      return await inboxClient.loadRecipients({ limit, offset })
-    }
-    return []
-  }
 
   const loadMessages = async (
     by: MessagesBy,
@@ -136,7 +119,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     createChat,
     loadChats,
     loadMessages,
-    loadRecipients,
+    loadRecipients: sortedAuthors,
     getMessages,
     sendMessage,
   }

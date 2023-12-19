@@ -3,7 +3,7 @@ import type { ProfileInput } from '../graphql/schema/core.gen'
 import { createContext, createEffect, createMemo, JSX, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { apiClient as coreClient } from '../graphql/client/core'
+import { apiClient } from '../graphql/client/core'
 import { loadAuthor } from '../stores/zine/authors'
 
 import { useSession } from './session'
@@ -38,14 +38,8 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
 
   const currentSlug = createMemo(() => author()?.slug)
 
-  const apiClient = createMemo(() => {
-    const token = getToken()
-    if (!coreClient.private) coreClient.connect(token)
-    return coreClient
-  })
-
   const submit = async (profile: ProfileInput) => {
-    const response = await apiClient().updateProfile(profile)
+    const response = await apiClient.updateProfile(profile)
     if (response.error) {
       console.error(response.error)
       throw response.error

@@ -50,6 +50,7 @@ export const NotificationsPanel = (props: Props) => {
   const { isAuthenticated } = useSession()
   const { t } = useLocalize()
   const {
+    after,
     sortedNotifications,
     unreadNotificationsCount,
     loadedNotificationsCount,
@@ -112,7 +113,7 @@ export const NotificationsPanel = (props: Props) => {
 
   const scrollContainerRef: { current: HTMLDivElement } = { current: null }
   const loadNextPage = async () => {
-    await loadNotifications({ limit: PAGE_SIZE, offset: loadedNotificationsCount() })
+    await loadNotifications({ after: after(), limit: PAGE_SIZE, offset: loadedNotificationsCount() })
     if (loadedNotificationsCount() < totalNotificationsCount()) {
       const hasMore = scrollContainerRef.current.scrollHeight <= scrollContainerRef.current.offsetHeight
 

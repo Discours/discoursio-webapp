@@ -13,6 +13,9 @@ const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
 
 export const getImageUrl = (src: string, options: { width?: number; height?: number } = {}) => {
   const sizeUrlPart = getSizeUrlPart(options)
-
-  return `${thumborUrl}/unsafe/${sizeUrlPart}${src.replace(thumborUrl, '').replace('/unsafe', '')}`
+  const sourceUrl = src.replace(thumborUrl, '').replace('/unsafe', '')
+  return (
+    'https://' +
+    `${thumborUrl}/unsafe/${sizeUrlPart}${sourceUrl}`.replace('https://', '').replace('//', '/')
+  )
 }

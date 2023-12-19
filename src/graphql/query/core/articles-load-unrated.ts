@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadUnratedShoutsQuery($limit: Int!) {
-    loadUnratedShouts(limit: $limit) {
+  query LoadUnratedShoutsQuery($limit: Int, $offset: Int) {
+    load_shouts_unrated(limit: $limit, offset: $offset) {
       id
       title
       # lead

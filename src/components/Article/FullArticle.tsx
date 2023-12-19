@@ -13,6 +13,7 @@ import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { capitalize } from '../../utils/capitalize'
+import { isCyrillic } from '../../utils/cyrillic'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription, getKeywords } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
@@ -295,7 +296,9 @@ export const FullArticle = (props: Props) => {
   const description = getDescription(props.article.description || body())
   const ogTitle = props.article.title
   const keywords = getKeywords(props.article)
-
+  const getAuthorName = (a: Author) => {
+    return lang() == 'en' && isCyrillic(a.name) ? capitalize(a.slug.replace(/-/, ' ')) : a.name
+  }
   return (
     <>
       <Meta name="descprition" content={description} />
@@ -333,7 +336,7 @@ export const FullArticle = (props: Props) => {
                     {(a: Author, index) => (
                       <>
                         <Show when={index() > 0}>, </Show>
-                        <a href={getPagePath(router, 'author', { slug: a.slug })}>{a.name}</a>
+                        <a href={getPagePath(router, 'author', { slug: a.slug })}>{getAuthorName(a)}</a>
                       </>
                     )}
                   </For>

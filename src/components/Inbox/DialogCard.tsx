@@ -1,9 +1,10 @@
-import type { ChatMember } from '../../graphql/schema/core.gen'
+import type { ChatMember } from '../../graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
 import { Show, Switch, Match, createMemo } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
+import { Author } from '../../graphql/schema/core.gen'
 import { AuthorBadge } from '../Author/AuthorBadge'
 
 import DialogAvatar from './DialogAvatar'
@@ -26,7 +27,7 @@ type DialogProps = {
 const DialogCard = (props: DialogProps) => {
   const { t, formatTime } = useLocalize()
   const companions = createMemo(
-    () => props.members && props.members.filter((member) => member.id !== props.ownId),
+    () => props.members && props.members.filter((member: ChatMember) => member.id !== props.ownId),
   )
 
   const names = createMemo(
@@ -51,11 +52,11 @@ const DialogCard = (props: DialogProps) => {
               when={props.isChatHeader}
               fallback={
                 <div class={styles.avatar}>
-                  <DialogAvatar name={props.members[0].slug} url={props.members[0].userpic} />
+                  <DialogAvatar name={props.members[0].slug} url={props.members[0].pic} />
                 </div>
               }
             >
-              <AuthorBadge nameOnly={true} author={props.members[0]} />
+              <AuthorBadge nameOnly={true} author={props.members[0] as Author} />
             </Show>
           }
         >

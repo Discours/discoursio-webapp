@@ -2,16 +2,15 @@ import type { JSX } from 'solid-js'
 
 import { openPage } from '@nanostores/router'
 import { Editor } from '@tiptap/core'
-import { Accessor, createContext, createMemo, createSignal, useContext } from 'solid-js'
+import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { createStore, SetStoreFunction } from 'solid-js/store'
 
-import { apiClient as coreClient } from '../graphql/client/core'
+import { apiClient } from '../graphql/client/core'
 import { ShoutVisibility, Topic, TopicInput } from '../graphql/schema/core.gen'
 import { router, useRouter } from '../stores/router'
 import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
-import { useSession } from './session'
 import { useSnackbar } from './snackbar'
 
 type WordCounter = {
@@ -83,23 +82,12 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
-  const {
-    actions: { getToken },
-  } = useSession()
   const { page } = useRouter()
-  const apiClient = createMemo(() => {
-    const token = getToken()
-    if (!coreClient.private) coreClient.connect(token)
-    return coreClient
-  })
   const {
     actions: { showSnackbar },
   } = useSnackbar()
-
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
-
   const editorRef: { current: () => Editor } = { current: null }
-
   const [form, setForm] = createStore<ShoutForm>(null)
   const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
@@ -133,7 +121,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
-    return apiClient().updateArticle({
+    return await apiClient.updateArticle({
       shoutId: formToUpdate.shoutId,
       shoutInput: {
         body: formToUpdate.body,
@@ -218,7 +206,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const publishShoutById = async (shoutId: number) => {
     try {
-      await apiClient().updateArticle({
+      await apiClient.updateArticle({
         shoutId,
         publish: true,
       })
@@ -232,7 +220,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const deleteShout = async (shoutId: number) => {
     try {
-      await apiClient().deleteShout({
+      await apiClient.deleteShout({
         shoutId,
       })
       return true

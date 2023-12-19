@@ -54,7 +54,6 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
         }
         variant="tiny"
         onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
-        closeOnPopupClick={true}
         {...props.popupProps}
       >
         <For each={props.options.filter((p) => p.value !== props.currentOption.value)}>

@@ -14,7 +14,6 @@ export type PopupProps = {
   children: JSX.Element
   onVisibilityChange?: (isVisible: boolean) => void
   horizontalAnchor?: HorizontalAnchor
-  closeOnPopupClick?: boolean
   variant?: 'bordered' | 'tiny'
 }
 
@@ -39,13 +38,6 @@ export const Popup = (props: PopupProps) => {
   })
 
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
-
-  const handlePopupClick = (event: MouseEvent) => {
-    if (props.closeOnPopupClick) {
-      setIsVisible(false)
-      event.stopPropagation()
-    }
-  }
 
   return (
     <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>

@@ -135,9 +135,7 @@ export const HomeView = (props: Props) => {
           header={<h2>{t('Top commented')}</h2>}
           nodate={true}
         />
-        111
         {randomLayout()}
-        222
         <Show when={topArticles()}>
           <ArticleCardSwiper title={t('Favorite')} slides={topArticles()} />
         </Show>

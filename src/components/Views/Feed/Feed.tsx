@@ -150,7 +150,7 @@ export const Feed = (props: Props) => {
       options.order_by = orderBy
     }
 
-    if (!searchParams().by && searchParams().by !== 'publish_date') {
+    if (searchParams().by && searchParams().by !== 'publish_date') {
       const period = searchParams().period || 'month'
       const fromDate = getFromDate(period)
       options.filters = { fromDate: getServerDate(fromDate) }

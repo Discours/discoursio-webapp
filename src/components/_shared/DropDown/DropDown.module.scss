@@ -1,0 +1,7 @@
+.chevron {
+  vertical-align: top;
+
+  &.rotate {
+    transform: rotate(180deg);
+  }
+}

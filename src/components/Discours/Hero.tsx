@@ -7,7 +7,7 @@ import styles from './Hero.module.scss'
 
 export default () => {
   const { t } = useLocalize()
-  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
 
   return (
     <div class={styles.aboutDiscours}>
@@ -28,7 +28,7 @@ export default () => {
                 class="button"
                 onClick={() => {
                   showModal('auth')
-                  changeSearchParam({
+                  changeSearchParams({
                     mode: 'register',
                   })
                 }}

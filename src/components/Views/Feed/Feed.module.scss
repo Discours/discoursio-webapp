@@ -192,3 +192,14 @@
 
   font-weight: 500;
 }
+
+.filtersContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.periodSwitcher {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 18px;
+}

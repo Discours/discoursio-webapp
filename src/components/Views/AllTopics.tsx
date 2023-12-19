@@ -31,7 +31,7 @@ const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫ
 
 export const AllTopicsView = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { searchParams, changeSearchParam } = useRouter<AllTopicsPageSearchParams>()
+  const { searchParams, changeSearchParams } = useRouter<AllTopicsPageSearchParams>()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
 
   const { sortedTopics } = useTopicsStore({
@@ -43,7 +43,7 @@ export const AllTopicsView = (props: Props) => {
 
   createEffect(() => {
     if (!searchParams().by) {
-      changeSearchParam({
+      changeSearchParams({
         by: 'shouts',
       })
     }

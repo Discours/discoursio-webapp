@@ -138,7 +138,7 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   const page = useStore(routerStore)
   const searchParams = useStore(searchParamsStore) as unknown as Accessor<TSearchParams>
 
-  const changeSearchParam = (newValues: Partial<TSearchParams>, replace = false) => {
+  const changeSearchParams = (newValues: Partial<TSearchParams>, replace = false) => {
     const newSearchParams = { ...searchParamsStore.get() }
 
     Object.keys(newValues).forEach((key) => {
@@ -155,6 +155,6 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
   return {
     page,
     searchParams,
-    changeSearchParam,
+    changeSearchParams,
   }
 }

@@ -32,7 +32,7 @@ const handleEmailInput = (newEmail: string) => {
 }
 
 export const RegisterForm = () => {
-  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const { emailChecks } = useEmailChecks()
 
@@ -202,7 +202,7 @@ export const RegisterForm = () => {
                     href="#"
                     onClick={(event) => {
                       event.preventDefault()
-                      changeSearchParam({
+                      changeSearchParams({
                         mode: 'login',
                       })
                     }}
@@ -255,7 +255,7 @@ export const RegisterForm = () => {
               <span
                 class={styles.authLink}
                 onClick={() =>
-                  changeSearchParam({
+                  changeSearchParams({
                     mode: 'login',
                   })
                 }

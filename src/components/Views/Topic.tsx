@@ -41,7 +41,7 @@ const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: Props) => {
   const { t } = useLocalize()
-  const { searchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
+  const { searchParams, changeSearchParams } = useRouter<TopicsPageSearchParams>()
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
@@ -125,7 +125,7 @@ export const TopicView = (props: Props) => {
                     <button
                       type="button"
                       onClick={() =>
-                        changeSearchParam({
+                        changeSearchParams({
                           by: 'recent',
                         })
                       }
@@ -135,17 +135,17 @@ export const TopicView = (props: Props) => {
                   </li>
                   {/*TODO: server sort*/}
                   {/*<li classList={{ 'view-switcher__item--selected': getSearchParams().by === 'rating' }}>*/}
-                  {/*  <button type="button" onClick={() => changeSearchParam('by', 'rating')}>*/}
+                  {/*  <button type="button" onClick={() => changeSearchParams('by', 'rating')}>*/}
                   {/*    {t('Popular')}*/}
                   {/*  </button>*/}
                   {/*</li>*/}
                   {/*<li classList={{ 'view-switcher__item--selected': getSearchParams().by === 'viewed' }}>*/}
-                  {/*  <button type="button" onClick={() => changeSearchParam('by', 'viewed')}>*/}
+                  {/*  <button type="button" onClick={() => changeSearchParams('by', 'viewed')}>*/}
                   {/*    {t('Views')}*/}
                   {/*  </button>*/}
                   {/*</li>*/}
                   {/*<li classList={{ 'view-switcher__item--selected': getSearchParams().by === 'commented' }}>*/}
-                  {/*  <button type="button" onClick={() => changeSearchParam('by', 'commented')}>*/}
+                  {/*  <button type="button" onClick={() => changeSearchParams('by', 'commented')}>*/}
                   {/*    {t('Discussing')}*/}
                   {/*  </button>*/}
                   {/*</li>*/}

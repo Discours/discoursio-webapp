@@ -161,13 +161,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <a href={`/${props.article.slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
-                <span class={styles.shoutCardLinkContainer}>{title}</span>
+                <span class={styles.shoutCardLinkContainer} innerHTML={title} />
               </span>
             </div>
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
               <div class={styles.shoutCardSubtitle}>
-                <span class={styles.shoutCardLinkContainer}>{subtitle}</span>
+                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle} />
               </div>
             </Show>
           </a>

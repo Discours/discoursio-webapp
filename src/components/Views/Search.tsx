@@ -1,4 +1,4 @@
-import type { Shout } from '../../graphql/schema/core.gen'
+import type { SearchResult, Shout } from '../../graphql/schema/core.gen'
 
 import { Show, For, createSignal } from 'solid-js'
 
@@ -15,14 +15,14 @@ type SearchPageSearchParams = {
 
 type Props = {
   query: string
-  results: Shout[]
+  results: SearchResult[]
 }
 
 const LOAD_MORE_PAGE_SIZE = 50
 
 export const SearchView = (props: Props) => {
   const { t } = useLocalize()
-  const { sortedArticles } = useArticlesStore({ shouts: props.results })
+  const { articleEntities, sortedArticles } = useArticlesStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [query, setQuery] = createSignal(props.query)
   const [offset, setOffset] = createSignal(0)

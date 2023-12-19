@@ -1,35 +1,11 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query MyFeedQuery($options: LoadShoutsOptions) {
+  query LoadSearchQuery($options: LoadShoutsOptions) {
     load_shouts_search(options: $options) {
-      id
+      score
       title
-      subtitle
       slug
-      layout
-      cover
-      main_topic
-      topics {
-        id
-        title
-        body
-        slug
-      }
-      authors {
-        id
-        name
-        slug
-        pic
-        created_at
-      }
-      created_at
-      published_at
-      stat {
-        viewed
-        reacted
-        rating
-      }
     }
   }
 `

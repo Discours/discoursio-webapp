@@ -4,28 +4,33 @@ import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
 
 import styles from './SearchModal.module.scss'
+import { apiClient } from '../../../graphql/client/core'
+import { createEffect, createSignal } from 'solid-js'
+import { SearchResult } from '../../../graphql/schema/core.gen'
 
 export const SearchModal = () => {
   const { t } = useLocalize()
+  const [searchResults, setSearchResults] = createSignal<Array<SearchResult>>([])
 
-  const action = '/search'
-  const method = 'get'
   let msgElement: HTMLTextAreaElement | undefined
   let contactElement: HTMLInputElement | undefined
+
   const submit = async () => {
-    await fetch(action, {
-      method,
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json; charset=utf-8',
-      },
-      body: JSON.stringify({ contact: contactElement?.value, message: msgElement?.textContent }),
-    })
-    // hideModal()
+    const results = await apiClient.getShoutsSearch({ text: msgElement.value })
+
+    if (results) setSearchResults(results)
   }
 
+  createEffect(() => {
+    if (searchResults()) {
+      // TODO: some showing logics
+    }
+  })
+
+  // TODO: useLocalize()
+
   return (
-    <form method={method} action={action} onSubmit={submit} class={styles.searchForm}>
+    <form onSubmit={submit} class={styles.searchForm}>
       <input
         type="text"
         name="contact"

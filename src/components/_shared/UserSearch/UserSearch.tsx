@@ -1,13 +1,8 @@
 import { clsx } from 'clsx'
-import { createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { Author } from '../../../graphql/types.gen'
-import { apiClient } from '../../../utils/apiClient'
-import { AuthorBadge } from '../../Author/AuthorBadge'
 import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
-import { Loading } from '../Loading'
 
 import styles from './UserSearch.module.scss'
 

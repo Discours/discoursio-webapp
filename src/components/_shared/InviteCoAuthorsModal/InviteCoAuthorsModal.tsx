@@ -8,7 +8,7 @@ export const InviteCoAuthorsModal = () => {
   return (
     <Modal variant="medium" name="inviteCoAuthors">
       <h2>{t('Invite collaborators')}</h2>
-      <UserSearch placeholder={t('Write your colleagues name or email')} onChange={() => ''} />
+      <UserSearch placeholder={t('Write your colleagues name or email')} onChange={() => {}} />
     </Modal>
   )
 }

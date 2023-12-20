@@ -204,7 +204,7 @@ a:hover,
 a:visited,
 a:link,
 .link {
-  border-bottom: 1px solid rgb(0 0 0 / 30%);
+  border-bottom: 2px solid rgb(0 0 0 / 30%);
   text-decoration: none;
   cursor: pointer;
 }
@@ -624,6 +624,10 @@ figure {
     margin-bottom: 0.6em;
     white-space: nowrap;
 
+    .link {
+      border-bottom: none;
+    }
+
     &:last-child {
       margin-right: 0;
     }
@@ -645,6 +649,7 @@ figure {
   }
 
   a,
+  .link,
   .linkReplacement,
   button {
     border-bottom: 2px solid transparent;
@@ -662,6 +667,7 @@ figure {
     font-weight: bold;
 
     a,
+    .link,
     .linkReplacement,
     button {
       border-bottom: 2px solid #000;

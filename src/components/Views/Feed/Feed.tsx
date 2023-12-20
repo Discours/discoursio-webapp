@@ -199,7 +199,7 @@ export const Feed = (props: Props) => {
 
         <div class="col-md-12 offset-xl-1">
           <div class={styles.filtersContainer}>
-            <ul class={clsx(styles.feedFilter, 'view-switcher')}>
+            <ul class={clsx('view-switcher', styles.feedFilter)}>
               <li
                 class={clsx({
                   'view-switcher__item--selected':

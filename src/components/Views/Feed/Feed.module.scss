@@ -1,7 +1,4 @@
 .feedFilter {
-  margin-bottom: 4.8rem;
-  margin-top: 0.2em;
-
   @include media-breakpoint-down(md) {
     margin-right: 4rem !important;
   }
@@ -196,6 +193,12 @@
 .filtersContainer {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 4rem;
+
+  .feedFilter {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 .periodSwitcher {

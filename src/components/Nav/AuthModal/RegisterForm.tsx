@@ -11,6 +11,7 @@ import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 import { ApiError } from '../../../utils/apiClient'
 import { validateEmail } from '../../../utils/validateEmail'
+import { validatePassword } from '../../../utils/validatePassword'
 import { Icon } from '../../_shared/Icon'
 
 import { AuthModalHeader } from './AuthModalHeader'
@@ -52,23 +53,6 @@ export const RegisterForm = () => {
     }
   }
 
-  function isValidPassword(passwordToCheck) {
-    const minLength = 8
-    const hasNumber = /\d/
-    const hasSpecial = /[!#$%&*@^]/
-
-    if (passwordToCheck.length < minLength) {
-      return t('Password should be at least 8 characters')
-    }
-    if (!hasNumber.test(passwordToCheck)) {
-      return t('Password should contain at least one number')
-    }
-    if (!hasSpecial.test(passwordToCheck)) {
-      return t('Password should contain at least one special character: !@#$%^&*')
-    }
-    return null
-  }
-
   const handlePasswordInput = (newPassword: string) => {
     setPassword(newPassword)
   }
@@ -80,7 +64,7 @@ export const RegisterForm = () => {
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
 
-    const passwordError = isValidPassword(password())
+    const passwordError = validatePassword(password())
     if (passwordError) {
       setValidationErrors((errors) => ({ ...errors, password: passwordError }))
     } else {

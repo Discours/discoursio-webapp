@@ -11,6 +11,7 @@ import {
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../stores/zine/topics'
+import { apiClient } from '../../utils/apiClient'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
@@ -31,6 +32,7 @@ type Props = {
 
 export const PRERENDERED_ARTICLES_COUNT = 5
 export const RANDOM_TOPICS_COUNT = 12
+export const RANDOM_TOPIC_SHOUTS_COUNT = 7
 const CLIENT_LOAD_ARTICLES_COUNT = 29
 const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + Row 2 + Row3
 
@@ -63,6 +65,9 @@ export const HomeView = (props: Props) => {
 
       setIsLoadMoreButtonVisible(hasMore)
     }
+
+    // const result = await apiClient.getRandomTopicShouts(RANDOM_TOPIC_SHOUTS_COUNT)
+    // debugger
   })
 
   const randomLayout = createMemo(() => {

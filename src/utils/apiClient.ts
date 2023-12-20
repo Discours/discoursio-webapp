@@ -44,6 +44,7 @@ import updateProfile from '../graphql/mutation/update-profile'
 import shoutLoad from '../graphql/query/article-load'
 import shoutsLoadBy from '../graphql/query/articles-load-by'
 import articlesLoadRandomTop from '../graphql/query/articles-load-random-top'
+import articlesLoadRandomTopic from '../graphql/query/articles-load-random-topic'
 import articlesLoadUnrated from '../graphql/query/articles-load-unrated'
 import authCheckEmailQuery from '../graphql/query/auth-check-email'
 import authLoginQuery from '../graphql/query/auth-login'
@@ -357,6 +358,17 @@ export const apiClient = {
     }
 
     return resp.data.loadRandomTopShouts
+  },
+
+  getRandomTopicShouts: async (limit: number): Promise<{ topic: Topic; shouts: Shout[] }> => {
+    console.log('go')
+    const resp = await graphQLClient.query(articlesLoadRandomTopic, { limit }).toPromise()
+
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.loadRandomTopicShouts
   },
 
   getUnratedShouts: async (limit: number): Promise<Shout[]> => {

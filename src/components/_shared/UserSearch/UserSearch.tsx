@@ -16,7 +16,7 @@ export const UserSearch = (props: Props) => {
   const { t } = useLocalize()
   const roles = [
     {
-      title: t('Redactor'),
+      title: t('Editor'),
       description: t('Can write and edit text directly, and accept or reject suggestions from others'),
     },
     {

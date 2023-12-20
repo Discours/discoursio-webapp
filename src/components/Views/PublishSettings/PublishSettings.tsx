@@ -14,8 +14,6 @@ import { apiClient } from '../../../utils/apiClient'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
-import { InviteCoAuthorsModal } from '../../_shared/InviteCoAuthorsModal'
-import { UserSearch } from '../../_shared/UserSearch'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
 import { EMPTY_TOPIC } from '../Edit'
@@ -258,7 +256,6 @@ export const PublishSettings = (props: Props) => {
       <Modal variant="narrow" name="uploadCoverImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
       </Modal>
-      <InviteCoAuthorsModal />
     </form>
   )
 }

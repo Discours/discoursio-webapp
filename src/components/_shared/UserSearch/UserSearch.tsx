@@ -37,12 +37,6 @@ export const UserSearch = (props: Props) => {
     props.onChange(value)
   }
 
-  const [authors, setAuthors] = createSignal<Author[]>()
-  onMount(async () => {
-    const allAuthors = await apiClient.getAllAuthors()
-    setAuthors(allAuthors)
-  })
-
   return (
     <div class={clsx(styles.UserSearch, props.class)}>
       <div class={styles.searchHeader}>
@@ -59,12 +53,14 @@ export const UserSearch = (props: Props) => {
         <Button variant={'bordered'} size={'M'} value={t('Add')} />
       </div>
 
-      <Show when={authors()} fallback={<Loading />}>
-        <div class={styles.authors}>
-          <For each={authors()}>{(author) => <AuthorBadge author={author} nameOnly={true} />}</For>
-        </div>
-      </Show>
-      <Button value={t('Coming soon')} />
+      <div class={styles.teaser}>
+        <h3>{t('Coming soon')}</h3>
+        <p>
+          {t(
+            'We are working on collaborative editing of articles and in the near future you will have an amazing opportunity - to create together with your colleagues',
+          )}
+        </p>
+      </div>
     </div>
   )
 }

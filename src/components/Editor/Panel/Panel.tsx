@@ -7,6 +7,7 @@ import Typograf from 'typograf'
 import { useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { router } from '../../../stores/router'
+import { showModal } from '../../../stores/ui'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { Button } from '../../_shared/Button'
@@ -91,7 +92,9 @@ export const Panel = (props: Props) => {
 
         <section>
           <p>
-            <a class={styles.link}>{t('Invite co-authors')}</a>
+            <span class={styles.link} onClick={() => showModal('inviteCoAuthors')}>
+              {t('Invite co-authors')}
+            </span>
           </p>
           <p>
             <a

@@ -1,6 +1,6 @@
-import type { Shout } from '../../graphql/types.gen'
+import type { Shout, Topic } from '../../graphql/types.gen'
 
-import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { batch, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import {
@@ -11,6 +11,7 @@ import {
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../stores/zine/topics'
+import { apiClient } from '../../utils/apiClient'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
@@ -31,25 +32,23 @@ type Props = {
 
 export const PRERENDERED_ARTICLES_COUNT = 5
 export const RANDOM_TOPICS_COUNT = 12
+export const RANDOM_TOPIC_SHOUTS_COUNT = 7
 const CLIENT_LOAD_ARTICLES_COUNT = 29
 const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + Row 2 + Row3
 
 export const HomeView = (props: Props) => {
-  const {
-    sortedArticles,
-    articlesByLayout,
-    topArticles,
-    topCommentedArticles,
-    topMonthArticles,
-    topViewedArticles,
-  } = useArticlesStore({
-    shouts: props.shouts,
-  })
+  const { sortedArticles, topArticles, topCommentedArticles, topMonthArticles, topViewedArticles } =
+    useArticlesStore({
+      shouts: props.shouts,
+    })
 
   const { topTopics } = useTopicsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { topAuthors } = useTopAuthorsStore()
   const { t } = useLocalize()
+
+  const [randomTopic, setRandomTopic] = createSignal<Topic>(null)
+  const [randomTopicArticles, setRandomTopicArticles] = createSignal<Shout[]>([])
 
   onMount(async () => {
     loadTopArticles()
@@ -63,22 +62,12 @@ export const HomeView = (props: Props) => {
 
       setIsLoadMoreButtonVisible(hasMore)
     }
-  })
 
-  const randomLayout = createMemo(() => {
-    const filledLayouts = Object.keys(articlesByLayout()).filter(
-      // FIXME: is 7 ok? or more complex logic needed?
-      (layout) => articlesByLayout()[layout].length > 7,
-    )
-
-    const selectedRandomLayout =
-      filledLayouts.length > 0 ? filledLayouts[Math.floor(Math.random() * filledLayouts.length)] : ''
-
-    return (
-      <Show when={Boolean(selectedRandomLayout)}>
-        <Group articles={articlesByLayout()[selectedRandomLayout]} header={''} />
-      </Show>
-    )
+    const { topic, shouts } = await apiClient.getRandomTopicShouts(RANDOM_TOPIC_SHOUTS_COUNT)
+    batch(() => {
+      setRandomTopic(topic)
+      setRandomTopicArticles(shouts)
+    })
   })
 
   const loadMore = async () => {
@@ -135,7 +124,9 @@ export const HomeView = (props: Props) => {
           header={<h2>{t('Top commented')}</h2>}
           nodate={true}
         />
-        {randomLayout()}
+        <Show when={randomTopic()}>
+          <Group articles={randomTopicArticles()} header={''} />
+        </Show>
         <Show when={topArticles()}>
           <ArticleCardSwiper title={t('Favorite')} slides={topArticles()} />
         </Show>

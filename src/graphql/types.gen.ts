@@ -373,6 +373,7 @@ export type Query = {
   loadMySubscriptions?: Maybe<MySubscriptionsQueryResult>
   loadNotifications: NotificationsQueryResult
   loadRandomTopShouts: Array<Maybe<Shout>>
+  loadRandomTopicShouts: RandomTopicShoutsQueryResult
   loadReactionsBy: Array<Maybe<Reaction>>
   loadRecipients: Result
   loadShout?: Maybe<Shout>
@@ -428,6 +429,10 @@ export type QueryLoadNotificationsArgs = {
 
 export type QueryLoadRandomTopShoutsArgs = {
   params?: InputMaybe<LoadRandomTopShoutsParams>
+}
+
+export type QueryLoadRandomTopicShoutsArgs = {
+  limit: Scalars['Int']['input']
 }
 
 export type QueryLoadReactionsByArgs = {
@@ -502,6 +507,11 @@ export type QueryUserFollowedTopicsArgs = {
 
 export type QueryUserFollowersArgs = {
   slug: Scalars['String']['input']
+}
+
+export type RandomTopicShoutsQueryResult = {
+  shouts: Array<Maybe<Shout>>
+  topic: Topic
 }
 
 export type Rating = {

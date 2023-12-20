@@ -54,8 +54,8 @@ export default defineConfig(({ mode, command }) => {
       https: true,
       port: 3000,
     },
+    cssCodeSplit: false,
     css: {
-      cssCodeSplit: false,
       devSourcemap: isDev,
       preprocessorOptions: {
         scss: { additionalData: '@import "src/styles/imports";\n' },

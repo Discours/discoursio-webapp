@@ -47,7 +47,7 @@ export const LoginForm = () => {
     actions: { signIn },
   } = useSession()
 
-  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
 
   const [password, setPassword] = createSignal('')
 
@@ -201,7 +201,7 @@ export const LoginForm = () => {
           <span
             class="link"
             onClick={() =>
-              changeSearchParam({
+              changeSearchParams({
                 mode: 'forgot-password',
               })
             }
@@ -218,7 +218,7 @@ export const LoginForm = () => {
           <span
             class={styles.authLink}
             onClick={() =>
-              changeSearchParam({
+              changeSearchParams({
                 mode: 'register',
               })
             }

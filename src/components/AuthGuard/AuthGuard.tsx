@@ -13,7 +13,7 @@ type Props = {
 
 export const AuthGuard = (props: Props) => {
   const { isAuthenticated, isSessionLoaded } = useSession()
-  const { changeSearchParam } = useRouter<RootSearchParams & AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<RootSearchParams & AuthModalSearchParams>()
 
   createEffect(() => {
     if (props.disabled) {
@@ -23,7 +23,7 @@ export const AuthGuard = (props: Props) => {
       if (isAuthenticated()) {
         hideModal()
       } else {
-        changeSearchParam(
+        changeSearchParams(
           {
             source: 'authguard',
             modal: 'auth',

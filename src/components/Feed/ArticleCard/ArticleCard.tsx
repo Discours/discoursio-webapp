@@ -98,11 +98,11 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
 
-  const { changeSearchParam } = useRouter()
+  const { changeSearchParams } = useRouter()
   const scrollToComments = (event) => {
     event.preventDefault()
     openPage(router, 'article', { slug: props.article.slug })
-    changeSearchParam({
+    changeSearchParams({
       scrollTo: 'comments',
     })
   }

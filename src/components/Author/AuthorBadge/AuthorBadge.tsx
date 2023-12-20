@@ -29,7 +29,7 @@ export const AuthorBadge = (props: Props) => {
     subscriptions,
     actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
-  const { changeSearchParam } = useRouter()
+  const { changeSearchParams } = useRouter()
   const { t, formatDate } = useLocalize()
   const subscribed = createMemo(() =>
     subscriptions().authors.some((author) => author.slug === props.author.slug),
@@ -54,7 +54,7 @@ export const AuthorBadge = (props: Props) => {
   const initChat = () => {
     requireAuthentication(() => {
       openPage(router, `inbox`)
-      changeSearchParam({
+      changeSearchParams({
         initChat: props.author.id.toString(),
       })
     }, 'discussions')

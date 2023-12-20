@@ -52,7 +52,7 @@ export const InboxView = () => {
   const [isClear, setClear] = createSignal(false)
   const { session } = useSession()
   const currentUserId = createMemo(() => session()?.user.id)
-  const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
+  const { changeSearchParams, searchParams } = useRouter<InboxSearchParams>()
   // Поиск по диалогам
   const getQuery = (query) => {
     if (query().length >= 2) {
@@ -67,7 +67,7 @@ export const InboxView = () => {
 
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
-    changeSearchParam({
+    changeSearchParams({
       chat: chat.id,
     })
     try {
@@ -126,7 +126,7 @@ export const InboxView = () => {
       try {
         const newChat = await createChat([Number(searchParams().initChat)], '')
         await loadChats()
-        changeSearchParam({
+        changeSearchParams({
           initChat: null,
           chat: newChat.chat.id,
         })

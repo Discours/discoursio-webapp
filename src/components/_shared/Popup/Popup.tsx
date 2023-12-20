@@ -32,7 +32,9 @@ export const Popup = (props: PopupProps) => {
   useOutsideClickHandler({
     containerRef,
     predicate: () => isVisible(),
-    handler: () => setIsVisible(false),
+    handler: () => {
+      setIsVisible(false)
+    },
   })
 
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)

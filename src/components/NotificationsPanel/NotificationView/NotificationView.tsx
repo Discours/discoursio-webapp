@@ -42,7 +42,7 @@ export const NotificationView = (props: Props) => {
     actions: { markNotificationAsRead, hideNotificationsPanel },
   } = useNotifications()
 
-  const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
+  const { changeSearchParams } = useRouter<ArticlePageSearchParams>()
 
   const { t, formatDate, formatTime } = useLocalize()
 
@@ -139,7 +139,7 @@ export const NotificationView = (props: Props) => {
     openPage(router, 'article', { slug: data().shout.slug })
 
     if (data().reactionIds) {
-      changeSearchParam({ commentId: data().reactionIds[0].toString() })
+      changeSearchParams({ commentId: data().reactionIds[0].toString() })
     }
   }
 

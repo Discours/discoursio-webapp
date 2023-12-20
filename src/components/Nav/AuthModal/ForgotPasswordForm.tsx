@@ -20,7 +20,7 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const ForgotPasswordForm = () => {
-  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t, lang } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
@@ -119,7 +119,7 @@ export const ForgotPasswordForm = () => {
               href="#"
               onClick={(event) => {
                 event.preventDefault()
-                changeSearchParam({
+                changeSearchParams({
                   mode: 'register',
                 })
               }}
@@ -141,7 +141,7 @@ export const ForgotPasswordForm = () => {
           <span
             class={styles.authLink}
             onClick={() =>
-              changeSearchParam({
+              changeSearchParams({
                 mode: 'login',
               })
             }

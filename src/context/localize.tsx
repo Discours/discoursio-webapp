@@ -32,7 +32,7 @@ export function useLocalize() {
 
 export const LocalizeProvider = (props: { children: JSX.Element }) => {
   const [lang, setLang] = createSignal<Language>(i18next.language === 'en' ? 'en' : 'ru')
-  const { searchParams, changeSearchParam } = useRouter<{
+  const { searchParams, changeSearchParams } = useRouter<{
     lng: string
   }>()
 
@@ -46,7 +46,7 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
     changeLanguage(lng)
     setLang(lng)
     Cookie.set('lng', lng)
-    changeSearchParam({ lng: null }, true)
+    changeSearchParams({ lng: null }, true)
   })
 
   const formatTime = (date: Date, options: Intl.DateTimeFormatOptions = {}) => {

@@ -115,9 +115,7 @@ export const HomeView = (props: Props) => {
           wrapper={'top-article'}
           nodate={true}
         />
-
         <Row3 articles={sortedArticles().slice(6, 9)} nodate={true} />
-
         <Beside
           beside={sortedArticles()[9]}
           title={t('Top authors')}
@@ -125,15 +123,11 @@ export const HomeView = (props: Props) => {
           wrapper={'author'}
           nodate={true}
         />
-
         <Show when={topMonthArticles()}>
           <ArticleCardSwiper title={t('Top month articles')} slides={topMonthArticles()} />
         </Show>
-
         <Row2 articles={sortedArticles().slice(10, 12)} nodate={true} />
-
         <RowShort articles={sortedArticles().slice(12, 16)} />
-
         <Row1 article={sortedArticles()[16]} nodate={true} />
         <Row3 articles={sortedArticles().slice(17, 20)} nodate={true} />
         <Row3
@@ -141,13 +135,10 @@ export const HomeView = (props: Props) => {
           header={<h2>{t('Top commented')}</h2>}
           nodate={true}
         />
-
         {randomLayout()}
-
         <Show when={topArticles()}>
           <ArticleCardSwiper title={t('Favorite')} slides={topArticles()} />
         </Show>
-
         <Beside
           beside={sortedArticles()[20]}
           title={t('Top topics')}
@@ -156,11 +147,8 @@ export const HomeView = (props: Props) => {
           isTopicCompact={true}
           nodate={true}
         />
-
         <Row3 articles={sortedArticles().slice(21, 24)} nodate={true} />
-
         <Banner />
-
         <Row2 articles={sortedArticles().slice(24, 26)} nodate={true} />
         <Row3 articles={sortedArticles().slice(26, 29)} nodate={true} />
         <Row2 articles={sortedArticles().slice(29, 31)} nodate={true} />

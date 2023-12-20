@@ -1,5 +1,5 @@
 export const capitalize = (originalString: string, firstonly = false) => {
-  const s = originalString.trim()
+  const s = (originalString || '').trim()
   return firstonly
     ? s.charAt(0).toUpperCase() + s.slice(1)
     : s

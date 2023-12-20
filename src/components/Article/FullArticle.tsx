@@ -95,9 +95,11 @@ export const FullArticle = (props: Props) => {
   const body = createMemo(() => {
     if (props.article.layout === 'literature') {
       try {
-        const media = JSON.parse(props.article.media)
-        if (media.length > 0) {
-          return media[0].body
+        if (props.article?.media) {
+          const media = JSON.parse(props.article.media)
+          if (media.length > 0) {
+            return media[0].body
+          }
         }
       } catch (error) {
         console.error(error)

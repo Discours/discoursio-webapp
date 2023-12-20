@@ -55,7 +55,7 @@ export const apiClient = {
     if (!response.data) {
       console.error('[graphql.core] getRandomTopShouts error', response.error)
     }
-    return response.data.load_shouts_top_random
+    return response.data.load_shouts_random_top
   },
 
   getUnratedShouts: async (limit = 50, offset = 0) => {

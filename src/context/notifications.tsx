@@ -72,9 +72,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   onMount(() => {
     addHandler((data: SSEMessage) => {
       if (data.entity === 'reaction' && isAuthenticated()) {
+        console.info(`[context.notifications] event`, data)
         loadNotifications({ after: after(), limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
-      } else {
-        console.info(`[NotificationsProvider] bypassed:`, data)
       }
     })
     setAfter(now)

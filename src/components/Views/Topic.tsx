@@ -40,7 +40,7 @@ export const PRERENDERED_ARTICLES_COUNT = 28
 const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: Props) => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
   const { searchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
@@ -50,17 +50,22 @@ export const TopicView = (props: Props) => {
 
   const { authorsByTopic } = useAuthorsStore()
 
-  const topic = createMemo(() => topicEntities()[props.topicSlug])
-
-  onMount(() => {
-    document.title = topic().title
-  })
+  const topic = createMemo(() =>
+    props.topic?.slug in topicEntities() ? topicEntities()[props.topic.slug] : props.topic,
+  )
+  const title = () =>
+    `#${capitalize(
+      lang() == 'en' ? topic()?.slug.replace(/-/, ' ') : topic()?.title || topic()?.slug.replace(/-/, ' '),
+      true,
+    )}`
+  onMount(() => (document.title = title()))
+  createEffect(() => props.title(title()))
 
   const loadMore = async () => {
     saveScrollPosition()
 
     const { hasMore } = await loadShouts({
-      filters: { topic: props.topicSlug },
+      filters: { topic: topic()?.slug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length,
     })
@@ -75,7 +80,7 @@ export const TopicView = (props: Props) => {
     }
   })
 
-  const title = createMemo(() => {
+  const selectionTitle = createMemo(() => {
     const m = searchParams().by
     if (m === 'viewed') return t('Top viewed')
     if (m === 'rating') return t('Top rated')
@@ -87,29 +92,27 @@ export const TopicView = (props: Props) => {
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
-  const pageTitle = `#${capitalize(topic().title, true)}`
-  createEffect(() => props.title(pageTitle))
-
-  const ogImage = topic().pic
-    ? getImageUrl(topic().pic, { width: 1200 })
-    : getImageUrl('production/image/logo_image.png')
-  const description = topic().body
-    ? getDescription(topic().body)
-    : t('The most interesting publications on the topic', { topicName: pageTitle })
-  const ogTitle = pageTitle
+  const ogImage = () =>
+    topic()?.pic
+      ? getImageUrl(topic().pic, { width: 1200 })
+      : getImageUrl('production/image/logo_image.png')
+  const description = () =>
+    topic()?.body
+      ? getDescription(topic().body)
+      : t('The most interesting publications on the topic', { topicName: title() })
 
   return (
     <div class={styles.topicPage}>
-      <Meta name="descprition" content={description} />
-      <Meta name="keywords" content={t('topicKeywords', { topic: topic().title })} />
+      <Meta name="descprition" content={description()} />
+      <Meta name="keywords" content={t('topicKeywords', { topic: title() })} />
       <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="twitter:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
+      <Meta name="og:title" content={title()} />
+      <Meta name="og:image" content={ogImage()} />
+      <Meta name="twitter:image" content={ogImage()} />
+      <Meta name="og:description" content={description()} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:title" content={title()} />
+      <Meta name="twitter:description" content={description()} />
       <Show when={props.isLoaded} fallback={<Loading />}>
         <Show when={topic()}>
           <FullTopic topic={topic()} />
@@ -170,7 +173,7 @@ export const TopicView = (props: Props) => {
             wrapper={'author'}
           />
 
-          <ArticleCardSwiper title={title()} slides={sortedArticles().slice(5, 11)} />
+          <ArticleCardSwiper title={selectionTitle()} slides={sortedArticles().slice(5, 11)} />
 
           <Beside
             beside={sortedArticles()[12]}

@@ -5,22 +5,16 @@ import { ArticleCard } from '../../Feed/ArticleCard'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 
-// import { PRERENDERED_ARTICLES_COUNT } from '../../Views/Home'
-
-// import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-
 import type { Shout } from '../../../graphql/types.gen'
+
+import { searchUrl } from '../../../utils/config'
+
 import { useLocalize } from '../../../context/localize'
 
 import styles from './SearchModal.module.scss'
 
-// @@TODO implement search
-// @@TODO implement throttling
-
+// @@TODO handle founded shouts rendering (cors)
 // @@TODO implement load more (await ...({ filters: { .. }, limit: .., offset: .. }))
-// @@TODO implement modal hiding on article click
-// @@TODO search url as const
-// @@TODO refactor switcher, filters, topics
 
 const getSearchCoincidences = ({ str, intersection }) =>
   `<span>${str.replace(
@@ -33,15 +27,17 @@ export const SearchModal = () => {
 
   const searchInputRef: { current: HTMLInputElement } = { current: null }
 
-  const [isSearching, setIsSearching] = createSignal(false)
-  const [searchResultsList, setSearchResultsList] = createSignal([])
-  // const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [searchResultsList, setSearchResultsList] = createSignal<[] | null>([])
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [isLoading, setIsLoading] = createSignal(false)
 
   const handleSearch = async () => {
     const searchValue = searchInputRef.current?.value || ''
 
     if (Boolean(searchValue)) {
-      await fetch(`https://search.discours.io/search?q=${searchValue}`, {
+      setIsLoading(true)
+
+      await fetch(`${searchUrl}=${searchValue}`, {
         method: 'GET',
         headers: {
           accept: 'application/json',
@@ -50,10 +46,8 @@ export const SearchModal = () => {
       })
         .then((data) => data.json())
         .then((data) => {
-          console.log(data)
-
-          // if (data.length) {
-          //   const preparedSearchResultsList = [].map((article) => ({
+          // if (data.what) {
+          //   const preparedSearchResultsList = data.what.map((article) => ({
           //     ...article,
           //     title: getSearchCoincidences({
           //       str: article.title,
@@ -62,18 +56,26 @@ export const SearchModal = () => {
           //     subtitle: getSearchCoincidences({
           //       str: article.subtitle,
           //       intersection: searchInputRef.current?.value || ''
-          //     })
+          //     }),
           //   }))
+          //
           //   setSearchResultsList(preparedSearchResultsList)
+          //
+          //   @@TODO handle setIsLoadMoreButtonVisible()
           // } else {
-          //   // @@TODO handle no search results notice
+          //   setSearchResultsList(null)
           // }
         })
         .catch((error) => {
           console.log('search request failed', error)
         })
+        .finally(() => {
+          setIsLoading(false)
+        })
     }
   }
+
+  const loadMore = () => {}
 
   return (
     <div class={styles.searchContainer}>
@@ -83,11 +85,13 @@ export const SearchModal = () => {
         ref={(el) => (searchInputRef.current = el)}
         class={styles.searchInput}
         onInput={handleSearch}
-        onFocusIn={() => setIsSearching(true)}
-        onFocusOut={() => setIsSearching(false)}
       />
 
-      <Button class={styles.searchButton} onClick={handleSearch} value={<Icon name="search" />} />
+      <Button
+        class={styles.searchButton}
+        onClick={handleSearch}
+        value={isLoading() ? <div class={styles.searchLoader} /> : <Icon name="search" />}
+      />
 
       <p
         class={styles.searchDescription}
@@ -96,18 +100,56 @@ export const SearchModal = () => {
         )}
       />
 
-      {/* @@TODO handle switcher */}
-      {/* <ul class={clsx('view-switcher', styles.filterSwitcher)}>
-        <li class="view-switcher__item view-switcher__item--selected">
-          <button type="button">Все</button>
-        </li>
-        <li class="view-switcher__item">
-          <button type="button">Публикации</button>
-        </li>
-        <li class="view-switcher__item">
-          <button type="button">Темы</button>
-        </li>
-      </ul> */}
+      {/* <Show when={!isLoading()}> */}
+      <Show when={false}>
+        <Show when={searchResultsList().length}>
+          {/* <For each={searchResultsList()}> */}
+          <For
+            each={[
+              {
+                body: 'body',
+                cover: 'production/image/bbad6b10-9b44-11ee-bdef-5758f9198f7d.png',
+                createdAt: '12',
+                id: 12,
+                slug: '/about',
+                authors: [
+                  {
+                    id: 1,
+                    name: 'author',
+                    slug: '/'
+                  }
+                ],
+                title: 'asas',
+                subtitle: 'asas',
+                topics: []
+              }
+            ]}
+          >
+            {(article: Shout) => (
+              <ArticleCard
+                article={article}
+                settings={{
+                  isFloorImportant: true,
+                  isSingle: true,
+                  nodate: true
+                }}
+              />
+            )}
+          </For>
+
+          <Show when={isLoadMoreButtonVisible()}>
+            <p class="load-more-container">
+              <button class="button" onClick={loadMore}>
+                {t('Load more')}
+              </button>
+            </p>
+          </Show>
+        </Show>
+
+        <Show when={!searchResultsList()}>
+          <p class={styles.searchDescription} innerHTML={t("We couldn't find anything for your request")} />
+        </Show>
+      </Show>
 
       {/* @@TODO handle filter */}
       {/* <Show when={FILTERS.length}>
@@ -119,71 +161,29 @@ export const SearchModal = () => {
                 class={styles.filterResultsControl}
                 onClick={() => setActiveFilter(filter)}
               >
-                Период времени
+                {filter.name}
               </button>
             )}
           </For>
         </div>
       </Show> */}
 
-      {/* <Show when={searchResultsList().length}> */}
-      <Show when={true}>
-        {/* <For each={searchResultsList()}> */}
-        <For
-          each={[
-            {
-              body: 'body',
-              cover: 'production/image/bbad6b10-9b44-11ee-bdef-5758f9198f7d.png',
-              createdAt: '12',
-              id: 12,
-              slug: '/',
-              authors: [
-                {
-                  id: 1,
-                  name: 'author',
-                  slug: '/'
-                }
-              ],
-              title: '',
-              subtitle: '',
-              topics: []
-            }
-          ]}
-        >
-          {(article: Shout) => (
-            <ArticleCard
-              article={article}
-              settings={{
-                isFloorImportant: true,
-                isSingle: true,
-                nodate: true
-              }}
-            />
-          )}
-        </For>
-
-        {/* @@TODO handle load more */}
-        {/* <Show when={isLoadMoreButtonVisible()}>
-          <p class="load-more-container">
-            <button class="button" onClick={loadMore}>
-              {t('Load more')}
-            </button>
-          </p>
-        </Show> */}
-      </Show>
-
       {/* @@TODO handle topics */}
-      {/* <div class="container-xl">
-        <div class="row">
-          <div class={clsx('col-md-18 offset-md-2', styles.topicsList)}>
-            {topics.map((topic) => (
-              <button type="button" class={styles.topTopic}>
-                {topic.name}
-              </button>
-            ))}
+      {/* <Show when={TOPICS.length}>
+        <div class="container-xl">
+          <div class="row">
+            <div class={clsx('col-md-18 offset-md-2', styles.topicsList)}>
+              <For each={TOPICS}>
+                {(topic) => (
+                  <button type="button" class={styles.topTopic} onClick={() => setActiveTopic(topic)}>
+                    {topic.name}
+                  </button>
+                )}
+              </For>
+            </div>
           </div>
         </div>
-      </div> */}
+      </Show> */}
     </div>
   )
 }

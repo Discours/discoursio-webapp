@@ -23,6 +23,7 @@ export type ModalType =
   | 'editorInsertLink'
   | 'followers'
   | 'following'
+  | 'inviteCoAuthors'
 
 export const MODALS: Record<ModalType, ModalType> = {
   auth: 'auth',
@@ -38,6 +39,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   editorInsertLink: 'editorInsertLink',
   followers: 'followers',
   following: 'following',
+  inviteCoAuthors: 'inviteCoAuthors',
 }
 
 const [modal, setModal] = createSignal<ModalType>(null)

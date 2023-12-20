@@ -14,6 +14,8 @@ import { apiClient } from '../../../utils/apiClient'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
+import { InviteCoAuthorsModal } from '../../_shared/InviteCoAuthorsModal'
+import { UserSearch } from '../../_shared/UserSearch'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
 import { EMPTY_TOPIC } from '../Edit'
@@ -225,23 +227,12 @@ export const PublishSettings = (props: Props) => {
                 <div class={styles.validationError}>{formErrors.selectedTopics}</div>
               </Show>
             </div>
-
-            {/*<h4>Соавторы</h4>*/}
-            {/*<p class="description">У каждого соавтора можно добавить роль</p>*/}
-            {/*<div class="pretty-form__item--with-button">*/}
-            {/*  <div class="pretty-form__item">*/}
-            {/*    <input type="text" name="authors" id="authors" placeholder="Введите имя или e-mail" />*/}
-            {/*    <label for="authors">Введите имя или e-mail</label>*/}
-            {/*  </div>*/}
-            {/*  <button class="button button--submit">Добавить</button>*/}
-            {/*</div>*/}
-
-            {/*<div class="row">*/}
-            {/*  <div class="col-md-6">Михаил Драбкин</div>*/}
-            {/*  <div class="col-md-6">*/}
-            {/*    <input type="text" name="coauthor" id="coauthor1" class="nolabel" />*/}
-            {/*  </div>*/}
-            {/*</div>*/}
+            <h4>{t('Collaborators')}</h4>
+            <Button
+              variant="primary"
+              onClick={() => showModal('inviteCoAuthors')}
+              value={t('Invite collaborators')}
+            />
           </div>
         </div>
       </div>
@@ -267,6 +258,7 @@ export const PublishSettings = (props: Props) => {
       <Modal variant="narrow" name="uploadCoverImage">
         <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
       </Modal>
+      <InviteCoAuthorsModal />
     </form>
   )
 }

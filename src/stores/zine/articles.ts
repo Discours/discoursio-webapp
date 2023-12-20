@@ -1,7 +1,6 @@
 import type {
   Author,
   Shout,
-  ShoutInput,
   LoadShoutsOptions,
   QueryLoad_Shouts_SearchArgs,
 } from '../../graphql/schema/core.gen'

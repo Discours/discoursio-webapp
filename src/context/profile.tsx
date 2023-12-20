@@ -30,10 +30,7 @@ const userpicUrl = (userpic: string) => {
   return userpic
 }
 export const ProfileFormProvider = (props: { children: JSX.Element }) => {
-  const {
-    author,
-    actions: { getToken },
-  } = useSession()
+  const { author } = useSession()
   const [form, setForm] = createStore<ProfileInput>({})
 
   const currentSlug = createMemo(() => author()?.slug)

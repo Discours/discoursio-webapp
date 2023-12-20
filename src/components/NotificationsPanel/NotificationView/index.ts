@@ -1,1 +1,1 @@
-export { NotificationView } from './NotificationView'
+export { NotificationGroup } from './NotificationGroup'

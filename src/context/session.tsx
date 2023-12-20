@@ -48,6 +48,7 @@ export type SessionContextType = {
     loadSession: () => AuthToken | Promise<AuthToken>
     setSession: (token: AuthToken | null) => void // setSession
     loadAuthor: (info?: unknown) => Author | Promise<Author>
+    setAuthor: (a: Author) => void
     loadSubscriptions: () => Promise<void>
     requireAuthentication: (
       callback: (() => Promise<void>) | (() => void),
@@ -92,14 +93,14 @@ export const SessionProvider = (props: {
         Authorization: tkn,
       })
       if (authResult?.access_token) {
-        mutate(authResult)
+        setSession(authResult)
         // console.debug('[context.session] token after:', authResult.access_token)
         await loadSubscriptions()
         return authResult
       }
     } catch (error) {
       console.error('[context.session] getSession error:', error)
-      mutate(null)
+      setSession(null)
       return null
     } finally {
       setTimeout(() => {
@@ -108,7 +109,7 @@ export const SessionProvider = (props: {
     }
   }
 
-  const [session, { refetch: loadSession, mutate }] = createResource<AuthToken>(getSession, {
+  const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(getSession, {
     ssrLoadFrom: 'initial',
     initialValue: null,
   })
@@ -142,7 +143,7 @@ export const SessionProvider = (props: {
     }
   }
 
-  const [author, { refetch: loadAuthor }] = createResource<Author | null>(
+  const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
     async () => {
       const u = session()?.user
       if (u) {
@@ -162,7 +163,7 @@ export const SessionProvider = (props: {
     const authResult: AuthToken | void = await authorizer().login(params)
 
     if (authResult && authResult.access_token) {
-      mutate(authResult)
+      setSession(authResult)
       await loadSubscriptions()
       console.debug('[context.session] signed in')
     } else {
@@ -211,7 +212,7 @@ export const SessionProvider = (props: {
     setIsAuthWithCallback(() => callback)
 
     const userdata = await authorizer().getProfile()
-    if (userdata) mutate({ ...session(), user: userdata })
+    if (userdata) setSession({ ...session(), user: userdata })
 
     if (!isAuthenticated()) {
       showModal('auth', modalSource)
@@ -220,7 +221,7 @@ export const SessionProvider = (props: {
 
   const signOut = async () => {
     await authorizer().logout()
-    mutate(null)
+    setSession(null)
     setSubscriptions(EMPTY_SUBSCRIPTIONS)
     showSnackbar({ body: t("You've successfully logged out") })
   }
@@ -228,7 +229,7 @@ export const SessionProvider = (props: {
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
     const at: void | AuthToken = await authorizer().verifyEmail(input)
-    if (at) mutate(at)
+    if (at) setSession(at)
     console.log(`[context.session] confirmEmail got result ${at}`)
   }
 
@@ -243,7 +244,8 @@ export const SessionProvider = (props: {
     signOut,
     confirmEmail,
     setIsSessionLoaded,
-    setSession: mutate,
+    setSession,
+    setAuthor,
     authorizer,
     loadAuthor,
   }

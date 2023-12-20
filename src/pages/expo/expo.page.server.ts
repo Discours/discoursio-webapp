@@ -8,7 +8,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   const { layout } = pageContext.routeParams
 
   const expoShouts = await apiClient.getShouts({
-    filters: { layouts: ['audio', 'video', 'literature', 'image'] },
+    filters: { layouts: layout ? [layout] : ['audio', 'video', 'literature', 'image'] },
     limit: PRERENDERED_ARTICLES_COUNT,
   })
 

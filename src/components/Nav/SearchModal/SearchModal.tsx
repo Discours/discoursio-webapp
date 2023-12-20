@@ -1,12 +1,12 @@
 import { clsx } from 'clsx'
+import { createEffect, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { apiClient } from '../../../graphql/client/core'
+import { SearchResult } from '../../../graphql/schema/core.gen'
 import { Icon } from '../../_shared/Icon'
 
 import styles from './SearchModal.module.scss'
-import { apiClient } from '../../../graphql/client/core'
-import { createEffect, createSignal } from 'solid-js'
-import { SearchResult } from '../../../graphql/schema/core.gen'
 
 export const SearchModal = () => {
   const { t } = useLocalize()

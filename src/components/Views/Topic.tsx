@@ -55,7 +55,7 @@ export const TopicView = (props: Props) => {
   )
   const title = () =>
     `#${capitalize(
-      lang() == 'en' ? topic()?.slug.replace(/-/, ' ') : topic()?.title || topic()?.slug.replace(/-/, ' '),
+      lang() === 'en' ? topic()?.slug.replace(/-/, ' ') : topic()?.title || topic()?.slug.replace(/-/, ' '),
       true,
     )}`
   onMount(() => (document.title = title()))

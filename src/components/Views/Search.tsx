@@ -1,4 +1,4 @@
-import type { SearchResult, Shout } from '../../graphql/schema/core.gen'
+import type { SearchResult } from '../../graphql/schema/core.gen'
 
 import { Show, For, createSignal } from 'solid-js'
 
@@ -22,7 +22,7 @@ const LOAD_MORE_PAGE_SIZE = 50
 
 export const SearchView = (props: Props) => {
   const { t } = useLocalize()
-  const { articleEntities, sortedArticles } = useArticlesStore()
+  const { sortedArticles } = useArticlesStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [query, setQuery] = createSignal(props.query)
   const [offset, setOffset] = createSignal(0)
@@ -54,7 +54,7 @@ export const SearchView = (props: Props) => {
             name="q"
             ref={searchEl}
             onInput={handleQueryChange}
-            placeholder={t('Enter text') + '...'}
+            placeholder={query() || t('Enter text') + '...'}
           />
         </div>
         <div class="col-sm-6">

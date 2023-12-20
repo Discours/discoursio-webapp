@@ -1,12 +1,10 @@
 import type { JSX } from 'solid-js'
 
-import { createContext, createMemo, onCleanup, useContext } from 'solid-js'
+import { createContext, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
 import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/schema/core.gen'
-
-import { useSession } from './session'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
@@ -34,9 +32,6 @@ export function useReactions() {
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
-  const {
-    actions: { getToken },
-  } = useSession()
 
   const loadReactionsBy = async ({
     by,

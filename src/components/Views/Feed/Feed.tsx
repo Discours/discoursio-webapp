@@ -52,7 +52,7 @@ type Props = {
 }
 
 export const FeedView = (props: Props) => {
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
   const { page, searchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
@@ -238,7 +238,7 @@ export const FeedView = (props: Props) => {
                           />
                         </div>
                         <div class={styles.commentDetails}>
-                          <AuthorLink author={comment.createdBy as Author} size={'XS'} />
+                          <AuthorLink author={comment.created_by as Author} size={'XS'} />
                           <CommentDate comment={comment} isShort={true} isLastInRow={true} />
                         </div>
                         <div class={clsx('text-truncate', styles.commentArticleTitle)}>

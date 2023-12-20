@@ -4,7 +4,6 @@ import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { ChatMember } from '../../../graphql/schema/chat.gen'
 import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { follow, unfollow } from '../../../stores/zine/common'

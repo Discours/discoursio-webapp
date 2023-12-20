@@ -48,11 +48,9 @@ export const ProfileSettings = () => {
   const {
     actions: { showSnackbar },
   } = useSnackbar()
-
   const {
-    actions: { setUser, authorizer },
+    actions: { loadAuthor },
   } = useSession()
-
   const {
     actions: { showConfirm },
   } = useConfirm()
@@ -101,10 +99,8 @@ export const ProfileSettings = () => {
       }
       showSnackbar({ type: 'error', body: t('Error') })
     }
-    const profile = await authorizer().getProfile()
-    if (profile) {
-      setUser(profile)
-    }
+
+    await loadAuthor() // renews author's profile
   }
 
   const handleCancel = async () => {

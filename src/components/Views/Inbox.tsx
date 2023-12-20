@@ -17,7 +17,6 @@ import DialogCard from '../Inbox/DialogCard'
 import DialogHeader from '../Inbox/DialogHeader'
 import { Message } from '../Inbox/Message'
 import MessagesFallback from '../Inbox/MessagesFallback'
-import QuotedMessage from '../Inbox/QuotedMessage'
 import Search from '../Inbox/Search'
 import { Modal } from '../Nav/Modal'
 

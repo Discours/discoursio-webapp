@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
 import { throttle } from 'throttle-debounce'
 
 import { useLocalize } from '../../context/localize'
@@ -11,7 +11,7 @@ import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 
 import { EmptyMessage } from './EmptyMessage'
-import { NotificationView } from './NotificationView'
+import { NotificationGroup } from './NotificationView/NotificationGroup'
 
 import styles from './NotificationsPanel.module.scss'
 
@@ -186,42 +186,30 @@ export const NotificationsPanel = (props: Props) => {
               <div class="col-xs-24">
                 <Show when={todayNotifications().length > 0}>
                   <div class={styles.periodTitle}>{t('today')}</div>
-                  <For each={todayNotifications()}>
-                    {(notification) => (
-                      <NotificationView
-                        notification={notification}
-                        class={styles.notificationView}
-                        onClick={handleNotificationViewClick}
-                        dateTimeFormat={'ago'}
-                      />
-                    )}
-                  </For>
+                  <NotificationGroup
+                    notifications={todayNotifications()}
+                    class={styles.notificationView}
+                    onClick={handleNotificationViewClick}
+                    dateTimeFormat={'ago'}
+                  />
                 </Show>
                 <Show when={yesterdayNotifications().length > 0}>
                   <div class={styles.periodTitle}>{t('yesterday')}</div>
-                  <For each={yesterdayNotifications()}>
-                    {(notification) => (
-                      <NotificationView
-                        notification={notification}
-                        class={styles.notificationView}
-                        onClick={handleNotificationViewClick}
-                        dateTimeFormat={'time'}
-                      />
-                    )}
-                  </For>
+                  <NotificationGroup
+                    notifications={yesterdayNotifications()}
+                    class={styles.notificationView}
+                    onClick={handleNotificationViewClick}
+                    dateTimeFormat={'time'}
+                  />
                 </Show>
                 <Show when={earlierNotifications().length > 0}>
                   <div class={styles.periodTitle}>{t('earlier')}</div>
-                  <For each={earlierNotifications()}>
-                    {(notification) => (
-                      <NotificationView
-                        notification={notification}
-                        class={styles.notificationView}
-                        onClick={handleNotificationViewClick}
-                        dateTimeFormat={'date'}
-                      />
-                    )}
-                  </For>
+                  <NotificationGroup
+                    notifications={earlierNotifications()}
+                    class={styles.notificationView}
+                    onClick={handleNotificationViewClick}
+                    dateTimeFormat={'date'}
+                  />
                 </Show>
               </div>
             </div>

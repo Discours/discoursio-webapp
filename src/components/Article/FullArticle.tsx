@@ -299,7 +299,7 @@ export const FullArticle = (props: Props) => {
   const ogTitle = props.article.title
   const keywords = getKeywords(props.article)
   const getAuthorName = (a: Author) => {
-    return lang() == 'en' && isCyrillic(a.name) ? capitalize(a.slug.replace(/-/, ' ')) : a.name
+    return lang() === 'en' && isCyrillic(a.name) ? capitalize(a.slug.replace(/-/, ' ')) : a.name
   }
   return (
     <>

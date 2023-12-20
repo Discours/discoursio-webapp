@@ -1,7 +1,7 @@
 import type { Accessor, JSX } from 'solid-js'
 
 import { createStorageSignal } from '@solid-primitives/storage'
-import { createContext, createEffect, createMemo, createSignal, onMount, useContext } from 'solid-js'
+import { createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
 
@@ -41,7 +41,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
   const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
-  const { isAuthenticated } = useSession()
+  const { isAuthenticated, author } = useSession()
   const { addHandler } = useConnect()
 
   const loadNotifications = async (options: { after: number; limit?: number; offset?: number }) => {
@@ -81,10 +81,11 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   const markNotificationAsRead = async (notification: Notification) => {
     if (notifierClient.private) await notifierClient.markNotificationAsRead(notification.id)
-    const nnn = new Set([...notification.seen, notification.id])
-    setNotificationEntities(notification.id, 'seen', [...nnn])
+    notification.seen.push(author().id)
+    setNotificationEntities((nnn: Notification) => ({ ...nnn, [notification.id]: notification }))
     setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
+
   const markAllNotificationsAsRead = async () => {
     if (isAuthenticated() && notifierClient.private) {
       await notifierClient.markAllNotificationsAsRead()

@@ -361,7 +361,6 @@ export const apiClient = {
   },
 
   getRandomTopicShouts: async (limit: number): Promise<{ topic: Topic; shouts: Shout[] }> => {
-    console.log('go')
     const resp = await graphQLClient.query(articlesLoadRandomTopic, { limit }).toPromise()
 
     if (resp.error) {

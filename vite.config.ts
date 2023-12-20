@@ -54,7 +54,6 @@ export default defineConfig(({ mode, command }) => {
       https: true,
       port: 3000,
     },
-    cssCodeSplit: false,
     css: {
       devSourcemap: isDev,
       preprocessorOptions: {

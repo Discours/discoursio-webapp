@@ -47,21 +47,6 @@ const articlesByTopic = createLazyMemo(() => {
   )
 })
 
-const articlesByLayout = createLazyMemo(() => {
-  return Object.values(articleEntities()).reduce(
-    (acc, article) => {
-      if (!acc[article.layout]) {
-        acc[article.layout] = []
-      }
-
-      acc[article.layout].push(article)
-
-      return acc
-    },
-    {} as { [layout: string]: Shout[] },
-  )
-})
-
 const topViewedArticles = createLazyMemo(() => {
   const result = Object.values(articleEntities())
   result.sort(byStat('viewed'))
@@ -226,7 +211,6 @@ export const useArticlesStore = (initialState: InitialState = {}) => {
     articleEntities,
     sortedArticles,
     articlesByAuthor,
-    articlesByLayout,
     articlesByTopic,
     topMonthArticles,
     topArticles,

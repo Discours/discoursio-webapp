@@ -14,11 +14,13 @@ type Props = {
 }
 
 const ZOOM_STEP = 1.08
+const TRANSITION_SPEED = 300
 
 export const Lightbox = (props: Props) => {
   const [zoomLevel, setZoomLevel] = createSignal(1)
   const [translateX, setTranslateX] = createSignal(0)
   const [translateY, setTranslateY] = createSignal(0)
+  const [transitionEnabled, setTransitionEnabled] = createSignal(false)
 
   const lightboxRef: {
     current: HTMLElement
@@ -36,12 +38,16 @@ export const Lightbox = (props: Props) => {
 
   const zoomIn = (event) => {
     event.stopPropagation()
+    setTransitionEnabled(true)
     setZoomLevel(zoomLevel() * ZOOM_STEP)
+    setTimeout(() => setTransitionEnabled(false), TRANSITION_SPEED)
   }
 
   const zoomOut = (event) => {
     event.stopPropagation()
+    setTransitionEnabled(true)
     setZoomLevel(zoomLevel() / ZOOM_STEP)
+    setTimeout(() => setTransitionEnabled(false), TRANSITION_SPEED)
   }
 
   const zoomReset = (event) => {
@@ -95,6 +101,7 @@ export const Lightbox = (props: Props) => {
 
   const lightboxStyle = createMemo(() => ({
     transform: `translate(${translateX()}px, ${translateY()}px) scale(${zoomLevel()})`,
+    transition: transitionEnabled() ? `transform ${TRANSITION_SPEED}ms ease-in-out` : '',
     cursor: 'grab',
   }))
 

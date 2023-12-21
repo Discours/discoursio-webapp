@@ -10,6 +10,9 @@
   justify-content: center;
   z-index: 10000;
 
+  animation: 300ms fadeIn;
+  animation-fill-mode: forwards;
+
   .image {
     max-width: 90%;
     max-height: 80%;
@@ -70,5 +73,30 @@
       font-size: 1.2rem;
       letter-spacing: 0.15em;
     }
+  }
+}
+
+.fadeOut {
+  animation: 300ms fadeOut;
+  animation-fill-mode: backwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }

@@ -2,6 +2,7 @@ import type { PageProps } from './types'
 
 import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
 
+import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
 import { ReactionsProvider } from '../context/reactions'
@@ -53,7 +54,7 @@ export const TopicPage = (props: PageProps) => {
   return (
     <PageLayout title={props.seo.title}>
       <ReactionsProvider>
-        <Show when={isLoaded()}>
+        <Show when={isLoaded()} fallback={<Loading />}>
           <TopicView
             topic={usePrerenderedData ? props.topic : null}
             shouts={usePrerenderedData ? props.topicShouts : null}

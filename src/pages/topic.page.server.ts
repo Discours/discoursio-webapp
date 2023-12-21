@@ -3,6 +3,7 @@ import type { PageContext } from '../renderer/types'
 
 import { render } from 'vike/abort'
 
+import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Topic'
 import { apiClient } from '../utils/apiClient'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
@@ -14,7 +15,12 @@ export const onBeforeRender = async (pageContext: PageContext) => {
     throw render(404)
   }
 
-  const pageProps: PageProps = { topic, seo: { title: topic.title } }
+  const topicShouts = await apiClient.getShouts({
+    filters: { topic: topic.slug },
+    limit: PRERENDERED_ARTICLES_COUNT,
+  })
+
+  const pageProps: PageProps = { topic, topicShouts, seo: { title: topic.title } }
 
   return {
     pageContext: {

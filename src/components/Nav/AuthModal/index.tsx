@@ -9,6 +9,7 @@ import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 import { isMobile } from '../../../utils/media-query'
 
+import { ChangePasswordForm } from './ChangePasswordForm'
 import { EmailConfirm } from './EmailConfirm'
 import { ForgotPasswordForm } from './ForgotPasswordForm'
 import { LoginForm } from './LoginForm'
@@ -21,10 +22,11 @@ const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   register: RegisterForm,
   'forgot-password': ForgotPasswordForm,
   'confirm-email': EmailConfirm,
+  'change-password': ChangePasswordForm,
 }
 
 export const AuthModal = () => {
-  let rootRef: HTMLDivElement
+  const rootRef: { current: HTMLDivElement } = { current: null }
   const { t } = useLocalize()
   const { searchParams } = useRouter<AuthModalSearchParams>()
 
@@ -36,17 +38,17 @@ export const AuthModal = () => {
 
   createEffect((oldMode) => {
     if (oldMode !== mode() && !isMobile()) {
-      rootRef?.querySelector('input')?.focus()
+      rootRef.current?.querySelector('input')?.focus()
     }
   }, null)
 
   return (
     <div
-      ref={rootRef}
+      ref={(el) => (rootRef.current = el)}
       class={clsx(styles.view, {
         row: !source,
+        [styles.signUp]: mode() === 'register' || mode() === 'confirm-email',
       })}
-      classList={{ [styles.signUp]: mode() === 'register' || mode() === 'confirm-email' }}
     >
       <Show when={!source}>
         <div class={clsx('col-md-12 d-none d-md-flex', styles.authImage)}>

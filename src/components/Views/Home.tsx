@@ -129,7 +129,6 @@ export const HomeView = (props: Props) => {
           header={<h2>{t('Top commented')}</h2>}
           nodate={true}
         />
-        111
         <Show when={randomTopic()}>
           <Group
             articles={randomTopicArticles()}

@@ -1,0 +1,36 @@
+.randomTopicHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.randomTopicHeader {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 44px;
+  text-transform: capitalize;
+}
+
+.randomTopicHeaderLink {
+  border: none !important;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+
+  .icon {
+    vertical-align: top;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    border: none !important;
+
+    .icon {
+      filter: invert(1);
+    }
+  }
+}

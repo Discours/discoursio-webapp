@@ -9,6 +9,7 @@ import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 import { isMobile } from '../../../utils/media-query'
 
+import { ChangePasswordForm } from './ChangePasswordForm'
 import { EmailConfirm } from './EmailConfirm'
 import { ForgotPasswordForm } from './ForgotPasswordForm'
 import { LoginForm } from './LoginForm'
@@ -21,6 +22,7 @@ const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   register: RegisterForm,
   'forgot-password': ForgotPasswordForm,
   'confirm-email': EmailConfirm,
+  'change-password': ChangePasswordForm,
 }
 
 export const AuthModal = () => {

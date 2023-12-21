@@ -12,9 +12,9 @@ import { hideModal } from '../../../stores/ui'
 import { ApiError } from '../../../utils/apiClient'
 import { validateEmail } from '../../../utils/validateEmail'
 import { validatePassword } from '../../../utils/validatePassword'
-import { Icon } from '../../_shared/Icon'
 
 import { AuthModalHeader } from './AuthModalHeader'
+import { PasswordField } from './PasswordField'
 import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
 
@@ -41,7 +41,6 @@ export const RegisterForm = () => {
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
-  const [showPassword, setShowPassword] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
 
@@ -53,12 +52,8 @@ export const RegisterForm = () => {
     }
   }
 
-  const handlePasswordInput = (newPassword: string) => {
-    setPassword(newPassword)
-  }
-
-  const handleNameInput = (newPasswordCopy: string) => {
-    setFullName(newPasswordCopy)
+  const handleNameInput = (newName: string) => {
+    setFullName(newName)
   }
 
   const handleSubmit = async (event: Event) => {
@@ -66,7 +61,7 @@ export const RegisterForm = () => {
 
     const passwordError = validatePassword(password())
     if (passwordError) {
-      setValidationErrors((errors) => ({ ...errors, password: passwordError }))
+      setValidationErrors((errors) => ({ ...errors, password: t(passwordError) }))
     } else {
       setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
     }
@@ -182,48 +177,14 @@ export const RegisterForm = () => {
               <Show when={emailChecks()[email()]}>
                 <div class={styles.validationError}>
                   {t("This email is already taken. If it's you")},{' '}
-                  <a
-                    href="#"
-                    onClick={(event) => {
-                      event.preventDefault()
-                      changeSearchParams({
-                        mode: 'login',
-                      })
-                    }}
-                  >
+                  <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
                     {t('enter')}
-                  </a>
+                  </span>
                 </div>
               </Show>
             </div>
 
-            <div
-              class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().password,
-              })}
-            >
-              <input
-                id="password"
-                name="password"
-                autocomplete="current-password"
-                type={showPassword() ? 'text' : 'password'}
-                placeholder={t('Password')}
-                onInput={(event) => handlePasswordInput(event.currentTarget.value)}
-              />
-              <label for="password">{t('Password')}</label>
-              <button
-                type="button"
-                class={styles.passwordToggle}
-                onClick={() => setShowPassword(!showPassword())}
-              >
-                <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
-              </button>
-              <Show when={validationErrors().password}>
-                <div class={clsx(styles.registerPassword, styles.validationError)}>
-                  {validationErrors().password}
-                </div>
-              </Show>
-            </div>
+            <PasswordField error={validationErrors().password} value={(value) => setPassword(value)} />
 
             <div>
               <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

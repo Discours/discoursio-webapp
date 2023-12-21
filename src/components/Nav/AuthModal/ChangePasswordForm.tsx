@@ -1,21 +1,19 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createSignal, JSX, Show } from 'solid-js'
+import { createSignal, JSX } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { signSendLink } from '../../../stores/auth'
 import { useRouter } from '../../../stores/router'
-import { ApiError } from '../../../utils/apiClient'
-import { validateEmail } from '../../../utils/validateEmail'
-import { Icon } from '../../_shared/Icon'
+import { validatePassword } from '../../../utils/validatePassword'
 
-import { email, setEmail } from './sharedLogic'
+import { PasswordField } from './PasswordField'
 
 import styles from './AuthModal.module.scss'
 
 type FormFields = {
   password: string
+  repeatPassword: string
 }
 
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
@@ -23,26 +21,42 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 export const ChangePasswordForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
-  const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-  const [isUserNotFount, setIsUserNotFound] = createSignal(false)
+  const [newPassword, setNewPassword] = createSignal<string>()
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-
-    setSubmitError('')
-    const newValidationErrors: ValidationErrors = {}
+    setIsSubmitting(true)
+    // Change password logic
   }
 
-  const handlePasswordAInput = () => {
-    console.log('!!! A:')
+  const handlePasswordInput = (value) => {
+    const passwordError = validatePassword(value)
+    if (passwordError) {
+      setValidationErrors((errors) => ({ ...errors, password: t(passwordError) }))
+    } else {
+      setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
+    }
+    setNewPassword(value)
   }
 
-  const handlePasswordBInput = () => {
-    console.log('!!! B:')
+  const handlePasswordCopyInput = (value) => {
+    console.log('!!! B:', value)
+    const passwordError = () => {
+      if (value !== newPassword()) {
+        return 'Пароли должны совпадать'
+      }
+      return validatePassword(value)
+    }
+
+    if (passwordError()) {
+      setValidationErrors((errors) => ({ ...errors, repeatPassword: t(passwordError()) }))
+    } else {
+      setValidationErrors(({ repeatPassword: _notNeeded, ...rest }) => rest)
+    }
   }
 
   return (
@@ -59,65 +73,15 @@ export const ChangePasswordForm = () => {
           )}
         </div>
 
-        <div
-          class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().password,
-          })}
-        >
-          <input
-            id="password"
-            name="password"
-            autocomplete="current-password"
-            type={showPassword() ? 'text' : 'password'}
-            placeholder={t('Password')}
-            onInput={(event) => handlePasswordInput(event.currentTarget.value)}
-          />
-          <label for="password">{t('Password')}</label>
-          <button
-            type="button"
-            class={styles.passwordToggle}
-            onClick={() => setShowPassword(!showPassword())}
-          >
-            <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
-          </button>
-          <Show when={validationErrors().password}>
-            <div class={clsx(styles.registerPassword, styles.validationError)}>
-              {validationErrors().password}
-            </div>
-          </Show>
-        </div>
-
-        <div
-          class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().password,
-          })}
-        >
-          <input
-            id="password"
-            name="password"
-            autocomplete="current-password"
-            type={showPassword() ? 'text' : 'password'}
-            placeholder={t('Password')}
-            onInput={(event) => handlePasswordInput(event.currentTarget.value)}
-          />
-          <label for="password">{t('Password')}</label>
-          <button
-            type="button"
-            class={styles.passwordToggle}
-            onClick={() => setShowPassword(!showPassword())}
-          >
-            <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
-          </button>
-          <Show when={validationErrors().password}>
-            <div class={clsx(styles.registerPassword, styles.validationError)}>
-              {validationErrors().password}
-            </div>
-          </Show>
-        </div>
+        <PasswordField error={validationErrors().password} value={(value) => handlePasswordInput(value)} />
+        <PasswordField
+          error={validationErrors().repeatPassword}
+          value={(value) => handlePasswordCopyInput(value)}
+        />
 
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
-            {isSubmitting() ? '...' : t('Restore password')}
+            {isSubmitting() ? '...' : t('Change password')}
           </button>
         </div>
         <div class={styles.authControl}>
@@ -129,7 +93,7 @@ export const ChangePasswordForm = () => {
               })
             }
           >
-            {t('I know the password')}
+            {t('Cancel')}
           </span>
         </div>
       </div>

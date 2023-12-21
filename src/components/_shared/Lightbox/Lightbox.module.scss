@@ -10,7 +10,7 @@
   justify-content: center;
   z-index: 10000;
 
-  animation: 400ms fadeIn;
+  animation: 300ms fadeIn;
   animation-fill-mode: forwards;
 
   .image {
@@ -77,7 +77,7 @@
 }
 
 .fadeOut {
-  animation: 400ms fadeOut;
+  animation: 300ms fadeOut;
   animation-fill-mode: backwards;
 }
 

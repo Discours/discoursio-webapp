@@ -10,7 +10,7 @@ export const validatePassword = (passwordToCheck) => {
     return 'Password should contain at least one number'
   }
   if (!hasSpecial.test(passwordToCheck)) {
-    return 'Add special characters to password: !@#$%^&*'
+    return 'Password should contain at least one special character: !@#$%^&*'
   }
   return null
 }

@@ -14,7 +14,6 @@ import styles from './AuthModal.module.scss'
 
 type FormFields = {
   password: string
-  repeatPassword: string
 }
 
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
@@ -49,22 +48,6 @@ export const ChangePasswordForm = () => {
     setNewPassword(value)
   }
 
-  const handlePasswordCopyInput = (value) => {
-    console.log('!!! B:', value)
-    const passwordError = () => {
-      if (value !== newPassword()) {
-        return 'Пароли должны совпадать'
-      }
-      return validatePassword(value)
-    }
-
-    if (passwordError()) {
-      setValidationErrors((errors) => ({ ...errors, repeatPassword: t(passwordError()) }))
-    } else {
-      setValidationErrors(({ repeatPassword: _notNeeded, ...rest }) => rest)
-    }
-  }
-
   return (
     <>
       <Show when={!isSuccess()}>
@@ -84,10 +67,6 @@ export const ChangePasswordForm = () => {
             <PasswordField
               error={validationErrors().password}
               value={(value) => handlePasswordInput(value)}
-            />
-            <PasswordField
-              error={validationErrors().repeatPassword}
-              value={(value) => handlePasswordCopyInput(value)}
             />
 
             <div>

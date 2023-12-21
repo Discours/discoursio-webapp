@@ -1,9 +1,8 @@
 import { clsx } from 'clsx'
-import { createSignal } from 'solid-js'
-
-import { Icon } from '../Icon'
+import { createMemo, createSignal, onCleanup } from 'solid-js'
 
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { Icon } from '../Icon'
 
 import styles from './Lightbox.module.scss'
 
@@ -17,13 +16,15 @@ type Props = {
 const ZOOM_STEP = 1.08
 
 export const Lightbox = (props: Props) => {
+  const [zoomLevel, setZoomLevel] = createSignal(1)
+  const [translateX, setTranslateX] = createSignal(0)
+  const [translateY, setTranslateY] = createSignal(0)
+
   const lightboxRef: {
     current: HTMLElement
   } = {
     current: null,
   }
-
-  const [zoomLevel, setZoomLevel] = createSignal(1)
 
   const closeLightbox = () => {
     lightboxRef.current?.classList.add(styles.fadeOut)
@@ -60,12 +61,43 @@ export const Lightbox = (props: Props) => {
     setZoomLevel(scale * ZOOM_STEP)
   }
 
-  const lightboxStyle = () => ({
-    transform: `scale(${zoomLevel()})`,
-    transition: 'transform 0.3s ease',
+  useEscKeyDownHandler(closeLightbox)
+
+  let startX: number = 0
+  let startY: number = 0
+  let isDragging: boolean = false
+
+  const onMouseDown: (event: MouseEvent) => void = (event) => {
+    startX = event.clientX - translateX()
+    startY = event.clientY - translateY()
+    isDragging = true
+    event.preventDefault()
+  }
+
+  const onMouseMove: (event: MouseEvent) => void = (event) => {
+    if (isDragging) {
+      setTranslateX(event.clientX - startX)
+      setTranslateY(event.clientY - startY)
+    }
+  }
+
+  const onMouseUp: () => void = () => {
+    isDragging = false
+  }
+
+  document.addEventListener('mousemove', onMouseMove)
+  document.addEventListener('mouseup', onMouseUp)
+
+  onCleanup(() => {
+    document.removeEventListener('mousemove', onMouseMove)
+    document.removeEventListener('mouseup', onMouseUp)
   })
 
-  useEscKeyDownHandler(closeLightbox)
+  const lightboxStyle = createMemo(() => ({
+    transform: `translate(${translateX()}px, ${translateY()}px) scale(${zoomLevel()})`,
+    transition: 'transform 0.3s ease',
+    cursor: isDragging ? 'grab' : 'default',
+  }))
 
   return (
     <div
@@ -90,10 +122,11 @@ export const Lightbox = (props: Props) => {
       <img
         class={styles.image}
         src={props.image}
-        style={lightboxStyle()}
         alt={props.imageAlt || ''}
         onClick={(event) => event.stopPropagation()}
         onWheel={handleWheelZoom}
+        style={lightboxStyle()}
+        onMouseDown={onMouseDown}
       />
     </div>
   )

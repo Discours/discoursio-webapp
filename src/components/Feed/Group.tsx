@@ -12,7 +12,6 @@ interface GroupProps {
 }
 
 export default (props: GroupProps) => {
-  if (!props.articles) props.articles = []
   return (
     <div class="floor floor--group">
       <Show when={props.articles.length > 4}>

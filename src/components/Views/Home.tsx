@@ -1,8 +1,10 @@
 import type { Shout, Topic } from '../../graphql/types.gen'
 
+import { getPagePath } from '@nanostores/router'
 import { batch, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
+import { router } from '../../stores/router'
 import {
   loadShouts,
   loadTopArticles,
@@ -14,6 +16,7 @@ import { useTopicsStore } from '../../stores/zine/topics'
 import { apiClient } from '../../utils/apiClient'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
+import { Icon } from '../_shared/Icon'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 import Banner from '../Discours/Banner'
 import Hero from '../Discours/Hero'
@@ -25,6 +28,8 @@ import { Row3 } from '../Feed/Row3'
 import { Row5 } from '../Feed/Row5'
 import RowShort from '../Feed/RowShort'
 import { Topics } from '../Nav/Topics'
+
+import styles from './Home.module.scss'
 
 type Props = {
   shouts: Shout[]
@@ -125,7 +130,22 @@ export const HomeView = (props: Props) => {
           nodate={true}
         />
         <Show when={randomTopic()}>
-          <Group articles={randomTopicArticles()} header={''} />
+          <Group
+            articles={randomTopicArticles()}
+            header={
+              <div class={styles.randomTopicHeaderContainer}>
+                <div class={styles.randomTopicHeader}>{randomTopic().title}</div>
+                <div>
+                  <a
+                    class={styles.randomTopicHeaderLink}
+                    href={getPagePath(router, 'topic', { slug: randomTopic().slug })}
+                  >
+                    {t('All articles')} <Icon class={styles.icon} name="arrow-right" />
+                  </a>
+                </div>
+              </div>
+            }
+          />
         </Show>
         <Show when={topArticles()}>
           <ArticleCardSwiper title={t('Favorite')} slides={topArticles()} />

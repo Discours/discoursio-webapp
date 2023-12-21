@@ -54,6 +54,21 @@ const getOrderBy = (by: FeedSearchParams['by']) => {
   return ''
 }
 
+const getFromDate = (period: FeedPeriod): Date => {
+  const now = new Date()
+  switch (period) {
+    case 'week': {
+      return new Date(now.setDate(now.getDate() - 7))
+    }
+    case 'month': {
+      return new Date(now.setMonth(now.getMonth() - 1))
+    }
+    case 'year': {
+      return new Date(now.setFullYear(now.getFullYear() - 1))
+    }
+  }
+}
+
 type Props = {
   loadShouts: (options: LoadShoutsOptions) => Promise<{
     hasMore: boolean
@@ -124,20 +139,6 @@ export const Feed = (props: Props) => {
     ),
   )
 
-  const getFromDate = (period: FeedPeriod): Date => {
-    const now = new Date()
-    switch (period) {
-      case 'week': {
-        return new Date(now.setDate(now.getDate() - 7))
-      }
-      case 'month': {
-        return new Date(now.setMonth(now.getMonth() - 1))
-      }
-      case 'year': {
-        return new Date(now.setFullYear(now.getFullYear() - 1))
-      }
-    }
-  }
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,

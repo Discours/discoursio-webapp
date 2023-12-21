@@ -165,7 +165,7 @@ export const LoginForm = () => {
           </Show>
         </div>
 
-        <PasswordField error={validationErrors().password} value={(value) => handlePasswordInput(value)} />
+        <PasswordField onInput={(value) => handlePasswordInput(value)} />
 
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

@@ -6,7 +6,6 @@ import { createSignal, JSX, Show } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
-import { validatePassword } from '../../../utils/validatePassword'
 
 import { PasswordField } from './PasswordField'
 
@@ -24,6 +23,7 @@ export const ChangePasswordForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [newPassword, setNewPassword] = createSignal<string>()
+  const [passwordError, setPasswordError] = createSignal<string>()
   const [isSuccess, setIsSuccess] = createSignal(false)
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
@@ -32,6 +32,7 @@ export const ChangePasswordForm = () => {
     event.preventDefault()
     setIsSubmitting(true)
     // Fake change password logic
+    console.log('!!! sent new password:', newPassword)
     setTimeout(() => {
       setIsSubmitting(false)
       setIsSuccess(true)
@@ -39,13 +40,12 @@ export const ChangePasswordForm = () => {
   }
 
   const handlePasswordInput = (value) => {
-    const passwordError = validatePassword(value)
-    if (passwordError) {
-      setValidationErrors((errors) => ({ ...errors, password: t(passwordError) }))
+    setNewPassword(value)
+    if (passwordError()) {
+      setValidationErrors((errors) => ({ ...errors, password: passwordError() }))
     } else {
       setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
     }
-    setNewPassword(value)
   }
 
   return (
@@ -65,8 +65,8 @@ export const ChangePasswordForm = () => {
             </div>
 
             <PasswordField
-              error={validationErrors().password}
-              value={(value) => handlePasswordInput(value)}
+              errorMessage={(err) => setPasswordError(err)}
+              onInput={(value) => handlePasswordInput(value)}
             />
 
             <div>

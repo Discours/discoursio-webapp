@@ -11,7 +11,6 @@ import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 import { ApiError } from '../../../utils/apiClient'
 import { validateEmail } from '../../../utils/validateEmail'
-import { validatePassword } from '../../../utils/validatePassword'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
@@ -43,6 +42,7 @@ export const RegisterForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
+  const [passwordError, setPasswordError] = createSignal<string>()
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
@@ -59,9 +59,8 @@ export const RegisterForm = () => {
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
 
-    const passwordError = validatePassword(password())
-    if (passwordError) {
-      setValidationErrors((errors) => ({ ...errors, password: t(passwordError) }))
+    if (passwordError()) {
+      setValidationErrors((errors) => ({ ...errors, password: passwordError() }))
     } else {
       setValidationErrors(({ password: _notNeeded, ...rest }) => rest)
     }
@@ -184,7 +183,10 @@ export const RegisterForm = () => {
               </Show>
             </div>
 
-            <PasswordField error={validationErrors().password} value={(value) => setPassword(value)} />
+            <PasswordField
+              errorMessage={(err) => setPasswordError(err)}
+              onInput={(value) => setPassword(value)}
+            />
 
             <div>
               <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

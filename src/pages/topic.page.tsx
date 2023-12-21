@@ -1,7 +1,8 @@
 import type { PageProps } from './types'
 
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
 
+import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
 import { ReactionsProvider } from '../context/reactions'
@@ -16,7 +17,7 @@ export const TopicPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(
     Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug(),
   )
-  const [pageTitle, setPageTitle] = createSignal<string>()
+
   const preload = () =>
     Promise.all([
       loadShouts({ filters: { topic: slug() }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 }),
@@ -51,15 +52,15 @@ export const TopicPage = (props: PageProps) => {
   const usePrerenderedData = props.topic?.slug === slug()
 
   return (
-    <PageLayout title={pageTitle()}>
+    <PageLayout title={props.seo.title}>
       <ReactionsProvider>
-        <TopicView
-          title={(title) => setPageTitle(title)}
-          isLoaded={isLoaded()}
-          topic={usePrerenderedData ? props.topic : null}
-          shouts={usePrerenderedData ? props.topicShouts : null}
-          topicSlug={slug()}
-        />
+        <Show when={isLoaded()} fallback={<Loading />}>
+          <TopicView
+            topic={usePrerenderedData ? props.topic : null}
+            shouts={usePrerenderedData ? props.topicShouts : null}
+            topicSlug={slug()}
+          />
+        </Show>
       </ReactionsProvider>
     </PageLayout>
   )

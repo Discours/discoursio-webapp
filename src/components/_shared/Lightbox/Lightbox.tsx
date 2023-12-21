@@ -95,7 +95,6 @@ export const Lightbox = (props: Props) => {
 
   const lightboxStyle = createMemo(() => ({
     transform: `translate(${translateX()}px, ${translateY()}px) scale(${zoomLevel()})`,
-    transition: 'transform 0.3s ease',
     cursor: 'grab',
   }))
 

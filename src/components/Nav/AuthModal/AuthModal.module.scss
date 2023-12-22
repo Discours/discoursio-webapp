@@ -2,6 +2,7 @@
   background: #fff;
   min-height: 550px;
   position: relative;
+  justify-content: center;
 
   @include media-breakpoint-up(md) {
     min-height: 600px;
@@ -106,6 +107,10 @@
 
   margin-top: 1.6rem;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
 
   a {
     color: #9fa1a7;
@@ -125,7 +130,7 @@
 .submitButton {
   display: block;
   font-weight: 700;
-  margin-top: 32px;
+  margin-top: 36px;
   padding: 1.6rem !important;
   width: 100%;
 }
@@ -183,10 +188,6 @@
   line-height: 16px;
   margin-top: 0.3em;
 
-  &.registerPassword {
-    margin-bottom: -32px;
-  }
-
   /* Red/500 */
   color: #d00820;
 
@@ -199,26 +200,6 @@
       border-color: var(--background-color-invert);
     }
   }
-}
-
-.passwordToggle {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.passwordToggleIcon {
-  height: 1.6em;
-  display: inline-block;
-  margin-right: 0.2em;
-  max-width: 1.4em;
-  max-height: 1.4em;
-  transition: filter 0.2s;
-  vertical-align: middle;
 }
 
 .title {

@@ -70,7 +70,7 @@ export const InboxView = () => {
 
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
-    changeSearchParam({
+    changeSearchParams({
       chat: chat.id,
     })
     try {
@@ -118,7 +118,7 @@ export const InboxView = () => {
       try {
         const newChat = await createChat([Number(searchParams().initChat)], '')
         await loadChats()
-        changeSearchParam({
+        changeSearchParams({
           initChat: null,
           chat: newChat.chat.id,
         })

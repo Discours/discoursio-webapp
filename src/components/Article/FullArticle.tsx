@@ -144,7 +144,7 @@ export const FullArticle = (props: Props) => {
     scrollTo(commentsRef.current)
   }
 
-  const { searchParams, changeSearchParam } = useRouter<ArticlePageSearchParams>()
+  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
 
   createEffect(() => {
     if (props.scrollToComments) {
@@ -155,7 +155,7 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
-      changeSearchParam({
+      changeSearchParams({
         scrollTo: null,
       })
     }
@@ -167,7 +167,7 @@ export const FullArticle = (props: Props) => {
         `[id='comment_${searchParams().commentId}']`,
       )
 
-      changeSearchParam({ commentId: null })
+      changeSearchParams({ commentId: null })
 
       if (commentElement) {
         scrollTo(commentElement)

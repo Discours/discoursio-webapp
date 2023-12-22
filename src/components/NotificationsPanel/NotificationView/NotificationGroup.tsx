@@ -44,7 +44,7 @@ const reactionsCaption = (threadId: string) =>
 
 export const NotificationGroup = (props: NotificationGroupProps) => {
   const { t, formatTime, formatDate } = useLocalize()
-  const { changeSearchParam } = useRouter<ArticlePageSearchParams>()
+  const { changeSearchParams } = useRouter<ArticlePageSearchParams>()
   const {
     actions: { hideNotificationsPanel, markSeenThread },
   } = useNotifications()
@@ -54,7 +54,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
     markSeenThread(threadId)
     const [slug, commentId] = threadId.split('::')
     openPage(router, 'article', { slug })
-    if (commentId) changeSearchParam({ commentId })
+    if (commentId) changeSearchParams({ commentId })
   }
 
   const handleLinkClick = (event: MouseEvent | TouchEvent) => {

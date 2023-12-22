@@ -4,6 +4,7 @@ import type { PageContext } from '../renderer/types'
 import { render } from 'vike/abort'
 
 import { apiClient } from '../graphql/client/core'
+import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Topic'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams
@@ -14,7 +15,12 @@ export const onBeforeRender = async (pageContext: PageContext) => {
     throw render(404)
   }
 
-  const pageProps: PageProps = { topic, seo: { title: topic.title } }
+  const topicShouts = await apiClient.getShouts({
+    filters: { topic: topic.slug },
+    limit: PRERENDERED_ARTICLES_COUNT,
+  })
+
+  const pageProps: PageProps = { topic, topicShouts, seo: { title: topic.title } }
 
   return {
     pageContext: {

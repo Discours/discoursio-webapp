@@ -24,6 +24,7 @@ export type ModalType =
   | 'followers'
   | 'following'
   | 'search'
+  | 'inviteCoAuthors'
 
 export const MODALS: Record<ModalType, ModalType> = {
   auth: 'auth',
@@ -39,18 +40,19 @@ export const MODALS: Record<ModalType, ModalType> = {
   editorInsertLink: 'editorInsertLink',
   followers: 'followers',
   following: 'following',
+  inviteCoAuthors: 'inviteCoAuthors',
   search: 'search',
 }
 
 const [modal, setModal] = createSignal<ModalType>(null)
 
-const { searchParams, changeSearchParam } = useRouter<
+const { searchParams, changeSearchParams } = useRouter<
   AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams
 >()
 
 export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
   if (modalSource) {
-    changeSearchParam({
+    changeSearchParams({
       source: modalSource,
     })
   }
@@ -72,7 +74,7 @@ export const hideModal = () => {
     newSearchParams.mode = null
   }
 
-  changeSearchParam(newSearchParams, true)
+  changeSearchParams(newSearchParams, true)
 
   setModal(null)
 }

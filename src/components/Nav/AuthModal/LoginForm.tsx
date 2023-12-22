@@ -10,9 +10,9 @@ import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 import { validateEmail } from '../../../utils/validateEmail'
-import { Icon } from '../../_shared/Icon'
 
 import { AuthModalHeader } from './AuthModalHeader'
+import { PasswordField } from './PasswordField'
 import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
 
@@ -34,7 +34,6 @@ export const LoginForm = () => {
   // TODO: better solution for interactive error messages
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
-  const [showPassword, setShowPassword] = createSignal(false)
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
@@ -46,7 +45,7 @@ export const LoginForm = () => {
     actions: { signIn },
   } = useSession()
 
-  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
 
   const [password, setPassword] = createSignal('')
 
@@ -167,31 +166,7 @@ export const LoginForm = () => {
           </Show>
         </div>
 
-        <div
-          class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().password,
-          })}
-        >
-          <input
-            id="password"
-            name="password"
-            autocomplete="password"
-            type={showPassword() ? 'text' : 'password'}
-            placeholder={t('Password')}
-            onInput={(event) => handlePasswordInput(event.currentTarget.value)}
-          />
-          <label for="password">{t('Password')}</label>
-          <button
-            type="button"
-            class={styles.passwordToggle}
-            onClick={() => setShowPassword(!showPassword())}
-          >
-            <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
-          </button>
-          <Show when={validationErrors().password}>
-            <div class={styles.validationError}>{validationErrors().password}</div>
-          </Show>
-        </div>
+        <PasswordField onInput={(value) => handlePasswordInput(value)} />
 
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
@@ -202,12 +177,22 @@ export const LoginForm = () => {
           <span
             class="link"
             onClick={() =>
-              changeSearchParam({
+              changeSearchParams({
                 mode: 'forgot-password',
               })
             }
           >
             {t('Forgot password?')}
+          </span>
+          <span
+            class="link"
+            onClick={() =>
+              changeSearchParams({
+                mode: 'change-password',
+              })
+            }
+          >
+            {t('Change password')}
           </span>
         </div>
       </div>
@@ -219,7 +204,7 @@ export const LoginForm = () => {
           <span
             class={styles.authLink}
             onClick={() =>
-              changeSearchParam({
+              changeSearchParams({
                 mode: 'register',
               })
             }

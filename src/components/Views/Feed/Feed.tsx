@@ -3,7 +3,7 @@ import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphq
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
@@ -13,6 +13,8 @@ import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/arti
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
 import { getImageUrl } from '../../../utils/getImageUrl'
+import { getServerDate } from '../../../utils/getServerDate'
+import { DropDown } from '../../_shared/DropDown'
 import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
 import { CommentDate } from '../../Article/CommentDate'
@@ -28,8 +30,16 @@ import stylesTopic from '../../Feed/CardTopic.module.scss'
 export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5
 
+type FeedPeriod = 'week' | 'month' | 'year'
+
+type PeriodItem = {
+  value: FeedPeriod
+  title: string
+}
+
 type FeedSearchParams = {
   by: 'publish_date' | 'rating' | 'last_comment'
+  period: FeedPeriod
 }
 
 const getOrderBy = (by: FeedSearchParams['by']) => {
@@ -44,6 +54,21 @@ const getOrderBy = (by: FeedSearchParams['by']) => {
   return ''
 }
 
+const getFromDate = (period: FeedPeriod): Date => {
+  const now = new Date()
+  switch (period) {
+    case 'week': {
+      return new Date(now.setDate(now.getDate() - 7))
+    }
+    case 'month': {
+      return new Date(now.setMonth(now.getMonth() - 1))
+    }
+    case 'year': {
+      return new Date(now.setFullYear(now.getFullYear() - 1))
+    }
+  }
+}
+
 type Props = {
   loadShouts: (options: LoadShoutsOptions) => Promise<{
     hasMore: boolean
@@ -53,7 +78,16 @@ type Props = {
 
 export const FeedView = (props: Props) => {
   const { t } = useLocalize()
-  const { page, searchParams } = useRouter<FeedSearchParams>()
+
+  const monthPeriod: PeriodItem = { value: 'month', title: t('This month') }
+
+  const periods: PeriodItem[] = [
+    { value: 'week', title: t('This week') },
+    monthPeriod,
+    { value: 'year', title: t('This year') },
+  ]
+
+  const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
 
@@ -63,6 +97,16 @@ export const FeedView = (props: Props) => {
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
   const [unratedArticles, setUnratedArticles] = createSignal<Shout[]>([])
+
+  const currentPeriod = createMemo(() => {
+    const period = periods.find((p) => p.value === searchParams().period)
+
+    if (!period) {
+      return monthPeriod
+    }
+
+    return period
+  })
 
   const {
     actions: { loadReactionsBy },
@@ -86,7 +130,7 @@ export const FeedView = (props: Props) => {
 
   createEffect(
     on(
-      () => page().route + searchParams().by,
+      () => page().route + searchParams().by + searchParams().period,
       () => {
         resetSortedArticles()
         loadMore()
@@ -94,6 +138,7 @@ export const FeedView = (props: Props) => {
       { defer: true },
     ),
   )
+
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
@@ -104,6 +149,12 @@ export const FeedView = (props: Props) => {
 
     if (orderBy) {
       options.order_by = orderBy
+    }
+
+    if (searchParams().by && searchParams().by !== 'publish_date') {
+      const period = searchParams().period || 'month'
+      const fromDate = getFromDate(period)
+      options.filters = { fromDate: getServerDate(fromDate) }
     }
 
     return props.loadShouts(options)
@@ -148,32 +199,49 @@ export const FeedView = (props: Props) => {
         </div>
 
         <div class="col-md-12 offset-xl-1">
-          <ul class={clsx(styles.feedFilter, 'view-switcher')}>
-            <li
-              class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'publish_date' || !searchParams().by,
-              })}
-            >
-              <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
-            </li>
-            {/*<li>*/}
-            {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
-            {/*</li>*/}
-            <li
-              class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'rating',
-              })}
-            >
-              <a href={`${getPagePath(router, page().route)}?by=rating`}>{t('Top rated')}</a>
-            </li>
-            <li
-              class={clsx({
-                'view-switcher__item--selected': searchParams().by === 'last_comment',
-              })}
-            >
-              <a href={`${getPagePath(router, page().route)}?by=last_comment`}>{t('Most commented')}</a>
-            </li>
-          </ul>
+          <div class={styles.filtersContainer}>
+            <ul class={clsx('view-switcher', styles.feedFilter)}>
+              <li
+                class={clsx({
+                  'view-switcher__item--selected':
+                    searchParams().by === 'publish_date' || !searchParams().by,
+                })}
+              >
+                <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
+              </li>
+              {/*<li>*/}
+              {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
+              {/*</li>*/}
+              <li
+                class={clsx({
+                  'view-switcher__item--selected': searchParams().by === 'rating',
+                })}
+              >
+                <span class="link" onClick={() => changeSearchParams({ by: 'rating' })}>
+                  {t('Top rated')}
+                </span>
+              </li>
+              <li
+                class={clsx({
+                  'view-switcher__item--selected': searchParams().by === 'last_comment',
+                })}
+              >
+                <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
+                  {t('Most commented')}
+                </span>
+              </li>
+            </ul>
+            <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
+              <div>
+                <DropDown
+                  options={periods}
+                  currentOption={currentPeriod()}
+                  triggerCssClass={styles.periodSwitcher}
+                  onChange={(period) => changeSearchParams({ period: period.value })}
+                />
+              </div>
+            </Show>
+          </div>
 
           <Show when={!isLoading()} fallback={<Loading />}>
             <Show when={sortedArticles().length > 0}>

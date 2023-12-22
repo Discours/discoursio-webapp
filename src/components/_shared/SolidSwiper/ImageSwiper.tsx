@@ -7,6 +7,7 @@ import { MediaItem } from '../../../pages/types'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { Icon } from '../Icon'
 import { Image } from '../Image'
+import { Lightbox } from '../Lightbox'
 
 import { SwiperRef } from './swiper'
 
@@ -23,11 +24,13 @@ type Props = {
 const MIN_WIDTH = 540
 
 export const ImageSwiper = (props: Props) => {
-  const [slideIndex, setSlideIndex] = createSignal(0)
-  const [isMobileView, setIsMobileView] = createSignal(false)
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
   const swiperMainContainer: { current: HTMLDivElement } = { current: null }
+
+  const [slideIndex, setSlideIndex] = createSignal(0)
+  const [isMobileView, setIsMobileView] = createSignal(false)
+  const [selectedImage, setSelectedImage] = createSignal('')
 
   const handleSlideChange = () => {
     thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
@@ -76,6 +79,19 @@ export const ImageSwiper = (props: Props) => {
     })
   })
 
+  const openLightbox = (image) => {
+    setSelectedImage(image)
+  }
+  const handleLightboxClose = () => {
+    setSelectedImage()
+  }
+
+  const handleImageClick = (event) => {
+    const src = event.target.src
+
+    openLightbox(getImageUrl(src))
+  }
+
   return (
     <div class={clsx(styles.Swiper, styles.articleMode, { [styles.mobileView]: isMobileView() })}>
       <div class={styles.container} ref={(el) => (swiperMainContainer.current = el)}>
@@ -94,7 +110,7 @@ export const ImageSwiper = (props: Props) => {
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
                   <swiper-slide lazy="true" virtual-index={index()}>
-                    <div class={styles.image}>
+                    <div class={styles.image} onClick={handleImageClick}>
                       <Image src={slide.url} alt={slide.title} width={800} />
                     </div>
                   </swiper-slide>
@@ -178,6 +194,10 @@ export const ImageSwiper = (props: Props) => {
           <div class={styles.body} innerHTML={props.images[slideIndex()].body} />
         </Show>
       </div>
+
+      <Show when={selectedImage()}>
+        <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
+      </Show>
     </div>
   )
 }

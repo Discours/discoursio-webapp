@@ -1,7 +1,12 @@
 import { createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
-import { Shout } from '../../graphql/schema/core.gen'
+import { Shout, Topic } from '../../graphql/schema/core.gen'
+import { getPagePath } from '@nanostores/router'
+import { batch, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
+import { router } from '../../stores/router'
 import {
   loadShouts,
   loadTopArticles,
@@ -10,8 +15,10 @@ import {
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../stores/zine/topics'
+import { apiClient } from '../../utils/apiClient'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
+import { Icon } from '../_shared/Icon'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 import Banner from '../Discours/Banner'
 import Hero from '../Discours/Hero'
@@ -24,31 +31,31 @@ import { Row5 } from '../Feed/Row5'
 import RowShort from '../Feed/RowShort'
 import { Topics } from '../Nav/Topics'
 
+import styles from './Home.module.scss'
+
 type Props = {
   shouts: Shout[]
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 5
 export const RANDOM_TOPICS_COUNT = 12
+export const RANDOM_TOPIC_SHOUTS_COUNT = 7
 const CLIENT_LOAD_ARTICLES_COUNT = 29
 const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + Row 2 + Row3
 
 export const HomeView = (props: Props) => {
-  const {
-    sortedArticles,
-    articlesByLayout,
-    topArticles,
-    topCommentedArticles,
-    topMonthArticles,
-    topViewedArticles,
-  } = useArticlesStore({
-    shouts: props.shouts,
-  })
+  const { sortedArticles, topArticles, topCommentedArticles, topMonthArticles, topViewedArticles } =
+    useArticlesStore({
+      shouts: props.shouts,
+    })
 
   const { topTopics } = useTopicsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { topAuthors } = useTopAuthorsStore()
   const { t } = useLocalize()
+
+  const [randomTopic, setRandomTopic] = createSignal<Topic>(null)
+  const [randomTopicArticles, setRandomTopicArticles] = createSignal<Shout[]>([])
 
   onMount(async () => {
     loadTopArticles()
@@ -62,22 +69,12 @@ export const HomeView = (props: Props) => {
 
       setIsLoadMoreButtonVisible(hasMore)
     }
-  })
 
-  const randomLayout = createMemo(() => {
-    const filledLayouts = Object.keys(articlesByLayout()).filter(
-      // FIXME: is 7 ok? or more complex logic needed?
-      (layout) => articlesByLayout()[layout].length > 7,
-    )
-
-    const selectedRandomLayout =
-      filledLayouts.length > 0 ? filledLayouts[Math.floor(Math.random() * filledLayouts.length)] : ''
-
-    return (
-      <Show when={Boolean(selectedRandomLayout)}>
-        <Group articles={articlesByLayout()[selectedRandomLayout]} header={''} />
-      </Show>
-    )
+    const { topic, shouts } = await apiClient.getRandomTopicShouts(RANDOM_TOPIC_SHOUTS_COUNT)
+    batch(() => {
+      setRandomTopic(topic)
+      setRandomTopicArticles(shouts)
+    })
   })
 
   const loadMore = async () => {
@@ -114,9 +111,7 @@ export const HomeView = (props: Props) => {
           wrapper={'top-article'}
           nodate={true}
         />
-
         <Row3 articles={sortedArticles().slice(6, 9)} nodate={true} />
-
         <Beside
           beside={sortedArticles()[9]}
           title={t('Top authors')}
@@ -124,15 +119,11 @@ export const HomeView = (props: Props) => {
           wrapper={'author'}
           nodate={true}
         />
-
         <Show when={topMonthArticles()}>
           <ArticleCardSwiper title={t('Top month articles')} slides={topMonthArticles()} />
         </Show>
-
         <Row2 articles={sortedArticles().slice(10, 12)} nodate={true} />
-
         <RowShort articles={sortedArticles().slice(12, 16)} />
-
         <Row1 article={sortedArticles()[16]} nodate={true} />
         <Row3 articles={sortedArticles().slice(17, 20)} nodate={true} />
         <Row3
@@ -140,13 +131,27 @@ export const HomeView = (props: Props) => {
           header={<h2>{t('Top commented')}</h2>}
           nodate={true}
         />
-
-        {randomLayout()}
-
+        <Show when={randomTopic()}>
+          <Group
+            articles={randomTopicArticles()}
+            header={
+              <div class={styles.randomTopicHeaderContainer}>
+                <div class={styles.randomTopicHeader}>{randomTopic().title}</div>
+                <div>
+                  <a
+                    class={styles.randomTopicHeaderLink}
+                    href={getPagePath(router, 'topic', { slug: randomTopic().slug })}
+                  >
+                    {t('All articles')} <Icon class={styles.icon} name="arrow-right" />
+                  </a>
+                </div>
+              </div>
+            }
+          />
+        </Show>
         <Show when={topArticles()}>
           <ArticleCardSwiper title={t('Favorite')} slides={topArticles()} />
         </Show>
-
         <Beside
           beside={sortedArticles()[20]}
           title={t('Top topics')}
@@ -155,11 +160,8 @@ export const HomeView = (props: Props) => {
           isTopicCompact={true}
           nodate={true}
         />
-
         <Row3 articles={sortedArticles().slice(21, 24)} nodate={true} />
-
         <Banner />
-
         <Row2 articles={sortedArticles().slice(24, 26)} nodate={true} />
         <Row3 articles={sortedArticles().slice(26, 29)} nodate={true} />
         <Row2 articles={sortedArticles().slice(29, 31)} nodate={true} />

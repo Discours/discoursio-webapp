@@ -31,7 +31,7 @@ const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫ
 export const AllAuthorsView = (props: Props) => {
   const { t, lang } = useLocalize()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
-  const { searchParams, changeSearchParam } = useRouter<AllAuthorsPageSearchParams>()
+  const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
     sortBy: searchParams().by || 'shouts',
@@ -41,7 +41,7 @@ export const AllAuthorsView = (props: Props) => {
 
   createEffect(() => {
     if (!searchParams().by) {
-      changeSearchParam({
+      changeSearchParams({
         by: 'shouts',
       })
     }

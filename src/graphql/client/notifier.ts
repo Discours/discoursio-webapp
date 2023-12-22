@@ -1,8 +1,13 @@
 import { createGraphQLClient } from '../createGraphQLClient'
-import markAllNotificationsAsRead from '../mutation/notifier/mark-all-notifications-as-read'
-import markNotificationAsRead from '../mutation/notifier/mark-notification-as-read'
+import markSeenMutation from '../mutation/notifier/mark-seen'
+import markSeenAfterMutation from '../mutation/notifier/mark-seen-after'
+import markThreadSeenMutation from '../mutation/notifier/mark-seen-thread'
 import loadNotifications from '../query/notifier/notifications-load'
-import { NotificationsResult, QueryLoad_NotificationsArgs } from '../schema/notifier.gen'
+import {
+  MutationMark_Seen_AfterArgs,
+  NotificationsResult,
+  QueryLoad_NotificationsArgs,
+} from '../schema/notifier.gen'
 
 export const notifierClient = {
   private: null,
@@ -12,15 +17,15 @@ export const notifierClient = {
     const resp = await notifierClient.private.query(loadNotifications, params).toPromise()
     return resp.data?.load_notifications
   },
-  markNotificationAsRead: async (notification_id: number): Promise<void> => {
-    await notifierClient.private
-      .mutation(markNotificationAsRead, {
-        notification_id,
-      })
-      .toPromise()
+
+  markSeen: async (notification_id: number): Promise<void> => {
+    await notifierClient.private.mutation(markSeenMutation, { notification_id }).toPromise()
   },
 
-  markAllNotificationsAsRead: async (): Promise<void> => {
-    await notifierClient.private.mutation(markAllNotificationsAsRead, {}).toPromise()
+  markSeenAfter: async (options: MutationMark_Seen_AfterArgs): Promise<void> => {
+    await notifierClient.private.mutation(markSeenAfterMutation, options).toPromise()
+  },
+  markSeenThread: async (thread: string): Promise<void> => {
+    await notifierClient.private.mutation(markThreadSeenMutation, { thread }).toPromise()
   },
 }

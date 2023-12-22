@@ -5,11 +5,19 @@ export default gql`
     load_notifications(after: $after, limit: $limit, offset: $offset) {
       notifications {
         id
-        entity
-        action
-        payload
-        created_at
-        seen
+        updated_at
+        authors {
+          id
+          slug
+          name
+          pic
+        }
+        reactions
+        shout {
+          id
+          slug
+          title
+        }
       }
       unread
       total

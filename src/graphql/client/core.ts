@@ -90,7 +90,7 @@ export const apiClient = {
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
     if (response.error) {
-      console.debug('[graphql.client.core] get_topicss_all', response.error)
+      console.debug('[graphql.client.core] get_topics_all', response.error)
     }
     return response.data.get_topics_all
   },

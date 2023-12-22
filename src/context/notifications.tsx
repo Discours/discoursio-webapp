@@ -8,24 +8,25 @@ import { Portal } from 'solid-js/web'
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
 import { notifierClient } from '../graphql/client/notifier'
-import { Notification, QueryLoad_NotificationsArgs } from '../graphql/schema/notifier.gen'
+import { NotificationGroup, QueryLoad_NotificationsArgs } from '../graphql/schema/notifier.gen'
 
 import { SSEMessage, useConnect } from './connect'
 import { useSession } from './session'
 
 type NotificationsContextType = {
-  notificationEntities: Record<number, Notification>
+  notificationEntities: Record<string, NotificationGroup>
   unreadNotificationsCount: Accessor<number>
   after: Accessor<number>
-  sortedNotifications: Accessor<Notification[]>
+  sortedNotifications: Accessor<NotificationGroup[]>
   loadedNotificationsCount: Accessor<number>
   totalNotificationsCount: Accessor<number>
   actions: {
     showNotificationsPanel: () => void
     hideNotificationsPanel: () => void
-    markNotificationAsRead: (notification: Notification) => Promise<void>
-    markAllNotificationsAsRead: () => Promise<void>
-    loadNotifications: (options: QueryLoad_NotificationsArgs) => Promise<Notification[]>
+    markSeen: (notification_id: number) => Promise<void>
+    markSeenThread: (threadId: string) => Promise<void>
+    markSeenAll: () => Promise<void>
+    loadNotificationsGrouped: (options: QueryLoad_NotificationsArgs) => Promise<NotificationGroup[]>
   }
 }
 
@@ -40,56 +41,65 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = createSignal(false)
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
-  const [notificationEntities, setNotificationEntities] = createStore<Record<number, Notification>>({})
-  const { isAuthenticated, author } = useSession()
+  const [notificationEntities, setNotificationEntities] = createStore<Record<string, NotificationGroup>>({})
+  const { isAuthenticated } = useSession()
   const { addHandler } = useConnect()
 
-  const loadNotifications = async (options: { after: number; limit?: number; offset?: number }) => {
+  const loadNotificationsGrouped = async (options: { after: number; limit?: number; offset?: number }) => {
     if (isAuthenticated() && notifierClient?.private) {
-      const { notifications, unread, total } = await notifierClient.getNotifications(options)
-      const newNotificationEntities = notifications.reduce((acc, notification) => {
-        acc[notification.id] = notification
+      const { notifications: groups, unread, total } = await notifierClient.getNotifications(options)
+      const newGroupsEntries = groups.reduce((acc, group: NotificationGroup) => {
+        acc[group.id] = group
         return acc
       }, {})
 
       setTotalNotificationsCount(total)
       setUnreadNotificationsCount(unread)
-      setNotificationEntities(newNotificationEntities)
-      console.debug(`[context.notifications] updated`)
-      return notifications
+      setNotificationEntities(newGroupsEntries)
+      console.debug(`[context.notifications] groups updated`)
+      return groups
     } else {
       return []
     }
   }
 
   const sortedNotifications = createMemo(() => {
-    return Object.values(notificationEntities).sort((a, b) => b.created_at - a.created_at)
+    return Object.values(notificationEntities).sort((a, b) => b.updated_at - a.updated_at)
   })
 
   const now = Math.floor(Date.now() / 1000)
   const loadedNotificationsCount = createMemo(() => Object.keys(notificationEntities).length)
   const [after, setAfter] = createStorageSignal('notifier_timestamp', now)
+
   onMount(() => {
     addHandler((data: SSEMessage) => {
       if (data.entity === 'reaction' && isAuthenticated()) {
         console.info(`[context.notifications] event`, data)
-        loadNotifications({ after: after(), limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
+        loadNotificationsGrouped({ after: after(), limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
       }
     })
     setAfter(now)
   })
 
-  const markNotificationAsRead = async (notification: Notification) => {
-    if (notifierClient.private) await notifierClient.markNotificationAsRead(notification.id)
-    notification.seen.push(author().id)
-    setNotificationEntities((nnn: Notification) => ({ ...nnn, [notification.id]: notification }))
+  const markSeenThread = async (threadId: string) => {
+    if (notifierClient.private) await notifierClient.markSeenThread(threadId)
+    const thread = notificationEntities[threadId]
+    thread.seen = true
+    setNotificationEntities((nnn) => ({ ...nnn, [threadId]: thread }))
     setUnreadNotificationsCount((oldCount) => oldCount - 1)
   }
 
-  const markAllNotificationsAsRead = async () => {
+  const markSeenAll = async () => {
     if (isAuthenticated() && notifierClient.private) {
-      await notifierClient.markAllNotificationsAsRead()
-      await loadNotifications({ after: after(), limit: loadedNotificationsCount() })
+      await notifierClient.markSeenAfter({ after: after() })
+      await loadNotificationsGrouped({ after: after(), limit: loadedNotificationsCount() })
+    }
+  }
+
+  const markSeen = async (notification_id: number) => {
+    if (isAuthenticated() && notifierClient.private) {
+      await notifierClient.markSeen(notification_id)
+      await loadNotificationsGrouped({ after: after(), limit: loadedNotificationsCount() })
     }
   }
 
@@ -104,9 +114,10 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const actions = {
     showNotificationsPanel,
     hideNotificationsPanel,
-    markNotificationAsRead,
-    markAllNotificationsAsRead,
-    loadNotifications,
+    markSeenThread,
+    markSeenAll,
+    markSeen,
+    loadNotificationsGrouped,
   }
 
   const value: NotificationsContextType = {

@@ -55,7 +55,7 @@ export const NotificationsPanel = (props: Props) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    actions: { loadNotifications, markAllNotificationsAsRead },
+    actions: { loadNotificationsGrouped, markSeenAll },
   } = useNotifications()
   const handleHide = () => {
     props.onClose()
@@ -96,24 +96,24 @@ export const NotificationsPanel = (props: Props) => {
   }
 
   const todayNotifications = createMemo(() => {
-    return sortedNotifications().filter((notification) => isToday(new Date(notification.created_at * 1000)))
+    return sortedNotifications().filter((notification) => isToday(new Date(notification.updated_at * 1000)))
   })
 
   const yesterdayNotifications = createMemo(() => {
     return sortedNotifications().filter((notification) =>
-      isYesterday(new Date(notification.created_at * 1000)),
+      isYesterday(new Date(notification.updated_at * 1000)),
     )
   })
 
   const earlierNotifications = createMemo(() => {
     return sortedNotifications().filter((notification) =>
-      isEarlier(new Date(notification.created_at * 1000)),
+      isEarlier(new Date(notification.updated_at * 1000)),
     )
   })
 
   const scrollContainerRef: { current: HTMLDivElement } = { current: null }
   const loadNextPage = async () => {
-    await loadNotifications({ after: after(), limit: PAGE_SIZE, offset: loadedNotificationsCount() })
+    await loadNotificationsGrouped({ after: after(), limit: PAGE_SIZE, offset: loadedNotificationsCount() })
     if (loadedNotificationsCount() < totalNotificationsCount()) {
       const hasMore = scrollContainerRef.current.scrollHeight <= scrollContainerRef.current.offsetHeight
 
@@ -221,11 +221,7 @@ export const NotificationsPanel = (props: Props) => {
 
         <Show when={unreadNotificationsCount() > 0}>
           <div class={styles.actions}>
-            <Button
-              onClick={() => markAllNotificationsAsRead()}
-              variant="secondary"
-              value={t('Mark as read')}
-            />
+            <Button onClick={(_e) => markSeenAll()} variant="secondary" value={t('Mark as read')} />
           </div>
         </Show>
       </div>

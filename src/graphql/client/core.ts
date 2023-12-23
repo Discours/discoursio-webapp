@@ -43,6 +43,7 @@ import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import userFollowedTopics from '../query/core/topics-by-author'
 import topicsRandomQuery from '../query/core/topics-random'
+import articlesLoadRandomTopic from '../query/core/articles-load-random-topic'
 
 const publicGraphQLClient = createGraphQLClient('core')
 
@@ -76,6 +77,16 @@ export const apiClient = {
     }
 
     return response.data.get_topics_random
+  },
+
+  getRandomTopicShouts: async (limit: number): Promise<{ topic: Topic; shouts: Shout[] }> => {
+    const resp = await publicGraphQLClient.query(articlesLoadRandomTopic, { limit }).toPromise()
+
+    if (resp.error) {
+      console.error(resp)
+    }
+
+    return resp.data.load_random_topics_shouts
   },
 
   follow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {

@@ -83,8 +83,8 @@ export const addAuthorsByTopic = (newAuthorsByTopic: { [topicSlug: string]: Auth
   })
 }
 
-export const loadAllAuthors = async (): Promise<void> => {
-  const authors = await apiClient.getAllAuthors()
+export const loadAllAuthors = async (limit: number = 50, offset = 0): Promise<void> => {
+  const authors = await apiClient.getAllAuthors(limit, offset)
   addAuthors(authors)
 }
 

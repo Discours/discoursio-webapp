@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   query LoadRandomTopicShoutsQuery($limit: Int!) {
-    loadRandomTopicShouts(limit: $limit) {
+    load_shouts_random_topic(limit: $limit) {
       topic {
         id
         title
@@ -28,7 +28,7 @@ export default gql`
         cover
         lead
         # community
-        mainTopic
+        main_topic
         topics {
           id
           title
@@ -44,12 +44,12 @@ export default gql`
           id
           name
           slug
-          userpic
-          createdAt
+          pic
+          created_at
           bio
         }
-        createdAt
-        publishedAt
+        created_at
+        published_at
         stat {
           viewed
           reacted

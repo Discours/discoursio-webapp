@@ -113,7 +113,7 @@ export const SessionProvider = (props: {
       try {
         console.info('[context.session] loading session')
         return await authorizer().getSession()
-      } catch (_) {
+      } catch {
         console.info('[context.session] cannot refresh session')
         return null
       }
@@ -163,13 +163,14 @@ export const SessionProvider = (props: {
           setIsSessionLoaded(true)
         }
       }
-    } else {
-      console.log('[context.session] setting session null')
-      if (session() === null && author() !== null) {
-        setIsSessionLoaded(true)
-        setAuthor(null)
-        setSubscriptions(EMPTY_SUBSCRIPTIONS)
-      }
+    }
+  })
+
+  createEffect(() => {
+    if (session() !== null && author() === null) {
+      setIsSessionLoaded(true)
+      setAuthor(null)
+      setSubscriptions(EMPTY_SUBSCRIPTIONS)
     }
   })
 
@@ -180,7 +181,9 @@ export const SessionProvider = (props: {
     let s
     try {
       s = await loadSession()
-    } catch (e) {}
+    } catch {
+      console.warn('[context.session] load session failed')
+    }
     if (!s) {
       setIsSessionLoaded(true)
       setSession(null)

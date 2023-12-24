@@ -83,14 +83,19 @@ export const addAuthorsByTopic = (newAuthorsByTopic: { [topicSlug: string]: Auth
   })
 }
 
-export const loadAllAuthors = async (limit: number = 50, offset = 0): Promise<void> => {
-  const authors = await apiClient.getAllAuthors(limit, offset)
+export const loadAllAuthors = async (): Promise<void> => {
+  const authors = await apiClient.getAllAuthors()
   addAuthors(authors)
 }
 
 type InitialState = {
   authors?: Author[]
   sortBy?: AuthorsSortBy
+}
+
+export const loadAuthors = async (by = {}, limit: number = 50, offset = 0): Promise<void> => {
+  const authors = await apiClient.loadAuthorsBy({ by, limit, offset })
+  addAuthors(authors)
 }
 
 export const useAuthorsStore = (initialState: InitialState = {}) => {

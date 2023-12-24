@@ -3,8 +3,8 @@ import type { PageContext } from '../renderer/types'
 
 import { render } from 'vike/abort'
 
-import { apiClient } from '../graphql/client/core'
 import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Topic'
+import { apiClient } from '../graphql/client/core'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams

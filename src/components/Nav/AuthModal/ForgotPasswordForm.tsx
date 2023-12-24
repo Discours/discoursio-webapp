@@ -21,7 +21,7 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const ForgotPasswordForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail)
@@ -65,7 +65,7 @@ export const ForgotPasswordForm = () => {
         email: email(),
         redirect_uri: window.location.origin,
       })
-      console.debug('[ForgotPasswordForm] authorizer response: ', response)
+      console.debug('[ForgotPasswordForm] authorizer response:', response)
       if (response && response.message) setMessage(response.message)
     } catch (error) {
       console.error(error)

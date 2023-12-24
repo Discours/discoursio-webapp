@@ -38,7 +38,7 @@ const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { searchParams, changeSearchParam } = useRouter<TopicsPageSearchParams>()
+  const { searchParams, changeSearchParams } = useRouter<TopicsPageSearchParams>()
 
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
@@ -56,7 +56,6 @@ export const TopicView = (props: Props) => {
       true,
     )}`
   onMount(() => (document.title = title()))
-  createEffect(() => props.title(title()))
 
   const loadMore = async () => {
     saveScrollPosition()
@@ -76,7 +75,7 @@ export const TopicView = (props: Props) => {
       loadMore()
     }
   })
-
+  /*
   const selectionTitle = createMemo(() => {
     const m = searchParams().by
     if (m === 'viewed') return t('Top viewed')
@@ -84,7 +83,7 @@ export const TopicView = (props: Props) => {
     if (m === 'commented') return t('Top discussed')
     return t('Top recent')
   })
-
+  */
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )

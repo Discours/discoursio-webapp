@@ -52,7 +52,7 @@ export const InboxView = () => {
   const [isScrollToNewVisible, setIsScrollToNewVisible] = createSignal(false)
   const { author } = useSession()
   const currentUserId = createMemo(() => author()?.id)
-  const { changeSearchParam, searchParams } = useRouter<InboxSearchParams>()
+  const { changeSearchParams, searchParams } = useRouter<InboxSearchParams>()
 
   const messagesContainerRef: { current: HTMLDivElement } = {
     current: null,

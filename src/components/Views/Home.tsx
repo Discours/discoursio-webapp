@@ -1,8 +1,9 @@
-import { Shout, Topic } from '../../graphql/schema/core.gen'
 import { getPagePath } from '@nanostores/router'
 import { batch, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
+import { apiClient } from '../../graphql/client/core'
+import { Shout, Topic } from '../../graphql/schema/core.gen'
 import { router } from '../../stores/router'
 import {
   loadShouts,
@@ -28,7 +29,6 @@ import RowShort from '../Feed/RowShort'
 import { Topics } from '../Nav/Topics'
 
 import styles from './Home.module.scss'
-import { apiClient } from '../../graphql/client/core'
 
 type Props = {
   shouts: Shout[]

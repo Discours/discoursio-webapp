@@ -29,13 +29,14 @@ import shoutsLoadBy from '../query/core/articles-load-by'
 import draftsLoad from '../query/core/articles-load-drafts'
 import myFeed from '../query/core/articles-load-feed'
 import loadShoutsTopRandom from '../query/core/articles-load-random-top'
+import articlesLoadRandomTopic from '../query/core/articles-load-random-topic'
 import shoutsLoadSearch from '../query/core/articles-load-search'
 import loadShoutsUnrated from '../query/core/articles-load-unrated'
 import authorBy from '../query/core/author-by'
 import authorFollowers from '../query/core/author-followers'
 import authorId from '../query/core/author-id'
-import authorsAll from '../query/core/authors-all'
 import authorFollowed from '../query/core/authors-followed-by'
+import authorsAll from '../query/core/authors-load-all'
 import authorsLoadBy from '../query/core/authors-load-by'
 import mySubscriptions from '../query/core/my-followed'
 import reactionsLoadBy from '../query/core/reactions-load-by'
@@ -43,7 +44,6 @@ import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import userFollowedTopics from '../query/core/topics-by-author'
 import topicsRandomQuery from '../query/core/topics-random'
-import articlesLoadRandomTopic from '../query/core/articles-load-random-topic'
 
 const publicGraphQLClient = createGraphQLClient('core')
 
@@ -93,11 +93,11 @@ export const apiClient = {
 
     return response.data.get_topics_all
   },
-  getAllAuthors: async (limit: number = 50, offset: number = 0) => {
-    const response = await publicGraphQLClient.query(authorsAll, { limit, offset }).toPromise()
+  getAllAuthors: async () => {
+    const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
     if (!response.data) console.error('[graphql.client.core] load_authors_all', response)
 
-    return response.data.load_authors_all
+    return response.data.get_authors_all
   },
   getAuthor: async (params: { slug?: string; author_id?: number }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBy, params).toPromise()
@@ -172,8 +172,9 @@ export const apiClient = {
     console.debug('[graphql.client.core] updateReaction:', response)
     return response.data.update_reaction.reaction
   },
-  getAuthorsBy: async (args: QueryLoad_Authors_ByArgs) => {
+  loadAuthorsBy: async (args: QueryLoad_Authors_ByArgs) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, args).toPromise()
+    console.debug('[graphql.client.core] authorsLoadBy:', resp)
     return resp.data.load_authors_by
   },
   getShoutBySlug: async (slug: string) => {

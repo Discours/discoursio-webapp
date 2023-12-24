@@ -4,13 +4,13 @@ import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 
 import { PasswordField } from './PasswordField'
 
 import styles from './AuthModal.module.scss'
-import { useSession } from '../../../context/session'
 
 type FormFields = {
   password: string

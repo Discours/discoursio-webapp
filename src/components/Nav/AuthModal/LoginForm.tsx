@@ -17,7 +17,6 @@ import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
 
 import styles from './AuthModal.module.scss'
-import { VerifyEmailInput } from '@authorizerdev/authorizer-js'
 
 type FormFields = {
   email: string

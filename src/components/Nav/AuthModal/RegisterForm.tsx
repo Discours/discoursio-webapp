@@ -6,7 +6,7 @@ import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { ApiError } from '../../../graphql/error'
+// import { ApiError } from '../../../graphql/error'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
@@ -36,7 +36,7 @@ export const RegisterForm = () => {
   const { t } = useLocalize()
   const { emailChecks } = useEmailChecks()
   const {
-    actions: { authorizer },
+    actions: { signUp },
   } = useSession()
   const [submitError, setSubmitError] = createSignal('')
   const [fullName, setFullName] = createSignal('')
@@ -105,19 +105,20 @@ export const RegisterForm = () => {
     }
 
     setIsSubmitting(true)
-
     try {
-      await authorizer().signup({
+      const opts = {
         given_name: cleanName,
         email: cleanEmail,
         password: password(),
         confirm_password: password(),
         redirect_uri: window.location.origin,
-      })
+      }
+      await signUp(opts)
 
       setIsSuccess(true)
     } catch (error) {
-      if (error instanceof ApiError && error.code === 'user_already_exists') {
+      console.error(error)
+      if (error?.code === 'user_already_exists') {
         return
       }
 

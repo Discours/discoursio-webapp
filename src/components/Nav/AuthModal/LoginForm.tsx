@@ -17,6 +17,7 @@ import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
 
 import styles from './AuthModal.module.scss'
+import { VerifyEmailInput } from '@authorizerdev/authorizer-js'
 
 type FormFields = {
   email: string
@@ -65,11 +66,12 @@ export const LoginForm = () => {
     setIsLinkSent(true)
     setIsEmailNotConfirmed(false)
     setSubmitError('')
-    const {
-      actions: { authorizer, getToken },
-    } = useSession()
-    const result = await authorizer().verifyEmail({ token: getToken() })
-    if (!result) setSubmitError('cant sign send link') // TODO:
+    changeSearchParams({ mode: 'forgot-password' }) // NOTE: temporary solition
+    /* FIXME:
+    const { actions: { authorizer } } = useSession()
+    const result = await authorizer().verifyEmail({ token })
+    if (!result) setSubmitError('cant sign send link')
+    */
   }
 
   const handleSubmit = async (event: Event) => {
@@ -110,6 +112,7 @@ export const LoginForm = () => {
 
       showSnackbar({ body: t('Welcome!') })
     } catch (error) {
+      console.error(error)
       if (error instanceof ApiError) {
         if (error.code === 'email_not_confirmed') {
           setSubmitError(t('Please, confirm email'))
@@ -183,16 +186,6 @@ export const LoginForm = () => {
             }
           >
             {t('Forgot password?')}
-          </span>
-          <span
-            class="link"
-            onClick={() =>
-              changeSearchParams({
-                mode: 'change-password',
-              })
-            }
-          >
-            {t('Change password')}
           </span>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { hideModal } from '../../../stores/ui'
 import { PasswordField } from './PasswordField'
 
 import styles from './AuthModal.module.scss'
+import { useSession } from '../../../context/session'
 
 type FormFields = {
   password: string
@@ -18,28 +19,31 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const ChangePasswordForm = () => {
-  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
+  const { searchParams, changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
+  const {
+    actions: { changePassword },
+  } = useSession()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [newPassword, setNewPassword] = createSignal<string>()
   const [passwordError, setPasswordError] = createSignal<string>()
   const [isSuccess, setIsSuccess] = createSignal(false)
-
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
     setIsSubmitting(true)
-    // Fake change password logic
-    console.log('!!! sent new password:', newPassword)
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setIsSuccess(true)
-    }, 1000)
+    if (newPassword()) {
+      await changePassword(newPassword(), searchParams()?.token)
+      setTimeout(() => {
+        setIsSubmitting(false)
+        setIsSuccess(true)
+      }, 1000)
+    }
   }
 
-  const handlePasswordInput = (value) => {
+  const handlePasswordInput = (value: string) => {
     setNewPassword(value)
     if (passwordError()) {
       setValidationErrors((errors) => ({ ...errors, password: passwordError() }))
@@ -93,6 +97,12 @@ export const ChangePasswordForm = () => {
         <div class={styles.title}>{t('Password updated!')}</div>
         <div class={styles.text}>{t('You can now login using your new password')}</div>
         <div>
+          <button
+            class={clsx('button', styles.submitButton)}
+            onClick={() => changeSearchParams({ mode: 'login' })}
+          >
+            {t('Enter')}
+          </button>
           <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>
             {t('Back to main page')}
           </button>

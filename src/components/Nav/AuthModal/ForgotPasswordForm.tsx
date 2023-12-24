@@ -5,7 +5,7 @@ import { createSignal, JSX, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { ApiError } from '../../../graphql/error'
+// import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { validateEmail } from '../../../utils/validateEmail'
 
@@ -33,17 +33,13 @@ export const ForgotPasswordForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [isUserNotFount, setIsUserNotFound] = createSignal(false)
-
   const authFormRef: { current: HTMLFormElement } = { current: null }
-
   const [message, setMessage] = createSignal<string>('')
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-
     setSubmitError('')
     setIsUserNotFound(false)
-
     const newValidationErrors: ValidationErrors = {}
 
     if (!email()) {
@@ -53,7 +49,6 @@ export const ForgotPasswordForm = () => {
     }
 
     setValidationErrors(newValidationErrors)
-
     const isValid = Object.keys(newValidationErrors).length === 0
 
     if (!isValid) {
@@ -68,18 +63,17 @@ export const ForgotPasswordForm = () => {
     try {
       const response = await authorizer().forgotPassword({
         email: email(),
-        redirect_uri: window.location.href + '&success=1', // FIXME: redirect to success page accepting confirmation code
+        redirect_uri: window.location.origin,
       })
-      if (response) {
-        console.debug('[ForgotPasswordForm]', response)
-        if (response.message) setMessage(response.message)
-      }
+      console.debug('[ForgotPasswordForm] authorizer response: ', response)
+      if (response && response.message) setMessage(response.message)
     } catch (error) {
-      if (error instanceof ApiError && error.code === 'user_not_found') {
+      console.error(error)
+      if (error?.code === 'user_not_found') {
         setIsUserNotFound(true)
         return
       }
-      setSubmitError(error.message)
+      setSubmitError(error?.message)
     } finally {
       setIsSubmitting(false)
     }
@@ -92,17 +86,17 @@ export const ForgotPasswordForm = () => {
       ref={(el) => (authFormRef.current = el)}
     >
       <div>
-        <h4>{t('Forgot password?')}</h4>
+        <h4>{t('Restore password')}</h4>
         <div class={styles.authSubtitle}>
           {t(message()) || t('Everything is ok, please give us your email address')}
         </div>
-
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input
+            disabled={Boolean(message())}
             id="email"
             name="email"
             autocomplete="email"
@@ -144,7 +138,11 @@ export const ForgotPasswordForm = () => {
         </Show>
 
         <div>
-          <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
+          <button
+            class={clsx('button', styles.submitButton)}
+            disabled={isSubmitting() || Boolean(message())}
+            type="submit"
+          >
             {isSubmitting() ? '...' : t('Restore password')}
           </button>
         </div>

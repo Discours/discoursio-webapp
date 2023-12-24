@@ -11,6 +11,7 @@ export type AuthModalSource =
 export type AuthModalSearchParams = {
   mode: AuthModalMode
   source?: AuthModalSource
+  token?: string
 }
 
 export type ConfirmEmailSearchParams = {

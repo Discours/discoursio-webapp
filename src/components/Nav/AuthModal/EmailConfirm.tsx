@@ -1,11 +1,10 @@
 import type { ConfirmEmailSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 
@@ -13,52 +12,21 @@ import styles from './AuthModal.module.scss'
 
 export const EmailConfirm = () => {
   const { t } = useLocalize()
+  const { searchParams } = useRouter<ConfirmEmailSearchParams>()
   const {
-    actions: { confirmEmail, loadSession, loadAuthor },
+    actions: { confirmEmail },
     session,
   } = useSession()
-  const [confirmedEmail, setConfirmedEmail] = createSignal<boolean>(false)
+  const [isTokenExpired, setIsTokenExpired] = createSignal(false) // TODO: handle expired token in context/session
+  const [isTokenInvalid, setIsTokenInvalid] = createSignal(false) // TODO: handle invalid token in context/session
 
-  const [isTokenExpired, setIsTokenExpired] = createSignal(false)
-  const [isTokenInvalid, setIsTokenInvalid] = createSignal(false)
-  const { searchParams, changeSearchParam } = useRouter<ConfirmEmailSearchParams>()
-
-  onMount(async () => {
-    const token = searchParams().access_token
-    if (token) {
-      changeSearchParam({})
-      try {
-        await confirmEmail({ token })
-        await loadSession()
-        await loadAuthor()
-      } catch (error) {
-        // TODO: adapt this code to authorizer
-        if (error instanceof ApiError) {
-          if (error.code === 'token_expired') {
-            setIsTokenExpired(true)
-            return
-          }
-
-          if (error.code === 'token_invalid') {
-            setIsTokenInvalid(true)
-            return
-          }
-        }
-
-        console.log(error)
-      }
-    }
-  })
-
-  createEffect(() => {
-    const confirmed = session()?.user?.email_verified
-    if (confirmed) {
-      console.debug(`[EmailConfirm] email successfully verified`)
-      setConfirmedEmail(confirmed)
-    }
+  createEffect(async () => {
+    const token = searchParams()?.access_token
+    if (token) await confirmEmail({ token })
   })
 
   const email = createMemo(() => session()?.user?.email)
+  const confirmedEmail = createMemo(() => session()?.user?.email_verified)
 
   return (
     <div>

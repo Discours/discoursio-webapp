@@ -8,6 +8,7 @@ import {
   AuthToken,
   Authorizer,
   ConfigType,
+  SignupInput,
 } from '@authorizerdev/authorizer-js'
 import {
   createContext,
@@ -29,9 +30,9 @@ import { showModal } from '../stores/ui'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
 
-const config: ConfigType = {
+const defaultConfig: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
-  redirectURL: 'https://discoursio-webapp.vercel.app/?modal=auth',
+  redirectURL: 'https://discoursio-webapp.vercel.app',
   clientID: '9c113377-5eea-4c89-98e1-69302462fc08', // FIXME: use env?
 }
 
@@ -41,10 +42,9 @@ export type SessionContextType = {
   author: Resource<Author | null>
   isSessionLoaded: Accessor<boolean>
   subscriptions: Accessor<Result>
-  isAuthenticated: Accessor<boolean>
   isAuthWithCallback: Accessor<() => void>
+  isAuthenticated: Accessor<boolean>
   actions: {
-    getToken: () => string
     loadSession: () => AuthToken | Promise<AuthToken>
     setSession: (token: AuthToken | null) => void // setSession
     loadAuthor: (info?: unknown) => Author | Promise<Author>
@@ -54,9 +54,11 @@ export type SessionContextType = {
       callback: (() => Promise<void>) | (() => void),
       modalSource: AuthModalSource,
     ) => void
+    signUp: (params: SignupInput) => Promise<AuthToken | void>
     signIn: (params: LoginInput) => Promise<void>
     signOut: () => Promise<void>
-    confirmEmail: (input: VerifyEmailInput) => Promise<void> // email confirm callback is in auth.discours.io
+    changePassword: (password: string, token: string) => void
+    confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken | void> // email confirm callback is in auth.discours.io
     setIsSessionLoaded: (loaded: boolean) => void
     authorizer: () => Authorizer
   }
@@ -81,75 +83,40 @@ export const SessionProvider = (props: {
   const {
     actions: { showSnackbar },
   } = useSnackbar()
-  const { searchParams, changeSearchParam } = useRouter()
-  const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
-  const [subscriptions, setSubscriptions] = createSignal<Result>(EMPTY_SUBSCRIPTIONS)
+  const { searchParams, changeSearchParams } = useRouter()
 
-  const getSession = async (): Promise<AuthToken> => {
-    try {
-      const tkn = getToken()
-      // console.debug('[context.session] token before:', tkn)
-      const authResult = await authorizer().getSession({
-        Authorization: tkn,
+  // handle callback's redirect_uri
+  createEffect(async () => {
+    // TODO: handle oauth here too
+    const token = searchParams()?.token
+    const access_token = searchParams()?.access_token
+    if (token) {
+      changeSearchParams({
+        mode: 'change-password',
+        modal: 'auth',
       })
-      if (authResult?.access_token) {
-        setSession(authResult)
-        // console.debug('[context.session] token after:', authResult.access_token)
-        await loadSubscriptions()
-        return authResult
-      }
-    } catch (error) {
-      console.error('[context.session] getSession error:', error)
-      setSession(null)
-      return null
-    } finally {
-      setTimeout(() => {
-        setIsSessionLoaded(true)
-      }, 0)
-    }
-  }
-
-  const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(getSession, {
-    ssrLoadFrom: 'initial',
-    initialValue: null,
-  })
-
-  createEffect(() => {
-    // detect confirm redirect
-    const params = searchParams()
-    if (params?.access_token) {
-      console.debug('[context.session] access token presented, changing search params')
-      changeSearchParam({ modal: 'auth', mode: 'confirm-email', access_token: params?.access_token })
+    } else if (access_token) {
+      changeSearchParams({
+        mode: 'confirm-email',
+        modal: 'auth',
+      })
     }
   })
 
-  createEffect(() => {
-    const token = getToken()
-    if (!inboxClient.private && token) {
-      apiClient.connect(token)
-      notifierClient.connect(token)
-      inboxClient.connect(token)
-    }
-  })
+  // load
 
-  const loadSubscriptions = async (): Promise<void> => {
-    if (apiClient.private) {
-      const result = await apiClient.getMySubscriptions()
-      if (result) {
-        setSubscriptions(result)
-      } else {
-        setSubscriptions(EMPTY_SUBSCRIPTIONS)
-      }
-    }
-  }
-
-  const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
+  const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
+  const authorizer = createMemo(() => new Authorizer(defaultConfig))
+  const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
+  const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(
     async () => {
-      const u = session()?.user
-      if (u) {
-        return (await apiClient.getAuthorId({ user: u.id })) ?? null
+      try {
+        console.info('[context.session] loading session')
+        return await authorizer().getSession()
+      } catch (_) {
+        console.info('[context.session] cannot refresh session')
+        return null
       }
-      return null
     },
     {
       ssrLoadFrom: 'initial',
@@ -157,29 +124,71 @@ export const SessionProvider = (props: {
     },
   )
 
-  const isAuthenticated = createMemo(() => Boolean(session()?.user))
-
-  const signIn = async (params: LoginInput) => {
-    const authResult: AuthToken | void = await authorizer().login(params)
-
-    if (authResult && authResult.access_token) {
-      setSession(authResult)
-      await loadSubscriptions()
-      console.debug('[context.session] signed in')
-    } else {
-      console.info((authResult as AuthToken).message)
-    }
-  }
-
-  const authorizer = createMemo(
-    () =>
-      new Authorizer({
-        authorizerURL: config.authorizerURL,
-        redirectURL: config.redirectURL,
-        clientID: config.clientID,
-      }),
+  const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
+    async () => {
+      const u = session()?.user
+      return u ? (await apiClient.getAuthorId({ user: u.id })) || null : null
+    },
+    {
+      ssrLoadFrom: 'initial',
+      initialValue: null,
+    },
   )
 
+  const [subscriptions, setSubscriptions] = createSignal<Result>(EMPTY_SUBSCRIPTIONS)
+  const loadSubscriptions = async (): Promise<void> => {
+    const result = await apiClient.getMySubscriptions()
+    setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
+  }
+
+  // session postload effect
+  createEffect(async () => {
+    if (session()) {
+      const token = session()?.access_token
+      if (token) {
+        console.log('[context.session] token observer got token', token)
+        if (!inboxClient.private) {
+          apiClient.connect(token)
+          notifierClient.connect(token)
+          inboxClient.connect(token)
+        }
+        if (!author()) {
+          const a = await loadAuthor()
+          await loadSubscriptions()
+          if (a) {
+            console.log('[context.session] author profile and subs loaded', author())
+          } else {
+            console.warn('[context.session] author is not loaded')
+          }
+          setIsSessionLoaded(true)
+        }
+      }
+    } else {
+      console.log('[context.session] setting session null')
+      if (session() === null && author() !== null) {
+        setIsSessionLoaded(true)
+        setAuthor(null)
+        setSubscriptions(EMPTY_SUBSCRIPTIONS)
+      }
+    }
+  })
+
+  // initial effect
+  onMount(async () => {
+    const metaRes = await authorizer().getMetaData()
+    setConfig({ ...defaultConfig, ...metaRes, redirectURL: window.location.origin })
+    let s
+    try {
+      s = await loadSession()
+    } catch (e) {}
+    if (!s) {
+      setIsSessionLoaded(true)
+      setSession(null)
+      setAuthor(null)
+    }
+  })
+
+  // callback state updater
   createEffect(
     on(
       () => props.onStateChangeCallback,
@@ -190,56 +199,57 @@ export const SessionProvider = (props: {
     ),
   )
 
-  const [configuration, setConfig] = createSignal<ConfigType>(config)
-
-  onMount(async () => {
-    setIsSessionLoaded(false)
-    console.log('[context.session] loading...')
-    const metaRes = await authorizer().getMetaData()
-    setConfig({ ...config, ...metaRes, redirectURL: window.location.origin + '/?modal=auth' })
-    console.log('[context.session] refreshing session...')
-    const s = await getSession()
-    console.debug('[context.session] session:', s)
-    console.log('[context.session] loading author...')
-    const a = await loadAuthor()
-    console.debug('[context.session] author:', a)
-    setIsSessionLoaded(true)
-    console.log('[context.session] loaded')
-  })
-
+  // require auth wrapper
   const [isAuthWithCallback, setIsAuthWithCallback] = createSignal<() => void>()
   const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
     setIsAuthWithCallback(() => callback)
 
-    const userdata = await authorizer().getProfile()
-    if (userdata) setSession({ ...session(), user: userdata })
+    await loadSession()
 
-    if (!isAuthenticated()) {
+    if (!session()) {
       showModal('auth', modalSource)
     }
+  }
+
+  // authorizer api proxy methods
+
+  const signUp = async (params) => {
+    const authResult: void | AuthToken = await authorizer().signup({
+      ...params,
+      confirm_password: params.password,
+    })
+    if (authResult) setSession(authResult)
+  }
+
+  const signIn = async (params: LoginInput) => {
+    const authResult: AuthToken | void = await authorizer().login(params)
+    if (authResult) setSession(authResult)
   }
 
   const signOut = async () => {
     await authorizer().logout()
     setSession(null)
-    setSubscriptions(EMPTY_SUBSCRIPTIONS)
     showSnackbar({ body: t("You've successfully logged out") })
+  }
+
+  const changePassword = async (password: string, token: string) => {
+    const resp = await authorizer().resetPassword({ password, token, confirm_password: password })
+    console.debug('[context.session] change password response:', resp)
   }
 
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
     const at: void | AuthToken = await authorizer().verifyEmail(input)
     if (at) setSession(at)
-    console.log(`[context.session] confirmEmail got result ${at}`)
+    return at
   }
 
-  const getToken = createMemo(() => session()?.access_token)
-
+  const isAuthenticated = createMemo(() => Boolean(author()))
   const actions = {
-    getToken,
     loadSession,
     loadSubscriptions,
     requireAuthentication,
+    signUp,
     signIn,
     signOut,
     confirmEmail,
@@ -248,16 +258,17 @@ export const SessionProvider = (props: {
     setAuthor,
     authorizer,
     loadAuthor,
+    changePassword,
   }
   const value: SessionContextType = {
     config: configuration(),
     session,
     subscriptions,
     isSessionLoaded,
-    isAuthenticated,
     author,
     actions,
     isAuthWithCallback,
+    isAuthenticated,
   }
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

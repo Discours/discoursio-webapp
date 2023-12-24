@@ -9,8 +9,8 @@ const RECONNECT_TIMES = 2
 
 export interface SSEMessage {
   id: string
-  entity: string
-  action: string
+  entity: string // follower | shout | reaction
+  action: string // create | delete | update | join | follow | seen
   payload: any // Author | Shout | Reaction | Message
   created_at?: number // unixtime x1000
   seen?: boolean
@@ -29,9 +29,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
   const [messageHandlers, setHandlers] = createSignal<Array<MessageHandler>>([])
   // const [messages, setMessages] = createSignal<Array<SSEMessage>>([]);
   const [connected, setConnected] = createSignal(false)
-  const {
-    actions: { getToken },
-  } = useSession()
+  const { session } = useSession()
 
   const addHandler = (handler: MessageHandler) => {
     setHandlers((hhh) => [...hhh, handler])
@@ -39,8 +37,9 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
 
   const [retried, setRetried] = createSignal<number>(0)
   createEffect(async () => {
-    const token = getToken()
+    const token = session()?.access_token
     if (token && !connected()) {
+      console.info('[context.connect] init SSE connection')
       await fetchEventSource('https://connect.discours.io', {
         method: 'GET',
         headers: {

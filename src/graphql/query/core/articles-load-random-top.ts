@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadRandomTopShoutsQuery($params: LoadRandomTopShoutsParams) {
-    load_shouts_random_top(params: $params) {
+  query LoadRandomTopShoutsQuery($options: LoadShoutsOptions) {
+    load_shouts_random_top(options: $options) {
       id
       title
       # lead

@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 
 import { Link } from '@solidjs/meta'
-import { splitProps } from 'solid-js'
+import { createEffect, splitProps } from 'solid-js'
 
 import { getImageUrl } from '../../../utils/getImageUrl'
 
@@ -21,10 +21,9 @@ export const Image = (props: Props) => {
         `${getImageUrl(local.src, { width: others.width * pixelDensity })} ${pixelDensity}x`,
     )
     .join(', ')
-
   return (
     <>
-      <Link rel="preload" as="image" imagesrcset={imageSrcSet} />
+      <Link rel="preload" as="image" imagesrcset={imageSrcSet} href={imageUrl} />
       <img src={imageUrl} alt={local.alt} srcSet={imageSrcSet} {...others} />
     </>
   )

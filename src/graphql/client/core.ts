@@ -53,39 +53,28 @@ export const apiClient = {
 
   getRandomTopShouts: async (params: QueryLoad_Shouts_Random_TopArgs) => {
     const response = await publicGraphQLClient.query(loadShoutsTopRandom, params).toPromise()
-    if (!response.data) {
-      console.error('[graphql.core] getRandomTopShouts error', response.error)
-    }
+    if (!response.data) console.error('[graphql.core] load_shouts_random_top failed', response)
+
     return response.data.load_shouts_random_top
   },
 
   getUnratedShouts: async (limit = 50, offset = 0) => {
     const response = await apiClient.private.query(loadShoutsUnrated, { limit, offset }).toPromise()
-
-    if (!response.data) {
-      console.error('[graphql.core] getUnratedShouts error', response.error)
-    }
+    if (!response.data) console.error('[graphql.core] load_shouts_unrated', response)
 
     return response.data.load_shouts_unrated
   },
 
   getRandomTopics: async ({ amount }: { amount: number }) => {
     const response = await publicGraphQLClient.query(topicsRandomQuery, { amount }).toPromise()
-
-    if (!response.data) {
-      console.error('[graphql.client.core] getRandomTopics', response.error)
-    }
+    if (!response.data) console.error('[graphql.client.core] get_topics_random failed', response)
 
     return response.data.get_topics_random
   },
 
   getRandomTopicShouts: async (limit: number): Promise<{ topic: Topic; shouts: Shout[] }> => {
     const resp = await publicGraphQLClient.query(articlesLoadRandomTopic, { limit }).toPromise()
-
-    if (resp.error) {
-      console.error(resp)
-    }
-
+    if (!resp.data) console.error('[graphql.client.core] load_shouts_random_topic', resp)
     return resp.data.load_random_topics_shouts
   },
 
@@ -100,16 +89,14 @@ export const apiClient = {
 
   getAllTopics: async () => {
     const response = await publicGraphQLClient.query(topicsAll, {}).toPromise()
-    if (response.error) {
-      console.debug('[graphql.client.core] get_topics_all', response.error)
-    }
+    if (!response.data) console.error('[graphql.client.core] get_topics_all', response)
+
     return response.data.get_topics_all
   },
   getAllAuthors: async (limit: number = 50, offset: number = 0) => {
     const response = await publicGraphQLClient.query(authorsAll, { limit, offset }).toPromise()
-    if (response.error) {
-      console.debug('[graphql.client.core] load_authors_all', response.error)
-    }
+    if (!response.data) console.error('[graphql.client.core] load_authors_all', response)
+
     return response.data.load_authors_all
   },
   getAuthor: async (params: { slug?: string; author_id?: number }): Promise<Author> => {

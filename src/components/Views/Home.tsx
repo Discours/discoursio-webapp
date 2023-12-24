@@ -67,10 +67,11 @@ export const HomeView = (props: Props) => {
       setIsLoadMoreButtonVisible(hasMore)
     }
 
-    const { topic, shouts } = await apiClient.getRandomTopicShouts(RANDOM_TOPIC_SHOUTS_COUNT)
+    const result = await apiClient.getRandomTopicShouts(RANDOM_TOPIC_SHOUTS_COUNT)
+    if (!result) console.warn('[apiClient.getRandomTopicShouts] failed')
     batch(() => {
-      setRandomTopic(topic)
-      setRandomTopicArticles(shouts)
+      if (result?.topic) setRandomTopic(result.topic)
+      if (result?.shouts) setRandomTopicArticles(result.shouts)
     })
   })
 

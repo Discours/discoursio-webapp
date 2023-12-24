@@ -86,14 +86,17 @@ export const AuthorView = (props: Props) => {
   })
 
   createEffect(async () => {
-    console.error('[AuthorView] load subscriptions')
-    try {
-      const { authors, topics } = await fetchSubscriptions()
-      setFollowing([...(authors || []), ...(topics || [])])
-      const userSubscribers = await apiClient.getAuthorFollowers({ slug: author().slug })
-      setFollowers(userSubscribers)
-    } catch (error) {
-      console.error('[AuthorView] error:', error)
+    const slug = author()?.slug
+    if (slug) {
+      console.debug('[AuthorView] load subscriptions')
+      try {
+        const { authors, topics } = await fetchSubscriptions()
+        setFollowing([...(authors || []), ...(topics || [])])
+        const userSubscribers = await apiClient.getAuthorFollowers({ slug })
+        setFollowers(userSubscribers)
+      } catch (error) {
+        console.error('[AuthorView] error:', error)
+      }
     }
   })
 

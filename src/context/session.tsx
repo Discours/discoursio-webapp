@@ -165,19 +165,20 @@ export const SessionProvider = (props: {
         }
         if (!author()) {
           const a = await loadAuthor()
-          await loadSubscriptions()
-          if (a) {
-            console.log('[context.session] author profile and subs loaded', author())
-          } else {
-            setSubscriptions(EMPTY_SUBSCRIPTIONS)
-            setAuthor(null)
-            console.warn('[context.session] author is not loaded')
-          }
+          if (!a) reset()
+          else await loadSubscriptions()
         }
         setIsSessionLoaded(true)
       }
     }
   })
+
+  const reset = () => {
+    setIsSessionLoaded(true)
+    setSubscriptions(EMPTY_SUBSCRIPTIONS)
+    setSession(null)
+    setAuthor(null)
+  }
 
   // initial effect
   onMount(async () => {
@@ -189,11 +190,7 @@ export const SessionProvider = (props: {
     } catch {
       console.warn('[context.session] load session failed')
     }
-    if (!s) {
-      setIsSessionLoaded(true)
-      setSession(null)
-      setAuthor(null)
-    }
+    if (!s) reset()
   })
 
   // callback state updater
@@ -236,7 +233,7 @@ export const SessionProvider = (props: {
 
   const signOut = async () => {
     await authorizer().logout()
-    setSession(null)
+    reset()
     showSnackbar({ body: t("You've successfully logged out") })
   }
 

@@ -1,41 +1,24 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal } from 'solid-js'
-
 import { useLocalize } from '../../../context/localize'
-import { apiClient } from '../../../graphql/client/core'
-import { SearchResult } from '../../../graphql/schema/core.gen'
 import { Icon } from '../../_shared/Icon'
 
 import styles from './SearchModal.module.scss'
 
 export const SearchModal = () => {
   const { t } = useLocalize()
-  const [searchResults, setSearchResults] = createSignal<Array<SearchResult>>([])
+  let qElement: HTMLInputElement | undefined
 
-  let msgElement: HTMLTextAreaElement | undefined
-  let contactElement: HTMLInputElement | undefined
-
-  const submit = async () => {
-    const results = await apiClient.getShoutsSearch({ text: msgElement.value })
-
-    if (results) setSearchResults(results)
+  const submitQuery = async (ev) => {
+    ev.preventDefault()
+    window.history.pushState({}, '', '/search?q=' + qElement.value)
   }
-
-  createEffect(() => {
-    if (searchResults()) {
-      // TODO: some showing logics
-    }
-  })
-
-  // TODO: useLocalize()
-
   return (
-    <form onSubmit={submit} class={styles.searchForm}>
+    <form onSubmit={submitQuery} class={styles.searchForm}>
       <input
         type="text"
-        name="contact"
+        name="q"
         placeholder={t('Site search')}
-        ref={contactElement}
+        ref={qElement}
         class={styles.searchField}
       />
       <button type="submit" class={styles.submitControl}>
@@ -48,13 +31,13 @@ export const SearchModal = () => {
 
       <ul class={clsx('view-switcher', styles.filterSwitcher)}>
         <li class="view-switcher__item view-switcher__item--selected">
-          <button type="button">Все</button>
+          <button type="button">{t('All')}</button>
         </li>
         <li class="view-switcher__item">
-          <button type="button">Публикации</button>
+          <button type="button">{t('Publications')}</button>
         </li>
         <li class="view-switcher__item">
-          <button type="button">Темы</button>
+          <button type="button">{t('Topics')}</button>
         </li>
       </ul>
 

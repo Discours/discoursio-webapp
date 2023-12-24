@@ -1,4 +1,4 @@
-import type { ChatMember } from '../../graphql/schema/core.gen'
+import type { ChatMember } from '../../graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
 import { For } from 'solid-js'
@@ -29,7 +29,7 @@ const GroupDialogAvatar = (props: Props) => {
             bordered={true}
             size="small"
             name={user.name}
-            url={user.userpic}
+            url={user.pic}
           />
         )}
       </For>

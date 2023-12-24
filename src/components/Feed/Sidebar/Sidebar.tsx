@@ -130,7 +130,7 @@ export const Sidebar = () => {
                   classList={{ [styles.unread]: checkAuthorIsSeen(author.slug) }}
                 >
                   <div class={styles.sidebarItemName}>
-                    <Userpic name={author.name} userpic={author.userpic} size="XS" class={styles.userpic} />
+                    <Userpic name={author.name} userpic={author.pic} size="XS" class={styles.userpic} />
                     <div class={styles.sidebarItemNameLabel}>{author.name}</div>
                   </div>
                 </a>

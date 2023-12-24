@@ -13,7 +13,7 @@ import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/arti
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
 import { getImageUrl } from '../../../utils/getImageUrl'
-import { getServerDate } from '../../../utils/getServerDate'
+import { getUnixtime } from '../../../utils/getServerDate'
 import { DropDown } from '../../_shared/DropDown'
 import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
@@ -54,19 +54,21 @@ const getOrderBy = (by: FeedSearchParams['by']) => {
   return ''
 }
 
-const getFromDate = (period: FeedPeriod): Date => {
+const getFromDate = (period: FeedPeriod): number => {
   const now = new Date()
+  let d: Date = now
   switch (period) {
     case 'week': {
-      return new Date(now.setDate(now.getDate() - 7))
+      d = new Date(now.setDate(now.getDate() - 7))
     }
     case 'month': {
-      return new Date(now.setMonth(now.getMonth() - 1))
+      d = new Date(now.setMonth(now.getMonth() - 1))
     }
     case 'year': {
-      return new Date(now.setFullYear(now.getFullYear() - 1))
+      d = new Date(now.setFullYear(now.getFullYear() - 1))
     }
   }
+  return Math.floor(d.getTime() / 1000)
 }
 
 type Props = {
@@ -153,8 +155,7 @@ export const FeedView = (props: Props) => {
 
     if (searchParams().by && searchParams().by !== 'publish_date') {
       const period = searchParams().period || 'month'
-      const fromDate = getFromDate(period)
-      options.filters = { fromDate: getServerDate(fromDate) }
+      options.filters = { after: getFromDate(period) }
     }
 
     return props.loadShouts(options)

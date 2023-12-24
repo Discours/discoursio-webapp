@@ -1,6 +1,6 @@
 // TODO: additional entities list column + article
 
-import type { Author, Shout, Topic, User } from '../../graphql/schema/core.gen'
+import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'
@@ -16,7 +16,7 @@ import styles from './Beside.module.scss'
 
 type Props = {
   title?: string
-  values: (Shout | User | Topic | Author)[]
+  values: (Shout | Topic | Author)[]
   beside: Shout
   wrapper: 'topic' | 'author' | 'article' | 'top-article'
   isTopicCompact?: boolean
@@ -68,7 +68,7 @@ export const Beside = (props: Props) => {
                   })}
                 >
                   <For each={[...props.values]}>
-                    {(value: Partial<Shout | User | Topic>) => (
+                    {(value: Partial<Shout | Author | Topic>) => (
                       <li classList={{ [styles.top]: props.wrapper.startsWith('top-') }}>
                         <Show when={props.wrapper === 'topic'}>
                           <TopicCard

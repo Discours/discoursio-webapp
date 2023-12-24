@@ -1,4 +1,4 @@
-import type { Author, Reaction, Shout, Stat, Topic, TopicStat } from '../graphql/types.gen'
+import type { Author, Reaction, Shout, Stat, Topic, TopicStat } from '../graphql/schema/core.gen'
 
 export const byFirstChar = (a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || '')
 

@@ -31,7 +31,7 @@ export const Message = (props: Props) => {
     <div class={clsx(styles.Message, isOwn && styles.own)}>
       <Show when={!isOwn && user}>
         <div class={styles.author}>
-          <DialogAvatar size="small" name={user.name} url={user.userpic} />
+          <DialogAvatar size="small" name={user.name} url={user.pic} />
           <div class={styles.name}>{user.name}</div>
         </div>
       </Show>

@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   query {
-    get_authors_all() {
+    get_authors_all {
       id
       slug
       name

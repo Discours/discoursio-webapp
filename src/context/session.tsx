@@ -40,6 +40,7 @@ export type SessionContextType = {
   config: ConfigType
   session: Resource<AuthToken>
   author: Resource<Author | null>
+  authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
   subscriptions: Accessor<Result>
   isAuthWithCallback: Accessor<() => void>
@@ -104,17 +105,18 @@ export const SessionProvider = (props: {
   })
 
   // load
-
   const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
   const authorizer = createMemo(() => new Authorizer(defaultConfig))
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
+  const [authError, setAuthError] = createSignal('')
   const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(
     async () => {
       try {
         console.info('[context.session] loading session')
         return await authorizer().getSession()
-      } catch {
-        console.info('[context.session] cannot refresh session')
+      } catch (e) {
+        console.info('[context.session] cannot refresh session', e)
+        setAuthError(e)
         return null
       }
     },
@@ -141,7 +143,7 @@ export const SessionProvider = (props: {
     setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
   }
 
-  // session postload effect
+  // when session is loaded
   createEffect(async () => {
     if (session()) {
       const token = session()?.access_token
@@ -158,19 +160,13 @@ export const SessionProvider = (props: {
           if (a) {
             console.log('[context.session] author profile and subs loaded', author())
           } else {
+            setSubscriptions(EMPTY_SUBSCRIPTIONS)
+            setAuthor(null)
             console.warn('[context.session] author is not loaded')
           }
-          setIsSessionLoaded(true)
         }
+        setIsSessionLoaded(true)
       }
-    }
-  })
-
-  createEffect(() => {
-    if (session() !== null && author() === null) {
-      setIsSessionLoaded(true)
-      setAuthor(null)
-      setSubscriptions(EMPTY_SUBSCRIPTIONS)
     }
   })
 
@@ -242,9 +238,13 @@ export const SessionProvider = (props: {
 
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
-    const at: void | AuthToken = await authorizer().verifyEmail(input)
-    if (at) setSession(at)
-    return at
+    try {
+      const at: void | AuthToken = await authorizer().verifyEmail(input)
+      if (at) setSession(at)
+      return at
+    } catch (e) {
+      console.debug(e)
+    }
   }
 
   const isAuthenticated = createMemo(() => Boolean(author()))
@@ -264,6 +264,7 @@ export const SessionProvider = (props: {
     changePassword,
   }
   const value: SessionContextType = {
+    authError,
     config: configuration(),
     session,
     subscriptions,

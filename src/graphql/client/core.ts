@@ -95,7 +95,7 @@ export const apiClient = {
   },
   getAllAuthors: async () => {
     const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
-    if (!response.data) console.error('[graphql.client.core] load_authors_all', response)
+    if (!response.data) console.error('[graphql.client.core] getAllAuthors', response)
 
     return response.data.get_authors_all
   },

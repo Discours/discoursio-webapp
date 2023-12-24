@@ -12,44 +12,26 @@ import styles from './AuthModal.module.scss'
 
 export const EmailConfirm = () => {
   const { t } = useLocalize()
-  const { searchParams } = useRouter<ConfirmEmailSearchParams>()
-  const {
-    actions: { confirmEmail },
-    session,
-  } = useSession()
-  const [isTokenExpired, setIsTokenExpired] = createSignal(false) // TODO: handle expired token in context/session
-  const [isTokenInvalid, setIsTokenInvalid] = createSignal(false) // TODO: handle invalid token in context/session
-
-  createEffect(async () => {
-    const token = searchParams()?.access_token
-    if (token) await confirmEmail({ token })
+  const { session, authError } = useSession()
+  const [email, setEmail] = createSignal('')
+  const [emailConfirmed, setEmailConfirmed] = createSignal(false)
+  createEffect(() => {
+    setEmail(session()?.user?.email)
+    setEmailConfirmed(session()?.user?.email_verified)
   })
-
-  const email = createMemo(() => session()?.user?.email)
-  const confirmedEmail = createMemo(() => session()?.user?.email_verified)
 
   return (
     <div>
-      {/* TODO: texts */}
-      <Show when={isTokenExpired()}>
-        <div class={styles.title}>Ссылка больше не действительна</div>
+      <Show when={authError()}>
+        <div class={styles.title}>{authError()}</div>
         <div class={styles.text}>
           <a href="/?modal=auth&mode=login">
             {/*TODO: temp solution, should be send link again */}
-            Вход
+            {t('Enter')}
           </a>
         </div>
       </Show>
-      <Show when={isTokenInvalid()}>
-        <div class={styles.title}>Неправильная ссылка</div>
-        <div class={styles.text}>
-          <a href="/?modal=auth&mode=login">
-            {/*TODO: temp solution, should be send link again */}
-            Вход
-          </a>
-        </div>
-      </Show>
-      <Show when={confirmedEmail()}>
+      <Show when={emailConfirmed()}>
         <div class={styles.title}>{t('Hooray! Welcome!')}</div>
         <div class={styles.text}>
           {t("You've confirmed email")} {email()}

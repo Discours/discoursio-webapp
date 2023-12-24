@@ -13,7 +13,6 @@ import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/arti
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
 import { getImageUrl } from '../../../utils/getImageUrl'
-import { getUnixtime } from '../../../utils/getServerDate'
 import { DropDown } from '../../_shared/DropDown'
 import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
@@ -60,12 +59,15 @@ const getFromDate = (period: FeedPeriod): number => {
   switch (period) {
     case 'week': {
       d = new Date(now.setDate(now.getDate() - 7))
+      break
     }
     case 'month': {
       d = new Date(now.setMonth(now.getMonth() - 1))
+      break
     }
     case 'year': {
       d = new Date(now.setFullYear(now.getFullYear() - 1))
+      break
     }
   }
   return Math.floor(d.getTime() / 1000)

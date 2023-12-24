@@ -10,7 +10,7 @@ export const SearchModal = () => {
 
   const submitQuery = async (ev) => {
     ev.preventDefault()
-    window.history.pushState({}, '', '/search?q=' + qElement.value)
+    window.history.pushState({}, '', '/search/' + qElement.value)
   }
   return (
     <form onSubmit={submitQuery} class={styles.searchForm}>

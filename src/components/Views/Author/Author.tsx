@@ -40,12 +40,18 @@ export const AuthorView = (props: Props) => {
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
 
   const { page: getPage } = useRouter()
-  const author = createMemo(() => authorEntities()[props.authorSlug])
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
+
+  const author = createMemo(() => authorEntities()[props.authorSlug])
+  createEffect(async () => {
+    if (author() && !author().stat) {
+      await apiClient.getAuthor({ author_id: author().id })
+    }
+  })
 
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
@@ -71,20 +77,24 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(async () => {
-    try {
-      const userSubscribers = await apiClient.getAuthorFollowers({ slug: props.authorSlug })
-      setFollowers(userSubscribers)
-    } catch (error) {
-      console.error('[getAuthorFollowers]', error)
-    }
-
     checkBioHeight()
 
+    // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       await loadMore()
     }
-    const { authors, topics } = await fetchSubscriptions()
-    setFollowing([...(authors || []), ...(topics || [])])
+  })
+
+  createEffect(async () => {
+    console.error('[AuthorView] load subscriptions')
+    try {
+      const { authors, topics } = await fetchSubscriptions()
+      setFollowing([...(authors || []), ...(topics || [])])
+      const userSubscribers = await apiClient.getAuthorFollowers({ slug: author().slug })
+      setFollowers(userSubscribers)
+    } catch (error) {
+      console.error('[AuthorView] error:', error)
+    }
   })
 
   createEffect(() => {
@@ -160,13 +170,17 @@ export const AuthorView = (props: Props) => {
                     <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
                       {t('Publications')}
                     </a>
-                    <span class="view-switcher__counter">{author().stat.shouts}</span>
+                    <Show when={author().stat}>
+                      <span class="view-switcher__counter">{author().stat.shouts}</span>
+                    </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
                     <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                       {t('Comments')}
                     </a>
-                    <span class="view-switcher__counter">{author().stat.commented}</span>
+                    <Show when={author().stat}>
+                      <span class="view-switcher__counter">{author().stat.commented}</span>
+                    </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
                     <a

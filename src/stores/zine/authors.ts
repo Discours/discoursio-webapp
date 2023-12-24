@@ -7,7 +7,7 @@ import { byStat } from '../../utils/sortby'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
 
-const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('shouts')
+const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('name')
 
 export const setAuthorsSort = (sortBy: AuthorsSortBy) => setSortAllBy(sortBy)
 

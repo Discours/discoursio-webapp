@@ -34,7 +34,7 @@ export const AllAuthorsView = (props: Props) => {
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
-    sortBy: searchParams().by || 'shouts',
+    sortBy: searchParams().by || 'name',
   })
 
   const [searchQuery, setSearchQuery] = createSignal('')
@@ -42,13 +42,13 @@ export const AllAuthorsView = (props: Props) => {
   createEffect(() => {
     if (!searchParams().by) {
       changeSearchParams({
-        by: 'shouts',
+        by: 'name',
       })
     }
   })
 
   createEffect(() => {
-    setAuthorsSort(searchParams().by || 'shouts')
+    setAuthorsSort(searchParams().by || 'name')
   })
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
@@ -171,7 +171,9 @@ export const AllAuthorsView = (props: Props) => {
                                 <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                   <div class="topic-title">
                                     <a href={`/author/${author.slug}`}>{author.name}</a>
-                                    <span class={styles.articlesCounter}>{author.stat.shouts}</span>
+                                    <Show when={author.stat}>
+                                      <span class={styles.articlesCounter}>{author.stat.shouts}</span>
+                                    </Show>
                                   </div>
                                 </div>
                               )}

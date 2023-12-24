@@ -5,13 +5,17 @@ import { openPage } from '@nanostores/router'
 
 import styles from './SearchModal.module.scss'
 import { router, useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
 
 export const SearchModal = () => {
   const { t } = useLocalize()
+  const { changeSearchParams } = useRouter()
   let qElement: HTMLInputElement | undefined
 
   const submitQuery = async (ev) => {
     ev.preventDefault()
+    changeSearchParams({}, true)
+    hideModal()
     openPage(router, 'search', { q: qElement.value })
   }
   return (

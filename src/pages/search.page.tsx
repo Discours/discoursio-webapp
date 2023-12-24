@@ -1,6 +1,6 @@
 import type { PageProps } from './types'
 
-import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
@@ -12,20 +12,18 @@ import { loadShoutsSearch, resetSortedArticles } from '../stores/zine/articles'
 
 export const SearchPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
-
   const { t } = useLocalize()
-
-  const { page } = useRouter()
-
+  const { page, searchParams } = useRouter()
   const q = createMemo(() => page().params['q'] as string)
 
-  onMount(async () => {
-    if (isLoaded()) {
-      return
+  createEffect(async () => {
+    if (isLoaded()) return
+    else if (q() && window) {
+      const text = q() || window.location.href.split('/').pop()
+      // TODO: pagination, load more
+      await loadShoutsSearch({ text, limit: 50, offset: 0 })
+      setIsLoaded(true)
     }
-
-    await loadShoutsSearch({ text: q(), limit: 50, offset: 0 })
-    setIsLoaded(true)
   })
 
   onCleanup(() => resetSortedArticles())

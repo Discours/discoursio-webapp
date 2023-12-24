@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadSearchQuery($options: LoadShoutsOptions) {
-    load_shouts_search(options: $options) {
+  query LoadSearchQuery($params: LoadShoutsOptions) {
+    load_shouts_search(params: $params) {
       score
       title
       slug

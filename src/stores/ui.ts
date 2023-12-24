@@ -67,15 +67,6 @@ export const hideModal = () => {
     source: null,
   }
 
-  if (searchParams().modal === 'auth') {
-    if (searchParams().mode === 'confirm-email') {
-      newSearchParams.token = null
-    }
-    newSearchParams.mode = null
-  }
-
-  changeSearchParams(newSearchParams, true)
-
   setModal(null)
 }
 

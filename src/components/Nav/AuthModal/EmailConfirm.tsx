@@ -12,12 +12,19 @@ import styles from './AuthModal.module.scss'
 
 export const EmailConfirm = () => {
   const { t } = useLocalize()
+  const { changeSearchParams } = useRouter()
   const { session, authError } = useSession()
   const [email, setEmail] = createSignal('')
   const [emailConfirmed, setEmailConfirmed] = createSignal(false)
   createEffect(() => {
     setEmail(session()?.user?.email)
     setEmailConfirmed(session()?.user?.email_verified)
+  })
+
+  createEffect(() => {
+    if (emailConfirmed() || authError()) {
+      changeSearchParams({}, true)
+    }
   })
 
   return (

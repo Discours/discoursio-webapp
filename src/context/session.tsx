@@ -25,11 +25,12 @@ import {
 import { inboxClient } from '../graphql/client/chat'
 import { apiClient } from '../graphql/client/core'
 import { notifierClient } from '../graphql/client/notifier'
-import { useRouter } from '../stores/router'
+import { router, useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
+import { openPage } from '@nanostores/router'
 
 const defaultConfig: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
@@ -92,17 +93,8 @@ export const SessionProvider = (props: {
     // TODO: handle oauth here too
     const token = searchParams()?.token
     const access_token = searchParams()?.access_token
-    if (token) {
-      changeSearchParams({
-        mode: 'change-password',
-        modal: 'auth',
-      })
-    } else if (access_token) {
-      changeSearchParams({
-        mode: 'confirm-email',
-        modal: 'auth',
-      })
-    }
+    if (access_token) changeSearchParams({ mode: 'confirm-email', modal: 'auth', access_token })
+    else if (token) changeSearchParams({ mode: 'change-password', modal: 'auth', token })
   })
 
   // load

@@ -1,8 +1,10 @@
 import { clsx } from 'clsx'
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
+import { openPage } from '@nanostores/router'
 
 import styles from './SearchModal.module.scss'
+import { router, useRouter } from '../../../stores/router'
 
 export const SearchModal = () => {
   const { t } = useLocalize()
@@ -10,7 +12,7 @@ export const SearchModal = () => {
 
   const submitQuery = async (ev) => {
     ev.preventDefault()
-    window.history.pushState({}, '', '/search/' + qElement.value)
+    openPage(router, 'search', { q: qElement.value })
   }
   return (
     <form onSubmit={submitQuery} class={styles.searchForm}>

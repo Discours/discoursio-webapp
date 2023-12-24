@@ -118,6 +118,8 @@ export const RegisterForm = () => {
       setIsSuccess(true)
     } catch (error) {
       console.error(error)
+
+      // TODO: move to context/session
       if (error?.code === 'user_already_exists') {
         return
       }

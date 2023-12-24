@@ -5,6 +5,7 @@ import { createMemo, createSignal } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
 import { byTopicStatDesc } from '../../utils/sortby'
+import { useRouter } from '../router'
 
 export type TopicsSortBy = 'followers' | 'title' | 'authors' | 'shouts'
 
@@ -17,7 +18,7 @@ const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
 
 const sortedTopics = createLazyMemo<Topic[]>(() => {
   const topics = Object.values(topicEntities())
-
+  const { changeSearchParams } = useRouter()
   switch (sortAllBy()) {
     case 'followers': {
       // console.debug('[store.topics] sorted by followers')
@@ -40,7 +41,8 @@ const sortedTopics = createLazyMemo<Topic[]>(() => {
       break
     }
     default: {
-      console.error(`Unknown sort: ${sortAllBy()}`)
+      topics.sort(byTopicStatDesc('shouts'))
+      changeSearchParams({ by: 'shouts' })
     }
   }
 

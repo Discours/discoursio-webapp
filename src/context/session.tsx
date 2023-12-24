@@ -17,6 +17,7 @@ import {
   createResource,
   createSignal,
   on,
+  onCleanup,
   onMount,
   useContext,
 } from 'solid-js'
@@ -105,6 +106,7 @@ export const SessionProvider = (props: {
   })
 
   // load
+  let ta
   const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
   const authorizer = createMemo(() => new Authorizer(defaultConfig))
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
@@ -112,8 +114,11 @@ export const SessionProvider = (props: {
   const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(
     async () => {
       try {
-        console.info('[context.session] loading session')
-        return await authorizer().getSession()
+        const s = await authorizer().getSession()
+        console.info('[context.session] loading session', s)
+        ta = setTimeout(loadSession, s.expires_in * 1000)
+        console.info(`[context.session] will refresh in ${s.expires_in / 60} mins`)
+        return s
       } catch (e) {
         console.info('[context.session] cannot refresh session', e)
         setAuthError(e)
@@ -125,6 +130,10 @@ export const SessionProvider = (props: {
       initialValue: null,
     },
   )
+
+  onCleanup(() => {
+    clearTimeout(ta)
+  })
 
   const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
     async () => {
@@ -148,7 +157,7 @@ export const SessionProvider = (props: {
     if (session()) {
       const token = session()?.access_token
       if (token) {
-        console.log('[context.session] token observer got token', token)
+        // console.log('[context.session] token observer got token', token)
         if (!inboxClient.private) {
           apiClient.connect(token)
           notifierClient.connect(token)

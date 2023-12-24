@@ -56,7 +56,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       setTotalNotificationsCount(total)
       setUnreadNotificationsCount(unread)
       setNotificationEntities(newGroupsEntries)
-      console.debug(`[context.notifications] groups updated`)
+      console.debug(`[context.notifications] groups updated`, groups)
       return groups
     } else {
       return []

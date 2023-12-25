@@ -8,7 +8,7 @@ import { apiClient } from '../graphql/client/core'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { slug } = pageContext.routeParams
-
+  console.debug(`[author.page] detected author in route: @${slug}`)
   const author = await apiClient.getAuthor({ slug })
 
   if (!author) {

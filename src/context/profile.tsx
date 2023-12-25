@@ -33,8 +33,6 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
   const { author } = useSession()
   const [form, setForm] = createStore<ProfileInput>({})
 
-  const currentSlug = createMemo(() => author()?.slug)
-
   const submit = async (profile: ProfileInput) => {
     const response = await apiClient.updateProfile(profile)
     if (response.error) {
@@ -44,9 +42,8 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
   }
 
   createEffect(async () => {
-    if (!currentSlug()) return
-    try {
-      const currentAuthor = await loadAuthor({ slug: currentSlug() })
+    if (author()) {
+      const currentAuthor = author()
       setForm({
         name: currentAuthor.name,
         slug: currentAuthor.slug,
@@ -55,10 +52,9 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
         pic: userpicUrl(currentAuthor.pic),
         links: currentAuthor.links,
       })
-    } catch (error) {
-      console.error(error)
     }
   })
+
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
     if (fieldName === 'links') {
       if (remove) {

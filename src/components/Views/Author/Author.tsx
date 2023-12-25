@@ -9,7 +9,7 @@ import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
-import { useAuthorsStore } from '../../../stores/zine/authors'
+import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
@@ -24,6 +24,7 @@ import { Row3 } from '../../Feed/Row3'
 
 import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
+import { useSession } from '../../../context/session'
 
 type Props = {
   shouts: Shout[]
@@ -38,18 +39,21 @@ export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
-
   const { page: getPage } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-
+  const {
+    actions: { loadSubscriptions },
+  } = useSession()
   const author = createMemo(() => authorEntities()[props.authorSlug])
+
   createEffect(async () => {
-    if (author() && !author().stat) {
-      await apiClient.getAuthor({ author_id: author().id })
+    if (!author()?.stat) {
+      console.debug(`[AuthorView] updating author...`)
+      await loadAuthor({ slug: props.authorSlug })
     }
   })
 
@@ -92,7 +96,7 @@ export const AuthorView = (props: Props) => {
       try {
         const { authors, topics } = await fetchSubscriptions()
         setFollowing([...(authors || []), ...(topics || [])])
-        const userSubscribers = await apiClient.getAuthorFollowers({ slug })
+        const userSubscribers = await loadSubscriptions()
         setFollowers(userSubscribers)
       } catch (error) {
         console.error('[AuthorView] error:', error)

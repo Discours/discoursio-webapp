@@ -22,20 +22,3 @@ jobs:
 
       - name: Run tests
         run: npm run check
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Cloning repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel && vercel --version
-
-      - name: Deploy to Vercel
-        run: vercel --prod --scope=VERCEL_PROJECT_ID
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

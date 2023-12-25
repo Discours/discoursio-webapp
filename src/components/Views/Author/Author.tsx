@@ -115,15 +115,6 @@ export const AuthorView = (props: Props) => {
     restoreScrollPosition()
   }
 
-  // TODO: use title
-  // const title = createMemo(() => {
-  //   const m = searchParams().by
-  //   if (m === 'viewed') return t('Top viewed')
-  //   if (m === 'rating') return t('Top rated')
-  //   if (m === 'commented') return t('Top discussed')
-  //   return t('Top recent')
-  // })
-
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )

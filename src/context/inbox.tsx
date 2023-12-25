@@ -56,7 +56,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   ): Promise<Array<Message>> => {
     if (inboxClient.private) {
       const msgs = await inboxClient.loadChatMessages({ by, limit, offset })
-      setMessages((mmm) => [...mmm, ...msgs]) // TODO: check unique
+      setMessages((mmm) => [...new Set([...mmm, ...msgs])])
       return msgs || []
     }
     return []

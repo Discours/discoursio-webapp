@@ -65,7 +65,8 @@ export const LoginForm = () => {
     setIsLinkSent(true)
     setIsEmailNotConfirmed(false)
     setSubmitError('')
-    changeSearchParams({ mode: 'forgot-password' }) // NOTE: temporary solition
+    changeSearchParams({ mode: 'forgot-password' })
+    // NOTE: temporary solition, needs logix in authorizer
     /* FIXME:
     const { actions: { authorizer } } = useSession()
     const result = await authorizer().verifyEmail({ token })

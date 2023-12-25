@@ -196,8 +196,7 @@ export const HeaderAuth = (props: Props) => {
             >
               <Show when={!isSaveButtonVisible()}>
                 <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
-                  <a href="/inbox">
-                    {/*FIXME: replace with route*/}
+                  <a href={getPagePath(router, 'inbox')}>
                     <div classList={{ entered: page().path === '/inbox' }}>
                       <Icon name="inbox-white" class={styles.icon} />
                       <Icon name="inbox-white-hover" class={clsx(styles.icon, styles.iconHover)} />

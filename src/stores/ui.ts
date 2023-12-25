@@ -60,15 +60,7 @@ export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) =
   setModal(modalType)
 }
 
-// TODO: find a better solution
-export const hideModal = () => {
-  const newSearchParams: Partial<AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams> = {
-    modal: null,
-    source: null,
-  }
-
-  setModal(null)
-}
+export const hideModal = () => setModal(null)
 
 export const useModalStore = () => {
   return {

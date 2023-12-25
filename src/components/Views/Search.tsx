@@ -54,11 +54,6 @@ export const SearchView = (props: Props) => {
   onMount(async () => {
     const q = window.location.pathname.replace('/search/', '') || props.query
     setQuery(q)
-    if (sortedArticles() && !sortedArticles()[0].created_at) {
-      // TODO: fill up articles data structures in search results
-      console.info('[SearchView] poor articles data structure found')
-      await loadMore()
-    }
   })
 
   // TODO: use score from the search results to sort by relevance

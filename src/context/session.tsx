@@ -25,12 +25,11 @@ import {
 import { inboxClient } from '../graphql/client/chat'
 import { apiClient } from '../graphql/client/core'
 import { notifierClient } from '../graphql/client/notifier'
-import { router, useRouter } from '../stores/router'
+import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import { openPage } from '@nanostores/router'
 
 const defaultConfig: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
@@ -157,8 +156,7 @@ export const SessionProvider = (props: {
         }
         if (!author()) {
           const a = await loadAuthor()
-          if (!a) reset()
-          else await loadSubscriptions()
+          a ? await loadSubscriptions() : reset()
         }
         setIsSessionLoaded(true)
       }

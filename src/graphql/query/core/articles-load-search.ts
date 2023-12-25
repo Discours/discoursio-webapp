@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadSearchQuery($params: LoadShoutsOptions) {
-    load_shouts_search(params: $params) {
+  query LoadShoutsSearchQuery($text: String!, $limit: Int, $offset: Int) {
+    load_shouts_search(text: $text, limit: $limit, offset: $offset) {
       score
       title
       slug

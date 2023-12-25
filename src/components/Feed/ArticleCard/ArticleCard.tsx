@@ -87,12 +87,14 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { author } = useSession()
   const mainTopicSlug = props.article.main_topic || ''
-  const mainTopic = props.article.topics.find((tpc: Topic) => tpc.slug === mainTopicSlug)
+  const mainTopic = props.article.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
   const mainTopicTitle =
-    mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace('-', ' ') : mainTopic.title
+    mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace('-', ' ') : mainTopic?.title || ''
 
   const formattedDate = createMemo<string>(() => {
-    return formatDate(new Date(props.article.created_at * 1000))
+    let r = ''
+    if (props.article.created_at) r = formatDate(new Date(props.article.created_at * 1000))
+    return r
   })
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)

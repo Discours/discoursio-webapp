@@ -85,18 +85,20 @@ const addArticles = (...args: Shout[][]) => {
   const authorsByTopic = allArticles.reduce(
     (acc, article) => {
       const { authors, topics } = article
-
-      topics.forEach((topic) => {
-        if (!acc[topic.slug]) {
-          acc[topic.slug] = []
-        }
-
-        authors.forEach((author) => {
-          if (!acc[topic.slug].some((a) => a.slug === author.slug)) {
-            acc[topic.slug].push(author)
+      if (topics) {
+        // TODO: check if data can be consistent without topics and authors in article
+        topics.forEach((topic) => {
+          if (!acc[topic.slug]) {
+            acc[topic.slug] = []
           }
+
+          authors.forEach((author) => {
+            if (!acc[topic.slug].some((a) => a.slug === author.slug)) {
+              acc[topic.slug].push(author)
+            }
+          })
         })
-      })
+      }
 
       return acc
     },

@@ -1,13 +1,14 @@
 import type { SearchResult } from '../../graphql/schema/core.gen'
 
-import { Show, For, createSignal } from 'solid-js'
+import { Show, For, createSignal, createEffect, onMount } from 'solid-js'
 
 import '../../styles/Search.scss'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
-import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
+import { loadShoutsSearch, useArticlesStore } from '../../stores/zine/articles'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
+import { apiClient } from '../../graphql/client/core'
 
 type SearchPageSearchParams = {
   by: '' | 'relevance' | 'rating'
@@ -35,15 +36,32 @@ export const SearchView = (props: Props) => {
 
   const loadMore = async () => {
     saveScrollPosition()
-    const { hasMore } = await loadShouts({
-      filters: {},
-      offset: offset(),
-      limit: LOAD_MORE_PAGE_SIZE,
-    })
-    setIsLoadMoreButtonVisible(hasMore)
-    setOffset(offset() + LOAD_MORE_PAGE_SIZE)
+    if (query()) {
+      console.log(query())
+      const { hasMore } = await loadShoutsSearch({
+        text: query(),
+        offset: offset(),
+        limit: LOAD_MORE_PAGE_SIZE,
+      })
+      setIsLoadMoreButtonVisible(hasMore)
+      setOffset(offset() + LOAD_MORE_PAGE_SIZE)
+    } else {
+      console.warn('[SaerchView] no query found')
+    }
     restoreScrollPosition()
   }
+
+  onMount(async () => {
+    const q = window.location.pathname.replace('/search/', '') || props.query
+    setQuery(q)
+    if (sortedArticles() && !sortedArticles()[0].created_at) {
+      // TODO: fill up articles data structures in search results
+      console.info('[SearchView] poor articles data structure found')
+      await loadMore()
+    }
+  })
+
+  // TODO: use score from the search results to sort by relevance
 
   return (
     <div class="search-page wide-container">
@@ -94,21 +112,15 @@ export const SearchView = (props: Props) => {
               )}
             </For>
 
-            <div class="col-md-6">
-              <a href="#" class="search__show-more">
-                <span class="search__show-more-inner">{t('Load more')}</span>
-              </a>
-            </div>
+            <Show when={isLoadMoreButtonVisible()}>
+              <div class="col-md-6">
+                <a href={`/search/${query()}`} onClick={loadMore} class="search__show-more">
+                  <span class="search__show-more-inner">{t('Load more')}</span>
+                </a>
+              </div>
+            </Show>
           </div>
         </div>
-
-        <Show when={isLoadMoreButtonVisible()}>
-          <p class="load-more-container">
-            <button class="button" onClick={loadMore}>
-              {t('Load more')}
-            </button>
-          </p>
-        </Show>
       </Show>
     </div>
   )

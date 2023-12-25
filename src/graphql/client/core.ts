@@ -195,8 +195,8 @@ export const apiClient = {
     return resp.data.load_shouts_by
   },
 
-  getShoutsSearch: async (args: QueryLoad_Shouts_SearchArgs) => {
-    const resp = await publicGraphQLClient.query(shoutsLoadSearch, args).toPromise()
+  getShoutsSearch: async ({ text, limit, offset }: QueryLoad_Shouts_SearchArgs) => {
+    const resp = await publicGraphQLClient.query(shoutsLoadSearch, { text, limit, offset }).toPromise()
     if (resp.error) console.error(resp)
 
     return resp.data.load_shouts_search

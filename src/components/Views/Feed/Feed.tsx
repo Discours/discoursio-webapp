@@ -25,6 +25,7 @@ import { Sidebar } from '../../Feed/Sidebar'
 import styles from './Feed.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
+import { useSession } from '../../../context/session'
 
 export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5
@@ -129,7 +130,14 @@ export const FeedView = (props: Props) => {
   onMount(() => {
     loadMore()
     // eslint-disable-next-line promise/catch-or-return
-    Promise.all([loadUnratedArticles(), loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
+    Promise.all([loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
+  })
+
+  const { session } = useSession()
+  createEffect(() => {
+    if (session()?.access_token && !unratedArticles()) {
+      loadUnratedArticles()
+    }
   })
 
   createEffect(

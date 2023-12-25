@@ -6,6 +6,19 @@ export default gql`
       score
       title
       slug
+      created_at
+      cover
+      topics {
+        slug
+        title
+      }
+      authors {
+        slug
+        name
+        pic
+        created_at
+        last_seen
+      }
     }
   }
 `

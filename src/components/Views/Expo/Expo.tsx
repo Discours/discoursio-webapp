@@ -143,7 +143,6 @@ export const Expo = (props: Props) => {
   const handleLoadMoreClick = () => {
     loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
   }
-
   return (
     <div class={styles.Expo}>
       <Show when={sortedArticles().length > 0} fallback={<Loading />}>
@@ -206,6 +205,7 @@ export const Expo = (props: Props) => {
                     article={shout}
                     settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
                     desktopCoverSize="XS"
+                    withAspectRatio={true}
                   />
                 </div>
               )}
@@ -220,6 +220,7 @@ export const Expo = (props: Props) => {
                     article={shout}
                     settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
                     desktopCoverSize="XS"
+                    withAspectRatio={true}
                   />
                 </div>
               )}
@@ -236,6 +237,7 @@ export const Expo = (props: Props) => {
                         article={shout}
                         settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
                         desktopCoverSize="XS"
+                        withAspectRatio={true}
                       />
                     </div>
                   )}

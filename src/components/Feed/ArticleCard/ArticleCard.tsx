@@ -46,6 +46,7 @@ export type ArticleCardProps = {
     withViewed?: boolean
     noAuthorLink?: boolean
   }
+  withAspectRatio?: boolean
   desktopCoverSize?: 'XS' | 'S' | 'M' | 'L'
   article: Shout
 }
@@ -112,6 +113,22 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
 
   const description = getDescription(props.article.body)
+
+  const aspectRatio = () => {
+    switch (props.article.layout) {
+      case 'music': {
+        return styles.aspectRatio1x1
+      }
+      case 'image': {
+        return styles.aspectRatio4x3
+      }
+      case 'video':
+      case 'literature': {
+        return styles.aspectRatio16x9
+      }
+    }
+  }
+
   return (
     <section
       class={clsx(styles.shoutCard, props.settings?.additionalClass, {
@@ -127,6 +144,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
         [styles.shoutCardNoImage]: !props.article.cover,
+        [aspectRatio()]: props.withAspectRatio,
       })}
     >
       <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
@@ -154,7 +172,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </div>
       </Show>
-
       <div class={styles.shoutCardContent}>
         <Show
           when={

@@ -14,6 +14,7 @@ import {
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../stores/zine/topics'
 import { apiClient } from '../../utils/apiClient'
+import { capitalize } from '../../utils/capitalize'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
 import { Icon } from '../_shared/Icon'
@@ -134,7 +135,7 @@ export const HomeView = (props: Props) => {
             articles={randomTopicArticles()}
             header={
               <div class={styles.randomTopicHeaderContainer}>
-                <div class={styles.randomTopicHeader}>{randomTopic().title}</div>
+                <div class={styles.randomTopicHeader}>{capitalize(randomTopic().title, true)}</div>
                 <div>
                   <a
                     class={styles.randomTopicHeaderLink}

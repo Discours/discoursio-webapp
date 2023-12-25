@@ -111,9 +111,9 @@ export const SessionProvider = (props: {
         ta = setTimeout(loadSession, s.expires_in * 1000)
         console.info(`[context.session] will refresh in ${s.expires_in / 60} mins`)
         return s
-      } catch (e) {
-        console.info('[context.session] cannot refresh session', e)
-        setAuthError(e)
+      } catch (error) {
+        console.info('[context.session] cannot refresh session', error)
+        setAuthError(error)
         return null
       }
     },
@@ -179,8 +179,8 @@ export const SessionProvider = (props: {
     let s
     try {
       s = await loadSession()
-    } catch {
-      console.warn('[context.session] load session failed')
+    } catch (error) {
+      console.warn('[context.session] load session failed', error)
     }
     if (!s) reset()
   })
@@ -240,8 +240,8 @@ export const SessionProvider = (props: {
       const at: void | AuthToken = await authorizer().verifyEmail(input)
       if (at) setSession(at)
       return at
-    } catch (e) {
-      console.debug(e)
+    } catch (error) {
+      console.warn(error)
     }
   }
 

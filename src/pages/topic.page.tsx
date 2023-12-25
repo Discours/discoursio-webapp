@@ -20,7 +20,11 @@ export const TopicPage = (props: PageProps) => {
 
   const preload = () =>
     Promise.all([
-      loadShouts({ filters: { topic: slug() }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 }),
+      loadShouts({
+        filters: { topic: slug(), visibility: 'public' },
+        limit: PRERENDERED_ARTICLES_COUNT,
+        offset: 0,
+      }),
       loadTopic({ slug: slug() }),
     ])
 

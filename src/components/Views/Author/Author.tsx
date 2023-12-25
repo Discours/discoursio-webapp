@@ -45,15 +45,12 @@ export const AuthorView = (props: Props) => {
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-  const {
-    actions: { loadSubscriptions },
-  } = useSession()
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
   createEffect(async () => {
     if (!author()?.stat) {
-      console.debug(`[AuthorView] updating author...`)
-      await loadAuthor({ slug: props.authorSlug })
+      const a = await loadAuthor({ slug: props.authorSlug })
+      console.debug(`[AuthorView] loaded author:`, a)
     }
   })
 
@@ -96,8 +93,8 @@ export const AuthorView = (props: Props) => {
       try {
         const { authors, topics } = await fetchSubscriptions()
         setFollowing([...(authors || []), ...(topics || [])])
-        const userSubscribers = await loadSubscriptions()
-        setFollowers(userSubscribers)
+        const userSubscribers = await apiClient.getAuthorFollowers({ slug })
+        setFollowers(userSubscribers || [])
       } catch (error) {
         console.error('[AuthorView] error:', error)
       }

@@ -27,7 +27,7 @@ import { apiClient } from '../graphql/client/core'
 import { notifierClient } from '../graphql/client/notifier'
 import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
-
+import { addAuthors } from '../stores/zine/authors'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
 
@@ -122,9 +122,7 @@ export const SessionProvider = (props: {
     },
   )
 
-  onCleanup(() => {
-    clearTimeout(ta)
-  })
+  onCleanup(() => clearTimeout(ta))
 
   const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
     async () => {
@@ -156,7 +154,12 @@ export const SessionProvider = (props: {
         }
         if (!author()) {
           const a = await loadAuthor()
-          a ? await loadSubscriptions() : reset()
+          if (a) {
+            await loadSubscriptions()
+            addAuthors([a])
+          } else {
+            reset()
+          }
         }
         setIsSessionLoaded(true)
       }

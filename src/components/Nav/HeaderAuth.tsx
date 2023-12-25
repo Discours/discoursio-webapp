@@ -55,7 +55,6 @@ export const HeaderAuth = (props: Props) => {
   }
 
   const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
-
   const isNotificationsVisible = createMemo(() => isAuthenticated() && !isEditorPage())
   const isSaveButtonVisible = createMemo(() => isAuthenticated() && isEditorPage())
   const isCreatePostButtonVisible = createMemo(() => isAuthenticated() && !isEditorPage())

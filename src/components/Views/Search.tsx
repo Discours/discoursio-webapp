@@ -54,6 +54,7 @@ export const SearchView = (props: Props) => {
   onMount(async () => {
     const q = window.location.pathname.replace('/search/', '') || props.query
     setQuery(q)
+    searchEl.value = q
   })
 
   // TODO: use score from the search results to sort by relevance

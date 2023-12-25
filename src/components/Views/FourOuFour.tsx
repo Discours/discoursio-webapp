@@ -4,8 +4,14 @@ import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
 
 import styles from '../../styles/FourOuFour.module.scss'
+import { openPage } from '@nanostores/router'
+import { router } from '../../stores/router'
 
 export const FourOuFourView = (_props) => {
+  let queryInput: HTMLInputElement
+  const search = (_ev) => {
+    openPage(router, 'search', { q: queryInput.value })
+  }
   const { t } = useLocalize()
   return (
     <div class={styles.errorPageWrapper}>
@@ -29,9 +35,15 @@ export const FourOuFourView = (_props) => {
               <div class={styles.errorExplain}>
                 <p>{t(`You've reached a non-existed page`)}</p>
                 <p>{t('Try to find another way')}:</p>
-                <form class={clsx(styles.prettyForm, 'pretty-form')} action="/search" method="get">
+                <form class={clsx(styles.prettyForm, 'pretty-form')} method="get" onSubmit={search}>
                   <div class={clsx(styles.prettyFormItem, 'pretty-form__item')}>
-                    <input type="text" name="q" placeholder={t('Search')} id="search-field" />
+                    <input
+                      type="text"
+                      name="q"
+                      placeholder={t('Search')}
+                      id="search-field"
+                      ref={queryInput}
+                    />
                     <label for="search-field">{t('Search')}</label>
                     <button type="submit" class={styles.searchSubmit}>
                       <Icon name="search" />

@@ -6,7 +6,7 @@ import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
-import { setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
+import { loadAllAuthors, loadAuthors, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { scrollHandler } from '../../utils/scroll'
@@ -30,7 +30,7 @@ const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫ
 
 export const AllAuthorsView = (props: Props) => {
   const { t, lang } = useLocalize()
-  const [limit, setLimit] = createSignal(PAGE_SIZE)
+  const [offset, setOffset] = createSignal(0)
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
@@ -40,16 +40,32 @@ export const AllAuthorsView = (props: Props) => {
   const [searchQuery, setSearchQuery] = createSignal('')
 
   createEffect(() => {
-    if (!searchParams().by) {
-      changeSearchParams({
-        by: 'name',
-      })
+    let by = searchParams().by
+    if (by) {
+      setAuthorsSort(by)
+    } else {
+      by = 'name'
+      changeSearchParams({ by })
     }
   })
 
-  createEffect(() => {
-    setAuthorsSort(searchParams().by || 'name')
+  const loadMore = async (by: AllAuthorsPageSearchParams['by'] = '') => {
+    await loadAuthors({ by: { stat: by }, limit: PAGE_SIZE, offset: offset() })
+    setOffset((o) => o + PAGE_SIZE)
+  }
+
+  const isStatsLoaded = createMemo(() => sortedAuthors() && sortedAuthors().some((author) => author.stat))
+
+  createEffect(async () => {
+    if (!isStatsLoaded()) {
+      await loadMore('shouts')
+      await loadMore('followers')
+    }
   })
+
+  const showMore = async () => {
+    await loadMore(searchParams().by)
+  }
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
@@ -85,8 +101,6 @@ export const AllAuthorsView = (props: Props) => {
     return dummyFilter(sortedAuthors(), searchQuery(), lang())
   })
 
-  const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
-
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Authors')
   const description = t('List of authors of the open editorial community')
@@ -105,32 +119,34 @@ export const AllAuthorsView = (props: Props) => {
       <Meta name="twitter:description" content={description} />
       <Show when={props.isLoaded} fallback={<Loading />}>
         <div class="offset-md-5">
-          <div class="row">
-            <div class="col-lg-20 col-xl-18">
-              <h1>{t('Authors')}</h1>
-              <p>{t('Subscribe who you like to tune your personal feed')}</p>
-              <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
-                <li
-                  classList={{
-                    'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts',
-                  }}
-                >
-                  <a href="/authors?by=shouts">{t('By shouts')}</a>
-                </li>
-                <li classList={{ 'view-switcher__item--selected': searchParams().by === 'followers' }}>
-                  <a href="/authors?by=followers">{t('By popularity')}</a>
-                </li>
-                <li classList={{ 'view-switcher__item--selected': searchParams().by === 'name' }}>
-                  <a href="/authors?by=name">{t('By name')}</a>
-                </li>
-                <Show when={searchParams().by !== 'name'}>
-                  <li class="view-switcher__search">
-                    <SearchField onChange={(value) => setSearchQuery(value)} />
+          <Show when={isStatsLoaded()}>
+            <div class="row">
+              <div class="col-lg-20 col-xl-18">
+                <h1>{t('Authors')}</h1>
+                <p>{t('Subscribe who you like to tune your personal feed')}</p>
+                <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
+                  <li
+                    classList={{
+                      'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts',
+                    }}
+                  >
+                    <a href="/authors?by=shouts">{t('By shouts')}</a>
                   </li>
-                </Show>
-              </ul>
+                  <li classList={{ 'view-switcher__item--selected': searchParams().by === 'followers' }}>
+                    <a href="/authors?by=followers">{t('By popularity')}</a>
+                  </li>
+                  <li classList={{ 'view-switcher__item--selected': searchParams().by === 'name' }}>
+                    <a href="/authors?by=name">{t('By name')}</a>
+                  </li>
+                  <Show when={searchParams().by !== 'name'}>
+                    <li class="view-switcher__search">
+                      <SearchField onChange={(value) => setSearchQuery(value)} />
+                    </li>
+                  </Show>
+                </ul>
+              </div>
             </div>
-          </div>
+          </Show>
 
           <Show when={sortedAuthors().length > 0}>
             <Show when={searchParams().by === 'name'}>
@@ -188,7 +204,7 @@ export const AllAuthorsView = (props: Props) => {
             </Show>
 
             <Show when={searchParams().by && searchParams().by !== 'name'}>
-              <For each={filteredAuthors().slice(0, limit())}>
+              <For each={filteredAuthors().slice(0, PAGE_SIZE)}>
                 {(author) => (
                   <div class="row">
                     <div class="col-lg-20 col-xl-18">
@@ -199,7 +215,7 @@ export const AllAuthorsView = (props: Props) => {
               </For>
             </Show>
 
-            <Show when={filteredAuthors().length > limit() && searchParams().by !== 'name'}>
+            <Show when={filteredAuthors().length > PAGE_SIZE + offset() && searchParams().by !== 'name'}>
               <div class="row">
                 <div class={clsx(styles.loadMoreContainer, 'col-24 col-md-20')}>
                   <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>

@@ -2,7 +2,7 @@ import { createLazyMemo } from '@solid-primitives/memo'
 import { createSignal } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
-import { Author } from '../../graphql/schema/core.gen'
+import { Author, QueryLoad_Authors_ByArgs } from '../../graphql/schema/core.gen'
 import { byStat } from '../../utils/sortby'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
@@ -93,8 +93,8 @@ type InitialState = {
   sortBy?: AuthorsSortBy
 }
 
-export const loadAuthors = async (by = {}, limit: number = 50, offset = 0): Promise<void> => {
-  const authors = await apiClient.loadAuthorsBy({ by, limit, offset })
+export const loadAuthors = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
+  const authors = await apiClient.loadAuthorsBy(args)
   addAuthors(authors)
 }
 

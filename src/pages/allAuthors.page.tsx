@@ -17,7 +17,7 @@ export const AllAuthorsPage = (props: PageProps) => {
       return
     }
 
-    await loadAllAuthors() // default limit, offset: 60, 0
+    await loadAllAuthors()
     setIsLoaded(true)
   })
 

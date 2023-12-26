@@ -8,6 +8,7 @@ import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
 import { useRouter } from '../../stores/router'
+import { AuthorsSortBy, useAuthorsStore } from '../../stores/zine/authors'
 import { showModal } from '../../stores/ui'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
@@ -23,6 +24,7 @@ import { Modal } from '../Nav/Modal'
 import styles from '../../styles/Inbox.module.scss'
 
 type InboxSearchParams = {
+  by?: string
   initChat: string
   chat: string
 }
@@ -35,14 +37,18 @@ const handleOpenInviteModal = () => {
   showModal('inviteToChat')
 }
 
-export const InboxView = () => {
+type Props = {
+  authors: Author[]
+  isLoaded: boolean
+}
+
+export const InboxView = (props: Props) => {
   const { t } = useLocalize()
   const {
     chats,
     messages,
     actions: { loadChats, loadRecipients, getMessages, sendMessage, createChat },
   } = useInbox()
-
   const [recipients, setRecipients] = createSignal<Author[]>([])
   const [sortByGroup, setSortByGroup] = createSignal(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
@@ -53,7 +59,10 @@ export const InboxView = () => {
   const { author } = useSession()
   const currentUserId = createMemo(() => author()?.id)
   const { changeSearchParams, searchParams } = useRouter<InboxSearchParams>()
-
+  const { sortedAuthors } = useAuthorsStore({
+    authors: props.authors,
+    sortBy: (searchParams()?.by as AuthorsSortBy) || 'name',
+  })
   const messagesContainerRef: { current: HTMLDivElement } = {
     current: null,
   }

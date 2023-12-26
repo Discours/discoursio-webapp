@@ -1,11 +1,12 @@
-import { clsx } from 'clsx'
-import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
 import { openPage } from '@nanostores/router'
+import { clsx } from 'clsx'
 
-import styles from './SearchModal.module.scss'
+import { useLocalize } from '../../../context/localize'
 import { router, useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
+import { Icon } from '../../_shared/Icon'
+
+import styles from './SearchModal.module.scss'
 
 export const SearchModal = () => {
   const { t } = useLocalize()

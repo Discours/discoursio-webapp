@@ -8,7 +8,6 @@ import deleteChatMessage from '../mutation/chat/chat-message-delete'
 import updateChatMessage from '../mutation/chat/chat-message-update'
 import updateChat from '../mutation/chat/chat-update'
 import chatMessagesLoadBy from '../query/chat/chat-messages-load-by'
-import loadRecipients from '../query/chat/chat-recipients'
 import myChats from '../query/chat/chats-load'
 import {
   Chat,

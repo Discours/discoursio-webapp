@@ -1,10 +1,9 @@
 import type { ProfileInput } from '../graphql/schema/core.gen'
 
-import { createContext, createEffect, createMemo, JSX, useContext } from 'solid-js'
+import { createContext, createEffect, JSX, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { loadAuthor } from '../stores/zine/authors'
 
 import { useSession } from './session'
 

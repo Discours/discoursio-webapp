@@ -24,7 +24,6 @@ import { Row3 } from '../../Feed/Row3'
 
 import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
-import { useSession } from '../../../context/session'
 
 type Props = {
   shouts: Shout[]

@@ -1,6 +1,6 @@
 import type { SearchResult } from '../../graphql/schema/core.gen'
 
-import { Show, For, createSignal, createEffect, onMount } from 'solid-js'
+import { Show, For, createSignal, onMount } from 'solid-js'
 
 import '../../styles/Search.scss'
 import { useLocalize } from '../../context/localize'
@@ -8,7 +8,6 @@ import { useRouter } from '../../stores/router'
 import { loadShoutsSearch, useArticlesStore } from '../../stores/zine/articles'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
-import { apiClient } from '../../graphql/client/core'
 
 type SearchPageSearchParams = {
   by: '' | 'relevance' | 'rating'

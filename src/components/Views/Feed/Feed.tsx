@@ -7,6 +7,7 @@ import { createEffect, createMemo, createSignal, For, on, onMount, Show } from '
 
 import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
+import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
@@ -25,7 +26,6 @@ import { Sidebar } from '../../Feed/Sidebar'
 import styles from './Feed.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
-import { useSession } from '../../../context/session'
 
 export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5

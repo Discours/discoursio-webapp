@@ -1,7 +1,5 @@
-import type { ConfirmEmailSearchParams } from './types'
-
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'

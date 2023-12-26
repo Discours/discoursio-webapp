@@ -1,8 +1,10 @@
 @mixin searchFilterControl {
-  background: rgb(64 64 64 / 0.5);
+  background: rgb(64 64 64 / 50%);
   border-radius: 10rem;
   color: #fff;
+
   @include font-size(1.4rem);
+
   font-weight: 500;
   height: 4rem;
   padding: 0 2rem;
@@ -13,7 +15,7 @@
   }
 
   &:active {
-    color: rgb(255 255 255 / 0.4);
+    color: rgb(255 255 255 / 40%);
   }
 }
 
@@ -25,13 +27,15 @@
     border: none;
     border-bottom: 2px solid #fff;
     color: #fff;
+
     @include font-size(4.8rem);
+
     font-weight: bold;
     outline: none;
     padding: 0 0 0.5rem;
 
     &::placeholder {
-      color: rgb(255 255 255 / 0.32);
+      color: rgb(255 255 255 / 32%);
     }
 
     &:not(:placeholder-shown) + .submitControl {
@@ -51,7 +55,8 @@
 }
 
 .searchDescription {
-  color: rgb(255 255 255 / 0.64);
+  color: rgb(255 255 255 / 64%);
+
   @include font-size(1.6rem);
 }
 

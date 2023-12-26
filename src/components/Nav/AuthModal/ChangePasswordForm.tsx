@@ -67,7 +67,9 @@ export const ChangePasswordForm = () => {
                 'Now you can enter a new password, it must contain at least 8 characters and not be the same as the previous password',
               )}
             </div>
-
+            <Show when={validationErrors()}>
+              <div>{validationErrors()['password']}</div>
+            </Show>
             <PasswordField
               errorMessage={(err) => setPasswordError(err)}
               onInput={(value) => handlePasswordInput(value)}

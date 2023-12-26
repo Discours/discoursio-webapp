@@ -1,11 +1,11 @@
+import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 
 import { useLocalize } from '../../context/localize'
+import { router } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
 
 import styles from '../../styles/FourOuFour.module.scss'
-import { openPage } from '@nanostores/router'
-import { router } from '../../stores/router'
 
 export const FourOuFourView = (_props) => {
   let queryInput: HTMLInputElement

@@ -75,7 +75,7 @@ export const apiClient = {
   getRandomTopicShouts: async (limit: number): Promise<{ topic: Topic; shouts: Shout[] }> => {
     const resp = await publicGraphQLClient.query(articlesLoadRandomTopic, { limit }).toPromise()
     if (!resp.data) console.error('[graphql.client.core] load_shouts_random_topic', resp)
-    return resp.data.load_random_topics_shouts
+    return resp.data.load_shouts_random_topic
   },
 
   follow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {

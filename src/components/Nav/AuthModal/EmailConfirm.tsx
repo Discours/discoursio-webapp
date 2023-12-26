@@ -14,14 +14,16 @@ export const EmailConfirm = () => {
   const { session, authError } = useSession()
   const [email, setEmail] = createSignal('')
   const [emailConfirmed, setEmailConfirmed] = createSignal(false)
-  createEffect(() => {
-    setEmail(session()?.user?.email)
-    setEmailConfirmed(session()?.user?.email_verified)
-  })
 
   createEffect(() => {
-    if (emailConfirmed() || authError()) {
-      changeSearchParams({}, true)
+    const e = session()?.user?.email
+    const v = session()?.user?.email_verified
+    if (e) {
+      setEmail(e)
+      if (v) setEmailConfirmed(v)
+      if (authError()) {
+        changeSearchParams({}, true)
+      }
     }
   })
 

@@ -187,10 +187,12 @@ export const AuthorView = (props: Props) => {
                 </ul>
               </div>
               <div class={clsx('col-md-8', styles.additionalControls)}>
-                <div class={styles.ratingContainer}>
-                  {t('Karma')}
-                  <AuthorRatingControl author={props.author} class={styles.ratingControl} />
-                </div>
+                <Show when={props.author?.stat?.rating}>
+                  <div class={styles.ratingContainer}>
+                    {t('Karma')}
+                    <AuthorRatingControl author={props.author} class={styles.ratingControl} />
+                  </div>
+                </Show>
               </div>
             </div>
           </>

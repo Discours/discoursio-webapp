@@ -17,7 +17,7 @@ import { splitToPages } from '../../../utils/splitToPages'
 import { Loading } from '../../_shared/Loading'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
-import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
+import { AuthorShoutsRating } from '../../Author/AuthorShoutsRating'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
@@ -187,10 +187,10 @@ export const AuthorView = (props: Props) => {
                 </ul>
               </div>
               <div class={clsx('col-md-8', styles.additionalControls)}>
-                <Show when={props.author?.stat?.rating}>
+                <Show when={props.author?.stat?.rating || props.author?.stat?.rating === 0}>
                   <div class={styles.ratingContainer}>
                     {t('Karma')}
-                    <AuthorRatingControl author={props.author} class={styles.ratingControl} />
+                    <AuthorShoutsRating author={props.author} class={styles.ratingControl} />
                   </div>
                 </Show>
               </div>

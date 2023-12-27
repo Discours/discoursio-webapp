@@ -281,7 +281,7 @@ export const AuthorCard = (props: Props) => {
                 </li>
                 <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
                   <button type="button" onClick={() => setSubscriptionFilter('users')}>
-                    {t('Users')}
+                    {t('Authors')}
                   </button>
                   <span class="view-switcher__counter">
                     {props.following.filter((s) => 'name' in s).length}

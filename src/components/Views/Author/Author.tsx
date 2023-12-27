@@ -47,8 +47,8 @@ export const AuthorView = (props: Props) => {
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
   createEffect(async () => {
-    if (!author()?.stat) {
-      const a = await loadAuthor({ slug: props.authorSlug })
+    if (author() && author().id && !author().stat) {
+      const a = await loadAuthor({ slug: '', author_id: author().id })
       console.debug(`[AuthorView] loaded author:`, a)
     }
   })
@@ -78,8 +78,7 @@ export const AuthorView = (props: Props) => {
 
   onMount(async () => {
     checkBioHeight()
-    const slug = props.authorSlug || props.author.slug || author().slug
-    await loadAuthor({ slug })
+
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       await loadMore()

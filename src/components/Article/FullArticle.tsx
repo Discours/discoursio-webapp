@@ -12,7 +12,7 @@ import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
-import { getImageUrl } from '../../utils/getImageUrl'
+import { getImageUrl, getOpenGraphImageUrl } from '../../utils/getImageUrl'
 import { getDescription, getKeywords } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
@@ -21,6 +21,7 @@ import { Popover } from '../_shared/Popover'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { AuthorBadge } from '../Author/AuthorBadge'
+import article from '../Editor/extensions/Article'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
 import { TableOfContents } from '../TableOfContents'
@@ -283,9 +284,15 @@ export const FullArticle = (props: Props) => {
     }
   }
 
-  const ogImage = props.article.cover
-    ? getImageUrl(props.article.cover, { width: 1200 })
-    : getImageUrl('production/image/logo_image.png')
+  const cover = props.article.cover ?? 'production/image/logo_image.png'
+
+  const ogImage = getOpenGraphImageUrl(cover, {
+    title: props.article.title,
+    topic: mainTopic().title,
+    author: props.article.authors[0].name,
+    width: 1200,
+  })
+  console.log(ogImage)
   const description = getDescription(props.article.description || body())
   const ogTitle = props.article.title
   const keywords = getKeywords(props.article)

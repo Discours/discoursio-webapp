@@ -19,10 +19,12 @@ export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleRatingChange = async (isUpvote: boolean) => {
     console.log('handleRatingChange', { isUpvote })
-    await apiClient.rateAuthor({ rated_slug: props.author.slug, value: isUpvote ? 1 : -1 })
+    if (props.author?.slug) {
+      await apiClient.rateAuthor({ rated_slug: props.author?.slug, value: isUpvote ? 1 : -1 })
+    }
   }
 
-  const [rating, setRating] = createSignal(props.author.stat.rating)
+  const [rating, setRating] = createSignal(props.author?.stat?.rating)
   return (
     <div
       class={clsx(styles.rating, props.class, {

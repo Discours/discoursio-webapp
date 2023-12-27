@@ -6,7 +6,7 @@ import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
-import { loadAllAuthors, loadAuthors, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
+import { loadAuthors, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { scrollHandler } from '../../utils/scroll'
@@ -30,7 +30,8 @@ const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫ
 
 export const AllAuthorsView = (props: Props) => {
   const { t, lang } = useLocalize()
-  const [offset, setOffset] = createSignal(0)
+  const [offsetByShouts, setOffsetByShouts] = createSignal(0)
+  const [offsetByFollowers, setOffsetByFollowers] = createSignal(0)
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
@@ -38,7 +39,7 @@ export const AllAuthorsView = (props: Props) => {
   })
 
   const [searchQuery, setSearchQuery] = createSignal('')
-
+  const offset = searchParams()?.by === 'shouts' ? offsetByShouts : offsetByFollowers
   createEffect(() => {
     let by = searchParams().by
     if (by) {
@@ -49,23 +50,29 @@ export const AllAuthorsView = (props: Props) => {
     }
   })
 
-  const loadMore = async (by: AllAuthorsPageSearchParams['by'] = '') => {
-    await loadAuthors({ by: { stat: by }, limit: PAGE_SIZE, offset: offset() })
-    setOffset((o) => o + PAGE_SIZE)
+  const loadMoreByShouts = async () => {
+    await loadAuthors({ by: { stat: 'shouts' }, limit: PAGE_SIZE, offset: offsetByShouts() })
+    setOffsetByShouts((o) => o + PAGE_SIZE)
+  }
+  const loadMoreByFollowers = async () => {
+    await loadAuthors({ by: { stat: 'followers' }, limit: PAGE_SIZE, offset: offsetByFollowers() })
+    setOffsetByFollowers((o) => o + PAGE_SIZE)
   }
 
   const isStatsLoaded = createMemo(() => sortedAuthors() && sortedAuthors().some((author) => author.stat))
 
   createEffect(async () => {
     if (!isStatsLoaded()) {
-      await loadMore('shouts')
-      await loadMore('followers')
+      await loadMoreByShouts()
+      await loadMoreByFollowers()
     }
   })
 
-  const showMore = async () => {
-    await loadMore(searchParams().by)
-  }
+  const showMore = async () =>
+    await {
+      shouts: loadMoreByShouts,
+      followers: loadMoreByFollowers,
+    }[searchParams().by]()
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(

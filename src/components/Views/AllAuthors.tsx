@@ -51,11 +51,11 @@ export const AllAuthorsView = (props: Props) => {
   })
 
   const loadMoreByShouts = async () => {
-    await loadAuthors({ by: { stat: 'shouts' }, limit: PAGE_SIZE, offset: offsetByShouts() })
+    await loadAuthors({ by: { order: 'shouts_stat' }, limit: PAGE_SIZE, offset: offsetByShouts() })
     setOffsetByShouts((o) => o + PAGE_SIZE)
   }
   const loadMoreByFollowers = async () => {
-    await loadAuthors({ by: { stat: 'followers' }, limit: PAGE_SIZE, offset: offsetByFollowers() })
+    await loadAuthors({ by: { order: 'followers_stat' }, limit: PAGE_SIZE, offset: offsetByFollowers() })
     setOffsetByFollowers((o) => o + PAGE_SIZE)
   }
 

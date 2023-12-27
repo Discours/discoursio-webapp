@@ -78,7 +78,8 @@ export const AuthorView = (props: Props) => {
 
   onMount(async () => {
     checkBioHeight()
-
+    const slug = props.authorSlug || props.author.slug || author().slug
+    await loadAuthor({ slug })
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       await loadMore()

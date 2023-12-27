@@ -38,8 +38,8 @@ export const FullTopic = (props: Props) => {
 
   return (
     <div class={clsx(styles.topicHeader, 'col-md-16 col-lg-12 offset-md-4 offset-lg-6')}>
-      <h1>#{props.topic.title}</h1>
-      <p>{props.topic.body}</p>
+      <h1>#{props.topic?.title}</h1>
+      <p>{props.topic?.body}</p>
       <div class={clsx(styles.topicActions)}>
         <Show when={!subscribed()}>
           <Button variant="primary" onClick={() => handleSubscribe(true)} value={t('Follow the topic')} />
@@ -51,12 +51,12 @@ export const FullTopic = (props: Props) => {
             value={t('Unfollow the topic')}
           />
         </Show>
-        <a class={styles.write} href={`/create/?topicId=${props.topic.id}`}>
+        <a class={styles.write} href={`/create/?topicId=${props.topic?.id}`}>
           {t('Write about the topic')}
         </a>
       </div>
-      <Show when={props.topic.pic}>
-        <img src={props.topic.pic} alt={props.topic.title} />
+      <Show when={props.topic?.pic}>
+        <img src={props.topic.pic} alt={props.topic?.title} />
       </Show>
     </div>
   )

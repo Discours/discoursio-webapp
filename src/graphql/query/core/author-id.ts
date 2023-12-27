@@ -12,6 +12,15 @@ export default gql`
       links
       created_at
       last_seen
+      stat {
+        shouts
+        comments: commented
+        followers
+        followings
+        rating
+        rating_shouts
+        rating_comments
+      }
     }
   }
 `

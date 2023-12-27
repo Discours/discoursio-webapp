@@ -44,6 +44,7 @@ import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import userFollowedTopics from '../query/core/topics-by-author'
 import topicsRandomQuery from '../query/core/topics-random'
+import rateAuthor from '../mutation/core/author-rate'
 
 const publicGraphQLClient = createGraphQLClient('core')
 
@@ -63,6 +64,13 @@ export const apiClient = {
     if (!response.data) console.error('[graphql.core] load_shouts_unrated', response)
 
     return response.data.load_shouts_unrated
+  },
+
+  rateAuthor: async ({ rated_slug, value }: { rated_slug: string; value: number }) => {
+    const response = await apiClient.private.mutation(rateAuthor, { rated_slug, value }).toPromise()
+    if (!response.data) console.error('[graphql.client.core] get_topics_random failed', response)
+
+    return response.data.rate_author
   },
 
   getRandomTopics: async ({ amount }: { amount: number }) => {

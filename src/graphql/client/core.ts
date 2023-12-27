@@ -117,7 +117,7 @@ export const apiClient = {
   },
   getAuthorFollowingTopics: async ({ slug }: { slug: string }): Promise<Topic[]> => {
     const response = await publicGraphQLClient.query(userFollowedTopics, { slug }).toPromise()
-    return response.data.userFollowedTopics
+    return response.data.get_topics_by_author
   },
   updateProfile: async (input: ProfileInput) => {
     const response = await apiClient.private.mutation(updateProfile, { profile: input }).toPromise()

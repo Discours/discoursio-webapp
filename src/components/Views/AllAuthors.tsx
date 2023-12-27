@@ -126,11 +126,11 @@ export const AllAuthorsView = (props: Props) => {
       <Meta name="twitter:description" content={description} />
       <Show when={props.isLoaded} fallback={<Loading />}>
         <div class="offset-md-5">
-          <Show when={isStatsLoaded()}>
-            <div class="row">
-              <div class="col-lg-20 col-xl-18">
-                <h1>{t('Authors')}</h1>
-                <p>{t('Subscribe who you like to tune your personal feed')}</p>
+          <div class="row">
+            <div class="col-lg-20 col-xl-18">
+              <h1>{t('Authors')}</h1>
+              <p>{t('Subscribe who you like to tune your personal feed')}</p>
+              <Show when={isStatsLoaded()}>
                 <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                   <li
                     classList={{
@@ -151,9 +151,9 @@ export const AllAuthorsView = (props: Props) => {
                     </li>
                   </Show>
                 </ul>
-              </div>
+              </Show>
             </div>
-          </Show>
+          </div>
 
           <Show when={sortedAuthors().length > 0}>
             <Show when={searchParams().by === 'name'}>

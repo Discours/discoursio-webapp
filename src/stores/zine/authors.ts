@@ -95,6 +95,7 @@ type InitialState = {
 
 export const loadAuthors = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
   const authors = await apiClient.loadAuthorsBy(args)
+  console.debug(`[load_authors_by] loaded ${Object.keys(authors).length} authors with stat`)
   addAuthors(authors)
 }
 

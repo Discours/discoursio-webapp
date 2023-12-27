@@ -61,7 +61,7 @@ export const loadAuthor = async ({
   author_id,
 }: {
   slug: string
-  author_id: number
+  author_id?: number
 }): Promise<Author> => {
   const author = await apiClient.getAuthor({ slug, author_id })
   addAuthors([author])

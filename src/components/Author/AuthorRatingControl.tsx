@@ -1,11 +1,11 @@
 import type { Author } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
+import { Show, createSignal } from 'solid-js'
+
+import { apiClient } from '../../graphql/client/core'
 
 import styles from './AuthorRatingControl.module.scss'
-import { Show, createSignal } from 'solid-js'
-import { useLocalize } from '../../context/localize'
-import { apiClient } from '../../graphql/client/core'
 
 interface AuthorRatingControlProps {
   author: Author
@@ -15,12 +15,13 @@ interface AuthorRatingControlProps {
 export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
   const isUpvoted = false
   const isDownvoted = false
-  const { t } = useLocalize()
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleRatingChange = async (isUpvote: boolean) => {
     console.log('handleRatingChange', { isUpvote })
     if (props.author?.slug) {
-      await apiClient.rateAuthor({ rated_slug: props.author?.slug, value: isUpvote ? 1 : -1 })
+      const value = isUpvote ? 1 : -1
+      await apiClient.rateAuthor({ rated_slug: props.author?.slug, value })
+      setRating((r) => r + value)
     }
   }
 

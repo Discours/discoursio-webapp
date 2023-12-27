@@ -8,8 +8,8 @@ import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
 import { useRouter } from '../../stores/router'
-import { AuthorsSortBy, useAuthorsStore } from '../../stores/zine/authors'
 import { showModal } from '../../stores/ui'
+import { AuthorsSortBy, useAuthorsStore } from '../../stores/zine/authors'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
@@ -59,10 +59,7 @@ export const InboxView = (props: Props) => {
   const { author } = useSession()
   const currentUserId = createMemo(() => author()?.id)
   const { changeSearchParams, searchParams } = useRouter<InboxSearchParams>()
-  const { sortedAuthors } = useAuthorsStore({
-    authors: props.authors,
-    sortBy: (searchParams()?.by as AuthorsSortBy) || 'name',
-  })
+
   const messagesContainerRef: { current: HTMLDivElement } = {
     current: null,
   }

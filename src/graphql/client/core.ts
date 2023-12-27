@@ -18,6 +18,7 @@ import { createGraphQLClient } from '../createGraphQLClient'
 import createArticle from '../mutation/core/article-create'
 import deleteShout from '../mutation/core/article-delete'
 import updateArticle from '../mutation/core/article-update'
+import rateAuthor from '../mutation/core/author-rate'
 import followMutation from '../mutation/core/follow'
 import reactionCreate from '../mutation/core/reaction-create'
 import reactionDestroy from '../mutation/core/reaction-destroy'
@@ -44,7 +45,6 @@ import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import userFollowedTopics from '../query/core/topics-by-author'
 import topicsRandomQuery from '../query/core/topics-random'
-import rateAuthor from '../mutation/core/author-rate'
 
 const publicGraphQLClient = createGraphQLClient('core')
 

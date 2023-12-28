@@ -76,7 +76,7 @@ export const FullArticle = (props: Props) => {
     const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
     const mt = props.article.topics.find((tpc: Topic) => tpc.slug === main_topic_slug)
     if (mt) {
-      mt.title = lang() === 'en' ? capitalize(mt.slug.replace('-', ' ')) : mt.title
+      mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
       return mt
     } else {
       return props.article.topics[0]

@@ -17,6 +17,7 @@ import { AuthorBadge } from '../Author/AuthorBadge'
 import styles from './AllAuthors.module.scss'
 import { isCyrillic } from '../../utils/cyrillic'
 import { capitalize } from '../../utils/capitalize'
+import { translit } from '../../utils/ru2en'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -78,7 +79,7 @@ export const AllAuthorsView = (props: Props) => {
     }[searchParams().by]()
   const translate = (author: Author) =>
     lang() === 'en' && isCyrillic(author.name)
-      ? capitalize(author.slug.replace(/-/, ' '), true)
+      ? capitalize(translit(author.name.replace(/ё/, 'e').replace(/ь/, '')).replace(/-/, ' '), true)
       : author.name
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
@@ -86,6 +87,8 @@ export const AllAuthorsView = (props: Props) => {
         let letter = ''
         if (!letter && author && author.name) {
           const name = translate(author)
+            .replace(/[^A-zА-я0-9]/, ' ')
+            .trim()
           const nameParts = name.trim().split(' ')
           const found = nameParts.filter(Boolean).pop()
           if (found && found.length > 0) {
@@ -96,8 +99,12 @@ export const AllAuthorsView = (props: Props) => {
         if (/[^A-z]/.test(letter) && lang() === 'en') letter = '@'
 
         if (!acc[letter]) acc[letter] = []
-
+        author.name = translate(author)
         acc[letter].push(author)
+
+        // Sort authors within each letter group alphabetically by name
+        acc[letter].sort((a, b) => a.name.localeCompare(b.name))
+
         return acc
       },
       {} as { [letter: string]: Author[] },

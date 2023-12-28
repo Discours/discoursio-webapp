@@ -89,7 +89,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const mainTopicSlug = props.article.main_topic || ''
   const mainTopic = props.article.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
   const mainTopicTitle =
-    mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace('-', ' ') : mainTopic?.title || ''
+    mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
 
   const formattedDate = createMemo<string>(() => {
     let r = ''

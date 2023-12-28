@@ -42,28 +42,30 @@ export const TopicBadge = (props: Props) => {
 
   return (
     <div class={styles.TopicBadge}>
-      <a
-        href={`/topic/${props.topic.slug}`}
-        class={clsx(styles.picture, { [styles.withImage]: props.topic.pic })}
-        style={
-          props.topic.pic && {
-            'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`,
+      <div class={styles.basicInfo}>
+        <a
+          href={`/topic/${props.topic.slug}`}
+          class={clsx(styles.picture, { [styles.withImage]: props.topic.pic })}
+          style={
+            props.topic.pic && {
+              'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`,
+            }
           }
-        }
-      />
-      <a href={`/topic/${props.topic.slug}`} class={styles.info}>
-        <span class={styles.title}>{props.topic.title}</span>
-        <Show
-          when={props.topic.body}
-          fallback={
-            <div class={styles.description}>
-              {t('PublicationsWithCount', { count: props.topic.stat.shouts ?? 0 })}
-            </div>
-          }
-        >
-          <div class={clsx('text-truncate', styles.description)}>{props.topic.body}</div>
-        </Show>
-      </a>
+        />
+        <a href={`/topic/${props.topic.slug}`} class={styles.info}>
+          <span class={styles.title}>{props.topic.title}</span>
+          <Show
+            when={props.topic.body}
+            fallback={
+              <div class={styles.description}>
+                {t('PublicationsWithCount', { count: props.topic.stat.shouts ?? 0 })}
+              </div>
+            }
+          >
+            <div class={clsx('text-truncate', styles.description)}>{props.topic.body}</div>
+          </Show>
+        </a>
+      </div>
       <Show when={isAuthenticated()}>
         <div class={styles.actions}>
           <Show

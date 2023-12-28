@@ -10,7 +10,7 @@
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 10002;
+  z-index: 10003;
 }
 
 .modal {
@@ -116,6 +116,7 @@
 }
 
 .backdrop.isMobile {
+  z-index: 10002;
   top: 56px;
   height: calc(100% - 58px);
   bottom: 0;

@@ -22,6 +22,7 @@ import { Userpic } from '../Userpic'
 
 import styles from './AuthorCard.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
+import { isCyrillic } from '../../../utils/cyrillic'
 
 type Props = {
   author: Author
@@ -60,7 +61,7 @@ export const AuthorCard = (props: Props) => {
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
 
   const name = createMemo(() => {
-    if (lang() !== 'ru') {
+    if (lang() !== 'ru' && isCyrillic(props.author.name)) {
       if (props.author.name === 'Дискурс') {
         return 'Discours'
       }

@@ -15,6 +15,8 @@ import { SearchField } from '../_shared/SearchField'
 import { AuthorBadge } from '../Author/AuthorBadge'
 
 import styles from './AllAuthors.module.scss'
+import { isCyrillic } from '../../utils/cyrillic'
+import { capitalize } from '../../utils/capitalize'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -26,10 +28,11 @@ type Props = {
 }
 
 const PAGE_SIZE = 20
-const ALPHABET = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@']
 
 export const AllAuthorsView = (props: Props) => {
   const { t, lang } = useLocalize()
+  const ALPHABET =
+    lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ@']
   const [offsetByShouts, setOffsetByShouts] = createSignal(0)
   const [offsetByFollowers, setOffsetByFollowers] = createSignal(0)
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
@@ -73,20 +76,24 @@ export const AllAuthorsView = (props: Props) => {
       shouts: loadMoreByShouts,
       followers: loadMoreByFollowers,
     }[searchParams().by]()
-
+  const translate = (author: Author) =>
+    lang() === 'en' && isCyrillic(author.name)
+      ? capitalize(author.slug.replace(/-/, ' '), true)
+      : author.name
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
       (acc, author) => {
         let letter = ''
-        if (author && author.name) {
-          const nameParts = author.name.trim().split(' ')
-          const lastName = nameParts.pop()
-          if (lastName && lastName.length > 0) {
-            letter = lastName[0].toUpperCase()
+        if (!letter && author && author.name) {
+          const name = translate(author)
+          const nameParts = name.trim().split(' ')
+          const found = nameParts.filter(Boolean).pop()
+          if (found && found.length > 0) {
+            letter = found[0].toUpperCase()
           }
         }
-
         if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '@'
+        if (/[^A-z]/.test(letter) && lang() === 'en') letter = '@'
 
         if (!acc[letter]) acc[letter] = []
 
@@ -193,7 +200,7 @@ export const AllAuthorsView = (props: Props) => {
                               {(author) => (
                                 <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                   <div class="topic-title">
-                                    <a href={`/author/${author.slug}`}>{author.name}</a>
+                                    <a href={`/author/${author.slug}`}>{translate(author)}</a>
                                     <Show when={author.stat}>
                                       <span class={styles.articlesCounter}>{author.stat.shouts}</span>
                                     </Show>

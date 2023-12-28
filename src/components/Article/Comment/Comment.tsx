@@ -11,7 +11,7 @@ import { Author, Reaction, ReactionKind } from '../../../graphql/schema/core.gen
 import { router } from '../../../stores/router'
 import { Icon } from '../../_shared/Icon'
 import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
-import { AuthorLink } from '../../Author/AhtorLink'
+import { AuthorLink } from '../../Author/AuthorLink'
 import { Userpic } from '../../Author/Userpic'
 import { CommentDate } from '../CommentDate'
 import { CommentRatingControl } from '../CommentRatingControl'

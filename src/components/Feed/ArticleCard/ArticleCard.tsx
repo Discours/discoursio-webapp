@@ -15,7 +15,7 @@ import { Popover } from '../../_shared/Popover'
 import { CoverImage } from '../../Article/CoverImage'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
-import { AuthorLink } from '../../Author/AhtorLink'
+import { AuthorLink } from '../../Author/AuthorLink'
 import { CardTopic } from '../CardTopic'
 import { FeedArticlePopup } from '../FeedArticlePopup'
 

@@ -8,6 +8,7 @@ import { isCyrillic } from '../../../utils/cyrillic'
 import { Userpic } from '../Userpic'
 
 import styles from './AhtorLink.module.scss'
+import { translit } from '../../../utils/ru2en'
 
 type Props = {
   author: Author
@@ -20,7 +21,7 @@ export const AuthorLink = (props: Props) => {
   const { lang } = useLocalize()
   const name = createMemo(() => {
     return lang() === 'en' && isCyrillic(props.author.name)
-      ? capitalize(props.author.slug.replace(/-/, ' '))
+      ? translit(capitalize(props.author.name))
       : props.author.name
   })
   return (
@@ -30,7 +31,7 @@ export const AuthorLink = (props: Props) => {
       })}
     >
       <a class={styles.link} href={`/author/${props.author.slug}`}>
-        <Userpic size={props.size ?? 'M'} name={props.author.name} userpic={props.author.pic} />
+        <Userpic size={props.size ?? 'M'} name={name()} userpic={props.author.pic} />
         <div class={styles.name}>{name()}</div>
       </a>
     </div>

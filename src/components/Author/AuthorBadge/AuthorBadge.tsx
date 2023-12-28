@@ -11,9 +11,12 @@ import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
+import { translit } from '../../../utils/ru2en'
 
 import styles from './AuthorBadge.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
+import { capitalize } from '../../../utils/capitalize'
+import { isCyrillic } from '../../../utils/cyrillic'
 
 type Props = {
   author: Author
@@ -30,7 +33,7 @@ export const AuthorBadge = (props: Props) => {
     actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
   const { changeSearchParams } = useRouter()
-  const { t, formatDate } = useLocalize()
+  const { t, formatDate, lang } = useLocalize()
   const subscribed = createMemo(() =>
     subscriptions().authors.some((a: Author) => a.slug === props.author.slug),
   )
@@ -60,19 +63,27 @@ export const AuthorBadge = (props: Props) => {
     }, 'discussions')
   }
 
+  const name = createMemo(() =>
+    capitalize(
+      lang() === 'en' && isCyrillic(props.author.name)
+        ? translit(props.author.name)
+        : props.author.name || '',
+    ),
+  )
+
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
       <div class={styles.basicInfo}>
         <Userpic
           hasLink={true}
           size={'M'}
-          name={props.author.name}
+          name={name()}
           userpic={props.author.pic}
           slug={props.author.slug}
         />
         <a href={`/author/${props.author.slug}`} class={styles.info}>
           <div class={styles.name}>
-            <span>{props.author.name}</span>
+            <span>{name()}</span>
           </div>
           <Show when={!props.nameOnly}>
             <Switch

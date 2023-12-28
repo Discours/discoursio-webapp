@@ -111,7 +111,7 @@ export const AuthorBadge = (props: Props) => {
               fallback={
                 <Button
                   variant={props.iconButtons ? 'secondary' : 'bordered'}
-                  size="M"
+                  size="S"
                   value={
                     <Show
                       when={props.iconButtons}
@@ -135,7 +135,7 @@ export const AuthorBadge = (props: Props) => {
             >
               <Button
                 variant={props.iconButtons ? 'secondary' : 'bordered'}
-                size="M"
+                size="S"
                 value={
                   <Show
                     when={props.iconButtons}
@@ -161,7 +161,7 @@ export const AuthorBadge = (props: Props) => {
           <Show when={props.showMessageButton}>
             <Button
               variant={props.iconButtons ? 'secondary' : 'bordered'}
-              size="M"
+              size="S"
               value={props.iconButtons ? <Icon name="inbox-white" /> : t('Message')}
               onClick={initChat}
               class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}

@@ -63,13 +63,17 @@ export const AuthorBadge = (props: Props) => {
     }, 'discussions')
   }
 
-  const name = createMemo(() =>
-    capitalize(
-      lang() === 'en' && isCyrillic(props.author.name)
-        ? translit(props.author.name)
-        : props.author.name || '',
-    ),
-  )
+  const name = createMemo(() => {
+    if (lang() !== 'ru' && isCyrillic(props.author.name)) {
+      if (props.author.name === 'Дискурс') {
+        return 'Discours'
+      }
+
+      return translit(props.author.name)
+    }
+
+    return props.author.name
+  })
 
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>

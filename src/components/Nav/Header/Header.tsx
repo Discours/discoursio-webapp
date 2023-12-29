@@ -63,7 +63,6 @@ export const Header = (props: Props) => {
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
   const toggleFixed = () => {
     setFixed(!fixed())
-    console.log('!!! toggleFixed:')
   }
 
   const tag = (topic: Topic) =>
@@ -141,9 +140,6 @@ export const Header = (props: Props) => {
     clearTimeout(timer)
   }
 
-  createEffect(() => {
-    console.log('!!! mo:', modal())
-  })
   const hideSubnavigation = (event, time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)

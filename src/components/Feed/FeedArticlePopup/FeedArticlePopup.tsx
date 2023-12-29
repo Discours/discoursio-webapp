@@ -13,31 +13,16 @@ import styles from './FeedArticlePopup.module.scss'
 
 type FeedArticlePopupProps = {
   title: string
-  shareUrl?: string
   imageUrl: string
   isOwner: boolean
   description: string
-  isVisible?: (value: boolean) => void
 } & Omit<PopupProps, 'children'>
 
 export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
   const { t } = useLocalize()
-  const [isVisible, setIsVisible] = createSignal(false)
-
-  createEffect(() => {
-    if (props.isVisible) {
-      props.isVisible(isVisible())
-    }
-  })
   return (
     <>
-      <Popup
-        {...props}
-        isVisible={setIsVisible()}
-        variant="tiny"
-        onVisibilityChange={(value) => setIsVisible(value)}
-        popupCssClass={styles.feedArticlePopup}
-      >
+      <Popup {...props} variant="tiny" popupCssClass={styles.feedArticlePopup}>
         <ul class={clsx('nodash', styles.actionList)}>
           <Show when={!props.isOwner}>
             <li>

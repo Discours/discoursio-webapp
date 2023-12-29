@@ -289,7 +289,7 @@ export const FullArticle = (props: Props) => {
   const description = getDescription(props.article.description || body())
   const ogTitle = props.article.title
   const keywords = getKeywords(props.article)
-
+  const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })
   return (
     <>
       <Meta name="descprition" content={description} />
@@ -461,6 +461,7 @@ export const FullArticle = (props: Props) => {
                       title={props.article.title}
                       description={description}
                       imageUrl={props.article.cover}
+                      shareUrl={shareUrl}
                       containerCssClass={stylesHeader.control}
                       trigger={
                         <div class={styles.shoutStatsItemInner}>
@@ -495,6 +496,7 @@ export const FullArticle = (props: Props) => {
                 title={props.article.title}
                 description={description}
                 imageUrl={props.article.cover}
+                shareUrl={shareUrl}
                 trigger={
                   <button>
                     <Icon name="ellipsis" class={clsx(styles.icon)} />

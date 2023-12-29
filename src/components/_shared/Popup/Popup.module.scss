@@ -103,23 +103,6 @@
       vertical-align: middle;
     }
   }
-
-  .shareControl {
-    text-align: left;
-    transition:
-      color 0.3s,
-      background-color 0.3s;
-    white-space: nowrap;
-
-    &:hover {
-      background: #000;
-      color: #fff;
-
-      .icon img {
-        filter: invert(0);
-      }
-    }
-  }
 }
 
 // TODO: animation

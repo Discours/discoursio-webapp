@@ -128,7 +128,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       }
     }
   }
-
+  const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })
   return (
     <section
       class={clsx(styles.shoutCard, props.settings?.additionalClass, {
@@ -366,6 +366,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   title={title}
                   description={description}
                   imageUrl={props.article.cover}
+                  shareUrl={shareUrl}
                   trigger={
                     <button>
                       <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />

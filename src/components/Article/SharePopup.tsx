@@ -15,7 +15,6 @@ type SharePopupProps = {
   shareUrl?: string
   imageUrl: string
   description: string
-  isVisible?: boolean
   onVisibilityChange?: (value: boolean) => void
 } & Omit<PopupProps, 'children'>
 

@@ -58,7 +58,12 @@ const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
 
 export const FullArticle = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
+  const [sharePopupVisible, setSharePopupVisible] = createSignal(false)
+  const [actionsPopupVisible, setActionsPopupVisible] = createSignal(false)
 
+  createEffect(() => {
+    console.log('!!! actionsPopupVisible():', actionsPopupVisible())
+  })
   const { t, formatDate } = useLocalize()
   const {
     user,
@@ -462,6 +467,11 @@ export const FullArticle = (props: Props) => {
                       description={description}
                       imageUrl={props.article.cover}
                       containerCssClass={stylesHeader.control}
+                      isVisible={sharePopupVisible()}
+                      onVisibilityChange={(isVisible) => {
+                        setActionsPopupVisible(false)
+                        console.log('!!! AAAAAAA:', isVisible)
+                      }}
                       trigger={
                         <div class={styles.shoutStatsItemInner}>
                           <Icon name="share-outline" class={styles.icon} />
@@ -495,7 +505,8 @@ export const FullArticle = (props: Props) => {
                 title={props.article.title}
                 description={description}
                 imageUrl={props.article.cover}
-                shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
+                onShareClick={() => setSharePopupVisible(true)}
+                setVisible={actionsPopupVisible()}
                 trigger={
                   <button>
                     <Icon name="ellipsis" class={clsx(styles.icon)} />

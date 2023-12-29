@@ -15,7 +15,8 @@ type SharePopupProps = {
   shareUrl?: string
   imageUrl: string
   description: string
-  isVisible?: (value: boolean) => void
+  isVisible?: boolean
+  onVisibilityChange?: (value: boolean) => void
 } & Omit<PopupProps, 'children'>
 
 export const getShareUrl = (params: { pathname?: string } = {}) => {
@@ -32,8 +33,8 @@ export const SharePopup = (props: SharePopupProps) => {
   } = useSnackbar()
 
   createEffect(() => {
-    if (props.isVisible) {
-      props.isVisible(isVisible())
+    if (props.onVisibilityChange) {
+      props.onVisibilityChange(isVisible())
     }
   })
 

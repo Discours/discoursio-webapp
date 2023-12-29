@@ -1,6 +1,6 @@
 .feedFilter {
   @include media-breakpoint-down(md) {
-    margin-right: 4rem !important;
+    margin-right: 1rem !important;
   }
 }
 
@@ -195,14 +195,28 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4rem;
+  @include media-breakpoint-down(sm) {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 
   .feedFilter {
     margin-top: 0;
     margin-bottom: 0;
+    min-width: 300px;
 
     & > li {
       margin-bottom: 0;
     }
+  }
+
+  .dropdowns {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    justify-content: center;
   }
 }
 

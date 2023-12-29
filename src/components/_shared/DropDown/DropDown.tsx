@@ -43,7 +43,7 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
     <Show when={props.currentOption} keyed={true}>
       <Popup
         trigger={
-          <div class={props.triggerCssClass}>
+          <div class={clsx(styles.trigger, props.triggerCssClass)}>
             {props.currentOption.title}{' '}
             <Chevron
               class={clsx(styles.chevron, {

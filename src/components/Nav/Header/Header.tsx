@@ -61,7 +61,10 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
+  const toggleFixed = () => {
+    setFixed(!fixed())
+    console.log('!!! toggleFixed:')
+  }
 
   const tag = (topic: Topic) =>
     /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
@@ -138,6 +141,9 @@ export const Header = (props: Props) => {
     clearTimeout(timer)
   }
 
+  createEffect(() => {
+    console.log('!!! mo:', modal())
+  })
   const hideSubnavigation = (event, time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)
@@ -183,9 +189,9 @@ export const Header = (props: Props) => {
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
-        <nav class={clsx('row', styles.headerInner, { ['fixed']: fixed() })}>
+        <nav class={clsx('row', styles.headerInner, { [styles.fixed]: fixed() })}>
           <div class={clsx(styles.burgerContainer, 'col-auto')}>
-            <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
+            <div class={clsx(styles.burger, { [styles.fixed]: fixed() })} onClick={toggleFixed}>
               <div />
             </div>
           </div>

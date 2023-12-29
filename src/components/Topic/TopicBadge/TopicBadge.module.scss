@@ -3,14 +3,15 @@
   flex-direction: row;
   align-items: flex-start;
   margin-bottom: 2rem;
+  gap: 1rem;
 
-  @include media-breakpoint-down(sm) {
-    flex-wrap: wrap;
-    margin-bottom: 3rem;
-  }
-
-  @include media-breakpoint-down(md) {
-    text-align: left;
+  .basicInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    flex: 1;
+    gap: 1rem;
   }
 
   .picture {
@@ -24,7 +25,12 @@
     background-position: 50% 50%;
     background-repeat: no-repeat;
     border: none;
-    margin-right: 1.2rem;
+
+    &.smallSize {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+    }
 
     &:hover {
       background-color: var(--black-50);
@@ -40,21 +46,18 @@
 
     border: none;
     display: flex;
-    flex: 0 calc(100% - 5.2rem);
     flex-direction: column;
-    margin-bottom: 1rem;
-
-    @include media-breakpoint-up(sm) {
-      flex: 1 100%;
-    }
 
     &:hover {
       background: unset;
     }
 
     .title {
+      @include font-size(1.4rem);
+
+      font-weight: 500;
+      line-height: 1em;
       color: var(--blue-500);
-      font-weight: 700;
       text-transform: uppercase;
     }
 
@@ -64,19 +67,9 @@
   }
 
   .actions {
-    flex: 0 20%;
-    margin-left: 5.2rem;
-
-    @include media-breakpoint-up(sm) {
-      margin-left: 2rem;
-    }
-
-    @include media-breakpoint-up(md) {
-      flex: 1;
-      margin-left: auto;
-      padding-left: 1rem;
-      text-align: right;
-    }
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
   }
 
   .subscribeButton {

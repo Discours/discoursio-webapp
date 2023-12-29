@@ -36,9 +36,7 @@ export const Popup = (props: PopupProps) => {
       setIsVisible(false)
     },
   })
-
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
-
   return (
     <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>
       <span class={styles.trigger} onClick={toggle}>

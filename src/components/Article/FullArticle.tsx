@@ -495,7 +495,6 @@ export const FullArticle = (props: Props) => {
                 title={props.article.title}
                 description={description}
                 imageUrl={props.article.cover}
-                shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                 trigger={
                   <button>
                     <Icon name="ellipsis" class={clsx(styles.icon)} />

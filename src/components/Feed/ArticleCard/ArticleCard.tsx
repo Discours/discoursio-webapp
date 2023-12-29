@@ -345,7 +345,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
                       description={description}
                       imageUrl={props.article.cover}
                       shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
-                      isVisible={(value) => setIsActionPopupActive(value)}
                       trigger={
                         <button>
                           <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
@@ -367,8 +366,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   title={title}
                   description={description}
                   imageUrl={props.article.cover}
-                  shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
-                  isVisible={(value) => setIsActionPopupActive(value)}
                   trigger={
                     <button>
                       <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />

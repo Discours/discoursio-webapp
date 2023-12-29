@@ -15,7 +15,6 @@ export type PopupProps = {
   onVisibilityChange?: (isVisible: boolean) => void
   horizontalAnchor?: HorizontalAnchor
   variant?: 'bordered' | 'tiny'
-  isVisible?: boolean
 }
 
 export const Popup = (props: PopupProps) => {
@@ -38,12 +37,6 @@ export const Popup = (props: PopupProps) => {
     },
   })
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
-  createEffect(() => {
-    if (props.isVisible) {
-      setIsVisible(props.isVisible)
-    }
-  })
-
   return (
     <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>
       <span class={styles.trigger} onClick={toggle}>

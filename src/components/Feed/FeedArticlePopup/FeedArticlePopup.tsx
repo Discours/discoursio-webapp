@@ -18,8 +18,6 @@ type FeedArticlePopupProps = {
   isOwner: boolean
   description: string
   isVisible?: (value: boolean) => void
-  onShareClick?: () => void
-  setVisible?: boolean
 } & Omit<PopupProps, 'children'>
 
 export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
@@ -41,11 +39,6 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
         popupCssClass={styles.feedArticlePopup}
       >
         <ul class={clsx('nodash', styles.actionList)}>
-          <li>
-            <button class={styles.action} role="button" onClick={props.onShareClick}>
-              {t('Share')}
-            </button>
-          </li>
           <Show when={!props.isOwner}>
             <li>
               <button

@@ -32,6 +32,7 @@
       &.soon {
         color: var(--black-300);
         display: flex;
+        gap: 0.6rem;
         width: 100%;
         justify-content: space-between;
       }

@@ -13,21 +13,19 @@ import { SoonChip } from '../../_shared/SoonChip'
 import styles from './FeedArticlePopup.module.scss'
 
 type FeedArticlePopupProps = {
-  title: string
-  imageUrl: string
   isOwner: boolean
-  description: string
-  shareUrl: string
+  onInviteClick: () => void
+  onShareClick: () => void
 } & Omit<PopupProps, 'children'>
 
 export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
   const { t } = useLocalize()
   return (
     <>
-      <Popup horizontalAnchor={'right'} {...props} variant="tiny" popupCssClass={styles.feedArticlePopup}>
+      <Popup {...props} horizontalAnchor={'right'} variant="tiny" popupCssClass={styles.feedArticlePopup}>
         <ul class={clsx('nodash', styles.actionList)}>
           <li>
-            <button class={styles.action} role="button" onClick={() => showModal('share')}>
+            <button class={styles.action} role="button" onClick={props.onShareClick}>
               {t('Share')}
             </button>
           </li>
@@ -45,13 +43,7 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
             </li>
           </Show>
           <li>
-            <button
-              class={styles.action}
-              role="button"
-              onClick={() => {
-                showModal('inviteCoAuthors')
-              }}
-            >
+            <button class={styles.action} role="button" onClick={props.onInviteClick}>
               {t('Invite experts')}
             </button>
           </li>
@@ -93,13 +85,6 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
           {/*</li>*/}
         </ul>
       </Popup>
-      <InviteCoAuthorsModal title={t('Invite experts')} />
-      <ShareModal
-        title={props.title}
-        shareUrl={props.shareUrl}
-        imageUrl={props.imageUrl}
-        description={props.description}
-      />
     </>
   )
 }

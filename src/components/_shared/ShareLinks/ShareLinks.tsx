@@ -80,23 +80,21 @@ export const ShareLinks = (props: Props) => {
               </button>
             }
           >
-            <form>
-              <div class={clsx('pretty-form__item', styles.linkInput)}>
-                <input type="text" name="link" readonly value={props.shareUrl} />
-                <label for="link">{t('Copy link')}</label>
+            <form class={clsx('pretty-form__item', styles.linkInput)}>
+              <input type="text" name="link" readonly value={props.shareUrl} />
+              <label for="link">{t('Copy link')}</label>
 
-                <Popover content={t('Copy link')}>
-                  {(triggerRef: (el) => void) => (
-                    <div class={styles.copyButton} onClick={copyLink} ref={triggerRef}>
-                      <Icon name="copy" class={styles.icon} />
-                    </div>
-                  )}
-                </Popover>
+              <Popover content={t('Copy link')}>
+                {(triggerRef: (el) => void) => (
+                  <div class={styles.copyButton} onClick={copyLink} ref={triggerRef}>
+                    <Icon name="copy" class={styles.icon} />
+                  </div>
+                )}
+              </Popover>
 
-                <Show when={isLinkCopied()}>
-                  <div class={styles.isCopied}>{t('Link copied to clipboard')}</div>
-                </Show>
-              </div>
+              <Show when={isLinkCopied()}>
+                <div class={styles.isCopied}>{t('Link copied to clipboard')}</div>
+              </Show>
             </form>
           </Show>
         </li>

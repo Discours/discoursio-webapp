@@ -31,15 +31,24 @@
   }
 
   &.inModal {
+    li {
+      margin: 0;
+    }
+
     .shareControl {
       font-size: 18px;
       font-weight: 600;
+      padding: 1rem;
+      margin: 0 -12px;
+      width: calc(100% + 24px);
+      transition: unset;
     }
   }
 
   .linkInput {
     position: relative;
-    margin-bottom: 0 !important;
+    margin-top: 2rem;
+    margin-bottom: -2rem !important;
 
     input {
       margin-bottom: 0;
@@ -60,6 +69,7 @@
       cursor: pointer;
     }
   }
+
   .isCopied {
     @include font-size(1.6rem);
 

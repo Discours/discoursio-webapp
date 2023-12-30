@@ -12,12 +12,15 @@ import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
+import { showModal } from '../../stores/ui'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription, getKeywords } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
+import { InviteCoAuthorsModal } from '../_shared/InviteCoAuthorsModal'
 import { Lightbox } from '../_shared/Lightbox'
 import { Popover } from '../_shared/Popover'
+import { ShareModal } from '../_shared/ShareModal'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { VideoPlayer } from '../_shared/VideoPlayer'
 import { AuthorBadge } from '../Author/AuthorBadge'
@@ -493,10 +496,8 @@ export const FullArticle = (props: Props) => {
               <FeedArticlePopup
                 isOwner={canEdit()}
                 containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
-                title={props.article.title}
-                description={description}
-                imageUrl={props.article.cover}
-                shareUrl={shareUrl}
+                onShareClick={() => showModal('share')}
+                onInviteClick={() => showModal('inviteCoAuthors')}
                 trigger={
                   <button>
                     <Icon name="ellipsis" class={clsx(styles.icon)} />
@@ -556,6 +557,13 @@ export const FullArticle = (props: Props) => {
       <Show when={selectedImage()}>
         <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
       </Show>
+      <InviteCoAuthorsModal title={t('Invite experts')} />
+      <ShareModal
+        title={props.article.title}
+        description={description}
+        imageUrl={props.article.cover}
+        shareUrl={shareUrl}
+      />
     </>
   )
 }

@@ -61,6 +61,8 @@ const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
 
 export const FullArticle = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
+  const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
+  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
 
   const { t, formatDate } = useLocalize()
   const {
@@ -68,8 +70,6 @@ export const FullArticle = (props: Props) => {
     isAuthenticated,
     actions: { requireAuthentication },
   } = useSession()
-
-  const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
@@ -415,7 +415,7 @@ export const FullArticle = (props: Props) => {
                 <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
               </div>
 
-              <Popover content={t('Comment')}>
+              <Popover content={t('Comment')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
                   <div class={clsx(styles.shoutStatsItem)} ref={triggerRef} onClick={scrollToComments}>
                     <Icon name="comment" class={styles.icon} />
@@ -442,7 +442,7 @@ export const FullArticle = (props: Props) => {
                 </div>
               </div>
 
-              <Popover content={t('Add to bookmarks')}>
+              <Popover content={t('Add to bookmarks')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
                   <div
                     class={clsx(styles.shoutStatsItem, styles.shoutStatsItemBookmarks)}
@@ -457,7 +457,7 @@ export const FullArticle = (props: Props) => {
                 )}
               </Popover>
 
-              <Popover content={t('Share')}>
+              <Popover content={t('Share')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
                     <SharePopup
@@ -466,6 +466,7 @@ export const FullArticle = (props: Props) => {
                       imageUrl={props.article.cover}
                       shareUrl={shareUrl}
                       containerCssClass={stylesHeader.control}
+                      onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                       trigger={
                         <div class={styles.shoutStatsItemInner}>
                           <Icon name="share-outline" class={styles.icon} />
@@ -498,6 +499,7 @@ export const FullArticle = (props: Props) => {
                 containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
                 onShareClick={() => showModal('share')}
                 onInviteClick={() => showModal('inviteCoAuthors')}
+                onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                 trigger={
                   <button>
                     <Icon name="ellipsis" class={clsx(styles.icon)} />

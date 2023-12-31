@@ -5,10 +5,10 @@ import { useLocalize } from '../../../context/localize'
 import { Author } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { isCyrillic } from '../../../utils/cyrillic'
+import { translit } from '../../../utils/ru2en'
 import { Userpic } from '../Userpic'
 
 import styles from './AhtorLink.module.scss'
-import { translit } from '../../../utils/ru2en'
 
 type Props = {
   author: Author

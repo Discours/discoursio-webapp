@@ -9,7 +9,7 @@ import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
 import { useRouter } from '../../stores/router'
 import { showModal } from '../../stores/ui'
-import { AuthorsSortBy, useAuthorsStore } from '../../stores/zine/authors'
+// import { AuthorsSortBy, useAuthorsStore } from '../../stores/zine/authors'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import SimplifiedEditor from '../Editor/SimplifiedEditor'
@@ -47,9 +47,9 @@ export const InboxView = (props: Props) => {
   const {
     chats,
     messages,
-    actions: { loadChats, loadRecipients, getMessages, sendMessage, createChat },
+    actions: { loadChats, getMessages, sendMessage, createChat },
   } = useInbox()
-  const [recipients, setRecipients] = createSignal<Author[]>([])
+  const [recipients, setRecipients] = createSignal<Author[]>(props.authors)
   const [sortByGroup, setSortByGroup] = createSignal(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
@@ -188,6 +188,8 @@ export const InboxView = (props: Props) => {
     })
     setIsScrollToNewVisible(false)
   }
+
+  const isLoaded = createMemo(() => props.isLoaded)
 
   return (
     <div class={clsx('container', styles.Inbox)}>

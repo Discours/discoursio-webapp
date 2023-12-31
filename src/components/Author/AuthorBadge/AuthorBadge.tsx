@@ -7,16 +7,16 @@ import { useSession } from '../../../context/session'
 import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { follow, unfollow } from '../../../stores/zine/common'
+// import { capitalize } from '../../../utils/capitalize'
+import { isCyrillic } from '../../../utils/cyrillic'
+import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
-import { translit } from '../../../utils/ru2en'
 
 import styles from './AuthorBadge.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
-import { capitalize } from '../../../utils/capitalize'
-import { isCyrillic } from '../../../utils/cyrillic'
 
 type Props = {
   author: Author

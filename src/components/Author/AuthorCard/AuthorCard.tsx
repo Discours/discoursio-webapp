@@ -10,6 +10,7 @@ import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { SubscriptionFilter } from '../../../pages/types'
 import { router, useRouter } from '../../../stores/router'
 import { follow, unfollow } from '../../../stores/zine/common'
+import { isCyrillic } from '../../../utils/cyrillic'
 import { isAuthor } from '../../../utils/isAuthor'
 import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
@@ -22,7 +23,6 @@ import { Userpic } from '../Userpic'
 
 import styles from './AuthorCard.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
-import { isCyrillic } from '../../../utils/cyrillic'
 
 type Props = {
   author: Author

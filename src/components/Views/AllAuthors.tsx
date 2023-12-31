@@ -7,17 +7,17 @@ import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { loadAuthors, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
+import { capitalize } from '../../utils/capitalize'
+import { isCyrillic } from '../../utils/cyrillic'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { translit } from '../../utils/ru2en'
 import { scrollHandler } from '../../utils/scroll'
 import { Loading } from '../_shared/Loading'
 import { SearchField } from '../_shared/SearchField'
 import { AuthorBadge } from '../Author/AuthorBadge'
 
 import styles from './AllAuthors.module.scss'
-import { isCyrillic } from '../../utils/cyrillic'
-import { capitalize } from '../../utils/capitalize'
-import { translit } from '../../utils/ru2en'
 
 type AllAuthorsPageSearchParams = {
   by: '' | 'name' | 'shouts' | 'followers'
@@ -87,7 +87,7 @@ export const AllAuthorsView = (props: Props) => {
         let letter = ''
         if (!letter && author && author.name) {
           const name = translate(author)
-            .replace(/[^A-zА-я0-9]/, ' ')
+            .replace(/[^\dA-zА-я]/, ' ')
             .trim()
           const nameParts = name.trim().split(' ')
           const found = nameParts.filter(Boolean).pop()

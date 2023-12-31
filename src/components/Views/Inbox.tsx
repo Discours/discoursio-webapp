@@ -91,18 +91,10 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  onMount(async () => {
-    try {
-      const response = await loadRecipients() // time ago in seconds
-      setRecipients(response as unknown as Author[])
-    } catch (error) {
-      console.log(error)
-    }
-    await loadChats()
-  })
+  onMount(loadChats)
 
   const handleSubmit = async (message: string) => {
-    await sendMessage({
+    sendMessage({
       body: message,
       chat_id: currentDialog()?.id.toString(),
       reply_to: messageToReply()?.id,
@@ -149,8 +141,8 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  const findToReply = (messageId) => {
-    return messages().find((message) => message.id === messageId)
+  const findToReply = (messageId: number) => {
+    return messages().find((message: MessageType) => message.id === messageId)
   }
 
   createEffect(

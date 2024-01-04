@@ -2,7 +2,7 @@
   align-items: flex-start;
   display: flex;
   gap: 1rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 
   &.nameOnly {
     align-items: center;
@@ -10,10 +10,6 @@
     .info {
       margin-bottom: 0;
     }
-  }
-
-  @include media-breakpoint-up(sm) {
-    margin-bottom: 2rem;
   }
 
   @include media-breakpoint-down(md) {
@@ -60,6 +56,7 @@
 
     .bio {
       color: var(--black-400);
+      font-weight: 500;
     }
   }
 

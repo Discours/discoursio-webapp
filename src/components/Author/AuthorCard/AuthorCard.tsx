@@ -29,7 +29,6 @@ type Props = {
   followers?: Author[]
   following?: Array<Author | Topic>
 }
-
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const {
@@ -254,7 +253,7 @@ export const AuthorCard = (props: Props) => {
           </Show>
         </ShowOnlyOnClient>
         <Show when={props.followers}>
-          <Modal variant="medium" name="followers" maxHeight>
+          <Modal variant="medium" isResponsive={true} name="followers" maxHeight>
             <>
               <h2>{t('Followers')}</h2>
               <div class={styles.listWrapper}>
@@ -270,7 +269,7 @@ export const AuthorCard = (props: Props) => {
           </Modal>
         </Show>
         <Show when={props.following}>
-          <Modal variant="medium" name="following" maxHeight>
+          <Modal variant="medium" isResponsive={true} name="following" maxHeight>
             <>
               <h2>{t('Subscriptions')}</h2>
               <ul class="view-switcher">

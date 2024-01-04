@@ -8,6 +8,7 @@ import { ConfirmProvider } from '../context/confirm'
 import { ConnectProvider } from '../context/connect'
 import { EditorProvider } from '../context/editor'
 import { LocalizeProvider } from '../context/localize'
+import { MediaQueryProvider } from '../context/mediaQuery'
 import { NotificationsProvider } from '../context/notifications'
 import { SessionProvider } from '../context/session'
 import { SnackbarProvider } from '../context/snackbar'
@@ -116,19 +117,21 @@ export const App = (props: Props) => {
     <MetaProvider>
       <Meta name="viewport" content="width=device-width, initial-scale=1" />
       <LocalizeProvider>
-        <SnackbarProvider>
-          <ConfirmProvider>
-            <SessionProvider onStateChangeCallback={console.log}>
-              <ConnectProvider>
-                <NotificationsProvider>
-                  <EditorProvider>
-                    <Dynamic component={pageComponent()} {...props} />
-                  </EditorProvider>
-                </NotificationsProvider>
-              </ConnectProvider>
-            </SessionProvider>
-          </ConfirmProvider>
-        </SnackbarProvider>
+        <MediaQueryProvider>
+          <SnackbarProvider>
+            <ConfirmProvider>
+              <SessionProvider onStateChangeCallback={console.log}>
+                <ConnectProvider>
+                  <NotificationsProvider>
+                    <EditorProvider>
+                      <Dynamic component={pageComponent()} {...props} />
+                    </EditorProvider>
+                  </NotificationsProvider>
+                </ConnectProvider>
+              </SessionProvider>
+            </ConfirmProvider>
+          </SnackbarProvider>
+        </MediaQueryProvider>
       </LocalizeProvider>
     </MetaProvider>
   )

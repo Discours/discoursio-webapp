@@ -1,0 +1,48 @@
+.feedArticlePopup {
+  box-shadow: none !important;
+  border: 1px solid rgb(0 0 0 / 15%);
+  border-radius: 1.6rem;
+  padding: 0 !important;
+  text-align: left;
+  overflow: hidden;
+
+  @include media-breakpoint-down(md) {
+    left: auto !important;
+    right: 0;
+    transform: none !important;
+  }
+
+  .actionList {
+    & > li {
+      margin-bottom: 0 !important;
+    }
+
+    .action {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 16px;
+      font-size: inherit;
+      font-weight: 500;
+      text-align: left;
+      white-space: nowrap;
+
+      &.soon {
+        color: var(--black-300);
+      }
+
+      &:hover {
+        background: var(--black-500);
+        color: var(--black-50) !important;
+      }
+    }
+
+    li:first-child .action {
+      padding-top: 16px;
+    }
+    li:last-child .action {
+      padding-bottom: 16px;
+    }
+  }
+}

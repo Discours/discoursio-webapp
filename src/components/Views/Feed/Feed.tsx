@@ -31,15 +31,22 @@ export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5
 
 type FeedPeriod = 'week' | 'month' | 'year'
+type VisibilityMode = 'all' | 'community' | 'public'
 
 type PeriodItem = {
   value: FeedPeriod
   title: string
 }
 
+type VisibilityItem = {
+  value: VisibilityMode
+  title: string
+}
+
 type FeedSearchParams = {
   by: 'publish_date' | 'rating' | 'last_comment'
   period: FeedPeriod
+  visibility: VisibilityMode
 }
 
 const getOrderBy = (by: FeedSearchParams['by']) => {
@@ -85,11 +92,17 @@ export const FeedView = (props: Props) => {
   const { t } = useLocalize()
 
   const monthPeriod: PeriodItem = { value: 'month', title: t('This month') }
+  const visibilityAll = { value: 'public', title: t('All') }
 
   const periods: PeriodItem[] = [
     { value: 'week', title: t('This week') },
     monthPeriod,
     { value: 'year', title: t('This year') },
+  ]
+
+  const visibilities: VisibilityItem[] = [
+    { value: 'community', title: t('All') },
+    { value: 'public', title: t('Published') },
   ]
 
   const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
@@ -105,12 +118,18 @@ export const FeedView = (props: Props) => {
 
   const currentPeriod = createMemo(() => {
     const period = periods.find((p) => p.value === searchParams().period)
-
     if (!period) {
       return monthPeriod
     }
-
     return period
+  })
+
+  const currentVisibility = createMemo(() => {
+    const visibility = visibilities.find((v) => v.value === searchParams().visibility)
+    if (!visibility) {
+      return visibilityAll
+    }
+    return visibility
   })
 
   const {
@@ -130,7 +149,7 @@ export const FeedView = (props: Props) => {
   onMount(() => {
     loadMore()
     // eslint-disable-next-line promise/catch-or-return
-    Promise.all([loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
+    Promise.all([loadUnratedArticles(), loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
   })
 
   const { session } = useSession()
@@ -142,7 +161,7 @@ export const FeedView = (props: Props) => {
 
   createEffect(
     on(
-      () => page().route + searchParams().by + searchParams().period,
+      () => page().route + searchParams().by + searchParams().period + searchParams().visibility,
       () => {
         resetSortedArticles()
         loadMore()
@@ -158,16 +177,19 @@ export const FeedView = (props: Props) => {
     }
 
     const orderBy = getOrderBy(searchParams().by)
-
     if (orderBy) {
       options.order_by = orderBy
+    }
+
+    const visibilityMode = searchParams().visibility
+    if (visibilityMode && visibilityMode !== 'all') {
+      options.filters = { ...options.filters, published: visibilityMode === 'public' }
     }
 
     if (searchParams().by && searchParams().by !== 'publish_date') {
       const period = searchParams().period || 'month'
       options.filters = { after: getFromDate(period) }
     }
-
     return props.loadShouts(options)
   }
 
@@ -242,16 +264,24 @@ export const FeedView = (props: Props) => {
                 </span>
               </li>
             </ul>
-            <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
-              <div>
+            <div class={styles.dropdowns}>
+              <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
                 <DropDown
                   options={periods}
                   currentOption={currentPeriod()}
                   triggerCssClass={styles.periodSwitcher}
-                  onChange={(period) => changeSearchParams({ period: period.value })}
+                  onChange={(period: PeriodItem) => changeSearchParams({ period: period.value })}
                 />
-              </div>
-            </Show>
+              </Show>
+              <DropDown
+                options={visibilities}
+                currentOption={currentVisibility()}
+                triggerCssClass={styles.periodSwitcher}
+                onChange={(visibility: VisibilityItem) =>
+                  changeSearchParams({ visibility: visibility.value })
+                }
+              />
+            </div>
           </div>
 
           <Show when={!isLoading()} fallback={<Loading />}>

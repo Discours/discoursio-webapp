@@ -19,13 +19,16 @@ export const notifierClient = {
   },
 
   markSeen: async (notification_id: number): Promise<void> => {
+    // call when notification is clicked
     await notifierClient.private.mutation(markSeenMutation, { notification_id }).toPromise()
   },
 
   markSeenAfter: async (options: MutationMark_Seen_AfterArgs): Promise<void> => {
+    // call when 'mark all as seen' cliecked
     await notifierClient.private.mutation(markSeenAfterMutation, options).toPromise()
   },
   markSeenThread: async (thread: string): Promise<void> => {
+    // call when notification group is clicked
     await notifierClient.private.mutation(markThreadSeenMutation, { thread }).toPromise()
   },
 }

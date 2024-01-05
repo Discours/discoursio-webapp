@@ -22,3 +22,27 @@ jobs:
 
       - name: Run tests
         run: npm run check
+
+  update_mailgun_template:
+    runs-on: ubuntu-latest
+    name: Update 'main' template on Mailgun
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: update authorizer_password_reset
+        uses: jlepocher/mailgun-create-template-version-action@v1.3
+        with:
+          mailgun-host: 'api.eu.mailgun.net'
+          mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
+          mailgun-domain-name: 'discours.io'
+          mailgun-template-name: 'authorizer_password_reset'
+          html-file-path: './templates/authorizer_password_reset.html'
+
+      - name: update authorizer_password_reset
+        uses: jlepocher/mailgun-create-template-version-action@v1.3
+        with:
+          mailgun-host: 'api.eu.mailgun.net'
+          mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
+          mailgun-domain-name: 'discours.io'
+          mailgun-template-name: 'authorizer_email_confirm'
+          html-file-path: './templates/authorizer_email_confirm.html'

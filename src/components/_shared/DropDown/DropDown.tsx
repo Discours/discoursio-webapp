@@ -14,8 +14,7 @@ export type Option = {
 
 type Props<TOption> = {
   class?: string
-  popupProps?: PopupProps
-  horizontalAnchor?: PopupProps['horizontalAnchor']
+  popupProps?: Partial<PopupProps>
   options: TOption[]
   currentOption: TOption
   triggerCssClass?: string
@@ -55,7 +54,6 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
         }
         variant="tiny"
         onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
-        horizontalAnchor={props.horizontalAnchor}
         {...props.popupProps}
       >
         <For each={props.options}>

@@ -41,7 +41,7 @@ export const ArticlePage = (props: PageProps) => {
     script.async = true
     script.src = 'https://ackee.discours.io/increment.js'
     script.dataset.ackeeServer = 'https://ackee.discours.io'
-    script.dataset.ackeeDomainId = '1004abeb-89b2-4e85-ad97-74f8d2c8ed2d'
+    script.dataset.ackeeDomainId = '306f0723-77cc-4c11-8b9c-8415a1e9daf0'
     try {
       document.body.appendChild(script)
     } catch (error) {

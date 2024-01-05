@@ -19,7 +19,6 @@ type Props = {
 }
 
 export const TopicBadge = (props: Props) => {
-  const [isSubscribing, setIsSubscribing] = createSignal(false)
   const { t, lang } = useLocalize()
   const { mediaMatches } = useMediaQuery()
   const [isMobileView, setIsMobileView] = createSignal(false)

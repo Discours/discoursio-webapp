@@ -25,7 +25,7 @@ jobs:
 
   update_mailgun_template:
     runs-on: ubuntu-latest
-    name: Update 'main' template on Mailgun
+    name: Update templates on Mailgun
     steps:
       - name: Checkout
         uses: actions/checkout@v2

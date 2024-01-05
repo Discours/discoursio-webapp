@@ -16,7 +16,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   }
 
   const topicShouts = await apiClient.getShouts({
-    filters: { topic: topic.slug, visibility: 'public' },
+    filters: { topic: topic.slug, published: true },
     limit: PRERENDERED_ARTICLES_COUNT,
   })
 

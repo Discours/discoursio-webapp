@@ -182,7 +182,9 @@ export const FeedView = (props: Props) => {
     }
 
     const visibilityMode = searchParams().visibility
-    if (visibilityMode && visibilityMode !== 'all') {
+    if (visibilityMode === 'all') {
+      options.filters = { ...options.filters }
+    } else if (visibilityMode) {
       options.filters = { ...options.filters, published: visibilityMode === 'public' }
     }
 

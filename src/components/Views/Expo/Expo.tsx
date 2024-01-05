@@ -41,7 +41,7 @@ export const Expo = (props: Props) => {
   })
 
   const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
-    const filters = { visibility: 'public', ...additionalFilters }
+    const filters = { published: true, ...additionalFilters }
 
     filters.layouts = []
     if (props.layout) {

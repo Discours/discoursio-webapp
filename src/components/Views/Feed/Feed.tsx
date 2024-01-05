@@ -203,6 +203,10 @@ export const Feed = (props: Props) => {
   )
   const ogTitle = t('Feed')
 
+  const myPopupProps = {
+    horizontalAnchor: 'right',
+  }
+
   return (
     <div class="wide-container feed">
       <Meta name="descprition" content={description} />
@@ -256,6 +260,7 @@ export const Feed = (props: Props) => {
             <div class={styles.dropdowns}>
               <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
                 <DropDown
+                  horizontalAnchor="right"
                   options={periods}
                   currentOption={currentPeriod()}
                   triggerCssClass={styles.periodSwitcher}
@@ -263,6 +268,7 @@ export const Feed = (props: Props) => {
                 />
               </Show>
               <DropDown
+                horizontalAnchor="right"
                 options={visibilities}
                 currentOption={currentVisibility()}
                 triggerCssClass={styles.periodSwitcher}

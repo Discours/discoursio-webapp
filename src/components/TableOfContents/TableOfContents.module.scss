@@ -1,6 +1,7 @@
 .TableOfContentsFixedWrapper {
   min-height: 100%;
   position: relative;
+  z-index: 1;
   top: 0;
 
   @include media-breakpoint-down(xl) {

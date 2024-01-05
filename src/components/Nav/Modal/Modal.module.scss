@@ -1,7 +1,7 @@
 .backdrop {
   align-items: center;
-  background: rgb(20 20 20 / 70%);
   display: flex;
+  background: rgba(20, 20, 20, 0.07);
   justify-content: center;
   height: 100%;
   left: 0;
@@ -17,6 +17,7 @@
   background: var(--background-color);
   max-width: 1000px;
   position: relative;
+  z-index: 1;
 
   &:not([class*='col-']) {
     width: 100%;

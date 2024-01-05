@@ -4,6 +4,7 @@ import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 
+import { useLocalize } from '../../../context/localize'
 import { useMediaQuery } from '../../../context/mediaQuery'
 import { router } from '../../../stores/router'
 import { hideModal, useModalStore } from '../../../stores/ui'
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export const Modal = (props: Props) => {
+  const { t } = useLocalize()
   const { modal } = useModalStore()
   const [visible, setVisible] = createSignal(false)
   const allowClose = createMemo(() => props.allowClose !== false)

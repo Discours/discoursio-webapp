@@ -5,6 +5,7 @@
   padding: 0 !important;
   text-align: left;
   overflow: hidden;
+  margin-top: -14px;
 
   @include media-breakpoint-down(md) {
     left: auto !important;
@@ -30,6 +31,10 @@
 
       &.soon {
         color: var(--black-300);
+        display: flex;
+        gap: 0.6rem;
+        width: 100%;
+        justify-content: space-between;
       }
 
       &:hover {

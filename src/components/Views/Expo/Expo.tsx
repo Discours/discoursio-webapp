@@ -147,7 +147,7 @@ export const Expo = (props: Props) => {
     <div class={styles.Expo}>
       <Show when={sortedArticles().length > 0} fallback={<Loading />}>
         <div class="wide-container">
-          <ul class={clsx('view-switcher', styles.navigation)}>
+          <ul class={clsx('view-switcher')}>
             <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
               <ConditionalWrapper
                 condition={Boolean(props.layout)}

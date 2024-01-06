@@ -1,12 +1,9 @@
-import { getPagePath } from '@nanostores/router'
 import { createSocialShare, FACEBOOK, TELEGRAM, TWITTER, VK } from '@solid-primitives/share'
-import { Input } from '@thisbeyond/solid-select'
 import { clsx } from 'clsx'
 import { createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSnackbar } from '../../../context/snackbar'
-import { router } from '../../../stores/router'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 

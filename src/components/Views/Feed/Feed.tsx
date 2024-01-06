@@ -203,10 +203,6 @@ export const Feed = (props: Props) => {
   )
   const ogTitle = t('Feed')
 
-  const myPopupProps = {
-    horizontalAnchor: 'right',
-  }
-
   return (
     <div class="wide-container feed">
       <Meta name="descprition" content={description} />

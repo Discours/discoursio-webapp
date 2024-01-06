@@ -1,8 +1,7 @@
 .UserSearch {
   .searchHeader {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     width: 100%;
     gap: 1rem;
   }
@@ -10,8 +9,7 @@
   .field {
     border-bottom: 2px solid var(--background-color-invert);
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     padding: 4px 0;
     align-items: center;
     width: 100%;
@@ -28,6 +26,7 @@
     &::placeholder {
       color: #404040;
     }
+
     &:focus {
       outline: none;
     }

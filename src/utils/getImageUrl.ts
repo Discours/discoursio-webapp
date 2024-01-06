@@ -1,5 +1,7 @@
 import { thumborUrl } from './config'
 
+const thumborPrefix = `${thumborUrl}/unsafe/`
+
 const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
   const widthString = options.width ? options.width.toString() : ''
   const heightString = options.height ? options.height.toString() : ''
@@ -14,12 +16,34 @@ const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
 export const getImageUrl = (src: string, options: { width?: number; height?: number } = {}) => {
   const sizeUrlPart = getSizeUrlPart(options)
 
-  const thumborPrefix = `${thumborUrl}/unsafe/`
-
   if (src.startsWith(thumborPrefix)) {
     const thumborKey = src.replace(thumborPrefix, '')
     return `${thumborUrl}/unsafe/${sizeUrlPart}${thumborKey}`
   }
 
   return `${thumborUrl}/unsafe/${sizeUrlPart}${src}`
+}
+
+export const getOpenGraphImageUrl = (
+  src: string,
+  options: {
+    topic: string
+    title: string
+    author: string
+    width?: number
+    height?: number
+  },
+) => {
+  const sizeUrlPart = getSizeUrlPart(options)
+
+  const filtersPart = `filters:discourstext('${encodeURIComponent(options.topic)}','${encodeURIComponent(
+    options.author,
+  )}','${encodeURIComponent(options.title)}')/`
+
+  if (src.startsWith(thumborPrefix)) {
+    const thumborKey = src.replace(thumborPrefix, '')
+    return `${thumborUrl}/unsafe/${sizeUrlPart}${filtersPart}${thumborKey}`
+  }
+
+  return `${thumborUrl}/unsafe/${sizeUrlPart}${filtersPart}${src}`
 }

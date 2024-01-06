@@ -1,9 +1,6 @@
 import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
-import { Button } from '../Button'
 import { ShareLinks } from '../ShareLinks'
-
-import styles from '../ShareLinks/ShareLinks.module.scss'
 
 type Props = {
   modalTitle?: string

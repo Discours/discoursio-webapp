@@ -1,8 +1,7 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, JSX, on, Show } from 'solid-js'
+import { createEffect, createSignal, on, Show } from 'solid-js'
 
 import { useLocalize } from '../../../../context/localize'
-import { resetSortedArticles } from '../../../../stores/zine/articles'
 import { Icon } from '../../../_shared/Icon'
 
 import styles from './PasswordField.module.scss'

@@ -14,7 +14,7 @@ export type Option = {
 
 type Props<TOption> = {
   class?: string
-  popupProps?: PopupProps
+  popupProps?: Partial<PopupProps>
   options: TOption[]
   currentOption: TOption
   triggerCssClass?: string
@@ -43,7 +43,7 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
     <Show when={props.currentOption} keyed={true}>
       <Popup
         trigger={
-          <div class={props.triggerCssClass}>
+          <div class={clsx(styles.trigger, props.triggerCssClass)}>
             {props.currentOption.title}{' '}
             <Chevron
               class={clsx(styles.chevron, {
@@ -56,9 +56,12 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
         onVisibilityChange={(isVisible) => setIsPopupVisible(isVisible)}
         {...props.popupProps}
       >
-        <For each={props.options.filter((p) => p.value !== props.currentOption.value)}>
+        <For each={props.options}>
           {(option) => (
-            <div class="link" onClick={() => props.onChange(option)}>
+            <div
+              class={clsx('link', { [styles.active]: props.currentOption.value === option.value })}
+              onClick={() => props.onChange(option)}
+            >
               {option.title}
             </div>
           )}

@@ -31,15 +31,22 @@ export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5
 
 type FeedPeriod = 'week' | 'month' | 'year'
+type VisibilityMode = 'all' | 'community' | 'public'
 
 type PeriodItem = {
   value: FeedPeriod
   title: string
 }
 
+type VisibilityItem = {
+  value: VisibilityMode
+  title: string
+}
+
 type FeedSearchParams = {
   by: 'publish_date' | 'rating' | 'last_comment'
   period: FeedPeriod
+  visibility: VisibilityMode
 }
 
 const getOrderBy = (by: FeedSearchParams['by']) => {
@@ -80,11 +87,17 @@ export const Feed = (props: Props) => {
   const { t } = useLocalize()
 
   const monthPeriod: PeriodItem = { value: 'month', title: t('This month') }
+  const visibilityAll = { value: 'public', title: t('All') }
 
   const periods: PeriodItem[] = [
     { value: 'week', title: t('This week') },
     monthPeriod,
     { value: 'year', title: t('This year') },
+  ]
+
+  const visibilities: VisibilityItem[] = [
+    { value: 'community', title: t('All') },
+    { value: 'public', title: t('Published') },
   ]
 
   const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
@@ -100,12 +113,18 @@ export const Feed = (props: Props) => {
 
   const currentPeriod = createMemo(() => {
     const period = periods.find((p) => p.value === searchParams().period)
-
     if (!period) {
       return monthPeriod
     }
-
     return period
+  })
+
+  const currentVisibility = createMemo(() => {
+    const visibility = visibilities.find((v) => v.value === searchParams().visibility)
+    if (!visibility) {
+      return visibilityAll
+    }
+    return visibility
   })
 
   const {
@@ -130,7 +149,7 @@ export const Feed = (props: Props) => {
 
   createEffect(
     on(
-      () => page().route + searchParams().by + searchParams().period,
+      () => page().route + searchParams().by + searchParams().period + searchParams().visibility,
       () => {
         resetSortedArticles()
         loadMore()
@@ -146,17 +165,20 @@ export const Feed = (props: Props) => {
     }
 
     const orderBy = getOrderBy(searchParams().by)
-
     if (orderBy) {
       options.order_by = orderBy
+    }
+
+    const visibilityMode = searchParams().visibility
+    if (visibilityMode && visibilityMode !== 'all') {
+      options.filters = { ...options.filters, visibility: visibilityMode }
     }
 
     if (searchParams().by && searchParams().by !== 'publish_date') {
       const period = searchParams().period || 'month'
       const fromDate = getFromDate(period)
-      options.filters = { fromDate: getServerDate(fromDate) }
+      options.filters = { ...options.filters, fromDate: getServerDate(fromDate) }
     }
-
     return props.loadShouts(options)
   }
 
@@ -180,6 +202,10 @@ export const Feed = (props: Props) => {
     'Independent media project about culture, science, art and society with horizontal editing',
   )
   const ogTitle = t('Feed')
+
+  const myPopupProps = {
+    horizontalAnchor: 'right',
+  }
 
   return (
     <div class="wide-container feed">
@@ -231,16 +257,26 @@ export const Feed = (props: Props) => {
                 </span>
               </li>
             </ul>
-            <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
-              <div>
+            <div class={styles.dropdowns}>
+              <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
                 <DropDown
+                  popupProps={{ horizontalAnchor: 'right' }}
                   options={periods}
                   currentOption={currentPeriod()}
                   triggerCssClass={styles.periodSwitcher}
-                  onChange={(period) => changeSearchParams({ period: period.value })}
+                  onChange={(period: PeriodItem) => changeSearchParams({ period: period.value })}
                 />
-              </div>
-            </Show>
+              </Show>
+              <DropDown
+                popupProps={{ horizontalAnchor: 'right' }}
+                options={visibilities}
+                currentOption={currentVisibility()}
+                triggerCssClass={styles.periodSwitcher}
+                onChange={(visibility: VisibilityItem) =>
+                  changeSearchParams({ visibility: visibility.value })
+                }
+              />
+            </div>
           </div>
 
           <Show when={!isLoading()} fallback={<Loading />}>

@@ -6,8 +6,10 @@
   overflow: hidden;
   position: relative;
   transform: translateY(-2px);
+  width: 100%;
 
   @include media-breakpoint-down(sm) {
+    overflow: auto;
     padding: 0 divide($container-padding-x, 2);
   }
 

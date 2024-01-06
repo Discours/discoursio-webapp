@@ -1,8 +1,9 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createMemo, createSignal, Match, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, Match, Show, Switch } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { useMediaQuery } from '../../../context/mediaQuery'
 import { useSession } from '../../../context/session'
 import { Author, FollowingEntity } from '../../../graphql/types.gen'
 import { router, useRouter } from '../../../stores/router'
@@ -23,7 +24,14 @@ type Props = {
   nameOnly?: boolean
 }
 export const AuthorBadge = (props: Props) => {
+  const { mediaMatches } = useMediaQuery()
+  const [isMobileView, setIsMobileView] = createSignal(false)
   const [isSubscribing, setIsSubscribing] = createSignal(false)
+
+  createEffect(() => {
+    setIsMobileView(!mediaMatches.sm)
+  })
+
   const {
     session,
     subscriptions,
@@ -65,7 +73,7 @@ export const AuthorBadge = (props: Props) => {
       <div class={styles.basicInfo}>
         <Userpic
           hasLink={true}
-          size={'M'}
+          size={isMobileView() ? 'M' : 'L'}
           name={props.author.name}
           userpic={props.author.userpic}
           slug={props.author.slug}
@@ -111,7 +119,7 @@ export const AuthorBadge = (props: Props) => {
               fallback={
                 <Button
                   variant={props.iconButtons ? 'secondary' : 'bordered'}
-                  size="M"
+                  size="S"
                   value={
                     <Show
                       when={props.iconButtons}
@@ -135,7 +143,7 @@ export const AuthorBadge = (props: Props) => {
             >
               <Button
                 variant={props.iconButtons ? 'secondary' : 'bordered'}
-                size="M"
+                size="S"
                 value={
                   <Show
                     when={props.iconButtons}
@@ -161,7 +169,7 @@ export const AuthorBadge = (props: Props) => {
           <Show when={props.showMessageButton}>
             <Button
               variant={props.iconButtons ? 'secondary' : 'bordered'}
-              size="M"
+              size="S"
               value={props.iconButtons ? <Icon name="inbox-white" /> : t('Message')}
               onClick={initChat}
               class={clsx(styles.actionButton, { [styles.iconed]: props.iconButtons })}

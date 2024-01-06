@@ -4,6 +4,8 @@ import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 
+import { useLocalize } from '../../../context/localize'
+import { useMediaQuery } from '../../../context/mediaQuery'
 import { router } from '../../../stores/router'
 import { hideModal, useModalStore } from '../../../stores/ui'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
@@ -19,12 +21,16 @@ interface Props {
   noPadding?: boolean
   maxHeight?: boolean
   allowClose?: boolean
+  isResponsive?: boolean
 }
 
 export const Modal = (props: Props) => {
+  const { t } = useLocalize()
   const { modal } = useModalStore()
   const [visible, setVisible] = createSignal(false)
   const allowClose = createMemo(() => props.allowClose !== false)
+  const [isMobileView, setIsMobileView] = createSignal(false)
+  const { mediaMatches } = useMediaQuery()
   const handleHide = () => {
     if (modal()) {
       if (allowClose()) {
@@ -33,7 +39,6 @@ export const Modal = (props: Props) => {
         redirectPage(router, 'home')
       }
     }
-
     hideModal()
   }
 
@@ -43,10 +48,21 @@ export const Modal = (props: Props) => {
     setVisible(modal() === props.name)
   })
 
+  createEffect(() => {
+    if (props.isResponsive) {
+      setIsMobileView(!mediaMatches.sm)
+    }
+  })
+
   return (
     <Show when={visible()}>
-      <div class={styles.backdrop} onClick={handleHide}>
-        <div class="wide-container">
+      <div
+        class={clsx(styles.backdrop, {
+          [styles.isMobile]: isMobileView(),
+        })}
+        onClick={handleHide}
+      >
+        <div class={clsx('wide-container', styles.container)}>
           <div
             class={clsx(styles.modal, {
               [styles.narrow]: props.variant === 'narrow',
@@ -57,9 +73,11 @@ export const Modal = (props: Props) => {
             onClick={(event) => event.stopPropagation()}
           >
             <div class={styles.modalInner}>{props.children}</div>
-            <div class={styles.close} onClick={handleHide}>
-              <Icon name="close" class={styles.icon} />
-            </div>
+            <Show when={!isMobileView()}>
+              <div class={styles.close} onClick={handleHide}>
+                <Icon name="close" class={styles.icon} />
+              </div>
+            </Show>
           </div>
         </div>
       </div>

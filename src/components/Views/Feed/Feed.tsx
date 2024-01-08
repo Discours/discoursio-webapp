@@ -301,7 +301,7 @@ export const Feed = (props: Props) => {
               <For each={sortedArticles().slice(0, 4)}>
                 {(article) => (
                   <ArticleCard
-                    shareClick={(shared) => handleShare(shared)}
+                    onShare={(shared) => handleShare(shared)}
                     article={article}
                     settings={{ isFeedMode: true }}
                     desktopCoverSize="M"

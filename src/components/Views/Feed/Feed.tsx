@@ -422,9 +422,9 @@ export const Feed = (props: Props) => {
       </div>
       <Show when={shareData()}>
         <ShareModal
-          title={shareData()?.title}
-          description={shareData()?.description}
-          imageUrl={shareData()?.image}
+          title={shareData().title}
+          description={shareData().description}
+          imageUrl={shareData().image}
           shareUrl={shareData().url}
         />
       </Show>

@@ -1,5 +1,3 @@
-import { createMemo } from 'solid-js'
-
 import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { ShareLinks } from '../ShareLinks'

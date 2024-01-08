@@ -36,13 +36,6 @@ const UNRATED_ARTICLES_COUNT = 5
 type FeedPeriod = 'week' | 'month' | 'year'
 type VisibilityMode = 'all' | 'community' | 'public'
 
-type ShareData = {
-  title: string
-  description: string
-  image: string
-  url: string
-}
-
 type PeriodItem = {
   value: FeedPeriod
   title: string

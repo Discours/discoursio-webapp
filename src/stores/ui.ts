@@ -25,6 +25,7 @@ export type ModalType =
   | 'following'
   | 'search'
   | 'inviteCoAuthors'
+  | 'share'
 
 export const MODALS: Record<ModalType, ModalType> = {
   auth: 'auth',
@@ -42,6 +43,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   following: 'following',
   inviteCoAuthors: 'inviteCoAuthors',
   search: 'search',
+  share: 'share',
 }
 
 const [modal, setModal] = createSignal<ModalType>(null)

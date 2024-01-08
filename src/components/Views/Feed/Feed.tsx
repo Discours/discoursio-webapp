@@ -269,6 +269,7 @@ export const FeedView = (props: Props) => {
             <div class={styles.dropdowns}>
               <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
                 <DropDown
+                  popupProps={{ horizontalAnchor: 'right' }}
                   options={periods}
                   currentOption={currentPeriod()}
                   triggerCssClass={styles.periodSwitcher}
@@ -276,6 +277,7 @@ export const FeedView = (props: Props) => {
                 />
               </Show>
               <DropDown
+                popupProps={{ horizontalAnchor: 'right' }}
                 options={visibilities}
                 currentOption={currentVisibility()}
                 triggerCssClass={styles.periodSwitcher}

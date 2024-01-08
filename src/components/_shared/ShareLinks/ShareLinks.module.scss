@@ -1,0 +1,82 @@
+.ShareLinks {
+  .shareControl {
+    text-align: left;
+    transition:
+      color 0.3s,
+      background-color 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+      background: #000;
+      color: #fff;
+
+      .icon img {
+        filter: invert(0);
+      }
+    }
+
+    .icon {
+      display: inline-block;
+      width: 3.6rem;
+
+      img {
+        display: inline-block;
+        filter: invert(1);
+        max-height: 2rem;
+        max-width: 2rem;
+        transition: filter 0.3s;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  &.inModal {
+    li {
+      margin: 0;
+    }
+
+    .shareControl {
+      font-size: 18px;
+      font-weight: 600;
+      padding: 1rem;
+      margin: 0 -12px;
+      width: calc(100% + 24px);
+      transition: unset;
+    }
+  }
+
+  .linkInput {
+    position: relative;
+    margin-top: 2rem;
+    margin-bottom: -2rem !important;
+
+    input {
+      margin-bottom: 0;
+      padding-right: 40px;
+      box-sizing: border-box;
+    }
+
+    .copyButton {
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      right: 2px;
+      width: 40px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  }
+
+  .isCopied {
+    @include font-size(1.6rem);
+
+    position: absolute;
+    top: 100%;
+    left: 1.2rem;
+    margin-top: 0.5rem;
+    color: var(--blue-500);
+  }
+}

@@ -1,10 +1,15 @@
 .trigger {
   white-space: nowrap;
 }
+
 .chevron {
   vertical-align: top;
 
   &.rotate {
     transform: rotate(180deg);
   }
+}
+
+.active {
+  font-weight: 600;
 }

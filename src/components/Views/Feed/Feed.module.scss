@@ -195,6 +195,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4rem;
+
   @include media-breakpoint-down(sm) {
     flex-direction: column-reverse;
     align-items: flex-start;
@@ -205,6 +206,7 @@
     margin-top: 0;
     margin-bottom: 0;
     min-width: 300px;
+    overflow: hidden;
 
     & > li {
       margin-bottom: 0;
@@ -213,8 +215,7 @@
 
   .dropdowns {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     gap: 1rem;
     justify-content: center;
   }

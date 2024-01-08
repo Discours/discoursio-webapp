@@ -7,9 +7,8 @@
 
   .basicInfo {
     display: flex;
-    flex-direction: row;
+    flex-flow: row nowrap;
     align-items: flex-start;
-    flex-wrap: nowrap;
     flex: 1;
     gap: 1rem;
   }

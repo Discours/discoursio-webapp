@@ -7,11 +7,14 @@ import { createMemo, createSignal, For, Show } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { router, useRouter } from '../../../stores/router'
+import { showModal } from '../../../stores/ui'
 import { capitalize } from '../../../utils/capitalize'
 import { getDescription } from '../../../utils/meta'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
+import { InviteCoAuthorsModal } from '../../_shared/InviteCoAuthorsModal'
 import { Popover } from '../../_shared/Popover'
+import { ShareModal } from '../../_shared/ShareModal'
 import { CoverImage } from '../../Article/CoverImage'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
@@ -310,7 +313,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
             <div class={styles.shoutCardDetailsContent}>
               <Show when={canEdit()}>
-                <Popover content={t('Edit')}>
+                <Popover content={t('Edit')} disabled={isActionPopupActive()}>
                   {(triggerRef: (el) => void) => (
                     <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                       <a href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}>
@@ -325,7 +328,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </Popover>
               </Show>
 
-              <Popover content={t('Add to bookmarks')}>
+              <Popover content={t('Add to bookmarks')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <button>
@@ -348,6 +351,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                       description={description}
                       imageUrl={props.article.cover}
                       shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
+                      onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                       trigger={
                         <button>
                           <Icon name="share-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
@@ -366,9 +370,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <FeedArticlePopup
                   isOwner={canEdit()}
                   containerCssClass={stylesHeader.control}
-                  title={title}
-                  description={description}
-                  imageUrl={props.article.cover}
+                  onShareClick={() => showModal('share')}
+                  onInviteClick={() => showModal('inviteCoAuthors')}
+                  onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                   trigger={
                     <button>
                       <Icon name="ellipsis" class={clsx(styles.icon, styles.feedControlIcon)} />
@@ -384,6 +388,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </section>
         </Show>
       </div>
+      <InviteCoAuthorsModal title={t('Invite experts')} />
+      <ShareModal
+        title={title}
+        description={description}
+        imageUrl={props.article.cover}
+        shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
+      />
     </section>
   )
 }

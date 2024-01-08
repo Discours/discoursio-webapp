@@ -1,7 +1,7 @@
 .backdrop {
   align-items: center;
-  background: rgb(20 20 20 / 70%);
   display: flex;
+  background: rgb(20 20 20 / 7%);
   justify-content: center;
   height: 100%;
   left: 0;
@@ -17,6 +17,7 @@
   background: var(--background-color);
   max-width: 1000px;
   position: relative;
+  z-index: 1;
 
   &:not([class*='col-']) {
     width: 100%;
@@ -124,11 +125,13 @@
   .maxHeight {
     height: 100%;
   }
+
   .container {
     padding: 0;
     height: 100%;
     min-height: 100%;
   }
+
   .modalInner {
     padding: 1rem 1rem 0;
     height: 100%;

@@ -1,29 +1,31 @@
 import type { PopupProps } from '../../_shared/Popup'
 
 import { clsx } from 'clsx'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { showModal } from '../../../stores/ui'
-import { InviteCoAuthorsModal } from '../../_shared/InviteCoAuthorsModal'
 import { Popup } from '../../_shared/Popup'
 import { SoonChip } from '../../_shared/SoonChip'
 
 import styles from './FeedArticlePopup.module.scss'
 
 type FeedArticlePopupProps = {
-  title: string
-  imageUrl: string
   isOwner: boolean
-  description: string
+  onInviteClick: () => void
+  onShareClick: () => void
 } & Omit<PopupProps, 'children'>
 
 export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
   const { t } = useLocalize()
   return (
     <>
-      <Popup {...props} variant="tiny" popupCssClass={styles.feedArticlePopup}>
+      <Popup {...props} horizontalAnchor={'right'} variant="tiny" popupCssClass={styles.feedArticlePopup}>
         <ul class={clsx('nodash', styles.actionList)}>
+          <li>
+            <button class={styles.action} role="button" onClick={props.onShareClick}>
+              {t('Share')}
+            </button>
+          </li>
           <Show when={!props.isOwner}>
             <li>
               <button
@@ -38,13 +40,7 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
             </li>
           </Show>
           <li>
-            <button
-              class={styles.action}
-              role="button"
-              onClick={() => {
-                showModal('inviteCoAuthors')
-              }}
-            >
+            <button class={styles.action} role="button" onClick={props.onInviteClick}>
               {t('Invite experts')}
             </button>
           </li>
@@ -86,7 +82,6 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
           {/*</li>*/}
         </ul>
       </Popup>
-      <InviteCoAuthorsModal title={t('Invite experts')} />
     </>
   )
 }

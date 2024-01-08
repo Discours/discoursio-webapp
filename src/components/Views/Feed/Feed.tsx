@@ -213,15 +213,10 @@ export const Feed = (props: Props) => {
   )
   const ogTitle = t('Feed')
 
-  const [shareData, setShareData] = createSignal<ShareData | undefined>()
+  const [shareData, setShareData] = createSignal<Shout | undefined>()
   const handleShare = (shared) => {
     showModal('share')
-    setShareData({
-      title: shared.title,
-      description: shared.description,
-      image: shared.cover,
-      url: getShareUrl({ pathname: `/${shared.slug}` }),
-    })
+    setShareData(shared)
   }
 
   return (
@@ -424,8 +419,8 @@ export const Feed = (props: Props) => {
         <ShareModal
           title={shareData().title}
           description={shareData().description}
-          imageUrl={shareData().image}
-          shareUrl={shareData().url}
+          imageUrl={shareData().cover}
+          shareUrl={getShareUrl({ pathname: `/${shareData().slug}` })}
         />
       </Show>
     </div>

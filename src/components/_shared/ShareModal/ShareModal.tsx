@@ -1,3 +1,5 @@
+import { createMemo } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { ShareLinks } from '../ShareLinks'
@@ -11,7 +13,6 @@ type Props = {
 }
 export const ShareModal = (props: Props) => {
   const { t } = useLocalize()
-
   return (
     <Modal name="share" variant="medium" allowClose={true}>
       <h2>{t('Share publication')}</h2>

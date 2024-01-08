@@ -21,6 +21,7 @@ type Props = {
 export const ShareLinks = (props: Props) => {
   const { t } = useLocalize()
   const [isLinkCopied, setIsLinkCopied] = createSignal(false)
+
   const {
     actions: { showSnackbar },
   } = useSnackbar()

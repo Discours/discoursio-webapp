@@ -8,6 +8,7 @@ import { createEffect, createMemo, createSignal, For, on, onMount, Show } from '
 import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
 import { router, useRouter } from '../../../stores/router'
+import { showModal } from '../../../stores/ui'
 import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
@@ -17,7 +18,9 @@ import { getServerDate } from '../../../utils/getServerDate'
 import { DropDown } from '../../_shared/DropDown'
 import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
+import { ShareModal } from '../../_shared/ShareModal'
 import { CommentDate } from '../../Article/CommentDate'
+import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorLink } from '../../Author/AhtorLink'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ArticleCard } from '../../Feed/ArticleCard'
@@ -32,6 +35,13 @@ const UNRATED_ARTICLES_COUNT = 5
 
 type FeedPeriod = 'week' | 'month' | 'year'
 type VisibilityMode = 'all' | 'community' | 'public'
+
+type ShareData = {
+  title: string
+  description: string
+  image: string
+  url: string
+}
 
 type PeriodItem = {
   value: FeedPeriod
@@ -203,6 +213,17 @@ export const Feed = (props: Props) => {
   )
   const ogTitle = t('Feed')
 
+  const [shareData, setShareData] = createSignal<ShareData | undefined>()
+  const handleShare = (shared) => {
+    showModal('share')
+    setShareData({
+      title: shared.title,
+      description: shared.description,
+      image: shared.cover,
+      url: getShareUrl({ pathname: `/${shared.slug}` }),
+    })
+  }
+
   return (
     <div class="wide-container feed">
       <Meta name="descprition" content={description} />
@@ -279,7 +300,12 @@ export const Feed = (props: Props) => {
             <Show when={sortedArticles().length > 0}>
               <For each={sortedArticles().slice(0, 4)}>
                 {(article) => (
-                  <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
+                  <ArticleCard
+                    shareClick={(shared) => handleShare(shared)}
+                    article={article}
+                    settings={{ isFeedMode: true }}
+                    desktopCoverSize="M"
+                  />
                 )}
               </For>
 
@@ -394,6 +420,14 @@ export const Feed = (props: Props) => {
           </Show>
         </aside>
       </div>
+      <Show when={shareData()}>
+        <ShareModal
+          title={shareData()?.title}
+          description={shareData()?.description}
+          imageUrl={shareData()?.image}
+          shareUrl={shareData().url}
+        />
+      </Show>
     </div>
   )
 }

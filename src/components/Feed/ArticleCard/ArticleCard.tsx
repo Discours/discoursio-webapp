@@ -52,6 +52,7 @@ export type ArticleCardProps = {
   withAspectRatio?: boolean
   desktopCoverSize?: 'XS' | 'S' | 'M' | 'L'
   article: Shout
+  shareClick?: (shareData: Partial<Shout>) => void
 }
 
 const desktopCoverImageWidths: Record<ArticleCardProps['desktopCoverSize'], number> = {
@@ -367,7 +368,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <FeedArticlePopup
                   isOwner={canEdit()}
                   containerCssClass={stylesHeader.control}
-                  onShareClick={() => showModal('share')}
+                  onShareClick={() => props.shareClick(props.article)}
                   onInviteClick={() => showModal('inviteCoAuthors')}
                   onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                   trigger={
@@ -386,12 +387,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
       </div>
       <InviteCoAuthorsModal title={t('Invite experts')} />
-      <ShareModal
-        title={title}
-        description={description}
-        imageUrl={props.article.cover}
-        shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
-      />
     </section>
   )
 }

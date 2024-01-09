@@ -13,11 +13,19 @@ const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
   return `${widthString}x${heightString}/`
 }
 
-export const getImageUrl = (src: string, options: { width?: number; height?: number } = {}) => {
+export const getImageUrl = (
+  src: string,
+  options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
+) => {
   const sizeUrlPart = getSizeUrlPart(options)
 
+  if (options.noSizeUrlPart) {
+    src = src.replace(/\d+x.*?\//, '')
+  }
+
   if (src.startsWith(thumborPrefix)) {
-    const thumborKey = src.replace(thumborPrefix, '')
+    let thumborKey = src.replace(thumborPrefix, '')
+
     return `${thumborUrl}/unsafe/${sizeUrlPart}${thumborKey}`
   }
 

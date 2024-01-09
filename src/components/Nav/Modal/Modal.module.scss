@@ -88,6 +88,13 @@
   position: relative;
   text-align: left;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
   @include media-breakpoint-up(sm) {
     padding: 5rem;
   }

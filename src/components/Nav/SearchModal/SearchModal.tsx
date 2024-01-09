@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { createSignal, Show, For } from 'solid-js'
 
 import { ArticleCard } from '../../Feed/ArticleCard'
@@ -10,16 +9,18 @@ import type { Shout } from '../../../graphql/types.gen'
 import { searchUrl } from '../../../utils/config'
 
 import { useLocalize } from '../../../context/localize'
+import { hideModal } from '../../../stores/ui'
 
 import styles from './SearchModal.module.scss'
 
-// @@TODO handle founded shouts rendering (cors)
-// @@TODO implement load more (await ...({ filters: { .. }, limit: .., offset: .. }))
+// @@TODO handle empty article options after backend support (subtitle, cover, etc.)
+// @@TODO implement load more
+// @@TODO implement FILTERS & TOPICS
 
-const getSearchCoincidences = ({ str, intersection }) =>
+const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
   `<span>${str.replace(
-    new RegExp(intersection, 'g'),
-    `<span class="blackModeIntersection">${intersection}</span>`
+    new RegExp(intersection, 'gi'),
+    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`
   )}</span>`
 
 export const SearchModal = () => {
@@ -28,8 +29,8 @@ export const SearchModal = () => {
   const searchInputRef: { current: HTMLInputElement } = { current: null }
 
   const [searchResultsList, setSearchResultsList] = createSignal<[] | null>([])
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isLoading, setIsLoading] = createSignal(false)
+  // const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const handleSearch = async () => {
     const searchValue = searchInputRef.current?.value || ''
@@ -46,25 +47,34 @@ export const SearchModal = () => {
       })
         .then((data) => data.json())
         .then((data) => {
-          // if (data.what) {
-          //   const preparedSearchResultsList = data.what.map((article) => ({
-          //     ...article,
-          //     title: getSearchCoincidences({
-          //       str: article.title,
-          //       intersection: searchInputRef.current?.value || ''
-          //     }),
-          //     subtitle: getSearchCoincidences({
-          //       str: article.subtitle,
-          //       intersection: searchInputRef.current?.value || ''
-          //     }),
-          //   }))
-          //
-          //   setSearchResultsList(preparedSearchResultsList)
-          //
-          //   @@TODO handle setIsLoadMoreButtonVisible()
-          // } else {
-          //   setSearchResultsList(null)
-          // }
+          if (data.length) {
+            const preparedSearchResultsList = data.map((article, index) => ({
+              ...article,
+              body: '',
+              cover: '',
+              createdAt: '',
+              id: index,
+              slug: article.slug,
+              authors: [],
+              topics: [],
+              title: article.title
+                ? getSearchCoincidences({
+                    str: article.title,
+                    intersection: searchInputRef.current?.value || ''
+                  })
+                : '',
+              subtitle: article.subtitle
+                ? getSearchCoincidences({
+                    str: article.subtitle,
+                    intersection: searchInputRef.current?.value || ''
+                  })
+                : ''
+            }))
+
+            setSearchResultsList(preparedSearchResultsList)
+          } else {
+            setSearchResultsList(null)
+          }
         })
         .catch((error) => {
           console.log('search request failed', error)
@@ -75,7 +85,9 @@ export const SearchModal = () => {
     }
   }
 
-  const loadMore = () => {}
+  const handleArticleClick = () => {
+    hideModal()
+  }
 
   return (
     <div class={styles.searchContainer}>
@@ -100,50 +112,31 @@ export const SearchModal = () => {
         )}
       />
 
-      {/* <Show when={!isLoading()}> */}
-      <Show when={false}>
-        <Show when={searchResultsList().length}>
-          {/* <For each={searchResultsList()}> */}
-          <For
-            each={[
-              {
-                body: 'body',
-                cover: 'production/image/bbad6b10-9b44-11ee-bdef-5758f9198f7d.png',
-                createdAt: '12',
-                id: 12,
-                slug: '/about',
-                authors: [
-                  {
-                    id: 1,
-                    name: 'author',
-                    slug: '/'
-                  }
-                ],
-                title: 'asas',
-                subtitle: 'asas',
-                topics: []
-              }
-            ]}
-          >
+      <Show when={!isLoading()}>
+        <Show when={searchResultsList()}>
+          <For each={searchResultsList()}>
             {(article: Shout) => (
-              <ArticleCard
-                article={article}
-                settings={{
-                  isFloorImportant: true,
-                  isSingle: true,
-                  nodate: true
-                }}
-              />
+              <div onClick={handleArticleClick}>
+                <ArticleCard
+                  article={article}
+                  settings={{
+                    noimage: true, // @@TODO remove flag after cover support
+                    isFloorImportant: true,
+                    isSingle: true,
+                    nodate: true
+                  }}
+                />
+              </div>
             )}
           </For>
 
-          <Show when={isLoadMoreButtonVisible()}>
+          {/* <Show when={isLoadMoreButtonVisible()}>
             <p class="load-more-container">
               <button class="button" onClick={loadMore}>
                 {t('Load more')}
               </button>
             </p>
-          </Show>
+          </Show> */}
         </Show>
 
         <Show when={!searchResultsList()}>

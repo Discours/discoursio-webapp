@@ -45,6 +45,11 @@
   &:not(:placeholder-shown) + .searchButton img {
     filter: invert(1);
   }
+
+  &::-moz-selection,
+  &::selection {
+    color: #2638d9;
+  }
 }
 
 .searchButton {
@@ -61,6 +66,7 @@
 }
 
 .searchDescription {
+  margin-bottom: 44px;
   @include font-size(1.6rem);
 
   color: rgb(255 255 255 / 0.64);

@@ -185,22 +185,16 @@ const SimplifiedEditor = (props: Props) => {
       .chain()
       .focus()
       .insertContent({
-        type: 'capturedImage',
+        type: 'figure',
+        attrs: { 'data-type': 'image' },
         content: [
           {
             type: 'figcaption',
-            content: [
-              {
-                type: 'text',
-                text: image.originalFilename,
-              },
-            ],
+            content: [{ type: 'text', text: image.originalFilename }],
           },
           {
             type: 'image',
-            attrs: {
-              src: image.url,
-            },
+            attrs: { src: image.url },
           },
         ],
       })

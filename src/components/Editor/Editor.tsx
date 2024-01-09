@@ -135,6 +135,11 @@ export const Editor = (props: Props) => {
     content: 'figcaption image',
   })
 
+  const EmbedFigure = Figure.extend({
+    name: 'capturedEmbed',
+    content: 'figcaption embed',
+  })
+
   const handleClipboardPaste = async () => {
     try {
       const clipboardItems = await navigator.clipboard.read()
@@ -163,22 +168,16 @@ export const Editor = (props: Props) => {
         .chain()
         .focus()
         .insertContent({
-          type: 'capturedImage',
+          type: 'figure',
+          attrs: { 'data-type': 'image' },
           content: [
             {
               type: 'figcaption',
-              content: [
-                {
-                  type: 'text',
-                  text: result.originalFilename,
-                },
-              ],
+              content: [{ type: 'text', text: result.originalFilename }],
             },
             {
               type: 'image',
-              attrs: {
-                src: result.url,
-              },
+              attrs: { src: result.url },
             },
           ],
         })
@@ -251,6 +250,7 @@ export const Editor = (props: Props) => {
         },
       }),
       ImageFigure,
+      EmbedFigure,
       Image,
       Figcaption,
       Footnote,

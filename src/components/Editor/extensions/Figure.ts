@@ -16,26 +16,85 @@ export const Figure = Node.create({
     }
   },
   group: 'block',
-  content: 'block figcaption',
+  content: 'image figcaption | iframe figcaption',
   draggable: true,
   isolating: true,
 
   addAttributes() {
     return {
+      ...this.parent?.(),
       'data-float': null,
+      'data-type': { default: null },
     }
   },
+
+  // parseHTML() {
+  //   return [
+  //     {
+  //       tag: `figure[data-type="${this.name}"]`,
+  //     },
+  //   ]
+  // },
 
   parseHTML() {
     return [
       {
-        tag: `figure[data-type="${this.name}"]`,
+        tag: 'figure',
+        getAttrs: (node) => {
+          if (!(node instanceof HTMLElement)) {
+            return
+          }
+          const img = node.querySelector('img')
+          const iframe = node.querySelector('iframe')
+          let dataType = null
+          if (img) {
+            dataType = 'image'
+          } else if (iframe) {
+            dataType = 'iframe'
+          }
+          return { 'data-type': dataType }
+        },
       },
     ]
   },
+  //
+  // renderHTML({ HTMLAttributes }) {
+  //   return ['figure', mergeAttributes(HTMLAttributes, { 'data-type': this.name }), 0]
+  // },
+  renderHTML({ node, HTMLAttributes }) {
+    let imgNode = null
+    let iframeNode = null
+    let figcaptionNode = null
 
-  renderHTML({ HTMLAttributes }) {
-    return ['figure', mergeAttributes(HTMLAttributes, { 'data-type': this.name }), 0]
+    node.content.forEach((childNode) => {
+      switch (childNode.type.name) {
+        case 'image': {
+          imgNode = childNode
+          break
+        }
+        case 'iframe': {
+          iframeNode = childNode
+          break
+        }
+        case 'figcaption': {
+          figcaptionNode = childNode
+          break
+        }
+      }
+    })
+
+    const content = []
+    if (imgNode) {
+      content.push(['img', imgNode.attrs])
+    } else if (iframeNode) {
+      content.push(['iframe', iframeNode.attrs])
+    }
+
+    if (figcaptionNode) {
+      content.push(['figcaption', 0, figcaptionNode.textContent])
+    }
+
+    return ['figure', mergeAttributes(HTMLAttributes), ...content]
   },
 
   addProseMirrorPlugins() {

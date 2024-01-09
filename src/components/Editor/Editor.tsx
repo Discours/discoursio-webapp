@@ -42,7 +42,6 @@ import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './Bubbl
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import Article from './extensions/Article'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
-import { Embed } from './extensions/Embed'
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
 import { Footnote } from './extensions/Footnote'

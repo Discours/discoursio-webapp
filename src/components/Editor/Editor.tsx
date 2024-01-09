@@ -50,6 +50,7 @@ import { TrailingNode } from './extensions/TrailingNode'
 import { TextBubbleMenu } from './TextBubbleMenu'
 
 import './Prosemirror.scss'
+import Iframe from './extensions/Iframe'
 
 type Props = {
   shoutId: number
@@ -130,16 +131,6 @@ export const Editor = (props: Props) => {
     current: null,
   }
 
-  const ImageFigure = Figure.extend({
-    name: 'capturedImage',
-    content: 'figcaption image',
-  })
-
-  const EmbedFigure = Figure.extend({
-    name: 'capturedEmbed',
-    content: 'figcaption embed',
-  })
-
   const handleClipboardPaste = async () => {
     try {
       const clipboardItems = await navigator.clipboard.read()
@@ -172,12 +163,12 @@ export const Editor = (props: Props) => {
           attrs: { 'data-type': 'image' },
           content: [
             {
-              type: 'figcaption',
-              content: [{ type: 'text', text: result.originalFilename }],
-            },
-            {
               type: 'image',
               attrs: { src: result.url },
+            },
+            {
+              type: 'figcaption',
+              content: [{ type: 'text', text: result.originalFilename }],
             },
           ],
         })
@@ -249,12 +240,11 @@ export const Editor = (props: Props) => {
           class: 'highlight',
         },
       }),
-      ImageFigure,
-      EmbedFigure,
       Image,
+      Iframe,
+      Figure,
       Figcaption,
       Footnote,
-      Embed,
       CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',

@@ -189,12 +189,12 @@ const SimplifiedEditor = (props: Props) => {
         attrs: { 'data-type': 'image' },
         content: [
           {
-            type: 'figcaption',
-            content: [{ type: 'text', text: image.originalFilename }],
-          },
-          {
             type: 'image',
             attrs: { src: image.url },
+          },
+          {
+            type: 'figcaption',
+            content: [{ type: 'text', text: image.originalFilename }],
           },
         ],
       })

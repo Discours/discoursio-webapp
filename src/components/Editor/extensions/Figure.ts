@@ -16,13 +16,14 @@ export const Figure = Node.create({
     }
   },
   group: 'block',
-  content: 'image figcaption | iframe figcaption',
+  // content: 'image figcaption | iframe figcaption',
+  content: '(image | iframe) figcaption?',
   draggable: true,
   isolating: true,
+  atom: true,
 
   addAttributes() {
     return {
-      ...this.parent?.(),
       'data-float': null,
       'data-type': { default: null },
     }
@@ -42,6 +43,7 @@ export const Figure = Node.create({
         tag: 'figure',
         getAttrs: (node) => {
           if (!(node instanceof HTMLElement)) {
+            console.log('!!! node:', node)
             return
           }
           const img = node.querySelector('img')
@@ -61,41 +63,44 @@ export const Figure = Node.create({
   // renderHTML({ HTMLAttributes }) {
   //   return ['figure', mergeAttributes(HTMLAttributes, { 'data-type': this.name }), 0]
   // },
-  renderHTML({ node, HTMLAttributes }) {
-    let imgNode = null
-    let iframeNode = null
-    let figcaptionNode = null
-
-    node.content.forEach((childNode) => {
-      switch (childNode.type.name) {
-        case 'image': {
-          imgNode = childNode
-          break
-        }
-        case 'iframe': {
-          iframeNode = childNode
-          break
-        }
-        case 'figcaption': {
-          figcaptionNode = childNode
-          break
-        }
-      }
-    })
-
-    const content = []
-    if (imgNode) {
-      content.push(['img', imgNode.attrs])
-    } else if (iframeNode) {
-      content.push(['iframe', iframeNode.attrs])
-    }
-
-    if (figcaptionNode) {
-      content.push(['figcaption', 0, figcaptionNode.textContent])
-    }
-
-    return ['figure', mergeAttributes(HTMLAttributes), ...content]
+  renderHTML({ HTMLAttributes }) {
+    return ['figure', mergeAttributes(HTMLAttributes, { 'data-type': this.name }), 0]
   },
+  // renderHTML({ node, HTMLAttributes }) {
+  //   let imgNode = null
+  //   let iframeNode = null
+  //   let figcaptionNode = null
+  //
+  //   node.content.forEach((childNode) => {
+  //     switch (childNode.type.name) {
+  //       case 'image': {
+  //         imgNode = childNode
+  //         break
+  //       }
+  //       case 'iframe': {
+  //         iframeNode = childNode
+  //         break
+  //       }
+  //       case 'figcaption': {
+  //         figcaptionNode = childNode
+  //         break
+  //       }
+  //     }
+  //   })
+  //
+  //   const content = []
+  //   if (imgNode) {
+  //     content.push(['img', imgNode.attrs])
+  //   } else if (iframeNode) {
+  //     content.push(['iframe', iframeNode.attrs])
+  //   }
+  //
+  //   if (figcaptionNode) {
+  //     content.push(['figcaption', {}, 0])
+  //   }
+  //
+  //   return ['figure', mergeAttributes(HTMLAttributes), ...content]
+  // },
 
   addProseMirrorPlugins() {
     return [

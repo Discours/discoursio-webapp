@@ -55,16 +55,16 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         attrs: { 'data-type': 'iframe' },
         content: [
           {
-            type: 'figcaption',
-            content: [{ type: 'text', text: t('Description') }],
-          },
-          {
             type: 'iframe',
             attrs: {
               src: emb.src,
               width: emb.width,
               height: emb.height,
             },
+          },
+          {
+            type: 'figcaption',
+            content: [{ type: 'text', text: t('Description') }],
           },
         ],
       })

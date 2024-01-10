@@ -154,6 +154,8 @@ export const Editor = (props: Props) => {
       showSnackbar({ body: t('Uploading image') })
       const result = await handleImageUpload(uplFile)
 
+      console.log('!!! result:', result)
+
       editor()
         .chain()
         .focus()

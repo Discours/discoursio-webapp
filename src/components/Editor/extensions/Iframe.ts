@@ -15,7 +15,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export default Node.create<IframeOptions>({
+export const Iframe = Node.create<IframeOptions>({
   name: 'iframe',
   group: 'block',
   atom: true,

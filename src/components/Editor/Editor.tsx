@@ -45,7 +45,7 @@ import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
 import { Footnote } from './extensions/Footnote'
-import Iframe from './extensions/Iframe'
+import { Iframe } from './extensions/Iframe'
 import { TrailingNode } from './extensions/TrailingNode'
 import { TextBubbleMenu } from './TextBubbleMenu'
 

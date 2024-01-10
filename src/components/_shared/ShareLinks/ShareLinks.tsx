@@ -16,7 +16,7 @@ type Props = {
   imageUrl?: string
   class?: string
   variant: 'inModal' | 'inPopup'
-  onShareClick?: (value: boolean) => void
+  onShareClick?: () => void
 }
 
 export const ShareLinks = (props: Props) => {
@@ -36,7 +36,7 @@ export const ShareLinks = (props: Props) => {
   const handleShare = (network) => {
     share(network)
     if (props.variant === 'inModal') {
-      props.onShareClick(true)
+      props.onShareClick()
     }
   }
   const copyLink = async () => {
@@ -45,7 +45,7 @@ export const ShareLinks = (props: Props) => {
       setIsLinkCopied(true)
       setTimeout(() => {
         setIsLinkCopied(false)
-        props.onShareClick(true)
+        props.onShareClick()
       }, 3000)
     } else {
       showSnackbar({ body: t('Link copied') })

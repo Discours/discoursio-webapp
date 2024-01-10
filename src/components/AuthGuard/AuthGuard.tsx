@@ -12,10 +12,14 @@ type Props = {
 }
 
 export const AuthGuard = (props: Props) => {
-  const { isAuthenticated, isSessionLoaded } = useSession()
+  const {
+    isAuthenticated,
+    isSessionLoaded,
+    actions: { loadSession },
+  } = useSession()
   const { changeSearchParams } = useRouter<RootSearchParams & AuthModalSearchParams>()
 
-  createEffect(() => {
+  createEffect(async () => {
     if (props.disabled) {
       return
     }
@@ -31,6 +35,8 @@ export const AuthGuard = (props: Props) => {
           true,
         )
       }
+    } else {
+      await loadSession()
     }
   })
 

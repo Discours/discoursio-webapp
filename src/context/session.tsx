@@ -128,7 +128,7 @@ export const SessionProvider = (props: {
   const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
     async () => {
       const u = session()?.user
-      return u ? (await apiClient.getAuthorId({ user: u.id })) || null : null
+      return u ? (await apiClient.getAuthorId({ user: u.id.trim() })) || null : null
     },
     {
       ssrLoadFrom: 'initial',

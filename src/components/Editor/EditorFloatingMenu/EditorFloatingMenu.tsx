@@ -46,7 +46,6 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
     console.log('!!! emb:', emb)
-    // props.editor.chain().focus().setIframe(emb).run()
     props.editor
       .chain()
       .focus()

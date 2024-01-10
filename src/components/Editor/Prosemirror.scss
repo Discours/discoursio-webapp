@@ -265,8 +265,20 @@ mark.highlight {
   }
 }
 
-figure[data-type='capturedImage'] {
-  flex-direction: column-reverse;
+figure[data-type='figure'] {
+  width: 100% !important;
+
+  .iframe-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+
+    iframe {
+      display: block;
+      width: 100%;
+    }
+  }
 }
 
 /* stylelint-disable-next-line selector-type-no-unknown */

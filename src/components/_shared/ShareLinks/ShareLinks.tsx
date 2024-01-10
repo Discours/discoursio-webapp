@@ -16,6 +16,7 @@ type Props = {
   imageUrl?: string
   class?: string
   variant: 'inModal' | 'inPopup'
+  onShareClick?: (value: boolean) => void
 }
 
 export const ShareLinks = (props: Props) => {
@@ -31,11 +32,21 @@ export const ShareLinks = (props: Props) => {
     url: props.shareUrl,
     description: props.description,
   }))
+
+  const handleShare = (network) => {
+    share(network)
+    if (props.variant === 'inModal') {
+      props.onShareClick(true)
+    }
+  }
   const copyLink = async () => {
     await navigator.clipboard.writeText(props.shareUrl)
     if (props.variant === 'inModal') {
       setIsLinkCopied(true)
-      setTimeout(() => setIsLinkCopied(false), 3000)
+      setTimeout(() => {
+        setIsLinkCopied(false)
+        props.onShareClick(true)
+      }, 3000)
     } else {
       showSnackbar({ body: t('Link copied') })
     }
@@ -45,25 +56,25 @@ export const ShareLinks = (props: Props) => {
     <div class={clsx(styles.ShareLinks, props.class, { [styles.inModal]: props.variant === 'inModal' })}>
       <ul class="nodash">
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => share(FACEBOOK)}>
+          <button role="button" class={styles.shareControl} onClick={() => handleShare(FACEBOOK)}>
             <Icon name="facebook-white" class={styles.icon} />
             Facebook
           </button>
         </li>
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => share(TWITTER)}>
+          <button role="button" class={styles.shareControl} onClick={() => handleShare(TWITTER)}>
             <Icon name="twitter-white" class={styles.icon} />
             Twitter
           </button>
         </li>
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => share(TELEGRAM)}>
+          <button role="button" class={styles.shareControl} onClick={() => handleShare(TELEGRAM)}>
             <Icon name="telegram-white" class={styles.icon} />
             Telegram
           </button>
         </li>
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => share(VK)}>
+          <button role="button" class={styles.shareControl} onClick={() => handleShare(VK)}>
             <Icon name="vk-white" class={styles.icon} />
             VK
           </button>

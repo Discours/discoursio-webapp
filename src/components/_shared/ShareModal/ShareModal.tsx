@@ -1,4 +1,5 @@
 import { useLocalize } from '../../../context/localize'
+import { hideModal } from '../../../stores/ui'
 import { Modal } from '../../Nav/Modal'
 import { ShareLinks } from '../ShareLinks'
 
@@ -20,6 +21,7 @@ export const ShareModal = (props: Props) => {
         shareUrl={props.shareUrl}
         imageUrl={props.imageUrl}
         description={props.description}
+        onShareClick={() => hideModal()}
       />
     </Modal>
   )

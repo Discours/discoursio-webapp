@@ -10,9 +10,6 @@ export interface IframeOptions {
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     iframe: {
-      /**
-       * Add an iframe
-       */
       setIframe: (options: { src: string }) => ReturnType
     }
   }
@@ -20,9 +17,7 @@ declare module '@tiptap/core' {
 
 export default Node.create<IframeOptions>({
   name: 'iframe',
-
   group: 'block',
-
   atom: true,
 
   addOptions() {
@@ -68,11 +63,9 @@ export default Node.create<IframeOptions>({
         ({ tr, dispatch }) => {
           const { selection } = tr
           const node = this.type.create(options)
-
           if (dispatch) {
             tr.replaceRangeWith(selection.from, selection.to, node)
           }
-
           return true
         },
     }

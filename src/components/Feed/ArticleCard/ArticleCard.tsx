@@ -14,7 +14,6 @@ import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { InviteCoAuthorsModal } from '../../_shared/InviteCoAuthorsModal'
 import { Popover } from '../../_shared/Popover'
-import { ShareModal } from '../../_shared/ShareModal'
 import { CoverImage } from '../../Article/CoverImage'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
 import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
@@ -52,6 +51,7 @@ export type ArticleCardProps = {
   withAspectRatio?: boolean
   desktopCoverSize?: 'XS' | 'S' | 'M' | 'L'
   article: Shout
+  onShare?: (article: Shout) => void
 }
 
 const desktopCoverImageWidths: Record<ArticleCardProps['desktopCoverSize'], number> = {
@@ -370,7 +370,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <FeedArticlePopup
                   isOwner={canEdit()}
                   containerCssClass={stylesHeader.control}
-                  onShareClick={() => showModal('share')}
+                  onShareClick={() => props.onShare(props.article)}
                   onInviteClick={() => showModal('inviteCoAuthors')}
                   onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                   trigger={
@@ -389,12 +389,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
         </Show>
       </div>
       <InviteCoAuthorsModal title={t('Invite experts')} />
-      <ShareModal
-        title={title}
-        description={description}
-        imageUrl={props.article.cover}
-        shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
-      />
     </section>
   )
 }

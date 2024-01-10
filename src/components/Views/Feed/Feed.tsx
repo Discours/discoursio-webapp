@@ -10,6 +10,7 @@ import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
+import { showModal } from '../../../stores/ui'
 import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
@@ -17,7 +18,10 @@ import { getImageUrl } from '../../../utils/getImageUrl'
 import { DropDown } from '../../_shared/DropDown'
 import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
+import { ShareModal } from '../../_shared/ShareModal'
 import { CommentDate } from '../../Article/CommentDate'
+import { getShareUrl } from '../../Article/SharePopup'
+import { AuthorLink } from '../../Author/AhtorLink'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { ArticleCard } from '../../Feed/ArticleCard'
@@ -216,6 +220,12 @@ export const FeedView = (props: Props) => {
   )
   const ogTitle = t('Feed')
 
+  const [shareData, setShareData] = createSignal<Shout | undefined>()
+  const handleShare = (shared) => {
+    showModal('share')
+    setShareData(shared)
+  }
+
   return (
     <div class="wide-container feed">
       <Meta name="descprition" content={description} />
@@ -292,7 +302,12 @@ export const FeedView = (props: Props) => {
             <Show when={sortedArticles().length > 0}>
               <For each={sortedArticles().slice(0, 4)}>
                 {(article) => (
-                  <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
+                  <ArticleCard
+                    onShare={(shared) => handleShare(shared)}
+                    article={article}
+                    settings={{ isFeedMode: true }}
+                    desktopCoverSize="M"
+                  />
                 )}
               </For>
 
@@ -407,6 +422,14 @@ export const FeedView = (props: Props) => {
           </Show>
         </aside>
       </div>
+      <Show when={shareData()}>
+        <ShareModal
+          title={shareData().title}
+          description={shareData().description}
+          imageUrl={shareData().cover}
+          shareUrl={getShareUrl({ pathname: `/${shareData().slug}` })}
+        />
+      </Show>
     </div>
   )
 }

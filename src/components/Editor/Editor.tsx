@@ -45,11 +45,11 @@ import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
 import { Footnote } from './extensions/Footnote'
+import Iframe from './extensions/Iframe'
 import { TrailingNode } from './extensions/TrailingNode'
 import { TextBubbleMenu } from './TextBubbleMenu'
 
 import './Prosemirror.scss'
-import Iframe from './extensions/Iframe'
 
 type Props = {
   shoutId: number
@@ -154,8 +154,6 @@ export const Editor = (props: Props) => {
       showSnackbar({ body: t('Uploading image') })
       const result = await handleImageUpload(uplFile)
 
-      console.log('!!! result:', result)
-
       editor()
         .chain()
         .focus()
@@ -256,7 +254,11 @@ export const Editor = (props: Props) => {
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
           setIsCommonMarkup(e.isActive('figcaption'))
           const result =
-            (view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')) ||
+            (view.hasFocus() &&
+              !empty &&
+              !isEmptyTextBlock &&
+              !e.isActive('image') &&
+              !e.isActive('figure')) ||
             e.isActive('footnote')
           setShouldShowTextBubbleMenu(result)
           return result

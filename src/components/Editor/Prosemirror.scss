@@ -265,8 +265,16 @@ mark.highlight {
   }
 }
 
+.ProseMirror-hideselection figure[data-type='figure'] {
+  & > figcaption {
+    --selection-color: rgb(0 0 0 / 60%);
+  }
+}
+
 figure[data-type='figure'] {
   width: 100% !important;
+  &.ProseMirror-hideselection {
+  }
 
   .iframe-wrapper {
     position: relative;

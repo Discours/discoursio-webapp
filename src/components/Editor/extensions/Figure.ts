@@ -16,7 +16,7 @@ export const Figure = Node.create({
     }
   },
   group: 'block',
-  content: '(image | iframe) figcaption?',
+  content: '(image | iframe) figcaption',
   draggable: true,
   isolating: true,
   atom: true,
@@ -34,7 +34,6 @@ export const Figure = Node.create({
         tag: 'figure',
         getAttrs: (node) => {
           if (!(node instanceof HTMLElement)) {
-            console.log('!!! node:', node)
             return
           }
           const img = node.querySelector('img')

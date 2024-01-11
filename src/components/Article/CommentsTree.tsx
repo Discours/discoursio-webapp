@@ -153,7 +153,7 @@ export const CommentsTree = (props: Props) => {
         </Show>
       </div>
       <ul class={styles.comments}>
-        <For each={sortedComments().filter((r) => !r.replyTo)}>
+        <For each={sortedComments().filter((r) => !r.reply_to)}>
           {(reaction) => (
             <Comment
               sortedComments={sortedComments()}

@@ -1,10 +1,13 @@
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, Show } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { useMediaQuery } from '../../../context/mediaQuery'
-import { useSession } from '../../../context/session'
+import styles from './TopicBadge.module.scss'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
+import { createMemo, createSignal, Show } from 'solid-js'
+import { imageProxy } from '../../../utils/imageProxy'
+import { Button } from '../../_shared/Button'
+import { useSession } from '../../../context/session'
+import { useLocalize } from '../../../context/localize'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
@@ -19,16 +22,16 @@ type Props = {
 }
 
 export const TopicBadge = (props: Props) => {
-  const { t, lang } = useLocalize()
-  const { mediaMatches } = useMediaQuery()
-  const [isMobileView, setIsMobileView] = createSignal(false)
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   createEffect(() => {
     setIsMobileView(!mediaMatches.sm)
   })
+  const { t } = useLocalize()
   const {
     subscriptions,
-    actions: { loadSubscriptions },
+    actions: { loadSubscriptions, loadSession },
+    isAuthenticated,
+    session,
   } = useSession()
 
   const subscribed = createMemo(() =>
@@ -51,63 +54,59 @@ export const TopicBadge = (props: Props) => {
 
   return (
     <div class={styles.TopicBadge}>
-      <div class={styles.basicInfo}>
-        <a
-          href={`/topic/${props.topic.slug}`}
-          class={clsx(styles.picture, {
-            [styles.withImage]: props.topic.pic,
-            [styles.smallSize]: isMobileView(),
-          })}
-          style={
-            props.topic.pic && {
-              'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`,
-            }
-          }
-        />
-        <a href={`/topic/${props.topic.slug}`} class={styles.info}>
-          <span class={styles.title}>{title()}</span>
-          <Show
-            when={props.topic.body}
-            fallback={
-              <div class={styles.description}>
-                {t('PublicationsWithCount', { count: props.topic.stat.shouts ?? 0 })}
-              </div>
-            }
-          >
-            <div class={clsx('text-truncate', styles.description)}>{props.topic.body}</div>
-          </Show>
-        </a>
-      </div>
-
-      <div class={styles.actions}>
+      <a
+        href={`/topic/${props.topic.slug}`}
+        class={clsx(styles.picture, { [styles.withImage]: props.topic.pic })}
+        style={props.topic.pic && { 'background-image': `url('${imageProxy(props.topic.pic)}')` }}
+      />
+      <a href={`/topic/${props.topic.slug}`} class={styles.info}>
+        <span class={styles.title}>{title()}</span>
         <Show
-          when={!props.minimizeSubscribeButton}
+          when={props.topic.body}
           fallback={
-            <CheckButton text={t('Follow')} checked={subscribed()} onClick={() => subscribe(!subscribed)} />
+            <div class={styles.description}>
+              {t('PublicationsWithCount', { count: props.topic.stat.shouts ?? 0 })}
+            </div>
           }
         >
+          <div class={clsx('text-truncate', styles.description)}>{props.topic.body}</div>
+        </Show>
+      </a>
+      <Show when={isAuthenticated()}>
+        <div class={styles.actions}>
           <Show
-            when={subscribed()}
+            when={!props.minimizeSubscribeButton}
             fallback={
-              <Button
-                variant="primary"
-                size="S"
-                value={isSubscribing() ? t('subscribing...') : t('Subscribe')}
-                onClick={() => subscribe(true)}
-                class={styles.subscribeButton}
+              <CheckButton
+                text={t('Follow')}
+                checked={subscribed()}
+                onClick={() => subscribe(!subscribed)}
               />
             }
           >
-            <Button
-              onClick={() => subscribe(false)}
-              variant="bordered"
-              size="S"
-              value={t('Following')}
-              class={styles.subscribeButton}
-            />
+            <Show
+              when={subscribed()}
+              fallback={
+                <Button
+                  variant="primary"
+                  size="S"
+                  value={isSubscribing() ? t('...subscribing') : t('Subscribe')}
+                  onClick={() => subscribe(true)}
+                  class={styles.subscribeButton}
+                />
+              }
+            >
+              <Button
+                onClick={() => subscribe(false)}
+                variant="bordered"
+                size="S"
+                value={t('Following')}
+                class={styles.subscribeButton}
+              />
+            </Show>
           </Show>
-        </Show>
-      </div>
+        </div>
+      </Show>
     </div>
   )
 }

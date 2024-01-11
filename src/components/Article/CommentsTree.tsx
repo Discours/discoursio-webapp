@@ -153,12 +153,12 @@ export const CommentsTree = (props: Props) => {
         </Show>
       </div>
       <ul class={styles.comments}>
-        <For each={sortedComments().filter((r) => !r.reply_to)}>
+        <For each={sortedComments().filter((r) => !r.replyTo)}>
           {(reaction) => (
             <Comment
               sortedComments={sortedComments()}
               isArticleAuthor={Boolean(
-                props.articleAuthors.some((a) => a.slug === reaction.created_by.slug),
+                props.articleAuthors.some((a) => a?.slug === reaction.created_by.slug),
               )}
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}

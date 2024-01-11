@@ -181,8 +181,6 @@ export const InboxView = (props: Props) => {
     setIsScrollToNewVisible(false)
   }
 
-  const isLoaded = createMemo(() => props.isLoaded)
-
   return (
     <div class={clsx('container', styles.Inbox)}>
       <Modal variant="narrow" name="inviteToChat">

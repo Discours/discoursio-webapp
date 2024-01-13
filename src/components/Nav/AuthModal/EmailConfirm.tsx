@@ -6,20 +6,21 @@ import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 
+import { setEmail, email } from './sharedLogic'
+
 import styles from './AuthModal.module.scss'
 
 export const EmailConfirm = () => {
   const { t } = useLocalize()
   const { changeSearchParams } = useRouter()
   const { session, authError } = useSession()
-  const [email, setEmail] = createSignal('')
   const [emailConfirmed, setEmailConfirmed] = createSignal(false)
 
   createEffect(() => {
     const e = session()?.user?.email
     const v = session()?.user?.email_verified
     if (e) {
-      setEmail(e)
+      setEmail(e.toLowerCase())
       if (v) setEmailConfirmed(v)
       if (authError()) {
         changeSearchParams({}, true)
@@ -41,7 +42,7 @@ export const EmailConfirm = () => {
       <Show when={emailConfirmed()}>
         <div class={styles.title}>{t('Hooray! Welcome!')}</div>
         <div class={styles.text}>
-          {t("You've confirmed email")} {email()}
+          {t("You've confirmed email")} {email().toLowerCase()}
         </div>
         <div>
           <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>

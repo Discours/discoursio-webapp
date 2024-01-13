@@ -28,7 +28,7 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 const handleEmailInput = (newEmail: string) => {
-  setEmail(newEmail)
+  setEmail(newEmail.toLowerCase())
 }
 
 export const RegisterForm = () => {

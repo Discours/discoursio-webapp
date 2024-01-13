@@ -24,7 +24,7 @@ export const ForgotPasswordForm = () => {
   const { t } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
-    setEmail(newEmail)
+    setEmail(newEmail.toLowerCase())
   }
   const {
     actions: { authorizer },

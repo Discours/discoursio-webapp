@@ -51,7 +51,7 @@ export const LoginForm = () => {
 
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
-    setEmail(newEmail)
+    setEmail(newEmail.toLowerCase())
   }
 
   const handlePasswordInput = (newPassword: string) => {

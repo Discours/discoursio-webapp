@@ -93,7 +93,7 @@ const addArticles = (...args: Shout[][]) => {
           }
 
           authors.forEach((author) => {
-            if (!acc[topic.slug].some((a) => a.slug === author.slug)) {
+            if (!acc[topic.slug].some((a) => a?.slug === author.slug)) {
               acc[topic.slug].push(author)
             }
           })

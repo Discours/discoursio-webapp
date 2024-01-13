@@ -43,7 +43,7 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
   const subscribed = createMemo<boolean>(() =>
-    subscriptions().authors.some((a: Author) => a && a.slug === props.author.slug),
+    subscriptions().authors.some((a: Author) => a?.slug === props.author.slug),
   )
 
   const subscribe = async (really = true) => {

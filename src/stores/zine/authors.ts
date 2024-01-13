@@ -79,7 +79,7 @@ export const addAuthorsByTopic = (newAuthorsByTopic: { [topicSlug: string]: Auth
       }
 
       authors.forEach((author) => {
-        if (!acc[topicSlug].some((a) => a.slug === author.slug)) {
+        if (!acc[topicSlug].some((a) => a?.slug === author.slug)) {
           acc[topicSlug].push(author)
         }
       })

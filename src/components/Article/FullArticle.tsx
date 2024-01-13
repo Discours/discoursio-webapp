@@ -86,7 +86,7 @@ export const FullArticle = (props: Props) => {
     }
   })
 
-  const canEdit = () => props.article.authors?.some((a) => a.slug === author()?.slug)
+  const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
 
   const handleBookmarkButtonClick = (ev) => {
     requireAuthentication(() => {

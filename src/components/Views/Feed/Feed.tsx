@@ -408,7 +408,7 @@ export const FeedView = (props: Props) => {
                 </li>
               </ul>
             </section>
-            <Show when={unratedArticles().length > 0}>
+            <Show when={unratedArticles()}>
               <section class={clsx(styles.asideSection)}>
                 <h4>{t('Be the first to rate')}</h4>
                 <For each={unratedArticles()}>

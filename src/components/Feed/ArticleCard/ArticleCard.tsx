@@ -104,7 +104,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const canEdit = () =>
-    props.article.authors?.some((a) => a.slug === author()?.slug) ||
+    props.article.authors?.some((a) => a && a?.slug === author()?.slug) ||
     props.article.created_by?.id === author()?.id
 
   const { changeSearchParams } = useRouter()

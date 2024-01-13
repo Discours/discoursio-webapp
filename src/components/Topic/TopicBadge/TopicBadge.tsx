@@ -6,14 +6,12 @@ import { useMediaQuery } from '../../../context/mediaQuery'
 import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { follow, unfollow } from '../../../stores/zine/common'
+import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 
 import styles from './TopicBadge.module.scss'
-import { title } from 'process'
-import { capitalize } from '../../../utils/capitalize'
-
 type Props = {
   topic: Topic
   minimizeSubscribeButton?: boolean

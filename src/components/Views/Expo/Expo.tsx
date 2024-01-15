@@ -145,7 +145,7 @@ export const Expo = (props: Props) => {
   }
   return (
     <div class={styles.Expo}>
-      <Show when={sortedArticles().length > 0} fallback={<Loading />}>
+      <Show when={sortedArticles()?.length > 0} fallback={<Loading />}>
         <div class="wide-container">
           <ul class={clsx('view-switcher')}>
             <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
@@ -210,7 +210,7 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopMonthArticles().length > 0} keyed={true}>
+            <Show when={randomTopMonthArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
             </Show>
             <For each={sortedArticles().slice(PRERENDERED_ARTICLES_COUNT / 2, PRERENDERED_ARTICLES_COUNT)}>
@@ -225,7 +225,7 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopArticles().length > 0} keyed={true}>
+            <Show when={randomTopArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
             </Show>
             <For each={pages()}>

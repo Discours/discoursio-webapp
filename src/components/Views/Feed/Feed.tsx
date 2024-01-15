@@ -291,10 +291,7 @@ export const Feed = (props: Props) => {
                 {(article) => (
                   <ArticleCard
                     onShare={(shared) => handleShare(shared)}
-                    onInvite={() => {
-                      console.log('!!! click:')
-                      showModal('inviteCoAuthors')
-                    }}
+                    onInvite={() => showModal('inviteCoAuthors')}
                     article={article}
                     settings={{ isFeedMode: true }}
                     desktopCoverSize="M"

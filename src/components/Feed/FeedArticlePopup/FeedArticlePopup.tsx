@@ -22,7 +22,7 @@ export const FeedArticlePopup = (props: Props) => {
     <>
       <Popup
         {...props}
-        closePopupFunction={() => isHidden()}
+        closePopup={() => isHidden()}
         horizontalAnchor={'right'}
         variant="tiny"
         popupCssClass={styles.feedArticlePopup}

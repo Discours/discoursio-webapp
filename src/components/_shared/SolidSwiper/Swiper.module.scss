@@ -29,6 +29,7 @@
     background: var(--background-color-invert);
     color: var(--default-color-invert);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 
@@ -40,47 +41,37 @@
     .container {
       margin: auto;
       position: relative;
-      padding: 24px 0;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       gap: 20px;
       width: 100%;
 
       .thumbsHolder {
-        min-width: 110px;
         width: auto;
       }
 
       .thumbs {
-        padding: 52px 0;
-        width: 110px;
         overflow: hidden;
-        height: calc(var(--slide-height) + 40px);
         box-sizing: border-box;
         margin: 0;
         position: relative;
 
         .thumbsNav {
           height: 52px;
-          padding: 14px 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 110px;
-          left: 0;
-          right: 0;
-
-          .icon {
-            transform: rotate(90deg);
-          }
+          overflow: hidden;
 
           &.prev {
-            top: 0;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
           }
 
           &.next {
-            top: auto;
-            bottom: 0;
+            top: 50%;
+            right: 0;
+            left: unset;
+            transform: translateY(-50%);
           }
         }
       }
@@ -88,42 +79,11 @@
 
     &.mobileView {
       .container {
-        flex-direction: column-reverse;
         padding: 0;
-
-        .thumbsHolder {
-          min-width: unset;
-        }
-
         .thumbs {
-          width: 100%;
-          height: 80px;
-          padding: 0;
-
           & swiper-slide {
             // bind to html element <swiper-slide/>
             width: unset !important;
-          }
-
-          .thumbsNav {
-            height: 100%;
-            padding: 0;
-            width: 40px;
-
-            .icon {
-              transform: none;
-            }
-
-            &.prev {
-              top: 0;
-              left: 0;
-            }
-
-            &.next {
-              top: 0;
-              right: 0;
-              left: unset;
-            }
           }
         }
       }
@@ -259,6 +219,10 @@
       @include font-size(1.7rem);
 
       margin-top: 24px;
+
+      * {
+        color: var(--default-color-invert) !important; //Force fix migration errors with inline styles
+      }
 
       @include media-breakpoint-up(md) {
         // margin-left: calc((100% + 130px) * 0.15);
@@ -397,5 +361,10 @@
     .thumbAction {
       display: flex !important;
     }
+  }
+
+  .swiper-button-prev,
+  .swiper-rtl .swiper-button-next {
+    top: 200px !important;
   }
 }

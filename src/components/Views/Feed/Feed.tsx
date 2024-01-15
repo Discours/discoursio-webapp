@@ -17,6 +17,7 @@ import { getImageUrl } from '../../../utils/getImageUrl'
 import { getServerDate } from '../../../utils/getServerDate'
 import { DropDown } from '../../_shared/DropDown'
 import { Icon } from '../../_shared/Icon'
+import { InviteCoAuthorsModal } from '../../_shared/InviteCoAuthorsModal'
 import { Loading } from '../../_shared/Loading'
 import { ShareModal } from '../../_shared/ShareModal'
 import { CommentDate } from '../../Article/CommentDate'
@@ -290,6 +291,10 @@ export const Feed = (props: Props) => {
                 {(article) => (
                   <ArticleCard
                     onShare={(shared) => handleShare(shared)}
+                    onInvite={() => {
+                      console.log('!!! click:')
+                      showModal('inviteCoAuthors')
+                    }}
                     article={article}
                     settings={{ isFeedMode: true }}
                     desktopCoverSize="M"
@@ -416,6 +421,7 @@ export const Feed = (props: Props) => {
           shareUrl={getShareUrl({ pathname: `/${shareData().slug}` })}
         />
       </Show>
+      <InviteCoAuthorsModal title={t('Invite experts')} />
     </div>
   )
 }

@@ -29,6 +29,7 @@
     background: var(--background-color-invert);
     color: var(--default-color-invert);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 
@@ -42,12 +43,12 @@
       position: relative;
       padding: 24px 0;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       gap: 20px;
       width: 100%;
 
       .thumbsHolder {
-        min-width: 110px;
         width: auto;
       }
 
@@ -88,12 +89,7 @@
 
     &.mobileView {
       .container {
-        flex-direction: column-reverse;
         padding: 0;
-
-        .thumbsHolder {
-          min-width: unset;
-        }
 
         .thumbs {
           width: 100%;
@@ -260,6 +256,10 @@
 
       margin-top: 24px;
 
+      * {
+        color: var(--default-color-invert) !important; //Force fix migration errors with inline styles
+      }
+
       @include media-breakpoint-up(md) {
         // margin-left: calc((100% + 130px) * 0.15);
         margin-left: calc(15% + 24px);
@@ -397,5 +397,10 @@
     .thumbAction {
       display: flex !important;
     }
+  }
+
+  .swiper-button-prev,
+  .swiper-rtl .swiper-button-next {
+    top: 200px !important;
   }
 }

@@ -147,7 +147,7 @@ export const AudioPlayer = (props: Props) => {
           <audio
             ref={(el) => (audioRef.current = el)}
             onTimeUpdate={handleAudioTimeUpdate}
-            src={currentTack().url}
+            src={currentTack().url.replace('images.discours.io', 'cdn.discours.io')}
             onCanPlay={() => {
               // start to play the next track on src change
               if (isPlaying()) {

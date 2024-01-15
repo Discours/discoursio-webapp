@@ -1,7 +1,7 @@
 import type { PopupProps } from '../../_shared/Popup'
 
 import { clsx } from 'clsx'
-import { Show } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { Popup } from '../../_shared/Popup'
@@ -9,20 +9,34 @@ import { SoonChip } from '../../_shared/SoonChip'
 
 import styles from './FeedArticlePopup.module.scss'
 
-type FeedArticlePopupProps = {
+type Props = {
   isOwner: boolean
   onInviteClick: () => void
   onShareClick: () => void
 } & Omit<PopupProps, 'children'>
 
-export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
+export const FeedArticlePopup = (props: Props) => {
   const { t } = useLocalize()
+  const [isHidden, setHidden] = createSignal(false)
   return (
     <>
-      <Popup {...props} horizontalAnchor={'right'} variant="tiny" popupCssClass={styles.feedArticlePopup}>
+      <Popup
+        {...props}
+        closePopup={() => isHidden()}
+        horizontalAnchor={'right'}
+        variant="tiny"
+        popupCssClass={styles.feedArticlePopup}
+      >
         <ul class={clsx('nodash', styles.actionList)}>
           <li>
-            <button class={styles.action} role="button" onClick={props.onShareClick}>
+            <button
+              class={styles.action}
+              role="button"
+              onClick={() => {
+                props.onShareClick()
+                setHidden(true)
+              }}
+            >
               {t('Share')}
             </button>
           </li>
@@ -33,6 +47,7 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
                 role="button"
                 onClick={() => {
                   alert('Help to edit')
+                  setHidden(true)
                 }}
               >
                 {t('Help to edit')}
@@ -40,7 +55,14 @@ export const FeedArticlePopup = (props: FeedArticlePopupProps) => {
             </li>
           </Show>
           <li>
-            <button class={styles.action} role="button" onClick={props.onInviteClick}>
+            <button
+              class={styles.action}
+              role="button"
+              onClick={() => {
+                props.onInviteClick()
+                setHidden(true)
+              }}
+            >
               {t('Invite experts')}
             </button>
           </li>

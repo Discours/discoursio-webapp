@@ -35,7 +35,6 @@ export const ImageSwiper = (props: Props) => {
   const handleSlideChange = () => {
     thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
     setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
-    console.log('!!! mainSwipeRef.current.swiper.activeIndex:', mainSwipeRef.current.swiper.activeIndex)
   }
 
   createEffect(
@@ -59,7 +58,7 @@ export const ImageSwiper = (props: Props) => {
   onMount(() => {
     const updateDirection = () => {
       const width = window.innerWidth
-      setIsMobileView(width > MIN_WIDTH)
+      setIsMobileView(width < MIN_WIDTH)
     }
 
     updateDirection()

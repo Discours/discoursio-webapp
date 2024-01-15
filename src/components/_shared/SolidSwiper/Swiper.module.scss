@@ -41,7 +41,6 @@
     .container {
       margin: auto;
       position: relative;
-      padding: 24px 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -53,35 +52,26 @@
       }
 
       .thumbs {
-        padding: 52px 0;
-        width: 110px;
         overflow: hidden;
-        height: calc(var(--slide-height) + 40px);
         box-sizing: border-box;
         margin: 0;
         position: relative;
 
         .thumbsNav {
           height: 52px;
-          padding: 14px 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 110px;
-          left: 0;
-          right: 0;
-
-          .icon {
-            transform: rotate(90deg);
-          }
+          overflow: hidden;
 
           &.prev {
-            top: 0;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
           }
 
           &.next {
-            top: auto;
-            bottom: 0;
+            top: 50%;
+            right: 0;
+            left: unset;
+            transform: translateY(-50%);
           }
         }
       }
@@ -90,36 +80,10 @@
     &.mobileView {
       .container {
         padding: 0;
-
         .thumbs {
-          width: 100%;
-          height: 80px;
-          padding: 0;
-
           & swiper-slide {
             // bind to html element <swiper-slide/>
             width: unset !important;
-          }
-
-          .thumbsNav {
-            height: 100%;
-            padding: 0;
-            width: 40px;
-
-            .icon {
-              transform: none;
-            }
-
-            &.prev {
-              top: 0;
-              left: 0;
-            }
-
-            &.next {
-              top: 0;
-              right: 0;
-              left: unset;
-            }
           }
         }
       }

@@ -1,7 +1,7 @@
 import type { PopupProps } from '../../_shared/Popup'
 
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { Popup } from '../../_shared/Popup'
@@ -17,12 +17,13 @@ type Props = {
 
 export const FeedArticlePopup = (props: Props) => {
   const { t } = useLocalize()
-  const [isHidden, setHidden] = createSignal(false)
+  const [hidePopup, setHidePopup] = createSignal(false)
   return (
     <>
       <Popup
         {...props}
-        closePopup={() => isHidden()}
+        //TODO: fix hide logic
+        closePopup={hidePopup()}
         horizontalAnchor={'right'}
         variant="tiny"
         popupCssClass={styles.feedArticlePopup}
@@ -34,7 +35,7 @@ export const FeedArticlePopup = (props: Props) => {
               role="button"
               onClick={() => {
                 props.onShareClick()
-                setHidden(true)
+                setHidePopup(true)
               }}
             >
               {t('Share')}
@@ -47,7 +48,7 @@ export const FeedArticlePopup = (props: Props) => {
                 role="button"
                 onClick={() => {
                   alert('Help to edit')
-                  setHidden(true)
+                  setHidePopup(true)
                 }}
               >
                 {t('Help to edit')}
@@ -60,7 +61,7 @@ export const FeedArticlePopup = (props: Props) => {
               role="button"
               onClick={() => {
                 props.onInviteClick()
-                setHidden(true)
+                setHidePopup(false)
               }}
             >
               {t('Invite experts')}

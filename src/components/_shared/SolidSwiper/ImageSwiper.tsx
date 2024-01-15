@@ -52,7 +52,7 @@ export const ImageSwiper = (props: Props) => {
     const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation])
-    mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
+    mainSwipeRef.current?.swiper?.on('slideChange', handleSlideChange)
   })
 
   onMount(() => {
@@ -102,6 +102,7 @@ export const ImageSwiper = (props: Props) => {
                 watch-overflow={true}
                 watch-slides-visibility={true}
                 direction={'horizontal'}
+                slides-per-group-auto={true}
               >
                 <For each={props.images}>
                   {(slide, index) => (
@@ -130,7 +131,7 @@ export const ImageSwiper = (props: Props) => {
                 class={clsx(styles.navigation, styles.thumbsNav, styles.next, {
                   [styles.disabled]: slideIndex() + 1 === props.images.length,
                 })}
-                onClick={() => thumbSwipeRef.current.swiper.slideTo(10)}
+                onClick={() => thumbSwipeRef.current.swiper.slideNext()}
               >
                 <Icon name="swiper-r-arr" class={styles.icon} />
               </div>

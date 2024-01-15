@@ -52,14 +52,21 @@
       }
 
       .thumbs {
-        overflow: hidden;
+        //overflow: hidden;
         box-sizing: border-box;
         margin: 0;
         position: relative;
 
+        & > swiper-container {
+          display: flex;
+          flex-direction: row;
+          gap: 10px;
+        }
+
         .thumbsNav {
-          height: 52px;
+          height: 100%;
           overflow: hidden;
+          width: 24px;
 
           &.prev {
             top: 50%;

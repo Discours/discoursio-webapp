@@ -15,6 +15,7 @@ export type PopupProps = {
   onVisibilityChange?: (isVisible: boolean) => void
   horizontalAnchor?: HorizontalAnchor
   variant?: 'bordered' | 'tiny'
+  closePopupFunction?: (isVisible: boolean) => void
 }
 
 export const Popup = (props: PopupProps) => {
@@ -28,14 +29,20 @@ export const Popup = (props: PopupProps) => {
   })
 
   const containerRef: { current: HTMLElement } = { current: null }
+  const closePopup = () => setIsVisible(false)
 
   useOutsideClickHandler({
     containerRef,
     predicate: () => isVisible(),
-    handler: () => {
-      setIsVisible(false)
-    },
+    handler: () => closePopup(),
   })
+
+  createEffect(() => {
+    if (props.closePopupFunction) {
+      props.closePopupFunction(closePopup())
+    }
+  })
+
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
   return (
     <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>

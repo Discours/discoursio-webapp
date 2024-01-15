@@ -212,9 +212,10 @@ export const SessionProvider = (props: {
 
   // authorizer api proxy methods
 
-  const signUp = async (params) => {
+  const signUp = async (params: Partial<SignupInput>) => {
     const authResult: void | AuthToken = await authorizer().signup({
       ...params,
+      password: params.password,
       confirm_password: params.password,
     })
     if (authResult) setSession(authResult)

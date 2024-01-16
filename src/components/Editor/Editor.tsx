@@ -42,10 +42,10 @@ import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './Bubbl
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import Article from './extensions/Article'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
-import { Embed } from './extensions/Embed'
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
 import { Footnote } from './extensions/Footnote'
+import { Iframe } from './extensions/Iframe'
 import { TrailingNode } from './extensions/TrailingNode'
 import { TextBubbleMenu } from './TextBubbleMenu'
 
@@ -130,11 +130,6 @@ export const Editor = (props: Props) => {
     current: null,
   }
 
-  const ImageFigure = Figure.extend({
-    name: 'capturedImage',
-    content: 'figcaption image',
-  })
-
   const handleClipboardPaste = async () => {
     try {
       const clipboardItems = await navigator.clipboard.read()
@@ -163,22 +158,16 @@ export const Editor = (props: Props) => {
         .chain()
         .focus()
         .insertContent({
-          type: 'capturedImage',
+          type: 'figure',
+          attrs: { 'data-type': 'image' },
           content: [
             {
-              type: 'figcaption',
-              content: [
-                {
-                  type: 'text',
-                  text: result.originalFilename,
-                },
-              ],
+              type: 'image',
+              attrs: { src: result.url },
             },
             {
-              type: 'image',
-              attrs: {
-                src: result.url,
-              },
+              type: 'figcaption',
+              content: [{ type: 'text', text: result.originalFilename }],
             },
           ],
         })
@@ -250,11 +239,11 @@ export const Editor = (props: Props) => {
           class: 'highlight',
         },
       }),
-      ImageFigure,
       Image,
+      Iframe,
+      Figure,
       Figcaption,
       Footnote,
-      Embed,
       CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
@@ -265,8 +254,13 @@ export const Editor = (props: Props) => {
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
           setIsCommonMarkup(e.isActive('figcaption'))
           const result =
-            (view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')) ||
-            e.isActive('footnote')
+            (view.hasFocus() &&
+              !empty &&
+              !isEmptyTextBlock &&
+              !e.isActive('image') &&
+              !e.isActive('figure')) ||
+            e.isActive('footnote') ||
+            e.isActive('figcaption')
           setShouldShowTextBubbleMenu(result)
           return result
         },

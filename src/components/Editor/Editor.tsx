@@ -259,7 +259,8 @@ export const Editor = (props: Props) => {
               !isEmptyTextBlock &&
               !e.isActive('image') &&
               !e.isActive('figure')) ||
-            e.isActive('footnote')
+            e.isActive('footnote') ||
+            e.isActive('figcaption')
           setShouldShowTextBubbleMenu(result)
           return result
         },

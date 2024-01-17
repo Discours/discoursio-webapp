@@ -34,7 +34,12 @@ export const PlayerPlaylist = (props: Props) => {
   const handleMediaItemFieldChange = (field: keyof MediaItem, value: string) => {
     props.onMediaItemFieldChange(activeEditIndex(), field, value)
   }
-  const titleStyle = (mi: MediaItem) => ({ 'max-width': `calc(${mi.title ? 5 : 10}0% - 16px)` })
+  const titleStyle = (mi: MediaItem) => {
+    let portion = 0
+    if (mi.artist) portion += 5
+    if (mi.title) portion += 5
+    return { 'max-width': `calc(${portion}0% - 16px)` }
+  }
   return (
     <ul class={styles.playlist}>
       <For each={props.media}>

@@ -252,7 +252,6 @@ $vendors-thumb: ('::-webkit-slider-thumb', '::-moz-moz-range-thumb', '::-ms-thum
     @include font-size(1.6rem);
 
     overflow: hidden;
-    max-width: calc(50% - 16px);
     text-overflow: ellipsis;
     padding: 0;
     margin: 0;

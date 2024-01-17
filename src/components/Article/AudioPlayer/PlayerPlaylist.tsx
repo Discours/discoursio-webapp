@@ -54,8 +54,10 @@ export const PlayerPlaylist = (props: Props) => {
                   when={activeEditIndex() === index() && props.editorMode}
                   fallback={
                     <>
-                      <div class={styles.title}>{mi.title || t('Song title')}</div>
-                      <div class={styles.artist}>{mi.artist || t('Artist')}</div>
+                      <div class={styles.title}>{mi.title || index()}</div>
+                      <Show when={mi.artist}>
+                        <div class={styles.artist}>{mi.artist}</div>
+                      </Show>
                     </>
                   }
                 >

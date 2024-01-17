@@ -16,7 +16,7 @@ type Props = {
   onChangeMediaIndex?: (direction: 'up' | 'down', index) => void
 }
 
-const getFormattedTime = (point) => new Date(point * 1000).toISOString().slice(14, -5)
+const getFormattedTime = (point: number) => new Date(point * 1000).toISOString().slice(14, -5)
 
 export const AudioPlayer = (props: Props) => {
   const audioRef: { current: HTMLAudioElement } = { current: null }

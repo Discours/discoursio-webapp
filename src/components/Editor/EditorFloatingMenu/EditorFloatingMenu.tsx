@@ -26,7 +26,7 @@ const embedData = async (data) => {
   const element = document.createRange().createContextualFragment(data)
   const { attributes } = element.firstChild as HTMLIFrameElement
 
-  const result: { src: string } = { src: '' }
+  const result: { src: string; width?: string; height?: string } = { src: '' }
 
   for (let i = 0; i < attributes.length; i++) {
     const attribute = attributes[i]
@@ -45,7 +45,28 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
-    props.editor.chain().focus().setIframe(emb).run()
+    props.editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: 'figure',
+        attrs: { 'data-type': 'iframe' },
+        content: [
+          {
+            type: 'iframe',
+            attrs: {
+              src: emb.src,
+              width: emb.width,
+              height: emb.height,
+            },
+          },
+          {
+            type: 'figcaption',
+            content: [{ type: 'text', text: t('Description') }],
+          },
+        ],
+      })
+      .run()
   }
 
   const validateEmbed = async (value) => {

@@ -1,4 +1,4 @@
-import { mergeAttributes, Node } from '@tiptap/core'
+import { Node } from '@tiptap/core'
 
 export interface IframeOptions {
   allowFullscreen: boolean
@@ -15,19 +15,35 @@ declare module '@tiptap/core' {
   }
 }
 
-export const Embed = Node.create<IframeOptions>({
-  name: 'embed',
+export const Iframe = Node.create<IframeOptions>({
+  name: 'iframe',
   group: 'block',
-  selectable: true,
   atom: true,
-  draggable: true,
-  addAttributes() {
+
+  addOptions() {
     return {
-      src: { default: null },
-      width: { default: null },
-      height: { default: null },
+      allowFullscreen: true,
+      HTMLAttributes: {
+        class: 'iframe-wrapper',
+      },
     }
   },
+
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+      frameborder: {
+        default: 0,
+      },
+      allowfullscreen: {
+        default: this.options.allowFullscreen,
+        parseHTML: () => this.options.allowFullscreen,
+      },
+    }
+  },
+
   parseHTML() {
     return [
       {
@@ -35,28 +51,15 @@ export const Embed = Node.create<IframeOptions>({
       },
     ]
   },
+
   renderHTML({ HTMLAttributes }) {
-    return ['iframe', mergeAttributes(HTMLAttributes)]
+    return ['div', this.options.HTMLAttributes, ['iframe', HTMLAttributes]]
   },
-  addNodeView() {
-    return ({ node }) => {
-      const div = document.createElement('div')
-      div.className = 'embed-wrapper'
-      const iframe = document.createElement('iframe')
-      iframe.width = node.attrs.width
-      iframe.height = node.attrs.height
-      iframe.allowFullscreen = node.attrs.allowFullscreen
-      iframe.src = node.attrs.src
-      div.append(iframe)
-      return {
-        dom: div,
-      }
-    }
-  },
+
   addCommands() {
     return {
       setIframe:
-        (options) =>
+        (options: { src: string }) =>
         ({ tr, dispatch }) => {
           const { selection } = tr
           const node = this.type.create(options)

@@ -37,10 +37,16 @@ declare module 'solid-js' {
       onSlideChange?: () => void
       onBeforeSlideChangeStart?: () => void
       class?: string
+      observer?: boolean
+      loop?: boolean
+      speed?: number
+      slidesPerGroupAuto?: boolean
+      navigation?: boolean
       breakpoints?: {
         [width: number]: SwiperOptions
         [ratio: string]: SwiperOptions
       }
+      direction?: 'horizontal' | 'vertical'
       autoplay?: AutoplayOptions | boolean
     }
     // eslint-disable-next-line @typescript-eslint/no-empty-interface

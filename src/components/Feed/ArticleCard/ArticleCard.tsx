@@ -52,6 +52,7 @@ export type ArticleCardProps = {
   desktopCoverSize?: 'XS' | 'S' | 'M' | 'L'
   article: Shout
   onShare?: (article: Shout) => void
+  onInvite?: () => void
 }
 
 const desktopCoverImageWidths: Record<ArticleCardProps['desktopCoverSize'], number> = {
@@ -371,7 +372,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   isOwner={canEdit()}
                   containerCssClass={stylesHeader.control}
                   onShareClick={() => props.onShare(props.article)}
-                  onInviteClick={() => showModal('inviteCoAuthors')}
+                  onInviteClick={props.onInvite}
                   onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                   trigger={
                     <button>
@@ -388,7 +389,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </section>
         </Show>
       </div>
-      <InviteCoAuthorsModal title={t('Invite experts')} />
     </section>
   )
 }

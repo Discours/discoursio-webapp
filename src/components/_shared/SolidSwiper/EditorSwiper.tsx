@@ -1,7 +1,8 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, Show, on, onMount, lazy } from 'solid-js'
-import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
+import SwiperCore from 'swiper'
+import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 
 import { useLocalize } from '../../../context/localize'
 import { useSnackbar } from '../../../context/snackbar'

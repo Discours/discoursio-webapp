@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
 import { For, onMount, Show } from 'solid-js'
-import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
+import SwiperCore from 'swiper'
+import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 
 import { Shout } from '../../../graphql/schema/core.gen'
 import { ArticleCard } from '../../Feed/ArticleCard'

@@ -93,6 +93,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const closeUploadModalHandler = () => {
     setSelectedMenuItem()
     setMenuOpen(false)
+    setSelectedMenuItem()
   }
 
   useOutsideClickHandler({
@@ -104,6 +105,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
 
       if (menuOpen()) {
         setMenuOpen(false)
+        setSelectedMenuItem()
       }
     },
   })

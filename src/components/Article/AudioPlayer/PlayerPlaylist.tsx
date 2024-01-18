@@ -34,12 +34,6 @@ export const PlayerPlaylist = (props: Props) => {
   const handleMediaItemFieldChange = (field: keyof MediaItem, value: string) => {
     props.onMediaItemFieldChange(activeEditIndex(), field, value)
   }
-  const titleStyle = (mi: MediaItem) => {
-    let portion = 0
-    if (mi.artist) portion += 5
-    if (mi.title) portion += 5
-    return { 'max-width': `calc(${portion}0% - 16px)` }
-  }
   return (
     <ul class={styles.playlist}>
       <For each={props.media}>
@@ -59,14 +53,8 @@ export const PlayerPlaylist = (props: Props) => {
                   when={activeEditIndex() === index() && props.editorMode}
                   fallback={
                     <>
-                      <div class={styles.title} style={titleStyle(mi)}>
-                        {mi.title || index()}
-                      </div>
-                      <Show when={mi.artist}>
-                        <div class={styles.artist} style={titleStyle(mi)}>
-                          {mi.artist}
-                        </div>
-                      </Show>
+                      <div class={styles.title}>{mi.title || index()}</div>
+                      <div class={styles.artist}>{mi.artist || ''}</div>
                     </>
                   }
                 >

@@ -30,12 +30,7 @@ const DialogCard = (props: DialogProps) => {
     () => props.members && props.members.filter((member: ChatMember) => member.id !== props.ownId),
   )
 
-  const names = createMemo(
-    () =>
-      companions()
-        ?.map((companion) => companion.name)
-        .join(', '),
-  )
+  const names = createMemo<string>(() => (companions() || []).map((companion) => companion.name).join(', '))
 
   return (
     <Show when={props.members}>

@@ -136,13 +136,15 @@ export const FeedView = (props: Props) => {
     return visibility
   })
 
+  const { session } = useSession()
   const {
     actions: { loadReactionsBy },
   } = useReactions()
-
   const loadUnratedArticles = async () => {
-    const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)
-    setUnratedArticles(result)
+    if (session()) {
+      const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)
+      setUnratedArticles(result)
+    }
   }
 
   const loadTopComments = async () => {
@@ -153,10 +155,9 @@ export const FeedView = (props: Props) => {
   onMount(() => {
     loadMore()
     // eslint-disable-next-line promise/catch-or-return
-    Promise.all([loadUnratedArticles(), loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
+    Promise.all([loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
   })
 
-  const { session } = useSession()
   createEffect(() => {
     if (session()?.access_token && !unratedArticles()) {
       loadUnratedArticles()

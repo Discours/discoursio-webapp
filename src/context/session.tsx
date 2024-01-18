@@ -211,7 +211,7 @@ export const SessionProvider = (props: {
   onMount(async () => {
     const metaRes = await authorizer().getMetaData()
     setConfig({ ...defaultConfig, ...metaRes, redirectURL: window.location.origin })
-    let s
+    let s: AuthToken
     try {
       s = await loadSession()
     } catch (error) {

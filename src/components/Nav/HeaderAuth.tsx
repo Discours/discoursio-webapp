@@ -32,7 +32,7 @@ const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const { session, author, isAuthenticated, isSessionLoaded } = useSession()
+  const { session, author, isAuthenticated } = useSession()
   const {
     unreadNotificationsCount,
     actions: { showNotificationsPanel },
@@ -111,7 +111,7 @@ export const HeaderAuth = (props: Props) => {
 
   return (
     <ShowOnlyOnClient>
-      <Show when={isSessionLoaded()} keyed={true}>
+      <Show when={session()?.user?.email_verified} keyed={true}>
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
             <Show when={isCreatePostButtonVisible()}>

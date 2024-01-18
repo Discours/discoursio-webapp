@@ -313,8 +313,7 @@ footnote {
 }
 
 .highlight-fake-selection {
-  //background: var(--selection-background);
-  background: red;
+  background: var(--selection-background);
   color: var(--selection-color);
   border: solid var(--selection-background);
   border-width: 5px 0;

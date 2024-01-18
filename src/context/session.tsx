@@ -98,7 +98,8 @@ export const SessionProvider = (props: {
   })
 
   // load
-  let ta
+  let minuteLater
+
   const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
   const authorizer = createMemo(() => new Authorizer(defaultConfig))
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
@@ -108,12 +109,26 @@ export const SessionProvider = (props: {
       try {
         const s = await authorizer().getSession()
         console.info('[context.session] loading session', s)
-        ta = setTimeout(loadSession, s.expires_in * 1000)
+
+        // Set session expiration time in local storage
+        const expires_at = new Date(Date.now() + s.expires_in * 1000)
+        localStorage.setItem('expires_at', `${expires_at.getTime()}`)
+
+        // Set up session expiration check timer
+        minuteLater = setTimeout(checkSessionIsExpired, 60 * 1000)
         console.info(`[context.session] will refresh in ${s.expires_in / 60} mins`)
+
+        // Set the session loaded flag
+        setIsSessionLoaded(true)
+
         return s
       } catch (error) {
         console.info('[context.session] cannot refresh session', error)
         setAuthError(error)
+
+        // Set the session loaded flag even if there's an error
+        setIsSessionLoaded(true)
+
         return null
       }
     },
@@ -123,7 +138,25 @@ export const SessionProvider = (props: {
     },
   )
 
-  onCleanup(() => clearTimeout(ta))
+  const checkSessionIsExpired = () => {
+    const expires_at_data = localStorage.getItem('expires_at')
+
+    if (expires_at_data) {
+      const expires_at = Number.parseFloat(expires_at_data)
+      const current_time = Date.now()
+
+      // Check if the session has expired
+      if (current_time >= expires_at) {
+        console.info('[context.session] Session has expired, refreshing.')
+        loadSession()
+      } else {
+        // Schedule the next check
+        minuteLater = setTimeout(checkSessionIsExpired, 60 * 1000)
+      }
+    }
+  }
+
+  onCleanup(() => clearTimeout(minuteLater))
 
   const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
     async () => {

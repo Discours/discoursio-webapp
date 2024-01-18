@@ -32,7 +32,7 @@ const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const { session, author, isAuthenticated } = useSession()
+  const { session, author, isAuthenticated, isSessionLoaded } = useSession()
   const {
     unreadNotificationsCount,
     actions: { showNotificationsPanel },
@@ -58,7 +58,9 @@ export const HeaderAuth = (props: Props) => {
   const isNotificationsVisible = createMemo(() => isAuthenticated() && !isEditorPage())
   const isSaveButtonVisible = createMemo(() => isAuthenticated() && isEditorPage())
   const isCreatePostButtonVisible = createMemo(() => isAuthenticated() && !isEditorPage())
-  const isAuthenticatedControlsVisible = createMemo(() => isAuthenticated())
+  const isAuthenticatedControlsVisible = createMemo(
+    () => isAuthenticated() && session()?.user?.email_verified,
+  )
 
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
@@ -111,7 +113,7 @@ export const HeaderAuth = (props: Props) => {
 
   return (
     <ShowOnlyOnClient>
-      <Show when={session()?.user?.email_verified} keyed={true}>
+      <Show when={isSessionLoaded()} keyed={true}>
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
             <Show when={isCreatePostButtonVisible()}>

@@ -260,7 +260,7 @@ export const Editor = (props: Props) => {
               !e.isActive('image') &&
               !e.isActive('figure')) ||
             e.isActive('footnote') ||
-            e.isActive('figcaption')
+            (e.isActive('figcaption') && !empty)
           setShouldShowTextBubbleMenu(result)
           return result
         },

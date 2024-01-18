@@ -39,6 +39,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     if (!props.shouldShow) {
       setFootNote()
       setFootnoteEditorOpen(false)
+      setLinkEditorOpen(false)
+      setTextSizeBubbleOpen(false)
+      setListBubbleOpen(false)
     }
   })
 
@@ -93,11 +96,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
       props.editor.chain().focus().setFootnote({ value: footnote }).run()
     }
     setFootNote()
+    setLinkEditorOpen(false)
     setFootnoteEditorOpen(false)
   }
 
   const handleOpenFootnoteEditor = () => {
     updateCurrentFootnoteValue()
+    setLinkEditorOpen(false)
     setFootnoteEditorOpen(true)
   }
 
@@ -120,6 +125,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     window.addEventListener('keydown', handleKeyDown)
     onCleanup(() => {
       window.removeEventListener('keydown', handleKeyDown)
+      setLinkEditorOpen(false)
     })
   })
 

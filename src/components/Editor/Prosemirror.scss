@@ -311,3 +311,11 @@ footnote {
     background-color: unset;
   }
 }
+
+.highlight-fake-selection {
+  //background: var(--selection-background);
+  background: red;
+  color: var(--selection-color);
+  border: solid var(--selection-background);
+  border-width: 5px 0;
+}

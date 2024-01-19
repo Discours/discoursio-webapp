@@ -13,9 +13,9 @@ export const SocialProviders = () => {
   } = useSession()
 
   return (
-    <div className={styles.container}>
-      <div className={styles.text}>{t('or sign in with social networks')}</div>
-      <div className={styles.social}>
+    <div class={styles.container}>
+      <div class={styles.text}>{t('or sign in with social networks')}</div>
+      <div class={styles.social}>
         <a href="#" onClick={(_e) => oauth('google')}>
           <Icon name={'google'} />
         </a>

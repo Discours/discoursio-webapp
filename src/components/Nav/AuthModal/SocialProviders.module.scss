@@ -38,8 +38,13 @@
   a {
     border: none !important;
   }
-
-  .githubAuth:hover {
+  .facebook,
+  .google,
+  .vk,
+  .telegram {
+    border: none;
+  }
+  .github:hover {
     img {
       filter: invert(1);
     }

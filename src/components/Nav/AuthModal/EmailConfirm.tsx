@@ -28,16 +28,15 @@ export const EmailConfirm = () => {
     }
   })
 
+  createEffect(() => {
+    if (authError()) console.debug('[AuthModal.EmailConfirm] auth error: ', authError())
+  })
+
   return (
     <div>
       <Show when={authError()}>
-        <div class={styles.title}>{authError()}</div>
-        <div class={styles.text}>
-          <a href="/?modal=auth&mode=login">
-            {/*TODO: temp solution, should be send link again */}
-            {t('Enter')}
-          </a>
-        </div>
+        <div class={styles.title}>{t('Error')}</div>
+        <div class={styles.text}>{authError()}</div>
       </Show>
       <Show when={emailConfirmed()}>
         <div class={styles.title}>{t('Hooray! Welcome!')}</div>

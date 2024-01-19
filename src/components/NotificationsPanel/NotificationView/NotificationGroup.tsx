@@ -64,7 +64,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
 
   return (
     <>
-      <For each={props.notifications || []}>
+      <For each={props.notifications}>
         {(n: Group) => (
           <>
             {t(reactionsCaption(n.id), { commentsCount: n.reactions.length })}{' '}

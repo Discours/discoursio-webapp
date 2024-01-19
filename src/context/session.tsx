@@ -92,12 +92,8 @@ export const SessionProvider = (props: {
   const { searchParams, changeSearchParams } = useRouter()
   const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
   const authorizer = createMemo(() => new Authorizer(configuration()))
-
-  createEffect(() => {
-    if (authorizer()) {
-    }
-  })
   const [oauthState, setOauthState] = createSignal<string>()
+
   // handle callback's redirect_uri
   createEffect(async () => {
     // oauth
@@ -109,7 +105,7 @@ export const SessionProvider = (props: {
         : ['openid', 'profile', 'email']
       if (scope) console.info(`[context.session] scope: ${scope}`)
       const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
-      setConfig((c: ConfigType) => ({ ...c, redirectURL: url })) // .split('?')[0]
+      setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
       changeSearchParams({ mode: 'confirm-email', modal: 'auth' }, true)
     }
   })

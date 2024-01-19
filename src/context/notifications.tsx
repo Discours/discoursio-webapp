@@ -47,7 +47,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   const loadNotificationsGrouped = async (options: { after: number; limit?: number; offset?: number }) => {
     if (isAuthenticated() && notifierClient?.private) {
-      const { notifications: groups, unread, total } = await notifierClient.getNotifications(options)
+      const { notifications: groups, total, unread } = await notifierClient.getNotifications(options)
       const newGroupsEntries = groups.reduce((acc, group: NotificationGroup) => {
         acc[group.id] = group
         return acc
@@ -58,9 +58,8 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       setNotificationEntities(newGroupsEntries)
       console.debug(`[context.notifications] groups updated`, groups)
       return groups
-    } else {
-      return []
     }
+    return []
   }
 
   const sortedNotifications = createMemo(() => {

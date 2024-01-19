@@ -10,6 +10,7 @@ import {
   ConfigType,
   SignupInput,
   AuthorizeResponse,
+  GraphqlQueryInput,
 } from '@authorizerdev/authorizer-js'
 import {
   createContext,
@@ -61,7 +62,7 @@ export type SessionContextType = {
     signUp: (params: SignupInput) => Promise<AuthToken | void>
     signIn: (params: LoginInput) => Promise<void>
     signOut: () => Promise<void>
-    oauthLogin: (provider: string) => Promise<void>
+    oauth: (provider: string) => Promise<void>
     changePassword: (password: string, token: string) => void
     confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken | void> // email confirm callback is in auth.discours.io
     setIsSessionLoaded: (loaded: boolean) => void
@@ -89,10 +90,32 @@ export const SessionProvider = (props: {
     actions: { showSnackbar },
   } = useSnackbar()
   const { searchParams, changeSearchParams } = useRouter()
+  const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
+  const authorizer = createMemo(() => new Authorizer(configuration()))
 
+  createEffect(() => {
+    if (authorizer()) {
+    }
+  })
+  const [oauthState, setOauthState] = createSignal<string>()
   // handle callback's redirect_uri
   createEffect(async () => {
-    // TODO: handle oauth here too
+    // oauth
+    const state = searchParams()?.state
+    if (state) {
+      setOauthState((_s) => state)
+      const scope = searchParams()?.scope
+        ? searchParams()?.scope?.toString().split(' ')
+        : ['openid', 'profile', 'email']
+      if (scope) console.info(`[context.session] scope: ${scope}`)
+      const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
+      setConfig((c: ConfigType) => ({ ...c, redirectURL: url })) // .split('?')[0]
+      changeSearchParams({ mode: 'confirm-email', modal: 'auth' }, true)
+    }
+  })
+
+  // handle email confirm
+  createEffect(() => {
     const token = searchParams()?.token
     const access_token = searchParams()?.access_token
     if (access_token) changeSearchParams({ mode: 'confirm-email', modal: 'auth', access_token })
@@ -102,8 +125,6 @@ export const SessionProvider = (props: {
   // load
   let minuteLater
 
-  const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
-  const authorizer = createMemo(() => new Authorizer(defaultConfig))
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [authError, setAuthError] = createSignal('')
   const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(
@@ -246,13 +267,8 @@ export const SessionProvider = (props: {
   }
 
   // authorizer api proxy methods
-
-  const signUp = async (params: Partial<SignupInput>) => {
-    const authResult: void | AuthToken = await authorizer().signup({
-      ...params,
-      password: params.password,
-      confirm_password: params.password,
-    })
+  const signUp = async (params: SignupInput) => {
+    const authResult: void | AuthToken = await authorizer().signup(params)
     if (authResult) setSession(authResult)
   }
 
@@ -283,13 +299,16 @@ export const SessionProvider = (props: {
     }
   }
 
-  const oauthLogin = async (oauthProvider: string) => {
+  const oauth = async (oauthProvider: string) => {
     console.debug(`[context.session] calling authorizer's oauth for`)
     try {
+      // const data: GraphqlQueryInput = {}
+      // await authorizer().graphqlQuery(data)
       const ar: AuthorizeResponse | void = await authorizer().oauthLogin(
         oauthProvider,
         [],
         window.location.origin,
+        oauthState(),
       )
       console.debug(ar)
     } catch (error) {
@@ -312,7 +331,7 @@ export const SessionProvider = (props: {
     authorizer,
     loadAuthor,
     changePassword,
-    oauthLogin,
+    oauth,
   }
   const value: SessionContextType = {
     authError,

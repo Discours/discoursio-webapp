@@ -9,25 +9,20 @@ type Provider = 'facebook' | 'google' | 'github' // 'vk' | 'telegram'
 export const SocialProviders = () => {
   const { t } = useLocalize()
   const {
-    actions: { oauthLogin },
+    actions: { oauth },
   } = useSession()
-
-  const handleClick = async (event: MouseEvent | TouchEvent, provider: Provider): Promise<void> => {
-    event.preventDefault()
-    await oauthLogin(provider)
-  }
 
   return (
     <div className={styles.container}>
       <div className={styles.text}>{t('or sign in with social networks')}</div>
       <div className={styles.social}>
-        <a href="#" onClick={(ev) => handleClick(ev, 'google')}>
+        <a href="#" onClick={(_e) => oauth('google')}>
           <Icon name={'google'} />
         </a>
-        <a href="#" onClick={(ev) => handleClick(ev, 'facebook')}>
+        <a href="#" onClick={(_e) => oauth('facebook')}>
           <Icon name={'facebook'} />
         </a>
-        <a href="#" class={styles.githubAuth} onClick={(ev) => handleClick(ev, 'github')}>
+        <a href="#" class={styles.githubAuth} onClick={(_e) => oauth('github')}>
           <Icon name="github" />
         </a>
       </div>

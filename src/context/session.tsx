@@ -10,7 +10,7 @@ import {
   ConfigType,
   SignupInput,
   AuthorizeResponse,
-  GraphqlQueryInput,
+  // GraphqlQueryInput,
 } from '@authorizerdev/authorizer-js'
 import {
   createContext,

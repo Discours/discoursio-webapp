@@ -9,6 +9,7 @@ import {
   Authorizer,
   ConfigType,
   SignupInput,
+  AuthorizeResponse,
 } from '@authorizerdev/authorizer-js'
 import {
   createContext,
@@ -34,8 +35,8 @@ import { useSnackbar } from './snackbar'
 
 const defaultConfig: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
-  redirectURL: 'https://discoursio-webapp.vercel.app',
-  clientID: '9c113377-5eea-4c89-98e1-69302462fc08', // FIXME: use env?
+  redirectURL: 'https://testing.discours.io',
+  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24', // FIXME: use env?
 }
 
 export type SessionContextType = {
@@ -60,6 +61,7 @@ export type SessionContextType = {
     signUp: (params: SignupInput) => Promise<AuthToken | void>
     signIn: (params: LoginInput) => Promise<void>
     signOut: () => Promise<void>
+    oauthLogin: (provider: string) => Promise<void>
     changePassword: (password: string, token: string) => void
     confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken | void> // email confirm callback is in auth.discours.io
     setIsSessionLoaded: (loaded: boolean) => void
@@ -281,6 +283,20 @@ export const SessionProvider = (props: {
     }
   }
 
+  const oauthLogin = async (oauthProvider: string) => {
+    console.debug(`[context.session] calling authorizer's oauth for`)
+    try {
+      const ar: AuthorizeResponse | void = await authorizer().oauthLogin(
+        oauthProvider,
+        [],
+        window.location.origin,
+      )
+      console.debug(ar)
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
   const isAuthenticated = createMemo(() => Boolean(author()))
   const actions = {
     loadSession,
@@ -296,6 +312,7 @@ export const SessionProvider = (props: {
     authorizer,
     loadAuthor,
     changePassword,
+    oauthLogin,
   }
   const value: SessionContextType = {
     authError,

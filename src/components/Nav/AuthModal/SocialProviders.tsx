@@ -1,43 +1,33 @@
 import { useLocalize } from '../../../context/localize'
-import { hideModal } from '../../../stores/ui'
+import { useSession } from '../../../context/session'
 import { Icon } from '../../_shared/Icon'
 
 import styles from './SocialProviders.module.scss'
 
-type Provider = 'facebook' | 'google' | 'vk' | 'github'
-
-// 3rd party provider auth handler
-const handleSocialAuthLinkClick = (event: MouseEvent, provider: Provider): void => {
-  event.preventDefault()
-  const popup = window.open(
-    `https://auth.discours.io/oauth_login/${provider}`,
-    provider,
-    'width=740, height=420',
-  ) // TODO: precalculate window size
-  popup?.focus()
-  hideModal()
-}
+type Provider = 'facebook' | 'google' | 'github' // 'vk' | 'telegram'
 
 export const SocialProviders = () => {
   const { t } = useLocalize()
+  const {
+    actions: { oauthLogin },
+  } = useSession()
+
+  const handleClick = async (event: MouseEvent | TouchEvent, provider: Provider): Promise<void> => {
+    event.preventDefault()
+    await oauthLogin(provider)
+  }
+
   return (
-    <div class={styles.container}>
-      <div class={styles.text}>{t('or sign in with social networks')}</div>
-      <div class={styles.social}>
-        <a href="#" onClick={(event) => handleSocialAuthLinkClick(event, 'facebook')}>
-          <Icon name="facebook" />
+    <div className={styles.container}>
+      <div className={styles.text}>{t('or sign in with social networks')}</div>
+      <div className={styles.social}>
+        <a href="#" onClick={(ev) => handleClick(ev, 'google')}>
+          <Icon name={'google'} />
         </a>
-        <a href="#" onClick={(event) => handleSocialAuthLinkClick(event, 'google')}>
-          <Icon name="google" />
+        <a href="#" onClick={(ev) => handleClick(ev, 'facebook')}>
+          <Icon name={'facebook'} />
         </a>
-        <a href="#" onClick={(event) => handleSocialAuthLinkClick(event, 'vk')}>
-          <Icon name="vk" />
-        </a>
-        <a
-          href="#"
-          class={styles.githubAuth}
-          onClick={(event) => handleSocialAuthLinkClick(event, 'github')}
-        >
+        <a href="#" class={styles.githubAuth} onClick={(ev) => handleClick(ev, 'github')}>
           <Icon name="github" />
         </a>
       </div>

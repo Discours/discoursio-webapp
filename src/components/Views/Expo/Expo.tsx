@@ -47,7 +47,6 @@ export const Expo = (props: Props) => {
 
   const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
     const filters = { visibility: 'public', ...additionalFilters }
-
     if (props.layout) {
       filters.layout = props.layout
     } else {
@@ -132,7 +131,6 @@ export const Expo = (props: Props) => {
         loadRandomTopArticles()
         loadRandomTopMonthArticles()
       },
-      { defer: true },
     ),
   )
 
@@ -143,6 +141,7 @@ export const Expo = (props: Props) => {
   const handleLoadMoreClick = () => {
     loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
   }
+
   return (
     <div class={styles.Expo}>
       <Show when={sortedArticles().length > 0} fallback={<Loading />}>

@@ -1,8 +1,8 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, on, createMemo, createSignal, onCleanup } from 'solid-js'
 
-import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { getImageUrl } from '../../../utils/getImageUrl'
+import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { Icon } from '../Icon'
 
 import styles from './Lightbox.module.scss'
@@ -126,6 +126,9 @@ export const Lightbox = (props: Props) => {
     ),
   )
 
+  createEffect(() => {
+    console.log('!!! pictureScalePercentage:', pictureScalePercentage())
+  })
   return (
     <div
       class={clsx(styles.Lightbox, props.class)}
@@ -133,7 +136,7 @@ export const Lightbox = (props: Props) => {
       ref={(el) => (lightboxRef.current = el)}
     >
       <Show when={pictureScalePercentage()}>
-        <div class={styles.scalePercentage}>{pictureScalePercentage()}%</div>
+        <div class={styles.scalePercentage}>{`${pictureScalePercentage()}%`}</div>
       </Show>
       <span class={styles.close} onClick={closeLightbox}>
         <Icon name="close-white" class={styles.icon} />

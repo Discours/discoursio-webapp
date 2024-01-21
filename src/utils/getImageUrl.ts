@@ -19,17 +19,19 @@ export const getImageUrl = (
 ) => {
   const sizeUrlPart = getSizeUrlPart(options)
 
+  let modifiedSrc = src // Используйте новую переменную вместо переназначения параметра
+
   if (options.noSizeUrlPart) {
-    src = src.replace(/\d+x.*?\//, '')
+    modifiedSrc = modifiedSrc.replace(/\d+x.*?\//, '')
   }
 
   if (src.startsWith(thumborPrefix)) {
-    let thumborKey = src.replace(thumborPrefix, '')
+    const thumborKey = modifiedSrc.replace(thumborPrefix, '')
 
     return `${thumborUrl}/unsafe/${sizeUrlPart}${thumborKey}`
   }
 
-  return `${thumborUrl}/unsafe/${sizeUrlPart}${src}`
+  return `${thumborUrl}/unsafe/${sizeUrlPart}${modifiedSrc}`
 }
 
 export const getOpenGraphImageUrl = (

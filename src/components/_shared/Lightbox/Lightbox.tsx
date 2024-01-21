@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
-import { createMemo, createSignal, onCleanup } from 'solid-js'
+import { Show, createEffect, on, createMemo, createSignal, onCleanup } from 'solid-js'
 
+import { getImageUrl } from '../../../utils/getImageUrl'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { Icon } from '../Icon'
 
@@ -18,6 +19,7 @@ const TRANSITION_SPEED = 300
 
 export const Lightbox = (props: Props) => {
   const [zoomLevel, setZoomLevel] = createSignal(1)
+  const [pictureScalePercentage, setPictureScalePercentage] = createSignal<number | null>(null)
   const [translateX, setTranslateX] = createSignal(0)
   const [translateY, setTranslateY] = createSignal(0)
   const [transitionEnabled, setTransitionEnabled] = createSignal(false)
@@ -33,7 +35,7 @@ export const Lightbox = (props: Props) => {
 
     setTimeout(() => {
       props.onClose()
-    }, 300)
+    }, 200)
   }
 
   const zoomIn = (event) => {
@@ -64,6 +66,7 @@ export const Lightbox = (props: Props) => {
 
     scale = Math.min(Math.max(0.125, scale), 4)
 
+    setTransitionEnabled(true)
     setZoomLevel(scale * ZOOM_STEP)
   }
 
@@ -105,12 +108,36 @@ export const Lightbox = (props: Props) => {
     cursor: 'grab',
   }))
 
+  let fadeTimer
+
+  createEffect(
+    on(
+      () => zoomLevel(),
+      () => {
+        clearTimeout(fadeTimer)
+
+        fadeTimer = setTimeout(() => {
+          setPictureScalePercentage(null)
+        }, 2200)
+
+        setPictureScalePercentage(Math.round(zoomLevel() * 100))
+      },
+      { defer: true },
+    ),
+  )
+
+  createEffect(() => {
+    console.log('!!! pictureScalePercentage:', pictureScalePercentage())
+  })
   return (
     <div
       class={clsx(styles.Lightbox, props.class)}
       onClick={closeLightbox}
       ref={(el) => (lightboxRef.current = el)}
     >
+      <Show when={pictureScalePercentage()}>
+        <div class={styles.scalePercentage}>{`${pictureScalePercentage()}%`}</div>
+      </Show>
       <span class={styles.close} onClick={closeLightbox}>
         <Icon name="close-white" class={styles.icon} />
       </span>
@@ -127,7 +154,7 @@ export const Lightbox = (props: Props) => {
       </div>
       <img
         class={styles.image}
-        src={props.image}
+        src={getImageUrl(props.image, { noSizeUrlPart: true })}
         alt={props.imageAlt || ''}
         onClick={(event) => event.stopPropagation()}
         onWheel={handleWheelZoom}

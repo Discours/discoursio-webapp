@@ -80,6 +80,28 @@
   animation-fill-mode: backwards;
 }
 
+.scalePercentage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 40px;
+  height: 24px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+
+  font-size: 1.2rem;
+  border-radius: 6px;
+  background-color: rgb(0 0 0 / 80%);
+  color: #fff;
+
+  pointer-events: none;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;

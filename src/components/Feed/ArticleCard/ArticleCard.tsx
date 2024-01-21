@@ -1,4 +1,6 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
+import sanitizeHtml from 'sanitize-html'
+
 import type { Shout } from '../../../graphql/types.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { Icon } from '../../_shared/Icon'
@@ -69,6 +71,14 @@ const getTitleAndSubtitle = (
 
   return { title, subtitle }
 }
+
+const sanitizeString = (html) =>
+  sanitizeHtml(html, {
+    allowedTags: ['span'],
+    allowedAttributes: {
+      span: ['class']
+    }
+  })
 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
@@ -161,13 +171,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <a href={`/${props.article.slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={title} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={sanitizeString(title)} />
               </span>
             </div>
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
               <div class={styles.shoutCardSubtitle}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={sanitizeString(subtitle)} />
               </div>
             </Show>
           </a>
@@ -191,7 +201,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </Show>
         <Show when={props.article.description}>
-          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
+          <section
+            class={styles.shoutCardDescription}
+            innerHTML={sanitizeString(props.article.description)}
+          />
         </Show>
         <Show when={props.settings?.isFeedMode}>
           <Show when={!props.settings?.noimage && props.article.cover}>

@@ -61,6 +61,8 @@ import notifications from '../graphql/query/notifications'
 import markNotificationAsRead from '../graphql/mutation/mark-notification-as-read'
 import mySubscriptions from '../graphql/query/my-subscriptions'
 
+import { searchUrl } from './config'
+
 type ApiErrorCode =
   | 'unknown'
   | 'email_not_confirmed'
@@ -397,5 +399,18 @@ export const apiClient = {
   getRecipients: async (options: QueryLoadRecipientsArgs) => {
     const resp = await privateGraphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members
+  },
+
+  // search
+  getSearchResults: async (searchValue: string) => {
+    const resp = await fetch(`${searchUrl}/search?q=${searchValue}`, {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json; charset=utf-8'
+      }
+    })
+
+    return resp
   }
 }

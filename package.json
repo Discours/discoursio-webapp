@@ -34,7 +34,8 @@
     "i18next-icu": "2.3.0",
     "intl-messageformat": "10.5.3",
     "just-throttle": "4.2.0",
-    "mailgun.js": "8.2.1"
+    "mailgun.js": "8.2.1",
+    "sanitize-html": "2.11.0"
   },
   "devDependencies": {
     "@babel/core": "7.21.8",

@@ -1,15 +1,13 @@
-import { createSignal, Show, For } from 'solid-js'
+import { createSignal, Show, For, JSX } from 'solid-js'
 
-import { ArticleCard } from '../../Feed/ArticleCard'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
+import { SearchResultItem } from './SearchResultItem'
 
+import { apiClient } from '../../../utils/apiClient'
 import type { Shout } from '../../../graphql/types.gen'
 
-import { searchUrl } from '../../../utils/config'
-
 import { useLocalize } from '../../../context/localize'
-import { hideModal } from '../../../stores/ui'
 
 import styles from './SearchModal.module.scss'
 
@@ -26,67 +24,55 @@ const getSearchCoincidences = ({ str, intersection }: { str: string; intersectio
 export const SearchModal = () => {
   const { t } = useLocalize()
 
-  const searchInputRef: { current: HTMLInputElement } = { current: null }
-
+  const [inputValue, setInputValue] = createSignal('')
   const [searchResultsList, setSearchResultsList] = createSignal<[] | null>([])
   const [isLoading, setIsLoading] = createSignal(false)
   // const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const handleSearch = async () => {
-    const searchValue = searchInputRef.current?.value || ''
+    const searchValue = inputValue() || ''
 
-    if (Boolean(searchValue)) {
+    if (Boolean(searchValue) && searchValue.length > 2) {
       setIsLoading(true)
 
-      await fetch(`${searchUrl}=${searchValue}`, {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json; charset=utf-8'
+      try {
+        const response = await apiClient.getSearchResults(searchValue)
+        const searchResult = await response.json()
+
+        if (searchResult.length) {
+          const preparedSearchResultsList = searchResult.map((article, index) => ({
+            ...article,
+            body: '',
+            cover: '',
+            createdAt: '',
+            id: index,
+            slug: article.slug,
+            authors: [],
+            topics: [],
+            title: article.title
+              ? getSearchCoincidences({
+                  str: article.title,
+                  intersection: searchValue
+                })
+              : '',
+            subtitle: article.subtitle
+              ? getSearchCoincidences({
+                  str: article.subtitle,
+                  intersection: searchValue
+                })
+              : ''
+          }))
+
+          setSearchResultsList(preparedSearchResultsList)
+        } else {
+          setSearchResultsList(null)
         }
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.length) {
-            const preparedSearchResultsList = data.map((article, index) => ({
-              ...article,
-              body: '',
-              cover: '',
-              createdAt: '',
-              id: index,
-              slug: article.slug,
-              authors: [],
-              topics: [],
-              title: article.title
-                ? getSearchCoincidences({
-                    str: article.title,
-                    intersection: searchInputRef.current?.value || ''
-                  })
-                : '',
-              subtitle: article.subtitle
-                ? getSearchCoincidences({
-                    str: article.subtitle,
-                    intersection: searchInputRef.current?.value || ''
-                  })
-                : ''
-            }))
-
-            setSearchResultsList(preparedSearchResultsList)
-          } else {
-            setSearchResultsList(null)
-          }
-        })
-        .catch((error) => {
-          console.log('search request failed', error)
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
+      } catch (error) {
+        console.log('search request failed', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }
-
-  const handleArticleClick = () => {
-    hideModal()
   }
 
   return (
@@ -94,9 +80,12 @@ export const SearchModal = () => {
       <input
         type="search"
         placeholder={t('Site search')}
-        ref={(el) => (searchInputRef.current = el)}
         class={styles.searchInput}
-        onInput={handleSearch}
+        onInput={(event) => {
+          setInputValue(event.target.value)
+
+          handleSearch()
+        }}
       />
 
       <Button
@@ -116,8 +105,8 @@ export const SearchModal = () => {
         <Show when={searchResultsList()}>
           <For each={searchResultsList()}>
             {(article: Shout) => (
-              <div onClick={handleArticleClick}>
-                <ArticleCard
+              <div>
+                <SearchResultItem
                   article={article}
                   settings={{
                     noimage: true, // @@TODO remove flag after cover support

@@ -41,6 +41,8 @@ export const Iframe = Node.create<IframeOptions>({
         default: this.options.allowFullscreen,
         parseHTML: () => this.options.allowFullscreen,
       },
+      width: { default: null },
+      height: { default: null },
     }
   },
 

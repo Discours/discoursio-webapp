@@ -5,7 +5,6 @@ import type { Shout } from '../../../graphql/types.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createMemo, createSignal, For, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -95,8 +94,8 @@ const sanitizeString = (html) =>
   sanitizeHtml(html, {
     allowedTags: ['span'],
     allowedAttributes: {
-      span: ['class']
-    }
+      span: ['class'],
+    },
   })
 
 export const ArticleCard = (props: ArticleCardProps) => {

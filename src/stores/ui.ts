@@ -41,7 +41,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   editorInsertLink: 'editorInsertLink',
   followers: 'followers',
   following: 'following',
-  search: 'search'
+  search: 'search',
   inviteCoAuthors: 'inviteCoAuthors',
   share: 'share',
 }

@@ -18,8 +18,32 @@ import styles from './SearchModal.module.scss'
 const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
   `<span>${str.replace(
     new RegExp(intersection, 'gi'),
-    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`
+    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`,
   )}</span>`
+
+const prepareSearchResults = (list, searchValue) =>
+  list.map((article, index) => ({
+    ...article,
+    body: '',
+    cover: '',
+    createdAt: '',
+    id: index,
+    slug: article.slug,
+    authors: [],
+    topics: [],
+    title: article.title
+      ? getSearchCoincidences({
+          str: article.title,
+          intersection: searchValue,
+        })
+      : '',
+    subtitle: article.subtitle
+      ? getSearchCoincidences({
+          str: article.subtitle,
+          intersection: searchValue,
+        })
+      : '',
+  }))
 
 export const SearchModal = () => {
   const { t } = useLocalize()
@@ -39,29 +63,8 @@ export const SearchModal = () => {
         const response = await apiClient.getSearchResults(searchValue)
         const searchResult = await response.json()
 
-        if (searchResult.length) {
-          const preparedSearchResultsList = searchResult.map((article, index) => ({
-            ...article,
-            body: '',
-            cover: '',
-            createdAt: '',
-            id: index,
-            slug: article.slug,
-            authors: [],
-            topics: [],
-            title: article.title
-              ? getSearchCoincidences({
-                  str: article.title,
-                  intersection: searchValue
-                })
-              : '',
-            subtitle: article.subtitle
-              ? getSearchCoincidences({
-                  str: article.subtitle,
-                  intersection: searchValue
-                })
-              : ''
-          }))
+        if (searchResult.length > 0) {
+          const preparedSearchResultsList = prepareSearchResults(searchResult, searchValue)
 
           setSearchResultsList(preparedSearchResultsList)
         } else {
@@ -97,7 +100,7 @@ export const SearchModal = () => {
       <p
         class={styles.searchDescription}
         innerHTML={t(
-          'To find publications, art, comments, authors and topics of interest to you, just start typing your query'
+          'To find publications, art, comments, authors and topics of interest to you, just start typing your query',
         )}
       />
 
@@ -112,7 +115,7 @@ export const SearchModal = () => {
                     noimage: true, // @@TODO remove flag after cover support
                     isFloorImportant: true,
                     isSingle: true,
-                    nodate: true
+                    nodate: true,
                   }}
                 />
               </div>

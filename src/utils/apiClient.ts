@@ -446,14 +446,12 @@ export const apiClient = {
 
   // search
   getSearchResults: async (searchValue: string) => {
-    const resp = await fetch(`${searchUrl}/search?q=${searchValue}`, {
+    return await fetch(`${searchUrl}/search?q=${searchValue}`, {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        'content-type': 'application/json; charset=utf-8'
-      }
+        'content-type': 'application/json; charset=utf-8',
+      },
     })
-
-    return resp
-  }
+  },
 }

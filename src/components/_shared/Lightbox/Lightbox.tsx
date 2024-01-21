@@ -126,9 +126,6 @@ export const Lightbox = (props: Props) => {
     ),
   )
 
-  createEffect(() => {
-    console.log('!!! pictureScalePercentage:', pictureScalePercentage())
-  })
   return (
     <div
       class={clsx(styles.Lightbox, props.class)}

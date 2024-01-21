@@ -143,7 +143,6 @@ export const ImageSwiper = (props: Props) => {
               slides-per-view={1}
               thumbs-swiper={'.thumbSwiper'}
               observer={true}
-              // slide-change={handleSlideChange}
               space-between={isMobileView() ? 20 : 10}
             >
               <For each={props.images}>

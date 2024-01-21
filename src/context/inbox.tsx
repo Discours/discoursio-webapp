@@ -1,10 +1,12 @@
-import type { Accessor, JSX } from 'solid-js'
-import { createContext, createSignal, useContext } from 'solid-js'
-// import { createSubClient } from '../graphql/privateGraphQLClient'
 import type { Chat, Message, MutationCreateMessageArgs } from '../graphql/types.gen'
+import type { Accessor, JSX } from 'solid-js'
+
+import { createContext, createSignal, useContext } from 'solid-js'
+
+// import { createSubClient } from '../graphql/privateGraphQLClient'
+import { loadMessages } from '../stores/inbox'
 import { apiClient } from '../utils/apiClient'
 // import type { Client } from '@urql/core'
-import { loadMessages } from '../stores/inbox'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -54,7 +56,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
       const currentChat = chats().find((chat) => chat.id === args.chat)
       setChats((prev) => [
         ...prev.filter((c) => c.id !== currentChat.id),
-        { ...currentChat, updatedAt: message.createdAt }
+        { ...currentChat, updatedAt: message.createdAt },
       ])
     } catch (error) {
       console.error('[post message error]:', error)
@@ -82,7 +84,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     createChat,
     loadChats,
     getMessages,
-    sendMessage
+    sendMessage,
     // unsubscribe // TODO: call unsubscribe some time!
   }
 

@@ -1,9 +1,13 @@
-import type { Author, Shout, ShoutInput, LoadShoutsOptions } from '../../graphql/types.gen'
-import { apiClient } from '../../utils/apiClient'
-import { addAuthorsByTopic } from './authors'
-import { byStat } from '../../utils/sortby'
-import { createSignal } from 'solid-js'
+import type { Author, Shout, LoadShoutsOptions } from '../../graphql/types.gen'
+
 import { createLazyMemo } from '@solid-primitives/memo'
+import { createSignal } from 'solid-js'
+
+import { apiClient } from '../../utils/apiClient'
+import { getServerDate } from '../../utils/getServerDate'
+import { byStat } from '../../utils/sortby'
+
+import { addAuthorsByTopic } from './authors'
 
 const [sortedArticles, setSortedArticles] = createSignal<Shout[]>([])
 const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})
@@ -12,41 +16,35 @@ const [topArticles, setTopArticles] = createSignal<Shout[]>([])
 const [topMonthArticles, setTopMonthArticles] = createSignal<Shout[]>([])
 
 const articlesByAuthor = createLazyMemo(() => {
-  return Object.values(articleEntities()).reduce((acc, article) => {
-    article.authors.forEach((author) => {
-      if (!acc[author.slug]) {
-        acc[author.slug] = []
-      }
-      acc[author.slug].push(article)
-    })
+  return Object.values(articleEntities()).reduce(
+    (acc, article) => {
+      article.authors.forEach((author) => {
+        if (!acc[author.slug]) {
+          acc[author.slug] = []
+        }
+        acc[author.slug].push(article)
+      })
 
-    return acc
-  }, {} as { [authorSlug: string]: Shout[] })
+      return acc
+    },
+    {} as { [authorSlug: string]: Shout[] },
+  )
 })
 
 const articlesByTopic = createLazyMemo(() => {
-  return Object.values(articleEntities()).reduce((acc, article) => {
-    article.topics.forEach((topic) => {
-      if (!acc[topic.slug]) {
-        acc[topic.slug] = []
-      }
-      acc[topic.slug].push(article)
-    })
+  return Object.values(articleEntities()).reduce(
+    (acc, article) => {
+      article.topics.forEach((topic) => {
+        if (!acc[topic.slug]) {
+          acc[topic.slug] = []
+        }
+        acc[topic.slug].push(article)
+      })
 
-    return acc
-  }, {} as { [authorSlug: string]: Shout[] })
-})
-
-const articlesByLayout = createLazyMemo(() => {
-  return Object.values(articleEntities()).reduce((acc, article) => {
-    if (!acc[article.layout]) {
-      acc[article.layout] = []
-    }
-
-    acc[article.layout].push(article)
-
-    return acc
-  }, {} as { [layout: string]: Shout[] })
+      return acc
+    },
+    {} as { [authorSlug: string]: Shout[] },
+  )
 })
 
 const topViewedArticles = createLazyMemo(() => {
@@ -65,35 +63,41 @@ const topCommentedArticles = createLazyMemo(() => {
 const addArticles = (...args: Shout[][]) => {
   const allArticles = args.flatMap((articles) => articles || [])
 
-  const newArticleEntities = allArticles.reduce((acc, article) => {
-    acc[article.slug] = article
-    return acc
-  }, {} as { [articleSLug: string]: Shout })
+  const newArticleEntities = allArticles.reduce(
+    (acc, article) => {
+      acc[article.slug] = article
+      return acc
+    },
+    {} as { [articleSLug: string]: Shout },
+  )
 
   setArticleEntities((prevArticleEntities) => {
     return {
       ...prevArticleEntities,
-      ...newArticleEntities
+      ...newArticleEntities,
     }
   })
 
-  const authorsByTopic = allArticles.reduce((acc, article) => {
-    const { authors, topics } = article
+  const authorsByTopic = allArticles.reduce(
+    (acc, article) => {
+      const { authors, topics } = article
 
-    topics.forEach((topic) => {
-      if (!acc[topic.slug]) {
-        acc[topic.slug] = []
-      }
-
-      authors.forEach((author) => {
-        if (!acc[topic.slug].some((a) => a.slug === author.slug)) {
-          acc[topic.slug].push(author)
+      topics.forEach((topic) => {
+        if (!acc[topic.slug]) {
+          acc[topic.slug] = []
         }
-      })
-    })
 
-    return acc
-  }, {} as { [topicSlug: string]: Author[] })
+        authors.forEach((author) => {
+          if (!acc[topic.slug].some((a) => a.slug === author.slug)) {
+            acc[topic.slug].push(author)
+          }
+        })
+      })
+
+      return acc
+    },
+    {} as { [topicSlug: string]: Author[] },
+  )
 
   addAuthorsByTopic(authorsByTopic)
 }
@@ -104,6 +108,9 @@ const addSortedArticles = (articles: Shout[]) => {
 
 export const loadShout = async (slug: string): Promise<void> => {
   const newArticle = await apiClient.getShoutBySlug(slug)
+  if (!newArticle) {
+    return
+  }
   addArticles([newArticle])
   const newArticleIndex = sortedArticles().findIndex((s) => s.id === newArticle.id)
   if (newArticleIndex >= 0) {
@@ -114,11 +121,11 @@ export const loadShout = async (slug: string): Promise<void> => {
 }
 
 export const loadShouts = async (
-  options: LoadShoutsOptions
+  options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   const newShouts = await apiClient.getShouts({
     ...options,
-    limit: options.limit + 1
+    limit: options.limit + 1,
   })
 
   const hasMore = newShouts.length === options.limit + 1
@@ -134,11 +141,11 @@ export const loadShouts = async (
 }
 
 export const loadMyFeed = async (
-  options: LoadShoutsOptions
+  options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   const newShouts = await apiClient.getMyFeed({
     ...options,
-    limit: options.limit + 1
+    limit: options.limit + 1,
   })
 
   const hasMore = newShouts.length === options.limit + 1
@@ -157,14 +164,6 @@ export const resetSortedArticles = () => {
   setSortedArticles([])
 }
 
-export const createArticle = async ({ article }: { article: ShoutInput }) => {
-  try {
-    await apiClient.createArticle({ article })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 type InitialState = {
   shouts?: Shout[]
 }
@@ -172,14 +171,16 @@ type InitialState = {
 const TOP_MONTH_ARTICLES_COUNT = 10
 
 export const loadTopMonthArticles = async (): Promise<void> => {
+  const now = new Date()
+  const fromDate = getServerDate(new Date(now.setMonth(now.getMonth() - 1)))
+
   const articles = await apiClient.getShouts({
     filters: {
       visibility: 'public',
-      // TODO: replace with from, to
-      days: 30
+      fromDate,
     },
     order_by: 'rating_stat',
-    limit: TOP_MONTH_ARTICLES_COUNT
+    limit: TOP_MONTH_ARTICLES_COUNT,
   })
   addArticles(articles)
   setTopMonthArticles(articles)
@@ -190,10 +191,10 @@ const TOP_ARTICLES_COUNT = 10
 export const loadTopArticles = async (): Promise<void> => {
   const articles = await apiClient.getShouts({
     filters: {
-      visibility: 'public'
+      visibility: 'public',
     },
     order_by: 'rating_stat',
-    limit: TOP_ARTICLES_COUNT
+    limit: TOP_ARTICLES_COUNT,
   })
   addArticles(articles)
   setTopArticles(articles)
@@ -210,11 +211,10 @@ export const useArticlesStore = (initialState: InitialState = {}) => {
     articleEntities,
     sortedArticles,
     articlesByAuthor,
-    articlesByLayout,
     articlesByTopic,
     topMonthArticles,
     topArticles,
     topCommentedArticles,
-    topViewedArticles
+    topViewedArticles,
   }
 }

@@ -2,9 +2,10 @@
   background: #fff;
   min-height: 550px;
   position: relative;
+  justify-content: center;
 
   @include media-breakpoint-up(md) {
-    min-height: 710px;
+    min-height: 600px;
   }
 
   input {
@@ -40,9 +41,10 @@
 .authImage {
   @include font-size(1.5rem);
 
-  background: #141414 url('/auth-page.jpg') center no-repeat;
+  background: var(--background-color-invert)
+    url('https://images.discours.io/unsafe/1600x/production/image/auth-page.jpg') center no-repeat;
   background-size: cover;
-  color: #fff;
+  color: var(--default-color-invert);
   display: flex;
   padding: 3em;
   position: relative;
@@ -69,7 +71,7 @@
   z-index: 1;
 
   a {
-    color: #fff;
+    color: var(--default-color-invert);
 
     &:hover {
       color: rgb(255 255 255 / 70%);
@@ -87,22 +89,28 @@
 
 .disclaimer {
   @include font-size(1.2rem);
+
   color: #9fa1a7;
   margin-bottom: 0;
 
   a {
-    color: #fff !important;
+    color: var(--default-color-invert) !important;
 
     &:hover {
-      color: rgb(255, 255, 255, 0.6) !important;
+      color: rgb(255 255 255 / 60%) !important;
     }
   }
 }
 
 .authActions {
   @include font-size(1.5rem);
+
   margin-top: 1.6rem;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
 
   a {
     color: #9fa1a7;
@@ -122,7 +130,7 @@
 .submitButton {
   display: block;
   font-weight: 700;
-  margin-top: 32px;
+  margin-top: 36px;
   padding: 1.6rem !important;
   width: 100%;
 }
@@ -180,10 +188,6 @@
   line-height: 16px;
   margin-top: 0.3em;
 
-  &.registerPassword {
-    margin-bottom: -32px;
-  }
-
   /* Red/500 */
   color: #d00820;
 
@@ -192,30 +196,10 @@
     border-color: #d00820;
 
     &:hover {
-      color: white;
-      border-color: black;
+      color: var(--default-color-invert);
+      border-color: var(--background-color-invert);
     }
   }
-}
-
-.passwordToggle {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.passwordToggleIcon {
-  height: 1.6em;
-  display: inline-block;
-  margin-right: 0.2em;
-  max-width: 1.4em;
-  max-height: 1.4em;
-  transition: filter 0.2s;
-  vertical-align: middle;
 }
 
 .title {

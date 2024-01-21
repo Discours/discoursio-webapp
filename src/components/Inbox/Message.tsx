@@ -1,12 +1,16 @@
-import { createSignal, Show } from 'solid-js'
-import { clsx } from 'clsx'
-import styles from './Message.module.scss'
-import DialogAvatar from './DialogAvatar'
 import type { Message as MessageType, ChatMember } from '../../graphql/types.gen'
+
+import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
+
+import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
+
+import DialogAvatar from './DialogAvatar'
 import { MessageActionsPopup } from './MessageActionsPopup'
 import QuotedMessage from './QuotedMessage'
-import { useLocalize } from '../../context/localize'
+
+import styles from './Message.module.scss'
 
 type Props = {
   content: MessageType

@@ -1,18 +1,21 @@
-import { createMemo, createSignal, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { FollowingEntity } from '../../graphql/types.gen'
 
-import { follow, unfollow } from '../../stores/zine/common'
 import { clsx } from 'clsx'
-import { useSession } from '../../context/session'
-import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { Icon } from '../_shared/Icon'
+import { createMemo, createSignal, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
-import { CardTopic } from '../Feed/CardTopic'
-import { CheckButton } from '../_shared/CheckButton'
+import { useSession } from '../../context/session'
+import { FollowingEntity } from '../../graphql/types.gen'
+import { follow, unfollow } from '../../stores/zine/common'
 import { capitalize } from '../../utils/capitalize'
+import { Button } from '../_shared/Button'
+import { CheckButton } from '../_shared/CheckButton'
+import { Icon } from '../_shared/Icon'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import { CardTopic } from '../Feed/CardTopic'
 
 import styles from './Card.module.scss'
+import stylesButton from '../_shared/Button/Button.module.scss'
 
 interface TopicProps {
   topic: Topic
@@ -36,7 +39,7 @@ export const TopicCard = (props: TopicProps) => {
   const {
     subscriptions,
     isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -62,6 +65,24 @@ export const TopicCard = (props: TopicProps) => {
     }, 'subscribe')
   }
 
+  const subscribeValue = () => {
+    return (
+      <>
+        <Show when={props.iconButton}>
+          <Show when={subscribed()} fallback="+">
+            <Icon name="check-subscribed" />
+          </Show>
+        </Show>
+        <Show when={!props.iconButton}>
+          <Show when={subscribed()} fallback={t('Follow')}>
+            <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+            <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+          </Show>
+        </Show>
+      </>
+    )
+  }
+
   return (
     <div class={styles.topicContainer}>
       <div
@@ -69,7 +90,7 @@ export const TopicCard = (props: TopicProps) => {
         classList={{
           row: !props.subscribeButtonBottom,
           [styles.topicCompact]: props.compact,
-          [styles.topicInRow]: props.isTopicInRow
+          [styles.topicInRow]: props.isTopicInRow,
         }}
       >
         <div
@@ -77,12 +98,12 @@ export const TopicCard = (props: TopicProps) => {
             [clsx('col-sm-18 col-md-24 col-lg-14 col-xl-15', styles.topicDetails)]: props.isNarrow,
             [clsx('col-24 col-sm-17 col-md-18', styles.topicDetails)]: props.compact,
             [clsx('col-sm-17 col-md-18', styles.topicDetails)]:
-              !props.subscribeButtonBottom && !props.isNarrow && !props.compact
+              !props.subscribeButtonBottom && !props.isNarrow && !props.compact,
           }}
         >
           <Show when={props.topic.title && !props.isCardMode}>
             <h3 class={styles.topicTitle}>
-              <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '')}</a>
+              <a href={`/topic/${props.topic.slug}`}>{capitalize(props.topic.title || '', true)}</a>
             </h3>
           </Show>
 
@@ -112,7 +133,7 @@ export const TopicCard = (props: TopicProps) => {
           classList={{
             'col-sm-6 col-md-24 col-lg-10 col-xl-9': props.isNarrow,
             'col-24 col-sm-7 col-md-6': props.compact,
-            'col-sm-7 col-md-6': !props.subscribeButtonBottom && !props.isNarrow && !props.compact
+            'col-sm-7 col-md-6': !props.subscribeButtonBottom && !props.isNarrow && !props.compact,
           }}
         >
           <ShowOnlyOnClient>
@@ -123,27 +144,18 @@ export const TopicCard = (props: TopicProps) => {
                   <CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />
                 }
               >
-                <button
+                <Button
+                  variant="bordered"
+                  size="M"
+                  value={subscribeValue()}
                   onClick={handleSubscribe}
-                  class="button--light button--subscribe-topic"
-                  classList={{
+                  isSubscribeButton={true}
+                  class={clsx(styles.actionButton, {
                     [styles.isSubscribing]: isSubscribing(),
-                    [styles.isSubscribed]: subscribed()
-                  }}
+                    [stylesButton.subscribed]: subscribed(),
+                  })}
                   disabled={isSubscribing()}
-                >
-                  <Show when={props.iconButton}>
-                    <Show when={subscribed()} fallback="+">
-                      <Icon name="check-subscribed" />
-                    </Show>
-                  </Show>
-                  <Show when={!props.iconButton}>
-                    <Show when={subscribed()} fallback={t('Follow')}>
-                      <span class={styles.buttonUnfollowLabel}>{t('Unfollow')}</span>
-                      <span class={styles.buttonSubscribedLabel}>{t('Following')}</span>
-                    </Show>
-                  </Show>
-                </button>
+                />
               </Show>
             </Show>
           </ShowOnlyOnClient>

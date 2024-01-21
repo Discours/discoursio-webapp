@@ -1,5 +1,6 @@
 import './Confirmed.scss'
 import { onMount } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
 
 export const Confirmed = (props: { token?: string }) => {

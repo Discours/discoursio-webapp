@@ -1,26 +1,31 @@
+import type { PageProps } from './types'
+
+import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
+
+import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
-import type { PageProps } from './types'
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
-import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
-import { useRouter } from '../stores/router'
-import { loadTopic } from '../stores/zine/topics'
-import { Loading } from '../components/_shared/Loading'
 import { ReactionsProvider } from '../context/reactions'
+import { useRouter } from '../stores/router'
+import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
+import { loadTopic } from '../stores/zine/topics'
 
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()
-
   const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(
-    Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug()
+    Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug(),
   )
 
   const preload = () =>
     Promise.all([
-      loadShouts({ filters: { topic: slug() }, limit: PRERENDERED_ARTICLES_COUNT, offset: 0 }),
-      loadTopic({ slug: slug() })
+      loadShouts({
+        filters: { topic: slug(), visibility: 'public' },
+        limit: PRERENDERED_ARTICLES_COUNT,
+        offset: 0,
+      }),
+      loadTopic({ slug: slug() }),
     ])
 
   onMount(async () => {
@@ -42,8 +47,8 @@ export const TopicPage = (props: PageProps) => {
         await preload()
         setIsLoaded(true)
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   onCleanup(() => resetSortedArticles())
@@ -51,7 +56,7 @@ export const TopicPage = (props: PageProps) => {
   const usePrerenderedData = props.topic?.slug === slug()
 
   return (
-    <PageLayout>
+    <PageLayout title={props.seo.title}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <TopicView

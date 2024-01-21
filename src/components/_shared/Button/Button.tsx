@@ -1,5 +1,7 @@
 import type { JSX } from 'solid-js'
+
 import { clsx } from 'clsx'
+
 import styles from './Button.module.scss'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline' | 'danger'
@@ -13,6 +15,7 @@ type Props = {
   onClick?: (event?: MouseEvent) => void
   class?: string
   ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void)
+  isSubscribeButton?: boolean
 }
 
 export const Button = (props: Props) => {
@@ -33,9 +36,10 @@ export const Button = (props: Props) => {
         styles[props.size ?? 'M'],
         styles[props.variant ?? 'primary'],
         {
-          [styles.loading]: props.loading
+          [styles.loading]: props.loading,
+          [styles.subscribeButton]: props.isSubscribeButton,
         },
-        props.class
+        props.class,
       )}
     >
       {props.value}

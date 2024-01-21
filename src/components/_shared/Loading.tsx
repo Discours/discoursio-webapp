@@ -1,5 +1,6 @@
-import styles from './Loading.module.scss'
 import { clsx } from 'clsx'
+
+import styles from './Loading.module.scss'
 
 type Props = {
   size?: 'small' | 'tiny'
@@ -9,7 +10,7 @@ export const Loading = (props: Props) => {
     <div
       class={clsx(styles.container, {
         [styles.small]: props.size === 'small',
-        [styles.tiny]: props.size === 'tiny'
+        [styles.tiny]: props.size === 'tiny',
       })}
     >
       <div class={styles.icon} />

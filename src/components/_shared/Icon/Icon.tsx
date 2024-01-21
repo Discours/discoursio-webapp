@@ -1,6 +1,8 @@
-import { mergeProps, Show } from 'solid-js'
 import type { JSX } from 'solid-js'
+
 import { clsx } from 'clsx'
+import { mergeProps, Show } from 'solid-js'
+
 import styles from './Icon.module.scss'
 
 type IconProps = {
@@ -17,7 +19,12 @@ export const Icon = (passedProps: IconProps) => {
 
   return (
     <div class={clsx('icon', styles.icon, props.class)} style={props.style}>
-      <img src={`/icons/${props.name}.svg`} alt={props.title ?? props.name} class={props.iconClassName} />
+      <img
+        src={`/icons/${props.name}.svg`}
+        alt={props.title ?? props.name}
+        class={props.iconClassName}
+        data-disable-lightbox="true"
+      />
       <Show when={props.counter}>
         <div class={styles.notificationsCounter}>{props.counter}</div>
       </Show>

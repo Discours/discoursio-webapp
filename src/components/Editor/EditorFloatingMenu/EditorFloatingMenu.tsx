@@ -1,18 +1,21 @@
-import { createEffect, createSignal, Show } from 'solid-js'
-import type { Editor, JSONContent } from '@tiptap/core'
-import { Icon } from '../../_shared/Icon'
-import { InlineForm } from '../InlineForm'
-import styles from './EditorFloatingMenu.module.scss'
-import HTMLParser from 'html-to-json-parser'
-import { useLocalize } from '../../../context/localize'
-import { Modal } from '../../Nav/Modal'
-import { Menu } from './Menu'
 import type { MenuItem } from './Menu/Menu'
-import { showModal } from '../../../stores/ui'
-import { UploadModalContent } from '../UploadModalContent'
-import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import type { Editor } from '@tiptap/core'
+
+import { createEffect, createSignal, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
 import { UploadedFile } from '../../../pages/types'
+import { showModal } from '../../../stores/ui'
 import { renderUploadedImage } from '../../../utils/renderUploadedImage'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { Icon } from '../../_shared/Icon'
+import { Modal } from '../../Nav/Modal'
+import { InlineForm } from '../InlineForm'
+import { UploadModalContent } from '../UploadModalContent'
+
+import { Menu } from './Menu'
+
+import styles from './EditorFloatingMenu.module.scss'
 
 type FloatingMenuProps = {
   editor: Editor
@@ -20,10 +23,17 @@ type FloatingMenuProps = {
 }
 
 const embedData = async (data) => {
-  const result = (await HTMLParser(data, false)) as JSONContent
-  if ('type' in result && result.type === 'iframe') {
-    return result.attributes
+  const element = document.createRange().createContextualFragment(data)
+  const { attributes } = element.firstChild as HTMLIFrameElement
+
+  const result: { src: string; width?: string; height?: string } = { src: '' }
+
+  for (let i = 0; i < attributes.length; i++) {
+    const attribute = attributes[i]
+    result[attribute.name] = attribute.value
   }
+
+  return result
 }
 
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
@@ -35,12 +45,33 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
-    props.editor.chain().focus().setIframe(emb).run()
+    props.editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: 'figure',
+        attrs: { 'data-type': 'iframe' },
+        content: [
+          {
+            type: 'iframe',
+            attrs: {
+              src: emb.src,
+              width: emb.width,
+              height: emb.height,
+            },
+          },
+          {
+            type: 'figcaption',
+            content: [{ type: 'text', text: t('Description') }],
+          },
+        ],
+      })
+      .run()
   }
 
   const validateEmbed = async (value) => {
-    const iframeData = (await HTMLParser(value, false)) as JSONContent
-    if (iframeData.type !== 'iframe') {
+    const element = document.createRange().createContextualFragment(value)
+    if (element.firstChild?.nodeName !== 'IFRAME') {
       return t('Error')
     }
   }
@@ -62,6 +93,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const closeUploadModalHandler = () => {
     setSelectedMenuItem()
     setMenuOpen(false)
+    setSelectedMenuItem()
   }
 
   useOutsideClickHandler({
@@ -73,8 +105,9 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
 
       if (menuOpen()) {
         setMenuOpen(false)
+        setSelectedMenuItem()
       }
-    }
+    },
   })
 
   const handleUpload = (image: UploadedFile) => {

@@ -1,11 +1,13 @@
 h1 {
   @include font-size(4rem);
+
   line-height: 1.1;
   margin-top: 0.5em;
 }
 
 h2 {
   @include font-size(4rem);
+
   line-height: 1.1;
 }
 
@@ -14,30 +16,22 @@ img {
 }
 
 .shoutHeader {
-  margin-bottom: 2em;
-
-  @include media-breakpoint-up(md) {
-    margin: 0 0 2em;
-  }
+  margin-bottom: 1.5em;
 }
 
-.shoutCover {
-  background-size: cover;
-  height: 0;
-  padding-bottom: 56.2%;
+.articleContent {
+  img:not([data-disable-lightbox='true']) {
+    cursor: zoom-in;
+  }
 }
 
 .shoutBody {
   font-size: 1.6rem;
   line-height: 1.6;
 
-  img {
-    display: block;
-    margin-bottom: 0.5em;
-  }
-
   blockquote,
   blockquote[data-type='punchline'] {
+    clear: both;
     font-size: 2.6rem;
     font-weight: bold;
     line-height: 1.4;
@@ -61,6 +55,7 @@ img {
   ta-quotation {
     border: solid #000;
     border-width: 0 0 0 2px;
+    clear: both;
     display: block;
     font-weight: 500;
     line-height: 1.6;
@@ -70,7 +65,12 @@ img {
     &[data-float='left'],
     &[data-float='right'] {
       @include font-size(2.2rem);
+
       line-height: 1.4;
+
+      @include media-breakpoint-up(sm) {
+        clear: none;
+      }
     }
 
     @include media-breakpoint-up(sm) {
@@ -92,9 +92,11 @@ img {
   ta-sub,
   ta-selection-frame,
   ta-border-sub {
-    background: #f1f2f3;
-    display: block;
     @include font-size(1.4rem);
+
+    background: #f1f2f3;
+    clear: both;
+    display: block;
     margin: 3.2rem 0;
     padding: 3.2rem;
 
@@ -106,6 +108,10 @@ img {
     p:last-child {
       margin-bottom: 0;
     }
+  }
+
+  ta-sub {
+    font-size: inherit;
   }
 
   *[data-bg='black'] {
@@ -173,15 +179,17 @@ img {
 
   :global(.img-align-left) {
     float: left;
-    margin: 1em 8.3333% 1.5em 0;
+    margin: 0 8.3333% 1.5em 0;
   }
 
-  :global(.width-30) {
-    width: 30%;
-  }
+  @include media-breakpoint-up(sm) {
+    :global(.width-30) {
+      width: 30%;
+    }
 
-  :global(.width-50) {
-    width: 50%;
+    :global(.width-50) {
+      width: 50%;
+    }
   }
 
   :global(.img-align-left.width-50) {
@@ -191,13 +199,15 @@ img {
   }
 
   :global(.img-align-right) {
-    float: right;
-    margin: 1em 0 1.5em 8.3333%;
+    @include media-breakpoint-up(sm) {
+      float: right;
+      margin: 1em 0 1.5em 8.3333%;
+    }
   }
 
   :global(.img-align-right.width-50) {
     @include media-breakpoint-up(xl) {
-      margin-right: -16.6666%;
+      margin-right: -8.3333%;
     }
   }
 
@@ -295,22 +305,24 @@ img {
   display: flex;
   justify-content: flex-start;
   padding: 3rem 0 0;
+  position: relative;
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(lg) {
     flex-wrap: wrap;
   }
 }
 
 .shoutStatsItem {
   @include font-size(1.5rem);
+
   align-items: center;
   font-weight: 500;
   display: flex;
-  margin: 0 6% 1em 0;
+  margin: 0 2rem 1em 0;
   vertical-align: baseline;
   cursor: pointer;
 
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(xl) {
     margin-right: 3.2rem;
   }
 
@@ -354,6 +366,14 @@ img {
   }
 }
 
+.shoutStatsItemBookmarks {
+  margin-left: auto;
+
+  @include media-breakpoint-up(lg) {
+    margin-left: 0;
+  }
+}
+
 .shoutStatsItemInner {
   cursor: pointer;
 
@@ -377,32 +397,41 @@ img {
 
 .shoutStatsItemAdditionalData {
   color: rgb(0 0 0 / 40%);
+  cursor: default;
   font-weight: normal;
   justify-self: flex-end;
-  margin-right: 0;
-  margin-left: auto;
   white-space: nowrap;
-  cursor: default;
 
   .icon {
     opacity: 0.4;
     height: 2rem;
   }
 
-  @include media-breakpoint-down(sm) {
-    flex: 1 40%;
+  @include media-breakpoint-down(lg) {
+    flex: 1 100%;
+    order: 9;
+
+    .shoutStatsItemAdditionalDataItem {
+      margin-left: 0;
+    }
   }
 }
 
 .shoutStatsItemViews {
+  color: rgb(0 0 0 / 40%);
   cursor: default;
+  font-weight: normal;
+  margin-left: auto;
+  white-space: nowrap;
 
-  @include media-breakpoint-down(sm) {
-    color: rgb(0 0 0 / 0.4);
+  @include media-breakpoint-down(lg) {
+    bottom: 0;
     flex: 1 40%;
     justify-content: end;
     margin-right: 0;
     order: 10;
+    position: absolute;
+    right: 0;
 
     .icon {
       display: none !important;
@@ -411,15 +440,20 @@ img {
 }
 
 .shoutStatsItemLabel {
+  font-weight: normal;
   margin-left: 0.3em;
+}
+
+.commentsTextLabel {
+  display: none;
 
   @include media-breakpoint-up(sm) {
-    display: none;
+    display: block;
   }
 }
 
 .shoutStatsItemCount {
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(lg) {
     display: none;
   }
 }
@@ -427,7 +461,8 @@ img {
 .shoutStatsItemAdditionalDataItem {
   font-weight: normal;
   display: inline-block;
-  margin-left: 2rem;
+
+  // margin-left: 2rem;
   margin-right: 0;
   margin-bottom: 0;
   cursor: default;
@@ -441,6 +476,7 @@ img {
 
 .topicsList {
   @include font-size(1.2rem);
+
   border-bottom: 1px solid #e8e8e8;
   letter-spacing: 0.08em;
   margin-top: 1.6rem;
@@ -480,12 +516,15 @@ img {
 }
 
 .commentsHeaderWrapper {
-  display: flex;
-  justify-content: space-between;
+  @include media-breakpoint-up(sm) {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .commentsHeader {
   @include font-size(2.4rem);
+
   margin-bottom: 1em;
 
   .newReactions {
@@ -519,6 +558,7 @@ img {
 
   button {
     @include font-size(1.5rem);
+
     border-radius: 0.8rem;
     margin-right: 1.2rem;
     padding: 0.9rem 1.2rem;
@@ -600,17 +640,34 @@ a[data-toggle='tooltip'] {
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 4px 4px 0 4px;
+    border-width: 4px 4px 0;
     border-color: var(--black-500) transparent transparent transparent;
   }
 }
 
 .lead {
   @include font-size(1.8rem);
+
   font-weight: 600;
 
   b,
   strong {
     font-weight: 700;
+  }
+}
+
+.articlePopupOpener {
+  .iconHover {
+    display: none;
+  }
+
+  &:hover {
+    .icon {
+      display: none;
+    }
+
+    .iconHover {
+      display: inline-block;
+    }
   }
 }

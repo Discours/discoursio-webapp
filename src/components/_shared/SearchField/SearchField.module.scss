@@ -2,6 +2,7 @@
   display: flex;
   justify-content: flex-end;
   position: relative;
+  min-width: 100px;
 
   &.bordered {
     border: 2px solid var(--black-100);

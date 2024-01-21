@@ -1,13 +1,16 @@
-import { clsx } from 'clsx'
-import styles from './DropArea.module.scss'
-import { createSignal, JSX, Show } from 'solid-js'
-import { createDropzone, createFileUploader } from '@solid-primitives/upload'
-import { useLocalize } from '../../../context/localize'
-import { validateFiles } from '../../../utils/validateFile'
 import type { FileTypeToUpload } from '../../../pages/types'
-import { handleFileUpload } from '../../../utils/handleFileUpload'
+
+import { createDropzone, createFileUploader } from '@solid-primitives/upload'
+import { clsx } from 'clsx'
+import { createSignal, JSX, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
 import { UploadedFile } from '../../../pages/types'
+import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
+import { validateFiles } from '../../../utils/validateFile'
+
+import styles from './DropArea.module.scss'
 
 type Props = {
   class?: string
@@ -60,14 +63,14 @@ export const DropArea = (props: Props) => {
 
   const { files, selectFiles } = createFileUploader({
     multiple: true,
-    accept: `${props.fileType}/*`
+    accept: `${props.fileType}/*`,
   })
 
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async () => {
       setDragActive(false)
       await initUpload(droppedFiles())
-    }
+    },
   })
   const handleDrag = (event) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {
@@ -95,7 +98,7 @@ export const DropArea = (props: Props) => {
         ref={dropzoneRef}
         onClick={handleDropFieldClick}
       >
-        <div class={styles.text}>{loading() ? 'Loading...' : props.placeholder}</div>
+        <div class={styles.text}>{loading() ? t('Loading') : props.placeholder}</div>
         <Show when={!loading() && props.isSquare && props.description}>
           <div class={styles.description}>{props.description}</div>
         </Show>

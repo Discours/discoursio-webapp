@@ -1,51 +1,55 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js'
-import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
-import uniqolor from 'uniqolor'
-import * as Y from 'yjs'
 import type { Doc } from 'yjs/dist/src/utils/Doc'
+
+import { HocuspocusProvider } from '@hocuspocus/provider'
+import { isTextSelection } from '@tiptap/core'
 import { Bold } from '@tiptap/extension-bold'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
-import { Dropcursor } from '@tiptap/extension-dropcursor'
-import { Italic } from '@tiptap/extension-italic'
-import { Strike } from '@tiptap/extension-strike'
-import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
-import { Underline } from '@tiptap/extension-underline'
-import { FloatingMenu } from '@tiptap/extension-floating-menu'
 import { BulletList } from '@tiptap/extension-bullet-list'
-import { OrderedList } from '@tiptap/extension-ordered-list'
-import { ListItem } from '@tiptap/extension-list-item'
 import { CharacterCount } from '@tiptap/extension-character-count'
-import { Placeholder } from '@tiptap/extension-placeholder'
+import { Collaboration } from '@tiptap/extension-collaboration'
+import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
+import { Document } from '@tiptap/extension-document'
+import { Dropcursor } from '@tiptap/extension-dropcursor'
+import { FloatingMenu } from '@tiptap/extension-floating-menu'
+import Focus from '@tiptap/extension-focus'
 import { Gapcursor } from '@tiptap/extension-gapcursor'
 import { HardBreak } from '@tiptap/extension-hard-break'
 import { Heading } from '@tiptap/extension-heading'
 import { Highlight } from '@tiptap/extension-highlight'
-import { Link } from '@tiptap/extension-link'
-import { Document } from '@tiptap/extension-document'
-import { Text } from '@tiptap/extension-text'
-import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
-import { isTextSelection } from '@tiptap/core'
-import { Paragraph } from '@tiptap/extension-paragraph'
-import Focus from '@tiptap/extension-focus'
-import { Collaboration } from '@tiptap/extension-collaboration'
-import { HocuspocusProvider } from '@hocuspocus/provider'
-import { CustomBlockquote } from './extensions/CustomBlockquote'
-import { Figure } from './extensions/Figure'
-import { Figcaption } from './extensions/Figcaption'
-import { Embed } from './extensions/Embed'
-import { useSession } from '../../context/session'
-import { useLocalize } from '../../context/localize'
-import { useEditorContext } from '../../context/editor'
-import { TrailingNode } from './extensions/TrailingNode'
-import Article from './extensions/Article'
-import { TextBubbleMenu } from './TextBubbleMenu'
-import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
-import { EditorFloatingMenu } from './EditorFloatingMenu'
-import './Prosemirror.scss'
+import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
 import { Image } from '@tiptap/extension-image'
-import { Footnote } from './extensions/Footnote'
+import { Italic } from '@tiptap/extension-italic'
+import { Link } from '@tiptap/extension-link'
+import { ListItem } from '@tiptap/extension-list-item'
+import { OrderedList } from '@tiptap/extension-ordered-list'
+import { Paragraph } from '@tiptap/extension-paragraph'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { Strike } from '@tiptap/extension-strike'
+import { Text } from '@tiptap/extension-text'
+import { Underline } from '@tiptap/extension-underline'
+import { createEffect, createSignal, onCleanup } from 'solid-js'
+import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import uniqolor from 'uniqolor'
+import * as Y from 'yjs'
+
+import { useEditorContext } from '../../context/editor'
+import { useLocalize } from '../../context/localize'
+import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
 import { handleImageUpload } from '../../utils/handleImageUpload'
+
+import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
+import { EditorFloatingMenu } from './EditorFloatingMenu'
+import Article from './extensions/Article'
+import { CustomBlockquote } from './extensions/CustomBlockquote'
+import { Figcaption } from './extensions/Figcaption'
+import { Figure } from './extensions/Figure'
+import { Footnote } from './extensions/Footnote'
+import { Iframe } from './extensions/Iframe'
+import { TrailingNode } from './extensions/TrailingNode'
+import { TextBubbleMenu } from './TextBubbleMenu'
+
+import './Prosemirror.scss'
 
 type Props = {
   shoutId: number
@@ -61,7 +65,7 @@ const allowedImageTypes = new Set([
   'image/png',
   'image/tiff',
   'image/webp',
-  'image/x-icon'
+  'image/x-icon',
 ])
 
 const yDocs: Record<string, Doc> = {}
@@ -75,7 +79,7 @@ export const Editor = (props: Props) => {
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const docName = `shout-${props.shoutId}`
@@ -88,48 +92,43 @@ export const Editor = (props: Props) => {
     providers[docName] = new HocuspocusProvider({
       url: 'wss://hocuspocus.discours.io',
       name: docName,
-      document: yDocs[docName]
+      document: yDocs[docName],
     })
   }
 
   const editorElRef: {
     current: HTMLDivElement
   } = {
-    current: null
+    current: null,
   }
 
   const textBubbleMenuRef: {
     current: HTMLDivElement
   } = {
-    current: null
+    current: null,
   }
 
   const incutBubbleMenuRef: {
     current: HTMLElement
   } = {
-    current: null
+    current: null,
   }
   const figureBubbleMenuRef: {
     current: HTMLElement
   } = {
-    current: null
+    current: null,
   }
   const blockquoteBubbleMenuRef: {
     current: HTMLElement
   } = {
-    current: null
+    current: null,
   }
 
   const floatingMenuRef: {
     current: HTMLDivElement
   } = {
-    current: null
+    current: null,
   }
-
-  const ImageFigure = Figure.extend({
-    name: 'capturedImage',
-    content: 'figcaption image'
-  })
 
   const handleClipboardPaste = async () => {
     try {
@@ -149,7 +148,7 @@ export const Editor = (props: Props) => {
         source: blob.toString(),
         name: file.name,
         size: file.size,
-        file
+        file,
       }
 
       showSnackbar({ body: t('Uploading image') })
@@ -159,24 +158,18 @@ export const Editor = (props: Props) => {
         .chain()
         .focus()
         .insertContent({
-          type: 'capturedImage',
+          type: 'figure',
+          attrs: { 'data-type': 'image' },
           content: [
             {
-              type: 'figcaption',
-              content: [
-                {
-                  type: 'text',
-                  text: result.originalFilename
-                }
-              ]
+              type: 'image',
+              attrs: { src: result.url },
             },
             {
-              type: 'image',
-              attrs: {
-                src: result.url
-              }
-            }
-          ]
+              type: 'figcaption',
+              content: [{ type: 'text', text: result.originalFilename }],
+            },
+          ],
         })
         .run()
     } catch (error) {
@@ -190,7 +183,7 @@ export const Editor = (props: Props) => {
     element: editorElRef.current,
     editorProps: {
       attributes: {
-        class: 'articleEditor'
+        class: 'articleEditor',
       },
       transformPastedHTML(html) {
         return html.replaceAll(/<img.*?>/g, '')
@@ -198,7 +191,7 @@ export const Editor = (props: Props) => {
       handlePaste: () => {
         handleClipboardPaste()
         return false
-      }
+      },
     },
     extensions: [
       Document,
@@ -211,31 +204,31 @@ export const Editor = (props: Props) => {
       Strike,
       HorizontalRule.configure({
         HTMLAttributes: {
-          class: 'horizontalRule'
-        }
+          class: 'horizontalRule',
+        },
       }),
       Underline,
       Link.configure({
-        openOnClick: false
+        openOnClick: false,
       }),
       Heading.configure({
-        levels: [2, 3, 4]
+        levels: [2, 3, 4],
       }),
       BulletList,
       OrderedList,
       ListItem,
       Collaboration.configure({
-        document: yDocs[docName]
+        document: yDocs[docName],
       }),
       CollaborationCursor.configure({
         provider: providers[docName],
         user: {
           name: user().name,
-          color: uniqolor(user().slug).color
-        }
+          color: uniqolor(user().slug).color,
+        },
       }),
       Placeholder.configure({
-        placeholder: t('Add a link or click plus to embed media')
+        placeholder: t('Add a link or click plus to embed media'),
       }),
       Focus,
       Gapcursor,
@@ -243,14 +236,14 @@ export const Editor = (props: Props) => {
       Highlight.configure({
         multicolor: true,
         HTMLAttributes: {
-          class: 'highlight'
-        }
+          class: 'highlight',
+        },
       }),
-      ImageFigure,
       Image,
+      Iframe,
+      Figure,
       Figcaption,
       Footnote,
-      Embed,
       CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
@@ -261,14 +254,19 @@ export const Editor = (props: Props) => {
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
           setIsCommonMarkup(e.isActive('figcaption'))
           const result =
-            (view.hasFocus() && !empty && !isEmptyTextBlock && !e.isActive('image')) ||
-            e.isActive('footnote')
+            (view.hasFocus() &&
+              !empty &&
+              !isEmptyTextBlock &&
+              !e.isActive('image') &&
+              !e.isActive('figure')) ||
+            e.isActive('footnote') ||
+            (e.isActive('figcaption') && !empty)
           setShouldShowTextBubbleMenu(result)
           return result
         },
         tippyOptions: {
-          sticky: true
-        }
+          sticky: true,
+        },
       }),
       BubbleMenu.configure({
         pluginKey: 'blockquoteBubbleMenu',
@@ -286,8 +284,8 @@ export const Editor = (props: Props) => {
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }
-          }
-        }
+          },
+        },
       }),
       BubbleMenu.configure({
         pluginKey: 'incutBubbleMenu',
@@ -305,31 +303,31 @@ export const Editor = (props: Props) => {
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }
-          }
-        }
+          },
+        },
       }),
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',
         element: figureBubbleMenuRef.current,
         shouldShow: ({ editor: e, view }) => {
           return view.hasFocus() && e.isActive('image')
-        }
+        },
       }),
       FloatingMenu.configure({
         tippyOptions: {
-          placement: 'left'
+          placement: 'left',
         },
-        element: floatingMenuRef.current
+        element: floatingMenuRef.current,
       }),
       TrailingNode,
-      Article
+      Article,
     ],
     enablePasteRules: [Link],
-    content: initialContent ?? null
+    content: initialContent ?? null,
   }))
 
   const {
-    actions: { countWords, setEditor }
+    actions: { countWords, setEditor },
   } = useEditorContext()
 
   setEditor(editor)
@@ -341,7 +339,7 @@ export const Editor = (props: Props) => {
     if (html()) {
       countWords({
         characters: editor().storage.characterCount.characters(),
-        words: editor().storage.characterCount.words()
+        words: editor().storage.characterCount.words(),
       })
     }
   })

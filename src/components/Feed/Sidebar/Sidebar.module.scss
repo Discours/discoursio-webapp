@@ -16,14 +16,17 @@
   }
 
   .sidebarItemName {
+    background: transparent;
     align-items: center;
     display: flex;
     position: relative;
+    transition: background-color 0.2s;
+  }
 
-    @include media-breakpoint-up(md) {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .sidebarItemNameLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .userpic {
@@ -95,12 +98,13 @@
     }
 
     &:hover {
-      img {
-        filter: invert(1);
+      .sidebarItemName,
+      .counter {
+        background: var(--background-color-invert);
       }
 
-      .counter {
-        background: #000;
+      img {
+        filter: invert(1);
       }
     }
   }
@@ -109,7 +113,6 @@
     display: inline-block;
     line-height: 1;
     height: 2.4rem;
-    margin-bottom: 0.2rem;
     margin-right: 0.8rem;
     min-width: 2.4rem;
     text-align: center;
@@ -125,6 +128,7 @@
 
   h4 {
     @include font-size(1.2rem);
+
     font-weight: bold;
     color: #9fa1a7;
     cursor: pointer;

@@ -1,12 +1,15 @@
+import { Buffer } from 'buffer'
+
 import { clsx } from 'clsx'
-import styles from './AudioUploader.module.scss'
-import { DropArea } from '../../_shared/DropArea'
-import { useLocalize } from '../../../context/localize'
 import { Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
 import { MediaItem } from '../../../pages/types'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
+import { DropArea } from '../../_shared/DropArea'
 import { AudioPlayer } from '../../Article/AudioPlayer'
-import { Buffer } from 'buffer'
+
+import styles from './AudioUploader.module.scss'
 
 window.Buffer = Buffer
 

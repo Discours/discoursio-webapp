@@ -1,8 +1,7 @@
 .AuthorLink {
   .link {
     display: inline-flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     align-items: center;
     gap: 1rem;
     justify-content: center;
@@ -33,6 +32,7 @@
     .link {
       gap: 0.5rem;
     }
+
     .name {
       font-size: 1.2rem;
       margin: 0;
@@ -43,8 +43,22 @@
     .link {
       gap: 1rem;
     }
+
     .name {
       font-size: 1.4rem;
+    }
+  }
+}
+
+.authorLinkFloorImportant {
+  .link {
+    &:hover {
+      background: #fff !important;
+
+      .name {
+        background: none;
+        color: #000;
+      }
     }
   }
 }

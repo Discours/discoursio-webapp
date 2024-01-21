@@ -1,12 +1,14 @@
 import type { Editor } from '@tiptap/core'
-import styles from './BubbleMenu.module.scss'
-import { Icon } from '../../_shared/Icon'
+
 import { useLocalize } from '../../../context/localize'
-import { Popover } from '../../_shared/Popover'
-import { UploadModalContent } from '../UploadModalContent'
-import { Modal } from '../../Nav/Modal'
 import { UploadedFile } from '../../../pages/types'
 import { renderUploadedImage } from '../../../utils/renderUploadedImage'
+import { Icon } from '../../_shared/Icon'
+import { Popover } from '../../_shared/Popover'
+import { Modal } from '../../Nav/Modal'
+import { UploadModalContent } from '../UploadModalContent'
+
+import styles from './BubbleMenu.module.scss'
 
 type Props = {
   editor: Editor

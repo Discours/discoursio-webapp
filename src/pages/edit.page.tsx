@@ -1,15 +1,20 @@
 import { createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
-import { PageLayout } from '../components/_shared/PageLayout'
+
 import { Loading } from '../components/_shared/Loading'
+import { PageLayout } from '../components/_shared/PageLayout'
+import { AuthGuard } from '../components/AuthGuard'
+import { useLocalize } from '../context/localize'
 import { Shout } from '../graphql/types.gen'
 import { useRouter } from '../stores/router'
 import { apiClient } from '../utils/apiClient'
-import { AuthGuard } from '../components/AuthGuard'
+
+import { LayoutType } from './types'
 
 const Edit = lazy(() => import('../components/Views/Edit'))
 
 export const EditPage = () => {
   const { page } = useRouter()
+  const { t } = useLocalize()
 
   const shoutId = createMemo(() => Number((page().params as Record<'shoutId', string>).shoutId))
 
@@ -20,8 +25,32 @@ export const EditPage = () => {
     setShout(loadedShout)
   })
 
+  const title = createMemo(() => {
+    if (!shout()) {
+      return t('Create post')
+    }
+
+    switch (shout().layout as LayoutType) {
+      case 'music': {
+        return t('Publish Album')
+      }
+      case 'image': {
+        return t('Create gallery')
+      }
+      case 'video': {
+        return t('Create video')
+      }
+      case 'literature': {
+        return t('New literary work')
+      }
+      default: {
+        return t('Write an article')
+      }
+    }
+  })
+
   return (
-    <PageLayout>
+    <PageLayout title={title()}>
       <AuthGuard>
         <Show when={shout()}>
           <Suspense fallback={<Loading />}>

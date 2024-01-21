@@ -14,7 +14,7 @@ export const Footnote = Node.create({
   name: 'footnote',
   addOptions() {
     return {
-      HTMLAttributes: {}
+      HTMLAttributes: {},
     }
   },
   group: 'inline',
@@ -29,18 +29,18 @@ export const Footnote = Node.create({
         parseHTML: (element) => element.dataset.value || null,
         renderHTML: (attributes) => {
           return {
-            'data-value': attributes.value
+            'data-value': attributes.value,
           }
-        }
-      }
+        },
+      },
     }
   },
 
   parseHTML() {
     return [
       {
-        tag: 'footnote'
-      }
+        tag: 'footnote',
+      },
     ]
   },
 
@@ -79,6 +79,7 @@ export const Footnote = Node.create({
         },
       deleteFootnote:
         () =>
+        // eslint-disable-next-line unicorn/consistent-function-scoping
         ({ tr, state }) => {
           const { selection } = state
           const { $from, $to } = selection
@@ -91,7 +92,7 @@ export const Footnote = Node.create({
           }
 
           return false
-        }
+        },
     }
-  }
+  },
 })

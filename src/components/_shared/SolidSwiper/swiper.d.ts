@@ -1,5 +1,5 @@
 import 'solid-js'
-import { SwiperOptions } from 'swiper'
+import { SwiperOptions, AutoplayOptions } from 'swiper'
 import { SwiperSlideProps } from 'swiper/react'
 
 type Kebab<T extends string, A extends string = ''> = T extends `${infer F}${infer R}`
@@ -37,6 +37,17 @@ declare module 'solid-js' {
       onSlideChange?: () => void
       onBeforeSlideChangeStart?: () => void
       class?: string
+      observer?: boolean
+      loop?: boolean
+      speed?: number
+      slidesPerGroupAuto?: boolean
+      navigation?: boolean
+      breakpoints?: {
+        [width: number]: SwiperOptions
+        [ratio: string]: SwiperOptions
+      }
+      direction?: 'horizontal' | 'vertical'
+      autoplay?: AutoplayOptions | boolean
     }
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface SwiperSlideAttributes extends KebabObjectKeys<SwiperSlideProps> {

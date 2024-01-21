@@ -1,12 +1,15 @@
-import { createMemo, Show } from 'solid-js'
 import type { Topic } from '../../graphql/types.gen'
-import { FollowingEntity } from '../../graphql/types.gen'
-import styles from './Full.module.scss'
-import { follow, unfollow } from '../../stores/zine/common'
 
 import { clsx } from 'clsx'
-import { useSession } from '../../context/session'
+import { createMemo, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { useSession } from '../../context/session'
+import { FollowingEntity } from '../../graphql/types.gen'
+import { follow, unfollow } from '../../stores/zine/common'
+import { Button } from '../_shared/Button'
+
+import styles from './Full.module.scss'
 
 type Props = {
   topic: Topic
@@ -15,22 +18,21 @@ type Props = {
 export const FullTopic = (props: Props) => {
   const {
     subscriptions,
-    actions: { requireAuthentication }
+    actions: { requireAuthentication, loadSubscriptions },
   } = useSession()
 
   const { t } = useLocalize()
 
   const subscribed = createMemo(() =>
-    subscriptions().topics.some((topic) => topic.slug === props.topic?.slug)
+    subscriptions().topics.some((topic) => topic.slug === props.topic?.slug),
   )
 
-  const handleSubscribe = (isFollowed: boolean) => {
-    requireAuthentication(() => {
-      if (isFollowed) {
-        unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-      } else {
-        follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-      }
+  const handleSubscribe = (really: boolean) => {
+    requireAuthentication(async () => {
+      await (really
+        ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
+        : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
+      loadSubscriptions()
     }, 'follow')
   }
 
@@ -40,16 +42,18 @@ export const FullTopic = (props: Props) => {
       <p>{props.topic.body}</p>
       <div class={clsx(styles.topicActions)}>
         <Show when={!subscribed()}>
-          <button onClick={() => handleSubscribe(false)} class="button">
-            {t('Follow the topic')}
-          </button>
+          <Button variant="primary" onClick={() => handleSubscribe(true)} value={t('Follow the topic')} />
         </Show>
         <Show when={subscribed()}>
-          <button onClick={() => handleSubscribe(true)} class="button">
-            {t('Unfollow the topic')}
-          </button>
+          <Button
+            variant="primary"
+            onClick={() => handleSubscribe(false)}
+            value={t('Unfollow the topic')}
+          />
         </Show>
-        <a href={`/create/?topicId=${props.topic.id}`}>{t('Write about the topic')}</a>
+        <a class={styles.write} href={`/create/?topicId=${props.topic.id}`}>
+          {t('Write about the topic')}
+        </a>
       </div>
       <Show when={props.topic.pic}>
         <img src={props.topic.pic} alt={props.topic.title} />

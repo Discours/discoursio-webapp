@@ -1,4 +1,4 @@
-export type AuthModalMode = 'login' | 'register' | 'confirm-email' | 'forgot-password'
+export type AuthModalMode = 'login' | 'register' | 'confirm-email' | 'forgot-password' | 'change-password'
 export type AuthModalSource =
   | 'discussions'
   | 'vote'

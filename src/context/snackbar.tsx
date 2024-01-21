@@ -1,5 +1,7 @@
 import type { Accessor, JSX } from 'solid-js'
+
 import { createContext, createSignal, useContext } from 'solid-js'
+
 import { delay } from '../utils/delay'
 
 const DEFAULT_DURATION = 3000 // 3 sec
@@ -56,7 +58,7 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
     const messageToShow = {
       type: message.type ?? 'success',
       body: message.body,
-      duration: message.duration ?? DEFAULT_DURATION
+      duration: message.duration ?? DEFAULT_DURATION,
     }
 
     messagesToShow.push(messageToShow)
@@ -70,7 +72,7 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
   }
 
   const actions = {
-    showSnackbar
+    showSnackbar,
   }
 
   const value: SnackbarContextType = { snackbarMessage, actions }

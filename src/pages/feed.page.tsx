@@ -1,38 +1,55 @@
+import { createEffect, Match, on, onCleanup, Switch } from 'solid-js'
+
 import { PageLayout } from '../components/_shared/PageLayout'
-import { FeedView } from '../components/Views/Feed'
-import { Match, onCleanup, Switch } from 'solid-js'
-import { loadMyFeed, loadShouts, resetSortedArticles } from '../stores/zine/articles'
-import { ReactionsProvider } from '../context/reactions'
-import { useRouter } from '../stores/router'
 import { AuthGuard } from '../components/AuthGuard'
+import { Feed } from '../components/Views/Feed'
+import { useLocalize } from '../context/localize'
+import { ReactionsProvider } from '../context/reactions'
 import { LoadShoutsOptions } from '../graphql/types.gen'
+import { useRouter } from '../stores/router'
+import { loadMyFeed, loadShouts, resetSortedArticles } from '../stores/zine/articles'
+
+const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
+  return loadShouts({
+    ...options,
+    filters: {
+      visibility: 'community',
+      ...options.filters,
+    },
+  })
+}
+
+const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
+  return loadMyFeed(options)
+}
 
 export const FeedPage = () => {
+  const { t } = useLocalize()
+
   onCleanup(() => resetSortedArticles())
 
   const { page } = useRouter()
 
-  const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
-    return loadShouts({
-      ...options,
-      filters: { visibility: 'community' }
-    })
-  }
-
-  const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
-    return loadMyFeed(options)
-  }
+  createEffect(
+    on(
+      () => page().route,
+      () => {
+        resetSortedArticles()
+      },
+      { defer: true },
+    ),
+  )
 
   return (
-    <PageLayout>
+    <PageLayout title={t('Feed')}>
       <ReactionsProvider>
-        <Switch fallback={<FeedView loadShouts={handleFeedLoadShouts} />}>
+        <Switch fallback={<Feed loadShouts={handleFeedLoadShouts} />}>
           <Match when={page().route === 'feed'}>
-            <FeedView loadShouts={handleFeedLoadShouts} />
+            <Feed loadShouts={handleFeedLoadShouts} />
           </Match>
           <Match when={page().route === 'feedMy'}>
             <AuthGuard>
-              <FeedView loadShouts={handleMyFeedLoadShouts} />
+              <Feed loadShouts={handleMyFeedLoadShouts} />
             </AuthGuard>
           </Match>
         </Switch>

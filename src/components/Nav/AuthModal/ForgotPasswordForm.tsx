@@ -1,13 +1,17 @@
-import styles from './AuthModal.module.scss'
+import type { AuthModalSearchParams } from './types'
+
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
-import { useRouter } from '../../../stores/router'
-import { email, setEmail } from './sharedLogic'
-import type { AuthModalSearchParams } from './types'
-import { ApiError } from '../../../utils/apiClient'
-import { signSendLink } from '../../../stores/auth'
+
 import { useLocalize } from '../../../context/localize'
+import { signSendLink } from '../../../stores/auth'
+import { useRouter } from '../../../stores/router'
+import { ApiError } from '../../../utils/apiClient'
 import { validateEmail } from '../../../utils/validateEmail'
+
+import { email, setEmail } from './sharedLogic'
+
+import styles from './AuthModal.module.scss'
 
 type FormFields = {
   email: string
@@ -16,7 +20,7 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const ForgotPasswordForm = () => {
-  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t, lang } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
@@ -83,7 +87,7 @@ export const ForgotPasswordForm = () => {
 
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email
+            'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input
@@ -115,8 +119,8 @@ export const ForgotPasswordForm = () => {
               href="#"
               onClick={(event) => {
                 event.preventDefault()
-                changeSearchParam({
-                  mode: 'register'
+                changeSearchParams({
+                  mode: 'register',
                 })
               }}
             >
@@ -137,8 +141,8 @@ export const ForgotPasswordForm = () => {
           <span
             class={styles.authLink}
             onClick={() =>
-              changeSearchParam({
-                mode: 'login'
+              changeSearchParams({
+                mode: 'login',
               })
             }
           >

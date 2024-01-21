@@ -1,11 +1,14 @@
-import { createComputed, createSignal, Show, For } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
+
+import { createComputed, createSignal, Show, For } from 'solid-js'
+
 import { ArticleCard } from './ArticleCard'
+import { ArticleCardProps } from './ArticleCard/ArticleCard'
 
 const x = [
   ['12', '12'],
   ['8', '16'],
-  ['16', '8']
+  ['16', '8'],
 ]
 
 export const Row2 = (props: {
@@ -17,6 +20,7 @@ export const Row2 = (props: {
 }) => {
   const [y, setY] = createSignal(0)
 
+  // FIXME: random can break hydration
   createComputed(() => setY(Math.floor(Math.random() * x.length)))
 
   return (
@@ -26,20 +30,37 @@ export const Row2 = (props: {
           <div class="row">
             <For each={props.articles}>
               {(a, i) => {
+                // FIXME: refactor this, too ugly now
+                const className = `col-md-${props.isEqual ? '12' : x[y()][i()]}`
+                let desktopCoverSize: ArticleCardProps['desktopCoverSize']
+
+                switch (className) {
+                  case 'col-md-8': {
+                    desktopCoverSize = 'S'
+                    break
+                  }
+                  case 'col-md-12': {
+                    desktopCoverSize = 'M'
+                    break
+                  }
+                  default: {
+                    desktopCoverSize = 'L'
+                  }
+                }
+
                 return (
-                  <Show when={!!a}>
-                    <div class={`col-md-${props.isEqual ? '12' : x[y()][i()]}`}>
-                      <ArticleCard
-                        article={a}
-                        settings={{
-                          isWithCover: props.isEqual || x[y()][i()] === '16',
-                          nodate: props.isEqual || props.nodate,
-                          noAuthorLink: props.noAuthorLink,
-                          noauthor: props.noauthor
-                        }}
-                      />
-                    </div>
-                  </Show>
+                  <div class={className}>
+                    <ArticleCard
+                      article={a}
+                      settings={{
+                        isWithCover: props.isEqual || x[y()][i()] === '16',
+                        nodate: props.isEqual || props.nodate,
+                        noAuthorLink: props.noAuthorLink,
+                        noauthor: props.noauthor,
+                      }}
+                      desktopCoverSize={desktopCoverSize}
+                    />
+                  </div>
                 )
               }}
             </For>

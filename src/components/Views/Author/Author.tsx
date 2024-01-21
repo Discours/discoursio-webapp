@@ -1,23 +1,29 @@
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
 import type { Author, Shout, Topic } from '../../../graphql/types.gen'
+
+import { getPagePath } from '@nanostores/router'
+import { Meta } from '@solidjs/meta'
+import { clsx } from 'clsx'
+import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { router, useRouter } from '../../../stores/router'
+import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
+import { useAuthorsStore } from '../../../stores/zine/authors'
+import { apiClient } from '../../../utils/apiClient'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { getDescription } from '../../../utils/meta'
+import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { splitToPages } from '../../../utils/splitToPages'
+import { Loading } from '../../_shared/Loading'
+import { Comment } from '../../Article/Comment'
+import { AuthorCard } from '../../Author/AuthorCard'
+import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
-import { useAuthorsStore } from '../../../stores/zine/authors'
-import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
-import { router, useRouter } from '../../../stores/router'
-import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { splitToPages } from '../../../utils/splitToPages'
+
 import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
-import { clsx } from 'clsx'
-import { AuthorCard } from '../../Author/AuthorCard'
-import { apiClient } from '../../../utils/apiClient'
-import { Comment } from '../../Article/Comment'
-import { useLocalize } from '../../../context/localize'
-import { AuthorRatingControl } from '../../Author/AuthorRatingControl'
-import { getPagePath } from '@nanostores/router'
-import { Loading } from '../../_shared/Loading'
 
 type Props = {
   shouts: Shout[]
@@ -47,7 +53,7 @@ export const AuthorView = (props: Props) => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
         apiClient.getAuthorFollowingUsers({ slug: props.authorSlug }),
-        apiClient.getAuthorFollowingTopics({ slug: props.authorSlug })
+        apiClient.getAuthorFollowingTopics({ slug: props.authorSlug }),
       ])
       const authors = getAuthors
       const topics = getTopics
@@ -81,12 +87,16 @@ export const AuthorView = (props: Props) => {
     setFollowing([...authors, ...topics])
   })
 
+  onMount(() => {
+    document.title = author().name
+  })
+
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
       filters: { author: props.authorSlug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length
+      offset: sortedArticles().length,
     })
     setIsLoadMoreButtonVisible(hasMore)
     restoreScrollPosition()
@@ -102,7 +112,7 @@ export const AuthorView = (props: Props) => {
   // })
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
   const [commented, setCommented] = createSignal([])
@@ -111,7 +121,7 @@ export const AuthorView = (props: Props) => {
     if (getPage().route === 'authorComments') {
       try {
         const data = await apiClient.getReactionsBy({
-          by: { comment: true, createdBy: props.authorSlug }
+          by: { comment: true, createdBy: props.authorSlug },
         })
         setCommented(data)
       } catch (error) {
@@ -120,8 +130,23 @@ export const AuthorView = (props: Props) => {
     }
   })
 
+  const ogImage = props.author?.userpic
+    ? getImageUrl(props.author.userpic, { width: 1200 })
+    : getImageUrl('production/image/logo_image.png')
+  const description = getDescription(props.author?.bio)
+  const ogTitle = props.author?.name
+
   return (
     <div class={styles.authorPage}>
+      <Meta name="descprition" content={description} />
+      <Meta name="og:type" content="profile" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:image" content={ogImage} />
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

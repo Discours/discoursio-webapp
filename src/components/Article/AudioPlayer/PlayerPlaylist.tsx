@@ -1,14 +1,16 @@
-import { createSignal, For, Show } from 'solid-js'
-import { SharePopup, getShareUrl } from '../SharePopup'
-import { getDescription } from '../../../utils/meta'
+import { createSignal, For, lazy, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
-import { Popover } from '../../_shared/Popover'
-import { Icon } from '../../_shared/Icon'
-import styles from './AudioPlayer.module.scss'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
-import MD from '../MD'
 import { MediaItem } from '../../../pages/types'
-import SimplifiedEditor from '../../Editor/SimplifiedEditor'
+import { getDescription } from '../../../utils/meta'
+import { Icon } from '../../_shared/Icon'
+import { Popover } from '../../_shared/Popover'
+import { SharePopup, getShareUrl } from '../SharePopup'
+
+import styles from './AudioPlayer.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
   media: MediaItem[]
@@ -146,12 +148,12 @@ export const PlayerPlaylist = (props: Props) => {
                   <div class={styles.descriptionBlock}>
                     <Show when={mi.body}>
                       <div class={styles.description}>
-                        <MD body={mi.body} />
+                        <div innerHTML={mi.body} />
                       </div>
                     </Show>
                     <Show when={mi.lyrics}>
                       <div class={styles.lyrics}>
-                        <MD body={mi.lyrics} />
+                        <div innerHTML={mi.lyrics} />
                       </div>
                     </Show>
                   </div>

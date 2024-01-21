@@ -1,11 +1,13 @@
-import { createSignal } from 'solid-js'
-import { useRouter } from './router'
 import type {
   AuthModalSearchParams,
   AuthModalSource,
-  ConfirmEmailSearchParams
+  ConfirmEmailSearchParams,
 } from '../components/Nav/AuthModal/types'
 import type { RootSearchParams } from '../pages/types'
+
+import { createSignal } from 'solid-js'
+
+import { useRouter } from './router'
 
 export type ModalType =
   | 'auth'
@@ -19,10 +21,11 @@ export type ModalType =
   | 'simplifiedEditorUploadImage'
   | 'uploadCoverImage'
   | 'editorInsertLink'
-  | 'simplifiedEditorInsertLink'
   | 'followers'
   | 'following'
   | 'search'
+  | 'inviteCoAuthors'
+  | 'share'
 
 export const MODALS: Record<ModalType, ModalType> = {
   auth: 'auth',
@@ -36,22 +39,23 @@ export const MODALS: Record<ModalType, ModalType> = {
   simplifiedEditorUploadImage: 'simplifiedEditorUploadImage',
   uploadCoverImage: 'uploadCoverImage',
   editorInsertLink: 'editorInsertLink',
-  simplifiedEditorInsertLink: 'simplifiedEditorInsertLink',
   followers: 'followers',
   following: 'following',
   search: 'search'
+  inviteCoAuthors: 'inviteCoAuthors',
+  share: 'share',
 }
 
 const [modal, setModal] = createSignal<ModalType>(null)
 
-const { searchParams, changeSearchParam } = useRouter<
+const { searchParams, changeSearchParams } = useRouter<
   AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams
 >()
 
 export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
   if (modalSource) {
-    changeSearchParam({
-      source: modalSource
+    changeSearchParams({
+      source: modalSource,
     })
   }
 
@@ -62,7 +66,7 @@ export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) =
 export const hideModal = () => {
   const newSearchParams: Partial<AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams> = {
     modal: null,
-    source: null
+    source: null,
   }
 
   if (searchParams().modal === 'auth') {
@@ -72,13 +76,13 @@ export const hideModal = () => {
     newSearchParams.mode = null
   }
 
-  changeSearchParam(newSearchParams, true)
+  changeSearchParams(newSearchParams, true)
 
   setModal(null)
 }
 
 export const useModalStore = () => {
   return {
-    modal
+    modal,
   }
 }

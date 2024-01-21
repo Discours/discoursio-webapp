@@ -1,0 +1,123 @@
+.Lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0 0 0 / 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: 300ms fadeIn;
+  animation-fill-mode: forwards;
+
+  .image {
+    max-width: 90%;
+    max-height: 80%;
+    cursor: grab;
+  }
+
+  .close {
+    background: rgb(0 0 0 / 50%);
+    border-radius: 100%;
+    position: fixed;
+    z-index: 1001;
+    top: 20px;
+    right: 40px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+
+    .icon {
+      height: 20px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+    }
+  }
+
+  .zoomControls {
+    display: flex;
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    height: 24px;
+    gap: 1rem;
+    transform: translateX(-50%);
+    z-index: 1001;
+
+    .control {
+      background-color: rgb(0 0 0 / 50%);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 24px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+      color: #fff;
+
+      &:hover {
+        background-color: #000;
+      }
+    }
+
+    .controlDefault {
+      font-size: 1.2rem;
+      letter-spacing: 0.15em;
+    }
+  }
+}
+
+.fadeOut {
+  animation: 300ms fadeOut;
+  animation-fill-mode: backwards;
+}
+
+.scalePercentage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 40px;
+  height: 24px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+
+  font-size: 1.2rem;
+  border-radius: 6px;
+  background-color: rgb(0 0 0 / 80%);
+  color: #fff;
+
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

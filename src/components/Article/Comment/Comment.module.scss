@@ -5,8 +5,8 @@
   position: relative;
   list-style: none;
 
-  & .comment {
-    margin-right: -1rem;
+  @include media-breakpoint-down(sm) {
+    padding-right: 0;
   }
 
   &.isNew {
@@ -14,11 +14,9 @@
     background: rgb(38 56 217 / 5%);
   }
 
-  @include media-breakpoint-down(sm) {
-    margin-right: -1.2rem;
-  }
-
   .comment {
+    margin-right: -1rem;
+
     &::before,
     &::after {
       content: '';
@@ -68,6 +66,8 @@
 }
 
 .commentContent {
+  padding: 0 1rem 1rem 0;
+
   &:hover {
     .commentControlReply,
     .commentControlShare,
@@ -77,6 +77,10 @@
     .commentControl {
       opacity: 1;
     }
+  }
+
+  p:last-child {
+    margin-bottom: 0;
   }
 }
 

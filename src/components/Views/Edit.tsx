@@ -1,30 +1,35 @@
-import { Accessor, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { useLocalize } from '../../context/localize'
-import { clsx } from 'clsx'
-import { Title } from '@solidjs/meta'
 import type { Shout, Topic } from '../../graphql/types.gen'
-import { useRouter } from '../../stores/router'
-import { ShoutForm, useEditorContext } from '../../context/editor'
-import { Editor, Panel } from '../Editor'
-import { Icon } from '../_shared/Icon'
-import styles from './Edit.module.scss'
-import { GrowingTextarea } from '../_shared/GrowingTextarea'
-import { VideoUploader } from '../Editor/VideoUploader'
-import { AudioUploader } from '../Editor/AudioUploader'
-import { slugify } from '../../utils/slugify'
-import { SolidSwiper } from '../_shared/SolidSwiper'
-import { DropArea } from '../_shared/DropArea'
-import { LayoutType, MediaItem } from '../../pages/types'
-import { clone } from '../../utils/clone'
+
+import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
-import { PublishSettings } from './PublishSettings'
+import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import SimplifiedEditor from '../Editor/SimplifiedEditor'
-import { isDesktop } from '../../utils/media-query'
-import { TableOfContents } from '../TableOfContents'
+
+import { ShoutForm, useEditorContext } from '../../context/editor'
+import { useLocalize } from '../../context/localize'
+import { LayoutType, MediaItem } from '../../pages/types'
+import { useRouter } from '../../stores/router'
+import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { isDesktop } from '../../utils/media-query'
+import { slugify } from '../../utils/slugify'
+import { DropArea } from '../_shared/DropArea'
+import { Icon } from '../_shared/Icon'
+import { InviteCoAuthorsModal } from '../_shared/InviteCoAuthorsModal'
 import { Popover } from '../_shared/Popover'
+import { EditorSwiper } from '../_shared/SolidSwiper'
+import { Editor, Panel } from '../Editor'
+import { AudioUploader } from '../Editor/AudioUploader'
+import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
+import { VideoUploader } from '../Editor/VideoUploader'
+import { TableOfContents } from '../TableOfContents'
+
+import { PublishSettings } from './PublishSettings'
+
+import styles from './Edit.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
   shout: Shout
@@ -33,7 +38,7 @@ type Props = {
 export const MAX_HEADER_LIMIT = 100
 export const EMPTY_TOPIC: Topic = {
   id: -1,
-  slug: ''
+  slug: '',
 }
 
 const AUTO_SAVE_INTERVAL = 5000
@@ -41,7 +46,7 @@ const handleScrollTopButtonClick = (e) => {
   e.preventDefault()
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
@@ -54,7 +59,7 @@ export const EditView = (props: Props) => {
   const {
     form,
     formErrors,
-    actions: { setForm, setFormErrors, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage }
+    actions: { setForm, setFormErrors, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage },
   } = useEditorContext()
 
   const shoutTopics = props.shout.topics || []
@@ -75,7 +80,7 @@ export const EditView = (props: Props) => {
       body: props.shout.body,
       coverImageUrl: props.shout.cover,
       media: props.shout.media,
-      layout: props.shout.layout
+      layout: props.shout.layout,
     })
   }
 
@@ -106,7 +111,7 @@ export const EditView = (props: Props) => {
     const handleBeforeUnload = (event) => {
       if (!deepEqual(prevForm, form)) {
         event.returnValue = t(
-          `There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?`
+          `There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?`,
         )
       }
     }
@@ -145,7 +150,7 @@ export const EditView = (props: Props) => {
   const [baseAudioFields, setBaseAudioFields] = createSignal({
     artist: '',
     date: '',
-    genre: ''
+    genre: '',
   })
 
   const handleBaseFieldsChange = (key, value) => {
@@ -167,26 +172,6 @@ export const EditView = (props: Props) => {
       }
       default: {
         return t('Header')
-      }
-    }
-  }
-
-  const pageTitle = () => {
-    switch (props.shout.layout as LayoutType) {
-      case 'music': {
-        return t('Publish Album')
-      }
-      case 'image': {
-        return t('Create gallery')
-      }
-      case 'video': {
-        return t('Create video')
-      }
-      case 'literature': {
-        return t('New literary work')
-      }
-      default: {
-        return t('Write an article')
       }
     }
   }
@@ -235,12 +220,11 @@ export const EditView = (props: Props) => {
   return (
     <>
       <div class={styles.container}>
-        <Title>{pageTitle()}</Title>
         <form>
           <div class="wide-container">
             <button
               class={clsx(styles.scrollTopButton, {
-                [styles.visible]: isScrolled()
+                [styles.visible]: isScrolled(),
               })}
               onClick={handleScrollTopButtonClick}
             >
@@ -364,7 +348,9 @@ export const EditView = (props: Props) => {
                           <div
                             class={styles.cover}
                             style={{
-                              'background-image': `url(${getImageUrl(form.coverImageUrl, { width: 1600 })})`
+                              'background-image': `url(${getImageUrl(form.coverImageUrl, {
+                                width: 1600,
+                              })})`,
                             }}
                           >
                             <Popover content={t('Delete cover')}>
@@ -384,8 +370,7 @@ export const EditView = (props: Props) => {
                     </div>
 
                     <Show when={props.shout.layout === 'image'}>
-                      <SolidSwiper
-                        editorMode={true}
+                      <EditorSwiper
                         images={mediaItems()}
                         onImageChange={handleMediaChange}
                         onImageDelete={(index) => handleMediaDelete(index)}
@@ -429,6 +414,7 @@ export const EditView = (props: Props) => {
         <PublishSettings shoutId={props.shout.id} form={form} />
       </Show>
       <Panel shoutId={props.shout.id} />
+      <InviteCoAuthorsModal />
     </>
   )
 }

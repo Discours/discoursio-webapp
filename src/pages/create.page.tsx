@@ -1,26 +1,45 @@
-import { PageLayout } from '../components/_shared/PageLayout'
-import { useLocalize } from '../context/localize'
+import { redirectPage } from '@nanostores/router'
+import { Meta } from '@solidjs/meta'
+import { clsx } from 'clsx'
+
 import { Button } from '../components/_shared/Button'
 import { Icon } from '../components/_shared/Icon'
-import { clsx } from 'clsx'
-import styles from '../styles/Create.module.scss'
-import { apiClient } from '../utils/apiClient'
-import { redirectPage } from '@nanostores/router'
-import { router } from '../stores/router'
-import { LayoutType } from './types'
+import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthGuard } from '../components/AuthGuard'
+import { useLocalize } from '../context/localize'
+import { router } from '../stores/router'
+import { apiClient } from '../utils/apiClient'
+import { getImageUrl } from '../utils/getImageUrl'
+
+import { LayoutType } from './types'
+
+import styles from '../styles/Create.module.scss'
 
 const handleCreate = async (layout: LayoutType) => {
   const shout = await apiClient.createArticle({ article: { layout: layout } })
   redirectPage(router, 'edit', {
-    shoutId: shout.id.toString()
+    shoutId: shout.id.toString(),
   })
 }
 
 export const CreatePage = () => {
   const { t } = useLocalize()
+  const ogImage = getImageUrl('production/image/logo_image.png')
+  const ogTitle = t('Choose a post type')
+  const description = t('Participate in the Discours: share information, join the editorial team')
+
   return (
-    <PageLayout>
+    <PageLayout title={ogTitle}>
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
       <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>
           <h1>{t('Choose a post type')}</h1>

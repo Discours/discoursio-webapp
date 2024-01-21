@@ -1,6 +1,8 @@
 import type { Chat } from '../../graphql/types.gen'
-import styles from './DialogHeader.module.scss'
+
 import DialogCard from './DialogCard'
+
+import styles from './DialogHeader.module.scss'
 
 type DialogHeader = {
   chat: Chat

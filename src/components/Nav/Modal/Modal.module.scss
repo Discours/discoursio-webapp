@@ -1,7 +1,7 @@
 .backdrop {
   align-items: center;
-  background: rgb(20 20 20 / 70%);
   display: flex;
+  background: rgb(20 20 20 / 90%);
   justify-content: center;
   height: 100%;
   left: 0;
@@ -10,13 +10,14 @@
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 10002;
+  z-index: 10003;
 }
 
 .modal {
-  background: #fff;
+  background: var(--background-color);
   max-width: 1000px;
   position: relative;
+  z-index: 1;
 
   &:not([class*='col-']) {
     width: 100%;
@@ -76,7 +77,7 @@
     }
 
     .modalInner {
-      padding: 3.8rem 2rem 2rem;
+      padding: 0;
     }
   }
 }
@@ -145,5 +146,27 @@
     right: 0;
     top: 2rem;
     width: 3.2rem;
+  }
+}
+
+.backdrop.isMobile {
+  z-index: 10002;
+  top: 56px;
+  height: calc(100% - 58px);
+  bottom: 0;
+
+  .maxHeight {
+    height: 100%;
+  }
+
+  .container {
+    padding: 0;
+    height: 100%;
+    min-height: 100%;
+  }
+
+  .modalInner {
+    padding: 1rem 1rem 0;
+    height: 100%;
   }
 }

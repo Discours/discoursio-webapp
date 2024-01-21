@@ -1,5 +1,6 @@
-import { PageLayout } from '../components/_shared/PageLayout'
 import { createSignal, Show } from 'solid-js'
+
+import { PageLayout } from '../components/_shared/PageLayout'
 
 export const ConnectPage = () => {
   const [state, setState] = createSignal<'initial' | 'loading' | 'success' | 'error'>('initial')
@@ -10,21 +11,24 @@ export const ConnectPage = () => {
     setState('loading')
 
     // eslint-disable-next-line unicorn/prefer-spread
-    const postData = Array.from(formRef.current.elements).reduce((acc, element) => {
-      const formField = element as unknown as { name: string; value: string }
-      if (formField.name) {
-        acc[formField.name] = formField.value
-      }
+    const postData = Array.from(formRef.current.elements).reduce(
+      (acc, element) => {
+        const formField = element as unknown as { name: string; value: string }
+        if (formField.name) {
+          acc[formField.name] = formField.value
+        }
 
-      return acc
-    }, {} as Record<string, string>)
+        return acc
+      },
+      {} as Record<string, string>,
+    )
 
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(postData)
+      body: JSON.stringify(postData),
     }
 
     const result = await fetch('/api/feedback', requestOptions)
@@ -37,12 +41,13 @@ export const ConnectPage = () => {
 
     setState('success')
     window.scrollTo({
-      top: 0
+      top: 0,
     })
   }
 
+  // TODO: l10n
   return (
-    <PageLayout>
+    <PageLayout title="Предложить идею">
       <article class="wide-container container--static-page">
         <div class="row">
           <div class="col-sm-20 col-md-16 col-lg-14 col-xl-12 offset-md-5">

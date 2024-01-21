@@ -1,11 +1,11 @@
+import type { PageProps } from './types'
+
+import { createSignal, onMount } from 'solid-js'
+
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AllAuthorsView } from '../components/Views/AllAuthors'
-import type { PageProps } from './types'
-import { createSignal, onMount, Show } from 'solid-js'
-import { loadAllAuthors } from '../stores/zine/authors'
-import { Loading } from '../components/_shared/Loading'
-import { Title } from '@solidjs/meta'
 import { useLocalize } from '../context/localize'
+import { loadAllAuthors } from '../stores/zine/authors'
 
 export const AllAuthorsPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors))
@@ -22,11 +22,8 @@ export const AllAuthorsPage = (props: PageProps) => {
   })
 
   return (
-    <PageLayout>
-      <Title>{t('Authors')}</Title>
-      <Show when={isLoaded()} fallback={<Loading />}>
-        <AllAuthorsView authors={props.allAuthors} />
-      </Show>
+    <PageLayout title={t('Authors')}>
+      <AllAuthorsView isLoaded={isLoaded()} authors={props.allAuthors} />
     </PageLayout>
   )
 }

@@ -1,51 +1,105 @@
-import styles from './Expo.module.scss'
-import { LoadShoutsOptions, Shout } from '../../../graphql/types.gen'
+import { getPagePath } from '@nanostores/router'
+import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
-import { ArticleCard } from '../../Feed/ArticleCard'
-import { Loading } from '../../_shared/Loading'
-import { Button } from '../../_shared/Button'
+
 import { useLocalize } from '../../../context/localize'
-import { router, useRouter } from '../../../stores/router'
+import {
+  LoadRandomTopShoutsParams,
+  LoadShoutsFilters,
+  LoadShoutsOptions,
+  Shout,
+} from '../../../graphql/types.gen'
 import { LayoutType } from '../../../pages/types'
+import { router } from '../../../stores/router'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
+import { apiClient } from '../../../utils/apiClient'
+import { getServerDate } from '../../../utils/getServerDate'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
-import { clsx } from 'clsx'
-import { getPagePath } from '@nanostores/router'
+import { Button } from '../../_shared/Button'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+import { Loading } from '../../_shared/Loading'
+import { ArticleCardSwiper } from '../../_shared/SolidSwiper/ArticleCardSwiper'
+import { ArticleCard } from '../../Feed/ArticleCard'
+
+import styles from './Expo.module.scss'
 
 type Props = {
   shouts: Shout[]
+  layout: LayoutType
 }
-export const PRERENDERED_ARTICLES_COUNT = 28
+
+export const PRERENDERED_ARTICLES_COUNT = 24
 const LOAD_MORE_PAGE_SIZE = 16
+
 export const Expo = (props: Props) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
+  const [randomTopArticles, setRandomTopArticles] = createSignal<Shout[]>([])
+  const [randomTopMonthArticles, setRandomTopMonthArticles] = createSignal<Shout[]>([])
+
   const { t } = useLocalize()
-  const { page: getPage } = useRouter()
-  const getLayout = createMemo<LayoutType>(() => getPage().params['layout'] as LayoutType)
+
   const { sortedArticles } = useArticlesStore({
-    shouts: isLoaded() ? props.shouts : []
+    shouts: isLoaded() ? props.shouts : [],
   })
 
-  const loadMore = async (count) => {
-    saveScrollPosition()
-    const options: LoadShoutsOptions = {
-      limit: count,
-      offset: sortedArticles().length
+  const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
+    const filters = { visibility: 'public', ...additionalFilters }
+    if (props.layout) {
+      filters.layout = props.layout
+    } else {
+      filters.excludeLayout = 'article'
     }
 
-    options.filters = getLayout() ? { layout: getLayout() } : { excludeLayout: 'article' }
+    return filters
+  }
+
+  const loadMore = async (count: number) => {
+    const options: LoadShoutsOptions = {
+      filters: getLoadShoutsFilters(),
+      limit: count,
+      offset: sortedArticles().length,
+    }
 
     const { hasMore } = await loadShouts(options)
     setIsLoadMoreButtonVisible(hasMore)
+  }
+
+  const loadMoreWithoutScrolling = async (count: number) => {
+    saveScrollPosition()
+    await loadMore(count)
     restoreScrollPosition()
   }
 
+  const loadRandomTopArticles = async () => {
+    const params: LoadRandomTopShoutsParams = {
+      filters: getLoadShoutsFilters(),
+      limit: 10,
+      fromRandomCount: 100,
+    }
+
+    const result = await apiClient.getRandomTopShouts(params)
+    setRandomTopArticles(result)
+  }
+
+  const loadRandomTopMonthArticles = async () => {
+    const now = new Date()
+    const fromDate = getServerDate(new Date(now.setMonth(now.getMonth() - 1)))
+
+    const params: LoadRandomTopShoutsParams = {
+      filters: getLoadShoutsFilters({ fromDate }),
+      limit: 10,
+      fromRandomCount: 10,
+    }
+
+    const result = await apiClient.getRandomTopShouts(params)
+    setRandomTopMonthArticles(result)
+  }
+
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
   onMount(() => {
@@ -61,17 +115,23 @@ export const Expo = (props: Props) => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore(LOAD_MORE_PAGE_SIZE)
     }
+
+    loadRandomTopArticles()
+    loadRandomTopMonthArticles()
   })
 
   createEffect(
     on(
-      () => getLayout(),
+      () => props.layout,
       () => {
         resetSortedArticles()
+        setRandomTopArticles([])
+        setRandomTopMonthArticles([])
         loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
+        loadRandomTopArticles()
+        loadRandomTopMonthArticles()
       },
-      { defer: true }
-    )
+    ),
   )
 
   onCleanup(() => {
@@ -79,57 +139,57 @@ export const Expo = (props: Props) => {
   })
 
   const handleLoadMoreClick = () => {
-    loadMore(LOAD_MORE_PAGE_SIZE)
+    loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
   }
 
   return (
     <div class={styles.Expo}>
       <Show when={sortedArticles().length > 0} fallback={<Loading />}>
         <div class="wide-container">
-          <ul class={clsx('view-switcher', styles.navigation)}>
-            <li class={clsx({ 'view-switcher__item--selected': !getLayout() })}>
+          <ul class={clsx('view-switcher')}>
+            <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
               <ConditionalWrapper
-                condition={Boolean(getLayout())}
-                wrapper={(children) => <a href={getPagePath(router, 'expo')}>{children}</a>}
+                condition={Boolean(props.layout)}
+                wrapper={(children) => <a href={getPagePath(router, 'expo', { layout: '' })}>{children}</a>}
               >
                 <span class={clsx('linkReplacement')}>{t('All')}</span>
               </ConditionalWrapper>
             </li>
-            <li class={clsx({ 'view-switcher__item--selected': getLayout() === 'literature' })}>
+            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'literature' })}>
               <ConditionalWrapper
-                condition={getLayout() !== 'literature'}
+                condition={props.layout !== 'literature'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'literature' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'literature' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Literature')}</span>
               </ConditionalWrapper>
             </li>
-            <li class={clsx({ 'view-switcher__item--selected': getLayout() === 'music' })}>
+            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'music' })}>
               <ConditionalWrapper
-                condition={getLayout() !== 'music'}
+                condition={props.layout !== 'music'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'music' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'music' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Music')}</span>
               </ConditionalWrapper>
             </li>
-            <li class={clsx({ 'view-switcher__item--selected': getLayout() === 'image' })}>
+            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'image' })}>
               <ConditionalWrapper
-                condition={getLayout() !== 'image'}
+                condition={props.layout !== 'image'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'image' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'image' })}>{children}</a>
                 )}
               >
                 <span class={clsx('linkReplacement')}>{t('Gallery')}</span>
               </ConditionalWrapper>
             </li>
-            <li class={clsx({ 'view-switcher__item--selected': getLayout() === 'video' })}>
+            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'video' })}>
               <ConditionalWrapper
-                condition={getLayout() !== 'video'}
+                condition={props.layout !== 'video'}
                 wrapper={(children) => (
-                  <a href={getPagePath(router, 'expoLayout', { layout: 'video' })}>{children}</a>
+                  <a href={getPagePath(router, 'expo', { layout: 'video' })}>{children}</a>
                 )}
               >
                 <span class={clsx('cursorPointer linkReplacement')}>{t('Video')}</span>
@@ -137,16 +197,36 @@ export const Expo = (props: Props) => {
             </li>
           </ul>
           <div class="row">
-            <For each={sortedArticles().slice(0, PRERENDERED_ARTICLES_COUNT)}>
+            <For each={sortedArticles().slice(0, PRERENDERED_ARTICLES_COUNT / 2)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
                     article={shout}
                     settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
+                    withAspectRatio={true}
                   />
                 </div>
               )}
             </For>
+            <Show when={randomTopMonthArticles().length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
+            </Show>
+            <For each={sortedArticles().slice(PRERENDERED_ARTICLES_COUNT / 2, PRERENDERED_ARTICLES_COUNT)}>
+              {(shout) => (
+                <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
+                  <ArticleCard
+                    article={shout}
+                    settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
+                    withAspectRatio={true}
+                  />
+                </div>
+              )}
+            </For>
+            <Show when={randomTopArticles().length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
+            </Show>
             <For each={pages()}>
               {(page) => (
                 <For each={page}>
@@ -155,6 +235,8 @@ export const Expo = (props: Props) => {
                       <ArticleCard
                         article={shout}
                         settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                        desktopCoverSize="XS"
+                        withAspectRatio={true}
                       />
                     </div>
                   )}

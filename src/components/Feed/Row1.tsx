@@ -1,5 +1,7 @@
-import { Show } from 'solid-js'
 import type { Shout } from '../../graphql/types.gen'
+
+import { Show } from 'solid-js'
+
 import { ArticleCard } from './ArticleCard'
 
 export const Row1 = (props: {
@@ -19,8 +21,9 @@ export const Row1 = (props: {
                 isSingle: true,
                 nodate: props.nodate,
                 noAuthorLink: props.noAuthorLink,
-                noauthor: props.noauthor
+                noauthor: props.noauthor,
               }}
+              desktopCoverSize="L"
             />
           </div>
         </div>

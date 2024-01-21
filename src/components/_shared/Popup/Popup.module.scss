@@ -15,7 +15,7 @@
   position: absolute;
   text-align: left;
   top: calc(100% + 8px);
-  z-index: 100;
+  z-index: 101;
 
   ul {
     margin-bottom: 0;
@@ -60,10 +60,11 @@
   }
 
   &.horizontalAnchorCenter {
-    left: -24px;
+    right: 0;
 
     @include media-breakpoint-up(md) {
       left: 50%;
+      right: auto;
       transform: translateX(-50%);
     }
   }
@@ -100,23 +101,6 @@
       max-width: 2rem;
       transition: filter 0.3s;
       vertical-align: middle;
-    }
-  }
-
-  .shareControl {
-    text-align: left;
-    transition:
-      color 0.3s,
-      background-color 0.3s;
-    white-space: nowrap;
-
-    &:hover {
-      background: #000;
-      color: #fff;
-
-      .icon img {
-        filter: invert(0);
-      }
     }
   }
 }

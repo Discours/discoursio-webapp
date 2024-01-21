@@ -1,30 +1,31 @@
-import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
-import { getPagePath, redirectPage } from '@nanostores/router'
-import { clsx } from 'clsx'
-
-import { Modal } from '../Modal'
-import { AuthModal } from '../AuthModal'
-import { HeaderAuth } from '../HeaderAuth'
-import { ConfirmModal } from '../ConfirmModal'
-import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import { Snackbar } from '../Snackbar'
-import { Icon } from '../../_shared/Icon'
 import type { Topic } from '../../../graphql/types.gen'
 
-import { useModalStore } from '../../../stores/ui'
-import { router, ROUTES, useRouter } from '../../../stores/router'
+import { getPagePath, redirectPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
 
-import { getDescription } from '../../../utils/meta'
+import { apiClient } from '../../../utils/apiClient'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { router, ROUTES, useRouter } from '../../../stores/router'
+import { useModalStore } from '../../../stores/ui'
+import { apiClient } from '../../../utils/apiClient'
+import { getDescription } from '../../../utils/meta'
+import { Icon } from '../../_shared/Icon'
+import { Subscribe } from '../../_shared/Subscribe'
+import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
+import { AuthModal } from '../AuthModal'
+import { ConfirmModal } from '../ConfirmModal'
+import { HeaderAuth } from '../HeaderAuth'
+import { Modal } from '../Modal'
+import { Snackbar } from '../Snackbar'
+import { SearchModal } from '../SearchModal/SearchModal'
+
+import { Link } from './Link'
 
 import styles from './Header.module.scss'
-import { apiClient } from '../../../utils/apiClient'
-import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
-import { Link } from './Link'
-import { Subscribe } from '../../_shared/Subscribe'
-import { SearchModal } from '../SearchModal/SearchModal'
 
 type Props = {
   title?: string
@@ -48,7 +49,7 @@ export const Header = (props: Props) => {
   const { modal } = useModalStore()
   const { page } = useRouter()
   const {
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
 
   const { searchParams } = useRouter<HeaderSearchParams>()
@@ -63,7 +64,9 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const toggleFixed = () => setFixed((oldFixed) => !oldFixed)
+  const toggleFixed = () => {
+    setFixed(!fixed())
+  }
 
   const tag = (topic: Topic) =>
     /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
@@ -168,7 +171,7 @@ export const Header = (props: Props) => {
         [styles.headerScrolledTop]: !getIsScrollingBottom() && getIsScrolled(),
         [styles.headerScrolledBottom]:
           (getIsScrollingBottom() && getIsScrolled() && !isProfilePopupVisible()) || isSharePopupVisible(),
-        [styles.headerWithTitle]: Boolean(props.title)
+        [styles.headerWithTitle]: Boolean(props.title),
       }}
     >
       <Modal
@@ -189,9 +192,9 @@ export const Header = (props: Props) => {
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>
-        <nav class={clsx('row', styles.headerInner, { ['fixed']: fixed() })}>
+        <nav class={clsx('row', styles.headerInner, { [styles.fixed]: fixed() })}>
           <div class={clsx(styles.burgerContainer, 'col-auto')}>
-            <div class={styles.burger} classList={{ fixed: fixed() }} onClick={toggleFixed}>
+            <div class={clsx(styles.burger, { [styles.fixed]: fixed() })} onClick={toggleFixed}>
               <div />
             </div>
           </div>
@@ -323,7 +326,7 @@ export const Header = (props: Props) => {
                 <p
                   class={styles.mobileDescription}
                   innerHTML={t(
-                    'Independant magazine with an open horizontal cooperation about culture, science and society'
+                    'Independant magazine with an open horizontal cooperation about culture, science and society',
                   )}
                 />
                 <div class={styles.mobileCopyright}>

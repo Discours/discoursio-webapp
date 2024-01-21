@@ -1,18 +1,17 @@
-import { generateHydrationScript, renderToString } from 'solid-js/web'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import type { PageContext } from './types'
+import type { Language } from '../context/localize'
+
+import i18next from 'i18next'
+import ICU from 'i18next-icu'
+import { generateHydrationScript, getAssets, renderToString } from 'solid-js/web'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+
+import en from '../../public/locales/en/translation.json'
+import ru from '../../public/locales/ru/translation.json'
 import { App } from '../components/App'
 import { initRouter } from '../stores/router'
-import type { PageContext } from './types'
-import { MetaProvider, renderTags } from '@solidjs/meta'
-import i18next from 'i18next'
-import ru from '../../public/locales/ru/translation.json'
-import en from '../../public/locales/en/translation.json'
-import type { Language } from '../context/localize'
-import ICU from 'i18next-icu'
 
 export const passToClient = ['pageProps', 'lng', 'documentProps', 'is404']
-
-const metaTags = []
 
 const getLng = (pageContext: PageContext): Language => {
   const { urlParsed, cookies } = pageContext
@@ -41,35 +40,28 @@ export const render = async (pageContext: PageContext) => {
       lng,
       resources: {
         ru: { translation: ru },
-        en: { translation: en }
-      }
+        en: { translation: en },
+      },
     })
   } else if (i18next.language !== lng) {
+    // eslint-disable-next-line import/no-named-as-default-member
     await i18next.changeLanguage(lng)
   }
 
-  if (pageContext.is404) {
-    initRouter('/404')
-  } else {
-    initRouter(pageContext.urlParsed.pathname, pageContext.urlParsed.search)
-  }
+  initRouter(pageContext.urlParsed.pathname, pageContext.urlParsed.search)
 
   pageContext.lng = lng
 
-  const rootContent = renderToString(() => (
-    <MetaProvider tags={metaTags}>
-      <App {...pageContext.pageProps} />
-    </MetaProvider>
-  ))
+  const rootContent = renderToString(() => <App {...pageContext.pageProps} is404={pageContext.is404} />)
 
   return escapeInject`<!DOCTYPE html>
     <html lang="${lng}">
       <head>
-        ${dangerouslySkipEscape(renderTags(metaTags))}
-        ${dangerouslySkipEscape(generateHydrationScript())}
+        ${dangerouslySkipEscape(getAssets())}
       </head>
       <body>
         <div id="root">${dangerouslySkipEscape(rootContent)}</div>
+        ${dangerouslySkipEscape(generateHydrationScript())}
       </body>
     </html>`
 }

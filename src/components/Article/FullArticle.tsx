@@ -1,31 +1,41 @@
-import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
-import { Title } from '@solidjs/meta'
-import { clsx } from 'clsx'
-import { getPagePath } from '@nanostores/router'
-import MD from './MD'
 import type { Author, Shout } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
+
+import { getPagePath } from '@nanostores/router'
+import { createPopper } from '@popperjs/core'
+import { Link, Meta } from '@solidjs/meta'
+import { clsx } from 'clsx'
+import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
+import { isServer } from 'solid-js/web'
+
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
 import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
-import { getDescription } from '../../utils/meta'
-import { TableOfContents } from '../TableOfContents'
-import { AudioPlayer } from './AudioPlayer'
-import { SharePopup } from './SharePopup'
-import { ShoutRatingControl } from './ShoutRatingControl'
-import { CommentsTree } from './CommentsTree'
-import stylesHeader from '../Nav/Header/Header.module.scss'
-import { AudioHeader } from './AudioHeader'
-import { Popover } from '../_shared/Popover'
-import { VideoPlayer } from '../_shared/VideoPlayer'
+import { showModal } from '../../stores/ui'
+import { getImageUrl, getOpenGraphImageUrl } from '../../utils/getImageUrl'
+import { getDescription, getKeywords } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
-import { SolidSwiper } from '../_shared/SolidSwiper'
-import styles from './Article.module.scss'
-import { CardTopic } from '../Feed/CardTopic'
-import { createPopper } from '@popperjs/core'
+import { Image } from '../_shared/Image'
+import { InviteCoAuthorsModal } from '../_shared/InviteCoAuthorsModal'
+import { Lightbox } from '../_shared/Lightbox'
+import { Popover } from '../_shared/Popover'
+import { ShareModal } from '../_shared/ShareModal'
+import { ImageSwiper } from '../_shared/SolidSwiper'
+import { VideoPlayer } from '../_shared/VideoPlayer'
 import { AuthorBadge } from '../Author/AuthorBadge'
-import { getImageUrl } from '../../utils/getImageUrl'
+import { CardTopic } from '../Feed/CardTopic'
+import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
+import { TableOfContents } from '../TableOfContents'
+
+import { AudioHeader } from './AudioHeader'
+import { AudioPlayer } from './AudioPlayer'
+import { CommentsTree } from './CommentsTree'
+import { getShareUrl, SharePopup } from './SharePopup'
+import { ShoutRatingControl } from './ShoutRatingControl'
+
+import styles from './Article.module.scss'
+import stylesHeader from '../Nav/Header/Header.module.scss'
 
 type Props = {
   article: Shout
@@ -43,26 +53,30 @@ const scrollTo = (el: HTMLElement) => {
   window.scrollTo({
     top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
     left: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
+const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
+
 export const FullArticle = (props: Props) => {
+  const [selectedImage, setSelectedImage] = createSignal('')
+  const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
+  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
+
   const { t, formatDate } = useLocalize()
   const {
     user,
     isAuthenticated,
-    actions: { requireAuthentication }
+    actions: { requireAuthentication },
   } = useSession()
-
-  const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.createdAt)))
 
   const mainTopic = createMemo(
     () =>
       props.article.topics?.find((topic) => topic?.slug === props.article.mainTopic) ||
-      props.article.topics[0]
+      props.article.topics[0],
   )
 
   const canEdit = () => props.article.authors?.some((a) => a.slug === user()?.slug)
@@ -87,8 +101,33 @@ export const FullArticle = (props: Props) => {
     }
     return props.article.body
   })
-  const media = createMemo(() => {
-    return JSON.parse(props.article.media || '[]')
+
+  const imageUrls = createMemo(() => {
+    if (!body()) {
+      return []
+    }
+
+    if (isServer) {
+      const result: string[] = []
+      let match: RegExpMatchArray
+
+      while ((match = imgSrcRegExp.exec(body())) !== null) {
+        result.push(match[1])
+      }
+      return result
+    }
+
+    const imageElements = document.querySelectorAll<HTMLImageElement>('#shoutBody img')
+    // eslint-disable-next-line unicorn/prefer-spread
+    return Array.from(imageElements).map((img) => img.src)
+  })
+
+  const media = createMemo<MediaItem[]>(() => {
+    try {
+      return JSON.parse(props.article.media)
+    } catch {
+      return []
+    }
   })
 
   const commentsRef: {
@@ -99,7 +138,7 @@ export const FullArticle = (props: Props) => {
     scrollTo(commentsRef.current)
   }
 
-  const { searchParams, changeSearchParam } = useRouter<ArticlePageSearchParams>()
+  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
 
   createEffect(() => {
     if (props.scrollToComments) {
@@ -110,8 +149,8 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
       scrollToComments()
-      changeSearchParam({
-        scrollTo: null
+      changeSearchParams({
+        scrollTo: null,
       })
     }
   })
@@ -119,10 +158,10 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams().commentId && isReactionsLoaded()) {
       const commentElement = document.querySelector<HTMLElement>(
-        `[id='comment_${searchParams().commentId}']`
+        `[id='comment_${searchParams().commentId}']`,
       )
 
-      changeSearchParam({ commentId: null })
+      changeSearchParams({ commentId: null })
 
       if (commentElement) {
         scrollTo(commentElement)
@@ -131,15 +170,19 @@ export const FullArticle = (props: Props) => {
   })
 
   const {
-    actions: { loadReactionsBy }
+    actions: { loadReactionsBy },
   } = useReactions()
 
   onMount(async () => {
     await loadReactionsBy({
-      by: { shout: props.article.slug }
+      by: { shout: props.article.slug },
     })
 
     setIsReactionsLoaded(true)
+  })
+
+  onMount(() => {
+    document.title = props.article.title
   })
 
   const clickHandlers = []
@@ -151,7 +194,7 @@ export const FullArticle = (props: Props) => {
     }
 
     const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
-      '[data-toggle="tooltip"], footnote'
+      '[data-toggle="tooltip"], footnote',
     )
     if (!tooltipElements) {
       return
@@ -168,7 +211,7 @@ export const FullArticle = (props: Props) => {
       document.body.appendChild(tooltip)
 
       if (element.hasAttribute('href')) {
-        element.setAttribute('href', 'javascript: void(0);')
+        element.setAttribute('href', 'javascript: void(0)')
       }
 
       const popperInstance = createPopper(element, tooltip, {
@@ -176,19 +219,19 @@ export const FullArticle = (props: Props) => {
         modifiers: [
           {
             name: 'eventListeners',
-            options: { scroll: false }
+            options: { scroll: false },
           },
           {
             name: 'offset',
             options: {
-              offset: [0, 8]
-            }
+              offset: [0, 8],
+            },
           },
           {
             name: 'flip',
-            options: { fallbackPlacements: ['top'] }
-          }
-        ]
+            options: { fallbackPlacements: ['top'] },
+          },
+        ],
       })
 
       tooltip.style.visibility = 'hidden'
@@ -229,12 +272,53 @@ export const FullArticle = (props: Props) => {
     })
   })
 
+  const openLightbox = (image) => {
+    setSelectedImage(image)
+  }
+  const handleLightboxClose = () => {
+    setSelectedImage()
+  }
+
+  const handleArticleBodyClick = (event) => {
+    if (event.target.tagName === 'IMG' && !event.target.dataset['disableLightbox']) {
+      const src = event.target.src
+      openLightbox(getImageUrl(src))
+    }
+  }
+
+  const cover = props.article.cover ?? 'production/image/logo_image.png'
+
+  const ogImage = getOpenGraphImageUrl(cover, {
+    title: props.article.title,
+    topic: mainTopic().title,
+    author: props.article.authors[0].name,
+    width: 1200,
+  })
+
+  const description = getDescription(props.article.description || body())
+  const ogTitle = props.article.title
+  const keywords = getKeywords(props.article)
+  const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })
   return (
     <>
-      <Title>{props.article.title}</Title>
+      <Meta name="descprition" content={description} />
+      <Meta name="keywords" content={keywords} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:image" content={ogImage} />
+
+      <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
       <div class="wide-container">
         <div class="row position-relative">
-          <article class="col-md-16 col-lg-14 col-xl-12 offset-md-5">
+          <article
+            class={clsx('col-md-16 col-lg-14 col-xl-12 offset-md-5', styles.articleContent)}
+            onClick={handleArticleBodyClick}
+          >
             {/*TODO: Check styles.shoutTopic*/}
             <Show when={props.article.layout !== 'music'}>
               <div class={styles.shoutHeader}>
@@ -264,12 +348,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <div
-                    class={styles.shoutCover}
-                    style={{
-                      'background-image': `url('${getImageUrl(props.article.cover, { width: 1600 })}')`
-                    }}
-                  />
+                  <Image width={800} alt={props.article.title} src={props.article.cover} />
                 </Show>
               </div>
             </Show>
@@ -301,7 +380,7 @@ export const FullArticle = (props: Props) => {
                         description={m.body}
                       />
                       <Show when={m?.body}>
-                        <MD body={m.body} />
+                        <div innerHTML={m.body} />
                       </Show>
                     </div>
                   )}
@@ -310,11 +389,7 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <Show when={body()}>
-              <div id="shoutBody" class={styles.shoutBody}>
-                <Show when={!body().startsWith('<')} fallback={<div innerHTML={body()} />}>
-                  <MD body={body()} />
-                </Show>
-              </div>
+              <div id="shoutBody" class={styles.shoutBody} innerHTML={body()} />
             </Show>
           </article>
 
@@ -331,7 +406,7 @@ export const FullArticle = (props: Props) => {
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 offset-md-2">
-                <SolidSwiper images={media()} />
+                <ImageSwiper images={media()} />
               </div>
             </div>
           </div>
@@ -346,35 +421,58 @@ export const FullArticle = (props: Props) => {
                 <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
               </div>
 
-              <Popover content={t('Comment')}>
+              <Popover content={t('Comment')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
-                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={scrollToComments}>
+                  <div class={clsx(styles.shoutStatsItem)} ref={triggerRef} onClick={scrollToComments}>
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
-                    {props.article.stat?.commented ?? ''}
+                    <Show
+                      when={props.article.stat?.commented}
+                      fallback={<span class={styles.commentsTextLabel}>{t('Add comment')}</span>}
+                    >
+                      {props.article.stat?.commented}
+                    </Show>
                   </div>
                 )}
               </Popover>
 
               <Show when={props.article.stat?.viewed}>
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
-                  <Icon name="eye" class={styles.icon} />
-                  <Icon name="eye" class={clsx(styles.icon, styles.iconHover)} />
-                  <span class={styles.shoutStatsItemCount}>{props.article.stat?.viewed}</span>
-                  <span class={styles.shoutStatsItemLabel}>
-                    {t('viewsWithCount', { count: props.article.stat?.viewed })}
-                  </span>
+                  {t('viewsWithCount', { count: props.article.stat?.viewed })}
                 </div>
               </Show>
 
-              <Popover content={t('Share')}>
+              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
+                <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
+                  {formattedDate()}
+                </div>
+              </div>
+
+              <Popover content={t('Add to bookmarks')} disabled={isActionPopupActive()}>
+                {(triggerRef: (el) => void) => (
+                  <div
+                    class={clsx(styles.shoutStatsItem, styles.shoutStatsItemBookmarks)}
+                    ref={triggerRef}
+                    onClick={handleBookmarkButtonClick}
+                  >
+                    <div class={styles.shoutStatsItemInner}>
+                      <Icon name="bookmark" class={styles.icon} />
+                      <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
+                    </div>
+                  </div>
+                )}
+              </Popover>
+
+              <Popover content={t('Share')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
                     <SharePopup
                       title={props.article.title}
-                      description={getDescription(props.article.body)}
+                      description={description}
                       imageUrl={props.article.cover}
+                      shareUrl={shareUrl}
                       containerCssClass={stylesHeader.control}
+                      onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                       trigger={
                         <div class={styles.shoutStatsItemInner}>
                           <Icon name="share-outline" class={styles.icon} />
@@ -385,16 +483,7 @@ export const FullArticle = (props: Props) => {
                   </div>
                 )}
               </Popover>
-              <Popover content={t('Add to bookmarks')}>
-                {(triggerRef: (el) => void) => (
-                  <div class={styles.shoutStatsItem} ref={triggerRef} onClick={handleBookmarkButtonClick}>
-                    <div class={styles.shoutStatsItemInner}>
-                      <Icon name="bookmark" class={styles.icon} />
-                      <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
-                    </div>
-                  </div>
-                )}
-              </Popover>
+
               <Show when={canEdit()}>
                 <Popover content={t('Edit')}>
                   {(triggerRef: (el) => void) => (
@@ -410,20 +499,32 @@ export const FullArticle = (props: Props) => {
                   )}
                 </Popover>
               </Show>
-              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
-                <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
-                  {formattedDate()}
-                </div>
-              </div>
+
+              <FeedArticlePopup
+                isOwner={canEdit()}
+                containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
+                onShareClick={() => showModal('share')}
+                onInviteClick={() => showModal('inviteCoAuthors')}
+                onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
+                trigger={
+                  <button>
+                    <Icon name="ellipsis" class={clsx(styles.icon)} />
+                    <Icon name="ellipsis" class={clsx(styles.icon, styles.iconHover)} />
+                  </button>
+                }
+              />
             </div>
-            <div class={styles.help}>
-              <Show when={isAuthenticated() && !canEdit()}>
+
+            <Show when={isAuthenticated() && !canEdit()}>
+              <div class={styles.help}>
                 <button class="button">{t('Cooperate')}</button>
-              </Show>
-              <Show when={canEdit()}>
+              </div>
+            </Show>
+            <Show when={canEdit()}>
+              <div class={styles.help}>
                 <button class="button button--light">{t('Invite to collab')}</button>
-              </Show>
-            </div>
+              </div>
+            </Show>
 
             <Show when={props.article.topics.length}>
               <div class={styles.topicsList}>
@@ -461,6 +562,16 @@ export const FullArticle = (props: Props) => {
           </div>
         </div>
       </div>
+      <Show when={selectedImage()}>
+        <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
+      </Show>
+      <InviteCoAuthorsModal title={t('Invite experts')} />
+      <ShareModal
+        title={props.article.title}
+        description={description}
+        imageUrl={props.article.cover}
+        shareUrl={shareUrl}
+      />
     </>
   )
 }

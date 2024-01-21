@@ -12,28 +12,43 @@ export const Figure = Node.create({
   name: 'figure',
   addOptions() {
     return {
-      HTMLAttributes: {}
+      HTMLAttributes: {},
     }
   },
   group: 'block',
-  content: 'block figcaption',
+  content: '(image | iframe) figcaption',
   draggable: true,
   isolating: true,
+  atom: true,
 
   addAttributes() {
     return {
-      'data-float': null
+      'data-float': null,
+      'data-type': { default: null },
     }
   },
 
   parseHTML() {
     return [
       {
-        tag: `figure[data-type="${this.name}"]`
-      }
+        tag: 'figure',
+        getAttrs: (node) => {
+          if (!(node instanceof HTMLElement)) {
+            return
+          }
+          const img = node.querySelector('img')
+          const iframe = node.querySelector('iframe')
+          let dataType = null
+          if (img) {
+            dataType = 'image'
+          } else if (iframe) {
+            dataType = 'iframe'
+          }
+          return { 'data-type': dataType }
+        },
+      },
     ]
   },
-
   renderHTML({ HTMLAttributes }) {
     return ['figure', mergeAttributes(HTMLAttributes, { 'data-type': this.name }), 0]
   },
@@ -54,10 +69,10 @@ export const Figure = Node.create({
                 event.preventDefault()
               }
               return false
-            }
-          }
-        }
-      })
+            },
+          },
+        },
+      }),
     ]
   },
 
@@ -67,7 +82,7 @@ export const Figure = Node.create({
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-float': value })
-        }
+        },
     }
-  }
+  },
 })

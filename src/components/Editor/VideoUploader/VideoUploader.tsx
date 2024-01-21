@@ -1,13 +1,16 @@
-import { clsx } from 'clsx'
-import styles from './VideoUploader.module.scss'
-import { useLocalize } from '../../../context/localize'
-import { createDropzone } from '@solid-primitives/upload'
-import { createSignal, For, Show } from 'solid-js'
-import { useSnackbar } from '../../../context/snackbar'
-import { validateUrl } from '../../../utils/validateUrl'
 import type { MediaItem } from '../../../pages/types'
+
+import { createDropzone } from '@solid-primitives/upload'
+import { clsx } from 'clsx'
+import { createSignal, For, Show } from 'solid-js'
+
+import { useLocalize } from '../../../context/localize'
+import { useSnackbar } from '../../../context/snackbar'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
+import { validateUrl } from '../../../utils/validateUrl'
 import { VideoPlayer } from '../../_shared/VideoPlayer'
+
+import styles from './VideoUploader.module.scss'
 
 type Props = {
   video: MediaItem[]
@@ -22,13 +25,13 @@ export const VideoUploader = (props: Props) => {
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const urlInput: {
     current: HTMLInputElement
   } = {
-    current: null
+    current: null,
   }
 
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
@@ -39,13 +42,13 @@ export const VideoUploader = (props: Props) => {
       } else if (droppedFiles()[0].file.type.startsWith('video/')) {
         await showSnackbar({
           body: t(
-            'This functionality is currently not available, we would like to work on this issue. Use the download link.'
-          )
+            'This functionality is currently not available, we would like to work on this issue. Use the download link.',
+          ),
         })
       } else {
         setError(t('Video format not supported'))
       }
-    }
+    },
   })
   const handleDrag = (event) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {
@@ -84,8 +87,8 @@ export const VideoUploader = (props: Props) => {
           onClick={() =>
             showSnackbar({
               body: t(
-                'This functionality is currently not available, we would like to work on this issue. Use the download link.'
-              )
+                'This functionality is currently not available, we would like to work on this issue. Use the download link.',
+              ),
             })
           }
           ref={dropzoneRef}

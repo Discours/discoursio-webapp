@@ -1,11 +1,11 @@
-import { createSignal, Show } from 'solid-js'
 import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
 
-import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
-
-import { Icon } from '../../_shared/Icon'
-import styles from './AudioPlayer.module.scss'
 import { MediaItem } from '../../../pages/types'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { Icon } from '../../_shared/Icon'
+
+import styles from './AudioPlayer.module.scss'
 
 type Props = {
   onPlayMedia: () => void
@@ -18,7 +18,7 @@ type Props = {
 
 export const PlayerHeader = (props: Props) => {
   const volumeContainerRef: { current: HTMLDivElement } = {
-    current: null
+    current: null,
   }
 
   const [isVolumeBarOpened, setIsVolumeBarOpened] = createSignal(false)
@@ -30,7 +30,7 @@ export const PlayerHeader = (props: Props) => {
   useOutsideClickHandler({
     containerRef: volumeContainerRef,
     predicate: () => isVolumeBarOpened(),
-    handler: () => toggleVolumeBar()
+    handler: () => toggleVolumeBar(),
   })
 
   return (
@@ -42,7 +42,7 @@ export const PlayerHeader = (props: Props) => {
           onClick={props.onPlayMedia}
           class={clsx(
             styles.playButton,
-            props.isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay
+            props.isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay,
           )}
           aria-label="Play"
           data-playing="false"

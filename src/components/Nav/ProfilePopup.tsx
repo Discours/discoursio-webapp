@@ -1,17 +1,20 @@
-import { useSession } from '../../context/session'
 import type { PopupProps } from '../_shared/Popup'
-import { Popup } from '../_shared/Popup'
-import styles from '../_shared/Popup/Popup.module.scss'
+
 import { getPagePath } from '@nanostores/router'
-import { router } from '../../stores/router'
+
 import { useLocalize } from '../../context/localize'
+import { useSession } from '../../context/session'
+import { router } from '../../stores/router'
+import { Popup } from '../_shared/Popup'
+
+import styles from '../_shared/Popup/Popup.module.scss'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
 export const ProfilePopup = (props: ProfilePopupProps) => {
   const {
     user,
-    actions: { signOut }
+    actions: { signOut },
   } = useSession()
 
   const { t } = useLocalize()

@@ -1,19 +1,23 @@
-import styles from './AuthModal.module.scss'
-import { clsx } from 'clsx'
-import { SocialProviders } from './SocialProviders'
-import { ApiError } from '../../../utils/apiClient'
-import { createSignal, Show } from 'solid-js'
-import { email, setEmail } from './sharedLogic'
-import { useRouter } from '../../../stores/router'
 import type { AuthModalSearchParams } from './types'
-import { hideModal } from '../../../stores/ui'
-import { useSession } from '../../../context/session'
-import { signSendLink } from '../../../stores/auth'
-import { validateEmail } from '../../../utils/validateEmail'
-import { useSnackbar } from '../../../context/snackbar'
+
+import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
+import { useSession } from '../../../context/session'
+import { useSnackbar } from '../../../context/snackbar'
+import { signSendLink } from '../../../stores/auth'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { ApiError } from '../../../utils/apiClient'
+import { validateEmail } from '../../../utils/validateEmail'
+
 import { AuthModalHeader } from './AuthModalHeader'
+import { PasswordField } from './PasswordField'
+import { email, setEmail } from './sharedLogic'
+import { SocialProviders } from './SocialProviders'
+
+import styles from './AuthModal.module.scss'
 
 type FormFields = {
   email: string
@@ -31,19 +35,18 @@ export const LoginForm = () => {
   // TODO: better solution for interactive error messages
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
-  const [showPassword, setShowPassword] = createSignal(false)
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
 
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const {
-    actions: { signIn }
+    actions: { signIn },
   } = useSession()
 
-  const { changeSearchParam } = useRouter<AuthModalSearchParams>()
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
 
   const [password, setPassword] = createSignal('')
 
@@ -144,7 +147,7 @@ export const LoginForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email
+            'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input
@@ -162,31 +165,7 @@ export const LoginForm = () => {
           </Show>
         </div>
 
-        <div
-          class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().password
-          })}
-        >
-          <input
-            id="password"
-            name="password"
-            autocomplete="password"
-            type={showPassword() ? 'text' : 'password'}
-            placeholder={t('Password')}
-            onInput={(event) => handlePasswordInput(event.currentTarget.value)}
-          />
-          <label for="password">{t('Password')}</label>
-          <button
-            type="button"
-            class={styles.passwordToggle}
-            onClick={() => setShowPassword(!showPassword())}
-          >
-            <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
-          </button>
-          <Show when={validationErrors().password}>
-            <div class={styles.validationError}>{validationErrors().password}</div>
-          </Show>
-        </div>
+        <PasswordField onInput={(value) => handlePasswordInput(value)} />
 
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
@@ -197,12 +176,22 @@ export const LoginForm = () => {
           <span
             class="link"
             onClick={() =>
-              changeSearchParam({
-                mode: 'forgot-password'
+              changeSearchParams({
+                mode: 'forgot-password',
               })
             }
           >
             {t('Forgot password?')}
+          </span>
+          <span
+            class="link"
+            onClick={() =>
+              changeSearchParams({
+                mode: 'change-password',
+              })
+            }
+          >
+            {t('Change password')}
           </span>
         </div>
       </div>
@@ -214,8 +203,8 @@ export const LoginForm = () => {
           <span
             class={styles.authLink}
             onClick={() =>
-              changeSearchParam({
-                mode: 'register'
+              changeSearchParams({
+                mode: 'register',
               })
             }
           >

@@ -1,12 +1,15 @@
-import { createMemo, createSignal, onMount, Show } from 'solid-js'
-import type { Shout } from '../graphql/types.gen'
-import { PageLayout } from '../components/_shared/PageLayout'
 import type { PageProps } from './types'
-import { loadShout, useArticlesStore } from '../stores/zine/articles'
-import { useRouter } from '../stores/router'
+import type { Shout } from '../graphql/types.gen'
+
+import { redirectPage } from '@nanostores/router'
+import { createMemo, createSignal, onMount, Show } from 'solid-js'
+
 import { Loading } from '../components/_shared/Loading'
-import { ReactionsProvider } from '../context/reactions'
+import { PageLayout } from '../components/_shared/PageLayout'
 import { FullArticle } from '../components/Article/FullArticle'
+import { ReactionsProvider } from '../context/reactions'
+import { router, useRouter } from '../stores/router'
+import { loadShout, useArticlesStore } from '../stores/zine/articles'
 import { setPageLoadManagerPromise } from '../utils/pageLoadManager'
 
 export const ArticlePage = (props: PageProps) => {
@@ -16,18 +19,20 @@ export const ArticlePage = (props: PageProps) => {
   const slug = createMemo(() => page().params['slug'] as string)
 
   const { articleEntities } = useArticlesStore({
-    shouts
+    shouts,
   })
 
   const article = createMemo<Shout>(() => articleEntities()[slug()])
 
   onMount(async () => {
-    const articleValue = articleEntities()[slug()]
-
-    if (!articleValue || !articleValue.body) {
+    if (!article() || !article().body) {
       const loadShoutPromise = loadShout(slug())
       setPageLoadManagerPromise(loadShoutPromise)
       await loadShoutPromise
+
+      if (!article()) {
+        redirectPage(router, 'fourOuFour')
+      }
     }
   })
 
@@ -43,6 +48,7 @@ export const ArticlePage = (props: PageProps) => {
 
   return (
     <PageLayout
+      title={props.seo?.title}
       headerTitle={article()?.title || ''}
       slug={article()?.slug}
       articleBody={article()?.body}

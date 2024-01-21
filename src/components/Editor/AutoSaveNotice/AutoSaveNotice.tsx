@@ -1,7 +1,9 @@
 import { clsx } from 'clsx'
-import styles from './AutoSaveNotice.module.scss'
-import { Loading } from '../../_shared/Loading'
+
 import { useLocalize } from '../../../context/localize'
+import { Loading } from '../../_shared/Loading'
+
+import styles from './AutoSaveNotice.module.scss'
 
 type Props = {
   active: boolean

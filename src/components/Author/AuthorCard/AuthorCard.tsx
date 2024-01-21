@@ -1,37 +1,40 @@
 import type { Author } from '../../../graphql/types.gen'
-import { Userpic } from '../Userpic'
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
-import { translit } from '../../../utils/ru2en'
-import { follow, unfollow } from '../../../stores/zine/common'
-import { clsx } from 'clsx'
-import { useSession } from '../../../context/session'
-import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
-import { FollowingEntity, Topic } from '../../../graphql/types.gen'
-import { router, useRouter } from '../../../stores/router'
+
 import { openPage, redirectPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
-import { Modal } from '../../Nav/Modal'
+import { useSession } from '../../../context/session'
+import { FollowingEntity, Topic } from '../../../graphql/types.gen'
 import { SubscriptionFilter } from '../../../pages/types'
+import { router, useRouter } from '../../../stores/router'
+import { follow, unfollow } from '../../../stores/zine/common'
 import { isAuthor } from '../../../utils/isAuthor'
-import { AuthorBadge } from '../AuthorBadge'
-import { TopicBadge } from '../../Topic/TopicBadge'
+import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
+import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import { Modal } from '../../Nav/Modal'
+import { TopicBadge } from '../../Topic/TopicBadge'
+import { AuthorBadge } from '../AuthorBadge'
+import { Userpic } from '../Userpic'
+
 import styles from './AuthorCard.module.scss'
+import stylesButton from '../../_shared/Button/Button.module.scss'
 
 type Props = {
   author: Author
   followers?: Author[]
   following?: Array<Author | Topic>
 }
-
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const {
     session,
     subscriptions,
     isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication }
+    actions: { loadSubscriptions, requireAuthentication },
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -39,7 +42,7 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
   const subscribed = createMemo<boolean>(() =>
-    subscriptions().authors.some((author) => author.slug === props.author.slug)
+    subscriptions().authors.some((author) => author.slug === props.author.slug),
   )
 
   const subscribe = async (really = true) => {
@@ -68,12 +71,12 @@ export const AuthorCard = (props: Props) => {
   })
 
   // TODO: reimplement AuthorCard
-  const { changeSearchParam } = useRouter()
+  const { changeSearchParams } = useRouter()
   const initChat = () => {
     requireAuthentication(() => {
       openPage(router, `inbox`)
-      changeSearchParam({
-        initChat: props.author.id.toString()
+      changeSearchParams({
+        initChat: props.author.id.toString(),
       })
     }, 'discussions')
   }
@@ -96,12 +99,22 @@ export const AuthorCard = (props: Props) => {
     }
   })
 
-  const followButtonText = () => {
+  const followButtonText = createMemo(() => {
     if (isSubscribing()) {
-      return t('...subscribing')
+      return t('subscribing...')
     }
-    return t(subscribed() ? 'Unfollow' : 'Follow')
-  }
+
+    if (subscribed()) {
+      return (
+        <>
+          <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+          <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+        </>
+      )
+    }
+
+    return t('Follow')
+  })
 
   return (
     <div class={clsx(styles.author, 'row')}>
@@ -117,7 +130,9 @@ export const AuthorCard = (props: Props) => {
       <div class={clsx('col-md-15 col-xl-13', styles.authorDetails)}>
         <div class={styles.authorDetailsWrapper}>
           <div class={styles.authorName}>{name()}</div>
-          <div class={styles.authorAbout} innerHTML={props.author.bio} />
+          <Show when={props.author.bio}>
+            <div class={styles.authorAbout} innerHTML={props.author.bio} />
+          </Show>
           <Show
             when={
               (props.followers && props.followers.length > 0) ||
@@ -205,13 +220,16 @@ export const AuthorCard = (props: Props) => {
                   <Button
                     onClick={handleSubscribe}
                     value={followButtonText()}
-                    class={styles.buttonSubscribe}
+                    isSubscribeButton={true}
+                    class={clsx({
+                      [stylesButton.subscribed]: subscribed(),
+                    })}
                   />
                   <Button
                     variant={'secondary'}
                     value={t('Message')}
                     onClick={initChat}
-                    class={styles.buttonSubscribe}
+                    class={styles.buttonWriteMessage}
                   />
                 </div>
               }
@@ -220,7 +238,12 @@ export const AuthorCard = (props: Props) => {
                 <Button
                   variant="secondary"
                   onClick={() => redirectPage(router, 'profileSettings')}
-                  value={t('Edit profile')}
+                  value={
+                    <>
+                      <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>
+                      <span class={styles.authorActionsLabelMobile}>{t('Edit')}</span>
+                    </>
+                  }
                 />
                 <SharePopup
                   title={props.author.name}
@@ -234,7 +257,7 @@ export const AuthorCard = (props: Props) => {
           </Show>
         </ShowOnlyOnClient>
         <Show when={props.followers}>
-          <Modal variant="medium" name="followers" maxHeight>
+          <Modal variant="medium" isResponsive={true} name="followers" maxHeight>
             <>
               <h2>{t('Followers')}</h2>
               <div class={styles.listWrapper}>
@@ -250,7 +273,7 @@ export const AuthorCard = (props: Props) => {
           </Modal>
         </Show>
         <Show when={props.following}>
-          <Modal variant="medium" name="following" maxHeight>
+          <Modal variant="medium" isResponsive={true} name="following" maxHeight>
             <>
               <h2>{t('Subscriptions')}</h2>
               <ul class="view-switcher">

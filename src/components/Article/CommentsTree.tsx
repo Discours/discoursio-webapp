@@ -1,15 +1,19 @@
-import { Show, createMemo, createSignal, onMount, For } from 'solid-js'
-import { Comment } from './Comment'
-import styles from './Article.module.scss'
 import { clsx } from 'clsx'
-import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
-import { useSession } from '../../context/session'
-import { Button } from '../_shared/Button'
-import { useReactions } from '../../context/reactions'
-import { byCreated } from '../../utils/sortby'
-import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
+import { Show, createMemo, createSignal, onMount, For, lazy } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
-import SimplifiedEditor from '../Editor/SimplifiedEditor'
+import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
+import { Author, Reaction, ReactionKind } from '../../graphql/types.gen'
+import { byCreated } from '../../utils/sortby'
+import { Button } from '../_shared/Button'
+import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
+
+import { Comment } from './Comment'
+
+import styles from './Article.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
 type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
 
@@ -48,11 +52,11 @@ export const CommentsTree = (props: Props) => {
 
   const {
     reactionEntities,
-    actions: { createReaction }
+    actions: { createReaction },
   } = useReactions()
 
   const comments = createMemo(() =>
-    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
+    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT'),
   )
 
   const sortedComments = createMemo(() => {
@@ -96,7 +100,7 @@ export const CommentsTree = (props: Props) => {
       await createReaction({
         kind: ReactionKind.Comment,
         body: value,
-        shout: props.shoutId
+        shout: props.shoutId,
       })
       setClearEditor(true)
     } catch (error) {
@@ -154,7 +158,7 @@ export const CommentsTree = (props: Props) => {
             <Comment
               sortedComments={sortedComments()}
               isArticleAuthor={Boolean(
-                props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug)
+                props.articleAuthors.some((a) => a.slug === reaction.createdBy.slug),
               )}
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}

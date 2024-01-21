@@ -1,25 +1,29 @@
+import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import styles from './PublishSettings.module.scss'
-import { createSignal, onMount, Show } from 'solid-js'
-import { TopicSelect, UploadModalContent } from '../../Editor'
-import { Button } from '../../_shared/Button'
-import { hideModal, showModal } from '../../../stores/ui'
+import { createSignal, lazy, onMount, Show } from 'solid-js'
+import { createStore } from 'solid-js/store'
+
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
-import { Modal } from '../../Nav/Modal'
-import { Topic } from '../../../graphql/types.gen'
-import { apiClient } from '../../../utils/apiClient'
-import { EMPTY_TOPIC } from '../Edit'
 import { useSession } from '../../../context/session'
-import { Icon } from '../../_shared/Icon'
-import stylesBeside from '../../Feed/Beside.module.scss'
-import { redirectPage } from '@nanostores/router'
-import { router } from '../../../stores/router'
-import { GrowingTextarea } from '../../_shared/GrowingTextarea'
-import { createStore } from 'solid-js/store'
+import { Topic } from '../../../graphql/types.gen'
 import { UploadedFile } from '../../../pages/types'
-import SimplifiedEditor, { MAX_DESCRIPTION_LIMIT } from '../../Editor/SimplifiedEditor'
+import { router } from '../../../stores/router'
+import { hideModal, showModal } from '../../../stores/ui'
+import { apiClient } from '../../../utils/apiClient'
+import { Button } from '../../_shared/Button'
+import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
+import { TopicSelect, UploadModalContent } from '../../Editor'
+import { Modal } from '../../Nav/Modal'
+import { EMPTY_TOPIC } from '../Edit'
+
+import styles from './PublishSettings.module.scss'
+import stylesBeside from '../../Feed/Beside.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
+const DESCRIPTION_MAX_LENGTH = 400
 
 type Props = {
   shoutId: number
@@ -40,7 +44,7 @@ export const PublishSettings = (props: Props) => {
     if (!props.form.description) {
       const cleanFootnotes = props.form.body.replaceAll(/<footnote data-value=".*?">.*?<\/footnote>/g, '')
       const leadText = cleanFootnotes.replaceAll(/<\/?[^>]+(>|$)/gi, ' ')
-      return shorten(leadText, MAX_DESCRIPTION_LIMIT).trim()
+      return shorten(leadText, DESCRIPTION_MAX_LENGTH).trim()
     }
     return props.form.description
   }
@@ -51,12 +55,12 @@ export const PublishSettings = (props: Props) => {
     slug: props.form.slug,
     title: props.form.title,
     subtitle: props.form.subtitle,
-    description: composeDescription()
+    description: composeDescription(),
   }
 
   const {
     formErrors,
-    actions: { setForm, setFormErrors, saveShout, publishShout }
+    actions: { setForm, setFormErrors, saveShout, publishShout },
   } = useEditorContext()
 
   const [settingsForm, setSettingsForm] = createStore(initialData)
@@ -78,7 +82,7 @@ export const PublishSettings = (props: Props) => {
       setSettingsForm((prev) => {
         return {
           ...prev,
-          mainTopic: newSelectedTopics[0]
+          mainTopic: newSelectedTopics[0],
         }
       })
     }
@@ -96,7 +100,7 @@ export const PublishSettings = (props: Props) => {
 
   const handleBackClick = () => {
     redirectPage(router, 'edit', {
-      shoutId: props.shoutId.toString()
+      shoutId: props.shoutId.toString(),
     })
   }
   const handleCancelClick = () => {
@@ -136,12 +140,12 @@ export const PublishSettings = (props: Props) => {
               </div>
               <div
                 class={clsx(styles.shoutCardCoverContainer, {
-                  [styles.hasImage]: settingsForm.coverImageUrl
+                  [styles.hasImage]: settingsForm.coverImageUrl,
                 })}
               >
                 <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
                   <div class={styles.shoutCardCover}>
-                    <Image src={settingsForm.coverImageUrl} alt={initialData.title} width={1600} />
+                    <Image src={settingsForm.coverImageUrl} alt={initialData.title} width={800} />
                   </div>
                 </Show>
                 <div class={styles.text}>
@@ -156,7 +160,7 @@ export const PublishSettings = (props: Props) => {
             </div>
             <p class="description">
               {t(
-                'Choose a title image for the article. You can immediately see how the publication card will look like.'
+                'Choose a title image for the article. You can immediately see how the publication card will look like.',
               )}
             </p>
 
@@ -189,7 +193,7 @@ export const PublishSettings = (props: Props) => {
                 label={t('Description')}
                 initialContent={composeDescription()}
                 onChange={(value) => setForm('description', value)}
-                maxLength={MAX_DESCRIPTION_LIMIT}
+                maxLength={DESCRIPTION_MAX_LENGTH}
               />
             </div>
 
@@ -202,7 +206,7 @@ export const PublishSettings = (props: Props) => {
             <h4>{t('Topics')}</h4>
             <p class="description">
               {t(
-                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title'
+                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title',
               )}
             </p>
             <div class={styles.inputContainer}>
@@ -221,23 +225,12 @@ export const PublishSettings = (props: Props) => {
                 <div class={styles.validationError}>{formErrors.selectedTopics}</div>
               </Show>
             </div>
-
-            {/*<h4>Соавторы</h4>*/}
-            {/*<p class="description">У каждого соавтора можно добавить роль</p>*/}
-            {/*<div class="pretty-form__item--with-button">*/}
-            {/*  <div class="pretty-form__item">*/}
-            {/*    <input type="text" name="authors" id="authors" placeholder="Введите имя или e-mail" />*/}
-            {/*    <label for="authors">Введите имя или e-mail</label>*/}
-            {/*  </div>*/}
-            {/*  <button class="button button--submit">Добавить</button>*/}
-            {/*</div>*/}
-
-            {/*<div class="row">*/}
-            {/*  <div class="col-md-6">Михаил Драбкин</div>*/}
-            {/*  <div class="col-md-6">*/}
-            {/*    <input type="text" name="coauthor" id="coauthor1" class="nolabel" />*/}
-            {/*  </div>*/}
-            {/*</div>*/}
+            <h4>{t('Collaborators')}</h4>
+            <Button
+              variant="primary"
+              onClick={() => showModal('inviteCoAuthors')}
+              value={t('Invite collaborators')}
+            />
           </div>
         </div>
       </div>

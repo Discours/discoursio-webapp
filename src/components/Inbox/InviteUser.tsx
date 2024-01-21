@@ -1,7 +1,10 @@
-import styles from './InviteUser.module.scss'
-import DialogAvatar from './DialogAvatar'
 import type { Author } from '../../graphql/types.gen'
+
 import { Icon } from '../_shared/Icon'
+
+import DialogAvatar from './DialogAvatar'
+
+import styles from './InviteUser.module.scss'
 
 type DialogProps = {
   author: Author

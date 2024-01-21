@@ -1,18 +1,20 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
 import type { PageProps } from '../types'
+
+import { createEffect, createMemo, on } from 'solid-js'
+
+import { PageLayout } from '../../components/_shared/PageLayout'
 import { Topics } from '../../components/Nav/Topics'
 import { Expo } from '../../components/Views/Expo'
 import { useLocalize } from '../../context/localize'
-import { createMemo } from 'solid-js'
-import { LayoutType } from '../types'
 import { useRouter } from '../../stores/router'
-import { Title } from '@solidjs/meta'
+import { LayoutType } from '../types'
 
 export const ExpoPage = (props: PageProps) => {
   const { t } = useLocalize()
-  const { page: getPage } = useRouter()
-  const getLayout = createMemo<LayoutType>(() => getPage().params['layout'] as LayoutType)
-  const title = createMemo(() => {
+  const { page } = useRouter()
+  const getLayout = createMemo<LayoutType>(() => page().params['layout'] as LayoutType)
+
+  const getTitle = () => {
     switch (getLayout()) {
       case 'music': {
         return t('Audio')
@@ -30,13 +32,22 @@ export const ExpoPage = (props: PageProps) => {
         return t('Art')
       }
     }
-  })
+  }
+
+  createEffect(
+    on(
+      () => getLayout(),
+      () => {
+        document.title = getTitle()
+      },
+      { defer: true },
+    ),
+  )
 
   return (
-    <PageLayout withPadding={true} zeroBottomPadding={true}>
-      <Title>{title()}</Title>
+    <PageLayout withPadding={true} zeroBottomPadding={true} title={getTitle()}>
       <Topics />
-      <Expo shouts={props.expoShouts} />
+      <Expo shouts={props.expoShouts} layout={getLayout()} />
     </PageLayout>
   )
 }

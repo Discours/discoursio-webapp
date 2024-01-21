@@ -4,7 +4,6 @@
   "singleQuote": true,
   "proseWrap": "always",
   "printWidth": 108,
-  "trailingComma": "none",
   "plugins": [],
   "overrides": [
     {

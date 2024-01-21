@@ -1,10 +1,12 @@
 import { createSignal, JSX, Show } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { useSnackbar } from '../../../context/snackbar'
 import { validateEmail } from '../../../utils/validateEmail'
 import { Button } from '../Button'
-import styles from './Subscribe.module.scss'
-import { useSnackbar } from '../../../context/snackbar'
 import { Icon } from '../Icon'
+
+import styles from './Subscribe.module.scss'
 
 type Props = {
   variant?: 'mobileSubscription'
@@ -16,7 +18,7 @@ export const Subscribe = (props: Props) => {
   const [email, setEmail] = createSignal('')
   const [emailError, setEmailError] = createSignal<string>(null)
   const {
-    actions: { showSnackbar }
+    actions: { showSnackbar },
   } = useSnackbar()
 
   const validate = (): boolean => {
@@ -44,14 +46,14 @@ export const Subscribe = (props: Props) => {
 
     if (!validate()) return
 
-    setTitle(t('...subscribing'))
+    setTitle(t('subscribing...'))
 
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: email() })
+      body: JSON.stringify({ email: email() }),
     }
 
     const response = await fetch('/api/newsletter', requestOptions)
@@ -106,7 +108,7 @@ export const Subscribe = (props: Props) => {
               <Icon name="arrow-right" />
             </button>
           </div>
-          <div class="description">Подпишитесь на рассылку лучших публикаций</div>
+          <div class="description">Подпишитесь на&nbsp;рассылку лучших публикаций</div>
         </Show>
         <Show when={emailError()}>
           <div class={styles.error}>{emailError()}</div>

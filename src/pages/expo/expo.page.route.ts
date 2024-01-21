@@ -1,4 +1,5 @@
 import { ROUTES } from '../../stores/router'
 import { getServerRoute } from '../../utils/getServerRoute'
 
-export default getServerRoute(ROUTES.expo)
+// yes, it's a hack
+export default getServerRoute(ROUTES.expo.replace(':layout?', '*'))

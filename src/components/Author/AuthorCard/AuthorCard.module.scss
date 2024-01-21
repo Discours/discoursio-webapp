@@ -43,8 +43,23 @@
     }
   }
 
+  .authorActionsLabel {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  .authorActionsLabelMobile {
+    display: none;
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+    }
+  }
+
   .authorDetails {
     display: block;
+    margin-bottom: 0;
 
     @include media-breakpoint-down(md) {
       flex: 1 100%;
@@ -77,37 +92,10 @@
     flex-wrap: wrap;
   }
 
-  .buttonSubscribe {
-    aspect-ratio: auto;
-    background-color: #000;
-    border: 1px solid #000;
+  .buttonWriteMessage {
     border-radius: 0.8rem;
-    color: #fff;
-    float: none;
     padding-bottom: 0.6rem;
     padding-top: 0.6rem;
-    width: 10em;
-
-    .icon {
-      margin-right: 0.5em;
-
-      img {
-        filter: invert(1);
-      }
-    }
-
-    &:hover {
-      background: #fff;
-      color: #000;
-
-      .icon img {
-        filter: invert(0);
-      }
-    }
-
-    img {
-      vertical-align: text-top;
-    }
   }
 }
 
@@ -174,7 +162,7 @@
 .authorSubscribeSocial {
   align-items: center;
   display: flex;
-  margin: 2rem 0;
+  margin: 0.5rem 0 2rem -0.4rem;
 
   .socialLink {
     border: none;
@@ -243,7 +231,8 @@
       }
     }
 
-    &[href*='telegram.com/'] {
+    &[href*='telegram.com/'],
+    &[href*='t.me/'] {
       &::before {
         background-image: url(/icons/user-link-telegram.svg);
       }
@@ -429,7 +418,6 @@
   @include media-breakpoint-down(sm) {
     flex: 1 100%;
     justify-content: center;
-    margin-top: 1em;
   }
 
   @include media-breakpoint-down(md) {
@@ -446,7 +434,6 @@
   flex-wrap: wrap;
   font-size: 1.4rem;
   margin-top: 1.5rem;
-  gap: 1rem;
 
   @include media-breakpoint-down(md) {
     justify-content: center;
@@ -457,9 +444,17 @@
   align-items: center;
   cursor: pointer;
   display: inline-flex;
-  margin-right: 3rem;
+  margin: 0 2% 1rem;
   vertical-align: top;
   border-bottom: unset !important;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
 
   .subscribersItem {
     position: relative;

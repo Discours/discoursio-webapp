@@ -215,3 +215,108 @@ h5 {
     }
   }
 }
+
+.userpic {
+  @include font-size(1.2rem);
+
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 1rem;
+  color: var(--black-300);
+  border: 1px solid var(--black-100);
+  cursor: pointer;
+
+  .userpicImage {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: contain;
+  }
+
+  &.hasControls {
+    overflow: visible;
+  }
+
+  .controls {
+    position: absolute;
+    right: -50px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .control {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    border-radius: 50%;
+    background: var(--background-color);
+    border: 1px solid var(--black-100);
+
+    img {
+      border-radius: unset;
+    }
+
+    &:hover {
+      background: var(--background-color-invert);
+
+      img {
+        filter: invert(1);
+      }
+    }
+  }
+}
+
+.socialInput {
+  margin-top: 1rem;
+}
+
+.formActions {
+  background: var(--background-color);
+  position: sticky;
+  z-index: 12;
+  bottom: 0;
+  border-top: 2px solid var(--black-100);
+  margin-bottom: -40px;
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+
+  .cancel {
+    color: #d00820;
+    padding: 0.8rem 0 !important;
+  }
+
+  .cancelLabel {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  .cancelLabelMobile {
+    display: none;
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+    }
+  }
+
+  :global(.row) > * {
+    margin-bottom: 0;
+  }
+}

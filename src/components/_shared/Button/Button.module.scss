@@ -8,8 +8,8 @@
   white-space: nowrap;
 
   &.primary {
-    background: #000;
-    color: #fff;
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
 
     &:hover {
       color: #ccc;
@@ -130,5 +130,66 @@
     min-width: 53px;
     font-size: 15px;
     padding: 1rem 1.2rem;
+  }
+
+  &.subscribeButton {
+    aspect-ratio: auto;
+    background-color: #000;
+    border: 2px solid #000;
+    border-radius: 0.8rem;
+    color: #fff;
+    float: none;
+    padding-bottom: 0.6rem;
+    padding-top: 0.6rem;
+    width: 10em;
+
+    .icon {
+      img {
+        filter: invert(1);
+      }
+    }
+
+    &:hover {
+      background: #fff;
+      color: #000;
+
+      .icon img {
+        filter: invert(0) !important;
+      }
+
+      .buttonSubscribeLabel {
+        display: none;
+      }
+
+      .buttonSubscribeLabelHovered {
+        display: block;
+      }
+    }
+
+    .buttonSubscribeLabelHovered {
+      display: none;
+    }
+
+    img {
+      vertical-align: text-top;
+    }
+  }
+
+  &.subscribed {
+    background: #fff;
+    color: #000;
+
+    .icon img {
+      filter: invert(0);
+    }
+
+    &:hover {
+      background: #000;
+      color: #fff;
+
+      .icon img {
+        filter: invert(1) !important;
+      }
+    }
   }
 }

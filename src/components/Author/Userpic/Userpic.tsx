@@ -1,9 +1,11 @@
-import { createMemo, Show } from 'solid-js'
-import styles from './Userpic.module.scss'
 import { clsx } from 'clsx'
+import { createMemo, Show } from 'solid-js'
+
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
-import { Loading } from '../../_shared/Loading'
 import { Image } from '../../_shared/Image'
+import { Loading } from '../../_shared/Loading'
+
+import styles from './Userpic.module.scss'
 
 type Props = {
   name: string
@@ -46,7 +48,7 @@ export const Userpic = (props: Props) => {
   return (
     <div
       class={clsx(styles.Userpic, props.class, styles[props.size ?? 'M'], {
-        ['cursorPointer']: props.onClick
+        ['cursorPointer']: props.onClick,
       })}
       onClick={props.onClick}
     >
@@ -55,7 +57,7 @@ export const Userpic = (props: Props) => {
           condition={props.hasLink}
           wrapper={(children) => <a href={`/author/${props.slug}`}>{children}</a>}
         >
-          <Show when={props.userpic} fallback={<div class={styles.letters}>{letters()}</div>}>
+          <Show keyed={true} when={props.userpic} fallback={<div class={styles.letters}>{letters()}</div>}>
             <Image src={props.userpic} width={avatarSize()} height={avatarSize()} alt={props.name} />
           </Show>
         </ConditionalWrapper>

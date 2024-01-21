@@ -1,0 +1,23 @@
+.SoonChip {
+  @include font-size(1.2rem);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  height: 22px;
+  padding: 2px 7px 2px 3px;
+  gap: -1px;
+  margin-left: 0.5rem;
+  border-radius: 8px;
+  background: var(--black-500);
+  color: var(--black-50);
+  font-weight: 700;
+  letter-spacing: 0.036px;
+  line-height: 1;
+
+  .icon {
+    width: 16px;
+    height: 16px;
+  }
+}

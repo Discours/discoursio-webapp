@@ -265,10 +265,29 @@ mark.highlight {
   }
 }
 
-figure[data-type='capturedImage'] {
-  flex-direction: column-reverse;
+.ProseMirror-hideselection figure[data-type='figure'] {
+  & > figcaption {
+    --selection-color: rgb(0 0 0 / 60%);
+  }
 }
 
+figure[data-type='figure'] {
+  width: 100% !important;
+
+  .iframe-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+
+    iframe {
+      display: block;
+      width: 100%;
+    }
+  }
+}
+
+/* stylelint-disable-next-line selector-type-no-unknown */
 footnote {
   display: inline-flex;
   position: relative;
@@ -276,7 +295,7 @@ footnote {
   width: 0.8rem;
   height: 1em;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     width: 10px;

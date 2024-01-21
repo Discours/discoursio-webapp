@@ -1,7 +1,9 @@
-import { Icon } from '../_shared/Icon'
-import styles from '../../styles/FourOuFour.module.scss'
 import { clsx } from 'clsx'
+
 import { useLocalize } from '../../context/localize'
+import { Icon } from '../_shared/Icon'
+
+import styles from '../../styles/FourOuFour.module.scss'
 
 export const FourOuFourView = (_props) => {
   const { t } = useLocalize()

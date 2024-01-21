@@ -1,5 +1,7 @@
 import { thumborUrl } from './config'
 
+const thumborPrefix = `${thumborUrl}/unsafe/`
+
 const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
   const widthString = options.width ? options.width.toString() : ''
   const heightString = options.height ? options.height.toString() : ''
@@ -11,19 +13,47 @@ const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
   return `${widthString}x${heightString}/`
 }
 
-// I'm not proud of this
-export const getImageUrl = (src: string, options: { width?: number; height?: number } = {}) => {
+export const getImageUrl = (
+  src: string,
+  options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
+) => {
   const sizeUrlPart = getSizeUrlPart(options)
 
-  if (!src.startsWith(thumborUrl)) {
-    return `${thumborUrl}/unsafe/${sizeUrlPart}${src}`
+  let modifiedSrc = src // Используйте новую переменную вместо переназначения параметра
+
+  if (options.noSizeUrlPart) {
+    modifiedSrc = modifiedSrc.replace(/\d+x.*?\//, '')
   }
 
-  if (src.startsWith(`${thumborUrl}/unsafe`)) {
-    const thumborKey = src.replace(`${thumborUrl}/unsafe`, '')
+  if (src.startsWith(thumborPrefix)) {
+    const thumborKey = modifiedSrc.replace(thumborPrefix, '')
+
     return `${thumborUrl}/unsafe/${sizeUrlPart}${thumborKey}`
   }
 
-  const thumborKey = src.replace(`${thumborUrl}`, '')
-  return `${thumborUrl}/${sizeUrlPart}${thumborKey}`
+  return `${thumborUrl}/unsafe/${sizeUrlPart}${modifiedSrc}`
+}
+
+export const getOpenGraphImageUrl = (
+  src: string,
+  options: {
+    topic: string
+    title: string
+    author: string
+    width?: number
+    height?: number
+  },
+) => {
+  const sizeUrlPart = getSizeUrlPart(options)
+
+  const filtersPart = `filters:discourstext('${encodeURIComponent(options.topic)}','${encodeURIComponent(
+    options.author,
+  )}','${encodeURIComponent(options.title)}')/`
+
+  if (src.startsWith(thumborPrefix)) {
+    const thumborKey = src.replace(thumborPrefix, '')
+    return `${thumborUrl}/unsafe/${sizeUrlPart}${filtersPart}${thumborKey}`
+  }
+
+  return `${thumborUrl}/unsafe/${sizeUrlPart}${filtersPart}${src}`
 }

@@ -1,26 +1,32 @@
-import { Dynamic } from 'solid-js/web'
-import { Show, Component, createEffect, createMemo } from 'solid-js'
-import { hideModal } from '../../../stores/ui'
-import { useRouter } from '../../../stores/router'
-import { clsx } from 'clsx'
-import styles from './AuthModal.module.scss'
-import { LoginForm } from './LoginForm'
-import { isMobile } from '../../../utils/media-query'
-import { RegisterForm } from './RegisterForm'
-import { ForgotPasswordForm } from './ForgotPasswordForm'
-import { EmailConfirm } from './EmailConfirm'
 import type { AuthModalMode, AuthModalSearchParams } from './types'
+
+import { clsx } from 'clsx'
+import { Show, Component, createEffect, createMemo } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
+
 import { useLocalize } from '../../../context/localize'
+import { useRouter } from '../../../stores/router'
+import { hideModal } from '../../../stores/ui'
+import { isMobile } from '../../../utils/media-query'
+
+import { ChangePasswordForm } from './ChangePasswordForm'
+import { EmailConfirm } from './EmailConfirm'
+import { ForgotPasswordForm } from './ForgotPasswordForm'
+import { LoginForm } from './LoginForm'
+import { RegisterForm } from './RegisterForm'
+
+import styles from './AuthModal.module.scss'
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   login: LoginForm,
   register: RegisterForm,
   'forgot-password': ForgotPasswordForm,
-  'confirm-email': EmailConfirm
+  'confirm-email': EmailConfirm,
+  'change-password': ChangePasswordForm,
 }
 
 export const AuthModal = () => {
-  let rootRef: HTMLDivElement
+  const rootRef: { current: HTMLDivElement } = { current: null }
   const { t } = useLocalize()
   const { searchParams } = useRouter<AuthModalSearchParams>()
 
@@ -32,17 +38,17 @@ export const AuthModal = () => {
 
   createEffect((oldMode) => {
     if (oldMode !== mode() && !isMobile()) {
-      rootRef?.querySelector('input')?.focus()
+      rootRef.current?.querySelector('input')?.focus()
     }
   }, null)
 
   return (
     <div
-      ref={rootRef}
+      ref={(el) => (rootRef.current = el)}
       class={clsx(styles.view, {
-        row: !source
+        row: !source,
+        [styles.signUp]: mode() === 'register' || mode() === 'confirm-email',
       })}
-      classList={{ [styles.signUp]: mode() === 'register' || mode() === 'confirm-email' }}
     >
       <Show when={!source}>
         <div class={clsx('col-md-12 d-none d-md-flex', styles.authImage)}>
@@ -54,7 +60,7 @@ export const AuthModal = () => {
               <h4>{t(`Join the global community of authors!`)}</h4>
               <p class={styles.authBenefits}>
                 {t(
-                  'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine'
+                  'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine',
                 )}
                 .&nbsp;
                 {t('New stories every day and even more!')}
@@ -77,7 +83,7 @@ export const AuthModal = () => {
       </Show>
       <div
         class={clsx(styles.auth, {
-          'col-md-12': !source
+          'col-md-12': !source,
         })}
       >
         <Dynamic component={AUTH_MODAL_MODES[mode()]} />

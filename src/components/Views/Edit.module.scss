@@ -50,10 +50,11 @@
     .additionalInput {
       @include font-size(1.4rem);
 
-      -moz-appearance: textfield;
+      appearance: textfield;
+
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
+        appearance: none;
         margin: 0;
       }
 
@@ -223,7 +224,7 @@
       border-radius: 50%;
       top: 4px;
       right: 4px;
-      background-color: rgba(black, 0.5);
+      background-color: rgb(0 0 0 / 50%);
       cursor: pointer;
       display: none;
     }
@@ -236,7 +237,6 @@
 
 .wrapperTableOfContents {
   position: fixed;
-  left: 40px;
   top: 106px;
   width: 240px;
   padding-top: 100px;

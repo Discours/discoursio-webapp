@@ -12,7 +12,7 @@
   }
 
   &:hover {
-    .shoutCardCover img {
+    .shoutCardCover {
       transform: scale(1.05);
     }
   }
@@ -48,6 +48,12 @@
     max-width: 2em;
     vertical-align: text-bottom;
   }
+
+  :global(.floor--group) &:not(:last-child) {
+    border-bottom: 1px solid;
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+  }
 }
 
 .shoutCardWithBorder {
@@ -62,6 +68,10 @@
 }
 
 .shoutCardTitlesContainer {
+  .shoutCardCompact & {
+    margin-bottom: 0.3em;
+  }
+
   &.shoutCardTitlesContainerFeedMode {
     margin-bottom: 1.4rem;
   }
@@ -89,23 +99,27 @@
 }
 
 .shoutCardCoverContainer {
+  overflow: hidden;
   position: relative;
 }
 
 .shoutCardCover {
-  background: rgb(0 0 0 / 30%);
   height: 0;
   margin-bottom: 1.6rem;
   overflow: hidden;
-  padding-bottom: 56.2%;
+  padding-bottom: 56.2%; // 16:9
   position: relative;
+  transform-origin: 50% 50%;
+  transition: transform 1s ease-in-out;
+
+  &.loading {
+    background: rgb(0 0 0 / 20%);
+  }
 
   img {
     height: 100%;
     object-fit: cover;
     position: absolute;
-    transform-origin: 50% 50%;
-    transition: transform 1s ease-in-out;
     width: 100%;
   }
 
@@ -134,13 +148,14 @@
 }
 
 .shoutDate {
+  @include font-size(1.2rem);
+
   color: #9fa1a7;
   font-weight: 500;
-  @include font-size(1.2rem);
 }
 
 .shoutDetails {
-  align-items: end;
+  align-items: center;
   display: flex;
   margin-bottom: 1rem;
 }
@@ -155,6 +170,7 @@
 
 .shoutCardTitle {
   @include font-size(2.2rem);
+
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 0.8rem;
@@ -175,6 +191,7 @@
 
   .shoutCardTitlesContainerFeedMode & {
     @include font-size(3.2rem);
+
     line-height: 1.1;
   }
 }
@@ -188,6 +205,7 @@
 
 .shoutCardSubtitle {
   @include font-size(1.8rem);
+
   color: #141414;
   font-weight: 400;
   line-height: 1.3;
@@ -246,6 +264,24 @@
       width: 100%;
       z-index: 1;
     }
+  }
+}
+
+.aspectRatio1x1 {
+  .shoutCardCover {
+    padding-bottom: 100%;
+  }
+}
+
+.aspectRatio4x3 {
+  .shoutCardCover {
+    padding-bottom: 75%;
+  }
+}
+
+.aspectRatio16x9 {
+  .shoutCardCover {
+    padding-bottom: 56.25%;
   }
 }
 
@@ -399,7 +435,6 @@
 
 .shoutCardWithCover {
   aspect-ratio: 16/9;
-  //padding: 0 2.4rem;
   width: 100%;
 
   @include media-breakpoint-down(xl) {
@@ -408,9 +443,22 @@
     padding-top: 30%;
   }
 
-  &.swiper-slide {
-    .shoutCardContent {
-      @include media-breakpoint-down(md) {
+  swiper-slide & {
+    aspect-ratio: 16/9;
+    margin-bottom: 0;
+
+    @include media-breakpoint-down(lg) {
+      aspect-ratio: 1/1;
+    }
+
+    @include media-breakpoint-down(md) {
+      aspect-ratio: 1/1.5;
+    }
+
+    @include media-breakpoint-down(sm) {
+      aspect-ratio: 1/1;
+
+      .shoutCardContent {
         padding-left: 10%;
       }
     }
@@ -468,9 +516,11 @@
     &::after {
       background: rgb(0 0 0 / 60%);
       content: '';
-      height: 100%;
+      height: 102%;
+      left: -1%;
       position: absolute;
-      width: 100%;
+      top: -1%;
+      width: 102%;
       z-index: 1;
     }
   }
@@ -571,6 +621,12 @@
     &:hover {
       background: none;
     }
+  }
+}
+
+.shoutCardDetailsItemLabel {
+  @include media-breakpoint-down(sm) {
+    display: none;
   }
 }
 
@@ -707,6 +763,7 @@
   .shoutCardTitle,
   .shoutCardSubtitle {
     @include font-size(1.8rem);
+
     display: inline;
   }
 
@@ -798,4 +855,8 @@
 
 .shoutTopicTop {
   margin-bottom: 0.4rem !important;
+}
+
+.placeholderCoverImage {
+  position: absolute;
 }

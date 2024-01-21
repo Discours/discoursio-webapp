@@ -22,7 +22,9 @@
 
     a {
       color: rgb(255 255 255 / 64%);
-      transition: color 0.3s, background-color 0.3s;
+      transition:
+        color 0.3s,
+        background-color 0.3s;
 
       &:hover {
         background: #fff;
@@ -66,6 +68,7 @@
 }
 
 .footerCopyrightSocial {
+  align-items: center;
   display: flex;
 
   .icon {
@@ -93,6 +96,15 @@
     margin-top: 0;
     margin-left: 0.3em;
     text-align: right;
+  }
+
+  a:link {
+    border: none;
+    padding-bottom: 0;
+  }
+
+  img {
+    margin: 0 auto;
   }
 }
 

@@ -1,14 +1,18 @@
 // TODO: additional entities list column + article
 
-import { For, Show } from 'solid-js'
-import { ArticleCard } from './ArticleCard'
-import { TopicCard } from '../Topic/Card'
-import styles from './Beside.module.scss'
 import type { Author, Shout, Topic, User } from '../../graphql/types.gen'
-import { Icon } from '../_shared/Icon'
+
 import { clsx } from 'clsx'
+import { For, Show } from 'solid-js'
+
 import { useLocalize } from '../../context/localize'
+import { Icon } from '../_shared/Icon'
 import { AuthorBadge } from '../Author/AuthorBadge'
+import { TopicCard } from '../Topic/Card'
+
+import { ArticleCard } from './ArticleCard'
+
+import styles from './Beside.module.scss'
 
 type Props = {
   title?: string
@@ -33,10 +37,10 @@ export const Beside = (props: Props) => {
             <Show when={!!props.values}>
               <div
                 class={clsx(
-                  'col-md-8',
+                  'col-lg-8',
                   styles[
                     `besideRatingColumn${props.wrapper.charAt(0).toUpperCase() + props.wrapper.slice(1)}`
-                  ]
+                  ],
                 )}
               >
                 <Show when={!!props.title}>
@@ -58,7 +62,11 @@ export const Beside = (props: Props) => {
                     </Show>
                   </div>
                 </Show>
-                <ul class={styles.besideColumn}>
+                <ul
+                  class={clsx(styles.besideColumn, {
+                    [styles.besideColumnTopViewed]: props.wrapper === 'top-article',
+                  })}
+                >
                   <For each={[...props.values]}>
                     {(value: Partial<Shout | User | Topic>) => (
                       <li classList={{ [styles.top]: props.wrapper.startsWith('top-') }}>
@@ -81,12 +89,14 @@ export const Beside = (props: Props) => {
                           <ArticleCard
                             article={value as Shout}
                             settings={{ noimage: true, nodate: props.nodate }}
+                            desktopCoverSize="XS"
                           />
                         </Show>
                         <Show when={props.wrapper === 'top-article' && value?.slug}>
                           <ArticleCard
                             article={value as Shout}
                             settings={{ noimage: true, noauthor: true, nodate: true, isShort: true }}
+                            desktopCoverSize="XS"
                           />
                         </Show>
                       </li>
@@ -95,10 +105,11 @@ export const Beside = (props: Props) => {
                 </ul>
               </div>
             </Show>
-            <div class={clsx('col-md-16', styles.shoutCardContainer)}>
+            <div class={clsx('col-lg-16', styles.shoutCardContainer)}>
               <ArticleCard
                 article={props.beside}
                 settings={{ isBigTitle: true, isBeside: true, nodate: props.nodate }}
+                desktopCoverSize="L"
               />
             </div>
           </div>

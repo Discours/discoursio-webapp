@@ -1,8 +1,11 @@
 import { createEffect, createMemo, createSignal, on, onMount, Show } from 'solid-js'
+
+import { MediaItem } from '../../../pages/types'
+
 import { PlayerHeader } from './PlayerHeader'
 import { PlayerPlaylist } from './PlayerPlaylist'
+
 import styles from './AudioPlayer.module.scss'
-import { MediaItem } from '../../../pages/types'
 
 type Props = {
   media: MediaItem[]
@@ -35,8 +38,8 @@ export const AudioPlayer = (props: Props) => {
       () => {
         setCurrentTrackDuration(0)
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   const handlePlayMedia = async (trackIndex: number) => {
@@ -131,7 +134,7 @@ export const AudioPlayer = (props: Props) => {
             <div
               class={styles.progressFilled}
               style={{
-                width: `${(currentTime() / currentTrackDuration()) * 100 || 0}%`
+                width: `${(currentTime() / currentTrackDuration()) * 100 || 0}%`,
               }}
             />
           </div>

@@ -1,9 +1,6 @@
 import { clsx } from 'clsx'
-import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
-import { Loading } from '../../_shared/Loading'
-import { SearchField } from '../../_shared/SearchField'
-import { isAuthor } from '../../../utils/isAuthor'
+
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { Author, Topic } from '../../../graphql/types.gen'
@@ -11,10 +8,15 @@ import { SubscriptionFilter } from '../../../pages/types'
 import { apiClient } from '../../../utils/apiClient'
 import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
+import { isAuthor } from '../../../utils/isAuthor'
+import { Loading } from '../../_shared/Loading'
+import { SearchField } from '../../_shared/SearchField'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
+import { TopicBadge } from '../../Topic/TopicBadge'
+
 import styles from '../../../pages/profile/Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
-import { AuthorBadge } from '../../Author/AuthorBadge'
-import { TopicBadge } from '../../Topic/TopicBadge'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
@@ -28,7 +30,7 @@ export const ProfileSubscriptions = () => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
         apiClient.getAuthorFollowingUsers({ slug: user().slug }),
-        apiClient.getAuthorFollowingTopics({ slug: user().slug })
+        apiClient.getAuthorFollowingTopics({ slug: user().slug }),
       ])
       setFollowing([...getAuthors, ...getTopics])
       setFiltered([...getAuthors, ...getTopics])
@@ -70,7 +72,7 @@ export const ProfileSubscriptions = () => {
           <div class="row">
             <div class="col-md-20 col-lg-18 col-xl-16">
               <h1>{t('My subscriptions')}</h1>
-              <p class="description">{t('Here you can manage all your Discourse subscriptions')}</p>
+              <p class="description">{t('Here you can manage all your Discours subscriptions')}</p>
               <Show when={following()} fallback={<Loading />}>
                 <ul class="view-switcher">
                   <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>

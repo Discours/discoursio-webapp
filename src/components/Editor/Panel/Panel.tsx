@@ -1,17 +1,20 @@
-import { clsx } from 'clsx'
-import { Button } from '../../_shared/Button'
-import { Icon } from '../../_shared/Icon'
-import { useLocalize } from '../../../context/localize'
-import styles from './Panel.module.scss'
-import { useEditorContext } from '../../../context/editor'
-import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
-import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { getPagePath } from '@nanostores/router'
-import { router } from '../../../stores/router'
+import { clsx } from 'clsx'
+import { createSignal, Show } from 'solid-js'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
-import { createSignal, Show } from 'solid-js'
+
+import { useEditorContext } from '../../../context/editor'
+import { useLocalize } from '../../../context/localize'
+import { router } from '../../../stores/router'
+import { showModal } from '../../../stores/ui'
+import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
+import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
+import { Button } from '../../_shared/Button'
 import { DarkModeToggle } from '../../_shared/DarkModeToggle'
+import { Icon } from '../../_shared/Icon'
+
+import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
 
@@ -26,11 +29,11 @@ export const Panel = (props: Props) => {
     wordCounter,
     editorRef,
     form,
-    actions: { toggleEditorPanel, saveShout, publishShout }
+    actions: { toggleEditorPanel, saveShout, publishShout },
   } = useEditorContext()
 
   const containerRef: { current: HTMLElement } = {
-    current: null
+    current: null,
   }
 
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
@@ -39,7 +42,7 @@ export const Panel = (props: Props) => {
   useOutsideClickHandler({
     containerRef,
     predicate: () => isEditorPanelVisible(),
-    handler: () => toggleEditorPanel()
+    handler: () => toggleEditorPanel(),
   })
 
   useEscKeyDownHandler(() => {
@@ -89,7 +92,9 @@ export const Panel = (props: Props) => {
 
         <section>
           <p>
-            <a class={styles.link}>{t('Invite co-authors')}</a>
+            <span class={styles.link} onClick={() => showModal('inviteCoAuthors')}>
+              {t('Invite co-authors')}
+            </span>
           </p>
           <p>
             <a

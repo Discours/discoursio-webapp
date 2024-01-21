@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
 import { createEffect, createSignal, For, Show, on, onMount, onCleanup } from 'solid-js'
-import SwiperCore, { Manipulation, Navigation, Pagination } from 'swiper'
+import SwiperCore from 'swiper'
+import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 import { throttle } from 'throttle-debounce'
 
 import { MediaItem } from '../../../pages/types'
@@ -27,7 +28,6 @@ export const ImageSwiper = (props: Props) => {
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
   const swiperMainContainer: { current: HTMLDivElement } = { current: null }
-
   const [slideIndex, setSlideIndex] = createSignal(0)
   const [isMobileView, setIsMobileView] = createSignal(false)
   const [selectedImage, setSelectedImage] = createSignal('')
@@ -52,18 +52,13 @@ export const ImageSwiper = (props: Props) => {
     const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation])
+    mainSwipeRef.current?.swiper?.on('slideChange', handleSlideChange)
   })
 
   onMount(() => {
     const updateDirection = () => {
       const width = window.innerWidth
-      const direction = width > MIN_WIDTH ? 'vertical' : 'horizontal'
-      if (direction === 'horizontal') {
-        setIsMobileView(true)
-      } else {
-        setIsMobileView(false)
-      }
-      thumbSwipeRef.current?.swiper?.changeDirection(direction)
+      setIsMobileView(width < MIN_WIDTH)
     }
 
     updateDirection()
@@ -96,47 +91,6 @@ export const ImageSwiper = (props: Props) => {
     <div class={clsx(styles.Swiper, styles.articleMode, { [styles.mobileView]: isMobileView() })}>
       <div class={styles.container} ref={(el) => (swiperMainContainer.current = el)}>
         <Show when={props.images.length > 0}>
-          <div class={styles.holder}>
-            <swiper-container
-              ref={(el) => (mainSwipeRef.current = el)}
-              slides-per-view={1}
-              thumbs-swiper={'.thumbSwiper'}
-              observer={true}
-              onSlideChange={handleSlideChange}
-              space-between={isMobileView() ? 20 : 10}
-            >
-              <For each={props.images}>
-                {(slide, index) => (
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  <swiper-slide lazy="true" virtual-index={index()}>
-                    <div class={styles.image} onClick={handleImageClick}>
-                      <Image src={slide.url} alt={slide.title} width={800} />
-                    </div>
-                  </swiper-slide>
-                )}
-              </For>
-            </swiper-container>
-            <div
-              class={clsx(styles.navigation, styles.prev, {
-                [styles.disabled]: slideIndex() === 0,
-              })}
-              onClick={() => mainSwipeRef.current.swiper.slidePrev()}
-            >
-              <Icon name="swiper-l-arr" class={styles.icon} />
-            </div>
-            <div
-              class={clsx(styles.navigation, styles.next, {
-                [styles.disabled]: slideIndex() + 1 === props.images.length,
-              })}
-              onClick={() => mainSwipeRef.current.swiper.slideNext()}
-            >
-              <Icon name="swiper-r-arr" class={styles.icon} />
-            </div>
-            <div class={styles.counter}>
-              {slideIndex() + 1} / {props.images.length}
-            </div>
-          </div>
           <div class={clsx(styles.holder, styles.thumbsHolder)}>
             <div class={styles.thumbs}>
               <swiper-container
@@ -147,6 +101,8 @@ export const ImageSwiper = (props: Props) => {
                 auto-scroll-offset={1}
                 watch-overflow={true}
                 watch-slides-visibility={true}
+                direction={'horizontal'}
+                slides-per-group-auto={true}
               >
                 <For each={props.images}>
                   {(slide, index) => (
@@ -179,6 +135,46 @@ export const ImageSwiper = (props: Props) => {
               >
                 <Icon name="swiper-r-arr" class={styles.icon} />
               </div>
+            </div>
+          </div>
+          <div class={styles.holder}>
+            <swiper-container
+              ref={(el) => (mainSwipeRef.current = el)}
+              slides-per-view={1}
+              thumbs-swiper={'.thumbSwiper'}
+              observer={true}
+              space-between={isMobileView() ? 20 : 10}
+            >
+              <For each={props.images}>
+                {(slide, index) => (
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  <swiper-slide lazy="true" virtual-index={index()}>
+                    <div class={styles.image} onClick={handleImageClick}>
+                      <Image src={slide.url} alt={slide.title} width={800} />
+                    </div>
+                  </swiper-slide>
+                )}
+              </For>
+            </swiper-container>
+            <div
+              class={clsx(styles.navigation, styles.prev, {
+                [styles.disabled]: slideIndex() === 0,
+              })}
+              onClick={() => mainSwipeRef.current.swiper.slidePrev()}
+            >
+              <Icon name="swiper-l-arr" class={styles.icon} />
+            </div>
+            <div
+              class={clsx(styles.navigation, styles.next, {
+                [styles.disabled]: slideIndex() + 1 === props.images.length,
+              })}
+              onClick={() => mainSwipeRef.current.swiper.slideNext()}
+            >
+              <Icon name="swiper-r-arr" class={styles.icon} />
+            </div>
+            <div class={styles.counter}>
+              {slideIndex() + 1} / {props.images.length}
             </div>
           </div>
         </Show>

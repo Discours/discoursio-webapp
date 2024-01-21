@@ -582,8 +582,8 @@ figure {
   display: flex;
   flex-direction: column;
   width: fit-content;
-  gap: 16px;
   margin: 2em auto;
+  gap: 0.6rem;
 
   img {
     display: block;
@@ -596,11 +596,8 @@ figure {
 figure {
   figcaption {
     color: rgb(0 0 0 / 60%);
-
     @include font-size(1.2rem);
-
     line-height: 1.5;
-    margin-top: 0.5em;
   }
 }
 

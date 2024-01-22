@@ -56,6 +56,7 @@ export const PublishSettings = (props: Props) => {
     title: props.form.title,
     subtitle: props.form.subtitle,
     description: composeDescription(),
+    selectedTopics: [],
   }
 
   const {

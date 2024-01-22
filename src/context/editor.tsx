@@ -23,7 +23,7 @@ export type ShoutForm = {
   shoutId: number
   slug: string
   title: string
-  subtitle: string
+  subtitle?: string
   lead?: string
   description?: string
   selectedTopics: Topic[]

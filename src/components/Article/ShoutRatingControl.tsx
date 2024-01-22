@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createMemo, Show } from 'solid-js'
+import { createMemo, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
@@ -50,14 +50,15 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         !r.reply_to,
     ),
   )
-
+  const [isLoading, setIsLoading] = createSignal(false)
   const handleRatingChange = async (isUpvote: boolean) => {
+    setIsLoading(true)
     requireAuthentication(async () => {
       await createReaction({
         kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
         shout: props.shout.id,
       })
-
+      setIsLoading(false)
       loadShout(props.shout.slug)
       loadReactionsBy({
         by: { shout: props.shout.slug },
@@ -67,7 +68,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   return (
     <div class={clsx(styles.rating, props.class)}>
-      <button onClick={() => handleRatingChange(false)}>
+      <button onClick={() => handleRatingChange(false)} disabled={isLoading()}>
         <Show when={!isDownvoted()}>
           <Icon name="rating-control-less" />
         </Show>
@@ -83,7 +84,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         />
       </Popup>
 
-      <button onClick={() => handleRatingChange(true)}>
+      <button onClick={() => handleRatingChange(true)} disabled={isLoading()}>
         <Show when={!isUpvoted()}>
           <Icon name="rating-control-more" />
         </Show>

@@ -255,12 +255,20 @@ export const SessionProvider = (props: {
   const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
     setIsAuthWithCallback(() => callback)
 
-    await loadSession()
-
     if (!session()) {
-      showModal('auth', modalSource)
+      await loadSession()
+      if (!session()) {
+        showModal('auth', modalSource)
+      }
     }
   }
+
+  createEffect(() => {
+    if (isAuthWithCallback()) {
+      isAuthWithCallback()()
+      setIsAuthWithCallback(null)
+    }
+  })
 
   // authorizer api proxy methods
   const signUp = async (params: SignupInput) => {

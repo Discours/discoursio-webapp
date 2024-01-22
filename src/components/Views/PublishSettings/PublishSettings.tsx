@@ -1,6 +1,6 @@
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { lazy, Show } from 'solid-js'
+import { createEffect, lazy, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
@@ -9,7 +9,7 @@ import { useSession } from '../../../context/session'
 import { UploadedFile } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'
-import { useTopicsStore } from '../../../stores/zine/topics'
+import { loadAllTopics, useTopicsStore } from '../../../stores/zine/topics'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
@@ -39,6 +39,10 @@ export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { author } = useSession()
   const { sortedTopics } = useTopicsStore()
+
+  createEffect(async () => {
+    if (!sortedTopics()) await loadAllTopics()
+  })
 
   const composeDescription = () => {
     if (!props.form.description) {

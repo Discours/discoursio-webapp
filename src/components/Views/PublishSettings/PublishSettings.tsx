@@ -41,7 +41,9 @@ export const PublishSettings = (props: Props) => {
   const { sortedTopics } = useTopicsStore()
 
   createEffect(async () => {
-    if (!sortedTopics()) await loadAllTopics()
+    if (sortedTopics()?.length < 33) {
+      await loadAllTopics()
+    }
   })
 
   const composeDescription = () => {

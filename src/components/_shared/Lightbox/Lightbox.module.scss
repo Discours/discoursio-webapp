@@ -23,20 +23,20 @@
     border-radius: 100%;
     position: fixed;
     z-index: 1001;
-    top: 20px;
-    right: 40px;
+    top: -40px;
+    right: -40px;
     font-size: 30px;
     color: white;
     cursor: pointer;
-    width: 36px;
-    height: 36px;
+    width: 80px;
+    height: 80px;
 
     .icon {
-      height: 20px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 20px;
+      bottom: 16px;
+      height: 15px;
+      left: 16px;
+      position: absolute;
+      width: 15px;
     }
   }
 

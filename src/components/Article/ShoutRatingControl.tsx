@@ -26,7 +26,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   const {
     reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy },
+    actions: { createReaction, loadReactionsBy },
   } = useReactions()
 
   const checkReaction = (reactionKind: ReactionKind) =>

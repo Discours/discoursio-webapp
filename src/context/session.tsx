@@ -47,7 +47,6 @@ export type SessionContextType = {
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
   subscriptions: Accessor<Result>
-  isAuthWithCallback: Accessor<() => void>
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthToken | Promise<AuthToken>
@@ -69,6 +68,8 @@ export type SessionContextType = {
     authorizer: () => Authorizer
   }
 }
+
+const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()
 
@@ -250,11 +251,9 @@ export const SessionProvider = (props: {
     ),
   )
 
-  // require auth wrapper
-  const [isAuthWithCallback, setIsAuthWithCallback] = createSignal<() => void>()
+  const [authCallback, setAuthCallback] = createSignal<() => void>(() => {})
   const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
-    setIsAuthWithCallback(() => callback)
-
+    setAuthCallback((_cb) => callback)
     if (!session()) {
       await loadSession()
       if (!session()) {
@@ -264,9 +263,10 @@ export const SessionProvider = (props: {
   }
 
   createEffect(() => {
-    if (isAuthWithCallback()) {
-      isAuthWithCallback()()
-      setIsAuthWithCallback(null)
+    const handler = authCallback()
+    if (handler !== noop) {
+      handler()
+      setAuthCallback((_cb) => noop)
     }
   })
 
@@ -345,7 +345,6 @@ export const SessionProvider = (props: {
     isSessionLoaded,
     author,
     actions,
-    isAuthWithCallback,
     isAuthenticated,
   }
 

@@ -51,29 +51,12 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     ),
   )
 
-  const deleteShoutReaction = async (reactionKind: ReactionKind) => {
-    const reactionToDelete = Object.values(reactionEntities).find(
-      (r) =>
-        r.kind === reactionKind &&
-        r.created_by.slug === author()?.slug &&
-        r.shout.id === props.shout.id &&
-        !r.reply_to,
-    )
-    return deleteReaction(reactionToDelete.id)
-  }
-
   const handleRatingChange = async (isUpvote: boolean) => {
     requireAuthentication(async () => {
-      if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
-      } else if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
-      } else {
-        await createReaction({
-          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-          shout: props.shout.id,
-        })
-      }
+      await createReaction({
+        kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+        shout: props.shout.id,
+      })
 
       loadShout(props.shout.slug)
       loadReactionsBy({

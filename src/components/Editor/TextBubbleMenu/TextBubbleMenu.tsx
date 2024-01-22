@@ -129,11 +129,21 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     })
   })
 
+  const handleOpenLinkForm = () => {
+    props.editor.chain().focus().addTextWrap({ class: 'highlight-fake-selection' }).run()
+    setLinkEditorOpen(true)
+  }
+
+  const handleCloseLinkForm = () => {
+    setLinkEditorOpen(false)
+    props.editor.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
+  }
+
   return (
     <div ref={props.ref} class={clsx(styles.TextBubbleMenu, { [styles.growWidth]: footnoteEditorOpen() })}>
       <Switch>
         <Match when={linkEditorOpen()}>
-          <InsertLinkForm editor={props.editor} onClose={() => setLinkEditorOpen(false)} />
+          <InsertLinkForm editor={props.editor} onClose={handleCloseLinkForm} />
         </Match>
         <Match when={footnoteEditorOpen()}>
           <SimplifiedEditor
@@ -329,7 +339,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                 <button
                   ref={triggerRef}
                   type="button"
-                  onClick={() => setLinkEditorOpen(true)}
+                  onClick={handleOpenLinkForm}
                   class={clsx(styles.bubbleMenuButton, {
                     [styles.bubbleMenuButtonActive]: isLink(),
                   })}

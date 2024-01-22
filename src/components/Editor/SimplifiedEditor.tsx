@@ -117,7 +117,10 @@ const SimplifiedEditor = (props: Props) => {
       Paragraph,
       Bold,
       Italic,
-      Link.configure({
+      Link.extend({
+        inclusive: false,
+      }).configure({
+        autolink: true,
         openOnClick: false,
       }),
       CharacterCount.configure({

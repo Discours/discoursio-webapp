@@ -130,7 +130,6 @@
     box-sizing: border-box;
     overflow: hidden;
     width: 100%;
-    max-height: var(--slide-height);
 
     .counter {
       @include font-size(1.2rem);

@@ -36,7 +36,8 @@ export const AuthGuard = (props: Props) => {
         )
       }
     } else {
-      await loadSession()
+      // await loadSession()
+      console.warn('session is not loaded')
     }
   })
 

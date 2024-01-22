@@ -1,5 +1,4 @@
 import { createMemo, createSignal, For, Show } from 'solid-js'
-import sanitizeHtml from 'sanitize-html'
 
 import type { Shout } from '../../../graphql/types.gen'
 
@@ -89,14 +88,6 @@ const getTitleAndSubtitle = (
 
   return { title, subtitle }
 }
-
-const sanitizeString = (html) =>
-  sanitizeHtml(html, {
-    allowedTags: ['span'],
-    allowedAttributes: {
-      span: ['class'],
-    },
-  })
 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
@@ -223,13 +214,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <a href={getPagePath(router, 'article', { slug: props.article.slug })}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={sanitizeString(title)} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={title} />
               </span>
             </div>
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
               <div class={styles.shoutCardSubtitle}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={sanitizeString(subtitle)} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle} />
               </div>
             </Show>
           </a>
@@ -259,10 +250,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </Show>
         <Show when={props.article.description}>
-          <section
-            class={styles.shoutCardDescription}
-            innerHTML={sanitizeString(props.article.description)}
-          />
+          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
         </Show>
         <Show when={props.settings?.isFeedMode}>
           <Show when={props.article.description}>

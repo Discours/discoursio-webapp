@@ -1,4 +1,4 @@
-import { createSignal, Show, For, JSX } from 'solid-js'
+import { createSignal, Show, For } from 'solid-js'
 
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'

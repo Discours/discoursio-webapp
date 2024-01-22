@@ -78,7 +78,7 @@ export const Lightbox = (props: Props) => {
     event.preventDefault()
     event.stopPropagation()
 
-    let isTrackpad = event.ctrlKey
+    const isTrackpad = event.ctrlKey
     if (isTrackpad) return
 
     let scale = zoomLevel()

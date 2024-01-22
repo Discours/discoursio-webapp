@@ -46,6 +46,8 @@ import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
 import { Footnote } from './extensions/Footnote'
 import { Iframe } from './extensions/Iframe'
+import { Span } from './extensions/Span'
+import { ToggleTextWrap } from './extensions/ToggleTextWrap'
 import { TrailingNode } from './extensions/TrailingNode'
 import { TextBubbleMenu } from './TextBubbleMenu'
 
@@ -201,6 +203,8 @@ export const Editor = (props: Props) => {
       CustomBlockquote,
       Bold,
       Italic,
+      Span,
+      ToggleTextWrap,
       Strike,
       HorizontalRule.configure({
         HTMLAttributes: {
@@ -208,7 +212,10 @@ export const Editor = (props: Props) => {
         },
       }),
       Underline,
-      Link.configure({
+      Link.extend({
+        inclusive: false,
+      }).configure({
+        autolink: true,
         openOnClick: false,
       }),
       Heading.configure({
@@ -244,6 +251,7 @@ export const Editor = (props: Props) => {
       Figure,
       Figcaption,
       Footnote,
+      ToggleTextWrap,
       CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
@@ -252,6 +260,9 @@ export const Editor = (props: Props) => {
           const { doc, selection } = state
           const { empty } = selection
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
+          if (isEmptyTextBlock) {
+            e.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
+          }
           setIsCommonMarkup(e.isActive('figcaption'))
           const result =
             (view.hasFocus() &&

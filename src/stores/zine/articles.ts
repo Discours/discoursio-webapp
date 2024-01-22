@@ -183,6 +183,7 @@ export const resetSortedArticles = () => {
 
 type InitialState = {
   shouts?: Shout[]
+  layout?: string
 }
 
 const TOP_MONTH_ARTICLES_COUNT = 10
@@ -219,7 +220,14 @@ export const loadTopArticles = async (): Promise<void> => {
 export const useArticlesStore = (initialState: InitialState = {}) => {
   addArticles([...(initialState.shouts || [])])
 
-  if (initialState.shouts) {
+  if (initialState.layout) {
+    // eslint-disable-next-line promise/catch-or-return
+    loadShouts({ filters: { layout: initialState.layout }, limit: 10 }).then(({ newShouts }) => {
+      addArticles(newShouts)
+      setSortedArticles(newShouts)
+    })
+  } else if (initialState.shouts) {
+    addArticles([...initialState.shouts])
     setSortedArticles([...initialState.shouts])
   }
 

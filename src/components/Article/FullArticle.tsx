@@ -4,7 +4,7 @@ import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
 import { Link, Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup } from 'solid-js'
+import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup, on } from 'solid-js'
 import { isServer } from 'solid-js/web'
 
 import { useLocalize } from '../../context/localize'
@@ -42,6 +42,11 @@ import stylesHeader from '../Nav/Header/Header.module.scss'
 type Props = {
   article: Shout
   scrollToComments?: boolean
+}
+
+type IframeSize = {
+  width: number
+  height: number
 }
 
 export type ArticlePageSearchParams = {
@@ -182,18 +187,6 @@ export const FullArticle = (props: Props) => {
     actions: { loadReactionsBy },
   } = useReactions()
 
-  onMount(async () => {
-    await loadReactionsBy({
-      by: { shout: props.article.slug },
-    })
-
-    setIsReactionsLoaded(true)
-  })
-
-  onMount(() => {
-    document.title = props.article.title
-  })
-
   const clickHandlers = []
   const documentClickHandlers = []
 
@@ -295,8 +288,50 @@ export const FullArticle = (props: Props) => {
     }
   }
 
-  const cover = props.article.cover ?? 'production/image/logo_image.png'
+  // Check iframes size
+  const articleContainer: { current: HTMLElement } = { current: null }
+  const updateIframeSizes = () => {
+    if (!articleContainer?.current || !props.article.body) return
+    const iframes = articleContainer?.current?.querySelectorAll('iframe')
+    if (!iframes) return
+    const containerWidth = articleContainer.current?.offsetWidth
+    iframes.forEach((iframe) => {
+      const style = window.getComputedStyle(iframe)
+      const originalWidth = iframe.getAttribute('width') || style.width.replace('px', '')
+      const originalHeight = iframe.getAttribute('height') || style.height.replace('px', '')
 
+      const width = Number(originalWidth)
+      const height = Number(originalHeight)
+
+      if (containerWidth < width) {
+        const aspectRatio = width / height
+        iframe.style.width = `${containerWidth}px`
+        iframe.style.height = `${Math.round(containerWidth / aspectRatio) + 40}px`
+      }
+    })
+  }
+
+  createEffect(
+    on(
+      () => props.article,
+      () => {
+        updateIframeSizes()
+      },
+    ),
+  )
+
+  onMount(async () => {
+    await loadReactionsBy({
+      by: { shout: props.article.slug },
+    })
+    setIsReactionsLoaded(true)
+    document.title = props.article.title
+    window?.addEventListener('resize', updateIframeSizes)
+
+    onCleanup(() => window.removeEventListener('resize', updateIframeSizes))
+  })
+
+  const cover = props.article.cover ?? 'production/image/logo_image.png'
   const ogImage = getOpenGraphImageUrl(cover, {
     title: props.article.title,
     topic: mainTopic().title,
@@ -328,6 +363,7 @@ export const FullArticle = (props: Props) => {
       <div class="wide-container">
         <div class="row position-relative">
           <article
+            ref={(el) => (articleContainer.current = el)}
             class={clsx('col-md-16 col-lg-14 col-xl-12 offset-md-5', styles.articleContent)}
             onClick={handleArticleBodyClick}
           >

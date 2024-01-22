@@ -36,8 +36,12 @@ export const Expo = (props: Props) => {
 
   const { t } = useLocalize()
 
+  // const { sortedArticles } = useArticlesStore({
+  //   shouts: isLoaded() ? props.shouts : [],
+  // })
   const { sortedArticles } = useArticlesStore({
-    shouts: isLoaded() ? props.shouts : [],
+    shouts: props.shouts || [],
+    layout: props.layout,
   })
 
   const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {

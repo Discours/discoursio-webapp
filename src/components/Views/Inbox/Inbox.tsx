@@ -1,27 +1,28 @@
-import type { Chat, Message as MessageType } from '../../graphql/schema/chat.gen'
-import type { Author } from '../../graphql/schema/core.gen'
+import type { Chat, Message as MessageType } from '../../../graphql/schema/chat.gen'
+import type { Author } from '../../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, createSignal, Show, onMount, createEffect, createMemo, on } from 'solid-js'
 
-import { useInbox } from '../../context/inbox'
-import { useLocalize } from '../../context/localize'
-import { useSession } from '../../context/session'
-import { useRouter } from '../../stores/router'
-import { showModal } from '../../stores/ui'
-// import { AuthorsSortBy, useAuthorsStore } from '../../stores/zine/authors'
-import { Icon } from '../_shared/Icon'
-import { Popover } from '../_shared/Popover'
-import SimplifiedEditor from '../Editor/SimplifiedEditor'
-import CreateModalContent from '../Inbox/CreateModalContent'
-import DialogCard from '../Inbox/DialogCard'
-import DialogHeader from '../Inbox/DialogHeader'
-import { Message } from '../Inbox/Message'
-import MessagesFallback from '../Inbox/MessagesFallback'
-import Search from '../Inbox/Search'
-import { Modal } from '../Nav/Modal'
+import { useInbox } from '../../../context/inbox'
+import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { useRouter } from '../../../stores/router'
+import { showModal } from '../../../stores/ui'
+import { useAuthorsStore } from '../../../stores/zine/authors'
+import { Icon } from '../../_shared/Icon'
+import { InviteMembers } from '../../_shared/InviteMembers'
+import { Popover } from '../../_shared/Popover'
+import SimplifiedEditor from '../../Editor/SimplifiedEditor'
+import CreateModalContent from '../../Inbox/CreateModalContent'
+import DialogCard from '../../Inbox/DialogCard'
+import DialogHeader from '../../Inbox/DialogHeader'
+import { Message } from '../../Inbox/Message'
+import MessagesFallback from '../../Inbox/MessagesFallback'
+import Search from '../../Inbox/Search'
+import { Modal } from '../../Nav/Modal'
 
-import styles from '../../styles/Inbox.module.scss'
+import styles from './Inbox.module.scss'
 
 type InboxSearchParams = {
   by?: string
@@ -34,7 +35,7 @@ const userSearch = (array: Author[], keyword: string) => {
 }
 
 const handleOpenInviteModal = () => {
-  showModal('inviteToChat')
+  showModal('inviteMembers')
 }
 
 type Props = {
@@ -64,16 +65,18 @@ export const InboxView = (props: Props) => {
     current: null,
   }
 
-  // Поиск по диалогам
+  const { sortedAuthors } = useAuthorsStore({
+    authors: props.authors,
+    sortBy: 'name',
+  })
   const getQuery = (query) => {
     if (query().length >= 2) {
       const match = userSearch(recipients(), query())
       setRecipients(match)
     } else {
-      // setRecipients(cashedRecipients())
+      setRecipients(sortedAuthors())
     }
   }
-
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParams({
@@ -91,7 +94,7 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  onMount(loadChats)
+  onMount(() => loadChats())
 
   const handleSubmit = async (message: string) => {
     sendMessage({
@@ -183,9 +186,8 @@ export const InboxView = (props: Props) => {
 
   return (
     <div class={clsx('container', styles.Inbox)}>
-      <Modal variant="narrow" name="inviteToChat">
-        <CreateModalContent users={recipients()} />
-      </Modal>
+      <InviteMembers title={t('Create Chat')} variant={'recipients'} />
+      {/*<CreateModalContent users={recipients()} />*/}
       <div class={clsx('row', styles.row)}>
         <div class={clsx(styles.chatList, 'col-md-8')}>
           <div class={styles.sidebarHeader}>

@@ -17,7 +17,7 @@ import { useTopicsStore } from '../../../stores/zine/topics'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { DropDown } from '../../_shared/DropDown'
 import { Icon } from '../../_shared/Icon'
-import { InviteCoAuthorsModal } from '../../_shared/InviteCoAuthorsModal'
+import { InviteMembers } from '../../_shared/InviteMembers'
 import { Loading } from '../../_shared/Loading'
 import { ShareModal } from '../../_shared/ShareModal'
 import { CommentDate } from '../../Article/CommentDate'
@@ -305,7 +305,7 @@ export const FeedView = (props: Props) => {
                 {(article) => (
                   <ArticleCard
                     onShare={(shared) => handleShare(shared)}
-                    onInvite={() => showModal('inviteCoAuthors')}
+                    onInvite={() => showModal('inviteMembers')}
                     article={article}
                     settings={{ isFeedMode: true }}
                     desktopCoverSize="M"
@@ -432,7 +432,7 @@ export const FeedView = (props: Props) => {
           shareUrl={getShareUrl({ pathname: `/${shareData().slug}` })}
         />
       </Show>
-      <InviteCoAuthorsModal title={t('Invite experts')} />
+      <InviteMembers title={t('Invite experts')} variant={'coauthors'} />
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { createSignal, onMount } from 'solid-js'
 
 import { PageLayout } from '../components/_shared/PageLayout'
 import { ShowOnlyOnClient } from '../components/_shared/ShowOnlyOnClient'
-import { InboxView } from '../components/Views/Inbox'
+import { InboxView } from '../components/Views/Inbox/Inbox'
 import { InboxProvider } from '../context/inbox'
 import { useLocalize } from '../context/localize'
 import { loadAllAuthors } from '../stores/zine/authors'

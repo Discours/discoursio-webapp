@@ -14,7 +14,7 @@ import { isDesktop } from '../../utils/media-query'
 import { slugify } from '../../utils/slugify'
 import { DropArea } from '../_shared/DropArea'
 import { Icon } from '../_shared/Icon'
-import { InviteCoAuthorsModal } from '../_shared/InviteCoAuthorsModal'
+import { InviteMembers } from '../_shared/InviteMembers'
 import { Popover } from '../_shared/Popover'
 import { EditorSwiper } from '../_shared/SolidSwiper'
 import { Editor, Panel } from '../Editor'
@@ -413,7 +413,7 @@ export const EditView = (props: Props) => {
         <PublishSettings shoutId={props.shout.id} form={form} />
       </Show>
       <Panel shoutId={props.shout.id} />
-      <InviteCoAuthorsModal />
+      <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
     </>
   )
 }

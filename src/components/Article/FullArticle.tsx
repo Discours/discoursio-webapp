@@ -19,7 +19,7 @@ import { getImageUrl, getOpenGraphImageUrl } from '../../utils/getImageUrl'
 import { getDescription, getKeywords } from '../../utils/meta'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
-import { InviteCoAuthorsModal } from '../_shared/InviteCoAuthorsModal'
+import { InviteMembers } from '../_shared/InviteMembers'
 import { Lightbox } from '../_shared/Lightbox'
 import { Popover } from '../_shared/Popover'
 import { ShareModal } from '../_shared/ShareModal'
@@ -555,7 +555,7 @@ export const FullArticle = (props: Props) => {
                 isOwner={canEdit()}
                 containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
                 onShareClick={() => showModal('share')}
-                onInviteClick={() => showModal('inviteCoAuthors')}
+                onInviteClick={() => showModal('inviteMembers')}
                 onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                 trigger={
                   <button>
@@ -618,7 +618,7 @@ export const FullArticle = (props: Props) => {
       <Show when={selectedImage()}>
         <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
       </Show>
-      <InviteCoAuthorsModal title={t('Invite experts')} />
+      <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
       <ShareModal
         title={props.article.title}
         description={description}

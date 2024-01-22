@@ -1,1 +1,0 @@
-export { InviteCoAuthorsModal } from './InviteCoAuthorsModal'

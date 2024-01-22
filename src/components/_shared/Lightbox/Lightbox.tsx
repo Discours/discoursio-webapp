@@ -78,9 +78,6 @@ export const Lightbox = (props: Props) => {
     event.preventDefault()
     event.stopPropagation()
 
-    const isTrackpad = event.ctrlKey
-    if (isTrackpad) return
-
     let scale = zoomLevel()
     scale += event.deltaY * -0.01
     scale = Math.min(Math.max(0.125, scale), 4)

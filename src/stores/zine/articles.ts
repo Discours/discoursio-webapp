@@ -222,7 +222,7 @@ export const useArticlesStore = (initialState: InitialState = {}) => {
 
   if (initialState.layout) {
     // eslint-disable-next-line promise/catch-or-return
-    loadShouts({ filters: { layout: initialState.layout }, limit: 10 }).then(({ newShouts }) => {
+    loadShouts({ filters: { layouts: [initialState.layout] }, limit: 10 }).then(({ newShouts }) => {
       addArticles(newShouts)
       setSortedArticles(newShouts)
     })

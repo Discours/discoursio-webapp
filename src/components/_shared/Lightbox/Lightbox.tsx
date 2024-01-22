@@ -30,6 +30,12 @@ export const Lightbox = (props: Props) => {
     current: null,
   }
 
+  const handleSmoothAction = (action: () => void) => {
+    setTransitionEnabled(true)
+    action()
+    setTimeout(() => setTransitionEnabled(false), TRANSITION_SPEED)
+  }
+
   const closeLightbox = () => {
     lightboxRef.current?.classList.add(styles.fadeOut)
 
@@ -40,34 +46,48 @@ export const Lightbox = (props: Props) => {
 
   const zoomIn = (event) => {
     event.stopPropagation()
-    setTransitionEnabled(true)
-    setZoomLevel(zoomLevel() * ZOOM_STEP)
-    setTimeout(() => setTransitionEnabled(false), TRANSITION_SPEED)
+
+    handleSmoothAction(() => {
+      setZoomLevel(zoomLevel() * ZOOM_STEP)
+    })
   }
 
   const zoomOut = (event) => {
     event.stopPropagation()
-    setTransitionEnabled(true)
-    setZoomLevel(zoomLevel() / ZOOM_STEP)
-    setTimeout(() => setTransitionEnabled(false), TRANSITION_SPEED)
+
+    handleSmoothAction(() => {
+      setZoomLevel(zoomLevel() / ZOOM_STEP)
+    })
+  }
+
+  const positionReset = () => {
+    setTranslateX(0)
+    setTranslateY(0)
   }
 
   const zoomReset = (event) => {
     event.stopPropagation()
-    setZoomLevel(1)
+
+    handleSmoothAction(() => {
+      setZoomLevel(1)
+      positionReset()
+    })
   }
 
-  const handleWheelZoom = (event) => {
+  const handleMouseWheelZoom = (event) => {
     event.preventDefault()
+    event.stopPropagation()
+
+    const isTrackpad = event.ctrlKey
+    if (isTrackpad) return
 
     let scale = zoomLevel()
-
     scale += event.deltaY * -0.01
-
     scale = Math.min(Math.max(0.125, scale), 4)
 
-    setTransitionEnabled(true)
-    setZoomLevel(scale * ZOOM_STEP)
+    handleSmoothAction(() => {
+      setZoomLevel(scale * ZOOM_STEP)
+    })
   }
 
   useEscKeyDownHandler(closeLightbox)
@@ -130,6 +150,7 @@ export const Lightbox = (props: Props) => {
     <div
       class={clsx(styles.Lightbox, props.class)}
       onClick={closeLightbox}
+      onWheel={(e) => e.preventDefault()}
       ref={(el) => (lightboxRef.current = el)}
     >
       <Show when={pictureScalePercentage()}>
@@ -154,7 +175,7 @@ export const Lightbox = (props: Props) => {
         src={getImageUrl(props.image, { noSizeUrlPart: true })}
         alt={props.imageAlt || ''}
         onClick={(event) => event.stopPropagation()}
-        onWheel={handleWheelZoom}
+        onWheel={handleMouseWheelZoom}
         style={lightboxStyle()}
         onMouseDown={onMouseDown}
       />

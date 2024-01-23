@@ -1,10 +1,10 @@
 import { thumborUrl, cdnUrl } from './config'
 
-const getSizeUrlPart = (options: { width?: number; height?: number } = {}) => {
+const getSizeUrlPart = (options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {}) => {
   const widthString = options.width ? options.width.toString() : ''
   const heightString = options.height ? options.height.toString() : ''
 
-  if (!widthString && !heightString) {
+  if ((!widthString && !heightString) || options.noSizeUrlPart) {
     return ''
   }
 
@@ -15,21 +15,12 @@ export const getImageUrl = (
   src: string,
   options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
 ) => {
+  const filename = src.split('/')[-1]
   const isAudio = src.toLowerCase().split('.')[-1] in ['wav', 'mp3', 'ogg', 'aif', 'flac']
-  const base = (isAudio ? cdnUrl : thumborUrl).replaceAll('unsafe/', '')
+  const base = isAudio ? cdnUrl : `${thumborUrl}/unsafe/`
   const sizeUrlPart = isAudio ? '' : getSizeUrlPart(options)
 
-  // Используйте новую переменную вместо переназначения параметра
-  let modifiedSrc = src
-    .replaceAll(thumborUrl + '/', '')
-    .replaceAll(cdnUrl + '/', '')
-    .replaceAll('unsafe/', '')
-
-  if (options.noSizeUrlPart) {
-    modifiedSrc = modifiedSrc.replace(/\d+x.*?\//, '')
-  }
-
-  return `${base}/unsafe/${sizeUrlPart}${modifiedSrc}`
+  return `${base}${sizeUrlPart}production/${isAudio ? 'audio' : 'image'}/${filename}`
 }
 
 export const getOpenGraphImageUrl = (

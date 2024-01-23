@@ -9,18 +9,15 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import { useAuthorsStore } from '../../../stores/zine/authors'
 import { Icon } from '../../_shared/Icon'
 import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
-import CreateModalContent from '../../Inbox/CreateModalContent'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
 import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
-import { Modal } from '../../Nav/Modal'
 
 import styles from './Inbox.module.scss'
 
@@ -65,16 +62,10 @@ export const InboxView = (props: Props) => {
     current: null,
   }
 
-  const { sortedAuthors } = useAuthorsStore({
-    authors: props.authors,
-    sortBy: 'name',
-  })
   const getQuery = (query) => {
     if (query().length >= 2) {
       const match = userSearch(recipients(), query())
       setRecipients(match)
-    } else {
-      setRecipients(sortedAuthors())
     }
   }
   const handleOpenChat = async (chat: Chat) => {

@@ -43,21 +43,23 @@
     &:hover {
       background: unset;
     }
+  }
 
-    .name {
-      color: var(--default-color);
-      font-weight: 500;
+  .name {
+    @include font-size(1.4rem);
 
-      & span:hover {
-        color: var(--default-color-invert);
-        background: var(--background-color-invert);
-      }
+    color: var(--default-color);
+    font-weight: 500;
+
+    & span:hover {
+      color: var(--default-color-invert);
+      background: var(--background-color-invert);
     }
+  }
 
-    .bio {
-      color: var(--black-400);
-      font-weight: 500;
-    }
+  .bio {
+    color: var(--black-400);
+    font-weight: 500;
   }
 
   .actions {

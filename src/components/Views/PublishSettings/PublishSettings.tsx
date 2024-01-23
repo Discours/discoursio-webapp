@@ -44,7 +44,7 @@ export const PublishSettings = (props: Props) => {
   const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
 
   createEffect(async () => {
-    await loadAllTopics()
+    if (!sortedTopics()) await loadAllTopics()
     setTopics(sortedTopics())
   })
 

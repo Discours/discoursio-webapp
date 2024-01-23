@@ -16,14 +16,14 @@ export const getImageUrl = (
   options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
 ) => {
   const isAudio = src.toLowerCase().split('.')[-1] in ['wav', 'mp3', 'ogg', 'aif', 'flac']
-  const base = isAudio ? cdnUrl : thumborUrl
+  const base = (isAudio ? cdnUrl : thumborUrl).replaceAll('unsafe/', '')
   const sizeUrlPart = isAudio ? '' : getSizeUrlPart(options)
 
   // Используйте новую переменную вместо переназначения параметра
   let modifiedSrc = src
     .replaceAll(thumborUrl + '/', '')
     .replaceAll(cdnUrl + '/', '')
-    .replaceAll('/unsafe', '')
+    .replaceAll('unsafe/', '')
 
   if (options.noSizeUrlPart) {
     modifiedSrc = modifiedSrc.replace(/\d+x.*?\//, '')

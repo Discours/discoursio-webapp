@@ -300,8 +300,8 @@ export const FullArticle = (props: Props) => {
       const originalWidth = iframe.getAttribute('width') || style.width.replace('px', '')
       const originalHeight = iframe.getAttribute('height') || style.height.replace('px', '')
 
-      const width = Number(originalWidth)
-      const height = Number(originalHeight)
+      const width: IframeSize['width'] = Number(originalWidth)
+      const height: IframeSize['height'] = Number(originalHeight)
 
       if (containerWidth < width) {
         const aspectRatio = width / height

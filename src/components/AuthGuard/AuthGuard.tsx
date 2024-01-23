@@ -12,11 +12,7 @@ type Props = {
 }
 
 export const AuthGuard = (props: Props) => {
-  const {
-    isAuthenticated,
-    isSessionLoaded,
-    actions: { loadSession },
-  } = useSession()
+  const { isAuthenticated, isSessionLoaded } = useSession()
   const { changeSearchParams } = useRouter<RootSearchParams & AuthModalSearchParams>()
 
   createEffect(async () => {

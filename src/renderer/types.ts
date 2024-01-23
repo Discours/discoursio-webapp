@@ -7,8 +7,7 @@ export type PageContext = PageContextBuiltInClientWithClientRouting & {
   Page: (pageProps: PageProps) => Component
   pageProps: PageProps
   lng: string
-  // FIXME typing
-  cookies: any
+  cookies: { [key: string]: string | number | undefined } | null
   documentProps?: {
     title?: string
     description?: string

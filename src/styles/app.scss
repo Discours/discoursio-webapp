@@ -595,7 +595,9 @@ figure {
 figure {
   figcaption {
     color: rgb(0 0 0 / 60%);
+
     @include font-size(1.2rem);
+
     line-height: 1.5;
   }
 }

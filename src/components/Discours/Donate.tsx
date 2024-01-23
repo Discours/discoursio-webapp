@@ -30,9 +30,7 @@ export const Donate = () => {
 
   const initiated = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const {
-      cp: { CloudPayments },
-    } = window as any // Checkout(cpOptions)
+    const CloudPayments = window['cp'] // Checkout(cpOptions)
     setWidget(new CloudPayments())
     console.log('[donate] payments initiated')
     setCustomerReciept({

@@ -52,7 +52,7 @@
       }
 
       .thumbs {
-        //overflow: hidden;
+        // overflow: hidden;
         box-sizing: border-box;
         margin: 0;
         position: relative;
@@ -87,6 +87,7 @@
     &.mobileView {
       .container {
         padding: 0;
+
         .thumbs {
           & swiper-slide {
             // bind to html element <swiper-slide/>
@@ -228,7 +229,7 @@
       margin-top: 24px;
 
       * {
-        color: var(--default-color-invert) !important; //Force fix migration errors with inline styles
+        color: var(--default-color-invert) !important; // Force fix migration errors with inline styles
       }
 
       @include media-breakpoint-up(md) {

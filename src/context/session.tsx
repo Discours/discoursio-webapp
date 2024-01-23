@@ -83,7 +83,7 @@ const EMPTY_SUBSCRIPTIONS = {
 }
 
 export const SessionProvider = (props: {
-  onStateChangeCallback(state: any): unknown
+  onStateChangeCallback(state: AuthToken): unknown
   children: JSX.Element
 }) => {
   const { t } = useLocalize()

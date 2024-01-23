@@ -6,7 +6,7 @@ import { useLocalize } from '../../../context/localize'
 import styles from './TimeAgo.module.scss'
 
 type Props = {
-  date: any
+  date: string | number | Date
   class?: string
 }
 

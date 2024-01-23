@@ -43,10 +43,13 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     offset?: number
   }): Promise<Reaction[]> => {
     const reactions = await apiClient.getReactionsBy({ by, limit, offset })
-    const newReactionEntities = reactions.reduce((acc, reaction) => {
-      acc[reaction.id] = reaction
-      return acc
-    }, {})
+    const newReactionEntities = reactions.reduce(
+      (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
+        acc[reaction.id] = reaction
+        return acc
+      },
+      {},
+    )
     setReactionEntities(newReactionEntities)
     return reactions
   }
@@ -79,9 +82,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const deleteReaction = async (reaction_id: number): Promise<void> => {
-    const _reaction = await apiClient.destroyReaction(reaction_id)
+    const r = await apiClient.destroyReaction(reaction_id)
     setReactionEntities({
-      [reaction_id]: undefined,
+      [r.id]: undefined,
     })
   }
 

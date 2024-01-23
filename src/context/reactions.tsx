@@ -78,10 +78,10 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     setReactionEntities(changes)
   }
 
-  const deleteReaction = async (id: number): Promise<void> => {
-    const reaction = await apiClient.destroyReaction(id)
+  const deleteReaction = async (reaction_id: number): Promise<void> => {
+    const _reaction = await apiClient.destroyReaction(reaction_id)
     setReactionEntities({
-      [reaction.id]: undefined,
+      [reaction_id]: undefined,
     })
   }
 

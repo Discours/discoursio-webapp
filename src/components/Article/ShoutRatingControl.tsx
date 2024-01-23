@@ -26,43 +26,53 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   const {
     reactionEntities,
-    actions: { createReaction, loadReactionsBy },
+    actions: { createReaction, deleteReaction, loadReactionsBy },
   } = useReactions()
+
+  const [isLoading, setIsLoading] = createSignal(false)
 
   const checkReaction = (reactionKind: ReactionKind) =>
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === author()?.slug &&
+        r.created_by.id === author()?.id &&
         r.shout.id === props.shout.id &&
         !r.reply_to,
     )
 
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
-
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
 
   const shoutRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
-      (r) =>
-        [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
-        r.shout.id === props.shout.id &&
-        !r.reply_to,
+      (r) => ['LIKE', 'DISLIKE'].includes(r.kind) && r.shout.id === props.shout.id && !r.reply_to,
     ),
   )
-  const [isLoading, setIsLoading] = createSignal(false)
+
+  const deleteShoutReaction = async (reactionKind: ReactionKind) => {
+    const reactionToDelete = Object.values(reactionEntities).find(
+      (r) =>
+        r.kind === reactionKind &&
+        r.created_by.id === author()?.id &&
+        r.shout.id === props.shout.id &&
+        !r.reply_to,
+    )
+    return deleteReaction(reactionToDelete.id)
+  }
+
   const handleRatingChange = async (isUpvote: boolean) => {
-    setIsLoading(true)
     requireAuthentication(async () => {
-      try {
+      if (isUpvoted()) {
+        await deleteShoutReaction(ReactionKind.Like)
+      } else if (isDownvoted()) {
+        await deleteShoutReaction(ReactionKind.Dislike)
+      } else {
         await createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
           shout: props.shout.id,
         })
-      } catch (error) {
-        console.warn(error)
       }
-      setIsLoading(false)
+
       loadShout(props.shout.slug)
       loadReactionsBy({
         by: { shout: props.shout.slug },

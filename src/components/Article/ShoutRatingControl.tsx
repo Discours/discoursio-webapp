@@ -54,10 +54,14 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const handleRatingChange = async (isUpvote: boolean) => {
     setIsLoading(true)
     requireAuthentication(async () => {
-      await createReaction({
-        kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-        shout: props.shout.id,
-      })
+      try {
+        await createReaction({
+          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+          shout: props.shout.id,
+        })
+      } catch (error) {
+        console.warn(error)
+      }
       setIsLoading(false)
       loadShout(props.shout.slug)
       loadReactionsBy({

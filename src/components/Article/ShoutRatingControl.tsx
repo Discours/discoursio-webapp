@@ -73,11 +73,8 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   return (
     <div class={clsx(styles.rating, props.class)}>
       <button onClick={() => handleRatingChange(false)} disabled={isLoading()}>
-        <Show when={!isDownvoted()}>
+        <Show when={!isDownvoted()} fallback={<Icon name="rating-control-checked" />}>
           <Icon name="rating-control-less" />
-        </Show>
-        <Show when={isDownvoted()}>
-          <Icon name="rating-control-checked" />
         </Show>
       </button>
 
@@ -89,11 +86,8 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       </Popup>
 
       <button onClick={() => handleRatingChange(true)} disabled={isLoading()}>
-        <Show when={!isUpvoted()}>
+        <Show when={!isUpvoted()} fallback={<Icon name="rating-control-checked" />}>
           <Icon name="rating-control-more" />
-        </Show>
-        <Show when={isUpvoted()}>
-          <Icon name="rating-control-checked" />
         </Show>
       </button>
     </div>

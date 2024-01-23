@@ -1,8 +1,9 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { For, Show } from 'solid-js'
+import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { Author } from '../../../graphql/schema/core.gen'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { Modal } from '../../Nav/Modal'
@@ -20,6 +21,8 @@ type Props = {
 }
 export const InviteMembers = (props: Props) => {
   const { t } = useLocalize()
+  const [searchVal, setSearchVal] = createSignal<string | undefined>()
+
   const roles = [
     {
       title: t('Editor'),
@@ -36,10 +39,9 @@ export const InviteMembers = (props: Props) => {
   ]
 
   const { sortedAuthors } = useAuthorsStore({ sortBy: 'name' })
-
+  const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
   const fetcher = async (page: number) => {
-    // await new Promise(resolve => setTimeout(resolve, 2000)) // for loader debug
-
+    await new Promise((resolve) => setTimeout(resolve, 2000)) // for loader debug
     const start = page * PAGE_SIZE
     const end = start + PAGE_SIZE
     return sortedAuthors().slice(start, end)
@@ -47,11 +49,14 @@ export const InviteMembers = (props: Props) => {
 
   const [pages, infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
 
-  const handleInputChange = (value: string) => {
-    console.log('!!! handleInputChange:', value)
+  const handleInputChange = async (value: string) => {
+    if (value.length > 2) {
+      const match = sortedAuthors().filter((author) =>
+        author.name.toLowerCase().includes(value.toLowerCase()),
+      )
+      setSearchResultAuthors(match)
+    }
   }
-
-  console.log('!!! sortedAuthors:', sortedAuthors())
 
   const handleInvite = () => {
     console.log('!!! handleInvite:')
@@ -67,13 +72,22 @@ export const InviteMembers = (props: Props) => {
               class={styles.input}
               type="text"
               placeholder={t('Write your colleagues name or email')}
-              onChange={(e) => handleInputChange(e.target.value)}
+              // onChange={(e) => {
+              //   if (props.variant === 'recipients') return
+              //   handleInputChange(e.target.value)
+              // }}
+              onInput={(e) => {
+                if (props.variant === 'coauthors') return
+                handleInputChange(e.target.value)
+              }}
             />
             <Show when={props.variant === 'coauthors'}>
               <DropdownSelect selectItems={roles} />
             </Show>
           </div>
-          <Button class={styles.searchButton} variant={'bordered'} size={'M'} value={t('Search')} />
+          <Show when={props.variant === 'coauthors'}>
+            <Button class={styles.searchButton} variant={'bordered'} size={'M'} value={t('Search')} />
+          </Show>
         </div>
         <Show when={props.variant === 'coauthors'}>
           <div class={styles.teaser}>
@@ -87,14 +101,14 @@ export const InviteMembers = (props: Props) => {
         </Show>
         <Show when={props.variant === 'recipients'}>
           <div class={styles.authors}>
-            <For each={pages()}>
+            <For each={searchResultAuthors() ?? pages()}>
               {(author) => (
                 <div class={styles.author}>
                   <AuthorBadge author={author} nameOnly={true} inviteView={true} onInvite={handleInvite} />
                 </div>
               )}
             </For>
-            <Show when={!end()}>
+            <Show when={!end() && !searchResultAuthors()}>
               <div use:infiniteScrollLoader class={styles.loading}>
                 <div class={styles.icon}>
                   <Loading size="tiny" />

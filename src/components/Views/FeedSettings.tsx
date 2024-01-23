@@ -3,7 +3,7 @@ import { useLocalize } from '../../context/localize'
 import styles from '../../styles/FeedSettings.module.scss'
 
 // type FeedSettingsSearchParams = {
-//   by: '' | 'topics' | 'authors' | 'reacted'
+//   by: '' | 'topics' | 'authors' | 'shouts'
 // }
 
 export const FeedSettingsView = (_props) => {
@@ -25,7 +25,7 @@ export const FeedSettingsView = (_props) => {
           <a href="?by=authors">{t('authors')}</a>
         </li>
         <li>
-          <a href="?by=reacted">{t('reactions')}</a>
+          <a href="?by=shouts">{t('publications')}</a>
         </li>
       </ul>
 

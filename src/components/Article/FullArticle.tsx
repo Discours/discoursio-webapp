@@ -208,9 +208,9 @@ export const FullArticle = (props: Props) => {
       tooltipContent.classList.add(styles.tooltipContent)
       tooltipContent.innerHTML = element.dataset.originalTitle || element.dataset.value
 
-      tooltip.appendChild(tooltipContent)
+      tooltip.append(tooltipContent)
 
-      document.body.appendChild(tooltip)
+      document.body.append(tooltip)
 
       if (element.hasAttribute('href')) {
         element.setAttribute('href', 'javascript: void(0)')

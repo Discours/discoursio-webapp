@@ -23,7 +23,7 @@ module.exports = {
       },
       extends: [
         'plugin:@typescript-eslint/recommended',
-        // 'plugin:@typescript-eslint/recommended-requiring-type-checking', // 23-01-2024 896 problems
+        // 'plugin:@typescript-eslint/recommended-requiring-type-checking', // 23-01-2024 681 problems
       ],
       rules: {
         '@typescript-eslint/no-unused-vars': [
@@ -59,7 +59,7 @@ module.exports = {
     'unicorn/import-style': 'off',
     'unicorn/numeric-separators-style': 'off',
     'unicorn/prefer-node-protocol': 'off',
-    'unicorn/prefer-dom-node-append': 'off', // FIXME
+    'unicorn/prefer-dom-node-append': 'warn',
     'unicorn/prefer-top-level-await': 'warn',
     'unicorn/consistent-function-scoping': 'warn',
     'unicorn/no-array-callback-reference': 'warn',

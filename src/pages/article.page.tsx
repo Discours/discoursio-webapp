@@ -37,13 +37,9 @@ export const ArticlePage = (props: PageProps) => {
   })
 
   onMount(() => {
-    const script = document.createElement('script')
-    script.async = true
-    script.src = 'https://ackee.discours.io/increment.js'
-    script.dataset.ackeeServer = 'https://ackee.discours.io'
-    script.dataset.ackeeDomainId = '2a6df3a8-53ac-4383-8cc6-73d38cea4524'
     try {
-      document.body.appendChild(script)
+      // document.body.appendChild(script)
+      console.debug('TODO: connect ga')
     } catch (error) {
       console.warn(error)
     }

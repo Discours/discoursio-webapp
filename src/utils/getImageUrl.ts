@@ -15,16 +15,12 @@ export const getImageUrl = (
   src: string,
   options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
 ) => {
-  //console.debug(src)
   const filename = src.split('/').pop()
   const isAudio = src.toLowerCase().split('.').pop() in ['wav', 'mp3', 'ogg', 'aif', 'flac']
   const base = isAudio ? cdnUrl : `${thumborUrl}/unsafe/`
   const sizeUrlPart = isAudio ? '' : getSizeUrlPart(options)
 
-  const res = `${base}${sizeUrlPart}production/${isAudio ? 'audio' : 'image'}/${filename}`
-  //console.debug(res)
-
-  return res
+  return `${base}${sizeUrlPart}production/${isAudio ? 'audio' : 'image'}/${filename}`
 }
 
 export const getOpenGraphImageUrl = (

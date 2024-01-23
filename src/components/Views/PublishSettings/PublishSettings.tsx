@@ -1,11 +1,12 @@
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, lazy, Show } from 'solid-js'
+import { createEffect, createSignal, lazy, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { Topic } from '../../../graphql/schema/core.gen'
 import { UploadedFile } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'
@@ -40,10 +41,11 @@ export const PublishSettings = (props: Props) => {
   const { author } = useSession()
   const { sortedTopics } = useTopicsStore()
 
+  const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
+
   createEffect(async () => {
-    if (sortedTopics()?.length < 33) {
-      await loadAllTopics()
-    }
+    await loadAllTopics()
+    setTopics(sortedTopics())
   })
 
   const composeDescription = () => {
@@ -212,9 +214,9 @@ export const PublishSettings = (props: Props) => {
             </p>
             <div class={styles.inputContainer}>
               <div class={clsx('pretty-form__item', styles.topicSelectContainer)}>
-                <Show when={sortedTopics()}>
+                <Show when={topics().length > 0}>
                   <TopicSelect
-                    topics={sortedTopics()}
+                    topics={topics()}
                     onChange={handleTopicSelectChange}
                     selectedTopics={props.form.selectedTopics}
                     onMainTopicChange={(mainTopic) => setForm('mainTopic', mainTopic)}

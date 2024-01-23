@@ -27,7 +27,8 @@ type Props = {
   iconButtons?: boolean
   nameOnly?: boolean
   inviteView?: boolean
-  onInvite?: () => void
+  onInvite?: (id: number) => void
+  selected?: boolean
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
@@ -206,12 +207,10 @@ export const AuthorBadge = (props: Props) => {
         </div>
       </Show>
       <Show when={props.inviteView}>
-        <Button
-          variant={'bordered'}
-          size="S"
-          value={t('Invite')}
-          onClick={props.onInvite}
-          class={clsx(styles.actionButton)}
+        <CheckButton
+          text={t('Invite')}
+          checked={props.selected}
+          onClick={() => props.onInvite(props.author.id)}
         />
       </Show>
     </div>

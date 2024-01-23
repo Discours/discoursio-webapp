@@ -1,9 +1,11 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 
+import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
 import { Author } from '../../../graphql/schema/core.gen'
+import { hideModal } from '../../../stores/ui'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { Modal } from '../../Nav/Modal'
@@ -13,16 +15,16 @@ import { Loading } from '../Loading'
 
 import styles from './InviteMembers.module.scss'
 
-const PAGE_SIZE = 50
+type InviteAuthor = Author & { selected: boolean }
 
 type Props = {
   title?: string
   variant?: 'coauthors' | 'recipients'
 }
+
+const PAGE_SIZE = 50
 export const InviteMembers = (props: Props) => {
   const { t } = useLocalize()
-  const [searchVal, setSearchVal] = createSignal<string | undefined>()
-
   const roles = [
     {
       title: t('Editor'),
@@ -39,27 +41,72 @@ export const InviteMembers = (props: Props) => {
   ]
 
   const { sortedAuthors } = useAuthorsStore({ sortBy: 'name' })
+  const { actions } = useInbox()
+  const [authorsToInvite, setAuthorsToInvite] = createSignal<InviteAuthor[]>()
+
   const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
+  const [collectionToInvite, setCollectionToInvite] = createSignal<number[]>([])
   const fetcher = async (page: number) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000)) // for loader debug
+    await new Promise((resolve, reject) => {
+      const checkDataLoaded = () => {
+        if (sortedAuthors().length > 0) {
+          resolve(true)
+        } else {
+          setTimeout(checkDataLoaded, 100)
+        }
+      }
+
+      setTimeout(() => reject(new Error('Timeout waiting for sortedAuthors')), 10000) // Таймаут ожидания 10 секунд
+      checkDataLoaded()
+    })
     const start = page * PAGE_SIZE
     const end = start + PAGE_SIZE
-    return sortedAuthors().slice(start, end)
+    const authors = authorsToInvite().map((author) => ({ ...author, selected: false }))
+    return authors.slice(start, end)
   }
 
   const [pages, infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
 
+  createEffect(
+    on(
+      () => sortedAuthors(),
+      (currentAuthors) => {
+        setAuthorsToInvite(currentAuthors.map((author) => ({ ...author, selected: false })))
+      },
+      { defer: true },
+    ),
+  )
+
   const handleInputChange = async (value: string) => {
-    if (value.length > 2) {
-      const match = sortedAuthors().filter((author) =>
+    if (value.length > 1) {
+      const match = authorsToInvite().filter((author) =>
         author.name.toLowerCase().includes(value.toLowerCase()),
       )
       setSearchResultAuthors(match)
+    } else {
+      setSearchResultAuthors()
     }
   }
 
-  const handleInvite = () => {
-    console.log('!!! handleInvite:')
+  const handleInvite = (id) => {
+    setCollectionToInvite((prev) => [...prev, id])
+  }
+
+  const handleCloseModal = () => {
+    setSearchResultAuthors()
+    setCollectionToInvite()
+    hideModal()
+  }
+
+  const handleCreate = async () => {
+    try {
+      const initChat = await actions.createChat(collectionToInvite(), 'chat Title')
+      console.debug('[components.Inbox] create chat result:', initChat)
+      hideModal()
+      await actions.loadChats()
+    } catch (error) {
+      console.error('handleCreate chat', error)
+    }
   }
 
   return (
@@ -72,10 +119,10 @@ export const InviteMembers = (props: Props) => {
               class={styles.input}
               type="text"
               placeholder={t('Write your colleagues name or email')}
-              // onChange={(e) => {
-              //   if (props.variant === 'recipients') return
-              //   handleInputChange(e.target.value)
-              // }}
+              onChange={(e) => {
+                if (props.variant === 'recipients') return
+                handleInputChange(e.target.value)
+              }}
               onInput={(e) => {
                 if (props.variant === 'coauthors') return
                 handleInputChange(e.target.value)
@@ -104,11 +151,16 @@ export const InviteMembers = (props: Props) => {
             <For each={searchResultAuthors() ?? pages()}>
               {(author) => (
                 <div class={styles.author}>
-                  <AuthorBadge author={author} nameOnly={true} inviteView={true} onInvite={handleInvite} />
+                  <AuthorBadge
+                    author={author}
+                    nameOnly={true}
+                    inviteView={true}
+                    onInvite={(id) => handleInvite(id)}
+                  />
                 </div>
               )}
             </For>
-            <Show when={!end() && !searchResultAuthors()}>
+            <Show when={!end()}>
               <div use:infiniteScrollLoader class={styles.loading}>
                 <div class={styles.icon}>
                   <Loading size="tiny" />
@@ -118,6 +170,16 @@ export const InviteMembers = (props: Props) => {
             </Show>
           </div>
         </Show>
+        <div class={styles.actions}>
+          <Button variant={'bordered'} size={'M'} value={t('Cancel')} onClick={handleCloseModal} />
+          <Button
+            variant={'primary'}
+            size={'M'}
+            disabled={collectionToInvite().length === 0}
+            value={t('Start dialog')}
+            onClick={handleCreate}
+          />
+        </div>
       </div>
     </Modal>
   )

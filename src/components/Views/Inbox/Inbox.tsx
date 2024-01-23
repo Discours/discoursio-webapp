@@ -9,6 +9,7 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
+import { useAuthorsStore } from '../../../stores/zine/authors'
 import { Icon } from '../../_shared/Icon'
 import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
@@ -85,7 +86,9 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  onMount(() => loadChats())
+  onMount(async () => {
+    await loadChats()
+  })
 
   const handleSubmit = async (message: string) => {
     sendMessage({

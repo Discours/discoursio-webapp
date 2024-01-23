@@ -28,6 +28,7 @@ export const inboxClient = {
 
   loadChats: async (options: QueryLoad_ChatsArgs): Promise<Chat[]> => {
     const resp = await inboxClient.private.query(myChats, options).toPromise()
+    console.log('!!! resp:', resp)
     return resp.data.load_chats.chats
   },
 

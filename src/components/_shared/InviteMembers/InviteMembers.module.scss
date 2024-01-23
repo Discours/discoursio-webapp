@@ -37,7 +37,7 @@
   }
 
   .authors {
-    height: 400px;
+    height: 300px;
     overflow: auto;
     margin-top: 1rem;
 
@@ -75,5 +75,12 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+  }
+
+  .actions {
+    display: flex;
+    margin-top: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
   }
 }

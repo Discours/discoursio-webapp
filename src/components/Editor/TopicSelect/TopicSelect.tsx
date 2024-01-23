@@ -56,7 +56,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
       return item.label
     }
 
-    const isMainTopic = item.id === props.mainTopic.id
+    const isMainTopic = item.id === props.mainTopic?.id
 
     return (
       <div

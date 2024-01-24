@@ -1,6 +1,6 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, on, Show } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
@@ -55,8 +55,7 @@ export const InviteMembers = (props: Props) => {
           setTimeout(checkDataLoaded, 100)
         }
       }
-
-      setTimeout(() => reject(new Error('Timeout waiting for sortedAuthors')), 10000) // Таймаут ожидания 10 секунд
+      setTimeout(() => reject(new Error('Timeout waiting for sortedAuthors')), 10000)
       checkDataLoaded()
     })
     const start = page * PAGE_SIZE

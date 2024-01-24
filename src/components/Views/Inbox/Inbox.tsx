@@ -126,6 +126,10 @@ export const InboxView = (props: Props) => {
   })
 
   const chatsToShow = () => {
+    if (!chats()) {
+      console.log('!!! NO CHATS:')
+      return
+    }
     const sorted = chats().sort((a, b) => {
       return b.updated_at - a.updated_at
     })
@@ -191,7 +195,7 @@ export const InboxView = (props: Props) => {
             </button>
           </div>
 
-          <Show when={chatsToShow}>
+          <Show when={chatsToShow()}>
             <ul class="view-switcher">
               <li class={clsx({ 'view-switcher__item--selected': !sortByPerToPer() && !sortByGroup() })}>
                 <button

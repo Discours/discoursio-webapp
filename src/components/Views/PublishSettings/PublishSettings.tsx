@@ -1,6 +1,6 @@
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, lazy, Show } from 'solid-js'
+import { createEffect, createSignal, lazy, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
@@ -43,8 +43,11 @@ export const PublishSettings = (props: Props) => {
 
   const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
 
-  createEffect(async () => {
-    if (!sortedTopics()) await loadAllTopics()
+  onMount(async () => {
+    await loadAllTopics()
+  })
+
+  createEffect(() => {
     setTopics(sortedTopics())
   })
 

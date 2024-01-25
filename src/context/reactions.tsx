@@ -82,10 +82,12 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const deleteReaction = async (reaction_id: number): Promise<void> => {
-    const r = await apiClient.destroyReaction(reaction_id)
-    setReactionEntities({
-      [reaction_id]: undefined,
-    })
+    if (reaction_id) {
+      await apiClient.destroyReaction(reaction_id)
+      setReactionEntities({
+        [reaction_id]: undefined,
+      })
+    }
   }
 
   const updateReaction = async (id: number, input: ReactionInput): Promise<void> => {

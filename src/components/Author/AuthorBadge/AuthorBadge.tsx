@@ -1,4 +1,4 @@
-import { getPagePath, openPage } from '@nanostores/router'
+import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, Match, Show, Switch } from 'solid-js'
 

@@ -1,6 +1,6 @@
-import { ArticleCard } from '../../Feed/ArticleCard'
-
 import type { Shout } from '../../../graphql/schema/core.gen'
+
+import { ArticleCard } from '../../Feed/ArticleCard'
 
 interface SearchCardProps {
   settings?: {

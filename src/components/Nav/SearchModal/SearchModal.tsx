@@ -1,13 +1,14 @@
-import { createSignal, Show, For } from 'solid-js'
-
-import { Button } from '../../_shared/Button'
-import { Icon } from '../../_shared/Icon'
-import { SearchResultItem } from './SearchResultItem'
-
-import { apiClient } from '../../../utils/apiClient'
 import type { Shout } from '../../../graphql/schema/core.gen'
 
+import { createSignal, Show, For } from 'solid-js'
+
 import { useLocalize } from '../../../context/localize'
+import { apiClient } from '../../../graphql/client/core'
+import { Button } from '../../_shared/Button'
+import { Icon } from '../../_shared/Icon'
+import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
+
+import { SearchResultItem } from './SearchResultItem'
 
 import styles from './SearchModal.module.scss'
 
@@ -16,7 +17,7 @@ import styles from './SearchModal.module.scss'
 // @@TODO implement FILTERS & TOPICS
 
 const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
-  `<span>${str.replace(
+  `<span>${str.replaceAll(
     new RegExp(intersection, 'gi'),
     (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`,
   )}</span>`
@@ -60,7 +61,12 @@ export const SearchModal = () => {
       setIsLoading(true)
 
       try {
-        const response = await apiClient.getSearchResults(searchValue)
+        // TODO: use offset to load more
+        const response = await apiClient.getShoutsSearch({
+          text: searchValue,
+          limit: FEED_PAGE_SIZE,
+          offset: 0,
+        })
         const searchResult = await response.json()
 
         if (searchResult.length > 0) {

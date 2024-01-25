@@ -1,5 +1,5 @@
 import { createLazyMemo } from '@solid-primitives/memo'
-import { createSignal } from 'solid-js'
+import { createMemo, createSignal } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
 import { Author, QueryLoad_Authors_ByArgs } from '../../graphql/schema/core.gen'
@@ -27,7 +27,7 @@ const sortedAuthors = createLazyMemo(() => {
       return authors.sort((a, b) => a.name.localeCompare(b.name))
     }
   }
-  // return authors
+  return authors
 })
 
 export const addAuthors = (authors: Author[]) => {

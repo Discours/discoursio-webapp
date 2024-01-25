@@ -86,10 +86,6 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  onMount(async () => {
-    await loadChats()
-  })
-
   const handleSubmit = async (message: string) => {
     sendMessage({
       body: message,
@@ -142,6 +138,10 @@ export const InboxView = (props: Props) => {
     }
   }
 
+  createEffect(() => {
+    console.log('!!! chatsToShow:', chatsToShow())
+  })
+
   const findToReply = (messageId: number) => {
     return messages().find((message: MessageType) => message.id === messageId)
   }
@@ -181,6 +181,10 @@ export const InboxView = (props: Props) => {
     })
     setIsScrollToNewVisible(false)
   }
+
+  onMount(async () => {
+    await loadChats()
+  })
 
   return (
     <div class={clsx('container', styles.Inbox)}>

@@ -70,6 +70,7 @@ export const InviteMembers = (props: Props) => {
     on(
       () => sortedAuthors(),
       (currentAuthors) => {
+        console.log('!!! :', sortedAuthors())
         setAuthorsToInvite(currentAuthors.map((author) => ({ ...author, selected: false })))
       },
       { defer: true },

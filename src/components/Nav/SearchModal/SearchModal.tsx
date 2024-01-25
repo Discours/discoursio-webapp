@@ -3,7 +3,6 @@ import type { Shout } from '../../../graphql/schema/core.gen'
 import { createSignal, Show, For } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { apiClient } from '../../../graphql/client/core'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
@@ -11,6 +10,9 @@ import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
 import { SearchResultItem } from './SearchResultItem'
 
 import styles from './SearchModal.module.scss'
+import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { loadShoutsSearch, useArticlesStore } from '../../../stores/zine/articles'
+import { byScore } from '../../../utils/sortby'
 
 // @@TODO handle empty article options after backend support (subtitle, cover, etc.)
 // @@TODO implement load more
@@ -48,40 +50,38 @@ const prepareSearchResults = (list, searchValue) =>
 
 export const SearchModal = () => {
   const { t } = useLocalize()
-
+  const { sortedArticles } = useArticlesStore()
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [offset, setOffset] = createSignal(0)
   const [inputValue, setInputValue] = createSignal('')
-  const [searchResultsList, setSearchResultsList] = createSignal<[] | null>([])
+  //const [searchResultsList, setSearchResultsList] = createSignal<[] | null>([])
   const [isLoading, setIsLoading] = createSignal(false)
   // const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
-  const handleSearch = async () => {
-    const searchValue = inputValue() || ''
+  let searchEl: HTMLInputElement
+  const handleQueryChange = async (_ev) => {
+    setInputValue(searchEl.value)
 
-    if (Boolean(searchValue) && searchValue.length > 2) {
-      setIsLoading(true)
+    if (inputValue() && inputValue().length > 2) await loadMore()
+  }
 
-      try {
-        // TODO: use offset to load more
-        const response = await apiClient.getShoutsSearch({
-          text: searchValue,
-          limit: FEED_PAGE_SIZE,
-          offset: 0,
-        })
-        const searchResult = await response.json()
-
-        if (searchResult.length > 0) {
-          const preparedSearchResultsList = prepareSearchResults(searchResult, searchValue)
-
-          setSearchResultsList(preparedSearchResultsList)
-        } else {
-          setSearchResultsList(null)
-        }
-      } catch (error) {
-        console.log('search request failed', error)
-      } finally {
-        setIsLoading(false)
-      }
+  const loadMore = async () => {
+    setIsLoading(true)
+    saveScrollPosition()
+    if (inputValue() && inputValue().length > 2) {
+      console.log(inputValue())
+      const { hasMore } = await loadShoutsSearch({
+        text: inputValue(),
+        offset: offset(),
+        limit: FEED_PAGE_SIZE,
+      })
+      setIsLoadMoreButtonVisible(hasMore)
+      setOffset(offset() + FEED_PAGE_SIZE)
+    } else {
+      console.warn('[SaerchView] no query found')
     }
+    restoreScrollPosition()
+    setIsLoading(false)
   }
 
   return (
@@ -90,16 +90,13 @@ export const SearchModal = () => {
         type="search"
         placeholder={t('Site search')}
         class={styles.searchInput}
-        onInput={(event) => {
-          setInputValue(event.target.value)
-
-          handleSearch()
-        }}
+        onInput={handleQueryChange}
+        ref={searchEl}
       />
 
       <Button
         class={styles.searchButton}
-        onClick={handleSearch}
+        onClick={loadMore}
         value={isLoading() ? <div class={styles.searchLoader} /> : <Icon name="search" />}
       />
 
@@ -111,14 +108,13 @@ export const SearchModal = () => {
       />
 
       <Show when={!isLoading()}>
-        <Show when={searchResultsList()}>
-          <For each={searchResultsList()}>
+        <Show when={sortedArticles()}>
+          <For each={sortedArticles().sort(byScore())}>
             {(article: Shout) => (
               <div>
                 <SearchResultItem
                   article={article}
                   settings={{
-                    noimage: true, // @@TODO remove flag after cover support
                     isFloorImportant: true,
                     isSingle: true,
                     nodate: true,
@@ -128,16 +124,16 @@ export const SearchModal = () => {
             )}
           </For>
 
-          {/* <Show when={isLoadMoreButtonVisible()}>
+          <Show when={isLoadMoreButtonVisible()}>
             <p class="load-more-container">
               <button class="button" onClick={loadMore}>
                 {t('Load more')}
               </button>
             </p>
-          </Show> */}
+          </Show>
         </Show>
 
-        <Show when={!searchResultsList()}>
+        <Show when={!sortedArticles()}>
           <p class={styles.searchDescription} innerHTML={t("We couldn't find anything for your request")} />
         </Show>
       </Show>

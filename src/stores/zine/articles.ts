@@ -22,7 +22,7 @@ const [topMonthArticles, setTopMonthArticles] = createSignal<Shout[]>([])
 const articlesByAuthor = createLazyMemo(() => {
   return Object.values(articleEntities()).reduce(
     (acc, article) => {
-      article.authors.forEach((author) => {
+      article.authors?.forEach((author) => {
         if (!acc[author.slug]) {
           acc[author.slug] = []
         }

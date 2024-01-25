@@ -40,6 +40,16 @@ export const byTopicStatDesc = (metric: keyof TopicStat) => {
   }
 }
 
+export const byScore = () => {
+  return (a, b) => {
+    const x = a?.score || 0
+    const y = b?.score || 0
+    if (x > y) return -1
+    if (x < y) return 1
+    return 0
+  }
+}
+
 export const sortBy = (data, metric) => {
   const x = [...data]
   x.sort(typeof metric === 'function' ? metric : byStat(metric))

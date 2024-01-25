@@ -356,7 +356,7 @@ export const Editor = (props: Props) => {
   })
 
   onCleanup(() => {
-    editor().destroy()
+    editor()?.destroy()
   })
 
   return (

@@ -60,8 +60,8 @@ export const InviteMembers = (props: Props) => {
     })
     const start = page * PAGE_SIZE
     const end = start + PAGE_SIZE
-    const authors = authorsToInvite().map((author) => ({ ...author, selected: false }))
-    return authors.slice(start, end)
+    const authors = authorsToInvite()?.map((author) => ({ ...author, selected: false }))
+    return authors?.slice(start, end)
   }
 
   const [pages, infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)

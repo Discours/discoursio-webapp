@@ -16,7 +16,6 @@ export type ModalType =
   | 'thank'
   | 'confirm'
   | 'donate'
-  | 'inviteToChat'
   | 'uploadImage'
   | 'simplifiedEditorUploadImage'
   | 'uploadCoverImage'
@@ -24,7 +23,7 @@ export type ModalType =
   | 'followers'
   | 'following'
   | 'search'
-  | 'inviteCoAuthors'
+  | 'inviteMembers'
   | 'share'
 
 export const MODALS: Record<ModalType, ModalType> = {
@@ -34,14 +33,13 @@ export const MODALS: Record<ModalType, ModalType> = {
   thank: 'thank',
   confirm: 'confirm',
   donate: 'donate',
-  inviteToChat: 'inviteToChat',
+  inviteMembers: 'inviteMembers',
   uploadImage: 'uploadImage',
   simplifiedEditorUploadImage: 'simplifiedEditorUploadImage',
   uploadCoverImage: 'uploadCoverImage',
   editorInsertLink: 'editorInsertLink',
   followers: 'followers',
   following: 'following',
-  inviteCoAuthors: 'inviteCoAuthors',
   search: 'search',
   share: 'share',
 }

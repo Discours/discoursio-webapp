@@ -1,4 +1,4 @@
-import { openPage } from '@nanostores/router'
+import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, Match, Show, Switch } from 'solid-js'
 
@@ -13,6 +13,7 @@ import { isCyrillic } from '../../../utils/cyrillic'
 import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
+import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 
@@ -25,6 +26,9 @@ type Props = {
   showMessageButton?: boolean
   iconButtons?: boolean
   nameOnly?: boolean
+  inviteView?: boolean
+  onInvite?: (id: number) => void
+  selected?: boolean
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
@@ -94,7 +98,14 @@ export const AuthorBadge = (props: Props) => {
           userpic={props.author.pic}
           slug={props.author.slug}
         />
-        <a href={`/author/${props.author.slug}`} class={styles.info}>
+        <ConditionalWrapper
+          condition={!props.inviteView}
+          wrapper={(children) => (
+            <a href={`/author/${props.author.slug}`} class={styles.info}>
+              {children}
+            </a>
+          )}
+        >
           <div class={styles.name}>
             <span>{name()}</span>
           </div>
@@ -118,7 +129,7 @@ export const AuthorBadge = (props: Props) => {
               </Match>
             </Switch>
           </Show>
-        </a>
+        </ConditionalWrapper>
       </div>
       <Show when={props.author.slug !== author()?.slug && !props.nameOnly}>
         <div class={styles.actions}>
@@ -194,6 +205,13 @@ export const AuthorBadge = (props: Props) => {
             />
           </Show>
         </div>
+      </Show>
+      <Show when={props.inviteView}>
+        <CheckButton
+          text={t('Invite')}
+          checked={props.selected}
+          onClick={() => props.onInvite(props.author.id)}
+        />
       </Show>
     </div>
   )

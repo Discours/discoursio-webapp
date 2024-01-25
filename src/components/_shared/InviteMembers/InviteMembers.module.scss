@@ -1,4 +1,4 @@
-.UserSearch {
+.InviteMembers {
   .searchHeader {
     display: flex;
     flex-flow: row nowrap;
@@ -32,10 +32,40 @@
     }
   }
 
+  .searchButton {
+    margin: 0;
+  }
+
   .authors {
-    height: 400px;
+    height: 300px;
     overflow: auto;
-    padding: 1rem 0;
+    margin-top: 1rem;
+
+    .author {
+      cursor: pointer;
+
+      &:hover {
+        background: var(--black-100);
+      }
+    }
+  }
+
+  .loading {
+    @include font-size(1.4rem);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    flex-direction: row;
+    opacity: 0.5;
+
+    .icon {
+      position: relative;
+      width: 18px;
+      height: 18px;
+    }
   }
 
   .teaser {
@@ -45,5 +75,12 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+  }
+
+  .actions {
+    display: flex;
+    margin-top: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
   }
 }

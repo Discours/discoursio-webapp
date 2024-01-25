@@ -33,7 +33,7 @@ const DialogCard = (props: DialogProps) => {
   const names = createMemo<string>(() => (companions() || []).map((companion) => companion.name).join(', '))
 
   return (
-    <Show when={props.members}>
+    <Show when={props.members.length > 0} fallback={<div>'No chat members'</div>}>
       <div
         class={clsx(styles.DialogCard, {
           [styles.opened]: props.isOpened,
@@ -47,7 +47,7 @@ const DialogCard = (props: DialogProps) => {
               when={props.isChatHeader}
               fallback={
                 <div class={styles.avatar}>
-                  <DialogAvatar name={props.members[0].slug} url={props.members[0].pic} />
+                  <DialogAvatar name={props.members[0]?.slug} url={props.members[0]?.pic} />
                 </div>
               }
             >

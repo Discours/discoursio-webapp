@@ -92,7 +92,7 @@ export const Panel = (props: Props) => {
 
         <section>
           <p>
-            <span class={styles.link} onClick={() => showModal('inviteCoAuthors')}>
+            <span class={styles.link} onClick={() => showModal('inviteMembers')}>
               {t('Invite co-authors')}
             </span>
           </p>

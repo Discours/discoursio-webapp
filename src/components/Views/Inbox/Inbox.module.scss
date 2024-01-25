@@ -36,7 +36,6 @@ main {
   display: flex;
   flex-direction: column;
   padding: 10px;
-  height: calc(100% - 10px);
 
   $fadeHeight: 10px;
 
@@ -51,26 +50,6 @@ main {
     flex: 1;
     position: relative;
     padding: $fadeHeight 0;
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      right: 0;
-      z-index: 1;
-      height: $fadeHeight;
-    }
-
-    &::before {
-      top: 0;
-      background: linear-gradient(white, transparent $fadeHeight);
-    }
-
-    &::after {
-      bottom: 0;
-      background: linear-gradient(transparent, white $fadeHeight);
-    }
 
     .dialogs {
       scroll-behavior: smooth;

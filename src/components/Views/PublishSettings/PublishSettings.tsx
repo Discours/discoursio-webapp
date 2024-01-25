@@ -234,7 +234,7 @@ export const PublishSettings = (props: Props) => {
             <h4>{t('Collaborators')}</h4>
             <Button
               variant="primary"
-              onClick={() => showModal('inviteCoAuthors')}
+              onClick={() => showModal('inviteMembers')}
               value={t('Invite collaborators')}
             />
           </div>

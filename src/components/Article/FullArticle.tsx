@@ -208,9 +208,9 @@ export const FullArticle = (props: Props) => {
       tooltipContent.classList.add(styles.tooltipContent)
       tooltipContent.innerHTML = element.dataset.originalTitle || element.dataset.value
 
-      tooltip.appendChild(tooltipContent)
+      tooltip.append(tooltipContent)
 
-      document.body.appendChild(tooltip)
+      document.body.append(tooltip)
 
       if (element.hasAttribute('href')) {
         element.setAttribute('href', 'javascript: void(0)')
@@ -300,8 +300,8 @@ export const FullArticle = (props: Props) => {
       const originalWidth = iframe.getAttribute('width') || style.width.replace('px', '')
       const originalHeight = iframe.getAttribute('height') || style.height.replace('px', '')
 
-      const width = Number(originalWidth)
-      const height = Number(originalHeight)
+      const width: IframeSize['width'] = Number(originalWidth)
+      const height: IframeSize['height'] = Number(originalHeight)
 
       if (containerWidth < width) {
         const aspectRatio = width / height

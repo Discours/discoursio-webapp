@@ -153,9 +153,9 @@ export const Lightbox = (props: Props) => {
       <Show when={pictureScalePercentage()}>
         <div class={styles.scalePercentage}>{`${pictureScalePercentage()}%`}</div>
       </Show>
-      <span class={styles.close} onClick={closeLightbox}>
+      <div class={styles.close} onClick={closeLightbox}>
         <Icon name="close-white" class={styles.icon} />
-      </span>
+      </div>
       <div class={styles.zoomControls}>
         <button class={styles.control} onClick={(event) => zoomOut(event)}>
           &minus;

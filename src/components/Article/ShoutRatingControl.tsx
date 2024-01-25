@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createMemo, Show } from 'solid-js'
+import { createMemo, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
@@ -29,25 +29,23 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     actions: { createReaction, deleteReaction, loadReactionsBy },
   } = useReactions()
 
+  const [isLoading, setIsLoading] = createSignal(false)
+
   const checkReaction = (reactionKind: ReactionKind) =>
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === author()?.slug &&
+        r.created_by.id === author()?.id &&
         r.shout.id === props.shout.id &&
         !r.reply_to,
     )
 
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
-
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
 
   const shoutRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
-      (r) =>
-        [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
-        r.shout.id === props.shout.id &&
-        !r.reply_to,
+      (r) => ['LIKE', 'DISLIKE'].includes(r.kind) && r.shout.id === props.shout.id && !r.reply_to,
     ),
   )
 
@@ -55,7 +53,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === author()?.slug &&
+        r.created_by.id === author()?.id &&
         r.shout.id === props.shout.id &&
         !r.reply_to,
     )
@@ -64,6 +62,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   const handleRatingChange = async (isUpvote: boolean) => {
     requireAuthentication(async () => {
+      setIsLoading(true)
       if (isUpvoted()) {
         await deleteShoutReaction(ReactionKind.Like)
       } else if (isDownvoted()) {
@@ -79,17 +78,16 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       loadReactionsBy({
         by: { shout: props.shout.slug },
       })
+
+      setIsLoading(false)
     }, 'vote')
   }
 
   return (
     <div class={clsx(styles.rating, props.class)}>
-      <button onClick={() => handleRatingChange(false)}>
-        <Show when={!isDownvoted()}>
+      <button onClick={() => handleRatingChange(false)} disabled={isLoading()}>
+        <Show when={!isDownvoted()} fallback={<Icon name="rating-control-checked" />}>
           <Icon name="rating-control-less" />
-        </Show>
-        <Show when={isDownvoted()}>
-          <Icon name="rating-control-checked" />
         </Show>
       </button>
 
@@ -100,12 +98,9 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         />
       </Popup>
 
-      <button onClick={() => handleRatingChange(true)}>
-        <Show when={!isUpvoted()}>
+      <button onClick={() => handleRatingChange(true)} disabled={isLoading()}>
+        <Show when={!isUpvoted()} fallback={<Icon name="rating-control-checked" />}>
           <Icon name="rating-control-more" />
-        </Show>
-        <Show when={isUpvoted()}>
-          <Icon name="rating-control-checked" />
         </Show>
       </button>
     </div>

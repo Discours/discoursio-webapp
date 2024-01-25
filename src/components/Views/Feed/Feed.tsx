@@ -48,14 +48,14 @@ type VisibilityItem = {
 }
 
 type FeedSearchParams = {
-  by: 'publish_date' | 'rating' | 'last_comment'
+  by: 'publish_date' | 'likes_stat' | 'rating' | 'last_comment'
   period: FeedPeriod
   visibility: VisibilityMode
 }
 
 const getOrderBy = (by: FeedSearchParams['by']) => {
-  if (by === 'rating') {
-    return 'rating_stat'
+  if (by === 'likes_stat' || by === 'rating') {
+    return 'likes_stat'
   }
 
   if (by === 'last_comment') {

@@ -16,7 +16,7 @@ export const ToggleTextWrap = Extension.create({
     return {
       addTextWrap:
         (attributes) =>
-        ({ commands, state }) => {
+        ({ commands, state: _s }) => {
           return commands.setMark('span', attributes)
         },
 

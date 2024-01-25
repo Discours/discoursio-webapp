@@ -30,9 +30,7 @@ export const Donate = () => {
 
   const initiated = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const {
-      cp: { CloudPayments },
-    } = window as any // Checkout(cpOptions)
+    const CloudPayments = window['cp'] // Checkout(cpOptions)
     setWidget(new CloudPayments())
     console.log('[donate] payments initiated')
     setCustomerReciept({
@@ -68,7 +66,7 @@ export const Donate = () => {
     script.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js'
     script.async = true
     script.addEventListener('load', initiated)
-    document.head.appendChild(script)
+    document.head.append(script)
   })
 
   const show = () => {

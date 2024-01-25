@@ -1,6 +1,7 @@
 node_modules
 public
 *.cjs
-src/graphql/schema/*.gen.ts
 dist/
 .vercel/
+src/graphql/client/*
+src/graphql/schema/*

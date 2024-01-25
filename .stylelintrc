@@ -7,6 +7,8 @@
     "stylelint-scss"
   ],
   "rules": {
+    "keyframes-name-pattern": null,
+    "declaration-block-no-redundant-longhand-properties": null,
     "selector-class-pattern": null,
     "no-descending-specificity": null,
     "scss/function-no-unknown": null,

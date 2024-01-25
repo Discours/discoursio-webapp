@@ -1,7 +1,7 @@
 import type { PopupProps } from '../../_shared/Popup'
 
 import { clsx } from 'clsx'
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { Popup } from '../../_shared/Popup'

@@ -52,7 +52,7 @@ export default gql`
         published_at
         stat {
           viewed
-          reacted
+
           rating
           commented
         }

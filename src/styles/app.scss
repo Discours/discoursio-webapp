@@ -213,7 +213,6 @@ a:visited,
 a:link,
 .link {
   color: var(--link-color);
-  padding-bottom: 0.1em;
   transition:
     color 0.2s,
     background-color 0.2s;
@@ -596,7 +595,9 @@ figure {
 figure {
   figcaption {
     color: rgb(0 0 0 / 60%);
+
     @include font-size(1.2rem);
+
     line-height: 1.5;
   }
 }

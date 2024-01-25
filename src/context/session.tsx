@@ -47,7 +47,6 @@ export type SessionContextType = {
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
   subscriptions: Accessor<Result>
-  isAuthWithCallback: Accessor<() => void>
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthToken | Promise<AuthToken>
@@ -70,6 +69,8 @@ export type SessionContextType = {
   }
 }
 
+const noop = () => {}
+
 const SessionContext = createContext<SessionContextType>()
 
 export function useSession() {
@@ -82,7 +83,7 @@ const EMPTY_SUBSCRIPTIONS = {
 }
 
 export const SessionProvider = (props: {
-  onStateChangeCallback(state: any): unknown
+  onStateChangeCallback(state: AuthToken): unknown
   children: JSX.Element
 }) => {
   const { t } = useLocalize()
@@ -250,17 +251,24 @@ export const SessionProvider = (props: {
     ),
   )
 
-  // require auth wrapper
-  const [isAuthWithCallback, setIsAuthWithCallback] = createSignal<() => void>()
+  const [authCallback, setAuthCallback] = createSignal<() => void>(() => {})
   const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
-    setIsAuthWithCallback(() => callback)
-
-    await loadSession()
-
+    setAuthCallback((_cb) => callback)
     if (!session()) {
-      showModal('auth', modalSource)
+      await loadSession()
+      if (!session()) {
+        showModal('auth', modalSource)
+      }
     }
   }
+
+  createEffect(() => {
+    const handler = authCallback()
+    if (handler !== noop) {
+      handler()
+      setAuthCallback((_cb) => noop)
+    }
+  })
 
   // authorizer api proxy methods
   const signUp = async (params: SignupInput) => {
@@ -337,7 +345,6 @@ export const SessionProvider = (props: {
     isSessionLoaded,
     author,
     actions,
-    isAuthWithCallback,
     isAuthenticated,
   }
 

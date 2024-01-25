@@ -196,7 +196,7 @@ export const loadTopMonthArticles = async (): Promise<void> => {
       published: true,
       after,
     },
-    order_by: 'rating_stat',
+    order_by: 'likes_stat',
     limit: TOP_MONTH_ARTICLES_COUNT,
   }
   const articles = await apiClient.getShouts(options)
@@ -209,7 +209,7 @@ const TOP_ARTICLES_COUNT = 10
 export const loadTopArticles = async (): Promise<void> => {
   const options: LoadShoutsOptions = {
     filters: { published: true },
-    order_by: 'rating_stat',
+    order_by: 'likes_stat',
     limit: TOP_ARTICLES_COUNT,
   }
   const articles = await apiClient.getShouts(options)

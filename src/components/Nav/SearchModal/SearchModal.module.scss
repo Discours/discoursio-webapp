@@ -1,4 +1,4 @@
-@mixin searchFilterControl {
+@mixin search-filter-control {
   background: rgb(64 64 64 / 50%);
   border-radius: 10rem;
   color: #fff;
@@ -69,7 +69,7 @@
 }
 
 .topTopic {
-  @include searchFilterControl;
+  @include search-filter-control;
 }
 
 .filterSwitcher {
@@ -99,5 +99,5 @@
 }
 
 .filterResultsControl {
-  @include searchFilterControl;
+  @include search-filter-control;
 }

@@ -11,7 +11,8 @@ export interface SSEMessage {
   id: string
   entity: string // follower | shout | reaction
   action: string // create | delete | update | join | follow | seen
-  payload: any // Author | Shout | Reaction | Message
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload: any // Author Shout Message Reaction Chat
   created_at?: number // unixtime x1000
   seen?: boolean
 }

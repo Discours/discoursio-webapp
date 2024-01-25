@@ -1,140 +1,174 @@
-import { openPage } from '@nanostores/router'
-import { clsx } from 'clsx'
+import { createSignal, Show, For } from 'solid-js'
+
+import { Button } from '../../_shared/Button'
+import { Icon } from '../../_shared/Icon'
+import { SearchResultItem } from './SearchResultItem'
+
+import { apiClient } from '../../../utils/apiClient'
+import type { Shout } from '../../../graphql/schema/core.gen'
 
 import { useLocalize } from '../../../context/localize'
-import { router, useRouter } from '../../../stores/router'
-import { hideModal } from '../../../stores/ui'
-import { Icon } from '../../_shared/Icon'
 
 import styles from './SearchModal.module.scss'
 
+// @@TODO handle empty article options after backend support (subtitle, cover, etc.)
+// @@TODO implement load more
+// @@TODO implement FILTERS & TOPICS
+
+const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
+  `<span>${str.replace(
+    new RegExp(intersection, 'gi'),
+    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`,
+  )}</span>`
+
+const prepareSearchResults = (list, searchValue) =>
+  list.map((article, index) => ({
+    ...article,
+    body: '',
+    cover: '',
+    createdAt: '',
+    id: index,
+    slug: article.slug,
+    authors: [],
+    topics: [],
+    title: article.title
+      ? getSearchCoincidences({
+          str: article.title,
+          intersection: searchValue,
+        })
+      : '',
+    subtitle: article.subtitle
+      ? getSearchCoincidences({
+          str: article.subtitle,
+          intersection: searchValue,
+        })
+      : '',
+  }))
+
 export const SearchModal = () => {
   const { t } = useLocalize()
-  const { changeSearchParams } = useRouter()
-  let qElement: HTMLInputElement | undefined
 
-  const submitQuery = async (ev) => {
-    ev.preventDefault()
-    changeSearchParams({}, true)
-    hideModal()
-    openPage(router, 'search', { q: qElement.value })
+  const [inputValue, setInputValue] = createSignal('')
+  const [searchResultsList, setSearchResultsList] = createSignal<[] | null>([])
+  const [isLoading, setIsLoading] = createSignal(false)
+  // const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+
+  const handleSearch = async () => {
+    const searchValue = inputValue() || ''
+
+    if (Boolean(searchValue) && searchValue.length > 2) {
+      setIsLoading(true)
+
+      try {
+        const response = await apiClient.getSearchResults(searchValue)
+        const searchResult = await response.json()
+
+        if (searchResult.length > 0) {
+          const preparedSearchResultsList = prepareSearchResults(searchResult, searchValue)
+
+          setSearchResultsList(preparedSearchResultsList)
+        } else {
+          setSearchResultsList(null)
+        }
+      } catch (error) {
+        console.log('search request failed', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
   }
+
   return (
-    <form onSubmit={submitQuery} class={styles.searchForm}>
+    <div class={styles.searchContainer}>
       <input
-        type="text"
-        name="q"
+        type="search"
         placeholder={t('Site search')}
-        ref={qElement}
-        class={styles.searchField}
+        class={styles.searchInput}
+        onInput={(event) => {
+          setInputValue(event.target.value)
+
+          handleSearch()
+        }}
       />
-      <button type="submit" class={styles.submitControl}>
-        <Icon name="search" />
-      </button>
-      <p class={styles.searchDescription}>
-        Для поиска публикаций, искусства, комментариев, интересных вам авторов и&nbsp;тем, просто начните
-        вводить ваш запрос
-      </p>
 
-      <ul class={clsx('view-switcher', styles.filterSwitcher)}>
-        <li class="view-switcher__item view-switcher__item--selected">
-          <button type="button">{t('All')}</button>
-        </li>
-        <li class="view-switcher__item">
-          <button type="button">{t('Publications')}</button>
-        </li>
-        <li class="view-switcher__item">
-          <button type="button">{t('Topics')}</button>
-        </li>
-      </ul>
+      <Button
+        class={styles.searchButton}
+        onClick={handleSearch}
+        value={isLoading() ? <div class={styles.searchLoader} /> : <Icon name="search" />}
+      />
 
-      <div class={styles.filterResults}>
-        <button type="button" class={styles.filterResultsControl}>
-          Период времени
-        </button>
-        <button type="button" class={styles.filterResultsControl}>
-          Рейтинг
-        </button>
-        <button type="button" class={styles.filterResultsControl}>
-          Тип постов
-        </button>
-        <button type="button" class={styles.filterResultsControl}>
-          Темы
-        </button>
-        <button type="button" class={styles.filterResultsControl}>
-          Авторы
-        </button>
-        <button type="button" class={styles.filterResultsControl}>
-          Сообщества
-        </button>
-      </div>
+      <p
+        class={styles.searchDescription}
+        innerHTML={t(
+          'To find publications, art, comments, authors and topics of interest to you, just start typing your query',
+        )}
+      />
 
-      <div class="container-xl">
-        <div class="row">
-          <div class={clsx('col-md-18 offset-md-2', styles.topicsList)}>
-            <button type="button" class={styles.topTopic}>
-              За месяц
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #репортажи
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #интервью
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #культура
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #поэзия
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #теории
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #война в украине
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #общество
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #Экспериментальная Музыка
-            </button>
-            <button type="button" class={styles.topTopic}>
-              Рейтинг 300+
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #Протесты
-            </button>
-            <button type="button" class={styles.topTopic}>
-              Музыка
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #За линией Маннергейма
-            </button>
-            <button type="button" class={styles.topTopic}>
-              Тесты
-            </button>
-            <button type="button" class={styles.topTopic}>
-              Коллективные истории
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #личный опыт
-            </button>
-            <button type="button" class={styles.topTopic}>
-              Тоня Самсонова
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #личный опыт
-            </button>
-            <button type="button" class={styles.topTopic}>
-              #Секс
-            </button>
-            <button type="button" class={styles.topTopic}>
-              Молоко Plus
-            </button>
+      <Show when={!isLoading()}>
+        <Show when={searchResultsList()}>
+          <For each={searchResultsList()}>
+            {(article: Shout) => (
+              <div>
+                <SearchResultItem
+                  article={article}
+                  settings={{
+                    noimage: true, // @@TODO remove flag after cover support
+                    isFloorImportant: true,
+                    isSingle: true,
+                    nodate: true,
+                  }}
+                />
+              </div>
+            )}
+          </For>
+
+          {/* <Show when={isLoadMoreButtonVisible()}>
+            <p class="load-more-container">
+              <button class="button" onClick={loadMore}>
+                {t('Load more')}
+              </button>
+            </p>
+          </Show> */}
+        </Show>
+
+        <Show when={!searchResultsList()}>
+          <p class={styles.searchDescription} innerHTML={t("We couldn't find anything for your request")} />
+        </Show>
+      </Show>
+
+      {/* @@TODO handle filter */}
+      {/* <Show when={FILTERS.length}>
+        <div class={styles.filterResults}>
+          <For each={FILTERS}>
+            {(filter) => (
+              <button
+                type="button"
+                class={styles.filterResultsControl}
+                onClick={() => setActiveFilter(filter)}
+              >
+                {filter.name}
+              </button>
+            )}
+          </For>
+        </div>
+      </Show> */}
+
+      {/* @@TODO handle topics */}
+      {/* <Show when={TOPICS.length}>
+        <div class="container-xl">
+          <div class="row">
+            <div class={clsx('col-md-18 offset-md-2', styles.topicsList)}>
+              <For each={TOPICS}>
+                {(topic) => (
+                  <button type="button" class={styles.topTopic} onClick={() => setActiveTopic(topic)}>
+                    {topic.name}
+                  </button>
+                )}
+              </For>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </Show> */}
+    </div>
   )
 }

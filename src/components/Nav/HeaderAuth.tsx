@@ -128,10 +128,10 @@ export const HeaderAuth = (props: Props) => {
 
             <Show when={!isSaveButtonVisible()}>
               <div class={styles.userControlItem}>
-                <button onClick={() => showModal('search')}>
+                <a href="?modal=search">
                   <Icon name="search" class={styles.icon} />
                   <Icon name="search" class={clsx(styles.icon, styles.iconHover)} />
-                </button>
+                </a>
               </div>
             </Show>
 

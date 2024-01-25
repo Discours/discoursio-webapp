@@ -122,10 +122,7 @@ export const InboxView = (props: Props) => {
   })
 
   const chatsToShow = () => {
-    if (!chats()) {
-      console.log('!!! NO CHATS:')
-      return
-    }
+    if (!chats()) return
     const sorted = chats().sort((a, b) => {
       return b.updated_at - a.updated_at
     })
@@ -137,10 +134,6 @@ export const InboxView = (props: Props) => {
       return sorted
     }
   }
-
-  createEffect(() => {
-    console.log('!!! chatsToShow:', chatsToShow())
-  })
 
   const findToReply = (messageId: number) => {
     return messages().find((message: MessageType) => message.id === messageId)

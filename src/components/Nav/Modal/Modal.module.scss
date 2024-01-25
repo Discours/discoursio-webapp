@@ -89,6 +89,13 @@
   position: relative;
   text-align: left;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
   @include media-breakpoint-up(sm) {
     padding: 5rem;
   }
@@ -114,6 +121,32 @@
   display: flex;
   flex-direction: column;
   height: 90vh;
+}
+
+.modal-search {
+  background: #000;
+
+  .modal {
+    background: none;
+    color: #fff;
+    height: 100vh;
+    max-width: none;
+    padding-top: 10rem;
+    width: 100% !important;
+  }
+
+  .modalInner {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .close {
+    filter: invert(1);
+    height: 3.2rem;
+    right: 0;
+    top: 2rem;
+    width: 3.2rem;
+  }
 }
 
 .backdrop.isMobile {

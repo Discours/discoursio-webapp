@@ -1066,6 +1066,11 @@ iframe {
   cursor: pointer;
 }
 
+.blackModeIntersection {
+  color: var(--default-color);
+  background: #fef2f2;
+}
+
 .img-align-column {
   clear: both;
 }

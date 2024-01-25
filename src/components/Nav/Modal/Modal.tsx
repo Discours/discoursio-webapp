@@ -54,12 +54,9 @@ export const Modal = (props: Props) => {
 
   return (
     <Show when={visible()}>
-      <div
-        class={clsx(styles.backdrop, {
+      <div class={clsx(styles.backdrop, [styles[`modal-${props.name}`]], {
           [styles.isMobile]: isMobileView(),
-        })}
-        onClick={handleHide}
-      >
+        })} onClick={handleHide}>
         <div class={clsx('wide-container', styles.container)}>
           <div
             class={clsx(styles.modal, {

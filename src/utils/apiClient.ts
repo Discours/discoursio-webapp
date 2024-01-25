@@ -66,6 +66,8 @@ import topicBySlug from '../graphql/query/topic-by-slug'
 import topicsAll from '../graphql/query/topics-all'
 import topicsRandomQuery from '../graphql/query/topics-random'
 
+import { searchUrl } from './config'
+
 type ApiErrorCode =
   | 'unknown'
   | 'email_not_confirmed'
@@ -440,5 +442,16 @@ export const apiClient = {
   getRecipients: async (options: QueryLoadRecipientsArgs) => {
     const resp = await graphQLClient.query(loadRecipients, options).toPromise()
     return resp.data.loadRecipients.members
+  },
+
+  // search
+  getSearchResults: async (searchValue: string) => {
+    return await fetch(`${searchUrl}/search?q=${searchValue}`, {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json; charset=utf-8',
+      },
+    })
   },
 }

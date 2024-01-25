@@ -1,8 +1,9 @@
+import { createMemo, createSignal, For, Show } from 'solid-js'
+
 import type { Shout } from '../../../graphql/types.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createMemo, createSignal, For, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -211,13 +212,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <a href={getPagePath(router, 'article', { slug: props.article.slug })}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
-                <span class={styles.shoutCardLinkContainer}>{title}</span>
+                <span class={styles.shoutCardLinkContainer} innerHTML={title} />
               </span>
             </div>
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
               <div class={styles.shoutCardSubtitle}>
-                <span class={styles.shoutCardLinkContainer}>{subtitle}</span>
+                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle} />
               </div>
             </Show>
           </a>
@@ -245,6 +246,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <time class={styles.shoutDate}>{formattedDate()}</time>
             </Show>
           </div>
+        </Show>
+        <Show when={props.article.description}>
+          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
         </Show>
         <Show when={props.settings?.isFeedMode}>
           <Show when={props.article.description}>

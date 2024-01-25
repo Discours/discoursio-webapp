@@ -4,11 +4,12 @@ import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
 
+import { apiClient } from '../../../utils/apiClient'
+
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { router, ROUTES, useRouter } from '../../../stores/router'
 import { useModalStore } from '../../../stores/ui'
-import { apiClient } from '../../../utils/apiClient'
 import { getDescription } from '../../../utils/meta'
 import { Icon } from '../../_shared/Icon'
 import { Subscribe } from '../../_shared/Subscribe'
@@ -19,6 +20,7 @@ import { ConfirmModal } from '../ConfirmModal'
 import { HeaderAuth } from '../HeaderAuth'
 import { Modal } from '../Modal'
 import { Snackbar } from '../Snackbar'
+import { SearchModal } from '../SearchModal/SearchModal'
 
 import { Link } from './Link'
 
@@ -182,6 +184,10 @@ export const Header = (props: Props) => {
 
       <Modal variant="narrow" name="confirm">
         <ConfirmModal />
+      </Modal>
+
+      <Modal variant="wide" name="search">
+        <SearchModal />
       </Modal>
 
       <div class={clsx(styles.mainHeaderInner, 'wide-container')}>

@@ -182,7 +182,7 @@ export const EditView = (props: Props) => {
       const hasChanges = !deepEqual(form, prevForm)
       if (hasChanges) {
         setSaving(true)
-        if (props.shout.visibility === ShoutVisibility.Authors) {
+        if (props.shout?.visibility === ShoutVisibility.Authors) {
           await saveDraft(form)
         } else {
           saveDraftToLocalStorage(form)

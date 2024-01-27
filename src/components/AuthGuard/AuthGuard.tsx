@@ -26,7 +26,7 @@ export const AuthGuard = (props: Props) => {
         changeSearchParams(
           {
             source: 'authguard',
-            modal: 'auth',
+            m: 'auth',
           },
           true,
         )

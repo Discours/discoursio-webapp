@@ -10,6 +10,7 @@ type Props = {
   class?: string
   errorMessage?: (error: string) => void
   onInput: (value: string) => void
+  variant?: 'login' | 'registration'
 }
 
 export const PasswordField = (props: Props) => {
@@ -49,7 +50,7 @@ export const PasswordField = (props: Props) => {
     on(
       () => error(),
       () => {
-        props.errorMessage ?? props.errorMessage(error())
+        props.errorMessage && props.errorMessage(error())
       },
       { defer: true },
     ),
@@ -59,7 +60,7 @@ export const PasswordField = (props: Props) => {
     <div class={clsx(styles.PassportField, props.class)}>
       <div
         class={clsx('pretty-form__item', {
-          'pretty-form__item--error': error(),
+          'pretty-form__item--error': error() && props.variant !== 'login',
         })}
       >
         <input
@@ -78,7 +79,7 @@ export const PasswordField = (props: Props) => {
         >
           <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
         </button>
-        <Show when={error()}>
+        <Show when={error() && props.variant !== 'login'}>
           <div class={clsx(styles.registerPassword, styles.validationError)}>{error()}</div>
         </Show>
       </div>

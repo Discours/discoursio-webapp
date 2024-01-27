@@ -23,7 +23,7 @@ export type PageProps = {
 }
 
 export type RootSearchParams = {
-  modal: string
+  m: string // modal
   lang: string
 }
 

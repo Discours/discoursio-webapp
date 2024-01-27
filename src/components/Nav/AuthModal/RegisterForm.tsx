@@ -118,13 +118,29 @@ export const RegisterForm = () => {
       setIsSuccess(true)
     } catch (error) {
       console.error(error)
-
-      // TODO: move to context/session
-      if (error?.code === 'user_already_exists') {
-        return
+      if (error) {
+        if (error.message.includes('has already signed up')) {
+          setValidationErrors((errors) => ({
+            ...errors,
+            email: (
+              <>
+                {t('User with this email already exists')},{' '}
+                <span
+                  class={'link'}
+                  onClick={() =>
+                    changeSearchParams({
+                      mode: 'login',
+                    })
+                  }
+                >
+                  {t('sign in')}
+                </span>
+              </>
+            ),
+          }))
+        }
+        console.error(error)
       }
-
-      setSubmitError(error.message)
     } finally {
       setIsSubmitting(false)
     }
@@ -138,9 +154,7 @@ export const RegisterForm = () => {
             <AuthModalHeader modalType="register" />
             <Show when={submitError()}>
               <div class={styles.authInfo}>
-                <ul>
-                  <li class={styles.warn}>{submitError()}</li>
-                </ul>
+                <div class={styles.warn}>{submitError()}</div>
               </div>
             </Show>
             <div

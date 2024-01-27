@@ -172,11 +172,11 @@ export const CommentsTree = (props: Props) => {
         fallback={
           <div class={styles.signInMessage}>
             {t('To write a comment, you must')}{' '}
-            <a href="?modal=auth&mode=register" class={styles.link}>
+            <a href="?m=auth&mode=register" class={styles.link}>
               {t('sign up')}
             </a>{' '}
             {t('or')}&nbsp;
-            <a href="?modal=auth&mode=login" class={styles.link}>
+            <a href="?m=auth&mode=login" class={styles.link}>
               {t('sign in')}
             </a>
           </div>

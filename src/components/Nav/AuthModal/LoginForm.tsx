@@ -66,7 +66,7 @@ export const LoginForm = () => {
     setIsEmailNotConfirmed(false)
     setSubmitError('')
     changeSearchParams({ mode: 'forgot-password' })
-    // NOTE: temporary solition, needs logix in authorizer
+    // NOTE: temporary solution, needs logic in authorizer
     /* FIXME:
     const { actions: { authorizer } } = useSession()
     const result = await authorizer().verifyEmail({ token })
@@ -140,9 +140,9 @@ export const LoginForm = () => {
           <div class={styles.authInfo}>
             <div class={styles.warn}>{submitError()}</div>
             <Show when={isEmailNotConfirmed()}>
-              <a href="#" onClick={handleSendLinkAgainClick}>
+              <span class={'link'} onClick={handleSendLinkAgainClick}>
                 {t('Send link again')}
-              </a>
+              </span>
             </Show>
           </div>
         </Show>
@@ -169,7 +169,7 @@ export const LoginForm = () => {
           </Show>
         </div>
 
-        <PasswordField onInput={(value) => handlePasswordInput(value)} />
+        <PasswordField variant={'login'} onInput={(value) => handlePasswordInput(value)} />
 
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

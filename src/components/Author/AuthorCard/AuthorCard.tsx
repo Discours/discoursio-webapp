@@ -142,7 +142,7 @@ export const AuthorCard = (props: Props) => {
           >
             <div class={styles.subscribersContainer}>
               <Show when={props.followers && props.followers.length > 0}>
-                <a href="?modal=followers" class={styles.subscribers}>
+                <a href="?m=followers" class={styles.subscribers}>
                   <For each={props.followers.slice(0, 3)}>
                     {(f) => (
                       <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
@@ -155,7 +155,7 @@ export const AuthorCard = (props: Props) => {
               </Show>
 
               <Show when={props.following && props.following.length > 0}>
-                <a href="?modal=following" class={styles.subscribers}>
+                <a href="?m=following" class={styles.subscribers}>
                   <For each={props.following.slice(0, 3)}>
                     {(f) => {
                       if ('name' in f) {

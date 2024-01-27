@@ -41,7 +41,9 @@ export const InviteMembers = (props: Props) => {
   ]
 
   const { sortedAuthors } = useAuthorsStore({ sortBy: 'name' })
-  const { actions } = useInbox()
+  const {
+    actions: { loadChats, createChat },
+  } = useInbox()
   const [authorsToInvite, setAuthorsToInvite] = createSignal<InviteAuthor[]>()
 
   const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
@@ -99,10 +101,10 @@ export const InviteMembers = (props: Props) => {
 
   const handleCreate = async () => {
     try {
-      const initChat = await actions.createChat(collectionToInvite(), 'chat Title')
+      const initChat = await createChat(collectionToInvite(), 'chat Title')
       console.debug('[components.Inbox] create chat result:', initChat)
       hideModal()
-      await actions.loadChats()
+      await loadChats()
     } catch (error) {
       console.error('handleCreate chat', error)
     }

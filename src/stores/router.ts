@@ -152,9 +152,14 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
     searchParamsStore.open(newSearchParams, replace)
   }
 
+  const clearSearchParams = (replace = false) => {
+    searchParamsStore.open({}, replace)
+  }
+
   return {
     page,
     searchParams,
     changeSearchParams,
+    clearSearchParams,
   }
 }

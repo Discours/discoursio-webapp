@@ -93,11 +93,11 @@ export const App = (props: Props) => {
   let is404 = props.is404
 
   createEffect(() => {
-    if (!searchParams().modal) {
+    if (!searchParams().m) {
       hideModal()
     }
 
-    const modal = MODALS[searchParams().modal]
+    const modal = MODALS[searchParams().m]
     if (modal) {
       showModal(modal)
     }

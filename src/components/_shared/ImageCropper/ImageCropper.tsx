@@ -34,6 +34,7 @@ export const ImageCropper = (props: CropperProps) => {
           guides: false,
           background: false,
           rotatable: false,
+          autoCropArea: 1,
           modal: true,
         }),
       )
@@ -42,7 +43,7 @@ export const ImageCropper = (props: CropperProps) => {
 
   return (
     <div>
-      <div>
+      <div class={styles.cropperContainer}>
         <img
           ref={(el) => (imageTagRef.current = el)}
           src={props.uploadFile.source}

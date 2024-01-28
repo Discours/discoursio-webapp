@@ -1,6 +1,6 @@
 import type { Shout } from '../../../graphql/schema/core.gen'
 
-import { createEffect, createResource, createSignal, For, onCleanup, Show } from 'solid-js'
+import { createResource, createSignal, For, onCleanup, Show } from 'solid-js'
 import { debounce } from 'throttle-debounce'
 
 import { useLocalize } from '../../../context/localize'

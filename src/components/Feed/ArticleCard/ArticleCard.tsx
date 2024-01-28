@@ -2,7 +2,6 @@ import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createMemo, createSignal, For, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -248,6 +247,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
               <time class={styles.shoutDate}>{formattedDate()}</time>
             </Show>
           </div>
+        </Show>
+        <Show when={props.article.description}>
+          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
         </Show>
         <Show when={props.settings?.isFeedMode}>
           <Show when={props.article.description}>

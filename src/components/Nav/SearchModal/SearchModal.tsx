@@ -1,6 +1,6 @@
 import type { Shout } from '../../../graphql/schema/core.gen'
 
-import { createResource, createSignal, For, Show } from 'solid-js'
+import { createEffect, createResource, createSignal, For, onCleanup, Show } from 'solid-js'
 import { debounce } from 'throttle-debounce'
 
 import { useLocalize } from '../../../context/localize'
@@ -55,6 +55,7 @@ export const SearchModal = () => {
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [inputValue, setInputValue] = createSignal('')
   const [isLoading, setIsLoading] = createSignal(false)
+  const [offset, setOffset] = createSignal<number>(0)
   const [searchResultsList, { refetch: loadSearchResults, mutate: setSearchResultsList }] = createResource<
     Shout[]
   >(
@@ -63,8 +64,10 @@ export const SearchModal = () => {
       const { hasMore, newShouts } = await loadShoutsSearch({
         limit: FEED_PAGE_SIZE,
         text: inputValue(),
-        offset: searchResultsList().length,
+        offset: offset(),
       })
+      setIsLoading(false)
+      setOffset(newShouts.length)
       setIsLoadMoreButtonVisible(hasMore)
       return newShouts
     },
@@ -76,12 +79,32 @@ export const SearchModal = () => {
 
   let searchEl: HTMLInputElement
   const debouncedLoadMore = debounce(500, loadSearchResults)
-  const handleQueryInput = () => {
-    const inp = searchEl.value
-    setInputValue(inp)
-    if (inp?.length > 2) debouncedLoadMore()
-    else setSearchResultsList([])
+
+  const handleQueryInput = async () => {
+    setInputValue(searchEl.value)
+    if (searchEl.value?.length > 2) {
+      await debouncedLoadMore()
+    } else {
+      setIsLoading(false)
+      setSearchResultsList([])
+    }
   }
+
+  const enterQuery = async (ev: KeyboardEvent) => {
+    setIsLoading(true)
+    if (ev.key === 'Enter' && inputValue().length > 2) {
+      await debouncedLoadMore()
+    } else {
+      setIsLoading(false)
+      setSearchResultsList([])
+    }
+  }
+
+  // Cleanup the debounce timer when the component unmounts
+  onCleanup(() => {
+    debouncedLoadMore.cancel()
+    console.log('cleanup search')
+  })
 
   return (
     <div class={styles.searchContainer}>
@@ -90,13 +113,13 @@ export const SearchModal = () => {
         placeholder={t('Site search')}
         class={styles.searchInput}
         onInput={handleQueryInput}
-        onChange={debouncedLoadMore}
+        onKeyDown={enterQuery}
         ref={searchEl}
       />
 
       <Button
         class={styles.searchButton}
-        onClick={loadSearchResults}
+        onClick={debouncedLoadMore}
         value={isLoading() ? <div class={styles.searchLoader} /> : <Icon name="search" />}
       />
 

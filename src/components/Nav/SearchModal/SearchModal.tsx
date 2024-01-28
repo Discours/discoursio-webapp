@@ -57,7 +57,7 @@ export const SearchModal = () => {
   const [isLoading, setIsLoading] = createSignal(false)
   const [offset, setOffset] = createSignal<number>(0)
   const [searchResultsList, { refetch: loadSearchResults, mutate: setSearchResultsList }] = createResource<
-    Shout[]
+    Shout[] | null
   >(
     async () => {
       setIsLoading(true)
@@ -73,7 +73,7 @@ export const SearchModal = () => {
     },
     {
       ssrLoadFrom: 'initial',
-      initialValue: [],
+      initialValue: null,
     },
   )
 
@@ -86,7 +86,7 @@ export const SearchModal = () => {
       await debouncedLoadMore()
     } else {
       setIsLoading(false)
-      setSearchResultsList([])
+      setSearchResultsList(null)
     }
   }
 
@@ -96,14 +96,14 @@ export const SearchModal = () => {
       await debouncedLoadMore()
     } else {
       setIsLoading(false)
-      setSearchResultsList([])
+      setSearchResultsList(null)
     }
   }
 
   // Cleanup the debounce timer when the component unmounts
   onCleanup(() => {
     debouncedLoadMore.cancel()
-    console.log('cleanup search')
+    // console.debug('[SearchModal] cleanup debouncing search')
   })
 
   return (
@@ -156,7 +156,7 @@ export const SearchModal = () => {
           </Show>
         </Show>
 
-        <Show when={!searchResultsList()}>
+        <Show when={Array.isArray(searchResultsList()) && searchResultsList().length === 0}>
           <p class={styles.searchDescription} innerHTML={t("We couldn't find anything for your request")} />
         </Show>
       </Show>

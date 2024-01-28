@@ -1,8 +1,12 @@
 import type { Shout } from '../../../graphql/schema/core.gen'
 
-import { createSignal, Show, For } from 'solid-js'
+import { createResource, createSignal, For, Show } from 'solid-js'
+import { debounce } from 'throttle-debounce'
 
 import { useLocalize } from '../../../context/localize'
+import { loadShoutsSearch } from '../../../stores/zine/articles'
+// import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { byScore } from '../../../utils/sortby'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
@@ -10,13 +14,11 @@ import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
 import { SearchResultItem } from './SearchResultItem'
 
 import styles from './SearchModal.module.scss'
-import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { loadShoutsSearch, useArticlesStore } from '../../../stores/zine/articles'
-import { byScore } from '../../../utils/sortby'
 
 // @@TODO handle empty article options after backend support (subtitle, cover, etc.)
 // @@TODO implement load more
 // @@TODO implement FILTERS & TOPICS
+// @@TODO use save/restoreScrollPosition if needed
 
 const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
   `<span>${str.replaceAll(
@@ -24,16 +26,16 @@ const getSearchCoincidences = ({ str, intersection }: { str: string; intersectio
     (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`,
   )}</span>`
 
-const prepareSearchResults = (list, searchValue) =>
-  list.map((article, index) => ({
+const prepareSearchResults = (list: Shout[], searchValue: string) =>
+  list.sort(byScore()).map((article, index) => ({
     ...article,
-    body: '',
-    cover: '',
-    createdAt: '',
+    body: article.body,
+    cover: article.cover,
+    created_at: article.created_at,
     id: index,
     slug: article.slug,
-    authors: [],
-    topics: [],
+    authors: article.authors,
+    topics: article.topics,
     title: article.title
       ? getSearchCoincidences({
           str: article.title,
@@ -50,38 +52,35 @@ const prepareSearchResults = (list, searchValue) =>
 
 export const SearchModal = () => {
   const { t } = useLocalize()
-  const { sortedArticles } = useArticlesStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const [offset, setOffset] = createSignal(0)
   const [inputValue, setInputValue] = createSignal('')
-  //const [searchResultsList, setSearchResultsList] = createSignal<[] | null>([])
   const [isLoading, setIsLoading] = createSignal(false)
-  // const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
-  let searchEl: HTMLInputElement
-  const handleQueryChange = async (_ev) => {
-    setInputValue(searchEl.value)
-
-    if (inputValue() && inputValue().length > 2) await loadMore()
-  }
-
-  const loadMore = async () => {
-    setIsLoading(true)
-    saveScrollPosition()
-    if (inputValue() && inputValue().length > 2) {
-      console.log(inputValue())
-      const { hasMore } = await loadShoutsSearch({
-        text: inputValue(),
-        offset: offset(),
+  const [searchResultsList, { refetch: loadSearchResults, mutate: setSearchResultsList }] = createResource<
+    Shout[]
+  >(
+    async () => {
+      setIsLoading(true)
+      const { hasMore, newShouts } = await loadShoutsSearch({
         limit: FEED_PAGE_SIZE,
+        text: inputValue(),
+        offset: searchResultsList().length,
       })
       setIsLoadMoreButtonVisible(hasMore)
-      setOffset(offset() + FEED_PAGE_SIZE)
-    } else {
-      console.warn('[SaerchView] no query found')
-    }
-    restoreScrollPosition()
-    setIsLoading(false)
+      return newShouts
+    },
+    {
+      ssrLoadFrom: 'initial',
+      initialValue: [],
+    },
+  )
+
+  let searchEl: HTMLInputElement
+  const debouncedLoadMore = debounce(500, loadSearchResults)
+  const handleQueryInput = () => {
+    const inp = searchEl.value
+    setInputValue(inp)
+    if (inp?.length > 2) debouncedLoadMore()
+    else setSearchResultsList([])
   }
 
   return (
@@ -90,13 +89,14 @@ export const SearchModal = () => {
         type="search"
         placeholder={t('Site search')}
         class={styles.searchInput}
-        onInput={handleQueryChange}
+        onInput={handleQueryInput}
+        onChange={debouncedLoadMore}
         ref={searchEl}
       />
 
       <Button
         class={styles.searchButton}
-        onClick={loadMore}
+        onClick={loadSearchResults}
         value={isLoading() ? <div class={styles.searchLoader} /> : <Icon name="search" />}
       />
 
@@ -108,8 +108,8 @@ export const SearchModal = () => {
       />
 
       <Show when={!isLoading()}>
-        <Show when={sortedArticles()}>
-          <For each={sortedArticles().sort(byScore())}>
+        <Show when={searchResultsList()}>
+          <For each={prepareSearchResults(searchResultsList(), inputValue())}>
             {(article: Shout) => (
               <div>
                 <SearchResultItem
@@ -126,14 +126,14 @@ export const SearchModal = () => {
 
           <Show when={isLoadMoreButtonVisible()}>
             <p class="load-more-container">
-              <button class="button" onClick={loadMore}>
+              <button class="button" onClick={loadSearchResults}>
                 {t('Load more')}
               </button>
             </p>
           </Show>
         </Show>
 
-        <Show when={!sortedArticles()}>
+        <Show when={!searchResultsList()}>
           <p class={styles.searchDescription} innerHTML={t("We couldn't find anything for your request")} />
         </Show>
       </Show>

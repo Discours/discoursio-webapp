@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { createEffect, createSignal, Show } from 'solid-js'
 
-import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { useLocalize } from '../../../context/localize'
 import { useMediaQuery } from '../../../context/mediaQuery'
+import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { FollowButton } from '../../_shared/FollowButton'

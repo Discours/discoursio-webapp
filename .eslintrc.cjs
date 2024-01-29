@@ -65,6 +65,7 @@ module.exports = {
     'unicorn/no-array-callback-reference': 'warn',
     'unicorn/no-array-method-this-argument': 'warn',
     'unicorn/no-for-loop': 'off',
+    'unicorn/prefer-switch': 'warn',
 
     'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
     'sonarjs/prefer-immediate-return': 'warn',

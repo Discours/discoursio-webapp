@@ -1,17 +1,16 @@
-import { Author, Topic, Community, FollowingEntity } from '../../../graphql/schema/core.gen'
-
 import clsx from 'clsx'
 import { Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { Author, Topic, Community, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { Button } from '../Button'
 import { CheckButton } from '../CheckButton'
 import { Icon } from '../Icon'
 
-import stylesButton from '../Button/Button.module.scss'
 import stylesCard from '../../Topic/Card.module.scss'
+import stylesButton from '../Button/Button.module.scss'
 
 interface FollowButtonProps {
   slug: string
@@ -39,12 +38,23 @@ export const FollowButton = (props: FollowButtonProps) => {
       () => subscriptions(),
       (subs) => {
         let items = []
-        if (props.entity === FollowingEntity.Author) {
-          items = subs.authors || []
-        } else if (props.entity === FollowingEntity.Topic) {
-          items = subs.topics || []
-        } else if (props.entity === FollowingEntity.Community) {
-          items = subs.communities || []
+        switch (props.entity) {
+          case FollowingEntity.Author: {
+            items = subs.authors || []
+
+            break
+          }
+          case FollowingEntity.Topic: {
+            items = subs.topics || []
+
+            break
+          }
+          case FollowingEntity.Community: {
+            items = subs.communities || []
+
+            break
+          }
+          // No default
         }
         setSubscribed(items.some((x: Topic | Author | Community) => x?.slug === props.slug))
       },

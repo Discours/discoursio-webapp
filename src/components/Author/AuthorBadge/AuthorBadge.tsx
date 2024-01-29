@@ -12,11 +12,11 @@ import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+import { FollowButton } from '../../_shared/FollowButton'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 
 import styles from './AuthorBadge.module.scss'
-import { FollowButton } from '../../_shared/FollowButton'
 
 type Props = {
   author: Author

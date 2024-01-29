@@ -1,9 +1,8 @@
-import { Topic, FollowingEntity } from '../../graphql/schema/core.gen'
-
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
+import { Topic, FollowingEntity } from '../../graphql/schema/core.gen'
 import { FollowButton } from '../_shared/FollowButton'
 
 import styles from './Full.module.scss'

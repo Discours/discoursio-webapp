@@ -1,15 +1,14 @@
-import { FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
-
 import { clsx } from 'clsx'
 import { createMemo, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
+import { FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
 import { capitalize } from '../../utils/capitalize'
+import { FollowButton } from '../_shared/FollowButton'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { CardTopic } from '../Feed/CardTopic'
 
 import styles from './Card.module.scss'
-import { FollowButton } from '../_shared/FollowButton'
 
 interface TopicProps {
   topic: Topic

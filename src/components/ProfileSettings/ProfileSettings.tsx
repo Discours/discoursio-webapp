@@ -190,7 +190,7 @@ export const ProfileSettings = () => {
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
                       <div
-                        class={clsx(styles.userpic, { [styles.hasControls]: form.userpic })}
+                        class={clsx(styles.userpic, { [styles.hasControls]: form.pic })}
                         onClick={handleCropAvatar}
                       >
                         <Switch>

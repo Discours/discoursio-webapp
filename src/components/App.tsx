@@ -7,6 +7,7 @@ import { Dynamic } from 'solid-js/web'
 import { ConfirmProvider } from '../context/confirm'
 import { ConnectProvider } from '../context/connect'
 import { EditorProvider } from '../context/editor'
+import { InboxProvider } from '../context/inbox'
 import { LocalizeProvider } from '../context/localize'
 import { MediaQueryProvider } from '../context/mediaQuery'
 import { NotificationsProvider } from '../context/notifications'
@@ -42,7 +43,6 @@ import { SearchPage } from '../pages/search.page'
 import { TopicPage } from '../pages/topic.page'
 import { ROUTES, useRouter } from '../stores/router'
 import { hideModal, MODALS, showModal } from '../stores/ui'
-import { InboxProvider } from '../context/inbox'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))

@@ -4,8 +4,6 @@ import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
 
-import { apiClient } from '../../../utils/apiClient'
-
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
@@ -22,7 +20,6 @@ import { HeaderAuth } from '../HeaderAuth'
 import { Modal } from '../Modal'
 import { SearchModal } from '../SearchModal/SearchModal'
 import { Snackbar } from '../Snackbar'
-import { SearchModal } from '../SearchModal/SearchModal'
 
 import { Link } from './Link'
 

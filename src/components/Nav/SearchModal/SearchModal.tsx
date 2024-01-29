@@ -3,6 +3,9 @@ import type { Shout } from '../../../graphql/schema/core.gen'
 import { createSignal, Show, For } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { loadShoutsSearch, useArticlesStore } from '../../../stores/zine/articles'
+import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { byScore } from '../../../utils/sortby'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
@@ -10,9 +13,6 @@ import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
 import { SearchResultItem } from './SearchResultItem'
 
 import styles from './SearchModal.module.scss'
-import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { loadShoutsSearch, useArticlesStore } from '../../../stores/zine/articles'
-import { byScore } from '../../../utils/sortby'
 
 // @@TODO handle empty article options after backend support (subtitle, cover, etc.)
 // @@TODO implement load more

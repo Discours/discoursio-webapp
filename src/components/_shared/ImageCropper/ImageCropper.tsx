@@ -40,9 +40,9 @@ export const ImageCropper = (props: CropperProps) => {
     }
   })
   const handleSave = (_ev) => {
-    // eslint-disable-next-line solid/reactivity
     cropper()
       .getCroppedCanvas()
+      // eslint-disable-next-line solid/reactivity
       .toBlob((blob) => {
         const formData = new FormData()
         formData.append('media', blob, props.uploadFile.file.name)

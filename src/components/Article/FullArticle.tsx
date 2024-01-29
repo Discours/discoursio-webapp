@@ -4,7 +4,7 @@ import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
 import { Link, Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { gtag, install } from 'ga-gtag'
+import { install } from 'ga-gtag'
 import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup, on } from 'solid-js'
 import { isServer } from 'solid-js/web'
 

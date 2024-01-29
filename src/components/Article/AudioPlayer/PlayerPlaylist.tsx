@@ -1,3 +1,4 @@
+import { gtag } from 'ga-gtag'
 import { createSignal, For, lazy, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
@@ -34,6 +35,14 @@ export const PlayerPlaylist = (props: Props) => {
   const handleMediaItemFieldChange = (field: keyof MediaItem, value: string) => {
     props.onMediaItemFieldChange(activeEditIndex(), field, value)
   }
+
+  const play = (index) => {
+    const mi = props.media[index]
+    gtag('event', 'select_item', {
+      item_list_id: props.articleSlug,
+      item_list_name: mi.title || '' + ' - ' + mi.artist || '',
+    })
+  }
   return (
     <ul class={styles.playlist}>
       <For each={props.media}>
@@ -42,7 +51,7 @@ export const PlayerPlaylist = (props: Props) => {
             <div class={styles.playlistItem}>
               <button
                 class={styles.playlistItemPlayButton}
-                onClick={() => props.onPlayMedia(index())}
+                onClick={() => play(index())}
                 type="button"
                 aria-label="Play"
               >

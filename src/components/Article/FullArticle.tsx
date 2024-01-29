@@ -4,6 +4,7 @@ import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
 import { Link, Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
+import { gtag, install } from 'ga-gtag'
 import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup, on } from 'solid-js'
 import { isServer } from 'solid-js/web'
 
@@ -321,9 +322,8 @@ export const FullArticle = (props: Props) => {
   )
 
   onMount(async () => {
-    await loadReactionsBy({
-      by: { shout: props.article.slug },
-    })
+    install('G-LQ4B87H8C2')
+    await loadReactionsBy({ by: { shout: props.article.slug } })
     setIsReactionsLoaded(true)
     document.title = props.article.title
     window?.addEventListener('resize', updateIframeSizes)

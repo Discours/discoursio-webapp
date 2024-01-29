@@ -1,7 +1,7 @@
 import type { Message as MessageType, ChatMember } from '../../graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { createMemo, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
@@ -23,22 +23,22 @@ type Props = {
 
 export const Message = (props: Props) => {
   const { formatTime } = useLocalize()
-  const isOwn = props.ownId === Number(props.content.created_by)
-  const user = props.members?.find((m) => m.id === Number(props.content.created_by))
+  const isOwn = createMemo(() => props.ownId === Number(props.content.created_by))
+  const user = createMemo(() => props.members?.find((m) => m.id === Number(props.content.created_by)))
   const [isPopupVisible, setIsPopupVisible] = createSignal<boolean>(false)
 
   return (
-    <div class={clsx(styles.Message, isOwn && styles.own)}>
-      <Show when={!isOwn && user}>
+    <div class={clsx(styles.Message, isOwn() && styles.own)}>
+      <Show when={!isOwn() && user()}>
         <div class={styles.author}>
-          <DialogAvatar size="small" name={user.name} url={user.pic} />
-          <div class={styles.name}>{user.name}</div>
+          <DialogAvatar size="small" name={user().name} url={user().pic} />
+          <div class={styles.name}>{user().name}</div>
         </div>
       </Show>
       <div class={clsx(styles.body, { [styles.popupVisible]: isPopupVisible() })}>
         <div class={styles.text}>
           <div class={styles.actions}>
-            <div onClick={props.replyClick}>
+            <div onClick={() => props.replyClick()}>
               <Icon name="chat-reply" class={styles.reply} />
             </div>
             <MessageActionsPopup
@@ -47,7 +47,7 @@ export const Message = (props: Props) => {
             />
           </div>
           <Show when={props.replyBody}>
-            <QuotedMessage body={props.replyBody} variant="inline" isOwn={isOwn} />
+            <QuotedMessage body={props.replyBody} variant="inline" isOwn={isOwn()} />
           </Show>
           <div innerHTML={props.content.body} />
         </div>

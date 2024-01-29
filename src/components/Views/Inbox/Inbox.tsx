@@ -9,7 +9,7 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import { useAuthorsStore } from '../../../stores/zine/authors'
+// import { useAuthorsStore } from '../../../stores/zine/authors'
 import { Icon } from '../../_shared/Icon'
 import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
@@ -48,7 +48,7 @@ export const InboxView = (props: Props) => {
     messages,
     actions: { loadChats, getMessages, sendMessage, createChat },
   } = useInbox()
-  const [recipients, setRecipients] = createSignal<Author[]>(props.authors)
+  const [recipients, setRecipients] = createSignal<Author[]>([])
   const [sortByGroup, setSortByGroup] = createSignal(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
@@ -86,7 +86,7 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  const handleSubmit = async (message: string) => {
+  const handleSubmit = (message: string) => {
     sendMessage({
       body: message,
       chat_id: currentDialog()?.id.toString(),
@@ -97,28 +97,34 @@ export const InboxView = (props: Props) => {
     messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
     setClear(false)
   }
+  createEffect(() => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const handleOpenChatWithParams = async () => {
+      if (searchParams().chat) {
+        const chatToOpen = chats()?.find((chat) => chat.id === searchParams().chat)
+        if (!chatToOpen) return
+        handleOpenChat(chatToOpen)
+        return
+      }
 
-  createEffect(async () => {
-    if (searchParams().chat) {
-      const chatToOpen = chats()?.find((chat) => chat.id === searchParams().chat)
-      if (!chatToOpen) return
-      await handleOpenChat(chatToOpen)
-      return
-    }
-    if (searchParams().initChat) {
-      try {
-        const newChat = await createChat([Number(searchParams().initChat)], '')
-        await loadChats()
-        changeSearchParams({
-          initChat: null,
-          chat: newChat.chat.id,
-        })
-        const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
-        await handleOpenChat(chatToOpen)
-      } catch (error) {
-        console.error(error)
+      if (searchParams().initChat) {
+        try {
+          const newChat = await createChat([Number(searchParams().initChat)], '')
+          await loadChats()
+          changeSearchParams({
+            initChat: null,
+            chat: newChat.chat.id,
+          })
+          const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
+          handleOpenChat(chatToOpen)
+        } catch (error) {
+          console.error(error)
+        }
       }
     }
+
+    // Call the synchronous function
+    handleOpenChatWithParams()
   })
 
   const chatsToShow = () => {
@@ -176,6 +182,7 @@ export const InboxView = (props: Props) => {
   }
 
   onMount(async () => {
+    setRecipients(props.authors)
     await loadChats()
   })
 

@@ -59,17 +59,23 @@ export const SearchModal = () => {
   const [searchResultsList, { refetch: loadSearchResults, mutate: setSearchResultsList }] = createResource<
     Shout[] | null
   >(
-    async () => {
-      setIsLoading(true)
-      const { hasMore, newShouts } = await loadShoutsSearch({
-        limit: FEED_PAGE_SIZE,
-        text: inputValue(),
-        offset: offset(),
-      })
-      setIsLoading(false)
-      setOffset(newShouts.length)
-      setIsLoadMoreButtonVisible(hasMore)
-      return newShouts
+    () => {
+      saveScrollPosition()
+      // eslint-disable-next-line unicorn/consistent-function-scoping
+      const fetchData = async () => {
+        setIsLoading(true)
+        const { hasMore, newShouts } = await loadShoutsSearch({
+          limit: FEED_PAGE_SIZE,
+          text: inputValue(),
+          offset: offset(),
+        })
+        setIsLoading(false)
+        setOffset(newShouts.length)
+        setIsLoadMoreButtonVisible(hasMore)
+        return newShouts
+      }
+
+      return fetchData()
     },
     {
       ssrLoadFrom: 'initial',

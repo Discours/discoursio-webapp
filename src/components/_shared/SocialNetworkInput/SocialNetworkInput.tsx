@@ -37,7 +37,7 @@ export const SocialNetworkInput = (props: Props) => {
         placeholder={props.autofocus ? null : `${props.link}${props.slug}`}
       />
       <Show when={props.isExist}>
-        <button type="button" onClick={props.handleDelete}>
+        <button type="button" onClick={() => props.handleDelete()}>
           <Icon name="remove" class={styles.remove} />
         </button>
       </Show>

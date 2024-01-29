@@ -38,7 +38,7 @@ export const ProfileSettings = () => {
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
-  const [userpicFile, setUserpicFile] = createSignal<any | null>(null)
+  const [userpicFile, setUserpicFile] = createSignal(null)
   const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
   const [hostname, setHostname] = createSignal<string | null>(null)

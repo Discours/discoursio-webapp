@@ -1,5 +1,6 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
+import { createMemo } from 'solid-js'
 
 import { router, ROUTES, useRouter } from '../../../stores/router'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
@@ -17,20 +18,20 @@ type Props = {
 
 export const Link = (props: Props) => {
   const { page } = useRouter()
-  const isSelected = page().route === props.routeName
+  const isSelected = createMemo(() => page().route === props.routeName)
   return (
     <li
-      onClick={props.onClick}
+      onClick={(ev) => props.onClick(ev)}
       classList={{ 'view-switcher__item--selected': page().route === props.routeName }}
     >
       <ConditionalWrapper
-        condition={!isSelected && Boolean(props.routeName)}
+        condition={!isSelected() && Boolean(props.routeName)}
         wrapper={(children) => <a href={getPagePath(router, props.routeName)}>{children}</a>}
       >
         <span
           class={clsx('cursorPointer linkReplacement', { [styles.mainNavigationItemActive]: props.active })}
-          onMouseOver={props.onMouseOver}
-          onMouseOut={props.onMouseOut}
+          onMouseOver={(ev) => props.onMouseOver(ev)}
+          onMouseOut={(ev) => props.onMouseOut(ev)}
         >
           {props.body}
         </span>

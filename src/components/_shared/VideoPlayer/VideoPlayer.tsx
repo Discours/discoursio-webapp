@@ -45,7 +45,7 @@ export const VideoPlayer = (props: Props) => {
         <Popover content={t('Delete')}>
           {(triggerRef: (el) => void) => (
             <Button
-              ref={triggerRef}
+              setRef={triggerRef}
               size="S"
               class={styles.deleteAction}
               onClick={() => props.onVideoDelete()}

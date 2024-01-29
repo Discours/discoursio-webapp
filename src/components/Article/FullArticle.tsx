@@ -331,33 +331,35 @@ export const FullArticle = (props: Props) => {
     onCleanup(() => window.removeEventListener('resize', updateIframeSizes))
   })
 
-  const cover = props.article.cover ?? 'production/image/logo_image.png'
-  const ogImage = getOpenGraphImageUrl(cover, {
-    title: props.article.title,
-    topic: mainTopic().title,
-    author: props.article.authors[0].name,
-    width: 1200,
-  })
+  const cover = createMemo(() => props.article.cover ?? 'production/image/logo_image.png')
+  const ogImage = createMemo(() =>
+    getOpenGraphImageUrl(cover(), {
+      title: props.article.title,
+      topic: mainTopic().title,
+      author: props.article.authors[0].name,
+      width: 1200,
+    }),
+  )
 
-  const description = getDescription(props.article.description || body())
-  const ogTitle = props.article.title
-  const keywords = getKeywords(props.article)
-  const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })
+  const description = createMemo(() => getDescription(props.article.description || body()))
+  const ogTitle = createMemo(() => props.article.title)
+  const keywords = createMemo(() => getKeywords(props.article))
+  const shareUrl = createMemo(() => getShareUrl({ pathname: `/${props.article.slug}` }))
   const getAuthorName = (a: Author) => {
     return lang() === 'en' && isCyrillic(a.name) ? capitalize(a.slug.replace(/-/, ' ')) : a.name
   }
   return (
     <>
-      <Meta name="descprition" content={description} />
-      <Meta name="keywords" content={keywords} />
+      <Meta name="descprition" content={description()} />
+      <Meta name="keywords" content={keywords()} />
       <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
+      <Meta name="og:title" content={ogTitle()} />
+      <Meta name="og:image" content={ogImage()} />
+      <Meta name="og:description" content={description()} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
-      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="twitter:title" content={ogTitle()} />
+      <Meta name="twitter:description" content={description()} />
+      <Meta name="twitter:image" content={ogImage()} />
 
       <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
       <div class="wide-container">
@@ -397,7 +399,7 @@ export const FullArticle = (props: Props) => {
                   }
                 >
                   <figure class="img-align-column">
-                    <Image width={800} alt={props.article.cover_caption} src={props.article.cover} />
+                    <Image width={800} alt={props.article.cover_caption} src={cover()} />
                     <figcaption innerHTML={props.article.cover_caption} />
                   </figure>
                 </Show>
@@ -409,7 +411,7 @@ export const FullArticle = (props: Props) => {
             <Show when={props.article.layout === 'audio'}>
               <AudioHeader
                 title={props.article.title}
-                cover={props.article.cover}
+                cover={cover()}
                 artistData={media()?.[0]}
                 topic={mainTopic()}
               />
@@ -474,7 +476,11 @@ export const FullArticle = (props: Props) => {
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
-                  <div class={clsx(styles.shoutStatsItem)} ref={triggerRef} onClick={scrollToComments}>
+                  <div
+                    class={clsx(styles.shoutStatsItem)}
+                    ref={triggerRef}
+                    onClick={() => scrollToComments()}
+                  >
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
                     <Show
@@ -519,9 +525,9 @@ export const FullArticle = (props: Props) => {
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
                     <SharePopup
                       title={props.article.title}
-                      description={description}
-                      imageUrl={props.article.cover}
-                      shareUrl={shareUrl}
+                      description={description()}
+                      imageUrl={cover()}
+                      shareUrl={shareUrl()}
                       containerCssClass={stylesHeader.control}
                       onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                       trigger={
@@ -621,9 +627,9 @@ export const FullArticle = (props: Props) => {
       <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
       <ShareModal
         title={props.article.title}
-        description={description}
-        imageUrl={props.article.cover}
-        shareUrl={shareUrl}
+        description={description()}
+        imageUrl={cover()}
+        shareUrl={shareUrl()}
       />
     </>
   )

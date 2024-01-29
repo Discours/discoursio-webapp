@@ -1,4 +1,4 @@
-import { Show } from 'solid-js'
+import { Show, createMemo } from 'solid-js'
 
 import { useLocalize } from '../../../../context/localize'
 import { useRouter } from '../../../../stores/router'
@@ -76,13 +76,13 @@ export const AuthModalHeader = (props: Props) => {
     }
   }
 
-  const { title, description } = generateModalTextsFromSource(props.modalType)
+  const content = createMemo(() => generateModalTextsFromSource(props.modalType))
 
   return (
     <>
-      <h4 class={styles.authFormHeader}>{title}</h4>
-      <Show when={description}>
-        <p class={styles.authFormDescription} innerHTML={description} />
+      <h4 class={styles.authFormHeader}>{content()?.title}</h4>
+      <Show when={content()?.description}>
+        <p class={styles.authFormDescription} innerHTML={content()?.description} />
       </Show>
     </>
   )

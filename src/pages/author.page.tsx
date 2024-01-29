@@ -13,10 +13,7 @@ import { loadAuthor } from '../stores/zine/authors'
 export const AuthorPage = (props: PageProps) => {
   const { page } = useRouter()
   const slug = createMemo(() => page().params['slug'] as string)
-
-  const [isLoaded, setIsLoaded] = createSignal(
-    Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug(),
-  )
+  const [isLoaded, setIsLoaded] = createSignal()
 
   const preload = () => {
     return Promise.all([
@@ -29,7 +26,10 @@ export const AuthorPage = (props: PageProps) => {
   }
 
   onMount(async () => {
-    if (isLoaded()) {
+    const initialValue =
+      Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug()
+    if (initialValue) {
+      setIsLoaded(initialValue)
       return
     }
 
@@ -54,15 +54,15 @@ export const AuthorPage = (props: PageProps) => {
 
   onCleanup(() => resetSortedArticles())
 
-  const usePrerenderedData = props.author?.slug === slug()
+  const usePrerenderedData = createMemo(() => props.author?.slug === slug())
 
   return (
     <PageLayout title={props.seo?.title}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <AuthorView
-            author={usePrerenderedData ? props.author : null}
-            shouts={usePrerenderedData ? props.authorShouts : null}
+            author={usePrerenderedData() ? props.author : null}
+            shouts={usePrerenderedData() ? props.authorShouts : null}
             authorSlug={slug()}
           />
         </Show>

@@ -13,10 +13,12 @@ import { loadTopic } from '../stores/zine/topics'
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()
   const slug = createMemo(() => page().params['slug'] as string)
+  const [isLoaded, setIsLoaded] = createSignal()
 
-  const [isLoaded, setIsLoaded] = createSignal(
-    Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug(),
-  )
+  createEffect(() => {
+    const x = Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug()
+    setIsLoaded(x)
+  })
 
   const preload = () =>
     Promise.all([
@@ -53,15 +55,15 @@ export const TopicPage = (props: PageProps) => {
 
   onCleanup(() => resetSortedArticles())
 
-  const usePrerenderedData = props.topic?.slug === slug()
+  const usePrerenderedData = createMemo(() => props.topic?.slug === slug())
 
   return (
     <PageLayout title={props.seo.title}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <TopicView
-            topic={usePrerenderedData ? props.topic : null}
-            shouts={usePrerenderedData ? props.topicShouts : null}
+            topic={usePrerenderedData() ? props.topic : null}
+            shouts={usePrerenderedData() ? props.topicShouts : null}
             topicSlug={slug()}
           />
         </Show>

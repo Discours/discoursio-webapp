@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, JSX, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, JSX, Show } from 'solid-js'
 
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 
@@ -20,7 +20,7 @@ export type PopupProps = {
 
 export const Popup = (props: PopupProps) => {
   const [isVisible, setIsVisible] = createSignal(false)
-  const horizontalAnchor: HorizontalAnchor = props.horizontalAnchor || 'center'
+  const horizontalAnchor = createMemo(() => props.horizontalAnchor || 'center')
 
   createEffect(() => {
     if (props.onVisibilityChange) {
@@ -52,8 +52,8 @@ export const Popup = (props: PopupProps) => {
       <Show when={isVisible()}>
         <div
           class={clsx(styles.popup, props.popupCssClass, {
-            [styles.horizontalAnchorCenter]: horizontalAnchor === 'center',
-            [styles.horizontalAnchorRight]: horizontalAnchor === 'right',
+            [styles.horizontalAnchorCenter]: horizontalAnchor() === 'center',
+            [styles.horizontalAnchorRight]: horizontalAnchor() === 'right',
             [styles.bordered]: props.variant === 'bordered',
             [styles.tiny]: props.variant === 'tiny',
           })}

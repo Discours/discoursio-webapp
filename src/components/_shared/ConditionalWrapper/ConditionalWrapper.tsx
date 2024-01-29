@@ -1,4 +1,4 @@
-import { JSX } from 'solid-js'
+import { JSX, createMemo } from 'solid-js'
 
 type Props = {
   condition: boolean
@@ -7,5 +7,6 @@ type Props = {
 }
 
 export const ConditionalWrapper = (props: Props) => {
-  return props.condition ? props.wrapper(props.children) : props.children
+  const content = createMemo(() => (props.condition ? props.wrapper(props.children) : props.children))
+  return <>{content()}</>
 }

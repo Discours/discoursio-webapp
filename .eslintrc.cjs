@@ -40,12 +40,12 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    mocha: true,
+    // mocha: true,
   },
   globals: {},
   rules: {
     // Solid
-    'solid/reactivity': 'off', // too many 'should be used within JSX'
+    'solid/reactivity': 'error',
     'solid/no-innerhtml': 'off',
 
     /** Unicorn **/

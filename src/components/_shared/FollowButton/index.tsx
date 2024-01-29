@@ -1,9 +1,10 @@
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { Author, Topic, Community, FollowingEntity } from '../../../graphql/schema/core.gen'
+import { showModal } from '../../../stores/ui'
 import { follow, unfollow } from '../../../stores/zine/common'
 import { Button } from '../Button'
 import { CheckButton } from '../CheckButton'
@@ -27,7 +28,8 @@ export const FollowButton = (props: FollowButtonProps) => {
   const {
     subscriptions,
     isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication },
+    isAuthenticated,
+    actions: { loadSubscriptions },
   } = useSession()
 
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -75,9 +77,11 @@ export const FollowButton = (props: FollowButtonProps) => {
   }
 
   const handleSubscribe = () => {
-    requireAuthentication(() => {
+    if (isAuthenticated()) {
       subscribe(!subscribed())
-    }, 'subscribe')
+    } else {
+      showModal('subscribe')
+    }
   }
 
   const subscribeValue = () => {

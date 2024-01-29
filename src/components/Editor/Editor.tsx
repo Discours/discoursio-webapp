@@ -27,7 +27,7 @@ import { Placeholder } from '@tiptap/extension-placeholder'
 import { Strike } from '@tiptap/extension-strike'
 import { Text } from '@tiptap/extension-text'
 import { Underline } from '@tiptap/extension-underline'
-import { createEffect, createSignal, onCleanup } from 'solid-js'
+import { createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
 import * as Y from 'yjs'
@@ -70,33 +70,41 @@ const allowedImageTypes = new Set([
   'image/x-icon',
 ])
 
-const yDocs: Record<string, Doc> = {}
-const providers: Record<string, HocuspocusProvider> = {}
-
 export const Editor = (props: Props) => {
   const { t } = useLocalize()
   const { author } = useSession()
-
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
-
+  const [yDocs, setYdocs] = createSignal<Record<string, Doc>>({})
+  const [providers, setProviders] = createSignal<Record<string, HocuspocusProvider>>({})
   const {
     actions: { showSnackbar },
   } = useSnackbar()
 
-  const docName = `shout-${props.shoutId}`
+  const docName = createMemo(() => `shout-${props.shoutId}`)
+  createEffect(
+    on(
+      docName,
+      (dname) => {
+        if (!yDocs()[dname]) {
+          const extens = {}
+          extens[dname] = new Y.Doc()
+          setYdocs((yd) => ({ ...yd, ...extens }))
+        }
 
-  if (!yDocs[docName]) {
-    yDocs[docName] = new Y.Doc()
-  }
-
-  if (!providers[docName]) {
-    providers[docName] = new HocuspocusProvider({
-      url: 'wss://hocuspocus.discours.io',
-      name: docName,
-      document: yDocs[docName],
-    })
-  }
+        if (!providers()[dname]) {
+          const extens = {}
+          extens[dname] = new HocuspocusProvider({
+            url: 'wss://hocuspocus.discours.io',
+            name: dname,
+            document: yDocs()[dname],
+          })
+          setProviders((ppp) => ({ ...ppp, ...extens }))
+        }
+      },
+      { defer: true },
+    ),
+  )
 
   const editorElRef: {
     current: HTMLDivElement
@@ -179,8 +187,6 @@ export const Editor = (props: Props) => {
     }
   }
 
-  const { initialContent } = props
-
   const editor = createTiptapEditor(() => ({
     element: editorElRef.current,
     editorProps: {
@@ -225,10 +231,10 @@ export const Editor = (props: Props) => {
       OrderedList,
       ListItem,
       Collaboration.configure({
-        document: yDocs[docName],
+        document: yDocs[docName()],
       }),
       CollaborationCursor.configure({
-        provider: providers[docName],
+        provider: providers[docName()],
         user: {
           name: author().name,
           color: uniqolor(author().slug).color,
@@ -334,7 +340,7 @@ export const Editor = (props: Props) => {
       Article,
     ],
     enablePasteRules: [Link],
-    content: initialContent ?? null,
+    content: props.initialContent ?? null,
   }))
 
   const {

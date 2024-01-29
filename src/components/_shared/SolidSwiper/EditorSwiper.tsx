@@ -114,11 +114,7 @@ export const EditorSwiper = (props: Props) => {
       setLoading(false)
     }
   }
-  const handleUploadThumb = async () => {
-    selectFiles((selectedFiles) => {
-      initUpload(selectedFiles)
-    })
-  }
+  const handleUploadThumb = () => selectFiles(initUpload)
 
   const handleChangeIndex = (direction: 'left' | 'right', index: number) => {
     const images = [...props.images]

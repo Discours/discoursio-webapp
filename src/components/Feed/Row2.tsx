@@ -1,15 +1,10 @@
 import type { Shout } from '../../graphql/schema/core.gen'
 
-import { createComputed, createSignal, Show, For } from 'solid-js'
+import { createSignal, createEffect, For, Show } from 'solid-js'
 
 import { ArticleCard } from './ArticleCard'
-import { ArticleCardProps } from './ArticleCard/ArticleCard'
 
-const x = [
-  ['12', '12'],
-  ['8', '16'],
-  ['16', '8'],
-]
+const columnSizes = ['col-md-12', 'col-md-8', 'col-md-16']
 
 export const Row2 = (props: {
   articles: Shout[]
@@ -18,10 +13,10 @@ export const Row2 = (props: {
   noAuthorLink?: boolean
   noauthor?: boolean
 }) => {
-  const [y, setY] = createSignal(0)
+  const [columnIndex, setColumnIndex] = createSignal(0)
 
-  // FIXME: random can break hydration
-  createComputed(() => setY(Math.floor(Math.random() * x.length)))
+  // Update column index on component mount
+  createEffect(() => setColumnIndex(Math.floor(Math.random() * columnSizes.length)))
 
   return (
     <Show when={props.articles && props.articles.length > 0}>
@@ -29,31 +24,16 @@ export const Row2 = (props: {
         <div class="wide-container">
           <div class="row">
             <For each={props.articles}>
-              {(a, i) => {
-                // FIXME: refactor this, too ugly now
-                const className = `col-md-${props.isEqual ? '12' : x[y()][i()]}`
-                let desktopCoverSize: ArticleCardProps['desktopCoverSize']
-
-                switch (className) {
-                  case 'col-md-8': {
-                    desktopCoverSize = 'S'
-                    break
-                  }
-                  case 'col-md-12': {
-                    desktopCoverSize = 'M'
-                    break
-                  }
-                  default: {
-                    desktopCoverSize = 'L'
-                  }
-                }
-
+              {(article, _idx) => {
+                const className = columnSizes[props.isEqual ? 0 : columnIndex() % columnSizes.length]
+                const big = className === 'col-md-12' ? 'M' : 'L'
+                const desktopCoverSize = className === 'col-md-8' ? 'S' : big
                 return (
                   <div class={className}>
                     <ArticleCard
-                      article={a}
+                      article={article}
                       settings={{
-                        isWithCover: props.isEqual || x[y()][i()] === '16',
+                        isWithCover: props.isEqual || className === 'col-md-16',
                         nodate: props.isEqual || props.nodate,
                         noAuthorLink: props.noAuthorLink,
                         noauthor: props.noauthor,

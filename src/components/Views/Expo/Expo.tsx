@@ -28,7 +28,7 @@ export const PRERENDERED_ARTICLES_COUNT = 24
 const LOAD_MORE_PAGE_SIZE = 16
 
 export const Expo = (props: Props) => {
-  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))
+  const [isLoaded, setIsLoaded] = createSignal<boolean>()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
   const [randomTopArticles, setRandomTopArticles] = createSignal<Shout[]>([])
@@ -108,7 +108,9 @@ export const Expo = (props: Props) => {
   )
 
   onMount(() => {
-    if (isLoaded()) {
+    const loaded = Boolean(props.shouts)
+    if (loaded) {
+      setIsLoaded(loaded)
       return
     }
 
@@ -149,7 +151,7 @@ export const Expo = (props: Props) => {
 
   return (
     <div class={styles.Expo}>
-      <Show when={sortedArticles()?.length > 0} fallback={<Loading />}>
+      <Show when={isLoaded()} fallback={<Loading />}>
         <div class="wide-container">
           <ul class={clsx('view-switcher')}>
             <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>

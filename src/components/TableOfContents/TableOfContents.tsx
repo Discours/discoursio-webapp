@@ -35,12 +35,10 @@ export const TableOfContents = (props: Props) => {
   const [headings, setHeadings] = createSignal<HTMLElement[]>([])
   const [areHeadingsLoaded, setAreHeadingsLoaded] = createSignal<boolean>(false)
   const [activeHeaderIndex, setActiveHeaderIndex] = createSignal<number>(-1)
-  const [isVisible, setIsVisible] = createSignal<boolean>(props.variant === 'article')
+  const [isVisible, setIsVisible] = createSignal<boolean>()
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
   }
-
-  setIsVisible(isDesktop())
 
   const updateHeadings = () => {
     setHeadings(
@@ -52,8 +50,9 @@ export const TableOfContents = (props: Props) => {
     setAreHeadingsLoaded(true)
   }
 
+  // eslint-disable-next-line solid/reactivity
   const debouncedUpdateHeadings = debounce(500, updateHeadings)
-
+  // eslint-disable-next-line solid/reactivity
   const updateActiveHeader = throttle(50, () => {
     const newActiveIndex = headings().findLastIndex((heading) => isInViewport(heading))
     setActiveHeaderIndex(newActiveIndex)
@@ -67,6 +66,7 @@ export const TableOfContents = (props: Props) => {
   )
 
   onMount(() => {
+    setIsVisible(props.variant === 'article' || isDesktop())
     window.addEventListener('scroll', updateActiveHeader)
     onCleanup(() => window.removeEventListener('scroll', updateActiveHeader))
   })

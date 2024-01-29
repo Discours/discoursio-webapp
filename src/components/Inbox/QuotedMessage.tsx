@@ -34,7 +34,7 @@ const QuotedMessage = (props: QuotedMessage) => {
         <div class={styles.quote}>{props.body}</div>
       </div>
       <Show when={props.cancel && props.variant === 'reply'}>
-        <div class={clsx(styles.cancel, styles.icon)} onClick={props.cancel}>
+        <div class={clsx(styles.cancel, styles.icon)} onClick={() => props.cancel()}>
           <Icon name="close-gray" />
         </div>
       </Show>

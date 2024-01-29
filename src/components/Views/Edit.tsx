@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, createEffect, createMemo, createSignal, lazy, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../context/editor'
@@ -61,27 +61,29 @@ export const EditView = (props: Props) => {
     actions: { setForm, setFormErrors, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage },
   } = useEditorContext()
 
-  const shoutTopics = props.shout.topics || []
+  const shoutTopics = createMemo(() => props.shout.topics || [])
 
-  const draft = getDraftFromLocalStorage(props.shout.id)
-  if (draft) {
-    setForm(draft)
-  } else {
-    setForm({
-      slug: props.shout.slug,
-      shoutId: props.shout.id,
-      title: props.shout.title,
-      lead: props.shout.lead,
-      description: props.shout.description,
-      subtitle: props.shout.subtitle,
-      selectedTopics: shoutTopics,
-      mainTopic: shoutTopics[0],
-      body: props.shout.body,
-      coverImageUrl: props.shout.cover,
-      media: props.shout.media,
-      layout: props.shout.layout,
-    })
-  }
+  createEffect(() => {
+    const d = getDraftFromLocalStorage(props.shout.id)
+    if (d) {
+      setForm(d)
+    } else {
+      setForm({
+        slug: props.shout.slug,
+        shoutId: props.shout.id,
+        title: props.shout.title,
+        lead: props.shout.lead,
+        description: props.shout.description,
+        subtitle: props.shout.subtitle,
+        selectedTopics: shoutTopics(),
+        mainTopic: shoutTopics()[0],
+        body: props.shout.body,
+        coverImageUrl: props.shout.cover,
+        media: props.shout.media,
+        layout: props.shout.layout,
+      })
+    }
+  })
 
   const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
 

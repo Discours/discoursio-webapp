@@ -1,7 +1,7 @@
 import type { Author } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { Show, createSignal } from 'solid-js'
+import { Show, createSignal, onMount } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
 
@@ -15,6 +15,8 @@ interface AuthorRatingControlProps {
 export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
   const isUpvoted = false
   const isDownvoted = false
+  const [rating, setRating] = createSignal(0)
+  onMount(() => setRating(props.author?.stat?.rating))
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleRatingChange = async (isUpvote: boolean) => {
     console.log('handleRatingChange', { isUpvote })
@@ -24,8 +26,6 @@ export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
       setRating((r) => r + value)
     }
   }
-
-  const [rating, setRating] = createSignal(props.author?.stat?.rating)
   return (
     <div
       class={clsx(styles.rating, props.class, {

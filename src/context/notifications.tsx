@@ -75,6 +75,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [after, setAfter] = createStorageSignal('notifier_timestamp', now)
 
   onMount(() => {
+    // eslint-disable-next-line solid/reactivity
     addHandler((data: SSEMessage) => {
       if (data.entity === 'reaction' && isAuthenticated()) {
         console.info(`[context.notifications] event`, data)

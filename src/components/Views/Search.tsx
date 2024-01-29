@@ -24,7 +24,7 @@ export const SearchView = (props: Props) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const [query, setQuery] = createSignal(props.query)
+  const [query, setQuery] = createSignal('')
   const [offset, setOffset] = createSignal(0)
 
   const { searchParams } = useRouter<SearchPageSearchParams>()
@@ -50,7 +50,7 @@ export const SearchView = (props: Props) => {
     restoreScrollPosition()
   }
 
-  onMount(async () => {
+  onMount(() => {
     const q = window.location.pathname.replace('/search/', '') || props.query
     setQuery(q)
     searchEl.value = q

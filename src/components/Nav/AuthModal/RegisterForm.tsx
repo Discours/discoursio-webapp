@@ -58,8 +58,8 @@ export const RegisterForm = () => {
     setFullName(newName)
   }
 
-  const handleSubmit = async (event: Event) => {
-    event.preventDefault()
+  const handleSubmit = async (_event: Event) => {
+    // event.preventDefault()
 
     if (passwordError()) {
       setValidationErrors((errors) => ({ ...errors, password: passwordError() }))

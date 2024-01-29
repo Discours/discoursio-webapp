@@ -76,20 +76,20 @@ export const CommentsTree = (props: Props) => {
     return newSortedComments
   })
 
-  const dateFromLocalStorage = Number.parseInt(localStorage.getItem(`${props.shoutSlug}`))
+  const dateFromLocalStorage = createMemo(() => Number.parseInt(localStorage.getItem(`${props.shoutSlug}`)))
   const currentDate = new Date()
   const setCookie = () => localStorage.setItem(`${props.shoutSlug}`, `${currentDate}`)
 
   onMount(() => {
-    if (!dateFromLocalStorage) {
+    if (!dateFromLocalStorage()) {
       setCookie()
-    } else if (currentDate.getTime() > dateFromLocalStorage) {
+    } else if (currentDate.getTime() > dateFromLocalStorage()) {
       const newComments = comments().filter((c) => {
         if (c.reply_to || c.created_by.slug === author()?.slug) {
           return
         }
         const created = c.created_at
-        return created > dateFromLocalStorage
+        return created > dateFromLocalStorage()
       })
       setNewReactions(newComments)
       setCookie()
@@ -163,7 +163,7 @@ export const CommentsTree = (props: Props) => {
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}
               clickedReplyId={clickedReplyId()}
-              lastSeen={dateFromLocalStorage}
+              lastSeen={dateFromLocalStorage()}
             />
           )}
         </For>

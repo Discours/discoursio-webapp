@@ -14,7 +14,7 @@ const MessagesFallback = (props: MessagesFallback) => {
       <div>
         <p class={styles.text}>{props.message}</p>
         <Show when={props.onClick}>
-          <button class={styles.button} type="button" onClick={props.onClick}>
+          <button class={styles.button} type="button" onClick={() => props.onClick()}>
             {props.actionText}
           </button>
         </Show>

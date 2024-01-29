@@ -1,4 +1,4 @@
-import { createSignal, JSX, onMount, Show } from 'solid-js'
+import { createSignal, JSX, onCleanup, onMount, Show } from 'solid-js'
 import usePopper from 'solid-popper'
 
 import styles from './Popover.module.scss'
@@ -37,24 +37,24 @@ export const Popover = (props: Props) => {
   const handleMouseOver = () => setShow(true)
   const handleMouseOut = () => setShow(false)
 
-  if (!props.disabled) {
-    onMount(() => {
+  onMount(() => {
+    if (!props.disabled) {
       showEvents.forEach((event) => {
         anchor().addEventListener(event, handleMouseOver)
       })
       hideEvents.forEach((event) => {
         anchor().addEventListener(event, handleMouseOut)
       })
-      return () => {
+      onCleanup(() => {
         showEvents.forEach((event) => {
           anchor().removeEventListener(event, handleMouseOver)
         })
         hideEvents.forEach((event) => {
           anchor().removeEventListener(event, handleMouseOut)
         })
-      }
-    })
-  }
+      })
+    }
+  })
 
   return (
     <>

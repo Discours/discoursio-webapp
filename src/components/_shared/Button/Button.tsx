@@ -1,4 +1,4 @@
-import type { JSX } from 'solid-js'
+import type { Accessor, JSX } from 'solid-js'
 
 import { clsx } from 'clsx'
 
@@ -14,21 +14,16 @@ type Props = {
   disabled?: boolean
   onClick?: (event?: MouseEvent) => void
   class?: string
-  ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void)
+  ref?: Accessor<HTMLButtonElement>
+  setRef?: (ref: HTMLButtonElement) => void
   isSubscribeButton?: boolean
 }
 
 export const Button = (props: Props) => {
   return (
     <button
-      ref={(el) => {
-        if (typeof props.ref === 'function') {
-          props.ref(el)
-          return
-        }
-        props.ref = el
-      }}
-      onClick={props.onClick}
+      ref={(el) => props.setRef(el)}
+      onClick={(ev) => props.onClick(ev)}
       type={props.type ?? 'button'}
       disabled={props.loading || props.disabled}
       class={clsx(

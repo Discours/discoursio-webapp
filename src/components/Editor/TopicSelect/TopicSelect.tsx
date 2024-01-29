@@ -2,7 +2,7 @@ import type { Topic } from '../../../graphql/schema/core.gen'
 
 import { createOptions, Select } from '@thisbeyond/solid-select'
 import { clsx } from 'clsx'
-import { createSignal } from 'solid-js'
+import { createMemo, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { clone } from '../../../utils/clone'
@@ -32,13 +32,15 @@ export const TopicSelect = (props: TopicSelectProps) => {
     return { id, title, slug: slugify(title) }
   }
 
-  const selectProps = createOptions(props.topics, {
-    key: 'title',
-    disable: (topic) => {
-      return props.selectedTopics.some((selectedTopic) => selectedTopic.slug === topic.slug)
-    },
-    createable: createValue,
-  })
+  const selectProps = createMemo(() =>
+    createOptions(props.topics, {
+      key: 'title',
+      disable: (topic) => {
+        return props.selectedTopics.some((selectedTopic) => selectedTopic.slug === topic.slug)
+      },
+      createable: createValue,
+    }),
+  )
 
   const handleChange = (selectedTopics: Topic[]) => {
     props.onChange(selectedTopics)
@@ -70,14 +72,14 @@ export const TopicSelect = (props: TopicSelectProps) => {
     )
   }
 
-  const initialValue = clone(props.selectedTopics)
+  const initialValue = createMemo(() => clone(props.selectedTopics))
 
   return (
     <Select
       multiple={true}
       disabled={isDisabled()}
-      initialValue={initialValue}
-      {...selectProps}
+      initialValue={initialValue()}
+      {...selectProps()}
       format={format}
       placeholder={t('Topics')}
       class="TopicSelect"

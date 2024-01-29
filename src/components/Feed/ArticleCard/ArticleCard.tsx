@@ -89,10 +89,13 @@ const getTitleAndSubtitle = (
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { author } = useSession()
-  const mainTopicSlug = props.article.main_topic || ''
-  const mainTopic = props.article.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
-  const mainTopicTitle =
-    mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
+  const mainTopicSlug = createMemo(() => props.article.main_topic || '')
+  const mainTopic = createMemo(
+    () => props.article.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug()),
+  )
+  const mainTopicTitle = createMemo(() =>
+    mainTopicSlug() && lang() === 'en' ? mainTopicSlug()?.replace(/-/, ' ') : mainTopic()?.title || '',
+  )
 
   const formattedDate = createMemo<string>(() => {
     let r = ''
@@ -100,7 +103,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
     return r
   })
 
-  const { title, subtitle } = getTitleAndSubtitle(props.article)
+  const card = createMemo(() => getTitleAndSubtitle(props.article))
 
   const canEdit = () =>
     props.article.authors?.some((a) => a && a?.slug === author()?.slug) ||
@@ -119,7 +122,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
 
-  const description = getDescription(props.article.body)
+  const description = createMemo(() => getDescription(props.article.body))
 
   const aspectRatio = () => {
     switch (props.article.layout) {
@@ -167,7 +170,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             >
               <Image
                 src={props.article.cover}
-                alt={title}
+                alt={card()?.title}
                 width={desktopCoverImageWidths[props.desktopCoverSize]}
                 onError={() => {
                   setIsCoverImageLoadError(true)
@@ -196,10 +199,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </Show>
 
-        <Show when={!props.settings?.isGroup && mainTopicSlug}>
+        <Show when={!props.settings?.isGroup && mainTopicSlug()}>
           <CardTopic
-            title={mainTopicTitle}
-            slug={mainTopicSlug}
+            title={mainTopicTitle()}
+            slug={mainTopicSlug()}
             isFloorImportant={props.settings?.isFloorImportant}
             isFeedMode={true}
             class={clsx(styles.shoutTopic, { [styles.shoutTopicTop]: props.settings.isShort })}
@@ -214,13 +217,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <a href={getPagePath(router, 'article', { slug: props.article.slug })}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={title} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={card()?.title} />
               </span>
             </div>
 
-            <Show when={!props.settings?.nosubtitle && subtitle}>
+            <Show when={!props.settings?.nosubtitle && card()?.subtitle}>
               <div class={styles.shoutCardSubtitle}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={card()?.subtitle} />
               </div>
             </Show>
           </a>
@@ -273,7 +276,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <Image src={props.article.cover} alt={title} width={600} loading="lazy" />
+                <Image src={props.article.cover} alt={card()?.title} width={600} loading="lazy" />
               </div>
             </div>
           </Show>
@@ -349,8 +352,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
                   <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <SharePopup
                       containerCssClass={stylesHeader.control}
-                      title={title}
-                      description={description}
+                      title={card()?.title}
+                      description={description()}
                       imageUrl={props.article.cover}
                       shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                       onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}

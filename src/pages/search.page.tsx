@@ -11,17 +11,16 @@ import { useRouter } from '../stores/router'
 import { loadShoutsSearch, resetSortedArticles } from '../stores/zine/articles'
 
 export const SearchPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
+  const [isLoaded, setIsLoaded] = createSignal(true)
   const { t } = useLocalize()
   const { page } = useRouter()
   const q = createMemo(() => page().params['q'] as string)
 
-  createEffect(async () => {
+  createEffect(() => {
     if (isLoaded()) return
     else if (q() && window) {
       const text = q() || window.location.href.split('/').pop()
-      // TODO: pagination, load more
-      await loadShoutsSearch({ text, limit: 50, offset: 0 })
+      loadShoutsSearch({ text, limit: 50, offset: 0 })
       setIsLoaded(true)
     }
   })

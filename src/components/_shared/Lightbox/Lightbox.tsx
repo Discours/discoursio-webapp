@@ -23,21 +23,17 @@ export const Lightbox = (props: Props) => {
   const [translateX, setTranslateX] = createSignal(0)
   const [translateY, setTranslateY] = createSignal(0)
   const [transitionEnabled, setTransitionEnabled] = createSignal(false)
-
-  const lightboxRef: {
-    current: HTMLElement
-  } = {
-    current: null,
-  }
-
-  const handleSmoothAction = (action: () => void) => {
+  const [lightboxRef, setLightboxRef] = createSignal<HTMLButtonElement>()
+  const handleSmoothAction = (action: (event) => void) => {
     setTransitionEnabled(true)
-    action()
+    action(event)
     setTimeout(() => setTransitionEnabled(false), TRANSITION_SPEED)
   }
 
   const closeLightbox = () => {
-    lightboxRef.current?.classList.add(styles.fadeOut)
+    if (lightboxRef()) {
+      lightboxRef()?.classList.add(styles.fadeOut)
+    }
 
     setTimeout(() => {
       props.onClose()
@@ -46,16 +42,16 @@ export const Lightbox = (props: Props) => {
 
   const zoomIn = (event) => {
     event.stopPropagation()
-
-    handleSmoothAction(() => {
+    // eslint-disable-next-line solid/reactivity
+    handleSmoothAction((_ev) => {
       setZoomLevel(zoomLevel() * ZOOM_STEP)
     })
   }
 
   const zoomOut = (event) => {
     event.stopPropagation()
-
-    handleSmoothAction(() => {
+    // eslint-disable-next-line solid/reactivity
+    handleSmoothAction((_ev) => {
       setZoomLevel(zoomLevel() / ZOOM_STEP)
     })
   }
@@ -68,7 +64,7 @@ export const Lightbox = (props: Props) => {
   const zoomReset = (event) => {
     event.stopPropagation()
 
-    handleSmoothAction(() => {
+    handleSmoothAction((_ev) => {
       setZoomLevel(1)
       positionReset()
     })
@@ -81,8 +77,8 @@ export const Lightbox = (props: Props) => {
     let scale = zoomLevel()
     scale += event.deltaY * -0.01
     scale = Math.min(Math.max(0.125, scale), 4)
-
-    handleSmoothAction(() => {
+    // eslint-disable-next-line solid/reactivity
+    handleSmoothAction((_ev) => {
       setZoomLevel(scale * ZOOM_STEP)
     })
   }
@@ -146,14 +142,14 @@ export const Lightbox = (props: Props) => {
   return (
     <div
       class={clsx(styles.Lightbox, props.class)}
-      onClick={closeLightbox}
+      onClick={() => closeLightbox()}
       onWheel={(e) => e.preventDefault()}
-      ref={(el) => (lightboxRef.current = el)}
+      ref={setLightboxRef}
     >
       <Show when={pictureScalePercentage()}>
         <div class={styles.scalePercentage}>{`${pictureScalePercentage()}%`}</div>
       </Show>
-      <div class={styles.close} onClick={closeLightbox}>
+      <div class={styles.close} onClick={() => closeLightbox()}>
         <Icon name="close-white" class={styles.icon} />
       </div>
       <div class={styles.zoomControls}>
@@ -172,9 +168,9 @@ export const Lightbox = (props: Props) => {
         src={getImageUrl(props.image, { noSizeUrlPart: true })}
         alt={props.imageAlt || ''}
         onClick={(event) => event.stopPropagation()}
-        onWheel={handleMouseWheelZoom}
+        onWheel={(ev) => handleMouseWheelZoom(ev)}
         style={lightboxStyle()}
-        onMouseDown={onMouseDown}
+        onMouseDown={(ev) => onMouseDown(ev)}
       />
     </div>
   )

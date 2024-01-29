@@ -10,10 +10,12 @@ import { loadAllTopics } from '../stores/zine/topics'
 export const AllTopicsPage = (props: PageProps) => {
   const { t } = useLocalize()
 
-  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allTopics))
+  const [isLoaded, setIsLoaded] = createSignal<boolean>()
 
   onMount(async () => {
-    if (isLoaded()) {
+    const loaded = Boolean(props.allTopics)
+    if (loaded) {
+      setIsLoaded(loaded)
       return
     }
 

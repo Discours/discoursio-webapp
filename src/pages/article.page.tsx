@@ -13,15 +13,10 @@ import { loadShout, useArticlesStore } from '../stores/zine/articles'
 import { setPageLoadManagerPromise } from '../utils/pageLoadManager'
 
 export const ArticlePage = (props: PageProps) => {
-  const shouts = props.article ? [props.article] : []
+  const shouts = createMemo(() => (props.article ? [props.article] : []))
   const { page } = useRouter()
-
   const slug = createMemo(() => page().params['slug'] as string)
-
-  const { articleEntities } = useArticlesStore({
-    shouts,
-  })
-
+  const { articleEntities } = useArticlesStore({ shouts: shouts() })
   const article = createMemo<Shout>(() => articleEntities()[slug()])
 
   onMount(async () => {

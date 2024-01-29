@@ -66,7 +66,7 @@ const GrowingTextarea = (props: Props) => {
                 ? props.initialValue?.slice(0, props.maxLength)
                 : props.initialValue
             }
-            onKeyDown={props.allowEnterKey ? handleKeyDown : null}
+            onKeyDown={(ev) => (props.allowEnterKey ? handleKeyDown(ev) : null)}
             onInput={(event) => handleChangeValue(event.target.value)}
             placeholder={props.placeholder}
             onFocus={() => setIsFocused(true)}

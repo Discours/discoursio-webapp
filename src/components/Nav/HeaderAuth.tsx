@@ -99,7 +99,7 @@ export const HeaderAuth = (props: Props) => {
         <Popover content={buttonProps.value}>
           {(ref) => (
             <Button
-              ref={ref}
+              setRef={ref}
               variant={'light'}
               onClick={buttonProps.action}
               value={<Icon name={buttonProps.icon} class={styles.icon} />}
@@ -173,7 +173,7 @@ export const HeaderAuth = (props: Props) => {
                 <Popover content={t('Settings')}>
                   {(ref) => (
                     <Button
-                      ref={ref}
+                      setRef={ref}
                       value={<Icon name="burger" />}
                       variant={'light'}
                       onClick={handleBurgerButtonClick}

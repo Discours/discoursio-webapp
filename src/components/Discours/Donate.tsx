@@ -76,7 +76,7 @@ export const Donate = () => {
     const choice: HTMLInputElement | undefined | null =
       amountSwitchElement?.querySelector('input[type=radio]:checked')
     setAmount(Number.parseInt(customAmountElement?.value || choice?.value || '0'))
-    console.log('[donate] input amount ' + amount)
+    console.log('[donate] input amount ' + amount())
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(widget() as any).charge(
       {

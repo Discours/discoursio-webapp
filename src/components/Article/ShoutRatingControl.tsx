@@ -60,15 +60,16 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     return deleteReaction(reactionToDelete.id)
   }
 
-  const handleRatingChange = async (isUpvote: boolean) => {
-    requireAuthentication(async () => {
+  const handleRatingChange = (isUpvote: boolean) => {
+    // eslint-disable-next-line solid/reactivity
+    requireAuthentication(() => {
       setIsLoading(true)
       if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
+        deleteShoutReaction(ReactionKind.Like)
       } else if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
+        deleteShoutReaction(ReactionKind.Dislike)
       } else {
-        await createReaction({
+        createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
           shout: props.shout.id,
         })

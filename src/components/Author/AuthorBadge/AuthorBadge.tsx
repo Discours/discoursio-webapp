@@ -45,6 +45,7 @@ export const AuthorBadge = (props: Props) => {
   const { t, formatDate, lang } = useLocalize()
 
   const initChat = () => {
+    // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
       openPage(router, `inbox`)
       changeSearchParams({

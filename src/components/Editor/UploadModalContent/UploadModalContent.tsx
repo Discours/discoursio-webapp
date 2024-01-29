@@ -57,6 +57,7 @@ export const UploadModalContent = (props: Props) => {
   }
 
   const handleUpload = async () => {
+    // eslint-disable-next-line solid/reactivity
     selectFiles(async ([uploadFile]) => {
       await runUpload(uploadFile)
     })

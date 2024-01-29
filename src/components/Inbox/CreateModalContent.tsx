@@ -1,6 +1,6 @@
 import type { Author } from '../../graphql/schema/core.gen'
 
-import { createSignal, For, createEffect } from 'solid-js'
+import { createSignal, For, createEffect, createMemo, onMount } from 'solid-js'
 
 import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
@@ -10,19 +10,21 @@ import InviteUser from './InviteUser'
 
 import styles from './CreateModalContent.module.scss'
 
-type inviteUser = Author & { selected: boolean }
+type InvitedAuthor = Author & { selected: boolean }
 type Props = {
   users: Author[]
 }
 
 const CreateModalContent = (props: Props) => {
   const { t } = useLocalize()
-  const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
+  const inviteUsers = createMemo(() => props.users.map((user) => ({ ...user, selected: false })))
   const [chatTitle, setChatTitle] = createSignal<string>('')
   const [usersId, setUsersId] = createSignal<number[]>([])
-  const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
+  const [collectionToInvite, setCollectionToInvite] = createSignal<InvitedAuthor[]>([])
   let textInput: HTMLInputElement
-
+  onMount(() => {
+    setCollectionToInvite(inviteUsers())
+  })
   const reset = () => {
     setChatTitle('')
     setUsersId([])

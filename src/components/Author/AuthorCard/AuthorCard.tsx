@@ -2,7 +2,7 @@ import type { Author, Community } from '../../../graphql/schema/core.gen'
 
 import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -35,7 +35,7 @@ export const AuthorCard = (props: Props) => {
     isSessionLoaded,
     actions: { requireAuthentication },
   } = useSession()
-  const [following, setFollowing] = createSignal<Array<Author | Topic | Community>>(props.following)
+  const [following, setFollowing] = createSignal<Array<Author | Topic | Community>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
 
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
@@ -52,9 +52,12 @@ export const AuthorCard = (props: Props) => {
     return props.author.name
   })
 
+  onMount(() => setFollowing(props.following))
+
   // TODO: reimplement AuthorCard
   const { changeSearchParams } = useRouter()
   const initChat = () => {
+    // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
       openPage(router, `inbox`)
       changeSearchParams({

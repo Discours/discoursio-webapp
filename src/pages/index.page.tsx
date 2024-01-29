@@ -11,11 +11,13 @@ import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { loadRandomTopics } from '../stores/zine/topics'
 
 export const HomePage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts))
+  const [isLoaded, setIsLoaded] = createSignal(false)
   const { t } = useLocalize()
 
   onMount(async () => {
-    if (isLoaded()) {
+    const someInit = Boolean(props.homeShouts)
+    if (someInit) {
+      setIsLoaded(someInit)
       return
     }
 

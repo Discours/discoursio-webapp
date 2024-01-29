@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { For } from 'solid-js'
+import { For, createMemo } from 'solid-js'
 
 import { Author } from '../../../graphql/schema/core.gen'
 import { NotificationAuthor } from '../../../graphql/schema/notifier.gen'
@@ -13,7 +13,9 @@ type Props = {
 }
 
 export const GroupAvatar = (props: Props) => {
-  const displayedAvatars = props.authors.length > 4 ? props.authors.slice(0, 3) : props.authors.slice(0, 4)
+  const displayedAvatars = createMemo(() =>
+    props.authors.length > 4 ? props.authors.slice(0, 3) : props.authors.slice(0, 4),
+  )
   const avatarSize = () => {
     switch (props.authors.length) {
       case 1: {
@@ -35,7 +37,7 @@ export const GroupAvatar = (props: Props) => {
         [styles.four]: props.authors.length >= 4,
       })}
     >
-      <For each={displayedAvatars}>
+      <For each={displayedAvatars()}>
         {(author: Author) => (
           <Userpic size={avatarSize()} name={author.name} userpic={author.pic} class={styles.item} />
         )}

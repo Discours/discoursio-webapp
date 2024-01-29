@@ -65,10 +65,10 @@ export const AllAuthorsView = (props: Props) => {
 
   const isStatsLoaded = createMemo(() => sortedAuthors() && sortedAuthors().some((author) => author.stat))
 
-  createEffect(async () => {
+  createEffect(() => {
     if (!isStatsLoaded()) {
-      await loadMoreByShouts()
-      await loadMoreByFollowers()
+      loadMoreByShouts()
+      loadMoreByFollowers()
     }
   })
 

@@ -140,6 +140,7 @@ export const NotificationsPanel = (props: Props) => {
       setIsLoading(false)
     }
   }
+  // eslint-disable-next-line solid/reactivity
   const handleScrollThrottled = throttle(50, handleScroll)
 
   onMount(() => {

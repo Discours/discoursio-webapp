@@ -15,7 +15,7 @@ export const AuthGuard = (props: Props) => {
   const { isAuthenticated, isSessionLoaded } = useSession()
   const { changeSearchParams } = useRouter<RootSearchParams & AuthModalSearchParams>()
 
-  createEffect(async () => {
+  createEffect(() => {
     if (props.disabled) {
       return
     }

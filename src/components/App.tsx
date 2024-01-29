@@ -90,7 +90,7 @@ type Props = PageProps & { is404: boolean }
 
 export const App = (props: Props) => {
   const { page, searchParams } = useRouter<RootSearchParams>()
-  let is404 = props.is404
+  const is404 = createMemo(() => props.is404)
 
   createEffect(() => {
     if (!searchParams().m) {
@@ -106,8 +106,7 @@ export const App = (props: Props) => {
   const pageComponent = createMemo(() => {
     const result = pagesMap[page()?.route || 'home']
 
-    if (is404 || !result || page()?.path === '/404') {
-      is404 = false
+    if (is404() || !result || page()?.path === '/404') {
       return FourOuFourPage
     }
 

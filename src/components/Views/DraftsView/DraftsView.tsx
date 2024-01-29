@@ -22,8 +22,8 @@ export const DraftsView = () => {
     }
   }
 
-  createEffect(async () => {
-    if (isSessionLoaded()) await loadDrafts()
+  createEffect(() => {
+    if (isSessionLoaded()) loadDrafts()
   })
 
   const {

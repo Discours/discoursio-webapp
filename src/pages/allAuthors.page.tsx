@@ -8,12 +8,14 @@ import { useLocalize } from '../context/localize'
 import { loadAllAuthors } from '../stores/zine/authors'
 
 export const AllAuthorsPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors))
+  const [isLoaded, setIsLoaded] = createSignal<boolean>()
 
   const { t } = useLocalize()
 
   onMount(async () => {
-    if (isLoaded()) {
+    const loaded = Boolean(props.allAuthors)
+    if (loaded) {
+      setIsLoaded(loaded)
       return
     }
 

@@ -26,7 +26,7 @@ type Props = {
 }
 
 export const PageLayout = (props: Props) => {
-  const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed
+  const isHeaderFixed = () => (props.isHeaderFixed === undefined ? true : props.isHeaderFixed)
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
 
   createEffect(() => {
@@ -43,7 +43,7 @@ export const PageLayout = (props: Props) => {
         title={props.headerTitle}
         articleBody={props.articleBody}
         cover={props.articleBody}
-        isHeaderFixed={isHeaderFixed}
+        isHeaderFixed={isHeaderFixed()}
         scrollToComments={(value) => setScrollToComments(value)}
       />
       <main
@@ -51,7 +51,7 @@ export const PageLayout = (props: Props) => {
           [styles.withPadding]: props.withPadding,
           [styles.zeroBottomPadding]: props.zeroBottomPadding,
         })}
-        classList={{ 'main-content--no-padding': !isHeaderFixed }}
+        classList={{ 'main-content--no-padding': !isHeaderFixed() }}
       >
         {props.children}
       </main>

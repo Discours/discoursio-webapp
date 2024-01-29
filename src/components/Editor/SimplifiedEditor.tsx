@@ -68,7 +68,7 @@ const SimplifiedEditor = (props: Props) => {
   const [shouldShowLinkBubbleMenu, setShouldShowLinkBubbleMenu] = createSignal(false)
   const isCancelButtonVisible = createMemo(() => props.isCancelButtonVisible !== false)
 
-  const maxLength = props.maxLength ?? DEFAULT_MAX_LENGTH
+  const maxLength = createMemo(() => props.maxLength ?? DEFAULT_MAX_LENGTH)
 
   const wrapperEditorElRef: {
     current: HTMLElement
@@ -124,7 +124,7 @@ const SimplifiedEditor = (props: Props) => {
         openOnClick: false,
       }),
       CharacterCount.configure({
-        limit: maxLength,
+        limit: maxLength(),
       }),
       Blockquote.configure({
         HTMLAttributes: {
@@ -248,11 +248,11 @@ const SimplifiedEditor = (props: Props) => {
     })
   })
 
-  if (props.onChange) {
-    createEffect(() => {
+  createEffect(() => {
+    if (props.onChange) {
       props.onChange(html())
-    })
-  }
+    }
+  })
 
   createEffect(() => {
     if (html()) {
@@ -260,10 +260,12 @@ const SimplifiedEditor = (props: Props) => {
     }
   })
 
-  const maxHeightStyle = {
-    overflow: 'auto',
-    'max-height': `${props.maxHeight}px`,
-  }
+  const maxHeightStyle = createMemo(() => {
+    return {
+      overflow: 'auto',
+      'max-height': `${props.maxHeight}px`,
+    }
+  })
 
   const handleShowLinkBubble = () => {
     editor().chain().focus().run()
@@ -288,12 +290,12 @@ const SimplifiedEditor = (props: Props) => {
         })}
       >
         <Show when={props.maxLength && editor()}>
-          <div class={styles.limit}>{maxLength - counter()}</div>
+          <div class={styles.limit}>{maxLength() - counter()}</div>
         </Show>
         <Show when={props.label && counter() > 0}>
           <div class={styles.label}>{props.label}</div>
         </Show>
-        <div style={props.maxHeight && maxHeightStyle} ref={(el) => (editorElRef.current = el)} />
+        <div style={props.maxHeight && maxHeightStyle()} ref={(el) => (editorElRef.current = el)} />
         <Show when={!props.onlyBubbleControls}>
           <div class={clsx(styles.controls, { [styles.alwaysVisible]: props.controlsAlwaysVisible })}>
             <div class={styles.actions}>

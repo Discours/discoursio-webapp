@@ -12,9 +12,10 @@ type Props = {
 
 export const TimeAgo = (props: Props) => {
   const { formatDate, formatTimeAgo } = useLocalize()
-  const [formattedTimeAgo, setFormattedTimeAgo] = createSignal(formatTimeAgo(new Date(props.date)))
+  const [formattedTimeAgo, setFormattedTimeAgo] = createSignal(formatTimeAgo(new Date()))
 
   onMount(() => {
+    setFormattedTimeAgo(formatTimeAgo(new Date(props.date)))
     let timerId: NodeJS.Timeout
     const updateTimeAgo = () => {
       timerId = setTimeout(() => {

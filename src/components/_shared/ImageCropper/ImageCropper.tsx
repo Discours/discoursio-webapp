@@ -39,7 +39,20 @@ export const ImageCropper = (props: CropperProps) => {
       )
     }
   })
+  const handleSave = (_ev) => {
+    // eslint-disable-next-line solid/reactivity
+    cropper()
+      .getCroppedCanvas()
+      .toBlob((blob) => {
+        const formData = new FormData()
+        formData.append('media', blob, props.uploadFile.file.name)
 
+        props.onSave({
+          ...props.uploadFile,
+          file: formData.get('media'),
+        })
+      })
+  }
   return (
     <div>
       <div class={styles.cropperContainer}>
@@ -55,23 +68,7 @@ export const ImageCropper = (props: CropperProps) => {
           <Button variant="secondary" onClick={props.onDecline} value={t('Decline')} />
         </Show>
 
-        <Button
-          variant="primary"
-          onClick={() => {
-            cropper()
-              .getCroppedCanvas()
-              .toBlob((blob) => {
-                const formData = new FormData()
-                formData.append('media', blob, props.uploadFile.file.name)
-
-                props.onSave({
-                  ...props.uploadFile,
-                  file: formData.get('media'),
-                })
-              })
-          }}
-          value={t('Save')}
-        />
+        <Button variant="primary" onClick={handleSave} value={t('Save')} />
       </div>
     </div>
   )

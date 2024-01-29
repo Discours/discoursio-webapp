@@ -14,7 +14,7 @@ type DialogProps = {
 
 const InviteUser = (props: DialogProps) => {
   return (
-    <div class={styles.InviteUser} onClick={props.onClick}>
+    <div class={styles.InviteUser} onClick={() => props.onClick()}>
       <DialogAvatar name={props.author.name} url={props.author.pic} />
       <div class={styles.name}>{props.author.name}</div>
       <div class={styles.action}>{props.selected ? <Icon name="cross" /> : <Icon name="plus" />}</div>

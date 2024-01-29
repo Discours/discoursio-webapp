@@ -10,10 +10,12 @@ import { loadAllAuthors } from '../stores/zine/authors'
 
 export const InboxPage = (props: PageProps) => {
   const { t } = useLocalize()
-  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors))
+  const [isLoaded, setIsLoaded] = createSignal<boolean>(false)
 
   onMount(async () => {
-    if (isLoaded()) {
+    const notEmpty = Boolean(props.allAuthors)
+    if (notEmpty) {
+      setIsLoaded(notEmpty)
       return
     }
 

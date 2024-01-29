@@ -79,12 +79,13 @@ export const DropArea = (props: Props) => {
       setDragActive(false)
     }
   }
-  const handleDropFieldClick = async () => {
-    selectFiles((selectedFiles) => {
+  const handleDropFieldClick = () => {
+    // eslint-disable-next-line solid/reactivity
+    selectFiles(async (selectedFiles) => {
       const filesArray = selectedFiles.map((file) => {
         return file
       })
-      initUpload(filesArray)
+      await initUpload(filesArray)
     })
   }
 

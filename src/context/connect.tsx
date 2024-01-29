@@ -37,11 +37,11 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
   }
 
   const [retried, setRetried] = createSignal<number>(0)
-  createEffect(async () => {
+  createEffect(() => {
     const token = session()?.access_token
     if (token && !connected()) {
       console.info('[context.connect] init SSE connection')
-      await fetchEventSource('https://connect.discours.io', {
+      fetchEventSource('https://connect.discours.io', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

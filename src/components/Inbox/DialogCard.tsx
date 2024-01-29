@@ -39,7 +39,7 @@ const DialogCard = (props: DialogProps) => {
           [styles.opened]: props.isOpened,
           [styles.hovered]: !props.isChatHeader,
         })}
-        onClick={props.onClick}
+        onClick={() => props.onClick()}
       >
         <Switch
           fallback={

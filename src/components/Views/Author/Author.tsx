@@ -3,7 +3,7 @@ import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
+import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect, on } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
@@ -46,10 +46,9 @@ export const AuthorView = (props: Props) => {
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const author = createMemo(() => authorEntities()[props.authorSlug])
 
-  createEffect(async () => {
+  createEffect(() => {
     if (author() && author().id && !author().stat) {
-      const a = await loadAuthor({ slug: '', author_id: author().id })
-      console.debug(`[AuthorView] loaded author:`, a)
+      loadAuthor({ slug: '', author_id: author().id })
     }
   })
 
@@ -85,9 +84,9 @@ export const AuthorView = (props: Props) => {
     }
   })
 
-  createEffect(async () => {
+  createEffect(() => {
     const slug = author()?.slug
-    if (slug) {
+    const fetchData = async () => {
       console.debug('[AuthorView] load subscriptions')
       try {
         const { authors, topics } = await fetchSubscriptions()
@@ -98,10 +97,12 @@ export const AuthorView = (props: Props) => {
         console.error('[AuthorView] error:', error)
       }
     }
+
+    if (slug && !following()) fetchData()
   })
 
   createEffect(() => {
-    document.title = author()?.name
+    if (author()) document.title = author().name
   })
 
   const loadMore = async () => {
@@ -121,36 +122,48 @@ export const AuthorView = (props: Props) => {
 
   const [commented, setCommented] = createSignal([])
 
-  createEffect(async () => {
-    if (getPage().route === 'authorComments' && props.author) {
-      try {
-        const data = await apiClient.getReactionsBy({
-          by: { comment: true, created_by: props.author.id },
-        })
-        setCommented(data)
-      } catch (error) {
-        console.error('[getReactionsBy comment]', error)
-      }
-    }
-  })
+  createEffect(
+    on(
+      () => props.author?.id,
+      (authorId) => {
+        const fetchData = async () => {
+          try {
+            if (getPage().route === 'authorComments' && props.author) {
+              const data = await apiClient.getReactionsBy({
+                by: { comment: true, created_by: authorId },
+              })
+              setCommented(data)
+            }
+          } catch (error) {
+            console.error('[getReactionsBy comment]', error)
+          }
+        }
 
-  const ogImage = props.author?.pic
-    ? getImageUrl(props.author.pic, { width: 1200 })
-    : getImageUrl('production/image/logo_image.png')
-  const description = getDescription(props.author?.bio)
-  const ogTitle = props.author?.name
+        fetchData()
+      },
+      { defer: true },
+    ),
+  )
+
+  const ogImage = createMemo(() =>
+    props.author?.pic
+      ? getImageUrl(props.author.pic, { width: 1200 })
+      : getImageUrl('production/image/logo_image.png'),
+  )
+  const description = createMemo(() => getDescription(props.author?.bio))
+  const ogTitle = createMemo(() => props.author?.name)
 
   return (
     <div class={styles.authorPage}>
-      <Meta name="descprition" content={description} />
+      <Meta name="descprition" content={description()} />
       <Meta name="og:type" content="profile" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
+      <Meta name="og:title" content={ogTitle()} />
+      <Meta name="og:image" content={ogImage()} />
+      <Meta name="og:description" content={description()} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
-      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="twitter:title" content={ogTitle()} />
+      <Meta name="twitter:description" content={description()} />
+      <Meta name="twitter:image" content={ogImage()} />
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

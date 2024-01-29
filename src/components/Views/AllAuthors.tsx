@@ -1,5 +1,6 @@
 import type { Author } from '../../graphql/schema/core.gen'
 
+import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
@@ -81,6 +82,7 @@ export const AllAuthorsView = (props: Props) => {
     lang() === 'en' && isCyrillic(author.name)
       ? capitalize(translit(author.name.replace(/ё/, 'e').replace(/ь/, '')).replace(/-/, ' '), true)
       : author.name
+
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
       (acc, author) => {

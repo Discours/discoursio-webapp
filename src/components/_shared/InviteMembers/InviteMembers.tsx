@@ -1,9 +1,10 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, on, Show } from 'solid-js'
+import { createEffect, createResource, createSignal, For, on, Show } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
+import { apiClient } from '../../../graphql/client/core'
 import { Author } from '../../../graphql/schema/core.gen'
 import { hideModal } from '../../../stores/ui'
 import { useAuthorsStore } from '../../../stores/zine/authors'
@@ -48,23 +49,30 @@ export const InviteMembers = (props: Props) => {
 
   const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
   const [collectionToInvite, setCollectionToInvite] = createSignal<number[]>([])
-  const fetcher = async (page: number) => {
-    await new Promise((resolve, reject) => {
-      const checkDataLoaded = () => {
-        if (sortedAuthors().length > 0) {
-          resolve(true)
-        } else {
-          setTimeout(checkDataLoaded, 100)
-        }
-      }
-      setTimeout(() => reject(new Error('Timeout waiting for sortedAuthors')), 10000)
-      checkDataLoaded()
-    })
-    const start = page * PAGE_SIZE
-    const end = start + PAGE_SIZE
-    const authors = authorsToInvite()?.map((author) => ({ ...author, selected: false }))
-    return authors?.slice(start, end)
-  }
+  const [data, { mutate, refetch }] = createResource(async () => {
+    const resp = await apiClient.loadAuthorsBy({ offset: 0, limit: PAGE_SIZE })
+    console.log('!!! resp:', resp)
+  })
+
+  console.log('!!! data:', data())
+
+  // const fetcher = async (page: number) => {
+  //   await new Promise((resolve, reject) => {
+  //     const checkDataLoaded = () => {
+  //       if (sortedAuthors().length > 0) {
+  //         resolve(true)
+  //       } else {
+  //         setTimeout(checkDataLoaded, 100)
+  //       }
+  //     }
+  //     setTimeout(() => reject(new Error('Timeout waiting for sortedAuthors')), 10000)
+  //     checkDataLoaded()
+  //   })
+  //   const start = page * PAGE_SIZE
+  //   const end = start + PAGE_SIZE
+  //   const authors = authorsToInvite()?.map((author) => ({ ...author, selected: false }))
+  //   return authors?.slice(start, end)
+  // }
 
   const [pages, infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
 

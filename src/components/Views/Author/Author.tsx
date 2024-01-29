@@ -139,7 +139,7 @@ export const AuthorView = (props: Props) => {
           }
         }
 
-        fetchData()
+        return fetchData()
       },
       { defer: true },
     ),

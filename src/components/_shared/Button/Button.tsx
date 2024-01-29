@@ -22,7 +22,7 @@ type Props = {
 export const Button = (props: Props) => {
   return (
     <button
-      ref={(el) => props.setRef(el)}
+      ref={(el) => props.setRef && props.setRef(el)}
       onClick={(ev) => props.onClick(ev)}
       type={props.type ?? 'button'}
       disabled={props.loading || props.disabled}

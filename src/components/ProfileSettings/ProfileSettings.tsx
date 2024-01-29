@@ -14,12 +14,17 @@ import { getImageUrl } from '../../utils/getImageUrl'
 import { handleImageUpload } from '../../utils/handleImageUpload'
 import { profileSocialLinks } from '../../utils/profileSocialLinks'
 import { validateUrl } from '../../utils/validateUrl'
+
+import { Modal } from '../Nav/Modal'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../_shared/Loading'
 import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
+import { ImageCropper } from '../_shared/ImageCropper'
 import { ProfileSettingsNavigation } from '../Nav/ProfileSettingsNavigation'
+
+import { showModal, hideModal } from '../../stores/ui'
 
 import styles from '../../pages/profile/Settings.module.scss'
 
@@ -28,12 +33,14 @@ const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTexta
 
 export const ProfileSettings = () => {
   const { t } = useLocalize()
+
   const [prevForm, setPrevForm] = createStore({})
   const [isFormInitialized, setIsFormInitialized] = createSignal(false)
   const [social, setSocial] = createSignal([])
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
+  const [userpicFile, setUserpicFile] = createSignal<any | null>(null)
   const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
   const [hostname, setHostname] = createSignal<string | null>(null)
@@ -114,21 +121,30 @@ export const ProfileSettings = () => {
     }
   }
 
-  const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
+  const handleCropAvatar = () => {
+    const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
-  const handleUploadAvatar = async () => {
-    selectFiles(async ([uploadFile]) => {
-      try {
-        setUploadError(false)
-        setIsUserpicUpdating(true)
-        const result = await handleImageUpload(uploadFile)
-        updateFormField('userpic', result.url)
-        setIsUserpicUpdating(false)
-      } catch (error) {
-        setUploadError(true)
-        console.error('[upload avatar] error', error)
-      }
+    selectFiles(([uploadFile]) => {
+      setUserpicFile(uploadFile)
+
+      showModal('cropImage')
     })
+  }
+
+  const handleUploadAvatar = async (uploadFile) => {
+    try {
+      setUploadError(false)
+      setIsUserpicUpdating(true)
+
+      const result = await handleImageUpload(uploadFile)
+      updateFormField('userpic', result.url)
+
+      setUserpicFile(null)
+      setIsUserpicUpdating(false)
+    } catch (error) {
+      setUploadError(true)
+      console.error('[upload avatar] error', error)
+    }
   }
 
   onMount(() => {
@@ -176,8 +192,8 @@ export const ProfileSettings = () => {
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
                       <div
-                        class={clsx(styles.userpic, { [styles.hasControls]: form.pic })}
-                        onClick={!form.pic && handleUploadAvatar}
+                        class={clsx(styles.userpic, { [styles.hasControls]: form.userpic })}
+                        onClick={handleCropAvatar}
                       >
                         <Switch>
                           <Match when={isUserpicUpdating()}>
@@ -205,17 +221,19 @@ export const ProfileSettings = () => {
                                   </button>
                                 )}
                               </Popover>
-                              <Popover content={t('Upload userpic')}>
+
+                              {/* @@TODO inspect popover below. onClick causes page refreshing */}
+                              {/* <Popover content={t('Upload userpic')}>
                                 {(triggerRef: (el) => void) => (
                                   <button
                                     ref={triggerRef}
                                     class={styles.control}
-                                    onClick={handleUploadAvatar}
+                                    onClick={() => handleCropAvatar()}
                                   >
                                     <Icon name="user-image-black" />
                                   </button>
                                 )}
-                              </Popover>
+                              </Popover> */}
                             </div>
                           </Match>
                           <Match when={!form.pic}>
@@ -364,6 +382,21 @@ export const ProfileSettings = () => {
             </div>
           </div>
         </Show>
+        <Modal variant="medium" name="cropImage" onClose={() => setUserpicFile(null)}>
+          <h2>{t('Crop image')}</h2>
+
+          <Show when={userpicFile()}>
+            <ImageCropper
+              uploadFile={userpicFile()}
+              onSave={(data) => {
+                handleUploadAvatar(data)
+
+                hideModal()
+              }}
+              onDecline={() => hideModal()}
+            />
+          </Show>
+        </Modal>
       </>
     </Show>
   )

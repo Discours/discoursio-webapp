@@ -249,6 +249,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </div>
         </Show>
+        <Show when={props.article.description}>
+          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
+        </Show>
         <Show when={props.settings?.isFeedMode}>
           <Show when={props.article.description}>
             <section class={styles.shoutCardDescription} innerHTML={props.article.description} />

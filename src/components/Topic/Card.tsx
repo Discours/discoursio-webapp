@@ -1,21 +1,15 @@
-import type { Topic } from '../../graphql/schema/core.gen'
+import { FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { createMemo, createSignal, Show } from 'solid-js'
+import { createMemo, Show } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
-import { useSession } from '../../context/session'
-import { FollowingEntity } from '../../graphql/schema/core.gen'
-import { follow, unfollow } from '../../stores/zine/common'
 import { capitalize } from '../../utils/capitalize'
-import { Button } from '../_shared/Button'
-import { CheckButton } from '../_shared/CheckButton'
-import { Icon } from '../_shared/Icon'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { CardTopic } from '../Feed/CardTopic'
 
 import styles from './Card.module.scss'
-import stylesButton from '../_shared/Button/Button.module.scss'
+import { FollowButton } from '../_shared/FollowButton'
 
 interface TopicProps {
   topic: Topic
@@ -25,64 +19,17 @@ interface TopicProps {
   subscribeButtonBottom?: boolean
   additionalClass?: string
   isTopicInRow?: boolean
-  iconButton?: boolean
   showPublications?: boolean
   showDescription?: boolean
   isCardMode?: boolean
-  minimizeSubscribeButton?: boolean
   isNarrow?: boolean
   withIcon?: boolean
+  iconButton?: boolean
+  minimizeSubscribeButton?: boolean
 }
 
 export const TopicCard = (props: TopicProps) => {
-  const { t, lang } = useLocalize()
-  const {
-    subscriptions,
-    isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication },
-  } = useSession()
-
-  const [isSubscribing, setIsSubscribing] = createSignal(false)
-
-  const subscribed = createMemo(() => {
-    return subscriptions().topics.some((topic) => topic.slug === props.topic.slug)
-  })
-
-  const subscribe = async (really = true) => {
-    setIsSubscribing(true)
-
-    await (really
-      ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-      : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
-
-    await loadSubscriptions()
-    setIsSubscribing(false)
-  }
-
-  const handleSubscribe = () => {
-    requireAuthentication(() => {
-      subscribe(!subscribed())
-    }, 'subscribe')
-  }
-
-  const subscribeValue = () => {
-    return (
-      <>
-        <Show when={props.iconButton}>
-          <Show when={subscribed()} fallback="+">
-            <Icon name="check-subscribed" />
-          </Show>
-        </Show>
-        <Show when={!props.iconButton}>
-          <Show when={subscribed()} fallback={t('Follow')}>
-            <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
-            <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
-          </Show>
-        </Show>
-      </>
-    )
-  }
-
+  const { lang } = useLocalize()
   const title = createMemo(() =>
     capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
   )
@@ -141,27 +88,12 @@ export const TopicCard = (props: TopicProps) => {
           }}
         >
           <ShowOnlyOnClient>
-            <Show when={isSessionLoaded()}>
-              <Show
-                when={!props.minimizeSubscribeButton}
-                fallback={
-                  <CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />
-                }
-              >
-                <Button
-                  variant="bordered"
-                  size="M"
-                  value={subscribeValue()}
-                  onClick={handleSubscribe}
-                  isSubscribeButton={true}
-                  class={clsx(styles.actionButton, {
-                    [styles.isSubscribing]: isSubscribing(),
-                    [stylesButton.subscribed]: subscribed(),
-                  })}
-                  disabled={isSubscribing()}
-                />
-              </Show>
-            </Show>
+            <FollowButton
+              slug={props.topic.slug}
+              entity={FollowingEntity.Topic}
+              iconButton={props.iconButton}
+              minimizeSubscribeButton={props.minimizeSubscribeButton}
+            />
           </ShowOnlyOnClient>
         </div>
       </div>

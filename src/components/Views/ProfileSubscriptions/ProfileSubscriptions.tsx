@@ -42,7 +42,7 @@ export const ProfileSubscriptions = () => {
 
   createEffect(() => {
     if (following()) {
-      if (subscriptionFilter() === 'users') {
+      if (subscriptionFilter() === 'authors') {
         setFiltered(following().filter((s) => 'name' in s))
       } else if (subscriptionFilter() === 'topics') {
         setFiltered(following().filter((s) => 'title' in s))
@@ -80,8 +80,8 @@ export const ProfileSubscriptions = () => {
                       {t('All')}
                     </button>
                   </li>
-                  <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'users' })}>
-                    <button type="button" onClick={() => setSubscriptionFilter('users')}>
+                  <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'authors' })}>
+                    <button type="button" onClick={() => setSubscriptionFilter('authors')}>
                       {t('Authors')}
                     </button>
                   </li>

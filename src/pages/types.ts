@@ -50,4 +50,4 @@ export type UploadedFile = {
   originalFilename?: string
 }
 
-export type SubscriptionFilter = 'all' | 'users' | 'topics'
+export type SubscriptionFilter = 'all' | 'authors' | 'topics' | 'communities'

@@ -142,7 +142,7 @@ export const AuthorView = (props: Props) => {
 
   const [commented, setCommented] = createSignal([])
   createEffect(() => {
-    if (author() && !commented()) {
+    if (getPage().route === 'authorComments' && !commented()) {
       try {
         fetchComments()
       } catch (error) {
@@ -156,7 +156,7 @@ export const AuthorView = (props: Props) => {
       ? getImageUrl(author().pic, { width: 1200 })
       : getImageUrl('production/image/logo_image.png'),
   )
-  const description = createMemo(() => getDescription(author().bio))
+  const description = createMemo(() => getDescription(author()?.bio))
 
   return (
     <div class={styles.authorPage}>

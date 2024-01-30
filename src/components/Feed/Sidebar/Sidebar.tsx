@@ -111,7 +111,7 @@ export const Sidebar = () => {
         </li>
       </ul>
 
-      <Show when={subscriptions()?.authors.length > 0 || subscriptions()?.topics.length > 0}>
+      <Show when={subscriptions.authors.length > 0 || subscriptions.topics.length > 0}>
         <h4
           classList={{ [styles.opened]: isSubscriptionsVisible() }}
           onClick={() => {
@@ -122,7 +122,7 @@ export const Sidebar = () => {
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
-          <For each={subscriptions()?.authors}>
+          <For each={subscriptions.authors}>
             {(author) => (
               <li>
                 <a
@@ -137,7 +137,7 @@ export const Sidebar = () => {
               </li>
             )}
           </For>
-          <For each={subscriptions()?.topics}>
+          <For each={subscriptions.topics}>
             {(topic) => (
               <li>
                 <a

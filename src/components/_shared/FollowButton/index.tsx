@@ -24,10 +24,7 @@ interface FollowButtonProps {
 
 export const FollowButton = (props: FollowButtonProps) => {
   const { t } = useLocalize()
-  const {
-    subscriptions,
-    actions: { follow, unfollow, setSubscriptions, loadSubscriptions },
-  } = useFollowing()
+  const { subscriptions, follow, unfollow, setSubscriptions, loadSubscriptions } = useFollowing()
   const {
     author,
     actions: { requireAuthentication },
@@ -36,7 +33,7 @@ export const FollowButton = (props: FollowButtonProps) => {
   const [followed, setFollowed] = createSignal()
 
   createEffect(() => {
-    const subs = subscriptions()
+    const subs = subscriptions
     if (subs && subs !== EMPTY_SUBSCRIPTIONS) {
       console.debug('subs renewed, revalidate state')
       let items = []
@@ -51,7 +48,7 @@ export const FollowButton = (props: FollowButtonProps) => {
   const { topicEntities } = useTopicsStore()
   const updateSubs = (unfollow = false) => {
     console.debug('[FollowButton.updatedSubs] updated subscriptions postprocess')
-    const updatedSubs = subscriptions()
+    const updatedSubs = subscriptions
     if (props.entity === FollowingEntity.Author) {
       const a = authorEntities()[props.slug]
       if (!updatedSubs.authors) updatedSubs.authors = []

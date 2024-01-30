@@ -77,7 +77,8 @@ export const AllTopicsView = (props: Props) => {
     return keys
   })
 
-  const subscribed = (topicSlug: string) => subscriptions().topics.some((topic) => topic.slug === topicSlug)
+  const subscribed = (topicSlug: string) =>
+    subscriptions()?.topics.some((topic) => topic.slug === topicSlug)
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const [searchQuery, setSearchQuery] = createSignal('')

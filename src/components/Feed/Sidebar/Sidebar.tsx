@@ -11,11 +11,12 @@ import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../../Author/Userpic'
 
 import styles from './Sidebar.module.scss'
+import { useFollowing } from '../../../context/following'
 
 export const Sidebar = () => {
   const { t } = useLocalize()
   const { seen } = useSeenStore()
-  const { subscriptions } = useSession()
+  const { subscriptions } = useFollowing()
   const { page } = useRouter()
   const { articlesByTopic } = useArticlesStore()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
@@ -111,7 +112,7 @@ export const Sidebar = () => {
         </li>
       </ul>
 
-      <Show when={subscriptions().authors.length > 0 || subscriptions().topics.length > 0}>
+      <Show when={subscriptions()?.authors.length > 0 || subscriptions()?.topics.length > 0}>
         <h4
           classList={{ [styles.opened]: isSubscriptionsVisible() }}
           onClick={() => {
@@ -122,7 +123,7 @@ export const Sidebar = () => {
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
-          <For each={subscriptions().authors}>
+          <For each={subscriptions()?.authors}>
             {(author) => (
               <li>
                 <a
@@ -137,7 +138,7 @@ export const Sidebar = () => {
               </li>
             )}
           </For>
-          <For each={subscriptions().topics}>
+          <For each={subscriptions()?.topics}>
             {(topic) => (
               <li>
                 <a

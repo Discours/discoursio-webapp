@@ -115,7 +115,7 @@ export const AuthorBadge = (props: Props) => {
             slug={props.author.slug}
             entity={FollowingEntity.Author}
             iconButton={props.iconButtons}
-            minimizeSubscribeButton={props.minimizeSubscribeButton}
+            minimizeSubscribeButton={true}
           />
 
           <Show when={props.showMessageButton}>

@@ -2,7 +2,7 @@ import type { Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, onMount, createSignal } from 'solid-js'
+import { For, Show, createMemo, onMount, createSignal, createEffect, on } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
@@ -50,12 +50,21 @@ export const TopicView = (props: Props) => {
   const topic = createMemo(() =>
     props.topic?.slug in topicEntities() ? topicEntities()[props.topic.slug] : props.topic,
   )
-  const title = () =>
-    `#${capitalize(
-      lang() === 'en' ? topic()?.slug.replace(/-/, ' ') : topic()?.title || topic()?.slug.replace(/-/, ' '),
-      true,
-    )}`
-  onMount(() => (document.title = title()))
+  const [title, setTitle] = createSignal<string>('')
+  createEffect(
+    on(
+      () => topic(),
+      (tpc) => {
+        const tit = `#${capitalize(
+          lang() === 'en' ? tpc?.slug.replace(/-/, ' ') : tpc?.title || tpc?.slug.replace(/-/, ' '),
+          true,
+        )}`
+        setTitle(tit)
+        document.title = tit
+      },
+      { defer: true },
+    ),
+  )
 
   const loadMore = async () => {
     saveScrollPosition()

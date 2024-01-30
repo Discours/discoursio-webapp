@@ -58,19 +58,9 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
       await apiClient.follow({ what, slug })
       setSubscriptions((prevSubscriptions) => {
         const updatedSubs = { ...prevSubscriptions }
-
-        if (!updatedSubs[what]) {
-          // If the property for the entity type doesn't exist, create it
-          updatedSubs[what] = []
-        }
-
-        // Check if the entity already exists in the array
+        if (!updatedSubs[what]) updatedSubs[what] = []
         const exists = updatedSubs[what]?.some((entity) => entity.slug === slug)
-
-        if (!exists) {
-          // If not, add the new entity to the array
-          updatedSubs[what].push(slug)
-        }
+        if (!exists) updatedSubs[what].push(slug)
 
         return updatedSubs
       })
@@ -84,8 +74,6 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
       await apiClient.unfollow({ what, slug })
       setSubscriptions((prevSubscriptions) => {
         const updatedSubs = { ...prevSubscriptions }
-
-        // Remove the entity from the array
         updatedSubs[what] = (updatedSubs[what] || []).filter((x) => x !== slug)
 
         return updatedSubs

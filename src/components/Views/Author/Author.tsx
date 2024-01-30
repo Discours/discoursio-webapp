@@ -165,8 +165,8 @@ export const AuthorView = (props: Props) => {
   )
 
   const ogImage = createMemo(() =>
-    props.author?.pic
-      ? getImageUrl(author().pic, { width: 1200 })
+    author()?.pic
+      ? getImageUrl(author()?.pic, { width: 1200 })
       : getImageUrl('production/image/logo_image.png'),
   )
   const description = createMemo(() => getDescription(author()?.bio))

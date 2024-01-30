@@ -92,7 +92,6 @@ export const AuthorView = (props: Props) => {
   const fetchData = async () => {
     const slug = author()?.slug || props.authorSlug
     if (slug) {
-      document.title = author()?.name
       console.debug('[AuthorView] load subscriptions')
       try {
         const { authors, topics } = await fetchSubscriptions()
@@ -104,6 +103,10 @@ export const AuthorView = (props: Props) => {
       }
     }
   }
+
+  createEffect(() => {
+    if (author()) document.title = author().name
+  })
 
   const loadMore = async () => {
     saveScrollPosition()
@@ -148,23 +151,25 @@ export const AuthorView = (props: Props) => {
     }
   })
 
-  const ogImage = props.author?.pic
-    ? getImageUrl(props.author.pic, { width: 1200 })
-    : getImageUrl('production/image/logo_image.png')
-  const description = getDescription(props.author?.bio)
-  const ogTitle = props.author?.name
+  const ogImage = createMemo(() =>
+    props.author?.pic
+      ? getImageUrl(props.author.pic, { width: 1200 })
+      : getImageUrl('production/image/logo_image.png'),
+  )
+  const description = createMemo(() => getDescription(props.author?.bio))
+  const ogTitle = createMemo(() => props.author?.name)
 
   return (
     <div class={styles.authorPage}>
-      <Meta name="descprition" content={description} />
+      <Meta name="descprition" content={description()} />
       <Meta name="og:type" content="profile" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
+      <Meta name="og:title" content={ogTitle()} />
+      <Meta name="og:image" content={ogImage()} />
+      <Meta name="og:description" content={description()} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
-      <Meta name="twitter:image" content={ogImage} />
+      <Meta name="twitter:title" content={ogTitle()} />
+      <Meta name="twitter:description" content={description()} />
+      <Meta name="twitter:image" content={ogImage()} />
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

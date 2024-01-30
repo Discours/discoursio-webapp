@@ -54,16 +54,18 @@ export const FollowButton = (props: FollowButtonProps) => {
     if (props.entity === FollowingEntity.Author) {
       const a = authorEntities()[props.slug]
       if (!updatedSubs.authors) updatedSubs.authors = []
-      if (unfollow) updatedSubs.authors = updatedSubs.authors.filter((x) => x?.slug !== props.slug)
-      if (!updatedSubs.authors.includes(a)) {
+      if (unfollow) {
+        updatedSubs.authors = updatedSubs.authors.filter((x) => x?.slug !== props.slug)
+      } else if (!updatedSubs.authors.includes(a)) {
         updatedSubs.authors.push(a)
       }
     }
     if (props.entity === FollowingEntity.Topic) {
       const tpc = topicEntities()[props.slug]
       if (!updatedSubs.topics) updatedSubs.topics = []
-      if (unfollow) updatedSubs.topics = updatedSubs.topics.filter((x) => x?.slug !== props.slug)
-      if (!updatedSubs.topics.includes(tpc)) {
+      if (unfollow) {
+        updatedSubs.topics = updatedSubs.topics.filter((x) => x?.slug !== props.slug)
+      } else if (!updatedSubs.topics.includes(tpc)) {
         updatedSubs.topics.push(tpc)
       }
     }

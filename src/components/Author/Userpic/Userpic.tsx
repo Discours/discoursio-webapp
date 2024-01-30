@@ -50,7 +50,10 @@ export const Userpic = (props: Props) => {
       class={clsx(styles.Userpic, props.class, styles[props.size ?? 'M'], {
         ['cursorPointer']: props.onClick,
       })}
-      onClick={() => props.onClick()}
+      onClick={() => {
+        console.debug('[components.Userpic] clicked')
+        props.onClick()
+      }}
     >
       <Show when={!props.loading} fallback={<Loading />}>
         <ConditionalWrapper

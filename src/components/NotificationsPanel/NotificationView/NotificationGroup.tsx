@@ -49,6 +49,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
     actions: { hideNotificationsPanel, markSeenThread },
   } = useNotifications()
   const handleClick = (threadId: string) => {
+    console.debug(`[components.NotificationGroup] thread ${threadId} clicked`)
     props.onClick()
 
     markSeenThread(threadId)

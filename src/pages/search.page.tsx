@@ -19,7 +19,7 @@ export const SearchPage = (props: PageProps) => {
   createEffect(() => {
     if (isLoaded()) return
     else if (q() && window) {
-      const text = q() || window.location.href.split('/').pop()
+      const text = q() || window.location.pathname?.split('/').pop()
       loadShoutsSearch({ text, limit: 50, offset: 0 })
       setIsLoaded(true)
     }

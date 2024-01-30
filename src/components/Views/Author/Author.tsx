@@ -143,8 +143,7 @@ export const AuthorView = (props: Props) => {
       by: { comment: true, created_by: commenter.id },
     })
     console.debug(`[components.Author] fetched ${data.length} comments`)
-    const ccc = new Set([...commented(), ...data])
-    setCommented(Array.from(ccc).sort(byCreated))
+    setCommented(data)
   }
 
   const [commented, setCommented] = createSignal<Reaction[]>([])

@@ -52,7 +52,7 @@ export const Userpic = (props: Props) => {
       })}
       onClick={() => {
         console.debug('[components.Userpic] clicked')
-        props.onClick()
+        props.onClick && props.onClick()
       }}
     >
       <Show when={!props.loading} fallback={<Loading />}>

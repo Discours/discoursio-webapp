@@ -83,7 +83,11 @@ export const Beside = (props: Props) => {
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>
-                          <AuthorBadge author={value as Author} />
+                          <AuthorBadge
+                            author={value as Author}
+                            iconButtons={true}
+                            minimizeSubscribeButton={true}
+                          />
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>
                           <ArticleCard

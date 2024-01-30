@@ -1,12 +1,11 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal, on } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 
-import { useFollowing } from '../../../context/following'
+import { useFollowing, EMPTY_SUBSCRIPTIONS } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { Author, Topic, Community, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { Button } from '../Button'
-import { CheckButton } from '../CheckButton'
 import { Icon } from '../Icon'
 
 import stylesAuthor from '../../Author/AuthorBadge/AuthorBadge.module.scss'
@@ -33,36 +32,17 @@ export const FollowButton = (props: FollowButtonProps) => {
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const [subscribed, setSubscribed] = createSignal(false)
 
-  createEffect(
-    on(
-      () => subscriptions(),
-      (subs) => {
-        let items = []
-        switch (props.entity) {
-          case FollowingEntity.Author: {
-            items = subs.authors || []
-
-            break
-          }
-          case FollowingEntity.Topic: {
-            items = subs.topics || []
-
-            break
-          }
-          case FollowingEntity.Community: {
-            items = subs.communities || []
-
-            break
-          }
-          // No default
-        }
-        setSubscribed(items.some((x: Topic | Author | Community) => x?.slug === props.slug))
-      },
-      {
-        defer: true,
-      },
-    ),
-  )
+  createEffect(() => {
+    const subs = subscriptions()
+    if (subs && subs !== EMPTY_SUBSCRIPTIONS) {
+      console.debug('subs renewed, revalidate state')
+      let items = []
+      if (props.entity === FollowingEntity.Author) items = subs.authors
+      if (props.entity === FollowingEntity.Topic) items = subs.topics
+      if (props.entity === FollowingEntity.Community) items = subs.communities
+      setSubscribed(items.some((x: Topic | Author | Community) => x?.slug === props.slug))
+    }
+  })
 
   const subscribe = async (wasnt = true) => {
     console.debug('[FollowButton.subscribe] sending server mutation')

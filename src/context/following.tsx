@@ -31,7 +31,7 @@ export function useFollowing() {
   return useContext(FollowingContext)
 }
 
-const EMPTY_SUBSCRIPTIONS = {
+export const EMPTY_SUBSCRIPTIONS = {
   topics: [],
   authors: [],
   communities: [],

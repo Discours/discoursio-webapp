@@ -3,7 +3,7 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
+import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect, on } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
@@ -96,8 +96,8 @@ export const AuthorView = (props: Props) => {
         try {
           const { authors, topics } = await fetchSubscriptions()
           setFollowing([...(authors || []), ...(topics || [])])
-          const userSubscribers = await apiClient.getAuthorFollowers({ slug })
-          setFollowers(userSubscribers || [])
+          const followers = await apiClient.getAuthorFollowers({ slug })
+          setFollowers(followers || [])
         } catch (error) {
           console.error('[components.Author] fetch error', error)
         }
@@ -137,25 +137,31 @@ export const AuthorView = (props: Props) => {
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
-  const fetchComments = async () => {
+  const fetchComments = async (commenter: Author) => {
     const data = await apiClient.getReactionsBy({
-      by: { comment: true, created_by: props.author.id },
+      by: { comment: true, created_by: commenter.id },
     })
     console.debug(`[components.Author] fetched ${data.length} comments`)
     setCommented(data)
   }
 
   const [commented, setCommented] = createSignal<Reaction[]>([])
-  createEffect(() => {
-    if (getPage().route === 'authorComments') {
-      console.debug('[components.Author] routed to comments')
-      try {
-        fetchComments()
-      } catch (error) {
-        console.error('[components.Author] fetch error', error)
-      }
-    }
-  })
+  createEffect(
+    on(
+      author,
+      (a: Author) => {
+        if (getPage().route === 'authorComments') {
+          console.debug('[components.Author] routed to comments')
+          try {
+            if (a) fetchComments(a)
+          } catch (error) {
+            console.error('[components.Author] fetch error', error)
+          }
+        }
+      },
+      { defer: true },
+    ),
+  )
 
   const ogImage = createMemo(() =>
     props.author?.pic

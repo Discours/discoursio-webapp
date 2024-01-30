@@ -1,4 +1,4 @@
-import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
+import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
@@ -126,6 +126,13 @@ export const AuthorView = (props: Props) => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       fetchData()
       loadMore()
+      if (getPage().route === 'authorComments') {
+        try {
+          fetchComments()
+        } catch (error) {
+          console.error('[components.Author] fetch error', error)
+        }
+      }
     }
   })
 
@@ -137,16 +144,18 @@ export const AuthorView = (props: Props) => {
     const data = await apiClient.getReactionsBy({
       by: { comment: true, created_by: props.author.id },
     })
+    console.debug(`[components.Author] fetched ${data.length} comments`)
     setCommented(data)
   }
 
-  const [commented, setCommented] = createSignal([])
+  const [commented, setCommented] = createSignal<Reaction[]>([])
   createEffect(() => {
-    if (getPage().route === 'authorComments' && !commented()) {
+    if (getPage().route === 'authorComments') {
+      console.debug('[components.Author] routed to comments')
       try {
         fetchComments()
       } catch (error) {
-        console.error('[getReactionsBy comment]', error)
+        console.error('[components.Author] fetch error', error)
       }
     }
   })

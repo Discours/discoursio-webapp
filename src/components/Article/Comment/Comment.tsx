@@ -142,7 +142,7 @@ export const Comment = (props: Props) => {
           >
             <div class={styles.commentDetails}>
               <div class={styles.commentAuthor}>
-                <AuthorLink author={comment()?.created_by as Author} />
+                <AuthorLink author={comment()?.created_by} />
               </div>
 
               <Show when={props.isArticleAuthor}>

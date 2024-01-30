@@ -13,7 +13,7 @@ type SubscriptionsData = {
 }
 
 interface FollowingContextType {
-  isLoaded: Accessor<boolean>
+  loading: Accessor<boolean>
   subscriptions: SubscriptionsData
   setSubscriptions: (subscriptions: SubscriptionsData) => void
   loadSubscriptions: () => void
@@ -34,18 +34,19 @@ export const EMPTY_SUBSCRIPTIONS = {
 }
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
-  const [isLoaded, setIsLoaded] = createSignal<boolean>(false)
+  const [loading, setLoading] = createSignal<boolean>(false)
   const [subscriptions, setSubscriptions] = createStore<SubscriptionsData>(EMPTY_SUBSCRIPTIONS)
   const { author } = useSession()
 
   const fetchData = async () => {
+    setLoading(true)
     try {
       const result = await apiClient.getMySubscriptions()
       setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
-      setIsLoaded(true)
     } catch (error) {
       console.info('[context.following] cannot get subs', error)
-      setIsLoaded(true)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -82,7 +83,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   })
 
   const value: FollowingContextType = {
-    isLoaded,
+    loading,
     subscriptions,
     setSubscriptions,
     loadSubscriptions: fetchData,

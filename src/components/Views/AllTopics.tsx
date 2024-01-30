@@ -191,7 +191,7 @@ export const AllTopicsView = (props: Props) => {
                       {(topic) => (
                         <>
                           <TopicCard
-                            topic={topic as Topic}
+                            topic={topic}
                             compact={false}
                             subscribed={subscribed(topic.slug)}
                             showPublications={true}

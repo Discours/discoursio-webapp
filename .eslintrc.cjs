@@ -23,7 +23,7 @@ module.exports = {
       },
       extends: [
         'plugin:@typescript-eslint/recommended',
-        // 'plugin:@typescript-eslint/recommended-requiring-type-checking', // 23-01-2024 681 problems
+        // 'plugin:@typescript-eslint/recommended-requiring-type-checking', // 30-01-2024 699 problems
       ],
       rules: {
         '@typescript-eslint/no-unused-vars': [

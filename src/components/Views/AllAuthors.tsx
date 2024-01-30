@@ -229,7 +229,7 @@ export const AllAuthorsView = (props: Props) => {
                 {(author) => (
                   <div class="row">
                     <div class="col-lg-20 col-xl-18">
-                      <AuthorBadge author={author as Author} />
+                      <AuthorBadge author={author} />
                     </div>
                   </div>
                 )}

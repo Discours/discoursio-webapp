@@ -368,7 +368,7 @@ export const FeedView = (props: Props) => {
                           />
                         </div>
                         <div class={styles.commentDetails}>
-                          <AuthorLink author={comment.created_by as Author} size={'XS'} />
+                          <AuthorLink author={comment.created_by} size={'XS'} />
                           <CommentDate comment={comment} isShort={true} isLastInRow={true} />
                         </div>
                         <div class={clsx('text-truncate', styles.commentArticleTitle)}>

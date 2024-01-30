@@ -5,15 +5,15 @@ import { useFollowing, EMPTY_SUBSCRIPTIONS } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { Author, Topic, Community, FollowingEntity } from '../../../graphql/schema/core.gen'
+import { useAuthorsStore } from '../../../stores/zine/authors'
+import { useTopicsStore } from '../../../stores/zine/topics'
 import { Button } from '../Button'
+import { CheckButton } from '../CheckButton/CheckButton'
 import { Icon } from '../Icon'
 
 import stylesAuthor from '../../Author/AuthorBadge/AuthorBadge.module.scss'
 import stylesButton from '../Button/Button.module.scss'
 // import stylesCheck from '../CheckButton/CheckButton.module.scss'
-import { useAuthorsStore } from '../../../stores/zine/authors'
-import { useTopicsStore } from '../../../stores/zine/topics'
-import { CheckButton } from '../CheckButton/CheckButton'
 
 interface FollowButtonProps {
   slug: string
@@ -24,7 +24,14 @@ interface FollowButtonProps {
 
 export const FollowButton = (props: FollowButtonProps) => {
   const { t } = useLocalize()
-  const { subscriptions, follow, unfollow, setSubscriptions, loadSubscriptions } = useFollowing()
+  const {
+    subscriptions,
+    loading: subLoading,
+    follow,
+    unfollow,
+    setSubscriptions,
+    loadSubscriptions,
+  } = useFollowing()
   const {
     author,
     actions: { requireAuthentication },
@@ -95,11 +102,10 @@ export const FollowButton = (props: FollowButtonProps) => {
     }, 'subscribe')
   }
   const checked = createMemo(() => {
-    const r = author() && Boolean(followed())
-    return r
+    return author() && Boolean(followed())
   })
   return (
-    <>
+    <Show when={!subLoading()}>
       <Show
         when={!props.minimizeSubscribeButton}
         fallback={<CheckButton text={t('Follow')} checked={checked()} onClick={handleClick} />}
@@ -156,6 +162,6 @@ export const FollowButton = (props: FollowButtonProps) => {
           />
         </Show>
       </Show>
-    </>
+    </Show>
   )
 }

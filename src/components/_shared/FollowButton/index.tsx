@@ -25,7 +25,7 @@ export const FollowButton = (props: FollowButtonProps) => {
   const { t } = useLocalize()
   const {
     subscriptions,
-    actions: { follow, unfollow, setSubscriptions },
+    actions: { follow, unfollow, setSubscriptions, loadSubscriptions },
   } = useFollowing()
   const {
     author,
@@ -74,6 +74,7 @@ export const FollowButton = (props: FollowButtonProps) => {
       updatedSubs.communities.push(c)
     }*/
     setSubscriptions(updatedSubs)
+    loadSubscriptions()
   }
 
   const handleFollow = async (wasnt = true) => {

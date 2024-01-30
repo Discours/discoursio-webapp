@@ -1,6 +1,6 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
 
-import { createContext, createSignal, createResource, useContext, createEffect } from 'solid-js'
+import { createContext, createSignal, createResource, useContext, createEffect, untrack } from 'solid-js'
 
 import { apiClient } from '../graphql/client/core'
 import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
@@ -90,12 +90,14 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     communities?: Community[]
   }>(fetchData, {
     ssrLoadFrom: 'initial',
-    initialValue: null,
+    initialValue: EMPTY_SUBSCRIPTIONS,
   })
 
   createEffect(() => {
-    if (author() && (subscriptions() === EMPTY_SUBSCRIPTIONS || subscriptions() === null))
-      loadSubscriptions()
+    if (author() && subscriptions() === EMPTY_SUBSCRIPTIONS)
+      untrack(() => {
+        loadSubscriptions()
+      })
   })
 
   const value: FollowingContextType = {

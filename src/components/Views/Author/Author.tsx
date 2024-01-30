@@ -24,6 +24,7 @@ import { Row3 } from '../../Feed/Row3'
 
 import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
+import { byCreated } from '../../../utils/sortby'
 
 type Props = {
   shouts: Shout[]
@@ -142,7 +143,8 @@ export const AuthorView = (props: Props) => {
       by: { comment: true, created_by: commenter.id },
     })
     console.debug(`[components.Author] fetched ${data.length} comments`)
-    setCommented(data)
+    const ccc = new Set([...commented(), ...data])
+    setCommented(Array.from(ccc).sort(byCreated))
   }
 
   const [commented, setCommented] = createSignal<Reaction[]>([])

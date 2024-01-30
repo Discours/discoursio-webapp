@@ -39,9 +39,9 @@ export const FollowButton = (props: FollowButtonProps) => {
     if (subs && subs !== EMPTY_SUBSCRIPTIONS) {
       console.debug('subs renewed, revalidate state')
       let items = []
-      if (props.entity === FollowingEntity.Author) items = subs.authors
-      if (props.entity === FollowingEntity.Topic) items = subs.topics
-      if (props.entity === FollowingEntity.Community) items = subs.communities
+      if (props.entity === FollowingEntity.Author) items = subs.authors || []
+      if (props.entity === FollowingEntity.Topic) items = subs.topics || []
+      if (props.entity === FollowingEntity.Community) items = subs.communities || []
       setFollowed(items.some((x: Topic | Author | Community) => x?.slug === props.slug))
     }
   })
@@ -53,12 +53,14 @@ export const FollowButton = (props: FollowButtonProps) => {
     const updatedSubs = subscriptions()
     if (props.entity === FollowingEntity.Author) {
       const a = authorEntities()[props.slug]
+      if (!updatedSubs.authors) updatedSubs.authors = []
       if (!updatedSubs.authors.includes(a)) {
         updatedSubs.authors.push(a)
       }
     }
     if (props.entity === FollowingEntity.Topic) {
       const tpc = topicEntities()[props.slug]
+      if (!updatedSubs.topics) updatedSubs.topics = []
       if (!updatedSubs.topics.includes(tpc)) {
         updatedSubs.topics.push(tpc)
       }

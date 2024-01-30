@@ -105,7 +105,7 @@ export const FollowButton = (props: FollowButtonProps) => {
     return author() && Boolean(followed())
   })
   return (
-    <Show when={!subLoading()}>
+    <Show when={!author() || !subLoading()}>
       <Show
         when={!props.minimizeSubscribeButton}
         fallback={<CheckButton text={t('Follow')} checked={checked()} onClick={handleClick} />}

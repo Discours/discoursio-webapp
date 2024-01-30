@@ -48,12 +48,13 @@ export const FollowButton = (props: FollowButtonProps) => {
 
   const { authorEntities } = useAuthorsStore()
   const { topicEntities } = useTopicsStore()
-  const updateSubs = () => {
+  const updateSubs = (unfollow = false) => {
     console.debug('[FollowButton.updatedSubs] updated subscriptions postprocess')
     const updatedSubs = subscriptions()
     if (props.entity === FollowingEntity.Author) {
       const a = authorEntities()[props.slug]
       if (!updatedSubs.authors) updatedSubs.authors = []
+      if (unfollow) updatedSubs.authors = updatedSubs.authors.filter((x) => x?.slug !== props.slug)
       if (!updatedSubs.authors.includes(a)) {
         updatedSubs.authors.push(a)
       }
@@ -61,6 +62,7 @@ export const FollowButton = (props: FollowButtonProps) => {
     if (props.entity === FollowingEntity.Topic) {
       const tpc = topicEntities()[props.slug]
       if (!updatedSubs.topics) updatedSubs.topics = []
+      if (unfollow) updatedSubs.topics = updatedSubs.topics.filter((x) => x?.slug !== props.slug)
       if (!updatedSubs.topics.includes(tpc)) {
         updatedSubs.topics.push(tpc)
       }
@@ -78,7 +80,7 @@ export const FollowButton = (props: FollowButtonProps) => {
     await (wasnt ? follow : unfollow)(props.entity, props.slug)
     setIsSending(false)
     setFollowed(wasnt)
-    updateSubs()
+    updateSubs(wasnt)
   }
 
   const handleClick = (ev) => {

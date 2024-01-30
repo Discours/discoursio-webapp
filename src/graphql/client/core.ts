@@ -182,7 +182,7 @@ export const apiClient = {
   },
   loadAuthorsBy: async (args: QueryLoad_Authors_ByArgs) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, args).toPromise()
-    console.debug('[graphql.client.core] authorsLoadBy:', resp)
+
     return resp.data.load_authors_by
   },
   getShoutBySlug: async (slug: string) => {

@@ -1,15 +1,13 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { createEffect, createResource, createSignal, For, on, Show } from 'solid-js'
+import { createEffect, createSignal, For, Show } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
 import { Author } from '../../../graphql/schema/core.gen'
 import { hideModal } from '../../../stores/ui'
-import { useAuthorsStore } from '../../../stores/zine/authors'
 import { AuthorBadge } from '../../Author/AuthorBadge'
-import { Modal } from '../../Nav/Modal'
 import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
 import { Loading } from '../Loading'
@@ -24,6 +22,7 @@ type Props = {
 }
 
 const PAGE_SIZE = 50
+
 export const InviteMembers = (props: Props) => {
   const { t } = useLocalize()
   const roles = [
@@ -41,50 +40,45 @@ export const InviteMembers = (props: Props) => {
     },
   ]
 
-  const { sortedAuthors } = useAuthorsStore({ sortBy: 'name' })
   const {
     actions: { loadChats, createChat },
   } = useInbox()
-  const [authorsToInvite, setAuthorsToInvite] = createSignal<InviteAuthor[]>()
 
+  const [authorsToInvite, setAuthorsToInvite] = createSignal<InviteAuthor[]>([])
   const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
   const [collectionToInvite, setCollectionToInvite] = createSignal<number[]>([])
-  const [data, { mutate, refetch }] = createResource(async () => {
-    const resp = await apiClient.loadAuthorsBy({ offset: 0, limit: PAGE_SIZE })
-    console.log('!!! resp:', resp)
-  })
+  const [offsetAuthors, setOffsetAuthors] = createSignal(0)
 
-  console.log('!!! data:', data())
+  const getAuthors = async () => {
+    try {
+      const result = await apiClient.loadAuthorsBy({
+        by: {},
+        limit: PAGE_SIZE,
+        offset: offsetAuthors(),
+      })
+      if (!result) {
+        return []
+      }
+      return result
+    } catch (error) {
+      console.error('[getAuthors error]:', error)
+      return []
+    }
+  }
 
-  // const fetcher = async (page: number) => {
-  //   await new Promise((resolve, reject) => {
-  //     const checkDataLoaded = () => {
-  //       if (sortedAuthors().length > 0) {
-  //         resolve(true)
-  //       } else {
-  //         setTimeout(checkDataLoaded, 100)
-  //       }
-  //     }
-  //     setTimeout(() => reject(new Error('Timeout waiting for sortedAuthors')), 10000)
-  //     checkDataLoaded()
-  //   })
-  //   const start = page * PAGE_SIZE
-  //   const end = start + PAGE_SIZE
-  //   const authors = authorsToInvite()?.map((author) => ({ ...author, selected: false }))
-  //   return authors?.slice(start, end)
-  // }
+  const fetcher = async (page): Promise<Author[]> => {
+    const newOffset = page * PAGE_SIZE
+    setOffsetAuthors(newOffset)
+    try {
+      const result = await getAuthors()
+      return result.map((author) => ({ ...author, selected: false }))
+    } catch (error) {
+      console.error('[fetcher error]:', error)
+      return []
+    }
+  }
 
   const [pages, infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
-
-  createEffect(
-    on(
-      () => sortedAuthors(),
-      (currentAuthors) => {
-        setAuthorsToInvite(currentAuthors.map((author) => ({ ...author, selected: false })))
-      },
-      { defer: true },
-    ),
-  )
 
   const handleInputChange = async (value: string) => {
     if (value.length > 1) {
@@ -97,9 +91,18 @@ export const InviteMembers = (props: Props) => {
     }
   }
 
-  const handleInvite = (id) => {
+  const handleInvite = (id: number) => {
     setCollectionToInvite((prev) => [...prev, id])
+
+    setAuthorsToInvite((prevAuthors) =>
+      prevAuthors.map((author) => (author.id === id ? { ...author, selected: !author.selected } : author)),
+    )
   }
+
+  createEffect(() => {
+    console.log('!!! collectionToInvite:', collectionToInvite())
+    console.log('!!! authorsToInvite:', authorsToInvite())
+  })
 
   const handleCloseModal = () => {
     setSearchResultAuthors()
@@ -118,8 +121,12 @@ export const InviteMembers = (props: Props) => {
     }
   }
 
+  createEffect(() => {
+    console.log('!!! pages:', pages())
+  })
+
   return (
-    <Modal variant="medium" name="inviteMembers">
+    <>
       <h2>{props.title || t('Invite collaborators')}</h2>
       <div class={clsx(styles.InviteMembers)}>
         <div class={styles.searchHeader}>
@@ -157,7 +164,7 @@ export const InviteMembers = (props: Props) => {
         </Show>
         <Show when={props.variant === 'recipients'}>
           <div class={styles.authors}>
-            <For each={searchResultAuthors() ?? pages()}>
+            <For each={pages()}>
               {(author) => (
                 <div class={styles.author}>
                   <AuthorBadge
@@ -190,6 +197,6 @@ export const InviteMembers = (props: Props) => {
           />
         </div>
       </div>
-    </Modal>
+    </>
   )
 }

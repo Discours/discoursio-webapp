@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query AuthorsAllQuery($by: AuthorsBy, $limit: Int, $offset: Int) {
+  query AuthorsLoadByQuery($by: AuthorsBy!, $limit: Int!, $offset: Int!) {
     load_authors_by(by: $by, limit: $limit, offset: $offset) {
       id
       slug

@@ -19,6 +19,7 @@ import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
 import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
+import { Modal } from '../../Nav/Modal'
 
 import styles from './Inbox.module.scss'
 
@@ -181,7 +182,9 @@ export const InboxView = (props: Props) => {
 
   return (
     <div class={clsx('container', styles.Inbox)}>
-      <InviteMembers title={t('Create Chat')} variant={'recipients'} />
+      <Modal variant="medium" name="inviteMembers">
+        <InviteMembers title={t('Create Chat')} variant={'recipients'} />
+      </Modal>
       {/*<CreateModalContent users={recipients()} />*/}
       <div class={clsx('row', styles.row)}>
         <div class={clsx(styles.chatList, 'col-md-8')}>

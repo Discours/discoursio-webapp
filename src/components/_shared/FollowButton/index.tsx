@@ -11,6 +11,8 @@ import { Icon } from '../Icon'
 import stylesAuthor from '../../Author/AuthorBadge/AuthorBadge.module.scss'
 import stylesButton from '../Button/Button.module.scss'
 import stylesCheck from '../CheckButton/CheckButton.module.scss'
+import { useAuthorsStore } from '../../../stores/zine/authors'
+import { useTopicsStore } from '../../../stores/zine/topics'
 
 interface FollowButtonProps {
   slug: string
@@ -23,14 +25,14 @@ export const FollowButton = (props: FollowButtonProps) => {
   const { t } = useLocalize()
   const {
     subscriptions,
-    actions: { follow, unfollow },
+    actions: { follow, unfollow, setSubscriptions },
   } = useFollowing()
   const {
     author,
     actions: { requireAuthentication },
   } = useSession()
-  const [isSubscribing, setIsSubscribing] = createSignal(false)
-  const [subscribed, setSubscribed] = createSignal(false)
+  const [isSending, setIsSending] = createSignal(false)
+  const [followed, setFollowed] = createSignal(false)
 
   createEffect(() => {
     const subs = subscriptions()
@@ -40,34 +42,59 @@ export const FollowButton = (props: FollowButtonProps) => {
       if (props.entity === FollowingEntity.Author) items = subs.authors
       if (props.entity === FollowingEntity.Topic) items = subs.topics
       if (props.entity === FollowingEntity.Community) items = subs.communities
-      setSubscribed(items.some((x: Topic | Author | Community) => x?.slug === props.slug))
+      setFollowed(items.some((x: Topic | Author | Community) => x?.slug === props.slug))
     }
   })
 
-  const subscribe = async (wasnt = true) => {
-    console.debug('[FollowButton.subscribe] sending server mutation')
-    setIsSubscribing(true)
-    await (wasnt ? follow : unfollow)(props.entity, props.slug)
-    setSubscribed(wasnt)
-    setIsSubscribing(false)
+  const { authorEntities } = useAuthorsStore()
+  const { topicEntities } = useTopicsStore()
+  const updateSubs = () => {
+    console.debug('[FollowButton.updatedSubs] updated subscriptions postprocess')
+    const updatedSubs = subscriptions()
+    if (props.entity === FollowingEntity.Author) {
+      const a = authorEntities()[props.slug]
+      if (!updatedSubs.authors.includes(a)) {
+        updatedSubs.authors.push(a)
+      }
+    }
+    if (props.entity === FollowingEntity.Topic) {
+      const tpc = topicEntities()[props.slug]
+      if (!updatedSubs.topics.includes(tpc)) {
+        updatedSubs.topics.push(tpc)
+      }
+    }
+    /*if(props.entity === FollowingEntity.Community) {
+      const c = communityEntities()[props.slug]
+      updatedSubs.communities.push(c)
+    }*/
+    setSubscriptions(updatedSubs)
   }
 
-  const handleSubscribe = (ev) => {
+  const handleFollow = async (wasnt = true) => {
+    console.debug('[FollowButton.subscribe] sending server mutation')
+    setIsSending(true)
+    await (wasnt ? follow : unfollow)(props.entity, props.slug)
+    setIsSending(false)
+    setFollowed(wasnt)
+    updateSubs()
+  }
+
+  const handleClick = (ev) => {
     console.debug('[FollowButton.handleSubscribe] handling follow click')
     console.debug(ev)
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      setSubscribed(subscribed())
+      setFollowed(followed())
       if (author()) {
-        subscribe(!subscribed())
+        handleFollow(!followed())
       }
     }, 'subscribe')
   }
-  const subscribeValue = (what: FollowingEntity) => (
+  const buttonValue = (what: FollowingEntity) => (
     <Show
       when={props.iconButton}
       fallback={
-        <Show when={subscribed()} fallback={t('Follow')}>
+        <Show when={followed()} fallback={t('Follow')}>
           <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
         </Show>
@@ -78,8 +105,8 @@ export const FollowButton = (props: FollowButtonProps) => {
   )
 
   return props.minimizeSubscribeButton ? (
-    <button type="button" class={clsx(stylesCheck.CheckButton)} onClick={handleSubscribe}>
-      <Show when={subscribed()} fallback={t('Follow')}>
+    <button type="button" class={clsx(stylesCheck.CheckButton)} onClick={handleClick}>
+      <Show when={followed()} fallback={t('Follow')}>
         <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
         <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
       </Show>
@@ -88,13 +115,13 @@ export const FollowButton = (props: FollowButtonProps) => {
     <Button
       variant={props.iconButton ? 'secondary' : 'bordered'}
       size="M"
-      value={props.iconButton ? t(subscribed() ? 'Unfollow' : 'Follow') : subscribeValue(props.entity)}
-      onClick={handleSubscribe}
+      value={props.iconButton ? t(followed() ? 'Unfollow' : 'Follow') : buttonValue(props.entity)}
+      onClick={handleClick}
       isSubscribeButton={true}
-      disabled={isSubscribing()}
+      disabled={isSending()}
       class={clsx(stylesAuthor.actionButton, {
         [stylesAuthor.iconed]: props.iconButton,
-        [stylesButton.subscribed]: subscribed(),
+        [stylesButton.subscribed]: followed(),
       })}
     />
   )

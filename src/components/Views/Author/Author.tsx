@@ -92,20 +92,24 @@ export const AuthorView = (props: Props) => {
   const fetchData = async () => {
     const slug = author()?.slug || props.authorSlug
     if (slug) {
-      console.debug('[AuthorView] load subscriptions')
-      try {
-        const { authors, topics } = await fetchSubscriptions()
-        setFollowing([...(authors || []), ...(topics || [])])
-        const userSubscribers = await apiClient.getAuthorFollowers({ slug })
-        setFollowers(userSubscribers || [])
-      } catch (error) {
-        console.error('[AuthorView.fetchData] error:', error)
+      if (getPage().route === 'authorComments' && author()) {
+        try {
+          const { authors, topics } = await fetchSubscriptions()
+          setFollowing([...(authors || []), ...(topics || [])])
+          const userSubscribers = await apiClient.getAuthorFollowers({ slug })
+          setFollowers(userSubscribers || [])
+        } catch (error) {
+          console.error('[components.Author] fetch error', error)
+        }
       }
     }
   }
 
   createEffect(() => {
-    if (author()) document.title = author().name
+    if (author()) {
+      document.title = author().name
+      fetchData()
+    }
   })
 
   const loadMore = async () => {
@@ -126,13 +130,6 @@ export const AuthorView = (props: Props) => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       fetchData()
       loadMore()
-      if (getPage().route === 'authorComments') {
-        try {
-          fetchComments()
-        } catch (error) {
-          console.error('[components.Author] fetch error', error)
-        }
-      }
     }
   })
 

@@ -17,6 +17,7 @@ import { SearchField } from '../_shared/SearchField'
 import { TopicCard } from '../Topic/Card'
 
 import styles from './AllTopics.module.scss'
+import { useFollowing } from '../../context/following'
 
 type AllTopicsPageSearchParams = {
   by: 'shouts' | 'authors' | 'title' | ''
@@ -41,7 +42,7 @@ export const AllTopicsView = (props: Props) => {
     sortBy: searchParams().by || 'shouts',
   })
 
-  const { subscriptions } = useSession()
+  const { subscriptions } = useFollowing()
 
   createEffect(() => {
     if (!searchParams().by) {

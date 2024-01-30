@@ -50,7 +50,10 @@ const publicGraphQLClient = createGraphQLClient('core')
 
 export const apiClient = {
   private: null,
-  connect: (token: string) => (apiClient.private = createGraphQLClient('core', token)), // NOTE: use it after token appears
+  connect: (token: string) => {
+    // NOTE: use it after token appears
+    apiClient.private = createGraphQLClient('core', token)
+  },
 
   getRandomTopShouts: async (params: QueryLoad_Shouts_Random_TopArgs) => {
     const response = await publicGraphQLClient.query(loadShoutsTopRandom, params).toPromise()

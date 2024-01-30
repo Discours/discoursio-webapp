@@ -46,14 +46,12 @@ export type SessionContextType = {
   author: Resource<Author | null>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
-  subscriptions: Accessor<Result>
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthToken | Promise<AuthToken>
     setSession: (token: AuthToken | null) => void // setSession
     loadAuthor: (info?: unknown) => Author | Promise<Author>
     setAuthor: (a: Author) => void
-    loadSubscriptions: () => Promise<void>
     requireAuthentication: (
       callback: (() => Promise<void>) | (() => void),
       modalSource: AuthModalSource,
@@ -75,11 +73,6 @@ const SessionContext = createContext<SessionContextType>()
 
 export function useSession() {
   return useContext(SessionContext)
-}
-
-const EMPTY_SUBSCRIPTIONS = {
-  topics: [],
-  authors: [],
 }
 
 export const SessionProvider = (props: {
@@ -120,7 +113,7 @@ export const SessionProvider = (props: {
   })
 
   // load
-  let minuteLater
+  let minuteLater: NodeJS.Timeout | null
 
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [authError, setAuthError] = createSignal('')
@@ -187,12 +180,6 @@ export const SessionProvider = (props: {
     initialValue: null,
   })
 
-  const [subscriptions, setSubscriptions] = createSignal<Result>(EMPTY_SUBSCRIPTIONS)
-  const loadSubscriptions = async (): Promise<void> => {
-    const result = await apiClient.getMySubscriptions()
-    setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
-  }
-
   // when session is loaded
   createEffect(() => {
     if (session()) {
@@ -214,7 +201,6 @@ export const SessionProvider = (props: {
   // when author is loaded
   createEffect(() => {
     if (author()) {
-      loadSubscriptions()
       addAuthors([author()])
     } else {
       reset()
@@ -223,7 +209,6 @@ export const SessionProvider = (props: {
 
   const reset = () => {
     setIsSessionLoaded(true)
-    setSubscriptions(EMPTY_SUBSCRIPTIONS)
     setSession(null)
     setAuthor(null)
   }
@@ -324,7 +309,6 @@ export const SessionProvider = (props: {
   const isAuthenticated = createMemo(() => Boolean(author()))
   const actions = {
     loadSession,
-    loadSubscriptions,
     requireAuthentication,
     signUp,
     signIn,
@@ -342,7 +326,6 @@ export const SessionProvider = (props: {
     authError,
     config,
     session,
-    subscriptions,
     isSessionLoaded,
     author,
     actions,

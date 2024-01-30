@@ -1,16 +1,17 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal, on } from 'solid-js'
+import { Show, createEffect, createSignal, on, onMount } from 'solid-js'
 
+import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { Author, Topic, Community, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { showModal } from '../../../stores/ui'
-import { follow, unfollow } from '../../../stores/zine/common'
 import { Button } from '../Button'
 import { CheckButton } from '../CheckButton'
 import { Icon } from '../Icon'
 
-import stylesCard from '../../Topic/Card.module.scss'
+import stylesAuthor from '../../Author/AuthorBadge/AuthorBadge.module.scss'
+import stylesTopic from '../../Topic/Card.module.scss'
 import stylesButton from '../Button/Button.module.scss'
 
 interface FollowButtonProps {
@@ -23,15 +24,21 @@ interface FollowButtonProps {
   minimizeSubscribeButton?: boolean
 }
 
+const EMPTY_SUBS = {
+  topics: [],
+  authors: [],
+  communities: [],
+}
+
 export const FollowButton = (props: FollowButtonProps) => {
   const { t } = useLocalize()
   const {
     subscriptions,
-    isSessionLoaded,
-    isAuthenticated,
-    actions: { loadSubscriptions },
+    actions: { loadSubscriptions, follow, unfollow },
+  } = useFollowing()
+  const {
+    actions: { requireAuthentication },
   } = useSession()
-
   const [isSubscribing, setIsSubscribing] = createSignal(false)
   const [subscribed, setSubscribed] = createSignal(false)
 
@@ -60,65 +67,72 @@ export const FollowButton = (props: FollowButtonProps) => {
         }
         setSubscribed(items.some((x: Topic | Author | Community) => x?.slug === props.slug))
       },
-      { defer: true },
+      {
+        defer: true,
+      },
     ),
   )
 
-  const subscribe = async (really = true) => {
+  const subscribe = async (wasnt = true) => {
     setIsSubscribing(true)
-
-    await (really
-      ? follow({ what: props.entity, slug: props.slug })
-      : unfollow({ what: props.entity, slug: props.slug }))
-
-    setSubscribed(really)
-    await loadSubscriptions()
+    await (wasnt ? follow : unfollow)(props.entity, props.slug)
+    setSubscribed(wasnt)
     setIsSubscribing(false)
   }
 
   const handleSubscribe = () => {
-    if (isAuthenticated()) {
+    requireAuthentication(() => {
       subscribe(!subscribed())
-    } else {
-      showModal('subscribe')
-    }
+    }, 'subscribe')
   }
 
-  const subscribeValue = () => {
-    return (
-      <>
-        <Show when={props.iconButton}>
-          <Show when={subscribed()} fallback="+">
-            <Icon name="check-subscribed" />
-          </Show>
+  const subscribeValue = (what: FollowingEntity) => (
+    <Show
+      when={props.iconButton}
+      fallback={
+        <Show when={subscribed()} fallback={t('Follow')}>
+          <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+          <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
         </Show>
-        <Show when={!props.iconButton}>
-          <Show when={subscribed()} fallback={t('Follow')}>
-            <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
-            <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
-          </Show>
-        </Show>
-      </>
-    )
-  }
+      }
+    >
+      <Show when={subscribed()} fallback="+">
+        <Icon name={what === FollowingEntity.Author ? 'author-unsubscribe' : 'check-subscribed'} />
+      </Show>
+    </Show>
+  )
 
   return (
-    <Show when={isSessionLoaded()}>
+    <Show
+      when={!props.minimizeSubscribeButton}
+      fallback={<CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />}
+    >
       <Show
-        when={!props.minimizeSubscribeButton}
-        fallback={<CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />}
+        when={subscribed()}
+        fallback={
+          <Button
+            variant={props.iconButton ? 'secondary' : 'bordered'}
+            size="M"
+            value={subscribeValue(props.entity)}
+            onClick={() => setSubscribed(false)}
+            isSubscribeButton={true}
+            class={clsx(stylesAuthor.actionButton, {
+              [stylesAuthor.iconed]: props.iconButton,
+              [stylesButton.subscribed]: subscribed(),
+            })}
+          />
+        }
       >
         <Button
-          variant="bordered"
+          variant={props.iconButton ? 'secondary' : 'bordered'}
           size="M"
-          value={subscribeValue()}
-          onClick={handleSubscribe}
+          value={subscribeValue(props.entity)}
+          onClick={() => setSubscribed(false)}
           isSubscribeButton={true}
-          class={clsx(stylesCard.actionButton, {
-            [stylesCard.isSubscribing]: isSubscribing(),
+          class={clsx(stylesAuthor.actionButton, {
+            [stylesAuthor.iconed]: props.iconButton,
             [stylesButton.subscribed]: subscribed(),
           })}
-          disabled={isSubscribing()}
         />
       </Show>
     </Show>

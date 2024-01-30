@@ -153,23 +153,24 @@ export const AuthorView = (props: Props) => {
 
   const ogImage = createMemo(() =>
     props.author?.pic
-      ? getImageUrl(props.author.pic, { width: 1200 })
+      ? getImageUrl(author().pic, { width: 1200 })
       : getImageUrl('production/image/logo_image.png'),
   )
-  const description = createMemo(() => getDescription(props.author?.bio))
-  const ogTitle = createMemo(() => props.author?.name)
+  const description = createMemo(() => getDescription(author().bio))
 
   return (
     <div class={styles.authorPage}>
-      <Meta name="descprition" content={description()} />
-      <Meta name="og:type" content="profile" />
-      <Meta name="og:title" content={ogTitle()} />
-      <Meta name="og:image" content={ogImage()} />
-      <Meta name="og:description" content={description()} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle()} />
-      <Meta name="twitter:description" content={description()} />
-      <Meta name="twitter:image" content={ogImage()} />
+      <Show when={author()}>
+        <Meta name="descprition" content={description()} />
+        <Meta name="og:type" content="profile" />
+        <Meta name="og:title" content={author().name} />
+        <Meta name="og:image" content={ogImage()} />
+        <Meta name="og:description" content={description()} />
+        <Meta name="twitter:card" content="summary_large_image" />
+        <Meta name="twitter:title" content={author().name} />
+        <Meta name="twitter:description" content={description()} />
+        <Meta name="twitter:image" content={ogImage()} />
+      </Show>
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

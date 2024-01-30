@@ -56,29 +56,30 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const createReaction = async (input: ReactionInput): Promise<void> => {
     const reaction = await apiClient.createReaction(input)
-
-    const changes = {
-      [reaction.id]: reaction,
-    }
-
-    if ([ReactionKind.Like, ReactionKind.Dislike].includes(reaction.kind)) {
-      const oppositeReactionKind =
-        reaction.kind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
-
-      const oppositeReaction = Object.values(reactionEntities).find(
-        (r) =>
-          r.kind === oppositeReactionKind &&
-          r.created_by.slug === reaction.created_by.slug &&
-          r.shout.id === reaction.shout.id &&
-          r.reply_to === reaction.reply_to,
-      )
-
-      if (oppositeReaction) {
-        changes[oppositeReaction.id] = undefined
+    if (reaction) {
+      const changes = {
+        [reaction.id]: reaction,
       }
-    }
 
-    setReactionEntities(changes)
+      if ([ReactionKind.Like, ReactionKind.Dislike].includes(reaction.kind)) {
+        const oppositeReactionKind =
+          reaction.kind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
+
+        const oppositeReaction = Object.values(reactionEntities).find(
+          (r) =>
+            r.kind === oppositeReactionKind &&
+            r.created_by.slug === reaction.created_by.slug &&
+            r.shout.id === reaction.shout.id &&
+            r.reply_to === reaction.reply_to,
+        )
+
+        if (oppositeReaction) {
+          changes[oppositeReaction.id] = undefined
+        }
+      }
+
+      setReactionEntities(changes)
+    }
   }
 
   const deleteReaction = async (reaction_id: number): Promise<void> => {

@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createSignal, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, onMount, Show } from 'solid-js'
 
 import { Icon } from '../Icon'
 
@@ -17,16 +17,10 @@ type Props = {
 // If you clicked on the cross, you unsubscribed. Then the “Subscribe” button appears
 
 export const CheckButton = (props: Props) => {
-  const [clicked, setClicked] = createSignal()
-  onMount(() => setClicked(!props.checked))
-  const handleClick = () => {
-    props.onClick()
-    setClicked((prev) => !prev)
-  }
   return (
-    <button type="button" class={clsx(styles.CheckButton, props.class)} onClick={handleClick}>
+    <button type="button" class={clsx(styles.CheckButton, props.class)} onClick={props.onClick}>
       <Show
-        when={clicked()}
+        when={!props.checked}
         fallback={
           <>
             <Icon name="check-subscribed-black" class={styles.check} />

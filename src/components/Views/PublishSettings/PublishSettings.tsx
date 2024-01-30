@@ -63,11 +63,11 @@ export const PublishSettings = (props: Props) => {
 
   const initialData = createMemo(() => {
     return {
-      coverImageUrl: props.form.coverImageUrl,
-      mainTopic: props.form.mainTopic || EMPTY_TOPIC,
-      slug: props.form.slug,
-      title: props.form.title,
-      subtitle: props.form.subtitle,
+      coverImageUrl: props.form?.coverImageUrl,
+      mainTopic: props.form?.mainTopic || EMPTY_TOPIC,
+      slug: props.form?.slug,
+      title: props.form?.title,
+      subtitle: props.form?.subtitle,
       description: composeDescription(),
       selectedTopics: [],
     }

@@ -37,7 +37,7 @@ export const FollowButton = (props: FollowButtonProps) => {
   createEffect(() => {
     const subs = subscriptions()
     if (subs && subs !== EMPTY_SUBSCRIPTIONS) {
-      console.debug('subs renewed, revalidate state')
+      // console.debug('subs renewed, revalidate state')
       let items = []
       if (props.entity === FollowingEntity.Author) items = subs.authors || []
       if (props.entity === FollowingEntity.Topic) items = subs.topics || []
@@ -94,32 +94,28 @@ export const FollowButton = (props: FollowButtonProps) => {
       }
     }, 'subscribe')
   }
+  const buttonCaptions = () => (
+    <Show when={followed()} fallback={t('Follow')}>
+      <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+      <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+    </Show>
+  )
+
   const buttonValue = (what: FollowingEntity) => (
-    <Show
-      when={props.iconButton}
-      fallback={
-        <Show when={followed()} fallback={t('Follow')}>
-          <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
-          <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
-        </Show>
-      }
-    >
+    <Show when={props.iconButton} fallback={buttonCaptions()}>
       <Icon name={what === FollowingEntity.Author ? 'author-unsubscribe' : 'check-subscribed'} />
     </Show>
   )
 
   return props.minimizeSubscribeButton ? (
     <button type="button" class={clsx(stylesCheck.CheckButton)} onClick={handleClick}>
-      <Show when={followed()} fallback={t('Follow')}>
-        <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
-        <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
-      </Show>
+      {buttonCaptions()}
     </button>
   ) : (
     <Button
       variant={props.iconButton ? 'secondary' : 'bordered'}
       size="M"
-      value={props.iconButton ? t(followed() ? 'Unfollow' : 'Follow') : buttonValue(props.entity)}
+      value={buttonValue(props.entity)}
       onClick={handleClick}
       isSubscribeButton={true}
       disabled={isSending()}

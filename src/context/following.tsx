@@ -1,4 +1,4 @@
-import { createEffect, createSignal, createContext, Accessor, useContext, JSX } from 'solid-js'
+import { createEffect, createSignal, createContext, Accessor, useContext, JSX, onMount, on } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
@@ -78,8 +78,20 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  createEffect(() => {
-    if (author() && (!subscriptions || subscriptions === EMPTY_SUBSCRIPTIONS)) fetchData()
+  createEffect(
+    on(
+      author,
+      (_a: Author) => {
+        if (!subscriptions || subscriptions === EMPTY_SUBSCRIPTIONS) {
+          fetchData()
+        }
+      },
+      { defer: true },
+    ),
+  )
+
+  onMount(() => {
+    if (!loading() && !subscriptions) fetchData()
   })
 
   const value: FollowingContextType = {

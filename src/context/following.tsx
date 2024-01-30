@@ -94,7 +94,8 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   })
 
   createEffect(() => {
-    if (author() && subscriptions() === EMPTY_SUBSCRIPTIONS) loadSubscriptions()
+    if (author() && (subscriptions() === EMPTY_SUBSCRIPTIONS || subscriptions() === null))
+      loadSubscriptions()
   })
 
   const value: FollowingContextType = {

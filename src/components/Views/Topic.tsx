@@ -2,7 +2,7 @@ import type { Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, onMount, createSignal, createEffect, on, Suspense } from 'solid-js'
+import { For, Show, createMemo, onMount, createSignal, createEffect } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'

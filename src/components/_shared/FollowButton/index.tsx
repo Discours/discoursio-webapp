@@ -10,7 +10,7 @@ import { Icon } from '../Icon'
 
 import stylesAuthor from '../../Author/AuthorBadge/AuthorBadge.module.scss'
 import stylesButton from '../Button/Button.module.scss'
-import stylesCheck from '../CheckButton/CheckButton.module.scss'
+// import stylesCheck from '../CheckButton/CheckButton.module.scss'
 import { useAuthorsStore } from '../../../stores/zine/authors'
 import { useTopicsStore } from '../../../stores/zine/topics'
 import { CheckButton } from '../CheckButton/CheckButton'

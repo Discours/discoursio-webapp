@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, onMount, Show } from 'solid-js'
+import { Show } from 'solid-js'
 
 import { Icon } from '../Icon'
 
@@ -18,7 +18,7 @@ type Props = {
 
 export const CheckButton = (props: Props) => {
   return (
-    <button type="button" class={clsx(styles.CheckButton, props.class)} onClick={props.onClick}>
+    <button type="button" class={clsx(styles.CheckButton, props.class)} onClick={() => props.onClick()}>
       <Show
         when={!props.checked}
         fallback={

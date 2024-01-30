@@ -16,7 +16,6 @@ import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
-import { EMPTY_TOPIC } from '../Edit'
 
 import styles from './PublishSettings.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
@@ -36,6 +35,10 @@ const shorten = (str: string, maxLen: number) => {
   return `${result}...`
 }
 
+const EMPTY_TOPIC: Topic = {
+  id: -1,
+  slug: '',
+}
 const emptyConfig = {
   coverImageUrl: '',
   mainTopic: EMPTY_TOPIC,

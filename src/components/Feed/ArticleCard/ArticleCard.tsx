@@ -169,7 +169,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
               fallback={<CoverImage class={styles.placeholderCoverImage} />}
             >
               <Image
-                src={props.article.cover}
+                src={props.article?.cover}
                 alt={card()?.title}
                 width={desktopCoverImageWidths[props.desktopCoverSize]}
                 onError={() => {

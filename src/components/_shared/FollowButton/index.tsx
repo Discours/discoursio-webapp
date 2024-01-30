@@ -10,15 +10,12 @@ import { CheckButton } from '../CheckButton'
 import { Icon } from '../Icon'
 
 import stylesAuthor from '../../Author/AuthorBadge/AuthorBadge.module.scss'
-// import stylesTopic from '../../Topic/Card.module.scss'
 import stylesButton from '../Button/Button.module.scss'
+import stylesCheck from '../CheckButton/CheckButton.module.scss'
 
 interface FollowButtonProps {
   slug: string
   entity: FollowingEntity.Author | FollowingEntity.Topic | FollowingEntity.Community
-  topics?: Array<Topic>
-  authors?: Array<Author>
-  communities?: Array<Community>
   iconButton?: boolean
   minimizeSubscribeButton?: boolean
 }
@@ -30,6 +27,7 @@ export const FollowButton = (props: FollowButtonProps) => {
     actions: { follow, unfollow },
   } = useFollowing()
   const {
+    author,
     actions: { requireAuthentication },
   } = useSession()
   const [isSubscribing, setIsSubscribing] = createSignal(false)
@@ -67,19 +65,24 @@ export const FollowButton = (props: FollowButtonProps) => {
   )
 
   const subscribe = async (wasnt = true) => {
+    console.debug('[FollowButton.subscribe] sending server mutation')
     setIsSubscribing(true)
     await (wasnt ? follow : unfollow)(props.entity, props.slug)
     setSubscribed(wasnt)
     setIsSubscribing(false)
   }
 
-  const handleSubscribe = () => {
+  const handleSubscribe = (ev) => {
+    console.debug('[FollowButton.handleSubscribe] handling follow click')
+    console.debug(ev)
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      subscribe(!subscribed())
+      setSubscribed(subscribed())
+      if (author()) {
+        subscribe(!subscribed())
+      }
     }, 'subscribe')
   }
-
   const subscribeValue = (what: FollowingEntity) => (
     <Show
       when={props.iconButton}
@@ -90,47 +93,29 @@ export const FollowButton = (props: FollowButtonProps) => {
         </Show>
       }
     >
-      <Show when={subscribed()} fallback="+">
-        <Icon name={what === FollowingEntity.Author ? 'author-unsubscribe' : 'check-subscribed'} />
-      </Show>
+      <Icon name={what === FollowingEntity.Author ? 'author-unsubscribe' : 'check-subscribed'} />
     </Show>
   )
 
-  return (
-    <Show
-      when={!props.minimizeSubscribeButton}
-      fallback={<CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />}
-    >
-      <Show
-        when={subscribed()}
-        fallback={
-          <Button
-            variant={props.iconButton ? 'secondary' : 'bordered'}
-            size="M"
-            value={subscribeValue(props.entity)}
-            onClick={() => setSubscribed(false)}
-            isSubscribeButton={true}
-            disabled={isSubscribing()}
-            class={clsx(stylesAuthor.actionButton, {
-              [stylesAuthor.iconed]: props.iconButton,
-              [stylesButton.subscribed]: subscribed(),
-            })}
-          />
-        }
-      >
-        <Button
-          variant={props.iconButton ? 'secondary' : 'bordered'}
-          size="M"
-          value={subscribeValue(props.entity)}
-          onClick={() => setSubscribed(false)}
-          isSubscribeButton={true}
-          disabled={isSubscribing()}
-          class={clsx(stylesAuthor.actionButton, {
-            [stylesAuthor.iconed]: props.iconButton,
-            [stylesButton.subscribed]: subscribed(),
-          })}
-        />
+  return props.minimizeSubscribeButton ? (
+    <button type="button" class={clsx(stylesCheck.CheckButton)} onClick={handleSubscribe}>
+      <Show when={subscribed()} fallback={t('Follow')}>
+        <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+        <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
       </Show>
-    </Show>
+    </button>
+  ) : (
+    <Button
+      variant={props.iconButton ? 'secondary' : 'bordered'}
+      size="M"
+      value={props.iconButton ? t(subscribed() ? 'Unfollow' : 'Follow') : subscribeValue(props.entity)}
+      onClick={handleSubscribe}
+      isSubscribeButton={true}
+      disabled={isSubscribing()}
+      class={clsx(stylesAuthor.actionButton, {
+        [stylesAuthor.iconed]: props.iconButton,
+        [stylesButton.subscribed]: subscribed(),
+      })}
+    />
   )
 }

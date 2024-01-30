@@ -165,7 +165,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             })}
           >
             <Show
-              when={props.article.cover && !isCoverImageLoadError()}
+              when={props.article?.cover && !isCoverImageLoadError()}
               fallback={<CoverImage class={styles.placeholderCoverImage} />}
             >
               <Image
@@ -276,7 +276,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <Image src={props.article.cover} alt={card()?.title} width={600} loading="lazy" />
+                <Image src={props.article?.cover} alt={card()?.title} width={600} loading="lazy" />
               </div>
             </div>
           </Show>
@@ -354,7 +354,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                       containerCssClass={stylesHeader.control}
                       title={card()?.title}
                       description={description()}
-                      imageUrl={props.article.cover}
+                      imageUrl={props.article?.cover}
                       shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                       onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                       trigger={

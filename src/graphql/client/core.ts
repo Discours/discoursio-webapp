@@ -209,7 +209,7 @@ export const apiClient = {
     const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
     if (resp.error) console.error(resp)
 
-    return resp.data.load_shouts_by
+    return resp.data?.load_shouts_by
   },
 
   getShoutsSearch: async ({ text, limit, offset }: QueryLoad_Shouts_SearchArgs) => {

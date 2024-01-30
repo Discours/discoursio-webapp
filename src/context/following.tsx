@@ -1,6 +1,5 @@
-import type { Accessor, JSX, Resource } from 'solid-js'
-
-import { createContext, createSignal, createResource, useContext, createEffect, untrack } from 'solid-js'
+import { createEffect, createSignal, createContext, Accessor, useContext, JSX } from 'solid-js'
+import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
 import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
@@ -14,15 +13,12 @@ type SubscriptionsData = {
 }
 
 interface FollowingContextType {
-  //author: Resource<Author | null>
   isLoaded: Accessor<boolean>
-  subscriptions: Resource<SubscriptionsData>
-  actions: {
-    setSubscriptions: (sss) => void
-    loadSubscriptions: () => void
-    follow: (what: FollowingEntity, slug: string) => Promise<void>
-    unfollow: (what: FollowingEntity, slug: string) => Promise<void>
-  }
+  subscriptions: SubscriptionsData
+  setSubscriptions: (subscriptions: SubscriptionsData) => void
+  loadSubscriptions: () => void
+  follow: (what: FollowingEntity, slug: string) => Promise<void>
+  unfollow: (what: FollowingEntity, slug: string) => Promise<void>
 }
 
 const FollowingContext = createContext<FollowingContextType>()
@@ -38,11 +34,11 @@ export const EMPTY_SUBSCRIPTIONS = {
 }
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
-  const [isLoaded, setIsLoaded] = createSignal<boolean>()
+  const [isLoaded, setIsLoaded] = createSignal<boolean>(false)
+  const [subscriptions, setSubscriptions] = createStore<SubscriptionsData>(EMPTY_SUBSCRIPTIONS)
   const { author } = useSession()
 
   const fetchData = async () => {
-    const s = null
     try {
       const result = await apiClient.getMySubscriptions()
       setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
@@ -51,7 +47,6 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
       console.info('[context.following] cannot get subs', error)
       setIsLoaded(true)
     }
-    return s
   }
 
   const follow = async (what: FollowingEntity, slug: string) => {
@@ -62,7 +57,6 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
         if (!updatedSubs[what]) updatedSubs[what] = []
         const exists = updatedSubs[what]?.some((entity) => entity.slug === slug)
         if (!exists) updatedSubs[what].push(slug)
-
         return updatedSubs
       })
     } catch (error) {
@@ -76,7 +70,6 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
       setSubscriptions((prevSubscriptions) => {
         const updatedSubs = { ...prevSubscriptions }
         updatedSubs[what] = (updatedSubs[what] || []).filter((x) => x !== slug)
-
         return updatedSubs
       })
     } catch (error) {
@@ -84,31 +77,18 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const [subscriptions, { refetch: loadSubscriptions, mutate: setSubscriptions }] = createResource<{
-    topics?: Topic[]
-    authors?: Author[]
-    communities?: Community[]
-  }>(fetchData, {
-    ssrLoadFrom: 'initial',
-    initialValue: EMPTY_SUBSCRIPTIONS,
-  })
-
   createEffect(() => {
-    if (author() && subscriptions() === EMPTY_SUBSCRIPTIONS)
-      untrack(() => {
-        loadSubscriptions()
-      })
+    if (author() && subscriptions === EMPTY_SUBSCRIPTIONS) fetchData()
   })
 
   const value: FollowingContextType = {
     isLoaded,
     subscriptions,
-    actions: {
-      loadSubscriptions,
-      setSubscriptions,
-      follow,
-      unfollow,
-    },
+    setSubscriptions,
+    loadSubscriptions: fetchData,
+    follow,
+    unfollow,
   }
+
   return <FollowingContext.Provider value={value}>{props.children}</FollowingContext.Provider>
 }

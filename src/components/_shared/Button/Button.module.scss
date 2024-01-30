@@ -193,3 +193,17 @@
     }
   }
 }
+
+.buttonSubscribeLabel,
+.buttonSubscribeLabelHovered {
+  visibility: hidden;
+  transition: visibility 0.3s ease; /* Add a transition for a smooth fade effect */
+}
+
+.btn:hover .buttonSubscribeLabel {
+  visibility: visible;
+}
+
+.btn:hover .buttonSubscribeLabelHovered {
+  visibility: hidden;
+}

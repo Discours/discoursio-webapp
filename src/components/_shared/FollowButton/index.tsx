@@ -32,12 +32,12 @@ export const FollowButton = (props: FollowButtonProps) => {
     actions: { requireAuthentication },
   } = useSession()
   const [isSending, setIsSending] = createSignal(false)
-  const [followed, setFollowed] = createSignal(false)
+  const [followed, setFollowed] = createSignal()
 
   createEffect(() => {
     const subs = subscriptions()
     if (subs && subs !== EMPTY_SUBSCRIPTIONS) {
-      // console.debug('subs renewed, revalidate state')
+      console.debug('subs renewed, revalidate state')
       let items = []
       if (props.entity === FollowingEntity.Author) items = subs.authors || []
       if (props.entity === FollowingEntity.Topic) items = subs.topics || []
@@ -88,7 +88,6 @@ export const FollowButton = (props: FollowButtonProps) => {
 
   const handleClick = (ev) => {
     console.debug('[FollowButton.handleSubscribe] handling follow click')
-    console.debug(ev)
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
       setFollowed(followed())
@@ -98,34 +97,44 @@ export const FollowButton = (props: FollowButtonProps) => {
     }, 'subscribe')
   }
   const buttonCaptions = () => (
-    <Show when={followed()} fallback={t('Follow')}>
-      <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
-      <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
-    </Show>
+    <>
+      <Show when={followed() === true}>
+        <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
+        <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+      </Show>
+      <Show when={followed() === false}>{t('Follow')}</Show>
+    </>
   )
 
   const buttonValue = (what: FollowingEntity) => (
-    <Show when={props.iconButton} fallback={buttonCaptions()}>
-      <Icon name={what === FollowingEntity.Author ? 'author-unsubscribe' : 'check-subscribed'} />
+    <Show
+      when={!props.iconButton}
+      fallback={<Icon name={what === FollowingEntity.Author ? 'author-unsubscribe' : 'check-subscribed'} />}
+    >
+      {buttonCaptions()}
     </Show>
   )
 
-  return props.minimizeSubscribeButton ? (
-    <button type="button" class={clsx(stylesCheck.CheckButton)} onClick={handleClick}>
-      {buttonCaptions()}
-    </button>
-  ) : (
-    <Button
-      variant={props.iconButton ? 'secondary' : 'bordered'}
-      size="M"
-      value={buttonValue(props.entity)}
-      onClick={handleClick}
-      isSubscribeButton={true}
-      disabled={isSending()}
-      class={clsx(stylesAuthor.actionButton, {
-        [stylesAuthor.iconed]: props.iconButton,
-        [stylesButton.subscribed]: followed(),
-      })}
-    />
+  return (
+    <>
+      {props.minimizeSubscribeButton ? (
+        <button type="button" class={clsx(stylesCheck.CheckButton)} onClick={handleClick}>
+          {buttonCaptions()}
+        </button>
+      ) : (
+        <Button
+          variant={props.iconButton ? 'secondary' : 'bordered'}
+          class={clsx(stylesAuthor.actionButton, {
+            [stylesAuthor.iconed]: props.iconButton,
+            [stylesButton.subscribed]: followed(),
+          })}
+          size="M"
+          value={buttonValue(props.entity)}
+          onClick={handleClick}
+          isSubscribeButton={true}
+          disabled={isSending()}
+        />
+      )}
+    </>
   )
 }

@@ -101,11 +101,9 @@ export const FollowButton = (props: FollowButtonProps) => {
       }
     }, 'subscribe')
   }
-  const checked = createMemo(() => {
-    return author() && Boolean(followed())
-  })
+  const checked = createMemo(() => author() && Boolean(followed()))
   return (
-    <Show when={!(subLoading() && author() && subscriptions === EMPTY_SUBSCRIPTIONS)}>
+    <>
       <Show
         when={!props.minimizeSubscribeButton}
         fallback={<CheckButton text={t('Follow')} checked={checked()} onClick={handleClick} />}
@@ -162,6 +160,6 @@ export const FollowButton = (props: FollowButtonProps) => {
           />
         </Show>
       </Show>
-    </Show>
+    </>
   )
 }

@@ -51,6 +51,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   }
 
   const follow = async (what: FollowingEntity, slug: string) => {
+    if (!author()) return
     try {
       await apiClient.follow({ what, slug })
       setSubscriptions((prevSubscriptions) => {
@@ -66,6 +67,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   }
 
   const unfollow = async (what: FollowingEntity, slug: string) => {
+    if (!author()) return
     try {
       await apiClient.unfollow({ what, slug })
       setSubscriptions((prevSubscriptions) => {

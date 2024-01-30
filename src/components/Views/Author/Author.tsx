@@ -3,7 +3,7 @@ import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect, on } from 'solid-js'
+import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
@@ -44,16 +44,30 @@ export const AuthorView = (props: Props) => {
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-  const author = createMemo(() => authorEntities()[props.authorSlug])
+
+  // current author
+  const [author, setAuthor] = createSignal<Author>()
+  createEffect(() => {
+    try {
+      const a = authorEntities()[props.authorSlug]
+      setAuthor(a)
+    } catch (error) {
+      console.debug(error)
+    } finally {
+      if (author()) console.info('[AuthorView] author data loaded')
+    }
+  })
 
   createEffect(() => {
     if (author() && author().id && !author().stat) {
-      loadAuthor({ slug: '', author_id: author().id })
+      const a = loadAuthor({ slug: '', author_id: author().id })
+      console.debug(`[AuthorView] loaded author:`, a)
     }
   })
 
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
+
   const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
@@ -75,18 +89,10 @@ export const AuthorView = (props: Props) => {
     }
   }
 
-  onMount(async () => {
-    checkBioHeight()
-
-    // pagination
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      await loadMore()
-    }
-  })
-
-  createEffect(() => {
-    const slug = author()?.slug
-    const fetchData = async () => {
+  const fetchData = async () => {
+    const slug = author()?.slug || props.authorSlug
+    if (slug) {
+      document.title = author()?.name
       console.debug('[AuthorView] load subscriptions')
       try {
         const { authors, topics } = await fetchSubscriptions()
@@ -94,16 +100,10 @@ export const AuthorView = (props: Props) => {
         const userSubscribers = await apiClient.getAuthorFollowers({ slug })
         setFollowers(userSubscribers || [])
       } catch (error) {
-        console.error('[AuthorView] error:', error)
+        console.error('[AuthorView.fetchData] error:', error)
       }
     }
-
-    if (slug && !following()) fetchData()
-  })
-
-  createEffect(() => {
-    if (author()) document.title = author().name
-  })
+  }
 
   const loadMore = async () => {
     saveScrollPosition()
@@ -116,54 +116,55 @@ export const AuthorView = (props: Props) => {
     restoreScrollPosition()
   }
 
+  onMount(() => {
+    checkBioHeight()
+
+    // pagination
+    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
+      fetchData()
+      loadMore()
+    }
+  })
+
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
+  const fetchComments = async () => {
+    const data = await apiClient.getReactionsBy({
+      by: { comment: true, created_by: props.author.id },
+    })
+    setCommented(data)
+  }
+
   const [commented, setCommented] = createSignal([])
+  createEffect(() => {
+    if (author() && !commented()) {
+      try {
+        fetchComments()
+      } catch (error) {
+        console.error('[getReactionsBy comment]', error)
+      }
+    }
+  })
 
-  createEffect(
-    on(
-      () => props.author?.id,
-      (authorId) => {
-        const fetchData = async () => {
-          try {
-            if (getPage().route === 'authorComments' && props.author) {
-              const data = await apiClient.getReactionsBy({
-                by: { comment: true, created_by: authorId },
-              })
-              setCommented(data)
-            }
-          } catch (error) {
-            console.error('[getReactionsBy comment]', error)
-          }
-        }
-
-        return fetchData()
-      },
-      { defer: true },
-    ),
-  )
-
-  const ogImage = createMemo(() =>
-    props.author?.pic
-      ? getImageUrl(props.author.pic, { width: 1200 })
-      : getImageUrl('production/image/logo_image.png'),
-  )
-  const description = createMemo(() => getDescription(props.author?.bio))
-  const ogTitle = createMemo(() => props.author?.name)
+  const ogImage = props.author?.pic
+    ? getImageUrl(props.author.pic, { width: 1200 })
+    : getImageUrl('production/image/logo_image.png')
+  const description = getDescription(props.author?.bio)
+  const ogTitle = props.author?.name
 
   return (
     <div class={styles.authorPage}>
-      <Meta name="descprition" content={description()} />
+      <Meta name="descprition" content={description} />
       <Meta name="og:type" content="profile" />
-      <Meta name="og:title" content={ogTitle()} />
-      <Meta name="og:image" content={ogImage()} />
-      <Meta name="og:description" content={description()} />
+      <Meta name="og:title" content={ogTitle} />
+      <Meta name="og:image" content={ogImage} />
+      <Meta name="og:description" content={description} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle()} />
-      <Meta name="twitter:description" content={description()} />
-      <Meta name="twitter:image" content={ogImage()} />
+      <Meta name="twitter:title" content={ogTitle} />
+      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:image" content={ogImage} />
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

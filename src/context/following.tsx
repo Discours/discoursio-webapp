@@ -1,10 +1,11 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
 
-import { createContext, createSignal, createResource, onMount, useContext, createEffect } from 'solid-js'
+import { createContext, createSignal, createResource, useContext, createEffect } from 'solid-js'
 
-import { useSession } from './session'
 import { apiClient } from '../graphql/client/core'
 import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
+
+import { useSession } from './session'
 
 type SubscriptionsData = {
   topics?: Topic[]
@@ -14,7 +15,7 @@ type SubscriptionsData = {
 
 interface FollowingContextType {
   //author: Resource<Author | null>
-  isLoaded: Accessor<Boolean>
+  isLoaded: Accessor<boolean>
   subscriptions: Resource<SubscriptionsData>
   actions: {
     setSubscriptions: (sss) => void
@@ -37,11 +38,11 @@ const EMPTY_SUBSCRIPTIONS = {
 }
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
-  const [isLoaded, setIsLoaded] = createSignal<Boolean>()
+  const [isLoaded, setIsLoaded] = createSignal<boolean>()
   const { author } = useSession()
 
   const fetchData = async () => {
-    let s = null
+    const s = null
     try {
       const result = await apiClient.getMySubscriptions()
       setSubscriptions(result || EMPTY_SUBSCRIPTIONS)

@@ -1,17 +1,16 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal, on, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { Author, Topic, Community, FollowingEntity } from '../../../graphql/schema/core.gen'
-import { showModal } from '../../../stores/ui'
 import { Button } from '../Button'
 import { CheckButton } from '../CheckButton'
 import { Icon } from '../Icon'
 
 import stylesAuthor from '../../Author/AuthorBadge/AuthorBadge.module.scss'
-import stylesTopic from '../../Topic/Card.module.scss'
+// import stylesTopic from '../../Topic/Card.module.scss'
 import stylesButton from '../Button/Button.module.scss'
 
 interface FollowButtonProps {
@@ -24,17 +23,11 @@ interface FollowButtonProps {
   minimizeSubscribeButton?: boolean
 }
 
-const EMPTY_SUBS = {
-  topics: [],
-  authors: [],
-  communities: [],
-}
-
 export const FollowButton = (props: FollowButtonProps) => {
   const { t } = useLocalize()
   const {
     subscriptions,
-    actions: { loadSubscriptions, follow, unfollow },
+    actions: { follow, unfollow },
   } = useFollowing()
   const {
     actions: { requireAuthentication },
@@ -81,6 +74,7 @@ export const FollowButton = (props: FollowButtonProps) => {
   }
 
   const handleSubscribe = () => {
+    // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
       subscribe(!subscribed())
     }, 'subscribe')
@@ -116,6 +110,7 @@ export const FollowButton = (props: FollowButtonProps) => {
             value={subscribeValue(props.entity)}
             onClick={() => setSubscribed(false)}
             isSubscribeButton={true}
+            disabled={isSubscribing()}
             class={clsx(stylesAuthor.actionButton, {
               [stylesAuthor.iconed]: props.iconButton,
               [stylesButton.subscribed]: subscribed(),
@@ -129,6 +124,7 @@ export const FollowButton = (props: FollowButtonProps) => {
           value={subscribeValue(props.entity)}
           onClick={() => setSubscribed(false)}
           isSubscribeButton={true}
+          disabled={isSubscribing()}
           class={clsx(stylesAuthor.actionButton, {
             [stylesAuthor.iconed]: props.iconButton,
             [stylesButton.subscribed]: subscribed(),

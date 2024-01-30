@@ -28,9 +28,10 @@ export const ProfileSubscriptions = () => {
 
   const fetchSubscriptions = async () => {
     try {
+      const slug = author()?.slug
       const [getAuthors, getTopics] = await Promise.all([
-        apiClient.getAuthorFollowingUsers({ slug: author()?.slug }),
-        apiClient.getAuthorFollowingTopics({ slug: author()?.slug }),
+        apiClient.getAuthorFollowingAuthors({ slug }),
+        apiClient.getAuthorFollowingTopics({ slug }),
       ])
       setFollowing([...getAuthors, ...getTopics])
       setFiltered([...getAuthors, ...getTopics])

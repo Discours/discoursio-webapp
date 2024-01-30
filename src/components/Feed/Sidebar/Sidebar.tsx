@@ -2,8 +2,8 @@ import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createSignal, For, Show } from 'solid-js'
 
+import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
 import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore } from '../../../stores/zine/articles'
 import { useSeenStore } from '../../../stores/zine/seen'
@@ -11,7 +11,6 @@ import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../../Author/Userpic'
 
 import styles from './Sidebar.module.scss'
-import { useFollowing } from '../../../context/following'
 
 export const Sidebar = () => {
   const { t } = useLocalize()

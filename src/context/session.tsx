@@ -1,5 +1,5 @@
 import type { AuthModalSource } from '../components/Nav/AuthModal/types'
-import type { Author, Result } from '../graphql/schema/core.gen'
+import type { Author } from '../graphql/schema/core.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
 
 import {

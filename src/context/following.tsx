@@ -81,10 +81,13 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   }
 
   createEffect(() => {
-    if (author() && !subscriptions?.authors?.length && !subscriptions?.topics?.length) {
-      // && subscriptions.communites?.length
-      console.debug('[context.following] author with no subs detected')
-      fetchData()
+    if (author()) {
+      console.debug('[context.following] author detect')
+      if (!subscriptions?.authors?.length && !subscriptions?.topics?.length) {
+        // && subscriptions.communites?.length
+        console.debug('[context.following] no subs detected')
+        fetchData()
+      }
     }
   })
 

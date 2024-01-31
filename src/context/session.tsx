@@ -1,5 +1,5 @@
 import type { AuthModalSource } from '../components/Nav/AuthModal/types'
-import type { Author, Result } from '../graphql/schema/core.gen'
+import type { Author } from '../graphql/schema/core.gen'
 import type { Accessor, JSX, Resource } from 'solid-js'
 
 import {
@@ -41,19 +41,17 @@ const defaultConfig: ConfigType = {
 }
 
 export type SessionContextType = {
-  config: ConfigType
+  config: Accessor<ConfigType>
   session: Resource<AuthToken>
   author: Resource<Author | null>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
-  subscriptions: Accessor<Result>
   isAuthenticated: Accessor<boolean>
   actions: {
     loadSession: () => AuthToken | Promise<AuthToken>
     setSession: (token: AuthToken | null) => void // setSession
     loadAuthor: (info?: unknown) => Author | Promise<Author>
     setAuthor: (a: Author) => void
-    loadSubscriptions: () => Promise<void>
     requireAuthentication: (
       callback: (() => Promise<void>) | (() => void),
       modalSource: AuthModalSource,
@@ -77,11 +75,6 @@ export function useSession() {
   return useContext(SessionContext)
 }
 
-const EMPTY_SUBSCRIPTIONS = {
-  topics: [],
-  authors: [],
-}
-
 export const SessionProvider = (props: {
   onStateChangeCallback(state: AuthToken): unknown
   children: JSX.Element
@@ -91,12 +84,12 @@ export const SessionProvider = (props: {
     actions: { showSnackbar },
   } = useSnackbar()
   const { searchParams, changeSearchParams } = useRouter()
-  const [configuration, setConfig] = createSignal<ConfigType>(defaultConfig)
-  const authorizer = createMemo(() => new Authorizer(configuration()))
+  const [config, setConfig] = createSignal<ConfigType>(defaultConfig)
+  const authorizer = createMemo(() => new Authorizer(config()))
   const [oauthState, setOauthState] = createSignal<string>()
 
   // handle callback's redirect_uri
-  createEffect(async () => {
+  createEffect(() => {
     // oauth
     const state = searchParams()?.state
     if (state) {
@@ -120,43 +113,44 @@ export const SessionProvider = (props: {
   })
 
   // load
-  let minuteLater
+  let minuteLater: NodeJS.Timeout | null
 
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [authError, setAuthError] = createSignal('')
-  const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(
-    async () => {
-      try {
-        const s = await authorizer().getSession()
-        console.info('[context.session] loading session', s)
 
-        // Set session expiration time in local storage
-        const expires_at = new Date(Date.now() + s.expires_in * 1000)
-        localStorage.setItem('expires_at', `${expires_at.getTime()}`)
+  // Function to load session data
+  const sessionData = async () => {
+    try {
+      const s = await authorizer().getSession()
+      console.info('[context.session] loading session', s)
 
-        // Set up session expiration check timer
-        minuteLater = setTimeout(checkSessionIsExpired, 60 * 1000)
-        console.info(`[context.session] will refresh in ${s.expires_in / 60} mins`)
+      // Set session expiration time in local storage
+      const expires_at = new Date(Date.now() + s.expires_in * 1000)
+      localStorage.setItem('expires_at', `${expires_at.getTime()}`)
 
-        // Set the session loaded flag
-        setIsSessionLoaded(true)
+      // Set up session expiration check timer
+      minuteLater = setTimeout(checkSessionIsExpired, 60 * 1000)
+      console.info(`[context.session] will refresh in ${s.expires_in / 60} mins`)
 
-        return s
-      } catch (error) {
-        console.info('[context.session] cannot refresh session', error)
-        setAuthError(error)
+      // Set the session loaded flag
+      setIsSessionLoaded(true)
 
-        // Set the session loaded flag even if there's an error
-        setIsSessionLoaded(true)
+      return s
+    } catch (error) {
+      console.info('[context.session] cannot refresh session', error)
+      setAuthError(error)
 
-        return null
-      }
-    },
-    {
-      ssrLoadFrom: 'initial',
-      initialValue: null,
-    },
-  )
+      // Set the session loaded flag even if there's an error
+      setIsSessionLoaded(true)
+
+      return null
+    }
+  }
+
+  const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(sessionData, {
+    ssrLoadFrom: 'initial',
+    initialValue: null,
+  })
 
   const checkSessionIsExpired = () => {
     const expires_at_data = localStorage.getItem('expires_at')
@@ -177,26 +171,17 @@ export const SessionProvider = (props: {
   }
 
   onCleanup(() => clearTimeout(minuteLater))
-
-  const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(
-    async () => {
-      const u = session()?.user
-      return u ? (await apiClient.getAuthorId({ user: u.id.trim() })) || null : null
-    },
-    {
-      ssrLoadFrom: 'initial',
-      initialValue: null,
-    },
-  )
-
-  const [subscriptions, setSubscriptions] = createSignal<Result>(EMPTY_SUBSCRIPTIONS)
-  const loadSubscriptions = async (): Promise<void> => {
-    const result = await apiClient.getMySubscriptions()
-    setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
+  const authorData = async () => {
+    const u = session()?.user
+    return u ? (await apiClient.getAuthorId({ user: u.id.trim() })) || null : null
   }
+  const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(authorData, {
+    ssrLoadFrom: 'initial',
+    initialValue: null,
+  })
 
   // when session is loaded
-  createEffect(async () => {
+  createEffect(() => {
     if (session()) {
       const token = session()?.access_token
       if (token) {
@@ -206,23 +191,24 @@ export const SessionProvider = (props: {
           notifierClient.connect(token)
           inboxClient.connect(token)
         }
-        if (!author()) {
-          const a = await loadAuthor()
-          if (a) {
-            await loadSubscriptions()
-            addAuthors([a])
-          } else {
-            reset()
-          }
-        }
+        if (!author()) loadAuthor()
+
         setIsSessionLoaded(true)
       }
     }
   })
 
+  // when author is loaded
+  createEffect(() => {
+    if (author()) {
+      addAuthors([author()])
+    } else {
+      reset()
+    }
+  })
+
   const reset = () => {
     setIsSessionLoaded(true)
-    setSubscriptions(EMPTY_SUBSCRIPTIONS)
     setSession(null)
     setAuthor(null)
   }
@@ -252,10 +238,10 @@ export const SessionProvider = (props: {
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(() => {})
-  const requireAuthentication = async (callback: () => void, modalSource: AuthModalSource) => {
+  const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
     setAuthCallback((_cb) => callback)
     if (!session()) {
-      await loadSession()
+      loadSession()
       if (!session()) {
         showModal('auth', modalSource)
       }
@@ -323,7 +309,6 @@ export const SessionProvider = (props: {
   const isAuthenticated = createMemo(() => Boolean(author()))
   const actions = {
     loadSession,
-    loadSubscriptions,
     requireAuthentication,
     signUp,
     signIn,
@@ -339,9 +324,8 @@ export const SessionProvider = (props: {
   }
   const value: SessionContextType = {
     authError,
-    config: configuration(),
+    config,
     session,
-    subscriptions,
     isSessionLoaded,
     author,
     actions,

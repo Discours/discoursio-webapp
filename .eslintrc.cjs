@@ -23,7 +23,7 @@ module.exports = {
       },
       extends: [
         'plugin:@typescript-eslint/recommended',
-        // 'plugin:@typescript-eslint/recommended-requiring-type-checking', // 23-01-2024 681 problems
+        // 'plugin:@typescript-eslint/recommended-requiring-type-checking', // 30-01-2024 699 problems
       ],
       rules: {
         '@typescript-eslint/no-unused-vars': [
@@ -40,12 +40,12 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    mocha: true,
+    // mocha: true,
   },
   globals: {},
   rules: {
     // Solid
-    'solid/reactivity': 'off', // too many 'should be used within JSX'
+    'solid/reactivity': 'off',
     'solid/no-innerhtml': 'off',
 
     /** Unicorn **/
@@ -65,6 +65,7 @@ module.exports = {
     'unicorn/no-array-callback-reference': 'warn',
     'unicorn/no-array-method-this-argument': 'warn',
     'unicorn/no-for-loop': 'off',
+    'unicorn/prefer-switch': 'warn',
 
     'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
     'sonarjs/prefer-immediate-return': 'warn',

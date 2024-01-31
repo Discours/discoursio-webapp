@@ -1,6 +1,6 @@
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, lazy, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, lazy, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
@@ -16,7 +16,6 @@ import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
-import { EMPTY_TOPIC } from '../Edit'
 
 import styles from './PublishSettings.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
@@ -36,20 +35,25 @@ const shorten = (str: string, maxLen: number) => {
   return `${result}...`
 }
 
+const EMPTY_TOPIC: Topic = {
+  id: -1,
+  slug: '',
+}
+const emptyConfig = {
+  coverImageUrl: '',
+  mainTopic: EMPTY_TOPIC,
+  slug: '',
+  title: '',
+  subtitle: '',
+  description: '',
+  selectedTopics: [],
+}
+
 export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { author } = useSession()
   const { sortedTopics } = useTopicsStore()
-
   const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
-
-  onMount(async () => {
-    await loadAllTopics()
-  })
-
-  createEffect(() => {
-    setTopics(sortedTopics())
-  })
 
   const composeDescription = () => {
     if (!props.form.description) {
@@ -60,22 +64,31 @@ export const PublishSettings = (props: Props) => {
     return props.form.description
   }
 
-  const initialData: Partial<ShoutForm> = {
-    coverImageUrl: props.form.coverImageUrl,
-    mainTopic: props.form.mainTopic || EMPTY_TOPIC,
-    slug: props.form.slug,
-    title: props.form.title,
-    subtitle: props.form.subtitle,
-    description: composeDescription(),
-    selectedTopics: [],
-  }
+  const initialData = createMemo(() => {
+    return {
+      coverImageUrl: props.form?.coverImageUrl,
+      mainTopic: props.form?.mainTopic || EMPTY_TOPIC,
+      slug: props.form?.slug,
+      title: props.form?.title,
+      subtitle: props.form?.subtitle,
+      description: composeDescription(),
+      selectedTopics: [],
+    }
+  })
+
+  const [settingsForm, setSettingsForm] = createStore(emptyConfig)
+
+  onMount(() => {
+    setSettingsForm(initialData())
+    loadAllTopics()
+  })
+
+  createEffect(() => setTopics(sortedTopics()))
 
   const {
     formErrors,
     actions: { setForm, setFormErrors, saveShout, publishShout },
   } = useEditorContext()
-
-  const [settingsForm, setSettingsForm] = createStore(initialData)
 
   const handleUploadModalContentCloseSetCover = (image: UploadedFile) => {
     hideModal()
@@ -110,7 +123,7 @@ export const PublishSettings = (props: Props) => {
     })
   }
   const handleCancelClick = () => {
-    setSettingsForm(initialData)
+    setSettingsForm(initialData())
     handleBackClick()
   }
   const handlePublishSubmit = () => {
@@ -149,9 +162,9 @@ export const PublishSettings = (props: Props) => {
                   [styles.hasImage]: settingsForm.coverImageUrl,
                 })}
               >
-                <Show when={settingsForm.coverImageUrl ?? initialData.coverImageUrl}>
+                <Show when={settingsForm.coverImageUrl ?? initialData().coverImageUrl}>
                   <div class={styles.shoutCardCover}>
-                    <Image src={settingsForm.coverImageUrl} alt={initialData.title} width={800} />
+                    <Image src={settingsForm.coverImageUrl} alt={initialData().title} width={800} />
                   </div>
                 </Show>
                 <div class={styles.text}>

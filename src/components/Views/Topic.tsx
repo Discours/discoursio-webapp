@@ -2,7 +2,7 @@ import type { Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, onMount, createSignal } from 'solid-js'
+import { For, Show, createMemo, onMount, createSignal, createEffect } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
@@ -39,23 +39,27 @@ const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 export const TopicView = (props: Props) => {
   const { t, lang } = useLocalize()
   const { searchParams, changeSearchParams } = useRouter<TopicsPageSearchParams>()
-
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { topicEntities } = useTopicsStore({ topics: [props.topic] })
-
   const { authorsByTopic } = useAuthorsStore()
 
-  const topic = createMemo(() =>
-    props.topic?.slug in topicEntities() ? topicEntities()[props.topic.slug] : props.topic,
+  const [topic, setTopic] = createSignal<Topic>()
+  createEffect(() => {
+    const topics = topicEntities()
+    if (props.topicSlug && !topic() && topics) {
+      setTopic(topics[props.topicSlug])
+    }
+  })
+  const title = createMemo(
+    () =>
+      `#${capitalize(
+        lang() === 'en'
+          ? topic()?.slug.replace(/-/, ' ')
+          : topic()?.title || topic()?.slug.replace(/-/, ' '),
+        true,
+      )}`,
   )
-  const title = () =>
-    `#${capitalize(
-      lang() === 'en' ? topic()?.slug.replace(/-/, ' ') : topic()?.title || topic()?.slug.replace(/-/, ' '),
-      true,
-    )}`
-  onMount(() => (document.title = title()))
 
   const loadMore = async () => {
     saveScrollPosition()

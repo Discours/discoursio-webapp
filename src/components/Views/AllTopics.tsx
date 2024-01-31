@@ -4,8 +4,8 @@ import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 
+import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
-import { useSession } from '../../context/session'
 import { useRouter } from '../../stores/router'
 import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
 import { capitalize } from '../../utils/capitalize'
@@ -41,7 +41,7 @@ export const AllTopicsView = (props: Props) => {
     sortBy: searchParams().by || 'shouts',
   })
 
-  const { subscriptions } = useSession()
+  const { subscriptions } = useFollowing()
 
   createEffect(() => {
     if (!searchParams().by) {
@@ -76,7 +76,7 @@ export const AllTopicsView = (props: Props) => {
     return keys
   })
 
-  const subscribed = (topicSlug: string) => subscriptions().topics.some((topic) => topic.slug === topicSlug)
+  const subscribed = (topicSlug: string) => subscriptions.topics.some((topic) => topic.slug === topicSlug)
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const [searchQuery, setSearchQuery] = createSignal('')
@@ -191,7 +191,7 @@ export const AllTopicsView = (props: Props) => {
                       {(topic) => (
                         <>
                           <TopicCard
-                            topic={topic as Topic}
+                            topic={topic}
                             compact={false}
                             subscribed={subscribed(topic.slug)}
                             showPublications={true}

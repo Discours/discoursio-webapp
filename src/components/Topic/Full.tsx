@@ -1,12 +1,12 @@
 import type { Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { createMemo, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 
+import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
 import { FollowingEntity } from '../../graphql/schema/core.gen'
-import { follow, unfollow } from '../../stores/zine/common'
 import { Button } from '../_shared/Button'
 
 import styles from './Full.module.scss'
@@ -16,23 +16,26 @@ type Props = {
 }
 
 export const FullTopic = (props: Props) => {
-  const {
-    subscriptions,
-    actions: { requireAuthentication, loadSubscriptions },
-  } = useSession()
-
   const { t } = useLocalize()
+  const { subscriptions, setFollowing } = useFollowing()
+  const {
+    actions: { requireAuthentication },
+  } = useSession()
+  const [followed, setFollowed] = createSignal()
 
-  const subscribed = createMemo(() =>
-    subscriptions().topics.some((topic) => topic.slug === props.topic?.slug),
-  )
+  createEffect(() => {
+    const subs = subscriptions
+    if (subs?.topics.length !== 0) {
+      const items = subs.topics || []
+      setFollowed(items.some((x: Topic) => x?.slug === props.topic?.slug))
+    }
+  })
 
-  const handleSubscribe = (really: boolean) => {
-    requireAuthentication(async () => {
-      await (really
-        ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-        : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
-      loadSubscriptions()
+  const handleFollowClick = (_ev) => {
+    const really = !followed()
+    setFollowed(really)
+    requireAuthentication(() => {
+      setFollowing(FollowingEntity.Topic, props.topic.slug, really)
     }, 'follow')
   }
 
@@ -41,16 +44,11 @@ export const FullTopic = (props: Props) => {
       <h1>#{props.topic?.title}</h1>
       <p>{props.topic?.body}</p>
       <div class={clsx(styles.topicActions)}>
-        <Show when={!subscribed()}>
-          <Button variant="primary" onClick={() => handleSubscribe(true)} value={t('Follow the topic')} />
-        </Show>
-        <Show when={subscribed()}>
-          <Button
-            variant="primary"
-            onClick={() => handleSubscribe(false)}
-            value={t('Unfollow the topic')}
-          />
-        </Show>
+        <Button
+          variant="primary"
+          onClick={handleFollowClick}
+          value={followed() ? t('Unfollow the topic') : t('Follow the topic')}
+        />
         <a class={styles.write} href={`/create/?topicId=${props.topic?.id}`}>
           {t('Write about the topic')}
         </a>

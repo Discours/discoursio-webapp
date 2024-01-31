@@ -1,9 +1,9 @@
-import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
+import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
+import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect, on } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
@@ -13,6 +13,7 @@ import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { byCreated } from '../../../utils/sortby'
 import { splitToPages } from '../../../utils/splitToPages'
 import { Loading } from '../../_shared/Loading'
 import { Comment } from '../../Article/Comment'
@@ -44,21 +45,32 @@ export const AuthorView = (props: Props) => {
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-  const author = createMemo(() => authorEntities()[props.authorSlug])
 
-  createEffect(async () => {
+  // current author
+  const [author, setAuthor] = createSignal<Author>()
+  createEffect(() => {
+    try {
+      const a = authorEntities()[props.authorSlug]
+      setAuthor(a)
+    } catch (error) {
+      console.debug(error)
+    }
+  })
+
+  createEffect(() => {
     if (author() && author().id && !author().stat) {
-      const a = await loadAuthor({ slug: '', author_id: author().id })
+      const a = loadAuthor({ slug: '', author_id: author().id })
       console.debug(`[AuthorView] loaded author:`, a)
     }
   })
 
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
+
   const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
     try {
       const [getAuthors, getTopics] = await Promise.all([
-        apiClient.getAuthorFollowingUsers({ slug: props.authorSlug }),
+        apiClient.getAuthorFollowingAuthors({ slug: props.authorSlug }),
         apiClient.getAuthorFollowingTopics({ slug: props.authorSlug }),
       ])
       const authors = getAuthors
@@ -76,32 +88,27 @@ export const AuthorView = (props: Props) => {
     }
   }
 
-  onMount(async () => {
-    checkBioHeight()
-
-    // pagination
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      await loadMore()
-    }
-  })
-
-  createEffect(async () => {
-    const slug = author()?.slug
-    if (slug) {
-      console.debug('[AuthorView] load subscriptions')
+  const fetchData = async () => {
+    const slug = author()?.slug || props.authorSlug
+    if (slug && getPage().route === 'authorComments' && author()) {
       try {
         const { authors, topics } = await fetchSubscriptions()
         setFollowing([...(authors || []), ...(topics || [])])
-        const userSubscribers = await apiClient.getAuthorFollowers({ slug })
-        setFollowers(userSubscribers || [])
+        const flwrs = await apiClient.getAuthorFollowers({ slug })
+        setFollowers(flwrs || [])
+        console.info('[components.Author] following data loaded')
       } catch (error) {
-        console.error('[AuthorView] error:', error)
+        console.error('[components.Author] fetch error', error)
       }
     }
-  })
+  }
 
   createEffect(() => {
-    document.title = author()?.name
+    if (author()) {
+      console.info('[components.Author] profile data loaded')
+      document.title = author().name
+      fetchData()
+    }
   })
 
   const loadMore = async () => {
@@ -115,42 +122,66 @@ export const AuthorView = (props: Props) => {
     restoreScrollPosition()
   }
 
+  onMount(() => {
+    checkBioHeight()
+
+    // pagination
+    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
+      fetchData()
+      loadMore()
+    }
+  })
+
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
   )
 
-  const [commented, setCommented] = createSignal([])
+  const fetchComments = async (commenter: Author) => {
+    const data = await apiClient.getReactionsBy({
+      by: { comment: true, created_by: commenter.id },
+    })
+    console.debug(`[components.Author] fetched ${data.length} comments`)
+    setCommented(data)
+  }
 
-  createEffect(async () => {
-    if (getPage().route === 'authorComments' && props.author) {
-      try {
-        const data = await apiClient.getReactionsBy({
-          by: { comment: true, created_by: props.author.id },
-        })
-        setCommented(data)
-      } catch (error) {
-        console.error('[getReactionsBy comment]', error)
-      }
-    }
-  })
+  const [commented, setCommented] = createSignal<Reaction[]>([])
+  createEffect(
+    on(
+      author,
+      (a: Author) => {
+        if (getPage().route === 'authorComments') {
+          console.debug('[components.Author] routed to comments')
+          try {
+            if (a) fetchComments(a)
+          } catch (error) {
+            console.error('[components.Author] fetch error', error)
+          }
+        }
+      },
+      { defer: true },
+    ),
+  )
 
-  const ogImage = props.author?.pic
-    ? getImageUrl(props.author.pic, { width: 1200 })
-    : getImageUrl('production/image/logo_image.png')
-  const description = getDescription(props.author?.bio)
-  const ogTitle = props.author?.name
+  const ogImage = createMemo(() =>
+    author()?.pic
+      ? getImageUrl(author()?.pic, { width: 1200 })
+      : getImageUrl('production/image/logo_image.png'),
+  )
+  const description = createMemo(() => getDescription(author()?.bio))
 
   return (
     <div class={styles.authorPage}>
-      <Meta name="descprition" content={description} />
-      <Meta name="og:type" content="profile" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
-      <Meta name="twitter:image" content={ogImage} />
+      <Show when={author()}>
+        <Meta name="descprition" content={description()} />
+        <Meta name="og:type" content="profile" />
+        <Meta name="og:title" content={author().name} />
+        <Meta name="og:image" content={ogImage()} />
+        <Meta name="og:description" content={description()} />
+        <Meta name="twitter:card" content="summary_large_image" />
+        <Meta name="twitter:title" content={author().name} />
+        <Meta name="twitter:description" content={description()} />
+        <Meta name="twitter:image" content={ogImage()} />
+      </Show>
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

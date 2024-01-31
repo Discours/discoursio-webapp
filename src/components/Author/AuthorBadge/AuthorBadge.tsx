@@ -2,13 +2,12 @@ import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, Match, Show, Switch } from 'solid-js'
 
+import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useMediaQuery } from '../../../context/mediaQuery'
 import { useSession } from '../../../context/session'
 import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
-import { follow, unfollow } from '../../../stores/zine/common'
-// import { capitalize } from '../../../utils/capitalize'
 import { isCyrillic } from '../../../utils/cyrillic'
 import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
@@ -33,7 +32,7 @@ type Props = {
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const [isSubscribing, setIsSubscribing] = createSignal(false)
+  const [followed, setFollowed] = createSignal(false)
 
   createEffect(() => {
     setIsMobileView(!mediaMatches.sm)
@@ -41,33 +40,14 @@ export const AuthorBadge = (props: Props) => {
 
   const {
     author,
-    subscriptions,
-    actions: { loadSubscriptions, requireAuthentication },
+    actions: { requireAuthentication },
   } = useSession()
+  const { setFollowing } = useFollowing()
   const { changeSearchParams } = useRouter()
   const { t, formatDate, lang } = useLocalize()
-  const subscribed = createMemo(() => {
-    const sss = subscriptions()
-    return sss?.authors.some((a: Author) => a?.slug === props.author.slug)
-  })
-
-  const subscribe = async (really = true) => {
-    setIsSubscribing(true)
-
-    await (really
-      ? follow({ what: FollowingEntity.Author, slug: props.author.slug })
-      : unfollow({ what: FollowingEntity.Author, slug: props.author.slug }))
-
-    await loadSubscriptions()
-    setIsSubscribing(false)
-  }
-  const handleSubscribe = (really: boolean) => {
-    requireAuthentication(() => {
-      subscribe(really)
-    }, 'subscribe')
-  }
 
   const initChat = () => {
+    // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
       openPage(router, `inbox`)
       changeSearchParams({
@@ -87,6 +67,14 @@ export const AuthorBadge = (props: Props) => {
 
     return props.author.name
   })
+
+  const handleFollowClick = () => {
+    const value = !followed()
+    requireAuthentication(() => {
+      setFollowed(value)
+      setFollowing(FollowingEntity.Author, props.author.slug, value)
+    }, 'subscribe')
+  }
 
   return (
     <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
@@ -135,37 +123,24 @@ export const AuthorBadge = (props: Props) => {
         <div class={styles.actions}>
           <Show
             when={!props.minimizeSubscribeButton}
-            fallback={
-              <CheckButton
-                text={t('Follow')}
-                checked={subscribed()}
-                onClick={() => handleSubscribe(!subscribed())}
-              />
-            }
+            fallback={<CheckButton text={t('Follow')} checked={followed()} onClick={handleFollowClick} />}
           >
             <Show
-              when={subscribed()}
+              when={followed()}
               fallback={
                 <Button
                   variant={props.iconButtons ? 'secondary' : 'bordered'}
                   size="S"
                   value={
-                    <Show
-                      when={props.iconButtons}
-                      fallback={
-                        <Show when={isSubscribing()} fallback={t('Subscribe')}>
-                          {t('subscribing...')}
-                        </Show>
-                      }
-                    >
+                    <Show when={props.iconButtons} fallback={t('Subscribe')}>
                       <Icon name="author-subscribe" class={stylesButton.icon} />
                     </Show>
                   }
-                  onClick={() => handleSubscribe(true)}
+                  onClick={handleFollowClick}
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.iconed]: props.iconButtons,
-                    [stylesButton.subscribed]: subscribed(),
+                    [stylesButton.subscribed]: followed(),
                   })}
                 />
               }
@@ -186,11 +161,11 @@ export const AuthorBadge = (props: Props) => {
                     <Icon name="author-unsubscribe" class={stylesButton.icon} />
                   </Show>
                 }
-                onClick={() => handleSubscribe(false)}
+                onClick={handleFollowClick}
                 isSubscribeButton={true}
                 class={clsx(styles.actionButton, {
                   [styles.iconed]: props.iconButtons,
-                  [stylesButton.subscribed]: subscribed(),
+                  [stylesButton.subscribed]: followed(),
                 })}
               />
             </Show>

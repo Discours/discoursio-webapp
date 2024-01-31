@@ -1,12 +1,10 @@
-import type { Topic } from '../../graphql/schema/core.gen'
-
 import { clsx } from 'clsx'
 import { createMemo, createSignal, Show } from 'solid-js'
 
+import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
-import { FollowingEntity } from '../../graphql/schema/core.gen'
-import { follow, unfollow } from '../../stores/zine/common'
+import { FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
 import { capitalize } from '../../utils/capitalize'
 import { Button } from '../_shared/Button'
 import { CheckButton } from '../_shared/CheckButton'
@@ -36,32 +34,21 @@ interface TopicProps {
 
 export const TopicCard = (props: TopicProps) => {
   const { t, lang } = useLocalize()
+  const title = createMemo(() =>
+    capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
+  )
   const {
-    subscriptions,
-    isSessionLoaded,
-    actions: { loadSubscriptions, requireAuthentication },
+    author,
+    actions: { requireAuthentication },
   } = useSession()
+  const { setFollowing, loading: subLoading } = useFollowing()
+  const [followed, setFollowed] = createSignal()
 
-  const [isSubscribing, setIsSubscribing] = createSignal(false)
-
-  const subscribed = createMemo(() => {
-    return subscriptions().topics.some((topic) => topic.slug === props.topic.slug)
-  })
-
-  const subscribe = async (really = true) => {
-    setIsSubscribing(true)
-
-    await (really
-      ? follow({ what: FollowingEntity.Topic, slug: props.topic.slug })
-      : unfollow({ what: FollowingEntity.Topic, slug: props.topic.slug }))
-
-    await loadSubscriptions()
-    setIsSubscribing(false)
-  }
-
-  const handleSubscribe = () => {
+  const handleFollowClick = () => {
+    const value = !followed()
     requireAuthentication(() => {
-      subscribe(!subscribed())
+      setFollowed(value)
+      setFollowing(FollowingEntity.Topic, props.topic.slug, value)
     }, 'subscribe')
   }
 
@@ -69,12 +56,12 @@ export const TopicCard = (props: TopicProps) => {
     return (
       <>
         <Show when={props.iconButton}>
-          <Show when={subscribed()} fallback="+">
+          <Show when={followed()} fallback="+">
             <Icon name="check-subscribed" />
           </Show>
         </Show>
         <Show when={!props.iconButton}>
-          <Show when={subscribed()} fallback={t('Follow')}>
+          <Show when={followed()} fallback={t('Follow')}>
             <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
             <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
           </Show>
@@ -82,10 +69,6 @@ export const TopicCard = (props: TopicProps) => {
       </>
     )
   }
-
-  const title = createMemo(() =>
-    capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
-  )
 
   return (
     <div class={styles.topicContainer}>
@@ -141,24 +124,28 @@ export const TopicCard = (props: TopicProps) => {
           }}
         >
           <ShowOnlyOnClient>
-            <Show when={isSessionLoaded()}>
+            <Show when={author()}>
               <Show
                 when={!props.minimizeSubscribeButton}
                 fallback={
-                  <CheckButton text={t('Follow')} checked={subscribed()} onClick={handleSubscribe} />
+                  <CheckButton
+                    text={t('Follow')}
+                    checked={Boolean(followed())}
+                    onClick={handleFollowClick}
+                  />
                 }
               >
                 <Button
                   variant="bordered"
                   size="M"
                   value={subscribeValue()}
-                  onClick={handleSubscribe}
+                  onClick={handleFollowClick}
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
-                    [styles.isSubscribing]: isSubscribing(),
-                    [stylesButton.subscribed]: subscribed(),
+                    [styles.isSubscribing]: subLoading(),
+                    [stylesButton.subscribed]: followed(),
                   })}
-                  disabled={isSubscribing()}
+                  // disabled={subLoading()}
                 />
               </Show>
             </Show>

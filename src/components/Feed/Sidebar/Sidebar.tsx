@@ -2,8 +2,9 @@ import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { createSignal, For, Show } from 'solid-js'
 
+import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
+import { Author } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore } from '../../../stores/zine/articles'
 import { useSeenStore } from '../../../stores/zine/seen'
@@ -15,7 +16,7 @@ import styles from './Sidebar.module.scss'
 export const Sidebar = () => {
   const { t } = useLocalize()
   const { seen } = useSeenStore()
-  const { subscriptions } = useSession()
+  const { subscriptions } = useFollowing()
   const { page } = useRouter()
   const { articlesByTopic } = useArticlesStore()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
@@ -27,7 +28,6 @@ export const Sidebar = () => {
   const checkAuthorIsSeen = (authorSlug: string) => {
     return Boolean(seen()[authorSlug])
   }
-
   return (
     <div class={styles.sidebar}>
       <ul class={styles.feedFilters}>
@@ -111,7 +111,7 @@ export const Sidebar = () => {
         </li>
       </ul>
 
-      <Show when={subscriptions().authors.length > 0 || subscriptions().topics.length > 0}>
+      <Show when={subscriptions.authors.length > 0 || subscriptions.topics.length > 0}>
         <h4
           classList={{ [styles.opened]: isSubscriptionsVisible() }}
           onClick={() => {
@@ -122,22 +122,19 @@ export const Sidebar = () => {
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
-          <For each={subscriptions().authors}>
-            {(author) => (
+          <For each={subscriptions.authors}>
+            {(a: Author) => (
               <li>
-                <a
-                  href={`/author/${author.slug}`}
-                  classList={{ [styles.unread]: checkAuthorIsSeen(author.slug) }}
-                >
+                <a href={`/author/${a.slug}`} classList={{ [styles.unread]: checkAuthorIsSeen(a.slug) }}>
                   <div class={styles.sidebarItemName}>
-                    <Userpic name={author.name} userpic={author.pic} size="XS" class={styles.userpic} />
-                    <div class={styles.sidebarItemNameLabel}>{author.name}</div>
+                    <Userpic name={a.name} userpic={a.pic} size="XS" class={styles.userpic} />
+                    <div class={styles.sidebarItemNameLabel}>{a.name}</div>
                   </div>
                 </a>
               </li>
             )}
           </For>
-          <For each={subscriptions().topics}>
+          <For each={subscriptions.topics}>
             {(topic) => (
               <li>
                 <a

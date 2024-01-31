@@ -56,7 +56,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const createReaction = async (input: ReactionInput): Promise<void> => {
     const reaction = await apiClient.createReaction(input)
-
+    if (!reaction) return
     const changes = {
       [reaction.id]: reaction,
     }

@@ -13,6 +13,7 @@ import type {
   QueryLoad_Shouts_SearchArgs,
   QueryLoad_Shouts_Random_TopArgs,
   Community,
+  MutationDelete_ShoutArgs,
 } from '../schema/core.gen'
 
 import { createGraphQLClient } from '../createGraphQLClient'
@@ -163,11 +164,8 @@ export const apiClient = {
     console.debug('[graphql.client.core] updateArticle:', response.data)
     return response.data.update_shout.shout
   },
-  deleteShout: async (params): Promise<void> => {
-    console.debug(params)
-    const response = await apiClient.private
-      .mutation(deleteShout, { shout_id: params?.shoutId })
-      .toPromise()
+  deleteShout: async (params: MutationDelete_ShoutArgs): Promise<void> => {
+    const response = await apiClient.private.mutation(deleteShout, params).toPromise()
     console.debug('[graphql.client.core] deleteShout:', response)
   },
   getDrafts: async (): Promise<Shout[]> => {

@@ -80,17 +80,13 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const loadData = (_a?: Author) => {
-    // console.debug('[context.following] current subs:', subscriptions)
-    if (!subscriptions?.authors?.length && !subscriptions?.topics?.length) {
+  createEffect(() => {
+    if (author() && !subscriptions?.authors?.length && !subscriptions?.topics?.length) {
       // && subscriptions.communites?.length
+      console.debug('[context.following] author with no subs detected')
       fetchData()
     }
-  }
-  createEffect(() => {
-    if (author()) loadData()
   })
-  onMount(loadData)
 
   const setFollowing = (what: FollowingEntity, slug: string, value = true) => {
     setSubscriptions((prevSubscriptions) => {

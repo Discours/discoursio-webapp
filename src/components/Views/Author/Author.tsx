@@ -25,6 +25,7 @@ import { Row3 } from '../../Feed/Row3'
 
 import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
+import { useFollowing } from '../../../context/following'
 
 type Props = {
   shouts: Shout[]
@@ -37,6 +38,7 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
+  const { loadSubscriptions } = useFollowing()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage } = useRouter()
@@ -128,6 +130,7 @@ export const AuthorView = (props: Props) => {
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
+      loadSubscriptions()
     }
   })
 
@@ -145,13 +148,9 @@ export const AuthorView = (props: Props) => {
 
   const [commented, setCommented] = createSignal<Reaction[]>([])
   createEffect(() => {
-    if (author() && getPage().route === 'authorComments') {
-      console.debug('[components.Author] routed to comments')
-      try {
-        fetchComments(author())
-      } catch (error) {
-        console.error('[components.Author] fetch error', error)
-      }
+    const a = author()
+    if (a) {
+      fetchComments(a)
     }
   })
 

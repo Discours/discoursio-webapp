@@ -12,6 +12,7 @@ import { validateEmail } from '../../../utils/validateEmail'
 import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
+import { ApiResponse, ForgotPasswordResponse } from '@authorizerdev/authorizer-js'
 
 type FormFields = {
   email: string
@@ -61,12 +62,15 @@ export const ForgotPasswordForm = () => {
 
     setIsSubmitting(true)
     try {
-      const response = await authorizer().forgotPassword({
+      const response: ApiResponse<ForgotPasswordResponse> = await authorizer().forgotPassword({
         email: email(),
         redirect_uri: window.location.origin,
       })
       console.debug('[ForgotPasswordForm] authorizer response:', response)
-      if (response && response.message) setMessage(response.message)
+      if (response?.data) setMessage(response.data.message)
+      else {
+        console.warn(response.errors)
+      }
     } catch (error) {
       console.error(error)
       if (error?.code === 'user_not_found') {

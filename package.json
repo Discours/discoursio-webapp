@@ -34,6 +34,7 @@
     "@solid-primitives/pagination": "0.2.10",
     "cropperjs": "1.6.1",
     "form-data": "4.0.0",
+    "ga-gtag": "1.2.0",
     "i18next": "22.4.15",
     "i18next-icu": "2.3.0",
     "idb": "7.1.1",

@@ -218,10 +218,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const deleteShout = async (shoutId: number) => {
+  const deleteShout = async (shout_id: number) => {
     try {
       await apiClient.deleteShout({
-        shoutId,
+        shout_id,
       })
       return true
     } catch {

@@ -163,8 +163,11 @@ export const apiClient = {
     console.debug('[graphql.client.core] updateArticle:', response.data)
     return response.data.update_shout.shout
   },
-  deleteShout: async ({ shoutId }: { shoutId: number }): Promise<void> => {
-    const response = await apiClient.private.mutation(deleteShout, { shout_id: shoutId }).toPromise()
+  deleteShout: async (params): Promise<void> => {
+    console.debug(params)
+    const response = await apiClient.private
+      .mutation(deleteShout, { shout_id: params?.shoutId })
+      .toPromise()
     console.debug('[graphql.client.core] deleteShout:', response)
   },
   getDrafts: async (): Promise<Shout[]> => {

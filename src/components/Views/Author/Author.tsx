@@ -5,6 +5,7 @@ import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect, on } from 'solid-js'
 
+import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
@@ -25,7 +26,6 @@ import { Row3 } from '../../Feed/Row3'
 
 import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
-import { useFollowing } from '../../../context/following'
 
 type Props = {
   shouts: Shout[]

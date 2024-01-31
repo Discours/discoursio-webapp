@@ -34,13 +34,13 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const { sortedAuthors } = useAuthorsStore()
 
   const handleMessage = (sseMessage: SSEMessage) => {
-    console.log('[context.inbox]:', sseMessage)
-
     // handling all action types: create update delete join left seen
     if (sseMessage.entity === 'message') {
+      console.debug('[context.inbox]:', sseMessage.payload)
       const relivedMessage = sseMessage.payload
       setMessages((prev) => [...prev, relivedMessage])
     } else if (sseMessage.entity === 'chat') {
+      console.debug('[context.inbox]:', sseMessage.payload)
       const relivedChat = sseMessage.payload
       setChats((prev) => [...prev, relivedChat])
     }

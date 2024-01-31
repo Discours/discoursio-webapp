@@ -10,6 +10,8 @@ import {
   ConfigType,
   SignupInput,
   AuthorizeResponse,
+  ApiResponse,
+  GenericResponse,
   // GraphqlQueryInput,
 } from '@authorizerdev/authorizer-js'
 import {
@@ -121,21 +123,31 @@ export const SessionProvider = (props: {
   // Function to load session data
   const sessionData = async () => {
     try {
-      const s = await authorizer().getSession()
-      console.info('[context.session] loading session', s)
+      const s: ApiResponse<AuthToken> = await authorizer().getSession()
+      if (s?.data) {
+        console.info('[context.session] loading session', s)
 
-      // Set session expiration time in local storage
-      const expires_at = new Date(Date.now() + s.expires_in * 1000)
-      localStorage.setItem('expires_at', `${expires_at.getTime()}`)
+        // Set session expiration time in local storage
+        const expires_at = new Date(Date.now() + s.data.expires_in * 1000)
+        localStorage.setItem('expires_at', `${expires_at.getTime()}`)
 
-      // Set up session expiration check timer
-      minuteLater = setTimeout(checkSessionIsExpired, 60 * 1000)
-      console.info(`[context.session] will refresh in ${s.expires_in / 60} mins`)
+        // Set up session expiration check timer
+        minuteLater = setTimeout(checkSessionIsExpired, 60 * 1000)
+        console.info(`[context.session] will refresh in ${s.data.expires_in / 60} mins`)
 
-      // Set the session loaded flag
-      setIsSessionLoaded(true)
+        // Set the session loaded flag
+        setIsSessionLoaded(true)
 
-      return s
+        return s.data
+      } else {
+        console.info('[context.session] cannot refresh session', s.errors)
+        setAuthError(s.errors.pop().message)
+
+        // Set the session loaded flag even if there's an error
+        setIsSessionLoaded(true)
+
+        return null
+      }
     } catch (error) {
       console.info('[context.session] cannot refresh session', error)
       setAuthError(error)
@@ -258,17 +270,20 @@ export const SessionProvider = (props: {
 
   // authorizer api proxy methods
   const signUp = async (params: SignupInput) => {
-    const authResult: void | AuthToken = await authorizer().signup(params)
-    if (authResult) setSession(authResult)
+    const authResult: ApiResponse<AuthToken> = await authorizer().signup(params)
+    if (authResult?.data) setSession(authResult.data)
+    if (authResult?.errors) console.error(authResult.errors)
   }
 
   const signIn = async (params: LoginInput) => {
-    const authResult: AuthToken | void = await authorizer().login(params)
-    if (authResult) setSession(authResult)
+    const authResult: ApiResponse<AuthToken> = await authorizer().login(params)
+    if (authResult?.data) setSession(authResult.data)
+    if (authResult?.errors) console.error(authResult.errors)
   }
 
   const signOut = async () => {
-    await authorizer().logout()
+    const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
+    console.debug(authResult)
     reset()
     showSnackbar({ body: t("You've successfully logged out") })
   }
@@ -281,9 +296,13 @@ export const SessionProvider = (props: {
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
     try {
-      const at: void | AuthToken = await authorizer().verifyEmail(input)
-      if (at) setSession(at)
-      return at
+      const at: ApiResponse<AuthToken> = await authorizer().verifyEmail(input)
+      if (at?.data) {
+        setSession(at.data)
+        return at.data
+      } else {
+        console.warn(at?.errors)
+      }
     } catch (error) {
       console.warn(error)
     }

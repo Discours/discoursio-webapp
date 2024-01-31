@@ -144,22 +144,16 @@ export const AuthorView = (props: Props) => {
   }
 
   const [commented, setCommented] = createSignal<Reaction[]>([])
-  createEffect(
-    on(
-      author,
-      (a: Author) => {
-        if (getPage().route === 'authorComments') {
-          console.debug('[components.Author] routed to comments')
-          try {
-            if (a) fetchComments(a)
-          } catch (error) {
-            console.error('[components.Author] fetch error', error)
-          }
-        }
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(() => {
+    if (author() && getPage().route === 'authorComments') {
+      console.debug('[components.Author] routed to comments')
+      try {
+        fetchComments(author())
+      } catch (error) {
+        console.error('[components.Author] fetch error', error)
+      }
+    }
+  })
 
   const ogImage = createMemo(() =>
     author()?.pic

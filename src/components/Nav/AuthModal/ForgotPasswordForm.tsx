@@ -65,21 +65,16 @@ export const ForgotPasswordForm = () => {
         email: email(),
         redirect_uri: window.location.origin,
       })
-      if (data) {
-        console.debug('[ForgotPasswordForm] authorizer response:', data)
-        setMessage(data.message)
-      }
-      if (errors) {
-        console.warn(errors)
-        if (errors) {
-          const error: Error = errors[0]
-          if (error.cause === 'user_not_found') {
-            setIsUserNotFound(true)
-            return
-          } else {
-            setSubmitError(error.message)
-          }
-        }
+      console.debug('[ForgotPasswordForm] authorizer response:', data)
+      setMessage(data.message)
+
+      console.warn(errors)
+      if (errors.some((e) => e.cause === 'user_not_found')) {
+        setIsUserNotFound(true)
+        return
+      } else {
+        const errorText = errors.map((e) => e.message).join(' ') // FIXME
+        setSubmitError(errorText)
       }
     } catch (error) {
       console.error(error)

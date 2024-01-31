@@ -127,7 +127,6 @@ export const AuthorView = (props: Props) => {
 
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      fetchData()
       loadMore()
     }
   })

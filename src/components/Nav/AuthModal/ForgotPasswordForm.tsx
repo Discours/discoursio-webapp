@@ -12,7 +12,6 @@ import { validateEmail } from '../../../utils/validateEmail'
 import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
-import { ApiResponse, ForgotPasswordResponse } from '@authorizerdev/authorizer-js'
 
 type FormFields = {
   email: string
@@ -28,7 +27,7 @@ export const ForgotPasswordForm = () => {
     setEmail(newEmail.toLowerCase())
   }
   const {
-    actions: { authorizer },
+    actions: { forgotPassword },
   } = useSession()
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
@@ -62,22 +61,28 @@ export const ForgotPasswordForm = () => {
 
     setIsSubmitting(true)
     try {
-      const response: ApiResponse<ForgotPasswordResponse> = await authorizer().forgotPassword({
+      const { data, errors } = await forgotPassword({
         email: email(),
         redirect_uri: window.location.origin,
       })
-      console.debug('[ForgotPasswordForm] authorizer response:', response)
-      if (response?.data) setMessage(response.data.message)
-      else {
-        console.warn(response.errors)
+      if (data) {
+        console.debug('[ForgotPasswordForm] authorizer response:', data)
+        setMessage(data.message)
+      }
+      if (errors) {
+        console.warn(errors)
+        if (errors) {
+          const error: Error = errors[0]
+          if (error.cause === 'user_not_found') {
+            setIsUserNotFound(true)
+            return
+          } else {
+            setSubmitError(error.message)
+          }
+        }
       }
     } catch (error) {
       console.error(error)
-      if (error?.code === 'user_not_found') {
-        setIsUserNotFound(true)
-        return
-      }
-      setSubmitError(error?.message)
     } finally {
       setIsSubmitting(false)
     }

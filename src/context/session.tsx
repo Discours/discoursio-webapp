@@ -12,7 +12,8 @@ import {
   AuthorizeResponse,
   ApiResponse,
   GenericResponse,
-  // GraphqlQueryInput,
+  ForgotPasswordResponse,
+  ForgotPasswordInput,
 } from '@authorizerdev/authorizer-js'
 import {
   createContext,
@@ -62,6 +63,9 @@ export type SessionContextType = {
     signIn: (params: LoginInput) => Promise<void>
     signOut: () => Promise<void>
     oauth: (provider: string) => Promise<void>
+    forgotPassword: (
+      params: ForgotPasswordInput,
+    ) => Promise<{ data: ForgotPasswordResponse; errors: Error[] }>
     changePassword: (password: string, token: string) => void
     confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken | void> // email confirm callback is in auth.discours.io
     setIsSessionLoaded: (loaded: boolean) => void
@@ -293,6 +297,12 @@ export const SessionProvider = (props: {
     console.debug('[context.session] change password response:', resp)
   }
 
+  const forgotPassword = async (params: ForgotPasswordInput) => {
+    const resp = await authorizer().forgotPassword(params)
+    console.debug('[context.session] change password response:', resp)
+    return { data: resp?.data, errors: resp.errors }
+  }
+
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
     try {
@@ -338,6 +348,7 @@ export const SessionProvider = (props: {
     setAuthor,
     authorizer,
     loadAuthor,
+    forgotPassword,
     changePassword,
     oauth,
   }

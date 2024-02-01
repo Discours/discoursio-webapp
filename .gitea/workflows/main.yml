@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
-      - name: update authorizer_password_reset template
+      - name: "Create password reset template"
         uses: gyto/mailgun-template-action@v2
         with:
           html-file: "./templates/authorizer_password_reset.html"

@@ -31,10 +31,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
-      - name: "Create password reset template"
+      - name: Password-reset-template
         uses: gyto/mailgun-template-action@v2
         with:
           html-file: "./templates/authorizer_password_reset.html"
           mailgun-api-key: ${{ secrets.MAILGUN_KEY }}
-          mailgun-domain: "discours.io",
+          mailgun-domain: "discours.io"
           mailgun-template: "authorizer_password_reset"

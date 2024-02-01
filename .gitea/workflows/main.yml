@@ -35,6 +35,6 @@ jobs:
         uses: gyto/mailgun-template-action@v2
         with:
           html-file: "./templates/authorizer_password_reset.html"
-          mailgun-api-key: ${{ secrets.MAILGUN_KEY }}
+          mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
           mailgun-domain: "discours.io"
           mailgun-template: "authorizer_password_reset"

@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/sse-connect
+      - dev
 
 jobs:
   test:

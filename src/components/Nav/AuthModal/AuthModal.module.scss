@@ -188,11 +188,10 @@
   line-height: 16px;
   margin-top: 0.3em;
 
-  /* Red/500 */
-  color: #d00820;
+  color: var(--danger-color);
 
   a {
-    color: #d00820;
+    color: var(--danger-color);
     border-color: #d00820;
 
     &:hover {

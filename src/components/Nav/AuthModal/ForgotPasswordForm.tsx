@@ -5,7 +5,6 @@ import { createSignal, JSX, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-// import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { validateEmail } from '../../../utils/validateEmail'
 
@@ -29,16 +28,14 @@ export const ForgotPasswordForm = () => {
   const {
     actions: { authorizer },
   } = useSession()
-  const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-  const [isUserNotFount, setIsUserNotFound] = createSignal(false)
+  const [isUserNotFound, setIsUserNotFound] = createSignal(false)
   const authFormRef: { current: HTMLFormElement } = { current: null }
   const [message, setMessage] = createSignal<string>('')
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-    setSubmitError('')
     setIsUserNotFound(false)
     const newValidationErrors: ValidationErrors = {}
 
@@ -55,7 +52,6 @@ export const ForgotPasswordForm = () => {
       authFormRef.current
         .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
         .focus()
-
       return
     }
 
@@ -66,14 +62,20 @@ export const ForgotPasswordForm = () => {
         redirect_uri: window.location.origin,
       })
       console.debug('[ForgotPasswordForm] authorizer response:', response)
-      if (response && response.message) setMessage(response.message)
-    } catch (error) {
-      console.error(error)
-      if (error?.code === 'user_not_found') {
-        setIsUserNotFound(true)
-        return
+      if (response && response.message) {
+        setMessage(response.message)
       }
-      setSubmitError(error?.message)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (
+        response.errors &&
+        response.errors.length > 0 &&
+        response.errors[0].message.includes('bad user credentials')
+      ) {
+        setIsUserNotFound(true)
+      }
+    } catch (error) {
+      setValidationErrors((errors) => ({ ...errors, email: error?.message }))
     } finally {
       setIsSubmitting(false)
     }
@@ -92,7 +94,7 @@ export const ForgotPasswordForm = () => {
         </div>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+            'pretty-form__item--error': validationErrors().email || isUserNotFound(),
           })}
         >
           <input
@@ -107,37 +109,27 @@ export const ForgotPasswordForm = () => {
           />
 
           <label for="email">{t('Email')}</label>
+          <Show when={isUserNotFound()}>
+            <div class={styles.validationError}>
+              {t("We can't find you, check email or")}{' '}
+              <span
+                class={'link'}
+                onClick={() =>
+                  changeSearchParams({
+                    mode: 'login',
+                  })
+                }
+              >
+                {t('register')}
+              </span>
+            </div>
+          </Show>
+          <Show when={validationErrors().email}>
+            <div class={styles.validationError}>{validationErrors().email}</div>
+          </Show>
         </div>
 
-        <Show when={submitError()}>
-          <div class={styles.authInfo}>
-            <ul>
-              <li class={styles.warn}>{submitError()}</li>
-            </ul>
-          </div>
-        </Show>
-
-        <Show when={isUserNotFount()}>
-          <div class={styles.authSubtitle}>
-            {t("We can't find you, check email or")}{' '}
-            <a
-              href="#"
-              onClick={(event) => {
-                event.preventDefault()
-                changeSearchParams({
-                  mode: 'register',
-                })
-              }}
-            >
-              {t('register')}
-            </a>
-            <Show when={validationErrors().email}>
-              <div class={styles.validationError}>{validationErrors().email}</div>
-            </Show>
-          </div>
-        </Show>
-
-        <div>
+        <div style={{ 'margin-top': '5rem' }}>
           <button
             class={clsx('button', styles.submitButton)}
             disabled={isSubmitting() || Boolean(message())}

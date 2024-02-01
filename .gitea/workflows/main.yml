@@ -34,16 +34,7 @@ jobs:
       - name: update authorizer_password_reset template
         uses: gyto/mailgun-template-action@v2
         with:
-          html-file: './templates/authorizer_password_reset.html'
+          html-file: "./templates/authorizer_password_reset.html"
           mailgun-api-key: ${{ secrets.MAILGUN_KEY }}
           mailgun-domain: "discours.io",
           mailgun-template: "authorizer_password_reset"
-
-      - name: update authorizer_password_reset
-        uses: jlepocher/mailgun-create-template-version-action@v1.3
-        with:
-          mailgun-host: 'api.eu.mailgun.net'
-          mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
-          mailgun-domain-name: 'discours.io'
-          mailgun-template-name: 'authorizer_email_confirm'
-          html-file-path: './templates/authorizer_email_confirm.html'

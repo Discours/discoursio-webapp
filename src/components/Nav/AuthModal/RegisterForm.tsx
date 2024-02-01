@@ -6,7 +6,6 @@ import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-// import { ApiError } from '../../../graphql/error'
 import { checkEmail, useEmailChecks } from '../../../stores/emailChecks'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
@@ -113,34 +112,30 @@ export const RegisterForm = () => {
         confirm_password: password(),
         redirect_uri: window.location.origin,
       }
-      await signUp(opts)
-
+      const { errors } = await signUp(opts)
+      if (errors && errors.some((error) => error.message.includes('has already signed up'))) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          email: (
+            <>
+              {t('User with this email already exists')},{' '}
+              <span
+                class={'link'}
+                onClick={() =>
+                  changeSearchParams({
+                    mode: 'login',
+                  })
+                }
+              >
+                {t('sign in')}
+              </span>
+            </>
+          ),
+        }))
+      }
       setIsSuccess(true)
     } catch (error) {
       console.error(error)
-      if (error) {
-        if (error.message.includes('has already signed up')) {
-          setValidationErrors((errors) => ({
-            ...errors,
-            email: (
-              <>
-                {t('User with this email already exists')},{' '}
-                <span
-                  class={'link'}
-                  onClick={() =>
-                    changeSearchParams({
-                      mode: 'login',
-                    })
-                  }
-                >
-                  {t('sign in')}
-                </span>
-              </>
-            ),
-          }))
-        }
-        console.error(error)
-      }
     } finally {
       setIsSubmitting(false)
     }

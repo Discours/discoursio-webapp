@@ -59,8 +59,8 @@ export type SessionContextType = {
       callback: (() => Promise<void>) | (() => void),
       modalSource: AuthModalSource,
     ) => void
-    signUp: (params: SignupInput) => Promise<AuthToken | void>
-    signIn: (params: LoginInput) => Promise<void>
+    signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
+    signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
     signOut: () => Promise<void>
     oauth: (provider: string) => Promise<void>
     forgotPassword: (
@@ -273,16 +273,20 @@ export const SessionProvider = (props: {
   })
 
   // authorizer api proxy methods
+  const authenticate = async (authFunction, params) => {
+    const resp = await authFunction(params)
+    console.debug('[context.session] authenticate:', resp)
+    if (resp?.data && !resp.errors) {
+      setSession(resp.data)
+    }
+    return { data: resp?.data, errors: resp?.errors }
+  }
   const signUp = async (params: SignupInput) => {
-    const authResult: ApiResponse<AuthToken> = await authorizer().signup(params)
-    if (authResult?.data) setSession(authResult.data)
-    if (authResult?.errors) console.error(authResult.errors)
+    return authenticate(authorizer().signup, params)
   }
 
   const signIn = async (params: LoginInput) => {
-    const authResult: ApiResponse<AuthToken> = await authorizer().login(params)
-    if (authResult?.data) setSession(authResult.data)
-    if (authResult?.errors) console.error(authResult.errors)
+    return authenticate(authorizer().login, params)
   }
 
   const signOut = async () => {

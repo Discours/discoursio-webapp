@@ -64,15 +64,8 @@ export const ForgotPasswordForm = () => {
         redirect_uri: window.location.origin,
       })
       console.debug('[ForgotPasswordForm] authorizer response:', data)
-      setMessage(data.message)
-
-      console.warn(errors)
-      if (errors.some((e) => e.cause === 'user_not_found')) {
+      if (errors && errors.some((error) => error.message.includes('bad user credentials'))) {
         setIsUserNotFound(true)
-        return
-      } else {
-        const errorText = errors.map((e) => e.message).join(' ') // FIXME
-        setSubmitError(errorText)
       }
     } catch (error) {
       console.error(error)

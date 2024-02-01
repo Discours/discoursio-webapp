@@ -294,6 +294,7 @@ export const FullArticle = (props: Props) => {
   const updateIframeSizes = () => {
     if (!articleContainer?.current || !props.article.body) return
     const iframes = articleContainer?.current?.querySelectorAll('iframe')
+    console.log('!!! iframes:', iframes)
     if (!iframes) return
     const containerWidth = articleContainer.current?.offsetWidth
     iframes.forEach((iframe) => {
@@ -308,6 +309,8 @@ export const FullArticle = (props: Props) => {
         const aspectRatio = width / height
         iframe.style.width = `${containerWidth}px`
         iframe.style.height = `${Math.round(containerWidth / aspectRatio) + 40}px`
+      } else {
+        iframe.style.height = `${containerWidth}px`
       }
     })
   }

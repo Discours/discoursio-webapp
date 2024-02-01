@@ -16,3 +16,4 @@ stats.html
 *.scss.d.ts
 pnpm-lock.yaml
 bun.lockb
+.jj

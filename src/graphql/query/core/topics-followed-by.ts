@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query UserFollowingTopicsQuery($slug: String, $user: String, $author_id: Int) {
+  query LoadTopicsFollowedBy($slug: String, $user: String, $author_id: Int) {
     get_topics_by_author(slug: $slug, user: $user, author_id: $author_id) {
       id
       slug

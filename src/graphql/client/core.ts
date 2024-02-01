@@ -12,6 +12,7 @@ import type {
   QueryLoad_Authors_ByArgs,
   QueryLoad_Shouts_SearchArgs,
   QueryLoad_Shouts_Random_TopArgs,
+  Community,
 } from '../schema/core.gen'
 
 import { createGraphQLClient } from '../createGraphQLClient'
@@ -37,20 +38,24 @@ import authorBy from '../query/core/author-by'
 import authorFollowers from '../query/core/author-followers'
 import authorId from '../query/core/author-id'
 import authorsAll from '../query/core/authors-all'
-import authorFollowed from '../query/core/authors-followed-by'
 import authorsLoadBy from '../query/core/authors-load-by'
 import mySubscriptions from '../query/core/my-followed'
 import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
-import userFollowedTopics from '../query/core/topics-by-author'
+import authorFollowedAuthors from '../query/core/authors-followed-by'
+import authorFollowedTopics from '../query/core/topics-followed-by'
+import authorFollowedCommunities from '../query/core/communities-followed-by'
 import topicsRandomQuery from '../query/core/topics-random'
 
 const publicGraphQLClient = createGraphQLClient('core')
 
 export const apiClient = {
   private: null,
-  connect: (token: string) => (apiClient.private = createGraphQLClient('core', token)), // NOTE: use it after token appears
+  connect: (token: string) => {
+    // NOTE: use it after token appears
+    apiClient.private = createGraphQLClient('core', token)
+  },
 
   getRandomTopShouts: async (params: QueryLoad_Shouts_Random_TopArgs) => {
     const response = await publicGraphQLClient.query(loadShoutsTopRandom, params).toPromise()
@@ -119,13 +124,17 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authorFollowers, { slug }).toPromise()
     return response.data.get_author_followers
   },
-  getAuthorFollowingUsers: async ({ slug }: { slug: string }): Promise<Author[]> => {
-    const response = await publicGraphQLClient.query(authorFollowed, { slug }).toPromise()
+  getAuthorFollowingAuthors: async ({ slug }: { slug: string }): Promise<Author[]> => {
+    const response = await publicGraphQLClient.query(authorFollowedAuthors, { slug }).toPromise()
     return response.data.get_author_followed
   },
   getAuthorFollowingTopics: async ({ slug }: { slug: string }): Promise<Topic[]> => {
-    const response = await publicGraphQLClient.query(userFollowedTopics, { slug }).toPromise()
+    const response = await publicGraphQLClient.query(authorFollowedTopics, { slug }).toPromise()
     return response.data.get_topics_by_author
+  },
+  getAuthorFollowingCommunities: async ({ slug }: { slug: string }): Promise<Community[]> => {
+    const response = await publicGraphQLClient.query(authorFollowedCommunities, { slug }).toPromise()
+    return response.data.get_communities_by_author
   },
   updateProfile: async (input: ProfileInput) => {
     const response = await apiClient.private.mutation(updateProfile, { profile: input }).toPromise()
@@ -200,7 +209,7 @@ export const apiClient = {
     const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
     if (resp.error) console.error(resp)
 
-    return resp.data.load_shouts_by
+    return resp.data?.load_shouts_by
   },
 
   getShoutsSearch: async ({ text, limit, offset }: QueryLoad_Shouts_SearchArgs) => {

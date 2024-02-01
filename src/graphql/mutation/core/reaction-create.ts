@@ -8,7 +8,6 @@ export default gql`
         id
         body
         kind
-        range
         created_at
         reply_to
         stat {

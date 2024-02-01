@@ -27,7 +27,7 @@ export const ForgotPasswordForm = () => {
     setEmail(newEmail.toLowerCase())
   }
   const {
-    actions: { authorizer },
+    actions: { forgotPassword },
   } = useSession()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
@@ -53,28 +53,29 @@ export const ForgotPasswordForm = () => {
       authFormRef.current
         .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
         .focus()
+
       return
     }
 
     setIsSubmitting(true)
     try {
-      const response: ApiResponse<ForgotPasswordResponse> = await authorizer().forgotPassword({
+      const { data, errors } = await forgotPassword({
         email: email(),
         redirect_uri: window.location.origin,
       })
-      console.debug('[ForgotPasswordForm] authorizer response:', response)
-      if (response && response.data.message) {
-        setMessage(response.data.message)
-      }
-      if (
-        response.errors &&
-        response.errors.length > 0 &&
-        response.errors[0].message.includes('bad user credentials')
-      ) {
+      console.debug('[ForgotPasswordForm] authorizer response:', data)
+      setMessage(data.message)
+
+      console.warn(errors)
+      if (errors.some((e) => e.cause === 'user_not_found')) {
         setIsUserNotFound(true)
+        return
+      } else {
+        const errorText = errors.map((e) => e.message).join(' ') // FIXME
+        setSubmitError(errorText)
       }
     } catch (error) {
-      console.log('[ForgotPasswordResponse]', error)
+      console.error(error)
     } finally {
       setIsSubmitting(false)
     }
@@ -93,7 +94,7 @@ export const ForgotPasswordForm = () => {
         </div>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email || isUserNotFound(),
+            'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input

@@ -15,7 +15,7 @@ export const getImageUrl = (
   src: string,
   options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
 ) => {
-  const filename = src.split('/').pop()
+  const filename = src?.split('/').pop()
   const isAudio = src.toLowerCase().split('.').pop() in ['wav', 'mp3', 'ogg', 'aif', 'flac']
   const base = isAudio ? cdnUrl : `${thumborUrl}/unsafe/`
   const sizeUrlPart = isAudio ? '' : getSizeUrlPart(options)

@@ -30,7 +30,7 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@authorizerdev/authorizer-js": "1.2.11",
+    "@authorizerdev/authorizer-js": "2.0.0",
     "@solid-primitives/pagination": "0.2.10",
     "cropperjs": "1.6.1",
     "form-data": "4.0.0",

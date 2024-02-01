@@ -1,5 +1,6 @@
 import type { AuthModalSearchParams } from './types'
 
+import { ApiResponse, ForgotPasswordResponse } from '@authorizerdev/authorizer-js'
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
@@ -57,23 +58,17 @@ export const ForgotPasswordForm = () => {
 
     setIsSubmitting(true)
     try {
-      const response = await authorizer().forgotPassword({
+      const response: ApiResponse<ForgotPasswordResponse> = await authorizer().forgotPassword({
         email: email(),
         redirect_uri: window.location.origin,
       })
       console.debug('[ForgotPasswordForm] authorizer response:', response)
-      if (response && response.message) {
-        setMessage(response.message)
+      if (response && response.data.message) {
+        setMessage(response.data.message)
       }
       if (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         response.errors &&
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         response.errors.length > 0 &&
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         response.errors[0].message.includes('bad user credentials')
       ) {
         setIsUserNotFound(true)

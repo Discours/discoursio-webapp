@@ -74,7 +74,7 @@ export const ForgotPasswordForm = () => {
         setIsUserNotFound(true)
       }
     } catch (error) {
-      setValidationErrors((errors) => ({ ...errors, email: error?.message }))
+      console.log('[ForgotPasswordResponse]', error)
     } finally {
       setIsSubmitting(false)
     }

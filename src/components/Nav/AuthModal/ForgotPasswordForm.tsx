@@ -65,11 +65,15 @@ export const ForgotPasswordForm = () => {
       if (response && response.message) {
         setMessage(response.message)
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       if (
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         response.errors &&
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         response.errors.length > 0 &&
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         response.errors[0].message.includes('bad user credentials')
       ) {
         setIsUserNotFound(true)

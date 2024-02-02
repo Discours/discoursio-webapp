@@ -1,11 +1,11 @@
 import type { AuthModalSearchParams } from './types'
 
+import { ApiResponse, ForgotPasswordResponse } from '@authorizerdev/authorizer-js'
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-// import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { validateEmail } from '../../../utils/validateEmail'
 
@@ -29,16 +29,14 @@ export const ForgotPasswordForm = () => {
   const {
     actions: { forgotPassword },
   } = useSession()
-  const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-  const [isUserNotFount, setIsUserNotFound] = createSignal(false)
+  const [isUserNotFound, setIsUserNotFound] = createSignal(false)
   const authFormRef: { current: HTMLFormElement } = { current: null }
   const [message, setMessage] = createSignal<string>('')
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-    setSubmitError('')
     setIsUserNotFound(false)
     const newValidationErrors: ValidationErrors = {}
 
@@ -66,15 +64,8 @@ export const ForgotPasswordForm = () => {
         redirect_uri: window.location.origin,
       })
       console.debug('[ForgotPasswordForm] authorizer response:', data)
-      setMessage(data.message)
-
-      console.warn(errors)
-      if (errors.some((e) => e.cause === 'user_not_found')) {
+      if (errors && errors.some((error) => error.message.includes('bad user credentials'))) {
         setIsUserNotFound(true)
-        return
-      } else {
-        const errorText = errors.map((e) => e.message).join(' ') // FIXME
-        setSubmitError(errorText)
       }
     } catch (error) {
       console.error(error)
@@ -111,37 +102,27 @@ export const ForgotPasswordForm = () => {
           />
 
           <label for="email">{t('Email')}</label>
+          <Show when={isUserNotFound()}>
+            <div class={styles.validationError}>
+              {t("We can't find you, check email or")}{' '}
+              <span
+                class={'link'}
+                onClick={() =>
+                  changeSearchParams({
+                    mode: 'login',
+                  })
+                }
+              >
+                {t('register')}
+              </span>
+            </div>
+          </Show>
+          <Show when={validationErrors().email}>
+            <div class={styles.validationError}>{validationErrors().email}</div>
+          </Show>
         </div>
 
-        <Show when={submitError()}>
-          <div class={styles.authInfo}>
-            <ul>
-              <li class={styles.warn}>{submitError()}</li>
-            </ul>
-          </div>
-        </Show>
-
-        <Show when={isUserNotFount()}>
-          <div class={styles.authSubtitle}>
-            {t("We can't find you, check email or")}{' '}
-            <a
-              href="#"
-              onClick={(event) => {
-                event.preventDefault()
-                changeSearchParams({
-                  mode: 'register',
-                })
-              }}
-            >
-              {t('register')}
-            </a>
-            <Show when={validationErrors().email}>
-              <div class={styles.validationError}>{validationErrors().email}</div>
-            </Show>
-          </div>
-        </Show>
-
-        <div>
+        <div style={{ 'margin-top': '5rem' }}>
           <button
             class={clsx('button', styles.submitButton)}
             disabled={isSubmitting() || Boolean(message())}

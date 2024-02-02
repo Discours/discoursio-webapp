@@ -20,7 +20,7 @@ export const HomePage = (props: PageProps) => {
     }
 
     await Promise.all([
-      loadShouts({ filters: { published: true }, limit: PRERENDERED_ARTICLES_COUNT }),
+      loadShouts({ filters: { featured: true }, limit: PRERENDERED_ARTICLES_COUNT }),
       loadRandomTopics({ amount: RANDOM_TOPICS_COUNT }),
     ])
 

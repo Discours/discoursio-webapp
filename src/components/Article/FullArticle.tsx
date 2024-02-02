@@ -29,6 +29,7 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
+import { Modal } from '../Nav/Modal'
 import { TableOfContents } from '../TableOfContents'
 
 import { AudioHeader } from './AudioHeader'
@@ -79,7 +80,7 @@ export const FullArticle = (props: Props) => {
     actions: { requireAuthentication },
   } = useSession()
 
-  const formattedDate = createMemo(() => formatDate(new Date(props.article.created_at * 1000)))
+  const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
 
   const mainTopic = createMemo(() => {
     const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
@@ -308,6 +309,8 @@ export const FullArticle = (props: Props) => {
         const aspectRatio = width / height
         iframe.style.width = `${containerWidth}px`
         iframe.style.height = `${Math.round(containerWidth / aspectRatio) + 40}px`
+      } else {
+        iframe.style.height = `${containerWidth}px`
       }
     })
   }
@@ -618,7 +621,9 @@ export const FullArticle = (props: Props) => {
       <Show when={selectedImage()}>
         <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
       </Show>
-      <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      <Modal variant="medium" name="inviteMembers">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
       <ShareModal
         title={props.article.title}
         description={description}

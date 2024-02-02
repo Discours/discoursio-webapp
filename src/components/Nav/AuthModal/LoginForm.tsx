@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -106,26 +106,22 @@ export const LoginForm = () => {
     setIsSubmitting(true)
 
     try {
-      await signIn({ email: email(), password: password() })
-
+      const { errors } = await signIn({ email: email(), password: password() })
+      if (errors?.length > 0) {
+        if (errors.some((error) => error.message.includes('bad user credentials'))) {
+          setValidationErrors((prev) => ({
+            ...prev,
+            password: t('Something went wrong, check email and password'),
+          }))
+        } else {
+          setSubmitError(t('Error'))
+        }
+        return
+      }
       hideModal()
-
       showSnackbar({ body: t('Welcome!') })
     } catch (error) {
       console.error(error)
-      if (error instanceof ApiError) {
-        if (error.code === 'email_not_confirmed') {
-          setSubmitError(t('Please, confirm email'))
-          setIsEmailNotConfirmed(true)
-
-          return
-        }
-        if (error.code === 'user_not_found') {
-          setSubmitError(t('Something went wrong, check email and password'))
-
-          return
-        }
-      }
       setSubmitError(error.message)
     } finally {
       setIsSubmitting(false)
@@ -170,6 +166,11 @@ export const LoginForm = () => {
         </div>
 
         <PasswordField variant={'login'} onInput={(value) => handlePasswordInput(value)} />
+        <Show when={validationErrors().password}>
+          <div class={styles.validationError} style={{ position: 'static', 'font-size': '1.4rem' }}>
+            {validationErrors().password}
+          </div>
+        </Show>
 
         <div>
           <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">

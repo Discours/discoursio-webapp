@@ -111,7 +111,7 @@ export const InviteMembers = (props: Props) => {
   }
 
   return (
-    <Modal variant="medium" name="inviteMembers">
+    <>
       <h2>{props.title || t('Invite collaborators')}</h2>
       <div class={clsx(styles.InviteMembers)}>
         <div class={styles.searchHeader}>
@@ -182,6 +182,6 @@ export const InviteMembers = (props: Props) => {
           />
         </div>
       </div>
-    </Modal>
+    </>
   )
 }

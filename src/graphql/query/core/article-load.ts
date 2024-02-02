@@ -7,7 +7,6 @@ export default gql`
       title
       lead
       description
-      visibility
       subtitle
       slug
       layout
@@ -45,6 +44,7 @@ export default gql`
       created_at
       updated_at
       published_at
+      featured_at
       stat {
         viewed
 

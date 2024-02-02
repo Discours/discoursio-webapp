@@ -21,7 +21,7 @@ export const AuthorPage = (props: PageProps) => {
   const preload = () => {
     return Promise.all([
       loadShouts({
-        filters: { author: slug(), published: false },
+        filters: { author: slug(), featured: false },
         limit: PRERENDERED_ARTICLES_COUNT,
       }),
       loadAuthor({ slug: slug() }),

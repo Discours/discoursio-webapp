@@ -60,7 +60,7 @@ export const HomeView = (props: Props) => {
     loadTopMonthArticles()
     if (sortedArticles().length < PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT) {
       const { hasMore } = await loadShouts({
-        filters: { published: true },
+        filters: { featured: true },
         limit: CLIENT_LOAD_ARTICLES_COUNT,
         offset: sortedArticles().length,
       })
@@ -80,7 +80,7 @@ export const HomeView = (props: Props) => {
     saveScrollPosition()
 
     const { hasMore } = await loadShouts({
-      filters: { published: true },
+      filters: { featured: true },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length,
     })

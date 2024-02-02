@@ -14,7 +14,6 @@ import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { byCreated } from '../../../utils/sortby'
 import { splitToPages } from '../../../utils/splitToPages'
 import { Loading } from '../../_shared/Loading'
 import { Comment } from '../../Article/Comment'
@@ -69,18 +68,26 @@ export const AuthorView = (props: Props) => {
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
-  const fetchSubscriptions = async (): Promise<{ authors: Author[]; topics: Topic[] }> => {
+  const fetchData = async (slug) => {
     try {
-      const [getAuthors, getTopics] = await Promise.all([
-        apiClient.getAuthorFollowingAuthors({ slug: props.authorSlug }),
-        apiClient.getAuthorFollowingTopics({ slug: props.authorSlug }),
+      const [subscriptionsResult, followersResult] = await Promise.all([
+        (async () => {
+          const [getAuthors, getTopics] = await Promise.all([
+            apiClient.getAuthorFollowingAuthors({ slug }),
+            apiClient.getAuthorFollowingTopics({ slug }),
+          ])
+          return { authors: getAuthors, topics: getTopics }
+        })(),
+        apiClient.getAuthorFollowers({ slug }),
       ])
-      const authors = getAuthors
-      const topics = getTopics
-      return { authors, topics }
+
+      const { authors, topics } = subscriptionsResult
+      setFollowing([...(authors || []), ...(topics || [])])
+      setFollowers(followersResult || [])
+
+      console.info('[components.Author] following data loaded')
     } catch (error) {
-      console.error('[fetchSubscriptions] :', error)
-      throw error
+      console.error('[components.Author] fetch error', error)
     }
   }
 
@@ -90,27 +97,17 @@ export const AuthorView = (props: Props) => {
     }
   }
 
-  const fetchData = async () => {
-    const slug = author()?.slug || props.authorSlug
-    if (slug && getPage().route === 'authorComments' && author()) {
-      try {
-        const { authors, topics } = await fetchSubscriptions()
-        setFollowing([...(authors || []), ...(topics || [])])
-        const flwrs = await apiClient.getAuthorFollowers({ slug })
-        setFollowers(flwrs || [])
-        console.info('[components.Author] following data loaded')
-      } catch (error) {
-        console.error('[components.Author] fetch error', error)
-      }
-    }
-  }
-
   createEffect(() => {
     if (author()) {
       console.info('[components.Author] profile data loaded')
       document.title = author().name
-      fetchData()
+      fetchData(author().slug)
     }
+  })
+
+  onMount(() => {
+    const slug = props.authorSlug
+    fetchData(slug)
   })
 
   const loadMore = async () => {

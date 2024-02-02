@@ -94,11 +94,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const mainTopicTitle =
     mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
 
-  const formattedDate = createMemo<string>(() => {
-    let r = ''
-    if (props.article.published_at) r = formatDate(new Date(props.article.published_at * 1000))
-    return r
-  })
+  const formattedDate = createMemo<string>(() =>
+    props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
+  )
 
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 

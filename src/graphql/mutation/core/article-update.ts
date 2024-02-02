@@ -12,7 +12,10 @@ export default gql`
         lead
         description
         body
-        visibility
+        created_at
+        updated_at
+        published_at
+        featured_at
       }
     }
   }

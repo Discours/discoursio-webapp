@@ -196,7 +196,10 @@ export const FeedView = (props: Props) => {
     if (visibilityMode === 'all') {
       options.filters = { ...options.filters }
     } else if (visibilityMode) {
-      options.filters = { ...options.filters, featured: visibilityMode === ShoutVisibility.Featured }
+      options.filters = {
+        ...options.filters,
+        featured: visibilityMode === ShoutVisibility.Featured.valueOf(),
+      }
     }
 
     if (searchParams().by && searchParams().by !== 'publish_date') {

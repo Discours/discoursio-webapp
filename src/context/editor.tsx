@@ -122,11 +122,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
     return await apiClient.updateArticle({
-      shoutId: formToUpdate.shoutId,
-      shoutInput: {
+      shout_id: formToUpdate.shoutId,
+      shout_input: {
         ...formToUpdate,
         topics: formToUpdate.selectedTopics.map((topic) => topic2topicInput(topic)), // NOTE: first is main
-        media: formToUpdate.media,
         cover: formToUpdate.coverImageUrl,
       },
       publish,
@@ -196,10 +195,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const publishShoutById = async (shoutId: number) => {
+  const publishShoutById = async (shout_id: number) => {
     try {
       await apiClient.updateArticle({
-        shoutId,
+        shout_id,
         publish: true,
       })
 

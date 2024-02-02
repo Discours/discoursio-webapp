@@ -1,5 +1,4 @@
 import {
-  ShoutVisibility,
   type Author,
   type LoadShoutsOptions,
   type Reaction,
@@ -198,7 +197,7 @@ export const FeedView = (props: Props) => {
     } else if (visibilityMode) {
       options.filters = {
         ...options.filters,
-        featured: visibilityMode === ShoutVisibility.Featured.valueOf(),
+        featured: visibilityMode === 'featured',
       }
     }
 

@@ -5,7 +5,7 @@ import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
-import { ShoutVisibility, type Shout, type Topic } from '../../graphql/schema/core.gen'
+import { type Shout, type Topic } from '../../graphql/schema/core.gen'
 import { LayoutType, MediaItem } from '../../pages/types'
 import { useRouter } from '../../stores/router'
 import { clone } from '../../utils/clone'
@@ -182,7 +182,7 @@ export const EditView = (props: Props) => {
       const hasChanges = !deepEqual(form, prevForm)
       if (hasChanges) {
         setSaving(true)
-        if (props.shout?.visibility === ShoutVisibility.Authors) {
+        if (!props.shout?.published_at) {
           await saveDraft(form)
         } else {
           saveDraftToLocalStorage(form)

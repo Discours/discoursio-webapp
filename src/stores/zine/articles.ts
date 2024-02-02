@@ -193,7 +193,7 @@ export const loadTopMonthArticles = async (): Promise<void> => {
   const after = Math.floor(daysago / 1000)
   const options: LoadShoutsOptions = {
     filters: {
-      published: true,
+      featured: true,
       after,
     },
     order_by: 'likes_stat',
@@ -208,7 +208,7 @@ const TOP_ARTICLES_COUNT = 10
 
 export const loadTopArticles = async (): Promise<void> => {
   const options: LoadShoutsOptions = {
-    filters: { published: true },
+    filters: { featured: true },
     order_by: 'likes_stat',
     limit: TOP_ARTICLES_COUNT,
   }

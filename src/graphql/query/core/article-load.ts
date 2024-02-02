@@ -7,7 +7,6 @@ export default gql`
       title
       lead
       description
-      visibility
       subtitle
       slug
       layout

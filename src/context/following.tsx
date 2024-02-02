@@ -1,4 +1,4 @@
-import { createEffect, createSignal, createContext, Accessor, useContext, JSX, onMount } from 'solid-js'
+import { createEffect, createSignal, createContext, Accessor, useContext, JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'

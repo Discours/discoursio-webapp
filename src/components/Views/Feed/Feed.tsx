@@ -1,5 +1,3 @@
-import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/schema/core.gen'
-
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
@@ -9,6 +7,12 @@ import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
+import {
+  type Author,
+  type LoadShoutsOptions,
+  type Reaction,
+  type Shout,
+} from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
 import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
@@ -35,7 +39,7 @@ export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5
 
 type FeedPeriod = 'week' | 'month' | 'year'
-type VisibilityMode = 'all' | 'community' | 'public'
+type VisibilityMode = 'all' | 'community' | 'featured'
 
 type PeriodItem = {
   value: FeedPeriod
@@ -96,7 +100,7 @@ export const FeedView = (props: Props) => {
   const { t } = useLocalize()
 
   const monthPeriod: PeriodItem = { value: 'month', title: t('This month') }
-  const visibilityAll = { value: 'public', title: t('All') }
+  const visibilityAll = { value: 'featured', title: t('All') }
 
   const periods: PeriodItem[] = [
     { value: 'week', title: t('This week') },
@@ -106,7 +110,7 @@ export const FeedView = (props: Props) => {
 
   const visibilities: VisibilityItem[] = [
     { value: 'community', title: t('All') },
-    { value: 'public', title: t('Published') },
+    { value: 'featured', title: t('Published') },
   ]
 
   const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
@@ -190,7 +194,10 @@ export const FeedView = (props: Props) => {
     if (visibilityMode === 'all') {
       options.filters = { ...options.filters }
     } else if (visibilityMode) {
-      options.filters = { ...options.filters, published: visibilityMode === 'public' }
+      options.filters = {
+        ...options.filters,
+        featured: visibilityMode === 'featured',
+      }
     }
 
     if (searchParams().by && searchParams().by !== 'publish_date') {

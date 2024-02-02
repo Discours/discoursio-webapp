@@ -29,6 +29,7 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
+import { Modal } from '../Nav/Modal'
 import { TableOfContents } from '../TableOfContents'
 
 import { AudioHeader } from './AudioHeader'
@@ -294,7 +295,6 @@ export const FullArticle = (props: Props) => {
   const updateIframeSizes = () => {
     if (!articleContainer?.current || !props.article.body) return
     const iframes = articleContainer?.current?.querySelectorAll('iframe')
-    console.log('!!! iframes:', iframes)
     if (!iframes) return
     const containerWidth = articleContainer.current?.offsetWidth
     iframes.forEach((iframe) => {
@@ -621,7 +621,9 @@ export const FullArticle = (props: Props) => {
       <Show when={selectedImage()}>
         <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
       </Show>
-      <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      <Modal variant="medium" name="inviteMembers">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
       <ShareModal
         title={props.article.title}
         description={description}

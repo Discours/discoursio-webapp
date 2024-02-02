@@ -9,7 +9,7 @@ import { apiClient } from '../graphql/client/core'
 import { Topic, TopicInput } from '../graphql/schema/core.gen'
 import { router, useRouter } from '../stores/router'
 import { slugify } from '../utils/slugify'
-
+import { addArticles } from '../stores/zine/articles'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
 
@@ -197,11 +197,11 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const publishShoutById = async (shout_id: number) => {
     try {
-      await apiClient.updateArticle({
+      const newShout = await apiClient.updateArticle({
         shout_id,
         publish: true,
       })
-
+      addArticles([newShout])
       openPage(router, 'feed')
     } catch (error) {
       console.error('[publishShoutById]', error)

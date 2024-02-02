@@ -64,12 +64,14 @@ const topCommentedArticles = createLazyMemo(() => {
 })
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const addArticles = (...args: Shout[][]) => {
+export const addArticles = (...args: Shout[][]) => {
   const allArticles = args.flatMap((articles) => articles || [])
 
   const newArticleEntities = allArticles.reduce(
     (acc, article) => {
-      acc[article.slug] = article
+      if (!acc[article.slug]) {
+        acc[article.slug] = article
+      }
       return acc
     },
     {} as { [articleSLug: string]: Shout },

@@ -22,8 +22,8 @@ export const DraftsView = () => {
     }
   }
 
-  createEffect(async () => {
-    if (isSessionLoaded()) await loadDrafts()
+  createEffect(() => {
+    if (isSessionLoaded()) loadDrafts()
   })
 
   const {
@@ -32,7 +32,9 @@ export const DraftsView = () => {
 
   const handleDraftDelete = async (shout: Shout) => {
     const result = deleteShout(shout.id)
-    if (result) await loadDrafts()
+    if (result) {
+      setDrafts((ddd) => ddd.filter((d) => d.id !== shout.id))
+    }
   }
 
   const handleDraftPublish = (shout: Shout) => {

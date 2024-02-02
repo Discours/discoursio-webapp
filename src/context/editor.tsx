@@ -122,20 +122,11 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
     return await apiClient.updateArticle({
-      shoutId: formToUpdate.shoutId,
-      shoutInput: {
-        body: formToUpdate.body,
+      shout_id: formToUpdate.shoutId,
+      shout_input: {
+        ...formToUpdate,
         topics: formToUpdate.selectedTopics.map((topic) => topic2topicInput(topic)), // NOTE: first is main
-        // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-        // community?: InputMaybe<Scalars['Int']>
-        // mainTopic: topic2topicInput(formToUpdate.mainTopic),
-        slug: formToUpdate.slug,
-        subtitle: formToUpdate.subtitle,
-        title: formToUpdate.title,
-        lead: formToUpdate.lead,
-        description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
-        media: formToUpdate.media,
       },
       publish,
     })
@@ -204,10 +195,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const publishShoutById = async (shoutId: number) => {
+  const publishShoutById = async (shout_id: number) => {
     try {
       await apiClient.updateArticle({
-        shoutId,
+        shout_id,
         publish: true,
       })
 

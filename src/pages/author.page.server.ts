@@ -16,7 +16,7 @@ export const onBeforeRender = async (pageContext: PageContext) => {
   }
 
   const authorShouts = await apiClient.getShouts({
-    filters: { author: slug, published: false },
+    filters: { author: slug, featured: false },
     limit: PRERENDERED_ARTICLES_COUNT,
   })
   const pageProps: PageProps = { author, authorShouts, seo: { title: author.name } }

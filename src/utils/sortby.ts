@@ -6,6 +6,10 @@ export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
   return a?.created_at - b?.created_at
 }
 
+export const byPublished = (a: Shout, b: Shout) => {
+  return a.published_at - b.published_at
+}
+
 export const byLength = (
   a: (Shout | Reaction | Topic | Author)[],
   b: (Shout | Reaction | Topic | Author)[],

@@ -6,7 +6,7 @@ import { apiClient } from '../graphql/client/core'
 
 export const onBeforeRender = async (_pageContext: PageContext) => {
   const homeShouts = await apiClient.getShouts({
-    filters: { published: true },
+    filters: { featured: true },
     limit: PRERENDERED_ARTICLES_COUNT,
   })
 

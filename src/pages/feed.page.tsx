@@ -13,7 +13,7 @@ const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
   return loadShouts({
     ...options,
     filters: {
-      published: false,
+      featured: false,
       ...options.filters,
     },
   })

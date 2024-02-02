@@ -1,10 +1,3 @@
-import {
-  type Author,
-  type LoadShoutsOptions,
-  type Reaction,
-  type Shout,
-} from '../../../graphql/schema/core.gen'
-
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
@@ -14,6 +7,12 @@ import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
+import {
+  type Author,
+  type LoadShoutsOptions,
+  type Reaction,
+  type Shout,
+} from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
 import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'

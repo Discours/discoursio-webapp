@@ -182,10 +182,10 @@ export const EditView = (props: Props) => {
       const hasChanges = !deepEqual(form, prevForm)
       if (hasChanges) {
         setSaving(true)
-        if (!props.shout?.published_at) {
-          await saveDraft(form)
-        } else {
+        if (props.shout?.published_at) {
           saveDraftToLocalStorage(form)
+        } else {
+          await saveDraft(form)
         }
         setPrevForm(clone(form))
         setTimeout(() => {

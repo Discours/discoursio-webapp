@@ -45,6 +45,7 @@ export default gql`
       created_at
       updated_at
       published_at
+      featured_at
       stat {
         viewed
 

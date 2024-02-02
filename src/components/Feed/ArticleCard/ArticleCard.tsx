@@ -96,7 +96,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const formattedDate = createMemo<string>(() => {
     let r = ''
-    if (props.article.created_at) r = formatDate(new Date(props.article.created_at * 1000))
+    if (props.article.published_at) r = formatDate(new Date(props.article.published_at * 1000))
     return r
   })
 

@@ -79,7 +79,7 @@ export const FullArticle = (props: Props) => {
     actions: { requireAuthentication },
   } = useSession()
 
-  const formattedDate = createMemo(() => formatDate(new Date(props.article.created_at * 1000)))
+  const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
 
   const mainTopic = createMemo(() => {
     const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null

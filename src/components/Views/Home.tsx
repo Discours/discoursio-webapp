@@ -1,6 +1,7 @@
 import { getPagePath } from '@nanostores/router'
-import { batch, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { batch, createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
+import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
 import { Shout, Topic } from '../../graphql/schema/core.gen'

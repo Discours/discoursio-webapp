@@ -238,7 +238,6 @@ export const AuthorView = (props: Props) => {
             <div class="row">
               <div class="col-md-20 col-lg-18">
                 <Show when={commented()}>
-                  <h1>AAAAA</h1>
                   <ul class={stylesArticle.comments}>
                     <For each={commented()}>
                       {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}

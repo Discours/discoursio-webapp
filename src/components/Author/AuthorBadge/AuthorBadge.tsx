@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, Match, Show, Switch } from 'solid-js'
+import { createEffect, createMemo, createSignal, Match, on, Show, Switch } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -8,6 +8,7 @@ import { useMediaQuery } from '../../../context/mediaQuery'
 import { useSession } from '../../../context/session'
 import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
+import { resetSortedArticles } from '../../../stores/zine/articles'
 import { isCyrillic } from '../../../utils/cyrillic'
 import { translit } from '../../../utils/ru2en'
 import { Button } from '../../_shared/Button'
@@ -19,6 +20,10 @@ import { Userpic } from '../Userpic'
 import styles from './AuthorBadge.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
 
+type FollowedInfo = {
+  value?: boolean
+  loaded?: boolean
+}
 type Props = {
   author: Author
   minimizeSubscribeButton?: boolean
@@ -28,20 +33,22 @@ type Props = {
   inviteView?: boolean
   onInvite?: (id: number) => void
   selected?: boolean
+  isFollowed?: FollowedInfo
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
+  const {
+    author,
+    actions: { requireAuthentication },
+  } = useSession()
+
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const [followed, setFollowed] = createSignal(false)
+  const [isFollowed, setIsFollowed] = createSignal<boolean>()
 
   createEffect(() => {
     setIsMobileView(!mediaMatches.sm)
   })
 
-  const {
-    author,
-    actions: { requireAuthentication },
-  } = useSession()
   const { setFollowing } = useFollowing()
   const { changeSearchParams } = useRouter()
   const { t, formatDate, lang } = useLocalize()
@@ -68,10 +75,20 @@ export const AuthorBadge = (props: Props) => {
     return props.author.name
   })
 
+  createEffect(
+    on(
+      () => props.isFollowed,
+      () => {
+        setIsFollowed(props.isFollowed.value)
+      },
+      { defer: true },
+    ),
+  )
+
   const handleFollowClick = () => {
-    const value = !followed()
+    const value = !isFollowed()
     requireAuthentication(() => {
-      setFollowed(value)
+      setIsFollowed(value)
       setFollowing(FollowingEntity.Author, props.author.slug, value)
     }, 'subscribe')
   }
@@ -123,10 +140,10 @@ export const AuthorBadge = (props: Props) => {
         <div class={styles.actions}>
           <Show
             when={!props.minimizeSubscribeButton}
-            fallback={<CheckButton text={t('Follow')} checked={followed()} onClick={handleFollowClick} />}
+            fallback={<CheckButton text={t('Follow')} checked={isFollowed()} onClick={handleFollowClick} />}
           >
             <Show
-              when={followed()}
+              when={isFollowed()}
               fallback={
                 <Button
                   variant={props.iconButtons ? 'secondary' : 'bordered'}
@@ -140,7 +157,7 @@ export const AuthorBadge = (props: Props) => {
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.iconed]: props.iconButtons,
-                    [stylesButton.subscribed]: followed(),
+                    [stylesButton.subscribed]: isFollowed(),
                   })}
                 />
               }
@@ -165,7 +182,7 @@ export const AuthorBadge = (props: Props) => {
                 isSubscribeButton={true}
                 class={clsx(styles.actionButton, {
                   [styles.iconed]: props.iconButtons,
-                  [stylesButton.subscribed]: followed(),
+                  [stylesButton.subscribed]: isFollowed(),
                 })}
               />
             </Show>

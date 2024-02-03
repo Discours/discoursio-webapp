@@ -41,7 +41,7 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const isSubscribed = () => props.followers.some((entity) => entity.id === author()?.id)
+  const isSubscribed = () => props.followers?.some((entity) => entity.id === author()?.id)
   createEffect(
     on(
       () => props.followers,

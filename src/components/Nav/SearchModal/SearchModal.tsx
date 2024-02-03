@@ -55,6 +55,7 @@ export const SearchModal = () => {
   >(
     async () => {
       setIsLoading(true)
+      saveScrollPosition()
       const { hasMore, newShouts } = await loadShoutsSearch({
         limit: FEED_PAGE_SIZE,
         text: inputValue(),

@@ -8,8 +8,9 @@ import { createStore, SetStoreFunction } from 'solid-js/store'
 import { apiClient } from '../graphql/client/core'
 import { Topic, TopicInput } from '../graphql/schema/core.gen'
 import { router, useRouter } from '../stores/router'
-import { slugify } from '../utils/slugify'
 import { addArticles } from '../stores/zine/articles'
+import { slugify } from '../utils/slugify'
+
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
 

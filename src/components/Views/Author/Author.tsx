@@ -3,7 +3,7 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect, on } from 'solid-js'
+import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'

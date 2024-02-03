@@ -21,12 +21,12 @@ import { Editor, Panel } from '../Editor'
 import { AudioUploader } from '../Editor/AudioUploader'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 import { VideoUploader } from '../Editor/VideoUploader'
+import { Modal } from '../Nav/Modal'
 import { TableOfContents } from '../TableOfContents'
 
 import { PublishSettings } from './PublishSettings'
 
 import styles from './Edit.module.scss'
-import { Modal } from '../Nav/Modal'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../_shared/GrowingTextarea/GrowingTextarea'))

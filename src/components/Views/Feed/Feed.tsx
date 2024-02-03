@@ -30,11 +30,11 @@ import { AuthorBadge } from '../../Author/AuthorBadge'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { ArticleCard } from '../../Feed/ArticleCard'
 import { Sidebar } from '../../Feed/Sidebar'
+import { Modal } from '../../Nav/Modal'
 
 import styles from './Feed.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
-import { Modal } from '../../Nav/Modal'
 
 export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5

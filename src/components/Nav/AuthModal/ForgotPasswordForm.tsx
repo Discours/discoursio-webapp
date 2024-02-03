@@ -1,6 +1,5 @@
 import type { AuthModalSearchParams } from './types'
 
-import { ApiResponse, ForgotPasswordResponse } from '@authorizerdev/authorizer-js'
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 

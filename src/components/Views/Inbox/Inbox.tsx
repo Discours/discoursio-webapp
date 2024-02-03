@@ -19,9 +19,9 @@ import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
 import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
+import { Modal } from '../../Nav/Modal'
 
 import styles from './Inbox.module.scss'
-import { Modal } from '../../Nav/Modal'
 
 type InboxSearchParams = {
   by?: string

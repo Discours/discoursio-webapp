@@ -5,12 +5,14 @@ import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } 
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
+import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
 import { loadAuthor } from '../stores/zine/authors'
 
 export const AuthorPage = (props: PageProps) => {
+  const { t } = useLocalize()
   const { page } = useRouter()
   const slug = createMemo(() => page().params['slug'] as string)
 
@@ -57,7 +59,7 @@ export const AuthorPage = (props: PageProps) => {
   const usePrerenderedData = props.author?.slug === slug()
 
   return (
-    <PageLayout title={props.seo?.title}>
+    <PageLayout title={props.seo?.title || t('Discours')}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <AuthorView

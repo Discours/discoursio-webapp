@@ -1,15 +1,15 @@
 import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
-import { Meta } from '@solidjs/meta'
+import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect, on } from 'solid-js'
+import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
-import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
+import { loadMyFeed, loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
@@ -45,6 +45,7 @@ export const AuthorView = (props: Props) => {
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
+  const [commented, setCommented] = createSignal<Reaction[]>()
 
   // current author
   const [author, setAuthor] = createSignal<Author>()
@@ -125,13 +126,12 @@ export const AuthorView = (props: Props) => {
 
   const fetchComments = async (commenter: Author) => {
     const data = await apiClient.getReactionsBy({
-      by: { comment: true, created_by: commenter.id },
+      by: { comment: false, created_by: commenter.id },
     })
     console.debug(`[components.Author] fetched ${data.length} comments`)
     setCommented(data)
   }
 
-  const [commented, setCommented] = createSignal<Reaction[]>([])
   createEffect(() => {
     const a = author()
     if (a) {
@@ -149,6 +149,7 @@ export const AuthorView = (props: Props) => {
   return (
     <div class={styles.authorPage}>
       <Show when={author()}>
+        <Title>{author().name}</Title>
         <Meta name="descprition" content={description()} />
         <Meta name="og:type" content="profile" />
         <Meta name="og:title" content={author().name} />
@@ -236,11 +237,14 @@ export const AuthorView = (props: Props) => {
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
-                <ul class={stylesArticle.comments}>
-                  <For each={commented()}>
-                    {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
-                  </For>
-                </ul>
+                <Show when={commented()}>
+                  <h1>AAAAA</h1>
+                  <ul class={stylesArticle.comments}>
+                    <For each={commented()}>
+                      {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
+                    </For>
+                  </ul>
+                </Show>
               </div>
             </div>
           </div>

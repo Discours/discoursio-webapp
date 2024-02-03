@@ -237,13 +237,11 @@ export const AuthorView = (props: Props) => {
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
-                <Show when={commented()}>
-                  <ul class={stylesArticle.comments}>
-                    <For each={commented()}>
-                      {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
-                    </For>
-                  </ul>
-                </Show>
+                <ul class={stylesArticle.comments}>
+                  <For each={commented()}>
+                    {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
+                  </For>
+                </ul>
               </div>
             </div>
           </div>

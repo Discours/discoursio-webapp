@@ -3,8 +3,9 @@
 import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { For, Show } from 'solid-js'
+import { createEffect, createSignal, For, Show } from 'solid-js'
 
+import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
 import { AuthorBadge } from '../Author/AuthorBadge'
@@ -29,6 +30,13 @@ type Props = {
 
 export const Beside = (props: Props) => {
   const { t } = useLocalize()
+  const { subscriptions } = useFollowing()
+  const [subscriptionsAuthorsId, setSubscriptionsAuthorsId] = createSignal<number[] | undefined>()
+
+  createEffect(() => {
+    setSubscriptionsAuthorsId(subscriptions?.authors?.map((item) => item.id) || [])
+  })
+
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
       <div class="floor floor--9">
@@ -83,7 +91,13 @@ export const Beside = (props: Props) => {
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>
-                          <AuthorBadge author={value as Author} />
+                          <AuthorBadge
+                            author={value as Author}
+                            isFollowed={{
+                              loaded: Boolean(subscriptionsAuthorsId()),
+                              value: subscriptionsAuthorsId().includes(value.id),
+                            }}
+                          />
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>
                           <ArticleCard

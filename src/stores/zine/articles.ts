@@ -111,7 +111,7 @@ export const addArticles = (...args: Shout[][]) => {
 }
 
 const addSortedArticles = (articles: Shout[]) => {
-  setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
+  setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...(articles || [])])
 }
 
 export const loadShout = async (slug: string): Promise<void> => {

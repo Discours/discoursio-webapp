@@ -34,6 +34,7 @@ import { Sidebar } from '../../Feed/Sidebar'
 import styles from './Feed.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
+import { Modal } from '../../Nav/Modal'
 
 export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5
@@ -439,7 +440,10 @@ export const FeedView = (props: Props) => {
           shareUrl={getShareUrl({ pathname: `/${shareData().slug}` })}
         />
       </Show>
-      <InviteMembers title={t('Invite experts')} variant={'coauthors'} />
+
+      <Modal variant="medium" name="inviteCoauthors">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
     </div>
   )
 }

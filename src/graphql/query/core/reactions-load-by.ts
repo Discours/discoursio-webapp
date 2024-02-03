@@ -6,7 +6,6 @@ export default gql`
       id
       kind
       body
-      range
       reply_to
       shout {
         id

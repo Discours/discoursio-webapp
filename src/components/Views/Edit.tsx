@@ -26,6 +26,7 @@ import { TableOfContents } from '../TableOfContents'
 import { PublishSettings } from './PublishSettings'
 
 import styles from './Edit.module.scss'
+import { Modal } from '../Nav/Modal'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../_shared/GrowingTextarea/GrowingTextarea'))
@@ -413,7 +414,10 @@ export const EditView = (props: Props) => {
         <PublishSettings shoutId={props.shout.id} form={form} />
       </Show>
       <Panel shoutId={props.shout.id} />
-      <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+
+      <Modal variant="medium" name="inviteCoauthors">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
     </>
   )
 }

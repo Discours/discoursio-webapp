@@ -31,7 +31,6 @@ type Props = {
   author: Author
   authorSlug: string
 }
-
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
@@ -97,18 +96,7 @@ export const AuthorView = (props: Props) => {
     }
   }
 
-  createEffect(() => {
-    if (author()) {
-      console.info('[components.Author] profile data loaded')
-      document.title = author().name
-      fetchData(author().slug)
-    }
-  })
-
-  onMount(() => {
-    const slug = props.authorSlug
-    fetchData(slug)
-  })
+  onMount(() => fetchData(props.authorSlug))
 
   const loadMore = async () => {
     saveScrollPosition()

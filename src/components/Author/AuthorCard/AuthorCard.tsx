@@ -2,7 +2,7 @@ import type { Author, Community } from '../../../graphql/schema/core.gen'
 
 import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -36,11 +36,24 @@ export const AuthorCard = (props: Props) => {
     isSessionLoaded,
     actions: { requireAuthentication },
   } = useSession()
+
   const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
+  const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const [followed, setFollowed] = createSignal()
+  const isSubscribed = () => props.followers.some((entity) => entity.id === author()?.id)
+  createEffect(
+    on(
+      () => props.followers,
+      () => {
+        setIsFollowed(isSubscribed())
+      },
+      { defer: true },
+    ),
+  )
+
   const { setFollowing } = useFollowing()
+
   const name = createMemo(() => {
     if (lang() !== 'ru' && isCyrillic(props.author.name)) {
       if (props.author.name === 'Дискурс') {
@@ -82,15 +95,15 @@ export const AuthorCard = (props: Props) => {
   })
 
   const handleFollowClick = () => {
-    const value = !followed()
+    const value = !isFollowed()
     requireAuthentication(() => {
-      setFollowed(value)
+      setIsFollowed(value)
       setFollowing(FollowingEntity.Author, props.author.slug, value)
     }, 'subscribe')
   }
 
   const followButtonText = createMemo(() => {
-    if (followed()) {
+    if (isFollowed()) {
       return (
         <>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
@@ -198,14 +211,16 @@ export const AuthorCard = (props: Props) => {
               when={isProfileOwner()}
               fallback={
                 <div class={styles.authorActions}>
-                  <Button
-                    onClick={handleFollowClick}
-                    value={followButtonText()}
-                    isSubscribeButton={true}
-                    class={clsx({
-                      [stylesButton.subscribed]: followed(),
-                    })}
-                  />
+                  <Show when={isFollowed()}>
+                    <Button
+                      onClick={handleFollowClick}
+                      value={followButtonText()}
+                      isSubscribeButton={true}
+                      class={clsx({
+                        [stylesButton.subscribed]: isFollowed(),
+                      })}
+                    />
+                  </Show>
                   <Button
                     variant={'secondary'}
                     value={t('Message')}

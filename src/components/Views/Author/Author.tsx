@@ -136,6 +136,7 @@ export const AuthorView = (props: Props) => {
     const a = author()
     if (a) {
       fetchComments(a)
+      document.title = a.name
     }
   })
 

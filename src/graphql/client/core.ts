@@ -8,7 +8,7 @@ import type {
   ReactionInput,
   ReactionBy,
   Shout,
-  Result,
+  CommonResult,
   QueryLoad_Authors_ByArgs,
   QueryLoad_Shouts_SearchArgs,
   QueryLoad_Shouts_Random_TopArgs,
@@ -26,7 +26,7 @@ import reactionCreate from '../mutation/core/reaction-create'
 import reactionDestroy from '../mutation/core/reaction-destroy'
 import reactionUpdate from '../mutation/core/reaction-update'
 import unfollowMutation from '../mutation/core/unfollow'
-import updateProfile from '../mutation/core/update-profile'
+import updateAuthor from '../mutation/core/author-update'
 import shoutLoad from '../query/core/article-load'
 import shoutsLoadBy from '../query/core/articles-load-by'
 import draftsLoad from '../query/core/articles-load-drafts'
@@ -137,9 +137,9 @@ export const apiClient = {
     const response = await publicGraphQLClient.query(authorFollowedCommunities, { slug }).toPromise()
     return response.data.get_communities_by_author
   },
-  updateProfile: async (input: ProfileInput) => {
-    const response = await apiClient.private.mutation(updateProfile, { profile: input }).toPromise()
-    return response.data.update_profile
+  updateAuthor: async (input: ProfileInput) => {
+    const response = await apiClient.private.mutation(updateAuthor, { profile: input }).toPromise()
+    return response.data.update_author
   },
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
     const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
@@ -233,7 +233,7 @@ export const apiClient = {
       .toPromise()
     return resp.data.load_reactions_by
   },
-  getMySubscriptions: async (): Promise<Result> => {
+  getMySubscriptions: async (): Promise<CommonResult> => {
     const resp = await apiClient.private.query(mySubscriptions, {}).toPromise()
 
     return resp.data.get_my_followed

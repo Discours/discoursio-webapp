@@ -33,7 +33,7 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
   const [form, setForm] = createStore<ProfileInput>({})
 
   const submit = async (profile: ProfileInput) => {
-    const response = await apiClient.updateProfile(profile)
+    const response = await apiClient.updateAuthor(profile)
     if (response.error) {
       console.error(response.error)
       throw response.error

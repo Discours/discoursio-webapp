@@ -1,9 +1,11 @@
 name: 'deploy'
+
 on:
   push:
     branches:
       - main
-      - feature/sse-connect
+      - dev
+      - feature/email-templates
 
 jobs:
   test:
@@ -26,24 +28,40 @@ jobs:
   update_mailgun_template:
     runs-on: ubuntu-latest
     name: Update templates on Mailgun
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/email-templates'
     continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: update authorizer_password_reset
-        uses: jlepocher/mailgun-create-template-version-action@v1.3
+        
+      - name: "Email confirmation template"
+        uses: gyto/mailgun-template-action@v2
         with:
-          mailgun-host: 'api.eu.mailgun.net'
+          html-file: "./templates/authorizer_email_confirmation.html"
           mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
-          mailgun-domain-name: 'discours.io'
-          mailgun-template-name: 'authorizer_password_reset'
-          html-file-path: './templates/authorizer_password_reset.html'
-
-      - name: update authorizer_password_reset
-        uses: jlepocher/mailgun-create-template-version-action@v1.3
+          mailgun-domain: "discours.io"
+          mailgun-template: "authorizer_email_confirmation"
+        
+      - name: "Password reset template"
+        uses: gyto/mailgun-template-action@v2
         with:
-          mailgun-host: 'api.eu.mailgun.net'
+          html-file: "./templates/authorizer_password_reset.html"
           mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
-          mailgun-domain-name: 'discours.io'
-          mailgun-template-name: 'authorizer_email_confirm'
-          html-file-path: './templates/authorizer_email_confirm.html'
+          mailgun-domain: "discours.io"
+          mailgun-template: "authorizer_password_reset"
+          
+      - name: "First publication notification"
+        uses: gyto/mailgun-template-action@v2
+        with:
+          html-file: "./templates/first_publication_notification.html"
+          mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
+          mailgun-domain: "discours.io"
+          mailgun-template: "first_publication_notification"
+        
+      - name: "New comment notification template"
+        uses: gyto/mailgun-template-action@v2
+        with:
+          html-file: "./templates/new_comment_notification.html"
+          mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
+          mailgun-domain: "discours.io"
+          mailgun-template: "new_comment_notification"

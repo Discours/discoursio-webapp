@@ -8,6 +8,7 @@ import { createStore, SetStoreFunction } from 'solid-js/store'
 import { apiClient } from '../graphql/client/core'
 import { Topic, TopicInput } from '../graphql/schema/core.gen'
 import { router, useRouter } from '../stores/router'
+import { addArticles } from '../stores/zine/articles'
 import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
@@ -122,20 +123,11 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
     return await apiClient.updateArticle({
-      shoutId: formToUpdate.shoutId,
-      shoutInput: {
-        body: formToUpdate.body,
+      shout_id: formToUpdate.shoutId,
+      shout_input: {
+        ...formToUpdate,
         topics: formToUpdate.selectedTopics.map((topic) => topic2topicInput(topic)), // NOTE: first is main
-        // authors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
-        // community?: InputMaybe<Scalars['Int']>
-        // mainTopic: topic2topicInput(formToUpdate.mainTopic),
-        slug: formToUpdate.slug,
-        subtitle: formToUpdate.subtitle,
-        title: formToUpdate.title,
-        lead: formToUpdate.lead,
-        description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
-        media: formToUpdate.media,
       },
       publish,
     })
@@ -204,13 +196,13 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const publishShoutById = async (shoutId: number) => {
+  const publishShoutById = async (shout_id: number) => {
     try {
-      await apiClient.updateArticle({
-        shoutId,
+      const newShout = await apiClient.updateArticle({
+        shout_id,
         publish: true,
       })
-
+      addArticles([newShout])
       openPage(router, 'feed')
     } catch (error) {
       console.error('[publishShoutById]', error)
@@ -218,10 +210,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const deleteShout = async (shoutId: number) => {
+  const deleteShout = async (shout_id: number) => {
     try {
       await apiClient.deleteShout({
-        shoutId,
+        shout_id,
       })
       return true
     } catch {

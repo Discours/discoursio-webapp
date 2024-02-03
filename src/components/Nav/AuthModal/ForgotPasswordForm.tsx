@@ -1,6 +1,5 @@
 import type { AuthModalSearchParams } from './types'
 
-import { ApiResponse, ForgotPasswordResponse } from '@authorizerdev/authorizer-js'
 import { clsx } from 'clsx'
 import { createSignal, JSX, Show } from 'solid-js'
 
@@ -67,6 +66,7 @@ export const ForgotPasswordForm = () => {
       if (errors && errors.some((error) => error.message.includes('bad user credentials'))) {
         setIsUserNotFound(true)
       }
+      if (data.message) setMessage(data.message)
     } catch (error) {
       console.error(error)
     } finally {

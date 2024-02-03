@@ -1,12 +1,11 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useSnackbar } from '../../../context/snackbar'
-import { ApiError } from '../../../graphql/error'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 import { validateEmail } from '../../../utils/validateEmail'

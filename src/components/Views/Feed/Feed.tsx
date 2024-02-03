@@ -30,6 +30,7 @@ import { AuthorBadge } from '../../Author/AuthorBadge'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { ArticleCard } from '../../Feed/ArticleCard'
 import { Sidebar } from '../../Feed/Sidebar'
+import { Modal } from '../../Nav/Modal'
 
 import styles from './Feed.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
@@ -439,7 +440,10 @@ export const FeedView = (props: Props) => {
           shareUrl={getShareUrl({ pathname: `/${shareData().slug}` })}
         />
       </Show>
-      <InviteMembers title={t('Invite experts')} variant={'coauthors'} />
+
+      <Modal variant="medium" name="inviteCoauthors">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
     </div>
   )
 }

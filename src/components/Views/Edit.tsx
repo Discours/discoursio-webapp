@@ -21,6 +21,7 @@ import { Editor, Panel } from '../Editor'
 import { AudioUploader } from '../Editor/AudioUploader'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 import { VideoUploader } from '../Editor/VideoUploader'
+import { Modal } from '../Nav/Modal'
 import { TableOfContents } from '../TableOfContents'
 
 import { PublishSettings } from './PublishSettings'
@@ -413,7 +414,10 @@ export const EditView = (props: Props) => {
         <PublishSettings shoutId={props.shout.id} form={form} />
       </Show>
       <Panel shoutId={props.shout.id} />
-      <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+
+      <Modal variant="medium" name="inviteCoauthors">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
     </>
   )
 }

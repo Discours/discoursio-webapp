@@ -3,7 +3,7 @@ name: "deploy"
 on: [push]
 
 jobs:
-  Linting:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,3 +28,21 @@ jobs:
 
       - name: Test production build
         run: npm run build
+
+  e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success'
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+      env:
+        BASE_URL: ${{ github.event.deployment_status.target_url }}

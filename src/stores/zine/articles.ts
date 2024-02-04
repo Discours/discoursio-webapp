@@ -1,8 +1,8 @@
 import type {
   Author,
-  Shout,
   LoadShoutsOptions,
   QueryLoad_Shouts_SearchArgs,
+  Shout,
 } from '../../graphql/schema/core.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'

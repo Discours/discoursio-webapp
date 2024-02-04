@@ -2,7 +2,7 @@ import type { Topic } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
@@ -12,9 +12,9 @@ import { capitalize } from '../../utils/capitalize'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { scrollHandler } from '../../utils/scroll'
+import { TopicCard } from '../Topic/Card'
 import { Loading } from '../_shared/Loading'
 import { SearchField } from '../_shared/SearchField'
-import { TopicCard } from '../Topic/Card'
 
 import styles from './AllTopics.module.scss'
 

@@ -1,12 +1,12 @@
 import type { Accessor, JSX } from 'solid-js'
 
-import type { Author, Topic, Reaction, Shout } from '../graphql/schema/core.gen'
+import type { Author, Reaction, Shout, Topic } from '../graphql/schema/core.gen'
 
 import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
-import { createContext, useContext, createSignal, createEffect } from 'solid-js'
+import { createContext, createEffect, createSignal, useContext } from 'solid-js'
 
-import { useSession } from './session'
 import { Chat, Message } from '../graphql/schema/chat.gen'
+import { useSession } from './session'
 
 const RECONNECT_TIMES = 2
 

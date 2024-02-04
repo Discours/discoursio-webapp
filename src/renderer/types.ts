@@ -1,5 +1,5 @@
-import type { PageProps } from '../pages/types'
 import type { Component } from 'solid-js'
+import type { PageProps } from '../pages/types'
 
 import { PageContextBuiltInClientWithClientRouting } from 'vike/dist/esm/types'
 

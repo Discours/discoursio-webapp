@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, JSX, Show } from 'solid-js'
+import { JSX, Show, createEffect, createSignal } from 'solid-js'
 
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 

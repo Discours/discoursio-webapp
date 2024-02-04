@@ -1,4 +1,4 @@
-import { thumborUrl, cdnUrl } from './config'
+import { cdnUrl, thumborUrl } from './config'
 
 const getSizeUrlPart = (options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {}) => {
   const widthString = options.width ? options.width.toString() : ''

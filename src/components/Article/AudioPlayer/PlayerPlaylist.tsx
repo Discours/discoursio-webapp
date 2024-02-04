@@ -1,5 +1,5 @@
 import { gtag } from 'ga-gtag'
-import { createSignal, For, lazy, Show } from 'solid-js'
+import { For, Show, createSignal, lazy } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { MediaItem } from '../../../pages/types'

@@ -3,7 +3,7 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -15,16 +15,16 @@ import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
-import { Loading } from '../../_shared/Loading'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
 import { AuthorShoutsRating } from '../../Author/AuthorShoutsRating'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
+import { Loading } from '../../_shared/Loading'
 
-import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
+import styles from './Author.module.scss'
 
 type Props = {
   shouts: Shout[]

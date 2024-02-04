@@ -1,6 +1,6 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
 

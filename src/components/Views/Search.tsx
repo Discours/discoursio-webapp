@@ -1,11 +1,11 @@
 import type { SearchResult } from '../../graphql/schema/core.gen'
 
-import { Show, For, createSignal, onMount } from 'solid-js'
+import { For, Show, createSignal, onMount } from 'solid-js'
 
-import '../../styles/Search.scss'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { loadShoutsSearch, useArticlesStore } from '../../stores/zine/articles'
+import '../../styles/Search.scss'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
 

@@ -2,25 +2,25 @@ import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createMemo, createSignal, For, Show } from 'solid-js'
+import { For, Show, createMemo, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { router, useRouter } from '../../../stores/router'
 import { capitalize } from '../../../utils/capitalize'
 import { getDescription } from '../../../utils/meta'
+import { CoverImage } from '../../Article/CoverImage'
+import { SharePopup, getShareUrl } from '../../Article/SharePopup'
+import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
+import { AuthorLink } from '../../Author/AuthorLink'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { Popover } from '../../_shared/Popover'
-import { CoverImage } from '../../Article/CoverImage'
-import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
-import { AuthorLink } from '../../Author/AuthorLink'
 import { CardTopic } from '../CardTopic'
 import { FeedArticlePopup } from '../FeedArticlePopup'
 
-import styles from './ArticleCard.module.scss'
 import stylesHeader from '../../Nav/Header/Header.module.scss'
+import styles from './ArticleCard.module.scss'
 
 export type ArticleCardProps = {
   // TODO: refactor this, please

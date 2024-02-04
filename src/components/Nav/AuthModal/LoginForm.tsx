@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -12,8 +12,8 @@ import { validateEmail } from '../../../utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
-import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
+import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
 

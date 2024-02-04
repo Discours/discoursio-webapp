@@ -1,5 +1,5 @@
-import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
 import type { Accessor, JSX } from 'solid-js'
+import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
 
 import { createContext, createSignal, useContext } from 'solid-js'
 

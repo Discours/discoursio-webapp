@@ -2,7 +2,7 @@ import type { Author } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
@@ -13,9 +13,9 @@ import { dummyFilter } from '../../utils/dummyFilter'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { translit } from '../../utils/ru2en'
 import { scrollHandler } from '../../utils/scroll'
+import { AuthorBadge } from '../Author/AuthorBadge'
 import { Loading } from '../_shared/Loading'
 import { SearchField } from '../_shared/SearchField'
-import { AuthorBadge } from '../Author/AuthorBadge'
 
 import styles from './AllAuthors.module.scss'
 

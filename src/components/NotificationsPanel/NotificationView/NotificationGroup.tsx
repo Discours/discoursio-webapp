@@ -5,10 +5,10 @@ import { For, Show } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
 import { NotificationGroup as Group } from '../../../graphql/schema/notifier.gen'
-import { useRouter, router } from '../../../stores/router'
+import { router, useRouter } from '../../../stores/router'
+import { ArticlePageSearchParams } from '../../Article/FullArticle'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
 import { TimeAgo } from '../../_shared/TimeAgo'
-import { ArticlePageSearchParams } from '../../Article/FullArticle'
 
 import styles from './NotificationView.module.scss'
 

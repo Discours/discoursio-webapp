@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createMemo, For } from 'solid-js'
+import { For, createMemo } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'

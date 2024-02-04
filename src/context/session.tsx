@@ -1,19 +1,19 @@
+import type { Accessor, JSX, Resource } from 'solid-js'
 import type { AuthModalSource } from '../components/Nav/AuthModal/types'
 import type { Author } from '../graphql/schema/core.gen'
-import type { Accessor, JSX, Resource } from 'solid-js'
 
 import {
-  VerifyEmailInput,
-  LoginInput,
+  ApiResponse,
   AuthToken,
+  AuthorizeResponse,
   Authorizer,
   ConfigType,
-  SignupInput,
-  AuthorizeResponse,
-  ApiResponse,
-  GenericResponse,
-  ForgotPasswordResponse,
   ForgotPasswordInput,
+  ForgotPasswordResponse,
+  GenericResponse,
+  LoginInput,
+  SignupInput,
+  VerifyEmailInput,
 } from '@authorizerdev/authorizer-js'
 import {
   createContext,

@@ -1,8 +1,8 @@
-import { createEffect, Match, on, onCleanup, Switch } from 'solid-js'
+import { Match, Switch, createEffect, on, onCleanup } from 'solid-js'
 
-import { PageLayout } from '../components/_shared/PageLayout'
 import { AuthGuard } from '../components/AuthGuard'
 import { Feed } from '../components/Views/Feed'
+import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { LoadShoutsOptions } from '../graphql/schema/core.gen'

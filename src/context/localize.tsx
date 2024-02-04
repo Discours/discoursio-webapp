@@ -6,7 +6,7 @@ import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ru from 'javascript-time-ago/locale/ru'
 import Cookie from 'js-cookie'
-import { createContext, createEffect, createMemo, createSignal, Show, useContext } from 'solid-js'
+import { Show, createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
 
 import { useRouter } from '../stores/router'
 

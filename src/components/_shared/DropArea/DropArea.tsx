@@ -2,7 +2,7 @@ import type { FileTypeToUpload } from '../../../pages/types'
 
 import { createDropzone, createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
-import { createSignal, JSX, Show } from 'solid-js'
+import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { UploadedFile } from '../../../pages/types'

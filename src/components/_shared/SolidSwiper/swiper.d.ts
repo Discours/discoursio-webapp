@@ -1,5 +1,5 @@
 import 'solid-js'
-import { SwiperOptions, AutoplayOptions } from 'swiper'
+import { AutoplayOptions, SwiperOptions } from 'swiper'
 import { SwiperSlideProps } from 'swiper/react'
 
 type Kebab<T extends string, A extends string = ''> = T extends `${infer F}${infer R}`

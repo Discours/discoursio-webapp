@@ -1,7 +1,7 @@
 import type { ChatMember } from '../../graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
-import { Show, Switch, Match, createMemo } from 'solid-js'
+import { Match, Show, Switch, createMemo } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { Author } from '../../graphql/schema/core.gen'

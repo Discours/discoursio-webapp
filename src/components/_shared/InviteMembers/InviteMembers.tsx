@@ -1,6 +1,6 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, on, Show } from 'solid-js'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'

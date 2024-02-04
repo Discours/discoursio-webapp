@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, Match, on, Show, Switch } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -16,8 +16,8 @@ import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 
-import styles from './AuthorBadge.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
+import styles from './AuthorBadge.module.scss'
 
 type FollowedInfo = {
   value?: boolean

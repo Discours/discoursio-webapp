@@ -3,7 +3,7 @@ import type { JSX } from 'solid-js'
 import { openPage } from '@nanostores/router'
 import { Editor } from '@tiptap/core'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
-import { createStore, SetStoreFunction } from 'solid-js/store'
+import { SetStoreFunction, createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
 import { Topic, TopicInput } from '../graphql/schema/core.gen'

@@ -6,8 +6,8 @@ import { Show } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { MediaItem } from '../../../pages/types'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
-import { DropArea } from '../../_shared/DropArea'
 import { AudioPlayer } from '../../Article/AudioPlayer'
+import { DropArea } from '../../_shared/DropArea'
 
 import styles from './AudioUploader.module.scss'
 

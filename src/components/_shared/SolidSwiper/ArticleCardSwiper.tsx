@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { For, onMount, Show } from 'solid-js'
+import { For, Show, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
 import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 

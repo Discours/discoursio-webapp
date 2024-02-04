@@ -2,7 +2,7 @@ import type { Author, Community } from '../../../graphql/schema/core.gen'
 
 import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -13,16 +13,16 @@ import { router, useRouter } from '../../../stores/router'
 import { isCyrillic } from '../../../utils/cyrillic'
 import { isAuthor } from '../../../utils/isAuthor'
 import { translit } from '../../../utils/ru2en'
-import { Button } from '../../_shared/Button'
-import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
-import { getShareUrl, SharePopup } from '../../Article/SharePopup'
+import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
+import { Button } from '../../_shared/Button'
+import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
 
-import styles from './AuthorCard.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
+import styles from './AuthorCard.module.scss'
 
 type Props = {
   author: Author

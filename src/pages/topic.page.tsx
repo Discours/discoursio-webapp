@@ -1,10 +1,10 @@
 import type { PageProps } from './types'
 
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 
+import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
-import { PRERENDERED_ARTICLES_COUNT, TopicView } from '../components/Views/Topic'
 import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'

@@ -1,7 +1,7 @@
 import type { Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'

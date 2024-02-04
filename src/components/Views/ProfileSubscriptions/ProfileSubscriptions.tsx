@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
+import { For, Show, createEffect, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -9,11 +9,11 @@ import { SubscriptionFilter } from '../../../pages/types'
 import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
 import { isAuthor } from '../../../utils/isAuthor'
-import { Loading } from '../../_shared/Loading'
-import { SearchField } from '../../_shared/SearchField'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
 import { TopicBadge } from '../../Topic/TopicBadge'
+import { Loading } from '../../_shared/Loading'
+import { SearchField } from '../../_shared/SearchField'
 
 import styles from '../../../pages/profile/Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'

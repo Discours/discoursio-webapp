@@ -5,7 +5,8 @@
     "useIgnoreFile": true
   },
   "organizeImports": {
-    "enabled": true
+    "enabled": true,
+    "ignore": ["./api", "./gen"]
   },
   "formatter": {
     "indentStyle": "space",

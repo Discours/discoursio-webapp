@@ -1,6 +1,6 @@
 import type { Topic } from '../../../graphql/schema/core.gen'
 
-import { createOptions, Select } from '@thisbeyond/solid-select'
+import { Select, createOptions } from '@thisbeyond/solid-select'
 import { clsx } from 'clsx'
 import { createSignal } from 'solid-js'
 

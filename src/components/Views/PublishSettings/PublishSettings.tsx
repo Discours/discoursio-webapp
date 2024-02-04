@@ -1,6 +1,6 @@
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, lazy, onMount, Show } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, lazy, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
@@ -11,14 +11,14 @@ import { UploadedFile } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'
 import { loadAllTopics, useTopicsStore } from '../../../stores/zine/topics'
+import { TopicSelect, UploadModalContent } from '../../Editor'
+import { Modal } from '../../Nav/Modal'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
-import { TopicSelect, UploadModalContent } from '../../Editor'
-import { Modal } from '../../Nav/Modal'
 
-import styles from './PublishSettings.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
+import styles from './PublishSettings.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))

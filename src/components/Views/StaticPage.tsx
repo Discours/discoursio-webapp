@@ -1,7 +1,7 @@
 import { JSX } from 'solid-js'
 
-import { PageLayout } from '../_shared/PageLayout'
 import { TableOfContents } from '../TableOfContents'
+import { PageLayout } from '../_shared/PageLayout'
 
 type Props = {
   title: string

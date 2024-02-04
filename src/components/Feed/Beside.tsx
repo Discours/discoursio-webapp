@@ -3,13 +3,13 @@
 import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, Show } from 'solid-js'
+import { For, Show, createEffect, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { TopicCard } from '../Topic/Card'
+import { Icon } from '../_shared/Icon'
 
 import { ArticleCard } from './ArticleCard'
 

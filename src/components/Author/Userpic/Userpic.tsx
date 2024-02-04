@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createMemo, Show } from 'solid-js'
+import { Show, createMemo } from 'solid-js'
 
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Image } from '../../_shared/Image'

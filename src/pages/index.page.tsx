@@ -1,10 +1,10 @@
 import type { PageProps } from './types'
 
-import { createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Show, createSignal, onCleanup, onMount } from 'solid-js'
 
+import { HomeView, PRERENDERED_ARTICLES_COUNT, RANDOM_TOPICS_COUNT } from '../components/Views/Home'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
-import { HomeView, PRERENDERED_ARTICLES_COUNT, RANDOM_TOPICS_COUNT } from '../components/Views/Home'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'

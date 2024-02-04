@@ -2,7 +2,7 @@ import type { MediaItem } from '../../../pages/types'
 
 import { createDropzone } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
-import { createSignal, For, Show } from 'solid-js'
+import { For, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSnackbar } from '../../../context/snackbar'

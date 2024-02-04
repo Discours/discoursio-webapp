@@ -1,7 +1,7 @@
 import type { PopupProps } from '../Popup'
 
 import { clsx } from 'clsx'
-import { createSignal, For, Show } from 'solid-js'
+import { For, Show, createSignal } from 'solid-js'
 
 import { Popup } from '../Popup'
 

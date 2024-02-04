@@ -2,7 +2,7 @@ import type { JSX } from 'solid-js'
 
 import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, Show } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useMediaQuery } from '../../../context/mediaQuery'
 import { router } from '../../../stores/router'

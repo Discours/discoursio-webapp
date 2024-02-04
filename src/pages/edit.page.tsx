@@ -1,8 +1,8 @@
-import { createMemo, createSignal, lazy, onMount, Show, Suspense } from 'solid-js'
+import { Show, Suspense, createMemo, createSignal, lazy, onMount } from 'solid-js'
 
+import { AuthGuard } from '../components/AuthGuard'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
-import { AuthGuard } from '../components/AuthGuard'
 import { useLocalize } from '../context/localize'
 import { apiClient } from '../graphql/client/core'
 import { Shout } from '../graphql/schema/core.gen'

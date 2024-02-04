@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, onMount, For, lazy } from 'solid-js'
+import { For, Show, createMemo, createSignal, lazy, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'

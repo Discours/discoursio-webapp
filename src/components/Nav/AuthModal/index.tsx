@@ -1,7 +1,7 @@
 import type { AuthModalMode, AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { Show, Component, createEffect, createMemo } from 'solid-js'
+import { Component, Show, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 import { useLocalize } from '../../../context/localize'

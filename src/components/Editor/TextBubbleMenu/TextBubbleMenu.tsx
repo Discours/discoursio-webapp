@@ -1,7 +1,7 @@
 import type { Editor } from '@tiptap/core'
 
 import { clsx } from 'clsx'
-import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect, lazy } from 'solid-js'
+import { Match, Show, Switch, createEffect, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createEditorTransaction } from 'solid-tiptap'
 
 import { useLocalize } from '../../../context/localize'

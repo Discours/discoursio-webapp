@@ -1,6 +1,6 @@
 import type { Author } from '../../graphql/schema/core.gen'
 
-import { createSignal, For, createEffect } from 'solid-js'
+import { For, createEffect, createSignal } from 'solid-js'
 
 import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'

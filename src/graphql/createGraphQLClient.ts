@@ -1,4 +1,4 @@
-import { ClientOptions, dedupExchange, fetchExchange, Exchange, createClient } from '@urql/core'
+import { ClientOptions, Exchange, createClient, dedupExchange, fetchExchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
 
 import { isDev } from '../utils/config'

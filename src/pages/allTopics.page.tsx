@@ -2,8 +2,8 @@ import type { PageProps } from './types'
 
 import { createSignal, onMount } from 'solid-js'
 
-import { PageLayout } from '../components/_shared/PageLayout'
 import { AllTopicsView } from '../components/Views/AllTopics'
+import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 import { loadAllTopics } from '../stores/zine/topics'
 

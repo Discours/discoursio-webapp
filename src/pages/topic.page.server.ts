@@ -1,5 +1,5 @@
-import type { PageProps } from './types'
 import type { PageContext } from '../renderer/types'
+import type { PageProps } from './types'
 
 import { render } from 'vike/abort'
 

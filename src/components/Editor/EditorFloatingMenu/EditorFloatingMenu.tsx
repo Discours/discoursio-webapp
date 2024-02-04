@@ -1,15 +1,15 @@
-import type { MenuItem } from './Menu/Menu'
 import type { Editor } from '@tiptap/core'
+import type { MenuItem } from './Menu/Menu'
 
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { UploadedFile } from '../../../pages/types'
 import { showModal } from '../../../stores/ui'
 import { renderUploadedImage } from '../../../utils/renderUploadedImage'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
-import { Icon } from '../../_shared/Icon'
 import { Modal } from '../../Nav/Modal'
+import { Icon } from '../../_shared/Icon'
 import { InlineForm } from '../InlineForm'
 import { UploadModalContent } from '../UploadModalContent'
 

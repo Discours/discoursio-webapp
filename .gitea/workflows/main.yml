@@ -39,7 +39,7 @@ jobs:
         with:
           version: latest
       - name: Run Biome
-        run: biome ci .
+        run: biome ci src/.
 
   test_with_playwright:
     needs: install_dependencies

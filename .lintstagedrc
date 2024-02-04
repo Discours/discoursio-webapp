@@ -1,6 +1,6 @@
 {
   "*.{js,ts,cjs,mjs,d.mts,jsx,tsx,json,jsonc}": [
-    "biome lint . --no-errors-on-unmatched"
+    "biome check . --no-errors-on-unmatched --apply"
   ],
   "package.json": "sort-package-json",
   "public/locales/**/*.json": "sort-json"

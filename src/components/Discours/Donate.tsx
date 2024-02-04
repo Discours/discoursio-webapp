@@ -7,6 +7,9 @@ import { showModal } from '../../stores/ui'
 
 import styles from './Donate.module.scss'
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type DWindow = Window & { cp: any }
+
 export const Donate = () => {
   const { t } = useLocalize()
   const once = ''
@@ -29,33 +32,38 @@ export const Donate = () => {
   } = useSnackbar()
 
   const initiated = () => {
-    const CloudPayments = window.cp // Checkout(cpOptions)
-    setWidget(new CloudPayments())
-    console.log('[donate] payments initiated')
-    setCustomerReciept({
-      Items: [
-        //товарные позиции
-        {
-          label: cpOptions.description, //наименование товара
-          price: amount() || 0, //цена
-          quantity: 1, //количество
-          amount: amount() || 0, //сумма
-          vat: 20, //ставка НДС
-          method: 0, // тег-1214 признак способа расчета - признак способа расчета
-          object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+    try {
+      const { cp: CloudPayments } = window as unknown as DWindow
+
+      setWidget(new CloudPayments())
+      console.log('[donate] payments initiated')
+      setCustomerReciept({
+        Items: [
+          //товарные позиции
+          {
+            label: cpOptions.description, //наименование товара
+            price: amount() || 0, //цена
+            quantity: 1, //количество
+            amount: amount() || 0, //сумма
+            vat: 20, //ставка НДС
+            method: 0, // тег-1214 признак способа расчета - признак способа расчета
+            object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+          },
+        ],
+        // taxationSystem: 0, //система налогообложения; необязательный, если у вас одна система налогообложения
+        // email: 'user@example.com', //e-mail покупателя, если нужно отправить письмо с чеком
+        // phone: '', //телефон покупателя в любом формате, если нужно отправить сообщение со ссылкой на чек
+        isBso: false, //чек является бланком строгой отчетности
+        amounts: {
+          electronic: amount(), // Сумма оплаты электронными деньгами
+          advancePayment: 0, // Сумма из предоплаты (зачетом аванса) (2 знака после запятой)
+          credit: 0, // Сумма постоплатой(в кредит) (2 знака после запятой)
+          provision: 0, // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
         },
-      ],
-      // taxationSystem: 0, //система налогообложения; необязательный, если у вас одна система налогообложения
-      // email: 'user@example.com', //e-mail покупателя, если нужно отправить письмо с чеком
-      // phone: '', //телефон покупателя в любом формате, если нужно отправить сообщение со ссылкой на чек
-      isBso: false, //чек является бланком строгой отчетности
-      amounts: {
-        electronic: amount(), // Сумма оплаты электронными деньгами
-        advancePayment: 0, // Сумма из предоплаты (зачетом аванса) (2 знака после запятой)
-        credit: 0, // Сумма постоплатой(в кредит) (2 знака после запятой)
-        provision: 0, // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
-      },
-    })
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   onMount(() => {

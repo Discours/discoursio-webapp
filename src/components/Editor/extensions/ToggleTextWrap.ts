@@ -41,9 +41,8 @@ export const ToggleTextWrap = Extension.create({
           if (changesApplied) {
             dispatch(tr)
             return true
-          } else {
-            return false
           }
+          return false
         },
     }
   },

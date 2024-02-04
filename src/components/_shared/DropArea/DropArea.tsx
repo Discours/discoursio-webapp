@@ -89,7 +89,7 @@ export const DropArea = (props: Props) => {
   }
 
   return (
-    <div class={clsx(styles.DropArea, props.class, props.isSquare && styles['square'])}>
+    <div class={clsx(styles.DropArea, props.class, props.isSquare && styles.square)}>
       <div
         class={clsx(styles.field, { [styles.active]: dragActive() })}
         onDragEnter={handleDrag}

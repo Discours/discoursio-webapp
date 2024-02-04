@@ -33,7 +33,7 @@ export const DarkModeToggle = (props: Props) => {
 
     onCleanup(() => {
       setEditorDarkMode(false)
-      delete document.documentElement.dataset.editorDarkMode
+      document.documentElement.dataset.editorDarkMode = undefined
     })
   })
 

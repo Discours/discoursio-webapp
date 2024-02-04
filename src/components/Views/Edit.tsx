@@ -176,7 +176,7 @@ export const EditView = (props: Props) => {
     }
   }
 
-  let autoSaveTimeOutId
+  let autoSaveTimeOutId: number | string | NodeJS.Timeout
 
   const autoSaveRecursive = () => {
     autoSaveTimeOutId = setTimeout(async () => {

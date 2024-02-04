@@ -25,7 +25,7 @@ const getTitle = (title: string) => {
   const shoutTitleWords = title.split(' ')
 
   while (shoutTitle.length <= 30 && i < shoutTitleWords.length) {
-    shoutTitle += shoutTitleWords[i] + ' '
+    shoutTitle += `${shoutTitleWords[i]} `
     i++
   }
 

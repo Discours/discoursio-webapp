@@ -9,7 +9,7 @@ if (isDev) {
   exchanges.unshift(devtoolsExchange)
 }
 
-export const createGraphQLClient = (serviceName: string, token: string = '') => {
+export const createGraphQLClient = (serviceName: string, token = '') => {
   const options: ClientOptions = {
     url: `https://${serviceName}.discours.io`,
     maskTypename: true,

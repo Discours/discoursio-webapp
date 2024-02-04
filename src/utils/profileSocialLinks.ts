@@ -42,10 +42,10 @@ export const profileSocialLinks = (socialLinks: string[]): Link[] => {
   return processedLinks.sort((a, b) => {
     if (a.isPlaceholder && !b.isPlaceholder) {
       return 1
-    } else if (!a.isPlaceholder && b.isPlaceholder) {
-      return -1
-    } else {
-      return 0
     }
+    if (!a.isPlaceholder && b.isPlaceholder) {
+      return -1
+    }
+    return 0
   })
 }

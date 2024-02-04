@@ -40,7 +40,7 @@ export const getOpenGraphImageUrl = (
   )}','${encodeURIComponent(options.title)}')/`
 
   if (src.startsWith(thumborUrl)) {
-    const thumborKey = src.replace(thumborUrl + '/unsafe', '')
+    const thumborKey = src.replace(`${thumborUrl}/unsafe`, '')
     return `${thumborUrl}/unsafe/${sizeUrlPart}${filtersPart}${thumborKey}`
   }
 

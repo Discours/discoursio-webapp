@@ -1,5 +1,7 @@
 import type { Accessor, JSX } from 'solid-js'
 
+import type { Author, Topic, Reaction, Shout } from '../graphql/schema/core.gen'
+
 import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
 import { createContext, useContext, createSignal, createEffect } from 'solid-js'
 
@@ -11,8 +13,7 @@ export interface SSEMessage {
   id: string
   entity: string // follower | shout | reaction
   action: string // create | delete | update | join | follow | seen
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload: any // Author Shout Message Reaction Chat
+  payload: Partial<Author | Shout | Topic | Reaction>
   created_at?: number // unixtime x1000
   seen?: boolean
 }

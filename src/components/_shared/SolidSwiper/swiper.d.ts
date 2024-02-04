@@ -11,8 +11,10 @@ type Kebab<T extends string, A extends string = ''> = T extends `${infer F}${inf
  * @link https://swiperjs.com/element#parameters-as-attributes
  */
 type KebabObjectKeys<T> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  [key in keyof T as Kebab<key & string>]: T[key] extends Object ? KebabObjectKeys<T[key]> : T[key]
+  // biome-ignore lint/suspicious/noExplicitAny: TODO: <explanation>
+  [key in keyof T as Kebab<key & string>]: T[key] extends Record<string, any>
+    ? KebabObjectKeys<T[key]>
+    : T[key]
 }
 
 /**

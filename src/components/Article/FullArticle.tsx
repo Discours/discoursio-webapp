@@ -88,9 +88,8 @@ export const FullArticle = (props: Props) => {
     if (mt) {
       mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
       return mt
-    } else {
-      return props.article.topics[0]
     }
+    return props.article.topics[0]
   })
 
   const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
@@ -284,7 +283,7 @@ export const FullArticle = (props: Props) => {
   }
 
   const handleArticleBodyClick = (event) => {
-    if (event.target.tagName === 'IMG' && !event.target.dataset['disableLightbox']) {
+    if (event.target.tagName === 'IMG' && !event.target.dataset.disableLightbox) {
       const src = event.target.src
       openLightbox(getImageUrl(src))
     }

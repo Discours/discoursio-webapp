@@ -20,9 +20,9 @@ export const SocialProviders = () => {
       <div class={styles.social}>
         <For each={PROVIDERS}>
           {(provider) => (
-            <a href="#" class={styles[provider]} onClick={(_e) => oauth(provider)}>
+            <button class={styles[provider]} onClick={(_e) => oauth(provider)}>
               <Icon name={provider} />
-            </a>
+            </button>
           )}
         </For>
       </div>

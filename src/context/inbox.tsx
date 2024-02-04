@@ -49,11 +49,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const { addHandler } = useConnect()
   addHandler(handleMessage)
 
-  const loadMessages = async (
-    by: MessagesBy,
-    limit: number = 50,
-    offset: number = 0,
-  ): Promise<Array<Message>> => {
+  const loadMessages = async (by: MessagesBy, limit = 50, offset = 0): Promise<Array<Message>> => {
     if (inboxClient.private) {
       const msgs = await inboxClient.loadChatMessages({ by, limit, offset })
       setMessages((mmm) => [...new Set([...mmm, ...msgs])])

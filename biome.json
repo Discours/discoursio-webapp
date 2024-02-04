@@ -21,18 +21,32 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "all": true,
+      "recommended": true,
       "complexity": {
-        "noForEach": "off"
+        "noForEach": "off",
+        "useOptionalChain": "warn"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "useKeyWithMouseEvents": "off",
+        "useAnchorContent": "off",
+        "useValidAnchor": "off",
+        "useMediaCaption": "off",
+        "useAltText": "off",
+        "useButtonType": "off",
+        "noRedundantAlt": "off",
+        "noSvgWithoutTitle": "off"
       },
       "nursery": {
         "useImportRestrictions": "off"
       },
       "style": {
-        "useNamingConvention": "off"
+        "useNamingConvention": "off",
+        "noUnusedTemplateLiteral": "off"
       },
       "suspicious": {
-        "noConsoleLog": "off"
+        "noConsoleLog": "off",
+        "noAssignInExpressions": "off"
       }
     }
   }

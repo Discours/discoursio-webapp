@@ -1,5 +1,5 @@
-export let resolveHydrationPromise
+export let resolveHydrationPromise: () => void
 
-export const hydrationPromise = new Promise((resolve) => {
+export const hydrationPromise: Promise<void> = new Promise((resolve) => {
   resolveHydrationPromise = resolve
 })

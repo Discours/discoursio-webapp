@@ -67,7 +67,7 @@ export const SearchView = (props: Props) => {
             name="q"
             ref={searchEl}
             onInput={handleQueryChange}
-            placeholder={query() || t('Enter text') + '...'}
+            placeholder={query() || `${t('Enter text')}...`}
           />
         </div>
         <div class="col-sm-6">

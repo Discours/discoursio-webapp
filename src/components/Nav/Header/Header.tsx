@@ -135,7 +135,7 @@ export const Header = (props: Props) => {
     }
   }
 
-  let timer
+  let timer: string | number | NodeJS.Timeout
 
   const clearTimer = () => {
     clearTimeout(timer)
@@ -264,7 +264,7 @@ export const Header = (props: Props) => {
                   </li>
                 </ul>
 
-                <h4 innerHTML={t('Subscribe us')} />
+                <h4>{t('Subscribe us')}</h4>
                 <ul class="view-switcher">
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://www.instagram.com/discoursio/">
@@ -358,14 +358,14 @@ export const Header = (props: Props) => {
                 <Icon name="comment" class={styles.icon} />
                 <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
               </div>
-              <a href="#" class={styles.control} onClick={handleCreateButtonClick}>
+              <button class={styles.control} onClick={handleCreateButtonClick}>
                 <Icon name="pencil-outline" class={styles.icon} />
                 <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
-              </a>
-              <a href="#" class={styles.control} onClick={handleBookmarkButtonClick}>
+              </button>
+              <button class={styles.control} onClick={handleBookmarkButtonClick}>
                 <Icon name="bookmark" class={styles.icon} />
                 <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
-              </a>
+              </button>
             </div>
           </Show>
 
@@ -417,7 +417,7 @@ export const Header = (props: Props) => {
                 <a href="/podcasts">{t('Podcasts')}</a>
               </li>
               <li class="item">
-                <a href="">{t('Special Projects')}</a>
+                <a href="/about/projects">{t('Special Projects')}</a>
               </li>
               <li>
                 <a href="/topic/interview">#{t('Interview')}</a>

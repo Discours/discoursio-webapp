@@ -26,8 +26,8 @@ type DialogProps = {
 
 const DialogCard = (props: DialogProps) => {
   const { t, formatTime } = useLocalize()
-  const companions = createMemo(
-    () => props.members && props.members.filter((member: ChatMember) => member.id !== props.ownId),
+  const companions = createMemo(() =>
+    props.members?.filter((member: ChatMember) => member.id !== props.ownId),
   )
 
   const names = createMemo<string>(() => (companions() || []).map((companion) => companion.name).join(', '))

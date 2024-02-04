@@ -11,7 +11,7 @@ export const Footer = () => {
   const { t, lang } = useLocalize()
 
   const changeLangTitle = createMemo(() => (lang() === 'ru' ? 'English' : 'Русский'))
-  const changeLangLink = createMemo(() => '?lng=' + (lang() === 'ru' ? 'en' : 'ru'))
+  const changeLangLink = createMemo(() => `?lng=${lang() === 'ru' ? 'en' : 'ru'}`)
   const links = createMemo(() => [
     {
       header: 'About the project',

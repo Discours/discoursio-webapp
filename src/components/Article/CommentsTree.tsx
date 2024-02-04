@@ -22,8 +22,8 @@ const sortCommentsByRating = (a: Reaction, b: Reaction): -1 | 0 | 1 => {
     return 0
   }
 
-  const x = (a?.stat && a.stat.rating) || 0
-  const y = (b?.stat && b.stat.rating) || 0
+  const x = a.stat?.rating || 0
+  const y = b.stat?.rating || 0
 
   if (x > y) {
     return 1

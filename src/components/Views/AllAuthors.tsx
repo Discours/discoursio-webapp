@@ -63,7 +63,7 @@ export const AllAuthorsView = (props: Props) => {
     setOffsetByFollowers((o) => o + PAGE_SIZE)
   }
 
-  const isStatsLoaded = createMemo(() => sortedAuthors() && sortedAuthors().some((author) => author.stat))
+  const isStatsLoaded = createMemo(() => sortedAuthors()?.some((author) => author.stat))
 
   createEffect(async () => {
     if (!isStatsLoaded()) {

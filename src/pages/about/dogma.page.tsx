@@ -57,7 +57,7 @@ export const DogmaPage = () => {
             <b>Всегда исправляем ошибки, если мы их допустили.</b>
             Никто не безгрешен, иногда и мы ошибаемся. Заметили ошибку — отправьте{' '}
             <a href="/about/guide#editing">ремарку</a> автору или напишите нам на{' '}
-            <a href="mailto:welcome@discours.io" target="_blank">
+            <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
               welcome@discours.io
             </a>
             .

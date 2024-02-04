@@ -36,7 +36,7 @@ const CreateModalContent = (props: Props) => {
           return user.selected === true
         })
         .map((user) => {
-          return user['id']
+          return user.id
         })
       return [...s]
     })

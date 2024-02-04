@@ -89,9 +89,9 @@ export const Lightbox = (props: Props) => {
 
   useEscKeyDownHandler(closeLightbox)
 
-  let startX: number = 0
-  let startY: number = 0
-  let isDragging: boolean = false
+  let startX = 0
+  let startY = 0
+  let isDragging = false
 
   const onMouseDown: (event: MouseEvent) => void = (event) => {
     startX = event.clientX - translateX()
@@ -125,7 +125,7 @@ export const Lightbox = (props: Props) => {
     cursor: 'grab',
   }))
 
-  let fadeTimer
+  let fadeTimer: string | number | NodeJS.Timeout
 
   createEffect(
     on(
@@ -163,7 +163,7 @@ export const Lightbox = (props: Props) => {
         <button class={clsx(styles.control, styles.controlDefault)} onClick={(event) => zoomReset(event)}>
           1:1
         </button>
-        <button class={styles.control} onClick={(event) => zoomIn(event)}>
+        <button type="button" class={styles.control} onClick={(event) => zoomIn(event)}>
           +
         </button>
       </div>

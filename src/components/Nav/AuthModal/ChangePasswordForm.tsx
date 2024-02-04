@@ -68,7 +68,7 @@ export const ChangePasswordForm = () => {
               )}
             </div>
             <Show when={validationErrors()}>
-              <div>{validationErrors()['password']}</div>
+              <div>{validationErrors().password}</div>
             </Show>
             <PasswordField
               errorMessage={(err) => setPasswordError(err)}

@@ -28,14 +28,14 @@ export const VideoPlayer = (props: Props) => {
     if (isYoutube) {
       if (props.videoUrl.includes('youtube.com')) {
         const videoIdMatch = props.videoUrl.match(/watch=(\w+)/)
-        setVideoId(videoIdMatch && videoIdMatch[1])
+        setVideoId(videoIdMatch?.[1])
       } else {
         const videoIdMatch = props.videoUrl.match(/youtu.be\/(\w+)/)
-        setVideoId(videoIdMatch && videoIdMatch[1])
+        setVideoId(videoIdMatch?.[1])
       }
     } else {
       const videoIdMatch = props.videoUrl.match(/vimeo.com\/(\d+)/)
-      setVideoId(videoIdMatch && videoIdMatch[1])
+      setVideoId(videoIdMatch?.[1])
     }
   })
 
@@ -58,6 +58,7 @@ export const VideoPlayer = (props: Props) => {
         <Match when={isVimeo()}>
           <div class={styles.videoContainer}>
             <iframe
+              title={props.title}
               src={`https://player.vimeo.com/video/${videoId()}`}
               width="640"
               height="360"
@@ -69,6 +70,7 @@ export const VideoPlayer = (props: Props) => {
         <Match when={!isVimeo()}>
           <div class={styles.videoContainer}>
             <iframe
+              title={props.title}
               width="560"
               height="315"
               src={`https://www.youtube.com/embed/${videoId()}`}

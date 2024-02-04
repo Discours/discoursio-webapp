@@ -173,7 +173,7 @@ const SimplifiedEditor = (props: Props) => {
     createEditorTransaction(
       () => editor(),
       (ed) => {
-        return ed && ed.isActive(name)
+        return ed?.isActive(name)
       },
     )
 

@@ -23,7 +23,7 @@ export function useProfileForm() {
 }
 
 const userpicUrl = (userpic: string) => {
-  if (userpic && userpic.includes('assets.discours.io')) {
+  if (userpic?.includes('assets.discours.io')) {
     return userpic.replace('100x', '500x500')
   }
   return userpic

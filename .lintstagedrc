@@ -1,5 +1,5 @@
-"lint-staged": {
-  "*.{js,ts,cjs,mjs,d.mts,jsx,tsx,json,jsonc}": ["biome check --apply --no-errors-on-unmatched"],
+{
+  '*.{js,ts,cjs,mjs,d.mts,jsx,tsx,json,jsonc}': [ 'biome check --apply --no-errors-on-unmatched' ],
   "package.json": "sort-package-json",
   "public/locales/**/*.json": "sort-json"
 }

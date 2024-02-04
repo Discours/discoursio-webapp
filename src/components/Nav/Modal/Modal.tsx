@@ -32,7 +32,7 @@ export const Modal = (props: Props) => {
   const handleHide = () => {
     if (modal()) {
       if (allowClose()) {
-        props.onClose && props.onClose()
+        props.onClose?.()
       } else {
         redirectPage(router, 'home')
       }
@@ -64,7 +64,7 @@ export const Modal = (props: Props) => {
           <div
             class={clsx(styles.modal, {
               [styles.narrow]: props.variant === 'narrow',
-              ['col-auto col-md-20 offset-md-2 col-lg-14 offset-lg-5']: props.variant === 'medium',
+              'col-auto col-md-20 offset-md-2 col-lg-14 offset-lg-5': props.variant === 'medium',
               [styles.noPadding]: props.noPadding,
               [styles.maxHeight]: props.maxHeight,
             })}

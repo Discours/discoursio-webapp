@@ -129,11 +129,11 @@ export const InboxView = (props: Props) => {
     })
     if (sortByPerToPer()) {
       return sorted.filter((chat) => (chat.title || '').trim().length === 0)
-    } else if (sortByGroup()) {
-      return sorted.filter((chat) => (chat.title || '').trim().length > 0)
-    } else {
-      return sorted
     }
+    if (sortByGroup()) {
+      return sorted.filter((chat) => (chat.title || '').trim().length > 0)
+    }
+    return sorted
   }
 
   const findToReply = (messageId: number) => {

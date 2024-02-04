@@ -16,7 +16,7 @@ export const restoreScrollPosition = () => {
 }
 
 export const scrollHandler = (elemId: string, offset = -100) => {
-  const anchor = document.querySelector('#' + elemId)
+  const anchor = document.querySelector(`#${elemId}`)
 
   if (anchor) {
     window.scrollTo({

@@ -26,7 +26,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
       () => props.editor,
-      (editor) => editor && editor.isActive(name, attributes),
+      (editor) => editor?.isActive(name, attributes),
     )
 
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)

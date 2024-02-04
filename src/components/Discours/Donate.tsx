@@ -29,8 +29,7 @@ export const Donate = () => {
   } = useSnackbar()
 
   const initiated = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const CloudPayments = window['cp'] // Checkout(cpOptions)
+    const CloudPayments = window.cp // Checkout(cpOptions)
     setWidget(new CloudPayments())
     console.log('[donate] payments initiated')
     setCustomerReciept({
@@ -60,7 +59,6 @@ export const Donate = () => {
   }
 
   onMount(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const script = document.createElement('script')
     script.type = 'text/javascript'
     script.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js'
@@ -76,8 +74,8 @@ export const Donate = () => {
     const choice: HTMLInputElement | undefined | null =
       amountSwitchElement?.querySelector('input[type=radio]:checked')
     setAmount(Number.parseInt(customAmountElement?.value || choice?.value || '0'))
-    console.log('[donate] input amount ' + amount)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    console.log(`[donate] input amount ${amount}`)
+    // biome-ignore lint/suspicious/noExplicitAny: it's a widget!
     ;(widget() as any).charge(
       {
         // options
@@ -105,7 +103,7 @@ export const Donate = () => {
         console.debug('[donate] options', opts)
         showModal('thank')
       },
-      function (reason: string, options) {
+      (reason: string, options) => {
         // fail
         // действие при неуспешной оплате
         console.debug('[donate] options', options)

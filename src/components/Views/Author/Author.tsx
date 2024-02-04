@@ -59,7 +59,7 @@ export const AuthorView = (props: Props) => {
   })
 
   createEffect(() => {
-    if (author() && author().id && !author().stat) {
+    if (author()?.id && !author().stat) {
       const a = loadAuthor({ slug: '', author_id: author().id })
       console.debug(`[AuthorView] loaded author:`, a)
     }

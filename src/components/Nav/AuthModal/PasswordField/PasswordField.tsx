@@ -50,7 +50,7 @@ export const PasswordField = (props: Props) => {
     on(
       () => error(),
       () => {
-        props.errorMessage && props.errorMessage(error())
+        props.errorMessage?.(error())
       },
       { defer: true },
     ),

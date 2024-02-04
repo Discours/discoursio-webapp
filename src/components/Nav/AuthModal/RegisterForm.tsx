@@ -113,7 +113,7 @@ export const RegisterForm = () => {
         redirect_uri: window.location.origin,
       }
       const { errors } = await signUp(opts)
-      if (errors && errors.some((error) => error.message.includes('has already signed up'))) {
+      if (errors?.some((error) => error.message.includes('has already signed up'))) {
         setValidationErrors((prev) => ({
           ...prev,
           email: (

@@ -37,11 +37,11 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     // handling all action types: create update delete join left seen
     if (sseMessage.entity === 'message') {
       console.debug('[context.inbox]:', sseMessage.payload)
-      const relivedMessage = sseMessage.payload
+      const relivedMessage: Message = sseMessage.payload as Message
       setMessages((prev) => [...prev, relivedMessage])
     } else if (sseMessage.entity === 'chat') {
       console.debug('[context.inbox]:', sseMessage.payload)
-      const relivedChat = sseMessage.payload
+      const relivedChat: Chat = sseMessage.payload as Chat
       setChats((prev) => [...prev, relivedChat])
     }
   }

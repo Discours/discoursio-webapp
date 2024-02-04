@@ -6,6 +6,7 @@ import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event
 import { createContext, useContext, createSignal, createEffect } from 'solid-js'
 
 import { useSession } from './session'
+import { Chat, Message } from '../graphql/schema/chat.gen'
 
 const RECONNECT_TIMES = 2
 
@@ -13,7 +14,7 @@ export interface SSEMessage {
   id: string
   entity: string // follower | shout | reaction
   action: string // create | delete | update | join | follow | seen
-  payload: Partial<Author | Shout | Topic | Reaction>
+  payload: Author | Shout | Topic | Reaction | Chat | Message
   created_at?: number // unixtime x1000
   seen?: boolean
 }

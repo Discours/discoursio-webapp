@@ -21,6 +21,8 @@ const CreateModalContent = (props: Props) => {
   const [chatTitle, setChatTitle] = createSignal<string>('')
   const [usersId, setUsersId] = createSignal<number[]>([])
   const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
+  const { createChat, loadChats } = useInbox()
+
   let textInput: HTMLInputElement
 
   const reset = () => {
@@ -54,14 +56,12 @@ const CreateModalContent = (props: Props) => {
     })
   }
 
-  const { actions } = useInbox()
-
   const handleCreate = async () => {
     try {
-      const initChat = await actions.createChat(usersId(), chatTitle())
+      const initChat = await createChat(usersId(), chatTitle())
       console.debug('[components.Inbox] create chat result:', initChat)
       hideModal()
-      await actions.loadChats()
+      await loadChats()
     } catch (error) {
       console.error(error)
     }

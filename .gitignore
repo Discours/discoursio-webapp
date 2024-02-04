@@ -21,3 +21,4 @@ bun.lockb
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/plawright-report/

@@ -29,13 +29,6 @@ jobs:
       - name: Test production build
         run: npm run build
 
-  push:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-
   email-templates:
     runs-on: ubuntu-latest
     name: Update templates on Mailgun

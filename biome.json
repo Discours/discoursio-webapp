@@ -5,7 +5,7 @@
     "useIgnoreFile": true
   },
   "organizeImports": {
-    "enabled": false
+    "enabled": true
   },
   "formatter": {
     "indentStyle": "space",
@@ -24,6 +24,7 @@
     }
   },
   "linter": {
+    "ignore": ["*.scss", "*.md", ".DS_Store", "*.svg"],
     "enabled": true,
     "rules": {
       "recommended": true,

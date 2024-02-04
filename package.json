@@ -54,6 +54,7 @@
     "@microsoft/fetch-event-source": "^2.0.1",
     "@nanostores/router": "0.11.0",
     "@nanostores/solid": "0.4.2",
+    "@playwright/test": "1.41.2",
     "@popperjs/core": "2.11.8",
     "@sentry/browser": "5.30.0",
     "@solid-primitives/media": "2.2.3",

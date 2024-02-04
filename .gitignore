@@ -17,3 +17,7 @@ stats.html
 pnpm-lock.yaml
 bun.lockb
 .jj
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

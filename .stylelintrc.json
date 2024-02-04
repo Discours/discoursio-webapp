@@ -1,11 +1,6 @@
 {
-  "extends": [
-    "stylelint-config-standard-scss"
-  ],
-  "plugins": [
-    "stylelint-order",
-    "stylelint-scss"
-  ],
+  "extends": ["stylelint-config-standard-scss"],
+  "plugins": ["stylelint-order", "stylelint-scss"],
   "rules": {
     "keyframes-name-pattern": null,
     "declaration-block-no-redundant-longhand-properties": null,
@@ -15,13 +10,13 @@
     "scss/no-global-function-names": null,
     "function-url-quotes": null,
     "font-family-no-missing-generic-family-keyword": null,
-    "order/order": [
-      "custom-properties",
-      "declarations"
+    "order/order": ["custom-properties", "declarations"],
+    "scss/dollar-variable-pattern": [
+      "^[a-z][a-zA-Z]+$",
+      {
+        "ignore": "global"
+      }
     ],
-    "scss/dollar-variable-pattern": ["^[a-z][a-zA-Z]+$", {
-      "ignore": "global"
-    }],
     "selector-pseudo-class-no-unknown": [
       true,
       {

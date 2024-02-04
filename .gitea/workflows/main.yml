@@ -1,15 +1,9 @@
 name: "deploy"
 
-on:
-  push:
-    branches:
-      - main
-      - dev
-      - feature/email-templates
-      - feature/biome
+on: [push]
 
 jobs:
-  test:
+  Linting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,25 +12,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run check
-        run: npm run check
+      - name: Lint styles
+        run: npm run lint:styles
 
-      - name: Run check types
+      - name: Check types
         run: npm run typecheck
-
-  quality:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
 
       - name: Install Biome
         run: npm install --global --save-exact @biomejs/biome
 
-      - name: Run Biome
+      - name: Lint with Biome
         run: npx biome ci .
 
-  tests_e2e:
+  Playwright:
     name: Run end-to-end tests
     runs-on: ubuntu-latest
     steps:
@@ -49,14 +37,15 @@ jobs:
       - name: Run Playwright Test
         run: npx playwright test
 
-  push:
+
+  Github:
     needs: test_with_playwright
     runs-on: ubuntu-latest
     steps:
       - name: Push changes
         uses: ad-m/github-push-action@master
 
-  update_mailgun_template:
+  Mailgun:
     runs-on: ubuntu-latest
     name: Update templates on Mailgun
     if: github.event_name == 'push' && github.ref == 'refs/heads/feature/email-templates'

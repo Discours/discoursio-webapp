@@ -1,12 +1,17 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+  "vcs": {
+    "defaultBranch": "dev",
+    "useIgnoreFile": true
+  },
   "organizeImports": {
     "enabled": false
   },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 108
+    "lineWidth": 108,
+    "ignore": ["./src/graphql/schema"]
   },
   "javascript": {
     "formatter": {

@@ -7,12 +7,10 @@ import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { loadAuthors, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
-import { capitalize } from '../../utils/capitalize'
-import { isCyrillic } from '../../utils/cyrillic'
 import { dummyFilter } from '../../utils/dummyFilter'
 import { getImageUrl } from '../../utils/getImageUrl'
-import { translit } from '../../utils/ru2en'
 import { scrollHandler } from '../../utils/scroll'
+import { authorLetterReduce, translateAuthor } from '../../utils/translate'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { Loading } from '../_shared/Loading'
 import { SearchField } from '../_shared/SearchField'
@@ -77,36 +75,10 @@ export const AllAuthorsView = (props: Props) => {
       shouts: loadMoreByShouts,
       followers: loadMoreByFollowers,
     }[searchParams().by]()
-  const translate = (author: Author) =>
-    lang() === 'en' && isCyrillic(author.name)
-      ? capitalize(translit(author.name.replace(/ё/, 'e').replace(/ь/, '')).replace(/-/, ' '), true)
-      : author.name
+
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
-      (acc, author) => {
-        let letter = ''
-        if (!letter && author && author.name) {
-          const name = translate(author)
-            .replace(/[^\dA-zА-я]/, ' ')
-            .trim()
-          const nameParts = name.trim().split(' ')
-          const found = nameParts.filter(Boolean).pop()
-          if (found && found.length > 0) {
-            letter = found[0].toUpperCase()
-          }
-        }
-        if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '@'
-        if (/[^A-z]/.test(letter) && lang() === 'en') letter = '@'
-
-        if (!acc[letter]) acc[letter] = []
-        author.name = translate(author)
-        acc[letter].push(author)
-
-        // Sort authors within each letter group alphabetically by name
-        acc[letter].sort((a, b) => a.name.localeCompare(b.name))
-
-        return acc
-      },
+      (acc, author) => authorLetterReduce(acc, author, lang()),
       {} as { [letter: string]: Author[] },
     )
   })
@@ -207,7 +179,7 @@ export const AllAuthorsView = (props: Props) => {
                               {(author) => (
                                 <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                   <div class="topic-title">
-                                    <a href={`/author/${author.slug}`}>{translate(author)}</a>
+                                    <a href={`/author/${author.slug}`}>{translateAuthor(author, lang())}</a>
                                     <Show when={author.stat}>
                                       <span class={styles.articlesCounter}>{author.stat.shouts}</span>
                                     </Show>

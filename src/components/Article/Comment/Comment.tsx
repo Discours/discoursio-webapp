@@ -39,23 +39,14 @@ export const Comment = (props: Props) => {
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
   const { author } = useSession()
-
-  const {
-    actions: { createReaction, deleteReaction, updateReaction },
-  } = useReactions()
-
-  const {
-    actions: { showConfirm },
-  } = useConfirm()
-
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { createReaction, deleteReaction, updateReaction } = useReactions()
+  const { showConfirm } = useConfirm()
+  const { showSnackbar } = useSnackbar()
 
   const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === author()?.slug)
-
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
+
   const remove = async () => {
     if (comment()?.id) {
       try {

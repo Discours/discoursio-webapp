@@ -40,11 +40,8 @@ export const InviteMembers = (props: Props) => {
   ]
 
   const { sortedAuthors } = useAuthorsStore({ sortBy: 'name' })
-  const {
-    actions: { loadChats, createChat },
-  } = useInbox()
+  const { loadChats, createChat } = useInbox()
   const [authorsToInvite, setAuthorsToInvite] = createSignal<InviteAuthor[]>()
-
   const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
   const [collectionToInvite, setCollectionToInvite] = createSignal<number[]>([])
   const fetcher = async (page: number) => {

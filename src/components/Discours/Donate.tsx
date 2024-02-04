@@ -27,9 +27,7 @@ export const Donate = () => {
   const [showingPayment, setShowingPayment] = createSignal<boolean>()
   const [period, setPeriod] = createSignal(monthly)
   const [amount, setAmount] = createSignal(0)
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const initiated = () => {
     try {

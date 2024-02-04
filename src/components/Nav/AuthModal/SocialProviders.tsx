@@ -10,9 +10,7 @@ export const PROVIDERS = ['facebook', 'google', 'github'] // 'vk' | 'telegram'
 
 export const SocialProviders = () => {
   const { t } = useLocalize()
-  const {
-    actions: { oauth },
-  } = useSession()
+  const { oauth } = useSession()
 
   return (
     <div class={styles.container}>

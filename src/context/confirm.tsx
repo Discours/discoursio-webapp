@@ -15,16 +15,14 @@ type ConfirmMessage = {
 
 type ConfirmContextType = {
   confirmMessage: Accessor<ConfirmMessage>
-  actions: {
-    showConfirm: (message?: {
-      confirmBody?: ConfirmMessage['confirmBody']
-      confirmButtonLabel?: ConfirmMessage['confirmButtonLabel']
-      confirmButtonVariant?: ConfirmMessage['confirmButtonVariant']
-      declineButtonLabel?: ConfirmMessage['declineButtonLabel']
-      declineButtonVariant?: ConfirmMessage['declineButtonVariant']
-    }) => Promise<boolean>
-    resolveConfirm: (value: boolean) => void
-  }
+  showConfirm: (message?: {
+    confirmBody?: ConfirmMessage['confirmBody']
+    confirmButtonLabel?: ConfirmMessage['confirmButtonLabel']
+    confirmButtonVariant?: ConfirmMessage['confirmButtonVariant']
+    declineButtonLabel?: ConfirmMessage['declineButtonLabel']
+    declineButtonVariant?: ConfirmMessage['declineButtonVariant']
+  }) => Promise<boolean>
+  resolveConfirm: (value: boolean) => void
 }
 
 const ConfirmContext = createContext<ConfirmContextType>()
@@ -73,7 +71,7 @@ export const ConfirmProvider = (props: { children: JSX.Element }) => {
     resolveConfirm,
   }
 
-  const value: ConfirmContextType = { confirmMessage, actions }
+  const value: ConfirmContextType = { confirmMessage, ...actions }
 
   return <ConfirmContext.Provider value={value}>{props.children}</ConfirmContext.Provider>
 }

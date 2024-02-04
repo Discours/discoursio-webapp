@@ -19,13 +19,8 @@ type Props = {
 export const CommentRatingControl = (props: Props) => {
   const { t } = useLocalize()
   const { author } = useSession()
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
-  const {
-    reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy },
-  } = useReactions()
+  const { showSnackbar } = useSnackbar()
+  const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
 
   const checkReaction = (reactionKind: ReactionKind) =>
     Object.values(reactionEntities).some(
@@ -86,7 +81,7 @@ export const CommentRatingControl = (props: Props) => {
     <div class={styles.commentRating}>
       <button
         role="button"
-        disabled={!canVote() || !author()}
+        disabled={!(canVote() && author())}
         onClick={() => handleRatingChange(true)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlUp, {
           [styles.voted]: isUpvoted(),
@@ -112,7 +107,7 @@ export const CommentRatingControl = (props: Props) => {
       </Popup>
       <button
         role="button"
-        disabled={!canVote() || !author()}
+        disabled={!(canVote() && author())}
         onClick={() => handleRatingChange(false)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlDown, {
           [styles.voted]: isDownvoted(),

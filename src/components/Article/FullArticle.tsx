@@ -15,9 +15,9 @@ import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { showModal } from '../../stores/ui'
 import { capitalize } from '../../utils/capitalize'
-import { isCyrillic } from '../../utils/cyrillic'
 import { getImageUrl, getOpenGraphImageUrl } from '../../utils/getImageUrl'
 import { getDescription, getKeywords } from '../../utils/meta'
+import { isCyrillic } from '../../utils/translate'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
@@ -69,18 +69,16 @@ const scrollTo = (el: HTMLElement) => {
 const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
 
 export const FullArticle = (props: Props) => {
+  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
+  const { loadReactionsBy } = useReactions()
   const [selectedImage, setSelectedImage] = createSignal('')
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
-
   const { t, formatDate, lang } = useLocalize()
-  const {
-    author,
-    isAuthenticated,
-    actions: { requireAuthentication },
-  } = useSession()
+  const { author, isAuthenticated, requireAuthentication } = useSession()
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
+  const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
 
   const mainTopic = createMemo(() => {
     const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
@@ -91,8 +89,6 @@ export const FullArticle = (props: Props) => {
     }
     return props.article.topics[0]
   })
-
-  const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
 
   const handleBookmarkButtonClick = (ev) => {
     requireAuthentication(() => {
@@ -153,8 +149,6 @@ export const FullArticle = (props: Props) => {
     scrollTo(commentsRef.current)
   }
 
-  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
-
   createEffect(() => {
     if (props.scrollToComments) {
       scrollToComments()
@@ -183,10 +177,6 @@ export const FullArticle = (props: Props) => {
       }
     }
   })
-
-  const {
-    actions: { loadReactionsBy },
-  } = useReactions()
 
   const clickHandlers = []
   const documentClickHandlers = []
@@ -292,7 +282,7 @@ export const FullArticle = (props: Props) => {
   // Check iframes size
   const articleContainer: { current: HTMLElement } = { current: null }
   const updateIframeSizes = () => {
-    if (!articleContainer?.current || !props.article.body) return
+    if (!(articleContainer?.current && props.article.body)) return
     const iframes = articleContainer?.current?.querySelectorAll('iframe')
     if (!iframes) return
     const containerWidth = articleContainer.current?.offsetWidth

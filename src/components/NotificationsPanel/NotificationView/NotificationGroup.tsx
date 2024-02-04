@@ -45,9 +45,7 @@ const reactionsCaption = (threadId: string) =>
 export const NotificationGroup = (props: NotificationGroupProps) => {
   const { t, formatTime, formatDate } = useLocalize()
   const { changeSearchParams } = useRouter<ArticlePageSearchParams>()
-  const {
-    actions: { hideNotificationsPanel, markSeenThread },
-  } = useNotifications()
+  const { hideNotificationsPanel, markSeenThread } = useNotifications()
   const handleClick = (threadId: string) => {
     props.onClick()
 

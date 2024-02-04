@@ -24,9 +24,7 @@ export const VideoUploader = (props: Props) => {
   const [error, setError] = createSignal<string>()
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
 
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const urlInput: {
     current: HTMLInputElement

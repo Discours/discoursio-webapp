@@ -26,9 +26,7 @@ export const DraftsView = () => {
     if (isSessionLoaded()) loadDrafts()
   })
 
-  const {
-    actions: { publishShoutById, deleteShout },
-  } = useEditorContext()
+  const { publishShoutById, deleteShout } = useEditorContext()
 
   const handleDraftDelete = async (shout: Shout) => {
     const result = deleteShout(shout.id)

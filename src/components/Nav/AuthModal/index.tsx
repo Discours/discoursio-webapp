@@ -29,7 +29,6 @@ export const AuthModal = () => {
   const rootRef: { current: HTMLDivElement } = { current: null }
   const { t } = useLocalize()
   const { searchParams } = useRouter<AuthModalSearchParams>()
-
   const { source } = searchParams()
 
   const mode = createMemo<AuthModalMode>(() => {

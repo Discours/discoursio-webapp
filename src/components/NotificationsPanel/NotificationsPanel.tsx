@@ -46,7 +46,6 @@ const isEarlier = (date: Date) => {
 
 export const NotificationsPanel = (props: Props) => {
   const [isLoading, setIsLoading] = createSignal(false)
-
   const { isAuthenticated } = useSession()
   const { t } = useLocalize()
   const {
@@ -55,7 +54,8 @@ export const NotificationsPanel = (props: Props) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    actions: { loadNotificationsGrouped, markSeenAll },
+    loadNotificationsGrouped,
+    markSeenAll,
   } = useNotifications()
   const handleHide = () => {
     props.onClose()

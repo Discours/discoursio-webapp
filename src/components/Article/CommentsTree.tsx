@@ -49,11 +49,7 @@ export const CommentsTree = (props: Props) => {
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
   const [clearEditor, setClearEditor] = createSignal(false)
   const [clickedReplyId, setClickedReplyId] = createSignal<number>()
-
-  const {
-    reactionEntities,
-    actions: { createReaction },
-  } = useReactions()
+  const { reactionEntities, createReaction } = useReactions()
 
   const comments = createMemo(() =>
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT'),

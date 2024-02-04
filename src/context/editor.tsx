@@ -40,20 +40,18 @@ type EditorContextType = {
   form: ShoutForm
   formErrors: Record<keyof ShoutForm, string>
   editorRef: { current: () => Editor }
-  actions: {
-    saveShout: (form: ShoutForm) => Promise<void>
-    saveDraft: (form: ShoutForm) => Promise<void>
-    saveDraftToLocalStorage: (form: ShoutForm) => void
-    getDraftFromLocalStorage: (shoutId: number) => ShoutForm
-    publishShout: (form: ShoutForm) => Promise<void>
-    publishShoutById: (shoutId: number) => Promise<void>
-    deleteShout: (shoutId: number) => Promise<boolean>
-    toggleEditorPanel: () => void
-    countWords: (value: WordCounter) => void
-    setForm: SetStoreFunction<ShoutForm>
-    setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
-    setEditor: (editor: () => Editor) => void
-  }
+  saveShout: (form: ShoutForm) => Promise<void>
+  saveDraft: (form: ShoutForm) => Promise<void>
+  saveDraftToLocalStorage: (form: ShoutForm) => void
+  getDraftFromLocalStorage: (shoutId: number) => ShoutForm
+  publishShout: (form: ShoutForm) => Promise<void>
+  publishShoutById: (shoutId: number) => Promise<void>
+  deleteShout: (shoutId: number) => Promise<boolean>
+  toggleEditorPanel: () => void
+  countWords: (value: WordCounter) => void
+  setForm: SetStoreFunction<ShoutForm>
+  setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
+  setEditor: (editor: () => Editor) => void
 }
 
 const EditorContext = createContext<EditorContextType>()
@@ -84,9 +82,7 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
   const editorRef: { current: () => Editor } = { current: null }
   const [form, setForm] = createStore<ShoutForm>(null)
@@ -251,7 +247,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const value: EditorContextType = {
-    actions,
+    ...actions,
     form,
     formErrors,
     editorRef,

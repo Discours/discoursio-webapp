@@ -34,9 +34,7 @@ export const RegisterForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const { emailChecks } = useEmailChecks()
-  const {
-    actions: { signUp },
-  } = useSession()
+  const { signUp } = useSession()
   const [submitError, setSubmitError] = createSignal('')
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
@@ -67,11 +65,9 @@ export const RegisterForm = () => {
     }
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setValidationErrors(({ fullName: _notNeeded, ...rest }) => rest)
-
     setSubmitError('')
 
     const newValidationErrors: ValidationErrors = {}
-
     const cleanName = fullName().trim()
     const cleanEmail = email().trim()
 
@@ -90,9 +86,7 @@ export const RegisterForm = () => {
     }
 
     setValidationErrors(newValidationErrors)
-
     const emailCheckResult = await checkEmail(cleanEmail)
-
     const isValid = Object.keys(newValidationErrors).length === 0 && !emailCheckResult
 
     if (!isValid) {

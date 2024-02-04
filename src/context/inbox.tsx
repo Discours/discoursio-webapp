@@ -12,14 +12,12 @@ import { SSEMessage, useConnect } from './connect'
 type InboxContextType = {
   chats: Accessor<Chat[]>
   messages?: Accessor<Message[]>
-  actions: {
-    createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
-    loadChats: () => Promise<Array<Chat>>
-    loadRecipients: () => Array<Author>
-    loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Array<Message>>
-    getMessages?: (chatId: string) => Promise<Array<Message>>
-    sendMessage?: (args: MutationCreate_MessageArgs) => void
-  }
+  createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
+  loadChats: () => Promise<Array<Chat>>
+  loadRecipients: () => Array<Author>
+  loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Array<Message>>
+  getMessages?: (chatId: string) => Promise<Array<Message>>
+  sendMessage?: (args: MutationCreate_MessageArgs) => void
 }
 
 const InboxContext = createContext<InboxContextType>()
@@ -119,7 +117,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     sendMessage,
   }
 
-  const value: InboxContextType = { chats, messages, actions }
+  const value: InboxContextType = { chats, messages, ...actions }
 
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>
 }

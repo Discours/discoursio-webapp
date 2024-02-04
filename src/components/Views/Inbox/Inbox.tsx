@@ -44,11 +44,7 @@ type Props = {
 
 export const InboxView = (props: Props) => {
   const { t } = useLocalize()
-  const {
-    chats,
-    messages,
-    actions: { loadChats, getMessages, sendMessage, createChat },
-  } = useInbox()
+  const { chats, messages, loadChats, getMessages, sendMessage, createChat } = useInbox()
   const [recipients, setRecipients] = createSignal<Author[]>(props.authors)
   const [sortByGroup, setSortByGroup] = createSignal(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
@@ -197,7 +193,7 @@ export const InboxView = (props: Props) => {
 
           <Show when={chatsToShow()}>
             <ul class="view-switcher">
-              <li class={clsx({ 'view-switcher__item--selected': !sortByPerToPer() && !sortByGroup() })}>
+              <li class={clsx({ 'view-switcher__item--selected': !(sortByPerToPer() || sortByGroup()) })}>
                 <button
                   onClick={() => {
                     setSortByPerToPer(false)

@@ -20,14 +20,12 @@ type NotificationsContextType = {
   sortedNotifications: Accessor<NotificationGroup[]>
   loadedNotificationsCount: Accessor<number>
   totalNotificationsCount: Accessor<number>
-  actions: {
-    showNotificationsPanel: () => void
-    hideNotificationsPanel: () => void
-    markSeen: (notification_id: number) => Promise<void>
-    markSeenThread: (threadId: string) => Promise<void>
-    markSeenAll: () => Promise<void>
-    loadNotificationsGrouped: (options: QueryLoad_NotificationsArgs) => Promise<NotificationGroup[]>
-  }
+  showNotificationsPanel: () => void
+  hideNotificationsPanel: () => void
+  markSeen: (notification_id: number) => Promise<void>
+  markSeenThread: (threadId: string) => Promise<void>
+  markSeenAll: () => Promise<void>
+  loadNotificationsGrouped: (options: QueryLoad_NotificationsArgs) => Promise<NotificationGroup[]>
 }
 
 export const PAGE_SIZE = 20
@@ -130,7 +128,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    actions,
+    ...actions,
   }
 
   const handleNotificationPanelClose = () => {

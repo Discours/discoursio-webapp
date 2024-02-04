@@ -24,18 +24,10 @@ type Props = {
 
 export const Panel = (props: Props) => {
   const { t } = useLocalize()
-  const {
-    isEditorPanelVisible,
-    wordCounter,
-    editorRef,
-    form,
-    actions: { toggleEditorPanel, saveShout, publishShout },
-  } = useEditorContext()
+  const { isEditorPanelVisible, wordCounter, editorRef, form, toggleEditorPanel, saveShout, publishShout } =
+    useEditorContext()
 
-  const containerRef: { current: HTMLElement } = {
-    current: null,
-  }
-
+  const containerRef: { current: HTMLElement } = { current: null }
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
   const [isTypographyFixed, setIsTypographyFixed] = createSignal(false)
 

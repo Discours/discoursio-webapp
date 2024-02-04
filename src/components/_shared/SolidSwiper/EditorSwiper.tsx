@@ -40,9 +40,7 @@ export const EditorSwiper = (props: Props) => {
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const handleSlideDescriptionChange = (index: number, field: string, value) => {
     if (props.onImageChange) {

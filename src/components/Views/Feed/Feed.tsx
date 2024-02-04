@@ -117,7 +117,8 @@ export const FeedView = (props: Props) => {
   const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
-
+  const { session } = useSession()
+  const { loadReactionsBy } = useReactions()
   const { sortedArticles } = useArticlesStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
@@ -141,10 +142,6 @@ export const FeedView = (props: Props) => {
     return visibility
   })
 
-  const { session } = useSession()
-  const {
-    actions: { loadReactionsBy },
-  } = useReactions()
   const loadUnratedArticles = async () => {
     if (session()) {
       const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)

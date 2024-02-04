@@ -85,10 +85,7 @@ export const PublishSettings = (props: Props) => {
 
   createEffect(() => setTopics(sortedTopics()))
 
-  const {
-    formErrors,
-    actions: { setForm, setFormErrors, saveShout, publishShout },
-  } = useEditorContext()
+  const { formErrors, setForm, setFormErrors, saveShout, publishShout } = useEditorContext()
 
   const handleUploadModalContentCloseSetCover = (image: UploadedFile) => {
     hideModal()

@@ -25,9 +25,7 @@ export const ForgotPasswordForm = () => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail.toLowerCase())
   }
-  const {
-    actions: { forgotPassword },
-  } = useSession()
+  const { forgotPassword } = useSession()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [isUserNotFound, setIsUserNotFound] = createSignal(false)

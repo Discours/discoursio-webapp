@@ -33,15 +33,8 @@ export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
   const { session, author, isAuthenticated, isSessionLoaded } = useSession()
-  const {
-    unreadNotificationsCount,
-    actions: { showNotificationsPanel },
-  } = useNotifications()
-
-  const {
-    form,
-    actions: { toggleEditorPanel, saveShout, publishShout },
-  } = useEditorContext()
+  const { unreadNotificationsCount, showNotificationsPanel } = useNotifications()
+  const { form, toggleEditorPanel, saveShout, publishShout } = useEditorContext()
 
   const handleBellIconClick = (event: Event) => {
     event.preventDefault()

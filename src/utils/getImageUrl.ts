@@ -4,7 +4,7 @@ const getSizeUrlPart = (options: { width?: number; height?: number; noSizeUrlPar
   const widthString = options.width ? options.width.toString() : ''
   const heightString = options.height ? options.height.toString() : ''
 
-  if ((!widthString && !heightString) || options.noSizeUrlPart) {
+  if (!(widthString || heightString) || options.noSizeUrlPart) {
     return ''
   }
 

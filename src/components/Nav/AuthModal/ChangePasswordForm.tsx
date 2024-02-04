@@ -21,9 +21,7 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 export const ChangePasswordForm = () => {
   const { searchParams, changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
-  const {
-    actions: { changePassword },
-  } = useSession()
+  const { changePassword } = useSession()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [newPassword, setNewPassword] = createSignal<string>()

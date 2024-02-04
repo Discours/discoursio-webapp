@@ -6,11 +6,7 @@ import styles from './ConfirmModal.module.scss'
 
 export const ConfirmModal = () => {
   const { t } = useLocalize()
-
-  const {
-    confirmMessage,
-    actions: { resolveConfirm },
-  } = useConfirm()
+  const { confirmMessage, resolveConfirm } = useConfirm()
 
   return (
     <div class={styles.confirmModal}>

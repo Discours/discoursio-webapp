@@ -14,13 +14,11 @@ type SnackbarMessage = {
 
 type SnackbarContextType = {
   snackbarMessage: Accessor<SnackbarMessage>
-  actions: {
-    showSnackbar: (message: {
-      type?: SnackbarMessage['type']
-      body: SnackbarMessage['body']
-      duration?: SnackbarMessage['duration']
-    }) => Promise<void>
-  }
+  showSnackbar: (message: {
+    type?: SnackbarMessage['type']
+    body: SnackbarMessage['body']
+    duration?: SnackbarMessage['duration']
+  }) => Promise<void>
 }
 
 const SnackbarContext = createContext<SnackbarContextType>()
@@ -71,11 +69,7 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
     return currentCheckMessagesPromise
   }
 
-  const actions = {
-    showSnackbar,
-  }
-
-  const value: SnackbarContextType = { snackbarMessage, actions }
+  const value: SnackbarContextType = { snackbarMessage, showSnackbar }
 
   return <SnackbarContext.Provider value={value}>{props.children}</SnackbarContext.Provider>
 }

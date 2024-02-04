@@ -8,8 +8,8 @@ import { useMediaQuery } from '../../../context/mediaQuery'
 import { useSession } from '../../../context/session'
 import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
-import { isCyrillic } from '../../../utils/cyrillic'
 import { translit } from '../../../utils/ru2en'
+import { isCyrillic } from '../../../utils/translate'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
@@ -36,11 +36,7 @@ type Props = {
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
-  const {
-    author,
-    actions: { requireAuthentication },
-  } = useSession()
-
+  const { author, requireAuthentication } = useSession()
   const [isMobileView, setIsMobileView] = createSignal(false)
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
 

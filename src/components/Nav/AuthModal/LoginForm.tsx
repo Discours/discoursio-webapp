@@ -25,28 +25,18 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string>>
 
 export const LoginForm = () => {
+  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
-
   const [submitError, setSubmitError] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
+  const [password, setPassword] = createSignal('')
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   // TODO: better solution for interactive error messages
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
-
   const authFormRef: { current: HTMLFormElement } = { current: null }
-
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
-
-  const {
-    actions: { signIn },
-  } = useSession()
-
-  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
-
-  const [password, setPassword] = createSignal('')
+  const { showSnackbar } = useSnackbar()
+  const { signIn } = useSession()
 
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
@@ -67,7 +57,7 @@ export const LoginForm = () => {
     changeSearchParams({ mode: 'forgot-password' })
     // NOTE: temporary solution, needs logic in authorizer
     /* FIXME:
-    const { actions: { authorizer } } = useSession()
+    const { authorizer } = useSession()
     const result = await authorizer().verifyEmail({ token })
     if (!result) setSubmitError('cant sign send link')
     */
@@ -82,15 +72,15 @@ export const LoginForm = () => {
 
     const newValidationErrors: ValidationErrors = {}
 
-    if (!email()) {
-      newValidationErrors.email = t('Please enter email')
-    } else if (!validateEmail(email())) {
-      newValidationErrors.email = t('Invalid email')
+    const validateAndSetError = (field, message) => {
+      if (!field()) {
+        newValidationErrors[field.name] = t(message)
+      }
     }
 
-    if (!password()) {
-      newValidationErrors.password = t('Please enter password')
-    }
+    validateAndSetError(email, 'Please enter email')
+    validateAndSetError(() => validateEmail(email()), 'Invalid email')
+    validateAndSetError(password, 'Please enter password')
 
     if (Object.keys(newValidationErrors).length > 0) {
       setValidationErrors(newValidationErrors)

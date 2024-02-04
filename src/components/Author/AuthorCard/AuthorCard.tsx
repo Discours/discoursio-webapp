@@ -10,9 +10,9 @@ import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { SubscriptionFilter } from '../../../pages/types'
 import { router, useRouter } from '../../../stores/router'
-import { isCyrillic } from '../../../utils/cyrillic'
 import { isAuthor } from '../../../utils/isAuthor'
 import { translit } from '../../../utils/ru2en'
+import { isCyrillic } from '../../../utils/translate'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
@@ -31,17 +31,14 @@ type Props = {
 }
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
-  const {
-    author,
-    isSessionLoaded,
-    actions: { requireAuthentication },
-  } = useSession()
-
+  const { author, isSessionLoaded, requireAuthentication } = useSession()
+  const { setFollowing } = useFollowing()
   const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
   const isSubscribed = () => props.followers?.some((entity) => entity.id === author()?.id)
+
   createEffect(
     on(
       () => props.followers,
@@ -51,8 +48,6 @@ export const AuthorCard = (props: Props) => {
       { defer: true },
     ),
   )
-
-  const { setFollowing } = useFollowing()
 
   const name = createMemo(() => {
     if (lang() !== 'ru' && isCyrillic(props.author.name)) {

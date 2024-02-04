@@ -50,27 +50,25 @@ export type SessionContextType = {
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
   isAuthenticated: Accessor<boolean>
-  actions: {
-    loadSession: () => AuthToken | Promise<AuthToken>
-    setSession: (token: AuthToken | null) => void // setSession
-    loadAuthor: (info?: unknown) => Author | Promise<Author>
-    setAuthor: (a: Author) => void
-    requireAuthentication: (
-      callback: (() => Promise<void>) | (() => void),
-      modalSource: AuthModalSource,
-    ) => void
-    signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
-    signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
-    signOut: () => Promise<void>
-    oauth: (provider: string) => Promise<void>
-    forgotPassword: (
-      params: ForgotPasswordInput,
-    ) => Promise<{ data: ForgotPasswordResponse; errors: Error[] }>
-    changePassword: (password: string, token: string) => void
-    confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in auth.discours.io
-    setIsSessionLoaded: (loaded: boolean) => void
-    authorizer: () => Authorizer
-  }
+  loadSession: () => AuthToken | Promise<AuthToken>
+  setSession: (token: AuthToken | null) => void // setSession
+  loadAuthor: (info?: unknown) => Author | Promise<Author>
+  setAuthor: (a: Author) => void
+  requireAuthentication: (
+    callback: (() => Promise<void>) | (() => void),
+    modalSource: AuthModalSource,
+  ) => void
+  signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
+  signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
+  signOut: () => Promise<void>
+  oauth: (provider: string) => Promise<void>
+  forgotPassword: (
+    params: ForgotPasswordInput,
+  ) => Promise<{ data: ForgotPasswordResponse; errors: Error[] }>
+  changePassword: (password: string, token: string) => void
+  confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in auth.discours.io
+  setIsSessionLoaded: (loaded: boolean) => void
+  authorizer: () => Authorizer
 }
 
 const noop = () => {}
@@ -86,9 +84,7 @@ export const SessionProvider = (props: {
   children: JSX.Element
 }) => {
   const { t } = useLocalize()
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
   const { searchParams, changeSearchParams } = useRouter()
   const [config, setConfig] = createSignal<ConfigType>(defaultConfig)
   const authorizer = createMemo(() => new Authorizer(config()))
@@ -365,7 +361,7 @@ export const SessionProvider = (props: {
     session,
     isSessionLoaded,
     author,
-    actions,
+    ...actions,
     isAuthenticated,
   }
 

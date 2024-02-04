@@ -9,11 +9,9 @@ import { useSession } from './session'
 
 type ProfileFormContextType = {
   form: ProfileInput
-  actions: {
-    setForm: (profile: ProfileInput) => void
-    submit: (profile: ProfileInput) => Promise<void>
-    updateFormField: (fieldName: string, value: string, remove?: boolean) => void
-  }
+  setForm: (profile: ProfileInput) => void
+  submit: (profile: ProfileInput) => Promise<void>
+  updateFormField: (fieldName: string, value: string, remove?: boolean) => void
 }
 
 const ProfileFormContext = createContext<ProfileFormContextType>()
@@ -73,11 +71,9 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
 
   const value: ProfileFormContextType = {
     form,
-    actions: {
-      submit,
-      updateFormField,
-      setForm,
-    },
+    submit,
+    updateFormField,
+    setForm,
   }
 
   return <ProfileFormContext.Provider value={value}>{props.children}</ProfileFormContext.Provider>

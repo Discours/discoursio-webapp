@@ -26,7 +26,7 @@ export const DarkModeToggle = (props: Props) => {
       document.documentElement.dataset.editorDarkMode = 'false'
     }
 
-    if (!editorDarkModeAttr && !editorDarkModeSelected) {
+    if (!(editorDarkModeAttr || editorDarkModeSelected)) {
       localStorage.setItem('editorDarkMode', 'false')
       document.documentElement.dataset.editorDarkMode = 'false'
     }

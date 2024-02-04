@@ -53,18 +53,19 @@ const handleScrollTopButtonClick = (e) => {
 export const EditView = (props: Props) => {
   const { t } = useLocalize()
   const [isScrolled, setIsScrolled] = createSignal(false)
-
   const { page } = useRouter()
-
   const {
     form,
     formErrors,
-    actions: { setForm, setFormErrors, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage },
+    setForm,
+    setFormErrors,
+    saveDraft,
+    saveDraftToLocalStorage,
+    getDraftFromLocalStorage,
   } = useEditorContext()
-
   const shoutTopics = props.shout.topics || []
-
   const draft = getDraftFromLocalStorage(props.shout.id)
+
   if (draft) {
     setForm(draft)
   } else {

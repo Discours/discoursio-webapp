@@ -20,13 +20,8 @@ type Props = {
 
 export const Draft = (props: Props) => {
   const { t, formatDate } = useLocalize()
-  const {
-    actions: { showConfirm },
-  } = useConfirm()
-
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showConfirm } = useConfirm()
+  const { showSnackbar } = useSnackbar()
 
   const handlePublishLinkClick = (e) => {
     e.preventDefault()

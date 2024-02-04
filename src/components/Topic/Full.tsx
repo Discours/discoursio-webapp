@@ -18,9 +18,7 @@ type Props = {
 export const FullTopic = (props: Props) => {
   const { t } = useLocalize()
   const { subscriptions, setFollowing } = useFollowing()
-  const {
-    actions: { requireAuthentication },
-  } = useSession()
+  const { requireAuthentication } = useSession()
   const [followed, setFollowed] = createSignal()
 
   createEffect(() => {

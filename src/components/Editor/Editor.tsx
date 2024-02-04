@@ -80,9 +80,7 @@ export const Editor = (props: Props) => {
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
 
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const docName = `shout-${props.shoutId}`
 
@@ -337,10 +335,7 @@ export const Editor = (props: Props) => {
     content: initialContent ?? null,
   }))
 
-  const {
-    actions: { countWords, setEditor },
-  } = useEditorContext()
-
+  const { countWords, setEditor } = useEditorContext()
   setEditor(editor)
 
   const html = useEditorHTML(() => editor())

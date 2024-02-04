@@ -94,9 +94,7 @@ const SimplifiedEditor = (props: Props) => {
     current: null,
   }
 
-  const {
-    actions: { setEditor },
-  } = useEditorContext()
+  const { setEditor } = useEditorContext()
 
   const ImageFigure = Figure.extend({
     name: 'capturedImage',

@@ -19,16 +19,8 @@ interface ShoutRatingControlProps {
 
 export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
-  const {
-    author,
-    actions: { requireAuthentication },
-  } = useSession()
-
-  const {
-    reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy },
-  } = useReactions()
-
+  const { author, requireAuthentication } = useSession()
+  const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
   const [isLoading, setIsLoading] = createSignal(false)
 
   const checkReaction = (reactionKind: ReactionKind) =>

@@ -160,7 +160,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             submitButtonText={t('Send')}
           />
         </Match>
-        <Match when={!linkEditorOpen() || !footnoteEditorOpen()}>
+        <Match when={!(linkEditorOpen() && footnoteEditorOpen())}>
           <>
             <Show when={!props.isCommonMarkup}>
               <>

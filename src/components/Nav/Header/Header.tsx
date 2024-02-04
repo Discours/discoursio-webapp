@@ -46,12 +46,8 @@ export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
   const { modal } = useModalStore()
   const { page } = useRouter()
-  const {
-    actions: { requireAuthentication },
-  } = useSession()
-
+  const { requireAuthentication } = useSession()
   const { searchParams } = useRouter<HeaderSearchParams>()
-
   const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -62,9 +58,7 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const toggleFixed = () => {
-    setFixed(!fixed())
-  }
+  const toggleFixed = () => setFixed(!fixed())
 
   const tag = (topic: Topic) =>
     /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
@@ -82,7 +76,7 @@ export const Header = (props: Props) => {
     document.body.classList.toggle('fixed', fixed() || modal() !== null)
     document.body.classList.toggle(styles.fixed, fixed() && !modal())
 
-    if (!fixed() && !modal()) {
+    if (!(fixed() || modal())) {
       mainContent.style.marginTop = ''
       window.scrollTo(0, windowScrollTop)
     }

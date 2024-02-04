@@ -31,7 +31,6 @@ const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTexta
 
 export const ProfileSettings = () => {
   const { t } = useLocalize()
-
   const [prevForm, setPrevForm] = createStore({})
   const [isFormInitialized, setIsFormInitialized] = createSignal(false)
   const [social, setSocial] = createSignal([])
@@ -44,21 +43,10 @@ export const ProfileSettings = () => {
   const [hostname, setHostname] = createSignal<string | null>(null)
   const [slugError, setSlugError] = createSignal<string>()
   const [nameError, setNameError] = createSignal<string>()
-
-  const {
-    form,
-    actions: { submit, updateFormField, setForm },
-  } = useProfileForm()
-
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
-  const {
-    actions: { loadAuthor },
-  } = useSession()
-  const {
-    actions: { showConfirm },
-  } = useConfirm()
+  const { form, submit, updateFormField, setForm } = useProfileForm()
+  const { showSnackbar } = useSnackbar()
+  const { loadAuthor } = useSession()
+  const { showConfirm } = useConfirm()
 
   createEffect(() => {
     if (Object.keys(form).length > 0 && !isFormInitialized()) {

@@ -276,7 +276,7 @@ export const SessionProvider = (props: {
   const authenticate = async (authFunction, params) => {
     const resp = await authFunction(params)
     console.debug('[context.session] authenticate:', resp)
-    if (resp?.data && !resp.errors) {
+    if (resp?.data && resp?.errors.length === 0) {
       setSession(resp.data)
     }
     return { data: resp?.data, errors: resp?.errors }

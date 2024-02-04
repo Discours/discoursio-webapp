@@ -31,7 +31,7 @@ const getDevCssClassPrefix = (filename: string): string => {
 }
 
 const devGenerateScopedName = (name: string, filename: string, _css: string) =>
-  getDevCssClassPrefix(filename) + '__' + name
+  `${getDevCssClassPrefix(filename)}__${name}`
 
 export default defineConfig(({ mode, command }) => {
   const plugins = [

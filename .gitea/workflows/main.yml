@@ -29,11 +29,17 @@ jobs:
       - name: Run check types
         run: npm run typecheck
 
-      - name: Setup Biome
-        run: curl -L https://github.com/biomejs/biome/releases/download/cli%2Fv<version>/biome-darwin-arm64 -o biome && chmod +x biome
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Biome CLI
+        uses: biomejs/setup-biome@v2
 
       - name: Run Biome
-        run: biome ci src/.
+        run: biome ci .
 
   test_with_playwright:
     needs: install_dependencies

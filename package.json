@@ -19,6 +19,7 @@
     "lint:code:fix": "npx @biomejs/biome lint src --apply-unsafe --log-kind=compact --verbose",
     "lint:styles": "stylelint **/*.{scss,css}",
     "lint:styles:fix": "stylelint **/*.{scss,css} --fix",
+    "pre-commit": "lint-staged",
     "prepare": "husky install",
     "preview": "vite preview",
     "start": "vite",

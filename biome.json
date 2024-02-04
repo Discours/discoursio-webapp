@@ -24,7 +24,8 @@
       "recommended": true,
       "complexity": {
         "noForEach": "off",
-        "useOptionalChain": "warn"
+        "useOptionalChain": "warn",
+        "useLiteralKeys": "off"
       },
       "a11y": {
         "useHeadingContent": "off",

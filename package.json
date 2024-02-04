@@ -10,6 +10,7 @@
     "codegen": "graphql-codegen",
     "deploy": "graphql-codegen && npm run typecheck && vite build && vercel",
     "dev": "vite",
+    "e2e": "npx playwright test --project=chromium",
     "fix": "npm run lint:code:fix && npm run lint:styles:fix",
     "format": "npx @biomejs/biome format src/. --write",
     "hygen": "HYGEN_TMPLS=gen hygen",

@@ -26,6 +26,9 @@ jobs:
       - name: Check types
         run: npm run typecheck
 
+      - name: Test production build
+        run: npm run build
+
   Playwright:
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -40,10 +43,13 @@ jobs:
       run: npx playwright install --with-deps
 
     - name: Start Web Server
-      run: npm start &
+      run: npm start > server.log 2>&1 &
+    - name: Web Server startup log
+      run: sleep 10 && cat server.log
+
 
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npm run e2e
     - uses: actions/upload-artifact@v3
       if: always()
       with:

@@ -12,13 +12,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
 
       - name: Install dependencies
         run: npm ci
@@ -32,33 +27,25 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
 
-      - name: Setup Biome CLI
-        uses: biomejs/setup-biome@v2
+      - name: Install Biome
+        run: npm install --global --save-exact @biomejs/biome
 
       - name: Run Biome
-        run: biome ci .
+        run: npx biome ci .
 
-  test_with_playwright:
-    needs: install_dependencies
+  tests_e2e:
+    name: Run end-to-end tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Playwright
-        run: npm install playwright
-
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
       - name: Run Playwright Test
         run: npx playwright test/discoursio-webapp.check.js
 

@@ -12,7 +12,7 @@ import { loadTopic } from '../stores/zine/topics'
 
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()
-  const slug = createMemo(() => page().params.slug as string)
+  const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(
     Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug(),

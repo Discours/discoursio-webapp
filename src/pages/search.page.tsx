@@ -14,7 +14,7 @@ export const SearchPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.searchResults))
   const { t } = useLocalize()
   const { page } = useRouter()
-  const q = createMemo(() => page().params.q as string)
+  const q = createMemo(() => page().params['q'] as string)
 
   createEffect(async () => {
     if (isLoaded()) return

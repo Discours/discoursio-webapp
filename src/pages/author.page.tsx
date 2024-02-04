@@ -14,7 +14,7 @@ import { loadAuthor } from '../stores/zine/authors'
 export const AuthorPage = (props: PageProps) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const slug = createMemo(() => page().params.slug as string)
+  const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(
     Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug(),

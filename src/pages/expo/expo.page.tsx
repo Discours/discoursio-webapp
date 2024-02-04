@@ -12,7 +12,7 @@ import { LayoutType } from '../types'
 export const ExpoPage = (props: PageProps) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const getLayout = createMemo<LayoutType>(() => page().params['layout'] as LayoutType)
+  const getLayout = createMemo<LayoutType>(() => page().params.layout as LayoutType)
 
   const getTitle = () => {
     switch (getLayout()) {

@@ -27,6 +27,7 @@
         "useOptionalChain": "warn"
       },
       "a11y": {
+        "useHeadingContent": "off",
         "useKeyWithClickEvents": "off",
         "useKeyWithMouseEvents": "off",
         "useAnchorContent": "off",

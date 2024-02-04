@@ -165,7 +165,9 @@ export const AuthorCard = (props: Props) => {
                             class={styles.subscribersItem}
                           />
                         )
-                      } else if ('title' in f) {
+                      }
+
+                      if ('title' in f) {
                         return (
                           <Userpic
                             size={'XS'}
@@ -175,6 +177,7 @@ export const AuthorCard = (props: Props) => {
                           />
                         )
                       }
+
                       return null
                     }}
                   </For>
@@ -196,7 +199,7 @@ export const AuthorCard = (props: Props) => {
                       class={styles.socialLink}
                       href={link.startsWith('http') ? link : `https://${link}`}
                       target="_blank"
-                      rel="nofollow noopener"
+                      rel="nofollow noopener noreferrer"
                     >
                       <span class={styles.authorSubscribeSocialLabel}>
                         {link.startsWith('http') ? link : `https://${link}`}

@@ -16,7 +16,7 @@ export const ArticlePage = (props: PageProps) => {
   const shouts = props.article ? [props.article] : []
   const { page } = useRouter()
 
-  const slug = createMemo(() => page().params.slug as string)
+  const slug = createMemo(() => page().params['slug'])
 
   const { articleEntities } = useArticlesStore({
     shouts,

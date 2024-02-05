@@ -1,5 +1,5 @@
 {
   "*.{js,ts,cjs,mjs,d.mts,jsx,tsx,json,jsonc,scss,css}": [
-    "npx @biomejs/biome check . --log-kind=compact --verbose --apply-unsafe && stylelint **/*.{scss,css}"
+    "npx @biomejs/biome check . --log-kind=compact --verbose --apply-unsafe"
   ]
 }

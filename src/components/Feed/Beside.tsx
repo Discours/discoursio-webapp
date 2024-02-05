@@ -3,7 +3,7 @@
 import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal } from 'solid-js'
+import { For, Show } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
@@ -30,12 +30,7 @@ type Props = {
 
 export const Beside = (props: Props) => {
   const { t } = useLocalize()
-  const { subscriptions } = useFollowing()
-  const [subscriptionsAuthorsId, setSubscriptionsAuthorsId] = createSignal<number[] | undefined>()
-
-  createEffect(() => {
-    setSubscriptionsAuthorsId(subscriptions?.authors?.map((item) => item.id) || [])
-  })
+  const { isOwnerSubscribed } = useFollowing()
 
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
@@ -94,8 +89,7 @@ export const Beside = (props: Props) => {
                           <AuthorBadge
                             author={value as Author}
                             isFollowed={{
-                              loaded: Boolean(subscriptionsAuthorsId()),
-                              value: subscriptionsAuthorsId().includes(value.id),
+                              value: isOwnerSubscribed(value.id),
                             }}
                           />
                         </Show>

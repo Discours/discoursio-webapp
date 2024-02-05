@@ -135,7 +135,7 @@ export const Header = (props: Props) => {
     clearTimeout(timer)
   }
 
-  const hideSubnavigation = (event, time = 500) => {
+  const hideSubnavigation = (_event, time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)
     }, time)

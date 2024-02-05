@@ -62,7 +62,7 @@ export const InviteMembers = (props: Props) => {
     return authors?.slice(start, end)
   }
 
-  const [pages, infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
+  const [pages, _infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
 
   createEffect(
     on(

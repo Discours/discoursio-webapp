@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const DropdownSelect = (props: Props) => {
-  const [selected, setSelected] = createSignal<FilterItem>(props.selectItems[0])
+  const [selected, _setSelected] = createSignal<FilterItem>(props.selectItems[0])
   const [isDropDownVisible, setIsDropDownVisible] = createSignal(false)
 
   const containerRef: { current: HTMLElement } = {

@@ -70,7 +70,6 @@ export type SessionContextType = {
   authorizer: () => Authorizer
 }
 
-// biome-ignore lint/nursery/noEmptyBlockStatements: noop
 const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()

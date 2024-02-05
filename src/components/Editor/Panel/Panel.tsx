@@ -51,8 +51,9 @@ export const Panel = (props: Props) => {
     publishShout(form)
   }
 
+  const html = useEditorHTML(() => editorRef.current())
+
   const handleFixTypographyClick = () => {
-    const html = useEditorHTML(() => editorRef.current())
     editorRef.current().commands.setContent(typograf.execute(html()))
     setIsTypographyFixed(true)
   }

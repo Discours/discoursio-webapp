@@ -32,12 +32,14 @@
     "ignore": ["*.scss", "*.md", ".DS_Store", "*.svg"],
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "all": true,
       "complexity": {
-        "all": true,
         "noForEach": "off",
         "useOptionalChain": "warn",
         "useLiteralKeys": "off"
+      },
+      "correctness": {
+        "useHookAtTopLevel": "off"
       },
       "a11y": {
         "useHeadingContent": "off",
@@ -52,13 +54,11 @@
         "noSvgWithoutTitle": "off"
       },
       "nursery": {
-        "all": true,
         "useImportRestrictions": "off",
         "useImportType": "off",
         "useFilenamingConvention": "off"
       },
       "style": {
-        "all": true,
         "useBlockStatements": "off",
         "noImplicitBoolean": "off",
         "useNamingConvention": "off",

@@ -28,7 +28,6 @@ const embedData = (data) => {
 
   const result: { src: string; width?: string; height?: string } = { src: '' }
 
-  // biome-ignore lint/nursery/useForOf: <explanation>
   for (let i = 0; i < attributes.length; i++) {
     const attribute = attributes[i]
     result[attribute.name] = attribute.value

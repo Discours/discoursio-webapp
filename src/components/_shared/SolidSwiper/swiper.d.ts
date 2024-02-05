@@ -1,6 +1,43 @@
 import 'solid-js'
-import { AutoplayOptions, SwiperOptions } from 'swiper'
-import { SwiperSlideProps } from 'swiper/react'
+import { JSX, JSXElement, Ref } from 'solid-js'
+import { AutoplayOptions, SlideData, Swiper, SwiperOptions } from 'swiper'
+
+type SwiperSlideProps = {
+  /**
+   * Slide tag
+   *
+   * @default 'div'
+   */
+  tag?: string
+
+  /**
+   * Enables additional wrapper required for zoom mode
+   *
+   * @default false
+   */
+  zoom?: boolean
+
+  /**
+   * Adds lazy preloader to the slide
+   *
+   * @default false
+   */
+  lazy?: boolean
+
+  /**
+   * Slide's index in slides array/collection
+   *
+   * @default false
+   */
+  virtualIndex?: number
+
+  /**
+   * Slide's child element or render function
+   *
+   * @default undefined
+   */
+  children?: JSX.Element | ((slideData: SlideData) => JSX.Element)
+}
 
 type Kebab<T extends string, A extends string = ''> = T extends `${infer F}${infer R}`
   ? Kebab<R, `${A}${F extends Lowercase<F> ? '' : '-'}${Lowercase<F>}`>
@@ -27,8 +64,6 @@ type KebabObjectKeys<T> = {
 type SwiperRef = HTMLElement & { swiper: Swiper; initialize: () => void }
 
 declare module 'solid-js' {
-  // biome-ignore lint/style/useNamingConvention: JSX is ok
-  // biome-ignore lint/style/noNamespace: TODO: explain why
   namespace JSX {
     interface IntrinsicElements {
       'swiper-container': SwiperContainerAttributes
@@ -36,7 +71,7 @@ declare module 'solid-js' {
     }
 
     interface SwiperContainerAttributes extends KebabObjectKeys<SwiperOptions> {
-      ref?: RefObject<SwiperRef>
+      ref?: Ref<SwiperRef>
       children?: JSX.Element
       onSlideChange?: () => void
       onBeforeSlideChangeStart?: () => void

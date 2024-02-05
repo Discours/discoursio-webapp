@@ -22,5 +22,3 @@ export const <%= h.changeCase.pascal(name) %>Provider = (props: { children: JSX.
 
   return <<%= h.changeCase.pascal(name) %>Context.Provider value={value}>{props.children}</<%= h.changeCase.pascal(name) %>Context.Provider>
 }
-
-

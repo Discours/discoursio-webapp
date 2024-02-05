@@ -207,8 +207,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         shout_id,
         publish: true,
       })
-      addArticles([newShout])
-      openPage(router, 'feed')
+      if (newShout) {
+        addArticles([newShout])
+        openPage(router, 'feed')
+      } else {
+        console.error('[publishShoutById] no shout returned:', newShout)
+      }
     } catch (error) {
       console.error('[publishShoutById]', error)
       showSnackbar({ type: 'error', body: t('Error') })

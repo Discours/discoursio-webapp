@@ -326,8 +326,8 @@ export const FullArticle = (props: Props) => {
   const cover = props.article.cover ?? 'production/image/logo_image.png'
   const ogImage = getOpenGraphImageUrl(cover, {
     title: props.article.title,
-    topic: mainTopic().title,
-    author: props.article.authors[0].name,
+    topic: mainTopic()?.title || '',
+    author: props.article?.authors[0]?.name || '',
     width: 1200,
   })
 

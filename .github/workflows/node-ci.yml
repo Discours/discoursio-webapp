@@ -12,17 +12,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Biome
-        run: npm install --global --save-exact @biomejs/biome
+      - name: Check types
+        run: npm run typecheck
 
       - name: Lint with Biome
         run: npx biome ci .
 
       - name: Lint styles
         run: npm run lint:styles
-
-      - name: Check types
-        run: npm run typecheck
 
       - name: Test production build
         run: npm run build

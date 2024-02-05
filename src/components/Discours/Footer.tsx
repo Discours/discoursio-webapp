@@ -89,7 +89,7 @@ export const Footer = () => {
     },
   ])
 
-  const SOCIAL = [
+  const social = [
     {
       name: 'facebook',
       href: 'https://facebook.com/discoursio',
@@ -146,7 +146,7 @@ export const Footer = () => {
             <a href="/about/terms-of-use">{t('Terms of use')}</a>
           </div>
           <div class={clsx(styles.footerCopyrightSocial, 'col-md-6 col-lg-4')}>
-            <For each={SOCIAL}>
+            <For each={social}>
               {(social) => (
                 <div class={clsx(styles.socialItem, styles[`socialItem${social.name}`])}>
                   <a href={social.href}>

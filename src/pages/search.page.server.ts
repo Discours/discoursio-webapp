@@ -6,7 +6,7 @@ import { SearchResult } from '../graphql/schema/core.gen'
 
 export const onBeforeRender = async (pageContext: PageContext) => {
   const { q: text } = pageContext.routeParams
-  const searchResults: Array<SearchResult> = await apiClient.getShoutsSearch({ text, limit: 50 })
+  const searchResults: SearchResult[] = await apiClient.getShoutsSearch({ text, limit: 50 })
   const pageProps: PageProps = { searchResults, seo: { title: '' } }
 
   return {

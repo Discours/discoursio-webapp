@@ -13,10 +13,10 @@ type InboxContextType = {
   chats: Accessor<Chat[]>
   messages?: Accessor<Message[]>
   createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
-  loadChats: () => Promise<Array<Chat>>
-  loadRecipients: () => Array<Author>
-  loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Array<Message>>
-  getMessages?: (chatId: string) => Promise<Array<Message>>
+  loadChats: () => Promise<Chat[]>
+  loadRecipients: () => Author[]
+  loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Message[]>
+  getMessages?: (chatId: string) => Promise<Message[]>
   sendMessage?: (args: MutationCreate_MessageArgs) => void
 }
 
@@ -47,7 +47,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const { addHandler } = useConnect()
   addHandler(handleMessage)
 
-  const loadMessages = async (by: MessagesBy, limit = 50, offset = 0): Promise<Array<Message>> => {
+  const loadMessages = async (by: MessagesBy, limit = 50, offset = 0): Promise<Message[]> => {
     if (inboxClient.private) {
       const msgs = await inboxClient.loadChatMessages({ by, limit, offset })
       setMessages((mmm) => [...new Set([...mmm, ...msgs])])

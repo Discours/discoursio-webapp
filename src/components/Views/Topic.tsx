@@ -74,7 +74,7 @@ export const TopicView = (props: Props) => {
     restoreScrollPosition()
   }
 
-  onMount(async () => {
+  onMount(() => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
     }

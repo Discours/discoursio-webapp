@@ -48,7 +48,7 @@ export const LoginForm = () => {
     setPassword(newPassword)
   }
 
-  const handleSendLinkAgainClick = async (event: Event) => {
+  const handleSendLinkAgainClick = (event: Event) => {
     event.preventDefault()
 
     setIsLinkSent(true)

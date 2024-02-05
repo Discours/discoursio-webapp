@@ -81,8 +81,8 @@ export const FullArticle = (props: Props) => {
   const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
 
   const mainTopic = createMemo(() => {
-    const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
-    const mt = props.article.topics.find((tpc: Topic) => tpc.slug === main_topic_slug)
+    const mainTopicSlug = props.article.topics.length > 0 ? props.article.main_topic : null
+    const mt = props.article.topics.find((tpc: Topic) => tpc.slug === mainTopicSlug)
     if (mt) {
       mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
       return mt

@@ -2,7 +2,7 @@ import type { Author, Community } from '../../../graphql/schema/core.gen'
 
 import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -61,7 +61,7 @@ export const AuthorCard = (props: Props) => {
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      openPage(router, `inbox`)
+      openPage(router, 'inbox')
       changeSearchParams({
         initChat: props.author.id.toString(),
       })

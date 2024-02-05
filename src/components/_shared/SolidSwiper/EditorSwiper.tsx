@@ -84,7 +84,7 @@ export const EditorSwiper = (props: Props) => {
 
   const { selectFiles } = createFileUploader({
     multiple: true,
-    accept: `image/*`,
+    accept: 'image/*',
   })
 
   const initUpload = async (selectedFiles) => {

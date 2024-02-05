@@ -216,7 +216,7 @@ const SimplifiedEditor = (props: Props) => {
     }
   })
 
-  const handleKeyDown = async (event) => {
+  const handleKeyDown = (event) => {
     if (isEmpty() || !isFocused()) {
       return
     }

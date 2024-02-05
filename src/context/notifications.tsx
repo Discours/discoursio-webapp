@@ -58,7 +58,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       setTotalNotificationsCount(total)
       setUnreadNotificationsCount(unread)
       setNotificationEntities(newGroupsEntries)
-      console.debug(`[context.notifications] groups updated`, groups)
+      console.debug('[context.notifications] groups updated', groups)
       return groups
     }
     return []
@@ -75,7 +75,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   onMount(() => {
     addHandler((data: SSEMessage) => {
       if (data.entity === 'reaction' && isAuthenticated()) {
-        console.info(`[context.notifications] event`, data)
+        console.info('[context.notifications] event', data)
         loadNotificationsGrouped({ after: after(), limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
       }
     })

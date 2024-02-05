@@ -50,7 +50,7 @@ export const SearchView = (props: Props) => {
     restoreScrollPosition()
   }
 
-  onMount(async () => {
+  onMount(() => {
     const q = window.location.pathname.replace('/search/', '') || props.query
     setQuery(q)
     searchEl.value = q

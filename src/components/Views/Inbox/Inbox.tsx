@@ -9,7 +9,6 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import { useAuthorsStore } from '../../../stores/zine/authors'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
@@ -83,7 +82,7 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  const handleSubmit = async (message: string) => {
+  const handleSubmit = (message: string) => {
     sendMessage({
       body: message,
       chat_id: currentDialog()?.id.toString(),

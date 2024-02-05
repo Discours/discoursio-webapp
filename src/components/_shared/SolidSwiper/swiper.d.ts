@@ -27,6 +27,8 @@ type KebabObjectKeys<T> = {
 type SwiperRef = HTMLElement & { swiper: Swiper; initialize: () => void }
 
 declare module 'solid-js' {
+  // biome-ignore lint/style/useNamingConvention: JSX is ok
+  // biome-ignore lint/style/noNamespace: TODO: explain why
   namespace JSX {
     interface IntrinsicElements {
       'swiper-container': SwiperContainerAttributes

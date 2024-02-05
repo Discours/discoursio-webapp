@@ -9,7 +9,7 @@ import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
-import { loadMyFeed, loadShouts, useArticlesStore } from '../../../stores/zine/articles'
+import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
@@ -61,7 +61,7 @@ export const AuthorView = (props: Props) => {
   createEffect(() => {
     if (author()?.id && !author().stat) {
       const a = loadAuthor({ slug: '', author_id: author().id })
-      console.debug(`[AuthorView] loaded author:`, a)
+      console.debug('[AuthorView] loaded author:', a)
     }
   })
 
@@ -128,7 +128,7 @@ export const AuthorView = (props: Props) => {
     const data = await apiClient.getReactionsBy({
       by: { comment: false, created_by: commenter.id },
     })
-    console.debug(`[components.Author] fetched comments`, data)
+    console.debug('[components.Author] fetched comments', data)
     setCommented(data)
   }
 

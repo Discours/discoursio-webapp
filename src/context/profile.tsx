@@ -38,7 +38,7 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  createEffect(async () => {
+  createEffect(() => {
     if (author()) {
       const currentAuthor = author()
       setForm({

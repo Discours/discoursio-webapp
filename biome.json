@@ -52,11 +52,17 @@
         "noSvgWithoutTitle": "off"
       },
       "nursery": {
-        "useImportRestrictions": "off"
+        "all": true,
+        "useImportRestrictions": "off",
+        "useImportType": "off",
+        "useFilenamingConvention": "off"
       },
       "style": {
+        "all": true,
+        "useBlockStatements": "off",
+        "noImplicitBoolean": "off",
         "useNamingConvention": "off",
-        "noUnusedTemplateLiteral": "off"
+        "noDefaultExport": "off"
       },
       "suspicious": {
         "noConsoleLog": "off",

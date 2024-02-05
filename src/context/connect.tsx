@@ -29,7 +29,7 @@ export interface ConnectContextType {
 const ConnectContext = createContext<ConnectContextType>()
 
 export const ConnectProvider = (props: { children: JSX.Element }) => {
-  const [messageHandlers, setHandlers] = createSignal<Array<MessageHandler>>([])
+  const [messageHandlers, setHandlers] = createSignal<MessageHandler[]>([])
   // const [messages, setMessages] = createSignal<Array<SSEMessage>>([]);
   const [connected, setConnected] = createSignal(false)
   const { session } = useSession()

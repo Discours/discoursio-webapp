@@ -1,4 +1,5 @@
-import { Buffer } from 'buffer'
+// biome-ignore lint/nursery/noNodejsModules: TODO: maybe cause problems
+import { Buffer } from 'node:buffer'
 
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'

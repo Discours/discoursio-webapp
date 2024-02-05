@@ -56,7 +56,7 @@ export const AuthModal = () => {
             classList={{ [styles.hidden]: mode() !== 'register' && mode() !== 'confirm-email' }}
           >
             <div>
-              <h4>{t(`Join the global community of authors!`)}</h4>
+              <h4>{t('Join the global community of authors!')}</h4>
               <p class={styles.authBenefits}>
                 {t(
                   'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine',

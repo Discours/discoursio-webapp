@@ -5,7 +5,7 @@ import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
-import { type Shout, type Topic } from '../../graphql/schema/core.gen'
+import type { Shout, Topic } from '../../graphql/schema/core.gen'
 import { LayoutType, MediaItem } from '../../pages/types'
 import { useRouter } from '../../stores/router'
 import { clone } from '../../utils/clone'
@@ -112,7 +112,7 @@ export const EditView = (props: Props) => {
     const handleBeforeUnload = (event) => {
       if (!deepEqual(prevForm, form)) {
         event.returnValue = t(
-          `There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?`,
+          'There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?',
         )
       }
     }

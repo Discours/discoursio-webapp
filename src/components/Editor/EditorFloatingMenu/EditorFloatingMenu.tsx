@@ -22,12 +22,13 @@ type FloatingMenuProps = {
   ref: (el: HTMLDivElement) => void
 }
 
-const embedData = async (data) => {
+const embedData = (data) => {
   const element = document.createRange().createContextualFragment(data)
   const { attributes } = element.firstChild as HTMLIFrameElement
 
   const result: { src: string; width?: string; height?: string } = { src: '' }
 
+  // biome-ignore lint/nursery/useForOf: <explanation>
   for (let i = 0; i < attributes.length; i++) {
     const attribute = attributes[i]
     result[attribute.name] = attribute.value
@@ -69,7 +70,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
       .run()
   }
 
-  const validateEmbed = async (value) => {
+  const validateEmbed = (value) => {
     const element = document.createRange().createContextualFragment(value)
     if (element.firstChild?.nodeName !== 'IFRAME') {
       return t('Error')

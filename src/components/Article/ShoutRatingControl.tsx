@@ -52,7 +52,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     return deleteReaction(reactionToDelete.id)
   }
 
-  const handleRatingChange = async (isUpvote: boolean) => {
+  const handleRatingChange = (isUpvote: boolean) => {
     requireAuthentication(async () => {
       setIsLoading(true)
       if (isUpvoted()) {

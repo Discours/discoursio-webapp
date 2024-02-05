@@ -56,7 +56,7 @@ export const UploadModalContent = (props: Props) => {
     }
   }
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     selectFiles(async ([uploadFile]) => {
       await runUpload(uploadFile)
     })

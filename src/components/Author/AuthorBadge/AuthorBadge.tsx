@@ -51,7 +51,7 @@ export const AuthorBadge = (props: Props) => {
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      openPage(router, `inbox`)
+      openPage(router, 'inbox')
       changeSearchParams({
         initChat: props.author.id.toString(),
       })

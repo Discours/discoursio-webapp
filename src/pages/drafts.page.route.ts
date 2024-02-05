@@ -1,4 +1,6 @@
 import { ROUTES } from '../stores/router'
-import { getServerRoute } from '../utils/getServerRoute'
+import { getServerRoute as gsr } from '../utils/getServerRoute'
 
-export default getServerRoute(ROUTES.drafts)
+const getServerRoute = () => gsr(ROUTES.drafts)
+
+export { getServerRoute }

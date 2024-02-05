@@ -33,7 +33,7 @@ const GrowingTextarea = (props: Props) => {
     props.value(textareaValue)
   }
 
-  const handleKeyDown = async (event) => {
+  const handleKeyDown = (event) => {
     if (event.key === 'Enter' && event.shiftKey) {
       return
     }

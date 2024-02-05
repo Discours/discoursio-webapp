@@ -57,7 +57,7 @@ export const VideoUploader = (props: Props) => {
     }
   }
 
-  const handleUrlInput = async (value: string) => {
+  const handleUrlInput = (value: string) => {
     setError()
     if (validateUrl(value)) {
       props.onVideoAdd(composeMediaItems([{ url: value }]))

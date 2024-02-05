@@ -5,7 +5,6 @@ import type { Author } from '../graphql/schema/core.gen'
 import {
   ApiResponse,
   AuthToken,
-  AuthorizeResponse,
   Authorizer,
   ConfigType,
   ForgotPasswordInput,
@@ -71,6 +70,7 @@ export type SessionContextType = {
   authorizer: () => Authorizer
 }
 
+// biome-ignore lint/nursery/noEmptyBlockStatements: noop
 const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()
@@ -257,7 +257,7 @@ export const SessionProvider = (props: {
     ),
   )
 
-  const [authCallback, setAuthCallback] = createSignal<() => void>(() => {})
+  const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
   const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
     setAuthCallback((_cb) => callback)
     if (!session()) {
@@ -285,13 +285,8 @@ export const SessionProvider = (props: {
     }
     return { data: resp?.data, errors: resp?.errors }
   }
-  const signUp = async (params: SignupInput) => {
-    return authenticate(authorizer().signup, params)
-  }
-
-  const signIn = async (params: LoginInput) => {
-    return authenticate(authorizer().login, params)
-  }
+  const signUp = async (params: SignupInput) => await authenticate(authorizer().signup, params)
+  const signIn = async (params: LoginInput) => await authenticate(authorizer().login, params)
 
   const signOut = async () => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()

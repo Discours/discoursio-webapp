@@ -71,7 +71,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
     setListBubbleOpen((prev) => !prev)
   }
-  const handleKeyDown = async (event) => {
+  const handleKeyDown = (event) => {
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !props.editor.state.selection.empty) {
       event.preventDefault()
       setLinkEditorOpen(true)

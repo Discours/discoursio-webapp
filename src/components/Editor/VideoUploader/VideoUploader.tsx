@@ -2,7 +2,7 @@ import type { MediaItem } from '../../../pages/types'
 
 import { createDropzone } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
-import { createSignal, For, Show } from 'solid-js'
+import { For, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSnackbar } from '../../../context/snackbar'
@@ -24,9 +24,7 @@ export const VideoUploader = (props: Props) => {
   const [error, setError] = createSignal<string>()
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
 
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const urlInput: {
     current: HTMLInputElement
@@ -59,7 +57,7 @@ export const VideoUploader = (props: Props) => {
     }
   }
 
-  const handleUrlInput = async (value: string) => {
+  const handleUrlInput = (value: string) => {
     setError()
     if (validateUrl(value)) {
       props.onVideoAdd(composeMediaItems([{ url: value }]))

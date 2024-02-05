@@ -1,28 +1,28 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Accessor, createMemo, createSignal, lazy, onCleanup, onMount, Show } from 'solid-js'
+import { Accessor, Show, createMemo, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { ShoutForm, useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
-import { type Shout, type Topic } from '../../graphql/schema/core.gen'
+import type { Shout, Topic } from '../../graphql/schema/core.gen'
 import { LayoutType, MediaItem } from '../../pages/types'
 import { useRouter } from '../../stores/router'
 import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { isDesktop } from '../../utils/media-query'
 import { slugify } from '../../utils/slugify'
-import { DropArea } from '../_shared/DropArea'
-import { Icon } from '../_shared/Icon'
-import { InviteMembers } from '../_shared/InviteMembers'
-import { Popover } from '../_shared/Popover'
-import { EditorSwiper } from '../_shared/SolidSwiper'
 import { Editor, Panel } from '../Editor'
 import { AudioUploader } from '../Editor/AudioUploader'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
 import { VideoUploader } from '../Editor/VideoUploader'
 import { Modal } from '../Nav/Modal'
 import { TableOfContents } from '../TableOfContents'
+import { DropArea } from '../_shared/DropArea'
+import { Icon } from '../_shared/Icon'
+import { InviteMembers } from '../_shared/InviteMembers'
+import { Popover } from '../_shared/Popover'
+import { EditorSwiper } from '../_shared/SolidSwiper'
 
 import { PublishSettings } from './PublishSettings'
 
@@ -53,18 +53,19 @@ const handleScrollTopButtonClick = (e) => {
 export const EditView = (props: Props) => {
   const { t } = useLocalize()
   const [isScrolled, setIsScrolled] = createSignal(false)
-
   const { page } = useRouter()
-
   const {
     form,
     formErrors,
-    actions: { setForm, setFormErrors, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage },
+    setForm,
+    setFormErrors,
+    saveDraft,
+    saveDraftToLocalStorage,
+    getDraftFromLocalStorage,
   } = useEditorContext()
-
   const shoutTopics = props.shout.topics || []
-
   const draft = getDraftFromLocalStorage(props.shout.id)
+
   if (draft) {
     setForm(draft)
   } else {
@@ -111,7 +112,7 @@ export const EditView = (props: Props) => {
     const handleBeforeUnload = (event) => {
       if (!deepEqual(prevForm, form)) {
         event.returnValue = t(
-          `There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?`,
+          'There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?',
         )
       }
     }
@@ -176,7 +177,7 @@ export const EditView = (props: Props) => {
     }
   }
 
-  let autoSaveTimeOutId
+  let autoSaveTimeOutId: number | string | NodeJS.Timeout
 
   const autoSaveRecursive = () => {
     autoSaveTimeOutId = setTimeout(async () => {

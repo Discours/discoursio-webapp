@@ -1,6 +1,6 @@
 import type { PopupProps } from '../_shared/Popup'
 
-import { createEffect, createSignal, For } from 'solid-js'
+import { For, createEffect, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { Popup } from '../_shared/Popup'

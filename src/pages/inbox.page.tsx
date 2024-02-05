@@ -2,9 +2,9 @@ import type { PageProps } from './types'
 
 import { createSignal, onMount } from 'solid-js'
 
+import { InboxView } from '../components/Views/Inbox/Inbox'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { ShowOnlyOnClient } from '../components/_shared/ShowOnlyOnClient'
-import { InboxView } from '../components/Views/Inbox/Inbox'
 import { useLocalize } from '../context/localize'
 import { loadAllAuthors } from '../stores/zine/authors'
 

@@ -1,6 +1,6 @@
 import type { Author } from '../../graphql/schema/core.gen'
 
-import { createSignal, For, createEffect } from 'solid-js'
+import { For, createEffect, createSignal } from 'solid-js'
 
 import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
@@ -21,6 +21,8 @@ const CreateModalContent = (props: Props) => {
   const [chatTitle, setChatTitle] = createSignal<string>('')
   const [usersId, setUsersId] = createSignal<number[]>([])
   const [collectionToInvite, setCollectionToInvite] = createSignal<inviteUser[]>(inviteUsers)
+  const { createChat, loadChats } = useInbox()
+
   let textInput: HTMLInputElement
 
   const reset = () => {
@@ -36,7 +38,7 @@ const CreateModalContent = (props: Props) => {
           return user.selected === true
         })
         .map((user) => {
-          return user['id']
+          return user.id
         })
       return [...s]
     })
@@ -54,14 +56,12 @@ const CreateModalContent = (props: Props) => {
     })
   }
 
-  const { actions } = useInbox()
-
   const handleCreate = async () => {
     try {
-      const initChat = await actions.createChat(usersId(), chatTitle())
+      const initChat = await createChat(usersId(), chatTitle())
       console.debug('[components.Inbox] create chat result:', initChat)
       hideModal()
-      await actions.loadChats()
+      await loadChats()
     } catch (error) {
       console.error(error)
     }

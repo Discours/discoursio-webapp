@@ -1,29 +1,19 @@
 import { getPagePath } from '@nanostores/router'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
-import {
-  type Author,
-  type LoadShoutsOptions,
-  type Reaction,
-  type Shout,
-} from '../../../graphql/schema/core.gen'
+import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import { useArticlesStore, resetSortedArticles } from '../../../stores/zine/articles'
+import { resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
 import { getImageUrl } from '../../../utils/getImageUrl'
-import { DropDown } from '../../_shared/DropDown'
-import { Icon } from '../../_shared/Icon'
-import { InviteMembers } from '../../_shared/InviteMembers'
-import { Loading } from '../../_shared/Loading'
-import { ShareModal } from '../../_shared/ShareModal'
 import { CommentDate } from '../../Article/CommentDate'
 import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
@@ -31,10 +21,15 @@ import { AuthorLink } from '../../Author/AuthorLink'
 import { ArticleCard } from '../../Feed/ArticleCard'
 import { Sidebar } from '../../Feed/Sidebar'
 import { Modal } from '../../Nav/Modal'
+import { DropDown } from '../../_shared/DropDown'
+import { Icon } from '../../_shared/Icon'
+import { InviteMembers } from '../../_shared/InviteMembers'
+import { Loading } from '../../_shared/Loading'
+import { ShareModal } from '../../_shared/ShareModal'
 
-import styles from './Feed.module.scss'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
+import styles from './Feed.module.scss'
 
 export const FEED_PAGE_SIZE = 20
 const UNRATED_ARTICLES_COUNT = 5
@@ -117,7 +112,8 @@ export const FeedView = (props: Props) => {
   const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
-
+  const { session } = useSession()
+  const { loadReactionsBy } = useReactions()
   const { sortedArticles } = useArticlesStore()
   const { topTopics } = useTopicsStore()
   const { topAuthors } = useTopAuthorsStore()
@@ -141,10 +137,6 @@ export const FeedView = (props: Props) => {
     return visibility
   })
 
-  const { session } = useSession()
-  const {
-    actions: { loadReactionsBy },
-  } = useReactions()
   const loadUnratedArticles = async () => {
     if (session()) {
       const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)

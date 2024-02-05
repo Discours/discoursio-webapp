@@ -1,6 +1,6 @@
-import { createDropzone, createFileUploader, UploadFile } from '@solid-primitives/upload'
+import { UploadFile, createDropzone, createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { UploadedFile } from '../../../pages/types'
@@ -56,7 +56,7 @@ export const UploadModalContent = (props: Props) => {
     }
   }
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     selectFiles(async ([uploadFile]) => {
       await runUpload(uploadFile)
     })

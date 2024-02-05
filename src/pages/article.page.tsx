@@ -1,12 +1,12 @@
-import type { PageProps } from './types'
 import type { Shout } from '../graphql/schema/core.gen'
+import type { PageProps } from './types'
 
 import { redirectPage } from '@nanostores/router'
-import { createMemo, createSignal, onMount, Show } from 'solid-js'
+import { Show, createMemo, createSignal, onMount } from 'solid-js'
 
+import { FullArticle } from '../components/Article/FullArticle'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
-import { FullArticle } from '../components/Article/FullArticle'
 import { ReactionsProvider } from '../context/reactions'
 import { router, useRouter } from '../stores/router'
 import { loadShout, useArticlesStore } from '../stores/zine/articles'
@@ -25,7 +25,7 @@ export const ArticlePage = (props: PageProps) => {
   const article = createMemo<Shout>(() => articleEntities()[slug()])
 
   onMount(async () => {
-    if (!article() || !article().body) {
+    if (!article()?.body) {
       const loadShoutPromise = loadShout(slug())
       setPageLoadManagerPromise(loadShoutPromise)
       await loadShoutPromise

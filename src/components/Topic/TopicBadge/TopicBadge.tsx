@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -22,9 +22,7 @@ export const TopicBadge = (props: Props) => {
   const { t, lang } = useLocalize()
   const { mediaMatches } = useMediaQuery()
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const {
-    actions: { requireAuthentication },
-  } = useSession()
+  const { requireAuthentication } = useSession()
   const { setFollowing, loading: subLoading } = useFollowing()
   const [followed, setFollowed] = createSignal()
 

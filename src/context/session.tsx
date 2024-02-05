@@ -1,19 +1,18 @@
+import type { Accessor, JSX, Resource } from 'solid-js'
 import type { AuthModalSource } from '../components/Nav/AuthModal/types'
 import type { Author } from '../graphql/schema/core.gen'
-import type { Accessor, JSX, Resource } from 'solid-js'
 
 import {
-  VerifyEmailInput,
-  LoginInput,
+  ApiResponse,
   AuthToken,
   Authorizer,
   ConfigType,
-  SignupInput,
-  AuthorizeResponse,
-  ApiResponse,
-  GenericResponse,
-  ForgotPasswordResponse,
   ForgotPasswordInput,
+  ForgotPasswordResponse,
+  GenericResponse,
+  LoginInput,
+  SignupInput,
+  VerifyEmailInput,
 } from '@authorizerdev/authorizer-js'
 import {
   createContext,
@@ -50,27 +49,25 @@ export type SessionContextType = {
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
   isAuthenticated: Accessor<boolean>
-  actions: {
-    loadSession: () => AuthToken | Promise<AuthToken>
-    setSession: (token: AuthToken | null) => void // setSession
-    loadAuthor: (info?: unknown) => Author | Promise<Author>
-    setAuthor: (a: Author) => void
-    requireAuthentication: (
-      callback: (() => Promise<void>) | (() => void),
-      modalSource: AuthModalSource,
-    ) => void
-    signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
-    signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
-    signOut: () => Promise<void>
-    oauth: (provider: string) => Promise<void>
-    forgotPassword: (
-      params: ForgotPasswordInput,
-    ) => Promise<{ data: ForgotPasswordResponse; errors: Error[] }>
-    changePassword: (password: string, token: string) => void
-    confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken | void> // email confirm callback is in auth.discours.io
-    setIsSessionLoaded: (loaded: boolean) => void
-    authorizer: () => Authorizer
-  }
+  loadSession: () => AuthToken | Promise<AuthToken>
+  setSession: (token: AuthToken | null) => void // setSession
+  loadAuthor: (info?: unknown) => Author | Promise<Author>
+  setAuthor: (a: Author) => void
+  requireAuthentication: (
+    callback: (() => Promise<void>) | (() => void),
+    modalSource: AuthModalSource,
+  ) => void
+  signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
+  signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
+  signOut: () => Promise<void>
+  oauth: (provider: string) => Promise<void>
+  forgotPassword: (
+    params: ForgotPasswordInput,
+  ) => Promise<{ data: ForgotPasswordResponse; errors: Error[] }>
+  changePassword: (password: string, token: string) => void
+  confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in auth.discours.io
+  setIsSessionLoaded: (loaded: boolean) => void
+  authorizer: () => Authorizer
 }
 
 const noop = () => {}
@@ -86,9 +83,7 @@ export const SessionProvider = (props: {
   children: JSX.Element
 }) => {
   const { t } = useLocalize()
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
   const { searchParams, changeSearchParams } = useRouter()
   const [config, setConfig] = createSignal<ConfigType>(defaultConfig)
   const authorizer = createMemo(() => new Authorizer(config()))
@@ -114,7 +109,12 @@ export const SessionProvider = (props: {
   createEffect(() => {
     const token = searchParams()?.token
     const access_token = searchParams()?.access_token
-    if (access_token) changeSearchParams({ mode: 'confirm-email', modal: 'auth', access_token })
+    if (access_token)
+      changeSearchParams({
+        mode: 'confirm-email',
+        modal: 'auth',
+        access_token,
+      })
     else if (token) changeSearchParams({ mode: 'change-password', modal: 'auth', token })
   })
 
@@ -143,15 +143,14 @@ export const SessionProvider = (props: {
         setIsSessionLoaded(true)
 
         return s.data
-      } else {
-        console.info('[context.session] cannot refresh session', s.errors)
-        setAuthError(s.errors.pop().message)
-
-        // Set the session loaded flag even if there's an error
-        setIsSessionLoaded(true)
-
-        return null
       }
+      console.info('[context.session] cannot refresh session', s.errors)
+      setAuthError(s.errors.pop().message)
+
+      // Set the session loaded flag even if there's an error
+      setIsSessionLoaded(true)
+
+      return null
     } catch (error) {
       console.info('[context.session] cannot refresh session', error)
       setAuthError(error)
@@ -232,7 +231,11 @@ export const SessionProvider = (props: {
   // initial effect
   onMount(async () => {
     const metaRes = await authorizer().getMetaData()
-    setConfig({ ...defaultConfig, ...metaRes, redirectURL: window.location.origin })
+    setConfig({
+      ...defaultConfig,
+      ...metaRes,
+      redirectURL: window.location.origin,
+    })
     let s: AuthToken
     try {
       s = await loadSession()
@@ -253,7 +256,7 @@ export const SessionProvider = (props: {
     ),
   )
 
-  const [authCallback, setAuthCallback] = createSignal<() => void>(() => {})
+  const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
   const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
     setAuthCallback((_cb) => callback)
     if (!session()) {
@@ -281,13 +284,8 @@ export const SessionProvider = (props: {
     }
     return { data: resp?.data, errors: resp?.errors }
   }
-  const signUp = async (params: SignupInput) => {
-    return authenticate(authorizer().signup, params)
-  }
-
-  const signIn = async (params: LoginInput) => {
-    return authenticate(authorizer().login, params)
-  }
+  const signUp = async (params: SignupInput) => await authenticate(authorizer().signup, params)
+  const signIn = async (params: LoginInput) => await authenticate(authorizer().login, params)
 
   const signOut = async () => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
@@ -297,7 +295,11 @@ export const SessionProvider = (props: {
   }
 
   const changePassword = async (password: string, token: string) => {
-    const resp = await authorizer().resetPassword({ password, token, confirm_password: password })
+    const resp = await authorizer().resetPassword({
+      password,
+      token,
+      confirm_password: password,
+    })
     console.debug('[context.session] change password response:', resp)
   }
 
@@ -314,9 +316,8 @@ export const SessionProvider = (props: {
       if (at?.data) {
         setSession(at.data)
         return at.data
-      } else {
-        console.warn(at?.errors)
       }
+      console.warn(at?.errors)
     } catch (error) {
       console.warn(error)
     }
@@ -325,15 +326,7 @@ export const SessionProvider = (props: {
   const oauth = async (oauthProvider: string) => {
     console.debug(`[context.session] calling authorizer's oauth for`)
     try {
-      // const data: GraphqlQueryInput = {}
-      // await authorizer().graphqlQuery(data)
-      const ar: AuthorizeResponse | void = await authorizer().oauthLogin(
-        oauthProvider,
-        [],
-        window.location.origin,
-        oauthState(),
-      )
-      console.debug(ar)
+      await authorizer().oauthLogin(oauthProvider, [], window.location.origin, oauthState())
     } catch (error) {
       console.warn(error)
     }
@@ -362,7 +355,7 @@ export const SessionProvider = (props: {
     session,
     isSessionLoaded,
     author,
-    actions,
+    ...actions,
     isAuthenticated,
   }
 

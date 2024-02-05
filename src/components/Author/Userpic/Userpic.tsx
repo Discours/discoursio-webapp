@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createMemo, Show } from 'solid-js'
+import { Show, createMemo } from 'solid-js'
 
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Image } from '../../_shared/Image'
@@ -22,7 +22,7 @@ export const Userpic = (props: Props) => {
   const letters = () => {
     if (!props.name) return
     const names = props.name ? props.name.split(' ') : []
-    return names[0][0 ?? names[0][0]] + '.' + (names.length > 1 ? names[1][0] + '.' : '')
+    return `${names[0][0 ?? names[0][0]]}.${names.length > 1 ? `${names[1][0]}.` : ''}`
   }
 
   const avatarSize = createMemo(() => {
@@ -48,7 +48,7 @@ export const Userpic = (props: Props) => {
   return (
     <div
       class={clsx(styles.Userpic, props.class, styles[props.size ?? 'M'], {
-        ['cursorPointer']: props.onClick,
+        cursorPointer: props.onClick,
       })}
       onClick={props.onClick}
     >

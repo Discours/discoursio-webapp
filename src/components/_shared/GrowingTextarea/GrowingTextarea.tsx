@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 import { ShowOnlyOnClient } from '../ShowOnlyOnClient'
 
@@ -33,7 +33,7 @@ const GrowingTextarea = (props: Props) => {
     props.value(textareaValue)
   }
 
-  const handleKeyDown = async (event) => {
+  const handleKeyDown = (event) => {
     if (event.key === 'Enter' && event.shiftKey) {
       return
     }

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+  "files": {
+    "include": ["*.tsx", "*.ts", "*.js", "*.json"],
+    "ignore": ["./dist", "./node_modules", ".husky", "docs", "gen"]
+  },
+  "vcs": {
+    "defaultBranch": "dev",
+    "useIgnoreFile": true
+  },
+  "organizeImports": {
+    "enabled": true,
+    "ignore": ["./api", "./gen"]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 108,
+    "ignore": ["./src/graphql/schema", "./gen"]
+  },
+  "javascript": {
+    "formatter": {
+      "semicolons": "asNeeded",
+      "quoteStyle": "single",
+      "trailingComma": "all",
+      "enabled": true,
+      "jsxQuoteStyle": "double",
+      "arrowParentheses": "always"
+    }
+  },
+  "linter": {
+    "ignore": ["*.scss", "*.md", ".DS_Store", "*.svg"],
+    "enabled": true,
+    "rules": {
+      "all": true,
+      "complexity": {
+        "noForEach": "off",
+        "useOptionalChain": "warn",
+        "useLiteralKeys": "off"
+      },
+      "correctness": {
+        "useHookAtTopLevel": "off"
+      },
+      "a11y": {
+        "useHeadingContent": "off",
+        "useKeyWithClickEvents": "off",
+        "useKeyWithMouseEvents": "off",
+        "useAnchorContent": "off",
+        "useValidAnchor": "off",
+        "useMediaCaption": "off",
+        "useAltText": "off",
+        "useButtonType": "off",
+        "noRedundantAlt": "off",
+        "noSvgWithoutTitle": "off"
+      },
+      "nursery": {
+        "useImportRestrictions": "off",
+        "useImportType": "off",
+        "useFilenamingConvention": "off"
+      },
+      "style": {
+        "useBlockStatements": "off",
+        "noImplicitBoolean": "off",
+        "useNamingConvention": "off",
+        "noDefaultExport": "off"
+      },
+      "suspicious": {
+        "noConsoleLog": "off",
+        "noAssignInExpressions": "off"
+      }
+    }
+  }
+}

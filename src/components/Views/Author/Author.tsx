@@ -3,28 +3,28 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, Switch, onMount, For, Match, createEffect } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
-import { loadMyFeed, loadShouts, useArticlesStore } from '../../../stores/zine/articles'
+import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { splitToPages } from '../../../utils/splitToPages'
-import { Loading } from '../../_shared/Loading'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
 import { AuthorShoutsRating } from '../../Author/AuthorShoutsRating'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
+import { Loading } from '../../_shared/Loading'
 
-import styles from './Author.module.scss'
 import stylesArticle from '../../Article/Article.module.scss'
+import styles from './Author.module.scss'
 
 type Props = {
   shouts: Shout[]
@@ -59,9 +59,9 @@ export const AuthorView = (props: Props) => {
   })
 
   createEffect(() => {
-    if (author() && author().id && !author().stat) {
+    if (author()?.id && !author().stat) {
       const a = loadAuthor({ slug: '', author_id: author().id })
-      console.debug(`[AuthorView] loaded author:`, a)
+      console.debug('[AuthorView] loaded author:', a)
     }
   })
 
@@ -128,7 +128,7 @@ export const AuthorView = (props: Props) => {
     const data = await apiClient.getReactionsBy({
       by: { comment: false, created_by: commenter.id },
     })
-    console.debug(`[components.Author] fetched comments`, data)
+    console.debug('[components.Author] fetched comments', data)
     setCommented(data)
   }
 

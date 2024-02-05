@@ -1,5 +1,5 @@
 ---
-to: _templates/<%= name %>/<%= action || 'new' %>/hello.ejs.t
+to: gen/<%= name %>/<%= action || 'new' %>/hello.ejs.t
 ---
 ---
 to: app/hello.js
@@ -14,5 +14,3 @@ https://github.com/jondot/hygen
 ```
 
 console.log(hello)
-
-

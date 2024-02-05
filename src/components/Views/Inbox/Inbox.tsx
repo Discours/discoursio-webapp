@@ -2,17 +2,13 @@ import type { Chat, Message as MessageType } from '../../../graphql/schema/chat.
 import type { Author } from '../../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { For, createSignal, Show, onMount, createEffect, createMemo, on } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import { useAuthorsStore } from '../../../stores/zine/authors'
-import { Icon } from '../../_shared/Icon'
-import { InviteMembers } from '../../_shared/InviteMembers'
-import { Popover } from '../../_shared/Popover'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
@@ -20,6 +16,9 @@ import { Message } from '../../Inbox/Message'
 import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
 import { Modal } from '../../Nav/Modal'
+import { Icon } from '../../_shared/Icon'
+import { InviteMembers } from '../../_shared/InviteMembers'
+import { Popover } from '../../_shared/Popover'
 
 import styles from './Inbox.module.scss'
 
@@ -44,11 +43,7 @@ type Props = {
 
 export const InboxView = (props: Props) => {
   const { t } = useLocalize()
-  const {
-    chats,
-    messages,
-    actions: { loadChats, getMessages, sendMessage, createChat },
-  } = useInbox()
+  const { chats, messages, loadChats, getMessages, sendMessage, createChat } = useInbox()
   const [recipients, setRecipients] = createSignal<Author[]>(props.authors)
   const [sortByGroup, setSortByGroup] = createSignal(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
@@ -87,7 +82,7 @@ export const InboxView = (props: Props) => {
     }
   }
 
-  const handleSubmit = async (message: string) => {
+  const handleSubmit = (message: string) => {
     sendMessage({
       body: message,
       chat_id: currentDialog()?.id.toString(),
@@ -129,11 +124,11 @@ export const InboxView = (props: Props) => {
     })
     if (sortByPerToPer()) {
       return sorted.filter((chat) => (chat.title || '').trim().length === 0)
-    } else if (sortByGroup()) {
-      return sorted.filter((chat) => (chat.title || '').trim().length > 0)
-    } else {
-      return sorted
     }
+    if (sortByGroup()) {
+      return sorted.filter((chat) => (chat.title || '').trim().length > 0)
+    }
+    return sorted
   }
 
   const findToReply = (messageId: number) => {
@@ -197,7 +192,7 @@ export const InboxView = (props: Props) => {
 
           <Show when={chatsToShow()}>
             <ul class="view-switcher">
-              <li class={clsx({ 'view-switcher__item--selected': !sortByPerToPer() && !sortByGroup() })}>
+              <li class={clsx({ 'view-switcher__item--selected': !(sortByPerToPer() || sortByGroup()) })}>
                 <button
                   onClick={() => {
                     setSortByPerToPer(false)

@@ -5,8 +5,8 @@ import { createContext, createMemo, createSignal, onMount, useContext } from 'so
 import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
 
-import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { NotificationsPanel } from '../components/NotificationsPanel'
+import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { notifierClient } from '../graphql/client/notifier'
 import { NotificationGroup, QueryLoad_NotificationsArgs } from '../graphql/schema/notifier.gen'
 
@@ -20,14 +20,12 @@ type NotificationsContextType = {
   sortedNotifications: Accessor<NotificationGroup[]>
   loadedNotificationsCount: Accessor<number>
   totalNotificationsCount: Accessor<number>
-  actions: {
-    showNotificationsPanel: () => void
-    hideNotificationsPanel: () => void
-    markSeen: (notification_id: number) => Promise<void>
-    markSeenThread: (threadId: string) => Promise<void>
-    markSeenAll: () => Promise<void>
-    loadNotificationsGrouped: (options: QueryLoad_NotificationsArgs) => Promise<NotificationGroup[]>
-  }
+  showNotificationsPanel: () => void
+  hideNotificationsPanel: () => void
+  markSeen: (notification_id: number) => Promise<void>
+  markSeenThread: (threadId: string) => Promise<void>
+  markSeenAll: () => Promise<void>
+  loadNotificationsGrouped: (options: QueryLoad_NotificationsArgs) => Promise<NotificationGroup[]>
 }
 
 export const PAGE_SIZE = 20
@@ -60,7 +58,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       setTotalNotificationsCount(total)
       setUnreadNotificationsCount(unread)
       setNotificationEntities(newGroupsEntries)
-      console.debug(`[context.notifications] groups updated`, groups)
+      console.debug('[context.notifications] groups updated', groups)
       return groups
     }
     return []
@@ -77,7 +75,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   onMount(() => {
     addHandler((data: SSEMessage) => {
       if (data.entity === 'reaction' && isAuthenticated()) {
-        console.info(`[context.notifications] event`, data)
+        console.info('[context.notifications] event', data)
         loadNotificationsGrouped({ after: after(), limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
       }
     })
@@ -130,7 +128,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    actions,
+    ...actions,
   }
 
   const handleNotificationPanelClose = () => {

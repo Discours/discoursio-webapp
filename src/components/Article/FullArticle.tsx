@@ -5,7 +5,7 @@ import { createPopper } from '@popperjs/core'
 import { Link, Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { install } from 'ga-gtag'
-import { createEffect, For, createMemo, onMount, Show, createSignal, onCleanup, on } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
 
 import { useLocalize } from '../../context/localize'
@@ -15,9 +15,14 @@ import { MediaItem } from '../../pages/types'
 import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
 import { showModal } from '../../stores/ui'
 import { capitalize } from '../../utils/capitalize'
-import { isCyrillic } from '../../utils/cyrillic'
 import { getImageUrl, getOpenGraphImageUrl } from '../../utils/getImageUrl'
 import { getDescription, getKeywords } from '../../utils/meta'
+import { isCyrillic } from '../../utils/translate'
+import { AuthorBadge } from '../Author/AuthorBadge'
+import { CardTopic } from '../Feed/CardTopic'
+import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
+import { Modal } from '../Nav/Modal'
+import { TableOfContents } from '../TableOfContents'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
 import { InviteMembers } from '../_shared/InviteMembers'
@@ -26,20 +31,15 @@ import { Popover } from '../_shared/Popover'
 import { ShareModal } from '../_shared/ShareModal'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { VideoPlayer } from '../_shared/VideoPlayer'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { CardTopic } from '../Feed/CardTopic'
-import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
-import { Modal } from '../Nav/Modal'
-import { TableOfContents } from '../TableOfContents'
 
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
-import { getShareUrl, SharePopup } from './SharePopup'
+import { SharePopup, getShareUrl } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
 
-import styles from './Article.module.scss'
 import stylesHeader from '../Nav/Header/Header.module.scss'
+import styles from './Article.module.scss'
 
 type Props = {
   article: Shout
@@ -69,31 +69,26 @@ const scrollTo = (el: HTMLElement) => {
 const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
 
 export const FullArticle = (props: Props) => {
+  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
+  const { loadReactionsBy } = useReactions()
   const [selectedImage, setSelectedImage] = createSignal('')
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
-
   const { t, formatDate, lang } = useLocalize()
-  const {
-    author,
-    isAuthenticated,
-    actions: { requireAuthentication },
-  } = useSession()
+  const { author, isAuthenticated, requireAuthentication } = useSession()
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
+  const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
 
   const mainTopic = createMemo(() => {
-    const main_topic_slug = props.article.topics.length > 0 ? props.article.main_topic : null
-    const mt = props.article.topics.find((tpc: Topic) => tpc.slug === main_topic_slug)
+    const mainTopicSlug = props.article.topics.length > 0 ? props.article.main_topic : null
+    const mt = props.article.topics.find((tpc: Topic) => tpc.slug === mainTopicSlug)
     if (mt) {
       mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
       return mt
-    } else {
-      return props.article.topics[0]
     }
+    return props.article.topics[0]
   })
-
-  const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
 
   const handleBookmarkButtonClick = (ev) => {
     requireAuthentication(() => {
@@ -154,8 +149,6 @@ export const FullArticle = (props: Props) => {
     scrollTo(commentsRef.current)
   }
 
-  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
-
   createEffect(() => {
     if (props.scrollToComments) {
       scrollToComments()
@@ -184,10 +177,6 @@ export const FullArticle = (props: Props) => {
       }
     }
   })
-
-  const {
-    actions: { loadReactionsBy },
-  } = useReactions()
 
   const clickHandlers = []
   const documentClickHandlers = []
@@ -284,7 +273,7 @@ export const FullArticle = (props: Props) => {
   }
 
   const handleArticleBodyClick = (event) => {
-    if (event.target.tagName === 'IMG' && !event.target.dataset['disableLightbox']) {
+    if (event.target.tagName === 'IMG' && !event.target.dataset.disableLightbox) {
       const src = event.target.src
       openLightbox(getImageUrl(src))
     }
@@ -293,7 +282,7 @@ export const FullArticle = (props: Props) => {
   // Check iframes size
   const articleContainer: { current: HTMLElement } = { current: null }
   const updateIframeSizes = () => {
-    if (!articleContainer?.current || !props.article.body) return
+    if (!(articleContainer?.current && props.article.body)) return
     const iframes = articleContainer?.current?.querySelectorAll('iframe')
     if (!iframes) return
     const containerWidth = articleContainer.current?.offsetWidth
@@ -337,8 +326,8 @@ export const FullArticle = (props: Props) => {
   const cover = props.article.cover ?? 'production/image/logo_image.png'
   const ogImage = getOpenGraphImageUrl(cover, {
     title: props.article.title,
-    topic: mainTopic().title,
-    author: props.article.authors[0].name,
+    topic: mainTopic()?.title || '',
+    author: props.article?.authors[0]?.name || '',
     width: 1200,
   })
 

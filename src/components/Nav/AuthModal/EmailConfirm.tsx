@@ -1,12 +1,12 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { hideModal } from '../../../stores/ui'
 
-import { setEmail, email } from './sharedLogic'
+import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
 

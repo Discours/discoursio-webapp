@@ -43,7 +43,7 @@ import { ProfileSubscriptionsPage } from '../pages/profile/profileSubscriptions.
 import { SearchPage } from '../pages/search.page'
 import { TopicPage } from '../pages/topic.page'
 import { ROUTES, useRouter } from '../stores/router'
-import { hideModal, MODALS, showModal } from '../stores/ui'
+import { MODALS, hideModal, showModal } from '../stores/ui'
 
 // TODO: lazy load
 // const SomePage = lazy(() => import('./Pages/SomePage'))

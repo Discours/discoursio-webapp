@@ -1,6 +1,6 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, For, lazy, Suspense } from 'solid-js'
+import { For, Show, Suspense, createMemo, createSignal, lazy } from 'solid-js'
 
 import { useConfirm } from '../../../context/confirm'
 import { useLocalize } from '../../../context/localize'
@@ -9,10 +9,10 @@ import { useSession } from '../../../context/session'
 import { useSnackbar } from '../../../context/snackbar'
 import { Author, Reaction, ReactionKind } from '../../../graphql/schema/core.gen'
 import { router } from '../../../stores/router'
-import { Icon } from '../../_shared/Icon'
-import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { Userpic } from '../../Author/Userpic'
+import { Icon } from '../../_shared/Icon'
+import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
 import { CommentDate } from '../CommentDate'
 import { CommentRatingControl } from '../CommentRatingControl'
 
@@ -39,23 +39,14 @@ export const Comment = (props: Props) => {
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
   const { author } = useSession()
-
-  const {
-    actions: { createReaction, deleteReaction, updateReaction },
-  } = useReactions()
-
-  const {
-    actions: { showConfirm },
-  } = useConfirm()
-
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { createReaction, deleteReaction, updateReaction } = useReactions()
+  const { showConfirm } = useConfirm()
+  const { showSnackbar } = useSnackbar()
 
   const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === author()?.slug)
-
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
+
   const remove = async () => {
     if (comment()?.id) {
       try {

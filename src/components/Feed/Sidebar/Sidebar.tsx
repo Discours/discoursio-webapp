@@ -1,6 +1,6 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createSignal, For, Show } from 'solid-js'
+import { For, Show, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -8,8 +8,8 @@ import { Author } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore } from '../../../stores/zine/articles'
 import { useSeenStore } from '../../../stores/zine/seen'
-import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../../Author/Userpic'
+import { Icon } from '../../_shared/Icon'
 
 import styles from './Sidebar.module.scss'
 

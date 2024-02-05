@@ -13,7 +13,7 @@ export const getDescription = (body: string): string => {
   let description = ''
   let i = 0
   while (i < descriptionWordsArray.length && description.length < MAX_DESCRIPTION_LENGTH) {
-    description += descriptionWordsArray[i] + ' '
+    description += `${descriptionWordsArray[i]} `
     i++
   }
   return description.trim()

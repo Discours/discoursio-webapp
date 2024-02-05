@@ -1,6 +1,6 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, Show, on, onMount, lazy } from 'solid-js'
+import { For, Show, createEffect, createSignal, lazy, on, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
 import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 
@@ -40,9 +40,7 @@ export const EditorSwiper = (props: Props) => {
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const handleSlideDescriptionChange = (index: number, field: string, value) => {
     if (props.onImageChange) {
@@ -86,7 +84,7 @@ export const EditorSwiper = (props: Props) => {
 
   const { selectFiles } = createFileUploader({
     multiple: true,
-    accept: `image/*`,
+    accept: 'image/*',
   })
 
   const initUpload = async (selectedFiles) => {

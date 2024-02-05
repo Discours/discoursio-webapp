@@ -1,4 +1,4 @@
-import { createEffect, JSX, Show } from 'solid-js'
+import { JSX, Show, createEffect } from 'solid-js'
 
 import { useSession } from '../../context/session'
 import { RootSearchParams } from '../../pages/types'
@@ -15,7 +15,7 @@ export const AuthGuard = (props: Props) => {
   const { isAuthenticated, isSessionLoaded } = useSession()
   const { changeSearchParams } = useRouter<RootSearchParams & AuthModalSearchParams>()
 
-  createEffect(async () => {
+  createEffect(() => {
     if (props.disabled) {
       return
     }

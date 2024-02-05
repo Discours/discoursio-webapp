@@ -10,9 +10,7 @@ export const PROVIDERS = ['facebook', 'google', 'github'] // 'vk' | 'telegram'
 
 export const SocialProviders = () => {
   const { t } = useLocalize()
-  const {
-    actions: { oauth },
-  } = useSession()
+  const { oauth } = useSession()
 
   return (
     <div class={styles.container}>
@@ -20,9 +18,9 @@ export const SocialProviders = () => {
       <div class={styles.social}>
         <For each={PROVIDERS}>
           {(provider) => (
-            <a href="#" class={styles[provider]} onClick={(_e) => oauth(provider)}>
+            <button class={styles[provider]} onClick={(_e) => oauth(provider)}>
               <Icon name={provider} />
-            </a>
+            </button>
           )}
         </For>
       </div>

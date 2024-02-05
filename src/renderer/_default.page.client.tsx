@@ -1,5 +1,5 @@
-import type { PageContext } from './types'
 import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'
+import type { PageContext } from './types'
 
 // import * as Sentry from '@sentry/browser'
 import i18next from 'i18next'

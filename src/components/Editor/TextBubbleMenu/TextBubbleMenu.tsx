@@ -1,7 +1,7 @@
 import type { Editor } from '@tiptap/core'
 
 import { clsx } from 'clsx'
-import { Switch, Match, createSignal, Show, onMount, onCleanup, createEffect, lazy } from 'solid-js'
+import { Match, Show, Switch, createEffect, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createEditorTransaction } from 'solid-tiptap'
 
 import { useLocalize } from '../../../context/localize'
@@ -26,7 +26,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isActive = (name: string, attributes?: unknown) =>
     createEditorTransaction(
       () => props.editor,
-      (editor) => editor && editor.isActive(name, attributes),
+      (editor) => editor?.isActive(name, attributes),
     )
 
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
@@ -71,7 +71,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
     setListBubbleOpen((prev) => !prev)
   }
-  const handleKeyDown = async (event) => {
+  const handleKeyDown = (event) => {
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !props.editor.state.selection.empty) {
       event.preventDefault()
       setLinkEditorOpen(true)
@@ -160,7 +160,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             submitButtonText={t('Send')}
           />
         </Match>
-        <Match when={!linkEditorOpen() || !footnoteEditorOpen()}>
+        <Match when={!(linkEditorOpen() && footnoteEditorOpen())}>
           <>
             <Show when={!props.isCommonMarkup}>
               <>

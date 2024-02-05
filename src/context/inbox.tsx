@@ -1,5 +1,5 @@
-import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
 import type { Accessor, JSX } from 'solid-js'
+import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
 
 import { createContext, createSignal, useContext } from 'solid-js'
 
@@ -12,14 +12,12 @@ import { SSEMessage, useConnect } from './connect'
 type InboxContextType = {
   chats: Accessor<Chat[]>
   messages?: Accessor<Message[]>
-  actions: {
-    createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
-    loadChats: () => Promise<Array<Chat>>
-    loadRecipients: () => Array<Author>
-    loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Array<Message>>
-    getMessages?: (chatId: string) => Promise<Array<Message>>
-    sendMessage?: (args: MutationCreate_MessageArgs) => void
-  }
+  createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
+  loadChats: () => Promise<Chat[]>
+  loadRecipients: () => Author[]
+  loadMessages: (by: MessagesBy, limit: number, offset: number) => Promise<Message[]>
+  getMessages?: (chatId: string) => Promise<Message[]>
+  sendMessage?: (args: MutationCreate_MessageArgs) => void
 }
 
 const InboxContext = createContext<InboxContextType>()
@@ -37,11 +35,11 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     // handling all action types: create update delete join left seen
     if (sseMessage.entity === 'message') {
       console.debug('[context.inbox]:', sseMessage.payload)
-      const relivedMessage = sseMessage.payload
+      const relivedMessage: Message = sseMessage.payload as Message
       setMessages((prev) => [...prev, relivedMessage])
     } else if (sseMessage.entity === 'chat') {
       console.debug('[context.inbox]:', sseMessage.payload)
-      const relivedChat = sseMessage.payload
+      const relivedChat: Chat = sseMessage.payload as Chat
       setChats((prev) => [...prev, relivedChat])
     }
   }
@@ -49,11 +47,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const { addHandler } = useConnect()
   addHandler(handleMessage)
 
-  const loadMessages = async (
-    by: MessagesBy,
-    limit: number = 50,
-    offset: number = 0,
-  ): Promise<Array<Message>> => {
+  const loadMessages = async (by: MessagesBy, limit = 50, offset = 0): Promise<Message[]> => {
     if (inboxClient.private) {
       const msgs = await inboxClient.loadChatMessages({ by, limit, offset })
       setMessages((mmm) => [...new Set([...mmm, ...msgs])])
@@ -123,7 +117,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     sendMessage,
   }
 
-  const value: InboxContextType = { chats, messages, actions }
+  const value: InboxContextType = { chats, messages, ...actions }
 
   return <InboxContext.Provider value={value}>{props.children}</InboxContext.Provider>
 }

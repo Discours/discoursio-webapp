@@ -1,5 +1,5 @@
-import type { PageProps } from './types'
 import type { PageContext } from '../renderer/types'
+import type { PageProps } from './types'
 
 import { PRERENDERED_ARTICLES_COUNT } from '../components/Views/Home'
 import { apiClient } from '../graphql/client/core'

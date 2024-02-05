@@ -1,6 +1,6 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
 
@@ -24,18 +24,10 @@ type Props = {
 
 export const Panel = (props: Props) => {
   const { t } = useLocalize()
-  const {
-    isEditorPanelVisible,
-    wordCounter,
-    editorRef,
-    form,
-    actions: { toggleEditorPanel, saveShout, publishShout },
-  } = useEditorContext()
+  const { isEditorPanelVisible, wordCounter, editorRef, form, toggleEditorPanel, saveShout, publishShout } =
+    useEditorContext()
 
-  const containerRef: { current: HTMLElement } = {
-    current: null,
-  }
-
+  const containerRef: { current: HTMLElement } = { current: null }
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
   const [isTypographyFixed, setIsTypographyFixed] = createSignal(false)
 
@@ -59,8 +51,9 @@ export const Panel = (props: Props) => {
     publishShout(form)
   }
 
+  const html = useEditorHTML(() => editorRef.current())
+
   const handleFixTypographyClick = () => {
-    const html = useEditorHTML(() => editorRef.current())
     editorRef.current().commands.setContent(typograf.execute(html()))
     setIsTypographyFixed(true)
   }

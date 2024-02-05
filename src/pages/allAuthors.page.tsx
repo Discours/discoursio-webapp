@@ -2,8 +2,8 @@ import type { PageProps } from './types'
 
 import { createSignal, onMount } from 'solid-js'
 
-import { PageLayout } from '../components/_shared/PageLayout'
 import { AllAuthorsView } from '../components/Views/AllAuthors'
+import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 import { loadAllAuthors } from '../stores/zine/authors'
 

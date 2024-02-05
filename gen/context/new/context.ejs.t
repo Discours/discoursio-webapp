@@ -5,8 +5,7 @@ import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
 
 type <%= h.changeCase.pascal(name) %>ContextType = {
-  actions: {
-  }
+
 }
 
 const <%= h.changeCase.pascal(name) %>Context = createContext<<%= h.changeCase.pascal(name) %>ContextType>()
@@ -19,9 +18,7 @@ export const <%= h.changeCase.pascal(name) %>Provider = (props: { children: JSX.
   const actions = {
   }
 
-  const value: <%= h.changeCase.pascal(name) %>ContextType = { actions }
+  const value: <%= h.changeCase.pascal(name) %>ContextType = { ...actions }
 
   return <<%= h.changeCase.pascal(name) %>Context.Provider value={value}>{props.children}</<%= h.changeCase.pascal(name) %>Context.Provider>
 }
-
-

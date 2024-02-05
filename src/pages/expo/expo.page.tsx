@@ -2,9 +2,9 @@ import type { PageProps } from '../types'
 
 import { createEffect, createMemo, on } from 'solid-js'
 
-import { PageLayout } from '../../components/_shared/PageLayout'
 import { Topics } from '../../components/Nav/Topics'
 import { Expo } from '../../components/Views/Expo'
+import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { LayoutType } from '../types'

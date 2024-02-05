@@ -3,7 +3,7 @@ import type { JSX } from 'solid-js'
 import { openPage } from '@nanostores/router'
 import { Editor } from '@tiptap/core'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
-import { createStore, SetStoreFunction } from 'solid-js/store'
+import { SetStoreFunction, createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
 import { Topic, TopicInput } from '../graphql/schema/core.gen'
@@ -40,20 +40,18 @@ type EditorContextType = {
   form: ShoutForm
   formErrors: Record<keyof ShoutForm, string>
   editorRef: { current: () => Editor }
-  actions: {
-    saveShout: (form: ShoutForm) => Promise<void>
-    saveDraft: (form: ShoutForm) => Promise<void>
-    saveDraftToLocalStorage: (form: ShoutForm) => void
-    getDraftFromLocalStorage: (shoutId: number) => ShoutForm
-    publishShout: (form: ShoutForm) => Promise<void>
-    publishShoutById: (shoutId: number) => Promise<void>
-    deleteShout: (shoutId: number) => Promise<boolean>
-    toggleEditorPanel: () => void
-    countWords: (value: WordCounter) => void
-    setForm: SetStoreFunction<ShoutForm>
-    setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
-    setEditor: (editor: () => Editor) => void
-  }
+  saveShout: (form: ShoutForm) => Promise<void>
+  saveDraft: (form: ShoutForm) => Promise<void>
+  saveDraftToLocalStorage: (form: ShoutForm) => void
+  getDraftFromLocalStorage: (shoutId: number) => ShoutForm
+  publishShout: (form: ShoutForm) => Promise<void>
+  publishShoutById: (shoutId: number) => Promise<void>
+  deleteShout: (shoutId: number) => Promise<boolean>
+  toggleEditorPanel: () => void
+  countWords: (value: WordCounter) => void
+  setForm: SetStoreFunction<ShoutForm>
+  setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
+  setEditor: (editor: () => Editor) => void
 }
 
 const EditorContext = createContext<EditorContextType>()
@@ -84,9 +82,7 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
   const editorRef: { current: () => Editor } = { current: null }
   const [form, setForm] = createStore<ShoutForm>(null)
@@ -211,8 +207,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         shout_id,
         publish: true,
       })
-      addArticles([newShout])
-      openPage(router, 'feed')
+      if (newShout) {
+        addArticles([newShout])
+        openPage(router, 'feed')
+      } else {
+        console.error('[publishShoutById] no shout returned:', newShout)
+      }
     } catch (error) {
       console.error('[publishShoutById]', error)
       showSnackbar({ type: 'error', body: t('Error') })
@@ -251,7 +251,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const value: EditorContextType = {
-    actions,
+    ...actions,
     form,
     formErrors,
     editorRef,

@@ -1,8 +1,11 @@
 import type { Accessor, JSX } from 'solid-js'
 
-import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
-import { createContext, useContext, createSignal, createEffect } from 'solid-js'
+import type { Author, Reaction, Shout, Topic } from '../graphql/schema/core.gen'
 
+import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
+import { createContext, createEffect, createSignal, useContext } from 'solid-js'
+
+import { Chat, Message } from '../graphql/schema/chat.gen'
 import { useSession } from './session'
 
 const RECONNECT_TIMES = 2
@@ -11,8 +14,7 @@ export interface SSEMessage {
   id: string
   entity: string // follower | shout | reaction
   action: string // create | delete | update | join | follow | seen
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload: any // Author Shout Message Reaction Chat
+  payload: Author | Shout | Topic | Reaction | Chat | Message
   created_at?: number // unixtime x1000
   seen?: boolean
 }
@@ -27,7 +29,7 @@ export interface ConnectContextType {
 const ConnectContext = createContext<ConnectContextType>()
 
 export const ConnectProvider = (props: { children: JSX.Element }) => {
-  const [messageHandlers, setHandlers] = createSignal<Array<MessageHandler>>([])
+  const [messageHandlers, setHandlers] = createSignal<MessageHandler[]>([])
   // const [messages, setMessages] = createSignal<Array<SSEMessage>>([]);
   const [connected, setConnected] = createSignal(false)
   const { session } = useSession()

@@ -1,4 +1,4 @@
-import type { Shout, LoadShoutsOptions } from '../../graphql/schema/core.gen'
+import type { LoadShoutsOptions, Shout } from '../../graphql/schema/core.gen'
 
 import { createSignal } from 'solid-js'
 

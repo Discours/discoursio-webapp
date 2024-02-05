@@ -7,9 +7,9 @@ import { For, Show } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
-import { Icon } from '../_shared/Icon'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { TopicCard } from '../Topic/Card'
+import { Icon } from '../_shared/Icon'
 
 import { ArticleCard } from './ArticleCard'
 

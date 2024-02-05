@@ -2,25 +2,25 @@ import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createMemo, createSignal, For, Show } from 'solid-js'
+import { For, Show, createMemo, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { router, useRouter } from '../../../stores/router'
 import { capitalize } from '../../../utils/capitalize'
 import { getDescription } from '../../../utils/meta'
+import { CoverImage } from '../../Article/CoverImage'
+import { SharePopup, getShareUrl } from '../../Article/SharePopup'
+import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
+import { AuthorLink } from '../../Author/AuthorLink'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { Popover } from '../../_shared/Popover'
-import { CoverImage } from '../../Article/CoverImage'
-import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
-import { AuthorLink } from '../../Author/AuthorLink'
 import { CardTopic } from '../CardTopic'
 import { FeedArticlePopup } from '../FeedArticlePopup'
 
-import styles from './ArticleCard.module.scss'
 import stylesHeader from '../../Nav/Header/Header.module.scss'
+import styles from './ArticleCard.module.scss'
 
 export type ArticleCardProps = {
   // TODO: refactor this, please
@@ -83,28 +83,47 @@ const getTitleAndSubtitle = (
     }
   }
 
+  // TODO: simple fast auto translated title/substitle
+
   return { title, subtitle }
+}
+
+const getMainTopicTitle = (article: Shout, lng: string) => {
+  const mainTopicSlug = article.main_topic || ''
+  const mainTopic = article.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
+  const mainTopicTitle =
+    mainTopicSlug && lng === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
+
+  return [mainTopicTitle, mainTopicSlug]
+}
+
+const LAYOUT_ASPECT = {
+  music: styles.aspectRatio1x1,
+  literature: styles.aspectRatio16x9,
+  video: styles.aspectRatio16x9,
+  image: styles.aspectRatio4x3,
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { author } = useSession()
-  const mainTopicSlug = props.article.main_topic || ''
-  const mainTopic = props.article.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
-  const mainTopicTitle =
-    mainTopicSlug && lang() === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
+  const { changeSearchParams } = useRouter()
+  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
+  const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
+  const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
+  const description = getDescription(props.article.body)
+  const aspectRatio = () => LAYOUT_ASPECT[props.article.layout]
+  const [mainTopicTitle, mainTopicSlug] = getMainTopicTitle(props.article, lang())
+  const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const formattedDate = createMemo<string>(() =>
     props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
   )
 
-  const { title, subtitle } = getTitleAndSubtitle(props.article)
-
   const canEdit = () =>
     props.article.authors?.some((a) => a && a?.slug === author()?.slug) ||
     props.article.created_by?.id === author()?.id
 
-  const { changeSearchParams } = useRouter()
   const scrollToComments = (event) => {
     event.preventDefault()
     openPage(router, 'article', { slug: props.article.slug })
@@ -112,28 +131,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
       scrollTo: 'comments',
     })
   }
-
-  const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
-  const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
-  const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
-
-  const description = getDescription(props.article.body)
-
-  const aspectRatio = () => {
-    switch (props.article.layout) {
-      case 'music': {
-        return styles.aspectRatio1x1
-      }
-      case 'image': {
-        return styles.aspectRatio4x3
-      }
-      case 'video':
-      case 'literature': {
-        return styles.aspectRatio16x9
-      }
-    }
-  }
-
   return (
     <section
       class={clsx(styles.shoutCard, props.settings?.additionalClass, {
@@ -152,7 +149,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [aspectRatio()]: props.withAspectRatio,
       })}
     >
-      <Show when={!props.settings?.noimage && !props.settings?.isFeedMode}>
+      <Show when={!(props.settings?.noimage || props.settings?.isFeedMode)}>
         <div class={styles.shoutCardCoverContainer}>
           <div
             class={clsx(styles.shoutCardCover, {
@@ -223,7 +220,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </a>
         </div>
-        <Show when={!props.settings?.noauthor || !props.settings?.nodate}>
+        <Show when={!(props.settings?.noauthor && props.settings?.nodate)}>
           <div
             class={clsx(styles.shoutDetails, { [styles.shoutDetailsFeedMode]: props.settings?.isFeedMode })}
           >

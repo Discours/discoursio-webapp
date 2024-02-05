@@ -1,7 +1,7 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { createEffect, createSignal, For, lazy, Match, onCleanup, onMount, Show, Switch } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { useConfirm } from '../../context/confirm'
@@ -9,20 +9,20 @@ import { useLocalize } from '../../context/localize'
 import { useProfileForm } from '../../context/profile'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
-import { showModal, hideModal } from '../../stores/ui'
+import { hideModal, showModal } from '../../stores/ui'
 import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { handleImageUpload } from '../../utils/handleImageUpload'
 import { profileSocialLinks } from '../../utils/profileSocialLinks'
 import { validateUrl } from '../../utils/validateUrl'
+import { Modal } from '../Nav/Modal'
+import { ProfileSettingsNavigation } from '../Nav/ProfileSettingsNavigation'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { ImageCropper } from '../_shared/ImageCropper'
 import { Loading } from '../_shared/Loading'
 import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
-import { Modal } from '../Nav/Modal'
-import { ProfileSettingsNavigation } from '../Nav/ProfileSettingsNavigation'
 
 import styles from '../../pages/profile/Settings.module.scss'
 
@@ -31,7 +31,6 @@ const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTexta
 
 export const ProfileSettings = () => {
   const { t } = useLocalize()
-
   const [prevForm, setPrevForm] = createStore({})
   const [isFormInitialized, setIsFormInitialized] = createSignal(false)
   const [social, setSocial] = createSignal([])
@@ -44,21 +43,10 @@ export const ProfileSettings = () => {
   const [hostname, setHostname] = createSignal<string | null>(null)
   const [slugError, setSlugError] = createSignal<string>()
   const [nameError, setNameError] = createSignal<string>()
-
-  const {
-    form,
-    actions: { submit, updateFormField, setForm },
-  } = useProfileForm()
-
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
-  const {
-    actions: { loadAuthor },
-  } = useSession()
-  const {
-    actions: { showConfirm },
-  } = useConfirm()
+  const { form, submit, updateFormField, setForm } = useProfileForm()
+  const { showSnackbar } = useSnackbar()
+  const { loadAuthor } = useSession()
+  const { showConfirm } = useConfirm()
 
   createEffect(() => {
     if (Object.keys(form).length > 0 && !isFormInitialized()) {

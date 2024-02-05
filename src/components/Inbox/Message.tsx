@@ -1,7 +1,7 @@
-import type { Message as MessageType, ChatMember } from '../../graphql/schema/chat.gen'
+import type { ChatMember, Message as MessageType } from '../../graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
-import { createSignal, Show } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'

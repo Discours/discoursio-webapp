@@ -35,8 +35,10 @@
     width: auto;
   }
 
-  a {
+  a, button {
     border: none !important;
+    outline: none;
+    box-shadow: none;
   }
 
   .facebook,

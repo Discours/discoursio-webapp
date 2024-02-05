@@ -1,19 +1,19 @@
 import { clsx } from 'clsx'
-import { createMemo, createSignal, Show } from 'solid-js'
+import { Show, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
 import { FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
 import { capitalize } from '../../utils/capitalize'
+import { CardTopic } from '../Feed/CardTopic'
 import { Button } from '../_shared/Button'
 import { CheckButton } from '../_shared/CheckButton'
 import { Icon } from '../_shared/Icon'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { CardTopic } from '../Feed/CardTopic'
 
-import styles from './Card.module.scss'
 import stylesButton from '../_shared/Button/Button.module.scss'
+import styles from './Card.module.scss'
 
 interface TopicProps {
   topic: Topic
@@ -37,10 +37,7 @@ export const TopicCard = (props: TopicProps) => {
   const title = createMemo(() =>
     capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
   )
-  const {
-    author,
-    actions: { requireAuthentication },
-  } = useSession()
+  const { author, requireAuthentication } = useSession()
   const { setFollowing, loading: subLoading } = useFollowing()
   const [followed, setFollowed] = createSignal()
 
@@ -84,8 +81,11 @@ export const TopicCard = (props: TopicProps) => {
           classList={{
             [clsx('col-sm-18 col-md-24 col-lg-14 col-xl-15', styles.topicDetails)]: props.isNarrow,
             [clsx('col-24 col-sm-17 col-md-18', styles.topicDetails)]: props.compact,
-            [clsx('col-sm-17 col-md-18', styles.topicDetails)]:
-              !props.subscribeButtonBottom && !props.isNarrow && !props.compact,
+            [clsx('col-sm-17 col-md-18', styles.topicDetails)]: !(
+              props.subscribeButtonBottom ||
+              props.isNarrow ||
+              props.compact
+            ),
           }}
         >
           <Show when={title() && !props.isCardMode}>
@@ -120,7 +120,7 @@ export const TopicCard = (props: TopicProps) => {
           classList={{
             'col-sm-6 col-md-24 col-lg-10 col-xl-9': props.isNarrow,
             'col-24 col-sm-7 col-md-6': props.compact,
-            'col-sm-7 col-md-6': !props.subscribeButtonBottom && !props.isNarrow && !props.compact,
+            'col-sm-7 col-md-6': !(props.subscribeButtonBottom || props.isNarrow || props.compact),
           }}
         >
           <ShowOnlyOnClient>

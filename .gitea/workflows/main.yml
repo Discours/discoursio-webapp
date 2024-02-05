@@ -1,31 +1,35 @@
-name: 'deploy'
+name: "deploy"
 
-on:
-  push:
-    branches:
-      - main
-      - dev
-      - feature/email-templates
+on: [push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run tests
-        run: npm run check
+      - name: Install Biome
+        run: npm install --global --save-exact @biomejs/biome
 
-  update_mailgun_template:
+      - name: Lint with Biome
+        run: npx biome ci .
+
+      - name: Lint styles
+        run: npm run lint:styles
+
+      - name: Check types
+        run: npm run typecheck
+
+      - name: Test production build
+        run: npm run build
+
+  email-templates:
     runs-on: ubuntu-latest
     name: Update templates on Mailgun
     if: github.event_name == 'push' && github.ref == 'refs/heads/feature/email-templates'
@@ -33,7 +37,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: "Email confirmation template"
         uses: gyto/mailgun-template-action@v2
         with:
@@ -41,7 +45,7 @@ jobs:
           mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
           mailgun-domain: "discours.io"
           mailgun-template: "authorizer_email_confirmation"
-        
+
       - name: "Password reset template"
         uses: gyto/mailgun-template-action@v2
         with:
@@ -49,7 +53,7 @@ jobs:
           mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
           mailgun-domain: "discours.io"
           mailgun-template: "authorizer_password_reset"
-          
+
       - name: "First publication notification"
         uses: gyto/mailgun-template-action@v2
         with:
@@ -57,7 +61,7 @@ jobs:
           mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
           mailgun-domain: "discours.io"
           mailgun-template: "first_publication_notification"
-        
+
       - name: "New comment notification template"
         uses: gyto/mailgun-template-action@v2
         with:

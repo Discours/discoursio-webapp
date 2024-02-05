@@ -38,8 +38,9 @@ import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
 import { handleImageUpload } from '../../utils/handleImageUpload'
 
-import { FigureBubbleMenu, BlockquoteBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
+import { BlockquoteBubbleMenu, FigureBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
+import { TextBubbleMenu } from './TextBubbleMenu'
 import Article from './extensions/Article'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figcaption } from './extensions/Figcaption'
@@ -49,7 +50,6 @@ import { Iframe } from './extensions/Iframe'
 import { Span } from './extensions/Span'
 import { ToggleTextWrap } from './extensions/ToggleTextWrap'
 import { TrailingNode } from './extensions/TrailingNode'
-import { TextBubbleMenu } from './TextBubbleMenu'
 
 import './Prosemirror.scss'
 
@@ -80,9 +80,7 @@ export const Editor = (props: Props) => {
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
 
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const docName = `shout-${props.shoutId}`
 
@@ -337,10 +335,7 @@ export const Editor = (props: Props) => {
     content: initialContent ?? null,
   }))
 
-  const {
-    actions: { countWords, setEditor },
-  } = useEditorContext()
-
+  const { countWords, setEditor } = useEditorContext()
   setEditor(editor)
 
   const html = useEditorHTML(() => editor())

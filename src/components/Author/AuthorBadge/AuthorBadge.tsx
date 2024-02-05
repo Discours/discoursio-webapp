@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, Match, on, Show, Switch } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -8,16 +8,16 @@ import { useMediaQuery } from '../../../context/mediaQuery'
 import { useSession } from '../../../context/session'
 import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
-import { isCyrillic } from '../../../utils/cyrillic'
 import { translit } from '../../../utils/ru2en'
+import { isCyrillic } from '../../../utils/translate'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 
-import styles from './AuthorBadge.module.scss'
 import stylesButton from '../../_shared/Button/Button.module.scss'
+import styles from './AuthorBadge.module.scss'
 
 type FollowedInfo = {
   value?: boolean
@@ -36,11 +36,7 @@ type Props = {
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
-  const {
-    author,
-    actions: { requireAuthentication },
-  } = useSession()
-
+  const { author, requireAuthentication } = useSession()
   const [isMobileView, setIsMobileView] = createSignal(false)
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
 
@@ -55,7 +51,7 @@ export const AuthorBadge = (props: Props) => {
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      openPage(router, `inbox`)
+      openPage(router, 'inbox')
       changeSearchParams({
         initChat: props.author.id.toString(),
       })

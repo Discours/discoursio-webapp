@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal, onMount, For, lazy } from 'solid-js'
+import { For, Show, createMemo, createSignal, lazy, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
@@ -22,8 +22,8 @@ const sortCommentsByRating = (a: Reaction, b: Reaction): -1 | 0 | 1 => {
     return 0
   }
 
-  const x = (a?.stat && a.stat.rating) || 0
-  const y = (b?.stat && b.stat.rating) || 0
+  const x = a.stat?.rating || 0
+  const y = b.stat?.rating || 0
 
   if (x > y) {
     return 1
@@ -49,11 +49,7 @@ export const CommentsTree = (props: Props) => {
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
   const [clearEditor, setClearEditor] = createSignal(false)
   const [clickedReplyId, setClickedReplyId] = createSignal<number>()
-
-  const {
-    reactionEntities,
-    actions: { createReaction },
-  } = useReactions()
+  const { reactionEntities, createReaction } = useReactions()
 
   const comments = createMemo(() =>
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT'),

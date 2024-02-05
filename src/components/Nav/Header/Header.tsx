@@ -2,18 +2,18 @@ import type { Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Show, createSignal, createEffect, onMount, onCleanup, For } from 'solid-js'
+import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
-import { router, ROUTES, useRouter } from '../../../stores/router'
+import { ROUTES, router, useRouter } from '../../../stores/router'
 import { useModalStore } from '../../../stores/ui'
 import { getDescription } from '../../../utils/meta'
+import { SharePopup, getShareUrl } from '../../Article/SharePopup'
+import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { Icon } from '../../_shared/Icon'
 import { Subscribe } from '../../_shared/Subscribe'
-import { getShareUrl, SharePopup } from '../../Article/SharePopup'
-import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { AuthModal } from '../AuthModal'
 import { ConfirmModal } from '../ConfirmModal'
 import { HeaderAuth } from '../HeaderAuth'
@@ -46,12 +46,8 @@ export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
   const { modal } = useModalStore()
   const { page } = useRouter()
-  const {
-    actions: { requireAuthentication },
-  } = useSession()
-
+  const { requireAuthentication } = useSession()
   const { searchParams } = useRouter<HeaderSearchParams>()
-
   const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -62,9 +58,7 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const toggleFixed = () => {
-    setFixed(!fixed())
-  }
+  const toggleFixed = () => setFixed(!fixed())
 
   const tag = (topic: Topic) =>
     /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
@@ -82,7 +76,7 @@ export const Header = (props: Props) => {
     document.body.classList.toggle('fixed', fixed() || modal() !== null)
     document.body.classList.toggle(styles.fixed, fixed() && !modal())
 
-    if (!fixed() && !modal()) {
+    if (!(fixed() || modal())) {
       mainContent.style.marginTop = ''
       window.scrollTo(0, windowScrollTop)
     }
@@ -135,13 +129,13 @@ export const Header = (props: Props) => {
     }
   }
 
-  let timer
+  let timer: string | number | NodeJS.Timeout
 
   const clearTimer = () => {
     clearTimeout(timer)
   }
 
-  const hideSubnavigation = (event, time = 500) => {
+  const hideSubnavigation = (_event, time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)
     }, time)
@@ -264,7 +258,7 @@ export const Header = (props: Props) => {
                   </li>
                 </ul>
 
-                <h4 innerHTML={t('Subscribe us')} />
+                <h4>{t('Subscribe us')}</h4>
                 <ul class="view-switcher">
                   <li class={styles.mainNavigationSocial}>
                     <a href="https://www.instagram.com/discoursio/">
@@ -358,14 +352,14 @@ export const Header = (props: Props) => {
                 <Icon name="comment" class={styles.icon} />
                 <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
               </div>
-              <a href="#" class={styles.control} onClick={handleCreateButtonClick}>
+              <button class={styles.control} onClick={handleCreateButtonClick}>
                 <Icon name="pencil-outline" class={styles.icon} />
                 <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
-              </a>
-              <a href="#" class={styles.control} onClick={handleBookmarkButtonClick}>
+              </button>
+              <button class={styles.control} onClick={handleBookmarkButtonClick}>
                 <Icon name="bookmark" class={styles.icon} />
                 <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
-              </a>
+              </button>
             </div>
           </Show>
 
@@ -417,7 +411,7 @@ export const Header = (props: Props) => {
                 <a href="/podcasts">{t('Podcasts')}</a>
               </li>
               <li class="item">
-                <a href="">{t('Special Projects')}</a>
+                <a href="/about/projects">{t('Special Projects')}</a>
               </li>
               <li>
                 <a href="/topic/interview">#{t('Interview')}</a>

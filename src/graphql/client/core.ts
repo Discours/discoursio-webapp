@@ -1,19 +1,19 @@
 import type {
+  Author,
+  CommonResult,
+  Community,
   FollowingEntity,
+  LoadShoutsOptions,
+  MutationDelete_ShoutArgs,
+  ProfileInput,
+  QueryLoad_Authors_ByArgs,
+  QueryLoad_Shouts_Random_TopArgs,
+  QueryLoad_Shouts_SearchArgs,
+  ReactionBy,
+  ReactionInput,
+  Shout,
   ShoutInput,
   Topic,
-  Author,
-  LoadShoutsOptions,
-  ProfileInput,
-  ReactionInput,
-  ReactionBy,
-  Shout,
-  CommonResult,
-  QueryLoad_Authors_ByArgs,
-  QueryLoad_Shouts_SearchArgs,
-  QueryLoad_Shouts_Random_TopArgs,
-  Community,
-  MutationDelete_ShoutArgs,
 } from '../schema/core.gen'
 
 import { createGraphQLClient } from '../createGraphQLClient'
@@ -21,12 +21,12 @@ import createArticle from '../mutation/core/article-create'
 import deleteShout from '../mutation/core/article-delete'
 import updateArticle from '../mutation/core/article-update'
 import rateAuthor from '../mutation/core/author-rate'
+import updateAuthor from '../mutation/core/author-update'
 import followMutation from '../mutation/core/follow'
 import reactionCreate from '../mutation/core/reaction-create'
 import reactionDestroy from '../mutation/core/reaction-destroy'
 import reactionUpdate from '../mutation/core/reaction-update'
 import unfollowMutation from '../mutation/core/unfollow'
-import updateAuthor from '../mutation/core/author-update'
 import shoutLoad from '../query/core/article-load'
 import shoutsLoadBy from '../query/core/articles-load-by'
 import draftsLoad from '../query/core/articles-load-drafts'
@@ -39,14 +39,14 @@ import authorBy from '../query/core/author-by'
 import authorFollowers from '../query/core/author-followers'
 import authorId from '../query/core/author-id'
 import authorsAll from '../query/core/authors-all'
+import authorFollowedAuthors from '../query/core/authors-followed-by'
 import authorsLoadBy from '../query/core/authors-load-by'
+import authorFollowedCommunities from '../query/core/communities-followed-by'
 import mySubscriptions from '../query/core/my-followed'
 import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
-import authorFollowedAuthors from '../query/core/authors-followed-by'
 import authorFollowedTopics from '../query/core/topics-followed-by'
-import authorFollowedCommunities from '../query/core/communities-followed-by'
 import topicsRandomQuery from '../query/core/topics-random'
 
 const publicGraphQLClient = createGraphQLClient('core')

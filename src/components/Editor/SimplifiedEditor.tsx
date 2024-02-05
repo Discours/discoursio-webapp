@@ -10,7 +10,7 @@ import { Paragraph } from '@tiptap/extension-paragraph'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Text } from '@tiptap/extension-text'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import {
   createEditorTransaction,
@@ -24,17 +24,17 @@ import { useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
 import { UploadedFile } from '../../pages/types'
 import { hideModal, showModal } from '../../stores/ui'
+import { Modal } from '../Nav/Modal'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { Modal } from '../Nav/Modal'
 
-import { Figcaption } from './extensions/Figcaption'
-import { Figure } from './extensions/Figure'
 import { LinkBubbleMenuModule } from './LinkBubbleMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { UploadModalContent } from './UploadModalContent'
+import { Figcaption } from './extensions/Figcaption'
+import { Figure } from './extensions/Figure'
 
 import styles from './SimplifiedEditor.module.scss'
 
@@ -94,9 +94,7 @@ const SimplifiedEditor = (props: Props) => {
     current: null,
   }
 
-  const {
-    actions: { setEditor },
-  } = useEditorContext()
+  const { setEditor } = useEditorContext()
 
   const ImageFigure = Figure.extend({
     name: 'capturedImage',
@@ -173,7 +171,7 @@ const SimplifiedEditor = (props: Props) => {
     createEditorTransaction(
       () => editor(),
       (ed) => {
-        return ed && ed.isActive(name)
+        return ed?.isActive(name)
       },
     )
 
@@ -218,7 +216,7 @@ const SimplifiedEditor = (props: Props) => {
     }
   })
 
-  const handleKeyDown = async (event) => {
+  const handleKeyDown = (event) => {
     if (isEmpty() || !isFocused()) {
       return
     }

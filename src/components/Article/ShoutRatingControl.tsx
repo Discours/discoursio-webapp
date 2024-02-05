@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createMemo, createSignal, Show } from 'solid-js'
+import { Show, createMemo, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
@@ -19,16 +19,8 @@ interface ShoutRatingControlProps {
 
 export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
-  const {
-    author,
-    actions: { requireAuthentication },
-  } = useSession()
-
-  const {
-    reactionEntities,
-    actions: { createReaction, deleteReaction, loadReactionsBy },
-  } = useReactions()
-
+  const { author, requireAuthentication } = useSession()
+  const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
   const [isLoading, setIsLoading] = createSignal(false)
 
   const checkReaction = (reactionKind: ReactionKind) =>
@@ -60,7 +52,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     return deleteReaction(reactionToDelete.id)
   }
 
-  const handleRatingChange = async (isUpvote: boolean) => {
+  const handleRatingChange = (isUpvote: boolean) => {
     requireAuthentication(async () => {
       setIsLoading(true)
       if (isUpvoted()) {

@@ -1,7 +1,7 @@
 import type { ChatMember } from '../../graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
-import { Show, Switch, Match, createMemo } from 'solid-js'
+import { Match, Show, Switch, createMemo } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { Author } from '../../graphql/schema/core.gen'
@@ -26,8 +26,8 @@ type DialogProps = {
 
 const DialogCard = (props: DialogProps) => {
   const { t, formatTime } = useLocalize()
-  const companions = createMemo(
-    () => props.members && props.members.filter((member: ChatMember) => member.id !== props.ownId),
+  const companions = createMemo(() =>
+    props.members?.filter((member: ChatMember) => member.id !== props.ownId),
   )
 
   const names = createMemo<string>(() => (companions() || []).map((companion) => companion.name).join(', '))

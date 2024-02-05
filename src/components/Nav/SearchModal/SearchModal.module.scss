@@ -1,11 +1,9 @@
-@mixin searchFilterControl {
+@mixin search-filter-control {
   @include font-size(1.4rem);
 
   height: 4rem;
-
   padding: 0 2rem;
-
-  background: rgb(64 64 64 / 0.5);
+  background: rgb(64 64 64 / 50%);
   border-radius: 10rem;
   color: #fff;
   font-weight: 500;
@@ -16,7 +14,7 @@
   }
 
   &:active {
-    color: rgb(255 255 255 / 0.4);
+    color: rgb(255 255 255 / 40%);
   }
 }
 
@@ -28,9 +26,7 @@
   @include font-size(4.8rem);
 
   width: 100%;
-
   padding: 0 0 0.5rem;
-
   background: none;
   border: none;
   border-bottom: 2px solid #fff;
@@ -39,14 +35,13 @@
   outline: none;
 
   &::placeholder {
-    color: rgb(255 255 255 / 0.32);
+    color: rgb(255 255 255 / 32%);
   }
 
   &:not(:placeholder-shown) + .searchButton img {
     filter: invert(1);
   }
 
-  &::-moz-selection,
   &::selection {
     color: #2638d9;
   }
@@ -56,7 +51,6 @@
   position: absolute;
   right: 0;
   top: 2rem;
-
   width: 3.2rem;
   height: 3.2rem;
 
@@ -67,9 +61,10 @@
 
 .searchDescription {
   margin-bottom: 44px;
+
   @include font-size(1.6rem);
 
-  color: rgb(255 255 255 / 0.64);
+  color: rgb(255 255 255 / 64%);
 }
 
 .topicsList {
@@ -77,12 +72,11 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-
   margin-top: 9.6rem !important;
 }
 
 .topTopic {
-  @include searchFilterControl;
+  @include search-filter-control;
 }
 
 .filterSwitcher {
@@ -108,22 +102,19 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-
   margin: 6.4rem 0;
 }
 
 .filterResultsControl {
-  @include searchFilterControl;
+  @include search-filter-control;
 }
 
 .searchLoader {
   width: 28px;
   height: 28px;
-
   border: 5px solid #fff;
   border-bottom-color: transparent;
   border-radius: 50%;
-
   animation: rotation 1s linear infinite;
 }
 

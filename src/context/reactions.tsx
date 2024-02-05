@@ -8,20 +8,18 @@ import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/sc
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
-  actions: {
-    loadReactionsBy: ({
-      by,
-      limit,
-      offset,
-    }: {
-      by: ReactionBy
-      limit?: number
-      offset?: number
-    }) => Promise<Reaction[]>
-    createReaction: (reaction: ReactionInput) => Promise<void>
-    updateReaction: (id: number, reaction: ReactionInput) => Promise<void>
-    deleteReaction: (id: number) => Promise<void>
-  }
+  loadReactionsBy: ({
+    by,
+    limit,
+    offset,
+  }: {
+    by: ReactionBy
+    limit?: number
+    offset?: number
+  }) => Promise<Reaction[]>
+  createReaction: (reaction: ReactionInput) => Promise<void>
+  updateReaction: (id: number, reaction: ReactionInput) => Promise<void>
+  deleteReaction: (id: number) => Promise<void>
 }
 
 const ReactionsContext = createContext<ReactionsContextType>()
@@ -104,7 +102,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     deleteReaction,
   }
 
-  const value: ReactionsContextType = { reactionEntities, actions }
+  const value: ReactionsContextType = { reactionEntities, ...actions }
 
   return <ReactionsContext.Provider value={value}>{props.children}</ReactionsContext.Provider>
 }

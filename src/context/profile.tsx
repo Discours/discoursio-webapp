@@ -1,6 +1,6 @@
 import type { ProfileInput } from '../graphql/schema/core.gen'
 
-import { createContext, createEffect, JSX, useContext } from 'solid-js'
+import { JSX, createContext, createEffect, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
@@ -9,11 +9,9 @@ import { useSession } from './session'
 
 type ProfileFormContextType = {
   form: ProfileInput
-  actions: {
-    setForm: (profile: ProfileInput) => void
-    submit: (profile: ProfileInput) => Promise<void>
-    updateFormField: (fieldName: string, value: string, remove?: boolean) => void
-  }
+  setForm: (profile: ProfileInput) => void
+  submit: (profile: ProfileInput) => Promise<void>
+  updateFormField: (fieldName: string, value: string, remove?: boolean) => void
 }
 
 const ProfileFormContext = createContext<ProfileFormContextType>()
@@ -23,7 +21,7 @@ export function useProfileForm() {
 }
 
 const userpicUrl = (userpic: string) => {
-  if (userpic && userpic.includes('assets.discours.io')) {
+  if (userpic?.includes('assets.discours.io')) {
     return userpic.replace('100x', '500x500')
   }
   return userpic
@@ -40,7 +38,7 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  createEffect(async () => {
+  createEffect(() => {
     if (author()) {
       const currentAuthor = author()
       setForm({
@@ -73,11 +71,9 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
 
   const value: ProfileFormContextType = {
     form,
-    actions: {
-      submit,
-      updateFormField,
-      setForm,
-    },
+    submit,
+    updateFormField,
+    setForm,
   }
 
   return <ProfileFormContext.Provider value={value}>{props.children}</ProfileFormContext.Provider>

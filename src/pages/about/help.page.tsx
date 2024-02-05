@@ -111,7 +111,7 @@ export const HelpPage = () => {
           <h3 id="trustee">Войдите в&nbsp;попечительский совет Дискурса</h3>
           <p>
             Вы&nbsp;хотите сделать крупное пожертвование? Станьте попечителем Дискурса&nbsp;&mdash;{' '}
-            <a class="black-link" href="mailto:welcome@discours.io" target="_blank">
+            <a class="black-link" href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
               напишите нам
             </a>
             , мы&nbsp;будем рады единомышленникам.
@@ -128,7 +128,7 @@ export const HelpPage = () => {
           <p>
             Если вы&nbsp;хотите помочь проекту, но&nbsp;у&nbsp;вас возникли вопросы, напишите нам письмо
             по&nbsp;адресу{' '}
-            <a class="black-link" href="mailto:welcome@discours.io" target="_blank">
+            <a class="black-link" href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
               welcome@discours.io
             </a>
             .

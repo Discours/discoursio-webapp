@@ -86,7 +86,11 @@ export const TermsOfUsePage = () => {
             <p class="ng-binding">
               Обнародование контента осуществляется Издательством в&nbsp;соответствии с&nbsp;условиями
               лицензии{' '}
-              <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.ru" target="_blank">
+              <a
+                href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.ru"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Creative Commons BY-NC-ND 4.0
               </a>
               . Все материалы сайта предназначены исключительно для личного некоммерческого использования.
@@ -99,7 +103,7 @@ export const TermsOfUsePage = () => {
               и&nbsp;используются только в&nbsp;образовательных и&nbsp;информационных целях. Если
               вы&nbsp;являетесь собственником того или иного произведения и&nbsp;не&nbsp;согласны с&nbsp;его
               размещением на&nbsp;сайте, пожалуйста, напишите на&nbsp;
-              <a href="mailto:welcome@discours.io" target="_blank">
+              <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
                 welcome@discours.io
               </a>
               .
@@ -196,7 +200,7 @@ export const TermsOfUsePage = () => {
             <p class="ng-binding">
               По&nbsp;желанию пользователя Издательство готово удалить любую информацию о&nbsp;нем,
               собранную автоматическим путем. Для этого следует написать на&nbsp;адрес электронной почты{' '}
-              <a href="mailto:welcome@discours.io" target="_blank">
+              <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
                 welcome@discours.io
               </a>
               .
@@ -210,11 +214,11 @@ export const TermsOfUsePage = () => {
             </p>
             <p class="ng-binding">
               Общедоступные видео на&nbsp;сайте могут транслироваться с&nbsp;YouTube и&nbsp;регулируются{' '}
-              <a href="https://policies.google.com/privacy" target="_blank">
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
                 политикой конфиденциальности Google
               </a>
               . Загрузка видео на&nbsp;сайт также означает согласие с&nbsp;
-              <a href="https://www.youtube.com/t/terms" target="_blank">
+              <a href="https://www.youtube.com/t/terms" target="_blank" rel="noreferrer">
                 Условиями использования YouTube
               </a>
               .
@@ -231,7 +235,7 @@ export const TermsOfUsePage = () => {
         <p class="ng-binding">
           Любые вопросы и&nbsp;предложения по&nbsp;поводу функционирования сайта можно направить
           по&nbsp;электронной почте{' '}
-          <a href="mailto:welcome@discours.io" target="_blank">
+          <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
             welcome@discours.io
           </a>{' '}
           или через форму <a href="/connect">&laquo;предложить идею&raquo;</a>.

@@ -1,15 +1,15 @@
-import { Author, Topic } from '../graphql/schema/core.gen'
+import type { Author, Topic } from '../graphql/schema/core.gen'
 
 import { isAuthor } from './isAuthor'
 import { translit } from './ru2en'
 
-const prepareQuery = (searchQuery, lang) => {
+const prepareQuery = (searchQuery: string, lang: string) => {
   const q = searchQuery.toLowerCase()
   if (q.length === 0) return ''
   return lang === 'ru' ? translit(q) : q
 }
 
-const stringMatches = (str, q, lang) => {
+const stringMatches = (str: string, q: string, lang: string) => {
   const preparedStr = lang === 'ru' ? translit(str.toLowerCase()) : str.toLowerCase()
   return preparedStr.split(' ').some((word) => word.startsWith(q))
 }
@@ -26,7 +26,7 @@ export const dummyFilter = <T extends Topic | Author>(
   }
 
   return data.filter((item) => {
-    const slugMatches = item.slug && item.slug.split('-').some((w) => w.startsWith(q))
+    const slugMatches = item.slug?.split('-').some((w) => w.startsWith(q))
     if (slugMatches) return true
 
     if ('title' in item) {

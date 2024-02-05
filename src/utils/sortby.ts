@@ -26,8 +26,8 @@ export const byLength = (
 
 export const byStat = (metric: keyof Stat | keyof TopicStat) => {
   return (a, b) => {
-    const x = (a?.stat && a.stat[metric]) || 0
-    const y = (b?.stat && b.stat[metric]) || 0
+    const x = a.stat?.[metric] || 0
+    const y = b.stat?.[metric] || 0
     if (x > y) return -1
     if (x < y) return 1
     return 0
@@ -36,8 +36,8 @@ export const byStat = (metric: keyof Stat | keyof TopicStat) => {
 
 export const byTopicStatDesc = (metric: keyof TopicStat) => {
   return (a: Topic, b: Topic) => {
-    const x = (a?.stat && a.stat[metric]) || 0
-    const y = (b?.stat && b.stat[metric]) || 0
+    const x = a.stat?.[metric] || 0
+    const y = b.stat?.[metric] || 0
     if (x > y) return -1
     if (x < y) return 1
     return 0

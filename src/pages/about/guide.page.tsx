@@ -136,7 +136,7 @@ export const GuidePage = () => {
             вы&nbsp;хотите обсудить текст, прежде чем загрузить материал в интернет-редакцию&nbsp;&mdash;
             разместите его в&nbsp;google-документе, откройте доступ к&nbsp;редактированию по&nbsp;ссылке
             и&nbsp;напишите нам на&nbsp;
-            <a href="mailto:welcome@discours.io" target="_blank">
+            <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
               welcome@discours.io
             </a>
             .
@@ -144,11 +144,11 @@ export const GuidePage = () => {
           <p>
             Если у&nbsp;вас возникают трудности с&nbsp;тем, чтобы подобрать к&nbsp;своему материалу
             иллюстрации, тоже пишите на&nbsp;
-            <a href="mailto:welcome@discours.io" target="_blank">
+            <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
               почту
             </a>
             &mdash; наши коллеги-художники могут вам помочь{' '}
-            <a href="/create?collab" target="_blank">
+            <a href="/create?collab" target="_blank" rel="noreferrer">
               в&nbsp;режиме совместного редактирования
             </a>
             .
@@ -177,7 +177,7 @@ export const GuidePage = () => {
                 на&nbsp;мероприятия, базу контактов, юридическую поддержку, ознакомление с&nbsp;книжными,
                 кино- и&nbsp;музыкальными новинками до&nbsp;их&nbsp;выхода в&nbsp;свет. Если что-то
                 из&nbsp;этого вам понадобится, пишите на&nbsp;почту{' '}
-                <a href="mailto:welcome@discours.io" target="_blank">
+                <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
                   welcome@discours.io
                 </a>
                 &nbsp;&mdash; поможем.
@@ -219,15 +219,15 @@ export const GuidePage = () => {
           <p>
             За&nbsp;свежими публикациями Дискурса можно следить не&nbsp;только на&nbsp;сайте,
             но&nbsp;и&nbsp;на&nbsp;страницах в&nbsp;
-            <a href="https://facebook.com/discoursio/" target="_blank">
+            <a href="https://facebook.com/discoursio/" target="_blank" rel="noreferrer">
               Фейсбуке
             </a>
             ,{' '}
-            <a href="https://vk.com/discoursio" target="_blank">
+            <a href="https://vk.com/discoursio" target="_blank" rel="noreferrer">
               ВКонтакте
             </a>{' '}
             и&nbsp;
-            <a href="https://t.me/discoursio" target="_blank">
+            <a href="https://t.me/discoursio" target="_blank" rel="noreferrer">
               Телеграме
             </a>
             . А&nbsp;ещё раз в&nbsp;месяц мы&nbsp;отправляем <a href="#subscribe">почтовую рассылку</a>{' '}
@@ -236,7 +236,7 @@ export const GuidePage = () => {
           <p>
             Если вы&nbsp;хотите сотрудничать, что-то обсудить или предложить &mdash; пожалуйста, пишите
             на&nbsp;
-            <a href="mailto:welcome@discours.io" target="_blank">
+            <a href="mailto:welcome@discours.io" target="_blank" rel="noreferrer">
               welcome@discours.io
             </a>
             . Мы&nbsp;обязательно ответим.

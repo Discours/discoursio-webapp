@@ -1,7 +1,7 @@
 import type { AuthModalMode, AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { Show, Component, createEffect, createMemo } from 'solid-js'
+import { Component, Show, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 import { useLocalize } from '../../../context/localize'
@@ -29,7 +29,6 @@ export const AuthModal = () => {
   const rootRef: { current: HTMLDivElement } = { current: null }
   const { t } = useLocalize()
   const { searchParams } = useRouter<AuthModalSearchParams>()
-
   const { source } = searchParams()
 
   const mode = createMemo<AuthModalMode>(() => {
@@ -57,7 +56,7 @@ export const AuthModal = () => {
             classList={{ [styles.hidden]: mode() !== 'register' && mode() !== 'confirm-email' }}
           >
             <div>
-              <h4>{t(`Join the global community of authors!`)}</h4>
+              <h4>{t('Join the global community of authors!')}</h4>
               <p class={styles.authBenefits}>
                 {t(
                   'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine',

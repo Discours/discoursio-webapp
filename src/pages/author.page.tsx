@@ -1,10 +1,10 @@
 import type { PageProps } from './types'
 
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount, Show } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 
+import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
-import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'

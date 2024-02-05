@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createSignal, For, Show } from 'solid-js'
+import { For, Show, createSignal } from 'solid-js'
 
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const DropdownSelect = (props: Props) => {
-  const [selected, setSelected] = createSignal<FilterItem>(props.selectItems[0])
+  const [selected, _setSelected] = createSignal<FilterItem>(props.selectItems[0])
   const [isDropDownVisible, setIsDropDownVisible] = createSignal(false)
 
   const containerRef: { current: HTMLElement } = {

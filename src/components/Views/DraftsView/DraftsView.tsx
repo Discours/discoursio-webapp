@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createSignal, createEffect, For, Show } from 'solid-js'
+import { For, Show, createEffect, createSignal } from 'solid-js'
 
 import { useEditorContext } from '../../../context/editor'
 import { useSession } from '../../../context/session'
@@ -26,9 +26,7 @@ export const DraftsView = () => {
     if (isSessionLoaded()) loadDrafts()
   })
 
-  const {
-    actions: { publishShoutById, deleteShout },
-  } = useEditorContext()
+  const { publishShoutById, deleteShout } = useEditorContext()
 
   const handleDraftDelete = async (shout: Shout) => {
     const result = deleteShout(shout.id)

@@ -22,7 +22,7 @@ export const Snackbar = () => {
         <Transition
           enterClass={styles.enter}
           exitToClass={styles.exitTo}
-          onExit={(el, done) => setTimeout(() => done(), 300)}
+          onExit={(_el, done) => setTimeout(() => done(), 300)}
         >
           <Show when={snackbarMessage()}>
             <div class={styles.content}>

@@ -1,6 +1,43 @@
 import 'solid-js'
-import { SwiperOptions, AutoplayOptions } from 'swiper'
-import { SwiperSlideProps } from 'swiper/react'
+import { JSX, JSXElement, Ref } from 'solid-js'
+import { AutoplayOptions, SlideData, Swiper, SwiperOptions } from 'swiper'
+
+type SwiperSlideProps = {
+  /**
+   * Slide tag
+   *
+   * @default 'div'
+   */
+  tag?: string
+
+  /**
+   * Enables additional wrapper required for zoom mode
+   *
+   * @default false
+   */
+  zoom?: boolean
+
+  /**
+   * Adds lazy preloader to the slide
+   *
+   * @default false
+   */
+  lazy?: boolean
+
+  /**
+   * Slide's index in slides array/collection
+   *
+   * @default false
+   */
+  virtualIndex?: number
+
+  /**
+   * Slide's child element or render function
+   *
+   * @default undefined
+   */
+  children?: JSX.Element | ((slideData: SlideData) => JSX.Element)
+}
 
 type Kebab<T extends string, A extends string = ''> = T extends `${infer F}${infer R}`
   ? Kebab<R, `${A}${F extends Lowercase<F> ? '' : '-'}${Lowercase<F>}`>
@@ -11,8 +48,10 @@ type Kebab<T extends string, A extends string = ''> = T extends `${infer F}${inf
  * @link https://swiperjs.com/element#parameters-as-attributes
  */
 type KebabObjectKeys<T> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  [key in keyof T as Kebab<key & string>]: T[key] extends Object ? KebabObjectKeys<T[key]> : T[key]
+  // biome-ignore lint/suspicious/noExplicitAny: TODO: <explanation>
+  [key in keyof T as Kebab<key & string>]: T[key] extends Record<string, any>
+    ? KebabObjectKeys<T[key]>
+    : T[key]
 }
 
 /**
@@ -32,7 +71,7 @@ declare module 'solid-js' {
     }
 
     interface SwiperContainerAttributes extends KebabObjectKeys<SwiperOptions> {
-      ref?: RefObject<SwiperRef>
+      ref?: Ref<SwiperRef>
       children?: JSX.Element
       onSlideChange?: () => void
       onBeforeSlideChangeStart?: () => void

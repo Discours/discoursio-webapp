@@ -1,7 +1,7 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 
-import { router, ROUTES, useRouter } from '../../../stores/router'
+import { ROUTES, router, useRouter } from '../../../stores/router'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 
 import styles from './Header.module.scss'

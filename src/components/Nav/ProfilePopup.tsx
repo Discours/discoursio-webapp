@@ -12,11 +12,7 @@ import styles from '../_shared/Popup/Popup.module.scss'
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
 export const ProfilePopup = (props: ProfilePopupProps) => {
-  const {
-    author,
-    actions: { signOut },
-  } = useSession()
-
+  const { author, signOut } = useSession()
   const { t } = useLocalize()
 
   return (

@@ -24,7 +24,7 @@ export const InsertLinkForm = (props: Props) => {
   const currentUrl = createEditorTransaction(
     () => props.editor,
     (ed) => {
-      return (ed && ed.getAttributes('link').href) || ''
+      return ed?.getAttributes('link').href || ''
     },
   )
   const handleClearLinkForm = () => {

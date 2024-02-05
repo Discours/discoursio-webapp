@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createSignal, JSX, Show } from 'solid-js'
+import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -21,9 +21,7 @@ type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 export const ChangePasswordForm = () => {
   const { searchParams, changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
-  const {
-    actions: { changePassword },
-  } = useSession()
+  const { changePassword } = useSession()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [newPassword, setNewPassword] = createSignal<string>()
@@ -68,7 +66,7 @@ export const ChangePasswordForm = () => {
               )}
             </div>
             <Show when={validationErrors()}>
-              <div>{validationErrors()['password']}</div>
+              <div>{validationErrors().password}</div>
             </Show>
             <PasswordField
               errorMessage={(err) => setPasswordError(err)}

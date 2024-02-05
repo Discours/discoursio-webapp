@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createEffect, createSignal, on, Show } from 'solid-js'
+import { Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useLocalize } from '../../../../context/localize'
 import { Icon } from '../../../_shared/Icon'
@@ -50,7 +50,7 @@ export const PasswordField = (props: Props) => {
     on(
       () => error(),
       () => {
-        props.errorMessage && props.errorMessage(error())
+        props.errorMessage?.(error())
       },
       { defer: true },
     ),

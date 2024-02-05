@@ -1,5 +1,5 @@
-import type { AuthModalSearchParams } from './types'
 import type { JSX } from 'solid-js'
+import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
@@ -13,8 +13,8 @@ import { validateEmail } from '../../../utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
-import { email, setEmail } from './sharedLogic'
 import { SocialProviders } from './SocialProviders'
+import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
 
@@ -34,9 +34,7 @@ export const RegisterForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const { emailChecks } = useEmailChecks()
-  const {
-    actions: { signUp },
-  } = useSession()
+  const { signUp } = useSession()
   const [submitError, setSubmitError] = createSignal('')
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
@@ -67,11 +65,9 @@ export const RegisterForm = () => {
     }
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setValidationErrors(({ fullName: _notNeeded, ...rest }) => rest)
-
     setSubmitError('')
 
     const newValidationErrors: ValidationErrors = {}
-
     const cleanName = fullName().trim()
     const cleanEmail = email().trim()
 
@@ -90,9 +86,7 @@ export const RegisterForm = () => {
     }
 
     setValidationErrors(newValidationErrors)
-
     const emailCheckResult = await checkEmail(cleanEmail)
-
     const isValid = Object.keys(newValidationErrors).length === 0 && !emailCheckResult
 
     if (!isValid) {
@@ -113,7 +107,7 @@ export const RegisterForm = () => {
         redirect_uri: window.location.origin,
       }
       const { errors } = await signUp(opts)
-      if (errors && errors.some((error) => error.message.includes('has already signed up'))) {
+      if (errors?.some((error) => error.message.includes('has already signed up'))) {
         setValidationErrors((prev) => ({
           ...prev,
           email: (

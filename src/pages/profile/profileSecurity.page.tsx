@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 
-import { Icon } from '../../components/_shared/Icon'
-import { PageLayout } from '../../components/_shared/PageLayout'
 import { AuthGuard } from '../../components/AuthGuard'
 import { ProfileSettingsNavigation } from '../../components/Nav/ProfileSettingsNavigation'
+import { Icon } from '../../components/_shared/Icon'
+import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 
 import styles from './Settings.module.scss'

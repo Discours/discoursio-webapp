@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, on, onMount, Show } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { MediaItem } from '../../../pages/types'
 

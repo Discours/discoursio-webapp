@@ -1,6 +1,6 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { createEffect, createSignal, For, on, Show } from 'solid-js'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
@@ -40,11 +40,8 @@ export const InviteMembers = (props: Props) => {
   ]
 
   const { sortedAuthors } = useAuthorsStore({ sortBy: 'name' })
-  const {
-    actions: { loadChats, createChat },
-  } = useInbox()
+  const { loadChats, createChat } = useInbox()
   const [authorsToInvite, setAuthorsToInvite] = createSignal<InviteAuthor[]>()
-
   const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
   const [collectionToInvite, setCollectionToInvite] = createSignal<number[]>([])
   const fetcher = async (page: number) => {
@@ -65,7 +62,7 @@ export const InviteMembers = (props: Props) => {
     return authors?.slice(start, end)
   }
 
-  const [pages, infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
+  const [pages, _infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
 
   createEffect(
     on(

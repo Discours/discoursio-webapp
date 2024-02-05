@@ -1,10 +1,10 @@
-import { thumborUrl, cdnUrl } from './config'
+import { cdnUrl, thumborUrl } from './config'
 
 const getSizeUrlPart = (options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {}) => {
   const widthString = options.width ? options.width.toString() : ''
   const heightString = options.height ? options.height.toString() : ''
 
-  if ((!widthString && !heightString) || options.noSizeUrlPart) {
+  if (!(widthString || heightString) || options.noSizeUrlPart) {
     return ''
   }
 
@@ -40,7 +40,7 @@ export const getOpenGraphImageUrl = (
   )}','${encodeURIComponent(options.title)}')/`
 
   if (src.startsWith(thumborUrl)) {
-    const thumborKey = src.replace(thumborUrl + '/unsafe', '')
+    const thumborKey = src.replace(`${thumborUrl}/unsafe`, '')
     return `${thumborUrl}/unsafe/${sizeUrlPart}${filtersPart}${thumborKey}`
   }
 

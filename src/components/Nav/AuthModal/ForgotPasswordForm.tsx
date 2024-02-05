@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { createSignal, JSX, Show } from 'solid-js'
+import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -25,9 +25,7 @@ export const ForgotPasswordForm = () => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
     setEmail(newEmail.toLowerCase())
   }
-  const {
-    actions: { forgotPassword },
-  } = useSession()
+  const { forgotPassword } = useSession()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [isUserNotFound, setIsUserNotFound] = createSignal(false)
@@ -63,7 +61,7 @@ export const ForgotPasswordForm = () => {
         redirect_uri: window.location.origin,
       })
       console.debug('[ForgotPasswordForm] authorizer response:', data)
-      if (errors && errors.some((error) => error.message.includes('bad user credentials'))) {
+      if (errors?.some((error) => error.message.includes('bad user credentials'))) {
         setIsUserNotFound(true)
       }
       if (data.message) setMessage(data.message)

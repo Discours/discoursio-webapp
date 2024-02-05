@@ -1,4 +1,4 @@
-import { createSignal, JSX, Show } from 'solid-js'
+import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSnackbar } from '../../../context/snackbar'
@@ -17,9 +17,7 @@ export const Subscribe = (props: Props) => {
   const [title, setTitle] = createSignal('')
   const [email, setEmail] = createSignal('')
   const [emailError, setEmailError] = createSignal<string>(null)
-  const {
-    actions: { showSnackbar },
-  } = useSnackbar()
+  const { showSnackbar } = useSnackbar()
 
   const validate = (): boolean => {
     if (!email()) {

@@ -1,5 +1,5 @@
+import { JSX, createSignal } from 'solid-js'
 import './Tooltip.scss'
-import { createSignal, JSX } from 'solid-js'
 
 interface TooltipProps {
   children?: JSX.Element

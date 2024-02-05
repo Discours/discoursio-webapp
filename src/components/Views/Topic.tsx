@@ -2,7 +2,7 @@ import type { Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, onMount, createSignal, createEffect } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
@@ -14,12 +14,12 @@ import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription } from '../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
-import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 import { Beside } from '../Feed/Beside'
 import { Row1 } from '../Feed/Row1'
 import { Row2 } from '../Feed/Row2'
 import { Row3 } from '../Feed/Row3'
 import { FullTopic } from '../Topic/Full'
+import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
 import styles from '../../styles/Topic.module.scss'
 
@@ -74,7 +74,7 @@ export const TopicView = (props: Props) => {
     restoreScrollPosition()
   }
 
-  onMount(async () => {
+  onMount(() => {
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
     }

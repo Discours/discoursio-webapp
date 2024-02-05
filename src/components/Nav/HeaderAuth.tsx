@@ -1,6 +1,6 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Show, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 
 import { useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
@@ -8,11 +8,11 @@ import { useNotifications } from '../../context/notifications'
 import { useSession } from '../../context/session'
 import { router, useRouter } from '../../stores/router'
 import { showModal } from '../../stores/ui'
+import { Userpic } from '../Author/Userpic'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { Userpic } from '../Author/Userpic'
 
 import { ProfilePopup } from './ProfilePopup'
 
@@ -33,15 +33,8 @@ export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
   const { page } = useRouter()
   const { session, author, isAuthenticated, isSessionLoaded } = useSession()
-  const {
-    unreadNotificationsCount,
-    actions: { showNotificationsPanel },
-  } = useNotifications()
-
-  const {
-    form,
-    actions: { toggleEditorPanel, saveShout, publishShout },
-  } = useEditorContext()
+  const { unreadNotificationsCount, showNotificationsPanel } = useNotifications()
+  const { form, toggleEditorPanel, saveShout, publishShout } = useEditorContext()
 
   const handleBellIconClick = (event: Event) => {
     event.preventDefault()

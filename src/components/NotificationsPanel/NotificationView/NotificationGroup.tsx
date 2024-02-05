@@ -5,10 +5,10 @@ import { For, Show } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
 import { NotificationGroup as Group } from '../../../graphql/schema/notifier.gen'
-import { useRouter, router } from '../../../stores/router'
+import { router, useRouter } from '../../../stores/router'
+import { ArticlePageSearchParams } from '../../Article/FullArticle'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
 import { TimeAgo } from '../../_shared/TimeAgo'
-import { ArticlePageSearchParams } from '../../Article/FullArticle'
 
 import styles from './NotificationView.module.scss'
 
@@ -25,7 +25,7 @@ const getTitle = (title: string) => {
   const shoutTitleWords = title.split(' ')
 
   while (shoutTitle.length <= 30 && i < shoutTitleWords.length) {
-    shoutTitle += shoutTitleWords[i] + ' '
+    shoutTitle += `${shoutTitleWords[i]} `
     i++
   }
 
@@ -45,9 +45,7 @@ const reactionsCaption = (threadId: string) =>
 export const NotificationGroup = (props: NotificationGroupProps) => {
   const { t, formatTime, formatDate } = useLocalize()
   const { changeSearchParams } = useRouter<ArticlePageSearchParams>()
-  const {
-    actions: { hideNotificationsPanel, markSeenThread },
-  } = useNotifications()
+  const { hideNotificationsPanel, markSeenThread } = useNotifications()
   const handleClick = (threadId: string) => {
     props.onClick()
 

@@ -1,11 +1,11 @@
 import type { SearchResult } from '../../graphql/schema/core.gen'
 
-import { Show, For, createSignal, onMount } from 'solid-js'
+import { For, Show, createSignal, onMount } from 'solid-js'
 
-import '../../styles/Search.scss'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { loadShoutsSearch, useArticlesStore } from '../../stores/zine/articles'
+import '../../styles/Search.scss'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
 
@@ -50,7 +50,7 @@ export const SearchView = (props: Props) => {
     restoreScrollPosition()
   }
 
-  onMount(async () => {
+  onMount(() => {
     const q = window.location.pathname.replace('/search/', '') || props.query
     setQuery(q)
     searchEl.value = q
@@ -67,7 +67,7 @@ export const SearchView = (props: Props) => {
             name="q"
             ref={searchEl}
             onInput={handleQueryChange}
-            placeholder={query() || t('Enter text') + '...'}
+            placeholder={query() || `${t('Enter text')}...`}
           />
         </div>
         <div class="col-sm-6">

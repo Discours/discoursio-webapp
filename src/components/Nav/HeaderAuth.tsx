@@ -16,6 +16,7 @@ import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
 import { ProfilePopup } from './ProfilePopup'
 
+import { useSnackbar } from '../../context/snackbar'
 import styles from './Header/Header.module.scss'
 
 type Props = {
@@ -62,9 +63,10 @@ export const HeaderAuth = (props: Props) => {
   const handleSaveButtonClick = () => {
     saveShout(form)
   }
-
+  const { showSnackbar } = useSnackbar()
   const handlePublishButtonClick = () => {
-    publishShout(form)
+    if (form.mainTopic) publishShout(form)
+    else showSnackbar({ body: t('Please, set the main topic first') })
   }
 
   const [width, setWidth] = createSignal(0)

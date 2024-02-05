@@ -25,7 +25,11 @@ export const Draft = (props: Props) => {
 
   const handlePublishLinkClick = (e) => {
     e.preventDefault()
-    props.onPublish(props.shout)
+    if (props.shout.main_topic) {
+      props.onPublish(props.shout)
+    } else {
+      showSnackbar({ body: t('Please, set the main topic first') })
+    }
   }
 
   const handleDeleteLinkClick = async (e) => {

@@ -14,6 +14,7 @@ import { Button } from '../../_shared/Button'
 import { DarkModeToggle } from '../../_shared/DarkModeToggle'
 import { Icon } from '../../_shared/Icon'
 
+import { useSnackbar } from '../../../context/snackbar'
 import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
@@ -46,9 +47,10 @@ export const Panel = (props: Props) => {
   const handleSaveClick = () => {
     saveShout(form)
   }
-
+  const { showSnackbar } = useSnackbar()
   const handlePublishClick = () => {
-    publishShout(form)
+    if (form.mainTopic) publishShout(form)
+    else showSnackbar({ body: t('Please, set the main topic first') })
   }
 
   const html = useEditorHTML(() => editorRef.current())

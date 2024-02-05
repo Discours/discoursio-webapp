@@ -17,6 +17,7 @@ import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 
+import { useSnackbar } from '../../../context/snackbar'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 
@@ -53,6 +54,7 @@ export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { author } = useSession()
   const { sortedTopics } = useTopicsStore()
+  const { showSnackbar } = useSnackbar()
   const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
 
   const composeDescription = () => {
@@ -124,7 +126,12 @@ export const PublishSettings = (props: Props) => {
     handleBackClick()
   }
   const handlePublishSubmit = () => {
-    publishShout({ ...props.form, ...settingsForm })
+    const shoutData = { ...props.form, ...settingsForm }
+    if (!shoutData?.mainTopic) {
+      showSnackbar({ body: t('Please, set the main topic first') })
+    } else {
+      publishShout(shoutData)
+    }
   }
   const handleSaveDraft = () => {
     saveShout({ ...props.form, ...settingsForm })

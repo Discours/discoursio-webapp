@@ -41,11 +41,7 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const { subscriptions } = useFollowing()
-  const { setFollowing } = useFollowing()
-  const isOwnerSubscribed = (authorId: number) => {
-    return !!subscriptions?.authors.some((a) => a.id === authorId)
-  }
+  const { setFollowing, isOwnerSubscribed } = useFollowing()
 
   onMount(() => {
     setAuthorSubs(props.following)

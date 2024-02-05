@@ -20,6 +20,7 @@ interface FollowingContextType {
   loadSubscriptions: () => void
   follow: (what: FollowingEntity, slug: string) => Promise<void>
   unfollow: (what: FollowingEntity, slug: string) => Promise<void>
+  isOwnerSubscribed: (userId: number) => boolean
 }
 
 const FollowingContext = createContext<FollowingContextType>()
@@ -108,10 +109,16 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
+  const isOwnerSubscribed = (userId: number) => {
+    if (!author()) return
+    return !!subscriptions?.authors?.some((authorEntity) => authorEntity.id === userId)
+  }
+
   const value: FollowingContextType = {
     loading,
     subscriptions,
     setSubscriptions,
+    isOwnerSubscribed,
     setFollowing,
     loadSubscriptions: fetchData,
     follow,

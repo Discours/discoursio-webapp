@@ -4,6 +4,7 @@ import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { createEffect, createMemo, createSignal, For, Show } from 'solid-js'
 
+import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { loadAuthors, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
@@ -110,6 +111,8 @@ export const AllAuthorsView = (props: Props) => {
       {} as { [letter: string]: Author[] },
     )
   })
+
+  const { isOwnerSubscribed } = useFollowing()
 
   const sortedKeys = createMemo<string[]>(() => {
     const keys = Object.keys(byLetter())
@@ -229,7 +232,13 @@ export const AllAuthorsView = (props: Props) => {
                 {(author) => (
                   <div class="row">
                     <div class="col-lg-20 col-xl-18">
-                      <AuthorBadge author={author as Author} />
+                      <AuthorBadge
+                        author={author as Author}
+                        isFollowed={{
+                          loaded: Boolean(filteredAuthors()),
+                          value: isOwnerSubscribed(author.id),
+                        }}
+                      />
                     </div>
                   </div>
                 )}

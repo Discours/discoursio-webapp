@@ -2,7 +2,7 @@ import type { Author, Community } from '../../../graphql/schema/core.gen'
 
 import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -41,32 +41,29 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const isSubscribed = () => props.followers?.some((entity) => entity.id === author()?.id)
-  createEffect(
-    on(
-      () => props.followers,
-      () => {
-        setIsFollowed(isSubscribed())
-      },
-      { defer: true },
-    ),
-  )
-
+  const { subscriptions } = useFollowing()
   const { setFollowing } = useFollowing()
+  const isOwnerSubscribed = (authorId: number) => {
+    return !!subscriptions?.authors.some((a) => a.id === authorId)
+  }
+
+  onMount(() => {
+    setAuthorSubs(props.following)
+  })
+
+  createEffect(() => {
+    setIsFollowed(isOwnerSubscribed(props.author?.id))
+  })
 
   const name = createMemo(() => {
     if (lang() !== 'ru' && isCyrillic(props.author.name)) {
       if (props.author.name === 'Дискурс') {
         return 'Discours'
       }
-
       return translit(props.author.name)
     }
-
     return props.author.name
   })
-
-  onMount(() => setAuthorSubs(props.following))
 
   // TODO: reimplement AuthorCard
   const { changeSearchParams } = useRouter()
@@ -103,7 +100,7 @@ export const AuthorCard = (props: Props) => {
   }
 
   const followButtonText = createMemo(() => {
-    if (isFollowed()) {
+    if (isOwnerSubscribed(props.author?.id)) {
       return (
         <>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
@@ -111,7 +108,6 @@ export const AuthorCard = (props: Props) => {
         </>
       )
     }
-
     return t('Follow')
   })
 
@@ -206,12 +202,11 @@ export const AuthorCard = (props: Props) => {
                 </For>
               </div>
             </Show>
-
             <Show
               when={isProfileOwner()}
               fallback={
                 <div class={styles.authorActions}>
-                  <Show when={isFollowed()}>
+                  <Show when={authorSubs().length}>
                     <Button
                       onClick={handleFollowClick}
                       value={followButtonText()}
@@ -260,7 +255,15 @@ export const AuthorCard = (props: Props) => {
                 <div class="row">
                   <div class="col-24">
                     <For each={props.followers}>
-                      {(follower: Author) => <AuthorBadge author={follower} />}
+                      {(follower: Author) => (
+                        <AuthorBadge
+                          author={follower}
+                          isFollowed={{
+                            loaded: Boolean(authorSubs()),
+                            value: isOwnerSubscribed(follower.id),
+                          }}
+                        />
+                      )}
                     </For>
                   </div>
                 </div>
@@ -303,7 +306,13 @@ export const AuthorCard = (props: Props) => {
                     <For each={authorSubs()}>
                       {(subscription) =>
                         isAuthor(subscription) ? (
-                          <AuthorBadge author={subscription} />
+                          <AuthorBadge
+                            isFollowed={{
+                              loaded: Boolean(authorSubs()),
+                              value: isOwnerSubscribed(subscription.id),
+                            }}
+                            author={subscription}
+                          />
                         ) : (
                           <TopicBadge topic={subscription} />
                         )

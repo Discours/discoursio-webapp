@@ -80,7 +80,6 @@ export const AuthorBadge = (props: Props) => {
       () => {
         setIsFollowed(props.isFollowed.value)
       },
-      { defer: true },
     ),
   )
 

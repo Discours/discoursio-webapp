@@ -5,6 +5,7 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/feature/email-templates'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -35,10 +36,9 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/feature/email-templates'
     continue-on-error: true
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: "Email confirmation template"
+      - name: "authorizer_email_confirmation template"
         uses: gyto/mailgun-template-action@v2
         with:
           html-file: "./templates/authorizer_email_confirmation.html"
@@ -46,7 +46,7 @@ jobs:
           mailgun-domain: "discours.io"
           mailgun-template: "authorizer_email_confirmation"
 
-      - name: "Password reset template"
+      - name: "authorizer_password_reset template"
         uses: gyto/mailgun-template-action@v2
         with:
           html-file: "./templates/authorizer_password_reset.html"
@@ -54,15 +54,15 @@ jobs:
           mailgun-domain: "discours.io"
           mailgun-template: "authorizer_password_reset"
 
-      - name: "First publication notification"
+      - name: "email_first_publication template"
         uses: gyto/mailgun-template-action@v2
         with:
-          html-file: "./templates/first_publication_notification.html"
+          html-file: "./templates/email_first_publication.html"
           mailgun-api-key: ${{ secrets.MAILGUN_API_KEY }}
           mailgun-domain: "discours.io"
-          mailgun-template: "first_publication_notification"
+          mailgun-template: "email_first_publication"
 
-      - name: "New comment notification template"
+      - name: "new_comment_notification template"
         uses: gyto/mailgun-template-action@v2
         with:
           html-file: "./templates/new_comment_notification.html"

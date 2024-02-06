@@ -15,6 +15,7 @@ import { PasswordField } from './PasswordField'
 import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
+import { capitalize } from '../../../utils/capitalize'
 import styles from './AuthModal.module.scss'
 
 type FormFields = {
@@ -87,7 +88,7 @@ export const LoginForm = () => {
 
       authFormRef.current
         .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
-        .focus()
+        ?.focus()
 
       return
     }
@@ -175,7 +176,7 @@ export const LoginForm = () => {
               })
             }
           >
-            {t('Forgot password?')}
+            {t('Set the new password')}
           </span>
         </div>
       </div>

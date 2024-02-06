@@ -1,5 +1,5 @@
 {
-  "*.{js,ts,cjs,mjs,d.mts,jsx,tsx,json,jsonc,scss,css}": [
+  "*.{js,ts,cjs,mjs,d.mts,jsx,tsx,json,jsonc}": [
     "npx @biomejs/biome check ./src && tsc"
   ]
 }

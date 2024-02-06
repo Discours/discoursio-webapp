@@ -8,6 +8,8 @@ import styles from './PasswordField.module.scss'
 
 type Props = {
   class?: string
+  disabled?: boolean
+  placeholder?: string
   errorMessage?: (error: string) => void
   onInput: (value: string) => void
   variant?: 'login' | 'registration'
@@ -66,9 +68,10 @@ export const PasswordField = (props: Props) => {
         <input
           id="password"
           name="password"
+          disabled={props.disabled}
           autocomplete="current-password"
           type={showPassword() ? 'text' : 'password'}
-          placeholder={t('Password')}
+          placeholder={props.placeholder || t('Password')}
           onInput={(event) => handleInputChange(event.currentTarget.value)}
         />
         <label for="password">{t('Password')}</label>

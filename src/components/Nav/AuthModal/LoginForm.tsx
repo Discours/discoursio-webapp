@@ -55,7 +55,7 @@ export const LoginForm = () => {
     setIsLinkSent(true)
     setIsEmailNotConfirmed(false)
     setSubmitError('')
-    changeSearchParams({ mode: 'forgot-password' })
+    changeSearchParams({ mode: 'send-reset-link' })
     // NOTE: temporary solution, needs logic in authorizer
     /* FIXME:
     const { authorizer } = useSession()
@@ -172,7 +172,7 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               changeSearchParams({
-                mode: 'forgot-password',
+                mode: 'send-reset-link',
               })
             }
           >

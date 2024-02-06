@@ -187,17 +187,16 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
-
               <div class={styles.validationError}>{validationErrors().email}</div>
-
+              <Show when={Boolean(emailStatus())}>
+                {t('This email is')} {emailStatus() ? t(emailStatus()) : ''},{' '}
+              </Show>
               <Show when={emailStatus() === 'verfied'}>
-                {t('This email is')} {t(emailStatus())},{' '}
                 <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
                   {t('enter')}
                 </span>
               </Show>
               <Show when={emailStatus() === 'not verfied'}>
-                {t('This email is')} {t(emailStatus())},{' '}
                 <span
                   class="link"
                   onClick={() => resendVerifyEmail({ email: email(), identifier: 'basic_signup' })}
@@ -206,12 +205,11 @@ export const RegisterForm = () => {
                 </span>
               </Show>
               <Show when={emailStatus() === 'registered'}>
-                {t('This email is')} {t(emailStatus())},{' '}
                 <span
                   class="link"
                   onClick={() =>
                     changeSearchParams({
-                      mode: 'forgot-password',
+                      mode: 'send-reset-link',
                     })
                   }
                 >

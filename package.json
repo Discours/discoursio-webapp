@@ -16,6 +16,7 @@
     "hygen": "HYGEN_TMPLS=gen hygen",
     "postinstall": "npm run codegen",
     "check:code": "npx @biomejs/biome check src --log-kind=compact --verbose",
+    "check:types": "tsc --noEmit",
     "check:code:fix": "npx @biomejs/biome check src --log-kind=compact --verbose --apply-unsafe",
     "lint": "npm run lint:code && stylelint **/*.{scss,css}",
     "lint:code": "npx @biomejs/biome lint src --log-kind=compact --verbose",

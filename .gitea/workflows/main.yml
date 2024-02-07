@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Test production build
+      - name: Run templates build
         run: npm run templates
 
       - name: "authorizer_email_confirmation template"

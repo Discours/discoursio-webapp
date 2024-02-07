@@ -67,7 +67,7 @@ const allowedImageTypes = new Set([
   'image/png',
   'image/tiff',
   'image/webp',
-  'image/x-icon',
+  'image/x-icon'
 ])
 
 const yDocs: Record<string, Doc> = {}
@@ -92,42 +92,42 @@ export const Editor = (props: Props) => {
     providers[docName] = new HocuspocusProvider({
       url: 'wss://hocuspocus.discours.io',
       name: docName,
-      document: yDocs[docName],
+      document: yDocs[docName]
     })
   }
 
   const editorElRef: {
     current: HTMLDivElement
   } = {
-    current: null,
+    current: null
   }
 
   const textBubbleMenuRef: {
     current: HTMLDivElement
   } = {
-    current: null,
+    current: null
   }
 
   const incutBubbleMenuRef: {
     current: HTMLElement
   } = {
-    current: null,
+    current: null
   }
   const figureBubbleMenuRef: {
     current: HTMLElement
   } = {
-    current: null,
+    current: null
   }
   const blockquoteBubbleMenuRef: {
     current: HTMLElement
   } = {
-    current: null,
+    current: null
   }
 
   const floatingMenuRef: {
     current: HTMLDivElement
   } = {
-    current: null,
+    current: null
   }
 
   const handleClipboardPaste = async () => {
@@ -148,7 +148,7 @@ export const Editor = (props: Props) => {
         source: blob.toString(),
         name: file.name,
         size: file.size,
-        file,
+        file
       }
 
       showSnackbar({ body: t('Uploading image') })
@@ -163,13 +163,13 @@ export const Editor = (props: Props) => {
           content: [
             {
               type: 'image',
-              attrs: { src: result.url },
+              attrs: { src: result.url }
             },
             {
               type: 'figcaption',
-              content: [{ type: 'text', text: result.originalFilename }],
-            },
-          ],
+              content: [{ type: 'text', text: result.originalFilename }]
+            }
+          ]
         })
         .run()
     } catch (error) {
@@ -183,7 +183,7 @@ export const Editor = (props: Props) => {
     element: editorElRef.current,
     editorProps: {
       attributes: {
-        class: 'articleEditor',
+        class: 'articleEditor'
       },
       transformPastedHTML(html) {
         return html.replaceAll(/<img.*?>/g, '')
@@ -191,7 +191,7 @@ export const Editor = (props: Props) => {
       handlePaste: () => {
         handleClipboardPaste()
         return false
-      },
+      }
     },
     extensions: [
       Document,
@@ -206,34 +206,34 @@ export const Editor = (props: Props) => {
       Strike,
       HorizontalRule.configure({
         HTMLAttributes: {
-          class: 'horizontalRule',
-        },
+          class: 'horizontalRule'
+        }
       }),
       Underline,
       Link.extend({
-        inclusive: false,
+        inclusive: false
       }).configure({
         autolink: true,
-        openOnClick: false,
+        openOnClick: false
       }),
       Heading.configure({
-        levels: [2, 3, 4],
+        levels: [2, 3, 4]
       }),
       BulletList,
       OrderedList,
       ListItem,
       Collaboration.configure({
-        document: yDocs[docName],
+        document: yDocs[docName]
       }),
       CollaborationCursor.configure({
         provider: providers[docName],
         user: {
           name: author().name,
-          color: uniqolor(author().slug).color,
-        },
+          color: uniqolor(author().slug).color
+        }
       }),
       Placeholder.configure({
-        placeholder: t('Add a link or click plus to embed media'),
+        placeholder: t('Add a link or click plus to embed media')
       }),
       Focus,
       Gapcursor,
@@ -241,8 +241,8 @@ export const Editor = (props: Props) => {
       Highlight.configure({
         multicolor: true,
         HTMLAttributes: {
-          class: 'highlight',
-        },
+          class: 'highlight'
+        }
       }),
       Image,
       Iframe,
@@ -274,8 +274,8 @@ export const Editor = (props: Props) => {
           return result
         },
         tippyOptions: {
-          sticky: true,
-        },
+          sticky: true
+        }
       }),
       BubbleMenu.configure({
         pluginKey: 'blockquoteBubbleMenu',
@@ -293,8 +293,8 @@ export const Editor = (props: Props) => {
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }
-          },
-        },
+          }
+        }
       }),
       BubbleMenu.configure({
         pluginKey: 'incutBubbleMenu',
@@ -312,27 +312,27 @@ export const Editor = (props: Props) => {
             if (selectedElement) {
               return selectedElement.getBoundingClientRect()
             }
-          },
-        },
+          }
+        }
       }),
       BubbleMenu.configure({
         pluginKey: 'imageBubbleMenu',
         element: figureBubbleMenuRef.current,
         shouldShow: ({ editor: e, view }) => {
           return view.hasFocus() && e.isActive('image')
-        },
+        }
       }),
       FloatingMenu.configure({
         tippyOptions: {
-          placement: 'left',
+          placement: 'left'
         },
-        element: floatingMenuRef.current,
+        element: floatingMenuRef.current
       }),
       TrailingNode,
-      Article,
+      Article
     ],
     enablePasteRules: [Link],
-    content: initialContent ?? null,
+    content: initialContent ?? null
   }))
 
   const { countWords, setEditor } = useEditorContext()
@@ -345,7 +345,7 @@ export const Editor = (props: Props) => {
     if (html()) {
       countWords({
         characters: editor().storage.characterCount.characters(),
-        words: editor().storage.characterCount.words(),
+        words: editor().storage.characterCount.words()
       })
     }
   })

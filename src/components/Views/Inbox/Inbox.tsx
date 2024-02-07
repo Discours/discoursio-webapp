@@ -56,7 +56,7 @@ export const InboxView = (props: Props) => {
   const { changeSearchParams, searchParams } = useRouter<InboxSearchParams>()
 
   const messagesContainerRef: { current: HTMLDivElement } = {
-    current: null,
+    current: null
   }
 
   const getQuery = (query) => {
@@ -68,7 +68,7 @@ export const InboxView = (props: Props) => {
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParams({
-      chat: chat.id,
+      chat: chat.id
     })
     try {
       await getMessages(chat.id)
@@ -77,7 +77,7 @@ export const InboxView = (props: Props) => {
     } finally {
       messagesContainerRef.current.scroll({
         top: messagesContainerRef.current.scrollHeight,
-        behavior: 'instant',
+        behavior: 'instant'
       })
     }
   }
@@ -86,7 +86,7 @@ export const InboxView = (props: Props) => {
     sendMessage({
       body: message,
       chat_id: currentDialog()?.id.toString(),
-      reply_to: messageToReply()?.id,
+      reply_to: messageToReply()?.id
     })
     setClear(true)
     setMessageToReply(null)
@@ -107,7 +107,7 @@ export const InboxView = (props: Props) => {
         await loadChats()
         changeSearchParams({
           initChat: null,
-          chat: newChat.chat.id,
+          chat: newChat.chat.id
         })
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen)
@@ -147,11 +147,11 @@ export const InboxView = (props: Props) => {
         }
         messagesContainerRef.current.scroll({
           top: messagesContainerRef.current.scrollHeight,
-          behavior: 'smooth',
+          behavior: 'smooth'
         })
-      },
+      }
     ),
-    { defer: true },
+    { defer: true }
   )
   const handleScrollMessageContainer = () => {
     if (
@@ -166,7 +166,7 @@ export const InboxView = (props: Props) => {
   const handleScrollToNew = () => {
     messagesContainerRef.current.scroll({
       top: messagesContainerRef.current.scrollHeight,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     setIsScrollToNewVisible(false)
   }

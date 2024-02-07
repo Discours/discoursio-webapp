@@ -52,15 +52,15 @@ export const PasswordField = (props: Props) => {
       () => {
         props.errorMessage?.(error())
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   return (
     <div class={clsx(styles.PassportField, props.class)}>
       <div
         class={clsx('pretty-form__item', {
-          'pretty-form__item--error': error() && props.variant !== 'login',
+          'pretty-form__item--error': error() && props.variant !== 'login'
         })}
       >
         <input

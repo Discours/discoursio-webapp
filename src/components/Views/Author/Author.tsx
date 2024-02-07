@@ -74,11 +74,11 @@ export const AuthorView = (props: Props) => {
         (async () => {
           const [getAuthors, getTopics] = await Promise.all([
             apiClient.getAuthorFollowingAuthors({ slug }),
-            apiClient.getAuthorFollowingTopics({ slug }),
+            apiClient.getAuthorFollowingTopics({ slug })
           ])
           return { authors: getAuthors, topics: getTopics }
         })(),
-        apiClient.getAuthorFollowers({ slug }),
+        apiClient.getAuthorFollowers({ slug })
       ])
 
       const { authors, topics } = subscriptionsResult
@@ -104,7 +104,7 @@ export const AuthorView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { author: props.authorSlug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length,
+      offset: sortedArticles().length
     })
     setIsLoadMoreButtonVisible(hasMore)
     restoreScrollPosition()
@@ -121,12 +121,12 @@ export const AuthorView = (props: Props) => {
   })
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const fetchComments = async (commenter: Author) => {
     const data = await apiClient.getReactionsBy({
-      by: { comment: false, created_by: commenter.id },
+      by: { comment: false, created_by: commenter.id }
     })
     console.debug('[components.Author] fetched comments', data)
     setCommented(data)
@@ -142,7 +142,7 @@ export const AuthorView = (props: Props) => {
   const ogImage = createMemo(() =>
     author()?.pic
       ? getImageUrl(author()?.pic, { width: 1200 })
-      : getImageUrl('production/image/logo_image.png'),
+      : getImageUrl('production/image/logo_image.png')
   )
   const description = createMemo(() => getDescription(author()?.bio))
 

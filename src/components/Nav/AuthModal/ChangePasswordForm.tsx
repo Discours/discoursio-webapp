@@ -62,7 +62,7 @@ export const ChangePasswordForm = () => {
             <h4>{t('Enter a new password')}</h4>
             <div class={styles.authSubtitle}>
               {t(
-                'Now you can enter a new password, it must contain at least 8 characters and not be the same as the previous password',
+                'Now you can enter a new password, it must contain at least 8 characters and not be the same as the previous password'
               )}
             </div>
             <Show when={validationErrors()}>
@@ -83,7 +83,7 @@ export const ChangePasswordForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >

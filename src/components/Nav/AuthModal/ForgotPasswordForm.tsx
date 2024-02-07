@@ -58,7 +58,7 @@ export const ForgotPasswordForm = () => {
     try {
       const { data, errors } = await forgotPassword({
         email: email(),
-        redirect_uri: window.location.origin,
+        redirect_uri: window.location.origin
       })
       console.debug('[ForgotPasswordForm] authorizer response:', data)
       if (errors?.some((error) => error.message.includes('bad user credentials'))) {
@@ -85,7 +85,7 @@ export const ForgotPasswordForm = () => {
         </div>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input
@@ -107,7 +107,7 @@ export const ForgotPasswordForm = () => {
                 class={'link'}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >
@@ -134,7 +134,7 @@ export const ForgotPasswordForm = () => {
             class={styles.authLink}
             onClick={() =>
               changeSearchParams({
-                mode: 'login',
+                mode: 'login'
               })
             }
           >

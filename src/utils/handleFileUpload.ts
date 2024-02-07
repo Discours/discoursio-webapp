@@ -10,7 +10,7 @@ export const handleFileUpload = async (uploadFile: UploadFile): Promise<Uploaded
   formData.append('file', uploadFile.file, uploadFile.name)
   const response = await fetch(apiUrl, {
     method: 'POST',
-    body: formData,
+    body: formData
   })
   return response.json()
 }

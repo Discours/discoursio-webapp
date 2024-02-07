@@ -100,7 +100,7 @@ export const LoginForm = () => {
         if (errors.some((error) => error.message.includes('bad user credentials'))) {
           setValidationErrors((prev) => ({
             ...prev,
-            password: t('Something went wrong, check email and password'),
+            password: t('Something went wrong, check email and password')
           }))
         } else {
           setSubmitError(t('Error'))
@@ -136,7 +136,7 @@ export const LoginForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input
@@ -171,7 +171,7 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               changeSearchParams({
-                mode: 'forgot-password',
+                mode: 'forgot-password'
               })
             }
           >
@@ -188,7 +188,7 @@ export const LoginForm = () => {
             class={styles.authLink}
             onClick={() =>
               changeSearchParams({
-                mode: 'register',
+                mode: 'register'
               })
             }
           >

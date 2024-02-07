@@ -36,7 +36,7 @@ export const addAuthors = (authors: Author[]) => {
       acc[author.slug] = author
       return acc
     },
-    {} as Record<string, Author>,
+    {} as Record<string, Author>
   )
 
   setAuthorEntities((prevAuthorEntities) =>
@@ -44,18 +44,18 @@ export const addAuthors = (authors: Author[]) => {
       (acc, authorSlug) => {
         acc[authorSlug] = {
           ...acc[authorSlug],
-          ...newAuthorEntities[authorSlug],
+          ...newAuthorEntities[authorSlug]
         }
         return acc
       },
-      { ...prevAuthorEntities },
-    ),
+      { ...prevAuthorEntities }
+    )
   )
 }
 
 export const loadAuthor = async ({
   slug,
-  author_id,
+  author_id
 }: {
   slug: string
   author_id?: number

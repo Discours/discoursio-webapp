@@ -19,16 +19,16 @@ export const Popover = (props: Props) => {
       {
         name: 'offset',
         options: {
-          offset: [0, 8],
-        },
+          offset: [0, 8]
+        }
       },
       {
         name: 'flip',
         options: {
-          fallbackPlacements: ['top', 'bottom'],
-        },
-      },
-    ],
+          fallbackPlacements: ['top', 'bottom']
+        }
+      }
+    ]
   })
 
   const showEvents = ['mouseenter', 'focus']

@@ -18,7 +18,7 @@ export const CardTopic = (props: CardTopicProps) => {
     <div
       class={clsx(styles.shoutTopic, props.class, {
         [styles.shoutTopicFloorImportant]: props.isFloorImportant,
-        [styles.shoutTopicFeedMode]: props.isFeedMode,
+        [styles.shoutTopicFeedMode]: props.isFeedMode
       })}
     >
       <a href={getPagePath(router, 'topic', { slug: props.slug })}>{props.title}</a>

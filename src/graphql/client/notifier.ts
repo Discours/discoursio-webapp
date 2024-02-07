@@ -6,7 +6,7 @@ import loadNotifications from '../query/notifier/notifications-load'
 import {
   MutationMark_Seen_AfterArgs,
   NotificationsResult,
-  QueryLoad_NotificationsArgs,
+  QueryLoad_NotificationsArgs
 } from '../schema/notifier.gen'
 
 export const notifierClient = {
@@ -30,5 +30,5 @@ export const notifierClient = {
   markSeenThread: async (thread: string): Promise<void> => {
     // call when notification group is clicked
     await notifierClient.private.mutation(markThreadSeenMutation, { thread }).toPromise()
-  },
+  }
 }

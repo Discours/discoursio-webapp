@@ -1,7 +1,7 @@
 import type {
   AuthModalSearchParams,
   AuthModalSource,
-  ConfirmEmailSearchParams,
+  ConfirmEmailSearchParams
 } from '../components/Nav/AuthModal/types'
 import type { RootSearchParams } from '../pages/types'
 
@@ -43,7 +43,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   following: 'following',
   search: 'search',
   share: 'share',
-  cropImage: 'cropImage',
+  cropImage: 'cropImage'
 }
 
 const [modal, setModal] = createSignal<ModalType>(null)
@@ -55,7 +55,7 @@ const { changeSearchParams, clearSearchParams } = useRouter<
 export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
   if (modalSource) {
     changeSearchParams({
-      source: modalSource,
+      source: modalSource
     })
   }
 
@@ -69,6 +69,6 @@ export const hideModal = () => {
 
 export const useModalStore = () => {
   return {
-    modal,
+    modal
   }
 }

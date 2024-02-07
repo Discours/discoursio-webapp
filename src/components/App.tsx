@@ -84,7 +84,7 @@ const pagesMap: Record<keyof typeof ROUTES, Component<PageProps>> = {
   profileSettings: ProfileSettingsPage,
   profileSecurity: ProfileSecurityPage,
   profileSubscriptions: ProfileSubscriptionsPage,
-  fourOuFour: FourOuFourPage,
+  fourOuFour: FourOuFourPage
 }
 
 type Props = PageProps & { is404: boolean }

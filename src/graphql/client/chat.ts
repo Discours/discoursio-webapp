@@ -19,7 +19,7 @@ import {
   MutationUpdate_ChatArgs,
   MutationUpdate_MessageArgs,
   QueryLoad_ChatsArgs,
-  QueryLoad_Messages_ByArgs,
+  QueryLoad_Messages_ByArgs
 } from '../schema/chat.gen'
 
 export const inboxClient = {
@@ -69,5 +69,5 @@ export const inboxClient = {
   loadChatMessages: async (options: QueryLoad_Messages_ByArgs) => {
     const resp = await inboxClient.private.query(chatMessagesLoadBy, options).toPromise()
     return resp.data.load_messages_by.messages
-  },
+  }
 }

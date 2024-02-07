@@ -42,7 +42,7 @@ export const ArticleCardSwiper = (props: Props) => {
                 space-between={10}
                 breakpoints={{
                   576: { spaceBetween: 20, slidesPerView: 1.5 },
-                  992: { spaceBetween: 52, slidesPerView: 1.5 },
+                  992: { spaceBetween: 52, slidesPerView: 1.5 }
                 }}
                 round-lengths={true}
                 loop={true}
@@ -50,7 +50,7 @@ export const ArticleCardSwiper = (props: Props) => {
                 autoplay={{
                   disableOnInteraction: false,
                   delay: 6000,
-                  pauseOnMouseEnter: true,
+                  pauseOnMouseEnter: true
                 }}
               >
                 <For each={props.slides}>
@@ -64,7 +64,7 @@ export const ArticleCardSwiper = (props: Props) => {
                           additionalClass: 'swiper-slide',
                           isFloorImportant: true,
                           isWithCover: true,
-                          nodate: true,
+                          nodate: true
                         }}
                         desktopCoverSize="L"
                       />

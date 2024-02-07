@@ -26,7 +26,7 @@ export default (props: GroupProps) => {
                   nosubtitle: false,
                   noicon: true,
                   isBigTitle: true,
-                  nodate: true,
+                  nodate: true
                 }}
                 desktopCoverSize="M"
               />
@@ -60,7 +60,7 @@ export default (props: GroupProps) => {
                             noimage: true,
                             isBigTitle: true,
                             isCompact: true,
-                            nodate: true,
+                            nodate: true
                           }}
                           desktopCoverSize="XS"
                         />
@@ -77,7 +77,7 @@ export default (props: GroupProps) => {
                             noimage: true,
                             isBigTitle: true,
                             isCompact: true,
-                            nodate: true,
+                            nodate: true
                           }}
                           desktopCoverSize="XS"
                         />

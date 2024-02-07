@@ -57,14 +57,14 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
             attrs: {
               src: emb.src,
               width: emb.width,
-              height: emb.height,
-            },
+              height: emb.height
+            }
           },
           {
             type: 'figcaption',
-            content: [{ type: 'text', text: t('Description') }],
-          },
-        ],
+            content: [{ type: 'text', text: t('Description') }]
+          }
+        ]
       })
       .run()
   }
@@ -107,7 +107,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         setMenuOpen(false)
         setSelectedMenuItem()
       }
-    },
+    }
   })
 
   const handleUpload = (image: UploadedFile) => {

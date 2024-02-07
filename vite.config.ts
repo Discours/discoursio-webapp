@@ -17,7 +17,7 @@ const cssModuleHMR = () => {
           module.isSelfAccepting = true
         }
       })
-    },
+    }
   }
 }
 
@@ -27,7 +27,7 @@ const getDevCssClassPrefix = (filename: string): string => {
   return filename
     .slice(filename.indexOf(PATH_PREFIX) + PATH_PREFIX.length)
     .replace('.module.scss', '')
-    .replaceAll(/[/?\\]/g, '-')
+    .replace(/[/?\\]/g, '-')
 }
 
 const devGenerateScopedName = (name: string, filename: string, _css: string) =>
@@ -38,7 +38,7 @@ export default defineConfig(({ mode, command }) => {
     solidPlugin({ ssr: true }),
     ssrPlugin({ includeAssetsImportedByServer: true }),
     sassDts(),
-    cssModuleHMR(),
+    cssModuleHMR()
   ]
 
   if (command === 'serve') {
@@ -52,23 +52,23 @@ export default defineConfig(({ mode, command }) => {
     plugins,
     server: {
       https: true,
-      port: 3000,
+      port: 3000
     },
     css: {
       devSourcemap: isDev,
       preprocessorOptions: {
-        scss: { additionalData: '@import "src/styles/imports";\n' },
+        scss: { additionalData: '@import "src/styles/imports";\n' }
       },
       modules: {
-        generateScopedName: isDev ? devGenerateScopedName : '[hash:base64:5]',
-      },
+        generateScopedName: isDev ? devGenerateScopedName : '[hash:base64:5]'
+      }
     },
     build: {
       rollupOptions: {
-        external: [],
+        external: []
       },
       chunkSizeWarningLimit: 1024,
-      target: 'esnext',
+      target: 'esnext'
     },
     ssr: {
       noExternal: [
@@ -106,8 +106,8 @@ export default defineConfig(({ mode, command }) => {
         '@tiptap/extension-link',
         '@tiptap/extension-image',
         '@tiptap/extension-character-count',
-        'clsx',
-      ],
-    },
+        'clsx'
+      ]
+    }
   }
 })

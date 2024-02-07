@@ -8,6 +8,11 @@ const componentsDir = path.join(currentDir, 'templates', 'entries');
 
 const components = ['email_confirmation', 'first_publication', 'new_comment', 'password_reset'];
 
+// Ensure the output directory exists, if not create it
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
 try {
   // Read the template file
   const template = fs.readFileSync(templatePath, 'utf-8');

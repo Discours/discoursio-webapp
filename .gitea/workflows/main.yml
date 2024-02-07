@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: '18'
 
-      - uses: node templates/compile.cjs
+      - uses: npm run email-templates
 
       - name: "authorizer_email_confirmation template"
         uses: gyto/mailgun-template-action@v2

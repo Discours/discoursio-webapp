@@ -27,7 +27,8 @@
     "preview": "vite preview",
     "start": "vite",
     "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch"
+    "typecheck:watch": "tsc --noEmit --watch",
+    "email-templates": "node ./templates/compile.cjs"
   },
   "dependencies": {
     "@authorizerdev/authorizer-js": "2.0.0",

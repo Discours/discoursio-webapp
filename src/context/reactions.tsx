@@ -5,6 +5,7 @@ import { createStore, reconcile } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
 import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/schema/core.gen'
+import { useSession } from './session'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
@@ -30,6 +31,7 @@ export function useReactions() {
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
+  const { author } = useSession()
 
   const loadReactionsBy = async ({
     by,
@@ -53,7 +55,18 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const createReaction = async (input: ReactionInput): Promise<void> => {
+    const fakeId = Date.now() + Math.floor(Math.random() * 1000)
+    setReactionEntities((rrr: Record<number, Reaction>) => ({
+      ...rrr,
+      [fakeId]: {
+        ...input,
+        id: fakeId,
+        created_by: author(),
+        created_at: Math.floor(Date.now() / 1000),
+      } as unknown as Reaction,
+    }))
     const reaction = await apiClient.createReaction(input)
+    setReactionEntities({ [fakeId]: undefined })
     if (!reaction) return
     const changes = {
       [reaction.id]: reaction,
@@ -79,13 +92,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     setReactionEntities(changes)
   }
 
-  const deleteReaction = async (reaction_id: number): Promise<void> => {
-    if (reaction_id) {
-      await apiClient.destroyReaction(reaction_id)
-      setReactionEntities({
-        [reaction_id]: undefined,
-      })
-    }
+  const deleteReaction = async (reaction: number): Promise<void> => {
+    setReactionEntities({ [reaction]: undefined })
+    await apiClient.destroyReaction(reaction)
   }
 
   const updateReaction = async (id: number, input: ReactionInput): Promise<void> => {

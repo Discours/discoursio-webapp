@@ -1,4 +1,4 @@
-import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
+import type { Author, Reaction, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
@@ -312,10 +312,11 @@ export const FullArticle = (props: Props) => {
       },
     ),
   )
-
+  const [ratings, setRatings] = createSignal<Reaction[]>([])
   onMount(async () => {
     install('G-LQ4B87H8C2')
-    await loadReactionsBy({ by: { shout: props.article.slug } })
+    const rrr = await loadReactionsBy({ by: { shout: props.article.slug } })
+    setRatings((_) => rrr.filter((r) => ['LIKE', 'DISLIKE'].includes(r.kind)))
     setIsReactionsLoaded(true)
     document.title = props.article.title
     window?.addEventListener('resize', updateIframeSizes)
@@ -461,7 +462,11 @@ export const FullArticle = (props: Props) => {
           <div class="col-md-16 offset-md-5">
             <div class={styles.shoutStats}>
               <div class={styles.shoutStatsItem}>
-                <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
+                <ShoutRatingControl
+                  shout={props.article}
+                  class={styles.ratingControl}
+                  ratings={ratings()}
+                />
               </div>
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>

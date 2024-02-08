@@ -135,6 +135,7 @@
     "yjs": "13.6.8"
   },
   "overrides": {
+    "@whatwg-node/node-fetch": "^0.5.6",
     "esbuild": "0.17.19",
     "graphql": "16.8.1",
     "lodash": "~4.17.0",

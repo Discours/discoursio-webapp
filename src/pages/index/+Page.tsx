@@ -10,7 +10,7 @@ import { ReactionsProvider } from '../../context/reactions'
 import { loadShouts, resetSortedArticles } from '../../stores/zine/articles'
 import { loadRandomTopics } from '../../stores/zine/topics'
 
-const HomePage = (props: PageProps) => {
+const Page = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts))
   const { t } = useLocalize()
 
@@ -40,4 +40,4 @@ const HomePage = (props: PageProps) => {
   )
 }
 
-export { HomePage }
+export { Page }

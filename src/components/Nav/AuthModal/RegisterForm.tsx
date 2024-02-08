@@ -187,13 +187,13 @@ export const RegisterForm = () => {
               <input
                 name="fullName"
                 type="text"
-                disabled={emailStatus()}
+                disabled={Boolean(emailStatus())}
                 placeholder={t('Full name')}
                 autocomplete="one-time-code"
                 onInput={(event) => handleNameInput(event.currentTarget.value)}
               />
               <label for="name">{t('Full name')}</label>
-              <Show when={validationErrors().fullName}>
+              <Show when={validationErrors().fullName && !emailStatus()}>
                 <div class={styles.validationError}>{validationErrors().fullName}</div>
               </Show>
             </div>
@@ -213,7 +213,7 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
-              <div class={clsx(styles.validationError, styles.info, { [styles.info]: emailStatus() })}>
+              <div class={clsx(styles.validationError, { info: Boolean(emailStatus()) })}>
                 {validationErrors().email}
               </div>
             </div>

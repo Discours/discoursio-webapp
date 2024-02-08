@@ -18,9 +18,7 @@ export const StaticPage = (props: Props) => {
         ref={(el) => (articleBodyElement.current = el)}
       >
         <div class="row">
-          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
-            {props.children}
-          </div>
+          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">{props.children}</div>
 
           <div class="col-md-6 col-lg-4 order-md-last">
             <TableOfContents

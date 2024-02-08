@@ -1,6 +1,6 @@
 import { Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
-import { MediaItem } from '../../../pages/types'
+import { MediaItem } from '../../../utils/types'
 
 import { PlayerHeader } from './PlayerHeader'
 import { PlayerPlaylist } from './PlayerPlaylist'

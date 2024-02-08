@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/core'
 
 import { useLocalize } from '../../../context/localize'
-import { UploadedFile } from '../../../pages/types'
 import { renderUploadedImage } from '../../../utils/renderUploadedImage'
+import { UploadedFile } from '../../../utils/types'
 import { Modal } from '../../Nav/Modal'
 import { Icon } from '../../_shared/Icon'
 import { Popover } from '../../_shared/Popover'

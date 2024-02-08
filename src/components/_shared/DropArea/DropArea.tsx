@@ -1,13 +1,13 @@
-import type { FileTypeToUpload } from '../../../pages/types'
+import type { FileTypeToUpload } from '../../../utils/types'
 
 import { createDropzone, createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { UploadedFile } from '../../../pages/types'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
+import { UploadedFile } from '../../../utils/types'
 import { validateFiles } from '../../../utils/validateFile'
 
 import styles from './DropArea.module.scss'

@@ -1,9 +1,9 @@
 import { JSX, Show, createEffect } from 'solid-js'
 
 import { useSession } from '../../context/session'
-import { RootSearchParams } from '../../pages/types'
 import { useRouter } from '../../stores/router'
 import { hideModal } from '../../stores/ui'
+import { RootSearchParams } from '../../utils/types'
 import { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
 type Props = {

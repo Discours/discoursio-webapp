@@ -5,18 +5,18 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
 import { Author, Topic } from '../../../graphql/schema/core.gen'
-import { SubscriptionFilter } from '../../../pages/types'
 import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
 import { isAuthor } from '../../../utils/isAuthor'
+import { SubscriptionFilter } from '../../../utils/types'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
 
-import styles from '../../../pages/profile/Settings.module.scss'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
+import styles from '../../../styles/ProfileSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()

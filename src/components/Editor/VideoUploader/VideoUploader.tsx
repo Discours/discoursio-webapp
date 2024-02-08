@@ -1,4 +1,4 @@
-import type { MediaItem } from '../../../pages/types'
+import type { MediaItem } from '../../../utils/types'
 
 import { createDropzone } from '@solid-primitives/upload'
 import { clsx } from 'clsx'

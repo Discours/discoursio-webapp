@@ -2,7 +2,7 @@ import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
 import { Topic } from '../../../graphql/schema/core.gen'
-import { MediaItem } from '../../../pages/types'
+import { MediaItem } from '../../../utils/types'
 import { CardTopic } from '../../Feed/CardTopic'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'

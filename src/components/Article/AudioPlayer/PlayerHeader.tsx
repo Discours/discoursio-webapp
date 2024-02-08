@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
-import { MediaItem } from '../../../pages/types'
+import { MediaItem } from '../../../utils/types'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { Icon } from '../../_shared/Icon'
 

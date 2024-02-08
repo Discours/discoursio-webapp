@@ -4,8 +4,8 @@ import { clsx } from 'clsx'
 import { Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { MediaItem } from '../../../pages/types'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
+import { MediaItem } from '../../../utils/types'
 import { AudioPlayer } from '../../Article/AudioPlayer'
 import { DropArea } from '../../_shared/DropArea'
 

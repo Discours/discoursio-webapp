@@ -1,6 +1,6 @@
 import { UploadFile } from '@solid-primitives/upload'
 
-import { FileTypeToUpload } from '../pages/types'
+import { FileTypeToUpload } from './types'
 
 export const validateFiles = (fileType: FileTypeToUpload, files: UploadFile[]): boolean => {
   const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'bmp'])

@@ -24,7 +24,7 @@ import { Loading } from '../_shared/Loading'
 import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
 
-import styles from '../../pages/profile/Settings.module.scss'
+import styles from '../../styles/ProfileSettings.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))

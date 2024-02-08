@@ -22,8 +22,8 @@ import {
 
 import { useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
-import { UploadedFile } from '../../pages/types'
 import { hideModal, showModal } from '../../stores/ui'
+import { UploadedFile } from '../../utils/types'
 import { Modal } from '../Nav/Modal'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'

@@ -3,7 +3,7 @@ import type {
   AuthModalSource,
   ConfirmEmailSearchParams
 } from '../components/Nav/AuthModal/types'
-import type { RootSearchParams } from '../pages/types'
+import type { RootSearchParams } from '../utils/types'
 
 import { createSignal } from 'solid-js'
 

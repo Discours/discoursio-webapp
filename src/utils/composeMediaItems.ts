@@ -1,4 +1,4 @@
-import { UploadedFile } from '../pages/types'
+import { UploadedFile } from './types'
 
 const removeFileExtension = (fileName: string) => {
   return fileName.replace(/\.(wav|flac|mp3|aac|jpg|jpeg|png|gif)$/i, '')

@@ -3,3 +3,4 @@
 - unnested overrides in package.json
 - bun support
 - custom email templates 'compiler'
+- migrated to vike V1 design

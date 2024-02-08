@@ -1,6 +1,6 @@
 import { UploadFile } from '@solid-primitives/upload'
 
-import { UploadedFile } from '../pages/types'
+import { UploadedFile } from './types'
 
 const apiBaseUrl = 'https://core.discours.io'
 const apiUrl = `${apiBaseUrl}/upload`

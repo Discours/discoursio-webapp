@@ -1,7 +1,7 @@
 import { Editor } from '@tiptap/core'
 
-import { UploadedFile } from '../pages/types'
 import { hideModal } from '../stores/ui'
+import { UploadedFile } from './types'
 
 export const renderUploadedImage = (editor: Editor, image: UploadedFile) => {
   editor

@@ -26,8 +26,7 @@
     "start": "vite",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
-    "templates": "node ./templates/compile.cjs",
-    "prepare": "husky"
+    "templates": "node ./templates/compile.cjs"
   },
   "dependencies": {
     "form-data": "4.0.0",
@@ -138,6 +137,7 @@
   "overrides": {
     "esbuild": "0.17.19",
     "graphql": "16.8.1",
+    "lodash": "~4.17.0",
     "prosemirror-view": "1.32.7",
     "solid-js": "1.8.14",
     "stylelint": "^16.0.0",

@@ -63,7 +63,7 @@ export const AuthorCard = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, 'inbox')
       changeSearchParams({
-        initChat: props.author.id.toString(),
+        initChat: props.author.id.toString()
       })
     }, 'discussions')
   }
@@ -206,7 +206,7 @@ export const AuthorCard = (props: Props) => {
                       value={followButtonText()}
                       isSubscribeButton={true}
                       class={clsx({
-                        [stylesButton.subscribed]: isFollowed(),
+                        [stylesButton.subscribed]: isFollowed()
                       })}
                     />
                   </Show>
@@ -254,7 +254,7 @@ export const AuthorCard = (props: Props) => {
                           author={follower}
                           isFollowed={{
                             loaded: Boolean(authorSubs()),
-                            value: isOwnerSubscribed(follower.id),
+                            value: isOwnerSubscribed(follower.id)
                           }}
                         />
                       )}
@@ -303,7 +303,7 @@ export const AuthorCard = (props: Props) => {
                           <AuthorBadge
                             isFollowed={{
                               loaded: Boolean(authorSubs()),
-                              value: isOwnerSubscribed(subscription.id),
+                              value: isOwnerSubscribed(subscription.id)
                             }}
                             author={subscription}
                           />

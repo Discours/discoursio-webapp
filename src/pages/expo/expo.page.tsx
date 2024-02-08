@@ -40,8 +40,8 @@ export const ExpoPage = (props: PageProps) => {
       () => {
         document.title = getTitle()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   return (

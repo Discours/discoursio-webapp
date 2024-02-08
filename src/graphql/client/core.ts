@@ -13,7 +13,7 @@ import type {
   ReactionInput,
   Shout,
   ShoutInput,
-  Topic,
+  Topic
 } from '../schema/core.gen'
 
 import { createGraphQLClient } from '../createGraphQLClient'
@@ -152,7 +152,7 @@ export const apiClient = {
   updateArticle: async ({
     shout_id,
     shout_input,
-    publish,
+    publish
   }: {
     shout_id: number
     shout_input?: ShoutInput
@@ -237,5 +237,5 @@ export const apiClient = {
     const resp = await apiClient.private.query(mySubscriptions, {}).toPromise()
 
     return resp.data.get_my_followed
-  },
+  }
 }

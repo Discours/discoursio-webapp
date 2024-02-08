@@ -35,7 +35,7 @@ interface TopicProps {
 export const TopicCard = (props: TopicProps) => {
   const { t, lang } = useLocalize()
   const title = createMemo(() =>
-    capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
+    capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || '')
   )
   const { author, requireAuthentication } = useSession()
   const { setFollowing, loading: subLoading } = useFollowing()
@@ -74,7 +74,7 @@ export const TopicCard = (props: TopicProps) => {
         classList={{
           row: !props.subscribeButtonBottom,
           [styles.topicCompact]: props.compact,
-          [styles.topicInRow]: props.isTopicInRow,
+          [styles.topicInRow]: props.isTopicInRow
         }}
       >
         <div
@@ -85,7 +85,7 @@ export const TopicCard = (props: TopicProps) => {
               props.subscribeButtonBottom ||
               props.isNarrow ||
               props.compact
-            ),
+            )
           }}
         >
           <Show when={title() && !props.isCardMode}>
@@ -120,7 +120,7 @@ export const TopicCard = (props: TopicProps) => {
           classList={{
             'col-sm-6 col-md-24 col-lg-10 col-xl-9': props.isNarrow,
             'col-24 col-sm-7 col-md-6': props.compact,
-            'col-sm-7 col-md-6': !(props.subscribeButtonBottom || props.isNarrow || props.compact),
+            'col-sm-7 col-md-6': !(props.subscribeButtonBottom || props.isNarrow || props.compact)
           }}
         >
           <ShowOnlyOnClient>
@@ -143,7 +143,7 @@ export const TopicCard = (props: TopicProps) => {
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.isSubscribing]: subLoading(),
-                    [stylesButton.subscribed]: followed(),
+                    [stylesButton.subscribed]: followed()
                   })}
                   // disabled={subLoading()}
                 />

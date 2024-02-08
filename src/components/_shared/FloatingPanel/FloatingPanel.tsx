@@ -16,7 +16,7 @@ export default (props: Props) => {
   return (
     <div
       class={clsx(styles.PanelWrapper, {
-        [styles.PanelWrapperVisible]: props.isVisible,
+        [styles.PanelWrapperVisible]: props.isVisible
       })}
     >
       <Button

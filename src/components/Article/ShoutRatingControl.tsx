@@ -43,8 +43,8 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         const total = likes - dislikes
         setTotal(total)
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const handleRatingChange = (voteKind: ReactionKind) => {
@@ -65,7 +65,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         if (myRate()?.kind === oppositeKind) {
           mergeProps(
             props.ratings,
-            props.ratings.filter((r) => r.id === myRate().id),
+            props.ratings.filter((r) => r.id === myRate().id)
           )
           await deleteReaction(myRate().id)
           setMyRate(undefined)

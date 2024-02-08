@@ -19,7 +19,7 @@ export const ImageCropper = (props: CropperProps) => {
   const { t } = useLocalize()
 
   const imageTagRef: { current: HTMLImageElement } = {
-    current: null,
+    current: null
   }
 
   const [cropper, setCropper] = createSignal(null)
@@ -34,8 +34,8 @@ export const ImageCropper = (props: CropperProps) => {
           background: false,
           rotatable: false,
           autoCropArea: 1,
-          modal: true,
-        }),
+          modal: true
+        })
       )
     }
   })
@@ -66,7 +66,7 @@ export const ImageCropper = (props: CropperProps) => {
 
                 props.onSave({
                   ...props.uploadFile,
-                  file: formData.get('media'),
+                  file: formData.get('media')
                 })
               })
           }}

@@ -54,9 +54,9 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
       {},
       {
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
       },
-      options,
+      options
     )
 
     return date.toLocaleTimeString(lang(), opts)
@@ -68,9 +68,9 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
       {
         month: 'long',
         day: 'numeric',
-        year: 'numeric',
+        year: 'numeric'
       },
-      options,
+      options
     )
 
     let result = date.toLocaleDateString(lang(), opts)

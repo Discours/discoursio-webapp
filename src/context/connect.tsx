@@ -47,7 +47,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token,
+          Authorization: token
         },
         onmessage(event) {
           const m: SSEMessage = JSON.parse(event.data)
@@ -75,7 +75,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
           if (err.message === 'unauthorized' || retried() > RECONNECT_TIMES) {
             throw err // rethrow to stop the operation
           }
-        },
+        }
       })
     }
   })

@@ -39,7 +39,7 @@ export const Draft = (props: Props) => {
       confirmBody: t('Are you sure you want to delete this draft?'),
       confirmButtonLabel: t('Delete'),
       confirmButtonVariant: 'danger',
-      declineButtonVariant: 'primary',
+      declineButtonVariant: 'primary'
     })
     if (isConfirmed) {
       props.onDelete(props.shout)

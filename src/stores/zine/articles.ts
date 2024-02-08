@@ -2,7 +2,7 @@ import type {
   Author,
   LoadShoutsOptions,
   QueryLoad_Shouts_SearchArgs,
-  Shout,
+  Shout
 } from '../../graphql/schema/core.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'
@@ -31,7 +31,7 @@ const articlesByAuthor = createLazyMemo(() => {
 
       return acc
     },
-    {} as { [authorSlug: string]: Shout[] },
+    {} as { [authorSlug: string]: Shout[] }
   )
 })
 
@@ -47,7 +47,7 @@ const articlesByTopic = createLazyMemo(() => {
 
       return acc
     },
-    {} as { [authorSlug: string]: Shout[] },
+    {} as { [authorSlug: string]: Shout[] }
   )
 })
 
@@ -74,13 +74,13 @@ export const addArticles = (...args: Shout[][]) => {
       }
       return acc
     },
-    {} as { [articleSLug: string]: Shout },
+    {} as { [articleSLug: string]: Shout }
   )
 
   setArticleEntities((prevArticleEntities) => {
     return {
       ...prevArticleEntities,
-      ...newArticleEntities,
+      ...newArticleEntities
     }
   })
 
@@ -104,7 +104,7 @@ export const addArticles = (...args: Shout[][]) => {
 
       return acc
     },
-    {} as { [topicSlug: string]: Author[] },
+    {} as { [topicSlug: string]: Author[] }
   )
 
   addAuthorsByTopic(authorsByTopic)
@@ -129,7 +129,7 @@ export const loadShout = async (slug: string): Promise<void> => {
 }
 
 export const loadShouts = async (
-  options: LoadShoutsOptions,
+  options: LoadShoutsOptions
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   options.limit += 1
   const newShouts = await apiClient.getShouts(options)
@@ -146,7 +146,7 @@ export const loadShouts = async (
 }
 
 export const loadMyFeed = async (
-  options: LoadShoutsOptions,
+  options: LoadShoutsOptions
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   options.limit += 1
   const newShouts = await apiClient.getMyFeed(options)
@@ -163,7 +163,7 @@ export const loadMyFeed = async (
 }
 
 export const loadShoutsSearch = async (
-  options: QueryLoad_Shouts_SearchArgs,
+  options: QueryLoad_Shouts_SearchArgs
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   options.limit += 1
   const newShouts = await apiClient.getShoutsSearch(options)
@@ -196,10 +196,10 @@ export const loadTopMonthArticles = async (): Promise<void> => {
   const options: LoadShoutsOptions = {
     filters: {
       featured: true,
-      after,
+      after
     },
     order_by: 'likes_stat',
-    limit: TOP_MONTH_ARTICLES_COUNT,
+    limit: TOP_MONTH_ARTICLES_COUNT
   }
   const articles = await apiClient.getShouts(options)
   addArticles(articles)
@@ -212,7 +212,7 @@ export const loadTopArticles = async (): Promise<void> => {
   const options: LoadShoutsOptions = {
     filters: { featured: true },
     order_by: 'likes_stat',
-    limit: TOP_ARTICLES_COUNT,
+    limit: TOP_ARTICLES_COUNT
   }
   const articles = await apiClient.getShouts(options)
   addArticles(articles)
@@ -241,6 +241,6 @@ export const useArticlesStore = (initialState: InitialState = {}) => {
     topMonthArticles,
     topArticles,
     topCommentedArticles,
-    topViewedArticles,
+    topViewedArticles
   }
 }

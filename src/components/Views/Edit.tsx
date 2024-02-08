@@ -38,7 +38,7 @@ type Props = {
 export const MAX_HEADER_LIMIT = 100
 export const EMPTY_TOPIC: Topic = {
   id: -1,
-  slug: '',
+  slug: ''
 }
 
 const AUTO_SAVE_INTERVAL = 5000
@@ -46,7 +46,7 @@ const handleScrollTopButtonClick = (e) => {
   e.preventDefault()
   window.scrollTo({
     top: 0,
-    behavior: 'smooth',
+    behavior: 'smooth'
   })
 }
 
@@ -61,7 +61,7 @@ export const EditView = (props: Props) => {
     setFormErrors,
     saveDraft,
     saveDraftToLocalStorage,
-    getDraftFromLocalStorage,
+    getDraftFromLocalStorage
   } = useEditorContext()
   const shoutTopics = props.shout.topics || []
   const draft = getDraftFromLocalStorage(props.shout.id)
@@ -81,7 +81,7 @@ export const EditView = (props: Props) => {
       body: props.shout.body,
       coverImageUrl: props.shout.cover,
       media: props.shout.media,
-      layout: props.shout.layout,
+      layout: props.shout.layout
     })
   }
 
@@ -112,7 +112,7 @@ export const EditView = (props: Props) => {
     const handleBeforeUnload = (event) => {
       if (!deepEqual(prevForm, form)) {
         event.returnValue = t(
-          'There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?',
+          'There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?'
         )
       }
     }
@@ -151,7 +151,7 @@ export const EditView = (props: Props) => {
   const [baseAudioFields, setBaseAudioFields] = createSignal({
     artist: '',
     date: '',
-    genre: '',
+    genre: ''
   })
 
   const handleBaseFieldsChange = (key, value) => {
@@ -225,7 +225,7 @@ export const EditView = (props: Props) => {
           <div class="wide-container">
             <button
               class={clsx(styles.scrollTopButton, {
-                [styles.visible]: isScrolled(),
+                [styles.visible]: isScrolled()
               })}
               onClick={handleScrollTopButtonClick}
             >
@@ -350,8 +350,8 @@ export const EditView = (props: Props) => {
                             class={styles.cover}
                             style={{
                               'background-image': `url(${getImageUrl(form.coverImageUrl, {
-                                width: 1600,
-                              })})`,
+                                width: 1600
+                              })})`
                             }}
                           >
                             <Popover content={t('Delete cover')}>

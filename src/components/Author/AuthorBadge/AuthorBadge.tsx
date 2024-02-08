@@ -53,7 +53,7 @@ export const AuthorBadge = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, 'inbox')
       changeSearchParams({
-        initChat: props.author.id.toString(),
+        initChat: props.author.id.toString()
       })
     }, 'discussions')
   }
@@ -74,8 +74,8 @@ export const AuthorBadge = (props: Props) => {
     on(
       () => props.isFollowed,
       (followed) => setIsFollowed(followed?.value),
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const handleFollowClick = () => {
@@ -112,7 +112,7 @@ export const AuthorBadge = (props: Props) => {
               fallback={
                 <div class={styles.bio}>
                   {t('Registered since {date}', {
-                    date: formatDate(new Date(props.author.created_at * 1000)),
+                    date: formatDate(new Date(props.author.created_at * 1000))
                   })}
                 </div>
               }
@@ -150,7 +150,7 @@ export const AuthorBadge = (props: Props) => {
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
                     [styles.iconed]: props.iconButtons,
-                    [stylesButton.subscribed]: isFollowed(),
+                    [stylesButton.subscribed]: isFollowed()
                   })}
                 />
               }
@@ -175,7 +175,7 @@ export const AuthorBadge = (props: Props) => {
                 isSubscribeButton={true}
                 class={clsx(styles.actionButton, {
                   [styles.iconed]: props.iconButtons,
-                  [stylesButton.subscribed]: isFollowed(),
+                  [stylesButton.subscribed]: isFollowed()
                 })}
               />
             </Show>

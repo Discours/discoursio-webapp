@@ -38,7 +38,7 @@ export const AllTopicsView = (props: Props) => {
 
   const { sortedTopics } = useTopicsStore({
     topics: props.topics,
-    sortBy: searchParams().by || 'shouts',
+    sortBy: searchParams().by || 'shouts'
   })
 
   const { subscriptions } = useFollowing()
@@ -46,7 +46,7 @@ export const AllTopicsView = (props: Props) => {
   createEffect(() => {
     if (!searchParams().by) {
       changeSearchParams({
-        by: 'shouts',
+        by: 'shouts'
       })
     }
   })
@@ -65,7 +65,7 @@ export const AllTopicsView = (props: Props) => {
         acc[letter].push(topic)
         return acc
       },
-      {} as { [letter: string]: Topic[] },
+      {} as { [letter: string]: Topic[] }
     )
   })
 
@@ -113,7 +113,7 @@ export const AllTopicsView = (props: Props) => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Themes and plots')
   const description = t(
-    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about',
+    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about'
   )
 
   return (

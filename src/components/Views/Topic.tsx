@@ -57,8 +57,8 @@ export const TopicView = (props: Props) => {
         lang() === 'en'
           ? topic()?.slug.replace(/-/, ' ')
           : topic()?.title || topic()?.slug.replace(/-/, ' '),
-        true,
-      )}`,
+        true
+      )}`
   )
 
   const loadMore = async () => {
@@ -67,7 +67,7 @@ export const TopicView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { topic: topic()?.slug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length,
+      offset: sortedArticles().length
     })
     setIsLoadMoreButtonVisible(hasMore)
 
@@ -89,7 +89,7 @@ export const TopicView = (props: Props) => {
   })
   */
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const ogImage = () =>
@@ -120,14 +120,14 @@ export const TopicView = (props: Props) => {
             <ul class="view-switcher">
               <li
                 classList={{
-                  'view-switcher__item--selected': searchParams().by === 'recent' || !searchParams().by,
+                  'view-switcher__item--selected': searchParams().by === 'recent' || !searchParams().by
                 }}
               >
                 <button
                   type="button"
                   onClick={() =>
                     changeSearchParams({
-                      by: 'recent',
+                      by: 'recent'
                     })
                   }
                 >

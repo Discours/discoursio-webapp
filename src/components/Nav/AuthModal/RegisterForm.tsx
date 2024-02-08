@@ -104,7 +104,7 @@ export const RegisterForm = () => {
         email: cleanEmail,
         password: password(),
         confirm_password: password(),
-        redirect_uri: window.location.origin,
+        redirect_uri: window.location.origin
       }
       const { errors } = await signUp(opts)
       if (errors?.some((error) => error.message.includes('has already signed up'))) {
@@ -117,14 +117,14 @@ export const RegisterForm = () => {
                 class={'link'}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >
                 {t('sign in')}
               </span>
             </>
-          ),
+          )
         }))
       }
       setIsSuccess(true)
@@ -148,7 +148,7 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().fullName,
+                'pretty-form__item--error': validationErrors().fullName
               })}
             >
               <input
@@ -166,7 +166,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email,
+                'pretty-form__item--error': validationErrors().email
               })}
             >
               <input
@@ -213,7 +213,7 @@ export const RegisterForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >

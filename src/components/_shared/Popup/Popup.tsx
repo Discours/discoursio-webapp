@@ -34,7 +34,7 @@ export const Popup = (props: PopupProps) => {
   useOutsideClickHandler({
     containerRef,
     predicate: () => isVisible(),
-    handler: () => closePopup(),
+    handler: () => closePopup()
   })
 
   createEffect(() => {
@@ -55,7 +55,7 @@ export const Popup = (props: PopupProps) => {
             [styles.horizontalAnchorCenter]: horizontalAnchor === 'center',
             [styles.horizontalAnchorRight]: horizontalAnchor === 'right',
             [styles.bordered]: props.variant === 'bordered',
-            [styles.tiny]: props.variant === 'tiny',
+            [styles.tiny]: props.variant === 'tiny'
           })}
         >
           {props.children}

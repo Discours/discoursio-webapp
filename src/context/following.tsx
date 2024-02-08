@@ -32,7 +32,7 @@ export function useFollowing() {
 const EMPTY_SUBSCRIPTIONS = {
   topics: [],
   authors: [],
-  communities: [],
+  communities: []
 }
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
@@ -122,7 +122,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     setFollowing,
     loadSubscriptions: fetchData,
     follow,
-    unfollow,
+    unfollow
   }
 
   return <FollowingContext.Provider value={value}>{props.children}</FollowingContext.Provider>

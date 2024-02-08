@@ -47,7 +47,7 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
             {props.currentOption.title}{' '}
             <Chevron
               class={clsx(styles.chevron, {
-                [styles.rotate]: isPopupVisible(),
+                [styles.rotate]: isPopupVisible()
               })}
             />
           </div>

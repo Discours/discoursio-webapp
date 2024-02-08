@@ -2,7 +2,16 @@
   "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
   "files": {
     "include": ["*.tsx", "*.ts", "*.js", "*.json"],
-    "ignore": ["*.d.ts", "./dist", "./node_modules", ".husky", "docs", "gen", "test-results"]
+    "ignore": [
+      "*.d.ts",
+      "./dist",
+      "./node_modules",
+      ".husky",
+      "docs",
+      "gen",
+      "test-results",
+      "package-lock.json"
+    ]
   },
   "vcs": {
     "defaultBranch": "dev",

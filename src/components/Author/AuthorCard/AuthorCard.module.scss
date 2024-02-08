@@ -257,18 +257,6 @@
       }
     }
 
-    &[href*='tumblr.com/'] {
-      &::before {
-        background-image: url(/icons/user-link-tumblr.svg);
-      }
-
-      &:hover {
-        .authorSubscribeSocialLabel {
-          display: none;
-        }
-      }
-    }
-
     &[href*='instagram.com/'] {
       &::before {
         background-image: url(/icons/user-link-instagram.svg);

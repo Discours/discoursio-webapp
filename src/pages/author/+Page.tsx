@@ -72,5 +72,3 @@ export const AuthorPage = (props: PageProps) => {
     </PageLayout>
   )
 }
-
-export const Page = AuthorPage

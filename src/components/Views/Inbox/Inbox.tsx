@@ -2,14 +2,13 @@ import type { Chat, Message as MessageType } from '../../../graphql/schema/chat.
 import type { Author } from '../../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
@@ -21,6 +20,8 @@ import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
 
 import styles from './Inbox.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type InboxSearchParams = {
   by?: string

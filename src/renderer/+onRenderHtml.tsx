@@ -6,10 +6,11 @@ import ICU from 'i18next-icu'
 import { generateHydrationScript, getAssets, renderToString } from 'solid-js/web'
 import { dangerouslySkipEscape, escapeInject } from 'vike/server'
 
-import en from '../../public/locales/en/translation.json'
-import ru from '../../public/locales/ru/translation.json'
 import { App } from '../components/App'
 import { initRouter } from '../stores/router'
+
+const en = import('../../public/locales/en/translation.json')
+const ru = import('../../public/locales/ru/translation.json')
 
 const getLng = (pageContext: PageContext): Language => {
   const { urlParsed, cookies } = pageContext

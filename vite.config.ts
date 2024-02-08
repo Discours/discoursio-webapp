@@ -1,5 +1,7 @@
+import { visualizer } from 'rollup-plugin-visualizer'
+// import { bundleStats } from 'rollup-plugin-bundle-stats'
 import ssrPlugin from 'vike/plugin'
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import sassDts from 'vite-plugin-sass-dts'
 import solidPlugin from 'vite-plugin-solid'
@@ -30,15 +32,14 @@ const getDevCssClassPrefix = (filename: string): string => {
     .replace(/[/?\\]/g, '-')
 }
 
-const devGenerateScopedName = (name: string, filename: string, _css: string) =>
-  `${getDevCssClassPrefix(filename)}__${name}`
-
 export default defineConfig(({ mode, command }) => {
   const plugins = [
+    splitVendorChunkPlugin(),
     solidPlugin({ ssr: true }),
     ssrPlugin({ includeAssetsImportedByServer: true }),
     sassDts(),
-    cssModuleHMR()
+    cssModuleHMR(),
+    visualizer()
   ]
 
   if (command === 'serve') {
@@ -46,7 +47,9 @@ export default defineConfig(({ mode, command }) => {
   }
 
   const isDev = mode === 'development'
-
+  const generateScopedName = isDev
+    ? (n: string, f: string, _: string) => `${getDevCssClassPrefix(f)}__${n}`
+    : '[hash:base64:5]'
   return {
     envPrefix: 'PUBLIC_',
     plugins,
@@ -60,15 +63,18 @@ export default defineConfig(({ mode, command }) => {
         scss: { additionalData: '@import "src/styles/imports";\n' }
       },
       modules: {
-        generateScopedName: isDev ? devGenerateScopedName : '[hash:base64:5]'
+        generateScopedName
       }
     },
     build: {
       rollupOptions: {
-        external: []
+        external: ['buffer']
       },
       chunkSizeWarningLimit: 1024,
       target: 'esnext'
+    },
+    optimizeDeps: {
+      force: true
     },
     ssr: {
       noExternal: [

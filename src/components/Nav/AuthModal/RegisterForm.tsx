@@ -41,6 +41,7 @@ export const RegisterForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
+  const [infoEmailMessage, setInfoEmailMessage] = createSignal<boolean>(false)
   const [passwordError, setPasswordError] = createSignal<string>()
   const [emailStatus, setEmailStatus] = createSignal<string>('')
 
@@ -92,6 +93,7 @@ export const RegisterForm = () => {
       return
     }
     setIsSubmitting(true)
+    setInfoEmailMessage(false)
     try {
       const opts = {
         given_name: cleanName,
@@ -109,13 +111,11 @@ export const RegisterForm = () => {
       setIsSubmitting(false)
     }
   }
-  createEffect(() => {
-    console.debug(emailStatus())
-  })
 
   const handleCheckEmailStatus = (status: EmailStatus | string) => {
     switch (status) {
       case 'not verified':
+        setInfoEmailMessage(true)
         setValidationErrors((prev) => ({
           ...prev,
           email: (
@@ -133,8 +133,8 @@ export const RegisterForm = () => {
         break
 
       case 'verified':
+        setInfoEmailMessage(true)
         setValidationErrors((prev) => ({
-          ...prev,
           email: (
             <>
               {t('This email is verified')},{' '}
@@ -159,14 +159,7 @@ export const RegisterForm = () => {
         }))
         break
       default:
-        setValidationErrors((prev) => ({
-          ...prev,
-          email: (
-            <>
-              {t('This email is')} {status.length ? status : 'странный ¯\\_(ツ)_/¯'}
-            </>
-          ),
-        }))
+        setInfoEmailMessage(false)
         break
     }
   }
@@ -174,7 +167,6 @@ export const RegisterForm = () => {
   const handleEmailBlur = async () => {
     if (validateEmail(email())) {
       const checkResult = await isRegistered(email())
-      console.log('!!! checkResult:', checkResult)
       handleCheckEmailStatus(checkResult)
     }
   }
@@ -210,7 +202,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email,
+                'pretty-form__item--error': validationErrors().email && !infoEmailMessage(),
               })}
             >
               <input
@@ -223,7 +215,9 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
-              <div class={styles.validationError}>{validationErrors().email}</div>
+              <div class={clsx(styles.validationError, styles.info, { [styles.info]: infoEmailMessage() })}>
+                {validationErrors().email}
+              </div>
             </div>
 
             <PasswordField

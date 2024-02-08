@@ -27,7 +27,8 @@
     "preview": "vite preview",
     "start": "vite",
     "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch"
+    "typecheck:watch": "tsc --noEmit --watch",
+    "templates": "node ./templates/compile.cjs"
   },
   "dependencies": {
     "form-data": "4.0.0",

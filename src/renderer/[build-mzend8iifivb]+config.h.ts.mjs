@@ -1,9 +1,0 @@
-var config_h_default = {
-  clientRouting: true,
-  hydrationCanBeAborted: true,
-  passToClient: ["pageProps", "lng", "documentProps", "is404"]
-};
-export {
-  config_h_default as default
-};
-//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiK2NvbmZpZy5oLnRzIl0sCiAgInNvdXJjZXNDb250ZW50IjogWyJpbXBvcnQgdHlwZSB7IENvbmZpZyB9IGZyb20gJ3Zpa2UvdHlwZXMnXG5cbmV4cG9ydCBkZWZhdWx0IHtcbiAgY2xpZW50Um91dGluZzogdHJ1ZSxcbiAgaHlkcmF0aW9uQ2FuQmVBYm9ydGVkOiB0cnVlLFxuICBwYXNzVG9DbGllbnQ6IFsncGFnZVByb3BzJywgJ2xuZycsICdkb2N1bWVudFByb3BzJywgJ2lzNDA0J11cbn0gc2F0aXNmaWVzIENvbmZpZ1xuIl0sCiAgIm1hcHBpbmdzIjogIkFBRUEsSUFBTyxtQkFBUTtBQUFBLEVBQ2IsZUFBZTtBQUFBLEVBQ2YsdUJBQXVCO0FBQUEsRUFDdkIsY0FBYyxDQUFDLGFBQWEsT0FBTyxpQkFBaUIsT0FBTztBQUM3RDsiLAogICJuYW1lcyI6IFtdCn0K

@@ -1,8 +1,8 @@
 import type { JSX } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal } from 'solid-js'
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { Show, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -16,6 +16,8 @@ import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
+
+type EmailStatus = 'not verified' | 'verified' | 'registered' | ''
 
 type FormFields = {
   fullName: string
@@ -39,21 +41,11 @@ export const RegisterForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
+  const [infoEmailMessage, setInfoEmailMessage] = createSignal<boolean>(false)
   const [passwordError, setPasswordError] = createSignal<string>()
   const [emailStatus, setEmailStatus] = createSignal<string>('')
 
   const authFormRef: { current: HTMLFormElement } = { current: null }
-
-  const checkEmail = async (address: string) => {
-    const result: string = await isRegistered(address)
-    if (result) setEmailStatus((_s) => result)
-  }
-
-  const handleEmailBlur = () => {
-    if (validateEmail(email())) {
-      checkEmail(email())
-    }
-  }
 
   const handleNameInput = (newName: string) => {
     setFullName(newName)
@@ -100,8 +92,8 @@ export const RegisterForm = () => {
 
       return
     }
-
     setIsSubmitting(true)
+    setInfoEmailMessage(false)
     try {
       const opts = {
         given_name: cleanName,
@@ -111,26 +103,7 @@ export const RegisterForm = () => {
         redirect_uri: window.location.origin,
       }
       const { errors } = await signUp(opts)
-      if (errors?.some((error) => error.message.includes('has already signed up'))) {
-        setValidationErrors((prev) => ({
-          ...prev,
-          email: (
-            <>
-              {t('User with this email already exists')},{' '}
-              <span
-                class={'link'}
-                onClick={() =>
-                  changeSearchParams({
-                    mode: 'login',
-                  })
-                }
-              >
-                {t('sign in')}
-              </span>
-            </>
-          ),
-        }))
-      }
+      if (errors) return
       setIsSuccess(true)
     } catch (error) {
       console.error(error)
@@ -138,9 +111,65 @@ export const RegisterForm = () => {
       setIsSubmitting(false)
     }
   }
-  createEffect(() => {
-    console.debug(emailStatus())
-  })
+
+  const handleCheckEmailStatus = (status: EmailStatus | string) => {
+    switch (status) {
+      case 'not verified':
+        setInfoEmailMessage(true)
+        setValidationErrors((prev) => ({
+          ...prev,
+          email: (
+            <>
+              {t('This email is not verified')},{' '}
+              <span
+                class="link"
+                onClick={() => resendVerifyEmail({ email: email(), identifier: 'basic_signup' })}
+              >
+                {t('resend confirmation link')}
+              </span>
+            </>
+          ),
+        }))
+        break
+
+      case 'verified':
+        setInfoEmailMessage(true)
+        setValidationErrors((prev) => ({
+          email: (
+            <>
+              {t('This email is verified')},{' '}
+              <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
+                {t('enter')}
+              </span>
+            </>
+          ),
+        }))
+        break
+      case 'registered':
+        setValidationErrors((prev) => ({
+          ...prev,
+          email: (
+            <>
+              {t('This email is registered')},{'. '}
+              <span class="link" onClick={() => changeSearchParams({ mode: 'send-reset-link' })}>
+                {t('Set the new password').toLocaleLowerCase()}
+              </span>
+            </>
+          ),
+        }))
+        break
+      default:
+        setInfoEmailMessage(false)
+        break
+    }
+  }
+
+  const handleEmailBlur = async () => {
+    if (validateEmail(email())) {
+      const checkResult = await isRegistered(email())
+      handleCheckEmailStatus(checkResult)
+    }
+  }
 
   return (
     <>
@@ -162,63 +191,37 @@ export const RegisterForm = () => {
                 name="fullName"
                 type="text"
                 placeholder={t('Full name')}
-                autocomplete=""
+                autocomplete="one-time-code"
                 onInput={(event) => handleNameInput(event.currentTarget.value)}
               />
               <label for="name">{t('Full name')}</label>
-              <Show when={!emailStatus() && validationErrors().fullName}>
+              <Show when={validationErrors().fullName}>
                 <div class={styles.validationError}>{validationErrors().fullName}</div>
               </Show>
             </div>
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email,
+                'pretty-form__item--error': validationErrors().email && !infoEmailMessage(),
               })}
             >
               <input
                 id="email"
                 name="email"
-                autocomplete="email"
+                autocomplete="one-time-code"
                 type="email"
-                value={email()}
                 placeholder={t('Email')}
                 onInput={(event) => handleEmailInput(event.currentTarget.value)}
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
-              <div class={styles.validationError}>{validationErrors().email}</div>
-              <Show when={Boolean(emailStatus())}>
-                {t('This email is')} {emailStatus() ? t(emailStatus()) : ''},{' '}
-              </Show>
-              <Show when={emailStatus() === 'verfied'}>
-                <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
-                  {t('enter')}
-                </span>
-              </Show>
-              <Show when={emailStatus() === 'not verfied'}>
-                <span
-                  class="link"
-                  onClick={() => resendVerifyEmail({ email: email(), identifier: 'basic_signup' })}
-                >
-                  {t('resend confirmation link')}
-                </span>
-              </Show>
-              <Show when={emailStatus() === 'registered'}>
-                <span
-                  class="link"
-                  onClick={() =>
-                    changeSearchParams({
-                      mode: 'send-reset-link',
-                    })
-                  }
-                >
-                  {t('Set the new password').toLocaleLowerCase()}
-                </span>
-              </Show>
+              <div class={clsx(styles.validationError, styles.info, { [styles.info]: infoEmailMessage() })}>
+                {validationErrors().email}
+              </div>
             </div>
 
             <PasswordField
+              disableAutocomplete={true}
               disabled={Boolean(emailStatus())}
               errorMessage={(err) => setPasswordError(err)}
               onInput={(value) => setPassword(value)}

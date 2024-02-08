@@ -15,6 +15,7 @@ import { PasswordField } from './PasswordField'
 import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
+import { GenericResponse } from '@authorizerdev/authorizer-js'
 import styles from './AuthModal.module.scss'
 
 type EmailStatus = 'not verified' | 'verified' | 'registered' | ''
@@ -110,6 +111,14 @@ export const RegisterForm = () => {
     }
   }
 
+  const handleResendLink = async (_ev) => {
+    const response: GenericResponse = await resendVerifyEmail({
+      email: email(),
+      identifier: 'basic_signup',
+    })
+    setIsSuccess(response?.message === 'Verification email has been sent. Please check your inbox')
+  }
+
   const handleCheckEmailStatus = (status: EmailStatus | string) => {
     switch (status) {
       case 'not verified':
@@ -118,10 +127,7 @@ export const RegisterForm = () => {
           email: (
             <>
               {t('This email is not verified')},{' '}
-              <span
-                class="link"
-                onClick={() => resendVerifyEmail({ email: email(), identifier: 'basic_signup' })}
-              >
+              <span class="link" onClick={handleResendLink}>
                 {t('resend confirmation link')}
               </span>
             </>
@@ -133,9 +139,13 @@ export const RegisterForm = () => {
         setValidationErrors((prev) => ({
           email: (
             <>
-              {t('This email is verified')},{' '}
+              {t('This email is verified')}. {t('You can')}
               <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
                 {t('enter')}
+              </span>
+              {t('or')}{' '}
+              <span class="link" onClick={() => changeSearchParams({ mode: 'send-reset-link' })}>
+                {t('Set the new password').toLocaleLowerCase()}
               </span>
             </>
           ),
@@ -146,7 +156,7 @@ export const RegisterForm = () => {
           ...prev,
           email: (
             <>
-              {t('This email is registered')},{'. '}
+              {t('This email is registered')}. {t('You can')}{' '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'send-reset-link' })}>
                 {t('Set the new password').toLocaleLowerCase()}
               </span>

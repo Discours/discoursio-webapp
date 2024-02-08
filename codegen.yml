@@ -11,7 +11,7 @@ generates:
       skipTypename: true
       useTypeImports: true
       outputPath: './src/graphql/types/chat.gen.ts'
-      # namingConvention: change-case#CamelCase # for generated types
+      # namingConvention: lodash#pascalCase
 
   # Generate types for core
   src/graphql/schema/core.gen.ts:
@@ -24,7 +24,7 @@ generates:
       skipTypename: true
       useTypeImports: true
       outputPath: './src/graphql/types/core.gen.ts'
-      # namingConvention: change-case#CamelCase # for generated types
+      # namingConvention: lodash#pascalCase
 
   # Generate types for notifier
   src/graphql/schema/notifier.gen.ts:
@@ -37,20 +37,7 @@ generates:
       skipTypename: true
       useTypeImports: true
       outputPath: './src/graphql/types/notifier.gen.ts'
-      # namingConvention: change-case#CamelCase # for generated types
-
-  # internal types for auth
-  # src/graphql/schema/auth.gen.ts:
-  #  schema: 'https://auth.discours.io/graphql'
-  #  plugins:
-  #    - 'typescript'
-  #    - 'typescript-operations'
-  #    - 'typescript-urql'
-  #  config:
-  #    skipTypename: true
-  #    useTypeImports: true
-  #    outputPath: './src/graphql/types/auth.gen.ts'
-  #    namingConvention: change-case#CamelCase # for generated types
+      # namingConvention: lodash#pascalCase
 
 hooks:
   afterAllFileWrite:

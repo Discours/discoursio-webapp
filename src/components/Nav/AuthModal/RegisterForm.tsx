@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js'
-import { Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { Show, createMemo, createSignal } from 'solid-js'
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
@@ -41,7 +41,6 @@ export const RegisterForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [isSuccess, setIsSuccess] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-  const [infoEmailMessage, setInfoEmailMessage] = createSignal<boolean>(false)
   const [passwordError, setPasswordError] = createSignal<string>()
   const [emailStatus, setEmailStatus] = createSignal<string>('')
 
@@ -93,7 +92,6 @@ export const RegisterForm = () => {
       return
     }
     setIsSubmitting(true)
-    setInfoEmailMessage(false)
     try {
       const opts = {
         given_name: cleanName,
@@ -115,7 +113,6 @@ export const RegisterForm = () => {
   const handleCheckEmailStatus = (status: EmailStatus | string) => {
     switch (status) {
       case 'not verified':
-        setInfoEmailMessage(true)
         setValidationErrors((prev) => ({
           ...prev,
           email: (
@@ -133,7 +130,6 @@ export const RegisterForm = () => {
         break
 
       case 'verified':
-        setInfoEmailMessage(true)
         setValidationErrors((prev) => ({
           email: (
             <>
@@ -159,7 +155,7 @@ export const RegisterForm = () => {
         }))
         break
       default:
-        setInfoEmailMessage(false)
+        console.info('[RegisterForm] email is not registered')
         break
     }
   }
@@ -167,6 +163,7 @@ export const RegisterForm = () => {
   const handleEmailBlur = async () => {
     if (validateEmail(email())) {
       const checkResult = await isRegistered(email())
+      setEmailStatus(checkResult)
       handleCheckEmailStatus(checkResult)
     }
   }
@@ -190,6 +187,7 @@ export const RegisterForm = () => {
               <input
                 name="fullName"
                 type="text"
+                disabled={emailStatus()}
                 placeholder={t('Full name')}
                 autocomplete="one-time-code"
                 onInput={(event) => handleNameInput(event.currentTarget.value)}
@@ -202,7 +200,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email && !infoEmailMessage(),
+                'pretty-form__item--error': validationErrors().email && !emailStatus(),
               })}
             >
               <input
@@ -215,7 +213,7 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
-              <div class={clsx(styles.validationError, styles.info, { [styles.info]: infoEmailMessage() })}>
+              <div class={clsx(styles.validationError, styles.info, { [styles.info]: emailStatus() })}>
                 {validationErrors().email}
               </div>
             </div>

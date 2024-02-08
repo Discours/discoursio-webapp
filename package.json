@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check": "npm run lint && npm run typecheck",
+    "test": "npm run lint && npm run typecheck",
     "codegen": "graphql-codegen",
     "deploy": "graphql-codegen && npm run typecheck && vite build && vercel",
     "dev": "vite",
@@ -22,13 +22,12 @@
     "lint:code:fix": "npx @biomejs/biome lint src --apply-unsafe --log-kind=compact --verbose",
     "lint:styles": "stylelint **/*.{scss,css}",
     "lint:styles:fix": "stylelint **/*.{scss,css} --fix",
-    "pre-commit": "lint-staged",
-    "prepare": "husky install",
     "preview": "vite preview",
     "start": "vite",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
-    "templates": "node ./templates/compile.cjs"
+    "templates": "node ./templates/compile.cjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "form-data": "4.0.0",
@@ -99,7 +98,6 @@
     "ga-gtag": "1.2.0",
     "graphql": "16.8.1",
     "graphql-tag": "2.12.6",
-    "husky": "^9.0.10",
     "hygen": "^6.2.11",
     "i18next": "22.4.15",
     "i18next-http-backend": "2.2.0",
@@ -107,7 +105,6 @@
     "intl-messageformat": "10.5.3",
     "javascript-time-ago": "2.5.9",
     "js-cookie": "3.0.5",
-    "lint-staged": "15.1.0",
     "loglevel": "1.8.1",
     "loglevel-plugin-prefix": "0.8.4",
     "nanostores": "0.9.5",

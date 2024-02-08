@@ -4,3 +4,4 @@
 - bun support
 - custom email templates 'compiler'
 - migrated to vike V1 design
+- no lintstaged

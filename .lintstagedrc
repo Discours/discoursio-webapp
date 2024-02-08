@@ -1,5 +1,0 @@
-{
-  "*.{js,ts,cjs,mjs,d.mts,jsx,tsx,json,jsonc,scss,css}": [
-    "npx @biomejs/biome check"
-  ]
-}

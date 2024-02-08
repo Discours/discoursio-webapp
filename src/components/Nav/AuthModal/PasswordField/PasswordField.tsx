@@ -13,6 +13,7 @@ type Props = {
   errorMessage?: (error: string) => void
   onInput: (value: string) => void
   variant?: 'login' | 'registration'
+  disableAutocomplete?: boolean
 }
 
 export const PasswordField = (props: Props) => {
@@ -69,7 +70,7 @@ export const PasswordField = (props: Props) => {
           id="password"
           name="password"
           disabled={props.disabled}
-          autocomplete="current-password"
+          autocomplete={props.disableAutocomplete ? 'one-time-code' : 'current-password'}
           type={showPassword() ? 'text' : 'password'}
           placeholder={props.placeholder || t('Password')}
           onInput={(event) => handleInputChange(event.currentTarget.value)}

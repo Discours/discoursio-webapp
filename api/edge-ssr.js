@@ -3,7 +3,7 @@ import { renderPage } from 'vike/server'
 export const config = {
   runtime: 'edge',
 }
-export default async function handler(request) {
+export default async function handler(request, _response) {
   const { url, cookies } = request
 
   const pageContext = await renderPage({ urlOriginal: url, cookies })

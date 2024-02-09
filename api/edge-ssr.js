@@ -7,7 +7,7 @@ import { renderPage } from 'vike/server'
  * @param {import('@vercel/node').VercelResponse} res
  */
 export default async function handler(req, res) {
-  const { url, cookies } = request
+  const { url, cookies } = req
   const pageContext = await renderPage({ urlOriginal: url, cookies })
   const { httpResponse, errorWhileRendering, is404 } = pageContext
 
@@ -25,14 +25,14 @@ export default async function handler(req, res) {
   }
 
   const { body, statusCode, headers: headersArray } = httpResponse
-  const res = new Response()
+
   const headers = headersArray.reduce((acc, [name, value]) => {
     acc[name] = value
     return acc
   }, {})
 
   headers['Cache-Control'] = 's-maxage=1, stale-while-revalidate'
-
+  headers['Content-Type'] = 'text/html; charset=utf-8'
   res.statusCode = statusCode
   res.headers = headers
   res.end(body)

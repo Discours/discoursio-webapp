@@ -1,3 +1,5 @@
+.venv
+__pycache__
 dist/
 node_modules/
 npm-debug.log*
@@ -23,3 +25,5 @@ bun.lockb
 /playwright/.cache/
 /plawright-report/
 /templates/dist/*
+target
+clean

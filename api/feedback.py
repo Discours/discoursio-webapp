@@ -1,6 +1,11 @@
 import os
 import requests
 
+# Получение переменных окружения
+MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY')
+MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN')
+
+
 def handler(request):
     # Получение данных из запроса
     req_body = request.get_json()
@@ -10,10 +15,6 @@ def handler(request):
 
     # Формирование текста письма
     text = f"{contact}\n\n{message}"
-
-    # Получение переменных окружения
-    MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY')
-    MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN')
 
     # Формирование данных для отправки
     data = {

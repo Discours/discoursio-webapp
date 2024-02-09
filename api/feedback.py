@@ -25,6 +25,7 @@ def handler(request):
 
     # Отправка письма через Mailgun API
     try:
+        assert isinstance(MAILGUN_API_KEY, str), 'no api key'
         response = requests.post(
             f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages",
             auth=('api', MAILGUN_API_KEY),

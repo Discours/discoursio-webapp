@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     return new Response('', { status: 500 })
   }
 
-  if(!httpResponse) {
+  if (!httpResponse) {
     return new Response('', { status: 200 })
   }
 

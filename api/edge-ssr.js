@@ -1,8 +1,9 @@
-import { renderPage } from 'vike/server'
+const { renderPage } = require('vike/server')
 
 export const config = {
   runtime: 'edge'
 }
+
 export default async function handler(request) {
   const { url, cookies } = request
 

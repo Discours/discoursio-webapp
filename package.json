@@ -28,10 +28,6 @@
     "typecheck:watch": "tsc --noEmit --watch",
     "templates": "node ./templates/compile.cjs"
   },
-  "dependencies": {
-    "form-data": "4.0.0",
-    "mailgun.js": "10.1.0"
-  },
   "devDependencies": {
     "@authorizerdev/authorizer-js": "2.0.0",
     "@babel/core": "7.23.3",

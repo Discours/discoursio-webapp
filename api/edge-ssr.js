@@ -1,27 +1,31 @@
-const { renderPage } = require('vike/server')
+import { renderPage } from 'vike/server'
 
-export const config = {
-  runtime: 'edge'
-}
+// We use JSDoc instead of TypeScript because Vercel seems buggy with /api/**/*.ts files
 
-export default async function handler(request) {
+/**
+ * @param {import('@vercel/node').VercelRequest} req
+ * @param {import('@vercel/node').VercelResponse} res
+ */
+export default async function handler(req, res) {
   const { url, cookies } = request
-
   const pageContext = await renderPage({ urlOriginal: url, cookies })
-
   const { httpResponse, errorWhileRendering, is404 } = pageContext
 
-  if (errorWhileRendering && !is404) {
+  if (is404) {
+    return new Response('', { status: 404 })
+  }
+
+  if (errorWhileRendering) {
     console.error(errorWhileRendering)
     return new Response('', { status: 500 })
   }
 
-  if (!httpResponse) {
-    return new Response()
+  if(!httpResponse) {
+    return new Response('', { status: 200 })
   }
 
   const { body, statusCode, headers: headersArray } = httpResponse
-
+  const res = new Response()
   const headers = headersArray.reduce((acc, [name, value]) => {
     acc[name] = value
     return acc
@@ -29,5 +33,7 @@ export default async function handler(request) {
 
   headers['Cache-Control'] = 's-maxage=1, stale-while-revalidate'
 
-  return new Response(body, { status: statusCode, headers })
+  res.statusCode = statusCode
+  res.headers = headers
+  res.end(body)
 }

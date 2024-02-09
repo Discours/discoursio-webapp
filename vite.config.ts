@@ -83,6 +83,8 @@ export default defineConfig(({ mode, command }) => {
         '@urql/core',
         'wonka',
         'solid-popper',
+        'seroval',
+        'seroval-plugins',
         'seroval-plugins/web',
         '@solid-primitives/share',
         'i18next',

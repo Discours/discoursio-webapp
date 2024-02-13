@@ -127,7 +127,7 @@ export const AuthorBadge = (props: Props) => {
           </Show>
         </ConditionalWrapper>
       </div>
-      <Show when={props.author.slug !== author()?.slug && !props.nameOnly}>
+      <Show when={props.author.slug !== author()?.slug && !props.nameOnly && props.isFollowed?.loaded}>
         <div class={styles.actions}>
           <Show
             when={!props.minimizeSubscribeButton}

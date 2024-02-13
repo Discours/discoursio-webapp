@@ -84,35 +84,41 @@ export const TopicBadge = (props: Props) => {
           </a>
         </div>
 
-        <div class={styles.actions}>
-          <Show
-            when={!props.minimizeSubscribeButton}
-            fallback={
-              <CheckButton text={t('Follow')} checked={Boolean(isFollowed())} onClick={handleFollowClick} />
-            }
-          >
+        <Show when={props.isFollowed?.loaded}>
+          <div class={styles.actions}>
             <Show
-              when={isFollowed()}
+              when={!props.minimizeSubscribeButton}
               fallback={
-                <Button
-                  variant="primary"
-                  size="S"
-                  value={t('Subscribe')}
+                <CheckButton
+                  text={t('Follow')}
+                  checked={Boolean(isFollowed())}
                   onClick={handleFollowClick}
-                  class={styles.subscribeButton}
                 />
               }
             >
-              <Button
-                onClick={handleFollowClick}
-                variant="bordered"
-                size="S"
-                value={t('Following')}
-                class={styles.subscribeButton}
-              />
+              <Show
+                when={isFollowed()}
+                fallback={
+                  <Button
+                    variant="primary"
+                    size="S"
+                    value={t('Subscribe')}
+                    onClick={handleFollowClick}
+                    class={styles.subscribeButton}
+                  />
+                }
+              >
+                <Button
+                  onClick={handleFollowClick}
+                  variant="bordered"
+                  size="S"
+                  value={t('Following')}
+                  class={styles.subscribeButton}
+                />
+              </Show>
             </Show>
-          </Show>
-        </div>
+          </div>
+        </Show>
       </div>
       <div class={styles.stats}>
         <span class={styles.statsItem}>{t('shoutsWithCount', { count: props.topic?.stat?.shouts })}</span>

@@ -12,7 +12,6 @@ import { capitalize } from '../../../utils/capitalize'
 import { dummyFilter } from '../../../utils/dummyFilter'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { scrollHandler } from '../../../utils/scroll'
-import { TopicCard } from '../../Topic/Card'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
 
@@ -188,16 +187,14 @@ export const AllTopics = (props: Props) => {
                   <div class="col-lg-20 col-xl-18 py-4">
                     <For each={filteredResults().slice(0, limit())}>
                       {(topic) => (
-                        <>
-                          <TopicBadge
-                            topic={topic}
-                            isFollowed={{
-                              loaded: filteredResults().length > 0,
-                              value: isOwnerSubscribed(topic.slug),
-                            }}
-                            showStat={true}
-                          />
-                        </>
+                        <TopicBadge
+                          topic={topic}
+                          isFollowed={{
+                            loaded: Boolean(filteredResults()),
+                            value: isOwnerSubscribed(topic.slug),
+                          }}
+                          showStat={true}
+                        />
                       )}
                     </For>
                   </div>

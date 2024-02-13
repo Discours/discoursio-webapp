@@ -25,9 +25,9 @@ export const TopicBadge = (props: Props) => {
   const { t, lang } = useLocalize()
   const { mediaMatches } = useMediaQuery()
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const { requireAuthentication } = useSession()
-  const { setFollowing, loading: subLoading } = useFollowing()
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
+  const { requireAuthentication } = useSession()
+  const { setFollowing } = useFollowing()
 
   const handleFollowClick = () => {
     const value = !isFollowed()
@@ -45,7 +45,7 @@ export const TopicBadge = (props: Props) => {
     on(
       () => props.isFollowed,
       () => {
-        setIsFollowed(props.isFollowed.value)
+        setIsFollowed(props.isFollowed?.value)
       },
     ),
   )
@@ -97,7 +97,7 @@ export const TopicBadge = (props: Props) => {
                 <Button
                   variant="primary"
                   size="S"
-                  value={subLoading() ? t('subscribing...') : t('Subscribe')}
+                  value={t('Subscribe')}
                   onClick={handleFollowClick}
                   class={styles.subscribeButton}
                 />

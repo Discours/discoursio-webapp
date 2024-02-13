@@ -3,33 +3,33 @@ import deepEqual from 'fast-deep-equal'
 import { Accessor, Show, createMemo, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { ShoutForm, useEditorContext } from '../../context/editor'
-import { useLocalize } from '../../context/localize'
-import type { Shout, Topic } from '../../graphql/schema/core.gen'
-import { LayoutType, MediaItem } from '../../pages/types'
-import { useRouter } from '../../stores/router'
-import { clone } from '../../utils/clone'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { isDesktop } from '../../utils/media-query'
-import { slugify } from '../../utils/slugify'
-import { Editor, Panel } from '../Editor'
-import { AudioUploader } from '../Editor/AudioUploader'
-import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
-import { VideoUploader } from '../Editor/VideoUploader'
-import { Modal } from '../Nav/Modal'
-import { TableOfContents } from '../TableOfContents'
-import { DropArea } from '../_shared/DropArea'
-import { Icon } from '../_shared/Icon'
-import { InviteMembers } from '../_shared/InviteMembers'
-import { Popover } from '../_shared/Popover'
-import { EditorSwiper } from '../_shared/SolidSwiper'
+import { ShoutForm, useEditorContext } from '../../../context/editor'
+import { useLocalize } from '../../../context/localize'
+import type { Shout, Topic } from '../../../graphql/schema/core.gen'
+import { LayoutType, MediaItem } from '../../../pages/types'
+import { useRouter } from '../../../stores/router'
+import { clone } from '../../../utils/clone'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { isDesktop } from '../../../utils/media-query'
+import { slugify } from '../../../utils/slugify'
+import { Editor, Panel } from '../../Editor'
+import { AudioUploader } from '../../Editor/AudioUploader'
+import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
+import { VideoUploader } from '../../Editor/VideoUploader'
+import { Modal } from '../../Nav/Modal'
+import { TableOfContents } from '../../TableOfContents'
+import { DropArea } from '../../_shared/DropArea'
+import { Icon } from '../../_shared/Icon'
+import { InviteMembers } from '../../_shared/InviteMembers'
+import { Popover } from '../../_shared/Popover'
+import { EditorSwiper } from '../../_shared/SolidSwiper'
 
-import { PublishSettings } from './PublishSettings'
+import { PublishSettings } from '../PublishSettings'
 
-import styles from './Edit.module.scss'
+import styles from './EditView.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
-const GrowingTextarea = lazy(() => import('../_shared/GrowingTextarea/GrowingTextarea'))
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
   shout: Shout
@@ -121,7 +121,7 @@ export const EditView = (props: Props) => {
     onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
 
-  const handleTitleInputChange = (value) => {
+  const handleTitleInputChange = (value: string) => {
     setForm('title', value)
     setForm('slug', slugify(value))
     if (value) {

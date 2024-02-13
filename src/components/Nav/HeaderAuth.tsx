@@ -51,7 +51,7 @@ export const HeaderAuth = (props: Props) => {
   const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
   const isNotificationsVisible = createMemo(() => isAuthenticated() && !isEditorPage())
   const isSaveButtonVisible = createMemo(() => isAuthenticated() && isEditorPage())
-  const isCreatePostButtonVisible = createMemo(() => isAuthenticated() && !isEditorPage())
+  const isCreatePostButtonVisible = createMemo(() => !isEditorPage())
   const isAuthenticatedControlsVisible = createMemo(
     () => isAuthenticated() && session()?.user?.email_verified,
   )
@@ -111,7 +111,7 @@ export const HeaderAuth = (props: Props) => {
       <Show when={isSessionLoaded()} keyed={true}>
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
-            <Show when={isCreatePostButtonVisible()}>
+            <Show when={isCreatePostButtonVisible() && isAuthenticated()}>
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
@@ -178,6 +178,17 @@ export const HeaderAuth = (props: Props) => {
                 </Popover>
               </div>
             </Show>
+
+            <Show when={isCreatePostButtonVisible() && !isAuthenticated()}>
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+                <a href={getPagePath(router, 'create')}>
+                  <span class={styles.textLabel}>{t('Create post')}</span>
+                  <Icon name="pencil" class={styles.icon} />
+                  <Icon name="pencil" class={clsx(styles.icon, styles.iconHover)} />
+                </a>
+              </div>
+            </Show>
+
             <Show
               when={isAuthenticatedControlsVisible()}
               fallback={
@@ -200,27 +211,28 @@ export const HeaderAuth = (props: Props) => {
                   </a>
                 </div>
               </Show>
-              <ProfilePopup
-                onVisibilityChange={(isVisible) => {
-                  props.setIsProfilePopupVisible(isVisible)
-                }}
-                containerCssClass={styles.control}
-                trigger={
-                  <div class={styles.userControlItem}>
-                    <button class={styles.button}>
-                      <div classList={{ entered: page().path === `/${author()?.slug}` }}>
-                        <Userpic
-                          size={'M'}
-                          name={author()?.name}
-                          userpic={author()?.pic}
-                          class={styles.userpic}
-                        />
-                      </div>
-                    </button>
-                  </div>
-                }
-              />
             </Show>
+
+            <ProfilePopup
+              onVisibilityChange={(isVisible) => {
+                props.setIsProfilePopupVisible(isVisible)
+              }}
+              containerCssClass={styles.control}
+              trigger={
+                <div class={styles.userControlItem}>
+                  <button class={styles.button}>
+                    <div classList={{ entered: page().path === `/${author()?.slug}` }}>
+                      <Userpic
+                        size={'M'}
+                        name={author()?.name}
+                        userpic={author()?.pic}
+                        class={styles.userpic}
+                      />
+                    </div>
+                  </button>
+                </div>
+              }
+            />
           </div>
         </div>
       </Show>

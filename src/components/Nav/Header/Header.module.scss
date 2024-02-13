@@ -548,7 +548,7 @@
     padding: 0;
 
     &:hover {
-      background: none !important;
+      background: none;
 
       .icon {
         display: none;
@@ -579,6 +579,8 @@
 }
 
 .userControlItemVerbose {
+  align-items: stretch;
+  display: flex;
   margin-left: 0.9em !important;
 
   &:first-child {
@@ -629,33 +631,39 @@
     }
   }
 
+  a:link,
+  a:visited,
+  button {
+    align-items: center;
+    border-radius: 2rem;
+    box-shadow: 0 0 0 1px #000;
+    display: flex;
+    padding: 0 1.5rem;
+
+    &:hover {
+      background-color: var(--link-hover-background);
+
+      &,
+      .textLabel {
+        color: #fff !important;
+      }
+
+      .icon {
+        display: none;
+      }
+
+      .iconHover {
+        display: block;
+      }
+    }
+  }
+
   button {
     margin: 0 !important;
   }
 
   a::before {
     display: none;
-  }
-
-  a:hover,
-  button:hover {
-    .icon {
-      display: none;
-    }
-
-    .iconHover {
-      display: block;
-    }
-
-    .textLabel {
-      color: var(--link-hover-color);
-    }
-  }
-
-  a:hover {
-    .textLabel {
-      background-color: var(--link-hover-background);
-    }
   }
 }
 

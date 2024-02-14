@@ -18,6 +18,8 @@ import { ProfilePopup } from './ProfilePopup'
 
 import { useSnackbar } from '../../context/snackbar'
 import styles from './Header/Header.module.scss'
+import {VotersList} from "../_shared/VotersList";
+import {Popup} from "../_shared/Popup";
 
 type Props = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -70,6 +72,7 @@ export const HeaderAuth = (props: Props) => {
   }
 
   const [width, setWidth] = createSignal(0)
+  const [editorMode, setEditorMode] = createSignal(t('Editing'))
 
   onMount(() => {
     const handleResize = () => setWidth(window.innerWidth)
@@ -148,13 +151,33 @@ export const HeaderAuth = (props: Props) => {
             </Show>
 
             <Show when={isSaveButtonVisible()}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                {renderIconedButton({
-                  value: t('Save'),
-                  icon: 'save',
-                  action: handleSaveButtonClick,
-                })}
-              </div>
+              <Popup trigger={<span class={styles.editorModePopupOpener}><Icon name="swiper-r-arr" class={styles.editorModePopupOpenerIcon}/>
+              {editorMode()}</span>}
+                     variant="bordered"
+                     popupCssClass={styles.editorPopup}
+              >
+                <ul class={clsx('nodash', styles.editorModesList)}>
+                  <li class={clsx({[styles.editorModesSelected]: editorMode() === t('Preview')})}
+                      onClick={() => setEditorMode(t('Preview'))}>
+                    <Icon name="eye" class={styles.editorModeIcon}/>
+                    <div class={styles.editorModeTitle}>{t('Preview')}</div>
+                    <div class={styles.editorModeDescription}>Посмотрите, как материал будет выглядеть при публикации</div>
+                  </li>
+                  <li class={clsx({[styles.editorModesSelected]: editorMode() === t('Editing')})}
+                      onClick={() => setEditorMode(t('Editing'))}>
+                    <Icon name="pencil-outline" class={styles.editorModeIcon}/>
+                    <div class={styles.editorModeTitle}>{t('Editing')}</div>
+                    <div class={styles.editorModeDescription}>Изменяйте текст напрямую в редакторе</div>
+                  </li>
+                  <li class={clsx({[styles.editorModesSelected]: editorMode() === t('Commenting')})}
+                      onClick={() => setEditorMode(t('Commenting'))}>
+                    <Icon name="comment" class={styles.editorModeIcon}/>
+                    <div class={styles.editorModeTitle}>{t('Commenting')}</div>
+                    <div class={styles.editorModeDescription}>Предлагайте правки и комментарии, чтобы сделать материал лучше</div>
+                  </li>
+                </ul>
+              </Popup>
+
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 {renderIconedButton({
@@ -169,7 +192,7 @@ export const HeaderAuth = (props: Props) => {
                   {(ref) => (
                     <Button
                       ref={ref}
-                      value={<Icon name="burger" />}
+                      value={<Icon name="ellipsis" />}
                       variant={'light'}
                       onClick={handleBurgerButtonClick}
                       class={styles.settingsControl}
@@ -212,28 +235,28 @@ export const HeaderAuth = (props: Props) => {
                 </div>
               </Show>
             </Show>
-
-            <ProfilePopup
-              onVisibilityChange={(isVisible) => {
-                props.setIsProfilePopupVisible(isVisible)
-              }}
-              containerCssClass={styles.control}
-              trigger={
-                <div class={styles.userControlItem}>
-                  <button class={styles.button}>
-                    <div classList={{ entered: page().path === `/${author()?.slug}` }}>
-                      <Userpic
-                        size={'M'}
-                        name={author()?.name}
-                        userpic={author()?.pic}
-                        class={styles.userpic}
-                      />
-                    </div>
-                  </button>
-                </div>
-              }
-            />
           </div>
+
+          <ProfilePopup
+            onVisibilityChange={(isVisible) => {
+              props.setIsProfilePopupVisible(isVisible)
+            }}
+            containerCssClass={styles.control}
+            trigger={
+              <div class={clsx(styles.userControlItem, styles.userControlItemUserpic)}>
+                <button class={styles.button}>
+                  <div classList={{ entered: page().path === `/${author()?.slug}` }}>
+                    <Userpic
+                      size={'L'}
+                      name={author()?.name}
+                      userpic={author()?.pic}
+                      class={styles.userpic}
+                    />
+                  </div>
+                </button>
+              </div>
+            }
+          />
         </div>
       </Show>
     </ShowOnlyOnClient>

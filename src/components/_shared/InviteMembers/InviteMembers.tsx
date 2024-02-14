@@ -62,7 +62,7 @@ export const InviteMembers = (props: Props) => {
     return authors?.slice(start, end)
   }
 
-  const [pages, _infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
+  const [pages, setEl, { end }] = createInfiniteScroll(fetcher)
 
   createEffect(
     on(
@@ -158,7 +158,7 @@ export const InviteMembers = (props: Props) => {
               )}
             </For>
             <Show when={!end()}>
-              <div use:infiniteScrollLoader class={styles.loading}>
+              <div ref={setEl as (e: HTMLDivElement) => void} class={styles.loading}>
                 <div class={styles.icon}>
                   <Loading size="tiny" />
                 </div>

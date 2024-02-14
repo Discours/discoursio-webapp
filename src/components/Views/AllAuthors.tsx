@@ -2,7 +2,7 @@ import type { Author } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
@@ -16,6 +16,9 @@ import { AuthorBadge } from '../Author/AuthorBadge'
 import { Loading } from '../_shared/Loading'
 import { SearchField } from '../_shared/SearchField'
 
+import { createInfiniteScroll } from '@solid-primitives/pagination'
+import { apiClient } from '../../graphql/client/core'
+import { Button } from '../_shared/Button'
 import styles from './AllAuthors.module.scss'
 
 type AllAuthorsPageSearchParams = {
@@ -33,8 +36,6 @@ export const AllAuthorsView = (props: Props) => {
   const { t, lang } = useLocalize()
   const ALPHABET =
     lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ@']
-  const [offsetByShouts, setOffsetByShouts] = createSignal(0)
-  const [offsetByFollowers, setOffsetByFollowers] = createSignal(0)
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
@@ -42,7 +43,7 @@ export const AllAuthorsView = (props: Props) => {
   })
 
   const [searchQuery, setSearchQuery] = createSignal('')
-  const offset = searchParams()?.by === 'shouts' ? offsetByShouts : offsetByFollowers
+  // const offset = searchParams()?.by === 'shouts' ? offsetByShouts : offsetByFollowers
   createEffect(() => {
     let by = searchParams().by
     if (by) {
@@ -52,30 +53,6 @@ export const AllAuthorsView = (props: Props) => {
       changeSearchParams({ by })
     }
   })
-
-  const loadMoreByShouts = async () => {
-    await loadAuthors({ by: { order: 'shouts_stat' }, limit: PAGE_SIZE, offset: offsetByShouts() })
-    setOffsetByShouts((o) => o + PAGE_SIZE)
-  }
-  const loadMoreByFollowers = async () => {
-    await loadAuthors({ by: { order: 'followers_stat' }, limit: PAGE_SIZE, offset: offsetByFollowers() })
-    setOffsetByFollowers((o) => o + PAGE_SIZE)
-  }
-
-  const isStatsLoaded = createMemo(() => sortedAuthors()?.some((author) => author.stat))
-
-  createEffect(async () => {
-    if (!isStatsLoaded()) {
-      await loadMoreByShouts()
-      await loadMoreByFollowers()
-    }
-  })
-
-  const showMore = async () =>
-    await {
-      shouts: loadMoreByShouts,
-      followers: loadMoreByFollowers,
-    }[searchParams().by]()
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
@@ -93,13 +70,33 @@ export const AllAuthorsView = (props: Props) => {
     return keys
   })
 
-  const filteredAuthors = createMemo(() => {
-    return dummyFilter(sortedAuthors(), searchQuery(), lang())
-  })
-
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Authors')
   const description = t('List of authors of the open editorial community')
+
+  // BRAND NEW
+  const fetchAuthors = async (page: number): Promise<Author[]> => {
+    console.log('!!! fetchAuthors:')
+    console.log('!!! page:', page)
+    return apiClient.loadAuthorsBy({ by: { order: 'shouts' }, limit: PAGE_SIZE, offset: PAGE_SIZE * page })
+  }
+
+  const [authors, setEl, { end, setEnd }] = createInfiniteScroll(fetchAuthors)
+
+  // DEBUG CODE
+  const hanleTest = async () => {
+    console.log('!!! aa:')
+    const authors = await apiClient.loadAuthorsBy({ by: { order: 'shouts' }, limit: PAGE_SIZE, offset: 40 })
+
+    const authorsObject = authors.map((author) => ({
+      name: author.name,
+      id: author.id,
+      followers: author.stat.followers,
+      shouts: author.stat.shouts,
+    }))
+
+    console.log('!!! shouts 40:', authorsObject)
+  }
 
   return (
     <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
@@ -114,119 +111,130 @@ export const AllAuthorsView = (props: Props) => {
       <Meta name="twitter:title" content={ogTitle} />
       <Meta name="twitter:description" content={description} />
       <Show when={props.isLoaded} fallback={<Loading />}>
+        <Button onClick={hanleTest} value={'AAA'} />
         <div class="offset-md-5">
           <div class="row">
             <div class="col-lg-20 col-xl-18">
               <h1>{t('Authors')}</h1>
               <p>{t('Subscribe who you like to tune your personal feed')}</p>
-              <Show when={isStatsLoaded()}>
-                <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
-                  <li
-                    classList={{
-                      'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts',
-                    }}
-                  >
-                    <a href="/authors?by=shouts">{t('By shouts')}</a>
+              <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
+                <li
+                  class={clsx({
+                    ['view-switcher__item--selected']: !searchParams().by || searchParams().by === 'shouts',
+                  })}
+                >
+                  <a href="/authors?by=shouts">{t('By shouts')}</a>
+                </li>
+                <li
+                  class={clsx({
+                    ['view-switcher__item--selected']: searchParams().by === 'followers',
+                  })}
+                >
+                  <a href="/authors?by=followers">{t('By popularity')}</a>
+                </li>
+                <li
+                  class={clsx({
+                    ['view-switcher__item--selected']: searchParams().by === 'name',
+                  })}
+                >
+                  <a href="/authors?by=name">{t('By name')}</a>
+                </li>
+                <Show when={searchParams().by !== 'name'}>
+                  <li class="view-switcher__search">
+                    <SearchField onChange={(value) => setSearchQuery(value)} />
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': searchParams().by === 'followers' }}>
-                    <a href="/authors?by=followers">{t('By popularity')}</a>
-                  </li>
-                  <li classList={{ 'view-switcher__item--selected': searchParams().by === 'name' }}>
-                    <a href="/authors?by=name">{t('By name')}</a>
-                  </li>
-                  <Show when={searchParams().by !== 'name'}>
-                    <li class="view-switcher__search">
-                      <SearchField onChange={(value) => setSearchQuery(value)} />
-                    </li>
-                  </Show>
-                </ul>
-              </Show>
+                </Show>
+              </ul>
             </div>
           </div>
 
-          <Show when={sortedAuthors().length > 0}>
-            <Show when={searchParams().by === 'name'}>
-              <div class="row">
-                <div class="col-lg-20 col-xl-18">
-                  <ul class={clsx('nodash', styles.alphabet)}>
-                    <For each={ALPHABET}>
-                      {(letter, index) => (
-                        <li>
-                          <Show when={letter in byLetter()} fallback={letter}>
-                            <a
-                              href={`/authors?by=name#letter-${index()}`}
-                              onClick={(event) => {
-                                event.preventDefault()
-                                scrollHandler(`letter-${index()}`)
-                              }}
-                            >
-                              {letter}
-                            </a>
-                          </Show>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
+          <Show when={searchParams().by === 'name'}>
+            <div class="row">
+              <div class="col-lg-20 col-xl-18">
+                <ul class={clsx('nodash', styles.alphabet)}>
+                  <For each={ALPHABET}>
+                    {(letter, index) => (
+                      <li>
+                        <Show when={letter in byLetter()} fallback={letter}>
+                          <a
+                            href={`/authors?by=name#letter-${index()}`}
+                            onClick={(event) => {
+                              event.preventDefault()
+                              scrollHandler(`letter-${index()}`)
+                            }}
+                          >
+                            {letter}
+                          </a>
+                        </Show>
+                      </li>
+                    )}
+                  </For>
+                </ul>
               </div>
+            </div>
 
-              <For each={sortedKeys()}>
-                {(letter) => (
-                  <div class={clsx(styles.group, 'group')}>
-                    <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-lg-20">
-                          <div class="row">
-                            <For each={byLetter()[letter]}>
-                              {(author) => (
-                                <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
-                                  <div class="topic-title">
-                                    <a href={`/author/${author.slug}`}>{translateAuthor(author, lang())}</a>
-                                    <Show when={author.stat}>
-                                      <span class={styles.articlesCounter}>{author.stat.shouts}</span>
-                                    </Show>
-                                  </div>
+            <For each={sortedKeys()}>
+              {(letter) => (
+                <div class={clsx(styles.group, 'group')}>
+                  <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-lg-20">
+                        <div class="row">
+                          <For each={byLetter()[letter]}>
+                            {(author) => (
+                              <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
+                                <div class="topic-title">
+                                  <a href={`/author/${author.slug}`}>{translateAuthor(author, lang())}</a>
+                                  <Show when={author.stat}>
+                                    <span class={styles.articlesCounter}>{author.stat.shouts}</span>
+                                  </Show>
                                 </div>
-                              )}
-                            </For>
-                          </div>
+                              </div>
+                            )}
+                          </For>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
-              </For>
-            </Show>
-
-            <Show when={searchParams().by && searchParams().by !== 'name'}>
-              <For each={filteredAuthors().slice(0, PAGE_SIZE)}>
-                {(author) => (
-                  <div class="row">
-                    <div class="col-lg-20 col-xl-18">
-                      <AuthorBadge
-                        author={author as Author}
-                        isFollowed={{
-                          loaded: Boolean(filteredAuthors()),
-                          value: isOwnerSubscribed(author.id),
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </For>
-            </Show>
-
-            <Show when={filteredAuthors().length > PAGE_SIZE + offset() && searchParams().by !== 'name'}>
-              <div class="row">
-                <div class={clsx(styles.loadMoreContainer, 'col-24 col-md-20')}>
-                  <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                    {t('Load more')}
-                  </button>
                 </div>
-              </div>
-            </Show>
+              )}
+            </For>
           </Show>
+
+          <Show when={searchParams().by === 'shouts'}>
+            <div>
+              <For each={authors()}>{(author: Author) => <div>{author.name}</div>}</For>
+              <Show when={!end()}>
+                <div ref={setEl as (e: HTMLDivElement) => void}>Loading...</div>
+              </Show>
+            </div>
+            {/*<For each={filteredAuthors().slice(0, PAGE_SIZE)}>*/}
+            {/*  {(author) => (*/}
+            {/*    <div class="row">*/}
+            {/*      <div class="col-lg-20 col-xl-18">*/}
+            {/*        <AuthorBadge*/}
+            {/*          author={author as Author}*/}
+            {/*          isFollowed={{*/}
+            {/*            loaded: Boolean(filteredAuthors()),*/}
+            {/*            value: isOwnerSubscribed(author.id),*/}
+            {/*          }}*/}
+            {/*        />*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  )}*/}
+            {/*</For>*/}
+          </Show>
+
+          {/*<Show when={filteredAuthors().length > PAGE_SIZE + offset() && searchParams().by !== "name"}>*/}
+          {/*  <div class="row">*/}
+          {/*    <div class={clsx(styles.loadMoreContainer, "col-24 col-md-20")}>*/}
+          {/*      <button class={clsx("button", styles.loadMoreButton)} onClick={showMore}>*/}
+          {/*        {t("Load more")}*/}
+          {/*      </button>*/}
+          {/*    </div>*/}
+          {/*  </div>*/}
+          {/*</Show>*/}
         </div>
       </Show>
     </div>

@@ -1,24 +1,23 @@
-import type { Author } from '../../graphql/schema/core.gen'
+import type { Author } from '../../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 
-import { useFollowing } from '../../context/following'
-import { useLocalize } from '../../context/localize'
-import { useRouter } from '../../stores/router'
-import { loadAuthors, setAuthorsSort, useAuthorsStore } from '../../stores/zine/authors'
-import { dummyFilter } from '../../utils/dummyFilter'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { scrollHandler } from '../../utils/scroll'
-import { authorLetterReduce, translateAuthor } from '../../utils/translate'
-import { AuthorBadge } from '../Author/AuthorBadge'
-import { Loading } from '../_shared/Loading'
-import { SearchField } from '../_shared/SearchField'
+import { useFollowing } from '../../../context/following'
+import { useLocalize } from '../../../context/localize'
+import { useRouter } from '../../../stores/router'
+import { setAuthorsSort, useAuthorsStore } from '../../../stores/zine/authors'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { scrollHandler } from '../../../utils/scroll'
+import { authorLetterReduce, translateAuthor } from '../../../utils/translate'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { Loading } from '../../_shared/Loading'
+import { SearchField } from '../../_shared/SearchField'
 
 import { createInfiniteScroll } from '@solid-primitives/pagination'
-import { apiClient } from '../../graphql/client/core'
-import { Button } from '../_shared/Button'
+import { apiClient } from '../../../graphql/client/core'
+import { Button } from '../../_shared/Button'
 import styles from './AllAuthors.module.scss'
 
 type AllAuthorsPageSearchParams = {
@@ -32,7 +31,7 @@ type Props = {
 
 const PAGE_SIZE = 20
 
-export const AllAuthorsView = (props: Props) => {
+export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
   const ALPHABET =
     lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ@']
@@ -43,7 +42,7 @@ export const AllAuthorsView = (props: Props) => {
   })
 
   const [searchQuery, setSearchQuery] = createSignal('')
-  // const offset = searchParams()?.by === 'shouts' ? offsetByShouts : offsetByFollowers
+
   createEffect(() => {
     let by = searchParams().by
     if (by) {
@@ -81,7 +80,17 @@ export const AllAuthorsView = (props: Props) => {
     return apiClient.loadAuthorsBy({ by: { order: 'shouts' }, limit: PAGE_SIZE, offset: PAGE_SIZE * page })
   }
 
-  const [authors, setEl, { end, setEnd }] = createInfiniteScroll(fetchAuthors)
+  const [authors, setAuthors] = createSignal<Author[]>([])
+  const [setEl, setSetEl] = createSignal<HTMLElement | undefined>()
+  const [end, setEnd] = createSignal<boolean>(false)
+
+  onMount(() => {
+    const [authors, setEl, { end, setEnd }] = createInfiniteScroll(fetchAuthors)
+    setAuthors(authors)
+    // @ts-ignore
+    setSetEl(setEl)
+    setEnd(end)
+  })
 
   // DEBUG CODE
   const hanleTest = async () => {
@@ -204,37 +213,31 @@ export const AllAuthorsView = (props: Props) => {
 
           <Show when={searchParams().by === 'shouts'}>
             <div>
-              <For each={authors()}>{(author: Author) => <div>{author.name}</div>}</For>
+              <For each={authors()}>
+                {(author: Author) => (
+                  <div class="row">
+                    <div class="col-lg-20 col-xl-18">
+                      <AuthorBadge
+                        author={author as Author}
+                        isFollowed={{
+                          loaded: Boolean(authors().length),
+                          value: isOwnerSubscribed(author.id),
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </For>
               <Show when={!end()}>
-                <div ref={setEl as (e: HTMLDivElement) => void}>Loading...</div>
+                <div ref={setEl as (e: HTMLDivElement) => void} class={styles.loading}>
+                  <div class={styles.icon}>
+                    <Loading size="tiny" />
+                  </div>
+                  <div>{t('Loading')}</div>
+                </div>
               </Show>
             </div>
-            {/*<For each={filteredAuthors().slice(0, PAGE_SIZE)}>*/}
-            {/*  {(author) => (*/}
-            {/*    <div class="row">*/}
-            {/*      <div class="col-lg-20 col-xl-18">*/}
-            {/*        <AuthorBadge*/}
-            {/*          author={author as Author}*/}
-            {/*          isFollowed={{*/}
-            {/*            loaded: Boolean(filteredAuthors()),*/}
-            {/*            value: isOwnerSubscribed(author.id),*/}
-            {/*          }}*/}
-            {/*        />*/}
-            {/*      </div>*/}
-            {/*    </div>*/}
-            {/*  )}*/}
-            {/*</For>*/}
           </Show>
-
-          {/*<Show when={filteredAuthors().length > PAGE_SIZE + offset() && searchParams().by !== "name"}>*/}
-          {/*  <div class="row">*/}
-          {/*    <div class={clsx(styles.loadMoreContainer, "col-24 col-md-20")}>*/}
-          {/*      <button class={clsx("button", styles.loadMoreButton)} onClick={showMore}>*/}
-          {/*        {t("Load more")}*/}
-          {/*      </button>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</Show>*/}
         </div>
       </Show>
     </div>

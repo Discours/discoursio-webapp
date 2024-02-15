@@ -1,10 +1,13 @@
 .TopicBadge {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
   margin-bottom: 2rem;
   gap: 1rem;
 
+  .content {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: .8rem;
+  }
   .basicInfo {
     display: flex;
     flex-flow: row nowrap;
@@ -76,5 +79,36 @@
     border-radius: 0.8rem !important;
     margin-right: 0 !important;
     width: 9em;
+  }
+}
+
+.stats {
+  @include font-size(1.5rem);
+
+  color: var(--secondary-color);
+  display: flex;
+  margin: 0 0 1em;
+
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin-top: 0.5em;
+  }
+
+  .statsItem {
+    @include font-size(1.4rem);
+
+    margin-right: 1.6rem;
+    white-space: nowrap;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.followers {
+      word-break: keep-all;
+    }
   }
 }

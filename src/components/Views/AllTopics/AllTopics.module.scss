@@ -32,45 +32,6 @@
   }
 }
 
-.stats {
-  @include font-size(1.7rem);
-
-  color: #9fa1a7;
-  display: flex;
-  margin: 0 0 1em;
-
-  @include media-breakpoint-down(md) {
-    flex-wrap: wrap;
-  }
-
-  @include media-breakpoint-down(sm) {
-    margin-top: 0.5em;
-  }
-
-  .statsItem {
-    @include font-size(1.5rem);
-
-    margin-right: 1.6rem;
-    white-space: nowrap;
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &.compact {
-      font-size: small;
-    }
-
-    &.followers {
-      word-break: keep-all;
-    }
-
-    &.button {
-      float: right;
-    }
-  }
-}
-
 .loadMoreContainer {
   margin-top: 48px;
   text-align: center;

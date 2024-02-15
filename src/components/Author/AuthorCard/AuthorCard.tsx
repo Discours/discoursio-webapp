@@ -308,7 +308,13 @@ export const AuthorCard = (props: Props) => {
                             author={subscription}
                           />
                         ) : (
-                          <TopicBadge topic={subscription} />
+                          <TopicBadge
+                            isFollowed={{
+                              loaded: Boolean(authorSubs()),
+                              value: isOwnerSubscribed(subscription.id),
+                            }}
+                            topic={subscription}
+                          />
                         )
                       }
                     </For>

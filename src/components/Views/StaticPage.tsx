@@ -12,17 +12,15 @@ export const StaticPage = (props: Props) => {
 
   return (
     <PageLayout title={props.title}>
-      <div class="wide-container">
+      <article
+        class="wide-container container--static-page"
+        id="articleBody"
+        ref={(el) => (articleBodyElement.current = el)}
+      >
         <div class="row">
-          <article
-            class="col-md-16 col-lg-14 col-xl-12 offset-md-5"
-            id="articleBody"
-            ref={(el) => (articleBodyElement.current = el)}
-          >
-            {props.children}
-          </article>
+          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">{props.children}</div>
 
-          <div class="col-md-6 offset-md-1">
+          <div class="col-md-6 col-lg-4 order-md-last">
             <TableOfContents
               variant="article"
               parentSelector="#articleBody"
@@ -30,7 +28,7 @@ export const StaticPage = (props: Props) => {
             />
           </div>
         </div>
-      </div>
+      </article>
     </PageLayout>
   )
 }

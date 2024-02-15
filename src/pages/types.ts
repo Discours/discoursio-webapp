@@ -50,4 +50,9 @@ export type UploadedFile = {
   originalFilename?: string
 }
 
+export type FollowedInfo = {
+  value?: boolean
+  loaded?: boolean
+}
+
 export type SubscriptionFilter = 'all' | 'authors' | 'topics' | 'communities'

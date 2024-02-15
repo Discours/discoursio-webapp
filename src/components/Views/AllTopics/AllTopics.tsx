@@ -1,21 +1,22 @@
-import type { Topic } from '../../graphql/schema/core.gen'
+import type { Topic } from '../../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 
-import { useFollowing } from '../../context/following'
-import { useLocalize } from '../../context/localize'
-import { useRouter } from '../../stores/router'
-import { setTopicsSort, useTopicsStore } from '../../stores/zine/topics'
-import { capitalize } from '../../utils/capitalize'
-import { dummyFilter } from '../../utils/dummyFilter'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { scrollHandler } from '../../utils/scroll'
-import { TopicCard } from '../Topic/Card'
-import { Loading } from '../_shared/Loading'
-import { SearchField } from '../_shared/SearchField'
+import { useFollowing } from '../../../context/following'
+import { useLocalize } from '../../../context/localize'
+import { useRouter } from '../../../stores/router'
+import { setTopicsSort, useTopicsStore } from '../../../stores/zine/topics'
+import { capitalize } from '../../../utils/capitalize'
+import { dummyFilter } from '../../../utils/dummyFilter'
+import { getImageUrl } from '../../../utils/getImageUrl'
+import { scrollHandler } from '../../../utils/scroll'
+import { TopicCard } from '../../Topic/Card'
+import { Loading } from '../../_shared/Loading'
+import { SearchField } from '../../_shared/SearchField'
 
+import { TopicBadge } from '../../Topic/TopicBadge'
 import styles from './AllTopics.module.scss'
 
 type AllTopicsPageSearchParams = {
@@ -29,7 +30,7 @@ type Props = {
 
 const PAGE_SIZE = 20
 
-export const AllTopicsView = (props: Props) => {
+export const AllTopics = (props: Props) => {
   const { t, lang } = useLocalize()
   const { searchParams, changeSearchParams } = useRouter<AllTopicsPageSearchParams>()
   const [limit, setLimit] = createSignal(PAGE_SIZE)
@@ -40,8 +41,6 @@ export const AllTopicsView = (props: Props) => {
     topics: props.topics,
     sortBy: searchParams().by || 'shouts',
   })
-
-  const { subscriptions } = useFollowing()
 
   createEffect(() => {
     if (!searchParams().by) {
@@ -76,7 +75,7 @@ export const AllTopicsView = (props: Props) => {
     return keys
   })
 
-  const subscribed = (topicSlug: string) => subscriptions.topics.some((topic) => topic.slug === topicSlug)
+  const { isOwnerSubscribed } = useFollowing()
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const [searchQuery, setSearchQuery] = createSignal('')
@@ -186,28 +185,18 @@ export const AllTopicsView = (props: Props) => {
 
               <Show when={searchParams().by && searchParams().by !== 'title'}>
                 <div class="row">
-                  <div class="col-lg-20 col-xl-18">
+                  <div class="col-lg-20 col-xl-18 py-4">
                     <For each={filteredResults().slice(0, limit())}>
                       {(topic) => (
                         <>
-                          <TopicCard
+                          <TopicBadge
                             topic={topic}
-                            compact={false}
-                            subscribed={subscribed(topic.slug)}
-                            showPublications={true}
-                            showDescription={true}
+                            isFollowed={{
+                              loaded: filteredResults().length > 0,
+                              value: isOwnerSubscribed(topic.slug),
+                            }}
+                            showStat={true}
                           />
-                          <div class={styles.stats}>
-                            <span class={styles.statsItem}>
-                              {t('shoutsWithCount', { count: topic.stat.shouts })}
-                            </span>
-                            <span class={styles.statsItem}>
-                              {t('authorsWithCount', { count: topic.stat.authors })}
-                            </span>
-                            <span class={styles.statsItem}>
-                              {t('followersWithCount', { count: topic.stat.followers })}
-                            </span>
-                          </div>
                         </>
                       )}
                     </For>

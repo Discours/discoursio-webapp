@@ -9,7 +9,7 @@ import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import SimplifiedEditor from '../../Editor/SimplifiedEditor'
+
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
@@ -21,6 +21,10 @@ import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
 
 import styles from './Inbox.module.scss'
+import { lazy } from 'solid-js'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+
 
 type InboxSearchParams = {
   by?: string

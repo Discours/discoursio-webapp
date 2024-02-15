@@ -1,5 +1,5 @@
 import ssrPlugin from 'vike/plugin'
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import sassDts from 'vite-plugin-sass-dts'
 import solidPlugin from 'vite-plugin-solid'
@@ -35,6 +35,7 @@ const devGenerateScopedName = (name: string, filename: string, _css: string) =>
 
 export default defineConfig(({ mode, command }) => {
   const plugins = [
+    splitVendorChunkPlugin(),
     solidPlugin({ ssr: true }),
     ssrPlugin({ includeAssetsImportedByServer: true }),
     sassDts(),
@@ -51,7 +52,7 @@ export default defineConfig(({ mode, command }) => {
     envPrefix: 'PUBLIC_',
     plugins,
     server: {
-      https: true,
+      https: {},
       port: 3000,
     },
     css: {

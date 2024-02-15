@@ -140,6 +140,9 @@ export const RegisterForm = () => {
           email: (
             <>
               {t('This email is verified')}. {t('You can')}
+              <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
+                {t('enter')}
+              </span>
             </>
           ),
         }))
@@ -221,45 +224,21 @@ export const RegisterForm = () => {
               </div>
             </div>
 
-            <Show
-              when={emailStatus() !== 'registered'}
-              fallback={
-                <button
-                  class={clsx('button', styles.submitButton)}
-                  onClick={() => changeSearchParams({ mode: 'login' })}
-                >
-                  {emailStatus() === 'verified' ? t('Login') : t('')}
-                </button>
-              }
-            >
-              <PasswordField
-                disableAutocomplete={true}
-                disabled={Boolean(emailStatus())}
-                errorMessage={(err) => setPasswordError(err)}
-                onInput={(value) => setPassword(value)}
-              />
-            </Show>
+            <PasswordField
+              disableAutocomplete={true}
+              disabled={Boolean(emailStatus())}
+              errorMessage={(err) => setPasswordError(err)}
+              onInput={(value) => setPassword(value)}
+            />
 
             <div>
-              <Show
-                when={emailStatus() !== 'registered'}
-                fallback={
-                  <button
-                    class={clsx('button', styles.submitButton)}
-                    onClick={() => changeSearchParams({ mode: 'send-reset-link' })}
-                  >
-                    {t('Set the new password')}
-                  </button>
-                }
+              <button
+                class={clsx('button', styles.submitButton)}
+                disabled={isSubmitting() || Boolean(emailStatus())}
+                type="submit"
               >
-                <button
-                  class={clsx('button', styles.submitButton)}
-                  disabled={isSubmitting() || Boolean(emailStatus())}
-                  type="submit"
-                >
-                  {isSubmitting() ? '...' : t('Join')}
-                </button>
-              </Show>
+                {isSubmitting() ? '...' : t('Join')}
+              </button>
             </div>
           </div>
 

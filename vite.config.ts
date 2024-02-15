@@ -52,7 +52,7 @@ export default defineConfig(({ mode, command }) => {
     plugins,
     server: {
       cors: isDev,
-      https: true,
+      https: {},
       port: 3000,
     },
     css: {

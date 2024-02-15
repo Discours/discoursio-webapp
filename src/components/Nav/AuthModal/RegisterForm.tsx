@@ -137,23 +137,11 @@ export const RegisterForm = () => {
 
       case 'verified':
         setValidationErrors((prev) => ({
-          email: (
-            <>
-              {t('This email is verified')}. {t('You can')}
-              <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
-                {t('enter')}
-              </span>
-              {t('or')}{' '}
-              <span class="link" onClick={() => changeSearchParams({ mode: 'send-reset-link' })}>
-                {t('Set the new password').toLocaleLowerCase()}
-              </span>
-            </>
-          ),
+          email: (<>{t('This email is verified')}. {t('You can')}</>),
         }))
         break
       case 'registered':
-        setValidationErrors((prev) => ({
-          ...prev,
+        setValidationErrors((prev) => ({ ...prev,
           email: (
             <>
               {t('This email is registered')}. {t('You can')}{' '}
@@ -228,21 +216,34 @@ export const RegisterForm = () => {
               </div>
             </div>
 
-            <PasswordField
-              disableAutocomplete={true}
-              disabled={Boolean(emailStatus())}
-              errorMessage={(err) => setPasswordError(err)}
-              onInput={(value) => setPassword(value)}
-            />
+            <Show when={emailStatus() !== 'registered'} fallback={
+                <button class={clsx('button', styles.submitButton)} onClick={() => changeSearchParams({ mode: 'login' })}>
+                  {emailStatus() === 'verified' ? t('Login') : t('')}
+                </button>}>
+                <PasswordField
+                  disableAutocomplete={true}
+                  disabled={Boolean(emailStatus())}
+                  errorMessage={(err) => setPasswordError(err)}
+                  onInput={(value) => setPassword(value)}
+                />
+            </Show>
 
             <div>
-              <button
-                class={clsx('button', styles.submitButton)}
-                disabled={isSubmitting() || Boolean(emailStatus())}
-                type="submit"
-              >
-                {isSubmitting() ? '...' : t('Join')}
-              </button>
+              <Show when={emailStatus() !== 'registered'} fallback={
+                <button
+                  class={clsx('button', styles.submitButton)}
+                  onClick={() => changeSearchParams({ mode: 'send-reset-link' })
+                  }>
+                  {t('Set the new password')}
+                </button>}>
+                  <button
+                    class={clsx('button', styles.submitButton)}
+                    disabled={isSubmitting() || Boolean(emailStatus())}
+                    type="submit"
+                  >
+                    {isSubmitting() ? '...' : t('Join')}
+                  </button>
+              </Show>
             </div>
           </div>
 

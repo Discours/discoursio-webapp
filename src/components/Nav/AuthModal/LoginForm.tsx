@@ -15,7 +15,6 @@ import { PasswordField } from './PasswordField'
 import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
-import { capitalize } from '../../../utils/capitalize'
 import styles from './AuthModal.module.scss'
 
 type FormFields = {

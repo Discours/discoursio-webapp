@@ -28,7 +28,7 @@ export const RatingControl = (props: RatingControlProps) => {
   const [isLoading, setIsLoading] = createSignal(false)
   const [ratings, setRatings] = createSignal<Reaction[]>([])
   const [myRate, setMyRate] = createSignal<Reaction | undefined>()
-  const [total, setTotal] = createSignal(0)
+  const [total, setTotal] = createSignal(props.comment?.stat?.rating || props.shout?.stat?.rating || 0)
 
   createEffect(
     on(

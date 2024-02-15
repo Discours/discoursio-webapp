@@ -17,6 +17,7 @@ import { SearchField } from '../../_shared/SearchField'
 
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { apiClient } from '../../../graphql/client/core'
+import { AuthorsList } from '../../AuthorsList'
 import { Button } from '../../_shared/Button'
 import styles from './AllAuthors.module.scss'
 
@@ -28,8 +29,6 @@ type Props = {
   authors: Author[]
   isLoaded: boolean
 }
-
-const PAGE_SIZE = 20
 
 export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
@@ -60,8 +59,6 @@ export const AllAuthors = (props: Props) => {
     )
   })
 
-  const { isOwnerSubscribed } = useFollowing()
-
   const sortedKeys = createMemo<string[]>(() => {
     const keys = Object.keys(byLetter())
     keys.sort()
@@ -72,40 +69,6 @@ export const AllAuthors = (props: Props) => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Authors')
   const description = t('List of authors of the open editorial community')
-
-  // BRAND NEW
-  const fetchAuthors = async (page: number): Promise<Author[]> => {
-    console.log('!!! fetchAuthors:')
-    console.log('!!! page:', page)
-    return apiClient.loadAuthorsBy({ by: { order: 'shouts' }, limit: PAGE_SIZE, offset: PAGE_SIZE * page })
-  }
-
-  const [authors, setAuthors] = createSignal<Author[]>([])
-  const [setEl, setSetEl] = createSignal<HTMLElement | undefined>()
-  const [end, setEnd] = createSignal<boolean>(false)
-
-  onMount(() => {
-    const [authors, setEl, { end, setEnd }] = createInfiniteScroll(fetchAuthors)
-    setAuthors(authors)
-    // @ts-ignore
-    setSetEl(setEl)
-    setEnd(end)
-  })
-
-  // DEBUG CODE
-  const hanleTest = async () => {
-    console.log('!!! aa:')
-    const authors = await apiClient.loadAuthorsBy({ by: { order: 'shouts' }, limit: PAGE_SIZE, offset: 40 })
-
-    const authorsObject = authors.map((author) => ({
-      name: author.name,
-      id: author.id,
-      followers: author.stat.followers,
-      shouts: author.stat.shouts,
-    }))
-
-    console.log('!!! shouts 40:', authorsObject)
-  }
 
   return (
     <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
@@ -120,7 +83,6 @@ export const AllAuthors = (props: Props) => {
       <Meta name="twitter:title" content={ogTitle} />
       <Meta name="twitter:description" content={description} />
       <Show when={props.isLoaded} fallback={<Loading />}>
-        <Button onClick={hanleTest} value={'AAA'} />
         <div class="offset-md-5">
           <div class="row">
             <div class="col-lg-20 col-xl-18">
@@ -211,32 +173,11 @@ export const AllAuthors = (props: Props) => {
             </For>
           </Show>
 
-          <Show when={searchParams().by === 'shouts'}>
-            <div>
-              <For each={authors()}>
-                {(author: Author) => (
-                  <div class="row">
-                    <div class="col-lg-20 col-xl-18">
-                      <AuthorBadge
-                        author={author as Author}
-                        isFollowed={{
-                          loaded: Boolean(authors().length),
-                          value: isOwnerSubscribed(author.id),
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </For>
-              <Show when={!end()}>
-                <div ref={setEl as (e: HTMLDivElement) => void} class={styles.loading}>
-                  <div class={styles.icon}>
-                    <Loading size="tiny" />
-                  </div>
-                  <div>{t('Loading')}</div>
-                </div>
-              </Show>
-            </div>
+          <Show when={searchParams().by === 'shouts' && props.isLoaded}>
+            <AuthorsList query={'shouts'} />
+          </Show>
+          <Show when={searchParams().by === 'followers' && props.isLoaded}>
+            <AuthorsList query={'followers'} />
           </Show>
         </div>
       </Show>

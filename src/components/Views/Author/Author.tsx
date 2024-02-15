@@ -128,7 +128,6 @@ export const AuthorView = (props: Props) => {
     const data = await apiClient.getReactionsBy({
       by: { comment: false, created_by: commenter.id }
     })
-    console.debug('[components.Author] fetched comments', data)
     setCommented(data)
   }
 

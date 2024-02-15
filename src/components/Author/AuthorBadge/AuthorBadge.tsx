@@ -16,13 +16,10 @@ import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 
+import { FollowedInfo } from '../../../pages/types'
 import stylesButton from '../../_shared/Button/Button.module.scss'
 import styles from './AuthorBadge.module.scss'
 
-type FollowedInfo = {
-  value?: boolean
-  loaded?: boolean
-}
 type Props = {
   author: Author
   minimizeSubscribeButton?: boolean

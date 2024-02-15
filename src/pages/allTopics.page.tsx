@@ -2,7 +2,7 @@ import type { PageProps } from './types'
 
 import { createSignal, onMount } from 'solid-js'
 
-import { AllTopicsView } from '../components/Views/AllTopics'
+import { AllTopics } from '../components/Views/AllTopics'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 import { loadAllTopics } from '../stores/zine/topics'
@@ -23,7 +23,7 @@ export const AllTopicsPage = (props: PageProps) => {
 
   return (
     <PageLayout title={t('Themes and plots')}>
-      <AllTopicsView isLoaded={isLoaded()} topics={props.allTopics} />
+      <AllTopics isLoaded={isLoaded()} topics={props.allTopics} />
     </PageLayout>
   )
 }

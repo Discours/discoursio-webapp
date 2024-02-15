@@ -29,7 +29,7 @@
     }
   },
   "linter": {
-    "ignore": ["*.scss", "*.md", ".DS_Store", "*.svg"],
+    "ignore": ["*.scss", "*.md", ".DS_Store", "*.svg", "*.d.ts"],
     "enabled": true,
     "rules": {
       "all": true,

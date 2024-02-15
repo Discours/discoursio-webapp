@@ -75,7 +75,7 @@ const providers: Record<string, HocuspocusProvider> = {}
 
 export const Editor = (props: Props) => {
   const { t } = useLocalize()
-  const { author } = useSession()
+  const { author, session } = useSession()
 
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
@@ -92,7 +92,8 @@ export const Editor = (props: Props) => {
     providers[docName] = new HocuspocusProvider({
       url: 'wss://hocuspocus.discours.io',
       name: docName,
-      document: yDocs[docName]
+      document: yDocs[docName],
+      token: session()?.access_token || '',
     })
   }
 

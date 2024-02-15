@@ -18,7 +18,7 @@ type FormFields = {
 
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
-export const ForgotPasswordForm = () => {
+export const SendResetLinkForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
@@ -60,7 +60,7 @@ export const ForgotPasswordForm = () => {
         email: email(),
         redirect_uri: window.location.origin,
       })
-      console.debug('[ForgotPasswordForm] authorizer response:', data)
+      console.debug('[SendResetLinkForm] authorizer response:', data)
       if (errors?.some((error) => error.message.includes('bad user credentials'))) {
         setIsUserNotFound(true)
       }
@@ -79,10 +79,8 @@ export const ForgotPasswordForm = () => {
       ref={(el) => (authFormRef.current = el)}
     >
       <div>
-        <h4>{t('Restore password')}</h4>
-        <div class={styles.authSubtitle}>
-          {t(message()) || t('Everything is ok, please give us your email address')}
-        </div>
+        <h4>{t('Set the new password')}</h4>
+        <div class={styles.authSubtitle}>{t(message()) || t('Please give us your email address')}</div>
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email,
@@ -126,7 +124,7 @@ export const ForgotPasswordForm = () => {
             disabled={isSubmitting() || Boolean(message())}
             type="submit"
           >
-            {isSubmitting() ? '...' : t('Restore password')}
+            {isSubmitting() ? '...' : t('Send')}
           </button>
         </div>
         <div class={styles.authControl}>

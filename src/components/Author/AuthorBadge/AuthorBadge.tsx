@@ -71,7 +71,7 @@ export const AuthorBadge = (props: Props) => {
     on(
       () => props.isFollowed,
       () => {
-        setIsFollowed(props.isFollowed.value)
+        setIsFollowed(props.isFollowed?.value)
       },
     ),
   )

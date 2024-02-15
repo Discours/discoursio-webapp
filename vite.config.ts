@@ -51,7 +51,8 @@ export default defineConfig(({ mode, command }) => {
     envPrefix: 'PUBLIC_',
     plugins,
     server: {
-      https: true,
+      cors: isDev,
+      https: {},
       port: 3000,
     },
     css: {
@@ -78,6 +79,8 @@ export default defineConfig(({ mode, command }) => {
         'wonka',
         'solid-popper',
         'seroval',
+        'seroval-plugins',
+        'seroval-plugins/web',
         '@solid-primitives/share',
         'i18next',
         'js-cookie',

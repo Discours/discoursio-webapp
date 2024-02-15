@@ -11,6 +11,7 @@ import {
   ForgotPasswordResponse,
   GenericResponse,
   LoginInput,
+  ResendVerifyEmailInput,
   SignupInput,
   VerifyEmailInput,
 } from '@authorizerdev/authorizer-js'
@@ -68,6 +69,8 @@ export type SessionContextType = {
   confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in auth.discours.io
   setIsSessionLoaded: (loaded: boolean) => void
   authorizer: () => Authorizer
+  isRegistered: (email: string) => Promise<string>
+  resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
 const noop = () => {}
@@ -309,6 +312,31 @@ export const SessionProvider = (props: {
     return { data: resp?.data, errors: resp.errors }
   }
 
+  const resendVerifyEmail = async (params: ResendVerifyEmailInput) => {
+    const resp = await authorizer().resendVerifyEmail(params)
+    console.debug('[context.session] resend verify email response:', resp)
+    if (resp.errors) {
+      resp.errors.forEach((error) => {
+        showSnackbar({ type: 'error', body: error.message })
+      })
+    }
+    return resp?.data
+  }
+
+  const isRegistered = async (email: string): Promise<string> => {
+    console.debug('[context.session] calling is_registered for ', email)
+    try {
+      const response = await authorizer().graphqlQuery({
+        query: `query { is_registered(email: "${email}") { message }}`,
+      })
+      // console.log(response)
+      return response?.data?.is_registered?.message
+    } catch (error) {
+      console.warn(error)
+    }
+    return ''
+  }
+
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
     try {
@@ -348,6 +376,7 @@ export const SessionProvider = (props: {
     forgotPassword,
     changePassword,
     oauth,
+    isRegistered,
   }
   const value: SessionContextType = {
     authError,
@@ -357,6 +386,7 @@ export const SessionProvider = (props: {
     author,
     ...actions,
     isAuthenticated,
+    resendVerifyEmail,
   }
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

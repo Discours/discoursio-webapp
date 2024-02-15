@@ -10,7 +10,7 @@ import { useRouter } from '../stores/router'
 
 import { LayoutType } from './types'
 
-const Edit = lazy(() => import('../components/Views/Edit'))
+const EditView = lazy(() => import('../components/Views/EditView/EditView'))
 
 export const EditPage = () => {
   const { page } = useRouter()
@@ -54,7 +54,7 @@ export const EditPage = () => {
       <AuthGuard>
         <Show when={shout()}>
           <Suspense fallback={<Loading />}>
-            <Edit shout={shout()} />
+            <EditView shout={shout()} />
           </Suspense>
         </Show>
       </AuthGuard>

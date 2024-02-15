@@ -63,11 +63,6 @@ export const HeaderAuth = (props: Props) => {
   const handleSaveButtonClick = () => {
     saveShout(form)
   }
-  const { showSnackbar } = useSnackbar()
-  const handlePublishButtonClick = () => {
-    if (form.mainTopic) publishShout(form)
-    else showSnackbar({ body: t('Please, set the main topic first') })
-  }
 
   const [width, setWidth] = createSignal(0)
 
@@ -160,7 +155,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Publish'),
                   icon: 'publish',
-                  action: handlePublishButtonClick,
+                  action: () => publishShout(form),
                 })}
               </div>
 

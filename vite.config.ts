@@ -52,6 +52,7 @@ export default defineConfig(({ mode, command }) => {
     envPrefix: 'PUBLIC_',
     plugins,
     server: {
+      cors: isDev,
       https: {},
       port: 3000,
     },

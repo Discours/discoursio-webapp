@@ -17,9 +17,9 @@ import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { ProfilePopup } from './ProfilePopup'
 
 import { useSnackbar } from '../../context/snackbar'
+import { Popup } from '../_shared/Popup'
+import { VotersList } from '../_shared/VotersList'
 import styles from './Header/Header.module.scss'
-import {VotersList} from "../_shared/VotersList";
-import {Popup} from "../_shared/Popup";
 
 type Props = {
   setIsProfilePopupVisible: (value: boolean) => void
@@ -151,33 +151,47 @@ export const HeaderAuth = (props: Props) => {
             </Show>
 
             <Show when={isSaveButtonVisible()}>
-              <Popup trigger={<span class={styles.editorModePopupOpener}><Icon name="swiper-r-arr" class={styles.editorModePopupOpenerIcon}/>
-              {editorMode()}</span>}
-                     variant="bordered"
-                     popupCssClass={styles.editorPopup}
+              <Popup
+                trigger={
+                  <span class={styles.editorModePopupOpener}>
+                    <Icon name="swiper-r-arr" class={styles.editorModePopupOpenerIcon} />
+                    {editorMode()}
+                  </span>
+                }
+                variant="bordered"
+                popupCssClass={styles.editorPopup}
               >
                 <ul class={clsx('nodash', styles.editorModesList)}>
-                  <li class={clsx({[styles.editorModesSelected]: editorMode() === t('Preview')})}
-                      onClick={() => setEditorMode(t('Preview'))}>
-                    <Icon name="eye" class={styles.editorModeIcon}/>
+                  <li
+                    class={clsx({ [styles.editorModesSelected]: editorMode() === t('Preview') })}
+                    onClick={() => setEditorMode(t('Preview'))}
+                  >
+                    <Icon name="eye" class={styles.editorModeIcon} />
                     <div class={styles.editorModeTitle}>{t('Preview')}</div>
-                    <div class={styles.editorModeDescription}>Посмотрите, как материал будет выглядеть при публикации</div>
+                    <div class={styles.editorModeDescription}>
+                      Посмотрите, как материал будет выглядеть при публикации
+                    </div>
                   </li>
-                  <li class={clsx({[styles.editorModesSelected]: editorMode() === t('Editing')})}
-                      onClick={() => setEditorMode(t('Editing'))}>
-                    <Icon name="pencil-outline" class={styles.editorModeIcon}/>
+                  <li
+                    class={clsx({ [styles.editorModesSelected]: editorMode() === t('Editing') })}
+                    onClick={() => setEditorMode(t('Editing'))}
+                  >
+                    <Icon name="pencil-outline" class={styles.editorModeIcon} />
                     <div class={styles.editorModeTitle}>{t('Editing')}</div>
                     <div class={styles.editorModeDescription}>Изменяйте текст напрямую в редакторе</div>
                   </li>
-                  <li class={clsx({[styles.editorModesSelected]: editorMode() === t('Commenting')})}
-                      onClick={() => setEditorMode(t('Commenting'))}>
-                    <Icon name="comment" class={styles.editorModeIcon}/>
+                  <li
+                    class={clsx({ [styles.editorModesSelected]: editorMode() === t('Commenting') })}
+                    onClick={() => setEditorMode(t('Commenting'))}
+                  >
+                    <Icon name="comment" class={styles.editorModeIcon} />
                     <div class={styles.editorModeTitle}>{t('Commenting')}</div>
-                    <div class={styles.editorModeDescription}>Предлагайте правки и комментарии, чтобы сделать материал лучше</div>
+                    <div class={styles.editorModeDescription}>
+                      Предлагайте правки и комментарии, чтобы сделать материал лучше
+                    </div>
                   </li>
                 </ul>
               </Popup>
-
 
               <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 {renderIconedButton({

@@ -14,7 +14,7 @@ import { Userpic } from '../../Author/Userpic'
 import { Icon } from '../../_shared/Icon'
 import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
 import { CommentDate } from '../CommentDate'
-import { CommentRatingControl } from '../CommentRatingControl'
+import { RatingControl as CommentRatingControl } from '../RatingControl'
 
 import styles from './Comment.module.scss'
 

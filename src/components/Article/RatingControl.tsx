@@ -1,24 +1,27 @@
 import { clsx } from 'clsx'
-import { Show, Suspense, createEffect, createMemo, createSignal, mergeProps, on } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, mergeProps, on } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
-import { Author, Reaction, ReactionKind, Shout } from '../../graphql/schema/core.gen'
+import { Reaction, ReactionKind, Shout } from '../../graphql/schema/core.gen'
 import { loadShout } from '../../stores/zine/articles'
 import { byCreated } from '../../utils/sortby'
 import { Icon } from '../_shared/Icon'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
-import styles from './ShoutRatingControl.module.scss'
 
-interface ShoutRatingControlProps {
-  shout: Shout
+import stylesComment from './CommentRatingControl.module.scss'
+import stylesShout from './ShoutRatingControl.module.scss'
+
+interface RatingControlProps {
+  shout?: Shout
+  comment?: Reaction
   ratings?: Reaction[]
   class?: string
 }
 
-export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
+export const RatingControl = (props: RatingControlProps) => {
   const { t } = useLocalize()
   const { author, requireAuthentication } = useSession()
   const { createReaction, deleteReaction, loadReactionsBy } = useReactions()
@@ -85,27 +88,66 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   }
   const isNotDisliked = createMemo(() => !myRate() || myRate()?.kind === ReactionKind.Dislike)
   const isNotLiked = createMemo(() => !myRate() || myRate()?.kind === ReactionKind.Like)
+
+  const getTrigger = () => {
+    return props.comment ? (
+      <div
+        class={clsx(stylesComment.commentRatingValue, {
+          [stylesComment.commentRatingPositive]: props.comment.stat.rating > 0,
+          [stylesComment.commentRatingNegative]: props.comment.stat.rating < 0,
+        })}
+      >
+        {props.comment.stat.rating || 0}
+      </div>
+    ) : (
+      <span class={stylesShout.ratingValue}>{total()}</span>
+    )
+  }
   return (
-    <div class={clsx(styles.rating, props.class)}>
-      <button onClick={() => handleRatingChange(ReactionKind.Dislike)} disabled={isLoading()}>
-        <Icon
-          name={isNotDisliked() ? 'rating-control-less' : 'rating-control-checked'}
-          class={isLoading() ? 'rotating' : ''}
-        />
+    <div class={clsx(props.comment ? stylesComment.commentRating : stylesShout.rating, props.class)}>
+      <button
+        onClick={() => handleRatingChange(ReactionKind.Dislike)}
+        disabled={isLoading()}
+        class={
+          props.comment
+            ? clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlUp, {
+                [stylesComment.voted]: myRate()?.kind === 'LIKE',
+              })
+            : ''
+        }
+      >
+        <Show when={!props.comment}>
+          <Icon
+            name={isNotDisliked() ? 'rating-control-less' : 'rating-control-checked'}
+            class={isLoading() ? 'rotating' : ''}
+          />
+        </Show>
       </button>
 
-      <Popup trigger={<span class={styles.ratingValue}>{total()}</span>} variant="tiny">
+      <Popup trigger={getTrigger()} variant="tiny">
         <VotersList
           reactions={ratings()}
-          fallbackMessage={isLoading() ? t('Loading') : t('This post has not been rated yet')}
+          fallbackMessage={isLoading() ? t('Loading') : t('No one rated yet')}
         />
       </Popup>
 
-      <button onClick={() => handleRatingChange(ReactionKind.Like)} disabled={isLoading()}>
-        <Icon
-          name={isNotLiked() ? 'rating-control-more' : 'rating-control-checked'}
-          class={isLoading() ? 'rotating' : ''}
-        />
+      <button
+        onClick={() => handleRatingChange(ReactionKind.Like)}
+        disabled={isLoading()}
+        class={
+          props.comment
+            ? clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlDown, {
+                [stylesComment.voted]: myRate()?.kind === 'DISLIKE',
+              })
+            : ''
+        }
+      >
+        <Show when={!props.comment}>
+          <Icon
+            name={isNotLiked() ? 'rating-control-more' : 'rating-control-checked'}
+            class={isLoading() ? 'rotating' : ''}
+          />
+        </Show>
       </button>
     </div>
   )

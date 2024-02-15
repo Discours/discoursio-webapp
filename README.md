@@ -5,18 +5,19 @@ npm start
 ```
 
 ## Useful commands
-run checks
+
+run checks with your favorite package manager: npm, yarn, pnpm or bun
+
 ```
 npm run check
 ```
-type checking with watch
-```
-npm run typecheck:watch
-```
+
 fix styles, imports, formatting and autofixable linting errors:
+
 ```
 npm run fix
 ```
+
 ## Code generation
 
 generate new SolidJS component:

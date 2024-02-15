@@ -28,19 +28,30 @@ export const RatingControl = (props: RatingControlProps) => {
   const [isLoading, setIsLoading] = createSignal(false)
   const [ratings, setRatings] = createSignal<Reaction[]>([])
   const [myRate, setMyRate] = createSignal<Reaction | undefined>()
-  const [total, setTotal] = createSignal(props.shout?.stat?.rating || 0)
+  const [total, setTotal] = createSignal(0)
+
+  createEffect(
+    on(
+      [() => props.comment, () => props.shout],
+      ([comment, shout]) => {
+        setTotal(comment?.stat?.rating || shout?.stat?.rating || 0)
+      },
+      { defer: true },
+    ),
+  )
 
   createEffect(
     on(
       [() => props.ratings, author],
       ([reactions, me]) => {
-        console.debug('[ShoutRatingControl] on reactions update')
-        const shoutRatings = Object.values(reactions).filter((r) => !r.reply_to)
-        setRatings((_) => shoutRatings.sort(byCreated))
-        setMyRate((_) => shoutRatings.find((r) => r.created_by.id === me?.id))
+        console.debug('[RatingControl] on reactions update')
+        const ratingVotes = Object.values(reactions).filter((r) => !r.reply_to)
+        setRatings((_) => ratingVotes.sort(byCreated))
+        setMyRate((_) => ratingVotes.find((r) => r.created_by.id === me?.id))
+
         // Extract likes and dislikes from shoutRatings using map
-        const likes = shoutRatings.filter((rating) => rating.kind === 'LIKE').length
-        const dislikes = shoutRatings.filter((rating) => rating.kind === 'DISLIKE').length
+        const likes = ratingVotes.filter((rating) => rating.kind === 'LIKE').length
+        const dislikes = ratingVotes.filter((rating) => rating.kind === 'DISLIKE').length
 
         // Calculate the total
         const total = likes - dislikes
@@ -55,15 +66,15 @@ export const RatingControl = (props: RatingControlProps) => {
       setIsLoading(true)
 
       if (!myRate()) {
-        console.debug('[ShoutRatingControl.handleRatingChange] shout wasnt voted by you before', myRate())
-        const rateInput = { kind: voteKind, shout: props.shout.id }
+        console.debug('[RatingControl.handleRatingChange] wasnt voted by you before', myRate())
+        const rateInput = { kind: voteKind, shout: props.shout?.id }
         const fakeId = Date.now() + Math.floor(Math.random() * 1000)
-        const savedRatings = [...props.ratings]
+        // const savedRatings = [...props.ratings]
         mergeProps(props.ratings, [...props.ratings, { ...rateInput, id: fakeId, created_by: author() }])
         await createReaction(rateInput)
-        console.debug(`[ShoutRatingControl.handleRatingChange] your ${voteKind} vote was created`)
+        console.debug(`[RatingControl.handleRatingChange] your ${voteKind} vote was created`)
       } else {
-        console.debug('[ShoutRatingControl.handleRatingChange] shout already has your vote', myRate())
+        console.debug('[RatingControl.handleRatingChange] already has your vote', myRate())
         const oppositeKind = voteKind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
         if (myRate()?.kind === oppositeKind) {
           mergeProps(
@@ -72,16 +83,16 @@ export const RatingControl = (props: RatingControlProps) => {
           )
           await deleteReaction(myRate().id)
           setMyRate(undefined)
-          console.debug(`[ShoutRatingControl.handleRatingChange] your ${oppositeKind} vote was removed`)
+          console.debug(`[RatingControl.handleRatingChange] your ${oppositeKind} vote was removed`)
         }
         if (myRate()?.kind === voteKind) {
-          console.debug(`[ShoutRatingControl.handleRatingChange] cant vote ${voteKind} twice`)
+          console.debug(`[RatingControl.handleRatingChange] cant vote ${voteKind} twice`)
         }
       }
 
-      const ratings = await loadReactionsBy({ by: { shout: props.shout.slug, rating: true } })
+      const ratings = await loadReactionsBy({ by: { shout: props.shout?.slug, rating: true } })
       mergeProps(props.ratings, ratings)
-      const s = await loadShout(props.shout.slug)
+      const s = await loadShout(props.shout?.slug)
       mergeProps(props.shout, s)
       setIsLoading(false)
     }, 'vote')
@@ -93,11 +104,11 @@ export const RatingControl = (props: RatingControlProps) => {
     return props.comment ? (
       <div
         class={clsx(stylesComment.commentRatingValue, {
-          [stylesComment.commentRatingPositive]: props.comment.stat.rating > 0,
-          [stylesComment.commentRatingNegative]: props.comment.stat.rating < 0,
+          [stylesComment.commentRatingPositive]: total() > 0,
+          [stylesComment.commentRatingNegative]: total() < 0,
         })}
       >
-        {props.comment.stat.rating || 0}
+        {total()}
       </div>
     ) : (
       <span class={stylesShout.ratingValue}>{total()}</span>

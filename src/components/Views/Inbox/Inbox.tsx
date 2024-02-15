@@ -20,11 +20,10 @@ import { Icon } from '../../_shared/Icon'
 import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
 
-import styles from './Inbox.module.scss'
 import { lazy } from 'solid-js'
+import styles from './Inbox.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
-
 
 type InboxSearchParams = {
   by?: string

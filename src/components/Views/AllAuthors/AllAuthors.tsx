@@ -2,23 +2,19 @@ import type { Author } from '../../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 
-import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useRouter } from '../../../stores/router'
 import { setAuthorsSort, useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { scrollHandler } from '../../../utils/scroll'
 import { authorLetterReduce, translateAuthor } from '../../../utils/translate'
-import { AuthorBadge } from '../../Author/AuthorBadge'
+
+import { AuthorsList } from '../../AuthorsList'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
 
-import { createInfiniteScroll } from '@solid-primitives/pagination'
-import { apiClient } from '../../../graphql/client/core'
-import { AuthorsList } from '../../AuthorsList'
-import { Button } from '../../_shared/Button'
 import styles from './AllAuthors.module.scss'
 
 type AllAuthorsPageSearchParams = {
@@ -172,12 +168,8 @@ export const AllAuthors = (props: Props) => {
               )}
             </For>
           </Show>
-
-          <Show when={searchParams().by === 'shouts' && props.isLoaded}>
-            <AuthorsList query={'shouts'} />
-          </Show>
-          <Show when={searchParams().by === 'followers' && props.isLoaded}>
-            <AuthorsList query={'followers'} />
+          <Show when={searchParams().by !== 'name' && props.isLoaded}>
+            <AuthorsList query={searchParams().by === 'shouts' ? 'shouts' : 'followers'} />
           </Show>
         </div>
       </Show>

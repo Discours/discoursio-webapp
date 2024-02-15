@@ -21,10 +21,6 @@ export const AllAuthorsPage = (props: PageProps) => {
     setIsLoaded(true)
   })
 
-  createEffect(() => {
-    console.log('!!! isLoaded():', isLoaded())
-  })
-
   return (
     <PageLayout title={t('Authors')}>
       <AllAuthors isLoaded={isLoaded()} authors={props.allAuthors} />

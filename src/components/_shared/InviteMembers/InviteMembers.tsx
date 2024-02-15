@@ -159,7 +159,9 @@ export const InviteMembers = (props: Props) => {
               )}
             </For>
             <Show when={!end()}>
-              <InlineLoader ref={setEl as (e: HTMLDivElement) => void} />
+              <div ref={setEl as (e: HTMLDivElement) => void}>
+                <InlineLoader />
+              </div>
             </Show>
           </div>
         </Show>

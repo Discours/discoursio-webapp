@@ -309,6 +309,7 @@
   "Publication settings": "Настройки публикации",
   "Publications": "Публикации",
   "PublicationsWithCount": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}",
+  "FollowersWithCount": "{count, plural, =0 {нет подписчиков} one {{count} подписчик} few {{count} подписчика} other {{count} подписчиков}}",
   "Publish": "Опубликовать",
   "Publish Album": "Опубликовать альбом",
   "Publish Settings": "Настройки публикации",

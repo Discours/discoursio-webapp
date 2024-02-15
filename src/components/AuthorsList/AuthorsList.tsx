@@ -1,13 +1,11 @@
 import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
-import { For, Show } from 'solid-js'
+import { For, Show, createEffect } from 'solid-js'
 import { useFollowing } from '../../context/following'
-import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
 import type { Author } from '../../graphql/schema/core.gen'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
-import { Loading } from '../_shared/Loading'
 import styles from './AuthorsList.module.scss'
 
 type Props = {
@@ -17,11 +15,9 @@ type Props = {
 
 const PAGE_SIZE = 20
 export const AuthorsList = (props: Props) => {
-  const { t } = useLocalize()
   const { isOwnerSubscribed } = useFollowing()
-  const fetchAuthors = async (page: number): Promise<Author[]> => {
+  const fetchAuthors = async (page: number) => {
     console.log('!!! fetchAuthors:')
-    console.log('!!! page:', page)
     return apiClient.loadAuthorsBy({
       by: { order: props.query },
       limit: PAGE_SIZE,
@@ -29,18 +25,34 @@ export const AuthorsList = (props: Props) => {
     })
   }
 
-  const [authors, setEl, { end, setEnd }] = createInfiniteScroll(fetchAuthors)
+  const [pages, setEl, { setPage, setPages, end, setEnd }] = createInfiniteScroll(fetchAuthors)
+
+  createEffect(() => {
+    setPage(0)
+    setPages([])
+    setEnd(false)
+    fetchAuthors(0).then((newPages) => {
+      setPages(newPages)
+      if (newPages.length < PAGE_SIZE) {
+        setEnd(true)
+      }
+    })
+  })
+
+  createEffect(() => {
+    console.log('!!! pages():', pages())
+  })
 
   return (
     <div class={clsx(styles.AuthorsList, props.class)}>
-      <For each={authors()}>
+      <For each={pages()}>
         {(author: Author) => (
           <div class="row">
             <div class="col-lg-20 col-xl-18">
               <AuthorBadge
-                author={author as Author}
+                author={author}
                 isFollowed={{
-                  loaded: Boolean(authors().length),
+                  loaded: Boolean(pages().length),
                   value: isOwnerSubscribed(author.id),
                 }}
               />
@@ -49,7 +61,9 @@ export const AuthorsList = (props: Props) => {
         )}
       </For>
       <Show when={!end()}>
-        <InlineLoader ref={setEl as (e: HTMLDivElement) => void} />
+        <div ref={setEl as (e: HTMLDivElement) => void}>
+          <InlineLoader />
+        </div>
       </Show>
     </div>
   )

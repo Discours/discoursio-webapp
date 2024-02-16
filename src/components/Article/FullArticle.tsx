@@ -79,12 +79,9 @@ export const FullArticle = (props: Props) => {
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
 
-  const canEdit = createMemo(
-    () =>
-      Boolean(author()?.id) &&
-      (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
-        props.article?.created_by?.id === author().id ||
-        session()?.user?.roles.includes('editor')),
+  const canEdit = createMemo ( () =>
+      Boolean(author()?.id) && ((props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id)) ||
+        (props.article?.created_by.id === author().id) || session()?.user?.roles.includes('editor'))
   )
 
   const mainTopic = createMemo(() => {

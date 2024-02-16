@@ -43,11 +43,10 @@ export const Comment = (props: Props) => {
   const { showConfirm } = useConfirm()
   const { showSnackbar } = useSnackbar()
 
-  const canEdit = createMemo(
-    () =>
-      Boolean(author()?.id) &&
-      (props.comment?.created_by?.id === author().id || session()?.user?.roles.includes('editor')),
+  const canEdit = createMemo ( () =>
+      Boolean(author()?.id) && ((props.comment?.created_by?.id === author().id) || session()?.user?.roles.includes('editor'))
   )
+
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
 

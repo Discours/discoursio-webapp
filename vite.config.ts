@@ -17,6 +17,7 @@ const cssModuleHMR = () => {
           module.isSelfAccepting = true
         }
       })
+    }
   }
 }
 

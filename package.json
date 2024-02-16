@@ -128,7 +128,7 @@
     "typograf": "7.3.0",
     "uniqolor": "1.1.0",
     "vike": "0.4.148",
-    "vite": "^4.0.0",
+    "vite": "5.1.2",
     "vite-plugin-mkcert": "^1.17.3",
     "vite-plugin-sass-dts": "^1.3.17",
     "vite-plugin-solid": "2.10.1",

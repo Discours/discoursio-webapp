@@ -184,9 +184,7 @@ export const apiClient = {
     return response.data.delete_reaction.reaction
   },
   updateReaction: async (reaction: ReactionInput) => {
-    const response = await apiClient.private
-      .mutation(reactionUpdate, { reaction })
-      .toPromise()
+    const response = await apiClient.private.mutation(reactionUpdate, { reaction }).toPromise()
     console.debug('[graphql.client.core] updateReaction:', response)
     return response.data.update_reaction.reaction
   },

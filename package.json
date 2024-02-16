@@ -14,7 +14,7 @@
     "fix": "npm run check:code:fix && stylelint **/*.{scss,css} --fix",
     "format": "npx @biomejs/biome format src/. --write",
     "hygen": "HYGEN_TMPLS=gen hygen",
-    "postinstall": "npm run codegen && npx patch-package solid-tiptap",
+    "postinstall": "npm run codegen && npx patch-package",
     "check:code": "npx @biomejs/biome check src --log-kind=compact --verbose",
     "check:code:fix": "npx @biomejs/biome check src --log-kind=compact --verbose --apply-unsafe",
     "lint": "npm run lint:code && stylelint **/*.{scss,css}",

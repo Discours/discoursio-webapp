@@ -32,9 +32,19 @@ export const RatingControl = (props: RatingControlProps) => {
 
   createEffect(
     on(
-      [() => props.comment, () => props.shout],
-      ([comment, shout]) => {
-        setTotal(comment?.stat?.rating || shout?.stat?.rating || 0)
+      () => props.comment,
+      (comment) => {
+        setTotal(comment?.stat?.rating || 0)
+      },
+      { defer: true },
+    ),
+  )
+
+  createEffect(
+    on(
+      () => props.shout,
+      (shout) => {
+        setTotal(shout?.stat?.rating || 0)
       },
       { defer: true },
     ),
@@ -97,10 +107,11 @@ export const RatingControl = (props: RatingControlProps) => {
       setIsLoading(false)
     }, 'vote')
   }
+
   const isNotDisliked = createMemo(() => !myRate() || myRate()?.kind === ReactionKind.Dislike)
   const isNotLiked = createMemo(() => !myRate() || myRate()?.kind === ReactionKind.Like)
 
-  const getTrigger = () => {
+  const getTrigger = createMemo(() => {
     return props.comment ? (
       <div
         class={clsx(stylesComment.commentRatingValue, {
@@ -113,18 +124,18 @@ export const RatingControl = (props: RatingControlProps) => {
     ) : (
       <span class={stylesShout.ratingValue}>{total()}</span>
     )
-  }
+  })
+
   return (
     <div class={clsx(props.comment ? stylesComment.commentRating : stylesShout.rating, props.class)}>
       <button
         onClick={() => handleRatingChange(ReactionKind.Dislike)}
         disabled={isLoading()}
         class={
-          props.comment
-            ? clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlUp, {
-                [stylesComment.voted]: myRate()?.kind === 'LIKE',
-              })
-            : ''
+          props.comment ? clsx(stylesComment.commentRatingControl,
+              stylesComment.commentRatingControlUp,
+              { [stylesComment.voted]: myRate()?.kind === 'LIKE'}
+            ) : ''
         }
       >
         <Show when={!props.comment}>
@@ -146,11 +157,10 @@ export const RatingControl = (props: RatingControlProps) => {
         onClick={() => handleRatingChange(ReactionKind.Like)}
         disabled={isLoading()}
         class={
-          props.comment
-            ? clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlDown, {
-                [stylesComment.voted]: myRate()?.kind === 'DISLIKE',
-              })
-            : ''
+          props.comment ? clsx(stylesComment.commentRatingControl,
+                  stylesComment.commentRatingControlDown,
+                  { [stylesComment.voted]: myRate()?.kind === 'DISLIKE'}
+              ) : ''
         }
       >
         <Show when={!props.comment}>

@@ -95,7 +95,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const countWords = (value) => setWordCounter(value)
   const validate = () => {
     if (!form.title) {
-      setFormErrors('title', t('Required'))
+      setFormErrors('title', t('Please, set the article title'))
       return false
     }
 

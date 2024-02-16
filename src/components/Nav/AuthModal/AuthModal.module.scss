@@ -198,6 +198,14 @@
       border-color: var(--background-color-invert);
     }
   }
+
+  &.info,
+  &.info a {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+
+  }
+
 }
 
 .title {

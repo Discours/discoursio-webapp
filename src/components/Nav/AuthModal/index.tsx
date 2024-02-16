@@ -11,16 +11,16 @@ import { isMobile } from '../../../utils/media-query'
 
 import { ChangePasswordForm } from './ChangePasswordForm'
 import { EmailConfirm } from './EmailConfirm'
-import { ForgotPasswordForm } from './ForgotPasswordForm'
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
+import { SendResetLinkForm } from './SendResetLinkForm'
 
 import styles from './AuthModal.module.scss'
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   login: LoginForm,
   register: RegisterForm,
-  'forgot-password': ForgotPasswordForm,
+  'send-reset-link': SendResetLinkForm,
   'confirm-email': EmailConfirm,
   'change-password': ChangePasswordForm
 }

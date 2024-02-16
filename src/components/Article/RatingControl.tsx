@@ -157,7 +157,7 @@ export const RatingControl = (props: RatingControlProps) => {
           when={author()}
           fallback={
             <>
-              <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
+              <span class="link" onClick={() => changeSearchParams({ mode: 'login', modal: 'auth' })}>
                 {t('Enter')}
               </span>
               {lang() === 'ru' ? ', ' : ' '}

@@ -96,7 +96,8 @@ export const Comment = (props: Props) => {
   const handleUpdate = async (value) => {
     setLoading(true)
     try {
-      await updateReaction(props.comment.id, {
+      await updateReaction({
+        id: props.comment.id,
         kind: ReactionKind.Comment,
         body: value,
         shout: props.comment.shout.id,

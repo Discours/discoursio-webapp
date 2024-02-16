@@ -60,27 +60,29 @@ export const AuthorsList = (props: Props) => {
   })
 
   return (
-    <div class={clsx(styles.AuthorsList, props.class)}>
-      <For each={pages()}>
-        {(author: Author) => (
-          <div class="row">
-            <div class="col-lg-20 col-xl-18">
-              <AuthorBadge
-                author={author}
-                isFollowed={{
-                  loaded: Boolean(pages().length),
-                  value: isOwnerSubscribed(author.id),
-                }}
-              />
+    <Show when={pages()}>
+      <div class={clsx(styles.AuthorsList, props.class)}>
+        <For each={pages()}>
+          {(author: Author) => (
+            <div class="row">
+              <div class="col-lg-20 col-xl-18">
+                <AuthorBadge
+                  author={author}
+                  isFollowed={{
+                    loaded: Boolean(pages().length),
+                    value: isOwnerSubscribed(author.id),
+                  }}
+                />
+              </div>
             </div>
+          )}
+        </For>
+        <Show when={!end()}>
+          <div ref={setEl as (e: HTMLDivElement) => void}>
+            <InlineLoader />
           </div>
-        )}
-      </For>
-      <Show when={!end()}>
-        <div ref={setEl as (e: HTMLDivElement) => void}>
-          <InlineLoader />
-        </div>
-      </Show>
-    </div>
+        </Show>
+      </div>
+    </Show>
   )
 }

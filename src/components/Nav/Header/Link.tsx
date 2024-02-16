@@ -17,7 +17,7 @@ type Props = {
 
 export const Link = (props: Props) => {
   const { page } = useRouter()
-  const isSelected = page().route === props.routeName
+  const isSelected = page()?.route === props.routeName
   return (
     <li
       onClick={props.onClick}

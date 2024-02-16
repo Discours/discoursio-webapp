@@ -4,6 +4,7 @@ import { For, Show, createEffect } from 'solid-js'
 import { useFollowing } from '../../context/following'
 import { apiClient } from '../../graphql/client/core'
 import type { Author } from '../../graphql/schema/core.gen'
+import { setAuthorsByFollowers, setAuthorsByShouts, useAuthorsStore } from '../../stores/zine/authors'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
 import styles from './AuthorsList.module.scss'
@@ -16,31 +17,46 @@ type Props = {
 const PAGE_SIZE = 20
 export const AuthorsList = (props: Props) => {
   const { isOwnerSubscribed } = useFollowing()
+  const { authorsByShouts, authorsByFollowers } = useAuthorsStore()
+
   const fetchAuthors = async (page: number) => {
-    console.log('!!! fetchAuthors:')
-    return apiClient.loadAuthorsBy({
+    const scrollTop = window.scrollY
+    const getPage = () => {
+      if (props.query === 'shouts') {
+        return authorsByShouts().length / PAGE_SIZE
+      }
+      if (props.query === 'followers') {
+        return authorsByFollowers().length / PAGE_SIZE
+      }
+      return page
+    }
+
+    const result = await apiClient.loadAuthorsBy({
       by: { order: props.query },
       limit: PAGE_SIZE,
-      offset: PAGE_SIZE * page,
+      offset: PAGE_SIZE * getPage(),
     })
+
+    if (props.query === 'shouts') {
+      setAuthorsByShouts((prev) => [...prev, ...result])
+    } else if (props.query === 'followers') {
+      setAuthorsByFollowers((prev) => [...prev, ...result])
+    }
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollTop)
+    })
+
+    return result
   }
 
   const [pages, setEl, { setPage, setPages, end, setEnd }] = createInfiniteScroll(fetchAuthors)
 
   createEffect(() => {
+    const initialData = props.query === 'shouts' ? authorsByShouts() : authorsByFollowers()
     setPage(0)
-    setPages([])
+    setPages(initialData)
     setEnd(false)
-    fetchAuthors(0).then((newPages) => {
-      setPages(newPages)
-      if (newPages.length < PAGE_SIZE) {
-        setEnd(true)
-      }
-    })
-  })
-
-  createEffect(() => {
-    console.log('!!! pages():', pages())
   })
 
   return (

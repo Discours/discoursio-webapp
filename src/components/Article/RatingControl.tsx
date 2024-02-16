@@ -132,10 +132,11 @@ export const RatingControl = (props: RatingControlProps) => {
         onClick={() => handleRatingChange(ReactionKind.Dislike)}
         disabled={isLoading()}
         class={
-          props.comment ? clsx(stylesComment.commentRatingControl,
-              stylesComment.commentRatingControlUp,
-              { [stylesComment.voted]: myRate()?.kind === 'LIKE'}
-            ) : ''
+          props.comment
+            ? clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlUp, {
+                [stylesComment.voted]: myRate()?.kind === 'LIKE',
+              })
+            : ''
         }
       >
         <Show when={!props.comment}>
@@ -157,10 +158,11 @@ export const RatingControl = (props: RatingControlProps) => {
         onClick={() => handleRatingChange(ReactionKind.Like)}
         disabled={isLoading()}
         class={
-          props.comment ? clsx(stylesComment.commentRatingControl,
-                  stylesComment.commentRatingControlDown,
-                  { [stylesComment.voted]: myRate()?.kind === 'DISLIKE'}
-              ) : ''
+          props.comment
+            ? clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlDown, {
+                [stylesComment.voted]: myRate()?.kind === 'DISLIKE',
+              })
+            : ''
         }
       >
         <Show when={!props.comment}>

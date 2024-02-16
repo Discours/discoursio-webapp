@@ -99,7 +99,6 @@
     "ga-gtag": "1.2.0",
     "graphql": "16.8.1",
     "graphql-tag": "2.12.6",
-    "husky": "8.0.3",
     "hygen": "6.2.11",
     "i18next": "22.4.15",
     "i18next-http-backend": "2.2.0",

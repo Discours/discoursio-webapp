@@ -1,7 +1,7 @@
 import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'
 import type { PageContext } from './types'
 
-// import * as Sentry from '@sentry/browser'
+import * as Sentry from '@sentry/browser'
 import i18next from 'i18next'
 import HttpApi from 'i18next-http-backend'
 import ICU from 'i18next-icu'
@@ -9,7 +9,7 @@ import { hydrate } from 'solid-js/web'
 
 import { App } from '../components/App'
 import { initRouter } from '../stores/router'
-// import { SENTRY_DSN } from '../utils/config'
+import { SENTRY_DSN } from '../utils/config'
 import { resolveHydrationPromise } from '../utils/hydrationPromise'
 
 let layoutReady = false
@@ -20,13 +20,17 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
   const { pathname, search } = window.location
   const searchParams = Object.fromEntries(new URLSearchParams(search))
   initRouter(pathname, searchParams)
-  /*
-  if (SENTRY_DSN) {
-    Sentry.init({
-      dsn: SENTRY_DSN,
-    })
-  }
-  */
+
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    integrations: [
+      Sentry.replayIntegration(),
+    ],
+    // Session Replay
+    replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+    replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+  });
+
   // eslint-disable-next-line import/no-named-as-default-member
   await i18next
     .use(HttpApi)

@@ -47,11 +47,6 @@ export const Panel = (props: Props) => {
   const handleSaveClick = () => {
     saveShout(form)
   }
-  const { showSnackbar } = useSnackbar()
-  const handlePublishClick = () => {
-    if (form.mainTopic) publishShout(form)
-    else showSnackbar({ body: t('Please, set the main topic first') })
-  }
 
   const html = useEditorHTML(() => editorRef.current())
 
@@ -74,7 +69,7 @@ export const Panel = (props: Props) => {
       <div class={clsx(styles.actionsHolder, styles.scrolled, { hidden: isShortcutsVisible() })}>
         <section>
           <p>
-            <span class={styles.link} onClick={handlePublishClick}>
+            <span class={styles.link} onClick={() => publishShout(form)}>
               {t('Publish')}
             </span>
           </p>

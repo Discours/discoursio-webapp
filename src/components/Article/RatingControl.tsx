@@ -34,7 +34,9 @@ export const RatingControl = (props: RatingControlProps) => {
     on(
       () => props.comment,
       (comment) => {
-        setTotal(comment?.stat?.rating || 0)
+        if (comment) {
+          setTotal(comment?.stat?.rating)
+        }
       },
       { defer: true },
     ),
@@ -44,7 +46,9 @@ export const RatingControl = (props: RatingControlProps) => {
     on(
       () => props.shout,
       (shout) => {
-        setTotal(shout?.stat?.rating || 0)
+        if (shout) {
+          setTotal(shout?.stat?.rating)
+        }
       },
       { defer: true },
     ),

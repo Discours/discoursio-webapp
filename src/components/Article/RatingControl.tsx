@@ -11,6 +11,7 @@ import { Icon } from '../_shared/Icon'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
 
+import { useRouter } from '../../stores/router'
 import stylesComment from './CommentRatingControl.module.scss'
 import stylesShout from './ShoutRatingControl.module.scss'
 
@@ -22,7 +23,8 @@ interface RatingControlProps {
 }
 
 export const RatingControl = (props: RatingControlProps) => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
+  const { changeSearchParams } = useRouter()
   const { author, requireAuthentication } = useSession()
   const { createReaction, deleteReaction, loadReactionsBy } = useReactions()
   const [isLoading, setIsLoading] = createSignal(false)
@@ -151,7 +153,18 @@ export const RatingControl = (props: RatingControlProps) => {
         </Show>
       </button>
       <Popup trigger={getTrigger()} variant="tiny">
-        <Show when={author()} fallback={t('Sign in to see the voters')}>
+        <Show
+          when={author()}
+          fallback={
+            <>
+              <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
+                {t('Enter')}
+              </span>
+              {lang() === 'ru' ? ', ' : ' '}
+              {t('to see the voters')}
+            </>
+          }
+        >
           <VotersList
             reactions={ratings()}
             fallbackMessage={isLoading() ? t('Loading') : t('No one rated yet')}

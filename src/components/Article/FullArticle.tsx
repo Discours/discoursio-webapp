@@ -78,11 +78,13 @@ export const FullArticle = (props: Props) => {
   const { author, session, isAuthenticated, requireAuthentication } = useSession()
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
+
   const canEdit = createMemo(
     () =>
-      props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug) ||
-      props.article?.created_by.slug === author()?.slug ||
-      session()?.user?.roles.includes('editor'),
+      Boolean(author()?.id) &&
+      (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
+        props.article?.created_by?.id === author().id ||
+        session()?.user?.roles.includes('editor')),
   )
 
   const mainTopic = createMemo(() => {

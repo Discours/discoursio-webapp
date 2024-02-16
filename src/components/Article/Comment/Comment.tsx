@@ -44,7 +44,9 @@ export const Comment = (props: Props) => {
   const { showSnackbar } = useSnackbar()
 
   const canEdit = createMemo(
-    () => props.comment.created_by?.slug === author()?.slug || session()?.user?.roles.includes('editor'),
+    () =>
+      Boolean(author()?.id) &&
+      (props.comment?.created_by?.id === author().id || session()?.user?.roles.includes('editor')),
   )
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())

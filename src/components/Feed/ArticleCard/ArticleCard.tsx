@@ -122,9 +122,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const canEdit = createMemo(
     () =>
-      props.article.authors?.some((a) => a && a?.slug === author()?.slug) ||
-      props.article.created_by?.id === author()?.id ||
-      session()?.user?.roles.includes('editor'),
+      Boolean(author()?.id) &&
+      (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
+        props.article?.created_by?.id === author().id ||
+        session()?.user?.roles.includes('editor')),
   )
 
   const scrollToComments = (event) => {

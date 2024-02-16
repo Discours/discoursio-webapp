@@ -9,7 +9,7 @@ const pagesTitles = {
   '/about/donate': /Дискурс/,
   '/authors': /Дискурс/,
   '/topics': /Дискурс/,
-  '/inbox': /Дискурс/,
+  '/inbox': /Дискурс/
 }
 
 Object.keys(pagesTitles).forEach((res: string) => {

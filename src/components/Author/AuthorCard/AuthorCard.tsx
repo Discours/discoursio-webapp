@@ -311,7 +311,7 @@ export const AuthorCard = (props: Props) => {
                           <TopicBadge
                             isFollowed={{
                               loaded: Boolean(authorSubs()),
-                              value: isOwnerSubscribed(subscription.id),
+                              value: isOwnerSubscribed(subscription.id)
                             }}
                             topic={subscription}
                           />

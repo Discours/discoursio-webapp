@@ -193,7 +193,7 @@ export const AllTopics = (props: Props) => {
                             topic={topic}
                             isFollowed={{
                               loaded: filteredResults().length > 0,
-                              value: isOwnerSubscribed(topic.slug),
+                              value: isOwnerSubscribed(topic.slug)
                             }}
                             showStat={true}
                           />

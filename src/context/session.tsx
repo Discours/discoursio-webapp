@@ -327,7 +327,7 @@ export const SessionProvider = (props: {
     console.debug('[context.session] calling is_registered for ', email)
     try {
       const response = await authorizer().graphqlQuery({
-        query: `query { is_registered(email: "${email}") { message }}`,
+        query: `query { is_registered(email: "${email}") { message }}`
       })
       // console.log(response)
       return response?.data?.is_registered?.message
@@ -376,7 +376,7 @@ export const SessionProvider = (props: {
     forgotPassword,
     changePassword,
     oauth,
-    isRegistered,
+    isRegistered
   }
   const value: SessionContextType = {
     authError,
@@ -386,7 +386,7 @@ export const SessionProvider = (props: {
     author,
     ...actions,
     isAuthenticated,
-    resendVerifyEmail,
+    resendVerifyEmail
   }
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

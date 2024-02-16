@@ -93,7 +93,7 @@ export const Editor = (props: Props) => {
       url: 'wss://hocuspocus.discours.io',
       name: docName,
       document: yDocs[docName],
-      token: session()?.access_token || '',
+      token: session()?.access_token || ''
     })
   }
 

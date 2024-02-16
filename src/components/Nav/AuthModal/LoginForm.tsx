@@ -171,7 +171,7 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               changeSearchParams({
-                mode: 'send-reset-link',
+                mode: 'send-reset-link'
               })
             }
           >

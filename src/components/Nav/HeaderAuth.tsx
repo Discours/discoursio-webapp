@@ -155,7 +155,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Publish'),
                   icon: 'publish',
-                  action: () => publishShout(form),
+                  action: () => publishShout(form)
                 })}
               </div>
 

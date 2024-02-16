@@ -75,10 +75,15 @@ export const FullArticle = (props: Props) => {
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const { t, formatDate, lang } = useLocalize()
-  const { author, isAuthenticated, requireAuthentication } = useSession()
+  const { author, session, isAuthenticated, requireAuthentication } = useSession()
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
-  const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
+  const canEdit = createMemo(
+    () =>
+      props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug) ||
+      props.article?.created_by.slug === author()?.slug ||
+      session()?.user?.roles.includes('editor'),
+  )
 
   const mainTopic = createMemo(() => {
     const mainTopicSlug = props.article.topics.length > 0 ? props.article.main_topic : null

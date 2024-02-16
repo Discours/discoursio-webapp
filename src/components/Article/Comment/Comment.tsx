@@ -38,12 +38,14 @@ export const Comment = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
-  const { author } = useSession()
+  const { author, session } = useSession()
   const { createReaction, deleteReaction, updateReaction } = useReactions()
   const { showConfirm } = useConfirm()
   const { showSnackbar } = useSnackbar()
 
-  const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === author()?.slug)
+  const canEdit = createMemo(
+    () => props.comment.created_by?.slug === author()?.slug || session()?.user?.roles.includes('editor'),
+  )
   const comment = createMemo(() => props.comment)
   const body = createMemo(() => (comment().body || '').trim())
 
@@ -108,9 +110,7 @@ export const Comment = (props: Props) => {
   return (
     <li
       id={`comment_${comment().id}`}
-      class={clsx(styles.comment, props.class, {
-        [styles.isNew]: !isCommentAuthor() && comment()?.created_at > props.lastSeen,
-      })}
+      class={clsx(styles.comment, props.class, { [styles.isNew]: comment()?.created_at > props.lastSeen })}
     >
       <Show when={!!body()}>
         <div class={styles.commentContent}>
@@ -189,7 +189,7 @@ export const Comment = (props: Props) => {
                   {loading() ? t('Loading') : t('Reply')}
                 </button>
               </ShowIfAuthenticated>
-              <Show when={isCommentAuthor()}>
+              <Show when={canEdit()}>
                 <button
                   class={clsx(styles.commentControl, styles.commentControlEdit)}
                   onClick={toggleEditMode}

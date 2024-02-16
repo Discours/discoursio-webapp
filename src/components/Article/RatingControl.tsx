@@ -150,14 +150,14 @@ export const RatingControl = (props: RatingControlProps) => {
           />
         </Show>
       </button>
-
       <Popup trigger={getTrigger()} variant="tiny">
-        <VotersList
-          reactions={ratings()}
-          fallbackMessage={isLoading() ? t('Loading') : t('No one rated yet')}
-        />
+        <Show when={author()} fallback={t('Sign in to see the voters')}>
+          <VotersList
+            reactions={ratings()}
+            fallbackMessage={isLoading() ? t('Loading') : t('No one rated yet')}
+          />
+        </Show>
       </Popup>
-
       <button
         onClick={() => handleRatingChange(ReactionKind.Like)}
         disabled={isLoading()}

@@ -21,7 +21,7 @@ export const Link = (props: Props) => {
   return (
     <li
       onClick={props.onClick}
-      classList={{ 'view-switcher__item--selected': page().route === props.routeName }}
+      classList={{ 'view-switcher__item--selected': page()?.route === props.routeName }}
     >
       <ConditionalWrapper
         condition={!isSelected && Boolean(props.routeName)}

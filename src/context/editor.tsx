@@ -64,7 +64,7 @@ const topic2topicInput = (topic: Topic): TopicInput => {
   return {
     id: topic.id,
     slug: topic.slug,
-    title: topic.title,
+    title: topic.title
   }
 }
 
@@ -89,7 +89,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
-    words: 0,
+    words: 0
   })
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const countWords = (value) => setWordCounter(value)
@@ -132,9 +132,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         lead: formToUpdate.lead,
         description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
-        media: formToUpdate.media,
+        media: formToUpdate.media
       },
-      publish,
+      publish
     })
   }
 
@@ -205,7 +205,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     try {
       const newShout = await apiClient.updateArticle({
         shout_id,
-        publish: true,
+        publish: true
       })
       if (newShout) {
         addArticles([newShout])
@@ -222,7 +222,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const deleteShout = async (shout_id: number) => {
     try {
       await apiClient.deleteShout({
-        shout_id,
+        shout_id
       })
       return true
     } catch {
@@ -247,7 +247,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     countWords,
     setForm,
     setFormErrors,
-    setEditor,
+    setEditor
   }
 
   const value: EditorContextType = {
@@ -256,7 +256,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     formErrors,
     editorRef,
     isEditorPanelVisible,
-    wordCounter,
+    wordCounter
   }
 
   return <EditorContext.Provider value={value}>{props.children}</EditorContext.Provider>

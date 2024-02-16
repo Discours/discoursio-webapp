@@ -20,7 +20,7 @@ export const DropdownSelect = (props: Props) => {
   const [isDropDownVisible, setIsDropDownVisible] = createSignal(false)
 
   const containerRef: { current: HTMLElement } = {
-    current: null,
+    current: null
   }
 
   const handleShowDropdown = () => {
@@ -30,7 +30,7 @@ export const DropdownSelect = (props: Props) => {
   useOutsideClickHandler({
     containerRef,
     predicate: () => isDropDownVisible(),
-    handler: () => setIsDropDownVisible(false),
+    handler: () => setIsDropDownVisible(false)
   })
 
   return (

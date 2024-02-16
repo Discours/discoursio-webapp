@@ -38,7 +38,7 @@ export const AllAuthorsView = (props: Props) => {
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
-    sortBy: searchParams().by || 'name',
+    sortBy: searchParams().by || 'name'
   })
 
   const [searchQuery, setSearchQuery] = createSignal('')
@@ -74,13 +74,13 @@ export const AllAuthorsView = (props: Props) => {
   const showMore = async () =>
     await {
       shouts: loadMoreByShouts,
-      followers: loadMoreByFollowers,
+      followers: loadMoreByFollowers
     }[searchParams().by]()
 
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
       (acc, author) => authorLetterReduce(acc, author, lang()),
-      {} as { [letter: string]: Author[] },
+      {} as { [letter: string]: Author[] }
     )
   })
 
@@ -123,7 +123,7 @@ export const AllAuthorsView = (props: Props) => {
                 <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                   <li
                     classList={{
-                      'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts',
+                      'view-switcher__item--selected': !searchParams().by || searchParams().by === 'shouts'
                     }}
                   >
                     <a href="/authors?by=shouts">{t('By shouts')}</a>
@@ -208,7 +208,7 @@ export const AllAuthorsView = (props: Props) => {
                         author={author as Author}
                         isFollowed={{
                           loaded: Boolean(filteredAuthors()),
-                          value: isOwnerSubscribed(author.id),
+                          value: isOwnerSubscribed(author.id)
                         }}
                       />
                     </div>

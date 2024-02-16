@@ -15,7 +15,7 @@ export const Snackbar = () => {
     <div
       class={clsx(styles.snackbar, {
         [styles.error]: snackbarMessage()?.type === 'error',
-        [styles.success]: snackbarMessage()?.type === 'success',
+        [styles.success]: snackbarMessage()?.type === 'success'
       })}
     >
       <ShowOnlyOnClient>

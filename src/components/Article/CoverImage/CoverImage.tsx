@@ -26,7 +26,7 @@ const coverImages = [
   CoverImage9,
   CoverImage10,
   CoverImage11,
-  CoverImage12,
+  CoverImage12
 ]
 
 let counter = 0

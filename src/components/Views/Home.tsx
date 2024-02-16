@@ -9,7 +9,7 @@ import {
   loadShouts,
   loadTopArticles,
   loadTopMonthArticles,
-  useArticlesStore,
+  useArticlesStore
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../stores/zine/topics'
@@ -44,7 +44,7 @@ const LOAD_MORE_PAGE_SIZE = 16 // Row1 + Row3 + Row2 + Beside (3 + 1) + Row1 + R
 export const HomeView = (props: Props) => {
   const { sortedArticles, topArticles, topCommentedArticles, topMonthArticles, topViewedArticles } =
     useArticlesStore({
-      shouts: props.shouts,
+      shouts: props.shouts
     })
 
   const { topTopics } = useTopicsStore()
@@ -62,7 +62,7 @@ export const HomeView = (props: Props) => {
       const { hasMore } = await loadShouts({
         filters: { featured: true },
         limit: CLIENT_LOAD_ARTICLES_COUNT,
-        offset: sortedArticles().length,
+        offset: sortedArticles().length
       })
 
       setIsLoadMoreButtonVisible(hasMore)
@@ -82,7 +82,7 @@ export const HomeView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { featured: true },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length,
+      offset: sortedArticles().length
     })
     setIsLoadMoreButtonVisible(hasMore)
 
@@ -93,8 +93,8 @@ export const HomeView = (props: Props) => {
     splitToPages(
       sortedArticles(),
       PRERENDERED_ARTICLES_COUNT + CLIENT_LOAD_ARTICLES_COUNT,
-      LOAD_MORE_PAGE_SIZE,
-    ),
+      LOAD_MORE_PAGE_SIZE
+    )
   )
 
   return (

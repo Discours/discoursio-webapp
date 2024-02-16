@@ -118,7 +118,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     markSeenThread,
     markSeenAll,
     markSeen,
-    loadNotificationsGrouped,
+    loadNotificationsGrouped
   }
 
   const value: NotificationsContextType = {
@@ -128,7 +128,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    ...actions,
+    ...actions
   }
 
   const handleNotificationPanelClose = () => {

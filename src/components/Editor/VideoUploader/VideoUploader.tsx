@@ -29,7 +29,7 @@ export const VideoUploader = (props: Props) => {
   const urlInput: {
     current: HTMLInputElement
   } = {
-    current: null,
+    current: null
   }
 
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
@@ -40,13 +40,13 @@ export const VideoUploader = (props: Props) => {
       } else if (droppedFiles()[0].file.type.startsWith('video/')) {
         await showSnackbar({
           body: t(
-            'This functionality is currently not available, we would like to work on this issue. Use the download link.',
-          ),
+            'This functionality is currently not available, we would like to work on this issue. Use the download link.'
+          )
         })
       } else {
         setError(t('Video format not supported'))
       }
-    },
+    }
   })
   const handleDrag = (event) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {
@@ -85,8 +85,8 @@ export const VideoUploader = (props: Props) => {
           onClick={() =>
             showSnackbar({
               body: t(
-                'This functionality is currently not available, we would like to work on this issue. Use the download link.',
-              ),
+                'This functionality is currently not available, we would like to work on this issue. Use the download link.'
+              )
             })
           }
           ref={dropzoneRef}

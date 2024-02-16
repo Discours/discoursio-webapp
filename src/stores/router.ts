@@ -42,13 +42,13 @@ export const ROUTES = {
   profileSecurity: '/profile/security',
   profileSubscriptions: '/profile/subscriptions',
   fourOuFour: '/404',
-  article: '/:slug',
+  article: '/:slug'
 } as const
 
 const searchParamsStore = createSearchParams()
 const routerStore = createRouter(ROUTES, {
   search: false,
-  links: false,
+  links: false
 })
 
 export const router = routerStore
@@ -84,7 +84,7 @@ const scrollToHash = (hash: string) => {
 
   window.scrollTo({
     top: newScrollTop,
-    behavior: 'smooth',
+    behavior: 'smooth'
   })
 }
 
@@ -120,7 +120,7 @@ const handleClientRouteLinkClick = async (event) => {
 
   window.scrollTo({
     top: 0,
-    left: 0,
+    left: 0
   })
 }
 
@@ -160,6 +160,6 @@ export const useRouter = <TSearchParams extends Record<string, string> = Record<
     page,
     searchParams,
     changeSearchParams,
-    clearSearchParams,
+    clearSearchParams
   }
 }

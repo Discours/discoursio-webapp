@@ -12,7 +12,7 @@ export const Figcaption = Node.create({
 
   addOptions() {
     return {
-      HTMLAttributes: {},
+      HTMLAttributes: {}
     }
   },
 
@@ -25,8 +25,8 @@ export const Figcaption = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'figcaption',
-      },
+        tag: 'figcaption'
+      }
     ]
   },
 
@@ -39,7 +39,7 @@ export const Figcaption = Node.create({
         (value) =>
         ({ commands }) => {
           return commands.focus(value)
-        },
+        }
     }
-  },
+  }
 })

@@ -43,7 +43,7 @@ export const PlayerPlaylist = (props: Props) => {
     gtag('event', 'select_item', {
       item_list_id: props.articleSlug,
       item_list_name: getMediaTitle(mi, index),
-      items: props.media.map((it, ix) => getMediaTitle(it, ix)),
+      items: props.media.map((it, ix) => getMediaTitle(it, ix))
     })
   }
   return (

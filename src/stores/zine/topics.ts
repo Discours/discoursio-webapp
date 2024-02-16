@@ -63,13 +63,13 @@ const addTopics = (...args: Topic[][]) => {
       acc[topic.slug] = topic
       return acc
     },
-    {} as Record<string, Topic>,
+    {} as Record<string, Topic>
   )
 
   setTopicEntities((prevTopicEntities) => {
     return {
       ...prevTopicEntities,
-      ...newTopicEntities,
+      ...newTopicEntities
     }
   })
 }

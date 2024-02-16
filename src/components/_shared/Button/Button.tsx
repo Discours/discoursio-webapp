@@ -37,9 +37,9 @@ export const Button = (props: Props) => {
         styles[props.variant ?? 'primary'],
         {
           [styles.loading]: props.loading,
-          [styles.subscribeButton]: props.isSubscribeButton,
+          [styles.subscribeButton]: props.isSubscribeButton
         },
-        props.class,
+        props.class
       )}
     >
       {props.value}

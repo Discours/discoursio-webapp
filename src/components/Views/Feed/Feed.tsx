@@ -101,12 +101,12 @@ export const FeedView = (props: Props) => {
   const periods: PeriodItem[] = [
     { value: 'week', title: t('This week') },
     monthPeriod,
-    { value: 'year', title: t('This year') },
+    { value: 'year', title: t('This year') }
   ]
 
   const visibilities: VisibilityItem[] = [
     { value: 'community', title: t('All') },
-    { value: 'featured', title: t('Published') },
+    { value: 'featured', title: t('Published') }
   ]
 
   const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
@@ -168,14 +168,14 @@ export const FeedView = (props: Props) => {
         resetSortedArticles()
         loadMore()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
-      offset: sortedArticles().length,
+      offset: sortedArticles().length
     }
 
     const orderBy = getOrderBy(searchParams().by)
@@ -189,7 +189,7 @@ export const FeedView = (props: Props) => {
     } else if (visibilityMode) {
       options.filters = {
         ...options.filters,
-        featured: visibilityMode === 'featured',
+        featured: visibilityMode === 'featured'
       }
     }
 
@@ -208,8 +208,8 @@ export const FeedView = (props: Props) => {
 
     loadReactionsBy({
       by: {
-        shouts: newShouts.map((s) => s.slug),
-      },
+        shouts: newShouts.map((s) => s.slug)
+      }
     })
 
     setIsLoadMoreButtonVisible(hasMore)
@@ -217,7 +217,7 @@ export const FeedView = (props: Props) => {
 
   const ogImage = getImageUrl('production/image/logo_image.png')
   const description = t(
-    'Independent media project about culture, science, art and society with horizontal editing',
+    'Independent media project about culture, science, art and society with horizontal editing'
   )
   const ogTitle = t('Feed')
 
@@ -250,7 +250,7 @@ export const FeedView = (props: Props) => {
               <li
                 class={clsx({
                   'view-switcher__item--selected':
-                    searchParams().by === 'publish_date' || !searchParams().by,
+                    searchParams().by === 'publish_date' || !searchParams().by
                 })}
               >
                 <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
@@ -260,7 +260,7 @@ export const FeedView = (props: Props) => {
               {/*</li>*/}
               <li
                 class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'rating',
+                  'view-switcher__item--selected': searchParams().by === 'rating'
                 })}
               >
                 <span class="link" onClick={() => changeSearchParams({ by: 'rating' })}>
@@ -269,7 +269,7 @@ export const FeedView = (props: Props) => {
               </li>
               <li
                 class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'last_comment',
+                  'view-switcher__item--selected': searchParams().by === 'last_comment'
                 })}
               >
                 <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
@@ -362,7 +362,7 @@ export const FeedView = (props: Props) => {
                         <div class={clsx('text-truncate', styles.commentBody)}>
                           <a
                             href={`${getPagePath(router, 'article', {
-                              slug: comment.shout.slug,
+                              slug: comment.shout.slug
                             })}?commentId=${comment.id}`}
                             innerHTML={comment.body}
                           />

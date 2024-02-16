@@ -28,7 +28,7 @@ export const CommentRatingControl = (props: Props) => {
         r.kind === reactionKind &&
         r.created_by.slug === author()?.slug &&
         r.shout.id === props.comment.shout.id &&
-        r.reply_to === props.comment.id,
+        r.reply_to === props.comment.id
     )
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
@@ -39,8 +39,8 @@ export const CommentRatingControl = (props: Props) => {
       (r) =>
         [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) &&
         r.shout.id === props.comment.shout.id &&
-        r.reply_to === props.comment.id,
-    ),
+        r.reply_to === props.comment.id
+    )
   )
 
   const deleteCommentReaction = async (reactionKind: ReactionKind) => {
@@ -49,7 +49,7 @@ export const CommentRatingControl = (props: Props) => {
         r.kind === reactionKind &&
         r.created_by.slug === author()?.slug &&
         r.shout.id === props.comment.shout.id &&
-        r.reply_to === props.comment.id,
+        r.reply_to === props.comment.id
     )
     return deleteReaction(reactionToDelete.id)
   }
@@ -64,7 +64,7 @@ export const CommentRatingControl = (props: Props) => {
         await createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
           shout: props.comment.shout.id,
-          reply_to: props.comment.id,
+          reply_to: props.comment.id
         })
       }
     } catch {
@@ -73,7 +73,7 @@ export const CommentRatingControl = (props: Props) => {
 
     await loadShout(props.comment.shout.slug)
     await loadReactionsBy({
-      by: { shout: props.comment.shout.slug },
+      by: { shout: props.comment.shout.slug }
     })
   }
 
@@ -84,7 +84,7 @@ export const CommentRatingControl = (props: Props) => {
         disabled={!(canVote() && author())}
         onClick={() => handleRatingChange(true)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlUp, {
-          [styles.voted]: isUpvoted(),
+          [styles.voted]: isUpvoted()
         })}
       />
       <Popup
@@ -92,7 +92,7 @@ export const CommentRatingControl = (props: Props) => {
           <div
             class={clsx(styles.commentRatingValue, {
               [styles.commentRatingPositive]: props.comment.stat.rating > 0,
-              [styles.commentRatingNegative]: props.comment.stat.rating < 0,
+              [styles.commentRatingNegative]: props.comment.stat.rating < 0
             })}
           >
             {props.comment.stat.rating || 0}
@@ -110,7 +110,7 @@ export const CommentRatingControl = (props: Props) => {
         disabled={!(canVote() && author())}
         onClick={() => handleRatingChange(false)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlDown, {
-          [styles.voted]: isDownvoted(),
+          [styles.voted]: isDownvoted()
         })}
       />
     </div>

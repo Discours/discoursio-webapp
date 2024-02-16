@@ -41,7 +41,7 @@ export const Expo = (props: Props) => {
   // })
   const { sortedArticles } = useArticlesStore({
     shouts: props.shouts || [],
-    layout: props.layout,
+    layout: props.layout
   })
 
   const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
@@ -61,7 +61,7 @@ export const Expo = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: getLoadShoutsFilters(),
       limit: count,
-      offset: sortedArticles().length,
+      offset: sortedArticles().length
     }
 
     options.filters = props.layout
@@ -82,7 +82,7 @@ export const Expo = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: getLoadShoutsFilters(),
       limit: 10,
-      random_limit: 100,
+      random_limit: 100
     }
 
     const result = await apiClient.getRandomTopShouts({ options })
@@ -96,7 +96,7 @@ export const Expo = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: getLoadShoutsFilters({ after }),
       limit: 10,
-      random_limit: 10,
+      random_limit: 10
     }
 
     const result = await apiClient.getRandomTopShouts({ options })
@@ -104,7 +104,7 @@ export const Expo = (props: Props) => {
   }
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
+    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   onMount(() => {
@@ -135,8 +135,8 @@ export const Expo = (props: Props) => {
         loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
         loadRandomTopArticles()
         loadRandomTopMonthArticles()
-      },
-    ),
+      }
+    )
   )
 
   onCleanup(() => {

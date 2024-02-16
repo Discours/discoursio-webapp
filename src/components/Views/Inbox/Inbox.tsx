@@ -2,14 +2,13 @@ import type { Chat, Message as MessageType } from '../../../graphql/schema/chat.
 import type { Author } from '../../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
 
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
-import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
@@ -21,6 +20,8 @@ import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
 
 import styles from './Inbox.module.scss'
+
+const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type InboxSearchParams = {
   by?: string
@@ -56,7 +57,7 @@ export const InboxView = (props: Props) => {
   const { changeSearchParams, searchParams } = useRouter<InboxSearchParams>()
 
   const messagesContainerRef: { current: HTMLDivElement } = {
-    current: null,
+    current: null
   }
 
   const getQuery = (query) => {
@@ -68,7 +69,7 @@ export const InboxView = (props: Props) => {
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParams({
-      chat: chat.id,
+      chat: chat.id
     })
     try {
       await getMessages(chat.id)
@@ -77,7 +78,7 @@ export const InboxView = (props: Props) => {
     } finally {
       messagesContainerRef.current.scroll({
         top: messagesContainerRef.current.scrollHeight,
-        behavior: 'instant',
+        behavior: 'instant'
       })
     }
   }
@@ -86,7 +87,7 @@ export const InboxView = (props: Props) => {
     sendMessage({
       body: message,
       chat_id: currentDialog()?.id.toString(),
-      reply_to: messageToReply()?.id,
+      reply_to: messageToReply()?.id
     })
     setClear(true)
     setMessageToReply(null)
@@ -107,7 +108,7 @@ export const InboxView = (props: Props) => {
         await loadChats()
         changeSearchParams({
           initChat: null,
-          chat: newChat.chat.id,
+          chat: newChat.chat.id
         })
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen)
@@ -147,11 +148,11 @@ export const InboxView = (props: Props) => {
         }
         messagesContainerRef.current.scroll({
           top: messagesContainerRef.current.scrollHeight,
-          behavior: 'smooth',
+          behavior: 'smooth'
         })
-      },
+      }
     ),
-    { defer: true },
+    { defer: true }
   )
   const handleScrollMessageContainer = () => {
     if (
@@ -166,7 +167,7 @@ export const InboxView = (props: Props) => {
   const handleScrollToNew = () => {
     messagesContainerRef.current.scroll({
       top: messagesContainerRef.current.scrollHeight,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     setIsScrollToNewVisible(false)
   }

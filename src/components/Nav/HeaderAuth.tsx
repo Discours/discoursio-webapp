@@ -53,7 +53,7 @@ export const HeaderAuth = (props: Props) => {
   const isSaveButtonVisible = createMemo(() => isAuthenticated() && isEditorPage())
   const isCreatePostButtonVisible = createMemo(() => isAuthenticated() && !isEditorPage())
   const isAuthenticatedControlsVisible = createMemo(
-    () => isAuthenticated() && session()?.user?.email_verified,
+    () => isAuthenticated() && session()?.user?.email_verified
   )
 
   const handleBurgerButtonClick = () => {
@@ -147,7 +147,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Save'),
                   icon: 'save',
-                  action: handleSaveButtonClick,
+                  action: handleSaveButtonClick
                 })}
               </div>
 
@@ -155,7 +155,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Publish'),
                   icon: 'publish',
-                  action: () => publishShout(form),
+                  action: () => publishShout(form)
                 })}
               </div>
 

@@ -47,7 +47,7 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
         bio: currentAuthor.bio,
         about: currentAuthor.about,
         pic: userpicUrl(currentAuthor.pic),
-        links: currentAuthor.links,
+        links: currentAuthor.links
       })
     }
   })
@@ -57,14 +57,14 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
       if (remove) {
         setForm(
           'links',
-          form.links.filter((item) => item !== value),
+          form.links.filter((item) => item !== value)
         )
       } else {
         setForm((prev) => ({ ...prev, links: [...prev.links, value] }))
       }
     } else {
       setForm({
-        [fieldName]: value,
+        [fieldName]: value
       })
     }
   }
@@ -73,7 +73,7 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
     form,
     submit,
     updateFormField,
-    setForm,
+    setForm
   }
 
   return <ProfileFormContext.Provider value={value}>{props.children}</ProfileFormContext.Provider>

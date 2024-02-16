@@ -18,25 +18,25 @@ export const Footer = () => {
       items: [
         {
           title: 'Discours Manifest',
-          slug: '/about/manifest',
+          slug: '/about/manifest'
         },
         {
           title: 'How it works',
-          slug: '/about/guide',
+          slug: '/about/guide'
         },
         {
           title: 'Dogma',
-          slug: '/about/dogma',
+          slug: '/about/dogma'
         },
         {
           title: 'Principles',
-          slug: '/about/principles',
+          slug: '/about/principles'
         },
         {
           title: 'How to write an article',
-          slug: '/how-to-write-a-good-article',
-        },
-      ],
+          slug: '/how-to-write-a-good-article'
+        }
+      ]
     },
 
     {
@@ -44,21 +44,21 @@ export const Footer = () => {
       items: [
         {
           title: 'Suggest an idea',
-          slug: '/connect',
+          slug: '/connect'
         },
         {
           title: 'Become an author',
-          slug: '/create',
+          slug: '/create'
         },
         {
           title: 'Support Discours',
-          slug: '/about/help',
+          slug: '/about/help'
         },
         {
           title: 'Work with us',
-          slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform',
-        },
-      ],
+          slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform'
+        }
+      ]
     },
 
     {
@@ -66,46 +66,46 @@ export const Footer = () => {
       items: [
         {
           title: 'Authors',
-          slug: '/authors',
+          slug: '/authors'
         },
         {
           title: 'Communities',
-          slug: '/community',
+          slug: '/community'
         },
         {
           title: 'Partners',
-          slug: '/about/partners',
+          slug: '/about/partners'
         },
         {
           title: 'Special projects',
-          slug: '/about/projects',
+          slug: '/about/projects'
         },
         {
           title: changeLangTitle(),
           slug: changeLangLink(),
-          rel: 'external',
-        },
-      ],
-    },
+          rel: 'external'
+        }
+      ]
+    }
   ])
 
   const social = [
     {
       name: 'facebook',
-      href: 'https://facebook.com/discoursio',
+      href: 'https://facebook.com/discoursio'
     },
     {
       name: 'vk',
-      href: 'https://vk.com/discoursio',
+      href: 'https://vk.com/discoursio'
     },
     {
       name: 'twitter',
-      href: 'https://twitter.com/discours_io',
+      href: 'https://twitter.com/discours_io'
     },
     {
       name: 'telegram',
-      href: 'https://t.me/discoursio',
-    },
+      href: 'https://t.me/discoursio'
+    }
   ]
   return (
     <footer class={styles.discoursFooter}>
@@ -140,7 +140,7 @@ export const Footer = () => {
         <div class={clsx(styles.footerCopyright, 'row')}>
           <div class="col-md-18 col-lg-20">
             {t(
-              'Independant magazine with an open horizontal cooperation about culture, science and society',
+              'Independant magazine with an open horizontal cooperation about culture, science and society'
             )}
             . {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
             <a href="/about/terms-of-use">{t('Terms of use')}</a>

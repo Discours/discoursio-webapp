@@ -88,7 +88,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
         const currentChat = chats().find((chat) => chat.id === args.chat_id)
         setChats((prev) => [
           ...prev.filter((c) => c.id !== currentChat.id),
-          { ...currentChat, updated_at: message.created_at },
+          { ...currentChat, updated_at: message.created_at }
         ])
       }
     } catch (error) {
@@ -114,7 +114,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     loadMessages,
     loadRecipients: sortedAuthors,
     getMessages,
-    sendMessage,
+    sendMessage
   }
 
   const value: InboxContextType = { chats, messages, ...actions }

@@ -19,7 +19,7 @@ type ReactionsContextType = {
     offset?: number
   }) => Promise<Reaction[]>
   createReaction: (reaction: ReactionInput) => Promise<void>
-  updateReaction: (id: number, reaction: ReactionInput) => Promise<void>
+  updateReaction: (reaction: ReactionInput) => Promise<void>
   deleteReaction: (id: number) => Promise<void>
 }
 
@@ -97,8 +97,8 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     await apiClient.destroyReaction(reaction)
   }
 
-  const updateReaction = async (id: number, input: ReactionInput): Promise<void> => {
-    const reaction = await apiClient.updateReaction(id, input)
+  const updateReaction = async (input: ReactionInput): Promise<void> => {
+    const reaction = await apiClient.updateReaction(input)
     setReactionEntities(reaction.id, reaction)
   }
 

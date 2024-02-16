@@ -49,7 +49,7 @@ export const RatingControl = (props: RatingControlProps) => {
       () => props.shout,
       (shout) => {
         if (shout) {
-          setTotal(shout?.stat?.rating)
+          setTotal(shout.stat?.rating)
         }
       },
       { defer: true },

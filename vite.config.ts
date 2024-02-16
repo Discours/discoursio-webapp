@@ -1,5 +1,5 @@
 import ssrPlugin from 'vike/plugin'
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import sassDts from 'vite-plugin-sass-dts'
 import solidPlugin from 'vite-plugin-solid'
@@ -17,6 +17,7 @@ const cssModuleHMR = () => {
           module.isSelfAccepting = true
         }
       })
+    }
   }
 }
 
@@ -37,7 +38,8 @@ export default defineConfig(({ mode, command }) => {
     solidPlugin({ ssr: true }),
     ssrPlugin({ includeAssetsImportedByServer: true }),
     sassDts(),
-    cssModuleHMR()
+    cssModuleHMR(),
+    splitVendorChunkPlugin()
   ]
 
   if (command === 'serve') {

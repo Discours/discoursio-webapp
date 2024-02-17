@@ -23,7 +23,7 @@ import stylesHeader from '../../Nav/Header/Header.module.scss'
 import styles from './ArticleCard.module.scss'
 
 export type ArticleCardProps = {
-// TODO: refactor this, please
+  // TODO: refactor this, please
   settings?: {
     noicon?: boolean
     noimage?: boolean
@@ -192,7 +192,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <div class={styles.shoutCardType}>
             <a href={`/expo/${props.article.layout}`}>
               <Icon name={props.article.layout} class={styles.icon} />
-{/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
+              {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
             </a>
           </div>
         </Show>

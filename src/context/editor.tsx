@@ -229,10 +229,15 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const publishShoutById = async (shout_id: number) => {
     try {
-      const newShout = await apiClient.updateArticle({
+      const { shout: newShout, error } = await apiClient.updateArticle({
         shout_id,
         publish: true,
       })
+      if (error) {
+        console.error(error)
+        snackbar?.showSnackbar({ type: 'error', body: error })
+        return
+      }
       if (newShout) {
         addArticles([newShout])
         openPage(router, 'feed')

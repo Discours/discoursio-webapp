@@ -161,7 +161,11 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
 
     try {
-      const shout = await updateShout(formToSave, { publish: false })
+      const { shout, error } = await updateShout(formToSave, { publish: false })
+      if (error) {
+        snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
+        return
+      }
       removeDraftFromLocalStorage(formToSave.shoutId)
 
       if (shout?.published_at) {
@@ -176,24 +180,33 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const saveDraft = async (draftForm: ShoutForm) => {
-    await updateShout(draftForm, { publish: false })
+    const { error } = await updateShout(draftForm, { publish: false })
+    if (error) {
+      snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
+      return
+    }
   }
 
   const publishShout = async (formToPublish: ShoutForm) => {
-    if (isEditorPanelVisible()) {
+    const editorPanelVisible = isEditorPanelVisible()
+    const pageRoute = page()?.route
+
+    if (editorPanelVisible) {
       toggleEditorPanel()
     }
 
-    if (page()?.route === 'edit') {
+    if (pageRoute === 'edit') {
       if (!validate()) {
         return
       }
 
-      await updateShout(formToPublish, { publish: false })
-
       const slug = slugify(form.title)
       setForm('slug', slug)
       openPage(router, 'editSettings', { shoutId: form.shoutId.toString() })
+      const { error } = await updateShout(formToPublish, { publish: false })
+      if (error) {
+        snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
+      }
       return
     }
 
@@ -202,7 +215,11 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
 
     try {
-      await updateShout(formToPublish, { publish: true })
+      const { error } = await updateShout(formToPublish, { publish: true })
+      if (error) {
+        snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
+        return
+      }
       openPage(router, 'feed')
     } catch (error) {
       console.error('[publishShout]', error)

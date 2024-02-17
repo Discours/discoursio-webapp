@@ -157,12 +157,12 @@ export const apiClient = {
     shout_id: number
     shout_input?: ShoutInput
     publish: boolean
-  }): Promise<Shout> => {
+  }): Promise<CommonResult> => {
     const response = await apiClient.private
       .mutation(updateArticle, { shout_id, shout_input, publish })
       .toPromise()
     console.debug('[graphql.client.core] updateArticle:', response.data)
-    return response.data.update_shout.shout
+    return response.data.update_shout
   },
   deleteShout: async (params: MutationDelete_ShoutArgs): Promise<void> => {
     const response = await apiClient.private.mutation(deleteShout, params).toPromise()

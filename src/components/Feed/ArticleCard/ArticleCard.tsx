@@ -23,7 +23,7 @@ import stylesHeader from '../../Nav/Header/Header.module.scss'
 import styles from './ArticleCard.module.scss'
 
 export type ArticleCardProps = {
-  // TODO: refactor this, please
+// TODO: refactor this, please
   settings?: {
     noicon?: boolean
     noimage?: boolean
@@ -67,7 +67,7 @@ const getTitleAndSubtitle = (
   subtitle: string
 } => {
   let title = article.title
-  let subtitle = article.subtitle
+  let subtitle: string = article.subtitle || ''
 
   if (!subtitle) {
     let tt = article.title?.split('. ') || []
@@ -79,7 +79,7 @@ const getTitleAndSubtitle = (
     if (tt && tt.length > 1) {
       const sep = article.title?.replace(tt[0], '').split(' ', 1)[0]
       title = tt[0] + (sep === '.' || sep === ':' ? '' : sep)
-      subtitle = capitalize(article.title?.replace(tt[0] + sep, ''), true)
+      subtitle = capitalize(article.title?.replace(tt[0] + sep, ''), true) || ''
     }
   }
 
@@ -131,6 +131,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       scrollTo: 'comments',
     })
   }
+
   return (
     <section
       class={clsx(styles.shoutCard, props.settings?.additionalClass, {
@@ -149,7 +150,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [aspectRatio()]: props.withAspectRatio,
       })}
     >
+      {/* Cover Image */}
       <Show when={!(props.settings?.noimage || props.settings?.isFeedMode)}>
+        {/* Cover Image Container */}
         <div class={styles.shoutCardCoverContainer}>
           <div
             class={clsx(styles.shoutCardCover, {
@@ -174,7 +177,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </div>
       </Show>
+
+      {/* Shout Card Content */}
       <div class={styles.shoutCardContent}>
+        {/* Shout Card Icon */}
         <Show
           when={
             props.article.layout &&
@@ -186,11 +192,12 @@ export const ArticleCard = (props: ArticleCardProps) => {
           <div class={styles.shoutCardType}>
             <a href={`/expo/${props.article.layout}`}>
               <Icon name={props.article.layout} class={styles.icon} />
-              {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
+{/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
             </a>
           </div>
         </Show>
 
+        {/* Main Topic */}
         <Show when={!props.settings?.isGroup && mainTopicSlug}>
           <CardTopic
             title={mainTopicTitle}
@@ -201,6 +208,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           />
         </Show>
 
+        {/* Title and Subtitle */}
         <div
           class={clsx(styles.shoutCardTitlesContainer, {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode,
@@ -220,22 +228,23 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </a>
         </div>
+
+        {/* Details */}
         <Show when={!(props.settings?.noauthor && props.settings?.nodate)}>
+          {/* Author and Date */}
           <div
             class={clsx(styles.shoutDetails, { [styles.shoutDetailsFeedMode]: props.settings?.isFeedMode })}
           >
             <Show when={!props.settings?.noauthor}>
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
-                  {(a: Author) => {
-                    return (
-                      <AuthorLink
-                        size={'XS'}
-                        author={a}
-                        isFloorImportant={props.settings.isFloorImportant || props.settings?.isWithCover}
-                      />
-                    )
-                  }}
+                  {(a: Author) => (
+                    <AuthorLink
+                      size={'XS'}
+                      author={a}
+                      isFloorImportant={props.settings.isFloorImportant || props.settings?.isWithCover}
+                    />
+                  )}
                 </For>
               </div>
             </Show>
@@ -244,6 +253,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </div>
         </Show>
+
+        {/* Description */}
         <Show when={props.article.description}>
           <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
         </Show>

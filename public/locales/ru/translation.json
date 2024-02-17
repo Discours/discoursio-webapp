@@ -529,6 +529,7 @@
   "repeat": "повторить",
   "resend confirmation link": "отправить ссылку ещё раз",
   "shout": "пост",
+  "shout not found": "публикация не найдена",
   "shoutsWithCount": "{count} {count, plural, one {пост} few {поста}  other {постов}}",
   "sign in": "войти",
   "sign up or sign in": "зарегистрироваться или войти",

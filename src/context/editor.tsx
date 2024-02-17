@@ -72,7 +72,7 @@ const saveDraftToLocalStorage = (formToSave: ShoutForm) => {
   localStorage.setItem(`shout-${formToSave.shoutId}`, JSON.stringify(formToSave))
 }
 const getDraftFromLocalStorage = (shoutId: number) => {
-  return JSON.parse(localStorage.getItem(`shout-${shoutId}`) || '')
+  return JSON.parse(localStorage.getItem(`shout-${shoutId}`) || '{}')
 }
 
 const removeDraftFromLocalStorage = (shoutId: number) => {
@@ -105,7 +105,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       return false
     }
 
-    const parsedMedia = JSON.parse(form.media || '')
+    const parsedMedia = JSON.parse(form.media || '[]')
     if (form.layout === 'video' && !parsedMedia[0]) {
       snackbar?.showSnackbar({
         type: 'error',

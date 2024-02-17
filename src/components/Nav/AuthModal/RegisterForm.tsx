@@ -152,9 +152,10 @@ export const RegisterForm = () => {
           ...prev,
           email: (
             <>
-              {t('This email is registered')}. {t('You can')}{' '}
+              {t('This email is registered')}
+              {'. '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'send-reset-link' })}>
-                {t('Set the new password').toLocaleLowerCase()}
+                {t('Set the new password')}
               </span>
             </>
           ),
@@ -196,7 +197,7 @@ export const RegisterForm = () => {
                 disabled={Boolean(emailStatus())}
                 placeholder={t('Full name')}
                 autocomplete="one-time-code"
-                onInput={(event) => handleNameInput(event.currentTarget.value)}
+                onChange={(event) => handleNameInput(event.currentTarget.value)}
               />
               <label for="name">{t('Full name')}</label>
               <Show when={validationErrors().fullName && !emailStatus()}>
@@ -227,8 +228,8 @@ export const RegisterForm = () => {
             <PasswordField
               disableAutocomplete={true}
               disabled={Boolean(emailStatus())}
-              errorMessage={(err) => setPasswordError(err)}
-              onInput={(value) => setPassword(value)}
+              errorMessage={(err) => !emailStatus() && setPasswordError(err)}
+              onInput={(value) => setPassword(emailStatus() ? '' : value)}
             />
 
             <div>

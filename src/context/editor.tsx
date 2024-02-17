@@ -12,8 +12,8 @@ import { addArticles } from '../stores/zine/articles'
 import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
-import { useSnackbar } from './snackbar'
 import { useSession } from './session'
+import { useSnackbar } from './snackbar'
 
 type WordCounter = {
   characters: number
@@ -134,7 +134,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         lead: formToUpdate.lead,
         description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
-        media: formToUpdate.media
+        media: formToUpdate.media,
       },
       publish,
     })

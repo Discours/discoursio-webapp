@@ -12,7 +12,6 @@ import { addArticles } from '../stores/zine/articles'
 import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
-import { useSession } from './session'
 import { useSnackbar } from './snackbar'
 
 type WordCounter = {
@@ -40,7 +39,7 @@ type EditorContextType = {
   wordCounter: Accessor<WordCounter>
   form: ShoutForm
   formErrors: Record<keyof ShoutForm, string>
-  editorRef: { current: () => Editor }
+  editorRef: { current: () => Editor | null }
   saveShout: (form: ShoutForm) => Promise<void>
   saveDraft: (form: ShoutForm) => Promise<void>
   saveDraftToLocalStorage: (form: ShoutForm) => void
@@ -73,7 +72,7 @@ const saveDraftToLocalStorage = (formToSave: ShoutForm) => {
   localStorage.setItem(`shout-${formToSave.shoutId}`, JSON.stringify(formToSave))
 }
 const getDraftFromLocalStorage = (shoutId: number) => {
-  return JSON.parse(localStorage.getItem(`shout-${shoutId}`))
+  return JSON.parse(localStorage.getItem(`shout-${shoutId}`) || '')
 }
 
 const removeDraftFromLocalStorage = (shoutId: number) => {
@@ -81,14 +80,19 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
 }
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
-  const { t } = useLocalize()
+  const localize = useLocalize()
   const { page } = useRouter()
-  const { author } = useSession()
-  const { showSnackbar } = useSnackbar()
+  const snackbar = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
-  const editorRef: { current: () => Editor } = { current: null }
-  const [form, setForm] = createStore<ShoutForm>(null)
-  const [formErrors, setFormErrors] = createStore<Record<keyof ShoutForm, string>>(null)
+  const editorRef: { current: () => Editor | null } = { current: () => null }
+  const [form, setForm] = createStore<ShoutForm>({
+    body: '',
+    slug: '',
+    shoutId: 0,
+    title: '',
+    selectedTopics: [],
+  })
+  const [formErrors, setFormErrors] = createStore({} as Record<keyof ShoutForm, string>)
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
     words: 0,
@@ -97,13 +101,16 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const countWords = (value) => setWordCounter(value)
   const validate = () => {
     if (!form.title) {
-      setFormErrors('title', t('Please, set the article title'))
+      setFormErrors('title', localize?.t('Please, set the article title') || '')
       return false
     }
 
-    const parsedMedia = JSON.parse(form.media)
+    const parsedMedia = JSON.parse(form.media || '')
     if (form.layout === 'video' && !parsedMedia[0]) {
-      showSnackbar({ type: 'error', body: t('Looks like you forgot to upload the video') })
+      snackbar?.showSnackbar({
+        type: 'error',
+        body: localize?.t('Looks like you forgot to upload the video'),
+      })
       return false
     }
 
@@ -112,7 +119,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const validateSettings = () => {
     if (form.selectedTopics.length === 0) {
-      setFormErrors('selectedTopics', t('Required'))
+      setFormErrors('selectedTopics', localize?.t('Required') || '')
       return false
     }
 
@@ -145,11 +152,11 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       toggleEditorPanel()
     }
 
-    if (page().route === 'edit' && !validate()) {
+    if (page()?.route === 'edit' && !validate()) {
       return
     }
 
-    if (page().route === 'editSettings' && !validateSettings()) {
+    if (page()?.route === 'editSettings' && !validateSettings()) {
       return
     }
 
@@ -164,7 +171,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       }
     } catch (error) {
       console.error('[saveShout]', error)
-      showSnackbar({ type: 'error', body: t('Error') })
+      snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
     }
   }
 
@@ -177,7 +184,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       toggleEditorPanel()
     }
 
-    if (page().route === 'edit') {
+    if (page()?.route === 'edit') {
       if (!validate()) {
         return
       }
@@ -199,7 +206,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       openPage(router, 'feed')
     } catch (error) {
       console.error('[publishShout]', error)
-      showSnackbar({ type: 'error', body: t('Error') })
+      snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
     }
   }
 
@@ -217,7 +224,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       }
     } catch (error) {
       console.error('[publishShoutById]', error)
-      showSnackbar({ type: 'error', body: t('Error') })
+      snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') })
     }
   }
 
@@ -228,7 +235,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       })
       return true
     } catch {
-      showSnackbar({ type: 'error', body: t('Error') })
+      snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
       return false
     }
   }

@@ -307,10 +307,10 @@ export const EditView = (props: Props) => {
                                 subtitleInput.current = el
                               }}
                               allowEnterKey={false}
-                              value={(value) => setForm('subtitle', value)}
+                              value={(value) => setForm('subtitle', value || '')}
                               class={styles.subtitleInput}
                               placeholder={t('Subheader')}
-                              initialValue={form.subtitle}
+                              initialValue={form.subtitle || ''}
                               maxLength={MAX_HEADER_LIMIT}
                             />
                           </Show>

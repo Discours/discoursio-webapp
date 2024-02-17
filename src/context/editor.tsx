@@ -13,6 +13,7 @@ import { slugify } from '../utils/slugify'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
+import { useSession } from './session'
 
 type WordCounter = {
   characters: number
@@ -82,6 +83,7 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
   const { page } = useRouter()
+  const { author } = useSession()
   const { showSnackbar } = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
   const editorRef: { current: () => Editor } = { current: null }
@@ -132,7 +134,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         lead: formToUpdate.lead,
         description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
-        media: formToUpdate.media,
+        media: formToUpdate.media
       },
       publish,
     })

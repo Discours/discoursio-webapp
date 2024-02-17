@@ -17,11 +17,11 @@ type Props = {
 
 export const Link = (props: Props) => {
   const { page } = useRouter()
-  const isSelected = page().route === props.routeName
+  const isSelected = page()?.route === props.routeName
   return (
     <li
       onClick={props.onClick}
-      classList={{ 'view-switcher__item--selected': page().route === props.routeName }}
+      classList={{ 'view-switcher__item--selected': page()?.route === props.routeName }}
     >
       <ConditionalWrapper
         condition={!isSelected && Boolean(props.routeName)}

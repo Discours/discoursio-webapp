@@ -7,7 +7,7 @@ export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
 }
 
 export const byPublished = (a: Shout, b: Shout) => {
-  return a.published_at - b.published_at
+  return (a?.published_at || 0) - (b?.published_at || 0)
 }
 
 export const byLength = (

@@ -77,7 +77,7 @@ export const FullArticle = (props: Props) => {
   const { t, formatDate, lang } = useLocalize()
   const { author, isAuthenticated, requireAuthentication } = useSession()
 
-  const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
+  const formattedDate = createMemo(() => formatDate(new Date((props.article?.published_at || 0) * 1000)))
   const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
 
   const mainTopic = createMemo(() => {

@@ -164,7 +164,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       const shout = await updateShout(formToSave, { publish: false })
       removeDraftFromLocalStorage(formToSave.shoutId)
 
-      if (shout.published_at) {
+      if (shout?.published_at) {
         openPage(router, 'article', { slug: shout.slug })
       } else {
         openPage(router, 'drafts')

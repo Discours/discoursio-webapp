@@ -117,7 +117,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const formattedDate = createMemo<string>(() =>
-    props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
+    props.article?.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
   )
 
   const canEdit = () =>

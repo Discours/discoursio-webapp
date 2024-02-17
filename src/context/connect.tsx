@@ -50,7 +50,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
           Authorization: token,
         },
         onmessage(event) {
-          const m: SSEMessage = JSON.parse(event.data || "{}")
+          const m: SSEMessage = JSON.parse(event.data || '{}')
           console.log('[context.connect] Received message:', m)
 
           // Iterate over all registered handlers and call them

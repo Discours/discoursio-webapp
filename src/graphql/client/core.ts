@@ -178,15 +178,13 @@ export const apiClient = {
     console.debug('[graphql.client.core] createReaction:', response)
     return response.data.create_reaction.reaction
   },
-  destroyReaction: async (id: number) => {
-    const response = await apiClient.private.mutation(reactionDestroy, { id: id }).toPromise()
+  destroyReaction: async (reaction_id: number) => {
+    const response = await apiClient.private.mutation(reactionDestroy, { reaction_id }).toPromise()
     console.debug('[graphql.client.core] destroyReaction:', response)
     return response.data.delete_reaction.reaction
   },
-  updateReaction: async (id: number, input: ReactionInput) => {
-    const response = await apiClient.private
-      .mutation(reactionUpdate, { id: id, reaction: input })
-      .toPromise()
+  updateReaction: async (reaction: ReactionInput) => {
+    const response = await apiClient.private.mutation(reactionUpdate, { reaction }).toPromise()
     console.debug('[graphql.client.core] updateReaction:', response)
     return response.data.update_reaction.reaction
   },

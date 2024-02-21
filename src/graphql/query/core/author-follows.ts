@@ -9,25 +9,11 @@ export default gql`
         name
         pic
         bio
-        stat {
-          shouts
-          followers
-        }
       }
       topics {
         id
         slug
         title
-        stat {
-          shouts
-          followers
-        }
-      }
-      communities {
-        id
-        slug
-        name
-        pic
       }
     }
   }

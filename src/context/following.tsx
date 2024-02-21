@@ -26,7 +26,6 @@ export function useFollowing() {
 const EMPTY_SUBSCRIPTIONS: AuthorFollows = {
   topics: [],
   authors: [],
-  shouts: [],
   communities: [],
 }
 

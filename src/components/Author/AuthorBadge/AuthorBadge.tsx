@@ -120,7 +120,7 @@ export const AuthorBadge = (props: Props) => {
               </Match>
               <Match when={props.author?.stat && props.author?.stat.shouts > 0}>
                 <div class={styles.bio}>
-                  {t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}
+                  {t('PublicationsWithCount', { count: props.author?.stat.shouts ?? 0 })}
                 </div>
               </Match>
             </Switch>

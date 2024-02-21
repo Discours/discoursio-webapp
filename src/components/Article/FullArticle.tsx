@@ -172,7 +172,6 @@ export const FullArticle = (props: Props) => {
 
       if (commentElement) {
         requestAnimationFrame(() => scrollTo(commentElement))
-        changeSearchParams({ commentId: null })
       }
     }
   })

@@ -23,26 +23,6 @@ export default gql`
           followers
         }
       }
-      shouts {
-        id
-        slug
-        title
-        subtitle
-        main_topic
-        authors {
-          id
-          name
-          slug
-          pic
-        }
-        stat {
-          viewed
-          rating
-          commented
-        }
-        created_at
-        updated_at
-      }
       communities {
         id
         slug

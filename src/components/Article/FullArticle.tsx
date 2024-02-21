@@ -58,9 +58,8 @@ export type ArticlePageSearchParams = {
 
 const scrollTo = (el: HTMLElement) => {
   const { top } = el.getBoundingClientRect()
-
   window.scrollTo({
-    top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
+    top: top - DEFAULT_HEADER_OFFSET,
     left: 0,
     behavior: 'smooth',
   })
@@ -152,22 +151,16 @@ export const FullArticle = (props: Props) => {
     current: HTMLDivElement
   } = { current: null }
 
-  const scrollToComments = () => {
-    scrollTo(commentsRef.current)
-  }
-
   createEffect(() => {
     if (props.scrollToComments) {
-      scrollToComments()
+      scrollTo(commentsRef.current)
     }
   })
 
   createEffect(() => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
-      scrollToComments()
-      changeSearchParams({
-        scrollTo: null,
-      })
+      requestAnimationFrame(() => scrollTo(commentsRef.current))
+      changeSearchParams({ scrollTo: null })
     }
   })
 
@@ -177,10 +170,9 @@ export const FullArticle = (props: Props) => {
         `[id='comment_${searchParams().commentId}']`,
       )
 
-      changeSearchParams({ commentId: null })
-
       if (commentElement) {
-        scrollTo(commentElement)
+        requestAnimationFrame(() => scrollTo(commentElement))
+        changeSearchParams({ commentId: null })
       }
     }
   })
@@ -473,7 +465,11 @@ export const FullArticle = (props: Props) => {
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
-                  <div class={clsx(styles.shoutStatsItem)} ref={triggerRef} onClick={scrollToComments}>
+                  <div
+                    class={clsx(styles.shoutStatsItem)}
+                    ref={triggerRef}
+                    onClick={() => scrollTo(commentsRef.current)}
+                  >
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
                     <Show

@@ -1,13 +1,13 @@
 import { clsx } from 'clsx'
-import { createSignal, For, Show, createEffect } from 'solid-js'
+import { For, Show, createEffect, createSignal } from 'solid-js'
 import { useFollowing } from '../../context/following'
+import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
 import { setAuthorsByFollowers, setAuthorsByShouts, useAuthorsStore } from '../../stores/zine/authors'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
-import styles from './AuthorsList.module.scss'
 import { Button } from '../_shared/Button'
-import { useLocalize } from '../../context/localize'
+import styles from './AuthorsList.module.scss'
 
 type Props = {
   class?: string
@@ -43,12 +43,17 @@ export const AuthorsList = (props: Props) => {
   const loadMoreAuthors = () => {
     const queryType = props.query
     const nextPage = currentPage()[queryType] + 1
-    fetchAuthors(queryType, nextPage).then(() => setCurrentPage({ ...currentPage(), [queryType]: nextPage }))
+    fetchAuthors(queryType, nextPage).then(() =>
+      setCurrentPage({ ...currentPage(), [queryType]: nextPage }),
+    )
   }
 
   createEffect(() => {
     const queryType = props.query
-    if (currentPage()[queryType] === 0 && (authorsByShouts().length === 0 || authorsByFollowers().length === 0)) {
+    if (
+      currentPage()[queryType] === 0 &&
+      (authorsByShouts().length === 0 || authorsByFollowers().length === 0)
+    ) {
       loadMoreAuthors()
     }
   })

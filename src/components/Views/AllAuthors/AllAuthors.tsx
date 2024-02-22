@@ -167,10 +167,7 @@ export const AllAuthors = (props: Props) => {
               )}
             </For>
           </Show>
-          <Show
-            when={searchParams().by !== 'name' && props.isLoaded}
-            fallback={<Loading />}
-          >
+          <Show when={searchParams().by !== 'name' && props.isLoaded} fallback={<Loading />}>
             <AuthorsList query={searchParams().by === 'shouts' ? 'shouts' : 'followers'} />
           </Show>
         </div>

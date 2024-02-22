@@ -1,4 +1,11 @@
 .AuthorsList {
+  .action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 8rem;
+  }
+
   .loading {
     @include font-size(1.4rem);
 

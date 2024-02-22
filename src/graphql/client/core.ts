@@ -1,7 +1,7 @@
 import type {
   Author,
+  AuthorFollows,
   CommonResult,
-  Community,
   FollowingEntity,
   LoadShoutsOptions,
   MutationDelete_ShoutArgs,
@@ -37,16 +37,14 @@ import shoutsLoadSearch from '../query/core/articles-load-search'
 import loadShoutsUnrated from '../query/core/articles-load-unrated'
 import authorBy from '../query/core/author-by'
 import authorFollowers from '../query/core/author-followers'
+import authorFollows from '../query/core/author-follows'
 import authorId from '../query/core/author-id'
 import authorsAll from '../query/core/authors-all'
-import authorFollowedAuthors from '../query/core/authors-followed-by'
 import authorsLoadBy from '../query/core/authors-load-by'
-import authorFollowedCommunities from '../query/core/communities-followed-by'
 import mySubscriptions from '../query/core/my-followed'
 import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
-import authorFollowedTopics from '../query/core/topics-followed-by'
 import topicsRandomQuery from '../query/core/topics-random'
 
 const publicGraphQLClient = createGraphQLClient('core')
@@ -86,7 +84,7 @@ export const apiClient = {
     return response.data.get_topics_random
   },
 
-  getRandomTopicShouts: async (limit: number): Promise<{ topic: Topic; shouts: Shout[] }> => {
+  getRandomTopicShouts: async (limit: number): Promise<CommonResult> => {
     const resp = await publicGraphQLClient.query(articlesLoadRandomTopic, { limit }).toPromise()
     if (!resp.data) console.error('[graphql.client.core] load_shouts_random_topic', resp)
     return resp.data.load_shouts_random_topic
@@ -96,6 +94,7 @@ export const apiClient = {
     const response = await apiClient.private.mutation(followMutation, { what, slug }).toPromise()
     return response.data.follow
   },
+
   unfollow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
     const response = await apiClient.private.mutation(unfollowMutation, { what, slug }).toPromise()
     return response.data.unfollow
@@ -107,48 +106,53 @@ export const apiClient = {
 
     return response.data.get_topics_all
   },
+
   getAllAuthors: async () => {
     const response = await publicGraphQLClient.query(authorsAll, {}).toPromise()
     if (!response.data) console.error('[graphql.client.core] getAllAuthors', response)
 
     return response.data.get_authors_all
   },
+
   getAuthor: async (params: { slug?: string; author_id?: number }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBy, params).toPromise()
     return response.data.get_author
   },
+
   getAuthorId: async (params: { user: string }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorId, params).toPromise()
     return response.data.get_author_id
   },
+
   getAuthorFollowers: async ({ slug }: { slug: string }): Promise<Author[]> => {
     const response = await publicGraphQLClient.query(authorFollowers, { slug }).toPromise()
     return response.data.get_author_followers
   },
-  getAuthorFollowingAuthors: async ({ slug }: { slug: string }): Promise<Author[]> => {
-    const response = await publicGraphQLClient.query(authorFollowedAuthors, { slug }).toPromise()
-    return response.data.get_author_followed
+
+  getAuthorFollows: async (params: {
+    slug?: string
+    author_id?: number
+    user?: string
+  }): Promise<AuthorFollows> => {
+    const response = await publicGraphQLClient.query(authorFollows, params).toPromise()
+    return response.data.get_author_follows
   },
-  getAuthorFollowingTopics: async ({ slug }: { slug: string }): Promise<Topic[]> => {
-    const response = await publicGraphQLClient.query(authorFollowedTopics, { slug }).toPromise()
-    return response.data.get_topics_by_author
-  },
-  getAuthorFollowingCommunities: async ({ slug }: { slug: string }): Promise<Community[]> => {
-    const response = await publicGraphQLClient.query(authorFollowedCommunities, { slug }).toPromise()
-    return response.data.get_communities_by_author
-  },
+
   updateAuthor: async (input: ProfileInput) => {
     const response = await apiClient.private.mutation(updateAuthor, { profile: input }).toPromise()
     return response.data.update_author
   },
+
   getTopic: async ({ slug }: { slug: string }): Promise<Topic> => {
     const response = await publicGraphQLClient.query(topicBySlug, { slug }).toPromise()
     return response.data.get_topic
   },
+
   createArticle: async ({ article }: { article: ShoutInput }): Promise<Shout> => {
     const response = await apiClient.private.mutation(createArticle, { shout: article }).toPromise()
     return response.data.create_shout.shout
   },
+
   updateArticle: async ({
     shout_id,
     shout_input,
@@ -164,10 +168,12 @@ export const apiClient = {
     console.debug('[graphql.client.core] updateArticle:', response.data)
     return response.data.update_shout.shout
   },
+
   deleteShout: async (params: MutationDelete_ShoutArgs): Promise<void> => {
     const response = await apiClient.private.mutation(deleteShout, params).toPromise()
     console.debug('[graphql.client.core] deleteShout:', response)
   },
+
   getDrafts: async (): Promise<Shout[]> => {
     const response = await apiClient.private.query(draftsLoad, {}).toPromise()
     console.debug('[graphql.client.core] getDrafts:', response)
@@ -178,15 +184,13 @@ export const apiClient = {
     console.debug('[graphql.client.core] createReaction:', response)
     return response.data.create_reaction.reaction
   },
-  destroyReaction: async (id: number) => {
-    const response = await apiClient.private.mutation(reactionDestroy, { id: id }).toPromise()
+  destroyReaction: async (reaction_id: number) => {
+    const response = await apiClient.private.mutation(reactionDestroy, { reaction_id }).toPromise()
     console.debug('[graphql.client.core] destroyReaction:', response)
     return response.data.delete_reaction.reaction
   },
-  updateReaction: async (id: number, input: ReactionInput) => {
-    const response = await apiClient.private
-      .mutation(reactionUpdate, { id: id, reaction: input })
-      .toPromise()
+  updateReaction: async (reaction: ReactionInput) => {
+    const response = await apiClient.private.mutation(reactionUpdate, { reaction }).toPromise()
     console.debug('[graphql.client.core] updateReaction:', response)
     return response.data.update_reaction.reaction
   },
@@ -232,10 +236,5 @@ export const apiClient = {
       .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: offset ?? 0 })
       .toPromise()
     return resp.data.load_reactions_by
-  },
-  getMySubscriptions: async (): Promise<CommonResult> => {
-    const resp = await apiClient.private.query(mySubscriptions, {}).toPromise()
-
-    return resp.data.get_my_followed
   },
 }

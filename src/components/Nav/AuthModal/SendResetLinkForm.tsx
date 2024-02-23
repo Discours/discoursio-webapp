@@ -29,7 +29,7 @@ export const SendResetLinkForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [isUserNotFound, setIsUserNotFound] = createSignal(false)
-  const authFormRef: { current: HTMLFormElement } = { current: null }
+  const authFormRef: { current: HTMLFormElement | null } = { current: null }
   const [message, setMessage] = createSignal<string>('')
 
   const handleSubmit = async (event: Event) => {
@@ -46,10 +46,13 @@ export const SendResetLinkForm = () => {
     setValidationErrors(newValidationErrors)
     const isValid = Object.keys(newValidationErrors).length === 0
 
-    if (!isValid) {
-      authFormRef.current
-        .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
-        .focus()
+    if (!isValid && Boolean(authFormRef.current)) {
+      const selectors = `input[name="${Object.keys(newValidationErrors)[0]}"]`
+
+      const el = authFormRef?.current
+      if (el) {
+        el.querySelector<HTMLInputElement>(selectors)?.focus()
+      }
 
       return
     }
@@ -61,7 +64,7 @@ export const SendResetLinkForm = () => {
         redirect_uri: window.location.origin
       })
       console.debug('[SendResetLinkForm] authorizer response:', data)
-      if (errors?.some((error) => error.message.includes('bad user credentials'))) {
+      if (errors?.some((error: { message: string | string[] }) => error.message.includes('bad user credentials'))) {
         setIsUserNotFound(true)
       }
       if (data.message) setMessage(data.message)

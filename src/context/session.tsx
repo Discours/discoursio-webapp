@@ -113,17 +113,14 @@ export const SessionProvider = (props: {
   )
 
   // handle token confirm
-  createEffect(() => {
-    const token = searchParams()?.token
-    const access_token = searchParams()?.access_token
-    if (access_token)
-      changeSearchParams({
-        mode: 'confirm-email',
-        m: 'auth',
-        access_token,
-      })
-    else if (token) changeSearchParams({ mode: 'change-password', modal: 'auth', token })
-  })
+  createEffect(on(
+    [() => searchParams()?.token, () => searchParams()?.access_token],
+    (token, access_token) => {
+      changeSearchParams({ mode: token?'change-password':'confirm-email', m: 'auth' }, true)
+      console.log()
+    },
+    { defer: true }
+  ))
 
   // load
   let minuteLater: NodeJS.Timeout | null
@@ -395,3 +392,7 @@ export const SessionProvider = (props: {
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>
 }
+function changeSearchParams(arg0: { mode: string; modal: string; token: any }) {
+  throw new Error('Function not implemented.')
+}
+

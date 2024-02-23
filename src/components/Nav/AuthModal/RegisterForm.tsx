@@ -139,7 +139,7 @@ export const RegisterForm = () => {
         setValidationErrors((prev) => ({
           email: (
             <>
-              {t('This email is verified')}. {t('You can')}
+              {t('This email is verified')}. {t('You can')}{' '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
                 {t('enter')}
               </span>
@@ -152,9 +152,9 @@ export const RegisterForm = () => {
           ...prev,
           email: (
             <>
-              {t('This email is registered')}. {t('You can')}{' '}
+              {t('This email is registered')}{'. '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'send-reset-link' })}>
-                {t('Set the new password').toLocaleLowerCase()}
+                {t('Set the new password')}
               </span>
             </>
           )

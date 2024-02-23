@@ -92,30 +92,34 @@ export const SessionProvider = (props: {
   const authorizer = createMemo(() => new Authorizer(config()))
   const [oauthState, setOauthState] = createSignal<string>()
 
-  // handle callback's redirect_uri
-  createEffect(() => {
-    // oauth
-    const state = searchParams()?.state
-    if (state) {
-      setOauthState((_s) => state)
-      const scope = searchParams()?.scope
-        ? searchParams()?.scope?.toString().split(' ')
-        : ['openid', 'profile', 'email']
-      if (scope) console.info(`[context.session] scope: ${scope}`)
-      const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
-      setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
-      changeSearchParams({ mode: 'confirm-email', modal: 'auth' }, true)
-    }
-  })
+  // handle auth state callback
+  createEffect(
+    on(
+      () => searchParams()?.state,
+      (state) => {
+        if (state) {
+          setOauthState((_s) => state)
+          const scope = searchParams()?.scope
+            ? searchParams()?.scope?.toString().split(' ')
+            : ['openid', 'profile', 'email']
+          if (scope) console.info(`[context.session] scope: ${scope}`)
+          const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
+          setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
+          changeSearchParams({ mode: 'confirm-email', m: 'auth' }, true)
+        }
+      },
+      { defer: true }
+    )
+  )
 
-  // handle email confirm
+  // handle token confirm
   createEffect(() => {
     const token = searchParams()?.token
     const access_token = searchParams()?.access_token
     if (access_token)
       changeSearchParams({
         mode: 'confirm-email',
-        modal: 'auth',
+        m: 'auth',
         access_token,
       })
     else if (token) changeSearchParams({ mode: 'change-password', modal: 'auth', token })

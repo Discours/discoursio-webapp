@@ -58,6 +58,11 @@
   }
 
   .bio {
+    @include font-size(1.2rem);
+
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
     color: var(--black-400);
     font-weight: 500;
   }

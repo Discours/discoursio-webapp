@@ -29,12 +29,9 @@ export const ProfileSubscriptions = () => {
   const fetchSubscriptions = async () => {
     try {
       const slug = author()?.slug
-      const [getAuthors, getTopics] = await Promise.all([
-        apiClient.getAuthorFollowingAuthors({ slug }),
-        apiClient.getAuthorFollowingTopics({ slug })
-      ])
-      setFollowing([...getAuthors, ...getTopics])
-      setFiltered([...getAuthors, ...getTopics])
+      const authorFollows = await apiClient.getAuthorFollows({ slug })
+      setFollowing([...authorFollows['authors']])
+      setFiltered([...authorFollows['authors'], ...authorFollows['topics']])
     } catch (error) {
       console.error('[fetchSubscriptions] :', error)
       throw error

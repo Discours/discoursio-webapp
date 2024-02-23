@@ -69,10 +69,12 @@ export const HomeView = (props: Props) => {
     }
 
     const result = await apiClient.getRandomTopicShouts(RANDOM_TOPIC_SHOUTS_COUNT)
-    if (!result) console.warn('[apiClient.getRandomTopicShouts] failed')
+    if (!result || result.error) console.warn('[apiClient.getRandomTopicShouts] failed')
     batch(() => {
-      if (result?.topic) setRandomTopic(result.topic)
-      if (result?.shouts) setRandomTopicArticles(result.shouts)
+      if (!result?.error) {
+        if (result?.topic) setRandomTopic(result.topic)
+        if (result?.shouts) setRandomTopicArticles(result.shouts)
+      }
     })
   })
 

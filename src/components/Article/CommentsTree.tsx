@@ -66,9 +66,6 @@ export const CommentsTree = (props: Props) => {
     if (commentsOrder() === 'rating') {
       newSortedComments = newSortedComments.sort(sortCommentsByRating)
     }
-
-    newSortedComments.reverse()
-
     return newSortedComments
   })
 

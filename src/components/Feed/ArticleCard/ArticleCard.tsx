@@ -106,7 +106,7 @@ const LAYOUT_ASPECT = {
 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
-  const { author } = useSession()
+  const { author, session } = useSession()
   const { changeSearchParams } = useRouter()
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
@@ -120,9 +120,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
     props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : ''
   )
 
-  const canEdit = () =>
-    props.article.authors?.some((a) => a && a?.slug === author()?.slug) ||
-    props.article.created_by?.id === author()?.id
+  const canEdit = createMemo(
+    () =>
+      Boolean(author()?.id) &&
+      (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
+        props.article?.created_by?.id === author().id ||
+        session()?.user?.roles.includes('editor')),
+  )
 
   const scrollToComments = (event) => {
     event.preventDefault()
@@ -365,7 +369,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
               <div class={styles.shoutCardDetailsItem}>
                 <FeedArticlePopup
-                  isOwner={canEdit()}
+                  canEdit={canEdit()}
                   containerCssClass={stylesHeader.control}
                   onShareClick={() => props.onShare(props.article)}
                   onInviteClick={props.onInvite}

@@ -6,6 +6,7 @@ import { Author, QueryLoad_Authors_ByArgs } from '../../graphql/schema/core.gen'
 import { byStat } from '../../utils/sortby'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
+type SortedAuthorsSetter = (prev: Author[]) => Author[]
 
 const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('name')
 
@@ -13,6 +14,11 @@ export const setAuthorsSort = (sortBy: AuthorsSortBy) => setSortAllBy(sortBy)
 
 const [authorEntities, setAuthorEntities] = createSignal<{ [authorSlug: string]: Author }>({})
 const [authorsByTopic, setAuthorsByTopic] = createSignal<{ [topicSlug: string]: Author[] }>({})
+const [authorsByShouts, setSortedAuthorsByShout] = createSignal<Author[]>([])
+const [authorsByFollowers, setSortedAuthorsByFollowers] = createSignal<Author[]>([])
+
+export const setAuthorsByShouts = (authors: SortedAuthorsSetter) => setSortedAuthorsByShout(authors)
+export const setAuthorsByFollowers = (authors: SortedAuthorsSetter) => setSortedAuthorsByFollowers(authors)
 
 const sortedAuthors = createLazyMemo(() => {
   const authors = Object.values(authorEntities())
@@ -108,5 +114,5 @@ export const useAuthorsStore = (initialState: InitialState = {}) => {
   }
   addAuthors([...(initialState.authors || [])])
 
-  return { authorEntities, sortedAuthors, authorsByTopic }
+  return { authorEntities, sortedAuthors, authorsByTopic, authorsByShouts, authorsByFollowers }
 }

@@ -108,8 +108,8 @@ export const SessionProvider = (props: {
           changeSearchParams({ mode: 'confirm-email', m: 'auth' }, true)
         }
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   // handle token confirm

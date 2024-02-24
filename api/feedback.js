@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     from: 'Discours Feedback Robot <robot@discours.io>',
     to: 'welcome@discours.io',
     subject,
-    text,
+    text
   }
 
   try {

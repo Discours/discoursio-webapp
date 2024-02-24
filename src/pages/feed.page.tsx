@@ -14,8 +14,8 @@ const handleFeedLoadShouts = (options: LoadShoutsOptions) => {
     ...options,
     filters: {
       featured: false,
-      ...options.filters,
-    },
+      ...options.filters
+    }
   })
 }
 
@@ -36,8 +36,8 @@ export const FeedPage = () => {
       () => {
         resetSortedArticles()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   return (

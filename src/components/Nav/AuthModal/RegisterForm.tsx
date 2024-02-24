@@ -99,7 +99,7 @@ export const RegisterForm = () => {
         email: cleanEmail,
         password: password(),
         confirm_password: password(),
-        redirect_uri: window.location.origin,
+        redirect_uri: window.location.origin
       }
       const { errors } = await signUp(opts)
       if (errors) return
@@ -114,7 +114,7 @@ export const RegisterForm = () => {
   const handleResendLink = async (_ev) => {
     const response: GenericResponse = await resendVerifyEmail({
       email: email(),
-      identifier: 'basic_signup',
+      identifier: 'basic_signup'
     })
     setIsSuccess(response?.message === 'Verification email has been sent. Please check your inbox')
   }
@@ -131,7 +131,7 @@ export const RegisterForm = () => {
                 {t('resend confirmation link')}
               </span>
             </>
-          ),
+          )
         }))
         break
 
@@ -144,7 +144,7 @@ export const RegisterForm = () => {
                 {t('enter')}
               </span>
             </>
-          ),
+          )
         }))
         break
       case 'registered':
@@ -157,7 +157,7 @@ export const RegisterForm = () => {
                 {t('Set the new password').toLocaleLowerCase()}
               </span>
             </>
-          ),
+          )
         }))
         break
       default:
@@ -187,7 +187,7 @@ export const RegisterForm = () => {
             </Show>
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().fullName,
+                'pretty-form__item--error': validationErrors().fullName
               })}
             >
               <input
@@ -206,7 +206,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email && !emailStatus(),
+                'pretty-form__item--error': validationErrors().email && !emailStatus()
               })}
             >
               <input
@@ -250,7 +250,7 @@ export const RegisterForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >

@@ -61,7 +61,7 @@ const scrollTo = (el: HTMLElement) => {
   window.scrollTo({
     top: top - DEFAULT_HEADER_OFFSET,
     left: 0,
-    behavior: 'smooth',
+    behavior: 'smooth'
   })
 }
 
@@ -83,7 +83,7 @@ export const FullArticle = (props: Props) => {
       Boolean(author()?.id) &&
       (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
         props.article?.created_by?.id === author().id ||
-        session()?.user?.roles.includes('editor')),
+        session()?.user?.roles.includes('editor'))
   )
 
   const mainTopic = createMemo(() => {
@@ -167,7 +167,7 @@ export const FullArticle = (props: Props) => {
   createEffect(() => {
     if (searchParams().commentId && isReactionsLoaded()) {
       const commentElement = document.querySelector<HTMLElement>(
-        `[id='comment_${searchParams().commentId}']`,
+        `[id='comment_${searchParams().commentId}']`
       )
 
       if (commentElement) {
@@ -185,7 +185,7 @@ export const FullArticle = (props: Props) => {
     }
 
     const tooltipElements: NodeListOf<HTMLElement> = document.querySelectorAll(
-      '[data-toggle="tooltip"], footnote',
+      '[data-toggle="tooltip"], footnote'
     )
     if (!tooltipElements) {
       return
@@ -210,19 +210,19 @@ export const FullArticle = (props: Props) => {
         modifiers: [
           {
             name: 'eventListeners',
-            options: { scroll: false },
+            options: { scroll: false }
           },
           {
             name: 'offset',
             options: {
-              offset: [0, 8],
-            },
+              offset: [0, 8]
+            }
           },
           {
             name: 'flip',
-            options: { fallbackPlacements: ['top'] },
-          },
-        ],
+            options: { fallbackPlacements: ['top'] }
+          }
+        ]
       })
 
       tooltip.style.visibility = 'hidden'
@@ -307,8 +307,8 @@ export const FullArticle = (props: Props) => {
       () => props.article,
       () => {
         updateIframeSizes()
-      },
-    ),
+      }
+    )
   )
 
   onMount(async () => {
@@ -326,7 +326,7 @@ export const FullArticle = (props: Props) => {
     title: props.article.title,
     topic: mainTopic()?.title || '',
     author: props.article?.authors[0]?.name || '',
-    width: 1200,
+    width: 1200
   })
 
   const description = getDescription(props.article.description || body())

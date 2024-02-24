@@ -17,7 +17,7 @@ const stringMatches = (str: string, q: string, lang: string) => {
 export const dummyFilter = <T extends Topic | Author>(
   data: T[],
   searchQuery: string,
-  lang: 'ru' | 'en',
+  lang: 'ru' | 'en'
 ): T[] => {
   const q = prepareQuery(searchQuery, lang)
 

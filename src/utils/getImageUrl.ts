@@ -13,7 +13,7 @@ const getSizeUrlPart = (options: { width?: number; height?: number; noSizeUrlPar
 
 export const getImageUrl = (
   src: string,
-  options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
+  options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {}
 ) => {
   const filename = src?.split('/').pop()
   const isAudio = src.toLowerCase().split('.').pop() in ['wav', 'mp3', 'ogg', 'aif', 'flac']
@@ -31,12 +31,12 @@ export const getOpenGraphImageUrl = (
     author: string
     width?: number
     height?: number
-  },
+  }
 ) => {
   const sizeUrlPart = getSizeUrlPart(options)
 
   const filtersPart = `filters:discourstext('${encodeURIComponent(options.topic)}','${encodeURIComponent(
-    options.author,
+    options.author
   )}','${encodeURIComponent(options.title)}')/`
 
   if (src.startsWith(thumborUrl)) {

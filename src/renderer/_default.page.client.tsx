@@ -36,7 +36,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
       supportedLngs: ['ru', 'en'],
       fallbackLng: lng,
       lng,
-      load: 'languageOnly',
+      load: 'languageOnly'
     })
 
   const isIOSorMacOSorAndroid = /iphone|ipad|ipod|macintosh|android/i.test(navigator.userAgent)

@@ -17,16 +17,16 @@ export const AuthorPage = (props: PageProps) => {
   const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(
-    Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug(),
+    Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug()
   )
 
   const preload = () => {
     return Promise.all([
       loadShouts({
         filters: { author: slug(), featured: false },
-        limit: PRERENDERED_ARTICLES_COUNT,
+        limit: PRERENDERED_ARTICLES_COUNT
       }),
-      loadAuthor({ slug: slug() }),
+      loadAuthor({ slug: slug() })
     ])
   }
 
@@ -50,8 +50,8 @@ export const AuthorPage = (props: PageProps) => {
         await preload()
         setIsLoaded(true)
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   onCleanup(() => resetSortedArticles())

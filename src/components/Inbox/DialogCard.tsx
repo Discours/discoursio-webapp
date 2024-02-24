@@ -27,7 +27,7 @@ type DialogProps = {
 const DialogCard = (props: DialogProps) => {
   const { t, formatTime } = useLocalize()
   const companions = createMemo(() =>
-    props.members?.filter((member: ChatMember) => member.id !== props.ownId),
+    props.members?.filter((member: ChatMember) => member.id !== props.ownId)
   )
 
   const names = createMemo<string>(() => (companions() || []).map((companion) => companion.name).join(', '))
@@ -37,7 +37,7 @@ const DialogCard = (props: DialogProps) => {
       <div
         class={clsx(styles.DialogCard, {
           [styles.opened]: props.isOpened,
-          [styles.hovered]: !props.isChatHeader,
+          [styles.hovered]: !props.isChatHeader
         })}
         onClick={props.onClick}
       >

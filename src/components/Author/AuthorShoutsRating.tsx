@@ -16,7 +16,7 @@ export const AuthorShoutsRating = (props: AuthorShoutsRating) => {
     <div
       class={clsx(styles.rating, props.class, {
         [styles.isUpvoted]: isUpvoted(),
-        [styles.isDownvoted]: !isUpvoted(),
+        [styles.isDownvoted]: !isUpvoted()
       })}
     >
       <span class={styles.ratingValue}>{props.author?.stat?.rating_shouts}</span>

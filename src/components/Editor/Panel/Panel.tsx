@@ -35,7 +35,7 @@ export const Panel = (props: Props) => {
   useOutsideClickHandler({
     containerRef,
     predicate: () => isEditorPanelVisible(),
-    handler: () => toggleEditorPanel(),
+    handler: () => toggleEditorPanel()
   })
 
   useEscKeyDownHandler(() => {

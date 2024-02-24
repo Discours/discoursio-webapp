@@ -45,6 +45,6 @@ export const useLayoutsStore = (layouts: LayoutType[], initialData: Shout[]) => 
   return {
     addLayoutShouts,
     sortedLayoutShouts,
-    loadLayoutShoutsBy,
+    loadLayoutShoutsBy
   }
 }

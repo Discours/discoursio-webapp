@@ -46,7 +46,7 @@ export const Comment = (props: Props) => {
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
-      (props.comment?.created_by?.id === author().id || session()?.user?.roles.includes('editor')),
+      (props.comment?.created_by?.id === author().id || session()?.user?.roles.includes('editor'))
   )
 
   const comment = createMemo(() => props.comment)
@@ -59,7 +59,7 @@ export const Comment = (props: Props) => {
           confirmBody: t('Are you sure you want to delete this comment?'),
           confirmButtonLabel: t('Delete'),
           confirmButtonVariant: 'danger',
-          declineButtonVariant: 'primary',
+          declineButtonVariant: 'primary'
         })
 
         if (isConfirmed) {
@@ -80,7 +80,7 @@ export const Comment = (props: Props) => {
         kind: ReactionKind.Comment,
         reply_to: props.comment.id,
         body: value,
-        shout: props.comment.shout.id,
+        shout: props.comment.shout.id
       })
       setClearEditor(true)
       setIsReplyVisible(false)
@@ -102,7 +102,7 @@ export const Comment = (props: Props) => {
         id: props.comment.id,
         kind: ReactionKind.Comment,
         body: value,
-        shout: props.comment.shout.id,
+        shout: props.comment.shout.id
       })
       setEditMode(false)
       setLoading(false)
@@ -126,7 +126,7 @@ export const Comment = (props: Props) => {
                   name={comment().created_by.name}
                   userpic={comment().created_by.pic}
                   class={clsx({
-                    [styles.compactUserpic]: props.compact,
+                    [styles.compactUserpic]: props.compact
                   })}
                 />
                 <small>

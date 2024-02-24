@@ -35,7 +35,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feed')}
             class={clsx({
-              [styles.selected]: page().route === 'feed',
+              [styles.selected]: page().route === 'feed'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -48,7 +48,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedMy')}
             class={clsx({
-              [styles.selected]: page().route === 'feedMy',
+              [styles.selected]: page().route === 'feedMy'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -61,7 +61,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedCollaborations')}
             class={clsx({
-              [styles.selected]: page().route === 'feedCollaborations',
+              [styles.selected]: page().route === 'feedCollaborations'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -74,7 +74,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedDiscussions')}
             class={clsx({
-              [styles.selected]: page().route === 'feedDiscussions',
+              [styles.selected]: page().route === 'feedDiscussions'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -87,7 +87,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedBookmarks')}
             class={clsx({
-              [styles.selected]: page().route === 'feedBookmarks',
+              [styles.selected]: page().route === 'feedBookmarks'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -100,7 +100,7 @@ export const Sidebar = () => {
           <a
             href={getPagePath(router, 'feedNotifications')}
             class={clsx({
-              [styles.selected]: page().route === 'feedNotifications',
+              [styles.selected]: page().route === 'feedNotifications'
             })}
           >
             <span class={styles.sidebarItemName}>

@@ -15,7 +15,7 @@ export const createGraphQLClient = (serviceName: string, token = '') => {
     maskTypename: true,
     requestPolicy: 'cache-and-network',
     fetchOptions: () => (token ? { headers: { Authorization: token } } : {}),
-    exchanges,
+    exchanges
   }
   return createClient(options)
 }

@@ -18,7 +18,7 @@ import styles from '../styles/Create.module.scss'
 const handleCreate = async (layout: LayoutType) => {
   const shout = await apiClient.createArticle({ article: { layout: layout } })
   redirectPage(router, 'edit', {
-    shoutId: shout.id.toString(),
+    shoutId: shout.id.toString()
   })
 }
 

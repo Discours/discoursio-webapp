@@ -13,7 +13,7 @@ import type {
   ReactionInput,
   Shout,
   ShoutInput,
-  Topic,
+  Topic
 } from '../schema/core.gen'
 
 import { createGraphQLClient } from '../createGraphQLClient'
@@ -156,7 +156,7 @@ export const apiClient = {
   updateArticle: async ({
     shout_id,
     shout_input,
-    publish,
+    publish
   }: {
     shout_id: number
     shout_input?: ShoutInput
@@ -236,5 +236,5 @@ export const apiClient = {
       .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: offset ?? 0 })
       .toPromise()
     return resp.data.load_reactions_by
-  },
+  }
 }

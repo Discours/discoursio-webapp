@@ -29,7 +29,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.kind === reactionKind &&
         r.created_by.id === author()?.id &&
         r.shout.id === props.shout.id &&
-        !r.reply_to,
+        !r.reply_to
     )
 
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
@@ -37,8 +37,8 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
 
   const shoutRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
-      (r) => ['LIKE', 'DISLIKE'].includes(r.kind) && r.shout.id === props.shout.id && !r.reply_to,
-    ),
+      (r) => ['LIKE', 'DISLIKE'].includes(r.kind) && r.shout.id === props.shout.id && !r.reply_to
+    )
   )
 
   const deleteShoutReaction = async (reactionKind: ReactionKind) => {
@@ -47,7 +47,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.kind === reactionKind &&
         r.created_by.id === author()?.id &&
         r.shout.id === props.shout.id &&
-        !r.reply_to,
+        !r.reply_to
     )
     return deleteReaction(reactionToDelete.id)
   }
@@ -62,13 +62,13 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
       } else {
         await createReaction({
           kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-          shout: props.shout.id,
+          shout: props.shout.id
         })
       }
 
       loadShout(props.shout.slug)
       loadReactionsBy({
-        by: { shout: props.shout.slug },
+        by: { shout: props.shout.slug }
       })
 
       setIsLoading(false)

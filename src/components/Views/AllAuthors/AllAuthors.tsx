@@ -33,7 +33,7 @@ export const AllAuthors = (props: Props) => {
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
-    sortBy: searchParams().by || 'name',
+    sortBy: searchParams().by || 'name'
   })
 
   const [searchQuery, setSearchQuery] = createSignal('')
@@ -51,7 +51,7 @@ export const AllAuthors = (props: Props) => {
   const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
     return sortedAuthors().reduce(
       (acc, author) => authorLetterReduce(acc, author, lang()),
-      {} as { [letter: string]: Author[] },
+      {} as { [letter: string]: Author[] }
     )
   })
 
@@ -87,21 +87,21 @@ export const AllAuthors = (props: Props) => {
               <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                 <li
                   class={clsx({
-                    ['view-switcher__item--selected']: !searchParams().by || searchParams().by === 'shouts',
+                    ['view-switcher__item--selected']: !searchParams().by || searchParams().by === 'shouts'
                   })}
                 >
                   <a href="/authors?by=shouts">{t('By shouts')}</a>
                 </li>
                 <li
                   class={clsx({
-                    ['view-switcher__item--selected']: searchParams().by === 'followers',
+                    ['view-switcher__item--selected']: searchParams().by === 'followers'
                   })}
                 >
                   <a href="/authors?by=followers">{t('By popularity')}</a>
                 </li>
                 <li
                   class={clsx({
-                    ['view-switcher__item--selected']: searchParams().by === 'name',
+                    ['view-switcher__item--selected']: searchParams().by === 'name'
                   })}
                 >
                   <a href="/authors?by=name">{t('By name')}</a>

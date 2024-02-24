@@ -23,7 +23,7 @@ import styles from './SearchModal.module.scss'
 const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
   `<span>${str.replaceAll(
     new RegExp(intersection, 'gi'),
-    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`,
+    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`
   )}</span>`
 
 const prepareSearchResults = (list: Shout[], searchValue: string) =>
@@ -33,15 +33,15 @@ const prepareSearchResults = (list: Shout[], searchValue: string) =>
     title: article.title
       ? getSearchCoincidences({
           str: article.title,
-          intersection: searchValue,
+          intersection: searchValue
         })
       : '',
     subtitle: article.subtitle
       ? getSearchCoincidences({
           str: article.subtitle,
-          intersection: searchValue,
+          intersection: searchValue
         })
-      : '',
+      : ''
   }))
 
 export const SearchModal = () => {
@@ -59,7 +59,7 @@ export const SearchModal = () => {
       const { hasMore, newShouts } = await loadShoutsSearch({
         limit: FEED_PAGE_SIZE,
         text: inputValue(),
-        offset: offset(),
+        offset: offset()
       })
       setIsLoading(false)
       setOffset(newShouts.length)
@@ -68,8 +68,8 @@ export const SearchModal = () => {
     },
     {
       ssrLoadFrom: 'initial',
-      initialValue: null,
-    },
+      initialValue: null
+    }
   )
 
   let searchEl: HTMLInputElement
@@ -123,7 +123,7 @@ export const SearchModal = () => {
       <p
         class={styles.searchDescription}
         innerHTML={t(
-          'To find publications, art, comments, authors and topics of interest to you, just start typing your query',
+          'To find publications, art, comments, authors and topics of interest to you, just start typing your query'
         )}
       />
 
@@ -137,7 +137,7 @@ export const SearchModal = () => {
                   settings={{
                     isFloorImportant: true,
                     isSingle: true,
-                    nodate: true,
+                    nodate: true
                   }}
                 />
               </div>

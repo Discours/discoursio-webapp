@@ -57,11 +57,11 @@ const desktopCoverImageWidths: Record<ArticleCardProps['desktopCoverSize'], numb
   XS: 300,
   S: 400,
   M: 600,
-  L: 800,
+  L: 800
 }
 
 const getTitleAndSubtitle = (
-  article: Shout,
+  article: Shout
 ): {
   title: string
   subtitle: string
@@ -101,7 +101,7 @@ const LAYOUT_ASPECT = {
   music: styles.aspectRatio1x1,
   literature: styles.aspectRatio16x9,
   video: styles.aspectRatio16x9,
-  image: styles.aspectRatio4x3,
+  image: styles.aspectRatio4x3
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
@@ -117,7 +117,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const formattedDate = createMemo<string>(() =>
-    props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
+    props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : ''
   )
 
   const canEdit = createMemo(
@@ -125,14 +125,14 @@ export const ArticleCard = (props: ArticleCardProps) => {
       Boolean(author()?.id) &&
       (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
         props.article?.created_by?.id === author().id ||
-        session()?.user?.roles.includes('editor')),
+        session()?.user?.roles.includes('editor'))
   )
 
   const scrollToComments = (event) => {
     event.preventDefault()
     openPage(router, 'article', { slug: props.article.slug })
     changeSearchParams({
-      scrollTo: 'comments',
+      scrollTo: 'comments'
     })
   }
   return (
@@ -150,14 +150,14 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
         [styles.shoutCardNoImage]: !props.article.cover,
-        [aspectRatio()]: props.withAspectRatio,
+        [aspectRatio()]: props.withAspectRatio
       })}
     >
       <Show when={!(props.settings?.noimage || props.settings?.isFeedMode)}>
         <div class={styles.shoutCardCoverContainer}>
           <div
             class={clsx(styles.shoutCardCover, {
-              [styles.loading]: props.article.cover && isCoverImageLoading(),
+              [styles.loading]: props.article.cover && isCoverImageLoading()
             })}
           >
             <Show
@@ -207,7 +207,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
         <div
           class={clsx(styles.shoutCardTitlesContainer, {
-            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode,
+            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
           <a href={getPagePath(router, 'article', { slug: props.article.slug })}>

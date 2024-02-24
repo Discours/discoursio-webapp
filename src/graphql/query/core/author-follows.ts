@@ -25,12 +25,12 @@ export default gql`
           followers
         }
       }
-      communities {
-        id
-        slug
-        name
-        pic
-      }
+      #communities {
+      #  id
+      #  slug
+      #  name
+      #  pic
+      #}
     }
   }
 `

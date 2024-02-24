@@ -72,7 +72,7 @@ export const AuthorView = (props: Props) => {
     try {
       const [subscriptionsResult, followersResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
-        apiClient.getAuthorFollowers({ slug }),
+        apiClient.getAuthorFollowers({ slug })
       ])
 
       const { authors, topics } = subscriptionsResult

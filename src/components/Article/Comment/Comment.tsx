@@ -46,7 +46,7 @@ export const Comment = (props: Props) => {
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
-      (props.comment?.created_by?.id === author().id || session()?.user?.roles.includes('editor')),
+      (props.comment?.created_by?.id === author().id || session()?.user?.roles.includes('editor'))
   )
 
   const comment = createMemo(() => props.comment)

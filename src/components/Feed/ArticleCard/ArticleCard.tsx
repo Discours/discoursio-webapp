@@ -125,7 +125,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       Boolean(author()?.id) &&
       (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
         props.article?.created_by?.id === author().id ||
-        session()?.user?.roles.includes('editor')),
+        session()?.user?.roles.includes('editor'))
   )
 
   const scrollToComments = (event) => {

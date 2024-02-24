@@ -236,5 +236,5 @@ export const apiClient = {
       .query(reactionsLoadBy, { by, limit: limit ?? 1000, offset: offset ?? 0 })
       .toPromise()
     return resp.data.load_reactions_by
-  },
+  }
 }

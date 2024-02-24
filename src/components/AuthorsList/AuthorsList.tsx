@@ -28,7 +28,7 @@ export const AuthorsList = (props: Props) => {
     const result = await apiClient.loadAuthorsBy({
       by: { order: queryType },
       limit: PAGE_SIZE,
-      offset: offset,
+      offset: offset
     })
 
     if (queryType === 'shouts') {
@@ -44,7 +44,7 @@ export const AuthorsList = (props: Props) => {
     const queryType = props.query
     const nextPage = currentPage()[queryType] + 1
     fetchAuthors(queryType, nextPage).then(() =>
-      setCurrentPage({ ...currentPage(), [queryType]: nextPage }),
+      setCurrentPage({ ...currentPage(), [queryType]: nextPage })
     )
   }
 
@@ -70,7 +70,7 @@ export const AuthorsList = (props: Props) => {
                 author={author}
                 isFollowed={{
                   loaded: !loading(),
-                  value: isOwnerSubscribed(author.id),
+                  value: isOwnerSubscribed(author.id)
                 }}
               />
             </div>

@@ -171,7 +171,7 @@ export const AllAuthors = (props: Props) => {
             <AuthorsList
               allAuthorsLength={sortedAuthors()?.length}
               searchQuery={searchQuery()}
-              query={searchParams().by === 'shouts' ? 'shouts' : 'followers'}
+              query={searchParams().by === 'shouts' ? 'shouts' : 'authors'}
             />
           </Show>
         </div>

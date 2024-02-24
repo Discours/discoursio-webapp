@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal, onMount } from 'solid-js'
+import { For, Show, createEffect, createSignal, onMount, on } from "solid-js";
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
@@ -11,7 +11,7 @@ import styles from './AuthorsList.module.scss'
 
 type Props = {
   class?: string
-  query: 'shouts' | 'followers'
+  query: 'shouts' | 'authors'
   searchQuery?: string
   allAuthorsLength?: number
 }
@@ -25,11 +25,11 @@ export const AuthorsList = (props: Props) => {
   const [currentPage, setCurrentPage] = createSignal({ shouts: 0, followers: 0 })
   const [allLoaded, setAllLoaded] = createSignal(false)
 
-  const fetchAuthors = async (queryType: 'shouts' | 'followers', page: number) => {
+  const fetchAuthors = async (queryType: 'shouts' | 'authors', page: number) => {
     setLoading(true)
 
+    console.log("!!! AAA:");
     const offset = PAGE_SIZE * page
-    console.log('!!! offset:', offset)
     const result = await apiClient.loadAuthorsBy({
       by: { order: queryType },
       limit: PAGE_SIZE,
@@ -51,12 +51,17 @@ export const AuthorsList = (props: Props) => {
       setCurrentPage({ ...currentPage(), [props.query]: nextPage }),
     )
   }
-
-  onMount(() => {
-    fetchAuthors(props.query, currentPage()[props.query]).then(() =>
-      setCurrentPage({ ...currentPage(), [props.query]: currentPage()[props.query] + 1 }),
-    )
-  })
+  createEffect(
+    on(
+      () => props.query,
+      () => {
+        fetchAuthors(props.query, currentPage()[props.query]).then(() =>
+          setCurrentPage({ ...currentPage(), [props.query]: currentPage()[props.query] + 1 }),
+        )
+      },
+      { defer: true },
+    ),
+  )
 
   const authorsList = () => (props.query === 'shouts' ? authorsByShouts() : authorsByFollowers())
 

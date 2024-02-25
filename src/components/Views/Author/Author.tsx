@@ -175,7 +175,7 @@ export const AuthorView = (props: Props) => {
                       {t('Comments')}
                     </a>
                     <Show when={author().stat}>
-                      <span class="view-switcher__counter">{author().stat.commented}</span>
+                      <span class="view-switcher__counter">{author().stat.comments}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>

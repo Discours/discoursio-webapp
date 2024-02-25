@@ -142,10 +142,8 @@ export const Header = (props: Props) => {
   }
 
   onMount(async () => {
-    if (window.location.pathname === '/' || window.location.pathname === '') {
-      const topics = await apiClient.getRandomTopics({ amount: RANDOM_TOPICS_COUNT })
-      setRandomTopics(topics)
-    }
+    const topics = await apiClient.getRandomTopics({ amount: RANDOM_TOPICS_COUNT })
+    setRandomTopics(topics)
   })
 
   const handleToggleMenuByLink = (event: MouseEvent, route: keyof typeof ROUTES) => {

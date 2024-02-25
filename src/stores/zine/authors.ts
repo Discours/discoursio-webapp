@@ -3,7 +3,6 @@ import { createSignal } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
 import { Author, QueryLoad_Authors_ByArgs } from '../../graphql/schema/core.gen'
-import { byStat } from '../../utils/sortby'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
 type SortedAuthorsSetter = (prev: Author[]) => Author[]
@@ -21,19 +20,7 @@ export const setAuthorsByShouts = (authors: SortedAuthorsSetter) => setSortedAut
 export const setAuthorsByFollowers = (authors: SortedAuthorsSetter) => setSortedAuthorsByFollowers(authors)
 
 const sortedAuthors = createLazyMemo(() => {
-  const authors = Object.values(authorEntities())
-  switch (sortAllBy()) {
-    case 'followers': {
-      return authors.sort(byStat('followers'))
-    }
-    case 'shouts': {
-      return authors.sort(byStat('shouts'))
-    }
-    case 'name': {
-      return authors.sort((a, b) => a.name.localeCompare(b.name))
-    }
-  }
-  return authors
+  return Object.values(authorEntities())
 })
 
 export const addAuthors = (authors: Author[]) => {

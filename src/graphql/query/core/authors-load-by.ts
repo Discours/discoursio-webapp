@@ -13,6 +13,10 @@ export default gql`
         shouts
         authors
         followers
+        rating
+        comments: commented
+        rating_shouts
+        rating_comments
       }
     }
   }

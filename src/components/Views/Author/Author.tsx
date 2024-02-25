@@ -58,9 +58,9 @@ export const AuthorView = (props: Props) => {
     }
   })
 
-  createEffect(() => {
+  createEffect(async () => {
     if (author()?.id && !author().stat) {
-      const a = loadAuthor({ slug: '', author_id: author().id })
+      const a = await loadAuthor({ slug: '', author_id: author().id })
       console.debug('[AuthorView] loaded author:', a)
     }
   })

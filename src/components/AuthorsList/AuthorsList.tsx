@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal, onMount, on } from "solid-js";
+import { For, Show, createEffect, createSignal, on, onMount } from 'solid-js'
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
@@ -28,7 +28,7 @@ export const AuthorsList = (props: Props) => {
   const fetchAuthors = async (queryType: 'shouts' | 'authors', page: number) => {
     setLoading(true)
 
-    console.log("!!! AAA:");
+    console.log('!!! AAA:')
     const offset = PAGE_SIZE * page
     const result = await apiClient.loadAuthorsBy({
       by: { order: queryType },
@@ -51,25 +51,28 @@ export const AuthorsList = (props: Props) => {
       setCurrentPage({ ...currentPage(), [props.query]: nextPage }),
     )
   }
+
   createEffect(
     on(
       () => props.query,
-      () => {
-        fetchAuthors(props.query, currentPage()[props.query]).then(() =>
-          setCurrentPage({ ...currentPage(), [props.query]: currentPage()[props.query] + 1 }),
-        )
+      (query) => {
+        const authorsList = query === 'shouts' ? authorsByShouts() : authorsByFollowers()
+        if (authorsList.length === 0 || currentPage()[query] === 0) {
+          setCurrentPage((prev) => ({ ...prev, [query]: 0 }))
+          fetchAuthors(query, 0).then(() => setCurrentPage((prev) => ({ ...prev, [query]: 1 })))
+        }
       },
-      { defer: true },
     ),
   )
 
   const authorsList = () => (props.query === 'shouts' ? authorsByShouts() : authorsByFollowers())
 
-  createEffect(() => {
-    if (props.searchQuery) {
-      // search logic
-    }
-  })
+  // TODO: do it with backend
+  // createEffect(() => {
+  //   if (props.searchQuery) {
+  //     // search logic
+  //   }
+  // })
 
   createEffect(() => {
     setAllLoaded(authorsByShouts().length === authorsList.length)

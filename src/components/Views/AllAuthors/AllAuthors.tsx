@@ -28,6 +28,7 @@ type Props = {
 
 export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
+  const [searchQuery, setSearchQuery] = createSignal('')
   const ALPHABET =
     lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ@']
   const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
@@ -36,27 +37,22 @@ export const AllAuthors = (props: Props) => {
     sortBy: searchParams().by || 'name',
   })
 
-  const [searchQuery, setSearchQuery] = createSignal('')
-
-  createEffect(() => {
-    let by = searchParams().by
-    if (by) {
-      setAuthorsSort(by)
-    } else {
-      by = 'name'
-      changeSearchParams({ by })
-    }
+  const filteredAuthors = createMemo(() => {
+    const query = searchQuery().toLowerCase()
+    return sortedAuthors().filter((author) => {
+      return author.name.toLowerCase().includes(query) // Предполагаем, что у автора есть свойство name
+    })
   })
 
-  const byLetter = createMemo<{ [letter: string]: Author[] }>(() => {
-    return sortedAuthors().reduce(
+  const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
+    return filteredAuthors().reduce(
       (acc, author) => authorLetterReduce(acc, author, lang()),
       {} as { [letter: string]: Author[] },
     )
   })
 
   const sortedKeys = createMemo<string[]>(() => {
-    const keys = Object.keys(byLetter())
+    const keys = Object.keys(byLetterFiltered())
     keys.sort()
     keys.push(keys.shift())
     return keys
@@ -106,7 +102,7 @@ export const AllAuthors = (props: Props) => {
                 >
                   <a href="/authors?by=name">{t('By name')}</a>
                 </li>
-                <Show when={searchParams().by !== 'name'}>
+                <Show when={searchParams().by === 'name'}>
                   <li class="view-switcher__search">
                     <SearchField onChange={(value) => setSearchQuery(value)} />
                   </li>
@@ -122,7 +118,7 @@ export const AllAuthors = (props: Props) => {
                   <For each={ALPHABET}>
                     {(letter, index) => (
                       <li>
-                        <Show when={letter in byLetter()} fallback={letter}>
+                        <Show when={letter in byLetterFiltered()} fallback={letter}>
                           <a
                             href={`/authors?by=name#letter-${index()}`}
                             onClick={(event) => {
@@ -147,7 +143,7 @@ export const AllAuthors = (props: Props) => {
                     <div class="row">
                       <div class="col-lg-20">
                         <div class="row">
-                          <For each={byLetter()[letter]}>
+                          <For each={byLetterFiltered()[letter]}>
                             {(author) => (
                               <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                 <div class="topic-title">
@@ -167,7 +163,7 @@ export const AllAuthors = (props: Props) => {
               )}
             </For>
           </Show>
-          <Show when={searchParams().by !== 'name' && props.isLoaded} fallback={<Loading />}>
+          <Show when={searchParams().by !== 'name' && props.isLoaded}>
             <AuthorsList
               allAuthorsLength={sortedAuthors()?.length}
               searchQuery={searchQuery()}

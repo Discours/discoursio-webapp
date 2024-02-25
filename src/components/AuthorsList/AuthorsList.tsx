@@ -11,7 +11,7 @@ import styles from './AuthorsList.module.scss'
 
 type Props = {
   class?: string
-  query: 'shouts' | 'authors'
+  query: 'followers' | 'shouts'
   searchQuery?: string
   allAuthorsLength?: number
 }
@@ -25,7 +25,7 @@ export const AuthorsList = (props: Props) => {
   const [currentPage, setCurrentPage] = createSignal({ shouts: 0, followers: 0 })
   const [allLoaded, setAllLoaded] = createSignal(false)
 
-  const fetchAuthors = async (queryType: 'shouts' | 'authors', page: number) => {
+  const fetchAuthors = async (queryType: Props['query'], page: number) => {
     setLoading(true)
 
     console.log('!!! AAA:')

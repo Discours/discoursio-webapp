@@ -18,7 +18,7 @@ export default gql`
         authors
         followers
         rating
-        commented
+        comments
       }
     }
   }

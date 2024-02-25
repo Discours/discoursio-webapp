@@ -17,7 +17,7 @@ export default gql`
         authors
         followers
         rating
-        comments: commented
+        comments
         rating_shouts
         rating_comments
       }

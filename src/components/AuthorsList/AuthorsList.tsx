@@ -8,6 +8,7 @@ import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
 import { Button } from '../_shared/Button'
 import styles from './AuthorsList.module.scss'
+import { Author } from "../../graphql/schema/core.gen";
 
 type Props = {
   class?: string
@@ -17,6 +18,13 @@ type Props = {
 }
 
 const PAGE_SIZE = 20
+
+// TODO: проверить нет ли дубликатов в базе данных, если нет - то не использовать addUniqueAuthors()
+const addUniqueAuthors = (prevAuthors: Author[], newAuthors: Author[]) => {
+  const uniqueNewAuthors = newAuthors.filter(newAuthor =>
+    !prevAuthors.some(prevAuthor => prevAuthor.id === newAuthor.id));
+  return [...prevAuthors, ...uniqueNewAuthors]
+}
 export const AuthorsList = (props: Props) => {
   const { t } = useLocalize()
   const { isOwnerSubscribed } = useFollowing()
@@ -35,9 +43,9 @@ export const AuthorsList = (props: Props) => {
     })
 
     if (queryType === 'shouts') {
-      setAuthorsByShouts((prev) => [...prev, ...result])
+      setAuthorsByShouts(prev => addUniqueAuthors(prev, result));
     } else {
-      setAuthorsByFollowers((prev) => [...prev, ...result])
+      setAuthorsByFollowers(prev => addUniqueAuthors(prev, result));
     }
     setLoading(false)
   }

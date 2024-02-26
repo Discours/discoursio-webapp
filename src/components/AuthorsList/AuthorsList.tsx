@@ -28,6 +28,7 @@ export const AuthorsList = (props: Props) => {
   const fetchAuthors = async (queryType: Props['query'], page: number) => {
     setLoading(true)
     const offset = PAGE_SIZE * page
+
     const result = await apiClient.loadAuthorsBy({
       by: { order: queryType },
       limit: PAGE_SIZE,
@@ -35,12 +36,11 @@ export const AuthorsList = (props: Props) => {
     })
 
     if (queryType === 'shouts') {
-      setAuthorsByShouts((prev) => [...prev, ...result])
+      setAuthorsByShouts((prev) => [prev, ...result])
     } else {
-      setAuthorsByFollowers((prev) => [...prev, ...result])
+      setAuthorsByFollowers((prev) => [prev, ...result])
     }
     setLoading(false)
-    return result
   }
 
   const loadMoreAuthors = () => {
@@ -73,7 +73,7 @@ export const AuthorsList = (props: Props) => {
   // })
 
   createEffect(() => {
-    setAllLoaded(authorsByShouts().length === authorsList.length)
+    setAllLoaded(props.allAuthorsLength === authorsList.length)
   })
 
   return (
@@ -96,10 +96,11 @@ export const AuthorsList = (props: Props) => {
       <div class="row">
         <div class="col-lg-20 col-xl-18">
           <div class={styles.action}>
+            <p>{`${loading()}`}</p>
             <Show when={!loading() && authorsList().length > 0 && !allLoaded()}>
               <Button value={t('Load more')} onClick={loadMoreAuthors} />
             </Show>
-            <Show when={loading() && !allLoaded()}>
+            <Show when={loading() &&   !allLoaded()}>
               <InlineLoader />
             </Show>
           </div>

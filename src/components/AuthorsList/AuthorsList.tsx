@@ -28,7 +28,6 @@ export const AuthorsList = (props: Props) => {
   const fetchAuthors = async (queryType: Props['query'], page: number) => {
     setLoading(true)
     const offset = PAGE_SIZE * page
-
     const result = await apiClient.loadAuthorsBy({
       by: { order: queryType },
       limit: PAGE_SIZE,
@@ -36,9 +35,9 @@ export const AuthorsList = (props: Props) => {
     })
 
     if (queryType === 'shouts') {
-      setAuthorsByShouts((prev) => [prev, ...result])
+      setAuthorsByShouts((prev) => [...prev, ...result])
     } else {
-      setAuthorsByFollowers((prev) => [prev, ...result])
+      setAuthorsByFollowers((prev) => [...prev, ...result])
     }
     setLoading(false)
   }
@@ -55,7 +54,7 @@ export const AuthorsList = (props: Props) => {
       () => props.query,
       (query) => {
         const authorsList = query === 'shouts' ? authorsByShouts() : authorsByFollowers()
-        if (authorsList.length === 0 || currentPage()[query] === 0) {
+        if (authorsList.length === 0 && currentPage()[query] === 0) {
           setCurrentPage((prev) => ({ ...prev, [query]: 0 }))
           fetchAuthors(query, 0).then(() => setCurrentPage((prev) => ({ ...prev, [query]: 1 })))
         }

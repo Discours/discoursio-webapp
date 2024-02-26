@@ -96,7 +96,6 @@ export const AuthorsList = (props: Props) => {
       <div class="row">
         <div class="col-lg-20 col-xl-18">
           <div class={styles.action}>
-            <p>{`${loading()}`}</p>
             <Show when={!loading() && authorsList().length > 0 && !allLoaded()}>
               <Button value={t('Load more')} onClick={loadMoreAuthors} />
             </Show>

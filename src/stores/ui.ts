@@ -48,9 +48,7 @@ export const MODALS: Record<ModalType, ModalType> = {
 
 const [modal, setModal] = createSignal<ModalType>(null)
 
-const { changeSearchParams, clearSearchParams } = useRouter<
-  AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams
->()
+const { changeSearchParams, clearSearchParams } = useRouter<AuthModalSearchParams & ConfirmEmailSearchParams & RootSearchParams>()
 
 export const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
   if (modalSource) {

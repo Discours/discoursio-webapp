@@ -27,8 +27,6 @@ export const AuthorsList = (props: Props) => {
 
   const fetchAuthors = async (queryType: Props['query'], page: number) => {
     setLoading(true)
-
-    console.log('!!! AAA:')
     const offset = PAGE_SIZE * page
     const result = await apiClient.loadAuthorsBy({
       by: { order: queryType },

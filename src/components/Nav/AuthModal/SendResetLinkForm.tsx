@@ -81,7 +81,6 @@ export const SendResetLinkForm = () => {
     >
       <div>
         <h4>{t('Set the new password')}</h4>
-        <p>{message()}</p>
         <div class={styles.authSubtitle}>
           {t(message()) || t('Please give us your email address')}
         </div>

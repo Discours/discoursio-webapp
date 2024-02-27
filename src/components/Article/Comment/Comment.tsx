@@ -46,14 +46,13 @@ export const Comment = (props: Props) => {
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
-      (props.comment?.created_by?.id === author().id || session()?.user?.roles.includes('editor')),
+      (props.comment?.created_by?.slug === author().slug || session()?.user?.roles.includes('editor')),
   )
 
-  const comment = createMemo(() => props.comment)
-  const body = createMemo(() => (comment().body || '').trim())
+  const body = createMemo(() => (props.comment.body || '').trim())
 
   const remove = async () => {
-    if (comment()?.id) {
+    if (props.comment?.id) {
       try {
         const isConfirmed = await showConfirm({
           confirmBody: t('Are you sure you want to delete this comment?'),
@@ -63,7 +62,7 @@ export const Comment = (props: Props) => {
         })
 
         if (isConfirmed) {
-          await deleteReaction(comment().id)
+          await deleteReaction(props.comment.id)
 
           await showSnackbar({ body: t('Comment successfully deleted') })
         }
@@ -113,8 +112,10 @@ export const Comment = (props: Props) => {
 
   return (
     <li
-      id={`comment_${comment().id}`}
-      class={clsx(styles.comment, props.class, { [styles.isNew]: comment()?.created_at > props.lastSeen })}
+      id={`comment_${props.comment.id}`}
+      class={clsx(styles.comment, props.class, {
+        [styles.isNew]: props.comment?.created_at > props.lastSeen,
+      })}
     >
       <Show when={!!body()}>
         <div class={styles.commentContent}>
@@ -123,21 +124,21 @@ export const Comment = (props: Props) => {
             fallback={
               <div>
                 <Userpic
-                  name={comment().created_by.name}
-                  userpic={comment().created_by.pic}
+                  name={props.comment.created_by.name}
+                  userpic={props.comment.created_by.pic}
                   class={clsx({
                     [styles.compactUserpic]: props.compact,
                   })}
                 />
                 <small>
-                  <a href={`#comment_${comment()?.id}`}>{comment()?.shout.title || ''}</a>
+                  <a href={`#comment_${props.comment?.id}`}>{props.comment?.shout.title || ''}</a>
                 </small>
               </div>
             }
           >
             <div class={styles.commentDetails}>
               <div class={styles.commentAuthor}>
-                <AuthorLink author={comment()?.created_by as Author} />
+                <AuthorLink author={props.comment?.created_by as Author} />
               </div>
 
               <Show when={props.isArticleAuthor}>
@@ -148,23 +149,23 @@ export const Comment = (props: Props) => {
                 <div class={styles.articleLink}>
                   <Icon name="arrow-right" class={styles.articleLinkIcon} />
                   <a
-                    href={`${getPagePath(router, 'article', { slug: comment().shout.slug })}?commentId=${
-                      comment().id
-                    }`}
+                    href={`${getPagePath(router, 'article', {
+                      slug: props.comment.shout.slug,
+                    })}?commentId=${props.comment.id}`}
                   >
-                    {comment().shout.title}
+                    {props.comment.shout.title}
                   </a>
                 </div>
               </Show>
-              <CommentDate showOnHover={true} comment={comment()} isShort={true} />
-              <CommentRatingControl comment={comment()} />
+              <CommentDate showOnHover={true} comment={props.comment} isShort={true} />
+              <CommentRatingControl comment={props.comment} />
             </div>
           </Show>
           <div class={styles.commentBody}>
             <Show when={editMode()} fallback={<div innerHTML={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor
-                  initialContent={comment().body}
+                  initialContent={props.comment.body}
                   submitButtonText={t('Save')}
                   quoteEnabled={true}
                   imageEnabled={true}

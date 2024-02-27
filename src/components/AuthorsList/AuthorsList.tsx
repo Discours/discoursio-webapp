@@ -19,13 +19,6 @@ type Props = {
 
 const PAGE_SIZE = 20
 
-// TODO: проверить нет ли дубликатов в базе данных, если нет - то не использовать addUniqueAuthors()
-const addUniqueAuthors = (prevAuthors: Author[], newAuthors: Author[]) => {
-  const uniqueNewAuthors = newAuthors.filter(
-    (newAuthor) => !prevAuthors.some((prevAuthor) => prevAuthor.id === newAuthor.id),
-  )
-  return [...prevAuthors, ...uniqueNewAuthors]
-}
 export const AuthorsList = (props: Props) => {
   const { t } = useLocalize()
   const { isOwnerSubscribed } = useFollowing()
@@ -44,9 +37,9 @@ export const AuthorsList = (props: Props) => {
     })
 
     if (queryType === 'shouts') {
-      setAuthorsByShouts((prev) => addUniqueAuthors(prev, result))
+      setAuthorsByShouts((prev) => [...prev, ...result])
     } else {
-      setAuthorsByFollowers((prev) => addUniqueAuthors(prev, result))
+      setAuthorsByFollowers((prev) => [...prev, ...result])
     }
     setLoading(false)
   }

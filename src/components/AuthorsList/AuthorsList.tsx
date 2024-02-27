@@ -3,12 +3,12 @@ import { For, Show, createEffect, createSignal, on, onMount } from 'solid-js'
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
+import { Author } from '../../graphql/schema/core.gen'
 import { setAuthorsByFollowers, setAuthorsByShouts, useAuthorsStore } from '../../stores/zine/authors'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
 import { Button } from '../_shared/Button'
 import styles from './AuthorsList.module.scss'
-import { Author } from "../../graphql/schema/core.gen";
 
 type Props = {
   class?: string
@@ -37,9 +37,9 @@ export const AuthorsList = (props: Props) => {
     })
 
     if (queryType === 'shouts') {
-      setAuthorsByShouts(prev => [...prev, ...result])
+      setAuthorsByShouts((prev) => [...prev, ...result])
     } else {
-      setAuthorsByFollowers(prev => [...prev, ...result])
+      setAuthorsByFollowers((prev) => [...prev, ...result])
     }
     setLoading(false)
   }
@@ -100,7 +100,7 @@ export const AuthorsList = (props: Props) => {
             <Show when={!loading() && authorsList().length > 0 && !allLoaded()}>
               <Button value={t('Load more')} onClick={loadMoreAuthors} />
             </Show>
-            <Show when={loading() &&   !allLoaded()}>
+            <Show when={loading() && !allLoaded()}>
               <InlineLoader />
             </Show>
           </div>

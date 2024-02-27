@@ -113,7 +113,9 @@ export const Comment = (props: Props) => {
   return (
     <li
       id={`comment_${props.comment.id}`}
-      class={clsx(styles.comment, props.class, { [styles.isNew]: props.comment?.created_at > props.lastSeen })}
+      class={clsx(styles.comment, props.class, {
+        [styles.isNew]: props.comment?.created_at > props.lastSeen,
+      })}
     >
       <Show when={!!body()}>
         <div class={styles.commentContent}>
@@ -147,9 +149,9 @@ export const Comment = (props: Props) => {
                 <div class={styles.articleLink}>
                   <Icon name="arrow-right" class={styles.articleLinkIcon} />
                   <a
-                    href={`${getPagePath(router, 'article', { slug: props.comment.shout.slug })}?commentId=${
-                      props.comment.id
-                    }`}
+                    href={`${getPagePath(router, 'article', {
+                      slug: props.comment.shout.slug,
+                    })}?commentId=${props.comment.id}`}
                   >
                     {props.comment.shout.title}
                   </a>

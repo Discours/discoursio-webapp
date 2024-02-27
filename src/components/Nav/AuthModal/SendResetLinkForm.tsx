@@ -72,6 +72,7 @@ export const SendResetLinkForm = () => {
     }
   }
 
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -80,7 +81,10 @@ export const SendResetLinkForm = () => {
     >
       <div>
         <h4>{t('Set the new password')}</h4>
-        <div class={styles.authSubtitle}>{t(message()) || t('Please give us your email address')}</div>
+        <p>{message()}</p>
+        <div class={styles.authSubtitle}>
+          {t(message()) || t('Please give us your email address')}
+        </div>
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email,
@@ -96,7 +100,6 @@ export const SendResetLinkForm = () => {
             placeholder={t('Email')}
             onInput={(event) => handleEmailInput(event.currentTarget.value)}
           />
-
           <label for="email">{t('Email')}</label>
           <Show when={isUserNotFound()}>
             <div class={styles.validationError}>

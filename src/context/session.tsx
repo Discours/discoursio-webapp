@@ -122,7 +122,13 @@ export const SessionProvider = (props: {
         m: 'auth',
         access_token,
       })
-    else if (token) changeSearchParams({ mode: 'change-password', modal: 'auth', token })
+    else if (token) {
+      changeSearchParams({
+        mode: 'change-password',
+        m: 'auth',
+        token,
+      })
+    }
   })
 
   // load
@@ -207,7 +213,6 @@ export const SessionProvider = (props: {
     if (session()) {
       const token = session()?.access_token
       if (token) {
-        // console.log('[context.session] token observer got token', token)
         if (!inboxClient.private) {
           apiClient.connect(token)
           notifierClient.connect(token)
@@ -333,7 +338,6 @@ export const SessionProvider = (props: {
       const response = await authorizer().graphqlQuery({
         query: `query { is_registered(email: "${email}") { message }}`,
       })
-      // console.log(response)
       return response?.data?.is_registered?.message
     } catch (error) {
       console.warn(error)

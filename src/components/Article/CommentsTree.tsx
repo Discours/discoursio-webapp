@@ -1,40 +1,19 @@
-import { clsx } from 'clsx'
-import { For, Show, createMemo, createSignal, lazy, onMount } from 'solid-js'
+import {clsx} from 'clsx'
+import {createMemo, createSignal, For, lazy, onMount, Show} from 'solid-js'
 
-import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
-import { useSession } from '../../context/session'
-import { Author, Reaction, ReactionKind } from '../../graphql/schema/core.gen'
-import { byCreated } from '../../utils/sortby'
-import { Button } from '../_shared/Button'
-import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
+import {useLocalize} from '../../context/localize'
+import {useReactions} from '../../context/reactions'
+import {useSession} from '../../context/session'
+import {Author, Reaction, ReactionKind, ReactionSort} from '../../graphql/schema/core.gen'
+import {byCreated, byStat} from '../../utils/sortby'
+import {Button} from '../_shared/Button'
+import {ShowIfAuthenticated} from '../_shared/ShowIfAuthenticated'
 
-import { Comment } from './Comment'
+import {Comment} from './Comment'
 
 import styles from './Article.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
-
-type CommentsOrder = 'createdAt' | 'rating' | 'newOnly'
-
-const sortCommentsByRating = (a: Reaction, b: Reaction): -1 | 0 | 1 => {
-  if (a.reply_to && b.reply_to) {
-    return 0
-  }
-
-  const x = a.stat?.rating || 0
-  const y = b.stat?.rating || 0
-
-  if (x > y) {
-    return 1
-  }
-
-  if (x < y) {
-    return -1
-  }
-
-  return 0
-}
 
 type Props = {
   articleAuthors: Author[]
@@ -45,7 +24,8 @@ type Props = {
 export const CommentsTree = (props: Props) => {
   const { author } = useSession()
   const { t } = useLocalize()
-  const [commentsOrder, setCommentsOrder] = createSignal<CommentsOrder>('createdAt')
+  const [commentsOrder, setCommentsOrder] = createSignal<ReactionSort>(ReactionSort.Newest)
+  const [onlyNew, setOnlyNew] = createSignal(false)
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
   const [clearEditor, setClearEditor] = createSignal(false)
   const [clickedReplyId, setClickedReplyId] = createSignal<number>()
@@ -59,12 +39,12 @@ export const CommentsTree = (props: Props) => {
     let newSortedComments = [...comments()]
     newSortedComments = newSortedComments.sort(byCreated)
 
-    if (commentsOrder() === 'newOnly') {
-      return newReactions().reverse()
+    if (onlyNew()) {
+      return newReactions().sort(byCreated).reverse()
     }
 
-    if (commentsOrder() === 'rating') {
-      newSortedComments = newSortedComments.sort(sortCommentsByRating)
+    if (commentsOrder() === ReactionSort.Like) {
+      newSortedComments = newSortedComments.sort(byStat('rating'))
     }
     return newSortedComments
   })
@@ -88,7 +68,7 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     }
   })
-  const handleSubmitComment = async (value) => {
+  const handleSubmitComment = async (value: string) => {
     try {
       await createReaction({
         kind: ReactionKind.Comment,
@@ -114,31 +94,29 @@ export const CommentsTree = (props: Props) => {
         <Show when={comments().length > 0}>
           <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
             <Show when={newReactions().length > 0}>
-              <li classList={{ 'view-switcher__item--selected': commentsOrder() === 'newOnly' }}>
+              <li classList={{ 'view-switcher__item--selected': onlyNew() }}>
                 <Button
                   variant="light"
                   value={t('New only')}
-                  onClick={() => {
-                    setCommentsOrder('newOnly')
-                  }}
+                  onClick={() => setOnlyNew(!onlyNew())}
                 />
               </li>
             </Show>
-            <li classList={{ 'view-switcher__item--selected': commentsOrder() === 'createdAt' }}>
+            <li classList={{ 'view-switcher__item--selected': commentsOrder() === ReactionSort.Newest }}>
               <Button
                 variant="light"
                 value={t('By time')}
                 onClick={() => {
-                  setCommentsOrder('createdAt')
+                  setCommentsOrder(ReactionSort.Newest)
                 }}
               />
             </li>
-            <li classList={{ 'view-switcher__item--selected': commentsOrder() === 'rating' }}>
+            <li classList={{ 'view-switcher__item--selected': commentsOrder() === ReactionSort.Like }}>
               <Button
                 variant="light"
                 value={t('By rating')}
                 onClick={() => {
-                  setCommentsOrder('rating')
+                  setCommentsOrder(ReactionSort.Like)
                 }}
               />
             </li>

@@ -145,7 +145,7 @@ export const FeedView = (props: Props) => {
   }
 
   const loadTopComments = async () => {
-    const comments = await loadReactionsBy({ by: { comment: true }, limit: 5 })
+    const comments = await loadReactionsBy({ by: { comment: true }, limit: 50 })
     setTopComments(comments)
   }
 

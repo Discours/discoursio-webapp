@@ -25,6 +25,7 @@ import { Loading } from '../../_shared/Loading'
 
 import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
+import {byCreated} from "../../../utils/sortby";
 
 type Props = {
   shouts: Shout[]
@@ -231,7 +232,7 @@ export const AuthorView = (props: Props) => {
             <div class="row">
               <div class="col-md-20 col-lg-18">
                 <ul class={stylesArticle.comments}>
-                  <For each={commented()}>
+                  <For each={commented()?.sort(byCreated).reverse()}>
                     {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
                   </For>
                 </ul>

@@ -5,10 +5,11 @@ import { createEffect, createSignal, onMount } from 'solid-js'
 import { AllAuthors } from '../components/Views/AllAuthors/'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
-import { loadAllAuthors } from '../stores/zine/authors'
+import {loadAllAuthors, loadAuthors} from '../stores/zine/authors'
+import {PAGE_SIZE} from "../components/Views/AllTopics/AllTopics";
 
 export const AllAuthorsPage = (props: PageProps) => {
-  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors))
+  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.allAuthors && props.topFollowedAuthors && props.topWritingAuthors))
 
   const { t } = useLocalize()
 
@@ -18,12 +19,14 @@ export const AllAuthorsPage = (props: PageProps) => {
     }
 
     await loadAllAuthors()
+    await loadAuthors({ by: { order: 'shouts' }, limit: PAGE_SIZE })
+    await loadAuthors({ by: { order: 'followers' }, limit: PAGE_SIZE })
     setIsLoaded(true)
   })
 
   return (
     <PageLayout title={t('Authors')}>
-      <AllAuthors isLoaded={isLoaded()} authors={props.allAuthors} />
+      <AllAuthors isLoaded={isLoaded()} authors={props.allAuthors} topWritingAuthors={props.topWritingAuthors} topFollowedAuthors={props.topFollowedAuthors} />
     </PageLayout>
   )
 }

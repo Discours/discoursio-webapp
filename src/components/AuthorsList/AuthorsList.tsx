@@ -3,6 +3,7 @@ import { For, Show, createEffect, createSignal, on, onMount } from 'solid-js'
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
+import { Author } from '../../graphql/schema/core.gen'
 import { setAuthorsByFollowers, setAuthorsByShouts, useAuthorsStore } from '../../stores/zine/authors'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
@@ -17,6 +18,7 @@ type Props = {
 }
 
 const PAGE_SIZE = 20
+
 export const AuthorsList = (props: Props) => {
   const { t } = useLocalize()
   const { isOwnerSubscribed } = useFollowing()
@@ -27,8 +29,6 @@ export const AuthorsList = (props: Props) => {
 
   const fetchAuthors = async (queryType: Props['query'], page: number) => {
     setLoading(true)
-
-    console.log('!!! AAA:')
     const offset = PAGE_SIZE * page
     const result = await apiClient.loadAuthorsBy({
       by: { order: queryType },
@@ -42,7 +42,6 @@ export const AuthorsList = (props: Props) => {
       setAuthorsByFollowers((prev) => [...prev, ...result])
     }
     setLoading(false)
-    return result
   }
 
   const loadMoreAuthors = () => {
@@ -57,7 +56,7 @@ export const AuthorsList = (props: Props) => {
       () => props.query,
       (query) => {
         const authorsList = query === 'shouts' ? authorsByShouts() : authorsByFollowers()
-        if (authorsList.length === 0 || currentPage()[query] === 0) {
+        if (authorsList.length === 0 && currentPage()[query] === 0) {
           setCurrentPage((prev) => ({ ...prev, [query]: 0 }))
           fetchAuthors(query, 0).then(() => setCurrentPage((prev) => ({ ...prev, [query]: 1 })))
         }
@@ -75,7 +74,7 @@ export const AuthorsList = (props: Props) => {
   // })
 
   createEffect(() => {
-    setAllLoaded(authorsByShouts().length === authorsList.length)
+    setAllLoaded(props.allAuthorsLength === authorsList.length)
   })
 
   return (

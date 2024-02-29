@@ -48,21 +48,9 @@ type VisibilityItem = {
 }
 
 type FeedSearchParams = {
-  by: 'publish_date' | 'likes_stat' | 'rating' | 'last_comment'
+  by: 'publish_date' | 'likes' | 'comments'
   period: FeedPeriod
   visibility: VisibilityMode
-}
-
-const getOrderBy = (by: FeedSearchParams['by']) => {
-  if (by === 'likes_stat' || by === 'rating') {
-    return 'likes_stat'
-  }
-
-  if (by === 'last_comment') {
-    return 'last_comment'
-  }
-
-  return ''
 }
 
 const getFromDate = (period: FeedPeriod): number => {
@@ -178,9 +166,8 @@ export const FeedView = (props: Props) => {
       offset: sortedArticles().length,
     }
 
-    const orderBy = getOrderBy(searchParams().by)
-    if (orderBy) {
-      options.order_by = orderBy
+    if (searchParams()?.by) {
+      options.order_by = searchParams().by
     }
 
     const visibilityMode = searchParams().visibility
@@ -222,7 +209,7 @@ export const FeedView = (props: Props) => {
   const ogTitle = t('Feed')
 
   const [shareData, setShareData] = createSignal<Shout | undefined>()
-  const handleShare = (shared) => {
+  const handleShare = (shared: Shout | undefined) => {
     showModal('share')
     setShareData(shared)
   }
@@ -260,19 +247,19 @@ export const FeedView = (props: Props) => {
               {/*</li>*/}
               <li
                 class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'rating',
+                  'view-switcher__item--selected': searchParams().by === 'likes',
                 })}
               >
-                <span class="link" onClick={() => changeSearchParams({ by: 'rating' })}>
+                <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
                   {t('Top rated')}
                 </span>
               </li>
               <li
                 class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'last_comment',
+                  'view-switcher__item--selected': searchParams().by === 'comments',
                 })}
               >
-                <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
+                <span class="link" onClick={() => changeSearchParams({ by: 'comments' })}>
                   {t('Most commented')}
                 </span>
               </li>

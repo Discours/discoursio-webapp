@@ -28,7 +28,7 @@ type Props = {
   isLoaded: boolean
 }
 
-const PAGE_SIZE = 20
+export const PAGE_SIZE = 20
 
 export const AllTopics = (props: Props) => {
   const { t, lang } = useLocalize()

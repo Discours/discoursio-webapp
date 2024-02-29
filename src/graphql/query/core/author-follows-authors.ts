@@ -8,6 +8,7 @@ export default gql`
         name
         pic
         bio
+        created_at
         stat {
           shouts
           authors

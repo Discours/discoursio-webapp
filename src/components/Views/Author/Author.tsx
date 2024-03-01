@@ -23,9 +23,9 @@ import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { Loading } from '../../_shared/Loading'
 
+import { byCreated } from '../../../utils/sortby'
 import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
-import {byCreated} from "../../../utils/sortby";
 
 type Props = {
   shouts: Shout[]

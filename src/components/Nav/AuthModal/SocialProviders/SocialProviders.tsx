@@ -1,8 +1,8 @@
 import { For } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { Icon } from '../../_shared/Icon'
+import { useLocalize } from '../../../../context/localize'
+import { useSession } from '../../../../context/session'
+import { Icon } from '../../../_shared/Icon'
 
 import styles from './SocialProviders.module.scss'
 

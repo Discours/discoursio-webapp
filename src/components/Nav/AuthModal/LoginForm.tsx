@@ -12,7 +12,7 @@ import { validateEmail } from '../../../utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
-import { SocialProviders } from './SocialProviders'
+import { SocialProviders } from "./SocialProviders"
 import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
@@ -31,6 +31,8 @@ export const LoginForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [password, setPassword] = createSignal('')
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
+
+  const { signUp, isRegistered, resendVerifyEmail } = useSession()
   // TODO: better solution for interactive error messages
   const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
@@ -55,46 +57,26 @@ export const LoginForm = () => {
     setIsEmailNotConfirmed(false)
     setSubmitError('')
     changeSearchParams({ mode: 'send-reset-link' })
-    // NOTE: temporary solution, needs logic in authorizer
-    /* FIXME:
-    const { authorizer } = useSession()
-    const result = await authorizer().verifyEmail({ token })
-    if (!result) setSubmitError('cant sign send link')
-    */
   }
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-
     setIsLinkSent(false)
     setIsEmailNotConfirmed(false)
     setSubmitError('')
 
-    const newValidationErrors: ValidationErrors = {}
-
-    const validateAndSetError = (field, message) => {
-      if (!field()) {
-        newValidationErrors[field.name] = t(message)
-      }
-    }
-
-    validateAndSetError(email, 'Please enter email')
-    validateAndSetError(() => validateEmail(email()), 'Invalid email')
-    validateAndSetError(password, 'Please enter password')
-
-    if (Object.keys(newValidationErrors).length > 0) {
-      setValidationErrors(newValidationErrors)
-
+    if (Object.keys(validationErrors()).length > 0) {
       authFormRef.current
-        .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
+        .querySelector<HTMLInputElement>(`input[name="${Object.keys(validationErrors())[0]}"]`)
         ?.focus()
-
       return
     }
 
     setIsSubmitting(true)
 
     try {
+      //TODO: use switch
+
       const { errors } = await signIn({ email: email(), password: password() })
       if (errors?.length > 0) {
         if (errors.some((error) => error.message.includes('bad user credentials'))) {
@@ -102,8 +84,12 @@ export const LoginForm = () => {
             ...prev,
             password: t('Something went wrong, check email and password'),
           }))
+        } else if (errors.some((error) => error.message.includes('user not found'))) {
+          setSubmitError('Пользователь не найден');
+        } else if (errors.some((error) => error.message.includes('email not verified'))) {
+          setSubmitError('Email не подтвержден');
         } else {
-          setSubmitError(t('Error'))
+          setSubmitError(t('Error'));
         }
         return
       }
@@ -114,6 +100,24 @@ export const LoginForm = () => {
       setSubmitError(error.message)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleBlurInput = async (value: string, type: 'email' | 'password') => {
+    if (type === 'email') {
+      if (value === '' || !validateEmail(value)) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          email: t('Invalid email'),
+        }));
+      }
+    } else if (type === 'password') {
+      if (value === '') {
+        setValidationErrors((prev) => ({
+          ...prev,
+          password: t('Please enter password'),
+        }));
+      }
     }
   }
 
@@ -146,6 +150,7 @@ export const LoginForm = () => {
             type="email"
             value={email()}
             placeholder={t('Email')}
+            onBlur={(event) => handleBlurInput(event.currentTarget.value, 'email')}
             onInput={(event) => handleEmailInput(event.currentTarget.value)}
           />
           <label for="email">{t('Email')}</label>
@@ -153,8 +158,11 @@ export const LoginForm = () => {
             <div class={styles.validationError}>{validationErrors().email}</div>
           </Show>
         </div>
-
-        <PasswordField variant={'login'} onInput={(value) => handlePasswordInput(value)} />
+        <PasswordField
+          variant={'login'}
+          onBlur={(value) => handleBlurInput(value, 'password')}
+          onInput={(value) => handlePasswordInput(value)}
+        />
         <Show when={validationErrors().password}>
           <div class={styles.validationError} style={{ position: 'static', 'font-size': '1.4rem' }}>
             {validationErrors().password}

@@ -80,7 +80,7 @@ export const SendResetLinkForm = () => {
     >
       <div>
         <h4>{t('Set the new password')}</h4>
-        <div class={styles.authSubtitle}>{t(message()) || t('Please give us your email address')}</div>
+        <div class={styles.authSubtitle}>{t('Please give us your email address')}</div>
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email,
@@ -116,28 +116,31 @@ export const SendResetLinkForm = () => {
             <div class={styles.validationError}>{validationErrors().email}</div>
           </Show>
         </div>
-
-        <div style={{ 'margin-top': '5rem' }}>
-          <button
-            class={clsx('button', styles.submitButton)}
-            disabled={isSubmitting() || Boolean(message())}
-            type="submit"
-          >
-            {isSubmitting() ? '...' : t('Send')}
-          </button>
-        </div>
-        <div class={styles.authControl}>
-          <span
-            class={styles.authLink}
-            onClick={() =>
-              changeSearchParams({
-                mode: 'login',
-              })
-            }
-          >
-            {t('I know the password')}
-          </span>
-        </div>
+        <Show when={!message()} fallback={<div class={styles.authSubtitle}>{t(message())}</div>}>
+          <>
+            <div style={{ 'margin-top': '5rem' }}>
+              <button
+                class={clsx('button', styles.submitButton)}
+                disabled={isSubmitting() || Boolean(message())}
+                type="submit"
+              >
+                {isSubmitting() ? '...' : t('Send')}
+              </button>
+            </div>
+            <div class={styles.authControl}>
+              <span
+                class={styles.authLink}
+                onClick={() =>
+                  changeSearchParams({
+                    mode: 'login',
+                  })
+                }
+              >
+                {t('I know the password')}
+              </span>
+            </div>
+          </>
+        </Show>
       </div>
     </form>
   )

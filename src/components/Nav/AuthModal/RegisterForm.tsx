@@ -12,7 +12,7 @@ import { validateEmail } from '../../../utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
-import { SocialProviders } from './SocialProviders'
+import { SocialProviders } from "./SocialProviders"
 import { email, setEmail } from './sharedLogic'
 
 import { GenericResponse } from '@authorizerdev/authorizer-js'
@@ -27,10 +27,6 @@ type FormFields = {
 }
 
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
-
-const handleEmailInput = (newEmail: string) => {
-  setEmail(newEmail.toLowerCase())
-}
 
 export const RegisterForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
@@ -137,7 +133,7 @@ export const RegisterForm = () => {
         setValidationErrors((prev) => ({
           email: (
             <>
-              {t('This email is verified')}. {t('You can')}
+              {t('This email is verified')}. {t('You can')}{' '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
                 {t('enter')}
               </span>
@@ -170,6 +166,12 @@ export const RegisterForm = () => {
       setEmailStatus(checkResult)
       handleCheckEmailStatus(checkResult)
     }
+  }
+
+  const handleEmailInput = (newEmail: string) => {
+    setEmailStatus('')
+    setValidationErrors({})
+    setEmail(newEmail.toLowerCase())
   }
 
   return (
@@ -217,9 +219,11 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
-              <div class={clsx(styles.validationError, { info: Boolean(emailStatus()) })}>
-                {validationErrors().email}
-              </div>
+              <Show when={validationErrors().email || emailStatus()}>
+                <div class={clsx(styles.validationError, { info: Boolean(emailStatus()) })}>
+                  {validationErrors().email}
+                </div>
+              </Show>
             </div>
 
             <PasswordField

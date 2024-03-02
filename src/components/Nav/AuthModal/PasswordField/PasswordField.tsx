@@ -12,9 +12,14 @@ type Props = {
   placeholder?: string
   errorMessage?: (error: string) => void
   onInput: (value: string) => void
+  onBlur?: (value: string) => void
   variant?: 'login' | 'registration'
   disableAutocomplete?: boolean
 }
+
+const minLength = 8
+const hasNumber = /\d/
+const hasSpecial = /[!#$%&*@^]/
 
 export const PasswordField = (props: Props) => {
   const { t } = useLocalize()
@@ -22,10 +27,6 @@ export const PasswordField = (props: Props) => {
   const [error, setError] = createSignal<string>()
 
   const validatePassword = (passwordToCheck) => {
-    const minLength = 8
-    const hasNumber = /\d/
-    const hasSpecial = /[!#$%&*@^]/
-
     if (passwordToCheck.length < minLength) {
       return t('Password should be at least 8 characters')
     }
@@ -35,11 +36,17 @@ export const PasswordField = (props: Props) => {
     if (!hasSpecial.test(passwordToCheck)) {
       return t('Password should contain at least one special character: !@#$%^&*')
     }
-
     return null
   }
 
-  const handleInputChange = (value) => {
+  const handleInputBlur = (value: string) => {
+    if (props.variant === 'login') {
+      return props.onBlur(value)
+    }
+    if (value.length < 1) {
+      return
+    }
+
     props.onInput(value)
     const errorValue = validatePassword(value)
     if (errorValue) {
@@ -61,32 +68,28 @@ export const PasswordField = (props: Props) => {
 
   return (
     <div class={clsx(styles.PassportField, props.class)}>
-      <div
-        class={clsx('pretty-form__item', {
-          'pretty-form__item--error': error() && props.variant !== 'login',
-        })}
-      >
+      <div class="pretty-form__item">
         <input
           id="password"
           name="password"
           disabled={props.disabled}
-          autocomplete={props.disableAutocomplete ? 'one-time-code' : 'current-password'}
-          type={showPassword() ? 'text' : 'password'}
-          placeholder={props.placeholder || t('Password')}
-          onInput={(event) => handleInputChange(event.currentTarget.value)}
+          autocomplete={props.disableAutocomplete ? "one-time-code" : "current-password"}
+          type={showPassword() ? "text" : "password"}
+          placeholder={props.placeholder || t("Password")}
+          onBlur={(event) => handleInputBlur(event.currentTarget.value)}
         />
-        <label for="password">{t('Password')}</label>
+        <label for="password">{t("Password")}</label>
         <button
           type="button"
           class={styles.passwordToggle}
           onClick={() => setShowPassword(!showPassword())}
         >
-          <Icon class={styles.passwordToggleIcon} name={showPassword() ? 'eye-off' : 'eye'} />
+          <Icon class={styles.passwordToggleIcon} name={showPassword() ? "eye-off" : "eye"} />
         </button>
-        <Show when={error() && props.variant !== 'login'}>
+        <Show when={error()}>
           <div class={clsx(styles.registerPassword, styles.validationError)}>{error()}</div>
         </Show>
       </div>
     </div>
-  )
+  );
 }

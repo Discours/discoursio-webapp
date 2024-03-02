@@ -14,6 +14,7 @@ import { resetSortedArticles, useArticlesStore } from '../../../stores/zine/arti
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { useTopicsStore } from '../../../stores/zine/topics'
 import { getImageUrl } from '../../../utils/getImageUrl'
+import { byCreated } from '../../../utils/sortby'
 import { CommentDate } from '../../Article/CommentDate'
 import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
@@ -134,7 +135,7 @@ export const FeedView = (props: Props) => {
 
   const loadTopComments = async () => {
     const comments = await loadReactionsBy({ by: { comment: true }, limit: 50 })
-    setTopComments(comments)
+    setTopComments(comments.sort(byCreated).reverse())
   }
 
   onMount(() => {

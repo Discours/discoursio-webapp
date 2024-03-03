@@ -94,10 +94,6 @@ export const App = (props: Props) => {
   const is404 = createMemo(() => props.is404)
 
   createEffect(() => {
-    if (!searchParams().m) {
-      hideModal()
-    }
-
     const modal = MODALS[searchParams().m]
     if (modal) {
       showModal(modal)

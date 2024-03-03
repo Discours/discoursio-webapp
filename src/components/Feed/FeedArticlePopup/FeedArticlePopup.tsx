@@ -10,7 +10,7 @@ import { SoonChip } from '../../_shared/SoonChip'
 import styles from './FeedArticlePopup.module.scss'
 
 type Props = {
-  isOwner: boolean
+  canEdit: boolean
   onInviteClick: () => void
   onShareClick: () => void
 } & Omit<PopupProps, 'children'>
@@ -41,7 +41,7 @@ export const FeedArticlePopup = (props: Props) => {
               {t('Share')}
             </button>
           </li>
-          <Show when={!props.isOwner}>
+          <Show when={!props.canEdit}>
             <li>
               <button
                 class={styles.action}
@@ -67,7 +67,7 @@ export const FeedArticlePopup = (props: Props) => {
               {t('Invite experts')}
             </button>
           </li>
-          <Show when={!props.isOwner}>
+          <Show when={!props.canEdit}>
             <li>
               <button class={clsx(styles.action, styles.soon)} role="button">
                 {t('Subscribe to comments')} <SoonChip />
@@ -79,7 +79,7 @@ export const FeedArticlePopup = (props: Props) => {
               {t('Add to bookmarks')} <SoonChip />
             </button>
           </li>
-          {/*<Show when={!props.isOwner}>*/}
+          {/*<Show when={!props.canEdit}>*/}
           {/*  <li>*/}
           {/*    <button*/}
           {/*      class={styles.action}*/}

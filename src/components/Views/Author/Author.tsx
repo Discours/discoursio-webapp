@@ -23,6 +23,7 @@ import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { Loading } from '../../_shared/Loading'
 
+import { byCreated } from '../../../utils/sortby'
 import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
 
@@ -58,9 +59,9 @@ export const AuthorView = (props: Props) => {
     }
   })
 
-  createEffect(() => {
+  createEffect(async () => {
     if (author()?.id && !author().stat) {
-      const a = loadAuthor({ slug: '', author_id: author().id })
+      const a = await loadAuthor({ slug: '', author_id: author().id })
       console.debug('[AuthorView] loaded author:', a)
     }
   })
@@ -71,13 +72,7 @@ export const AuthorView = (props: Props) => {
   const fetchData = async (slug) => {
     try {
       const [subscriptionsResult, followersResult] = await Promise.all([
-        (async () => {
-          const [getAuthors, getTopics] = await Promise.all([
-            apiClient.getAuthorFollowingAuthors({ slug }),
-            apiClient.getAuthorFollowingTopics({ slug }),
-          ])
-          return { authors: getAuthors, topics: getTopics }
-        })(),
+        apiClient.getAuthorFollows({ slug }),
         apiClient.getAuthorFollowers({ slug }),
       ])
 
@@ -181,7 +176,7 @@ export const AuthorView = (props: Props) => {
                       {t('Comments')}
                     </a>
                     <Show when={author().stat}>
-                      <span class="view-switcher__counter">{author().stat.commented}</span>
+                      <span class="view-switcher__counter">{author().stat.comments}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
@@ -237,7 +232,7 @@ export const AuthorView = (props: Props) => {
             <div class="row">
               <div class="col-md-20 col-lg-18">
                 <ul class={stylesArticle.comments}>
-                  <For each={commented()}>
+                  <For each={commented()?.sort(byCreated).reverse()}>
                     {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
                   </For>
                 </ul>

@@ -102,7 +102,6 @@ export const SendResetLinkForm = () => {
             placeholder={t('Email')}
             onChange={(event) => handleEmailInput(event.currentTarget.value)}
           />
-
           <label for="email">{t('Email')}</label>
           <Show when={isUserNotFound()}>
             <div class={styles.validationError}>

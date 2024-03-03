@@ -11,10 +11,10 @@ export default gql`
       created_at
       stat {
         shouts
-        comments: commented
+        authors
         followers
-        followings
         rating
+        comments
         rating_shouts
         rating_comments
       }

@@ -58,31 +58,30 @@ export const RatingControl = (props: RatingControlProps) => {
   createEffect(
     on(
       reactionEntities,
-      () => {
-        const ratings = Object.values(reactionEntities()).filter(r => !r.reply_to);
-        const likes = ratings.filter(rating => rating.kind === 'LIKE').length;
-        const dislikes = ratings.filter(rating => rating.kind === 'DISLIKE').length;
-        const total = likes - dislikes;
-        setTotal(total);
+      (reactions) => {
+        const ratings = Object.values(reactions).filter((r) => !r?.reply_to)
+        const likes = ratings.filter((rating) => rating.kind === 'LIKE').length
+        const dislikes = ratings.filter((rating) => rating.kind === 'DISLIKE').length
+        const total = likes - dislikes
+        setTotal(total)
       },
-      { defer: true }
-    )
-  );
-
+      { defer: true },
+    ),
+  )
 
   createEffect(
     on(
       [() => props.ratings, author],
       ([reactions, me]) => {
-        console.debug('[RatingControl] on reactions update');
-        const ratingVotes = Object.values(reactions).filter((r) => !r.reply_to);
-        setRatings((_) => ratingVotes.sort(byCreated));
-        setMyRate((_) => ratingVotes.find((r) => r.created_by.id === me?.id));
+        console.debug('[RatingControl] on reactions update')
+        const ratingVotes = Object.values(reactions).filter((r) => !r.reply_to)
+        setRatings((_) => ratingVotes.sort(byCreated))
+        const myReaction = reactions.find((r) => r.created_by.id === me?.id)
+        setMyRate((_) => myReaction)
       },
       { defer: true },
     ),
-  );
-
+  )
 
   const handleRatingChange = (voteKind: ReactionKind) => {
     requireAuthentication(async () => {
@@ -127,14 +126,14 @@ export const RatingControl = (props: RatingControlProps) => {
     return props.comment ? (
       <div
         class={clsx(stylesComment.commentRatingValue, {
-          [stylesComment.commentRatingPositive]: total() > 0,
-          [stylesComment.commentRatingNegative]: total() < 0,
+          [stylesComment.commentRatingPositive]: props.shout?.stat.rating > 0,
+          [stylesComment.commentRatingNegative]: props.shout?.stat.rating < 0,
         })}
       >
-        {total()}
+        {props.shout?.stat.rating}
       </div>
     ) : (
-      <span class={stylesShout.ratingValue}>{total()}</span>
+      <span class={stylesShout.ratingValue}>{props.shout?.stat.rating}</span>
     )
   })
 

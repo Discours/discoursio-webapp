@@ -53,7 +53,6 @@ export const RegisterForm = () => {
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
-
     if (passwordError()) {
       setValidationErrors((errors) => ({ ...errors, password: passwordError() }))
     } else {
@@ -102,7 +101,7 @@ export const RegisterForm = () => {
         redirect_uri: window.location.origin,
       }
       const { errors } = await signUp(opts)
-      if (errors) return
+      if (errors.length > 0) return
       setIsSuccess(true)
     } catch (error) {
       console.error(error)
@@ -134,7 +133,6 @@ export const RegisterForm = () => {
           ),
         }))
         break
-
       case 'verified':
         setValidationErrors((prev) => ({
           email: (

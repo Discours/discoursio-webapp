@@ -291,6 +291,7 @@
   "Profile": "Profile",
   "Publications": "Publications",
   "PublicationsWithCount": "{count, plural, =0 {no publications} one {{count} publication} other {{count} publications}}",
+  "FollowersWithCount": "{count, plural, =0 {no followers} one {{count} follower} other {{count} followers}}",
   "Publish Album": "Publish Album",
   "Publish Settings": "Publish Settings",
   "Published": "Published",

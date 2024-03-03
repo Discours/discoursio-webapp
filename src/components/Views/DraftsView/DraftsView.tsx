@@ -18,7 +18,7 @@ export const DraftsView = () => {
   const loadDrafts = async () => {
     if (apiClient.private) {
       const loadedDrafts = await apiClient.getDrafts()
-      setDrafts(loadedDrafts || [])
+      setDrafts(loadedDrafts.reverse() || [])
     }
   }
 

@@ -53,7 +53,6 @@ export default gql`
         featured_at
         stat {
           viewed
-
           rating
           commented
         }

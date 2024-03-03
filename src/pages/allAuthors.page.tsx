@@ -1,8 +1,8 @@
 import type { PageProps } from './types'
 
-import { createSignal, onMount } from 'solid-js'
+import { createEffect, createSignal, onMount } from 'solid-js'
 
-import { AllAuthorsView } from '../components/Views/AllAuthors'
+import { AllAuthors } from '../components/Views/AllAuthors/'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 import { loadAllAuthors } from '../stores/zine/authors'
@@ -23,7 +23,7 @@ export const AllAuthorsPage = (props: PageProps) => {
 
   return (
     <PageLayout title={t('Authors')}>
-      <AllAuthorsView isLoaded={isLoaded()} authors={props.allAuthors} />
+      <AllAuthors isLoaded={isLoaded()} authors={props.allAuthors} />
     </PageLayout>
   )
 }

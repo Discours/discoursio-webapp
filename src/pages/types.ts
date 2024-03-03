@@ -10,6 +10,8 @@ export type PageProps = {
   homeShouts?: Shout[]
   author?: Author
   allAuthors?: Author[]
+  topWritingAuthors?: Author[]
+  topFollowedAuthors?: Author[]
   topic?: Topic
   allTopics?: Topic[]
   searchQuery?: string

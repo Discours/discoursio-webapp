@@ -26,7 +26,7 @@ export const RatingControl = (props: RatingControlProps) => {
   const { t, lang } = useLocalize()
   const { changeSearchParams } = useRouter()
   const { author, requireAuthentication } = useSession()
-  const { createReaction, deleteReaction, loadReactionsBy } = useReactions()
+  const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
   const [isLoading, setIsLoading] = createSignal(false)
   const [ratings, setRatings] = createSignal<Reaction[]>([])
   const [myRate, setMyRate] = createSignal<Reaction | undefined>()
@@ -87,9 +87,7 @@ export const RatingControl = (props: RatingControlProps) => {
         const fakeId = Date.now() + Math.floor(Math.random() * 1000)
         // const savedRatings = [...props.ratings]
         mergeProps(props.ratings, [...props.ratings, { ...rateInput, id: fakeId, created_by: author() }])
-        const newReaction = await createReaction(rateInput)
-        setMyRate(newReaction) // Добавляем созданный голос в myRate
-        console.debug(`[RatingControl.handleRatingChange] your ${voteKind} vote was created`)
+        const _ = await createReaction(rateInput)
       } else {
         console.debug('[RatingControl.handleRatingChange] already has your vote', myRate())
         const oppositeKind = voteKind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like

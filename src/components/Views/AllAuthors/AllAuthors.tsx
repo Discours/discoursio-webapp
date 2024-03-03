@@ -23,6 +23,8 @@ type AllAuthorsPageSearchParams = {
 
 type Props = {
   authors: Author[]
+  topFollowedAuthors?: Author[]
+  topWritingAuthors?: Author[]
   isLoaded: boolean
 }
 

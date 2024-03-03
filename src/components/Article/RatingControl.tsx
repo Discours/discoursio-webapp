@@ -55,27 +55,34 @@ export const RatingControl = (props: RatingControlProps) => {
       { defer: true },
     ),
   )
+  createEffect(
+    on(
+      reactionEntities,
+      () => {
+        const ratings = Object.values(reactionEntities()).filter(r => !r.reply_to);
+        const likes = ratings.filter(rating => rating.kind === 'LIKE').length;
+        const dislikes = ratings.filter(rating => rating.kind === 'DISLIKE').length;
+        const total = likes - dislikes;
+        setTotal(total);
+      },
+      { defer: true }
+    )
+  );
+
 
   createEffect(
     on(
       [() => props.ratings, author],
       ([reactions, me]) => {
-        console.debug('[RatingControl] on reactions update')
-        const ratingVotes = Object.values(reactions).filter((r) => !r.reply_to)
-        setRatings((_) => ratingVotes.sort(byCreated))
-        setMyRate((_) => ratingVotes.find((r) => r.created_by.id === me?.id))
-
-        // Extract likes and dislikes from shoutRatings using map
-        const likes = ratingVotes.filter((rating) => rating.kind === 'LIKE').length
-        const dislikes = ratingVotes.filter((rating) => rating.kind === 'DISLIKE').length
-
-        // Calculate the total
-        const total = likes - dislikes
-        setTotal(total)
+        console.debug('[RatingControl] on reactions update');
+        const ratingVotes = Object.values(reactions).filter((r) => !r.reply_to);
+        setRatings((_) => ratingVotes.sort(byCreated));
+        setMyRate((_) => ratingVotes.find((r) => r.created_by.id === me?.id));
       },
       { defer: true },
     ),
-  )
+  );
+
 
   const handleRatingChange = (voteKind: ReactionKind) => {
     requireAuthentication(async () => {

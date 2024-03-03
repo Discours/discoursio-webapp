@@ -87,7 +87,8 @@ export const RatingControl = (props: RatingControlProps) => {
         const fakeId = Date.now() + Math.floor(Math.random() * 1000)
         // const savedRatings = [...props.ratings]
         mergeProps(props.ratings, [...props.ratings, { ...rateInput, id: fakeId, created_by: author() }])
-        await createReaction(rateInput)
+        const newReaction = await createReaction(rateInput)
+        setMyRate(newReaction) // Добавляем созданный голос в myRate
         console.debug(`[RatingControl.handleRatingChange] your ${voteKind} vote was created`)
       } else {
         console.debug('[RatingControl.handleRatingChange] already has your vote', myRate())

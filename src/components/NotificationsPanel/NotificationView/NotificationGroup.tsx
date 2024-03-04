@@ -4,7 +4,7 @@ import { For, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
-import { NotificationGroup as Group } from '../../../graphql/schema/notifier.gen'
+import { NotificationGroup as Group } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { ArticlePageSearchParams } from '../../Article/FullArticle'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
@@ -39,8 +39,8 @@ const getTitle = (title: string) => {
   return shoutTitle
 }
 
-const reactionsCaption = (threadId: string) =>
-  threadId.includes('::') ? 'Some new replies to your comment' : 'Some new comments to your publication'
+const threadCaption = (threadId: string) =>
+  threadId.includes(':') ? 'Some new replies to your comment' : 'Some new comments to your publication'
 
 export const NotificationGroup = (props: NotificationGroupProps) => {
   const { t, formatTime, formatDate } = useLocalize()
@@ -63,12 +63,12 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
   return (
     <>
       <For each={props.notifications}>
-        {(n: Group) => (
+        {(n: Group, index) => (
           <>
-            {t(reactionsCaption(n.id), { commentsCount: n.reactions.length })}{' '}
+            {t(threadCaption(n.thread), { commentsCount: n.reactions.length })}{' '}
             <div
               class={clsx(styles.NotificationView, props.class, { [styles.seen]: n.seen })}
-              onClick={(_) => handleClick(n.id)}
+              onClick={(_) => handleClick(n.thread)}
             >
               <div class={styles.userpic}>
                 <GroupAvatar authors={n.authors} />

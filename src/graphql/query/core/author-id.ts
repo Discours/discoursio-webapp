@@ -14,10 +14,10 @@ export default gql`
       last_seen
       stat {
         shouts
-        comments: commented
+        authors
         followers
-        followings
         rating
+        comments
         rating_shouts
         rating_comments
       }

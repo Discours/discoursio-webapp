@@ -2,20 +2,14 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
+import { AuthorFollows, FollowingEntity } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
-type SubscriptionsData = {
-  topics?: Topic[]
-  authors?: Author[]
-  communities?: Community[]
-}
-
 interface FollowingContextType {
   loading: Accessor<boolean>
-  subscriptions: SubscriptionsData
-  setSubscriptions: (subscriptions: SubscriptionsData) => void
+  subscriptions: AuthorFollows
+  setSubscriptions: (subscriptions: AuthorFollows) => void
   setFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
   loadSubscriptions: () => void
   follow: (what: FollowingEntity, slug: string) => Promise<void>
@@ -29,7 +23,7 @@ export function useFollowing() {
   return useContext(FollowingContext)
 }
 
-const EMPTY_SUBSCRIPTIONS = {
+const EMPTY_SUBSCRIPTIONS: AuthorFollows = {
   topics: [],
   authors: [],
   communities: [],
@@ -37,15 +31,15 @@ const EMPTY_SUBSCRIPTIONS = {
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [subscriptions, setSubscriptions] = createStore<SubscriptionsData>(EMPTY_SUBSCRIPTIONS)
-  const { author } = useSession()
+  const [subscriptions, setSubscriptions] = createStore<AuthorFollows>(EMPTY_SUBSCRIPTIONS)
+  const { author, session } = useSession()
 
   const fetchData = async () => {
     setLoading(true)
     try {
       if (apiClient.private) {
         console.debug('[context.following] fetching subs data...')
-        const result = await apiClient.getMySubscriptions()
+        const result = await apiClient.getAuthorFollows({ user: session()?.user.id })
         setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
         console.info('[context.following] subs:', subscriptions)
       }

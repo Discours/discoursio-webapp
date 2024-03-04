@@ -1,6 +1,6 @@
-import type { JSX, Accessor } from 'solid-js'
+import type { Accessor, JSX } from 'solid-js'
 
-import { createSignal, createContext, onCleanup, useContext } from 'solid-js'
+import { createContext, createSignal, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
@@ -30,7 +30,7 @@ export function useReactions() {
 }
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
-  const [reactionEntities, setReactionEntities] = createSignal<Record<number, Reaction>|undefined>()
+  const [reactionEntities, setReactionEntities] = createSignal<Record<number, Reaction> | undefined>()
   const { author } = useSession()
 
   const loadReactionsBy = async ({
@@ -99,10 +99,13 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const updateReaction = async (input: ReactionInput): Promise<Reaction> => {
     const reaction = await apiClient.updateReaction(input)
-    setReactionEntities((rrr) => {
-      rrr[reaction.id] = reaction
-      return rrr
-    })
+    if (reaction) {
+      setReactionEntities((rrr) => {
+        rrr[reaction.id] = reaction
+        return rrr
+      })
+    }
+    return reaction
   }
 
   onCleanup(() => setReactionEntities(reconcile({})))

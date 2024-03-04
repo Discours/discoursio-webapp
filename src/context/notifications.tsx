@@ -8,7 +8,7 @@ import { Portal } from 'solid-js/web'
 import { NotificationsPanel } from '../components/NotificationsPanel'
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { notifierClient } from '../graphql/client/notifier'
-import { NotificationGroup, QueryLoad_NotificationsArgs } from '../graphql/schema/notifier.gen'
+import { NotificationGroup, QueryLoad_NotificationsArgs } from '../graphql/schema/core.gen'
 
 import { SSEMessage, useConnect } from './connect'
 import { useSession } from './session'

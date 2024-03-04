@@ -51,7 +51,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       const unread = notificationsResult?.unread || 0
 
       const newGroupsEntries = groups.reduce((acc, group: NotificationGroup) => {
-        acc[group.id] = group
+        acc[group.thread] = group
         return acc
       }, {})
 

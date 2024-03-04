@@ -8,11 +8,10 @@ import {
   NotificationsResult,
   QueryLoad_NotificationsArgs,
 } from '../schema/core.gen'
+import { apiClient } from './core'
 
 export const notifierClient = {
-  private: null,
-  connect: (token: string) => (notifierClient.private = createGraphQLClient('notifier', token)),
-
+  private: apiClient.private,
   getNotifications: async (params: QueryLoad_NotificationsArgs): Promise<NotificationsResult> => {
     const resp = await notifierClient.private.query(loadNotifications, params).toPromise()
     return resp.data?.load_notifications

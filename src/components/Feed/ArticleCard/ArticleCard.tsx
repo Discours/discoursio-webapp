@@ -70,16 +70,16 @@ const getTitleAndSubtitle = (
   let subtitle: string = article.subtitle || ''
 
   if (!subtitle) {
-    let tt = article.title?.split('. ') || []
+    let titleParts = article.title?.split('. ') || []
 
-    if (tt?.length === 1) {
-      tt = article.title?.split(/{!|\?|:|;}\s/) || []
+    if (titleParts?.length === 1) {
+      titleParts = article.title?.split(/{!|\?|:|;}\s/) || []
     }
 
-    if (tt && tt.length > 1) {
-      const sep = article.title?.replace(tt[0], '').split(' ', 1)[0]
-      title = tt[0] + (sep === '.' || sep === ':' ? '' : sep)
-      subtitle = capitalize(article.title?.replace(tt[0] + sep, ''), true) || ''
+    if (titleParts && titleParts.length > 1) {
+      const sep = article.title?.replace(titleParts[0], '').split(' ', 1)[0]
+      title = titleParts[0] + (sep === '.' || sep === ':' ? '' : sep)
+      subtitle = capitalize(article.title?.replace(titleParts[0] + sep, ''), true) || ''
     }
   }
 

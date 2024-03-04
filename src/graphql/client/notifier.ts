@@ -4,10 +4,10 @@ import markSeenAfterMutation from '../mutation/notifier/mark-seen-after'
 import markThreadSeenMutation from '../mutation/notifier/mark-seen-thread'
 import loadNotifications from '../query/notifier/notifications-load'
 import {
-  MutationMark_Seen_AfterArgs,
+  MutationNotifications_Seen_AfterArgs,
   NotificationsResult,
   QueryLoad_NotificationsArgs,
-} from '../schema/notifier.gen'
+} from '../schema/core.gen'
 
 export const notifierClient = {
   private: null,
@@ -23,7 +23,7 @@ export const notifierClient = {
     await notifierClient.private.mutation(markSeenMutation, { notification_id }).toPromise()
   },
 
-  markSeenAfter: async (options: MutationMark_Seen_AfterArgs): Promise<void> => {
+  markSeenAfter: async (options: MutationNotifications_Seen_AfterArgs): Promise<void> => {
     // call when 'mark all as seen' cliecked
     await notifierClient.private.mutation(markSeenAfterMutation, options).toPromise()
   },

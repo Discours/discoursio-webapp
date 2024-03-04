@@ -38,6 +38,7 @@ export const Comment = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
+  const [editedBody, setEditedBody] = createSignal<string>()
   const { author, session } = useSession()
   const { createReaction, deleteReaction, updateReaction } = useReactions()
   const { showConfirm } = useConfirm()
@@ -49,7 +50,7 @@ export const Comment = (props: Props) => {
       (props.comment?.created_by?.slug === author().slug || session()?.user?.roles.includes('editor')),
   )
 
-  const body = createMemo(() => (props.comment.body || '').trim())
+  const body = createMemo(() => (editedBody() ? editedBody().trim() : props.comment.body.trim() || ''))
 
   const remove = async () => {
     if (props.comment?.id) {
@@ -97,12 +98,15 @@ export const Comment = (props: Props) => {
   const handleUpdate = async (value) => {
     setLoading(true)
     try {
-      await updateReaction({
+      const reaction = await updateReaction({
         id: props.comment.id,
         kind: ReactionKind.Comment,
         body: value,
         shout: props.comment.shout.id,
       })
+      if (reaction) {
+        setEditedBody(value)
+      }
       setEditMode(false)
       setLoading(false)
     } catch (error) {

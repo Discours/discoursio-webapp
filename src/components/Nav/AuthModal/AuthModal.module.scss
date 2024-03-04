@@ -1,5 +1,5 @@
 .view {
-  background: #fff;
+  background: var(--background-color);
   min-height: 550px;
   position: relative;
   justify-content: center;
@@ -154,17 +154,6 @@
   margin-bottom: 1em;
 }
 
-.authInfo {
-  font-weight: 400;
-  font-size: smaller;
-  margin-top: -2em;
-  position: absolute;
-
-  .warn {
-    color: #a00;
-  }
-}
-
 .authForm {
   display: flex;
   flex: 1;
@@ -220,4 +209,8 @@
   font-size: 15px;
   line-height: 24px;
   margin-bottom: 52px;
+}
+
+.submitError {
+  margin: -1rem 0 -2rem;
 }

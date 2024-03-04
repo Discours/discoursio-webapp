@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { Show, createSignal } from 'solid-js'
+import { Show, createSignal, createEffect, JSX } from "solid-js";
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -27,14 +27,11 @@ type ValidationErrors = Partial<Record<keyof FormFields, string>>
 export const LoginForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
-  const [submitError, setSubmitError] = createSignal('')
+  const [submitError, setSubmitError] = createSignal<string | JSX.Element>()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [password, setPassword] = createSignal('')
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
 
-  const { signUp, isRegistered, resendVerifyEmail } = useSession()
-  // TODO: better solution for interactive error messages
-  const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
   const [isLinkSent, setIsLinkSent] = createSignal(false)
   const authFormRef: { current: HTMLFormElement } = { current: null }
   const { showSnackbar } = useSnackbar()
@@ -54,16 +51,14 @@ export const LoginForm = () => {
     event.preventDefault()
 
     setIsLinkSent(true)
-    setIsEmailNotConfirmed(false)
-    setSubmitError('')
-    changeSearchParams({ mode: 'send-reset-link' })
+    setSubmitError()
+    changeSearchParams({ mode: 'send-confirm-email' })
   }
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
     setIsLinkSent(false)
-    setIsEmailNotConfirmed(false)
-    setSubmitError('')
+    setSubmitError()
 
     if (Object.keys(validationErrors()).length > 0) {
       authFormRef.current
@@ -75,9 +70,8 @@ export const LoginForm = () => {
     setIsSubmitting(true)
 
     try {
-      //TODO: use switch
-
       const { errors } = await signIn({ email: email(), password: password() })
+      console.error("[signIn errors]", errors)
       if (errors?.length > 0) {
         if (errors.some((error) => error.message.includes('bad user credentials'))) {
           setValidationErrors((prev) => ({
@@ -87,21 +81,31 @@ export const LoginForm = () => {
         } else if (errors.some((error) => error.message.includes('user not found'))) {
           setSubmitError('Пользователь не найден');
         } else if (errors.some((error) => error.message.includes('email not verified'))) {
-          setSubmitError('Email не подтвержден');
+          setSubmitError(
+            <div class={styles.info}>
+              {t('This email is not verified')}{'. '}
+              <span class={"link"} onClick={handleSendLinkAgainClick}>
+                {t("Send link again")}
+              </span>
+            </div>
+          )
         } else {
-          setSubmitError(t('Error'));
+          setSubmitError(t("Error", errors[0].message));
         }
-        return
+        return;
       }
-      hideModal()
-      showSnackbar({ body: t('Welcome!') })
+      hideModal();
+      showSnackbar({ body: t("Welcome!") });
     } catch (error) {
-      console.error(error)
-      setSubmitError(error.message)
+      console.error(error);
+      setSubmitError(error.message);
     } finally {
       setIsSubmitting(false)
     }
   }
+  createEffect(() => {
+    console.log("!!! submitError:", submitError());
+  })
 
   const handleBlurInput = async (value: string, type: 'email' | 'password') => {
     if (type === 'email') {
@@ -125,22 +129,9 @@ export const LoginForm = () => {
     <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
       <div>
         <AuthModalHeader modalType="login" />
-        <Show when={submitError()}>
-          <div class={styles.authInfo}>
-            <div class={styles.warn}>{submitError()}</div>
-            <Show when={isEmailNotConfirmed()}>
-              <span class={'link'} onClick={handleSendLinkAgainClick}>
-                {t('Send link again')}
-              </span>
-            </Show>
-          </div>
-        </Show>
-        <Show when={isLinkSent()}>
-          <div class={styles.authInfo}>{t('Link sent, check your email')}</div>
-        </Show>
         <div
-          class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+          class={clsx("pretty-form__item", {
+            "pretty-form__item--error": validationErrors().email,
           })}
         >
           <input
@@ -149,29 +140,32 @@ export const LoginForm = () => {
             autocomplete="email"
             type="email"
             value={email()}
-            placeholder={t('Email')}
-            onBlur={(event) => handleBlurInput(event.currentTarget.value, 'email')}
+            placeholder={t("Email")}
+            onBlur={(event) => handleBlurInput(event.currentTarget.value, "email")}
             onInput={(event) => handleEmailInput(event.currentTarget.value)}
           />
-          <label for="email">{t('Email')}</label>
+          <label for="email">{t("Email")}</label>
           <Show when={validationErrors().email}>
             <div class={styles.validationError}>{validationErrors().email}</div>
           </Show>
         </div>
         <PasswordField
-          variant={'login'}
-          onBlur={(value) => handleBlurInput(value, 'password')}
+          variant={"login"}
+          onBlur={(value) => handleBlurInput(value, "password")}
           onInput={(value) => handlePasswordInput(value)}
         />
         <Show when={validationErrors().password}>
-          <div class={styles.validationError} style={{ position: 'static', 'font-size': '1.4rem' }}>
+          <div class={styles.validationError} style={{ position: "static", "font-size": "1.4rem" }}>
             {validationErrors().password}
           </div>
         </Show>
+        <Show when={submitError()}>
+          <div class={clsx('form-message--error', styles.submitError)}>{submitError()}</div>
+        </Show>
 
         <div>
-          <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
-            {isSubmitting() ? '...' : t('Enter')}
+          <button class={clsx("button", styles.submitButton)} disabled={isSubmitting()} type="submit">
+            {isSubmitting() ? "..." : t("Enter")}
           </button>
         </div>
         <div class={styles.authActions}>
@@ -179,11 +173,11 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               changeSearchParams({
-                mode: 'send-reset-link',
+                mode: "send-reset-link",
               })
             }
           >
-            {t('Set the new password')}
+            {t("Set the new password")}
           </span>
         </div>
       </div>
@@ -196,14 +190,14 @@ export const LoginForm = () => {
             class={styles.authLink}
             onClick={() =>
               changeSearchParams({
-                mode: 'register',
+                mode: "register",
               })
             }
           >
-            {t('I have no account yet')}
+            {t("I have no account yet")}
           </span>
         </div>
       </div>
     </form>
-  )
+  );
 }

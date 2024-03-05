@@ -210,6 +210,13 @@ export const apiClient = {
     return resp.data.get_shout
   },
 
+  getMyShout: async (shout_id: number) => {
+    const resp = await apiClient.private.query(shoutLoad, { shout_id }).toPromise()
+    if (resp.error) console.error(resp)
+
+    return resp.data.get_shout
+  },
+
   getShouts: async (options: LoadShoutsOptions) => {
     const resp = await publicGraphQLClient.query(shoutsLoadBy, { options }).toPromise()
     if (resp.error) console.error(resp)

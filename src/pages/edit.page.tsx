@@ -7,8 +7,10 @@ import { useLocalize } from '../context/localize'
 import { apiClient } from '../graphql/client/core'
 import { Shout } from '../graphql/schema/core.gen'
 import { useRouter } from '../stores/router'
+import { router } from '../stores/router'
 
 import { LayoutType } from './types'
+import { redirectPage } from "@nanostores/router";
 
 const EditView = lazy(() => import('../components/Views/EditView/EditView'))
 
@@ -21,8 +23,14 @@ export const EditPage = () => {
   const [shout, setShout] = createSignal<Shout>(null)
 
   onMount(async () => {
-    const loadedShout = await apiClient.getShoutById(shoutId())
-    setShout(loadedShout)
+    const loadedShout = await apiClient.getMyShout(shoutId())
+    console.log(loadedShout)
+    if (loadedShout) {
+      setShout(loadedShout)
+    }
+    else {
+      redirectPage(router, 'drafts')
+    }
   })
 
   const title = createMemo(() => {

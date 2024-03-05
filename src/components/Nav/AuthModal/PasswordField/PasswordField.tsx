@@ -1,70 +1,74 @@
-import { clsx } from 'clsx'
-import { Show, createEffect, createSignal, on } from 'solid-js'
+import { clsx } from "clsx";
+import { Show, createEffect, createSignal, on } from "solid-js";
 
-import { useLocalize } from '../../../../context/localize'
-import { Icon } from '../../../_shared/Icon'
+import { useLocalize } from "../../../../context/localize";
+import { Icon } from "../../../_shared/Icon";
 
-import styles from './PasswordField.module.scss'
+import styles from "./PasswordField.module.scss";
 
 type Props = {
-  class?: string
-  disabled?: boolean
-  placeholder?: string
-  errorMessage?: (error: string) => void
-  onInput: (value: string) => void
-  onBlur?: (value: string) => void
-  variant?: 'login' | 'registration'
-  disableAutocomplete?: boolean
-}
+  class?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  errorMessage?: (error: string) => void;
+  setError?: string;
+  onInput: (value: string) => void;
+  onBlur?: (value: string) => void;
+  variant?: "login" | "registration";
+  disableAutocomplete?: boolean;
+};
 
-const minLength = 8
-const hasNumber = /\d/
-const hasSpecial = /[!#$%&*@^]/
+const minLength = 8;
+const hasNumber = /\d/;
+const hasSpecial = /[!#$%&*@^]/;
 
 export const PasswordField = (props: Props) => {
-  const { t } = useLocalize()
-  const [showPassword, setShowPassword] = createSignal(false)
-  const [error, setError] = createSignal<string>()
+  const { t } = useLocalize();
+  const [showPassword, setShowPassword] = createSignal(false);
+  const [error, setError] = createSignal<string>();
 
   const validatePassword = (passwordToCheck) => {
     if (passwordToCheck.length < minLength) {
-      return t('Password should be at least 8 characters')
+      return t("Password should be at least 8 characters");
     }
     if (!hasNumber.test(passwordToCheck)) {
-      return t('Password should contain at least one number')
+      return t("Password should contain at least one number");
     }
     if (!hasSpecial.test(passwordToCheck)) {
-      return t('Password should contain at least one special character: !@#$%^&*')
+      return t("Password should contain at least one special character: !@#$%^&*");
     }
-    return null
-  }
+    return null;
+  };
 
   const handleInputBlur = (value: string) => {
-    if (props.variant === 'login') {
-      return props.onBlur(value)
+    if (props.variant === "login") {
+      return props.onBlur(value);
     }
     if (value.length < 1) {
-      return
+      return;
     }
 
-    props.onInput(value)
-    const errorValue = validatePassword(value)
+    props.onInput(value);
+    const errorValue = validatePassword(value);
     if (errorValue) {
-      setError(errorValue)
+      setError(errorValue);
     } else {
-      setError()
+      setError();
     }
-  }
+  };
 
   createEffect(
     on(
       () => error(),
       () => {
-        props.errorMessage?.(error())
+        props.errorMessage?.(error());
       },
       { defer: true },
     ),
   )
+  createEffect(() => {
+    setError(props.setError);
+  })
 
   return (
     <div class={clsx(styles.PassportField, props.class)}>
@@ -87,9 +91,9 @@ export const PasswordField = (props: Props) => {
           <Icon class={styles.passwordToggleIcon} name={showPassword() ? "eye-off" : "eye"} />
         </button>
         <Show when={error()}>
-          <div class={clsx(styles.registerPassword, styles.validationError)}>{error()}</div>
+          <div class={clsx(styles.registerPassword, styles.validationError,{'form-message--error': props.setError})}>{error()}</div>
         </Show>
       </div>
     </div>
   );
-}
+};

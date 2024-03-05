@@ -55,8 +55,33 @@ export const LoginForm = () => {
     changeSearchParams({ mode: 'send-confirm-email' })
   }
 
+
+  const preSendValidate = async (value: string, type: 'email' | 'password'): Promise<boolean> => {
+    if (type === 'email') {
+      if (value === '' || !validateEmail(value)) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          email: t('Invalid email'),
+        }));
+        return false
+      }
+    } else if (type === 'password') {
+      if (value === '') {
+        setValidationErrors((prev) => ({
+          ...prev,
+          password: t('Please enter password'),
+        }))
+        return false
+      }
+    }
+    return true
+  }
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
+
+    await preSendValidate(email(), 'email')
+    await preSendValidate(password(), 'password')
+
     setIsLinkSent(false)
     setSubmitError()
 
@@ -103,27 +128,6 @@ export const LoginForm = () => {
       setIsSubmitting(false)
     }
   }
-  createEffect(() => {
-    console.log("!!! submitError:", submitError());
-  })
-
-  const handleBlurInput = async (value: string, type: 'email' | 'password') => {
-    if (type === 'email') {
-      if (value === '' || !validateEmail(value)) {
-        setValidationErrors((prev) => ({
-          ...prev,
-          email: t('Invalid email'),
-        }));
-      }
-    } else if (type === 'password') {
-      if (value === '') {
-        setValidationErrors((prev) => ({
-          ...prev,
-          password: t('Please enter password'),
-        }));
-      }
-    }
-  }
 
   return (
     <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
@@ -141,7 +145,6 @@ export const LoginForm = () => {
             type="email"
             value={email()}
             placeholder={t("Email")}
-            onBlur={(event) => handleBlurInput(event.currentTarget.value, "email")}
             onInput={(event) => handleEmailInput(event.currentTarget.value)}
           />
           <label for="email">{t("Email")}</label>
@@ -149,16 +152,13 @@ export const LoginForm = () => {
             <div class={styles.validationError}>{validationErrors().email}</div>
           </Show>
         </div>
-        <PasswordField
-          variant={"login"}
-          onBlur={(value) => handleBlurInput(value, "password")}
-          onInput={(value) => handlePasswordInput(value)}
-        />
-        <Show when={validationErrors().password}>
-          <div class={styles.validationError} style={{ position: "static", "font-size": "1.4rem" }}>
-            {validationErrors().password}
-          </div>
-        </Show>
+
+          <PasswordField
+            variant={"login"}
+            setError={validationErrors().password}
+            onInput={(value) => handlePasswordInput(value)}
+          />
+
         <Show when={submitError()}>
           <div class={clsx('form-message--error', styles.submitError)}>{submitError()}</div>
         </Show>

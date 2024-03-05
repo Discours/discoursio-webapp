@@ -180,11 +180,6 @@ export const RegisterForm = () => {
         <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
           <div>
             <AuthModalHeader modalType="register" />
-            <Show when={submitError()}>
-              <div class={styles.authInfo}>
-                <div class={styles.warn}>{submitError()}</div>
-              </div>
-            </Show>
             <div
               class={clsx('pretty-form__item', {
                 'pretty-form__item--error': validationErrors().fullName,
@@ -263,12 +258,14 @@ export const RegisterForm = () => {
         </form>
       </Show>
       <Show when={isSuccess()}>
-        <div class={styles.title}>{t('Almost done! Check your email.')}</div>
-        <div class={styles.text}>{t("We've sent you a message with a link to enter our website.")}</div>
-        <div>
-          <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>
-            {t('Back to main page')}
-          </button>
+        <div style={{"justify-content": "center"}}>
+          <div class={styles.title}>{t('Almost done! Check your email.')}</div>
+          <div class={styles.text}>{t("We've sent you a message with a link to enter our website.")}</div>
+          <div>
+            <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>
+              {t('Back to main page')}
+            </button>
+          </div>
         </div>
       </Show>
     </>

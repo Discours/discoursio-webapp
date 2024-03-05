@@ -80,7 +80,9 @@ export const SendResetLinkForm = () => {
     >
       <div>
         <h4>{t('Set the new password')}</h4>
-        <div class={styles.authSubtitle}>{t('Please give us your email address')}</div>
+        <Show when={!message()}>
+          <div class={styles.authSubtitle}>{t('Please give us your email address')}</div>
+        </Show>
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email,
@@ -104,7 +106,7 @@ export const SendResetLinkForm = () => {
                 class={'link'}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'register',
                   })
                 }
               >

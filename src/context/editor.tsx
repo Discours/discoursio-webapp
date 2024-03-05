@@ -127,6 +127,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
+    if (!formToUpdate.shoutId) {
+      console.error(formToUpdate)
+      return {"error": "not enought data"}
+    }
     return await apiClient.updateArticle({
       shout_id: formToUpdate.shoutId,
       shout_input: {
@@ -228,6 +232,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const publishShoutById = async (shout_id: number) => {
+    if (!shout_id) {
+      console.error(`shout_id is ${shout_id}`)
+      return
+    }
     try {
       const { shout: newShout, error } = await apiClient.updateArticle({
         shout_id,

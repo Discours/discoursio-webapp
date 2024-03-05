@@ -199,14 +199,9 @@ export const apiClient = {
     console.debug('[graphql.client.core] authorsLoadBy:', resp)
     return resp.data.load_authors_by
   },
+
   getShoutBySlug: async (slug: string) => {
     const resp = await publicGraphQLClient.query(shoutLoad, { slug }).toPromise()
-    return resp.data.get_shout
-  },
-  getShoutById: async (shout_id: number) => {
-    const resp = await publicGraphQLClient.query(shoutLoad, { shout_id }).toPromise()
-    if (resp.error) console.error(resp)
-
     return resp.data.get_shout
   },
 

@@ -9,13 +9,15 @@ import { Shout } from '../graphql/schema/core.gen'
 import { useRouter } from '../stores/router'
 import { router } from '../stores/router'
 
+import { redirectPage } from '@nanostores/router'
+import { useSnackbar } from '../context/snackbar'
 import { LayoutType } from './types'
-import { redirectPage } from "@nanostores/router";
 
 const EditView = lazy(() => import('../components/Views/EditView/EditView'))
 
 export const EditPage = () => {
   const { page } = useRouter()
+  const snackbar = useSnackbar()
   const { t } = useLocalize()
 
   const shoutId = createMemo(() => Number((page().params as Record<'shoutId', string>).shoutId))
@@ -27,8 +29,8 @@ export const EditPage = () => {
     console.log(loadedShout)
     if (loadedShout) {
       setShout(loadedShout)
-    }
-    else {
+    } else {
+      await snackbar?.showSnackbar({ type: 'error', body: t('This content is not published yet') })
       redirectPage(router, 'drafts')
     }
   })

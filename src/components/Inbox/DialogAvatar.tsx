@@ -51,10 +51,15 @@ const DialogAvatar = (props: Props) => {
       <Show when={Boolean(props.url)} fallback={<div class={styles.letter}>{nameFirstLetter()}</div>}>
         <div
           class={styles.imageHolder}
-          style={{ 'background-image': `url(
-            ${props.url.includes('discours.io') ? getImageUrl(props.url, { width: 40, height: 40 }) : props.url }
-            )`
-        }}
+          style={{
+            'background-image': `url(
+            ${
+              props.url.includes('discours.io')
+                ? getImageUrl(props.url, { width: 40, height: 40 })
+                : props.url
+            }
+            )`,
+          }}
         />
       </Show>
     </div>

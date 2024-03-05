@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   query LoadDraftsQuery {
-    load_shouts_drafts {
+    get_shouts_drafts {
       id
       title
       subtitle
@@ -23,6 +23,13 @@ export default gql`
           followers
         }
       }
+      created_by {
+        id
+        name
+        slug
+        pic
+        created_at
+      }
       authors {
         id
         name
@@ -35,7 +42,6 @@ export default gql`
       featured_at
       stat {
         viewed
-
         rating
         commented
       }

@@ -177,7 +177,7 @@ export const apiClient = {
   getDrafts: async (): Promise<Shout[]> => {
     const response = await apiClient.private.query(draftsLoad, {}).toPromise()
     console.debug('[graphql.client.core] getDrafts:', response)
-    return response.data.load_shouts_drafts
+    return response.data.get_shouts_drafts
   },
   createReaction: async (input: ReactionInput) => {
     const response = await apiClient.private.mutation(reactionCreate, { reaction: input }).toPromise()

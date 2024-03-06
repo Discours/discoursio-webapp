@@ -139,7 +139,7 @@ export const AuthorView = (props: Props) => {
   )
   const description = createMemo(() => getDescription(author()?.bio))
   const handleDeleteComment = (id: number) => {
-    setCommented((prev) => prev.filter((comment) => comment.id !== id));
+    setCommented((prev) => prev.filter((comment) => comment.id !== id))
   }
 
   return (
@@ -235,14 +235,14 @@ export const AuthorView = (props: Props) => {
               <div class="col-md-20 col-lg-18">
                 <ul class={stylesArticle.comments}>
                   <For each={commented()?.sort(byCreated).reverse()}>
-                    {(comment) =>
+                    {(comment) => (
                       <Comment
                         comment={comment}
                         class={styles.comment}
                         showArticleLink={true}
                         onDelete={(id) => handleDeleteComment(id)}
                       />
-                    }
+                    )}
                   </For>
                 </ul>
               </div>

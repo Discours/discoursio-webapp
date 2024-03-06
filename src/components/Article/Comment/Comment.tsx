@@ -71,8 +71,6 @@ export const Comment = (props: Props) => {
           }
           await showSnackbar({ body: t('Comment successfully deleted') })
         }
-
-
       } catch (error) {
         console.error('[deleteReaction]', error)
       }

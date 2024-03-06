@@ -135,7 +135,7 @@ export const apiClient = {
     user?: string
   }): Promise<AuthorFollows> => {
     const response = await publicGraphQLClient.query(authorFollows, params).toPromise()
-    console.log("!!! response:", response);
+    console.log('!!! response:', response)
     return response.data.get_author_follows
   },
 

@@ -5,6 +5,8 @@ import { createStore, reconcile } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
 import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/schema/core.gen'
+import { useLocalize } from './localize'
+import { useSnackbar } from './snackbar'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
@@ -30,6 +32,8 @@ export function useReactions() {
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
+  const { t } = useLocalize()
+  const { showSnackbar } = useSnackbar()
 
   const loadReactionsBy = async ({
     by,
@@ -81,7 +85,10 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const deleteReaction = async (reaction_id: number): Promise<void> => {
     if (reaction_id) {
-      await apiClient.destroyReaction(reaction_id)
+      const { error } = await apiClient.destroyReaction(reaction_id)
+      if (error) {
+        await showSnackbar({ type: 'error', body: t(error) })
+      }
       setReactionEntities({
         [reaction_id]: undefined,
       })

@@ -129,7 +129,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
     if (!formToUpdate.shoutId) {
       console.error(formToUpdate)
-      return {"error": "not enought data"}
+      return { error: 'not enought data' }
     }
     return await apiClient.updateArticle({
       shout_id: formToUpdate.shoutId,

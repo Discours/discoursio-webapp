@@ -30,6 +30,7 @@ type Props = {
   showArticleLink?: boolean
   clickedReply?: (id: number) => void
   clickedReplyId?: number
+  onDelete?: (id: number) => void
 }
 
 export const Comment = (props: Props) => {
@@ -64,7 +65,10 @@ export const Comment = (props: Props) => {
 
         if (isConfirmed) {
           await deleteReaction(props.comment.id)
-
+          // TODO: Учесть то что deleteReaction может вернуть error
+          if (props.onDelete) {
+            props.onDelete(props.comment.id)
+          }
           await showSnackbar({ body: t('Comment successfully deleted') })
         }
       } catch (error) {

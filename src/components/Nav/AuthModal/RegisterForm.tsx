@@ -12,7 +12,7 @@ import { validateEmail } from '../../../utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
-import { SocialProviders } from "./SocialProviders"
+import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
 import { GenericResponse } from '@authorizerdev/authorizer-js'
@@ -48,6 +48,7 @@ export const RegisterForm = () => {
   }
 
   const handleSubmit = async (event: Event) => {
+    console.log('!!! handleSubmit:', handleSubmit)
     event.preventDefault()
     if (passwordError()) {
       setValidationErrors((errors) => ({ ...errors, password: passwordError() }))
@@ -133,7 +134,8 @@ export const RegisterForm = () => {
         setValidationErrors((prev) => ({
           email: (
             <>
-              {t('This email is verified')}. {t('You can')}{' '}
+              {t('This email is registered')}. {t('try')}
+              {', '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
                 {t('enter')}
               </span>
@@ -258,7 +260,7 @@ export const RegisterForm = () => {
         </form>
       </Show>
       <Show when={isSuccess()}>
-        <div style={{"justify-content": "center"}}>
+        <div style={{ 'justify-content': 'center' }}>
           <div class={styles.title}>{t('Almost done! Check your email.')}</div>
           <div class={styles.text}>{t("We've sent you a message with a link to enter our website.")}</div>
           <div>

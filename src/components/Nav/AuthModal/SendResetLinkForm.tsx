@@ -79,9 +79,9 @@ export const SendResetLinkForm = () => {
       ref={(el) => (authFormRef.current = el)}
     >
       <div>
-        <h4>{t('Set the new password')}</h4>
+        <h4>{t('Forgot password?')}</h4>
         <Show when={!message()}>
-          <div class={styles.authSubtitle}>{t('Please give us your email address')}</div>
+          <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
         </Show>
         <div
           class={clsx('pretty-form__item', {

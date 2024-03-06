@@ -18,7 +18,7 @@ export const SocialProviders = () => {
       <div class={styles.social}>
         <For each={PROVIDERS}>
           {(provider) => (
-            <button class={styles[provider]} onClick={(_e) => oauth(provider)}>
+            <button type="button" class={styles[provider]} onClick={(_e) => oauth(provider)}>
               <Icon name={provider} />
             </button>
           )}

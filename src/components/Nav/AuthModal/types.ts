@@ -1,5 +1,5 @@
 export type AuthModalMode =
-  'login'
+  | 'login'
   | 'register'
   | 'confirm-email'
   | 'send-confirm-email'

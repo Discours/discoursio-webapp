@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { Show, createSignal, createEffect, JSX } from "solid-js";
+import { JSX, Show, createEffect, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -12,7 +12,7 @@ import { validateEmail } from '../../../utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
-import { SocialProviders } from "./SocialProviders"
+import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
 import styles from './AuthModal.module.scss'
@@ -55,14 +55,13 @@ export const LoginForm = () => {
     changeSearchParams({ mode: 'send-confirm-email' })
   }
 
-
   const preSendValidate = async (value: string, type: 'email' | 'password'): Promise<boolean> => {
     if (type === 'email') {
       if (value === '' || !validateEmail(value)) {
         setValidationErrors((prev) => ({
           ...prev,
           email: t('Invalid email'),
-        }));
+        }))
         return false
       }
     } else if (type === 'password') {
@@ -96,7 +95,7 @@ export const LoginForm = () => {
 
     try {
       const { errors } = await signIn({ email: email(), password: password() })
-      console.error("[signIn errors]", errors)
+      console.error('[signIn errors]', errors)
       if (errors?.length > 0) {
         if (errors.some((error) => error.message.includes('bad user credentials'))) {
           setValidationErrors((prev) => ({
@@ -104,26 +103,27 @@ export const LoginForm = () => {
             password: t('Something went wrong, check email and password'),
           }))
         } else if (errors.some((error) => error.message.includes('user not found'))) {
-          setSubmitError('Пользователь не найден');
+          setSubmitError('Пользователь не найден')
         } else if (errors.some((error) => error.message.includes('email not verified'))) {
           setSubmitError(
             <div class={styles.info}>
-              {t('This email is not verified')}{'. '}
-              <span class={"link"} onClick={handleSendLinkAgainClick}>
-                {t("Send link again")}
+              {t('This email is not verified')}
+              {'. '}
+              <span class={'link'} onClick={handleSendLinkAgainClick}>
+                {t('Send link again')}
               </span>
-            </div>
+            </div>,
           )
         } else {
-          setSubmitError(t("Error", errors[0].message));
+          setSubmitError(t('Error', errors[0].message))
         }
-        return;
+        return
       }
-      hideModal();
-      showSnackbar({ body: t("Welcome!") });
+      hideModal()
+      showSnackbar({ body: t('Welcome!') })
     } catch (error) {
-      console.error(error);
-      setSubmitError(error.message);
+      console.error(error)
+      setSubmitError(error.message)
     } finally {
       setIsSubmitting(false)
     }
@@ -134,8 +134,8 @@ export const LoginForm = () => {
       <div>
         <AuthModalHeader modalType="login" />
         <div
-          class={clsx("pretty-form__item", {
-            "pretty-form__item--error": validationErrors().email,
+          class={clsx('pretty-form__item', {
+            'pretty-form__item--error': validationErrors().email,
           })}
         >
           <input
@@ -144,28 +144,28 @@ export const LoginForm = () => {
             autocomplete="email"
             type="email"
             value={email()}
-            placeholder={t("Email")}
+            placeholder={t('Email')}
             onInput={(event) => handleEmailInput(event.currentTarget.value)}
           />
-          <label for="email">{t("Email")}</label>
+          <label for="email">{t('Email')}</label>
           <Show when={validationErrors().email}>
             <div class={styles.validationError}>{validationErrors().email}</div>
           </Show>
         </div>
 
-          <PasswordField
-            variant={"login"}
-            setError={validationErrors().password}
-            onInput={(value) => handlePasswordInput(value)}
-          />
+        <PasswordField
+          variant={'login'}
+          setError={validationErrors().password}
+          onInput={(value) => handlePasswordInput(value)}
+        />
 
         <Show when={submitError()}>
           <div class={clsx('form-message--error', styles.submitError)}>{submitError()}</div>
         </Show>
 
         <div>
-          <button class={clsx("button", styles.submitButton)} disabled={isSubmitting()} type="submit">
-            {isSubmitting() ? "..." : t("Enter")}
+          <button class={clsx('button', styles.submitButton)} disabled={isSubmitting()} type="submit">
+            {isSubmitting() ? '...' : t('Enter')}
           </button>
         </div>
         <div class={styles.authActions}>
@@ -173,11 +173,11 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               changeSearchParams({
-                mode: "send-reset-link",
+                mode: 'send-reset-link',
               })
             }
           >
-            {t("Set the new password")}
+            {t('Forgot password?')}
           </span>
         </div>
       </div>
@@ -190,14 +190,14 @@ export const LoginForm = () => {
             class={styles.authLink}
             onClick={() =>
               changeSearchParams({
-                mode: "register",
+                mode: 'register',
               })
             }
           >
-            {t("I have no account yet")}
+            {t('I have no account yet')}
           </span>
         </div>
       </div>
     </form>
-  );
+  )
 }

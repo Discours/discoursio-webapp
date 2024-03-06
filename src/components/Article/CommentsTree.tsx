@@ -1,15 +1,15 @@
-import {clsx} from 'clsx'
-import {createMemo, createSignal, For, lazy, onMount, Show} from 'solid-js'
+import { clsx } from 'clsx'
+import { For, Show, createMemo, createSignal, lazy, onMount } from 'solid-js'
 
-import {useLocalize} from '../../context/localize'
-import {useReactions} from '../../context/reactions'
-import {useSession} from '../../context/session'
-import {Author, Reaction, ReactionKind, ReactionSort} from '../../graphql/schema/core.gen'
-import {byCreated, byStat} from '../../utils/sortby'
-import {Button} from '../_shared/Button'
-import {ShowIfAuthenticated} from '../_shared/ShowIfAuthenticated'
+import { useLocalize } from '../../context/localize'
+import { useReactions } from '../../context/reactions'
+import { useSession } from '../../context/session'
+import { Author, Reaction, ReactionKind, ReactionSort } from '../../graphql/schema/core.gen'
+import { byCreated, byStat } from '../../utils/sortby'
+import { Button } from '../_shared/Button'
+import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 
-import {Comment} from './Comment'
+import { Comment } from './Comment'
 
 import styles from './Article.module.scss'
 
@@ -95,11 +95,7 @@ export const CommentsTree = (props: Props) => {
           <ul class={clsx(styles.commentsViewSwitcher, 'view-switcher')}>
             <Show when={newReactions().length > 0}>
               <li classList={{ 'view-switcher__item--selected': onlyNew() }}>
-                <Button
-                  variant="light"
-                  value={t('New only')}
-                  onClick={() => setOnlyNew(!onlyNew())}
-                />
+                <Button variant="light" value={t('New only')} onClick={() => setOnlyNew(!onlyNew())} />
               </li>
             </Show>
             <li classList={{ 'view-switcher__item--selected': commentsOrder() === ReactionSort.Newest }}>

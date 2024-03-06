@@ -33,7 +33,7 @@ export const ChangePasswordForm = () => {
     event.preventDefault()
     setIsSubmitting(true)
     if (newPassword()) {
-      changePassword(newPassword(), searchParams()?.token);
+      changePassword(newPassword(), searchParams()?.token)
       setTimeout(() => {
         setIsSubmitting(false)
         setIsSuccess(true)

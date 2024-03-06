@@ -29,7 +29,7 @@ export const EmailConfirm = () => {
     }
 
     if (authError()) {
-      console.debug("[AuthModal.EmailConfirm] auth error:", authError());
+      console.debug('[AuthModal.EmailConfirm] auth error:', authError())
     }
   })
 

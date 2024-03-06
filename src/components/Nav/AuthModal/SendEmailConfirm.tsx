@@ -9,14 +9,14 @@ export const SendEmailConfirm = () => {
   return (
     <div
       style={{
-        "align-items": "center",
-        "justify-content": "center",
+        'align-items': 'center',
+        'justify-content': 'center',
       }}
     >
-      <div class={styles.text}>{t("Link sent, check your email")}</div>
+      <div class={styles.text}>{t('Link sent, check your email')}</div>
       <div>
-        <button class={clsx("button", styles.submitButton)} onClick={() => hideModal()}>
-          {t("Go to main page")}
+        <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>
+          {t('Go to main page')}
         </button>
       </div>
     </div>

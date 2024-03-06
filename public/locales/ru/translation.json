@@ -88,6 +88,7 @@
   "Comment": "Комментировать",
   "Commentator": "Комментатор",
   "Comments": "Комментарии",
+  "CommentsWithCount": "{count, plural, =0 {{count} комментариев} one {{count} комментарий} few {{count} комментария} other {{count} комментариев}}",
   "Communities": "Сообщества",
   "Community Discussion Rules": "Правила дискуссий в сообществе",
   "Community Principles": "Принципы сообщества",

@@ -127,9 +127,8 @@ export const AuthorView = (props: Props) => {
   }
 
   createEffect(() => {
-    const a = author()
-    if (a) {
-      fetchComments(a)
+    if (author()) {
+      fetchComments(author())
     }
   })
 
@@ -139,6 +138,9 @@ export const AuthorView = (props: Props) => {
       : getImageUrl('production/image/logo_image.png'),
   )
   const description = createMemo(() => getDescription(author()?.bio))
+  const handleDeleteComment = (id: number) => {
+    setCommented((prev) => prev.filter((comment) => comment.id !== id));
+  }
 
   return (
     <div class={styles.authorPage}>
@@ -233,7 +235,14 @@ export const AuthorView = (props: Props) => {
               <div class="col-md-20 col-lg-18">
                 <ul class={stylesArticle.comments}>
                   <For each={commented()?.sort(byCreated).reverse()}>
-                    {(comment) => <Comment comment={comment} class={styles.comment} showArticleLink />}
+                    {(comment) =>
+                      <Comment
+                        comment={comment}
+                        class={styles.comment}
+                        showArticleLink={true}
+                        onDelete={(id) => handleDeleteComment(id)}
+                      />
+                    }
                   </For>
                 </ul>
               </div>

@@ -23,13 +23,6 @@ export default gql`
           followers
         }
       }
-      created_by {
-        id
-        name
-        slug
-        pic
-        created_at
-      }
       authors {
         id
         name

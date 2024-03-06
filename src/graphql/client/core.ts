@@ -30,6 +30,7 @@ import unfollowMutation from '../mutation/core/unfollow'
 import shoutLoad from '../query/core/article-load'
 import shoutsLoadBy from '../query/core/articles-load-by'
 import draftsLoad from '../query/core/articles-load-drafts'
+import getMyShout from '../query/core/article-my'
 import myFeed from '../query/core/articles-load-feed'
 import loadShoutsTopRandom from '../query/core/articles-load-random-top'
 import articlesLoadRandomTopic from '../query/core/articles-load-random-topic'
@@ -41,7 +42,6 @@ import authorFollows from '../query/core/author-follows'
 import authorId from '../query/core/author-id'
 import authorsAll from '../query/core/authors-all'
 import authorsLoadBy from '../query/core/authors-load-by'
-import mySubscriptions from '../query/core/my-followed'
 import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
@@ -206,10 +206,10 @@ export const apiClient = {
   },
 
   getMyShout: async (shout_id: number) => {
-    const resp = await apiClient.private.query(shoutLoad, { shout_id }).toPromise()
+    const resp = await apiClient.private.query(getMyShout, { shout_id }).toPromise()
     if (resp.error) console.error(resp)
 
-    return resp.data.get_shout
+    return resp.data.get_my_shout
   },
 
   getShouts: async (options: LoadShoutsOptions) => {

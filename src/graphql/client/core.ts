@@ -207,6 +207,7 @@ export const apiClient = {
   },
 
   getMyShout: async (shout_id: number) => {
+    await apiClient.private
     const resp = await apiClient.private.query(getMyShout, { shout_id }).toPromise()
     if (resp.error) console.error(resp)
 

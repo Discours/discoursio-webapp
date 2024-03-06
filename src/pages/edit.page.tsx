@@ -25,13 +25,13 @@ export const EditPage = () => {
   const [shout, setShout] = createSignal<Shout>(null)
 
   onMount(async () => {
-    const loadedShout = await apiClient.getMyShout(shoutId())
+    const { shout: loadedShout, error } = await apiClient.getMyShout(shoutId())
     console.log(loadedShout)
-    if (loadedShout) {
-      setShout(loadedShout)
-    } else {
+    if (error) {
       await snackbar?.showSnackbar({ type: 'error', body: t('This content is not published yet') })
       redirectPage(router, 'drafts')
+    } else {
+      setShout(loadedShout)
     }
   })
 

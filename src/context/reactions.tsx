@@ -57,7 +57,8 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const createReaction = async (input: ReactionInput): Promise<void> => {
-    const reaction = await apiClient.createReaction(input)
+    const {error, reaction} = await apiClient.createReaction(input)
+    if (error) await showSnackbar({type: 'error', body: t(error)})
     if (!reaction) return
     const changes = {
       [reaction.id]: reaction,
@@ -96,8 +97,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const updateReaction = async (input: ReactionInput): Promise<Reaction> => {
-    const reaction = await apiClient.updateReaction(input)
-    setReactionEntities(reaction.id, reaction)
+    const {error, reaction} = await apiClient.updateReaction(input)
+    if (error) await showSnackbar({type: 'error', body: t(error)})
+    if (reaction) setReactionEntities(reaction.id, reaction)
     return reaction
   }
 

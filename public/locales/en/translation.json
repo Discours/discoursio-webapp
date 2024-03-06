@@ -83,6 +83,7 @@
   "Comment successfully deleted": "Comment successfully deleted",
   "Commentator": "Commentator",
   "Comments": "Comments",
+  "CommentsWithCount": "{count, plural, =0 {{count} comments} one {{count} comment} few {{count} comments} other {{count} comments}}",
   "Communities": "Communities",
   "Community Discussion Rules": "Community Discussion Rules",
   "Community Principles": "Community Principles",

@@ -215,7 +215,6 @@ export const SessionProvider = (props: {
       if (token) {
         if (!inboxClient.private) {
           apiClient.connect(token)
-          notifierClient.connect(token)
           inboxClient.connect(token)
         }
         if (!author()) loadAuthor()

@@ -30,6 +30,7 @@ type Props = {
   showArticleLink?: boolean
   clickedReply?: (id: number) => void
   clickedReplyId?: number
+  onDelete?: (id: number) => void
 }
 
 export const Comment = (props: Props) => {
@@ -38,6 +39,7 @@ export const Comment = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
+  const [editedBody, setEditedBody] = createSignal<string>()
   const { author, session } = useSession()
   const { createReaction, deleteReaction, updateReaction } = useReactions()
   const { showConfirm } = useConfirm()
@@ -49,7 +51,7 @@ export const Comment = (props: Props) => {
       (props.comment?.created_by?.slug === author().slug || session()?.user?.roles.includes('editor')),
   )
 
-  const body = createMemo(() => (props.comment.body || '').trim())
+  const body = createMemo(() => (editedBody() ? editedBody().trim() : props.comment.body.trim() || ''))
 
   const remove = async () => {
     if (props.comment?.id) {
@@ -63,7 +65,10 @@ export const Comment = (props: Props) => {
 
         if (isConfirmed) {
           await deleteReaction(props.comment.id)
-
+          // TODO: Учесть то что deleteReaction может вернуть error
+          if (props.onDelete) {
+            props.onDelete(props.comment.id)
+          }
           await showSnackbar({ body: t('Comment successfully deleted') })
         }
       } catch (error) {
@@ -97,12 +102,15 @@ export const Comment = (props: Props) => {
   const handleUpdate = async (value) => {
     setLoading(true)
     try {
-      await updateReaction({
+      const reaction = await updateReaction({
         id: props.comment.id,
         kind: ReactionKind.Comment,
         body: value,
         shout: props.comment.shout.id,
       })
+      if (reaction) {
+        setEditedBody(value)
+      }
       setEditMode(false)
       setLoading(false)
     } catch (error) {
@@ -165,7 +173,7 @@ export const Comment = (props: Props) => {
             <Show when={editMode()} fallback={<div innerHTML={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor
-                  initialContent={props.comment.body}
+                  initialContent={editedBody() || props.comment.body}
                   submitButtonText={t('Save')}
                   quoteEnabled={true}
                   imageEnabled={true}

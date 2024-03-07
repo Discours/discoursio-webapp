@@ -2,8 +2,6 @@
   @include font-size(1.2rem);
 
   color: var(--secondary-color);
-
-  //align-self: center;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -18,15 +16,6 @@
     font-weight: 500;
     margin-right: 1rem;
     position: relative;
-
-    .icon {
-      line-height: 1;
-      width: 1rem;
-      display: inline-block;
-      opacity: 0.6;
-      margin-right: 0.5rem;
-      vertical-align: middle;
-    }
   }
 
   &.showOnHover {

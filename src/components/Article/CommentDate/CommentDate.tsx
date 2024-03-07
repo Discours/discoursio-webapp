@@ -1,10 +1,8 @@
 import type { Reaction } from '../../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
 
 import styles from './CommentDate.module.scss'
 
@@ -34,14 +32,6 @@ export const CommentDate = (props: Props) => {
       })}
     >
       <time class={styles.date}>{formattedDate(props.comment.created_at * 1000)}</time>
-      <Show when={props.comment.updated_at}>
-        <time class={styles.date}>
-          <Icon name="edit" class={styles.icon} />
-          <span class={styles.text}>
-            {t('Edited')} {formattedDate(props.comment.updated_at * 1000)}
-          </span>
-        </time>
-      </Show>
     </div>
   )
 }

@@ -549,5 +549,7 @@
   "video": "видео",
   "view": "просмотр",
   "viewsWithCount": "{count} {count, plural, one {просмотр} few {просмотрa} other {просмотров}}",
-  "yesterday": "вчера"
+  "yesterday": "вчера",
+  "It's OK. Just enter your email to receive a link to change your password": "Ничего страшного. Просто укажите свою почту, чтобы получить ссылку для смены пароля",
+  "Restore password": "Восстановить пароль"
 }

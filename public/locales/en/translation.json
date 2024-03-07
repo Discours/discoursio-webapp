@@ -522,5 +522,7 @@
   "video": "video",
   "view": "view",
   "viewsWithCount": "{count} {count, plural, one {view} other {views}}",
-  "yesterday": "yesterday"
+  "yesterday": "yesterday",
+  "It's OK. Just enter your email to receive a link to change your password": "It's OK. Just enter your email to receive a link to change your password",
+  "Restore password": "Restore password"
 }

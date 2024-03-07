@@ -81,7 +81,9 @@ export const SendResetLinkForm = () => {
       <div>
         <h4>{t('Forgot password?')}</h4>
         <Show when={!message()}>
-          <div class={styles.authSubtitle}>{t('Everything is ok, please give us your email address')}</div>
+          <div class={styles.authSubtitle}>
+            {t("It's OK. Just enter your email to receive a link to change your password")}
+          </div>
         </Show>
         <div
           class={clsx('pretty-form__item', {
@@ -126,7 +128,7 @@ export const SendResetLinkForm = () => {
                 disabled={isSubmitting() || Boolean(message())}
                 type="submit"
               >
-                {isSubmitting() ? '...' : t('Send')}
+                {isSubmitting() ? '...' : t('Restore password')}
               </button>
             </div>
             <div class={styles.authControl}>

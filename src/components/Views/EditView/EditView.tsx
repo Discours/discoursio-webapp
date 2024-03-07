@@ -68,7 +68,7 @@ export const EditView = (props: Props) => {
   // TODO: проверить сохранение черновика в local storage (не работает)
   const draft = getDraftFromLocalStorage(props.shout.id)
   if (draft) {
-    setForm(Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id });
+    setForm(Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id })
   } else {
     setForm({
       slug: props.shout.slug,

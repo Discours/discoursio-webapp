@@ -39,7 +39,7 @@ export const EditPage = () => {
     if (shout_id) {
       try {
         await loadMyShout(parseInt(shout_id, 10))
-      } catch(e) {
+      } catch (e) {
         console.error(e)
       }
     }

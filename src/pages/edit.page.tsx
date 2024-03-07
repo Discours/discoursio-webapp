@@ -1,4 +1,4 @@
-import { Show, Suspense, createMemo, createSignal, lazy, onMount } from 'solid-js'
+import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
 
 import { AuthGuard } from '../components/AuthGuard'
 import { Loading } from '../components/_shared/Loading'
@@ -24,16 +24,18 @@ export const EditPage = () => {
 
   const [shout, setShout] = createSignal<Shout>(null)
 
-  onMount(async () => {
-    const { shout: loadedShout, error } = await apiClient.getMyShout(shoutId())
-    console.log(loadedShout)
-    if (error) {
-      await snackbar?.showSnackbar({ type: 'error', body: t('This content is not published yet') })
-      redirectPage(router, 'drafts')
-    } else {
-      setShout(loadedShout)
-    }
-  })
+  createEffect(
+    on(shoutId, async (shout_id) => {
+      const { shout: loadedShout, error } = await apiClient.getMyShout(shout_id)
+      console.log(loadedShout)
+      if (error) {
+        await snackbar?.showSnackbar({ type: 'error', body: t('This content is not published yet') })
+        redirectPage(router, 'drafts')
+      } else {
+        setShout(loadedShout)
+      }
+    }),
+  )
 
   const title = createMemo(() => {
     if (!shout()) {

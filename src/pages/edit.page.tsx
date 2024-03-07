@@ -34,7 +34,7 @@ export const EditPage = () => {
       } else {
         setShout(loadedShout)
       }
-    }),
+    }, { defer: true }),
   )
 
   const title = createMemo(() => {

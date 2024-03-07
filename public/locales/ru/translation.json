@@ -552,5 +552,6 @@
   "video": "видео",
   "view": "просмотр",
   "viewsWithCount": "{count} {count, plural, one {просмотр} few {просмотрa} other {просмотров}}",
-  "yesterday": "вчера"
+  "yesterday": "вчера",
+  "Failed to delete comment": "Не удалось удалить комментарий"
 }

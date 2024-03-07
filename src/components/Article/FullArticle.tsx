@@ -141,7 +141,7 @@ export const FullArticle = (props: Props) => {
 
   const media = createMemo<MediaItem[]>(() => {
     try {
-      return JSON.parse(props.article.media)
+      return JSON.parse(props.article?.media || '[]')
     } catch {
       return []
     }

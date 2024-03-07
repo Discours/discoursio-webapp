@@ -149,6 +149,7 @@
   "Enter the code or click the link from email to confirm": "Введите код из письма или пройдите по ссылке в письме для подтверждения регистрации",
   "Enter your new password": "Введите новый пароль",
   "Enter": "Войти",
+  "This content is not published yet": "Содержимое ещё не опубликовано",
   "Error": "Ошибка",
   "Experience": "Личный опыт",
   "FAQ": "Советы и предложения",
@@ -529,6 +530,7 @@
   "repeat": "повторить",
   "resend confirmation link": "отправить ссылку ещё раз",
   "shout": "пост",
+  "shout not found": "публикация не найдена",
   "shoutsWithCount": "{count} {count, plural, one {пост} few {поста}  other {постов}}",
   "sign in": "войти",
   "sign up or sign in": "зарегистрироваться или войти",
@@ -550,6 +552,7 @@
   "view": "просмотр",
   "viewsWithCount": "{count} {count, plural, one {просмотр} few {просмотрa} other {просмотров}}",
   "yesterday": "вчера",
+  "Failed to delete comment": "Не удалось удалить комментарий",
   "It's OK. Just enter your email to receive a link to change your password": "Ничего страшного. Просто укажите свою почту, чтобы получить ссылку для смены пароля",
   "Restore password": "Восстановить пароль"
 }

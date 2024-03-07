@@ -64,10 +64,11 @@ export const EditView = (props: Props) => {
     getDraftFromLocalStorage,
   } = useEditorContext()
   const shoutTopics = props.shout.topics || []
-  const draft = getDraftFromLocalStorage(props.shout.id)
 
+  // TODO: проверить сохранение черновика в local storage (не работает)
+  const draft = getDraftFromLocalStorage(props.shout.id)
   if (draft) {
-    setForm(draft)
+    setForm(Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id })
   } else {
     setForm({
       slug: props.shout.slug,
@@ -179,6 +180,7 @@ export const EditView = (props: Props) => {
 
   let autoSaveTimeOutId: number | string | NodeJS.Timeout
 
+  //TODO: add throttle
   const autoSaveRecursive = () => {
     autoSaveTimeOutId = setTimeout(async () => {
       const hasChanges = !deepEqual(form, prevForm)
@@ -307,10 +309,10 @@ export const EditView = (props: Props) => {
                                 subtitleInput.current = el
                               }}
                               allowEnterKey={false}
-                              value={(value) => setForm('subtitle', value)}
+                              value={(value) => setForm('subtitle', value || '')}
                               class={styles.subtitleInput}
                               placeholder={t('Subheader')}
-                              initialValue={form.subtitle}
+                              initialValue={form.subtitle || ''}
                               maxLength={MAX_HEADER_LIMIT}
                             />
                           </Show>

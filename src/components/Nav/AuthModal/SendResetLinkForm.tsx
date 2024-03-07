@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { JSX, Show, createSignal } from 'solid-js'
+import { JSX, Show, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -72,6 +72,12 @@ export const SendResetLinkForm = () => {
     }
   }
 
+  onMount(() => {
+    if (email()) {
+      console.info('[SendResetLinkForm] email detected')
+    }
+  })
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -98,7 +104,7 @@ export const SendResetLinkForm = () => {
             type="email"
             value={email()}
             placeholder={t('Email')}
-            onInput={(event) => handleEmailInput(event.currentTarget.value)}
+            onChange={(event) => handleEmailInput(event.currentTarget.value)}
           />
           <label for="email">{t('Email')}</label>
           <Show when={isUserNotFound()}>

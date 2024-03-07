@@ -1,4 +1,4 @@
-import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
+import { Show, Suspense, createMemo, createSignal, lazy, onMount } from 'solid-js'
 
 import { AuthGuard } from '../components/AuthGuard'
 import { Loading } from '../components/_shared/Loading'
@@ -20,12 +20,9 @@ export const EditPage = () => {
   const snackbar = useSnackbar()
   const { t } = useLocalize()
 
-  const shoutId = createMemo(() => Number((page().params as Record<'shoutId', string>).shoutId))
-
   const [shout, setShout] = createSignal<Shout>(null)
-
-  createEffect(
-    on(shoutId, async (shout_id) => {
+  const loadMyShout = async (shout_id: number) => {
+    if (shout_id) {
       const { shout: loadedShout, error } = await apiClient.getMyShout(shout_id)
       console.log(loadedShout)
       if (error) {
@@ -34,8 +31,19 @@ export const EditPage = () => {
       } else {
         setShout(loadedShout)
       }
-    }, { defer: true }),
-  )
+    }
+  }
+
+  onMount(async () => {
+    const shout_id = window.location.pathname.split('/').pop()
+    if (shout_id) {
+      try {
+        await loadMyShout(parseInt(shout_id, 10))
+      } catch(e) {
+        console.error(e)
+      }
+    }
+  })
 
   const title = createMemo(() => {
     if (!shout()) {

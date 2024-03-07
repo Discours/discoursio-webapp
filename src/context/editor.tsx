@@ -184,10 +184,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const saveDraft = async (draftForm: ShoutForm) => {
-    console.log("!!! draftForm:", draftForm);
     const { error } = await updateShout(draftForm, { publish: false })
     if (error) {
-      console.log("!!! error:", error);
       snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
       return
     }

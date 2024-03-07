@@ -48,7 +48,6 @@ export const RegisterForm = () => {
   }
 
   const handleSubmit = async (event: Event) => {
-    console.log('!!! handleSubmit:', handleSubmit)
     event.preventDefault()
     if (passwordError()) {
       setValidationErrors((errors) => ({ ...errors, password: passwordError() }))

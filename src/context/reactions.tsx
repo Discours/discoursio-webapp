@@ -11,10 +11,10 @@ import { useSnackbar } from './snackbar'
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
   loadReactionsBy: ({
-                      by,
-                      limit,
-                      offset,
-                    }: {
+    by,
+    limit,
+    offset,
+  }: {
     by: ReactionBy
     limit?: number
     offset?: number
@@ -36,21 +36,21 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const { showSnackbar } = useSnackbar()
 
   const loadReactionsBy = async ({
-                                   by,
-                                   limit,
-                                   offset,
-                                 }: {
+    by,
+    limit,
+    offset,
+  }: {
     by: ReactionBy
     limit?: number
     offset?: number
   }): Promise<Reaction[]> => {
     const reactions = await apiClient.getReactionsBy({ by, limit, offset })
     const newReactionEntities = reactions.reduce(
-        (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
-          acc[reaction.id] = reaction
-          return acc
-        },
-        {},
+      (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
+        acc[reaction.id] = reaction
+        return acc
+      },
+      {},
     )
     setReactionEntities(newReactionEntities)
     return reactions
@@ -66,14 +66,14 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
     if ([ReactionKind.Like, ReactionKind.Dislike].includes(reaction.kind)) {
       const oppositeReactionKind =
-          reaction.kind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
+        reaction.kind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
 
       const oppositeReaction = Object.values(reactionEntities).find(
-          (r) =>
-              r.kind === oppositeReactionKind &&
-              r.created_by.slug === reaction.created_by.slug &&
-              r.shout.id === reaction.shout.id &&
-              r.reply_to === reaction.reply_to,
+        (r) =>
+          r.kind === oppositeReactionKind &&
+          r.created_by.slug === reaction.created_by.slug &&
+          r.shout.id === reaction.shout.id &&
+          r.reply_to === reaction.reply_to,
       )
 
       if (oppositeReaction) {

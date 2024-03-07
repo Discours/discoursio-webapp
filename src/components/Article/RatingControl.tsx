@@ -57,7 +57,7 @@ export const RatingControl = (props: RatingControlProps) => {
   )
   createEffect(
     on(
-        () => reactionEntities,
+      () => reactionEntities,
       (reactions) => {
         const ratings = Object.values(reactions).filter((r) => !r?.reply_to)
         const likes = ratings.filter((rating) => rating.kind === 'LIKE').length

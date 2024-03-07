@@ -135,7 +135,6 @@ export const apiClient = {
     user?: string
   }): Promise<AuthorFollows> => {
     const response = await publicGraphQLClient.query(authorFollows, params).toPromise()
-    console.log('!!! response:', response)
     return response.data.get_author_follows
   },
 
@@ -188,7 +187,7 @@ export const apiClient = {
   destroyReaction: async (reaction_id: number) => {
     const response = await apiClient.private.mutation(reactionDestroy, { reaction_id }).toPromise()
     console.debug('[graphql.client.core] destroyReaction:', response)
-    return response.data.delete_reaction.reaction
+    return response.data.delete_reaction
   },
   updateReaction: async (reaction: ReactionInput) => {
     const response = await apiClient.private.mutation(reactionUpdate, { reaction }).toPromise()

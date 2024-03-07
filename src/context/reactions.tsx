@@ -21,7 +21,7 @@ type ReactionsContextType = {
   }) => Promise<Reaction[]>
   createReaction: (reaction: ReactionInput) => Promise<void>
   updateReaction: (reaction: ReactionInput) => Promise<Reaction>
-  deleteReaction: (id: number) => Promise<void>
+  deleteReaction: (id: number) => Promise<{ error: string }>
 }
 
 const ReactionsContext = createContext<ReactionsContextType>()
@@ -84,15 +84,15 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     setReactionEntities(changes)
   }
 
-  const deleteReaction = async (reaction_id: number): Promise<void> => {
+  const deleteReaction = async (reaction_id: number): Promise<{ error: string; reaction?: string }> => {
     if (reaction_id) {
-      const { error } = await apiClient.destroyReaction(reaction_id)
-      if (error) {
-        await showSnackbar({ type: 'error', body: t(error) })
+      const result = await apiClient.destroyReaction(reaction_id)
+      if (!result.error) {
+        setReactionEntities({
+          [reaction_id]: undefined,
+        })
       }
-      setReactionEntities({
-        [reaction_id]: undefined,
-      })
+      return result
     }
   }
 

@@ -464,7 +464,7 @@ form {
   }
 
   .form-message--error {
-    color: #d00820;
+    color: var(--danger-color) !important;
   }
 
   select {

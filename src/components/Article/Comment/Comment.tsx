@@ -64,14 +64,19 @@ export const Comment = (props: Props) => {
         })
 
         if (isConfirmed) {
-          await deleteReaction(props.comment.id)
-          // TODO: Учесть то что deleteReaction может вернуть error
-          if (props.onDelete) {
+          const { error } = await deleteReaction(props.comment.id)
+          const notificationType = error ? 'error' : 'success'
+          const notificationMessage = error
+            ? t('Failed to delete comment')
+            : t('Comment successfully deleted')
+          await showSnackbar({ type: notificationType, body: notificationMessage })
+
+          if (!error && props.onDelete) {
             props.onDelete(props.comment.id)
           }
-          await showSnackbar({ body: t('Comment successfully deleted') })
         }
       } catch (error) {
+        await showSnackbar({ body: 'error' })
         console.error('[deleteReaction]', error)
       }
     }

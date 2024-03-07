@@ -70,10 +70,10 @@ export const PublishSettings = (props: Props) => {
     return {
       coverImageUrl: props.form?.coverImageUrl,
       mainTopic: props.form?.mainTopic || EMPTY_TOPIC,
-      slug: props.form?.slug,
-      title: props.form?.title,
-      subtitle: props.form?.subtitle,
-      description: composeDescription(),
+      slug: props.form?.slug || '',
+      title: props.form?.title || '',
+      subtitle: props.form?.subtitle || '',
+      description: composeDescription() || '',
       selectedTopics: [],
     }
   })
@@ -100,7 +100,7 @@ export const PublishSettings = (props: Props) => {
   const handleTopicSelectChange = (newSelectedTopics) => {
     if (
       props.form.selectedTopics.length === 0 ||
-      newSelectedTopics.every((topic) => topic.id !== props.form.mainTopic.id)
+      newSelectedTopics.every((topic) => topic.id !== props.form.mainTopic?.id)
     ) {
       setSettingsForm((prev) => {
         return {
@@ -176,7 +176,7 @@ export const PublishSettings = (props: Props) => {
                     <div class={styles.mainTopic}>{settingsForm.mainTopic.title}</div>
                   </Show>
                   <div class={styles.shoutCardTitle}>{settingsForm.title}</div>
-                  <div class={styles.shoutCardSubtitle}>{settingsForm.subtitle}</div>
+                  <div class={styles.shoutCardSubtitle}>{settingsForm.subtitle || ''}</div>
                   <div class={styles.shoutAuthor}>{author()?.name}</div>
                 </div>
               </div>
@@ -203,7 +203,7 @@ export const PublishSettings = (props: Props) => {
                 variant="bordered"
                 fieldName={t('Subheader')}
                 placeholder={t('Come up with a subtitle for your story')}
-                initialValue={settingsForm.subtitle}
+                initialValue={settingsForm.subtitle || ''}
                 value={(value) => setSettingsForm('subtitle', value)}
                 allowEnterKey={false}
                 maxLength={100}

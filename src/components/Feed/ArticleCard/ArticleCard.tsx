@@ -67,19 +67,19 @@ const getTitleAndSubtitle = (
   subtitle: string
 } => {
   let title = article.title
-  let subtitle = article.subtitle
+  let subtitle: string = article.subtitle || ''
 
   if (!subtitle) {
-    let tt = article.title?.split('. ') || []
+    let titleParts = article.title?.split('. ') || []
 
-    if (tt?.length === 1) {
-      tt = article.title?.split(/{!|\?|:|;}\s/) || []
+    if (titleParts?.length === 1) {
+      titleParts = article.title?.split(/{!|\?|:|;}\s/) || []
     }
 
-    if (tt && tt.length > 1) {
-      const sep = article.title?.replace(tt[0], '').split(' ', 1)[0]
-      title = tt[0] + (sep === '.' || sep === ':' ? '' : sep)
-      subtitle = capitalize(article.title?.replace(tt[0] + sep, ''), true)
+    if (titleParts && titleParts.length > 1) {
+      const sep = article.title?.replace(titleParts[0], '').split(' ', 1)[0]
+      title = titleParts[0] + (sep === '.' || sep === ':' ? '' : sep)
+      subtitle = capitalize(article.title?.replace(titleParts[0] + sep, ''), true) || ''
     }
   }
 
@@ -117,7 +117,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const formattedDate = createMemo<string>(() =>
-    props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
+    props.article?.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
   )
 
   const canEdit = createMemo(
@@ -135,6 +135,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
       scrollTo: 'comments',
     })
   }
+
   return (
     <section
       class={clsx(styles.shoutCard, props.settings?.additionalClass, {
@@ -153,7 +154,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [aspectRatio()]: props.withAspectRatio,
       })}
     >
+      {/* Cover Image */}
       <Show when={!(props.settings?.noimage || props.settings?.isFeedMode)}>
+        {/* Cover Image Container */}
         <div class={styles.shoutCardCoverContainer}>
           <div
             class={clsx(styles.shoutCardCover, {
@@ -178,7 +181,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </div>
       </Show>
+
+      {/* Shout Card Content */}
       <div class={styles.shoutCardContent}>
+        {/* Shout Card Icon */}
         <Show
           when={
             props.article.layout &&
@@ -195,6 +201,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           </div>
         </Show>
 
+        {/* Main Topic */}
         <Show when={!props.settings?.isGroup && mainTopicSlug}>
           <CardTopic
             title={mainTopicTitle}
@@ -205,6 +212,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
           />
         </Show>
 
+        {/* Title and Subtitle */}
         <div
           class={clsx(styles.shoutCardTitlesContainer, {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode,
@@ -224,22 +232,23 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </a>
         </div>
+
+        {/* Details */}
         <Show when={!(props.settings?.noauthor && props.settings?.nodate)}>
+          {/* Author and Date */}
           <div
             class={clsx(styles.shoutDetails, { [styles.shoutDetailsFeedMode]: props.settings?.isFeedMode })}
           >
             <Show when={!props.settings?.noauthor}>
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
-                  {(a: Author) => {
-                    return (
-                      <AuthorLink
-                        size={'XS'}
-                        author={a}
-                        isFloorImportant={props.settings.isFloorImportant || props.settings?.isWithCover}
-                      />
-                    )
-                  }}
+                  {(a: Author) => (
+                    <AuthorLink
+                      size={'XS'}
+                      author={a}
+                      isFloorImportant={props.settings.isFloorImportant || props.settings?.isWithCover}
+                    />
+                  )}
                 </For>
               </div>
             </Show>
@@ -248,6 +257,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
             </Show>
           </div>
         </Show>
+
+        {/* Description */}
         <Show when={props.article.description}>
           <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
         </Show>

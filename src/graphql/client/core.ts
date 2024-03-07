@@ -28,6 +28,7 @@ import reactionDestroy from '../mutation/core/reaction-destroy'
 import reactionUpdate from '../mutation/core/reaction-update'
 import unfollowMutation from '../mutation/core/unfollow'
 import shoutLoad from '../query/core/article-load'
+import getMyShout from '../query/core/article-my'
 import shoutsLoadBy from '../query/core/articles-load-by'
 import draftsLoad from '../query/core/articles-load-drafts'
 import myFeed from '../query/core/articles-load-feed'
@@ -41,7 +42,6 @@ import authorFollows from '../query/core/author-follows'
 import authorId from '../query/core/author-id'
 import authorsAll from '../query/core/authors-all'
 import authorsLoadBy from '../query/core/authors-load-by'
-import mySubscriptions from '../query/core/my-followed'
 import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
@@ -135,7 +135,6 @@ export const apiClient = {
     user?: string
   }): Promise<AuthorFollows> => {
     const response = await publicGraphQLClient.query(authorFollows, params).toPromise()
-    console.log('!!! response:', response)
     return response.data.get_author_follows
   },
 
@@ -162,12 +161,12 @@ export const apiClient = {
     shout_id: number
     shout_input?: ShoutInput
     publish: boolean
-  }): Promise<Shout> => {
+  }): Promise<CommonResult> => {
     const response = await apiClient.private
       .mutation(updateArticle, { shout_id, shout_input, publish })
       .toPromise()
     console.debug('[graphql.client.core] updateArticle:', response.data)
-    return response.data.update_shout.shout
+    return response.data.update_shout
   },
 
   deleteShout: async (params: MutationDelete_ShoutArgs): Promise<void> => {
@@ -178,7 +177,7 @@ export const apiClient = {
   getDrafts: async (): Promise<Shout[]> => {
     const response = await apiClient.private.query(draftsLoad, {}).toPromise()
     console.debug('[graphql.client.core] getDrafts:', response)
-    return response.data.load_shouts_drafts
+    return response.data.get_shouts_drafts
   },
   createReaction: async (input: ReactionInput) => {
     const response = await apiClient.private.mutation(reactionCreate, { reaction: input }).toPromise()
@@ -188,7 +187,7 @@ export const apiClient = {
   destroyReaction: async (reaction_id: number) => {
     const response = await apiClient.private.mutation(reactionDestroy, { reaction_id }).toPromise()
     console.debug('[graphql.client.core] destroyReaction:', response)
-    return response.data.delete_reaction.reaction
+    return response.data.delete_reaction
   },
   updateReaction: async (reaction: ReactionInput) => {
     const response = await apiClient.private.mutation(reactionUpdate, { reaction }).toPromise()
@@ -200,15 +199,18 @@ export const apiClient = {
     console.debug('[graphql.client.core] authorsLoadBy:', resp)
     return resp.data.load_authors_by
   },
+
   getShoutBySlug: async (slug: string) => {
     const resp = await publicGraphQLClient.query(shoutLoad, { slug }).toPromise()
     return resp.data.get_shout
   },
-  getShoutById: async (shout_id: number) => {
-    const resp = await publicGraphQLClient.query(shoutLoad, { shout_id }).toPromise()
+
+  getMyShout: async (shout_id: number) => {
+    await apiClient.private
+    const resp = await apiClient.private.query(getMyShout, { shout_id }).toPromise()
     if (resp.error) console.error(resp)
 
-    return resp.data.get_shout
+    return resp.data.get_my_shout
   },
 
   getShouts: async (options: LoadShoutsOptions) => {

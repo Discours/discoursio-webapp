@@ -28,10 +28,6 @@ type FormFields = {
 
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
-const handleEmailInput = (newEmail: string) => {
-  setEmail(newEmail.toLowerCase())
-}
-
 export const RegisterForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
@@ -52,6 +48,7 @@ export const RegisterForm = () => {
   }
 
   const handleSubmit = async (event: Event) => {
+    console.log('!!! handleSubmit:', handleSubmit)
     event.preventDefault()
     if (passwordError()) {
       setValidationErrors((errors) => ({ ...errors, password: passwordError() }))
@@ -137,7 +134,8 @@ export const RegisterForm = () => {
         setValidationErrors((prev) => ({
           email: (
             <>
-              {t('This email is verified')}. {t('You can')}
+              {t('This email is registered')}. {t('try')}
+              {', '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
                 {t('enter')}
               </span>
@@ -172,17 +170,18 @@ export const RegisterForm = () => {
     }
   }
 
+  const handleEmailInput = (newEmail: string) => {
+    setEmailStatus('')
+    setValidationErrors({})
+    setEmail(newEmail.toLowerCase())
+  }
+
   return (
     <>
       <Show when={!isSuccess()}>
         <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
           <div>
             <AuthModalHeader modalType="register" />
-            <Show when={submitError()}>
-              <div class={styles.authInfo}>
-                <div class={styles.warn}>{submitError()}</div>
-              </div>
-            </Show>
             <div
               class={clsx('pretty-form__item', {
                 'pretty-form__item--error': validationErrors().fullName,
@@ -217,9 +216,11 @@ export const RegisterForm = () => {
                 onBlur={handleEmailBlur}
               />
               <label for="email">{t('Email')}</label>
-              <div class={clsx(styles.validationError, { info: Boolean(emailStatus()) })}>
-                {validationErrors().email}
-              </div>
+              <Show when={validationErrors().email || emailStatus()}>
+                <div class={clsx(styles.validationError, { info: Boolean(emailStatus()) })}>
+                  {validationErrors().email}
+                </div>
+              </Show>
             </div>
 
             <PasswordField
@@ -259,12 +260,14 @@ export const RegisterForm = () => {
         </form>
       </Show>
       <Show when={isSuccess()}>
-        <div class={styles.title}>{t('Almost done! Check your email.')}</div>
-        <div class={styles.text}>{t("We've sent you a message with a link to enter our website.")}</div>
-        <div>
-          <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>
-            {t('Back to main page')}
-          </button>
+        <div style={{ 'justify-content': 'center' }}>
+          <div class={styles.title}>{t('Almost done! Check your email.')}</div>
+          <div class={styles.text}>{t("We've sent you a message with a link to enter our website.")}</div>
+          <div>
+            <button class={clsx('button', styles.submitButton)} onClick={() => hideModal()}>
+              {t('Back to main page')}
+            </button>
+          </div>
         </div>
       </Show>
     </>

@@ -79,8 +79,12 @@ export const SendResetLinkForm = () => {
       ref={(el) => (authFormRef.current = el)}
     >
       <div>
-        <h4>{t('Set the new password')}</h4>
-        <div class={styles.authSubtitle}>{t(message()) || t('Please give us your email address')}</div>
+        <h4>{t('Forgot password?')}</h4>
+        <Show when={!message()}>
+          <div class={styles.authSubtitle}>
+            {t("It's OK. Just enter your email to receive a link to change your password")}
+          </div>
+        </Show>
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email,
@@ -104,7 +108,7 @@ export const SendResetLinkForm = () => {
                 class={'link'}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'register',
                   })
                 }
               >
@@ -116,28 +120,31 @@ export const SendResetLinkForm = () => {
             <div class={styles.validationError}>{validationErrors().email}</div>
           </Show>
         </div>
-
-        <div style={{ 'margin-top': '5rem' }}>
-          <button
-            class={clsx('button', styles.submitButton)}
-            disabled={isSubmitting() || Boolean(message())}
-            type="submit"
-          >
-            {isSubmitting() ? '...' : t('Send')}
-          </button>
-        </div>
-        <div class={styles.authControl}>
-          <span
-            class={styles.authLink}
-            onClick={() =>
-              changeSearchParams({
-                mode: 'login',
-              })
-            }
-          >
-            {t('I know the password')}
-          </span>
-        </div>
+        <Show when={!message()} fallback={<div class={styles.authSubtitle}>{t(message())}</div>}>
+          <>
+            <div style={{ 'margin-top': '5rem' }}>
+              <button
+                class={clsx('button', styles.submitButton)}
+                disabled={isSubmitting() || Boolean(message())}
+                type="submit"
+              >
+                {isSubmitting() ? '...' : t('Restore password')}
+              </button>
+            </div>
+            <div class={styles.authControl}>
+              <span
+                class={styles.authLink}
+                onClick={() =>
+                  changeSearchParams({
+                    mode: 'login',
+                  })
+                }
+              >
+                {t('I know the password')}
+              </span>
+            </div>
+          </>
+        </Show>
       </div>
     </form>
   )

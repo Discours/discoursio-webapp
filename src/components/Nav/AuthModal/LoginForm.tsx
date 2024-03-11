@@ -160,7 +160,7 @@ export const LoginForm = () => {
         />
 
         <Show when={submitError()}>
-          <div class={clsx('form-message--error', styles.submitError)}>{submitError()}</div>
+          <div class={clsx('form-message--error', styles.validationError)}>{submitError()}</div>
         </Show>
 
         <div>

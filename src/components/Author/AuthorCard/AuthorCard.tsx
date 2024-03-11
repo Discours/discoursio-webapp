@@ -36,13 +36,14 @@ export const AuthorCard = (props: Props) => {
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const { setFollowing, isOwnerSubscribed } = useFollowing()
+  const { follow, isOwnerSubscribed, subscribeInAction } = useFollowing()
 
   onMount(() => {
     setAuthorSubs(props.following)
   })
 
   createEffect(() => {
+    console.log("!!! isOwnerSubscribed(props.author?.id):", isOwnerSubscribed(props.author?.id));
     setIsFollowed(isOwnerSubscribed(props.author?.id))
   })
 
@@ -82,15 +83,24 @@ export const AuthorCard = (props: Props) => {
     }
   })
 
+  createEffect(() => {
+    console.log("!!! subscribeInAction:", subscribeInAction());
+  })
   const handleFollowClick = () => {
+    console.log("!!! handleFollowClick:");
     const value = !isFollowed()
     requireAuthentication(() => {
       setIsFollowed(value)
-      setFollowing(FollowingEntity.Author, props.author.slug, value)
+      follow(FollowingEntity.Author, props.author.slug)
     }, 'subscribe')
   }
 
   const followButtonText = createMemo(() => {
+    console.log("!!! subscribeInAction()", subscribeInAction());
+    if (subscribeInAction()?.slug === props.author.slug) {
+      return subscribeInAction().type === 'subscribe' ? t('Subscribing...') : t('Unsubscribing...')
+    }
+
     if (isOwnerSubscribed(props.author?.id)) {
       return (
         <>
@@ -200,7 +210,7 @@ export const AuthorCard = (props: Props) => {
               when={isProfileOwner()}
               fallback={
                 <div class={styles.authorActions}>
-                  <Show when={authorSubs().length}>
+                  <Show when={authorSubs()?.length}>
                     <Button
                       onClick={handleFollowClick}
                       value={followButtonText()}

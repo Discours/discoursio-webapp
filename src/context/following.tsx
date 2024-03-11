@@ -2,9 +2,17 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { AuthorFollows, FollowingEntity } from '../graphql/schema/core.gen'
+import { Author, AuthorFollows, Community, FollowingEntity, Topic } from "../graphql/schema/core.gen";
 
 import { useSession } from './session'
+
+export type SubscriptionsData = {
+  topics?: Topic[]
+  authors?: Author[]
+  communities?: Community[]
+}
+
+type SubscribeAction = { slug: string; type: 'subscribe' | 'unsubscribe' }
 
 interface FollowingContextType {
   loading: Accessor<boolean>
@@ -15,6 +23,8 @@ interface FollowingContextType {
   follow: (what: FollowingEntity, slug: string) => Promise<void>
   unfollow: (what: FollowingEntity, slug: string) => Promise<void>
   isOwnerSubscribed: (id: number | string) => boolean
+  // followers: Accessor<Author[]>
+  subscribeInAction?: Accessor<SubscribeAction>
 }
 
 const FollowingContext = createContext<FollowingContextType>()
@@ -31,8 +41,9 @@ const EMPTY_SUBSCRIPTIONS: AuthorFollows = {
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [subscriptions, setSubscriptions] = createStore<AuthorFollows>(EMPTY_SUBSCRIPTIONS)
-  const { author, session } = useSession()
+  const [subscriptions, setSubscriptions] = createStore<SubscriptionsData>(EMPTY_SUBSCRIPTIONS)
+  const { session, author } = useSession()
+  const [subscribeInAction, setSubscribeInAction] = createSignal<SubscribeAction>()
 
   const fetchData = async () => {
     setLoading(true)
@@ -51,9 +62,14 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   }
 
   const follow = async (what: FollowingEntity, slug: string) => {
-    if (!author()) return
+    console.log("!!! flw:", author());
+    // if (!author()) return
+    setSubscribeInAction({ slug, type: 'subscribe' })
     try {
-      await apiClient.follow({ what, slug })
+      const result = async () => {
+        await apiClient.follow({ what, slug })
+      }
+      console.log("!!! follow result:", result());
       setSubscriptions((prevSubscriptions) => {
         const updatedSubs = { ...prevSubscriptions }
         if (!updatedSubs[what]) updatedSubs[what] = []
@@ -63,19 +79,26 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
       })
     } catch (error) {
       console.error(error)
+    } finally {
+      setSubscribeInAction()
     }
   }
 
   const unfollow = async (what: FollowingEntity, slug: string) => {
     if (!author()) return
     try {
+      setSubscribeInAction({ slug: slug, type: 'unsubscribe' })
       await apiClient.unfollow({ what, slug })
     } catch (error) {
       console.error(error)
+    } finally {
+      setSubscribeInAction()
     }
   }
 
+
   createEffect(() => {
+    console.log("!!! cone setSubscribeInAction:", subscribeInAction());
     if (author()) {
       console.debug('[context.following] author update detect')
       fetchData()
@@ -119,6 +142,8 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     loadSubscriptions: fetchData,
     follow,
     unfollow,
+    // followers,
+    subscribeInAction,
   }
 
   return <FollowingContext.Provider value={value}>{props.children}</FollowingContext.Provider>

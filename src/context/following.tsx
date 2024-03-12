@@ -50,9 +50,11 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     try {
       if (apiClient.private) {
         console.debug('[context.following] fetching subs data...')
+        console.log("%c!!! session()?.user.id:", 'background: #222; color: #bada55', session());
+
         const result = await apiClient.getAuthorFollows({ user: session()?.user.id })
+        console.log("!!! result:", result);
         setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
-        console.info('[context.following] subs:', subscriptions)
       }
     } catch (error) {
       console.info('[context.following] cannot get subs', error)
@@ -61,8 +63,14 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
+  createEffect(() => {
+    console.info('[context.following] subs:', subscriptions);
+  })
+
+
   const follow = async (what: FollowingEntity, slug: string) => {
-    console.log("!!! flw:", author());
+    console.log("!!! follow what:", what);
+    console.log("!!! follow slug:", slug);
     // if (!author()) return
     setSubscribeInAction({ slug, type: 'subscribe' })
     try {
@@ -98,11 +106,11 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
 
 
   createEffect(() => {
-    console.log("!!! cone setSubscribeInAction:", subscribeInAction());
-    if (author()) {
-      console.debug('[context.following] author update detect')
-      fetchData()
-    }
+    // console.log("!!! cone setSubscribeInAction:", subscribeInAction());
+    // if (author()) {
+    //   console.debug('[context.following] author update detect')
+    //   fetchData()
+    // }
   })
 
   const setFollowing = (what: FollowingEntity, slug: string, value = true) => {

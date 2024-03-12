@@ -12,7 +12,7 @@ type Props = {
   placeholder?: string
   errorMessage?: (error: string) => void
   setError?: string
-  onInput: (value: string) => void
+  onInput?: (value: string) => void
   onBlur?: (value: string) => void
   variant?: 'login' | 'registration'
   disableAutocomplete?: boolean

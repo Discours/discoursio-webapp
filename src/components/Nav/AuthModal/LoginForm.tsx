@@ -156,7 +156,7 @@ export const LoginForm = () => {
         <PasswordField
           variant={'login'}
           setError={validationErrors().password}
-          onInput={(value) => handlePasswordInput(value)}
+          onBlur={(value) => handlePasswordInput(value)}
         />
 
         <Show when={submitError()}>

@@ -37,7 +37,6 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { loadSubscriptions } = useFollowing()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage } = useRouter()
@@ -49,19 +48,13 @@ export const AuthorView = (props: Props) => {
   const [commented, setCommented] = createSignal<Reaction[]>()
 
   // current author
-  const [author, setAuthor] = createSignal<Author>()
-  createEffect(() => {
-    try {
-      const a = authorEntities()[props.authorSlug]
-      setAuthor(a)
-    } catch (error) {
-      console.debug(error)
-    }
-  })
+  console.log('%c!!! :', 'color: #bada55', props.author)
+  const [author, setAuthor] = createSignal<Author>(props.author)
 
   createEffect(async () => {
     if (author()?.id && !author().stat) {
       const a = await loadAuthor({ slug: '', author_id: author().id })
+      console.log('%c!!! A2:', 'color: #bada55', props.author)
       console.debug('[AuthorView] loaded author:', a)
     }
   })
@@ -69,13 +62,15 @@ export const AuthorView = (props: Props) => {
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
-  const fetchData = async (slug) => {
+  const fetchData = async (author: Author) => {
+    console.log('%c!!! slug:', 'color: #bada55', author)
     try {
       const [subscriptionsResult, followersResult] = await Promise.all([
-        apiClient.getAuthorFollows({ slug }),
-        apiClient.getAuthorFollowers({ slug }),
+        apiClient.getAuthorFollows({ author_id: author.id }),
+        apiClient.getAuthorFollowers({ slug: author.slug }),
       ])
-
+      console.log('%c!!! subscriptionsResult:', 'color: #bada55', subscriptionsResult)
+      console.log('%c!!! followersResult:', 'color: #bada55', followersResult)
       const { authors, topics } = subscriptionsResult
       setFollowing([...(authors || []), ...(topics || [])])
       setFollowers(followersResult || [])
@@ -92,8 +87,6 @@ export const AuthorView = (props: Props) => {
     }
   }
 
-  onMount(() => fetchData(props.authorSlug))
-
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
@@ -106,12 +99,11 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(() => {
+    fetchData(author())
     checkBioHeight()
-
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
-      loadSubscriptions()
     }
   })
 

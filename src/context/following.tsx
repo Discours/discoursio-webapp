@@ -1,4 +1,4 @@
-import { Accessor, JSX, createContext, createEffect, createSignal, useContext } from 'solid-js'
+import { Accessor, JSX, createContext, createEffect, createSignal, useContext, createMemo } from "solid-js";
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
@@ -22,7 +22,7 @@ interface FollowingContextType {
   loadSubscriptions: () => void
   follow: (what: FollowingEntity, slug: string) => Promise<void>
   unfollow: (what: FollowingEntity, slug: string) => Promise<void>
-  isOwnerSubscribed: (id: number | string) => boolean
+  isOwnerSubscribed: (id: number | string) => Accessor<boolean>
   // followers: Accessor<Author[]>
   subscribeInAction?: Accessor<SubscribeAction>
 }
@@ -69,33 +69,26 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
 
 
   const follow = async (what: FollowingEntity, slug: string) => {
-    console.log("!!! follow what:", what);
-    console.log("!!! follow slug:", slug);
-    // if (!author()) return
-    setSubscribeInAction({ slug, type: 'subscribe' })
+    if (!author()) return;
+    setSubscribeInAction({ slug, type: 'subscribe' });
     try {
-      const result = async () => {
-        await apiClient.follow({ what, slug })
-      }
-      console.log("!!! follow result:", result());
+      const subscriptionData = await apiClient.follow({ what, slug });
       setSubscriptions((prevSubscriptions) => {
-        const updatedSubs = { ...prevSubscriptions }
-        if (!updatedSubs[what]) updatedSubs[what] = []
-        const exists = updatedSubs[what]?.some((entity) => entity.slug === slug)
-        if (!exists) updatedSubs[what].push(slug)
-        return updatedSubs
-      })
+        if (!prevSubscriptions[what]) prevSubscriptions[what] = [];
+        prevSubscriptions[what].push(subscriptionData);
+        return prevSubscriptions;
+      });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setSubscribeInAction()
+      setSubscribeInAction(); // Сбрасываем состояние действия подписки.
     }
   }
 
   const unfollow = async (what: FollowingEntity, slug: string) => {
     if (!author()) return
+    setSubscribeInAction({ slug: slug, type: 'unsubscribe' })
     try {
-      setSubscribeInAction({ slug: slug, type: 'unsubscribe' })
       await apiClient.unfollow({ what, slug })
     } catch (error) {
       console.error(error)
@@ -134,12 +127,13 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const isOwnerSubscribed = (id?: number | string) => {
-    if (!author() || !subscriptions) return
-    const isAuthorSubscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === id)
-    const isTopicSubscribed = subscriptions.topics?.some((topicEntity) => topicEntity.slug === id)
-    return !!isAuthorSubscribed || !!isTopicSubscribed
-  }
+  const isOwnerSubscribed = (id?: number | string) => createMemo(() => {
+    console.log('%c!!! WTF:', 'color: #bada55', subscriptions);
+    if (!author() || !subscriptions) return false;
+    const isAuthorSubscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === id);
+    const isTopicSubscribed = subscriptions.topics?.some((topicEntity) => topicEntity.slug === id);
+    return !!isAuthorSubscribed || !!isTopicSubscribed;
+  })
 
   const value: FollowingContextType = {
     loading,

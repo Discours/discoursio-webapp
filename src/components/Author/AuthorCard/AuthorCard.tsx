@@ -34,7 +34,6 @@ export const AuthorCard = (props: Props) => {
   const { author, isSessionLoaded, requireAuthentication } = useSession()
   const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
-  const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
   const { follow, isOwnerSubscribed, subscribeInAction } = useFollowing()
 
@@ -42,9 +41,10 @@ export const AuthorCard = (props: Props) => {
     setAuthorSubs(props.following)
   })
 
+  const isSubscribed = isOwnerSubscribed(props.author?.id)
+
   createEffect(() => {
-    console.log("!!! isOwnerSubscribed(props.author?.id):", isOwnerSubscribed(props.author?.id));
-    setIsFollowed(isOwnerSubscribed(props.author?.id))
+    console.log('%c!!! isSubscribed:', 'color: #bada55', isSubscribed())
   })
 
   const name = createMemo(() => {
@@ -88,9 +88,7 @@ export const AuthorCard = (props: Props) => {
   })
   const handleFollowClick = () => {
     console.log("!!! handleFollowClick:");
-    const value = !isFollowed()
     requireAuthentication(() => {
-      setIsFollowed(value)
       follow(FollowingEntity.Author, props.author.slug)
     }, 'subscribe')
   }
@@ -101,7 +99,7 @@ export const AuthorCard = (props: Props) => {
       return subscribeInAction().type === 'subscribe' ? t('Subscribing...') : t('Unsubscribing...')
     }
 
-    if (isOwnerSubscribed(props.author?.id)) {
+    if (isSubscribed()) {
       return (
         <>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
@@ -130,10 +128,7 @@ export const AuthorCard = (props: Props) => {
             <div class={styles.authorAbout} innerHTML={props.author.bio} />
           </Show>
           <Show
-            when={
-              (props.followers && props.followers.length > 0) ||
-              (props.following && props.following.length > 0)
-            }
+            when={(props.followers?.length > 0) || (props.following?.length > 0)}
           >
             <div class={styles.subscribersContainer}>
               <Show when={props.followers && props.followers.length > 0}>
@@ -213,10 +208,11 @@ export const AuthorCard = (props: Props) => {
                   <Show when={authorSubs()?.length}>
                     <Button
                       onClick={handleFollowClick}
+                      disabled={Boolean(subscribeInAction())}
                       value={followButtonText()}
                       isSubscribeButton={true}
                       class={clsx({
-                        [stylesButton.subscribed]: isFollowed(),
+                        [stylesButton.subscribed]: isSubscribed(),
                       })}
                     />
                   </Show>
@@ -264,7 +260,7 @@ export const AuthorCard = (props: Props) => {
                           author={follower}
                           isFollowed={{
                             loaded: Boolean(authorSubs()),
-                            value: isOwnerSubscribed(follower.id),
+                            value: isSubscribed(),
                           }}
                         />
                       )}
@@ -313,7 +309,7 @@ export const AuthorCard = (props: Props) => {
                           <AuthorBadge
                             isFollowed={{
                               loaded: Boolean(authorSubs()),
-                              value: isOwnerSubscribed(subscription.id),
+                              value: isSubscribed(),
                             }}
                             author={subscription}
                           />
@@ -321,7 +317,7 @@ export const AuthorCard = (props: Props) => {
                           <TopicBadge
                             isFollowed={{
                               loaded: Boolean(authorSubs()),
-                              value: isOwnerSubscribed(subscription.id),
+                              value: isSubscribed(),
                             }}
                             topic={subscription}
                           />

@@ -22,7 +22,6 @@ interface FollowingContextType {
   loadSubscriptions: () => void
   follow: (what: FollowingEntity, slug: string) => Promise<void>
   unfollow: (what: FollowingEntity, slug: string) => Promise<void>
-  isOwnerSubscribed: (id: number | string) => Accessor<boolean>
   // followers: Accessor<Author[]>
   subscribeInAction?: Accessor<SubscribeAction>
 }
@@ -50,10 +49,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     try {
       if (apiClient.private) {
         console.debug('[context.following] fetching subs data...')
-        console.log("%c!!! session()?.user.id:", 'background: #222; color: #bada55', session());
-
         const result = await apiClient.getAuthorFollows({ user: session()?.user.id })
-        console.log("!!! result:", result);
         setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
       }
     } catch (error) {
@@ -99,11 +95,10 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
 
 
   createEffect(() => {
-    // console.log("!!! cone setSubscribeInAction:", subscribeInAction());
-    // if (author()) {
-    //   console.debug('[context.following] author update detect')
-    //   fetchData()
-    // }
+    if (author()) {
+      console.debug('[context.following] author update detect')
+      fetchData()
+    }
   })
 
   const setFollowing = (what: FollowingEntity, slug: string, value = true) => {
@@ -127,19 +122,14 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const isOwnerSubscribed = (id?: number | string) => createMemo(() => {
-    console.log('%c!!! WTF:', 'color: #bada55', subscriptions);
-    if (!author() || !subscriptions) return false;
-    const isAuthorSubscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === id);
-    const isTopicSubscribed = subscriptions.topics?.some((topicEntity) => topicEntity.slug === id);
-    return !!isAuthorSubscribed || !!isTopicSubscribed;
+  createEffect(() => {
+    console.log('%c!!! WTF subscriptions:', 'color: #bada55', subscriptions);
   })
 
   const value: FollowingContextType = {
     loading,
     subscriptions,
     setSubscriptions,
-    isOwnerSubscribed,
     setFollowing,
     loadSubscriptions: fetchData,
     follow,

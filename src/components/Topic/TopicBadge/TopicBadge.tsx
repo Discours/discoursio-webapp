@@ -10,14 +10,12 @@ import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
-
-import { FollowedInfo } from '../../../pages/types'
 import styles from './TopicBadge.module.scss'
+import { BadgeSubscribeButton } from "../../_shared/BadgeSubscribeButton";
 
 type Props = {
   topic: Topic
   minimizeSubscribeButton?: boolean
-  isFollowed?: FollowedInfo
   showStat?: boolean
 }
 
@@ -27,28 +25,24 @@ export const TopicBadge = (props: Props) => {
   const [isMobileView, setIsMobileView] = createSignal(false)
   const { requireAuthentication } = useSession()
   const { setFollowing, loading: subLoading } = useFollowing()
-  const [isFollowed, setIsFollowed] = createSignal<boolean>()
+  const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
+  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
+
+  createEffect(() => {
+    if(!subscriptions || !props.topic) return
+    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.topic?.id);
+    setIsSubscribed(subscribed)
+  })
 
   const handleFollowClick = () => {
-    const value = !isFollowed()
     requireAuthentication(() => {
-      setIsFollowed(value)
-      setFollowing(FollowingEntity.Topic, props.topic.slug, value)
+      follow(FollowingEntity.Topic, props.topic.slug)
     }, 'subscribe')
   }
 
   createEffect(() => {
     setIsMobileView(!mediaMatches.sm)
   })
-
-  createEffect(
-    on(
-      () => props.isFollowed,
-      () => {
-        setIsFollowed(props.isFollowed.value)
-      },
-    ),
-  )
 
   const title = () =>
     lang() === 'en' ? capitalize(props.topic.slug.replaceAll('-', ' ')) : props.topic.title
@@ -83,35 +77,8 @@ export const TopicBadge = (props: Props) => {
             </Show>
           </a>
         </div>
-
         <div class={styles.actions}>
-          <Show
-            when={!props.minimizeSubscribeButton}
-            fallback={
-              <CheckButton text={t('Follow')} checked={Boolean(isFollowed())} onClick={handleFollowClick} />
-            }
-          >
-            <Show
-              when={isFollowed()}
-              fallback={
-                <Button
-                  variant="primary"
-                  size="S"
-                  value={subLoading() ? t('subscribing...') : t('Subscribe')}
-                  onClick={handleFollowClick}
-                  class={styles.subscribeButton}
-                />
-              }
-            >
-              <Button
-                onClick={handleFollowClick}
-                variant="bordered"
-                size="S"
-                value={t('Following')}
-                class={styles.subscribeButton}
-              />
-            </Show>
-          </Show>
+          <BadgeSubscribeButton isSubscribed={isSubscribed()} action={handleFollowClick}/>
         </div>
       </div>
       <div class={styles.stats}>

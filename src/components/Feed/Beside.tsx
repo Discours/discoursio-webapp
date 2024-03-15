@@ -30,7 +30,6 @@ type Props = {
 
 export const Beside = (props: Props) => {
   const { t } = useLocalize()
-  const { isOwnerSubscribed } = useFollowing()
 
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
@@ -86,12 +85,7 @@ export const Beside = (props: Props) => {
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>
-                          <AuthorBadge
-                            author={value as Author}
-                            isFollowed={{
-                              value: isOwnerSubscribed(value.id),
-                            }}
-                          />
+                          <AuthorBadge author={value as Author}/>
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>
                           <ArticleCard

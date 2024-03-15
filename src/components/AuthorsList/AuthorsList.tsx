@@ -21,7 +21,6 @@ const PAGE_SIZE = 20
 
 export const AuthorsList = (props: Props) => {
   const { t } = useLocalize()
-  const { isOwnerSubscribed } = useFollowing()
   const { authorsByShouts, authorsByFollowers } = useAuthorsStore()
   const [loading, setLoading] = createSignal(false)
   const [currentPage, setCurrentPage] = createSignal({ shouts: 0, followers: 0 })
@@ -83,13 +82,7 @@ export const AuthorsList = (props: Props) => {
         {(author) => (
           <div class="row">
             <div class="col-lg-20 col-xl-18">
-              <AuthorBadge
-                author={author}
-                isFollowed={{
-                  loaded: !loading(),
-                  value: isOwnerSubscribed(author.id),
-                }}
-              />
+              <AuthorBadge author={author}/>
             </div>
           </div>
         )}

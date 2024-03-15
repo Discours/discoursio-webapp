@@ -74,8 +74,6 @@ export const AllTopics = (props: Props) => {
     return keys
   })
 
-  const { isOwnerSubscribed } = useFollowing()
-
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const [searchQuery, setSearchQuery] = createSignal('')
   const filteredResults = createMemo(() => {
@@ -190,10 +188,6 @@ export const AllTopics = (props: Props) => {
                         <>
                           <TopicBadge
                             topic={topic}
-                            isFollowed={{
-                              loaded: filteredResults().length > 0,
-                              value: isOwnerSubscribed(topic.slug),
-                            }}
                             showStat={true}
                           />
                         </>

@@ -92,7 +92,6 @@ export const apiClient = {
 
   follow: async ({ what, slug }: { what: FollowingEntity; slug: string }) => {
     const response = await apiClient.private.mutation(followMutation, { what, slug }).toPromise()
-    console.log("!!! response FOLLOW AAAA:", 'background: #222; color: #bada55', response);
     return response.data.follow
   },
 

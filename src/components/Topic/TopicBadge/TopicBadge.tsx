@@ -24,7 +24,6 @@ export const TopicBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
   const [isMobileView, setIsMobileView] = createSignal(false)
   const { requireAuthentication } = useSession()
-  const { setFollowing, loading: subLoading } = useFollowing()
   const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
   const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
 
@@ -36,7 +35,7 @@ export const TopicBadge = (props: Props) => {
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      follow(FollowingEntity.Topic, props.topic.slug)
+      isSubscribed() ? follow(FollowingEntity.Topic, props.topic.slug) : unfollow(FollowingEntity.Topic, props.topic.slug)
     }, 'subscribe')
   }
 
@@ -78,7 +77,11 @@ export const TopicBadge = (props: Props) => {
           </a>
         </div>
         <div class={styles.actions}>
-          <BadgeSubscribeButton isSubscribed={isSubscribed()} action={handleFollowClick}/>
+          <BadgeSubscribeButton
+            isSubscribed={isSubscribed()}
+            action={handleFollowClick}
+            actionMessageType={subscribeInAction()?.slug === props.topic.slug ? subscribeInAction().type : undefined}
+          />
         </div>
       </div>
       <div class={styles.stats}>

@@ -15,7 +15,6 @@ import { CheckButton } from '../../_shared/CheckButton'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
-import stylesButton from '../../_shared/Button/Button.module.scss'
 import styles from './AuthorBadge.module.scss'
 import { BadgeSubscribeButton } from "../../_shared/BadgeSubscribeButton";
 
@@ -131,56 +130,8 @@ export const AuthorBadge = (props: Props) => {
           <BadgeSubscribeButton
             action={() => handleFollowClick()}
             isSubscribed={isSubscribed()}
+            actionMessageType={subscribeInAction()?.slug === props.author.slug ? subscribeInAction().type : undefined}
           />
-          {/*<Show*/}
-          {/*  when={!props.minimizeSubscribeButton}*/}
-          {/*  fallback={<CheckButton text={t('Follow')} checked={isSubscribed()} onClick={handleFollowClick} />}*/}
-          {/*>*/}
-          {/*  <Show*/}
-          {/*    when={isSubscribed()}*/}
-          {/*    fallback={*/}
-          {/*      <Button*/}
-          {/*        variant={props.iconButtons ? 'secondary' : 'bordered'}*/}
-          {/*        size="S"*/}
-          {/*        value={*/}
-          {/*          <Show when={props.iconButtons} fallback={t('Subscribe')}>*/}
-          {/*            <Icon name="author-subscribe" class={stylesButton.icon} />*/}
-          {/*          </Show>*/}
-          {/*        }*/}
-          {/*        onClick={handleFollowClick}*/}
-          {/*        isSubscribeButton={true}*/}
-          {/*        class={clsx(styles.actionButton, {*/}
-          {/*          [styles.iconed]: props.iconButtons,*/}
-          {/*          [stylesButton.subscribed]: isSubscribed(),*/}
-          {/*        })}*/}
-          {/*      />*/}
-          {/*    }*/}
-          {/*  >*/}
-          {/*    <Button*/}
-          {/*      variant={props.iconButtons ? 'secondary' : 'bordered'}*/}
-          {/*      size="S"*/}
-          {/*      value={*/}
-          {/*        <Show*/}
-          {/*          when={props.iconButtons}*/}
-          {/*          fallback={*/}
-          {/*            <>*/}
-          {/*              <span class={styles.actionButtonLabel}>{t('Following')}</span>*/}
-          {/*              <span class={styles.actionButtonLabelHovered}>{t('Unfollow')}</span>*/}
-          {/*            </>*/}
-          {/*          }*/}
-          {/*        >*/}
-          {/*          <Icon name="author-unsubscribe" class={stylesButton.icon} />*/}
-          {/*        </Show>*/}
-          {/*      }*/}
-          {/*      onClick={handleFollowClick}*/}
-          {/*      isSubscribeButton={true}*/}
-          {/*      class={clsx(styles.actionButton, {*/}
-          {/*        [styles.iconed]: props.iconButtons,*/}
-          {/*        [stylesButton.subscribed]: isSubscribed(),*/}
-          {/*      })}*/}
-          {/*    />*/}
-          {/*  </Show>*/}
-          {/*</Show>*/}
           <Show when={props.showMessageButton}>
             <Button
               variant={props.iconButtons ? 'secondary' : 'bordered'}

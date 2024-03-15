@@ -122,10 +122,6 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  createEffect(() => {
-    console.log('%c!!! WTF subscriptions:', 'color: #bada55', subscriptions);
-  })
-
   const value: FollowingContextType = {
     loading,
     subscriptions,

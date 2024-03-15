@@ -3,7 +3,7 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount, on } from "solid-js";
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -48,13 +48,11 @@ export const AuthorView = (props: Props) => {
   const [commented, setCommented] = createSignal<Reaction[]>()
 
   // current author
-  console.log('%c!!! :', 'color: #bada55', props.author)
-  const [author, setAuthor] = createSignal<Author>(props.author)
+  // const [author, _] = createSignal<Author>(props.author)
 
   createEffect(async () => {
-    if (author()?.id && !author().stat) {
-      const a = await loadAuthor({ slug: '', author_id: author().id })
-      console.log('%c!!! A2:', 'color: #bada55', props.author)
+    if (props.author?.id && !props.author.stat) {
+      const a = await loadAuthor({ slug: '', author_id: props.author.id })
       console.debug('[AuthorView] loaded author:', a)
     }
   })
@@ -63,14 +61,11 @@ export const AuthorView = (props: Props) => {
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
   const fetchData = async (author: Author) => {
-    console.log('%c!!! slug:', 'color: #bada55', author)
     try {
       const [subscriptionsResult, followersResult] = await Promise.all([
         apiClient.getAuthorFollows({ author_id: author.id }),
         apiClient.getAuthorFollowers({ slug: author.slug }),
       ])
-      console.log('%c!!! subscriptionsResult:', 'color: #bada55', subscriptionsResult)
-      console.log('%c!!! followersResult:', 'color: #bada55', followersResult)
       const { authors, topics } = subscriptionsResult
       setFollowing([...(authors || []), ...(topics || [])])
       setFollowers(followersResult || [])
@@ -99,7 +94,6 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(() => {
-    fetchData(author())
     checkBioHeight()
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
@@ -118,41 +112,46 @@ export const AuthorView = (props: Props) => {
     setCommented(data)
   }
 
-  createEffect(() => {
-    if (author()) {
-      fetchComments(author())
-    }
-  })
+  createEffect(
+    on(
+      () => props.author,
+      () => {
+        fetchData(props.author)
+        fetchComments(props.author)
+      },
+      { defer: true },
+    ),
+  )
 
   const ogImage = createMemo(() =>
-    author()?.pic
-      ? getImageUrl(author()?.pic, { width: 1200 })
+    props.author?.pic
+      ? getImageUrl(props.author?.pic, { width: 1200 })
       : getImageUrl('production/image/logo_image.png'),
   )
-  const description = createMemo(() => getDescription(author()?.bio))
+  const description = createMemo(() => getDescription(props.author?.bio))
   const handleDeleteComment = (id: number) => {
     setCommented((prev) => prev.filter((comment) => comment.id !== id))
   }
 
   return (
     <div class={styles.authorPage}>
-      <Show when={author()}>
-        <Title>{author().name}</Title>
+      <Show when={props.author}>
+        <Title>{props.author.name}</Title>
         <Meta name="descprition" content={description()} />
         <Meta name="og:type" content="profile" />
-        <Meta name="og:title" content={author().name} />
+        <Meta name="og:title" content={props.author.name} />
         <Meta name="og:image" content={ogImage()} />
         <Meta name="og:description" content={description()} />
         <Meta name="twitter:card" content="summary_large_image" />
-        <Meta name="twitter:title" content={author().name} />
+        <Meta name="twitter:title" content={props.author.name} />
         <Meta name="twitter:description" content={description()} />
         <Meta name="twitter:image" content={ogImage()} />
       </Show>
       <div class="wide-container">
-        <Show when={author()} fallback={<Loading />}>
+        <Show when={props.author} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard author={author()} followers={followers()} following={following()} />
+              <AuthorCard author={props.author} followers={followers()} following={following()} />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
@@ -161,16 +160,16 @@ export const AuthorView = (props: Props) => {
                     <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
                       {t('Publications')}
                     </a>
-                    <Show when={author().stat}>
-                      <span class="view-switcher__counter">{author().stat.shouts}</span>
+                    <Show when={props.author.stat}>
+                      <span class="view-switcher__counter">{props.author.stat.shouts}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
                     <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                       {t('Comments')}
                     </a>
-                    <Show when={author().stat}>
-                      <span class="view-switcher__counter">{author().stat.comments}</span>
+                    <Show when={props.author.stat}>
+                      <span class="view-switcher__counter">{props.author.stat.comments}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
@@ -206,7 +205,7 @@ export const AuthorView = (props: Props) => {
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >
-                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author().about} />
+                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={props.author.about} />
                 </div>
 
                 <Show when={showExpandBioControl()}>

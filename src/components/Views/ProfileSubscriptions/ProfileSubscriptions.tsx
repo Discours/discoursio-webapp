@@ -27,8 +27,6 @@ export const ProfileSubscriptions = () => {
   const [searchQuery, setSearchQuery] = createSignal('')
 
   const fetchSubscriptions = async () => {
-
-    console.log('%c!!! :', 'color: #bada55', 'Профайл fetchSubscriptions' )
     try {
       const slug = author()?.slug
       const authorFollows = await apiClient.getAuthorFollows({ slug })

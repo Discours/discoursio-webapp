@@ -48,11 +48,19 @@ export const AuthorView = (props: Props) => {
   const [commented, setCommented] = createSignal<Reaction[]>()
 
   // current author
-  // const [author, _] = createSignal<Author>(props.author)
+  const [author, setAuthor] = createSignal<Author>()
+  createEffect(() => {
+    try {
+      const a = authorEntities()[props.authorSlug]
+      setAuthor(a)
+    } catch (error) {
+      console.debug(error)
+    }
+  })
 
   createEffect(async () => {
-    if (props.author?.id && !props.author.stat) {
-      const a = await loadAuthor({ slug: '', author_id: props.author.id })
+    if (author()?.id && !author().stat) {
+      const a = await loadAuthor({ slug: '', author_id: author().id })
       console.debug('[AuthorView] loaded author:', a)
     }
   })
@@ -112,46 +120,42 @@ export const AuthorView = (props: Props) => {
     setCommented(data)
   }
 
-  createEffect(
-    on(
-      () => props.author,
-      () => {
-        fetchData(props.author)
-        fetchComments(props.author)
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(() => {
+    if (author()) {
+      fetchData(author())
+      fetchComments(author())
+    }
+  })
 
   const ogImage = createMemo(() =>
-    props.author?.pic
-      ? getImageUrl(props.author?.pic, { width: 1200 })
+    author()?.pic
+      ? getImageUrl(author()?.pic, { width: 1200 })
       : getImageUrl('production/image/logo_image.png'),
   )
-  const description = createMemo(() => getDescription(props.author?.bio))
+  const description = createMemo(() => getDescription(author()?.bio))
   const handleDeleteComment = (id: number) => {
     setCommented((prev) => prev.filter((comment) => comment.id !== id))
   }
 
   return (
     <div class={styles.authorPage}>
-      <Show when={props.author}>
-        <Title>{props.author.name}</Title>
+      <Show when={author()}>
+        <Title>{author().name}</Title>
         <Meta name="descprition" content={description()} />
         <Meta name="og:type" content="profile" />
-        <Meta name="og:title" content={props.author.name} />
+        <Meta name="og:title" content={author().name} />
         <Meta name="og:image" content={ogImage()} />
         <Meta name="og:description" content={description()} />
         <Meta name="twitter:card" content="summary_large_image" />
-        <Meta name="twitter:title" content={props.author.name} />
+        <Meta name="twitter:title" content={author().name} />
         <Meta name="twitter:description" content={description()} />
         <Meta name="twitter:image" content={ogImage()} />
       </Show>
       <div class="wide-container">
-        <Show when={props.author} fallback={<Loading />}>
+        <Show when={author()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard author={props.author} followers={followers()} following={following()} />
+              <AuthorCard author={author()} followers={followers()} following={following()} />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
@@ -160,16 +164,16 @@ export const AuthorView = (props: Props) => {
                     <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
                       {t('Publications')}
                     </a>
-                    <Show when={props.author.stat}>
-                      <span class="view-switcher__counter">{props.author.stat.shouts}</span>
+                    <Show when={author().stat}>
+                      <span class="view-switcher__counter">{author().stat.shouts}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
                     <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
                       {t('Comments')}
                     </a>
-                    <Show when={props.author.stat}>
-                      <span class="view-switcher__counter">{props.author.stat.comments}</span>
+                    <Show when={author().stat}>
+                      <span class="view-switcher__counter">{author().stat.comments}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
@@ -183,10 +187,10 @@ export const AuthorView = (props: Props) => {
                 </ul>
               </div>
               <div class={clsx('col-md-8', styles.additionalControls)}>
-                <Show when={props.author?.stat?.rating || props.author?.stat?.rating === 0}>
+                <Show when={author()?.stat?.rating || author()?.stat?.rating === 0}>
                   <div class={styles.ratingContainer}>
                     {t('All posts rating')}
-                    <AuthorShoutsRating author={props.author} class={styles.ratingControl} />
+                    <AuthorShoutsRating author={author()} class={styles.ratingControl} />
                   </div>
                 </Show>
               </div>
@@ -205,7 +209,7 @@ export const AuthorView = (props: Props) => {
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >
-                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={props.author.about} />
+                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author().about} />
                 </div>
 
                 <Show when={showExpandBioControl()}>

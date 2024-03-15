@@ -186,10 +186,7 @@ export const AllTopics = (props: Props) => {
                     <For each={filteredResults().slice(0, limit())}>
                       {(topic) => (
                         <>
-                          <TopicBadge
-                            topic={topic}
-                            showStat={true}
-                          />
+                          <TopicBadge topic={topic} showStat={true} />
                         </>
                       )}
                     </For>

@@ -82,7 +82,7 @@ export const AuthorsList = (props: Props) => {
         {(author) => (
           <div class="row">
             <div class="col-lg-20 col-xl-18">
-              <AuthorBadge author={author}/>
+              <AuthorBadge author={author} />
             </div>
           </div>
         )}

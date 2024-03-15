@@ -9,8 +9,6 @@ import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { BadgeSubscribeButton } from '../../_shared/BadgeSubscribeButton'
-import { Button } from '../../_shared/Button'
-import { CheckButton } from '../../_shared/CheckButton'
 import styles from './TopicBadge.module.scss'
 
 type Props = {
@@ -29,7 +27,7 @@ export const TopicBadge = (props: Props) => {
 
   createEffect(() => {
     if (!subscriptions || !props.topic) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.topic?.id)
+    const subscribed = subscriptions.topics?.some((topics) => topics.id === props.topic?.id)
     setIsSubscribed(subscribed)
   })
 

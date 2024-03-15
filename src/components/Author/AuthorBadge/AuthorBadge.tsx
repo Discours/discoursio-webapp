@@ -10,13 +10,13 @@ import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { translit } from '../../../utils/ru2en'
 import { isCyrillic } from '../../../utils/translate'
+import { BadgeSubscribeButton } from '../../_shared/BadgeSubscribeButton'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 import styles from './AuthorBadge.module.scss'
-import { BadgeSubscribeButton } from "../../_shared/BadgeSubscribeButton";
 
 type Props = {
   author: Author
@@ -36,8 +36,8 @@ export const AuthorBadge = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
 
   createEffect(() => {
-    if(!subscriptions || !props.author) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id);
+    if (!subscriptions || !props.author) return
+    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
     setIsSubscribed(subscribed)
   })
 
@@ -73,7 +73,9 @@ export const AuthorBadge = (props: Props) => {
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      isSubscribed() ? unfollow(FollowingEntity.Author, props.author.slug) : follow(FollowingEntity.Author, props.author.slug)
+      isSubscribed()
+        ? unfollow(FollowingEntity.Author, props.author.slug)
+        : follow(FollowingEntity.Author, props.author.slug)
     }, 'subscribe')
   }
 
@@ -130,7 +132,9 @@ export const AuthorBadge = (props: Props) => {
           <BadgeSubscribeButton
             action={() => handleFollowClick()}
             isSubscribed={isSubscribed()}
-            actionMessageType={subscribeInAction()?.slug === props.author.slug ? subscribeInAction().type : undefined}
+            actionMessageType={
+              subscribeInAction()?.slug === props.author.slug ? subscribeInAction().type : undefined
+            }
           />
           <Show when={props.showMessageButton}>
             <Button

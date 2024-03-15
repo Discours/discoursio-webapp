@@ -1,8 +1,8 @@
-import { Accessor, JSX, createContext, createEffect, createSignal, useContext, createMemo } from "solid-js";
+import { Accessor, JSX, createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { Author, AuthorFollows, Community, FollowingEntity, Topic } from "../graphql/schema/core.gen";
+import { Author, AuthorFollows, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
@@ -60,24 +60,23 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   }
 
   createEffect(() => {
-    console.info('[context.following] subs:', subscriptions);
+    console.info('[context.following] subs:', subscriptions)
   })
 
-
   const follow = async (what: FollowingEntity, slug: string) => {
-    if (!author()) return;
-    setSubscribeInAction({ slug, type: 'subscribe' });
+    if (!author()) return
+    setSubscribeInAction({ slug, type: 'subscribe' })
     try {
-      const subscriptionData = await apiClient.follow({ what, slug });
+      const subscriptionData = await apiClient.follow({ what, slug })
       setSubscriptions((prevSubscriptions) => {
-        if (!prevSubscriptions[what]) prevSubscriptions[what] = [];
-        prevSubscriptions[what].push(subscriptionData);
-        return prevSubscriptions;
-      });
+        if (!prevSubscriptions[what]) prevSubscriptions[what] = []
+        prevSubscriptions[what].push(subscriptionData)
+        return prevSubscriptions
+      })
     } catch (error) {
-      console.error(error);
+      console.error(error)
     } finally {
-      setSubscribeInAction(); // Сбрасываем состояние действия подписки.
+      setSubscribeInAction() // Сбрасываем состояние действия подписки.
     }
   }
 
@@ -92,7 +91,6 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
       setSubscribeInAction()
     }
   }
-
 
   createEffect(() => {
     if (author()) {

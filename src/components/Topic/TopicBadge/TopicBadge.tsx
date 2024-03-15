@@ -8,10 +8,10 @@ import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
+import { BadgeSubscribeButton } from '../../_shared/BadgeSubscribeButton'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import styles from './TopicBadge.module.scss'
-import { BadgeSubscribeButton } from "../../_shared/BadgeSubscribeButton";
 
 type Props = {
   topic: Topic
@@ -28,14 +28,16 @@ export const TopicBadge = (props: Props) => {
   const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
 
   createEffect(() => {
-    if(!subscriptions || !props.topic) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.topic?.id);
+    if (!subscriptions || !props.topic) return
+    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.topic?.id)
     setIsSubscribed(subscribed)
   })
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      isSubscribed() ? follow(FollowingEntity.Topic, props.topic.slug) : unfollow(FollowingEntity.Topic, props.topic.slug)
+      isSubscribed()
+        ? follow(FollowingEntity.Topic, props.topic.slug)
+        : unfollow(FollowingEntity.Topic, props.topic.slug)
     }, 'subscribe')
   }
 
@@ -80,7 +82,9 @@ export const TopicBadge = (props: Props) => {
           <BadgeSubscribeButton
             isSubscribed={isSubscribed()}
             action={handleFollowClick}
-            actionMessageType={subscribeInAction()?.slug === props.topic.slug ? subscribeInAction().type : undefined}
+            actionMessageType={
+              subscribeInAction()?.slug === props.topic.slug ? subscribeInAction().type : undefined
+            }
           />
         </div>
       </div>

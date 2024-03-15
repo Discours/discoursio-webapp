@@ -43,8 +43,8 @@ export const AuthorCard = (props: Props) => {
   })
 
   createEffect(() => {
-    if(!subscriptions || !props.author) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id);
+    if (!subscriptions || !props.author) return
+    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
     setIsSubscribed(subscribed)
   })
 
@@ -86,7 +86,9 @@ export const AuthorCard = (props: Props) => {
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      isSubscribed() ? unfollow(FollowingEntity.Author, props.author.slug) : follow(FollowingEntity.Author, props.author.slug)
+      isSubscribed()
+        ? unfollow(FollowingEntity.Author, props.author.slug)
+        : follow(FollowingEntity.Author, props.author.slug)
     }, 'subscribe')
   }
 
@@ -123,9 +125,7 @@ export const AuthorCard = (props: Props) => {
           <Show when={props.author.bio}>
             <div class={styles.authorAbout} innerHTML={props.author.bio} />
           </Show>
-          <Show
-            when={(props.followers?.length > 0) || (props.following?.length > 0)}
-          >
+          <Show when={props.followers?.length > 0 || props.following?.length > 0}>
             <div class={styles.subscribersContainer}>
               <Show when={props.followers && props.followers.length > 0}>
                 <a href="?m=followers" class={styles.subscribers}>
@@ -251,9 +251,7 @@ export const AuthorCard = (props: Props) => {
                 <div class="row">
                   <div class="col-24">
                     <For each={props.followers}>
-                      {(follower: Author) => (
-                        <AuthorBadge author={follower}/>
-                      )}
+                      {(follower: Author) => <AuthorBadge author={follower} />}
                     </For>
                   </div>
                 </div>
@@ -296,13 +294,9 @@ export const AuthorCard = (props: Props) => {
                     <For each={authorSubs()}>
                       {(subscription) =>
                         isAuthor(subscription) ? (
-                          <AuthorBadge
-                            author={subscription}
-                          />
+                          <AuthorBadge author={subscription} />
                         ) : (
-                          <TopicBadge
-                            topic={subscription}
-                          />
+                          <TopicBadge topic={subscription} />
                         )
                       }
                     </For>

@@ -12,6 +12,7 @@ import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
 import { Loading } from '../Loading'
 
+import { InlineLoader } from '../../InlineLoader'
 import styles from './InviteMembers.module.scss'
 
 type InviteAuthor = Author & { selected: boolean }
@@ -62,7 +63,7 @@ export const InviteMembers = (props: Props) => {
     return authors?.slice(start, end)
   }
 
-  const [pages, _infiniteScrollLoader, { end }] = createInfiniteScroll(fetcher)
+  const [pages, setEl, { end }] = createInfiniteScroll(fetcher)
 
   createEffect(
     on(
@@ -158,11 +159,8 @@ export const InviteMembers = (props: Props) => {
               )}
             </For>
             <Show when={!end()}>
-              <div use:infiniteScrollLoader class={styles.loading}>
-                <div class={styles.icon}>
-                  <Loading size="tiny" />
-                </div>
-                <div>{t('Loading')}</div>
+              <div ref={setEl as (e: HTMLDivElement) => void}>
+                <InlineLoader />
               </div>
             </Show>
           </div>

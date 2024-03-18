@@ -11,6 +11,7 @@ import {
   ForgotPasswordResponse,
   GenericResponse,
   LoginInput,
+  ResendVerifyEmailInput,
   SignupInput,
   VerifyEmailInput,
 } from '@authorizerdev/authorizer-js'
@@ -68,6 +69,8 @@ export type SessionContextType = {
   confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in auth.discours.io
   setIsSessionLoaded: (loaded: boolean) => void
   authorizer: () => Authorizer
+  isRegistered: (email: string) => Promise<string>
+  resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
 const noop = () => {}
@@ -89,33 +92,43 @@ export const SessionProvider = (props: {
   const authorizer = createMemo(() => new Authorizer(config()))
   const [oauthState, setOauthState] = createSignal<string>()
 
-  // handle callback's redirect_uri
-  createEffect(() => {
-    // oauth
-    const state = searchParams()?.state
-    if (state) {
-      setOauthState((_s) => state)
-      const scope = searchParams()?.scope
-        ? searchParams()?.scope?.toString().split(' ')
-        : ['openid', 'profile', 'email']
-      if (scope) console.info(`[context.session] scope: ${scope}`)
-      const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
-      setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
-      changeSearchParams({ mode: 'confirm-email', modal: 'auth' }, true)
-    }
-  })
+  // handle auth state callback
+  createEffect(
+    on(
+      () => searchParams()?.state,
+      (state) => {
+        if (state) {
+          setOauthState((_s) => state)
+          const scope = searchParams()?.scope
+            ? searchParams()?.scope?.toString().split(' ')
+            : ['openid', 'profile', 'email']
+          if (scope) console.info(`[context.session] scope: ${scope}`)
+          const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
+          setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
+          changeSearchParams({ mode: 'confirm-email', m: 'auth' }, true)
+        }
+      },
+      { defer: true },
+    ),
+  )
 
-  // handle email confirm
+  // handle token confirm
   createEffect(() => {
     const token = searchParams()?.token
     const access_token = searchParams()?.access_token
     if (access_token)
       changeSearchParams({
         mode: 'confirm-email',
-        modal: 'auth',
+        m: 'auth',
         access_token,
       })
-    else if (token) changeSearchParams({ mode: 'change-password', modal: 'auth', token })
+    else if (token) {
+      changeSearchParams({
+        mode: 'change-password',
+        m: 'auth',
+        token,
+      })
+    }
   })
 
   // load
@@ -200,10 +213,8 @@ export const SessionProvider = (props: {
     if (session()) {
       const token = session()?.access_token
       if (token) {
-        // console.log('[context.session] token observer got token', token)
         if (!inboxClient.private) {
           apiClient.connect(token)
-          notifierClient.connect(token)
           inboxClient.connect(token)
         }
         if (!author()) loadAuthor()
@@ -309,6 +320,30 @@ export const SessionProvider = (props: {
     return { data: resp?.data, errors: resp.errors }
   }
 
+  const resendVerifyEmail = async (params: ResendVerifyEmailInput) => {
+    const resp = await authorizer().resendVerifyEmail(params)
+    console.debug('[context.session] resend verify email response:', resp)
+    if (resp.errors) {
+      resp.errors.forEach((error) => {
+        showSnackbar({ type: 'error', body: error.message })
+      })
+    }
+    return resp?.data
+  }
+
+  const isRegistered = async (email: string): Promise<string> => {
+    console.debug('[context.session] calling is_registered for ', email)
+    try {
+      const response = await authorizer().graphqlQuery({
+        query: `query { is_registered(email: "${email}") { message }}`,
+      })
+      return response?.data?.is_registered?.message
+    } catch (error) {
+      console.warn(error)
+    }
+    return ''
+  }
+
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
     try {
@@ -348,6 +383,7 @@ export const SessionProvider = (props: {
     forgotPassword,
     changePassword,
     oauth,
+    isRegistered,
   }
   const value: SessionContextType = {
     authError,
@@ -357,6 +393,7 @@ export const SessionProvider = (props: {
     author,
     ...actions,
     isAuthenticated,
+    resendVerifyEmail,
   }
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

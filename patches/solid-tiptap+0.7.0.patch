@@ -1,0 +1,62 @@
+diff --git a/node_modules/solid-tiptap/src/Editor.tsx b/node_modules/solid-tiptap/src/Editor.tsx
+index 9d1e51a..2cc36b3 100644
+--- a/node_modules/solid-tiptap/src/Editor.tsx
++++ b/node_modules/solid-tiptap/src/Editor.tsx
+@@ -1,6 +1,6 @@
+ import type { EditorOptions } from '@tiptap/core';
+ import { Editor } from '@tiptap/core';
+-import { createEffect, createSignal, onCleanup } from 'solid-js';
++import { createEffect, createSignal, onCleanup, on } from 'solid-js';
+ 
+ export type EditorRef = Editor | ((editor: Editor) => void);
+ 
+@@ -42,17 +42,19 @@ export default function useEditor<T extends HTMLElement>(
+ ): () => Editor | undefined {
+   const [signal, setSignal] = createSignal<Editor>();
+ 
+-  createEffect(() => {
+-    const instance = new Editor({
+-      ...props(),
+-    });
+-
+-    onCleanup(() => {
+-      instance.destroy();
+-    });
+-
+-    setSignal(instance);
+-  });
++  createEffect(
++    on(
++      props,
++      (properties) => {
++        if (properties) {
++          const instance = new Editor({ ...properties })
++          onCleanup(instance.destroy)
++          setSignal(instance)
++        }
++    },
++    { defer: true }
++    )
++  )
+ 
+   return signal;
+ }
+@@ -65,14 +67,16 @@ export function useEditorHTML<V extends Editor | undefined>(
+ 
+ export function useEditorJSON<
+   V extends Editor | undefined,
+-  R extends Record<string, any>,
++  // biome-ignore lint/suspicious/noExplicitAny: TODO: <explanation>
++R  extends Record<string, any>,
+ >(editor: () => V): () => R | undefined {
+   return createEditorTransaction(editor, instance => instance?.getJSON() as R);
+ }
+ 
+ export function useEditorIsActive<
+   V extends Editor | undefined,
+-  R extends Record<string, any>,
++  // biome-ignore lint/suspicious/noExplicitAny: TODO: <explanation>
++R  extends Record<string, any>,
+ >(
+   editor: () => V,
+   ...args: [name: () => string, options?: R] | [options: R]

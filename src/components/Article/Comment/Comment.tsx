@@ -30,6 +30,7 @@ type Props = {
   showArticleLink?: boolean
   clickedReply?: (id: number) => void
   clickedReplyId?: number
+  onDelete?: (id: number) => void
 }
 
 export const Comment = (props: Props) => {
@@ -38,17 +39,22 @@ export const Comment = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
-  const { author } = useSession()
+  const [editedBody, setEditedBody] = createSignal<string>()
+  const { author, session } = useSession()
   const { createReaction, deleteReaction, updateReaction } = useReactions()
   const { showConfirm } = useConfirm()
   const { showSnackbar } = useSnackbar()
 
-  const isCommentAuthor = createMemo(() => props.comment.created_by?.slug === author()?.slug)
-  const comment = createMemo(() => props.comment)
-  const body = createMemo(() => (comment().body || '').trim())
+  const canEdit = createMemo(
+    () =>
+      Boolean(author()?.id) &&
+      (props.comment?.created_by?.slug === author().slug || session()?.user?.roles.includes('editor')),
+  )
+
+  const body = createMemo(() => (editedBody() ? editedBody().trim() : props.comment.body.trim() || ''))
 
   const remove = async () => {
-    if (comment()?.id) {
+    if (props.comment?.id) {
       try {
         const isConfirmed = await showConfirm({
           confirmBody: t('Are you sure you want to delete this comment?'),
@@ -58,11 +64,19 @@ export const Comment = (props: Props) => {
         })
 
         if (isConfirmed) {
-          await deleteReaction(comment().id)
+          const { error } = await deleteReaction(props.comment.id)
+          const notificationType = error ? 'error' : 'success'
+          const notificationMessage = error
+            ? t('Failed to delete comment')
+            : t('Comment successfully deleted')
+          await showSnackbar({ type: notificationType, body: notificationMessage })
 
-          await showSnackbar({ body: t('Comment successfully deleted') })
+          if (!error && props.onDelete) {
+            props.onDelete(props.comment.id)
+          }
         }
       } catch (error) {
+        await showSnackbar({ body: 'error' })
         console.error('[deleteReaction]', error)
       }
     }
@@ -93,11 +107,15 @@ export const Comment = (props: Props) => {
   const handleUpdate = async (value) => {
     setLoading(true)
     try {
-      await updateReaction(props.comment.id, {
+      const reaction = await updateReaction({
+        id: props.comment.id,
         kind: ReactionKind.Comment,
         body: value,
         shout: props.comment.shout.id,
       })
+      if (reaction) {
+        setEditedBody(value)
+      }
       setEditMode(false)
       setLoading(false)
     } catch (error) {
@@ -107,9 +125,9 @@ export const Comment = (props: Props) => {
 
   return (
     <li
-      id={`comment_${comment().id}`}
+      id={`comment_${props.comment.id}`}
       class={clsx(styles.comment, props.class, {
-        [styles.isNew]: !isCommentAuthor() && comment()?.created_at > props.lastSeen,
+        [styles.isNew]: props.comment?.created_at > props.lastSeen,
       })}
     >
       <Show when={!!body()}>
@@ -119,21 +137,21 @@ export const Comment = (props: Props) => {
             fallback={
               <div>
                 <Userpic
-                  name={comment().created_by.name}
-                  userpic={comment().created_by.pic}
+                  name={props.comment.created_by.name}
+                  userpic={props.comment.created_by.pic}
                   class={clsx({
                     [styles.compactUserpic]: props.compact,
                   })}
                 />
                 <small>
-                  <a href={`#comment_${comment()?.id}`}>{comment()?.shout.title || ''}</a>
+                  <a href={`#comment_${props.comment?.id}`}>{props.comment?.shout.title || ''}</a>
                 </small>
               </div>
             }
           >
             <div class={styles.commentDetails}>
               <div class={styles.commentAuthor}>
-                <AuthorLink author={comment()?.created_by as Author} />
+                <AuthorLink author={props.comment?.created_by as Author} />
               </div>
 
               <Show when={props.isArticleAuthor}>
@@ -144,23 +162,23 @@ export const Comment = (props: Props) => {
                 <div class={styles.articleLink}>
                   <Icon name="arrow-right" class={styles.articleLinkIcon} />
                   <a
-                    href={`${getPagePath(router, 'article', { slug: comment().shout.slug })}?commentId=${
-                      comment().id
-                    }`}
+                    href={`${getPagePath(router, 'article', {
+                      slug: props.comment.shout.slug,
+                    })}?commentId=${props.comment.id}`}
                   >
-                    {comment().shout.title}
+                    {props.comment.shout.title}
                   </a>
                 </div>
               </Show>
-              <CommentDate showOnHover={true} comment={comment()} isShort={true} />
-              <CommentRatingControl comment={comment()} />
+              <CommentDate showOnHover={true} comment={props.comment} isShort={true} />
+              <CommentRatingControl comment={props.comment} />
             </div>
           </Show>
           <div class={styles.commentBody}>
             <Show when={editMode()} fallback={<div innerHTML={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
                 <SimplifiedEditor
-                  initialContent={comment().body}
+                  initialContent={editedBody() || props.comment.body}
                   submitButtonText={t('Save')}
                   quoteEnabled={true}
                   imageEnabled={true}
@@ -189,7 +207,7 @@ export const Comment = (props: Props) => {
                   {loading() ? t('Loading') : t('Reply')}
                 </button>
               </ShowIfAuthenticated>
-              <Show when={isCommentAuthor()}>
+              <Show when={canEdit()}>
                 <button
                   class={clsx(styles.commentControl, styles.commentControlEdit)}
                   onClick={toggleEditMode}

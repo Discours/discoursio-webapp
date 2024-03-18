@@ -75,7 +75,7 @@ export const TopicBadge = (props: Props) => {
               when={props.topic.body}
               fallback={
                 <div class={styles.description}>
-                  {t('PublicationsWithCount', { count: props.topic.stat.shouts ?? 0 })}
+                  {t('PublicationsWithCount', { count: props.topic?.stat?.shouts ?? 0 })}
                 </div>
               }
             >
@@ -118,8 +118,13 @@ export const TopicBadge = (props: Props) => {
         <span class={styles.statsItem}>{t('shoutsWithCount', { count: props.topic?.stat?.shouts })}</span>
         <span class={styles.statsItem}>{t('authorsWithCount', { count: props.topic?.stat?.authors })}</span>
         <span class={styles.statsItem}>
-          {t('followersWithCount', { count: props.topic?.stat?.followers })}
+          {t('FollowersWithCount', { count: props.topic?.stat?.followers })}
         </span>
+        <Show when={props.topic?.stat?.comments}>
+          <span class={styles.statsItem}>
+            {t('CommentsWithCount', { count: props.topic?.stat?.comments ?? 0 })}
+          </span>
+        </Show>
       </div>
     </div>
   )

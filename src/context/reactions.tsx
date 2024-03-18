@@ -5,6 +5,8 @@ import { createStore, reconcile } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
 import { Reaction, ReactionBy, ReactionInput, ReactionKind } from '../graphql/schema/core.gen'
+import { useLocalize } from './localize'
+import { useSnackbar } from './snackbar'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
@@ -18,8 +20,8 @@ type ReactionsContextType = {
     offset?: number
   }) => Promise<Reaction[]>
   createReaction: (reaction: ReactionInput) => Promise<void>
-  updateReaction: (id: number, reaction: ReactionInput) => Promise<void>
-  deleteReaction: (id: number) => Promise<void>
+  updateReaction: (reaction: ReactionInput) => Promise<Reaction>
+  deleteReaction: (id: number) => Promise<{ error: string }>
 }
 
 const ReactionsContext = createContext<ReactionsContextType>()
@@ -30,6 +32,8 @@ export function useReactions() {
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
+  const { t } = useLocalize()
+  const { showSnackbar } = useSnackbar()
 
   const loadReactionsBy = async ({
     by,
@@ -53,7 +57,8 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const createReaction = async (input: ReactionInput): Promise<void> => {
-    const reaction = await apiClient.createReaction(input)
+    const { error, reaction } = await apiClient.createReaction(input)
+    if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (!reaction) return
     const changes = {
       [reaction.id]: reaction,
@@ -79,18 +84,23 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     setReactionEntities(changes)
   }
 
-  const deleteReaction = async (reaction_id: number): Promise<void> => {
+  const deleteReaction = async (reaction_id: number): Promise<{ error: string; reaction?: string }> => {
     if (reaction_id) {
-      await apiClient.destroyReaction(reaction_id)
-      setReactionEntities({
-        [reaction_id]: undefined,
-      })
+      const result = await apiClient.destroyReaction(reaction_id)
+      if (!result.error) {
+        setReactionEntities({
+          [reaction_id]: undefined,
+        })
+      }
+      return result
     }
   }
 
-  const updateReaction = async (id: number, input: ReactionInput): Promise<void> => {
-    const reaction = await apiClient.updateReaction(id, input)
-    setReactionEntities(reaction.id, reaction)
+  const updateReaction = async (input: ReactionInput): Promise<Reaction> => {
+    const { error, reaction } = await apiClient.updateReaction(input)
+    if (error) await showSnackbar({ type: 'error', body: t(error) })
+    if (reaction) setReactionEntities(reaction.id, reaction)
+    return reaction
   }
 
   onCleanup(() => setReactionEntities(reconcile({})))

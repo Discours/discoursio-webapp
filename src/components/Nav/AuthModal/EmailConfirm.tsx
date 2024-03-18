@@ -17,19 +17,20 @@ export const EmailConfirm = () => {
   const [emailConfirmed, setEmailConfirmed] = createSignal(false)
 
   createEffect(() => {
-    const e = session()?.user?.email
-    const v = session()?.user?.email_verified
-    if (e) {
-      setEmail(e.toLowerCase())
-      if (v) setEmailConfirmed(v)
+    const email = session()?.user?.email
+    const isVerified = session()?.user?.email_verified
+
+    if (email) {
+      setEmail(email.toLowerCase())
+      if (isVerified) setEmailConfirmed(isVerified)
       if (authError()) {
         changeSearchParams({}, true)
       }
     }
-  })
 
-  createEffect(() => {
-    if (authError()) console.debug('[AuthModal.EmailConfirm] auth error:', authError())
+    if (authError()) {
+      console.debug('[AuthModal.EmailConfirm] auth error:', authError())
+    }
   })
 
   return (

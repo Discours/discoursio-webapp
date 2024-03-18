@@ -123,7 +123,7 @@ export const ProfileSettings = () => {
       setIsUserpicUpdating(true)
 
       const result = await handleImageUpload(uploadFile)
-      updateFormField('userpic', result.url)
+      updateFormField('pic', result.url)
 
       setUserpicFile(null)
       setIsUserpicUpdating(false)

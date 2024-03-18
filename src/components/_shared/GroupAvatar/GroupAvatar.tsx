@@ -2,14 +2,13 @@ import { clsx } from 'clsx'
 import { For } from 'solid-js'
 
 import { Author } from '../../../graphql/schema/core.gen'
-import { NotificationAuthor } from '../../../graphql/schema/notifier.gen'
 import { Userpic } from '../../Author/Userpic'
 
 import styles from './GroupAvatar.module.scss'
 
 type Props = {
   class?: string
-  authors: Author[] | NotificationAuthor[]
+  authors: Author[]
 }
 
 export const GroupAvatar = (props: Props) => {

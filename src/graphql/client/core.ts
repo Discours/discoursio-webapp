@@ -182,7 +182,7 @@ export const apiClient = {
   createReaction: async (input: ReactionInput) => {
     const response = await apiClient.private.mutation(reactionCreate, { reaction: input }).toPromise()
     console.debug('[graphql.client.core] createReaction:', response)
-    return response.data.create_reaction.reaction
+    return response.data.create_reaction
   },
   destroyReaction: async (reaction_id: number) => {
     const response = await apiClient.private.mutation(reactionDestroy, { reaction_id }).toPromise()

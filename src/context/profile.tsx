@@ -55,11 +55,11 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
     if (fieldName === 'links') {
       setForm((prev) => {
-        const updatedLinks = remove ? prev.links.filter((item) => item !== value) : [...prev.links, value];
-        return { ...prev, links: updatedLinks };
-      });
+        const updatedLinks = remove ? prev.links.filter((item) => item !== value) : [...prev.links, value]
+        return { ...prev, links: updatedLinks }
+      })
     } else {
-      setForm((prev) => ({ ...prev, [fieldName]: value }));
+      setForm((prev) => ({ ...prev, [fieldName]: value }))
     }
   }
 

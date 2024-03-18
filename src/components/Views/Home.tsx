@@ -64,7 +64,6 @@ export const HomeView = (props: Props) => {
         limit: CLIENT_LOAD_ARTICLES_COUNT,
         offset: sortedArticles().length,
       })
-
       setIsLoadMoreButtonVisible(hasMore)
     }
 

@@ -16,6 +16,7 @@ import type {
   Topic,
 } from '../schema/core.gen'
 
+import { coreApiUrl } from '../../utils/config'
 import { createGraphQLClient } from '../createGraphQLClient'
 import createArticle from '../mutation/core/article-create'
 import deleteShout from '../mutation/core/article-delete'
@@ -46,7 +47,6 @@ import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import topicsRandomQuery from '../query/core/topics-random'
-import { coreApiUrl } from "../../utils/config"
 
 const publicGraphQLClient = createGraphQLClient(coreApiUrl)
 

@@ -64,18 +64,8 @@ export const HomeView = (props: Props) => {
         limit: CLIENT_LOAD_ARTICLES_COUNT,
         offset: sortedArticles().length,
       })
-
       setIsLoadMoreButtonVisible(hasMore)
     }
-
-    const result = await apiClient.getRandomTopicShouts(RANDOM_TOPIC_SHOUTS_COUNT)
-    if (!result || result.error) console.warn('[apiClient.getRandomTopicShouts] failed')
-    batch(() => {
-      if (!result?.error) {
-        if (result?.topic) setRandomTopic(result.topic)
-        if (result?.shouts) setRandomTopicArticles(result.shouts)
-      }
-    })
   })
 
   const loadMore = async () => {

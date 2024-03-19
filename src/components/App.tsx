@@ -14,6 +14,7 @@ import { MediaQueryProvider } from '../context/mediaQuery'
 import { NotificationsProvider } from '../context/notifications'
 import { SessionProvider } from '../context/session'
 import { SnackbarProvider } from '../context/snackbar'
+import { TopicsProvider } from '../context/topics'
 import { DiscussionRulesPage } from '../pages/about/discussionRules.page'
 import { DogmaPage } from '../pages/about/dogma.page'
 import { GuidePage } from '../pages/about/guide.page'
@@ -116,21 +117,23 @@ export const App = (props: Props) => {
       <LocalizeProvider>
         <MediaQueryProvider>
           <SnackbarProvider>
-            <ConfirmProvider>
-              <SessionProvider onStateChangeCallback={console.log}>
-                <FollowingProvider>
-                  <ConnectProvider>
-                    <NotificationsProvider>
-                      <EditorProvider>
-                        <InboxProvider>
-                          <Dynamic component={pageComponent()} {...props} />
-                        </InboxProvider>
-                      </EditorProvider>
-                    </NotificationsProvider>
-                  </ConnectProvider>
-                </FollowingProvider>
-              </SessionProvider>
-            </ConfirmProvider>
+            <TopicsProvider>
+              <ConfirmProvider>
+                <SessionProvider onStateChangeCallback={console.log}>
+                  <FollowingProvider>
+                    <ConnectProvider>
+                      <NotificationsProvider>
+                        <EditorProvider>
+                          <InboxProvider>
+                            <Dynamic component={pageComponent()} {...props} />
+                          </InboxProvider>
+                        </EditorProvider>
+                      </NotificationsProvider>
+                    </ConnectProvider>
+                  </FollowingProvider>
+                </SessionProvider>
+              </ConfirmProvider>
+            </TopicsProvider>
           </SnackbarProvider>
         </MediaQueryProvider>
       </LocalizeProvider>

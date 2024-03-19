@@ -12,7 +12,7 @@ type Props = {
   placeholder?: string
   errorMessage?: (error: string) => void
   setError?: string
-  onInput: (value: string) => void
+  onInput?: (value: string) => void
   onBlur?: (value: string) => void
   variant?: 'login' | 'registration'
   disableAutocomplete?: boolean
@@ -41,8 +41,9 @@ export const PasswordField = (props: Props) => {
   }
 
   const handleInputBlur = (value: string) => {
-    if (props.variant === 'login') {
-      return props.onBlur(value)
+    if (props.variant === 'login' && props.onBlur) {
+      props.onBlur(value)
+      return
     }
     if (value.length < 1) {
       return

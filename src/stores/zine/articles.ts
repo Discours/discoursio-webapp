@@ -131,9 +131,8 @@ export const loadShout = async (slug: string): Promise<void> => {
 export const loadShouts = async (
   options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
-  options.limit += 1
   const newShouts = await apiClient.getShouts(options)
-  const hasMore = newShouts?.length === options.limit + 1
+  const hasMore = newShouts?.length !== options.limit + 1 && newShouts?.length !== 0
 
   if (hasMore) {
     newShouts.splice(-1)

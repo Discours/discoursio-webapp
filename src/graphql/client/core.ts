@@ -46,14 +46,15 @@ import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import topicsRandomQuery from '../query/core/topics-random'
+import { coreApiUrl } from "../../utils/config"
 
-const publicGraphQLClient = createGraphQLClient('core')
+const publicGraphQLClient = createGraphQLClient(coreApiUrl)
 
 export const apiClient = {
   private: null,
   connect: (token: string) => {
     // NOTE: use it after token appears
-    apiClient.private = createGraphQLClient('core', token)
+    apiClient.private = createGraphQLClient(coreApiUrl, token)
   },
 
   getRandomTopShouts: async (params: QueryLoad_Shouts_Random_TopArgs) => {
@@ -192,7 +193,7 @@ export const apiClient = {
   updateReaction: async (reaction: ReactionInput) => {
     const response = await apiClient.private.mutation(reactionUpdate, { reaction }).toPromise()
     console.debug('[graphql.client.core] updateReaction:', response)
-    return response.data.update_reaction.reaction
+    return response.data.update_reaction
   },
   loadAuthorsBy: async (args: QueryLoad_Authors_ByArgs) => {
     const resp = await publicGraphQLClient.query(authorsLoadBy, args).toPromise()

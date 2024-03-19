@@ -46,14 +46,15 @@ import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import topicsRandomQuery from '../query/core/topics-random'
+import { coreApiUrl } from "../../utils/config"
 
-const publicGraphQLClient = createGraphQLClient('core')
+const publicGraphQLClient = createGraphQLClient(coreApiUrl)
 
 export const apiClient = {
   private: null,
   connect: (token: string) => {
     // NOTE: use it after token appears
-    apiClient.private = createGraphQLClient('core', token)
+    apiClient.private = createGraphQLClient(coreApiUrl, token)
   },
 
   getRandomTopShouts: async (params: QueryLoad_Shouts_Random_TopArgs) => {

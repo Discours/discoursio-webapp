@@ -21,10 +21,11 @@ import {
   QueryLoad_ChatsArgs,
   QueryLoad_Messages_ByArgs,
 } from '../schema/chat.gen'
+import { chatApiUrl } from '../../utils/config'
 
 export const inboxClient = {
   private: null,
-  connect: (token: string) => (inboxClient.private = createGraphQLClient('chat', token)),
+  connect: (token: string) => (inboxClient.private = createGraphQLClient(chatApiUrl, token)),
 
   loadChats: async (options: QueryLoad_ChatsArgs): Promise<Chat[]> => {
     const resp = await inboxClient.private.query(myChats, options).toPromise()

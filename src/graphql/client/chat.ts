@@ -1,3 +1,4 @@
+import { chatApiUrl } from '../../utils/config'
 // inbox
 import { createGraphQLClient } from '../createGraphQLClient'
 import createChat from '../mutation/chat/chat-create'
@@ -21,7 +22,6 @@ import {
   QueryLoad_ChatsArgs,
   QueryLoad_Messages_ByArgs,
 } from '../schema/chat.gen'
-import { chatApiUrl } from '../../utils/config'
 
 export const inboxClient = {
   private: null,

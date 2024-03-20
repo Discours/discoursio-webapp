@@ -118,7 +118,6 @@
   .control {
     align-items: center;
     display: flex;
-    margin-left: 3rem;
   }
 }
 
@@ -440,8 +439,11 @@
   }
 
   .control {
-    cursor: pointer;
     border: 0;
+    cursor: pointer;
+    height: 3.4rem;
+    margin: 0 0.6rem;
+    width: 3.4rem;
 
     &:hover {
       background: none;
@@ -457,11 +459,7 @@
   }
 
   .control + .control {
-    margin-left: 1.2rem;
-
-    @include media-breakpoint-up(sm) {
-      margin-left: 2rem;
-    }
+    margin: 0 0.6rem;
   }
 
   img {
@@ -503,10 +501,14 @@
     }
   }
 
+  .settingsControlContainer {
+    margin-right: 2rem !important;
+  }
+
   .settingsControl {
     border-radius: 100%;
-    padding: 0.8rem !important;
     min-width: 4rem !important;
+    padding: 0.8rem !important;
 
     &:hover {
       background: var(--background-color-invert);
@@ -524,7 +526,7 @@
   display: flex;
   height: 2.4em;
   justify-content: center;
-  margin-left: 0.3rem;
+  margin: 0 0.7rem;
   position: relative;
   transition: margin-left 0.3s;
   width: 2.4em;
@@ -549,9 +551,10 @@
   a:link {
     border: none;
     cursor: pointer;
-    height: auto;
+    height: 100%;
     margin: 0;
     padding: 0;
+    width: 100%;
 
     &:hover {
       background: none;
@@ -593,7 +596,7 @@
   align-items: stretch;
   display: flex;
   height: 4rem;
-  margin-left: 0.9em !important;
+  margin-left: 1rem !important;
 
   &:first-child {
     margin-left: 0 !important;
@@ -625,9 +628,13 @@
   }
 
   @include media-breakpoint-up(xl) {
-    margin-left: 0.5rem !important;
+    margin-left: 1rem !important;
     margin-right: 0.5rem;
     width: auto;
+
+    &:last-child {
+      margin-right: 0;
+    }
 
     .icon {
       display: none !important;

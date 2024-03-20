@@ -10,18 +10,19 @@
 }
 
 .notificationsCounter {
-  background-color: #d00820;
-  border: 2px solid #fff;
-  border-radius: 2em;
+  align-items: center;
+  background-color: #E84500;
+  border-radius: 0.8rem;
   color: #fff;
-  font-size: 1rem;
+  display: flex;
+  font-size: 1.2rem;
   font-weight: 700;
-  height: 1.6em;
-  left: 1.1em;
-  line-height: 1.25em;
+  height: 2.2rem;
+  justify-content: center;
+  left: 1.5rem;
+  min-width: 2.2rem;
   padding: 0 0.25em;
   position: absolute;
   text-align: center;
   top: -0.5rem;
-  min-width: 1.5em;
 }

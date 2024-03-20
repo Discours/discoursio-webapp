@@ -196,7 +196,7 @@ export const HeaderAuth = (props: Props) => {
                 })}
               </div>
 
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+              <div class={clsx(styles.userControlItem, styles.settingsControlContainer, styles.userControlItemVerbose)}>
                 <Popover content={t('Settings')}>
                   {(ref) => (
                     <Button
@@ -246,26 +246,28 @@ export const HeaderAuth = (props: Props) => {
             </Show>
           </div>
 
-          <ProfilePopup
-            onVisibilityChange={(isVisible) => {
-              props.setIsProfilePopupVisible(isVisible)
-            }}
-            containerCssClass={styles.control}
-            trigger={
-              <div class={clsx(styles.userControlItem, styles.userControlItemUserpic)}>
-                <button class={styles.button}>
-                  <div classList={{ entered: page().path === `/${author()?.slug}` }}>
-                    <Userpic
-                      size={'L'}
-                      name={author()?.name}
-                      userpic={author()?.pic}
-                      class={styles.userpic}
-                    />
-                  </div>
-                </button>
-              </div>
-            }
-          />
+          <Show when={isAuthenticated()}>
+            <ProfilePopup
+              onVisibilityChange={(isVisible) => {
+                props.setIsProfilePopupVisible(isVisible)
+              }}
+              containerCssClass={styles.control}
+              trigger={
+                <div class={clsx(styles.userControlItem, styles.userControlItemUserpic)}>
+                  <button class={styles.button}>
+                    <div classList={{entered: page().path === `/${author()?.slug}`}}>
+                      <Userpic
+                        size={'L'}
+                        name={author()?.name}
+                        userpic={author()?.pic}
+                        class={styles.userpic}
+                      />
+                    </div>
+                  </button>
+                </div>
+              }
+            />
+          </Show>
         </div>
       </Show>
     </ShowOnlyOnClient>

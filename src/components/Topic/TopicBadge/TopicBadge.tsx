@@ -79,7 +79,7 @@ export const TopicBadge = (props: Props) => {
                 </div>
               }
             >
-              <div class={clsx('text-truncate', styles.description)}>{props.topic.body}</div>
+              <div innerHTML={props.topic.body} class={clsx('text-truncate', styles.description)}/>
             </Show>
           </a>
         </div>

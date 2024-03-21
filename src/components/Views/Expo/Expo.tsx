@@ -24,8 +24,8 @@ type Props = {
   layout: LayoutType
 }
 
-export const PRERENDERED_ARTICLES_COUNT = 24
-const LOAD_MORE_PAGE_SIZE = 16
+export const PRERENDERED_ARTICLES_COUNT = 37
+const LOAD_MORE_PAGE_SIZE = 11
 
 export const Expo = (props: Props) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))

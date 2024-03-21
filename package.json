@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "form-data": "4.0.0",
+    "idb": "8.0.0",
     "mailgun.js": "10.1.0"
   },
   "devDependencies": {

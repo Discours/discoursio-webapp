@@ -26,6 +26,7 @@ import { Loading } from '../../_shared/Loading'
 import { byCreated } from '../../../utils/sortby'
 import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
+import { hideModal, MODALS } from "../../../stores/ui";
 
 type Props = {
   shouts: Shout[]
@@ -39,13 +40,14 @@ export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
-  const { page: getPage } = useRouter()
+  const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [followers, setFollowers] = createSignal<Author[]>([])
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>()
+  const modal = MODALS[searchParams().m]
 
   // current author
   const [author, setAuthor] = createSignal<Author>()
@@ -102,6 +104,9 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(() => {
+    if (!modal) {
+      hideModal()
+    }
     checkBioHeight()
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {

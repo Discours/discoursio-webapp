@@ -41,8 +41,9 @@ export const PasswordField = (props: Props) => {
   }
 
   const handleInputBlur = (value: string) => {
-    if (props.variant === 'login') {
-      return props.onBlur(value)
+    if (props.variant === 'login' && props.onBlur) {
+      props.onBlur(value)
+      return
     }
     if (value.length < 1) {
       return

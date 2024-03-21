@@ -3,7 +3,7 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -23,10 +23,10 @@ import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { Loading } from '../../_shared/Loading'
 
+import { MODALS, hideModal } from '../../../stores/ui'
 import { byCreated } from '../../../utils/sortby'
 import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
-import { hideModal, MODALS } from "../../../stores/ui";
 
 type Props = {
   shouts: Shout[]
@@ -38,7 +38,6 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { loadSubscriptions } = useFollowing()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage, searchParams } = useRouter()
@@ -71,13 +70,12 @@ export const AuthorView = (props: Props) => {
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
-  const fetchData = async (slug) => {
+  const fetchData = async (author: Author) => {
     try {
       const [subscriptionsResult, followersResult] = await Promise.all([
-        apiClient.getAuthorFollows({ slug }),
-        apiClient.getAuthorFollowers({ slug }),
+        apiClient.getAuthorFollows({ author_id: author.id }),
+        apiClient.getAuthorFollowers({ slug: author.slug }),
       ])
-
       const { authors, topics } = subscriptionsResult
       setFollowing([...(authors || []), ...(topics || [])])
       setFollowers(followersResult || [])
@@ -94,14 +92,6 @@ export const AuthorView = (props: Props) => {
     }
   }
 
-  onMount(() => {
-    fetchData(props.authorSlug)
-
-    if (!modal) {
-      hideModal()
-    }
-  });
-
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
@@ -114,12 +104,13 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(() => {
+    if (!modal) {
+      hideModal()
+    }
     checkBioHeight()
-
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
-      loadSubscriptions()
     }
   })
 
@@ -136,6 +127,7 @@ export const AuthorView = (props: Props) => {
 
   createEffect(() => {
     if (author()) {
+      fetchData(author())
       fetchComments(author())
     }
   })
@@ -200,10 +192,10 @@ export const AuthorView = (props: Props) => {
                 </ul>
               </div>
               <div class={clsx('col-md-8', styles.additionalControls)}>
-                <Show when={props.author?.stat?.rating || props.author?.stat?.rating === 0}>
+                <Show when={author()?.stat?.rating || author()?.stat?.rating === 0}>
                   <div class={styles.ratingContainer}>
                     {t('All posts rating')}
-                    <AuthorShoutsRating author={props.author} class={styles.ratingControl} />
+                    <AuthorShoutsRating author={author()} class={styles.ratingControl} />
                   </div>
                 </Show>
               </div>

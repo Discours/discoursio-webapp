@@ -40,6 +40,7 @@ import { InboxPage } from '../pages/inbox.page'
 import { HomePage } from '../pages/index.page'
 import { ProfileSecurityPage } from '../pages/profile/profileSecurity.page'
 import { ProfileSettingsPage } from '../pages/profile/profileSettings.page'
+//TODO: ProfileSubscriptionsPage - garbage code?
 import { ProfileSubscriptionsPage } from '../pages/profile/profileSubscriptions.page'
 import { SearchPage } from '../pages/search.page'
 import { TopicPage } from '../pages/topic.page'

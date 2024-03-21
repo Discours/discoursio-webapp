@@ -70,9 +70,8 @@ export const AuthorBadge = (props: Props) => {
   createEffect(
     on(
       () => props.isFollowed,
-      () => {
-        setIsFollowed(props.isFollowed?.value)
-      },
+      (followed) => setIsFollowed(followed?.value),
+      { defer: true },
     ),
   )
 

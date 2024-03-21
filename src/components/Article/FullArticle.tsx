@@ -1,4 +1,4 @@
-import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
+import type { Author, Reaction, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
@@ -35,8 +35,8 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
+import { RatingControl as ShoutRatingControl } from './RatingControl'
 import { SharePopup, getShareUrl } from './SharePopup'
-import { ShoutRatingControl } from './ShoutRatingControl'
 
 import stylesHeader from '../Nav/Header/Header.module.scss'
 import styles from './Article.module.scss'
@@ -310,16 +310,27 @@ export const FullArticle = (props: Props) => {
       },
     ),
   )
+  const [ratings, setRatings] = createSignal<Reaction[]>([])
 
   onMount(async () => {
+    document.title = props.article?.title
     install('G-LQ4B87H8C2')
-    await loadReactionsBy({ by: { shout: props.article.slug } })
-    setIsReactionsLoaded(true)
-    document.title = props.article.title
     window?.addEventListener('resize', updateIframeSizes)
-
     onCleanup(() => window.removeEventListener('resize', updateIframeSizes))
   })
+
+  createEffect(
+    on(
+      () => props.article,
+      async (shout: Shout) => {
+        setIsReactionsLoaded(false)
+        const rrr = await loadReactionsBy({ by: { shout: shout?.slug } })
+        setRatings((_) => rrr.filter((r) => ['LIKE', 'DISLIKE'].includes(r.kind)))
+        setIsReactionsLoaded(true)
+      },
+      { defer: true },
+    ),
+  )
 
   const cover = props.article.cover ?? 'production/image/logo_image.png'
   const ogImage = getOpenGraphImageUrl(cover, {
@@ -459,7 +470,11 @@ export const FullArticle = (props: Props) => {
           <div class="col-md-16 offset-md-5">
             <div class={styles.shoutStats}>
               <div class={styles.shoutStatsItem}>
-                <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
+                <ShoutRatingControl
+                  shout={props.article}
+                  class={styles.ratingControl}
+                  ratings={ratings()}
+                />
               </div>
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>

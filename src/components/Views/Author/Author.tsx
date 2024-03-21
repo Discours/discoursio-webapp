@@ -23,10 +23,10 @@ import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { Loading } from '../../_shared/Loading'
 
+import { MODALS, hideModal } from '../../../stores/ui'
 import { byCreated } from '../../../utils/sortby'
 import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
-import { hideModal, MODALS } from "../../../stores/ui";
 
 type Props = {
   shouts: Shout[]

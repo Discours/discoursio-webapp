@@ -196,7 +196,13 @@ export const HeaderAuth = (props: Props) => {
                 })}
               </div>
 
-              <div class={clsx(styles.userControlItem, styles.settingsControlContainer, styles.userControlItemVerbose)}>
+              <div
+                class={clsx(
+                  styles.userControlItem,
+                  styles.settingsControlContainer,
+                  styles.userControlItemVerbose,
+                )}
+              >
                 <Popover content={t('Settings')}>
                   {(ref) => (
                     <Button
@@ -255,7 +261,7 @@ export const HeaderAuth = (props: Props) => {
               trigger={
                 <div class={clsx(styles.userControlItem, styles.userControlItemUserpic)}>
                   <button class={styles.button}>
-                    <div classList={{entered: page().path === `/${author()?.slug}`}}>
+                    <div classList={{ entered: page().path === `/${author()?.slug}` }}>
                       <Userpic
                         size={'L'}
                         name={author()?.name}

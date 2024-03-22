@@ -15,7 +15,7 @@ export const getImageUrl = (
   src: string,
   options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
 ) => {
-    if (!src.includes('discours.io') || src.includes('http')) {
+    if (!src.includes('discours.io') && src.includes('http')) {
         return src
     }
     const filename = src.toLowerCase().split('/').pop()

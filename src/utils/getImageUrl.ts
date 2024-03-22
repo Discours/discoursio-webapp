@@ -15,7 +15,9 @@ export const getImageUrl = (
   src: string,
   options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
 ) => {
-  if (src.includes('discours.io')) {
+    if (!src.includes('discours.io') || src.includes('http')) {
+        return src
+    }
     const filename = src.toLowerCase().split('/').pop()
     const ext = filename.split('.').pop()
     const isAudio = ext in ['wav', 'mp3', 'ogg', 'aif', 'flac']
@@ -24,9 +26,6 @@ export const getImageUrl = (
     const subfolder = isAudio ? 'audio' : 'image'
 
     return `${base}${suffix}production/${subfolder}/${filename}`
-  }
-
-  return src
 }
 
 export const getOpenGraphImageUrl = (

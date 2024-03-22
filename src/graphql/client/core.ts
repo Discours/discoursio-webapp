@@ -16,6 +16,7 @@ import type {
   Topic,
 } from '../schema/core.gen'
 
+import { coreApiUrl } from '../../utils/config'
 import { createGraphQLClient } from '../createGraphQLClient'
 import createArticle from '../mutation/core/article-create'
 import deleteShout from '../mutation/core/article-delete'
@@ -47,13 +48,13 @@ import topicBySlug from '../query/core/topic-by-slug'
 import topicsAll from '../query/core/topics-all'
 import topicsRandomQuery from '../query/core/topics-random'
 
-const publicGraphQLClient = createGraphQLClient('core')
+const publicGraphQLClient = createGraphQLClient(coreApiUrl)
 
 export const apiClient = {
   private: null,
   connect: (token: string) => {
     // NOTE: use it after token appears
-    apiClient.private = createGraphQLClient('core', token)
+    apiClient.private = createGraphQLClient(coreApiUrl, token)
   },
 
   getRandomTopShouts: async (params: QueryLoad_Shouts_Random_TopArgs) => {

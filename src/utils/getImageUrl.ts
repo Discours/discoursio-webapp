@@ -15,17 +15,17 @@ export const getImageUrl = (
   src: string,
   options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
 ) => {
-    if (!src.includes('discours.io') && src.includes('http')) {
-        return src
-    }
-    const filename = src.toLowerCase().split('/').pop()
-    const ext = filename.split('.').pop()
-    const isAudio = ext in ['wav', 'mp3', 'ogg', 'aif', 'flac']
-    const base = isAudio ? cdnUrl : `${thumborUrl}/unsafe/`
-    const suffix = isAudio || options.noSizeUrlPart ? '' : getSizeUrlPart(options)
-    const subfolder = isAudio ? 'audio' : 'image'
+  if (!src.includes('discours.io') && src.includes('http')) {
+    return src
+  }
+  const filename = src.toLowerCase().split('/').pop()
+  const ext = filename.split('.').pop()
+  const isAudio = ext in ['wav', 'mp3', 'ogg', 'aif', 'flac']
+  const base = isAudio ? cdnUrl : `${thumborUrl}/unsafe/`
+  const suffix = isAudio || options.noSizeUrlPart ? '' : getSizeUrlPart(options)
+  const subfolder = isAudio ? 'audio' : 'image'
 
-    return `${base}${suffix}production/${subfolder}/${filename}`
+  return `${base}${suffix}production/${subfolder}/${filename}`
 }
 
 export const getOpenGraphImageUrl = (

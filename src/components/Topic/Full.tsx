@@ -40,7 +40,7 @@ export const FullTopic = (props: Props) => {
   return (
     <div class={clsx(styles.topicHeader, 'col-md-16 col-lg-12 offset-md-4 offset-lg-6')}>
       <h1>#{props.topic?.title}</h1>
-      <p innerHTML={props.topic?.body}/>
+      <p innerHTML={props.topic?.body} />
       <div class={clsx(styles.topicActions)}>
         <Button
           variant="primary"

@@ -197,15 +197,8 @@
     padding: divide($container-padding-x, 2) !important;
   }
 
-  @include media-breakpoint-up(md) {
-    span,
-    button {
-      padding: 0 0.4rem;
-    }
-  }
-
   :global(.view-switcher) {
-    margin: 0 -0.5rem;
+    margin: 0;
     overflow: hidden;
     padding: 0;
   }
@@ -502,6 +495,7 @@
   }
 
   .settingsControlContainer {
+    margin-left: 1rem !important;
     margin-right: 2rem !important;
   }
 
@@ -524,12 +518,12 @@
   align-items: center;
   border-radius: 100%;
   display: flex;
-  height: 2.4em;
+  height: 3.4rem;
   justify-content: center;
   margin: 0 0.7rem;
   position: relative;
   transition: margin-left 0.3s;
-  width: 2.4em;
+  width: 3.4rem;
 
   @include media-breakpoint-down(sm) {
     margin-left: 0.4rem !important;
@@ -580,6 +574,10 @@
   }
 }
 
+.userControlItemSearch {
+  margin: 0 1rem 0 2.2rem;
+}
+
 .userControlItemUserpic {
   height: 4rem;
   width: 4rem;
@@ -607,6 +605,7 @@
 
     @include media-breakpoint-up(xl) {
       background: none;
+      margin-left: 0.8rem !important;
     }
 
     .icon {
@@ -628,8 +627,8 @@
   }
 
   @include media-breakpoint-up(xl) {
-    margin-left: 1rem !important;
-    margin-right: 0.5rem;
+    margin-left: 3rem !important;
+    margin-right: 0;
     width: auto;
 
     &:last-child {
@@ -657,7 +656,7 @@
     border-radius: 2rem;
     box-shadow: inset 0 0 0 2px #000;
     display: flex;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
 
     &:hover {
       background-color: var(--link-hover-background);
@@ -784,7 +783,7 @@
 
 .editorModePopupOpener {
   display: inline-block;
-  margin-right: 4rem;
+  margin-right: 2rem;
   position: relative;
   text-align: right;
   width: 9em;

@@ -87,6 +87,7 @@
   "Comment successfully deleted": "Комментарий успешно удален",
   "Comment": "Комментировать",
   "Commentator": "Комментатор",
+  "Commenting": "Комментирование",
   "Comments": "Комментарии",
   "CommentsWithCount": "{count, plural, =0 {{count} комментариев} one {{count} комментарий} few {{count} комментария} other {{count} комментариев}}",
   "Communities": "Сообщества",

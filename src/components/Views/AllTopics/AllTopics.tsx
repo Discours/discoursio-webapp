@@ -84,7 +84,7 @@ export const AllTopics = (props: Props) => {
 
   const AllTopicsHead = () => (
     <div class="row">
-      <div class="col-lg-20 col-xl-18">
+      <div class="col-lg-18 col-xl-15">
         <h1>{t('Topics')}</h1>
         <p>{t('Subscribe what you like to tune your personal feed')}</p>
 
@@ -133,7 +133,7 @@ export const AllTopics = (props: Props) => {
 
             <Show when={filteredResults().length > 0}>
               <Show when={searchParams().by === 'title'}>
-                <div class="col-lg-20 col-xl-18">
+                <div class="col-lg-18 col-xl-15">
                   <ul class={clsx('nodash', styles.alphabet)}>
                     <For each={ALPHABET}>
                       {(letter, index) => (
@@ -184,7 +184,7 @@ export const AllTopics = (props: Props) => {
 
               <Show when={searchParams().by && searchParams().by !== 'title'}>
                 <div class="row">
-                  <div class="col-lg-20 col-xl-18 py-4">
+                  <div class="col-lg-18 col-xl-15 py-4">
                     <For each={filteredResults().slice(0, limit())}>
                       {(topic) => (
                         <>

@@ -57,18 +57,6 @@ export const TopicBadge = (props: Props) => {
     <div class={styles.TopicBadge}>
       <div class={styles.content}>
         <div class={styles.basicInfo}>
-          <a
-            href={`/topic/${props.topic.slug}`}
-            class={clsx(styles.picture, {
-              [styles.withImage]: props.topic.pic,
-              [styles.smallSize]: isMobileView(),
-            })}
-            style={
-              props.topic.pic && {
-                'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`,
-              }
-            }
-          />
           <a href={`/topic/${props.topic.slug}`} class={styles.info}>
             <span class={styles.title}>{title()}</span>
             <Show

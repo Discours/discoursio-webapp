@@ -24,8 +24,8 @@ type Props = {
   layout: LayoutType
 }
 
-export const PRERENDERED_ARTICLES_COUNT = 37
-const LOAD_MORE_PAGE_SIZE = 11
+export const PRERENDERED_ARTICLES_COUNT = 36
+const LOAD_MORE_PAGE_SIZE = 12
 
 export const Expo = (props: Props) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))
@@ -34,11 +34,10 @@ export const Expo = (props: Props) => {
   const [randomTopArticles, setRandomTopArticles] = createSignal<Shout[]>([])
   const [randomTopMonthArticles, setRandomTopMonthArticles] = createSignal<Shout[]>([])
 
+  console.log('%c!!! randomTopMonthArticles():', 'color: #bada55', randomTopMonthArticles())
+
   const { t } = useLocalize()
 
-  // const { sortedArticles } = useArticlesStore({
-  //   shouts: isLoaded() ? props.shouts : [],
-  // })
   const { sortedArticles } = useArticlesStore({
     shouts: props.shouts || [],
     layout: props.layout,
@@ -84,7 +83,7 @@ export const Expo = (props: Props) => {
       limit: 10,
       random_limit: 100,
     }
-
+    console.log('%c!!! options:', 'color: #bada55', options)
     const result = await apiClient.getRandomTopShouts({ options })
     setRandomTopArticles(result)
   }
@@ -202,7 +201,7 @@ export const Expo = (props: Props) => {
             </li>
           </ul>
           <div class="row">
-            <For each={sortedArticles().slice(0, PRERENDERED_ARTICLES_COUNT / 2)}>
+            <For each={sortedArticles().slice(0, LOAD_MORE_PAGE_SIZE / 2)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -217,7 +216,7 @@ export const Expo = (props: Props) => {
             <Show when={randomTopMonthArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
             </Show>
-            <For each={sortedArticles().slice(PRERENDERED_ARTICLES_COUNT / 2, PRERENDERED_ARTICLES_COUNT)}>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE / 2, LOAD_MORE_PAGE_SIZE)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -232,20 +231,16 @@ export const Expo = (props: Props) => {
             <Show when={randomTopArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
             </Show>
-            <For each={pages()}>
-              {(page) => (
-                <For each={page}>
-                  {(shout) => (
-                    <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
-                      <ArticleCard
-                        article={shout}
-                        settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
-                        desktopCoverSize="XS"
-                        withAspectRatio={true}
-                      />
-                    </div>
-                  )}
-                </For>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE, PRERENDERED_ARTICLES_COUNT)}>
+              {(shout) => (
+                <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
+                  <ArticleCard
+                    article={shout}
+                    settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
+                    withAspectRatio={true}
+                  />
+                </div>
               )}
             </For>
           </div>

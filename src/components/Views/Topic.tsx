@@ -172,7 +172,6 @@ export const TopicView = (props: Props) => {
       />
 
       <ArticleCardSwiper title={title()} slides={sortedArticles().slice(5, 11)} />
-
       <Beside
         beside={sortedArticles()[12]}
         title={t('Top viewed')}
@@ -184,7 +183,7 @@ export const TopicView = (props: Props) => {
       <Row1 article={sortedArticles()[15]} />
 
       <Show when={sortedArticles().length > 15}>
-        <ArticleCardSwiper slides={sortedArticles().slice(16, 22)} />
+        <ArticleCardSwiper title={t('Favorite')} slides={sortedArticles().slice(16, 22)} />
         <Row3 articles={sortedArticles().slice(23, 26)} />
         <Row2 articles={sortedArticles().slice(26, 28)} />
       </Show>

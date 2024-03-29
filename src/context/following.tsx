@@ -2,9 +2,15 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { AuthorFollows, FollowingEntity } from '../graphql/schema/core.gen'
+import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
+
+type AuthorFollows = {
+  topics: Topic[]
+  authors: Author[]
+  communities: Community[]
+}
 
 interface FollowingContextType {
   loading: Accessor<boolean>

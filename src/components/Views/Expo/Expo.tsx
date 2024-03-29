@@ -37,7 +37,7 @@ export const Expo = (props: Props) => {
   const { t } = useLocalize()
 
   const { sortedArticles } = useArticlesStore({
-    shouts: props.shouts || [],
+    shouts: isLoaded() ? props.shouts : [],
     layout: props.layout,
   })
 
@@ -228,7 +228,7 @@ export const Expo = (props: Props) => {
             <Show when={randomTopArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
             </Show>
-            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2, PRERENDERED_ARTICLES_COUNT)}>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard

@@ -136,9 +136,8 @@ export const Expo = (props: Props) => {
   })
 
   const handleLoadMoreClick = () => {
-    loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE);
-  };
-
+    loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
+  }
 
   return (
     <div class={styles.Expo}>

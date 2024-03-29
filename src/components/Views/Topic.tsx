@@ -1,8 +1,8 @@
-import { LoadShoutsOptions, Shout, Topic } from "../../graphql/schema/core.gen";
+import { LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, onMount, on } from "solid-js";
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
@@ -21,9 +21,9 @@ import { Row3 } from '../Feed/Row3'
 import { FullTopic } from '../Topic/Full'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
+import { apiClient } from '../../graphql/client/core'
 import styles from '../../styles/Topic.module.scss'
-import { apiClient } from "../../graphql/client/core";
-import { getUnixtime } from "../../utils/getServerDate";
+import { getUnixtime } from '../../utils/getServerDate'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
@@ -48,7 +48,6 @@ export const TopicView = (props: Props) => {
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
-
   console.log('%c!!! :', 'color: #bada55', sortedArticles())
 
   const [topic, setTopic] = createSignal<Topic>()
@@ -62,7 +61,7 @@ export const TopicView = (props: Props) => {
 
   const loadRandomTopArticles = async (topic: string) => {
     const options: LoadShoutsOptions = {
-      filters: { featured: true, topic: topic},
+      filters: { featured: true, topic: topic },
       limit: 10,
       random_limit: 100,
     }
@@ -83,7 +82,6 @@ export const TopicView = (props: Props) => {
     const result = await apiClient.getRandomTopShouts({ options })
     setReactedTopMonthArticles(result)
   }
-
 
   createEffect(
     on(

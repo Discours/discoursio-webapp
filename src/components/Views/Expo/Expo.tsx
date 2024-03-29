@@ -26,7 +26,6 @@ type Props = {
 
 export const PRERENDERED_ARTICLES_COUNT = 36
 const LOAD_MORE_PAGE_SIZE = 12
-const PARTIAL_PAGE_SIZE = 8
 
 export const Expo = (props: Props) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))
@@ -199,7 +198,7 @@ export const Expo = (props: Props) => {
             </li>
           </ul>
           <div class="row">
-            <For each={sortedArticles().slice(0, PARTIAL_PAGE_SIZE)}>
+            <For each={sortedArticles().slice(0, LOAD_MORE_PAGE_SIZE)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -214,7 +213,7 @@ export const Expo = (props: Props) => {
             <Show when={randomTopMonthArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
             </Show>
-            <For each={sortedArticles().slice(PARTIAL_PAGE_SIZE, PARTIAL_PAGE_SIZE * 2)}>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE, LOAD_MORE_PAGE_SIZE * 2)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -229,7 +228,7 @@ export const Expo = (props: Props) => {
             <Show when={randomTopArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
             </Show>
-            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE, PRERENDERED_ARTICLES_COUNT)}>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2, PRERENDERED_ARTICLES_COUNT)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard

@@ -2,14 +2,14 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { AuthorFollows, FollowingEntity } from '../graphql/schema/core.gen'
+import { AuthorFollowsResult, FollowingEntity } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
 interface FollowingContextType {
   loading: Accessor<boolean>
-  subscriptions: AuthorFollows
-  setSubscriptions: (subscriptions: AuthorFollows) => void
+  subscriptions: AuthorFollowsResult
+  setSubscriptions: (subscriptions: AuthorFollowsResult) => void
   setFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
   loadSubscriptions: () => void
   follow: (what: FollowingEntity, slug: string) => Promise<void>
@@ -23,7 +23,7 @@ export function useFollowing() {
   return useContext(FollowingContext)
 }
 
-const EMPTY_SUBSCRIPTIONS: AuthorFollows = {
+const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
   topics: [],
   authors: [],
   communities: [],
@@ -31,7 +31,7 @@ const EMPTY_SUBSCRIPTIONS: AuthorFollows = {
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [subscriptions, setSubscriptions] = createStore<AuthorFollows>(EMPTY_SUBSCRIPTIONS)
+  const [subscriptions, setSubscriptions] = createStore<AuthorFollowsResult>(EMPTY_SUBSCRIPTIONS)
   const { author, session } = useSession()
 
   const fetchData = async () => {

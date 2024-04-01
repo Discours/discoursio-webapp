@@ -297,9 +297,6 @@
 .burgerContainer {
   box-sizing: content-box;
   display: inline-flex;
-  padding-left: 0;
-
-  // float: right;
 
   @include media-breakpoint-up(sm) {
     padding-left: divide($container-padding-x, 2);
@@ -595,6 +592,7 @@
   display: flex;
   height: 4rem;
   margin-left: 1rem !important;
+  width: 4rem;
 
   &:first-child {
     margin-left: 0 !important;

@@ -33,6 +33,7 @@ export const ProfileSettings = () => {
   const { t } = useLocalize()
   const [prevForm, setPrevForm] = createStore({})
   const [isFormInitialized, setIsFormInitialized] = createSignal(false)
+  const [isSaving, setIsSaving] = createSignal(false)
   const [social, setSocial] = createSignal([])
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
@@ -70,16 +71,20 @@ export const ProfileSettings = () => {
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
+    setIsSaving(true)
     if (nameInputRef.current.value.length === 0) {
       setNameError(t('Required'))
       nameInputRef.current.focus()
+      setIsSaving(false)
       return
     }
     if (slugInputRef.current.value.length === 0) {
       setSlugError(t('Required'))
       slugInputRef.current.focus()
+      setIsSaving(false)
       return
     }
+
     try {
       await submit(form)
       setPrevForm(clone(form))
@@ -91,6 +96,8 @@ export const ProfileSettings = () => {
         return
       }
       showSnackbar({ type: 'error', body: t('Error') })
+    } finally {
+      setIsSaving(false)
     }
 
     await loadAuthor() // renews author's profile
@@ -359,7 +366,12 @@ export const ProfileSettings = () => {
                           }
                           onClick={handleCancel}
                         />
-                        <Button onClick={handleSubmit} variant="primary" value={t('Save settings')} />
+                        <Button
+                          onClick={handleSubmit}
+                          variant="primary"
+                          disabled={isSaving()}
+                          value={isSaving() ? t('Saving...') : t('Save settings')}
+                        />
                       </div>
                     </div>
                   </div>

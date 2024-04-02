@@ -48,8 +48,6 @@ export const TopicView = (props: Props) => {
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
-  console.log('%c!!! :', 'color: #bada55', sortedArticles())
-
   const [topic, setTopic] = createSignal<Topic>()
 
   createEffect(() => {
@@ -84,9 +82,7 @@ export const TopicView = (props: Props) => {
     setReactedTopMonthArticles(result)
   }
 
-
   const loadRandom = () => {
-    console.log("!!! loadRandom:");
     loadFavoriteTopArticles(topic()?.slug)
     loadReactedTopMonthArticles(topic()?.slug)
   }

@@ -9,10 +9,10 @@ import {
   createEffect,
   createSignal,
   lazy,
+  on,
   onCleanup,
   onMount,
-  on
-} from "solid-js";
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { useConfirm } from '../../context/confirm'
@@ -173,7 +173,7 @@ export const ProfileSettings = () => {
       () => {
         setIsFloatingPanelVisible(!deepEqual(form, prevForm))
       },
-      { defer: true }
+      { defer: true },
     ),
   )
   const handleDeleteSocialLink = (link) => {

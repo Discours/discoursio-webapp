@@ -6,7 +6,7 @@ import type {
 } from '../../graphql/schema/core.gen'
 
 import { createLazyMemo } from '@solid-primitives/memo'
-import { createSignal } from 'solid-js'
+import { createEffect, createSignal } from "solid-js";
 
 import { apiClient } from '../../graphql/client/core'
 import { byStat } from '../../utils/sortby'
@@ -110,8 +110,12 @@ export const addArticles = (...args: Shout[][]) => {
   addAuthorsByTopic(authorsByTopic)
 }
 
+createEffect(() => {
+  console.log('%c!!! sortedArticles QWE:', 'color: #bada55', sortedArticles().length)
+})
 const addSortedArticles = (articles: Shout[]) => {
-  setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...(articles || [])])
+  console.log("!!! articles:", articles);
+  setSortedArticles((prevSortedArticles) => [...prevSortedArticles, ...articles])
 }
 
 export const loadShout = async (slug: string): Promise<void> => {
@@ -132,6 +136,7 @@ export const loadShouts = async (
   options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
   const newShouts = await apiClient.getShouts(options)
+  console.log("!!! AAAA options.limit:", options.limit)
   const hasMore = newShouts?.length !== options.limit + 1 && newShouts?.length !== 0
 
   if (hasMore) {
@@ -147,6 +152,7 @@ export const loadShouts = async (
 export const loadMyFeed = async (
   options: LoadShoutsOptions,
 ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
+
   options.limit += 1
   const newShouts = await apiClient.getMyFeed(options)
   const hasMore = newShouts?.length === options.limit + 1

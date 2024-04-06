@@ -37,7 +37,7 @@ export const Expo = (props: Props) => {
   const { t } = useLocalize()
 
   const { sortedArticles } = useArticlesStore({
-    shouts: isLoaded() ? props.shouts : [],
+    shouts: [],
     layout: props.layout,
   })
 
@@ -64,8 +64,9 @@ export const Expo = (props: Props) => {
     options.filters = props.layout
       ? { layouts: [props.layout] }
       : { layouts: ['audio', 'video', 'image', 'literature'] }
-
+    console.log('%c!!! EEEEE:', 'color: #bada55', )
     const { hasMore } = await loadShouts(options)
+    console.log("!!! hasMore:", hasMore);
     setIsLoadMoreButtonVisible(hasMore)
   }
 
@@ -100,19 +101,12 @@ export const Expo = (props: Props) => {
   }
 
   onMount(() => {
-    if (isLoaded()) {
-      return
-    }
+    // if (isLoaded()) {
+    //   return
+    // }
 
     loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
-    setIsLoaded(true)
-  })
-
-  onMount(() => {
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore(LOAD_MORE_PAGE_SIZE)
-    }
-
+    // setIsLoaded(true)
     loadRandomTopArticles()
     loadRandomTopMonthArticles()
   })
@@ -121,6 +115,7 @@ export const Expo = (props: Props) => {
     on(
       () => props.layout,
       () => {
+        console.log('%c!!! CLEAR:', 'color: #bada55', )
         resetSortedArticles()
         setFavoriteTopArticles([])
         setReactedTopMonthArticles([])
@@ -128,6 +123,7 @@ export const Expo = (props: Props) => {
         loadRandomTopArticles()
         loadRandomTopMonthArticles()
       },
+  { defer: true },
     ),
   )
 
@@ -224,7 +220,19 @@ export const Expo = (props: Props) => {
             <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
             </Show>
-            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2)}>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2, PRERENDERED_ARTICLES_COUNT)}>
+              {(shout) => (
+                <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
+                  <ArticleCard
+                    article={shout}
+                    settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
+                    withAspectRatio={true}
+                  />
+                </div>
+              )}
+            </For>
+            <For each={sortedArticles().slice(sortedArticles().length, (sortedArticles().length + LOAD_MORE_PAGE_SIZE))}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard

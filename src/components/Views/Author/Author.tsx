@@ -7,6 +7,7 @@ import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMou
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
@@ -30,32 +31,47 @@ import styles from './Author.module.scss'
 
 type Props = {
   authorSlug: string
+  shouts?: Shout[]
+  author?: Author
 }
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { loadSubscriptions } = useFollowing()
-  const { sortedArticles } = useArticlesStore()
-  const { authorEntities } = useAuthorsStore()
+  const { subscriptions, followers: myFollowers, loadSubscriptions } = useFollowing()
+  const { session } = useSession()
+  const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
+  const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
-  const [followers, setFollowers] = createSignal<Author[]>([])
-  const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
+  const [author, setAuthor] = createSignal<Author>()
+  const [followers, setFollowers] = createSignal([])
+  const [following, setFollowing] = createSignal<Array<Author | Topic>>([]) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
   // current author
-  const [author, setAuthor] = createSignal<Author>()
   createEffect(() => {
-    try {
-      const a = authorEntities()[props.authorSlug]
-      setAuthor(a)
-    } catch (error) {
-      console.debug(error)
+    if (props.authorSlug) {
+      if (session()?.user?.app_data?.profile?.slug === props.authorSlug) {
+        console.info('my own profile')
+        const { profile, authors, topics } = session().user.app_data
+        setFollowers(myFollowers)
+        setAuthor(profile)
+        setFollowing([...authors, ...topics])
+      }
+    } else {
+      try {
+        const a = authorEntities()[props.authorSlug]
+        setAuthor(a)
+        // TODO: add following data retrieval
+        console.debug('[Author] expecting following data fetched')
+      } catch (error) {
+        console.debug(error)
+      }
     }
   })
 
@@ -166,31 +182,53 @@ export const AuthorView = (props: Props) => {
         <Show when={author()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard author={author()} followers={followers()} following={following()} />
+              <AuthorCard author={author()} followers={followers() || []} following={following() || []} />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
                 <ul class="view-switcher">
-                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'author' }}>
-                    <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
+                  <li
+                    classList={{
+                      'view-switcher__item--selected': getPage().route === 'author',
+                    }}
+                  >
+                    <a
+                      href={getPagePath(router, 'author', {
+                        slug: props.authorSlug,
+                      })}
+                    >
                       {t('Publications')}
                     </a>
                     <Show when={author().stat}>
                       <span class="view-switcher__counter">{author().stat.shouts}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
-                    <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
+                  <li
+                    classList={{
+                      'view-switcher__item--selected': getPage().route === 'authorComments',
+                    }}
+                  >
+                    <a
+                      href={getPagePath(router, 'authorComments', {
+                        slug: props.authorSlug,
+                      })}
+                    >
                       {t('Comments')}
                     </a>
                     <Show when={author().stat}>
                       <span class="view-switcher__counter">{author().stat.comments}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
+                  <li
+                    classList={{
+                      'view-switcher__item--selected': getPage().route === 'authorAbout',
+                    }}
+                  >
                     <a
                       onClick={() => checkBioHeight()}
-                      href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
+                      href={getPagePath(router, 'authorAbout', {
+                        slug: props.authorSlug,
+                      })}
                     >
                       {t('Profile')}
                     </a>

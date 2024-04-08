@@ -14,12 +14,9 @@ import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
-import { ProfilePopup } from './ProfilePopup'
-
-import { useSnackbar } from '../../context/snackbar'
 import { Popup } from '../_shared/Popup'
-import { VotersList } from '../_shared/VotersList'
 import styles from './Header/Header.module.scss'
+import { ProfilePopup } from './ProfilePopup'
 
 type Props = {
   setIsProfilePopupVisible: (value: boolean) => void

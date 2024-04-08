@@ -1,133 +1,119 @@
-import type { Author, Community } from "../../../graphql/schema/core.gen";
+import type { Author, Community } from '../../../graphql/schema/core.gen'
 
-import { openPage, redirectPage } from "@nanostores/router";
-import { clsx } from "clsx";
-import {
-  For,
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  onMount,
-} from "solid-js";
+import { openPage, redirectPage } from '@nanostores/router'
+import { clsx } from 'clsx'
+import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 
-import { useFollowing } from "../../../context/following";
-import { useLocalize } from "../../../context/localize";
-import { useSession } from "../../../context/session";
-import { FollowingEntity, Topic } from "../../../graphql/schema/core.gen";
-import { SubscriptionFilter } from "../../../pages/types";
-import { router, useRouter } from "../../../stores/router";
-import { isAuthor } from "../../../utils/isAuthor";
-import { translit } from "../../../utils/ru2en";
-import { isCyrillic } from "../../../utils/translate";
-import { SharePopup, getShareUrl } from "../../Article/SharePopup";
-import { Modal } from "../../Nav/Modal";
-import { TopicBadge } from "../../Topic/TopicBadge";
-import { Button } from "../../_shared/Button";
-import { ShowOnlyOnClient } from "../../_shared/ShowOnlyOnClient";
-import { AuthorBadge } from "../AuthorBadge";
-import { Userpic } from "../Userpic";
+import { useFollowing } from '../../../context/following'
+import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
+import { SubscriptionFilter } from '../../../pages/types'
+import { router, useRouter } from '../../../stores/router'
+import { isAuthor } from '../../../utils/isAuthor'
+import { translit } from '../../../utils/ru2en'
+import { isCyrillic } from '../../../utils/translate'
+import { SharePopup, getShareUrl } from '../../Article/SharePopup'
+import { Modal } from '../../Nav/Modal'
+import { TopicBadge } from '../../Topic/TopicBadge'
+import { Button } from '../../_shared/Button'
+import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
+import { AuthorBadge } from '../AuthorBadge'
+import { Userpic } from '../Userpic'
 
-import stylesButton from "../../_shared/Button/Button.module.scss";
-import styles from "./AuthorCard.module.scss";
+import stylesButton from '../../_shared/Button/Button.module.scss'
+import styles from './AuthorCard.module.scss'
 
 type Props = {
-  author: Author;
-  followers?: Author[];
-  following?: Array<Author | Topic>;
-};
+  author: Author
+  followers?: Author[]
+  following?: Array<Author | Topic>
+}
 export const AuthorCard = (props: Props) => {
-  const { t, lang } = useLocalize();
-  const { author, isSessionLoaded, requireAuthentication } = useSession();
-  const [authorSubs, setAuthorSubs] = createSignal<
-    Array<Author | Topic | Community>
-  >([]);
-  const [subscriptionFilter, setSubscriptionFilter] =
-    createSignal<SubscriptionFilter>("all");
-  const [isFollowed, setIsFollowed] = createSignal<boolean>();
-  const isProfileOwner = createMemo(() => author()?.slug === props.author.slug);
-  const { setFollowing, isOwnerSubscribed } = useFollowing();
+  const { t, lang } = useLocalize()
+  const { author, isSessionLoaded, requireAuthentication } = useSession()
+  const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
+  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
+  const [isFollowed, setIsFollowed] = createSignal<boolean>()
+  const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
+  const { setFollowing, isOwnerSubscribed } = useFollowing()
 
   onMount(() => {
-    setAuthorSubs(props.following);
-  });
+    setAuthorSubs(props.following)
+  })
 
   createEffect(() => {
-    setIsFollowed(isOwnerSubscribed(props.author?.id));
-  });
+    setIsFollowed(isOwnerSubscribed(props.author?.id))
+  })
 
   const name = createMemo(() => {
-    if (lang() !== "ru" && isCyrillic(props.author.name)) {
-      if (props.author.name === "Дискурс") {
-        return "Discours";
+    if (lang() !== 'ru' && isCyrillic(props.author.name)) {
+      if (props.author.name === 'Дискурс') {
+        return 'Discours'
       }
-      return translit(props.author.name);
+      return translit(props.author.name)
     }
-    return props.author.name;
-  });
+    return props.author.name
+  })
 
   // TODO: reimplement AuthorCard
-  const { changeSearchParams } = useRouter();
+  const { changeSearchParams } = useRouter()
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      openPage(router, "inbox");
+      openPage(router, 'inbox')
       changeSearchParams({
         initChat: props.author.id.toString(),
-      });
-    }, "discussions");
-  };
+      })
+    }, 'discussions')
+  }
 
   createEffect(() => {
     if (props.following) {
-      if (subscriptionFilter() === "authors") {
-        setAuthorSubs(props.following.filter((s) => "name" in s));
-      } else if (subscriptionFilter() === "topics") {
-        setAuthorSubs(props.following.filter((s) => "title" in s));
-      } else if (subscriptionFilter() === "communities") {
-        setAuthorSubs(props.following.filter((s) => "title" in s));
+      if (subscriptionFilter() === 'authors') {
+        setAuthorSubs(props.following.filter((s) => 'name' in s))
+      } else if (subscriptionFilter() === 'topics') {
+        setAuthorSubs(props.following.filter((s) => 'title' in s))
+      } else if (subscriptionFilter() === 'communities') {
+        setAuthorSubs(props.following.filter((s) => 'title' in s))
       } else {
-        setAuthorSubs(props.following);
+        setAuthorSubs(props.following)
       }
     }
-  });
+  })
 
   const handleFollowClick = () => {
-    const value = !isFollowed();
+    const value = !isFollowed()
     requireAuthentication(() => {
-      setIsFollowed(value);
-      setFollowing(FollowingEntity.Author, props.author.slug, value);
-    }, "subscribe");
-  };
+      setIsFollowed(value)
+      setFollowing(FollowingEntity.Author, props.author.slug, value)
+    }, 'subscribe')
+  }
 
   const followButtonText = createMemo(() => {
     if (isOwnerSubscribed(props.author?.id)) {
       return (
         <>
-          <span class={stylesButton.buttonSubscribeLabel}>
-            {t("Following")}
-          </span>
-          <span class={stylesButton.buttonSubscribeLabelHovered}>
-            {t("Unfollow")}
-          </span>
+          <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
+          <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
         </>
-      );
+      )
     }
-    return t("Follow");
-  });
+    return t('Follow')
+  })
 
   return (
-    <div class={clsx(styles.author, "row")}>
+    <div class={clsx(styles.author, 'row')}>
       <div class="col-md-5">
         <Userpic
-          size={"XL"}
+          size={'XL'}
           name={props.author.name}
           userpic={props.author.pic}
           slug={props.author.slug}
           class={styles.circlewrap}
         />
       </div>
-      <div class={clsx("col-md-15 col-xl-13", styles.authorDetails)}>
+      <div class={clsx('col-md-15 col-xl-13', styles.authorDetails)}>
         <div class={styles.authorDetailsWrapper}>
           <div class={styles.authorName}>{name()}</div>
           <Show when={props.author.bio}>
@@ -144,16 +130,11 @@ export const AuthorCard = (props: Props) => {
                 <a href="?m=followers" class={styles.subscribers}>
                   <For each={props.followers.slice(0, 3)}>
                     {(f) => (
-                      <Userpic
-                        size={"XS"}
-                        name={f.name}
-                        userpic={f.pic}
-                        class={styles.subscribersItem}
-                      />
+                      <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
                     )}
                   </For>
                   <div class={styles.subscribersCounter}>
-                    {t("SubscriberWithCount", {
+                    {t('SubscriberWithCount', {
                       count: props.followers.length ?? 0,
                     })}
                   </div>
@@ -164,33 +145,33 @@ export const AuthorCard = (props: Props) => {
                 <a href="?m=following" class={styles.subscribers}>
                   <For each={props.following.slice(0, 3)}>
                     {(f) => {
-                      if ("name" in f) {
+                      if ('name' in f) {
                         return (
                           <Userpic
-                            size={"XS"}
+                            size={'XS'}
                             name={f.name}
                             userpic={f.pic}
                             class={styles.subscribersItem}
                           />
-                        );
+                        )
                       }
 
-                      if ("title" in f) {
+                      if ('title' in f) {
                         return (
                           <Userpic
-                            size={"XS"}
+                            size={'XS'}
                             name={f.title}
                             userpic={f.pic}
                             class={styles.subscribersItem}
                           />
-                        );
+                        )
                       }
 
-                      return null;
+                      return null
                     }}
                   </For>
                   <div class={styles.subscribersCounter}>
-                    {t("SubscriptionWithCount", {
+                    {t('SubscriptionWithCount', {
                       count: props?.following.length ?? 0,
                     })}
                   </div>
@@ -207,12 +188,12 @@ export const AuthorCard = (props: Props) => {
                   {(link) => (
                     <a
                       class={styles.socialLink}
-                      href={link.startsWith("http") ? link : `https://${link}`}
+                      href={link.startsWith('http') ? link : `https://${link}`}
                       target="_blank"
                       rel="nofollow noopener noreferrer"
                     >
                       <span class={styles.authorSubscribeSocialLabel}>
-                        {link.startsWith("http") ? link : `https://${link}`}
+                        {link.startsWith('http') ? link : `https://${link}`}
                       </span>
                     </a>
                   )}
@@ -234,8 +215,8 @@ export const AuthorCard = (props: Props) => {
                     />
                   </Show>
                   <Button
-                    variant={"secondary"}
-                    value={t("Message")}
+                    variant={'secondary'}
+                    value={t('Message')}
                     onClick={initChat}
                     class={styles.buttonWriteMessage}
                   />
@@ -245,15 +226,11 @@ export const AuthorCard = (props: Props) => {
               <div class={styles.authorActions}>
                 <Button
                   variant="secondary"
-                  onClick={() => redirectPage(router, "profileSettings")}
+                  onClick={() => redirectPage(router, 'profileSettings')}
                   value={
                     <>
-                      <span class={styles.authorActionsLabel}>
-                        {t("Edit profile")}
-                      </span>
-                      <span class={styles.authorActionsLabelMobile}>
-                        {t("Edit")}
-                      </span>
+                      <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>
+                      <span class={styles.authorActionsLabelMobile}>{t('Edit')}</span>
                     </>
                   }
                 />
@@ -264,21 +241,16 @@ export const AuthorCard = (props: Props) => {
                   shareUrl={getShareUrl({
                     pathname: `/author/${props.author.slug}`,
                   })}
-                  trigger={<Button variant="secondary" value={t("Share")} />}
+                  trigger={<Button variant="secondary" value={t('Share')} />}
                 />
               </div>
             </Show>
           </Show>
         </ShowOnlyOnClient>
         <Show when={props.followers}>
-          <Modal
-            variant="medium"
-            isResponsive={true}
-            name="followers"
-            maxHeight
-          >
+          <Modal variant="medium" isResponsive={true} name="followers" maxHeight>
             <>
-              <h2>{t("Followers")}</h2>
+              <h2>{t('Followers')}</h2>
               <div class={styles.listWrapper}>
                 <div class="row">
                   <div class="col-24">
@@ -300,61 +272,42 @@ export const AuthorCard = (props: Props) => {
           </Modal>
         </Show>
         <Show when={props.following}>
-          <Modal
-            variant="medium"
-            isResponsive={true}
-            name="following"
-            maxHeight
-          >
+          <Modal variant="medium" isResponsive={true} name="following" maxHeight>
             <>
-              <h2>{t("Subscriptions")}</h2>
+              <h2>{t('Subscriptions')}</h2>
               <ul class="view-switcher">
                 <li
                   class={clsx({
-                    "view-switcher__item--selected":
-                      subscriptionFilter() === "all",
+                    'view-switcher__item--selected': subscriptionFilter() === 'all',
                   })}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setSubscriptionFilter("all")}
-                  >
-                    {t("All")}
+                  <button type="button" onClick={() => setSubscriptionFilter('all')}>
+                    {t('All')}
+                  </button>
+                  <span class="view-switcher__counter">{props.following.length}</span>
+                </li>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': subscriptionFilter() === 'authors',
+                  })}
+                >
+                  <button type="button" onClick={() => setSubscriptionFilter('authors')}>
+                    {t('Authors')}
                   </button>
                   <span class="view-switcher__counter">
-                    {props.following.length}
+                    {props.following.filter((s) => 'name' in s).length}
                   </span>
                 </li>
                 <li
                   class={clsx({
-                    "view-switcher__item--selected":
-                      subscriptionFilter() === "authors",
+                    'view-switcher__item--selected': subscriptionFilter() === 'topics',
                   })}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setSubscriptionFilter("authors")}
-                  >
-                    {t("Authors")}
+                  <button type="button" onClick={() => setSubscriptionFilter('topics')}>
+                    {t('Topics')}
                   </button>
                   <span class="view-switcher__counter">
-                    {props.following.filter((s) => "name" in s).length}
-                  </span>
-                </li>
-                <li
-                  class={clsx({
-                    "view-switcher__item--selected":
-                      subscriptionFilter() === "topics",
-                  })}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSubscriptionFilter("topics")}
-                  >
-                    {t("Topics")}
-                  </button>
-                  <span class="view-switcher__counter">
-                    {props.following.filter((s) => "title" in s).length}
+                    {props.following.filter((s) => 'title' in s).length}
                   </span>
                 </li>
               </ul>
@@ -391,5 +344,5 @@ export const AuthorCard = (props: Props) => {
         </Show>
       </div>
     </div>
-  );
-};
+  )
+}

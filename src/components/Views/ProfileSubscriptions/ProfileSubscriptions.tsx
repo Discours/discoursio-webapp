@@ -1,60 +1,59 @@
-import { clsx } from "clsx";
-import { For, Show, createEffect, createSignal, onMount } from "solid-js";
+import { clsx } from 'clsx'
+import { For, Show, createEffect, createSignal, onMount } from 'solid-js'
 
-import { useFollowing } from "../../../context/following";
-import { useLocalize } from "../../../context/localize";
-import { useSession } from "../../../context/session";
-import { apiClient } from "../../../graphql/client/core";
-import { Author, Topic } from "../../../graphql/schema/core.gen";
-import { SubscriptionFilter } from "../../../pages/types";
-import { dummyFilter } from "../../../utils/dummyFilter";
+import { useFollowing } from '../../../context/following'
+import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
+import { apiClient } from '../../../graphql/client/core'
+import { Author, Topic } from '../../../graphql/schema/core.gen'
+import { SubscriptionFilter } from '../../../pages/types'
+import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
-import { isAuthor } from "../../../utils/isAuthor";
-import { AuthorBadge } from "../../Author/AuthorBadge";
-import { ProfileSettingsNavigation } from "../../Nav/ProfileSettingsNavigation";
-import { TopicBadge } from "../../Topic/TopicBadge";
-import { Loading } from "../../_shared/Loading";
-import { SearchField } from "../../_shared/SearchField";
+import { isAuthor } from '../../../utils/isAuthor'
+import { AuthorBadge } from '../../Author/AuthorBadge'
+import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
+import { TopicBadge } from '../../Topic/TopicBadge'
+import { Loading } from '../../_shared/Loading'
+import { SearchField } from '../../_shared/SearchField'
 
-import styles from "../../../pages/profile/Settings.module.scss";
-import stylesSettings from "../../../styles/FeedSettings.module.scss";
+import styles from '../../../pages/profile/Settings.module.scss'
+import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
-  const { t, lang } = useLocalize();
-  const { author, session } = useSession();
-  const { subscriptions } = useFollowing();
-  const [following, setFollowing] = createSignal<Array<Author | Topic>>([]);
-  const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([]);
-  const [subscriptionFilter, setSubscriptionFilter] =
-    createSignal<SubscriptionFilter>("all");
-  const [searchQuery, setSearchQuery] = createSignal("");
+  const { t, lang } = useLocalize()
+  const { author, session } = useSession()
+  const { subscriptions } = useFollowing()
+  const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
+  const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
+  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
+  const [searchQuery, setSearchQuery] = createSignal('')
 
   createEffect(() => {
-    const { authors, topics } = subscriptions;
+    const { authors, topics } = subscriptions
     if (authors || topics) {
-      const fdata = [...(authors || []), ...(topics || [])];
-      setFollowing(fdata);
-      if (subscriptionFilter() === "authors") {
-        setFiltered(fdata.filter((s) => "name" in s));
-      } else if (subscriptionFilter() === "topics") {
-        setFiltered(fdata.filter((s) => "title" in s));
+      const fdata = [...(authors || []), ...(topics || [])]
+      setFollowing(fdata)
+      if (subscriptionFilter() === 'authors') {
+        setFiltered(fdata.filter((s) => 'name' in s))
+      } else if (subscriptionFilter() === 'topics') {
+        setFiltered(fdata.filter((s) => 'title' in s))
       } else {
-        setFiltered(fdata);
+        setFiltered(fdata)
       }
     }
-  });
+  })
 
   createEffect(() => {
     if (searchQuery()) {
-      setFiltered(dummyFilter(following(), searchQuery(), lang()));
+      setFiltered(dummyFilter(following(), searchQuery(), lang()))
     }
-  });
+  })
 
   return (
     <div class="wide-container">
       <div class="row">
         <div class="col-md-5">
-          <div class={clsx("left-navigation", styles.leftNavigation)}>
+          <div class={clsx('left-navigation', styles.leftNavigation)}>
             <ProfileSettingsNavigation />
           </div>
         </div>
@@ -62,54 +61,40 @@ export const ProfileSubscriptions = () => {
         <div class="col-md-19">
           <div class="row">
             <div class="col-md-20 col-lg-18 col-xl-16">
-              <h1>{t("My subscriptions")}</h1>
-              <p class="description">
-                {t("Here you can manage all your Discours subscriptions")}
-              </p>
+              <h1>{t('My subscriptions')}</h1>
+              <p class="description">{t('Here you can manage all your Discours subscriptions')}</p>
               <Show when={following()} fallback={<Loading />}>
                 <ul class="view-switcher">
                   <li
                     class={clsx({
-                      "view-switcher__item--selected":
-                        subscriptionFilter() === "all",
+                      'view-switcher__item--selected': subscriptionFilter() === 'all',
                     })}
                   >
-                    <button
-                      type="button"
-                      onClick={() => setSubscriptionFilter("all")}
-                    >
-                      {t("All")}
+                    <button type="button" onClick={() => setSubscriptionFilter('all')}>
+                      {t('All')}
                     </button>
                   </li>
                   <li
                     class={clsx({
-                      "view-switcher__item--selected":
-                        subscriptionFilter() === "authors",
+                      'view-switcher__item--selected': subscriptionFilter() === 'authors',
                     })}
                   >
-                    <button
-                      type="button"
-                      onClick={() => setSubscriptionFilter("authors")}
-                    >
-                      {t("Authors")}
+                    <button type="button" onClick={() => setSubscriptionFilter('authors')}>
+                      {t('Authors')}
                     </button>
                   </li>
                   <li
                     class={clsx({
-                      "view-switcher__item--selected":
-                        subscriptionFilter() === "topics",
+                      'view-switcher__item--selected': subscriptionFilter() === 'topics',
                     })}
                   >
-                    <button
-                      type="button"
-                      onClick={() => setSubscriptionFilter("topics")}
-                    >
-                      {t("Topics")}
+                    <button type="button" onClick={() => setSubscriptionFilter('topics')}>
+                      {t('Topics')}
                     </button>
                   </li>
                 </ul>
 
-                <div class={clsx("pretty-form__item", styles.searchContainer)}>
+                <div class={clsx('pretty-form__item', styles.searchContainer)}>
                   <SearchField
                     onChange={(value) => setSearchQuery(value)}
                     class={styles.searchField}
@@ -117,22 +102,14 @@ export const ProfileSubscriptions = () => {
                   />
                 </div>
 
-                <div
-                  class={clsx(stylesSettings.settingsList, styles.topicsList)}
-                >
+                <div class={clsx(stylesSettings.settingsList, styles.topicsList)}>
                   <For each={filtered()}>
                     {(followingItem) => (
                       <div>
                         {isAuthor(followingItem) ? (
-                          <AuthorBadge
-                            minimizeSubscribeButton={true}
-                            author={followingItem}
-                          />
+                          <AuthorBadge minimizeSubscribeButton={true} author={followingItem} />
                         ) : (
-                          <TopicBadge
-                            minimizeSubscribeButton={true}
-                            topic={followingItem}
-                          />
+                          <TopicBadge minimizeSubscribeButton={true} topic={followingItem} />
                         )}
                       </div>
                     )}
@@ -144,5 +121,5 @@ export const ProfileSubscriptions = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

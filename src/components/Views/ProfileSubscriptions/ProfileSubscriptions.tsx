@@ -31,21 +31,21 @@ export const ProfileSubscriptions = () => {
   createEffect(() => {
     if (subscriptions()) {
       const { authors, topics } = subscriptions()
-      setFollowing([...authors, ...topics])
-      setFiltered([...authors, ...topics])
+      const fdata = [...authors, ...topics]
+      if (fdata) {
+        setFollowing(fdata)
+        if (subscriptionFilter() === 'authors') {
+          setFiltered(fdata.filter((s) => 'name' in s))
+        } else if (subscriptionFilter() === 'topics') {
+          setFiltered(fdata.filter((s) => 'title' in s))
+        } else {
+          setFiltered(fdata)
+        }
+      }
     }
   })
 
   createEffect(() => {
-    if (following()) {
-      if (subscriptionFilter() === 'authors') {
-        setFiltered(following().filter((s) => 'name' in s))
-      } else if (subscriptionFilter() === 'topics') {
-        setFiltered(following().filter((s) => 'title' in s))
-      } else {
-        setFiltered(following())
-      }
-    }
     if (searchQuery()) {
       setFiltered(dummyFilter(following(), searchQuery(), lang()))
     }

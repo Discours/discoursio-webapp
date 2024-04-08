@@ -33,6 +33,7 @@ export const ImageSwiper = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
 
   const handleSlideChange = () => {
+    console.log('%c!!! activeIndex:', 'color: #bada55', mainSwipeRef.current.swiper.activeIndex)
     thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
     setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
   }
@@ -48,12 +49,25 @@ export const ImageSwiper = (props: Props) => {
     ),
   )
 
+  createEffect(
+    on(
+      () => mainSwipeRef?.current?.swiper?.realIndex,
+      () => {
+        console.log('%c!!! activeIndex:', 'color: #bada55', mainSwipeRef?.current?.swiper?.realIndex)
+      },
+
+    ),
+  )
+
   onMount(async () => {
     const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation])
-    mainSwipeRef.current?.swiper?.on('slideChange', handleSlideChange)
+    if (mainSwipeRef.current?.swiper) {
+      mainSwipeRef.current.swiper.on('slideChange',handleSlideChange)
+    }
   })
+
 
   onMount(() => {
     const updateDirection = () => {
@@ -94,25 +108,25 @@ export const ImageSwiper = (props: Props) => {
           <div class={clsx(styles.holder, styles.thumbsHolder)}>
             <div class={styles.thumbs}>
               <swiper-container
-                class={'thumbSwiper'}
+                class={"thumbSwiper"}
                 ref={(el) => (thumbSwipeRef.current = el)}
-                slides-per-view={'auto'}
+                slides-per-view={"auto"}
                 space-between={isMobileView() ? 20 : 10}
                 auto-scroll-offset={1}
                 watch-overflow={true}
                 watch-slides-visibility={true}
-                direction={'horizontal'}
+                direction={"horizontal"}
                 slides-per-group-auto={true}
               >
                 <For each={props.images}>
                   {(slide, index) => (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
+                    <swiper-slide virtual-index={index()} style={{ width: "auto", height: "auto" }}>
                       <div
                         class={clsx(styles.imageThumb)}
                         style={{
-                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`,
+                          "background-image": `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`,
                         }}
                       />
                     </swiper-slide>
@@ -141,7 +155,7 @@ export const ImageSwiper = (props: Props) => {
             <swiper-container
               ref={(el) => (mainSwipeRef.current = el)}
               slides-per-view={1}
-              thumbs-swiper={'.thumbSwiper'}
+              thumbs-swiper={".thumbSwiper"}
               observer={true}
               space-between={isMobileView() ? 20 : 10}
             >
@@ -195,5 +209,5 @@ export const ImageSwiper = (props: Props) => {
         <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
       </Show>
     </div>
-  )
+  );
 }

@@ -329,7 +329,7 @@ export const FullArticle = (props: Props) => {
     width: 1200,
   })
 
-  const description = getDescription(props.article.description || body() || props.article.title)
+  const description = getDescription(props.article.description || body() || media()[0]?.body )
   const ogTitle = props.article.title
   const keywords = getKeywords(props.article)
   const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })

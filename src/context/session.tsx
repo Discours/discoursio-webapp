@@ -199,6 +199,7 @@ export const SessionProvider = (props: {
   }
 
   onCleanup(() => clearTimeout(minuteLater))
+
   const authorData = async () => {
     const u = session()?.user
     return u ? (await apiClient.getAuthorId({ user: u.id.trim() })) || null : null
@@ -217,7 +218,15 @@ export const SessionProvider = (props: {
           apiClient.connect(token)
           inboxClient.connect(token)
         }
-        if (!author()) loadAuthor()
+
+        try {
+          const { profile } = session().user.app_data
+          setAuthor(profile)
+          addAuthors([profile])
+          if(!profile) loadAuthor()
+        } catch(e) {
+          console.error(e)
+        }
 
         setIsSessionLoaded(true)
       }
@@ -262,8 +271,7 @@ export const SessionProvider = (props: {
       () => props.onStateChangeCallback,
       () => {
         props.onStateChangeCallback(session())
-      },
-      { defer: true },
+      }
     ),
   )
 

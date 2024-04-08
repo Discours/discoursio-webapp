@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, onMount } from 'solid-js'
 
+import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
@@ -20,23 +21,20 @@ import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
-  const { author } = useSession()
-  const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
-  const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
-  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
+  const { author, session } = useSession()
+  const { subscriptions } = useFollowing()
+  const [following, setFollowing] = (createSignal < Array < Author) | (Topic >> [])
+  const [filtered, setFiltered] = (createSignal < Array < Author) | (Topic >> [])
+  const [subscriptionFilter, setSubscriptionFilter] = createSignal < SubscriptionFilter > 'all'
   const [searchQuery, setSearchQuery] = createSignal('')
 
-  const fetchSubscriptions = async () => {
-    try {
-      const slug = author()?.slug
-      const authorFollows = await apiClient.getAuthorFollows({ slug })
-      setFollowing([...authorFollows['authors']])
-      setFiltered([...authorFollows['authors'], ...authorFollows['topics']])
-    } catch (error) {
-      console.error('[fetchSubscriptions] :', error)
-      throw error
+  createEffect(() => {
+    if (subscriptions()) {
+      const { authors, topics } = subscriptions()
+      setFollowing([...authors, ...topics])
+      setFiltered([...authors, ...topics])
     }
-  }
+  })
 
   createEffect(() => {
     if (following()) {
@@ -51,10 +49,6 @@ export const ProfileSubscriptions = () => {
     if (searchQuery()) {
       setFiltered(dummyFilter(following(), searchQuery(), lang()))
     }
-  })
-
-  onMount(async () => {
-    await fetchSubscriptions()
   })
 
   return (

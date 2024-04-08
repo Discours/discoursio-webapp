@@ -38,26 +38,36 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { loadSubscriptions } = useFollowing()
+  const { subscriptions, followers } = useFollowing()
+  const { session } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
-  const [followers, setFollowers] = createSignal<Author[]>([])
+  const [author, setAuthor] = createSignal<Author>()
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
   // current author
-  const [author, setAuthor] = createSignal<Author>()
   createEffect(() => {
-    try {
-      const a = authorEntities()[props.authorSlug]
-      setAuthor(a)
-    } catch (error) {
-      console.debug(error)
+    if(props.authorSlug) {
+      if (session()?.user?.app_data?.profile?.slug === props.authorSlug) {
+        console.info('my own profile')
+        const {profile, authors, topics} = session().user.app_data
+        setAuthor(profile)
+        setFollowing([...authors, ...topics])
+      }
+    } else {
+      try {
+        const a = authorEntities()[props.authorSlug]
+        setAuthor(a)
+        console.debug('[Author] expecting following data fetched')
+      } catch (error) {
+        console.debug(error)
+      }
     }
   })
 

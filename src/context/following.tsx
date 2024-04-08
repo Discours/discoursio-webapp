@@ -2,12 +2,13 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { AuthorFollows, FollowingEntity } from '../graphql/schema/core.gen'
+import { AuthorFollows, FollowingEntity, Author } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
 interface FollowingContextType {
   loading: Accessor<boolean>
+  followers: Accessor<Array<Author>>
   subscriptions: AuthorFollows
   setSubscriptions: (subscriptions: AuthorFollows) => void
   setFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
@@ -31,6 +32,7 @@ const EMPTY_SUBSCRIPTIONS: AuthorFollows = {
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
+  const [followers, setFollowers] = createSignal<Array<Author>>([])
   const [subscriptions, setSubscriptions] = createStore<AuthorFollows>(EMPTY_SUBSCRIPTIONS)
   const { author, session } = useSession()
 
@@ -77,8 +79,14 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
 
   createEffect(() => {
     if (author()) {
-      console.debug('[context.following] author update detect')
-      fetchData()
+      try {
+        const { authors, followers, topics } = session().user.app_data
+        setSubscriptions({ authors, topics })
+        setFollowers(followers)
+        if(!authors) fetchData()
+      } catch(e) {
+        console.error(e)
+      }
     }
   })
 
@@ -116,6 +124,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     setSubscriptions,
     isOwnerSubscribed,
     setFollowing,
+    followers,
     loadSubscriptions: fetchData,
     follow,
     unfollow,

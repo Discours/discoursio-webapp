@@ -5,7 +5,7 @@ import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
-import { Author, Topic } from '../../../graphql/schema/core.gen'
+import { Author as AuthorType, Topic } from '../../../graphql/schema/core.gen'
 import { SubscriptionFilter } from '../../../pages/types'
 import { dummyFilter } from '../../../utils/dummyFilter'
 // TODO: refactor styles
@@ -23,8 +23,8 @@ export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
   const { author, session } = useSession()
   const { subscriptions } = useFollowing()
-  const [following, setFollowing] = (createSignal < Array < Author) | (Topic >> [])
-  const [filtered, setFiltered] = (createSignal < Array < Author) | (Topic >> [])
+  const [following, setFollowing] = (createSignal < Array < AuthorType) | (Topic >> [])
+  const [filtered, setFiltered] = (createSignal < Array < AuthorType) | (Topic >> [])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal < SubscriptionFilter > 'all'
   const [searchQuery, setSearchQuery] = createSignal('')
 

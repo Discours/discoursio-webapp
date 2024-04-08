@@ -223,8 +223,8 @@ export const SessionProvider = (props: {
           const { profile } = session().user.app_data
           setAuthor(profile)
           addAuthors([profile])
-          if(!profile) loadAuthor()
-        } catch(e) {
+          if (!profile) loadAuthor()
+        } catch (e) {
           console.error(e)
         }
 
@@ -271,7 +271,7 @@ export const SessionProvider = (props: {
       () => props.onStateChangeCallback,
       () => {
         props.onStateChangeCallback(session())
-      }
+      },
     ),
   )
 

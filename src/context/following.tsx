@@ -2,7 +2,7 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { AuthorFollows, FollowingEntity, Author } from '../graphql/schema/core.gen'
+import { Author, AuthorFollows, FollowingEntity } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
@@ -83,8 +83,8 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
         const { authors, followers, topics } = session().user.app_data
         setSubscriptions({ authors, topics })
         setFollowers(followers)
-        if(!authors) fetchData()
-      } catch(e) {
+        if (!authors) fetchData()
+      } catch (e) {
         console.error(e)
       }
     }

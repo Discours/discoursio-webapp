@@ -53,10 +53,10 @@ export const AuthorView = (props: Props) => {
 
   // current author
   createEffect(() => {
-    if(props.authorSlug) {
+    if (props.authorSlug) {
       if (session()?.user?.app_data?.profile?.slug === props.authorSlug) {
         console.info('my own profile')
-        const {profile, authors, topics} = session().user.app_data
+        const { profile, authors, topics } = session().user.app_data
         setAuthor(profile)
         setFollowing([...authors, ...topics])
       }

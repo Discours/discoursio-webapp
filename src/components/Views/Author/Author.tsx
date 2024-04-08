@@ -29,8 +29,6 @@ import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
 
 type Props = {
-  shouts: Shout[]
-  author: Author
   authorSlug: string
 }
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -38,7 +36,7 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { subscriptions, followers } = useFollowing()
+  const { subscriptions, followers, loadSubscriptions } = useFollowing()
   const { session } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { authorEntities } = useAuthorsStore({ authors: [props.author] })
@@ -210,10 +208,10 @@ export const AuthorView = (props: Props) => {
                 </ul>
               </div>
               <div class={clsx('col-md-8', styles.additionalControls)}>
-                <Show when={props.author?.stat?.rating || props.author?.stat?.rating === 0}>
+                <Show when={author()?.stat?.rating || author()?.stat?.rating === 0}>
                   <div class={styles.ratingContainer}>
                     {t('All posts rating')}
-                    <AuthorShoutsRating author={props.author} class={styles.ratingControl} />
+                    <AuthorShoutsRating author={author()} class={styles.ratingControl} />
                   </div>
                 </Show>
               </div>

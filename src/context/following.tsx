@@ -2,14 +2,14 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { Author, AuthorFollows, FollowingEntity } from '../graphql/schema/core.gen'
+import { Author, AuthorFollowsResult, FollowingEntity } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
 interface FollowingContextType {
   loading: Accessor<boolean>
   followers: Accessor<Array<Author>>
-  subscriptions: AuthorFollows
+  subscriptions: AuthorFollowsResult
   setSubscriptions: (subscriptions: AuthorFollows) => void
   setFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
   loadSubscriptions: () => void
@@ -24,7 +24,7 @@ export function useFollowing() {
   return useContext(FollowingContext)
 }
 
-const EMPTY_SUBSCRIPTIONS: AuthorFollows = {
+const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
   topics: [],
   authors: [],
   communities: [],

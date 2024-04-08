@@ -10,7 +10,7 @@ interface FollowingContextType {
   loading: Accessor<boolean>
   followers: Accessor<Array<Author>>
   subscriptions: AuthorFollowsResult
-  setSubscriptions: (subscriptions: AuthorFollows) => void
+  setSubscriptions: (subscriptions: AuthorFollowsResult) => void
   setFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
   loadSubscriptions: () => void
   follow: (what: FollowingEntity, slug: string) => Promise<void>
@@ -33,7 +33,7 @@ const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
   const [followers, setFollowers] = createSignal<Array<Author>>([])
-  const [subscriptions, setSubscriptions] = createStore<AuthorFollows>(EMPTY_SUBSCRIPTIONS)
+  const [subscriptions, setSubscriptions] = createStore<AuthorFollowsResult>(EMPTY_SUBSCRIPTIONS)
   const { author, session } = useSession()
 
   const fetchData = async () => {

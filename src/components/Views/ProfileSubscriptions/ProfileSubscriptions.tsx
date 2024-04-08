@@ -29,18 +29,16 @@ export const ProfileSubscriptions = () => {
   const [searchQuery, setSearchQuery] = createSignal('')
 
   createEffect(() => {
-    if (subscriptions()) {
-      const { authors, topics } = subscriptions()
-      const fdata = [...authors, ...topics]
-      if (fdata) {
-        setFollowing(fdata)
-        if (subscriptionFilter() === 'authors') {
-          setFiltered(fdata.filter((s) => 'name' in s))
-        } else if (subscriptionFilter() === 'topics') {
-          setFiltered(fdata.filter((s) => 'title' in s))
-        } else {
-          setFiltered(fdata)
-        }
+    const { authors, topics } = subscriptions
+    if (authors || topics) {
+      const fdata = [...(authors || []), ...(topics || [])]
+      setFollowing(fdata)
+      if (subscriptionFilter() === 'authors') {
+        setFiltered(fdata.filter((s) => 'name' in s))
+      } else if (subscriptionFilter() === 'topics') {
+        setFiltered(fdata.filter((s) => 'title' in s))
+      } else {
+        setFiltered(fdata)
       }
     }
   })

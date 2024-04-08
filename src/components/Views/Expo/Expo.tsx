@@ -64,9 +64,7 @@ export const Expo = (props: Props) => {
     options.filters = props.layout
       ? { layouts: [props.layout] }
       : { layouts: ['audio', 'video', 'image', 'literature'] }
-    console.log('%c!!! EEEEE:', 'color: #bada55', )
     const { hasMore } = await loadShouts(options)
-    console.log("!!! hasMore:", hasMore);
     setIsLoadMoreButtonVisible(hasMore)
   }
 
@@ -115,7 +113,6 @@ export const Expo = (props: Props) => {
     on(
       () => props.layout,
       () => {
-        console.log('%c!!! CLEAR:', 'color: #bada55', )
         resetSortedArticles()
         setFavoriteTopArticles([])
         setReactedTopMonthArticles([])
@@ -123,7 +120,7 @@ export const Expo = (props: Props) => {
         loadRandomTopArticles()
         loadRandomTopMonthArticles()
       },
-  { defer: true },
+      { defer: true },
     ),
   )
 
@@ -232,7 +229,12 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <For each={sortedArticles().slice(sortedArticles().length, (sortedArticles().length + LOAD_MORE_PAGE_SIZE))}>
+            <For
+              each={sortedArticles().slice(
+                sortedArticles().length - LOAD_MORE_PAGE_SIZE,
+                sortedArticles().length + LOAD_MORE_PAGE_SIZE,
+              )}
+            >
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard

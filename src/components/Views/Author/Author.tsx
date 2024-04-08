@@ -1,162 +1,197 @@
-import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
+import type {
+  Author,
+  Reaction,
+  Shout,
+  Topic,
+} from "../../../graphql/schema/core.gen";
 
-import { getPagePath } from '@nanostores/router'
-import { Meta, Title } from '@solidjs/meta'
-import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { getPagePath } from "@nanostores/router";
+import { Meta, Title } from "@solidjs/meta";
+import { clsx } from "clsx";
+import {
+  For,
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createMemo,
+  createSignal,
+  onMount,
+} from "solid-js";
 
-import { useFollowing } from '../../../context/following'
-import { useLocalize } from '../../../context/localize'
-import { apiClient } from '../../../graphql/client/core'
-import { router, useRouter } from '../../../stores/router'
-import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
-import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
-import { getImageUrl } from '../../../utils/getImageUrl'
-import { getDescription } from '../../../utils/meta'
-import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { splitToPages } from '../../../utils/splitToPages'
-import { Comment } from '../../Article/Comment'
-import { AuthorCard } from '../../Author/AuthorCard'
-import { AuthorShoutsRating } from '../../Author/AuthorShoutsRating'
-import { Row1 } from '../../Feed/Row1'
-import { Row2 } from '../../Feed/Row2'
-import { Row3 } from '../../Feed/Row3'
-import { Loading } from '../../_shared/Loading'
+import { useFollowing } from "../../../context/following";
+import { useLocalize } from "../../../context/localize";
+import { useSession } from "../../../context/session";
+import { apiClient } from "../../../graphql/client/core";
+import { router, useRouter } from "../../../stores/router";
+import { loadShouts, useArticlesStore } from "../../../stores/zine/articles";
+import { loadAuthor, useAuthorsStore } from "../../../stores/zine/authors";
+import { getImageUrl } from "../../../utils/getImageUrl";
+import { getDescription } from "../../../utils/meta";
+import {
+  restoreScrollPosition,
+  saveScrollPosition,
+} from "../../../utils/scroll";
+import { splitToPages } from "../../../utils/splitToPages";
+import { Comment } from "../../Article/Comment";
+import { AuthorCard } from "../../Author/AuthorCard";
+import { AuthorShoutsRating } from "../../Author/AuthorShoutsRating";
+import { Row1 } from "../../Feed/Row1";
+import { Row2 } from "../../Feed/Row2";
+import { Row3 } from "../../Feed/Row3";
+import { Loading } from "../../_shared/Loading";
 
-import { MODALS, hideModal } from '../../../stores/ui'
-import { byCreated } from '../../../utils/sortby'
-import stylesArticle from '../../Article/Article.module.scss'
-import styles from './Author.module.scss'
+import { MODALS, hideModal } from "../../../stores/ui";
+import { byCreated } from "../../../utils/sortby";
+import stylesArticle from "../../Article/Article.module.scss";
+import styles from "./Author.module.scss";
 
 type Props = {
-  authorSlug: string
-}
-export const PRERENDERED_ARTICLES_COUNT = 12
-const LOAD_MORE_PAGE_SIZE = 9
+  authorSlug: string;
+  shouts?: Shout[];
+  author?: Author;
+};
+export const PRERENDERED_ARTICLES_COUNT = 12;
+const LOAD_MORE_PAGE_SIZE = 9;
 
 export const AuthorView = (props: Props) => {
-  const { t } = useLocalize()
-  const { subscriptions, followers, loadSubscriptions } = useFollowing()
-  const { session } = useSession()
-  const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
-  const { authorEntities } = useAuthorsStore({ authors: [props.author] })
-  const { page: getPage, searchParams } = useRouter()
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const [isBioExpanded, setIsBioExpanded] = createSignal(false)
-  const [author, setAuthor] = createSignal<Author>()
-  const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
-  const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-  const [commented, setCommented] = createSignal<Reaction[]>()
-  const modal = MODALS[searchParams().m]
+  const { t } = useLocalize();
+  const {
+    subscriptions,
+    followers: myFollowers,
+    loadSubscriptions,
+  } = useFollowing();
+  const { session } = useSession();
+  const { sortedArticles } = useArticlesStore({ shouts: props.shouts });
+  const { authorEntities } = useAuthorsStore({ authors: [props.author] });
+  const { page: getPage, searchParams } = useRouter();
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] =
+    createSignal(false);
+  const [isBioExpanded, setIsBioExpanded] = createSignal(false);
+  const [author, setAuthor] = createSignal<Author>();
+  const [followers, setFollowers] = createSignal([]);
+  const [following, setFollowing] = createSignal<Array<Author | Topic>>([]); // flat AuthorFollowsResult
+  const [showExpandBioControl, setShowExpandBioControl] = createSignal(false);
+  const [commented, setCommented] = createSignal<Reaction[]>();
+  const modal = MODALS[searchParams().m];
 
   // current author
   createEffect(() => {
     if (props.authorSlug) {
       if (session()?.user?.app_data?.profile?.slug === props.authorSlug) {
-        console.info('my own profile')
-        const { profile, authors, topics } = session().user.app_data
-        setAuthor(profile)
-        setFollowing([...authors, ...topics])
+        console.info("my own profile");
+        const { profile, authors, topics } = session().user.app_data;
+        setFollowers(myFollowers);
+        setAuthor(profile);
+        setFollowing([...authors, ...topics]);
       }
     } else {
       try {
-        const a = authorEntities()[props.authorSlug]
-        setAuthor(a)
-        console.debug('[Author] expecting following data fetched')
+        const a = authorEntities()[props.authorSlug];
+        setAuthor(a);
+        // TODO: add following data retrieval
+        console.debug("[Author] expecting following data fetched");
       } catch (error) {
-        console.debug(error)
+        console.debug(error);
       }
     }
-  })
+  });
 
   createEffect(async () => {
     if (author()?.id && !author().stat) {
-      const a = await loadAuthor({ slug: '', author_id: author().id })
-      console.debug('[AuthorView] loaded author:', a)
+      const a = await loadAuthor({ slug: "", author_id: author().id });
+      console.debug("[AuthorView] loaded author:", a);
     }
-  })
+  });
 
-  const bioContainerRef: { current: HTMLDivElement } = { current: null }
-  const bioWrapperRef: { current: HTMLDivElement } = { current: null }
+  const bioContainerRef: { current: HTMLDivElement } = { current: null };
+  const bioWrapperRef: { current: HTMLDivElement } = { current: null };
 
   const fetchData = async (slug) => {
     try {
       const [subscriptionsResult, followersResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
         apiClient.getAuthorFollowers({ slug }),
-      ])
+      ]);
 
-      const { authors, topics } = subscriptionsResult
-      setFollowing([...(authors || []), ...(topics || [])])
-      setFollowers(followersResult || [])
+      const { authors, topics } = subscriptionsResult;
+      setFollowing([...(authors || []), ...(topics || [])]);
+      setFollowers(followersResult || []);
 
-      console.info('[components.Author] following data loaded')
+      console.info("[components.Author] following data loaded");
     } catch (error) {
-      console.error('[components.Author] fetch error', error)
+      console.error("[components.Author] fetch error", error);
     }
-  }
+  };
 
   const checkBioHeight = () => {
     if (bioContainerRef.current) {
-      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
+      setShowExpandBioControl(
+        bioContainerRef.current.offsetHeight >
+          bioWrapperRef.current.offsetHeight,
+      );
     }
-  }
+  };
 
   onMount(() => {
-    fetchData(props.authorSlug)
+    fetchData(props.authorSlug);
 
     if (!modal) {
-      hideModal()
+      hideModal();
     }
-  })
+  });
 
   const loadMore = async () => {
-    saveScrollPosition()
+    saveScrollPosition();
     const { hasMore } = await loadShouts({
       filters: { author: props.authorSlug },
       limit: LOAD_MORE_PAGE_SIZE,
       offset: sortedArticles().length,
-    })
-    setIsLoadMoreButtonVisible(hasMore)
-    restoreScrollPosition()
-  }
+    });
+    setIsLoadMoreButtonVisible(hasMore);
+    restoreScrollPosition();
+  };
 
   onMount(() => {
-    checkBioHeight()
+    checkBioHeight();
 
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore()
-      loadSubscriptions()
+      loadMore();
+      loadSubscriptions();
     }
-  })
+  });
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
-  )
+    splitToPages(
+      sortedArticles(),
+      PRERENDERED_ARTICLES_COUNT,
+      LOAD_MORE_PAGE_SIZE,
+    ),
+  );
 
   const fetchComments = async (commenter: Author) => {
     const data = await apiClient.getReactionsBy({
       by: { comment: false, created_by: commenter.id },
-    })
-    setCommented(data)
-  }
+    });
+    setCommented(data);
+  };
 
   createEffect(() => {
     if (author()) {
-      fetchComments(author())
+      fetchComments(author());
     }
-  })
+  });
 
   const ogImage = createMemo(() =>
     author()?.pic
       ? getImageUrl(author()?.pic, { width: 1200 })
-      : getImageUrl('production/image/logo_image.png'),
-  )
-  const description = createMemo(() => getDescription(author()?.bio))
+      : getImageUrl("production/image/logo_image.png"),
+  );
+  const description = createMemo(() => getDescription(author()?.bio));
   const handleDeleteComment = (id: number) => {
-    setCommented((prev) => prev.filter((comment) => comment.id !== id))
-  }
+    setCommented((prev) => prev.filter((comment) => comment.id !== id));
+  };
 
   return (
     <div class={styles.authorPage}>
@@ -176,42 +211,80 @@ export const AuthorView = (props: Props) => {
         <Show when={author()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard author={author()} followers={followers()} following={following()} />
+              <AuthorCard
+                author={author()}
+                followers={followers() || []}
+                following={following() || []}
+              />
             </div>
-            <div class={clsx(styles.groupControls, 'row')}>
+            <div class={clsx(styles.groupControls, "row")}>
               <div class="col-md-16">
                 <ul class="view-switcher">
-                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'author' }}>
-                    <a href={getPagePath(router, 'author', { slug: props.authorSlug })}>
-                      {t('Publications')}
+                  <li
+                    classList={{
+                      "view-switcher__item--selected":
+                        getPage().route === "author",
+                    }}
+                  >
+                    <a
+                      href={getPagePath(router, "author", {
+                        slug: props.authorSlug,
+                      })}
+                    >
+                      {t("Publications")}
                     </a>
                     <Show when={author().stat}>
-                      <span class="view-switcher__counter">{author().stat.shouts}</span>
+                      <span class="view-switcher__counter">
+                        {author().stat.shouts}
+                      </span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
-                    <a href={getPagePath(router, 'authorComments', { slug: props.authorSlug })}>
-                      {t('Comments')}
+                  <li
+                    classList={{
+                      "view-switcher__item--selected":
+                        getPage().route === "authorComments",
+                    }}
+                  >
+                    <a
+                      href={getPagePath(router, "authorComments", {
+                        slug: props.authorSlug,
+                      })}
+                    >
+                      {t("Comments")}
                     </a>
                     <Show when={author().stat}>
-                      <span class="view-switcher__counter">{author().stat.comments}</span>
+                      <span class="view-switcher__counter">
+                        {author().stat.comments}
+                      </span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
+                  <li
+                    classList={{
+                      "view-switcher__item--selected":
+                        getPage().route === "authorAbout",
+                    }}
+                  >
                     <a
                       onClick={() => checkBioHeight()}
-                      href={getPagePath(router, 'authorAbout', { slug: props.authorSlug })}
+                      href={getPagePath(router, "authorAbout", {
+                        slug: props.authorSlug,
+                      })}
                     >
-                      {t('Profile')}
+                      {t("Profile")}
                     </a>
                   </li>
                 </ul>
               </div>
-              <div class={clsx('col-md-8', styles.additionalControls)}>
-                <Show when={author()?.stat?.rating || author()?.stat?.rating === 0}>
+              <div class={clsx("col-md-8", styles.additionalControls)}>
+                <Show
+                  when={author()?.stat?.rating || author()?.stat?.rating === 0}
+                >
                   <div class={styles.ratingContainer}>
-                    {t('All posts rating')}
-                    <AuthorShoutsRating author={author()} class={styles.ratingControl} />
+                    {t("All posts rating")}
+                    <AuthorShoutsRating
+                      author={author()}
+                      class={styles.ratingControl}
+                    />
                   </div>
                 </Show>
               </div>
@@ -221,7 +294,7 @@ export const AuthorView = (props: Props) => {
       </div>
 
       <Switch>
-        <Match when={getPage().route === 'authorAbout'}>
+        <Match when={getPage().route === "authorAbout"}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -230,22 +303,28 @@ export const AuthorView = (props: Props) => {
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >
-                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author().about} />
+                  <div
+                    ref={(el) => (bioContainerRef.current = el)}
+                    innerHTML={author().about}
+                  />
                 </div>
 
                 <Show when={showExpandBioControl()}>
                   <button
-                    class={clsx('button button--subscribe-topic', styles.longBioExpandedControl)}
+                    class={clsx(
+                      "button button--subscribe-topic",
+                      styles.longBioExpandedControl,
+                    )}
                     onClick={() => setIsBioExpanded(!isBioExpanded())}
                   >
-                    {t('Show more')}
+                    {t("Show more")}
                   </button>
                 </Show>
               </div>
             </div>
           </div>
         </Match>
-        <Match when={getPage().route === 'authorComments'}>
+        <Match when={getPage().route === "authorComments"}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -265,13 +344,18 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={getPage().route === 'author'}>
+        <Match when={getPage().route === "author"}>
           <Show when={sortedArticles().length === 1}>
             <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
           </Show>
 
           <Show when={sortedArticles().length === 2}>
-            <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
+            <Row2
+              articles={sortedArticles()}
+              isEqual={true}
+              noauthor={true}
+              nodate={true}
+            />
           </Show>
 
           <Show when={sortedArticles().length === 3}>
@@ -280,21 +364,45 @@ export const AuthorView = (props: Props) => {
 
           <Show when={sortedArticles().length > 3}>
             <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noauthor={true} />
+            <Row2
+              articles={sortedArticles().slice(1, 3)}
+              isEqual={true}
+              noauthor={true}
+            />
             <Row1 article={sortedArticles()[3]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noauthor={true} />
+            <Row2
+              articles={sortedArticles().slice(4, 6)}
+              isEqual={true}
+              noauthor={true}
+            />
             <Row1 article={sortedArticles()[6]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noauthor={true} />
+            <Row2
+              articles={sortedArticles().slice(7, 9)}
+              isEqual={true}
+              noauthor={true}
+            />
 
             <For each={pages()}>
               {(page) => (
                 <>
                   <Row1 article={page[0]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
+                  <Row2
+                    articles={page.slice(1, 3)}
+                    isEqual={true}
+                    noauthor={true}
+                  />
                   <Row1 article={page[3]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
+                  <Row2
+                    articles={page.slice(4, 6)}
+                    isEqual={true}
+                    noauthor={true}
+                  />
                   <Row1 article={page[6]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
+                  <Row2
+                    articles={page.slice(7, 9)}
+                    isEqual={true}
+                    noauthor={true}
+                  />
                 </>
               )}
             </For>
@@ -303,12 +411,12 @@ export const AuthorView = (props: Props) => {
           <Show when={isLoadMoreButtonVisible()}>
             <p class="load-more-container">
               <button class="button" onClick={loadMore}>
-                {t('Load more')}
+                {t("Load more")}
               </button>
             </p>
           </Show>
         </Match>
       </Switch>
     </div>
-  )
-}
+  );
+};

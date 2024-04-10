@@ -16,7 +16,7 @@ jobs:
         run: npm run check:types
 
       - name: Check code
-        run: npx run check:code
+        run: npm run check:code
 
       - name: Check styles
         run: npm run lint:styles

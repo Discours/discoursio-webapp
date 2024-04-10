@@ -15,11 +15,11 @@ jobs:
       - name: Check types
         run: npm run check:types
 
-      - name: Check code
-        run: npm run check:code
-
       - name: Check styles
         run: npm run lint:styles
+
+      - name: Biome Install
+        uses: predominant/biome-action@0.0.1-alpha
 
       - name: Test production build
         run: npm run build

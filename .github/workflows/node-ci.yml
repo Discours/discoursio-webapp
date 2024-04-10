@@ -13,12 +13,12 @@ jobs:
         run: npm ci
 
       - name: Check types
-        run: npm run typecheck
+        run: npm run check:types
 
-      - name: Lint with Biome
-        run: npx biome ci .
+      - name: Check code
+        run: npx run check:code
 
-      - name: Lint styles
+      - name: Check styles
         run: npm run lint:styles
 
       - name: Test production build

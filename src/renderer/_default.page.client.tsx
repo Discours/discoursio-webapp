@@ -25,6 +25,7 @@ export const render = async (
 
   Sentry.init({
     dsn: GLITCHTIP_DSN,
+    tracesSampleRate: 0.01,
     integrations: [Sentry.replayIntegration()],
     // Session Replay
     replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.

@@ -33,7 +33,7 @@ export const ChangePasswordForm = () => {
     event.preventDefault()
     setIsSubmitting(true)
     if (newPassword()) {
-      await changePassword(newPassword(), searchParams()?.token)
+      changePassword(newPassword(), searchParams()?.token)
       setTimeout(() => {
         setIsSubmitting(false)
         setIsSuccess(true)
@@ -60,11 +60,6 @@ export const ChangePasswordForm = () => {
         >
           <div>
             <h4>{t('Enter a new password')}</h4>
-            <div class={styles.authSubtitle}>
-              {t(
-                'Now you can enter a new password, it must contain at least 8 characters and not be the same as the previous password'
-              )}
-            </div>
             <Show when={validationErrors()}>
               <div>{validationErrors().password}</div>
             </Show>

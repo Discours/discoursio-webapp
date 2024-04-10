@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { Show, createSignal } from 'solid-js'
+import { JSX, Show, createEffect, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -27,12 +27,11 @@ type ValidationErrors = Partial<Record<keyof FormFields, string>>
 export const LoginForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
-  const [submitError, setSubmitError] = createSignal('')
+  const [submitError, setSubmitError] = createSignal<string | JSX.Element>()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [password, setPassword] = createSignal('')
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-  // TODO: better solution for interactive error messages
-  const [isEmailNotConfirmed, setIsEmailNotConfirmed] = createSignal(false)
+
   const [isLinkSent, setIsLinkSent] = createSignal(false)
   const authFormRef: { current: HTMLFormElement } = { current: null }
   const { showSnackbar } = useSnackbar()
@@ -52,43 +51,43 @@ export const LoginForm = () => {
     event.preventDefault()
 
     setIsLinkSent(true)
-    setIsEmailNotConfirmed(false)
-    setSubmitError('')
-    changeSearchParams({ mode: 'send-reset-link' })
-    // NOTE: temporary solution, needs logic in authorizer
-    /* FIXME:
-    const { authorizer } = useSession()
-    const result = await authorizer().verifyEmail({ token })
-    if (!result) setSubmitError('cant sign send link')
-    */
+    setSubmitError()
+    changeSearchParams({ mode: 'send-confirm-email' })
   }
 
+  const preSendValidate = async (value: string, type: 'email' | 'password'): Promise<boolean> => {
+    if (type === 'email') {
+      if (value === '' || !validateEmail(value)) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          email: t('Invalid email'),
+        }))
+        return false
+      }
+    } else if (type === 'password') {
+      if (value === '') {
+        setValidationErrors((prev) => ({
+          ...prev,
+          password: t('Please enter password'),
+        }))
+        return false
+      }
+    }
+    return true
+  }
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
 
+    await preSendValidate(email(), 'email')
+    await preSendValidate(password(), 'password')
+
     setIsLinkSent(false)
-    setIsEmailNotConfirmed(false)
-    setSubmitError('')
+    setSubmitError()
 
-    const newValidationErrors: ValidationErrors = {}
-
-    const validateAndSetError = (field, message) => {
-      if (!field()) {
-        newValidationErrors[field.name] = t(message)
-      }
-    }
-
-    validateAndSetError(email, 'Please enter email')
-    validateAndSetError(() => validateEmail(email()), 'Invalid email')
-    validateAndSetError(password, 'Please enter password')
-
-    if (Object.keys(newValidationErrors).length > 0) {
-      setValidationErrors(newValidationErrors)
-
+    if (Object.keys(validationErrors()).length > 0) {
       authFormRef.current
-        .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
+        .querySelector<HTMLInputElement>(`input[name="${Object.keys(validationErrors())[0]}"]`)
         ?.focus()
-
       return
     }
 
@@ -96,14 +95,27 @@ export const LoginForm = () => {
 
     try {
       const { errors } = await signIn({ email: email(), password: password() })
+      console.error('[signIn errors]', errors)
       if (errors?.length > 0) {
         if (errors.some((error) => error.message.includes('bad user credentials'))) {
           setValidationErrors((prev) => ({
             ...prev,
             password: t('Something went wrong, check email and password')
           }))
+        } else if (errors.some((error) => error.message.includes('user not found'))) {
+          setSubmitError('Пользователь не найден')
+        } else if (errors.some((error) => error.message.includes('email not verified'))) {
+          setSubmitError(
+            <div class={styles.info}>
+              {t('This email is not verified')}
+              {'. '}
+              <span class={'link'} onClick={handleSendLinkAgainClick}>
+                {t('Send link again')}
+              </span>
+            </div>,
+          )
         } else {
-          setSubmitError(t('Error'))
+          setSubmitError(t('Error', errors[0].message))
         }
         return
       }
@@ -121,19 +133,6 @@ export const LoginForm = () => {
     <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
       <div>
         <AuthModalHeader modalType="login" />
-        <Show when={submitError()}>
-          <div class={styles.authInfo}>
-            <div class={styles.warn}>{submitError()}</div>
-            <Show when={isEmailNotConfirmed()}>
-              <span class={'link'} onClick={handleSendLinkAgainClick}>
-                {t('Send link again')}
-              </span>
-            </Show>
-          </div>
-        </Show>
-        <Show when={isLinkSent()}>
-          <div class={styles.authInfo}>{t('Link sent, check your email')}</div>
-        </Show>
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email
@@ -154,11 +153,14 @@ export const LoginForm = () => {
           </Show>
         </div>
 
-        <PasswordField variant={'login'} onInput={(value) => handlePasswordInput(value)} />
-        <Show when={validationErrors().password}>
-          <div class={styles.validationError} style={{ position: 'static', 'font-size': '1.4rem' }}>
-            {validationErrors().password}
-          </div>
+        <PasswordField
+          variant={'login'}
+          setError={validationErrors().password}
+          onBlur={(value) => handlePasswordInput(value)}
+        />
+
+        <Show when={submitError()}>
+          <div class={clsx('form-message--error', styles.validationError)}>{submitError()}</div>
         </Show>
 
         <div>
@@ -175,7 +177,7 @@ export const LoginForm = () => {
               })
             }
           >
-            {t('Set the new password')}
+            {t('Forgot password?')}
           </span>
         </div>
       </div>

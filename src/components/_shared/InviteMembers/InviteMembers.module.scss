@@ -50,24 +50,6 @@
     }
   }
 
-  .loading {
-    @include font-size(1.4rem);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    width: 100%;
-    flex-direction: row;
-    opacity: 0.5;
-
-    .icon {
-      position: relative;
-      width: 18px;
-      height: 18px;
-    }
-  }
-
   .teaser {
     min-height: 300px;
     display: flex;

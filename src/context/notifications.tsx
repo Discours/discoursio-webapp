@@ -8,7 +8,7 @@ import { Portal } from 'solid-js/web'
 import { NotificationsPanel } from '../components/NotificationsPanel'
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
 import { notifierClient } from '../graphql/client/notifier'
-import { NotificationGroup, QueryLoad_NotificationsArgs } from '../graphql/schema/notifier.gen'
+import { NotificationGroup, QueryLoad_NotificationsArgs } from '../graphql/schema/core.gen'
 
 import { SSEMessage, useConnect } from './connect'
 import { useSession } from './session'
@@ -51,7 +51,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       const unread = notificationsResult?.unread || 0
 
       const newGroupsEntries = groups.reduce((acc, group: NotificationGroup) => {
-        acc[group.id] = group
+        acc[group.thread] = group
         return acc
       }, {})
 

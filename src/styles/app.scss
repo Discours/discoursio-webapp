@@ -204,7 +204,7 @@ a:hover,
 a:visited,
 a:link,
 .link {
-  border-bottom: 2px solid rgb(0 0 0 / 30%);
+  border-bottom: 2px solid var(--link-color);
   text-decoration: none;
   cursor: pointer;
 }
@@ -464,7 +464,7 @@ form {
   }
 
   .form-message--error {
-    color: #d00820;
+    color: var(--danger-color) !important;
   }
 
   select {
@@ -621,6 +621,10 @@ figure {
     margin-right: 2rem;
     margin-bottom: 0.6em;
     white-space: nowrap;
+
+    @include media-breakpoint-up(md) {
+      margin-right: 2.4rem;
+    }
 
     .link {
       border-bottom: none;

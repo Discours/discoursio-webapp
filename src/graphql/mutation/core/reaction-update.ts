@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  mutation UpdateReactionMutation($id: Int!, $reaction: ReactionInput!) {
-    update_reaction(id: $id, reaction: $reaction) {
+  mutation UpdateReactionMutation($reaction: ReactionInput!) {
+    update_reaction(reaction: $reaction) {
       error
       reaction {
         id

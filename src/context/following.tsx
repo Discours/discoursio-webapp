@@ -2,20 +2,15 @@ import { Accessor, JSX, createContext, createEffect, createSignal, useContext } 
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
+import { Author, AuthorFollowsResult, FollowingEntity } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
-type SubscriptionsData = {
-  topics?: Topic[]
-  authors?: Author[]
-  communities?: Community[]
-}
-
 interface FollowingContextType {
   loading: Accessor<boolean>
-  subscriptions: SubscriptionsData
-  setSubscriptions: (subscriptions: SubscriptionsData) => void
+  followers: Accessor<Array<Author>>
+  subscriptions: AuthorFollowsResult
+  setSubscriptions: (subscriptions: AuthorFollowsResult) => void
   setFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
   loadSubscriptions: () => void
   follow: (what: FollowingEntity, slug: string) => Promise<void>
@@ -29,7 +24,7 @@ export function useFollowing() {
   return useContext(FollowingContext)
 }
 
-const EMPTY_SUBSCRIPTIONS = {
+const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
   topics: [],
   authors: [],
   communities: []
@@ -37,15 +32,16 @@ const EMPTY_SUBSCRIPTIONS = {
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [subscriptions, setSubscriptions] = createStore<SubscriptionsData>(EMPTY_SUBSCRIPTIONS)
-  const { author } = useSession()
+  const [followers, setFollowers] = createSignal<Array<Author>>([])
+  const [subscriptions, setSubscriptions] = createStore<AuthorFollowsResult>(EMPTY_SUBSCRIPTIONS)
+  const { author, session } = useSession()
 
   const fetchData = async () => {
     setLoading(true)
     try {
       if (apiClient.private) {
         console.debug('[context.following] fetching subs data...')
-        const result = await apiClient.getMySubscriptions()
+        const result = await apiClient.getAuthorFollows({ user: session()?.user.id })
         setSubscriptions(result || EMPTY_SUBSCRIPTIONS)
         console.info('[context.following] subs:', subscriptions)
       }
@@ -83,8 +79,14 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
 
   createEffect(() => {
     if (author()) {
-      console.debug('[context.following] author update detect')
-      fetchData()
+      try {
+        const { authors, followers, topics } = session().user.app_data
+        setSubscriptions({ authors, topics })
+        setFollowers(followers)
+        if (!authors) fetchData()
+      } catch (e) {
+        console.error(e)
+      }
     }
   })
 
@@ -122,6 +124,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     setSubscriptions,
     isOwnerSubscribed,
     setFollowing,
+    followers,
     loadSubscriptions: fetchData,
     follow,
     unfollow

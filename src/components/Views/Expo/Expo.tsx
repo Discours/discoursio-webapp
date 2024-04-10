@@ -24,34 +24,31 @@ type Props = {
   layout: LayoutType
 }
 
-export const PRERENDERED_ARTICLES_COUNT = 24
-const LOAD_MORE_PAGE_SIZE = 16
+export const PRERENDERED_ARTICLES_COUNT = 36
+const LOAD_MORE_PAGE_SIZE = 12
 
 export const Expo = (props: Props) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
 
-  const [randomTopArticles, setRandomTopArticles] = createSignal<Shout[]>([])
-  const [randomTopMonthArticles, setRandomTopMonthArticles] = createSignal<Shout[]>([])
+  const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
+  const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
   const { t } = useLocalize()
 
-  // const { sortedArticles } = useArticlesStore({
-  //   shouts: isLoaded() ? props.shouts : [],
-  // })
   const { sortedArticles } = useArticlesStore({
-    shouts: props.shouts || [],
-    layout: props.layout
+    shouts: isLoaded() ? props.shouts : [],
+    layout: props.layout,
   })
 
   const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
-    const filters = { featured: true, ...additionalFilters }
+    const filters = { ...additionalFilters }
 
     if (!filters.layouts) filters.layouts = []
     if (props.layout) {
       filters.layouts.push(props.layout)
     } else {
-      filters.layouts.push('article')
+      filters.layouts.push('audio', 'video', 'image', 'literature')
     }
 
     return filters
@@ -80,13 +77,12 @@ export const Expo = (props: Props) => {
 
   const loadRandomTopArticles = async () => {
     const options: LoadShoutsOptions = {
-      filters: getLoadShoutsFilters(),
+      filters: { ...getLoadShoutsFilters(), featured: true },
       limit: 10,
       random_limit: 100
     }
-
     const result = await apiClient.getRandomTopShouts({ options })
-    setRandomTopArticles(result)
+    setFavoriteTopArticles(result)
   }
 
   const loadRandomTopMonthArticles = async () => {
@@ -94,18 +90,14 @@ export const Expo = (props: Props) => {
     const after = getUnixtime(new Date(now.setMonth(now.getMonth() - 1)))
 
     const options: LoadShoutsOptions = {
-      filters: getLoadShoutsFilters({ after }),
+      filters: { ...getLoadShoutsFilters({ after }), reacted: true },
       limit: 10,
       random_limit: 10
     }
 
     const result = await apiClient.getRandomTopShouts({ options })
-    setRandomTopMonthArticles(result)
+    setReactedTopMonthArticles(result)
   }
-
-  const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
-  )
 
   onMount(() => {
     if (isLoaded()) {
@@ -130,8 +122,8 @@ export const Expo = (props: Props) => {
       () => props.layout,
       () => {
         resetSortedArticles()
-        setRandomTopArticles([])
-        setRandomTopMonthArticles([])
+        setFavoriteTopArticles([])
+        setReactedTopMonthArticles([])
         loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
         loadRandomTopArticles()
         loadRandomTopMonthArticles()
@@ -202,7 +194,7 @@ export const Expo = (props: Props) => {
             </li>
           </ul>
           <div class="row">
-            <For each={sortedArticles().slice(0, PRERENDERED_ARTICLES_COUNT / 2)}>
+            <For each={sortedArticles().slice(0, LOAD_MORE_PAGE_SIZE)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -214,10 +206,10 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopMonthArticles()?.length > 0} keyed={true}>
-              <ArticleCardSwiper title={t('Top month articles')} slides={randomTopMonthArticles()} />
+            <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Top month articles')} slides={reactedTopMonthArticles()} />
             </Show>
-            <For each={sortedArticles().slice(PRERENDERED_ARTICLES_COUNT / 2, PRERENDERED_ARTICLES_COUNT)}>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE, LOAD_MORE_PAGE_SIZE * 2)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -229,23 +221,19 @@ export const Expo = (props: Props) => {
                 </div>
               )}
             </For>
-            <Show when={randomTopArticles()?.length > 0} keyed={true}>
-              <ArticleCardSwiper title={t('Favorite')} slides={randomTopArticles()} />
+            <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
+              <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
             </Show>
-            <For each={pages()}>
-              {(page) => (
-                <For each={page}>
-                  {(shout) => (
-                    <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
-                      <ArticleCard
-                        article={shout}
-                        settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
-                        desktopCoverSize="XS"
-                        withAspectRatio={true}
-                      />
-                    </div>
-                  )}
-                </For>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2)}>
+              {(shout) => (
+                <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
+                  <ArticleCard
+                    article={shout}
+                    settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                    desktopCoverSize="XS"
+                    withAspectRatio={true}
+                  />
+                </div>
               )}
             </For>
           </div>

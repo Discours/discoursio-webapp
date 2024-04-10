@@ -7,22 +7,42 @@ import { useLocalize } from '../context/localize'
 import { apiClient } from '../graphql/client/core'
 import { Shout } from '../graphql/schema/core.gen'
 import { useRouter } from '../stores/router'
+import { router } from '../stores/router'
 
+import { redirectPage } from '@nanostores/router'
+import { useSnackbar } from '../context/snackbar'
 import { LayoutType } from './types'
 
 const EditView = lazy(() => import('../components/Views/EditView/EditView'))
 
 export const EditPage = () => {
   const { page } = useRouter()
+  const snackbar = useSnackbar()
   const { t } = useLocalize()
 
-  const shoutId = createMemo(() => Number((page().params as Record<'shoutId', string>).shoutId))
-
   const [shout, setShout] = createSignal<Shout>(null)
+  const loadMyShout = async (shout_id: number) => {
+    if (shout_id) {
+      const { shout: loadedShout, error } = await apiClient.getMyShout(shout_id)
+      console.log(loadedShout)
+      if (error) {
+        await snackbar?.showSnackbar({ type: 'error', body: t('This content is not published yet') })
+        redirectPage(router, 'drafts')
+      } else {
+        setShout(loadedShout)
+      }
+    }
+  }
 
   onMount(async () => {
-    const loadedShout = await apiClient.getShoutById(shoutId())
-    setShout(loadedShout)
+    const shout_id = window.location.pathname.split('/').pop()
+    if (shout_id) {
+      try {
+        await loadMyShout(parseInt(shout_id, 10))
+      } catch (e) {
+        console.error(e)
+      }
+    }
   })
 
   const title = createMemo(() => {

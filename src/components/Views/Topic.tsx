@@ -1,8 +1,8 @@
-import type { Shout, Topic } from '../../graphql/schema/core.gen'
+import { LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
@@ -21,7 +21,9 @@ import { Row3 } from '../Feed/Row3'
 import { FullTopic } from '../Topic/Full'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
+import { apiClient } from '../../graphql/client/core'
 import styles from '../../styles/Topic.module.scss'
+import { getUnixtime } from '../../utils/getServerDate'
 
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
@@ -43,14 +45,56 @@ export const TopicView = (props: Props) => {
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { topicEntities } = useTopicsStore({ topics: [props.topic] })
   const { authorsByTopic } = useAuthorsStore()
+  const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
+  const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
   const [topic, setTopic] = createSignal<Topic>()
+
   createEffect(() => {
     const topics = topicEntities()
     if (props.topicSlug && !topic() && topics) {
       setTopic(topics[props.topicSlug])
     }
   })
+
+  const loadFavoriteTopArticles = async (topic: string) => {
+    const options: LoadShoutsOptions = {
+      filters: { featured: true, topic: topic },
+      limit: 10,
+      random_limit: 100,
+    }
+    const result = await apiClient.getRandomTopShouts({ options })
+    setFavoriteTopArticles(result)
+  }
+
+  const loadReactedTopMonthArticles = async (topic: string) => {
+    const now = new Date()
+    const after = getUnixtime(new Date(now.setMonth(now.getMonth() - 1)))
+
+    const options: LoadShoutsOptions = {
+      filters: { after: after, featured: true, topic: topic },
+      limit: 10,
+      random_limit: 10,
+    }
+
+    const result = await apiClient.getRandomTopShouts({ options })
+
+    setReactedTopMonthArticles(result)
+  }
+
+  const loadRandom = () => {
+    loadFavoriteTopArticles(topic()?.slug)
+    loadReactedTopMonthArticles(topic()?.slug)
+  }
+
+  createEffect(
+    on(
+      () => topic(),
+      () => loadRandom(),
+      { defer: true },
+    ),
+  )
+
   const title = createMemo(
     () =>
       `#${capitalize(
@@ -75,6 +119,7 @@ export const TopicView = (props: Props) => {
   }
 
   onMount(() => {
+    loadRandom()
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
     }
@@ -170,9 +215,9 @@ export const TopicView = (props: Props) => {
         beside={sortedArticles()[4]}
         wrapper={'author'}
       />
-
-      <ArticleCardSwiper title={title()} slides={sortedArticles().slice(5, 11)} />
-
+      <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
+        <ArticleCardSwiper title={t('Top month articles')} slides={reactedTopMonthArticles()} />
+      </Show>
       <Beside
         beside={sortedArticles()[12]}
         title={t('Top viewed')}
@@ -183,8 +228,10 @@ export const TopicView = (props: Props) => {
       <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
       <Row1 article={sortedArticles()[15]} />
 
+      <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
+        <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
+      </Show>
       <Show when={sortedArticles().length > 15}>
-        <ArticleCardSwiper slides={sortedArticles().slice(16, 22)} />
         <Row3 articles={sortedArticles().slice(23, 26)} />
         <Row2 articles={sortedArticles().slice(26, 28)} />
       </Show>

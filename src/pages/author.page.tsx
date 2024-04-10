@@ -56,17 +56,11 @@ export const AuthorPage = (props: PageProps) => {
 
   onCleanup(() => resetSortedArticles())
 
-  const usePrerenderedData = props.author?.slug === slug()
-
   return (
     <PageLayout title={props.seo?.title || t('Discours')}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
-          <AuthorView
-            author={usePrerenderedData ? props.author : null}
-            shouts={usePrerenderedData ? props.authorShouts : null}
-            authorSlug={slug()}
-          />
+          <AuthorView authorSlug={slug()} />
         </Show>
       </ReactionsProvider>
     </PageLayout>

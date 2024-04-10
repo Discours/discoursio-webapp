@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { JSX, Show, createSignal } from 'solid-js'
+import { JSX, Show, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -72,6 +72,12 @@ export const SendResetLinkForm = () => {
     }
   }
 
+  onMount(() => {
+    if (email()) {
+      console.info('[SendResetLinkForm] email detected')
+    }
+  })
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -79,8 +85,12 @@ export const SendResetLinkForm = () => {
       ref={(el) => (authFormRef.current = el)}
     >
       <div>
-        <h4>{t('Set the new password')}</h4>
-        <div class={styles.authSubtitle}>{t(message()) || t('Please give us your email address')}</div>
+        <h4>{t('Forgot password?')}</h4>
+        <Show when={!message()}>
+          <div class={styles.authSubtitle}>
+            {t("It's OK. Just enter your email to receive a link to change your password")}
+          </div>
+        </Show>
         <div
           class={clsx('pretty-form__item', {
             'pretty-form__item--error': validationErrors().email
@@ -94,9 +104,8 @@ export const SendResetLinkForm = () => {
             type="email"
             value={email()}
             placeholder={t('Email')}
-            onInput={(event) => handleEmailInput(event.currentTarget.value)}
+            onChange={(event) => handleEmailInput(event.currentTarget.value)}
           />
-
           <label for="email">{t('Email')}</label>
           <Show when={isUserNotFound()}>
             <div class={styles.validationError}>
@@ -105,7 +114,7 @@ export const SendResetLinkForm = () => {
                 class={'link'}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login'
+                    mode: 'register',
                   })
                 }
               >
@@ -117,28 +126,31 @@ export const SendResetLinkForm = () => {
             <div class={styles.validationError}>{validationErrors().email}</div>
           </Show>
         </div>
-
-        <div style={{ 'margin-top': '5rem' }}>
-          <button
-            class={clsx('button', styles.submitButton)}
-            disabled={isSubmitting() || Boolean(message())}
-            type="submit"
-          >
-            {isSubmitting() ? '...' : t('Send')}
-          </button>
-        </div>
-        <div class={styles.authControl}>
-          <span
-            class={styles.authLink}
-            onClick={() =>
-              changeSearchParams({
-                mode: 'login'
-              })
-            }
-          >
-            {t('I know the password')}
-          </span>
-        </div>
+        <Show when={!message()} fallback={<div class={styles.authSubtitle}>{t(message())}</div>}>
+          <>
+            <div style={{ 'margin-top': '5rem' }}>
+              <button
+                class={clsx('button', styles.submitButton)}
+                disabled={isSubmitting() || Boolean(message())}
+                type="submit"
+              >
+                {isSubmitting() ? '...' : t('Restore password')}
+              </button>
+            </div>
+            <div class={styles.authControl}>
+              <span
+                class={styles.authLink}
+                onClick={() =>
+                  changeSearchParams({
+                    mode: 'login',
+                  })
+                }
+              >
+                {t('I know the password')}
+              </span>
+            </div>
+          </>
+        </Show>
       </div>
     </form>
   )

@@ -58,9 +58,8 @@ export type ArticlePageSearchParams = {
 
 const scrollTo = (el: HTMLElement) => {
   const { top } = el.getBoundingClientRect()
-
   window.scrollTo({
-    top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
+    top: top - DEFAULT_HEADER_OFFSET,
     left: 0,
     behavior: 'smooth'
   })
@@ -75,10 +74,17 @@ export const FullArticle = (props: Props) => {
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const { t, formatDate, lang } = useLocalize()
-  const { author, isAuthenticated, requireAuthentication } = useSession()
+  const { author, session, isAuthenticated, requireAuthentication } = useSession()
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
-  const canEdit = () => props.article.authors?.some((a) => Boolean(a) && a?.slug === author()?.slug)
+
+  const canEdit = createMemo(
+    () =>
+      Boolean(author()?.id) &&
+      (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
+        props.article?.created_by?.id === author().id ||
+        session()?.user?.roles.includes('editor')),
+  )
 
   const mainTopic = createMemo(() => {
     const mainTopicSlug = props.article.topics.length > 0 ? props.article.main_topic : null
@@ -135,7 +141,7 @@ export const FullArticle = (props: Props) => {
 
   const media = createMemo<MediaItem[]>(() => {
     try {
-      return JSON.parse(props.article.media)
+      return JSON.parse(props.article?.media || '[]')
     } catch {
       return []
     }
@@ -145,22 +151,16 @@ export const FullArticle = (props: Props) => {
     current: HTMLDivElement
   } = { current: null }
 
-  const scrollToComments = () => {
-    scrollTo(commentsRef.current)
-  }
-
   createEffect(() => {
     if (props.scrollToComments) {
-      scrollToComments()
+      scrollTo(commentsRef.current)
     }
   })
 
   createEffect(() => {
     if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
-      scrollToComments()
-      changeSearchParams({
-        scrollTo: null
-      })
+      requestAnimationFrame(() => scrollTo(commentsRef.current))
+      changeSearchParams({ scrollTo: null })
     }
   })
 
@@ -170,10 +170,8 @@ export const FullArticle = (props: Props) => {
         `[id='comment_${searchParams().commentId}']`
       )
 
-      changeSearchParams({ commentId: null })
-
       if (commentElement) {
-        scrollTo(commentElement)
+        requestAnimationFrame(() => scrollTo(commentElement))
       }
     }
   })
@@ -466,7 +464,11 @@ export const FullArticle = (props: Props) => {
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>
                 {(triggerRef: (el) => void) => (
-                  <div class={clsx(styles.shoutStatsItem)} ref={triggerRef} onClick={scrollToComments}>
+                  <div
+                    class={clsx(styles.shoutStatsItem)}
+                    ref={triggerRef}
+                    onClick={() => scrollTo(commentsRef.current)}
+                  >
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
                     <Show
@@ -544,7 +546,7 @@ export const FullArticle = (props: Props) => {
               </Show>
 
               <FeedArticlePopup
-                isOwner={canEdit()}
+                canEdit={canEdit()}
                 containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
                 onShareClick={() => showModal('share')}
                 onInviteClick={() => showModal('inviteMembers')}

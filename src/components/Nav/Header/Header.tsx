@@ -6,12 +6,10 @@ import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { apiClient } from '../../../graphql/client/core'
 import { ROUTES, router, useRouter } from '../../../stores/router'
 import { useModalStore } from '../../../stores/ui'
 import { getDescription } from '../../../utils/meta'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
-import { RANDOM_TOPICS_COUNT } from '../../Views/Home'
 import { Icon } from '../../_shared/Icon'
 import { Subscribe } from '../../_shared/Subscribe'
 import { AuthModal } from '../AuthModal'
@@ -23,6 +21,8 @@ import { Snackbar } from '../Snackbar'
 
 import { Link } from './Link'
 
+import { useTopics } from '../../../context/topics'
+import { getRandomTopicsFromArray } from '../../../utils/getRandomTopicsFromArray'
 import styles from './Header.module.scss'
 
 type Props = {
@@ -48,6 +48,7 @@ export const Header = (props: Props) => {
   const { page } = useRouter()
   const { requireAuthentication } = useSession()
   const { searchParams } = useRouter<HeaderSearchParams>()
+  const { topics } = useTopics()
   const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -58,12 +59,17 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
+
   const toggleFixed = () => setFixed(!fixed())
 
   const tag = (topic: Topic) =>
     /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
 
   let windowScrollTop = 0
+
+  createEffect(() => {
+    setRandomTopics(getRandomTopicsFromArray(topics()))
+  })
 
   createEffect(() => {
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
@@ -140,13 +146,6 @@ export const Header = (props: Props) => {
       toggleSubnavigation(false)
     }, time)
   }
-
-  onMount(async () => {
-    if (window.location.pathname === '/' || window.location.pathname === '') {
-      const topics = await apiClient.getRandomTopics({ amount: RANDOM_TOPICS_COUNT })
-      setRandomTopics(topics)
-    }
-  })
 
   const handleToggleMenuByLink = (event: MouseEvent, route: keyof typeof ROUTES) => {
     if (!fixed()) {

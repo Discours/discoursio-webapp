@@ -1,18 +1,17 @@
-import { ClientOptions, Exchange, createClient, dedupExchange, fetchExchange } from '@urql/core'
+import { ClientOptions, Exchange, createClient, fetchExchange } from '@urql/core'
 import { devtoolsExchange } from '@urql/devtools'
 
 import { isDev } from '../utils/config'
 
-const exchanges: Exchange[] = [dedupExchange, fetchExchange]
+const exchanges: Exchange[] = [fetchExchange]
 
 if (isDev) {
   exchanges.unshift(devtoolsExchange)
 }
 
-export const createGraphQLClient = (serviceName: string, token = '') => {
+export const createGraphQLClient = (url: string, token = '') => {
   const options: ClientOptions = {
-    url: `https://${serviceName}.discours.io`,
-    maskTypename: true,
+    url,
     requestPolicy: 'cache-and-network',
     fetchOptions: () => (token ? { headers: { Authorization: token } } : {}),
     exchanges

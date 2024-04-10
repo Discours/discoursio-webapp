@@ -12,7 +12,6 @@ import { capitalize } from '../../../utils/capitalize'
 import { dummyFilter } from '../../../utils/dummyFilter'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { scrollHandler } from '../../../utils/scroll'
-import { TopicCard } from '../../Topic/Card'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
 
@@ -28,7 +27,7 @@ type Props = {
   isLoaded: boolean
 }
 
-const PAGE_SIZE = 20
+export const PAGE_SIZE = 20
 
 export const AllTopics = (props: Props) => {
   const { t, lang } = useLocalize()

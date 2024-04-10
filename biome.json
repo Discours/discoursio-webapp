@@ -54,7 +54,9 @@
         "noSvgWithoutTitle": "off"
       },
       "nursery": {
-        "useImportRestrictions": "off"
+        "useImportRestrictions": "off",
+        "useImportType": "off",
+        "useFilenamingConvention": "off"
       },
       "style": {
         "useBlockStatements": "off",

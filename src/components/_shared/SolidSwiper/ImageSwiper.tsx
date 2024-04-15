@@ -49,7 +49,6 @@ export const ImageSwiper = (props: Props) => {
   )
 
   onMount(async () => {
-    console.log("!!! onMount:");
     const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation])

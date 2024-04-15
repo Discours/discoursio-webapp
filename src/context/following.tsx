@@ -80,7 +80,8 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   createEffect(() => {
     if (author()) {
       try {
-        const { authors, followers, topics } = session().user.app_data
+        const cached = session()?.user.app_data
+        if(!cached) return
         setSubscriptions({ authors, topics })
         setFollowers(followers)
         if (!authors) fetchData()

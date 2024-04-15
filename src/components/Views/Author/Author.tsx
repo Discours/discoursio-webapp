@@ -96,7 +96,7 @@ export const AuthorView = (props: Props) => {
       setFollowing([...(authors || []), ...(topics || [])])
       setFollowers(followersResult || [])
 
-      console.info('[components.Author] following data loaded')
+      console.debug('[components.Author] following data loaded', subscriptionsResult)
     } catch (error) {
       console.error('[components.Author] fetch error', error)
     }

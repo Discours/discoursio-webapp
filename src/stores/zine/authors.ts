@@ -1,5 +1,5 @@
 import { createLazyMemo } from '@solid-primitives/memo'
-import { createSignal } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
 import { Author, QueryLoad_Authors_ByArgs } from '../../graphql/schema/core.gen'

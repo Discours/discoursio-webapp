@@ -54,15 +54,16 @@ export const AuthorView = (props: Props) => {
   const modal = MODALS[searchParams().m]
 
   // current author
+  createEffect(async () => {
+    await loadAuthor({ slug: props.authorSlug })
+  })
   createEffect(() => {
-    if (props.authorSlug) {
-      if (session()?.user?.app_data?.profile?.slug === props.authorSlug) {
-        console.info('my own profile')
-        const { profile, authors, topics } = session().user.app_data
-        setFollowers(myFollowers)
-        setAuthor(profile)
-        setFollowing([...authors, ...topics])
-      }
+    if (props.authorSlug && session()?.user?.app_data?.profile?.slug === props.authorSlug) {
+      console.info('my own profile')
+      const { profile, authors, topics } = session().user.app_data
+      setFollowers(myFollowers)
+      setAuthor(profile)
+      setFollowing([...authors, ...topics])
     } else {
       try {
         const a = authorEntities()[props.authorSlug]

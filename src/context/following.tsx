@@ -82,6 +82,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
       try {
         const cached = session()?.user.app_data
         if(!cached) return
+        const { authors, followers, topics } = cached
         setSubscriptions({ authors, topics })
         setFollowers(followers)
         if (!authors) fetchData()

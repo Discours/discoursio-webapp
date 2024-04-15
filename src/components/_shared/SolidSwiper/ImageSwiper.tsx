@@ -53,11 +53,10 @@ export const ImageSwiper = (props: Props) => {
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation])
     while (!mainSwipeRef.current || !mainSwipeRef.current.swiper) {
-      await new Promise(resolve => setTimeout(resolve, 10));  // wait 10 ms
+      await new Promise((resolve) => setTimeout(resolve, 10)) // wait 10 ms
     }
-    mainSwipeRef.current.swiper.on('slideChange', handleSlideChange);
+    mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
   })
-
 
   onMount(() => {
     const updateDirection = () => {

@@ -64,12 +64,12 @@ export const AuthorView = (props: Props) => {
   })
 
   createEffect(async () => {
-    if(Object.keys(authorEntities()).includes(props.authorSlug) && !author()?.id) {
+    if (Object.keys(authorEntities()).includes(props.authorSlug) && !author()?.id) {
       // use preloaded author
       const a = authorEntities()[props.authorSlug]
       setAuthor(a)
       console.debug('[AuthorView] preloaded author:', a)
-    } else if(props.authorSlug || (author()?.id && !author().stat)) {
+    } else if (props.authorSlug || (author()?.id && !author().stat)) {
       // load author
       const a = await loadAuthor({ slug: props.authorSlug, author_id: author()?.id })
       setAuthor(a)

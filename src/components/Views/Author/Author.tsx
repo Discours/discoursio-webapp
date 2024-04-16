@@ -69,7 +69,7 @@ export const AuthorView = (props: Props) => {
       const a = authorEntities()[props.authorSlug]
       setAuthor(a)
       console.debug('[AuthorView] preloaded author:', a)
-    } else if (props.authorSlug && !author().stat) {
+    } else if (props.authorSlug && !author()?.stat) {
       // load author
       const a = await loadAuthor({ slug: props.authorSlug, author_id: author()?.id })
       setAuthor(a)

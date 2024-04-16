@@ -53,32 +53,26 @@ export const AuthorView = (props: Props) => {
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
-  // current author
   createEffect(async () => {
-    await loadAuthor({ slug: props.authorSlug })
-  })
-  createEffect(() => {
     if (props.authorSlug && session()?.user?.app_data?.profile?.slug === props.authorSlug) {
-      console.info('my own profile')
+      console.info('preloaded my own profile')
       const { profile, authors, topics } = session().user.app_data
       setFollowers(myFollowers)
       setAuthor(profile)
       setFollowing([...authors, ...topics])
-    } else {
-      try {
-        const a = authorEntities()[props.authorSlug]
-        setAuthor(a)
-        // TODO: add following data retrieval
-        console.debug('[Author] expecting following data fetched')
-      } catch (error) {
-        console.debug(error)
-      }
     }
   })
 
   createEffect(async () => {
-    if (author()?.id && !author().stat) {
-      const a = await loadAuthor({ slug: '', author_id: author().id })
+    if(Object.keys(authorEntities()).includes(props.authorSlug) && !author()?.id) {
+      // use preloaded author
+      const a = authorEntities()[props.authorSlug]
+      setAuthor(a)
+      console.debug('[AuthorView] preloaded author:', a)
+    } else if(props.authorSlug || (author()?.id && !author().stat)) {
+      // load author
+      const a = await loadAuthor({ slug: props.authorSlug, author_id: author()?.id })
+      setAuthor(a)
       console.debug('[AuthorView] loaded author:', a)
     }
   })

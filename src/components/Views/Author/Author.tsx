@@ -53,8 +53,10 @@ export const AuthorView = (props: Props) => {
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
-  createEffect(async () => {
-    if (props.authorSlug && session()?.user?.app_data?.profile?.slug === props.authorSlug) {
+  const [sessionChecked, setSessionChecked] = createSignal(false)
+  createEffect(() => {
+    if (!sessionChecked() && props.authorSlug && session()?.user?.app_data?.profile?.slug === props.authorSlug) {
+      setSessionChecked(true)
       console.info('preloaded my own profile')
       const { profile, authors, topics } = session().user.app_data
       setFollowers(myFollowers)
@@ -63,35 +65,22 @@ export const AuthorView = (props: Props) => {
     }
   })
 
-  createEffect(async () => {
-    if (Object.keys(authorEntities()).includes(props.authorSlug) && !author()?.id) {
-      // use preloaded author
-      const a = authorEntities()[props.authorSlug]
-      setAuthor(a)
-      console.debug('[AuthorView] preloaded author:', a)
-    } else if (props.authorSlug && !author()?.stat) {
-      // load author
-      const a = await loadAuthor({ slug: props.authorSlug, author_id: author()?.id })
-      setAuthor(a)
-      console.debug('[AuthorView] loaded author:', a)
-    }
-  })
-
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
   const fetchData = async (slug) => {
     try {
-      const [subscriptionsResult, followersResult] = await Promise.all([
+      const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
         apiClient.getAuthorFollowers({ slug }),
+        loadAuthor({ slug })
       ])
-
       const { authors, topics } = subscriptionsResult
+      setAuthor(authorResult)
       setFollowing([...(authors || []), ...(topics || [])])
       setFollowers(followersResult || [])
 
-      console.info('[components.Author] following data loaded')
+      console.info('[components.Author] data loaded')
     } catch (error) {
       console.error('[components.Author] fetch error', error)
     }
@@ -102,14 +91,6 @@ export const AuthorView = (props: Props) => {
       setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
     }
   }
-
-  onMount(() => {
-    fetchData(props.authorSlug)
-
-    if (!modal) {
-      hideModal()
-    }
-  })
 
   const loadMore = async () => {
     saveScrollPosition()
@@ -123,7 +104,9 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(() => {
+    if (!modal) hideModal()
     checkBioHeight()
+    fetchData(props.authorSlug)
 
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {

@@ -55,13 +55,20 @@ export const AuthorView = (props: Props) => {
 
   const [sessionChecked, setSessionChecked] = createSignal(false)
   createEffect(() => {
-    if (!sessionChecked() && props.authorSlug && session()?.user?.app_data?.profile?.slug === props.authorSlug) {
+    if (
+      !sessionChecked() &&
+      props.authorSlug &&
+      session()?.user?.app_data?.profile?.slug === props.authorSlug
+    ) {
       setSessionChecked(true)
-      console.info('preloaded my own profile')
-      const { profile, authors, topics } = session().user.app_data
-      setFollowers(myFollowers)
-      setAuthor(profile)
-      setFollowing([...authors, ...topics])
+      const appdata = session()?.user.app_data
+      if (appdata) {
+        console.info('preloaded my own profile')
+        const { authors, followers, topics } = appdata
+        setFollowers(myFollowers)
+        setAuthor(profile)
+        setFollowing([...authors, ...topics])
+      }
     }
   })
 
@@ -73,7 +80,7 @@ export const AuthorView = (props: Props) => {
       const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
         apiClient.getAuthorFollowers({ slug }),
-        loadAuthor({ slug })
+        loadAuthor({ slug }),
       ])
       const { authors, topics } = subscriptionsResult
       setAuthor(authorResult)

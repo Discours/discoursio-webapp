@@ -220,10 +220,13 @@ export const SessionProvider = (props: {
         }
 
         try {
-          const { profile } = session().user.app_data
-          setAuthor(profile)
-          addAuthors([profile])
-          if (!profile) loadAuthor()
+          const appdata = session()?.user.app_data
+          if (appdata) {
+            const { profile } = appdata
+            setAuthor(profile)
+            addAuthors([profile])
+            if (!profile) loadAuthor()
+          }
         } catch (e) {
           console.error(e)
         }

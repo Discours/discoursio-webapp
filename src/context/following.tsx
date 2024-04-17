@@ -80,10 +80,13 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   createEffect(() => {
     if (author()) {
       try {
-        const { authors, followers, topics } = session().user.app_data
-        setSubscriptions({ authors, topics })
-        setFollowers(followers)
-        if (!authors) fetchData()
+        const appdata = session()?.user.app_data
+        if (appdata) {
+          const { authors, followers, topics } = appdata
+          setSubscriptions({ authors, topics })
+          setFollowers(followers)
+          if (!authors) fetchData()
+        }
       } catch (e) {
         console.error(e)
       }

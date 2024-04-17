@@ -64,7 +64,7 @@ export const AuthorView = (props: Props) => {
       const appdata = session()?.user.app_data
       if (appdata) {
         console.info('preloaded my own profile')
-        const { authors, followers, topics } = appdata
+        const { authors, profile, topics } = appdata
         setFollowers(myFollowers)
         setAuthor(profile)
         setFollowing([...authors, ...topics])

@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
-import { Manipulation, Navigation, Pagination } from 'swiper/modules'
+import { Manipulation, Navigation, Pagination, HashNavigation } from 'swiper/modules'
 import { throttle } from 'throttle-debounce'
 
 import { MediaItem } from '../../../pages/types'
@@ -13,6 +13,7 @@ import { Lightbox } from '../Lightbox'
 import { SwiperRef } from './swiper'
 
 import styles from './Swiper.module.scss'
+import { router } from "../../../stores/router";
 
 type Props = {
   images: MediaItem[]
@@ -33,8 +34,10 @@ export const ImageSwiper = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
 
   const handleSlideChange = () => {
-    thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
-    setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
+    const activeIndex = mainSwipeRef.current.swiper.activeIndex;
+    thumbSwipeRef.current.swiper.slideTo(activeIndex);
+    setSlideIndex(activeIndex);
+    window.location.hash = `${activeIndex + 1}`
   }
 
   createEffect(
@@ -51,11 +54,20 @@ export const ImageSwiper = (props: Props) => {
   onMount(async () => {
     const { register } = await import('swiper/element/bundle')
     register()
-    SwiperCore.use([Pagination, Navigation, Manipulation])
+    SwiperCore.use([Pagination, Navigation, Manipulation, HashNavigation])
     while (!mainSwipeRef.current || !mainSwipeRef.current.swiper) {
       await new Promise((resolve) => setTimeout(resolve, 10)) // wait 10 ms
     }
     mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
+
+    const initialSlide = parseInt(window.location.hash.replace('#', ''), 10) - 1
+    if (initialSlide && !isNaN(initialSlide) && initialSlide < props.images.length) {
+      mainSwipeRef.current.swiper.slideTo(initialSlide, 0)
+    } else {
+      window.location.hash = '1'
+    }
+
+    mainSwipeRef.current.swiper.init()
   })
 
   onMount(() => {
@@ -106,12 +118,18 @@ export const ImageSwiper = (props: Props) => {
                 watch-slides-visibility={true}
                 direction={'horizontal'}
                 slides-per-group-auto={true}
+                hash-navigation={{
+                  watchState: true,
+                }}
               >
                 <For each={props.images}>
                   {(slide, index) => (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
+                    <swiper-slide
+                      virtual-index={index()}
+                      style={{ width: 'auto', height: 'auto' }}
+                    >
                       <div
                         class={clsx(styles.imageThumb)}
                         style={{
@@ -152,7 +170,7 @@ export const ImageSwiper = (props: Props) => {
                 {(slide, index) => (
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
-                  <swiper-slide lazy="true" virtual-index={index()}>
+                  <swiper-slide lazy="true" virtual-index={index()} data-hash={index() + 1}>
                     <div class={styles.image} onClick={handleImageClick}>
                       <Image src={slide.url} alt={slide.title} width={800} />
                     </div>

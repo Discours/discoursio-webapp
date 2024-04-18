@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
-import { Manipulation, Navigation, Pagination, HashNavigation } from 'swiper/modules'
+import { HashNavigation, Manipulation, Navigation, Pagination } from 'swiper/modules'
 import { throttle } from 'throttle-debounce'
 
 import { MediaItem } from '../../../pages/types'
@@ -13,7 +13,6 @@ import { Lightbox } from '../Lightbox'
 import { SwiperRef } from './swiper'
 
 import styles from './Swiper.module.scss'
-import { router } from "../../../stores/router";
 
 type Props = {
   images: MediaItem[]
@@ -34,9 +33,9 @@ export const ImageSwiper = (props: Props) => {
   const [selectedImage, setSelectedImage] = createSignal('')
 
   const handleSlideChange = () => {
-    const activeIndex = mainSwipeRef.current.swiper.activeIndex;
-    thumbSwipeRef.current.swiper.slideTo(activeIndex);
-    setSlideIndex(activeIndex);
+    const activeIndex = mainSwipeRef.current.swiper.activeIndex
+    thumbSwipeRef.current.swiper.slideTo(activeIndex)
+    setSlideIndex(activeIndex)
     window.location.hash = `${activeIndex + 1}`
   }
 
@@ -61,7 +60,7 @@ export const ImageSwiper = (props: Props) => {
     mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
 
     const initialSlide = parseInt(window.location.hash.replace('#', ''), 10) - 1
-    if (initialSlide && !isNaN(initialSlide) && initialSlide < props.images.length) {
+    if (initialSlide && !Number.isNaN(initialSlide) && initialSlide < props.images.length) {
       mainSwipeRef.current.swiper.slideTo(initialSlide, 0)
     } else {
       window.location.hash = '1'
@@ -126,10 +125,7 @@ export const ImageSwiper = (props: Props) => {
                   {(slide, index) => (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    <swiper-slide
-                      virtual-index={index()}
-                      style={{ width: 'auto', height: 'auto' }}
-                    >
+                    <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
                       <div
                         class={clsx(styles.imageThumb)}
                         style={{

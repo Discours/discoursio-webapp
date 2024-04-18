@@ -134,6 +134,7 @@
 
     .counter {
       @include font-size(1.2rem);
+
       @include media-breakpoint-up(sm) {
         top: 477px;
       }

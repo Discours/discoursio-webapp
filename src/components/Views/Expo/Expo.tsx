@@ -10,7 +10,6 @@ import { router } from '../../../stores/router'
 import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
 import { getUnixtime } from '../../../utils/getServerDate'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { splitToPages } from '../../../utils/splitToPages'
 import { ArticleCard } from '../../Feed/ArticleCard'
 import { Button } from '../../_shared/Button'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
@@ -33,6 +32,7 @@ export const Expo = (props: Props) => {
 
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
+  const [articlesEndPage, setArticlesEndPage] = createSignal<number>(PRERENDERED_ARTICLES_COUNT)
 
   const { t } = useLocalize()
 
@@ -137,6 +137,7 @@ export const Expo = (props: Props) => {
 
   const handleLoadMoreClick = () => {
     loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
+    setArticlesEndPage((prev) => prev + LOAD_MORE_PAGE_SIZE)
   }
 
   return (
@@ -224,7 +225,7 @@ export const Expo = (props: Props) => {
             <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
             </Show>
-            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2)}>
+            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2, articlesEndPage())}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard

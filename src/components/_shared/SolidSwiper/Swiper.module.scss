@@ -135,9 +135,13 @@
     .counter {
       @include font-size(1.2rem);
 
+      @include media-breakpoint-up(sm) {
+        top: 477px;
+      }
+
       position: absolute;
       z-index: 2;
-      top: 477px;
+      top: 276px;
       right: 0;
       font-weight: 600;
       padding: 0.2rem 0.8rem;

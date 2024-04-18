@@ -54,6 +54,7 @@ type IframeSize = {
 export type ArticlePageSearchParams = {
   scrollTo: 'comments'
   commentId: string
+  slide?: string
 }
 
 const scrollTo = (el: HTMLElement) => {

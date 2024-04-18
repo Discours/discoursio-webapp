@@ -12,6 +12,8 @@ import { Lightbox } from '../Lightbox'
 
 import { SwiperRef } from './swiper'
 
+import { useRouter } from '../../../stores/router'
+import { ArticlePageSearchParams } from '../../Article/FullArticle'
 import styles from './Swiper.module.scss'
 
 type Props = {
@@ -31,12 +33,13 @@ export const ImageSwiper = (props: Props) => {
   const [slideIndex, setSlideIndex] = createSignal(0)
   const [isMobileView, setIsMobileView] = createSignal(false)
   const [selectedImage, setSelectedImage] = createSignal('')
+  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
 
   const handleSlideChange = () => {
     const activeIndex = mainSwipeRef.current.swiper.activeIndex
     thumbSwipeRef.current.swiper.slideTo(activeIndex)
     setSlideIndex(activeIndex)
-    window.location.hash = `${activeIndex + 1}`
+    changeSearchParams({ slide: `${activeIndex + 1}` })
   }
 
   createEffect(
@@ -58,12 +61,11 @@ export const ImageSwiper = (props: Props) => {
       await new Promise((resolve) => setTimeout(resolve, 10)) // wait 10 ms
     }
     mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
-
-    const initialSlide = parseInt(window.location.hash.replace('#', ''), 10) - 1
+    const initialSlide = parseInt(searchParams().slide) - 1
     if (initialSlide && !Number.isNaN(initialSlide) && initialSlide < props.images.length) {
       mainSwipeRef.current.swiper.slideTo(initialSlide, 0)
     } else {
-      window.location.hash = '1'
+      changeSearchParams({ slide: '1' })
     }
 
     mainSwipeRef.current.swiper.init()

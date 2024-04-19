@@ -16,7 +16,7 @@ jobs:
         run: npm run typecheck
 
       - name: Lint with Biome
-        run: npx biome ci .
+        run: npm run check:code
 
       - name: Lint styles
         run: npm run lint:styles

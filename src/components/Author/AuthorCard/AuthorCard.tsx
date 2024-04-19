@@ -134,7 +134,9 @@ export const AuthorCard = (props: Props) => {
                     )}
                   </For>
                   <div class={styles.subscribersCounter}>
-                    {t('SubscriberWithCount', { count: props.followers.length ?? 0 })}
+                    {t('SubscriberWithCount', {
+                      count: props.followers.length ?? 0,
+                    })}
                   </div>
                 </a>
               </Show>
@@ -169,7 +171,9 @@ export const AuthorCard = (props: Props) => {
                     }}
                   </For>
                   <div class={styles.subscribersCounter}>
-                    {t('SubscriptionWithCount', { count: props?.following.length ?? 0 })}
+                    {t('SubscriptionWithCount', {
+                      count: props?.following.length ?? 0,
+                    })}
                   </div>
                 </a>
               </Show>
@@ -234,7 +238,9 @@ export const AuthorCard = (props: Props) => {
                   title={props.author.name}
                   description={props.author.bio}
                   imageUrl={props.author.pic}
-                  shareUrl={getShareUrl({ pathname: `/author/${props.author.slug}` })}
+                  shareUrl={getShareUrl({
+                    pathname: `/author/${props.author.slug}`,
+                  })}
                   trigger={<Button variant="secondary" value={t('Share')} />}
                 />
               </div>
@@ -270,13 +276,21 @@ export const AuthorCard = (props: Props) => {
             <>
               <h2>{t('Subscriptions')}</h2>
               <ul class="view-switcher">
-                <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'all' })}>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': subscriptionFilter() === 'all',
+                  })}
+                >
                   <button type="button" onClick={() => setSubscriptionFilter('all')}>
                     {t('All')}
                   </button>
                   <span class="view-switcher__counter">{props.following.length}</span>
                 </li>
-                <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'authors' })}>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': subscriptionFilter() === 'authors',
+                  })}
+                >
                   <button type="button" onClick={() => setSubscriptionFilter('authors')}>
                     {t('Authors')}
                   </button>
@@ -284,7 +298,11 @@ export const AuthorCard = (props: Props) => {
                     {props.following.filter((s) => 'name' in s).length}
                   </span>
                 </li>
-                <li class={clsx({ 'view-switcher__item--selected': subscriptionFilter() === 'topics' })}>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': subscriptionFilter() === 'topics',
+                  })}
+                >
                   <button type="button" onClick={() => setSubscriptionFilter('topics')}>
                     {t('Topics')}
                   </button>

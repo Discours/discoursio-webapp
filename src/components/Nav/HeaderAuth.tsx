@@ -227,13 +227,15 @@ export const HeaderAuth = (props: Props) => {
             <Show
               when={isAuthenticatedControlsVisible()}
               fallback={
-                <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
-                  <a href="?m=auth&mode=login">
-                    <span class={styles.textLabel}>{t('Enter')}</span>
-                    <Icon name="key" class={styles.icon} />
-                    {/*<Icon name="user-default" class={clsx(styles.icon, styles.iconHover)} />*/}
-                  </a>
-                </div>
+                <Show when={!isAuthenticated()}>
+                  <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
+                    <a href="?m=auth&mode=login">
+                      <span class={styles.textLabel}>{t('Enter')}</span>
+                      <Icon name="key" class={styles.icon} />
+                      {/*<Icon name="user-default" class={clsx(styles.icon, styles.iconHover)} />*/}
+                    </a>
+                  </div>
+                </Show>
               }
             >
               <Show when={!isSaveButtonVisible()}>

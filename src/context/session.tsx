@@ -1,5 +1,9 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
-import type { AuthModalSource } from '../components/Nav/AuthModal/types'
+import type {
+  AuthModalSearchParams,
+  AuthModalSource,
+  ConfirmEmailSearchParams
+} from "../components/Nav/AuthModal/types";
 import type { Author } from '../graphql/schema/core.gen'
 
 import {
@@ -36,6 +40,7 @@ import { addAuthors } from '../stores/zine/authors'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
+import type { RootSearchParams } from "../pages/types";
 
 const defaultConfig: ConfigType = {
   authorizerURL: 'https://auth.discours.io',
@@ -136,6 +141,7 @@ export const SessionProvider = (props: {
 
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [authError, setAuthError] = createSignal('')
+  const { clearSearchParams } = useRouter<AuthModalSearchParams>()
 
   // Function to load session data
   const sessionData = async () => {
@@ -143,7 +149,7 @@ export const SessionProvider = (props: {
       const s: ApiResponse<AuthToken> = await authorizer().getSession()
       if (s?.data) {
         console.info('[context.session] loading session', s)
-
+        clearSearchParams()
         // Set session expiration time in local storage
         const expires_at = new Date(Date.now() + s.data.expires_in * 1000)
         localStorage.setItem('expires_at', `${expires_at.getTime()}`)
@@ -379,6 +385,7 @@ export const SessionProvider = (props: {
   }
 
   const isAuthenticated = createMemo(() => Boolean(author()))
+
   const actions = {
     loadSession,
     requireAuthentication,

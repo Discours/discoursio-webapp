@@ -264,6 +264,7 @@ export const ProfileSettings = () => {
                         type="text"
                         name="username"
                         id="username"
+                        autocomplete="one-time-code"
                         placeholder={t('Name')}
                         onInput={(event) => updateFormField('name', event.currentTarget.value)}
                         value={form.name}
@@ -289,6 +290,7 @@ export const ProfileSettings = () => {
                             type="text"
                             name="user-address"
                             id="user-address"
+                            autocomplete="one-time-code2"
                             onInput={(event) => updateFormField('slug', event.currentTarget.value)}
                             value={form.slug}
                             ref={(el) => (slugInputRef.current = el)}

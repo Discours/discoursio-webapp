@@ -1,9 +1,5 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
-import type {
-  AuthModalSearchParams,
-  AuthModalSource,
-  ConfirmEmailSearchParams
-} from "../components/Nav/AuthModal/types";
+import type { AuthModalSearchParams, AuthModalSource } from '../components/Nav/AuthModal/types'
 import type { Author } from '../graphql/schema/core.gen'
 
 import {
@@ -33,14 +29,12 @@ import {
 
 import { inboxClient } from '../graphql/client/chat'
 import { apiClient } from '../graphql/client/core'
-import { notifierClient } from '../graphql/client/notifier'
 import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 import { addAuthors } from '../stores/zine/authors'
 
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
-import type { RootSearchParams } from "../pages/types";
 
 const defaultConfig: ConfigType = {
   authorizerURL: 'https://auth.discours.io',

@@ -320,3 +320,14 @@ h5 {
     margin-bottom: 0;
   }
 }
+
+// disable last pass extention
+
+div[data-lastpass-icon-root="true"] {
+  opacity: 0 !important;
+}
+
+div[data-lastpass-infield="true"] {
+  opacity: 0 !important;
+}
+

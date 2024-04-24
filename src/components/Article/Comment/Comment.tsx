@@ -51,7 +51,7 @@ export const Comment = (props: Props) => {
       (props.comment?.created_by?.slug === author().slug || session()?.user?.roles.includes('editor')),
   )
 
-  const body = () => (editedBody() ? editedBody().trim() : props.comment.body.trim() || '')
+  const body = createMemo(() => (editedBody() ? editedBody().trim() : props.comment.body.trim() || ''))
 
   const remove = async () => {
     if (props.comment?.id) {

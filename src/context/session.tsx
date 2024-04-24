@@ -1,5 +1,5 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
-import type { AuthModalSource } from '../components/Nav/AuthModal/types'
+import type { AuthModalSearchParams, AuthModalSource } from '../components/Nav/AuthModal/types'
 import type { Author } from '../graphql/schema/core.gen'
 
 import {
@@ -29,7 +29,6 @@ import {
 
 import { inboxClient } from '../graphql/client/chat'
 import { apiClient } from '../graphql/client/core'
-import { notifierClient } from '../graphql/client/notifier'
 import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 import { addAuthors } from '../stores/zine/authors'
@@ -136,6 +135,7 @@ export const SessionProvider = (props: {
 
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [authError, setAuthError] = createSignal('')
+  const { clearSearchParams } = useRouter<AuthModalSearchParams>()
 
   // Function to load session data
   const sessionData = async () => {
@@ -143,7 +143,7 @@ export const SessionProvider = (props: {
       const s: ApiResponse<AuthToken> = await authorizer().getSession()
       if (s?.data) {
         console.info('[context.session] loading session', s)
-
+        clearSearchParams()
         // Set session expiration time in local storage
         const expires_at = new Date(Date.now() + s.data.expires_in * 1000)
         localStorage.setItem('expires_at', `${expires_at.getTime()}`)
@@ -199,6 +199,7 @@ export const SessionProvider = (props: {
   }
 
   onCleanup(() => clearTimeout(minuteLater))
+
   const authorData = async () => {
     const u = session()?.user
     return u ? (await apiClient.getAuthorId({ user: u.id.trim() })) || null : null
@@ -217,7 +218,18 @@ export const SessionProvider = (props: {
           apiClient.connect(token)
           inboxClient.connect(token)
         }
-        if (!author()) loadAuthor()
+
+        try {
+          const appdata = session()?.user.app_data
+          if (appdata) {
+            const { profile } = appdata
+            setAuthor(profile)
+            addAuthors([profile])
+            if (!profile) loadAuthor()
+          }
+        } catch (e) {
+          console.error(e)
+        }
 
         setIsSessionLoaded(true)
       }
@@ -263,7 +275,6 @@ export const SessionProvider = (props: {
       () => {
         props.onStateChangeCallback(session())
       },
-      { defer: true },
     ),
   )
 
@@ -368,6 +379,7 @@ export const SessionProvider = (props: {
   }
 
   const isAuthenticated = createMemo(() => Boolean(author()))
+
   const actions = {
     loadSession,
     requireAuthentication,

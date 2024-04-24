@@ -31,11 +31,13 @@ export const ImageSwiper = (props: Props) => {
   const [slideIndex, setSlideIndex] = createSignal(0)
   const [isMobileView, setIsMobileView] = createSignal(false)
   const [selectedImage, setSelectedImage] = createSignal('')
+  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
 
   const handleSlideChange = () => {
-    console.log('%c!!! activeIndex:', 'color: #bada55', mainSwipeRef.current.swiper.activeIndex)
-    thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
-    setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
+    const activeIndex = mainSwipeRef.current.swiper.activeIndex
+    thumbSwipeRef.current.swiper.slideTo(activeIndex)
+    setSlideIndex(activeIndex)
+    changeSearchParams({ slide: `${activeIndex + 1}` })
   }
 
   createEffect(
@@ -49,25 +51,23 @@ export const ImageSwiper = (props: Props) => {
     ),
   )
 
-  createEffect(
-    on(
-      () => mainSwipeRef?.current?.swiper?.realIndex,
-      () => {
-        console.log('%c!!! activeIndex:', 'color: #bada55', mainSwipeRef?.current?.swiper?.realIndex)
-      },
-
-    ),
-  )
-
   onMount(async () => {
     const { register } = await import('swiper/element/bundle')
     register()
-    SwiperCore.use([Pagination, Navigation, Manipulation])
-    if (mainSwipeRef.current?.swiper) {
-      mainSwipeRef.current.swiper.on('slideChange',handleSlideChange)
+    SwiperCore.use([Pagination, Navigation, Manipulation, HashNavigation])
+    while (!mainSwipeRef.current || !mainSwipeRef.current.swiper) {
+      await new Promise((resolve) => setTimeout(resolve, 10)) // wait 10 ms
     }
-  })
+    mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
+    const initialSlide = parseInt(searchParams().slide) - 1
+    if (initialSlide && !Number.isNaN(initialSlide) && initialSlide < props.images.length) {
+      mainSwipeRef.current.swiper.slideTo(initialSlide, 0)
+    } else {
+      changeSearchParams({ slide: '1' })
+    }
 
+    mainSwipeRef.current.swiper.init()
+  })
 
   onMount(() => {
     const updateDirection = () => {
@@ -108,25 +108,28 @@ export const ImageSwiper = (props: Props) => {
           <div class={clsx(styles.holder, styles.thumbsHolder)}>
             <div class={styles.thumbs}>
               <swiper-container
-                class={"thumbSwiper"}
+                class={'thumbSwiper'}
                 ref={(el) => (thumbSwipeRef.current = el)}
-                slides-per-view={"auto"}
+                slides-per-view={'auto'}
                 space-between={isMobileView() ? 20 : 10}
                 auto-scroll-offset={1}
                 watch-overflow={true}
                 watch-slides-visibility={true}
-                direction={"horizontal"}
+                direction={'horizontal'}
                 slides-per-group-auto={true}
+                hash-navigation={{
+                  watchState: true,
+                }}
               >
                 <For each={props.images}>
                   {(slide, index) => (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    <swiper-slide virtual-index={index()} style={{ width: "auto", height: "auto" }}>
+                    <swiper-slide virtual-index={index()} style={{ width: 'auto', height: 'auto' }}>
                       <div
                         class={clsx(styles.imageThumb)}
                         style={{
-                          "background-image": `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`,
+                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`,
                         }}
                       />
                     </swiper-slide>
@@ -155,7 +158,7 @@ export const ImageSwiper = (props: Props) => {
             <swiper-container
               ref={(el) => (mainSwipeRef.current = el)}
               slides-per-view={1}
-              thumbs-swiper={".thumbSwiper"}
+              thumbs-swiper={'.thumbSwiper'}
               observer={true}
               space-between={isMobileView() ? 20 : 10}
             >
@@ -163,7 +166,7 @@ export const ImageSwiper = (props: Props) => {
                 {(slide, index) => (
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
-                  <swiper-slide lazy="true" virtual-index={index()}>
+                  <swiper-slide lazy="true" virtual-index={index()} data-hash={index() + 1}>
                     <div class={styles.image} onClick={handleImageClick}>
                       <Image src={slide.url} alt={slide.title} width={800} />
                     </div>
@@ -209,5 +212,5 @@ export const ImageSwiper = (props: Props) => {
         <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
       </Show>
     </div>
-  );
+  )
 }

@@ -54,6 +54,13 @@ type FeedSearchParams = {
   visibility: VisibilityMode
 }
 
+type Props = {
+  loadShouts: (options: LoadShoutsOptions) => Promise<{
+    hasMore: boolean
+    newShouts: Shout[]
+  }>
+}
+
 const getFromDate = (period: FeedPeriod): number => {
   const now = new Date()
   let d: Date = now
@@ -74,18 +81,10 @@ const getFromDate = (period: FeedPeriod): number => {
   return Math.floor(d.getTime() / 1000)
 }
 
-type Props = {
-  loadShouts: (options: LoadShoutsOptions) => Promise<{
-    hasMore: boolean
-    newShouts: Shout[]
-  }>
-}
-
 export const FeedView = (props: Props) => {
   const { t } = useLocalize()
 
   const monthPeriod: PeriodItem = { value: 'month', title: t('This month') }
-  const visibilityAll = { value: 'featured', title: t('All') }
 
   const periods: PeriodItem[] = [
     { value: 'week', title: t('This week') },
@@ -121,7 +120,7 @@ export const FeedView = (props: Props) => {
   const currentVisibility = createMemo(() => {
     const visibility = visibilities.find((v) => v.value === searchParams().visibility)
     if (!visibility) {
-      return visibilityAll
+      return visibilities[0]
     }
     return visibility
   })
@@ -172,6 +171,7 @@ export const FeedView = (props: Props) => {
     }
 
     const visibilityMode = searchParams().visibility
+
     if (visibilityMode === 'all') {
       options.filters = { ...options.filters }
     } else if (visibilityMode) {
@@ -185,6 +185,7 @@ export const FeedView = (props: Props) => {
       const period = searchParams().period || 'month'
       options.filters = { after: getFromDate(period) }
     }
+
     return props.loadShouts(options)
   }
 

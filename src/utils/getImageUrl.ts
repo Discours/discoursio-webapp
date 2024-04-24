@@ -3,10 +3,10 @@ import { cdnUrl, thumborUrl } from './config'
 const URL_CONFIG = {
   cdnUrl: cdnUrl,
   thumborUrl: `${thumborUrl}/unsafe/`,
-  audioSubfolder: "audio",
-  imageSubfolder: "image",
-  productionFolder: "production/",
-};
+  audioSubfolder: 'audio',
+  imageSubfolder: 'image',
+  productionFolder: 'production/',
+}
 
 const AUDIO_EXTENSIONS = new Set(['wav', 'mp3', 'ogg', 'aif', 'flac'])
 

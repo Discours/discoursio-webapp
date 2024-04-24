@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
-import { Manipulation, Navigation, Pagination } from 'swiper/modules'
+import { HashNavigation, Manipulation, Navigation, Pagination } from 'swiper/modules'
 import { throttle } from 'throttle-debounce'
 
 import { MediaItem } from '../../../pages/types'
@@ -12,6 +12,8 @@ import { Lightbox } from '../Lightbox'
 
 import { SwiperRef } from './swiper'
 
+import { useRouter } from '../../../stores/router'
+import { ArticlePageSearchParams } from '../../Article/FullArticle'
 import styles from './Swiper.module.scss'
 
 type Props = {

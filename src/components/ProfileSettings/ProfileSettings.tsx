@@ -1,7 +1,18 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { For, Match, Show, Switch, createEffect, createSignal, lazy, onCleanup, onMount } from 'solid-js'
+import {
+  For,
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createSignal,
+  lazy,
+  on,
+  onCleanup,
+  onMount,
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { useConfirm } from '../../context/confirm'
@@ -156,12 +167,15 @@ export const ProfileSettings = () => {
     onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
 
-  createEffect(() => {
-    if (!deepEqual(form, prevForm)) {
-      setIsFloatingPanelVisible(true)
-    }
-  })
-
+  createEffect(
+    on(
+      () => deepEqual(form, prevForm),
+      () => {
+        setIsFloatingPanelVisible(!deepEqual(form, prevForm))
+      },
+      { defer: true },
+    ),
+  )
   const handleDeleteSocialLink = (link) => {
     updateFormField('links', link, true)
   }
@@ -181,7 +195,7 @@ export const ProfileSettings = () => {
                 <div class="col-md-20 col-lg-18 col-xl-16">
                   <h1>{t('Profile settings')}</h1>
                   <p class="description">{t('Here you can customize your profile the way you want.')}</p>
-                  <form enctype="multipart/form-data">
+                  <form enctype="multipart/form-data" autocomplete="off">
                     <h4>{t('Userpic')}</h4>
                     <div class="pretty-form__item">
                       <div
@@ -248,14 +262,16 @@ export const ProfileSettings = () => {
                     <div class="pretty-form__item">
                       <input
                         type="text"
-                        name="username"
-                        id="username"
+                        name="nameOfUser"
+                        id="nameOfUser"
+                        data-lpignore="true"
+                        autocomplete="one-time-code"
                         placeholder={t('Name')}
                         onInput={(event) => updateFormField('name', event.currentTarget.value)}
                         value={form.name}
                         ref={(el) => (nameInputRef.current = el)}
                       />
-                      <label for="username">{t('Name')}</label>
+                      <label for="nameOfUser">{t('Name')}</label>
                       <Show when={nameError()}>
                         <div
                           style={{ position: 'absolute', 'margin-top': '-4px' }}
@@ -275,6 +291,8 @@ export const ProfileSettings = () => {
                             type="text"
                             name="user-address"
                             id="user-address"
+                            data-lpignore="true"
+                            autocomplete="one-time-code2"
                             onInput={(event) => updateFormField('slug', event.currentTarget.value)}
                             value={form.slug}
                             ref={(el) => (slugInputRef.current = el)}

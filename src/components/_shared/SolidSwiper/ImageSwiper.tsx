@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
-import { Manipulation, Navigation, Pagination } from 'swiper/modules'
+import { HashNavigation, Manipulation, Navigation, Pagination } from 'swiper/modules'
 import { throttle } from 'throttle-debounce'
 
 import { MediaItem } from '../../../pages/types'
@@ -12,6 +12,8 @@ import { Lightbox } from '../Lightbox'
 
 import { SwiperRef } from './swiper'
 
+import { useRouter } from '../../../stores/router'
+import { ArticlePageSearchParams } from '../../Article/FullArticle'
 import styles from './Swiper.module.scss'
 
 type Props = {
@@ -31,10 +33,13 @@ export const ImageSwiper = (props: Props) => {
   const [slideIndex, setSlideIndex] = createSignal(0)
   const [isMobileView, setIsMobileView] = createSignal(false)
   const [selectedImage, setSelectedImage] = createSignal('')
+  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
 
   const handleSlideChange = () => {
-    thumbSwipeRef.current.swiper.slideTo(mainSwipeRef.current.swiper.activeIndex)
-    setSlideIndex(mainSwipeRef.current.swiper.activeIndex)
+    const activeIndex = mainSwipeRef.current.swiper.activeIndex
+    thumbSwipeRef.current.swiper.slideTo(activeIndex)
+    setSlideIndex(activeIndex)
+    changeSearchParams({ slide: `${activeIndex + 1}` })
   }
 
   createEffect(
@@ -51,8 +56,19 @@ export const ImageSwiper = (props: Props) => {
   onMount(async () => {
     const { register } = await import('swiper/element/bundle')
     register()
-    SwiperCore.use([Pagination, Navigation, Manipulation])
-    mainSwipeRef.current?.swiper?.on('slideChange', handleSlideChange)
+    SwiperCore.use([Pagination, Navigation, Manipulation, HashNavigation])
+    while (!mainSwipeRef.current || !mainSwipeRef.current.swiper) {
+      await new Promise((resolve) => setTimeout(resolve, 10)) // wait 10 ms
+    }
+    mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
+    const initialSlide = parseInt(searchParams().slide) - 1
+    if (initialSlide && !Number.isNaN(initialSlide) && initialSlide < props.images.length) {
+      mainSwipeRef.current.swiper.slideTo(initialSlide, 0)
+    } else {
+      changeSearchParams({ slide: '1' })
+    }
+
+    mainSwipeRef.current.swiper.init()
   })
 
   onMount(() => {
@@ -103,6 +119,9 @@ export const ImageSwiper = (props: Props) => {
                 watch-slides-visibility={true}
                 direction={'horizontal'}
                 slides-per-group-auto={true}
+                hash-navigation={{
+                  watchState: true,
+                }}
               >
                 <For each={props.images}>
                   {(slide, index) => (
@@ -149,7 +168,7 @@ export const ImageSwiper = (props: Props) => {
                 {(slide, index) => (
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
-                  <swiper-slide lazy="true" virtual-index={index()}>
+                  <swiper-slide lazy="true" virtual-index={index()} data-hash={index() + 1}>
                     <div class={styles.image} onClick={handleImageClick}>
                       <Image src={slide.url} alt={slide.title} width={800} />
                     </div>

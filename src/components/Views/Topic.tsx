@@ -48,8 +48,6 @@ export const TopicView = (props: Props) => {
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
-  console.log('%c!!! :', 'color: #bada55', sortedArticles())
-
   const [topic, setTopic] = createSignal<Topic>()
 
   createEffect(() => {
@@ -59,7 +57,7 @@ export const TopicView = (props: Props) => {
     }
   })
 
-  const loadRandomTopArticles = async (topic: string) => {
+  const loadFavoriteTopArticles = async (topic: string) => {
     const options: LoadShoutsOptions = {
       filters: { featured: true, topic: topic },
       limit: 10,
@@ -69,7 +67,7 @@ export const TopicView = (props: Props) => {
     setFavoriteTopArticles(result)
   }
 
-  const loadRandomTopMonthArticles = async (topic: string) => {
+  const loadReactedTopMonthArticles = async (topic: string) => {
     const now = new Date()
     const after = getUnixtime(new Date(now.setMonth(now.getMonth() - 1)))
 
@@ -80,16 +78,19 @@ export const TopicView = (props: Props) => {
     }
 
     const result = await apiClient.getRandomTopShouts({ options })
+
     setReactedTopMonthArticles(result)
+  }
+
+  const loadRandom = () => {
+    loadFavoriteTopArticles(topic()?.slug)
+    loadReactedTopMonthArticles(topic()?.slug)
   }
 
   createEffect(
     on(
       () => topic(),
-      () => {
-        loadRandomTopArticles(topic()?.slug)
-        loadRandomTopMonthArticles(topic()?.slug)
-      },
+      () => loadRandom(),
       { defer: true },
     ),
   )
@@ -118,6 +119,7 @@ export const TopicView = (props: Props) => {
   }
 
   onMount(() => {
+    loadRandom()
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
     }

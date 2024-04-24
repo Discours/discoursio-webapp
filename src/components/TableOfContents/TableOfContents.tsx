@@ -17,7 +17,7 @@ interface Props {
 
 const isInViewport = (el: Element): boolean => {
   const rect = el.getBoundingClientRect()
-  return rect.top <= DEFAULT_HEADER_OFFSET
+  return rect.top <= DEFAULT_HEADER_OFFSET + 24 // default offset + 1.5em (default header margin-top)
 }
 const scrollToHeader = (element) => {
   window.scrollTo({

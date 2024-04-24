@@ -128,7 +128,7 @@ export const AuthorView = (props: Props) => {
 
   const fetchComments = async (commenter: Author) => {
     const data = await apiClient.getReactionsBy({
-      by: { comment: false, created_by: commenter.id },
+      by: { comment: true, created_by: commenter.id },
     })
     setCommented(data)
   }

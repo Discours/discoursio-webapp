@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
@@ -38,14 +38,18 @@ export const TopicCard = (props: TopicProps) => {
     capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
   )
   const { author, requireAuthentication } = useSession()
-  const { setFollowing, loading: subLoading } = useFollowing()
-  const [followed, setFollowed] = createSignal()
+  const [isSubscribed, setIsSubscribed] = createSignal()
+  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
+
+  createEffect(() => {
+    if (!subscriptions || !props.topic) return
+    const subscribed = subscriptions.topics?.some((topics) => topics.id === props.topic?.id)
+    setIsSubscribed(subscribed)
+  })
 
   const handleFollowClick = () => {
-    const value = !followed()
     requireAuthentication(() => {
-      setFollowed(value)
-      setFollowing(FollowingEntity.Topic, props.topic.slug, value)
+      follow(FollowingEntity.Topic, props.topic.slug)
     }, 'subscribe')
   }
 
@@ -53,12 +57,12 @@ export const TopicCard = (props: TopicProps) => {
     return (
       <>
         <Show when={props.iconButton}>
-          <Show when={followed()} fallback="+">
+          <Show when={isSubscribed()} fallback="+">
             <Icon name="check-subscribed" />
           </Show>
         </Show>
         <Show when={!props.iconButton}>
-          <Show when={followed()} fallback={t('Follow')}>
+          <Show when={isSubscribed()} fallback={t('Follow')}>
             <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
             <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
           </Show>
@@ -130,7 +134,7 @@ export const TopicCard = (props: TopicProps) => {
                 fallback={
                   <CheckButton
                     text={t('Follow')}
-                    checked={Boolean(followed())}
+                    checked={Boolean(isSubscribed())}
                     onClick={handleFollowClick}
                   />
                 }
@@ -142,10 +146,10 @@ export const TopicCard = (props: TopicProps) => {
                   onClick={handleFollowClick}
                   isSubscribeButton={true}
                   class={clsx(styles.actionButton, {
-                    [styles.isSubscribing]: subLoading(),
-                    [stylesButton.subscribed]: followed(),
+                    [styles.isSubscribing]:
+                      subscribeInAction()?.slug === props.topic.slug ? subscribeInAction().type : undefined,
+                    [stylesButton.subscribed]: isSubscribed(),
                   })}
-                  // disabled={subLoading()}
                 />
               </Show>
             </Show>

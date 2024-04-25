@@ -3,7 +3,7 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -75,7 +75,7 @@ export const AuthorView = (props: Props) => {
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
-  const fetchData = async (slug) => {
+  const fetchData = async (slug: string) => {
     try {
       const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
@@ -118,7 +118,6 @@ export const AuthorView = (props: Props) => {
     // pagination
     if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
-      loadSubscriptions()
     }
   })
 
@@ -135,6 +134,7 @@ export const AuthorView = (props: Props) => {
 
   createEffect(() => {
     if (author()) {
+      fetchData(author().slug)
       fetchComments(author())
     }
   })

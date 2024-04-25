@@ -2,7 +2,7 @@ import { Accessor, JSX, createContext, createEffect, createMemo, createSignal, u
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { Author, AuthorFollowsResult, FollowingEntity } from '../graphql/schema/core.gen'
+import { Author, AuthorFollowsResult, FollowingEntity, Community, Topic } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 
@@ -64,6 +64,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     console.info('[context.following] subs:', subscriptions)
   })
 
+  const [subscribeInAction, setSubscribeInAction] = createSignal<SubscribeAction>()
   const follow = async (what: FollowingEntity, slug: string) => {
     if (!author()) return
     setSubscribeInAction({ slug, type: 'subscribe' })

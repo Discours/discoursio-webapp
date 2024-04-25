@@ -75,7 +75,7 @@ export const AuthorView = (props: Props) => {
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
-  const fetchData = async (author: Author) => {
+  const fetchData = async (slug: string) => {
     try {
       const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
@@ -134,7 +134,7 @@ export const AuthorView = (props: Props) => {
 
   createEffect(() => {
     if (author()) {
-      fetchData(author())
+      fetchData(author().slug)
       fetchComments(author())
     }
   })

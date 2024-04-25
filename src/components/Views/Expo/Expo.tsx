@@ -26,14 +26,11 @@ export const PRERENDERED_ARTICLES_COUNT = 36
 const LOAD_MORE_PAGE_SIZE = 12
 
 export const Expo = (props: Props) => {
+  const { t } = useLocalize()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
   const [articlesEndPage, setArticlesEndPage] = createSignal<number>(PRERENDERED_ARTICLES_COUNT)
-
-  const { t } = useLocalize()
-
   const [expoShouts, setExpoShouts] = createSignal<Shout[]>([])
   const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
     const filters = { ...additionalFilters }
@@ -107,8 +104,10 @@ export const Expo = (props: Props) => {
       () => props.layout,
       () => {
         setExpoShouts([])
+        setIsLoadMoreButtonVisible(false)
         setFavoriteTopArticles([])
         setReactedTopMonthArticles([])
+        setArticlesEndPage(PRERENDERED_ARTICLES_COUNT)
         loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
         loadRandomTopArticles()
         loadRandomTopMonthArticles()

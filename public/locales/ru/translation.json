@@ -555,5 +555,7 @@
   "yesterday": "вчера",
   "Failed to delete comment": "Не удалось удалить комментарий",
   "It's OK. Just enter your email to receive a link to change your password": "Ничего страшного. Просто укажите свою почту, чтобы получить ссылку для смены пароля",
-  "Restore password": "Восстановить пароль"
+  "Restore password": "Восстановить пароль",
+  "Subscribing...": "Подписываем...",
+  "Unsubscribing...": "Отписываем..."
 }

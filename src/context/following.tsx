@@ -2,7 +2,7 @@ import { Accessor, JSX, createContext, createEffect, createMemo, createSignal, u
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
-import { Author, AuthorFollowsResult, FollowingEntity, Community, Topic } from '../graphql/schema/core.gen'
+import { Author, AuthorFollowsResult, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
 
 import { useSession } from './session'
 

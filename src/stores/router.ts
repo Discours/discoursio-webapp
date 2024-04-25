@@ -114,8 +114,8 @@ const handleClientRouteLinkClick = async (event) => {
   }
 
   if (url.hash) {
-    scrollToHash(url.hash)
-    return
+    // scrollToHash(url.hash)
+    // return
   }
 
   window.scrollTo({

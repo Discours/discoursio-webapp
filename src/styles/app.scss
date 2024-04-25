@@ -588,6 +588,7 @@ figure {
     display: block;
     max-height: 90vh;
     margin: auto;
+    width: 100%;
   }
 }
 
@@ -621,6 +622,10 @@ figure {
     margin-right: 2rem;
     margin-bottom: 0.6em;
     white-space: nowrap;
+
+    @include media-breakpoint-up(md) {
+      margin-right: 2.4rem;
+    }
 
     .link {
       border-bottom: none;

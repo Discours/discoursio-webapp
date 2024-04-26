@@ -112,13 +112,9 @@ export const AuthorView = (props: Props) => {
 
   onMount(() => {
     if (!modal) hideModal()
-    checkBioHeight()
     fetchData(props.authorSlug)
-
-    // pagination
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore()
-    }
+    checkBioHeight()
+    loadMore()
   })
 
   const pages = createMemo<Shout[][]>(() =>
@@ -132,12 +128,17 @@ export const AuthorView = (props: Props) => {
     setCommented(data)
   }
 
-  createEffect(() => {
-    if (author()) {
-      fetchData(author().slug)
-      fetchComments(author())
-    }
-  })
+  const authorSlug = createMemo(() => author()?.slug)
+  createEffect(
+    on(
+      () => authorSlug(),
+      () => {
+        fetchData(authorSlug())
+        fetchComments(author())
+      },
+      { defer: true },
+    ),
+  )
 
   const ogImage = createMemo(() =>
     author()?.pic

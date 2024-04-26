@@ -112,6 +112,7 @@ export const AuthorView = (props: Props) => {
 
   onMount(() => {
     if (!modal) hideModal()
+    fetchData(props.authorSlug)
     checkBioHeight()
     loadMore()
   })
@@ -131,8 +132,8 @@ export const AuthorView = (props: Props) => {
   createEffect(
     on(
       () => authorSlug(),
-      (slug) => {
-        fetchData(slug)
+      () => {
+        fetchData(authorSlug())
         fetchComments(author())
       },
       { defer: true },

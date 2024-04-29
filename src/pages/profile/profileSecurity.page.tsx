@@ -7,10 +7,21 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 
 import styles from './Settings.module.scss'
+import { EyedPasswordInput } from '../../components/_shared/EyedPasswordInput'
+import { createEffect, createSignal } from 'solid-js'
 
 export const ProfileSecurityPage = () => {
   const { t } = useLocalize()
 
+  const [oldPassword, setOldPassword] = createSignal<string | undefined>()
+  const [newPassword, setNewPassword] = createSignal<string | undefined>()
+  const [error, setError] = createSignal<string | undefined>()
+
+  const handleCheckNewPassword = (value: string) => {
+    if (value !== newPassword()) {
+      setError(t('Passwords are not equal'))
+    }
+  }
   return (
     <PageLayout title={t('Profile')}>
       <AuthGuard>
@@ -25,63 +36,34 @@ export const ProfileSecurityPage = () => {
             <div class="col-md-19">
               <div class="row">
                 <div class="col-md-20 col-lg-18 col-xl-16">
-                  <h1>Вход и&nbsp;безопасность</h1>
-                  <p class="description">Настройки аккаунта, почты, пароля и&nbsp;способов входа.</p>
+                  <h1>{t('Login and security')}</h1>
+                  <p class="description">{t('Settings for account, email, password and login methods.')}</p>
 
                   <form>
-                    <h4>Почта</h4>
+                    <h4>{t('Email')}</h4>
                     <div class="pretty-form__item">
-                      <input type="text" name="email" id="email" placeholder="Почта" />
-                      <label for="email">Почта</label>
+                      <input type="text" name="email" id="email" placeholder={t('Email')} />
+                      <label for="email">{t('Email')}</label>
                     </div>
 
-                    <h4>Изменить пароль</h4>
-                    <h5>Текущий пароль</h5>
-                    <div class="pretty-form__item">
-                      <input
-                        type="text"
-                        name="password-current"
-                        id="password-current"
-                        class={clsx(styles.passwordInput, 'nolabel')}
-                      />
-                      <button type="button" class={styles.passwordToggleControl}>
-                        <Icon name="password-hide" />
-                      </button>
-                    </div>
+                    <h4>{t('Change password')}</h4>
+                    <h5>{t('Current password')}</h5>
 
-                    <h5>Новый пароль</h5>
-                    <div class="pretty-form__item">
-                      <input
-                        type="password"
-                        name="password-new"
-                        id="password-new"
-                        class={clsx(styles.passwordInput, 'nolabel')}
-                      />
-                      <button type="button" class={styles.passwordToggleControl}>
-                        <Icon name="password-open" />
-                      </button>
-                    </div>
+                    <EyedPasswordInput onInput={(value) => setOldPassword(value)} />
 
-                    <h5>Подтвердите новый пароль</h5>
-                    <div class="pretty-form__item">
-                      <input
-                        type="password"
-                        name="password-new-confirm"
-                        id="password-new-confirm"
-                        class={clsx(styles.passwordInput, 'nolabel')}
-                      />
-                      <button type="button" class={styles.passwordToggleControl}>
-                        <Icon name="password-open" />
-                      </button>
-                    </div>
+                    <h5>{t('New password')}</h5>
+                    <EyedPasswordInput onInput={(value) => setNewPassword(value)} />
 
-                    <h4>Социальные сети</h4>
+                    <h5>{t('Confirm your new password')}</h5>
+                    <EyedPasswordInput error={error()} onInput={(value) => handleCheckNewPassword(value)} />
+
+                    <h4>{t('Social networks')}</h4>
                     <h5>Google</h5>
                     <div class="pretty-form__item">
                       <p>
                         <button class={clsx('button', 'button--light', styles.socialButton)} type="button">
                           <Icon name="google" class={styles.icon} />
-                          Привязать
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
@@ -91,7 +73,7 @@ export const ProfileSecurityPage = () => {
                       <p>
                         <button class={clsx(styles.socialButton, 'button', 'button--light')} type="button">
                           <Icon name="vk" class={styles.icon} />
-                          Привязать
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
@@ -101,7 +83,7 @@ export const ProfileSecurityPage = () => {
                       <p>
                         <button class={clsx(styles.socialButton, 'button', 'button--light')} type="button">
                           <Icon name="facebook" class={styles.icon} />
-                          Привязать
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
@@ -118,15 +100,14 @@ export const ProfileSecurityPage = () => {
                           type="button"
                         >
                           <Icon name="apple" class={styles.icon} />
-                          Привязать
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
-
                     <br />
                     <p>
                       <button class="button button--submit" type="submit">
-                        Сохранить настройки
+                        {t('Save settings')}
                       </button>
                     </p>
                   </form>

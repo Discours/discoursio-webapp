@@ -425,7 +425,7 @@
   width: 100%;
 
   @include media-breakpoint-up(xl) {
-    right: 9rem;
+    right: 1.4rem;
   }
 
   .control {
@@ -457,6 +457,12 @@
   }
 }
 
+.articleControlsAuthorized {
+  @include media-breakpoint-up(xl) {
+    right: 9rem;
+  }
+}
+
 .userControl {
   align-items: center;
   display: flex;
@@ -484,7 +490,8 @@
   }
 
   .editorControl {
-    border-radius: 1.2em;
+    border-radius: 2em;
+    font-size: 1.4rem !important;
 
     &:hover {
       background: var(--background-color-invert);

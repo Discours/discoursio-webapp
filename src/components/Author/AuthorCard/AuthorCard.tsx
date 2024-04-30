@@ -312,7 +312,7 @@ export const AuthorCard = (props: Props) => {
                     <For each={authorSubs()}>
                       {(subscription) =>
                         isAuthor(subscription) ? (
-                          <AuthorBadge author={subscription} />
+                          <AuthorBadge author={subscription} subscriptionsMode={true} />
                         ) : (
                           <TopicBadge topic={subscription} subscriptionsMode={true} />
                         )

@@ -179,6 +179,10 @@
   @include font-size(1.2rem);
 }
 
+.commentAuthor {
+  margin-right: 2rem;
+}
+
 .articleAuthor {
   @include font-size(1.2rem);
 

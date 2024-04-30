@@ -119,6 +119,7 @@ export const Sidebar = () => {
           }}
         >
           {t('My subscriptions')}
+          <Icon name="toggle-arrow" class={styles.icon} />
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>

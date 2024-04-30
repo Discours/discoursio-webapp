@@ -6,7 +6,6 @@
     align-items: flex-start;
     display: flex;
     flex-direction: row;
-    margin-bottom: 1.6rem;
   }
 
   .basicInfo {
@@ -19,26 +18,29 @@
 
   .info {
     @include font-size(1.4rem);
-
     border: none;
-    display: flex;
-    flex-direction: column;
+    //display: flex;
+    //flex-direction: column;
 
     &:hover {
       background: unset;
+      color: inherit;
+
+      .title {
+        background: var(--background-color-invert);
+        color: var(--default-color-invert);
+      }
     }
 
     .title {
       @include font-size(2.2rem);
-
       font-weight: bold;
-      margin-bottom: 0.8rem;
     }
 
     .description {
       @include font-size(1.6rem);
-
       line-height: 1.4;
+      margin: 0.8rem 0;
       -webkit-line-clamp: 3;
     }
   }
@@ -47,6 +49,7 @@
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    margin-bottom: -1rem;
   }
 
   .subscribeButton {

@@ -48,9 +48,24 @@ export const TopicBadge = (props: Props) => {
     lang() === 'en' ? capitalize(props.topic.slug.replaceAll('-', ' ')) : props.topic.title
 
   return (
-    <div class={styles.TopicBadge}>
+    <div class={clsx(styles.TopicBadge, { [styles.TopicBadgeSubscriptionsMode]: props.subscriptionsMode })}>
       <div class={styles.content}>
         <div class={styles.basicInfo}>
+          <Show when={props.subscriptionsMode}>
+            <a
+              href={`/topic/${props.topic.slug}`}
+              class={clsx(styles.picture, {
+                [styles.withImage]: props.topic.pic,
+                [styles.smallSize]: isMobileView(),
+              })}
+              style={
+                props.topic.pic && {
+                  'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`,
+                }
+              }
+            />
+          </Show>
+
           <a href={`/topic/${props.topic.slug}`} class={styles.info}>
             <span class={styles.title}>{title()}</span>
 
@@ -75,18 +90,23 @@ export const TopicBadge = (props: Props) => {
           />
         </div>
       </div>
-      <div class={styles.stats}>
-        <span class={styles.statsItem}>{t('shoutsWithCount', { count: props.topic?.stat?.shouts })}</span>
-        <span class={styles.statsItem}>{t('authorsWithCount', { count: props.topic?.stat?.authors })}</span>
-        <span class={styles.statsItem}>
-          {t('FollowersWithCount', { count: props.topic?.stat?.followers })}
-        </span>
-        <Show when={props.topic?.stat?.comments}>
+
+      <Show when={!props.subscriptionsMode}>
+        <div class={styles.stats}>
+          <span class={styles.statsItem}>{t('shoutsWithCount', { count: props.topic?.stat?.shouts })}</span>
           <span class={styles.statsItem}>
-            {t('CommentsWithCount', { count: props.topic?.stat?.comments ?? 0 })}
+            {t('authorsWithCount', { count: props.topic?.stat?.authors })}
           </span>
-        </Show>
-      </div>
+          <span class={styles.statsItem}>
+            {t('FollowersWithCount', { count: props.topic?.stat?.followers })}
+          </span>
+          <Show when={props.topic?.stat?.comments}>
+            <span class={styles.statsItem}>
+              {t('CommentsWithCount', { count: props.topic?.stat?.comments ?? 0 })}
+            </span>
+          </Show>
+        </div>
+      </Show>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import ssrPlugin from 'vike/plugin'
 import { defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import sassDts from 'vite-plugin-sass-dts'
 import solidPlugin from 'vite-plugin-solid'
 
@@ -39,6 +40,19 @@ export default defineConfig(({ mode, command }) => {
     ssrPlugin({ includeAssetsImportedByServer: true }),
     sassDts(),
     cssModuleHMR(),
+    nodePolyfills({
+      include: ['path', 'stream', 'util'],
+      exclude: ['http'],
+      globals: {
+        Buffer: true,
+        //global: true,
+        //process: true,
+      },
+      overrides: {
+        fs: 'memfs',
+      },
+      protocolImports: true,
+    }),
   ]
 
   if (command === 'serve') {

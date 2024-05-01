@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'

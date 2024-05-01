@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal, on } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'

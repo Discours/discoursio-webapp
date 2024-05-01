@@ -1,3 +1,4 @@
+// biome-ignore lint/style/useNodejsImportProtocol:
 import { Buffer } from 'buffer'
 
 import { clsx } from 'clsx'

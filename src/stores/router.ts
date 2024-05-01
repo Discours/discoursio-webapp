@@ -69,7 +69,8 @@ const checkOpenOnClient = (link: HTMLAnchorElement, event) => {
   )
 }
 
-const scrollToHash = (hash: string) => {
+// TODO: use scrollToHash or remove
+const _scrollToHash = (hash: string) => {
   let selector = hash
 
   if (/^#\d+/.test(selector)) {

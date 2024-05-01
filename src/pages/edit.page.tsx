@@ -47,24 +47,24 @@ export const EditPage = () => {
   onMount(() => {
     const shoutId = window.location.pathname.split('/').pop()
     const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
+    console.debug(`editing shout ${shoutIdFromUrl}`)
     if (shoutIdFromUrl) setShoutId(shoutIdFromUrl)
   })
 
   createEffect(
-    on(
-      [session, shout, shoutId],
-      async ([ses, sh, shid]) => {
-        if (ses?.user && !sh && shid) {
-          const { shout: loadedShout, error } = await apiClient.getMyShout(shid)
-          if (error) {
-            fail(error)
-          } else {
-            setShout(loadedShout)
-          }
+    on([session, shout, shoutId], async ([ses, sh, shid]) => {
+      console.debug(`editing session ${ses}`)
+      console.debug(`editing shout_id ${shid}`)
+      console.debug(`editing shout ${sh}`)
+      if (ses?.user && !sh && shid) {
+        const { shout: loadedShout, error } = await apiClient.getMyShout(shid)
+        if (error) {
+          fail(error)
+        } else {
+          setShout(loadedShout)
         }
-      },
-      { defer: true },
-    ),
+      }
+    }),
   )
 
   const title = createMemo(() => {

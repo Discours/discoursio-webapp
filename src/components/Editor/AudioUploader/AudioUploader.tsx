@@ -9,12 +9,7 @@ import { DropArea } from '../../_shared/DropArea'
 
 import styles from './AudioUploader.module.scss'
 
-try {
-  // biome-ignore lint/style/useNodejsImportProtocol: it works like this
-  window.Buffer = (await import('buffer')).Buffer
-} catch (_e) {
-  window.Buffer = (await import('node:buffer')).Buffer
-}
+window.Buffer = (await import('node:buffer')).Buffer
 
 type Props = {
   class?: string

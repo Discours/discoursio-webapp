@@ -271,12 +271,9 @@ export const SessionProvider = (props: {
 
   // callback state updater
   createEffect(
-    on(
-      () => props.onStateChangeCallback,
-      () => {
-        props.onStateChangeCallback(session())
-      },
-    ),
+    on([() => props.onStateChangeCallback, session], ([_, ses]) => {
+      ses?.user?.id && props.onStateChangeCallback(ses)
+    }),
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)

@@ -1,6 +1,3 @@
-// biome-ignore lint/style/useNodejsImportProtocol: it works like this
-import { Buffer } from 'buffer'
-
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'
 
@@ -12,7 +9,12 @@ import { DropArea } from '../../_shared/DropArea'
 
 import styles from './AudioUploader.module.scss'
 
-window.Buffer = Buffer
+try {
+  // biome-ignore lint/style/useNodejsImportProtocol: it works like this
+  window.Buffer = (await import('buffer')).Buffer
+} catch (_e) {
+  window.Buffer = (await import('node:buffer')).Buffer
+}
 
 type Props = {
   class?: string

@@ -1,4 +1,4 @@
-import { Show, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
+import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
 
 import { AuthGuard } from '../components/AuthGuard'
 import { Loading } from '../components/_shared/Loading'
@@ -74,9 +74,11 @@ export const EditPage = () => {
   return (
     <PageLayout title={title()}>
       <AuthGuard>
-        <Show when={shout()} fallback={<Loading />}>
-          <EditView shout={shout() as Shout} />
-        </Show>
+        <Suspense fallback={<Loading />}>
+          <Show when={shout()} fallback={<Loading />}>
+            <EditView shout={shout() as Shout} />
+          </Show>
+        </Suspense>
       </AuthGuard>
     </PageLayout>
   )

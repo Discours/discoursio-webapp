@@ -53,9 +53,6 @@ export const EditPage = () => {
 
   createEffect(
     on([session, shout, shoutId], async ([ses, sh, shid]) => {
-      console.debug(`editing session ${ses}`)
-      console.debug(`editing shout_id ${shid}`)
-      console.debug(`editing shout ${sh}`)
       if (ses?.user && !sh && shid) {
         const { shout: loadedShout, error } = await apiClient.getMyShout(shid)
         if (error) {

@@ -66,7 +66,7 @@ export default defineConfig(({ mode, command }) => {
     },
     build: {
       rollupOptions: {
-        external: [],
+        external: ['buffer'],
       },
       chunkSizeWarningLimit: 1024,
       target: 'esnext',

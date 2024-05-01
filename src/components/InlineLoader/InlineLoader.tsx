@@ -1,4 +1,3 @@
-import { clsx } from 'clsx'
 import { useLocalize } from '../../context/localize'
 import { Loading } from '../_shared/Loading'
 import styles from './InlineLoader.module.scss'
@@ -7,7 +6,7 @@ type Props = {
   class?: string
 }
 
-export const InlineLoader = (props: Props) => {
+export const InlineLoader = (_props: Props) => {
   const { t } = useLocalize()
   return (
     <div class={styles.InlineLoader}>

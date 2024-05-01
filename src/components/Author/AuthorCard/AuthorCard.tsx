@@ -43,7 +43,7 @@ export const AuthorCard = (props: Props) => {
   })
 
   createEffect(() => {
-    if (!subscriptions || !props.author) return
+    if (!(subscriptions && props.author)) return
     const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
     setIsSubscribed(subscribed)
   })

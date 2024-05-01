@@ -26,7 +26,7 @@ export const TopicBadge = (props: Props) => {
   const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
 
   createEffect(() => {
-    if (!subscriptions || !props.topic) return
+    if (!(subscriptions && props.topic)) return
     const subscribed = subscriptions.topics?.some((topics) => topics.id === props.topic?.id)
     setIsSubscribed(subscribed)
   })

@@ -49,7 +49,7 @@ type VisibilityItem = {
 }
 
 type FeedSearchParams = {
-  by: 'publish_date' | 'likes' | 'comments'
+  by: 'publish_date' | 'likes' | 'last_comment'
   period: FeedPeriod
   visibility: VisibilityMode
 }
@@ -258,10 +258,10 @@ export const FeedView = (props: Props) => {
               </li>
               <li
                 class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'comments',
+                  'view-switcher__item--selected': searchParams().by === 'last_comment',
                 })}
               >
-                <span class="link" onClick={() => changeSearchParams({ by: 'comments' })}>
+                <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
                   {t('Most commented')}
                 </span>
               </li>

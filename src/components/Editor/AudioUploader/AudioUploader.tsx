@@ -7,9 +7,10 @@ import { composeMediaItems } from '../../../utils/composeMediaItems'
 import { AudioPlayer } from '../../Article/AudioPlayer'
 import { DropArea } from '../../_shared/DropArea'
 
+import { Buffer } from 'node:buffer'
 import styles from './AudioUploader.module.scss'
 
-window.Buffer = (await import('node:buffer')).Buffer
+window.Buffer = Buffer
 
 type Props = {
   class?: string

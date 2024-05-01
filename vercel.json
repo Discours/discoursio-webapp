@@ -4,5 +4,6 @@
       "source": "/((?!assets/).*)",
       "destination": "/api/edge-ssr.js"
     }
-  ]
+  ],
+  "nodeVersion": "20"
 }

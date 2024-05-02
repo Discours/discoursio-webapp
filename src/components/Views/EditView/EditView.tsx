@@ -188,7 +188,7 @@ export const EditView = (props: Props) => {
     const hasChanges = !deepEqual(form, prevForm)
     const hasTopic = Boolean(form.mainTopic)
     if (hasChanges || hasTopic) {
-      console.debug("saving draft")
+      console.debug('saving draft')
       setSaving(true)
       if (props.shout?.published_at) {
         saveDraftToLocalStorage(form)

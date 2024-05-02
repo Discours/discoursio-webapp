@@ -34,16 +34,18 @@ export const AuthorCard = (props: Props) => {
   const { author, isSessionLoaded, requireAuthentication } = useSession()
   const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
   const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
-  const [isFollowed, setIsFollowed] = createSignal<boolean>()
+  const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const { setFollowing, isOwnerSubscribed } = useFollowing()
+  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
 
   onMount(() => {
     setAuthorSubs(props.following)
   })
 
   createEffect(() => {
-    setIsFollowed(isOwnerSubscribed(props.author?.id))
+    if (!subscriptions || !props.author) return
+    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
+    setIsSubscribed(subscribed)
   })
 
   const name = createMemo(() => {
@@ -83,15 +85,19 @@ export const AuthorCard = (props: Props) => {
   })
 
   const handleFollowClick = () => {
-    const value = !isFollowed()
     requireAuthentication(() => {
-      setIsFollowed(value)
-      setFollowing(FollowingEntity.Author, props.author.slug, value)
+      isSubscribed()
+        ? unfollow(FollowingEntity.Author, props.author.slug)
+        : follow(FollowingEntity.Author, props.author.slug)
     }, 'subscribe')
   }
 
   const followButtonText = createMemo(() => {
-    if (isOwnerSubscribed(props.author?.id)) {
+    if (subscribeInAction()?.slug === props.author.slug) {
+      return subscribeInAction().type === 'subscribe' ? t('Subscribing...') : t('Unsubscribing...')
+    }
+
+    if (isSubscribed()) {
       return (
         <>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
@@ -119,12 +125,7 @@ export const AuthorCard = (props: Props) => {
           <Show when={props.author.bio}>
             <div class={styles.authorAbout} innerHTML={props.author.bio} />
           </Show>
-          <Show
-            when={
-              (props.followers && props.followers.length > 0) ||
-              (props.following && props.following.length > 0)
-            }
-          >
+          <Show when={props.followers?.length > 0 || props.following?.length > 0}>
             <div class={styles.subscribersContainer}>
               <Show when={props.followers && props.followers.length > 0}>
                 <a href="?m=followers" class={styles.subscribers}>
@@ -204,13 +205,14 @@ export const AuthorCard = (props: Props) => {
               when={isProfileOwner()}
               fallback={
                 <div class={styles.authorActions}>
-                  <Show when={authorSubs().length}>
+                  <Show when={authorSubs()?.length}>
                     <Button
                       onClick={handleFollowClick}
+                      disabled={Boolean(subscribeInAction())}
                       value={followButtonText()}
                       isSubscribeButton={true}
                       class={clsx({
-                        [stylesButton.subscribed]: isFollowed(),
+                        [stylesButton.subscribed]: isSubscribed(),
                       })}
                     />
                   </Show>
@@ -255,15 +257,7 @@ export const AuthorCard = (props: Props) => {
                 <div class="row">
                   <div class="col-24">
                     <For each={props.followers}>
-                      {(follower: Author) => (
-                        <AuthorBadge
-                          author={follower}
-                          isFollowed={{
-                            loaded: Boolean(authorSubs()),
-                            value: isOwnerSubscribed(follower.id),
-                          }}
-                        />
-                      )}
+                      {(follower: Author) => <AuthorBadge author={follower} />}
                     </For>
                   </div>
                 </div>
@@ -318,21 +312,9 @@ export const AuthorCard = (props: Props) => {
                     <For each={authorSubs()}>
                       {(subscription) =>
                         isAuthor(subscription) ? (
-                          <AuthorBadge
-                            isFollowed={{
-                              loaded: Boolean(authorSubs()),
-                              value: isOwnerSubscribed(subscription.id),
-                            }}
-                            author={subscription}
-                          />
+                          <AuthorBadge author={subscription} />
                         ) : (
-                          <TopicBadge
-                            isFollowed={{
-                              loaded: Boolean(authorSubs()),
-                              value: isOwnerSubscribed(subscription.id),
-                            }}
-                            topic={subscription}
-                          />
+                          <TopicBadge topic={subscription} />
                         )
                       }
                     </For>

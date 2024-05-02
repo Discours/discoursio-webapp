@@ -60,7 +60,7 @@ export type ArticlePageSearchParams = {
 const scrollTo = (el: HTMLElement) => {
   const { top } = el.getBoundingClientRect()
   window.scrollTo({
-    top: top - DEFAULT_HEADER_OFFSET,
+    top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
     left: 0,
     behavior: 'smooth',
   })
@@ -151,19 +151,6 @@ export const FullArticle = (props: Props) => {
   const commentsRef: {
     current: HTMLDivElement
   } = { current: null }
-
-  createEffect(() => {
-    if (props.scrollToComments) {
-      scrollTo(commentsRef.current)
-    }
-  })
-
-  createEffect(() => {
-    if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
-      requestAnimationFrame(() => scrollTo(commentsRef.current))
-      changeSearchParams({ scrollTo: null })
-    }
-  })
 
   createEffect(() => {
     if (searchParams().commentId && isReactionsLoaded()) {
@@ -318,6 +305,19 @@ export const FullArticle = (props: Props) => {
     install('G-LQ4B87H8C2')
     window?.addEventListener('resize', updateIframeSizes)
     onCleanup(() => window.removeEventListener('resize', updateIframeSizes))
+
+    createEffect(() => {
+      if (props.scrollToComments) {
+        scrollTo(commentsRef.current)
+      }
+    })
+
+    createEffect(() => {
+      if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
+        requestAnimationFrame(() => scrollTo(commentsRef.current))
+        changeSearchParams({ scrollTo: null })
+      }
+    })
   })
 
   createEffect(
@@ -341,7 +341,7 @@ export const FullArticle = (props: Props) => {
     width: 1200,
   })
 
-  const description = getDescription(props.article.description || body())
+  const description = getDescription(props.article.description || body() || media()[0]?.body)
   const ogTitle = props.article.title
   const keywords = getKeywords(props.article)
   const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })

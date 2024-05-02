@@ -6,7 +6,6 @@
     align-items: flex-start;
     display: flex;
     flex-direction: row;
-    margin-bottom: 1.6rem;
   }
 
   .basicInfo {
@@ -17,29 +16,104 @@
     gap: 1rem;
   }
 
+  .picture {
+    display: block;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 8px;
+    background-color: var(--black-50);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE5LjUgMTQuMjVDMTkuOTE0MSAxNC4yNSAyMC4yNSAxNC41ODU5IDIwLjI1IDE1QzIwLjI1IDE1LjQxNDEgMTkuOTE0MSAxNS43NSAxOS41IDE1Ljc1SDE1Ljc1VjE5LjVDMTUuNzUgMTkuOTE0MSAxNS40MTQxIDIwLjI1IDE1IDIwLjI1QzE0LjU4NTkgMjAuMjUgMTQuMjUgMTkuOTE0MSAxNC4yNSAxOS41VjE1Ljc1SDkuNzVWMTkuNUM5Ljc1IDE5LjkxNDEgOS40MTQwNiAyMC4yNSA5IDIwLjI1QzguNTg1OTQgMjAuMjUgOC4yNSAxOS45MTQxIDguMjUgMTkuNVYxNS43NUg0LjVDNC4wODU5NCAxNS43NSAzLjc1IDE1LjQxNDEgMy43NSAxNUMzLjc1IDE0LjU4NTkgNC4wODU5NCAxNC4yNSA0LjUgMTQuMjVIOC4yNVY5Ljc1SDQuNUM0LjA4NTk0IDkuNzUgMy43NSA5LjQxNDA2IDMuNzUgOUMzLjc1IDguNTg1OTQgNC4wODU5NCA4LjI1IDQuNSA4LjI1SDguMjVWNC41QzguMjUgNC4wODU5NCA4LjU4NTk0IDMuNzUgOSAzLjc1QzkuNDE0MDYgMy43NSA5Ljc1IDQuMDg1OTQgOS43NSA0LjVWOC4yNUgxNC4yNVY0LjVDMTQuMjUgNC4wODU5NCAxNC41ODU5IDMuNzUgMTUgMy43NUMxNS40MTQxIDMuNzUgMTUuNzUgNC4wODU5NCAxNS43NSA0LjVWOC4yNUgxOS41QzE5LjkxNDEgOC4yNSAyMC4yNSA4LjU4NTk0IDIwLjI1IDlDMjAuMjUgOS40MTQwNiAxOS45MTQxIDkuNzUgMTkuNSA5Ljc1SDE1Ljc1VjE0LjI1SDE5LjVaTTkuNzUgMTQuMjVIMTQuMjVWOS43NUg5Ljc1VjE0LjI1WiIgZmlsbD0iIzlGQTFBNyIvPgo8L3N2Zz4K');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    border: none;
+
+    &.smallSize {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+    }
+
+    &:hover {
+      background-color: var(--black-50);
+    }
+
+    &.withImage {
+      background-size: cover;
+    }
+  }
+
   .info {
     @include font-size(1.4rem);
-
     border: none;
-    display: flex;
-    flex-direction: column;
+    //display: flex;
+    //flex-direction: column;
 
     &:hover {
       background: unset;
+      color: inherit;
+
+      .title {
+        background: var(--background-color-invert);
+        color: var(--default-color-invert);
+      }
     }
 
     .title {
       @include font-size(2.2rem);
-
       font-weight: bold;
-      margin-bottom: 0.8rem;
     }
 
     .description {
       @include font-size(1.6rem);
-
       line-height: 1.4;
-      -webkit-line-clamp: 3;
+      margin: 0.8rem 0;
+      -webkit-line-clamp: 2;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: -1rem;
+  }
+
+  .subscribeButton {
+    border-radius: 0.8rem !important;
+    margin-right: 0 !important;
+    width: 9em;
+  }
+}
+
+.TopicBadgeSubscriptionsMode {
+  margin-bottom: 2rem;
+
+  .content {
+    margin-bottom: 0.8rem;
+  }
+
+  .info {
+    &:hover {
+      .title {
+        background-color: var(--blue-500);
+        color: var(--white-500);
+      }
+    }
+
+    .title {
+      @include font-size(1.4rem);
+      font-weight: 500;
+      line-height: 1em;
+      color: var(--blue-500);
+      text-transform: uppercase;
+    }
+
+    .description {
+      color: var(--black-400);
+      @include font-size(1.2rem);
+      font-weight: 500;
+      margin: 0;
     }
   }
 

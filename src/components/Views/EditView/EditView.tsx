@@ -187,7 +187,8 @@ export const EditView = (props: Props) => {
   const autoSave = async () => {
     const hasChanges = !deepEqual(form, prevForm)
     const hasTopic = Boolean(form.mainTopic)
-    if (hasChanges && hasTopic) {
+    if (hasChanges || hasTopic) {
+      console.debug('[EditView.autoSave] shout has topic')
       setSaving(true)
       if (props.shout?.published_at) {
         saveDraftToLocalStorage(form)

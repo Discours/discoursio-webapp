@@ -111,7 +111,7 @@ export const AuthorBadge = (props: Props) => {
               }
             >
               <Match when={props.author.bio}>
-                <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio}/>
+                <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
               </Match>
             </Switch>
             <Show when={props.author?.stat}>

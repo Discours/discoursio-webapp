@@ -107,7 +107,13 @@ export const HeaderAuth = (props: Props) => {
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
             <Show when={isCreatePostButtonVisible() && isAuthenticated()}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, styles.userControlItemCreate)}>
+              <div
+                class={clsx(
+                  styles.userControlItem,
+                  styles.userControlItemVerbose,
+                  styles.userControlItemCreate,
+                )}
+              >
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
@@ -215,7 +221,13 @@ export const HeaderAuth = (props: Props) => {
             </Show>
 
             <Show when={isCreatePostButtonVisible() && !isAuthenticated()}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, styles.userControlItemCreate)}>
+              <div
+                class={clsx(
+                  styles.userControlItem,
+                  styles.userControlItemVerbose,
+                  styles.userControlItemCreate,
+                )}
+              >
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />

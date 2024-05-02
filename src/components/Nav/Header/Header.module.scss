@@ -298,10 +298,6 @@
   box-sizing: content-box;
   display: inline-flex;
 
-  @include media-breakpoint-up(sm) {
-    padding-left: divide($container-padding-x, 2);
-  }
-
   @include media-breakpoint-up(lg) {
     display: none;
   }
@@ -425,7 +421,7 @@
   width: 100%;
 
   @include media-breakpoint-up(xl) {
-    right: 9rem;
+    right: 1.4rem;
   }
 
   .control {
@@ -457,6 +453,14 @@
   }
 }
 
+.articleControlsAuthorized {
+  right: 3.6rem;
+
+  @include media-breakpoint-up(xl) {
+    right: 9rem;
+  }
+}
+
 .userControl {
   align-items: center;
   display: flex;
@@ -484,7 +488,8 @@
   }
 
   .editorControl {
-    border-radius: 1.2em;
+    border-radius: 2em;
+    font-size: 1.4rem !important;
 
     &:hover {
       background: var(--background-color-invert);

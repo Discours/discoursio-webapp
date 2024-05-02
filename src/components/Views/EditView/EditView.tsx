@@ -2,6 +2,7 @@ import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import { Accessor, Show, createMemo, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { throttle } from 'throttle-debounce'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
@@ -41,7 +42,9 @@ export const EMPTY_TOPIC: Topic = {
   slug: '',
 }
 
+const THROTTLING_INTERVAL = 2000
 const AUTO_SAVE_INTERVAL = 5000
+const AUTO_SAVE_DELAY = 5000
 const handleScrollTopButtonClick = (e) => {
   e.preventDefault()
   window.scrollTo({
@@ -66,8 +69,9 @@ export const EditView = (props: Props) => {
   const shoutTopics = props.shout.topics || []
 
   // TODO: проверить сохранение черновика в local storage (не работает)
-  const draft = getDraftFromLocalStorage(props.shout.id)
+  const draft = props.shout || getDraftFromLocalStorage(props.shout.id)
   if (draft) {
+    // console.debug('draft: ', draft)
     setForm(Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id })
   } else {
     setForm({
@@ -180,42 +184,43 @@ export const EditView = (props: Props) => {
 
   let autoSaveTimeOutId: number | string | NodeJS.Timeout
 
-  //TODO: add throttle
-  const autoSaveRecursive = () => {
-    autoSaveTimeOutId = setTimeout(async () => {
-      const hasChanges = !deepEqual(form, prevForm)
-      if (hasChanges) {
-        setSaving(true)
-        if (props.shout?.published_at) {
-          saveDraftToLocalStorage(form)
-        } else {
-          await saveDraft(form)
-        }
-        setPrevForm(clone(form))
-        setTimeout(() => {
-          setSaving(false)
-        }, 2000)
+  const autoSave = async () => {
+    const hasChanges = !deepEqual(form, prevForm)
+    const hasTopic = Boolean(form.mainTopic)
+    if (hasChanges && hasTopic) {
+      setSaving(true)
+      if (props.shout?.published_at) {
+        saveDraftToLocalStorage(form)
+      } else {
+        await saveDraft(form)
       }
+      setPrevForm(clone(form))
+      setTimeout(() => {
+        setSaving(false)
+      }, AUTO_SAVE_DELAY)
+    }
+  }
+
+  // Throttle the autoSave function
+  const throttledAutoSave = throttle(THROTTLING_INTERVAL, autoSave)
+
+  const autoSaveRecursive = () => {
+    autoSaveTimeOutId = setTimeout(() => {
+      throttledAutoSave()
       autoSaveRecursive()
     }, AUTO_SAVE_INTERVAL)
   }
 
-  const stopAutoSave = () => {
-    clearTimeout(autoSaveTimeOutId)
-  }
-
   onMount(() => {
     autoSaveRecursive()
-  })
-
-  onCleanup(() => {
-    stopAutoSave()
+    onCleanup(() => clearTimeout(autoSaveTimeOutId))
   })
 
   const showSubtitleInput = () => {
     setIsSubtitleVisible(true)
     subtitleInput.current.focus()
   }
+
   const showLeadInput = () => {
     setIsLeadVisible(true)
   }

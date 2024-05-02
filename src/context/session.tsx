@@ -72,6 +72,7 @@ export type SessionContextType = {
   resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
+// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
 const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()
@@ -270,12 +271,9 @@ export const SessionProvider = (props: {
 
   // callback state updater
   createEffect(
-    on(
-      () => props.onStateChangeCallback,
-      () => {
-        props.onStateChangeCallback(session())
-      },
-    ),
+    on([() => props.onStateChangeCallback, session], ([_, ses]) => {
+      ses?.user?.id && props.onStateChangeCallback(ses)
+    }),
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)

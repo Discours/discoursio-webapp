@@ -59,7 +59,8 @@ export const HeaderAuth = (props: Props) => {
     toggleEditorPanel()
   }
 
-  const handleSaveButtonClick = () => {
+  // FIXME: remove the code if not needed here
+  const _handleSaveButtonClick = () => {
     saveShout(form)
   }
 

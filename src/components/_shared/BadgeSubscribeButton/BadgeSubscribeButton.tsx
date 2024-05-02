@@ -1,6 +1,5 @@
 import { clsx } from 'clsx'
 import { Show, createMemo } from 'solid-js'
-import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { Button } from '../Button'
 import stylesButton from '../Button/Button.module.scss'

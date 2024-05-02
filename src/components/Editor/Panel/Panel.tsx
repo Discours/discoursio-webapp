@@ -13,8 +13,6 @@ import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { Button } from '../../_shared/Button'
 import { DarkModeToggle } from '../../_shared/DarkModeToggle'
 import { Icon } from '../../_shared/Icon'
-
-import { useSnackbar } from '../../../context/snackbar'
 import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })

@@ -1,13 +1,13 @@
 import { createLazyMemo } from '@solid-primitives/memo'
-import { createEffect, createSignal } from 'solid-js'
+import { createSignal } from 'solid-js'
 
 import { apiClient } from '../../graphql/client/core'
 import { Author, QueryLoad_Authors_ByArgs } from '../../graphql/schema/core.gen'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
 type SortedAuthorsSetter = (prev: Author[]) => Author[]
-
-const [sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('name')
+// FIXME: use signal or remove
+const [_sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('name')
 
 export const setAuthorsSort = (sortBy: AuthorsSortBy) => setSortAllBy(sortBy)
 

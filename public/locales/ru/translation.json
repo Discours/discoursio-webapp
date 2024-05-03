@@ -562,5 +562,6 @@
   "Settings for account, email, password and login methods.": "Настройки аккаунта, почты, пароля и способов входа.",
   "Current password": "Текущий пароль",
   "Confirm your new password": "Подтвердите новый пароль",
-  "Connect": "Привязать"
+  "Connect": "Привязать",
+  "Incorrect old password": "Старый пароль не верен"
 }

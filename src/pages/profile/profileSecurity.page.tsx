@@ -23,6 +23,7 @@ export const ProfileSecurityPage = () => {
   const [newPassword, setNewPassword] = createSignal<string | undefined>()
   const [email, setEmail] = createSignal<string | undefined>()
   const [newPasswordError, setNewPasswordError] = createSignal<string | undefined>()
+  const [oldPasswordError, setOldPasswordError] = createSignal<string | undefined>()
   const [isSubmitting, setIsSubmitting] = createSignal<boolean>()
   const [emailError, setEmailError] = createSignal<string | undefined>()
   const handleCheckNewPassword = (value: string) => {
@@ -58,6 +59,11 @@ export const ProfileSecurityPage = () => {
     try {
       const { errors } = await updateProfile(options)
       if (errors.length > 0) {
+        console.error(errors)
+        if (errors.some((obj) => obj.message === 'incorrect old password')) {
+          setOldPasswordError(t('Incorrect old password'))
+          showSnackbar({ type: 'error', body: t('Incorrect old password') })
+        }
         return
       }
       showSnackbar({ type: 'success', body: t('Profile successfully saved') })
@@ -112,7 +118,11 @@ export const ProfileSecurityPage = () => {
                     <h4>{t('Change password')}</h4>
                     <h5>{t('Current password')}</h5>
 
-                    <PasswordField onInput={(value) => setOldPassword(value)} />
+                    <PasswordField
+                      onFocus={() => setOldPasswordError()}
+                      setError={oldPasswordError()}
+                      onInput={(value) => setOldPassword(value)}
+                    />
 
                     <h5>{t('New password')}</h5>
                     <PasswordField onInput={(value) => setNewPassword(value)} />

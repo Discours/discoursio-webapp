@@ -535,5 +535,6 @@
   "Settings for account, email, password and login methods.": "Settings for account, email, password and login methods.",
   "Current password": "Current password",
   "Confirm your new password": "Confirm your new password",
-  "Connect": "Connect"
+  "Connect": "Connect",
+  "Incorrect old password": "Incorrect old password"
 }

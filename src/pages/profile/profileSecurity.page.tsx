@@ -6,22 +6,63 @@ import { Icon } from '../../components/_shared/Icon'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 
+import { UpdateProfileInput } from '@authorizerdev/authorizer-js'
+import { createSignal, Show } from 'solid-js'
+import { PasswordField } from '../../components/Nav/AuthModal/PasswordField'
+import { useSession } from '../../context/session'
+import { useSnackbar } from '../../context/snackbar'
+import { validateEmail } from '../../utils/validateEmail'
 import styles from './Settings.module.scss'
-import { EyedPasswordInput } from '../../components/_shared/EyedPasswordInput'
-import { createEffect, createSignal } from 'solid-js'
 
 export const ProfileSecurityPage = () => {
   const { t } = useLocalize()
+  const { updateProfile, session } = useSession()
+  const { showSnackbar } = useSnackbar()
 
   const [oldPassword, setOldPassword] = createSignal<string | undefined>()
   const [newPassword, setNewPassword] = createSignal<string | undefined>()
+  const [email, setEmail] = createSignal<string | undefined>()
   const [error, setError] = createSignal<string | undefined>()
+  const [isSubmitting, setIsSubmitting] = createSignal<boolean>()
+  const [emailError, setEmailError] = createSignal<string | undefined>()
 
   const handleCheckNewPassword = (value: string) => {
     if (value !== newPassword()) {
       setError(t('Passwords are not equal'))
     }
   }
+
+  const handleChangeEmail = (value: string) => {
+    setEmailError()
+    setEmail(value.trim())
+  }
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    if (!validateEmail(email())) {
+      setEmailError(t('Invalid email'))
+      return
+    }
+
+    const options: UpdateProfileInput = {
+      old_password: oldPassword(),
+      new_password: newPassword() || oldPassword(),
+      confirm_new_password: newPassword() || oldPassword(),
+      email: email(),
+    }
+
+    try {
+      const { errors } = await updateProfile(options)
+      if (errors.length > 0) {
+        return
+      }
+      showSnackbar({ type: 'success', body: t('Profile successfully saved') })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <PageLayout title={t('Profile')}>
       <AuthGuard>
@@ -42,20 +83,40 @@ export const ProfileSecurityPage = () => {
                   <form>
                     <h4>{t('Email')}</h4>
                     <div class="pretty-form__item">
-                      <input type="text" name="email" id="email" placeholder={t('Email')} />
+                      <input
+                        type="text"
+                        name="email"
+                        id="email"
+                        placeholder={t('Email')}
+                        onFocus={() => setEmailError()}
+                        onInput={(event) => handleChangeEmail(event.target.value)}
+                      />
                       <label for="email">{t('Email')}</label>
+                      <Show when={emailError()}>
+                        <div
+                          class={clsx(styles.emailValidationError, {
+                            'form-message--error': emailError(),
+                          })}
+                        >
+                          {emailError()}
+                        </div>
+                      </Show>
                     </div>
 
                     <h4>{t('Change password')}</h4>
                     <h5>{t('Current password')}</h5>
 
-                    <EyedPasswordInput onInput={(value) => setOldPassword(value)} />
+                    <PasswordField onInput={(value) => setOldPassword(value)} />
 
                     <h5>{t('New password')}</h5>
-                    <EyedPasswordInput onInput={(value) => setNewPassword(value)} />
+                    <PasswordField onInput={(value) => setNewPassword(value)} />
 
                     <h5>{t('Confirm your new password')}</h5>
-                    <EyedPasswordInput error={error()} onInput={(value) => handleCheckNewPassword(value)} />
+                    <PasswordField
+                      noValidate={true}
+                      setError={error()}
+                      onInput={(value) => handleCheckNewPassword(value)}
+                    />
 
                     <h4>{t('Social networks')}</h4>
                     <h5>Google</h5>
@@ -106,8 +167,13 @@ export const ProfileSecurityPage = () => {
                     </div>
                     <br />
                     <p>
-                      <button class="button button--submit" type="submit">
-                        {t('Save settings')}
+                      <button
+                        class="button button--submit"
+                        type="button"
+                        disabled={isSubmitting() || Boolean(error())}
+                        onClick={handleSubmit}
+                      >
+                        {isSubmitting() ? t('Saving...') : t('Save settings')}
                       </button>
                     </p>
                   </form>

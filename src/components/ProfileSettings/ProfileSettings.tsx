@@ -1,18 +1,7 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import {
-  For,
-  Match,
-  Show,
-  Switch,
-  createEffect,
-  createSignal,
-  lazy,
-  on,
-  onCleanup,
-  onMount,
-} from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { useConfirm } from '../../context/confirm'
@@ -34,7 +23,6 @@ import { ImageCropper } from '../_shared/ImageCropper'
 import { Loading } from '../_shared/Loading'
 import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
-
 import styles from '../../pages/profile/Settings.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
@@ -167,15 +155,7 @@ export const ProfileSettings = () => {
     onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
 
-  createEffect(
-    on(
-      () => deepEqual(form, prevForm),
-      () => {
-        setIsFloatingPanelVisible(!deepEqual(form, prevForm))
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(() => setIsFloatingPanelVisible(!deepEqual(form, prevForm)))
   const handleDeleteSocialLink = (link) => {
     updateFormField('links', link, true)
   }

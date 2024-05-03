@@ -16,6 +16,7 @@ type Props = {
   onBlur?: (value: string) => void
   variant?: 'login' | 'registration'
   disableAutocomplete?: boolean
+  noValidate?: boolean
 }
 
 const minLength = 8
@@ -27,7 +28,7 @@ export const PasswordField = (props: Props) => {
   const [showPassword, setShowPassword] = createSignal(false)
   const [error, setError] = createSignal<string>()
 
-  const validatePassword = (passwordToCheck) => {
+  const validatePassword = (passwordToCheck: string) => {
     if (passwordToCheck.length < minLength) {
       return t('Password should be at least 8 characters')
     }
@@ -50,11 +51,13 @@ export const PasswordField = (props: Props) => {
     }
 
     props.onInput(value)
-    const errorValue = validatePassword(value)
-    if (errorValue) {
-      setError(errorValue)
-    } else {
-      setError()
+    if (!props.noValidate) {
+      const errorValue = validatePassword(value)
+      if (errorValue) {
+        setError(errorValue)
+      } else {
+        setError()
+      }
     }
   }
 

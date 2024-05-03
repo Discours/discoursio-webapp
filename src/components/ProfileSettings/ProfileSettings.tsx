@@ -155,7 +155,12 @@ export const ProfileSettings = () => {
     onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
 
-  createEffect(() => setIsFloatingPanelVisible(!deepEqual(form, prevForm)))
+  createEffect(() => {
+    console.log("!!! deepEqual(form, prevForm):", deepEqual(form, prevForm));
+    if (Object.keys(prevForm).length > 0) {
+      setIsFloatingPanelVisible(!deepEqual(form, prevForm));
+    }
+  });
   const handleDeleteSocialLink = (link) => {
     updateFormField('links', link, true)
   }

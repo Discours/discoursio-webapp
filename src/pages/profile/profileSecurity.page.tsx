@@ -36,7 +36,7 @@ export const ProfileSecurityPage = () => {
   }
 
   createEffect(() => {
-    if (session()) {
+    if (session()?.user?.email) {
       setEmail(session().user.email)
     }
   })
@@ -56,7 +56,7 @@ export const ProfileSecurityPage = () => {
       old_password: oldPassword(),
       new_password: newPassword() || oldPassword(),
       confirm_new_password: newPassword() || oldPassword(),
-      email: email() || session().user.email,
+      email: email() || session()?.user.email,
     }
 
     try {

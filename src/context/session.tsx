@@ -48,7 +48,6 @@ export type SessionContextType = {
   author: Resource<Author | null>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
-  isAuthenticated: Accessor<boolean>
   loadSession: () => AuthToken | Promise<AuthToken>
   setSession: (token: AuthToken | null) => void // setSession
   loadAuthor: (info?: unknown) => Author | Promise<Author>
@@ -375,9 +374,6 @@ export const SessionProvider = (props: {
       console.warn(error)
     }
   }
-
-  const isAuthenticated = createMemo(() => Boolean(author()))
-
   const actions = {
     loadSession,
     requireAuthentication,
@@ -402,7 +398,6 @@ export const SessionProvider = (props: {
     isSessionLoaded,
     author,
     ...actions,
-    isAuthenticated,
     resendVerifyEmail,
   }
 

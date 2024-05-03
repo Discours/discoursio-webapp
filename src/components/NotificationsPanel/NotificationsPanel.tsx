@@ -46,7 +46,7 @@ const isEarlier = (date: Date) => {
 
 export const NotificationsPanel = (props: Props) => {
   const [isLoading, setIsLoading] = createSignal(false)
-  const { isAuthenticated } = useSession()
+  const { author } = useSession()
   const { t } = useLocalize()
   const {
     after,
@@ -150,16 +150,13 @@ export const NotificationsPanel = (props: Props) => {
   })
 
   createEffect(
-    on(
-      () => isAuthenticated(),
-      async () => {
-        if (isAuthenticated()) {
-          setIsLoading(true)
-          await loadNextPage()
-          setIsLoading(false)
-        }
-      },
-    ),
+    on(author, async (a) => {
+      if (a?.id) {
+        setIsLoading(true)
+        await loadNextPage()
+        setIsLoading(false)
+      }
+    }),
   )
 
   return (

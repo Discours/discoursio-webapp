@@ -23,8 +23,16 @@ type Props = {
 
 export const Panel = (props: Props) => {
   const { t } = useLocalize()
-  const { isEditorPanelVisible, wordCounter, editorRef, form, toggleEditorPanel, saveShout, publishShout } =
-    useEditorContext()
+  const {
+    isEditorPanelVisible,
+    wordCounter,
+    editorRef,
+    form,
+    toggleEditorPanel,
+    saveShout,
+    saveDraft,
+    publishShout,
+  } = useEditorContext()
 
   const containerRef: { current: HTMLElement } = { current: null }
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
@@ -43,7 +51,12 @@ export const Panel = (props: Props) => {
   })
 
   const handleSaveClick = () => {
-    saveShout(form)
+    const hasTopics = form.selectedTopics?.length > 0
+    if (hasTopics) {
+      saveShout(form)
+    } else {
+      saveDraft(form)
+    }
   }
 
   const html = useEditorHTML(() => editorRef.current())

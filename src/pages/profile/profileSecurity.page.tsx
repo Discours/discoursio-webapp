@@ -11,6 +11,7 @@ import { Show, createEffect, createSignal } from 'solid-js'
 import { PasswordField } from '../../components/Nav/AuthModal/PasswordField'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
+import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
 import { validateEmail } from '../../utils/validateEmail'
 import styles from './Settings.module.scss'
 
@@ -26,6 +27,8 @@ export const ProfileSecurityPage = () => {
   const [oldPasswordError, setOldPasswordError] = createSignal<string | undefined>()
   const [isSubmitting, setIsSubmitting] = createSignal<boolean>()
   const [emailError, setEmailError] = createSignal<string | undefined>()
+
+  const oldPasswordRef: { current: HTMLDivElement } = { current: null }
   const handleCheckNewPassword = (value: string) => {
     if (value !== newPassword()) {
       setNewPasswordError(t('Passwords are not equal'))
@@ -63,6 +66,13 @@ export const ProfileSecurityPage = () => {
         if (errors.some((obj) => obj.message === 'incorrect old password')) {
           setOldPasswordError(t('Incorrect old password'))
           showSnackbar({ type: 'error', body: t('Incorrect old password') })
+          const rect = oldPasswordRef.current.getBoundingClientRect()
+          const topPosition = window.scrollY + rect.top - DEFAULT_HEADER_OFFSET * 2
+          window.scrollTo({
+            top: topPosition,
+            left: 0,
+            behavior: 'smooth',
+          })
         }
         return
       }
@@ -118,11 +128,13 @@ export const ProfileSecurityPage = () => {
                     <h4>{t('Change password')}</h4>
                     <h5>{t('Current password')}</h5>
 
-                    <PasswordField
-                      onFocus={() => setOldPasswordError()}
-                      setError={oldPasswordError()}
-                      onInput={(value) => setOldPassword(value)}
-                    />
+                    <div ref={(el) => (oldPasswordRef.current = el)}>
+                      <PasswordField
+                        onFocus={() => setOldPasswordError()}
+                        setError={oldPasswordError()}
+                        onInput={(value) => setOldPassword(value)}
+                      />
+                    </div>
 
                     <h5>{t('New password')}</h5>
                     <PasswordField onInput={(value) => setNewPassword(value)} />

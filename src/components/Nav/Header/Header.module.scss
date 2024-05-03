@@ -523,6 +523,7 @@
   height: 2.8rem;
   justify-content: center;
   margin: 0 0.4rem;
+  order: 2;
   position: relative;
   transition: margin-left 0.3s;
   width: 2.8rem;
@@ -533,7 +534,7 @@
     width: 3.2rem;
   }
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(xl) {
     margin-left: 0.4rem !important;
   }
 
@@ -584,6 +585,10 @@
 
 .userControlItemSearch {
   margin: 0 1rem 0 2.2rem;
+
+  @include media-breakpoint-down(xl) {
+    order: 1;
+  }
 }
 
 .userControlItemUserpic {
@@ -593,13 +598,6 @@
   @include media-breakpoint-up(md) {
     height: 4rem;
     width: 4rem;
-  }
-}
-
-.userControlItemInbox,
-.userControlItemSearch {
-  @include media-breakpoint-down(sm) {
-    display: none;
   }
 }
 
@@ -682,7 +680,9 @@
     }
 
     &:hover {
-      background-color: var(--link-hover-background);
+      @include media-breakpoint-up(xl) {
+        background-color: var(--link-hover-background);
+      }
 
       &,
       .textLabel {
@@ -705,6 +705,18 @@
 
   a::before {
     display: none;
+  }
+}
+
+.userControlItemCreate {
+  .icon {
+    height: 2.8rem;
+    width: 2.8rem;
+
+    @include media-breakpoint-up(md) {
+      height: 3.2rem;
+      width: 3.2rem;
+    }
   }
 }
 

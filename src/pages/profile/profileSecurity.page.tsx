@@ -7,7 +7,7 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 
 import { UpdateProfileInput } from '@authorizerdev/authorizer-js'
-import { Show, createSignal, createEffect } from "solid-js";
+import { Show, createEffect, createSignal } from 'solid-js'
 import { PasswordField } from '../../components/Nav/AuthModal/PasswordField'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
@@ -69,12 +69,12 @@ export const ProfileSecurityPage = () => {
   }
 
   return (
-    <PageLayout title={t("Profile")}>
+    <PageLayout title={t('Profile')}>
       <AuthGuard>
         <div class="wide-container">
           <div class="row">
             <div class="col-md-5">
-              <div class={clsx("left-navigation", styles.leftNavigation)}>
+              <div class={clsx('left-navigation', styles.leftNavigation)}>
                 <ProfileSettingsNavigation />
               </div>
             </div>
@@ -82,26 +82,26 @@ export const ProfileSecurityPage = () => {
             <div class="col-md-19">
               <div class="row">
                 <div class="col-md-20 col-lg-18 col-xl-16">
-                  <h1>{t("Login and security")}</h1>
-                  <p class="description">{t("Settings for account, email, password and login methods.")}</p>
+                  <h1>{t('Login and security')}</h1>
+                  <p class="description">{t('Settings for account, email, password and login methods.')}</p>
 
                   <form>
-                    <h4>{t("Email")}</h4>
+                    <h4>{t('Email')}</h4>
                     <div class="pretty-form__item">
                       <input
                         type="text"
                         name="email"
                         id="email"
                         value={email()}
-                        placeholder={t("Email")}
+                        placeholder={t('Email')}
                         onFocus={() => setEmailError()}
                         onInput={(event) => handleChangeEmail(event.target.value)}
                       />
-                      <label for="email">{t("Email")}</label>
+                      <label for="email">{t('Email')}</label>
                       <Show when={emailError()}>
                         <div
                           class={clsx(styles.emailValidationError, {
-                            "form-message--error": emailError(),
+                            'form-message--error': emailError(),
                           })}
                         >
                           {emailError()}
@@ -109,15 +109,15 @@ export const ProfileSecurityPage = () => {
                       </Show>
                     </div>
 
-                    <h4>{t("Change password")}</h4>
-                    <h5>{t("Current password")}</h5>
+                    <h4>{t('Change password')}</h4>
+                    <h5>{t('Current password')}</h5>
 
                     <PasswordField onInput={(value) => setOldPassword(value)} />
 
-                    <h5>{t("New password")}</h5>
+                    <h5>{t('New password')}</h5>
                     <PasswordField onInput={(value) => setNewPassword(value)} />
 
-                    <h5>{t("Confirm your new password")}</h5>
+                    <h5>{t('Confirm your new password')}</h5>
                     <PasswordField
                       noValidate={true}
                       onFocus={() => setNewPasswordError()}
@@ -125,13 +125,13 @@ export const ProfileSecurityPage = () => {
                       onInput={(value) => handleCheckNewPassword(value)}
                     />
 
-                    <h4>{t("Social networks")}</h4>
+                    <h4>{t('Social networks')}</h4>
                     <h5>Google</h5>
                     <div class="pretty-form__item">
                       <p>
-                        <button class={clsx("button", "button--light", styles.socialButton)} type="button">
+                        <button class={clsx('button', 'button--light', styles.socialButton)} type="button">
                           <Icon name="google" class={styles.icon} />
-                          {t("Connect")}
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
@@ -139,9 +139,9 @@ export const ProfileSecurityPage = () => {
                     <h5>VK</h5>
                     <div class="pretty-form__item">
                       <p>
-                        <button class={clsx(styles.socialButton, "button", "button--light")} type="button">
+                        <button class={clsx(styles.socialButton, 'button', 'button--light')} type="button">
                           <Icon name="vk" class={styles.icon} />
-                          {t("Connect")}
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
@@ -149,9 +149,9 @@ export const ProfileSecurityPage = () => {
                     <h5>Facebook</h5>
                     <div class="pretty-form__item">
                       <p>
-                        <button class={clsx(styles.socialButton, "button", "button--light")} type="button">
+                        <button class={clsx(styles.socialButton, 'button', 'button--light')} type="button">
                           <Icon name="facebook" class={styles.icon} />
-                          {t("Connect")}
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
@@ -163,12 +163,12 @@ export const ProfileSecurityPage = () => {
                           class={clsx(
                             styles.socialButton,
                             styles.socialButtonApple,
-                            "button" + " button--light",
+                            'button' + ' button--light',
                           )}
                           type="button"
                         >
                           <Icon name="apple" class={styles.icon} />
-                          {t("Connect")}
+                          {t('Connect')}
                         </button>
                       </p>
                     </div>
@@ -180,7 +180,7 @@ export const ProfileSecurityPage = () => {
                         disabled={isSubmitting() || Boolean(newPasswordError())}
                         onClick={handleSubmit}
                       >
-                        {isSubmitting() ? t("Saving...") : t("Save settings")}
+                        {isSubmitting() ? t('Saving...') : t('Save settings')}
                       </button>
                     </p>
                   </form>
@@ -191,7 +191,7 @@ export const ProfileSecurityPage = () => {
         </div>
       </AuthGuard>
     </PageLayout>
-  );
+  )
 }
 
 export const Page = ProfileSecurityPage

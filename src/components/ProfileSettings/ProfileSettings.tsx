@@ -9,6 +9,7 @@ import { useLocalize } from '../../context/localize'
 import { useProfileForm } from '../../context/profile'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
+import styles from '../../pages/profile/Settings.module.scss'
 import { hideModal, showModal } from '../../stores/ui'
 import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
@@ -23,7 +24,6 @@ import { ImageCropper } from '../_shared/ImageCropper'
 import { Loading } from '../_shared/Loading'
 import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
-import styles from '../../pages/profile/Settings.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))

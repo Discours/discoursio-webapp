@@ -7,7 +7,7 @@ import { PageLayout } from '../../components/_shared/PageLayout'
 import { useLocalize } from '../../context/localize'
 
 import { UpdateProfileInput } from '@authorizerdev/authorizer-js'
-import { createSignal, Show } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
 import { PasswordField } from '../../components/Nav/AuthModal/PasswordField'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'

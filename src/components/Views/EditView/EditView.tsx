@@ -69,12 +69,13 @@ export const EditView = (props: Props) => {
   const shoutTopics = props.shout.topics || []
 
   const draft = getDraftFromLocalStorage(props.shout.id)
-  let draftForm
+
   if (draft) {
-    draftForm = Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id }
+    const draftForm = Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id }
+    setForm(draftForm)
     console.debug('draft from localstorage: ', draftForm)
   } else {
-    draftForm = {
+    const draftForm = {
       slug: props.shout.slug,
       shoutId: props.shout.id,
       title: props.shout.title,
@@ -88,9 +89,10 @@ export const EditView = (props: Props) => {
       media: props.shout.media,
       layout: props.shout.layout,
     }
+    setForm(draftForm)
     console.debug('draft from props data: ', draftForm)
   }
-  draftForm && setForm(draftForm)
+
   const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
 
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))

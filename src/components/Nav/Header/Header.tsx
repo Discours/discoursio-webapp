@@ -331,9 +331,7 @@ export const Header = (props: Props) => {
           </div>
           <HeaderAuth setIsProfilePopupVisible={setIsProfilePopupVisible} />
           <Show when={props.title}>
-            <div
-              class={clsx(styles.articleControls, 'col-auto')}
-            >
+            <div class={clsx(styles.articleControls, 'col-auto')}>
               <SharePopup
                 title={props.title}
                 imageUrl={props.cover}

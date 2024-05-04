@@ -57,7 +57,7 @@ export const HeaderAuth = (props: Props) => {
     toggleEditorPanel()
   }
 
-  const handleSaveClick = () => {
+  const _handleSaveClick = () => {
     const hasTopics = form.selectedTopics?.length > 0
     if (hasTopics) {
       saveShout(form)

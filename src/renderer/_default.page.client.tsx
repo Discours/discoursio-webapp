@@ -1,7 +1,7 @@
 import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'
 import type { PageContext } from './types'
 
-import * as Sentry from '@sentry/browser'
+import { init as SentryInit, replayIntegration } from '@sentry/browser'
 import i18next from 'i18next'
 import HttpApi from 'i18next-http-backend'
 import ICU from 'i18next-icu'
@@ -21,10 +21,10 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
   const searchParams = Object.fromEntries(new URLSearchParams(search))
   initRouter(pathname, searchParams)
 
-  Sentry.init({
+  SentryInit({
     dsn: GLITCHTIP_DSN,
     tracesSampleRate: 0.01,
-    integrations: [Sentry.replayIntegration()],
+    integrations: [replayIntegration()],
     // Session Replay
     replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
     replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.

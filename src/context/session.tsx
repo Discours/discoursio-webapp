@@ -1,5 +1,5 @@
 import type { Accessor, JSX, Resource } from 'solid-js'
-import type { AuthModalSource } from '../components/Nav/AuthModal/types'
+import type { AuthModalSearchParams, AuthModalSource } from '../components/Nav/AuthModal/types'
 import type { Author } from '../graphql/schema/core.gen'
 
 import {
@@ -29,7 +29,6 @@ import {
 
 import { inboxClient } from '../graphql/client/chat'
 import { apiClient } from '../graphql/client/core'
-import { notifierClient } from '../graphql/client/notifier'
 import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 import { addAuthors } from '../stores/zine/authors'
@@ -49,7 +48,6 @@ export type SessionContextType = {
   author: Resource<Author | null>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
-  isAuthenticated: Accessor<boolean>
   loadSession: () => AuthToken | Promise<AuthToken>
   setSession: (token: AuthToken | null) => void // setSession
   loadAuthor: (info?: unknown) => Author | Promise<Author>
@@ -73,6 +71,7 @@ export type SessionContextType = {
   resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
+// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
 const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()
@@ -136,6 +135,7 @@ export const SessionProvider = (props: {
 
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [authError, setAuthError] = createSignal('')
+  const { clearSearchParams } = useRouter<AuthModalSearchParams>()
 
   // Function to load session data
   const sessionData = async () => {
@@ -143,7 +143,7 @@ export const SessionProvider = (props: {
       const s: ApiResponse<AuthToken> = await authorizer().getSession()
       if (s?.data) {
         console.info('[context.session] loading session', s)
-
+        clearSearchParams()
         // Set session expiration time in local storage
         const expires_at = new Date(Date.now() + s.data.expires_in * 1000)
         localStorage.setItem('expires_at', `${expires_at.getTime()}`)
@@ -220,10 +220,13 @@ export const SessionProvider = (props: {
         }
 
         try {
-          const { profile } = session().user.app_data
-          setAuthor(profile)
-          addAuthors([profile])
-          if (!profile) loadAuthor()
+          const appdata = session()?.user.app_data
+          if (appdata) {
+            const { profile } = appdata
+            setAuthor(profile)
+            addAuthors([profile])
+            if (!profile) loadAuthor()
+          }
         } catch (e) {
           console.error(e)
         }
@@ -267,12 +270,9 @@ export const SessionProvider = (props: {
 
   // callback state updater
   createEffect(
-    on(
-      () => props.onStateChangeCallback,
-      () => {
-        props.onStateChangeCallback(session())
-      },
-    ),
+    on([() => props.onStateChangeCallback, session], ([_, ses]) => {
+      ses?.user?.id && props.onStateChangeCallback(ses)
+    }),
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
@@ -374,8 +374,6 @@ export const SessionProvider = (props: {
       console.warn(error)
     }
   }
-
-  const isAuthenticated = createMemo(() => Boolean(author()))
   const actions = {
     loadSession,
     requireAuthentication,
@@ -400,7 +398,6 @@ export const SessionProvider = (props: {
     isSessionLoaded,
     author,
     ...actions,
-    isAuthenticated,
     resendVerifyEmail,
   }
 

@@ -1,16 +1,14 @@
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { For, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { apiClient } from '../../../graphql/client/core'
 import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '../../../graphql/schema/core.gen'
 import { LayoutType } from '../../../pages/types'
 import { router } from '../../../stores/router'
-import { loadShouts, resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
 import { getUnixtime } from '../../../utils/getServerDate'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { splitToPages } from '../../../utils/splitToPages'
 import { ArticleCard } from '../../Feed/ArticleCard'
 import { Button } from '../../_shared/Button'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
@@ -28,19 +26,12 @@ export const PRERENDERED_ARTICLES_COUNT = 36
 const LOAD_MORE_PAGE_SIZE = 12
 
 export const Expo = (props: Props) => {
-  const [isLoaded, setIsLoaded] = createSignal<boolean>(Boolean(props.shouts))
+  const { t } = useLocalize()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
-
-  const { t } = useLocalize()
-
-  const { sortedArticles } = useArticlesStore({
-    shouts: isLoaded() ? props.shouts : [],
-    layout: props.layout,
-  })
-
+  const [articlesEndPage, setArticlesEndPage] = createSignal<number>(PRERENDERED_ARTICLES_COUNT)
+  const [expoShouts, setExpoShouts] = createSignal<Shout[]>([])
   const getLoadShoutsFilters = (additionalFilters: LoadShoutsFilters = {}): LoadShoutsFilters => {
     const filters = { ...additionalFilters }
 
@@ -58,15 +49,18 @@ export const Expo = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: getLoadShoutsFilters(),
       limit: count,
-      offset: sortedArticles().length,
+      offset: expoShouts().length,
     }
 
     options.filters = props.layout
       ? { layouts: [props.layout] }
       : { layouts: ['audio', 'video', 'image', 'literature'] }
 
-    const { hasMore } = await loadShouts(options)
+    const newShouts = await apiClient.getShouts(options)
+    const hasMore = newShouts?.length !== options.limit + 1 && newShouts?.length !== 0
     setIsLoadMoreButtonVisible(hasMore)
+
+    setExpoShouts((prev) => [...prev, ...newShouts])
   }
 
   const loadMoreWithoutScrolling = async (count: number) => {
@@ -100,19 +94,7 @@ export const Expo = (props: Props) => {
   }
 
   onMount(() => {
-    if (isLoaded()) {
-      return
-    }
-
     loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
-    setIsLoaded(true)
-  })
-
-  onMount(() => {
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore(LOAD_MORE_PAGE_SIZE)
-    }
-
     loadRandomTopArticles()
     loadRandomTopMonthArticles()
   })
@@ -121,9 +103,11 @@ export const Expo = (props: Props) => {
     on(
       () => props.layout,
       () => {
-        resetSortedArticles()
+        setExpoShouts([])
+        setIsLoadMoreButtonVisible(false)
         setFavoriteTopArticles([])
         setReactedTopMonthArticles([])
+        setArticlesEndPage(PRERENDERED_ARTICLES_COUNT)
         loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
         loadRandomTopArticles()
         loadRandomTopMonthArticles()
@@ -132,16 +116,17 @@ export const Expo = (props: Props) => {
   )
 
   onCleanup(() => {
-    resetSortedArticles()
+    setExpoShouts([])
   })
 
   const handleLoadMoreClick = () => {
     loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
+    setArticlesEndPage((prev) => prev + LOAD_MORE_PAGE_SIZE)
   }
 
   return (
     <div class={styles.Expo}>
-      <Show when={sortedArticles()?.length > 0} fallback={<Loading />}>
+      <Show when={expoShouts().length > 0} fallback={<Loading />}>
         <div class="wide-container">
           <ul class={clsx('view-switcher')}>
             <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
@@ -194,7 +179,7 @@ export const Expo = (props: Props) => {
             </li>
           </ul>
           <div class="row">
-            <For each={sortedArticles().slice(0, LOAD_MORE_PAGE_SIZE)}>
+            <For each={expoShouts()?.slice(0, LOAD_MORE_PAGE_SIZE)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -209,7 +194,7 @@ export const Expo = (props: Props) => {
             <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Top month articles')} slides={reactedTopMonthArticles()} />
             </Show>
-            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE, LOAD_MORE_PAGE_SIZE * 2)}>
+            <For each={expoShouts().slice(LOAD_MORE_PAGE_SIZE, LOAD_MORE_PAGE_SIZE * 2)}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard
@@ -224,7 +209,7 @@ export const Expo = (props: Props) => {
             <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
               <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
             </Show>
-            <For each={sortedArticles().slice(LOAD_MORE_PAGE_SIZE * 2)}>
+            <For each={expoShouts().slice(LOAD_MORE_PAGE_SIZE * 2, articlesEndPage())}>
               {(shout) => (
                 <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
                   <ArticleCard

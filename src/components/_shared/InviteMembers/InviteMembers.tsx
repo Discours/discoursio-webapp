@@ -10,7 +10,6 @@ import { useAuthorsStore } from '../../../stores/zine/authors'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
-import { Loading } from '../Loading'
 
 import { InlineLoader } from '../../InlineLoader'
 import styles from './InviteMembers.module.scss'

@@ -1,9 +1,7 @@
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal, on, onMount } from 'solid-js'
-import { useFollowing } from '../../context/following'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
-import { Author } from '../../graphql/schema/core.gen'
 import { setAuthorsByFollowers, setAuthorsByShouts, useAuthorsStore } from '../../stores/zine/authors'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
@@ -21,7 +19,6 @@ const PAGE_SIZE = 20
 
 export const AuthorsList = (props: Props) => {
   const { t } = useLocalize()
-  const { isOwnerSubscribed } = useFollowing()
   const { authorsByShouts, authorsByFollowers } = useAuthorsStore()
   const [loading, setLoading] = createSignal(false)
   const [currentPage, setCurrentPage] = createSignal({ shouts: 0, followers: 0 })
@@ -83,13 +80,7 @@ export const AuthorsList = (props: Props) => {
         {(author) => (
           <div class="row">
             <div class="col-lg-20 col-xl-18">
-              <AuthorBadge
-                author={author}
-                isFollowed={{
-                  loaded: !loading(),
-                  value: isOwnerSubscribed(author.id),
-                }}
-              />
+              <AuthorBadge author={author} />
             </div>
           </div>
         )}

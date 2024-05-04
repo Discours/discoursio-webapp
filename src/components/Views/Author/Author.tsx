@@ -3,7 +3,7 @@ import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/cor
 import { getPagePath } from '@nanostores/router'
 import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -11,7 +11,7 @@ import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
-import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
+import { loadAuthor } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
@@ -39,10 +39,9 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { subscriptions, followers: myFollowers, loadSubscriptions } = useFollowing()
+  const { followers: myFollowers } = useFollowing()
   const { session } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
-  const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -53,50 +52,41 @@ export const AuthorView = (props: Props) => {
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
-  // current author
+  const [sessionChecked, setSessionChecked] = createSignal(false)
   createEffect(() => {
-    if (props.authorSlug) {
-      if (session()?.user?.app_data?.profile?.slug === props.authorSlug) {
-        console.info('my own profile')
-        const { profile, authors, topics } = session().user.app_data
+    if (
+      !sessionChecked() &&
+      props.authorSlug &&
+      session()?.user?.app_data?.profile?.slug === props.authorSlug
+    ) {
+      setSessionChecked(true)
+      const appdata = session()?.user.app_data
+      if (appdata) {
+        console.info('preloaded my own profile')
+        const { authors, profile, topics } = appdata
         setFollowers(myFollowers)
         setAuthor(profile)
         setFollowing([...authors, ...topics])
       }
-    } else {
-      try {
-        const a = authorEntities()[props.authorSlug]
-        setAuthor(a)
-        // TODO: add following data retrieval
-        console.debug('[Author] expecting following data fetched')
-      } catch (error) {
-        console.debug(error)
-      }
-    }
-  })
-
-  createEffect(async () => {
-    if (author()?.id && !author().stat) {
-      const a = await loadAuthor({ slug: '', author_id: author().id })
-      console.debug('[AuthorView] loaded author:', a)
     }
   })
 
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
-  const fetchData = async (slug) => {
+  const fetchData = async (slug: string) => {
     try {
-      const [subscriptionsResult, followersResult] = await Promise.all([
+      const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
         apiClient.getAuthorFollowers({ slug }),
+        loadAuthor({ slug }),
       ])
-
       const { authors, topics } = subscriptionsResult
+      setAuthor(authorResult)
       setFollowing([...(authors || []), ...(topics || [])])
       setFollowers(followersResult || [])
 
-      console.info('[components.Author] following data loaded')
+      console.debug('[components.Author] following data loaded', subscriptionsResult)
     } catch (error) {
       console.error('[components.Author] fetch error', error)
     }
@@ -107,14 +97,6 @@ export const AuthorView = (props: Props) => {
       setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
     }
   }
-
-  onMount(() => {
-    fetchData(props.authorSlug)
-
-    if (!modal) {
-      hideModal()
-    }
-  })
 
   const loadMore = async () => {
     saveScrollPosition()
@@ -128,13 +110,10 @@ export const AuthorView = (props: Props) => {
   }
 
   onMount(() => {
+    if (!modal) hideModal()
+    fetchData(props.authorSlug)
     checkBioHeight()
-
-    // pagination
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore()
-      loadSubscriptions()
-    }
+    loadMore()
   })
 
   const pages = createMemo<Shout[][]>(() =>
@@ -143,16 +122,22 @@ export const AuthorView = (props: Props) => {
 
   const fetchComments = async (commenter: Author) => {
     const data = await apiClient.getReactionsBy({
-      by: { comment: false, created_by: commenter.id },
+      by: { comment: true, created_by: commenter.id },
     })
     setCommented(data)
   }
 
-  createEffect(() => {
-    if (author()) {
-      fetchComments(author())
-    }
-  })
+  const authorSlug = createMemo(() => author()?.slug)
+  createEffect(
+    on(
+      () => authorSlug(),
+      () => {
+        fetchData(authorSlug())
+        fetchComments(author())
+      },
+      { defer: true },
+    ),
+  )
 
   const ogImage = createMemo(() =>
     author()?.pic

@@ -3,8 +3,6 @@ import type { Topic } from '../../../graphql/schema/core.gen'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
-
-import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useRouter } from '../../../stores/router'
 import { setTopicsSort, useTopicsStore } from '../../../stores/zine/topics'
@@ -73,8 +71,6 @@ export const AllTopics = (props: Props) => {
     keys.push(keys.shift())
     return keys
   })
-
-  const { isOwnerSubscribed } = useFollowing()
 
   const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
   const [searchQuery, setSearchQuery] = createSignal('')
@@ -188,14 +184,7 @@ export const AllTopics = (props: Props) => {
                     <For each={filteredResults().slice(0, limit())}>
                       {(topic) => (
                         <>
-                          <TopicBadge
-                            topic={topic}
-                            isFollowed={{
-                              loaded: filteredResults().length > 0,
-                              value: isOwnerSubscribed(topic.slug),
-                            }}
-                            showStat={true}
-                          />
+                          <TopicBadge topic={topic} showStat={true} />
                         </>
                       )}
                     </For>

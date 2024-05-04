@@ -15,7 +15,10 @@ jobs:
       - name: Check types
         run: npm run check:types
 
-      - name: Check styles
+      - name: Lint with Biome
+        run: npm run check:code
+
+      - name: Lint styles
         run: npm run lint:styles
 
       - name: Test production build

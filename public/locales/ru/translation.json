@@ -31,7 +31,7 @@
   "All posts rating": "Рейтинг всех постов",
   "All posts": "Все публикации",
   "All topics": "Все темы",
-  "All": "Все",
+  "All": "Общая лента",
   "Almost done! Check your email.": "Почти готово! Осталось подтвердить вашу почту.",
   "Are you sure you want to delete this comment?": "Уверены, что хотите удалить этот комментарий?",
   "Are you sure you want to delete this draft?": "Уверены, что хотите удалить этот черновик?",
@@ -156,7 +156,7 @@
   "FAQ": "Советы и предложения",
   "Favorite topics": "Избранные темы",
   "Favorite": "Избранное",
-  "Feed settings": "Настройки ленты",
+  "Feed settings": "Настроить ленту",
   "Feed": "Лента",
   "Feedback": "Обратная связь",
   "Fill email": "Введите почту",
@@ -555,5 +555,7 @@
   "yesterday": "вчера",
   "Failed to delete comment": "Не удалось удалить комментарий",
   "It's OK. Just enter your email to receive a link to change your password": "Ничего страшного. Просто укажите свою почту, чтобы получить ссылку для смены пароля",
-  "Restore password": "Восстановить пароль"
+  "Restore password": "Восстановить пароль",
+  "Subscribing...": "Подписываем...",
+  "Unsubscribing...": "Отписываем..."
 }

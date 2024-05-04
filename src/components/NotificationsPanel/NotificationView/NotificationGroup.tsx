@@ -63,7 +63,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
   return (
     <>
       <For each={props.notifications}>
-        {(n: Group, index) => (
+        {(n: Group, _index) => (
           <>
             {t(threadCaption(n.thread), { commentsCount: n.reactions.length })}{' '}
             <div

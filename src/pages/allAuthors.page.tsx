@@ -1,6 +1,6 @@
 import type { PageProps } from './types'
 
-import { createEffect, createSignal, onMount } from 'solid-js'
+import { createSignal, onMount } from 'solid-js'
 
 import { AllAuthors } from '../components/Views/AllAuthors/'
 import { PAGE_SIZE } from '../components/Views/AllTopics/AllTopics'

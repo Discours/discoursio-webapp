@@ -4,8 +4,6 @@ import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'
-
-import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { TopicCard } from '../Topic/Card'
@@ -30,7 +28,6 @@ type Props = {
 
 export const Beside = (props: Props) => {
   const { t } = useLocalize()
-  const { isOwnerSubscribed } = useFollowing()
 
   return (
     <Show when={!!props.beside?.slug && props.values?.length > 0}>
@@ -86,12 +83,7 @@ export const Beside = (props: Props) => {
                           />
                         </Show>
                         <Show when={props.wrapper === 'author'}>
-                          <AuthorBadge
-                            author={value as Author}
-                            isFollowed={{
-                              value: isOwnerSubscribed(value.id),
-                            }}
-                          />
+                          <AuthorBadge author={value as Author} />
                         </Show>
                         <Show when={props.wrapper === 'article' && value?.slug}>
                           <ArticleCard

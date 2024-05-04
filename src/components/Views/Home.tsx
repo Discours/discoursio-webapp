@@ -1,8 +1,7 @@
 import { getPagePath } from '@nanostores/router'
-import { For, Show, batch, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
-import { apiClient } from '../../graphql/client/core'
 import { Shout, Topic } from '../../graphql/schema/core.gen'
 import { router } from '../../stores/router'
 import {
@@ -52,8 +51,8 @@ export const HomeView = (props: Props) => {
   const { topAuthors } = useTopAuthorsStore()
   const { t } = useLocalize()
 
-  const [randomTopic, setRandomTopic] = createSignal<Topic>(null)
-  const [randomTopicArticles, setRandomTopicArticles] = createSignal<Shout[]>([])
+  const [randomTopic, _setRandomTopic] = createSignal<Topic>(null)
+  const [randomTopicArticles, _setRandomTopicArticles] = createSignal<Shout[]>([])
 
   onMount(async () => {
     loadTopArticles()

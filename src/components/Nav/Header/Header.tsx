@@ -59,7 +59,6 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const { isAuthenticated } = useSession()
 
   const toggleFixed = () => setFixed(!fixed())
 
@@ -331,11 +330,7 @@ export const Header = (props: Props) => {
           </div>
           <HeaderAuth setIsProfilePopupVisible={setIsProfilePopupVisible} />
           <Show when={props.title}>
-            <div
-              class={clsx(styles.articleControls, 'col-auto', {
-                [styles.articleControlsAuthorized]: isAuthenticated(),
-              })}
-            >
+            <div class={clsx(styles.articleControls, 'col-auto')}>
               <SharePopup
                 title={props.title}
                 imageUrl={props.cover}

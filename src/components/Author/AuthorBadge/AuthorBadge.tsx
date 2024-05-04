@@ -27,6 +27,7 @@ type Props = {
   inviteView?: boolean
   onInvite?: (id: number) => void
   selected?: boolean
+  subscriptionsMode?: boolean
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
@@ -122,7 +123,7 @@ export const AuthorBadge = (props: Props) => {
                 <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
               </Match>
             </Switch>
-            <Show when={props.author?.stat}>
+            <Show when={props.author?.stat && !props.subscriptionsMode}>
               <div class={styles.bio}>
                 <Show when={props.author?.stat.shouts > 0}>
                   <div>{t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}</div>

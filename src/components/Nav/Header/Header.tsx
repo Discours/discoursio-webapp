@@ -59,7 +59,7 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const { author } = useSession()
+  // const { author } = useSession()
 
   const toggleFixed = () => setFixed(!fixed())
 

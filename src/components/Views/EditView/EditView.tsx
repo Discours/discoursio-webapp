@@ -68,14 +68,13 @@ export const EditView = (props: Props) => {
   } = useEditorContext()
   const shoutTopics = props.shout.topics || []
 
-  // TODO: проверить сохранение черновика в local storage (не работает)
-  const draft = props.shout || getDraftFromLocalStorage(props.shout.id)
+  const draft = getDraftFromLocalStorage(props.shout.id)
+  let draftForm = {}
   if (draft) {
-    console.debug('draft from localstorage: ', draft)
-    setForm(Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id })
+    draftForm = Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id }
+    console.debug('draft from localstorage: ', draftForm)
   } else {
-    console.debug('draft from props data: ', props.shout)
-    setForm({
+    draftForm = {
       slug: props.shout.slug,
       shoutId: props.shout.id,
       title: props.shout.title,
@@ -88,9 +87,10 @@ export const EditView = (props: Props) => {
       coverImageUrl: props.shout.cover,
       media: props.shout.media,
       layout: props.shout.layout,
-    })
+    }
+    console.debug('draft from props data: ', draftForm)
   }
-
+  setForm(draftForm)
   const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
 
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))

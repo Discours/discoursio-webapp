@@ -57,7 +57,7 @@ export const HeaderAuth = (props: Props) => {
     toggleEditorPanel()
   }
 
-  const handleSaveClick = () => {
+  const _handleSaveClick = () => {
     const hasTopics = form.selectedTopics?.length > 0
     if (hasTopics) {
       saveShout(form)
@@ -109,12 +109,12 @@ export const HeaderAuth = (props: Props) => {
       <Show when={isSessionLoaded()} keyed={true}>
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
-            <Show when={isCreatePostButtonVisible() && isAuthenticated()}>
+            <Show when={isCreatePostButtonVisible() && author()?.id}>
               <div
                 class={clsx(
                   styles.userControlItem,
                   styles.userControlItemVerbose,
-                  styles.userControlItemCreate,
+                  // styles.userControlItemCreate,
                 )}
               >
                 <a href={getPagePath(router, 'create')}>
@@ -223,12 +223,12 @@ export const HeaderAuth = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={isCreatePostButtonVisible() && !isAuthenticated()}>
+            <Show when={isCreatePostButtonVisible() && !author()?.id}>
               <div
                 class={clsx(
                   styles.userControlItem,
                   styles.userControlItemVerbose,
-                  styles.userControlItemCreate,
+                  // styles.userControlItemCreate,
                 )}
               >
                 <a href={getPagePath(router, 'create')}>

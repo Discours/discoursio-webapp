@@ -30,7 +30,7 @@ export const RatingControl = (props: RatingControlProps) => {
   const [isLoading, setIsLoading] = createSignal(false)
   const [ratings, setRatings] = createSignal<Reaction[]>([])
   const [myRate, setMyRate] = createSignal<Reaction | undefined>()
-  const [total, setTotal] = createSignal(props.comment?.stat?.rating || props.shout?.stat?.rating || 0)
+  const [_total, setTotal] = createSignal(props.comment?.stat?.rating || props.shout?.stat?.rating || 0)
 
   createEffect(
     on(
@@ -87,14 +87,7 @@ export const RatingControl = (props: RatingControlProps) => {
     requireAuthentication(async () => {
       setIsLoading(true)
 
-      if (!myRate()) {
-        console.debug('[RatingControl.handleRatingChange] wasnt voted by you before', myRate())
-        const rateInput = { kind: voteKind, shout: props.shout?.id }
-        const fakeId = Date.now() + Math.floor(Math.random() * 1000)
-        // const savedRatings = [...props.ratings]
-        mergeProps(props.ratings, [...props.ratings, { ...rateInput, id: fakeId, created_by: author() }])
-        const _ = await createReaction(rateInput)
-      } else {
+      if (myRate()) {
         console.debug('[RatingControl.handleRatingChange] already has your vote', myRate())
         const oppositeKind = voteKind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
         if (myRate()?.kind === oppositeKind) {
@@ -109,6 +102,13 @@ export const RatingControl = (props: RatingControlProps) => {
         if (myRate()?.kind === voteKind) {
           console.debug(`[RatingControl.handleRatingChange] cant vote ${voteKind} twice`)
         }
+      } else {
+        console.debug('[RatingControl.handleRatingChange] wasnt voted by you before', myRate())
+        const rateInput = { kind: voteKind, shout: props.shout?.id }
+        const fakeId = Date.now() + Math.floor(Math.random() * 1000)
+        // const savedRatings = [...props.ratings]
+        mergeProps(props.ratings, [...props.ratings, { ...rateInput, id: fakeId, created_by: author() }])
+        const _ = await createReaction(rateInput)
       }
 
       const ratings = await loadReactionsBy({ by: { shout: props.shout?.slug, rating: true } })

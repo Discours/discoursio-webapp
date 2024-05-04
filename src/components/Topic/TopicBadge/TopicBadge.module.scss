@@ -45,9 +45,11 @@
 
   .info {
     @include font-size(1.4rem);
+
     border: none;
-    //display: flex;
-    //flex-direction: column;
+
+    // display: flex;
+    // flex-direction: column;
 
     &:hover {
       background: unset;
@@ -61,11 +63,13 @@
 
     .title {
       @include font-size(2.2rem);
+
       font-weight: bold;
     }
 
     .description {
       @include font-size(1.6rem);
+
       line-height: 1.4;
       margin: 0.8rem 0;
       -webkit-line-clamp: 2;
@@ -103,6 +107,7 @@
 
     .title {
       @include font-size(1.4rem);
+
       font-weight: 500;
       line-height: 1em;
       color: var(--blue-500);
@@ -111,7 +116,9 @@
 
     .description {
       color: var(--black-400);
+
       @include font-size(1.2rem);
+
       font-weight: 500;
       margin: 0;
     }

@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -28,6 +28,7 @@ type Props = {
   onInvite?: (id: number) => void
   selected?: boolean
   subscriptionsMode?: boolean
+  isFollowed?: boolean
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
@@ -71,7 +72,7 @@ export const AuthorBadge = (props: Props) => {
 
     return props.author.name
   })
-
+  const [_isFollowed, setIsFollowed] = createSignal()
   createEffect(
     on(
       () => props.isFollowed,

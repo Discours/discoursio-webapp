@@ -114,7 +114,7 @@ export const HeaderAuth = (props: Props) => {
                 class={clsx(
                   styles.userControlItem,
                   styles.userControlItemVerbose,
-                  styles.userControlItemCreate,
+                  // styles.userControlItemCreate,
                 )}
               >
                 <a href={getPagePath(router, 'create')}>
@@ -228,7 +228,7 @@ export const HeaderAuth = (props: Props) => {
                 class={clsx(
                   styles.userControlItem,
                   styles.userControlItemVerbose,
-                  styles.userControlItemCreate,
+                  // styles.userControlItemCreate,
                 )}
               >
                 <a href={getPagePath(router, 'create')}>

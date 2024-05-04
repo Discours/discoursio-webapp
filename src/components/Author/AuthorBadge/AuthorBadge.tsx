@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -27,8 +27,6 @@ type Props = {
   inviteView?: boolean
   onInvite?: (id: number) => void
   selected?: boolean
-  subscriptionsMode?: boolean
-  isFollowed?: boolean
 }
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
@@ -72,14 +70,6 @@ export const AuthorBadge = (props: Props) => {
 
     return props.author.name
   })
-  const [_isFollowed, setIsFollowed] = createSignal()
-  createEffect(
-    on(
-      () => props.isFollowed,
-      (followed) => setIsFollowed(followed?.value),
-      { defer: true },
-    ),
-  )
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
@@ -124,7 +114,7 @@ export const AuthorBadge = (props: Props) => {
                 <div class={clsx('text-truncate', styles.bio)} innerHTML={props.author.bio} />
               </Match>
             </Switch>
-            <Show when={props.author?.stat && !props.subscriptionsMode}>
+            <Show when={props.author?.stat}>
               <div class={styles.bio}>
                 <Show when={props.author?.stat.shouts > 0}>
                   <div>{t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}</div>

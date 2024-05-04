@@ -223,7 +223,7 @@ export const HeaderAuth = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={isCreatePostButtonVisible() && ! !author()?.id}>
+            <Show when={isCreatePostButtonVisible() && !!author()?.id}>
               <div
                 class={clsx(
                   styles.userControlItem,

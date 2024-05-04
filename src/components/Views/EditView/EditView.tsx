@@ -69,7 +69,7 @@ export const EditView = (props: Props) => {
   const shoutTopics = props.shout.topics || []
 
   const draft = getDraftFromLocalStorage(props.shout.id)
-  let draftForm = {}
+  let draftForm
   if (draft) {
     draftForm = Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id }
     console.debug('draft from localstorage: ', draftForm)
@@ -90,7 +90,7 @@ export const EditView = (props: Props) => {
     }
     console.debug('draft from props data: ', draftForm)
   }
-  setForm(draftForm)
+  draftForm && setForm(draftForm)
   const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
 
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))

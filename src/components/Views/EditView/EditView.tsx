@@ -68,13 +68,14 @@ export const EditView = (props: Props) => {
   } = useEditorContext()
   const shoutTopics = props.shout.topics || []
 
-  // TODO: проверить сохранение черновика в local storage (не работает)
-  const draft = props.shout || getDraftFromLocalStorage(props.shout.id)
+  const draft = getDraftFromLocalStorage(props.shout.id)
+
   if (draft) {
-    // console.debug('draft: ', draft)
-    setForm(Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id })
+    const draftForm = Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id }
+    setForm(draftForm)
+    console.debug('draft from localstorage: ', draftForm)
   } else {
-    setForm({
+    const draftForm = {
       slug: props.shout.slug,
       shoutId: props.shout.id,
       title: props.shout.title,
@@ -87,7 +88,9 @@ export const EditView = (props: Props) => {
       coverImageUrl: props.shout.cover,
       media: props.shout.media,
       layout: props.shout.layout,
-    })
+    }
+    setForm(draftForm)
+    console.debug('draft from props data: ', draftForm)
   }
 
   const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
@@ -110,9 +113,6 @@ export const EditView = (props: Props) => {
     onCleanup(() => {
       window.removeEventListener('scroll', handleScroll)
     })
-  })
-
-  onMount(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const handleBeforeUnload = (event) => {
       if (!deepEqual(prevForm, form)) {
@@ -188,17 +188,12 @@ export const EditView = (props: Props) => {
     const hasChanges = !deepEqual(form, prevForm)
     const hasTopic = Boolean(form.mainTopic)
     if (hasChanges || hasTopic) {
-      console.debug('[EditView.autoSave] shout has topic')
+      console.debug('saving draft', form)
       setSaving(true)
-      if (props.shout?.published_at) {
-        saveDraftToLocalStorage(form)
-      } else {
-        await saveDraft(form)
-      }
+      saveDraftToLocalStorage(form)
+      await saveDraft(form)
       setPrevForm(clone(form))
-      setTimeout(() => {
-        setSaving(false)
-      }, AUTO_SAVE_DELAY)
+      setTimeout(() => setSaving(false), AUTO_SAVE_DELAY)
     }
   }
 

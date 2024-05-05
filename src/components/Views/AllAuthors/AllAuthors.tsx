@@ -42,7 +42,8 @@ export const AllAuthors = (props: Props) => {
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
     return sortedAuthors().filter((author) => {
-      return author.name.toLowerCase().includes(query) // Предполагаем, что у автора есть свойство name
+      // Предполагаем, что у автора есть свойство name
+      return author.name.toLowerCase().includes(query)
     })
   })
 

@@ -28,6 +28,7 @@ const embedData = (data) => {
 
   const result: { src: string; width?: string; height?: string } = { src: '' }
 
+  // biome-ignore lint/style/useForOf: <explanation>
   for (let i = 0; i < attributes.length; i++) {
     const attribute = attributes.item(i)
     if (attribute) {

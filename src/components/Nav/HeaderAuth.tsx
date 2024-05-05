@@ -56,7 +56,7 @@ export const HeaderAuth = (props: Props) => {
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
   }
-
+  // FIXME: use handler
   const _handleSaveClick = () => {
     const hasTopics = form.selectedTopics?.length > 0
     if (hasTopics) {
@@ -254,7 +254,12 @@ export const HeaderAuth = (props: Props) => {
               }
             >
               <Show when={!isSaveButtonVisible()}>
-                <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
+                <div
+                  class={clsx(
+                    styles.userControlItem,
+                    // styles.userControlItemInbox
+                  )}
+                >
                   <a href={getPagePath(router, 'inbox')}>
                     <div classList={{ entered: page().path === '/inbox' }}>
                       <Icon name="inbox-white" class={styles.icon} />

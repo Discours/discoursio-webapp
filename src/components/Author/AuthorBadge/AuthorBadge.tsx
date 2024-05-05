@@ -45,7 +45,6 @@ export const AuthorBadge = (props: Props) => {
     setIsMobileView(!mediaMatches.sm)
   })
 
-  // const { setFollowing } = useFollowing()
   const { changeSearchParams } = useRouter()
   const { t, formatDate, lang } = useLocalize()
 

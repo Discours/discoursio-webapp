@@ -563,5 +563,6 @@
   "Current password": "Текущий пароль",
   "Confirm your new password": "Подтвердите новый пароль",
   "Connect": "Привязать",
-  "Incorrect old password": "Старый пароль не верен"
+  "Incorrect old password": "Старый пароль не верен",
+  "Repeat new password": "Повторите новый пароль"
 }

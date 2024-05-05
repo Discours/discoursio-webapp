@@ -536,5 +536,6 @@
   "Current password": "Current password",
   "Confirm your new password": "Confirm your new password",
   "Connect": "Connect",
-  "Incorrect old password": "Incorrect old password"
+  "Incorrect old password": "Incorrect old password",
+  "Repeat new password": "Repeat new password"
 }

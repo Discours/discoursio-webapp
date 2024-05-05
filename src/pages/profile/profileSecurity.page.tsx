@@ -22,6 +22,7 @@ export const ProfileSecurityPage = () => {
 
   const [oldPassword, setOldPassword] = createSignal<string | undefined>()
   const [newPassword, setNewPassword] = createSignal<string | undefined>()
+  const [newPasswordConfirm, setNewPasswordConfirm] = createSignal<string | undefined>()
   const [email, setEmail] = createSignal<string | undefined>()
   const [newPasswordError, setNewPasswordError] = createSignal<string | undefined>()
   const [oldPasswordError, setOldPasswordError] = createSignal<string | undefined>()
@@ -30,9 +31,14 @@ export const ProfileSecurityPage = () => {
 
   const oldPasswordRef: { current: HTMLDivElement } = { current: null }
   const handleCheckNewPassword = (value: string) => {
+    setNewPasswordConfirm(value)
     if (value !== newPassword()) {
       setNewPasswordError(t('Passwords are not equal'))
     }
+  }
+  const handleSetNewPassword = (value: string) => {
+    setNewPasswordConfirm('')
+    setNewPassword(value)
   }
 
   createEffect(() => {
@@ -108,6 +114,7 @@ export const ProfileSecurityPage = () => {
                         type="text"
                         name="email"
                         id="email"
+                        disabled={isSubmitting()}
                         value={email()}
                         placeholder={t('Email')}
                         onFocus={() => setEmailError()}
@@ -133,18 +140,26 @@ export const ProfileSecurityPage = () => {
                         onFocus={() => setOldPasswordError()}
                         setError={oldPasswordError()}
                         onInput={(value) => setOldPassword(value)}
+                        value={oldPassword() ?? ''}
+                        disabled={isSubmitting()}
                       />
                     </div>
 
                     <h5>{t('New password')}</h5>
-                    <PasswordField onInput={(value) => setNewPassword(value)} />
+                    <PasswordField
+                      onInput={(value) => handleSetNewPassword(value)}
+                      value={newPassword() ?? ''}
+                      disabled={isSubmitting()}
+                    />
 
                     <h5>{t('Confirm your new password')}</h5>
                     <PasswordField
                       noValidate={true}
+                      value={newPasswordConfirm()?.length > 0 ? newPasswordConfirm() : null}
                       onFocus={() => setNewPasswordError()}
                       setError={newPasswordError()}
                       onInput={(value) => handleCheckNewPassword(value)}
+                      disabled={isSubmitting()}
                     />
 
                     <h4>{t('Social networks')}</h4>

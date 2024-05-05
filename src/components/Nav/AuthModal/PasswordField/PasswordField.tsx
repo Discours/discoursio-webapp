@@ -18,6 +18,7 @@ type Props = {
   disableAutocomplete?: boolean
   noValidate?: boolean
   onFocus?: () => void
+  value?: string
 }
 
 const minLength = 8
@@ -83,6 +84,7 @@ export const PasswordField = (props: Props) => {
           name="password"
           disabled={props.disabled}
           onFocus={props.onFocus}
+          value={props.value ? props.value : ''}
           autocomplete={props.disableAutocomplete ? 'one-time-code' : 'current-password'}
           type={showPassword() ? 'text' : 'password'}
           placeholder={props.placeholder || t('Password')}

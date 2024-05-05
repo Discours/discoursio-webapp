@@ -57,7 +57,7 @@ export const ImageSwiper = (props: Props) => {
     const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation, HashNavigation])
-    while (!(mainSwipeRef.current?.swiper)) {
+    while (!mainSwipeRef.current?.swiper) {
       await new Promise((resolve) => setTimeout(resolve, 10)) // wait 10 ms
     }
     mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)

@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal, on, } from 'solid-js'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 import { useLocalize } from '../../context/localize'
 import { apiClient } from '../../graphql/client/core'
 import { setAuthorsByFollowers, setAuthorsByShouts, useAuthorsStore } from '../../stores/zine/authors'

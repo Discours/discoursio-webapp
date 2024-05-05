@@ -59,7 +59,7 @@ export const HeaderAuth = (props: Props) => {
     toggleEditorPanel()
   }
 
-  const handleSaveButtonClick = () => {
+  const _handleSaveButtonClick = () => {
     saveShout(form)
   }
 
@@ -251,7 +251,10 @@ export const HeaderAuth = (props: Props) => {
               }
             >
               <Show when={!isSaveButtonVisible()}>
-                <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
+                <div class={clsx(
+                      styles.userControlItem,
+                      // styles.userControlItemInbox
+                    )}>
                   <a href={getPagePath(router, 'inbox')}>
                     <div classList={{ entered: page().path === '/inbox' }}>
                       <Icon name="inbox-white" class={styles.icon} />

@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal, on } from 'solid-js'
+import { Show, createEffect, createSignal, } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -27,7 +27,7 @@ export const TopicBadge = (props: Props) => {
   const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
 
   createEffect(() => {
-    if (!subscriptions || !props.topic) return
+    if (!(subscriptions && props.topic)) return
     const subscribed = subscriptions.topics?.some((topics) => topics.id === props.topic?.id)
     setIsSubscribed(subscribed)
   })

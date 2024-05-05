@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer'
+import { Buffer } from 'node:buffer'
 
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'

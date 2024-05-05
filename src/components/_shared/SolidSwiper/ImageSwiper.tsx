@@ -57,11 +57,11 @@ export const ImageSwiper = (props: Props) => {
     const { register } = await import('swiper/element/bundle')
     register()
     SwiperCore.use([Pagination, Navigation, Manipulation, HashNavigation])
-    while (!mainSwipeRef.current || !mainSwipeRef.current.swiper) {
+    while (!(mainSwipeRef.current?.swiper)) {
       await new Promise((resolve) => setTimeout(resolve, 10)) // wait 10 ms
     }
     mainSwipeRef.current.swiper.on('slideChange', handleSlideChange)
-    const initialSlide = parseInt(searchParams().slide) - 1
+    const initialSlide = Number.parseInt(searchParams().slide) - 1
     if (initialSlide && !Number.isNaN(initialSlide) && initialSlide < props.images.length) {
       mainSwipeRef.current.swiper.slideTo(initialSlide, 0)
     } else {

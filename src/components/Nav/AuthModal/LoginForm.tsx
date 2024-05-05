@@ -1,7 +1,7 @@
 import type { AuthModalSearchParams } from './types'
 
 import { clsx } from 'clsx'
-import { JSX, Show, createEffect, createSignal } from 'solid-js'
+import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -32,7 +32,7 @@ export const LoginForm = () => {
   const [password, setPassword] = createSignal('')
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
 
-  const [isLinkSent, setIsLinkSent] = createSignal(false)
+  const [_isLinkSent, setIsLinkSent] = createSignal(false)
   const authFormRef: { current: HTMLFormElement } = { current: null }
   const { showSnackbar } = useSnackbar()
   const { signIn } = useSession()

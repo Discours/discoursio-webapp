@@ -1,5 +1,3 @@
-import type { Doc } from 'yjs/dist/src/utils/Doc'
-
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { isTextSelection } from '@tiptap/core'
 import { Bold } from '@tiptap/extension-bold'
@@ -30,7 +28,7 @@ import { Underline } from '@tiptap/extension-underline'
 import { createEffect, createSignal, onCleanup } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
-import * as Y from 'yjs'
+import { Doc } from 'yjs'
 
 import { useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
@@ -85,7 +83,7 @@ export const Editor = (props: Props) => {
   const docName = `shout-${props.shoutId}`
 
   if (!yDocs[docName]) {
-    yDocs[docName] = new Y.Doc()
+    yDocs[docName] = new Doc()
   }
 
   if (!providers[docName]) {

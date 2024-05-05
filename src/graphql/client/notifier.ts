@@ -1,4 +1,4 @@
-import { createGraphQLClient } from '../createGraphQLClient'
+
 import markSeenMutation from '../mutation/notifier/mark-seen'
 import markSeenAfterMutation from '../mutation/notifier/mark-seen-after'
 import markThreadSeenMutation from '../mutation/notifier/mark-seen-thread'

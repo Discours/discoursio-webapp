@@ -1,10 +1,8 @@
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal, onMount } from 'solid-js'
+import { For, Show, createEffect, createSignal, } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { apiClient } from '../../../graphql/client/core'
 import { Author, Topic } from '../../../graphql/schema/core.gen'
 import { SubscriptionFilter } from '../../../pages/types'
 import { dummyFilter } from '../../../utils/dummyFilter'
@@ -21,7 +19,6 @@ import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
-  const { author, session } = useSession()
   const { subscriptions } = useFollowing()
   const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
   const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])

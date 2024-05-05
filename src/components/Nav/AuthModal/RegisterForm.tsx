@@ -32,7 +32,7 @@ export const RegisterForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const { signUp, isRegistered, resendVerifyEmail } = useSession()
-  const [submitError, setSubmitError] = createSignal('')
+  const [_submitError, setSubmitError] = createSignal('')
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')
   const [isSubmitting, setIsSubmitting] = createSignal(false)
@@ -116,7 +116,7 @@ export const RegisterForm = () => {
 
   const handleCheckEmailStatus = (status: EmailStatus | string) => {
     switch (status) {
-      case 'not verified':
+      case 'not verified': {
         setValidationErrors((prev) => ({
           ...prev,
           email: (
@@ -129,8 +129,9 @@ export const RegisterForm = () => {
           ),
         }))
         break
-      case 'verified':
-        setValidationErrors((prev) => ({
+      }
+      case 'verified': {
+        setValidationErrors((_prev) => ({
           email: (
             <>
               {t('This email is registered')}. {t('try')}
@@ -142,7 +143,8 @@ export const RegisterForm = () => {
           ),
         }))
         break
-      case 'registered':
+      }
+      case 'registered': {
         setValidationErrors((prev) => ({
           ...prev,
           email: (
@@ -156,9 +158,11 @@ export const RegisterForm = () => {
           ),
         }))
         break
-      default:
+      }
+      default: {
         console.info('[RegisterForm] email is not registered')
         break
+      }
     }
   }
 

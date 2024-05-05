@@ -1,1 +1,1 @@
-export { Popup, PopupProps } from './Popup'
+export { Popup, type PopupProps } from './Popup'

@@ -72,10 +72,9 @@ export const AuthorBadge = (props: Props) => {
   })
 
   const handleFollowClick = () => {
-    requireAuthentication(() => {
-      isSubscribed()
-        ? unfollow(FollowingEntity.Author, props.author.slug)
-        : follow(FollowingEntity.Author, props.author.slug)
+    requireAuthentication(async () => {
+      const handle = isSubscribed() ? unfollow : follow
+      await handle(FollowingEntity.Author, props.author.slug)
     }, 'subscribe')
   }
 

@@ -8,6 +8,7 @@ import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 
 import styles from './ShareLinks.module.scss'
+import popupStyles from '../Popup/Popup.module.scss'
 
 type Props = {
   title: string
@@ -53,26 +54,26 @@ export const ShareLinks = (props: Props) => {
     <div class={clsx(styles.ShareLinks, props.class, { [styles.inModal]: props.variant === 'inModal' })}>
       <ul class="nodash">
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => handleShare(FACEBOOK)}>
-            <Icon name="facebook-white" class={styles.icon} />
+          <button role="button" class={clsx(styles.shareControl, popupStyles.action)} onClick={() => handleShare(FACEBOOK)}>
+            <Icon name="facebook-white" class={clsx(styles.icon, popupStyles.icon)} />
             Facebook
           </button>
         </li>
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => handleShare(TWITTER)}>
-            <Icon name="twitter-white" class={styles.icon} />
+          <button role="button" class={clsx(styles.shareControl, popupStyles.action)} onClick={() => handleShare(TWITTER)}>
+            <Icon name="twitter-white" class={clsx(styles.icon, popupStyles.icon)} />
             Twitter
           </button>
         </li>
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => handleShare(TELEGRAM)}>
-            <Icon name="telegram-white" class={styles.icon} />
+          <button role="button" class={clsx(styles.shareControl, popupStyles.action)} onClick={() => handleShare(TELEGRAM)}>
+            <Icon name="telegram-white" class={clsx(styles.icon, popupStyles.icon)} />
             Telegram
           </button>
         </li>
         <li>
-          <button role="button" class={styles.shareControl} onClick={() => handleShare(VK)}>
-            <Icon name="vk-white" class={styles.icon} />
+          <button role="button" class={clsx(styles.shareControl, popupStyles.action)} onClick={() => handleShare(VK)}>
+            <Icon name="vk-white" class={clsx(styles.icon, popupStyles.icon)} />
             VK
           </button>
         </li>
@@ -80,8 +81,8 @@ export const ShareLinks = (props: Props) => {
           <Show
             when={props.variant === 'inModal'}
             fallback={
-              <button role="button" class={styles.shareControl} onClick={copyLink}>
-                <Icon name="link-white" class={styles.icon} />
+              <button role="button" class={clsx(styles.shareControl, popupStyles.action)} onClick={copyLink}>
+                <Icon name="link-white" class={clsx(styles.icon, popupStyles.icon)} />
                 {t('Copy link')}
               </button>
             }
@@ -93,7 +94,7 @@ export const ShareLinks = (props: Props) => {
               <Popover content={t('Copy link')}>
                 {(triggerRef: (el) => void) => (
                   <div class={styles.copyButton} onClick={copyLink} ref={triggerRef}>
-                    <Icon name="copy" class={styles.icon} />
+                    <Icon name="copy" class={clsx(styles.icon, popupStyles.icon)} />
                   </div>
                 )}
               </Popover>

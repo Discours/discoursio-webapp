@@ -59,7 +59,7 @@ export const HeaderAuth = (props: Props) => {
     toggleEditorPanel()
   }
 
-  const handleSaveButtonClick = () => {
+  const _handleSaveButtonClick = () => {
     saveShout(form)
   }
 

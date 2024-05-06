@@ -42,7 +42,6 @@ export const AuthorView = (props: Props) => {
   const { followers: myFollowers } = useFollowing()
   const { session } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
-  // const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -87,7 +86,7 @@ export const AuthorView = (props: Props) => {
       setFollowing([...(authors || []), ...(topics || [])])
       setFollowers(followersResult || [])
 
-      console.info('[components.Author] data loaded')
+      console.debug('[components.Author] following data loaded', subscriptionsResult)
     } catch (error) {
       console.error('[components.Author] fetch error', error)
     }

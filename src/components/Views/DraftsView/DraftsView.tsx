@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal } from 'solid-js'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useEditorContext } from '../../../context/editor'
 import { useSession } from '../../../context/session'
@@ -9,22 +9,24 @@ import { Shout } from '../../../graphql/schema/core.gen'
 import { router } from '../../../stores/router'
 import { Draft } from '../../Draft'
 
+import { Loading } from '../../_shared/Loading'
 import styles from './DraftsView.module.scss'
 
 export const DraftsView = () => {
-  const { isAuthenticated, isSessionLoaded } = useSession()
+  const { session } = useSession()
   const [drafts, setDrafts] = createSignal<Shout[]>([])
 
-  const loadDrafts = async () => {
-    if (apiClient.private) {
-      const loadedDrafts = await apiClient.getDrafts()
-      setDrafts(loadedDrafts.reverse() || [])
-    }
-  }
-
-  createEffect(() => {
-    if (isSessionLoaded()) loadDrafts()
-  })
+  createEffect(
+    on(
+      () => session(),
+      async (s) => {
+        if (s) {
+          const loadedDrafts = await apiClient.getDrafts()
+          setDrafts(loadedDrafts.reverse() || [])
+        }
+      },
+    ),
+  )
 
   const { publishShoutById, deleteShout } = useEditorContext()
 
@@ -44,22 +46,20 @@ export const DraftsView = () => {
 
   return (
     <div class={clsx(styles.DraftsView)}>
-      <Show when={isSessionLoaded()}>
+      <Show when={session()?.user?.id} fallback={<Loading />}>
         <div class="wide-container">
           <div class="row">
             <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
-              <Show when={isAuthenticated()} fallback="Давайте авторизуемся">
-                <For each={drafts()}>
-                  {(draft) => (
-                    <Draft
-                      class={styles.draft}
-                      shout={draft}
-                      onDelete={handleDraftDelete}
-                      onPublish={handleDraftPublish}
-                    />
-                  )}
-                </For>
-              </Show>
+              <For each={drafts()}>
+                {(draft) => (
+                  <Draft
+                    class={styles.draft}
+                    shout={draft}
+                    onDelete={handleDraftDelete}
+                    onPublish={handleDraftPublish}
+                  />
+                )}
+              </For>
             </div>
           </div>
         </div>

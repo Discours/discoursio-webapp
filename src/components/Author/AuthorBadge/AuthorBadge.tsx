@@ -119,6 +119,9 @@ export const AuthorBadge = (props: Props) => {
                 <Show when={props.author?.stat.shouts > 0}>
                   <div>{t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}</div>
                 </Show>
+                <Show when={props.author?.stat.comments > 0}>
+                  <div>{t('CommentsWithCount', { count: props.author.stat?.comments ?? 0 })}</div>
+                </Show>
                 <Show when={props.author?.stat.followers > 0}>
                   <div>{t('FollowersWithCount', { count: props.author.stat?.followers ?? 0 })}</div>
                 </Show>

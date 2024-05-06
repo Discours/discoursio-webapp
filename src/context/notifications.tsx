@@ -40,11 +40,11 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
   const [notificationEntities, setNotificationEntities] = createStore<Record<string, NotificationGroup>>({})
-  const { isAuthenticated } = useSession()
+  const { author } = useSession()
   const { addHandler } = useConnect()
 
   const loadNotificationsGrouped = async (options: { after: number; limit?: number; offset?: number }) => {
-    if (isAuthenticated() && notifierClient?.private) {
+    if (author()?.id && notifierClient?.private) {
       const notificationsResult = await notifierClient.getNotifications(options)
       const groups = notificationsResult?.notifications || []
       const total = notificationsResult?.total || 0
@@ -74,7 +74,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   onMount(() => {
     addHandler((data: SSEMessage) => {
-      if (data.entity === 'reaction' && isAuthenticated()) {
+      if (data.entity === 'reaction' && author()?.id) {
         console.info('[context.notifications] event', data)
         loadNotificationsGrouped({ after: after(), limit: Math.max(PAGE_SIZE, loadedNotificationsCount()) })
       }
@@ -91,14 +91,14 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   }
 
   const markSeenAll = async () => {
-    if (isAuthenticated() && notifierClient.private) {
+    if (author()?.id && notifierClient.private) {
       await notifierClient.markSeenAfter({ after: after() })
       await loadNotificationsGrouped({ after: after(), limit: loadedNotificationsCount() })
     }
   }
 
   const markSeen = async (notification_id: number) => {
-    if (isAuthenticated() && notifierClient.private) {
+    if (author()?.id && notifierClient.private) {
       await notifierClient.markSeen(notification_id)
       await loadNotificationsGrouped({ after: after(), limit: loadedNotificationsCount() })
     }

@@ -31,7 +31,7 @@ export const LoginForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [password, setPassword] = createSignal('')
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-
+  // FIXME: use signal or remove
   const [_isLinkSent, setIsLinkSent] = createSignal(false)
   const authFormRef: { current: HTMLFormElement } = { current: null }
   const { showSnackbar } = useSnackbar()

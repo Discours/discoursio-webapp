@@ -47,7 +47,7 @@
     "@nanostores/solid": "0.4.2",
     "@playwright/test": "1.41.2",
     "@popperjs/core": "2.11.8",
-    "@sentry/browser": "7.99.0",
+    "@sentry/browser": "^7.113.0",
     "@solid-primitives/media": "2.2.3",
     "@solid-primitives/memo": "1.2.4",
     "@solid-primitives/pagination": "0.2.10",

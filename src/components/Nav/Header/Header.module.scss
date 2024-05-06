@@ -298,10 +298,6 @@
   box-sizing: content-box;
   display: inline-flex;
 
-  @include media-breakpoint-up(sm) {
-    padding-left: divide($container-padding-x, 2);
-  }
-
   @include media-breakpoint-up(lg) {
     display: none;
   }
@@ -425,7 +421,7 @@
   width: 100%;
 
   @include media-breakpoint-up(xl) {
-    right: 9rem;
+    right: 1.4rem;
   }
 
   .control {
@@ -457,6 +453,14 @@
   }
 }
 
+.articleControlsAuthorized {
+  right: 3.6rem;
+
+  @include media-breakpoint-up(xl) {
+    right: 9rem;
+  }
+}
+
 .userControl {
   align-items: center;
   display: flex;
@@ -484,7 +488,8 @@
   }
 
   .editorControl {
-    border-radius: 1.2em;
+    border-radius: 2em;
+    font-size: 1.4rem !important;
 
     &:hover {
       background: var(--background-color-invert);
@@ -518,6 +523,7 @@
   height: 2.8rem;
   justify-content: center;
   margin: 0 0.4rem;
+  order: 2;
   position: relative;
   transition: margin-left 0.3s;
   width: 2.8rem;
@@ -528,7 +534,7 @@
     width: 3.2rem;
   }
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(xl) {
     margin-left: 0.4rem !important;
   }
 
@@ -579,6 +585,10 @@
 
 .userControlItemSearch {
   margin: 0 1rem 0 2.2rem;
+
+  @include media-breakpoint-down(xl) {
+    order: 1;
+  }
 }
 
 .userControlItemUserpic {
@@ -588,13 +598,6 @@
   @include media-breakpoint-up(md) {
     height: 4rem;
     width: 4rem;
-  }
-}
-
-.userControlItemInbox,
-.userControlItemSearch {
-  @include media-breakpoint-down(sm) {
-    display: none;
   }
 }
 
@@ -677,7 +680,9 @@
     }
 
     &:hover {
-      background-color: var(--link-hover-background);
+      @include media-breakpoint-up(xl) {
+        background-color: var(--link-hover-background);
+      }
 
       &,
       .textLabel {
@@ -700,6 +705,18 @@
 
   a::before {
     display: none;
+  }
+}
+
+.userControlItemCreate {
+  .icon {
+    height: 2.8rem;
+    width: 2.8rem;
+
+    @include media-breakpoint-up(md) {
+      height: 3.2rem;
+      width: 3.2rem;
+    }
   }
 }
 

@@ -60,11 +60,13 @@
   .bio {
     @include font-size(1.2rem);
 
+    color: var(--black-400);
     display: flex;
     flex-direction: row;
-    gap: 1rem;
-    color: var(--black-400);
     font-weight: 500;
+    gap: 1rem;
+    max-width: 100%;
+    word-break: break-word;
   }
 
   .actions {

@@ -57,7 +57,7 @@ export const ProfileSettings = () => {
   const [nameError, setNameError] = createSignal<string>()
   const { form, submit, updateFormField, setForm } = useProfileForm()
   const { showSnackbar } = useSnackbar()
-  const { loadAuthor } = useSession()
+  const { loadAuthor, session } = useSession()
   const { showConfirm } = useConfirm()
 
   createEffect(() => {
@@ -140,7 +140,7 @@ export const ProfileSettings = () => {
       setUploadError(false)
       setIsUserpicUpdating(true)
 
-      const result = await handleImageUpload(uploadFile)
+      const result = await handleImageUpload(uploadFile, session()?.access_token)
       updateFormField('pic', result.url)
 
       setUserpicFile(null)

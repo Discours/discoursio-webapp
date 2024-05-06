@@ -1,5 +1,3 @@
-import { Buffer } from 'buffer'
-
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'
 

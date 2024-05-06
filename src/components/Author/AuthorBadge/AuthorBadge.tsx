@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -37,7 +37,7 @@ export const AuthorBadge = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
 
   createEffect(() => {
-    if (!subscriptions || !props.author) return
+    if (!(subscriptions && props.author)) return
     const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
     setIsSubscribed(subscribed)
   })
@@ -46,7 +46,6 @@ export const AuthorBadge = (props: Props) => {
     setIsMobileView(!mediaMatches.sm)
   })
 
-  const { setFollowing } = useFollowing()
   const { changeSearchParams } = useRouter()
   const { t, formatDate, lang } = useLocalize()
 

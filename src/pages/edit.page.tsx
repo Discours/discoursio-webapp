@@ -6,7 +6,6 @@ import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 import { apiClient } from '../graphql/client/core'
 import { Shout } from '../graphql/schema/core.gen'
-import { useRouter } from '../stores/router'
 import { router } from '../stores/router'
 
 import { redirectPage } from '@nanostores/router'
@@ -16,7 +15,6 @@ import { LayoutType } from './types'
 const EditView = lazy(() => import('../components/Views/EditView/EditView'))
 
 export const EditPage = () => {
-  const { page } = useRouter()
   const snackbar = useSnackbar()
   const { t } = useLocalize()
 
@@ -38,7 +36,7 @@ export const EditPage = () => {
     const shout_id = window.location.pathname.split('/').pop()
     if (shout_id) {
       try {
-        await loadMyShout(parseInt(shout_id, 10))
+        await loadMyShout(Number.parseInt(shout_id, 10))
       } catch (e) {
         console.error(e)
       }

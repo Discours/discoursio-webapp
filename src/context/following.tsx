@@ -1,4 +1,4 @@
-import { Accessor, JSX, createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
+import { Accessor, JSX, createContext, createEffect, createSignal, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { apiClient } from '../graphql/client/core'
@@ -16,7 +16,7 @@ type SubscribeAction = { slug: string; type: 'subscribe' | 'unsubscribe' }
 
 interface FollowingContextType {
   loading: Accessor<boolean>
-  followers: Accessor<Array<Author>>
+  followers: Accessor<Author[]>
   subscriptions: AuthorFollowsResult
   setSubscriptions: (subscriptions: AuthorFollowsResult) => void
   setFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
@@ -41,7 +41,7 @@ const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [followers, setFollowers] = createSignal<Array<Author>>([])
+  const [followers, setFollowers] = createSignal<Author[]>([])
   const [subscriptions, setSubscriptions] = createStore<AuthorFollowsResult>(EMPTY_SUBSCRIPTIONS)
   const { author, session } = useSession()
 

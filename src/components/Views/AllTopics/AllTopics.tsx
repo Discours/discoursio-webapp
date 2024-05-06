@@ -3,8 +3,6 @@ import type { Topic } from '../../../graphql/schema/core.gen'
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
-
-import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useRouter } from '../../../stores/router'
 import { setTopicsSort, useTopicsStore } from '../../../stores/zine/topics'

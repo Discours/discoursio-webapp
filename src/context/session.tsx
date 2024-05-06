@@ -72,6 +72,7 @@ export type SessionContextType = {
   resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
+// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
 const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()

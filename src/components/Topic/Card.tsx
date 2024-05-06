@@ -42,14 +42,18 @@ export const TopicCard = (props: TopicProps) => {
   const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
 
   createEffect(() => {
-    if (!subscriptions || !props.topic) return
+    if (!(subscriptions && props.topic)) return
     const subscribed = subscriptions.topics?.some((topics) => topics.id === props.topic?.id)
     setIsSubscribed(subscribed)
   })
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      follow(FollowingEntity.Topic, props.topic.slug)
+      if (isSubscribed()) {
+        unfollow(FollowingEntity.Topic, props.topic.slug)
+      } else {
+        follow(FollowingEntity.Topic, props.topic.slug)
+      }
     }, 'subscribe')
   }
 

@@ -57,6 +57,7 @@ export const HeaderAuth = (props: Props) => {
     toggleEditorPanel()
   }
 
+  // FIXME: use or remove
   const handleSaveClick = () => {
     const hasTopics = form.selectedTopics?.length > 0
     if (hasTopics) {
@@ -110,7 +111,13 @@ export const HeaderAuth = (props: Props) => {
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
             <Show when={isCreatePostButtonVisible() && author()?.id}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+              <div
+                class={clsx(
+                  styles.userControlItem,
+                  styles.userControlItemVerbose,
+                  // styles.userControlItemCreate,
+                )}
+              >
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
@@ -217,8 +224,14 @@ export const HeaderAuth = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={isCreatePostButtonVisible() && !author()?.id}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+            <Show when={isCreatePostButtonVisible() && !!author()?.id}>
+              <div
+                class={clsx(
+                  styles.userControlItem,
+                  styles.userControlItemVerbose,
+                  // styles.userControlItemCreate,
+                )}
+              >
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
@@ -241,25 +254,19 @@ export const HeaderAuth = (props: Props) => {
                 </Show>
               }
             >
-              <Show
-                when={isSaveButtonVisible()}
-                fallback={
-                  <div class={clsx(styles.userControlItem)}>
-                    <a href={getPagePath(router, 'inbox')}>
-                      <div classList={{ entered: page().path === '/inbox' }}>
-                        <Icon name="inbox-white" class={styles.icon} />
-                        <Icon name="inbox-white-hover" class={clsx(styles.icon, styles.iconHover)} />
-                      </div>
-                    </a>
-                  </div>
-                }
-              >
-                <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
-                  <button onClick={handleSaveClick}>
-                    <span class={styles.textLabel}>{t('Save')}</span>
-                    <Icon name="save" class={styles.icon} />
-                    <Icon name="save" class={clsx(styles.icon, styles.iconHover)} />
-                  </button>
+              <Show when={!isSaveButtonVisible()}>
+                <div
+                  class={clsx(
+                    styles.userControlItem,
+                    // styles.userControlItemInbox
+                  )}
+                >
+                  <a href={getPagePath(router, 'inbox')}>
+                    <div classList={{ entered: page().path === '/inbox' }}>
+                      <Icon name="inbox-white" class={styles.icon} />
+                      <Icon name="inbox-white-hover" class={clsx(styles.icon, styles.iconHover)} />
+                    </div>
+                  </a>
                 </div>
               </Show>
             </Show>

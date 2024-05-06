@@ -24,8 +24,8 @@
     "lint:styles:fix": "stylelint **/*.{scss,css} --fix",
     "preview": "vite preview",
     "start": "vite",
-    "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch"
+    "check:types": "tsc --noEmit",
+    "check:types:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "form-data": "4.0.0",

@@ -28,12 +28,32 @@ export const ArticleCardSwiper = (props: Props) => {
 
   return (
     <ShowOnlyOnClient>
-      <div class={clsx(styles.Swiper, styles.articleMode, styles.ArticleCardSwiper)}>
+      <div
+        class={clsx({
+          [styles.Swiper]: props.slides.length > 1,
+          [styles.articleMode]: true,
+          [styles.ArticleCardSwiper]: props.slides.length > 1,
+          [styles.unswiped]: props.slides.length === 1,
+        })}
+      >
         <Show when={props.title}>
           <h2 class={styles.sliderTitle}>{props.title}</h2>
         </Show>
         <div class={styles.container}>
-          <Show when={props.slides.length > 0}>
+          <Show
+            when={props.slides.length > 1}
+            fallback={
+              <ArticleCard
+                article={props.slides[0]}
+                settings={{
+                  isFloorImportant: true,
+                  isWithCover: true,
+                  nodate: true,
+                }}
+                desktopCoverSize="L"
+              />
+            }
+          >
             <div class={styles.holder}>
               <swiper-container
                 ref={(el) => (mainSwipeRef.current = el)}

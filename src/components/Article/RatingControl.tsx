@@ -1,17 +1,17 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createMemo, createSignal, mergeProps, on } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
+import { useSnackbar } from '../../context/snackbar'
 import { Reaction, ReactionKind, Shout } from '../../graphql/schema/core.gen'
+import { useRouter } from '../../stores/router'
 import { loadShout } from '../../stores/zine/articles'
 import { byCreated } from '../../utils/sortby'
 import { Icon } from '../_shared/Icon'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
-
-import { useRouter } from '../../stores/router'
 import stylesComment from './CommentRatingControl.module.scss'
 import stylesShout from './ShoutRatingControl.module.scss'
 
@@ -25,12 +25,71 @@ interface RatingControlProps {
 export const RatingControl = (props: RatingControlProps) => {
   const { t, lang } = useLocalize()
   const { changeSearchParams } = useRouter()
-  const { author, requireAuthentication } = useSession()
+  const snackbar = useSnackbar()
+  const { author } = useSession()
   const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
-  const [isLoading, setIsLoading] = createSignal(false)
-  const [ratings, setRatings] = createSignal<Reaction[]>([])
+
+  const checkReaction = (reactionKind: ReactionKind) =>
+    Object.values(reactionEntities).some(
+      (r) =>
+        r.kind === reactionKind &&
+        r.created_by.slug === author()?.slug &&
+        r.shout.id === props.comment.shout.id &&
+        r.reply_to === props.comment.id,
+    )
+  const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
+  const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
   const [myRate, setMyRate] = createSignal<Reaction | undefined>()
-  const [_total, setTotal] = createSignal(props.comment?.stat?.rating || props.shout?.stat?.rating || 0)
+  const [total, setTotal] = createSignal(props.comment?.stat?.rating || props.shout?.stat?.rating || 0)
+
+  const [ratingReactions, setRatingReactions] = createSignal<Reaction[]>([])
+  createEffect(() => {
+    const shout = props.comment.shout.id || props.shout.id
+    if (shout && !ratingReactions()) {
+      let result = Object.values(reactionEntities).filter(
+        (r) => [ReactionKind.Like, ReactionKind.Dislike].includes(r.kind) && r.shout.id === shout,
+      )
+      if (props.comment?.id) result = result.filter((r) => r.reply_to === props.comment.id)
+      setRatingReactions(result)
+    }
+  })
+
+  const deleteRating = async (reactionKind: ReactionKind) => {
+    const reactionToDelete = Object.values(reactionEntities).find(
+      (r) =>
+        r.kind === reactionKind &&
+        r.created_by.slug === author()?.slug &&
+        r.shout.id === props.comment.shout.id &&
+        r.reply_to === props.comment.id,
+    )
+    return deleteReaction(reactionToDelete.id)
+  }
+
+  const [isLoading, setIsLoading] = createSignal(false)
+  const handleRatingChange = async (isUpvote: boolean) => {
+    setIsLoading(true)
+    try {
+      if (isUpvoted()) {
+        await deleteRating(ReactionKind.Like)
+      } else if (isDownvoted()) {
+        await deleteRating(ReactionKind.Dislike)
+      } else {
+        await createReaction({
+          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+          shout: props.comment.shout.id,
+          reply_to: props.comment.id,
+        })
+      }
+    } catch {
+      snackbar?.showSnackbar({ type: 'error', body: t('Error') })
+    }
+
+    await loadShout(props.comment.shout.slug)
+    await loadReactionsBy({
+      by: { shout: props.comment.shout.slug },
+    })
+    setIsLoading(false)
+  }
 
   createEffect(
     on(
@@ -71,11 +130,11 @@ export const RatingControl = (props: RatingControlProps) => {
 
   createEffect(
     on(
-      [() => props.ratings, author],
+      [ratingReactions, author],
       ([reactions, me]) => {
         console.debug('[RatingControl] on reactions update')
         const ratingVotes = Object.values(reactions).filter((r) => !r.reply_to)
-        setRatings((_) => ratingVotes.sort(byCreated))
+        setRatingReactions((_) => ratingVotes.sort(byCreated))
         const myReaction = reactions.find((r) => r.created_by.id === me?.id)
         setMyRate((_) => myReaction)
       },
@@ -83,64 +142,61 @@ export const RatingControl = (props: RatingControlProps) => {
     ),
   )
 
-  const handleRatingChange = (voteKind: ReactionKind) => {
-    requireAuthentication(async () => {
-      setIsLoading(true)
-
-      if (myRate()) {
-        console.debug('[RatingControl.handleRatingChange] already has your vote', myRate())
-        const oppositeKind = voteKind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
-        if (myRate()?.kind === oppositeKind) {
-          mergeProps(
-            props.ratings,
-            props.ratings.filter((r) => r.id === myRate().id),
-          )
-          await deleteReaction(myRate().id)
-          setMyRate(undefined)
-          console.debug(`[RatingControl.handleRatingChange] your ${oppositeKind} vote was removed`)
-        }
-        if (myRate()?.kind === voteKind) {
-          console.debug(`[RatingControl.handleRatingChange] cant vote ${voteKind} twice`)
-        }
-      } else {
-        console.debug('[RatingControl.handleRatingChange] wasnt voted by you before', myRate())
-        const rateInput = { kind: voteKind, shout: props.shout?.id }
-        const fakeId = Date.now() + Math.floor(Math.random() * 1000)
-        // const savedRatings = [...props.ratings]
-        mergeProps(props.ratings, [...props.ratings, { ...rateInput, id: fakeId, created_by: author() }])
-        const _ = await createReaction(rateInput)
-      }
-
-      const ratings = await loadReactionsBy({ by: { shout: props.shout?.slug, rating: true } })
-      mergeProps(props.ratings, ratings)
-      const s = await loadShout(props.shout?.slug)
-      mergeProps(props.shout, s)
-      setIsLoading(false)
-    }, 'vote')
-  }
-
-  const isNotDisliked = createMemo(() => !myRate() || myRate()?.kind === ReactionKind.Dislike)
-  const isNotLiked = createMemo(() => !myRate() || myRate()?.kind === ReactionKind.Like)
-
   const getTrigger = createMemo(() => {
-    return props.comment ? (
+    return (
       <div
         class={clsx(stylesComment.commentRatingValue, {
-          [stylesComment.commentRatingPositive]: props.shout?.stat.rating > 0,
-          [stylesComment.commentRatingNegative]: props.shout?.stat.rating < 0,
+          [stylesComment.commentRatingPositive]: total() > 0 && Boolean(props.comment?.id),
+          [stylesComment.commentRatingNegative]: total() < 0 && Boolean(props.comment?.id),
+          [stylesShout.ratingValue]: !props.comment?.id,
         })}
       >
-        {props.shout?.stat.rating}
+        {total()}
       </div>
-    ) : (
-      <span class={stylesShout.ratingValue}>{props.shout?.stat.rating}</span>
     )
   })
 
-  return (
+  return props.comment?.id ? (
+    <div class={stylesComment.commentRating}>
+      <button
+        role="button"
+        disabled={!author()}
+        onClick={() => handleRatingChange(true)}
+        class={clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlUp, {
+          [stylesComment.voted]: isUpvoted(),
+        })}
+      />
+      <Popup
+        trigger={
+          <div
+            class={clsx(stylesComment.commentRatingValue, {
+              [stylesComment.commentRatingPositive]: props.comment.stat.rating > 0,
+              [stylesComment.commentRatingNegative]: props.comment.stat.rating < 0,
+            })}
+          >
+            {props.comment.stat.rating || 0}
+          </div>
+        }
+        variant="tiny"
+      >
+        <VotersList
+          reactions={ratingReactions()}
+          fallbackMessage={t('This comment has not yet been rated')}
+        />
+      </Popup>
+      <button
+        role="button"
+        disabled={!author()}
+        onClick={() => handleRatingChange(false)}
+        class={clsx(stylesComment.commentRatingControl, stylesComment.commentRatingControlDown, {
+          [stylesComment.voted]: isDownvoted(),
+        })}
+      />
+    </div>
+  ) : (
     <div class={clsx(props.comment ? stylesComment.commentRating : stylesShout.rating, props.class)}>
       <button
-        onClick={() => handleRatingChange(ReactionKind.Dislike)}
+        onClick={() => handleRatingChange(false)}
         disabled={isLoading()}
         class={
           props.comment
@@ -152,7 +208,7 @@ export const RatingControl = (props: RatingControlProps) => {
       >
         <Show when={!props.comment}>
           <Icon
-            name={isNotDisliked() ? 'rating-control-less' : 'rating-control-checked'}
+            name={isDownvoted() ? 'rating-control-checked' : 'rating-control-less'}
             class={isLoading() ? 'rotating' : ''}
           />
         </Show>
@@ -171,13 +227,13 @@ export const RatingControl = (props: RatingControlProps) => {
           }
         >
           <VotersList
-            reactions={ratings()}
+            reactions={ratingReactions()}
             fallbackMessage={isLoading() ? t('Loading') : t('No one rated yet')}
           />
         </Show>
       </Popup>
       <button
-        onClick={() => handleRatingChange(ReactionKind.Like)}
+        onClick={() => handleRatingChange(true)}
         disabled={isLoading()}
         class={
           props.comment
@@ -189,7 +245,7 @@ export const RatingControl = (props: RatingControlProps) => {
       >
         <Show when={!props.comment}>
           <Icon
-            name={isNotLiked() ? 'rating-control-more' : 'rating-control-checked'}
+            name={isUpvoted() ? 'rating-control-checked' : 'rating-control-more'}
             class={isLoading() ? 'rotating' : ''}
           />
         </Show>

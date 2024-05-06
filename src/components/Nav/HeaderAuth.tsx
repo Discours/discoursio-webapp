@@ -244,7 +244,7 @@ export const HeaderAuth = (props: Props) => {
               <Show
                 when={isSaveButtonVisible()}
                 fallback={
-                  <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
+                  <div class={clsx(styles.userControlItem)}>
                     <a href={getPagePath(router, 'inbox')}>
                       <div classList={{ entered: page().path === '/inbox' }}>
                         <Icon name="inbox-white" class={styles.icon} />

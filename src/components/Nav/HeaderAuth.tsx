@@ -34,12 +34,12 @@ export const HeaderAuth = (props: Props) => {
   const { page } = useRouter()
   const { session, author, isSessionLoaded } = useSession()
   const { unreadNotificationsCount, showNotificationsPanel } = useNotifications()
-  const { form, toggleEditorPanel, publishShout } = useEditorContext()
+  const { form, toggleEditorPanel, saveShout, publishShout } = useEditorContext()
 
   const handleBellIconClick = (event: Event) => {
     event.preventDefault()
 
-    if (!author()?.id) {
+    if (!session()?.access_token) {
       showModal('auth')
       return
     }
@@ -48,13 +48,19 @@ export const HeaderAuth = (props: Props) => {
   }
 
   const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
-  const isNotificationsVisible = createMemo(() => author()?.id && !isEditorPage())
-  const isSaveButtonVisible = createMemo(() => author()?.id && isEditorPage())
+  const isNotificationsVisible = createMemo(() => session()?.access_token && !isEditorPage())
+  const isSaveButtonVisible = createMemo(() => session()?.access_token && isEditorPage())
   const isCreatePostButtonVisible = createMemo(() => !isEditorPage())
-  const isAuthenticatedControlsVisible = createMemo(() => author()?.id && session()?.user?.email_verified)
+  const isAuthenticatedControlsVisible = createMemo(
+    () => session()?.access_token && session()?.user?.email_verified,
+  )
 
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
+  }
+
+  const handleSaveButtonClick = () => {
+    saveShout(form)
   }
 
   const [width, setWidth] = createSignal(0)
@@ -100,14 +106,8 @@ export const HeaderAuth = (props: Props) => {
       <Show when={isSessionLoaded()} keyed={true}>
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
-            <Show when={isCreatePostButtonVisible() && author()?.id}>
-              <div
-                class={clsx(
-                  styles.userControlItem,
-                  styles.userControlItemVerbose,
-                  // styles.userControlItemCreate,
-                )}
-              >
+            <Show when={isCreatePostButtonVisible() && session()?.access_token}>
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
@@ -214,18 +214,12 @@ export const HeaderAuth = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={isCreatePostButtonVisible() && !!author()?.id}>
-              <div
-                class={clsx(
-                  styles.userControlItem,
-                  styles.userControlItemVerbose,
-                  // styles.userControlItemCreate,
-                )}
-              >
+            <Show when={isCreatePostButtonVisible() && !session()?.access_token}>
+              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
-                  <Icon name="pencil-outline" class={styles.icon} />
-                  <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
+                  <Icon name="pencil" class={styles.icon} />
+                  <Icon name="pencil" class={clsx(styles.icon, styles.iconHover)} />
                 </a>
               </div>
             </Show>
@@ -233,24 +227,19 @@ export const HeaderAuth = (props: Props) => {
             <Show
               when={isAuthenticatedControlsVisible()}
               fallback={
-                <Show when={!author()?.id}>
+                <Show when={!session()?.access_token}>
                   <div class={clsx(styles.userControlItem, styles.userControlItemVerbose, 'loginbtn')}>
                     <a href="?m=auth&mode=login">
                       <span class={styles.textLabel}>{t('Enter')}</span>
                       <Icon name="key" class={styles.icon} />
-                      <Icon name="key" class={clsx(styles.icon, styles.iconHover)} />
+                      {/*<Icon name="user-default" class={clsx(styles.icon, styles.iconHover)} />*/}
                     </a>
                   </div>
                 </Show>
               }
             >
               <Show when={!isSaveButtonVisible()}>
-                <div
-                  class={clsx(
-                    styles.userControlItem,
-                    // styles.userControlItemInbox
-                  )}
-                >
+                <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
                   <a href={getPagePath(router, 'inbox')}>
                     <div classList={{ entered: page().path === '/inbox' }}>
                       <Icon name="inbox-white" class={styles.icon} />
@@ -262,7 +251,7 @@ export const HeaderAuth = (props: Props) => {
             </Show>
           </div>
 
-          <Show when={author()?.id}>
+          <Show when={session()?.access_token}>
             <ProfilePopup
               onVisibilityChange={(isVisible) => {
                 props.setIsProfilePopupVisible(isVisible)

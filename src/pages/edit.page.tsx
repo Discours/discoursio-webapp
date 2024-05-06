@@ -37,7 +37,8 @@ export const EditPage = () => {
 
   const fail = async (error: string) => {
     console.error(error)
-    await snackbar?.showSnackbar({ type: 'error', body: t(error) })
+    const errorMessage = error === 'forbidden' ? "You can't edit this post" : error
+    await snackbar?.showSnackbar({ type: 'error', body: t(errorMessage) })
     redirectPage(router, 'drafts')
   }
 

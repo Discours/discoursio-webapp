@@ -13,16 +13,20 @@ import { Loading } from '../../_shared/Loading'
 import styles from './DraftsView.module.scss'
 
 export const DraftsView = () => {
-  const { session } = useSession()
+  const { author, loadSession } = useSession()
   const [drafts, setDrafts] = createSignal<Shout[]>([])
 
   createEffect(
     on(
-      () => session(),
-      async (s) => {
-        if (s) {
-          const loadedDrafts = await apiClient.getDrafts()
-          setDrafts(loadedDrafts.reverse() || [])
+      () => author(),
+      async (a) => {
+        if (a) {
+          const { shouts: loadedDrafts, error } = await apiClient.getDrafts()
+          if (error) {
+            console.warn(error)
+            await loadSession()
+          }
+          setDrafts(loadedDrafts || [])
         }
       },
     ),
@@ -46,7 +50,7 @@ export const DraftsView = () => {
 
   return (
     <div class={clsx(styles.DraftsView)}>
-      <Show when={session()?.user?.id} fallback={<Loading />}>
+      <Show when={author()?.id} fallback={<Loading />}>
         <div class="wide-container">
           <div class="row">
             <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">

@@ -150,7 +150,6 @@ export const HeaderAuth = (props: Props) => {
                     {editorMode()}
                   </span>
                 }
-                variant="bordered"
                 popupCssClass={styles.editorPopup}
               >
                 <ul class={clsx('nodash', styles.editorModesList)}>

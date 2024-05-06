@@ -56,8 +56,8 @@ export const HeaderAuth = (props: Props) => {
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
   }
-  // FIXME: use handler
-  const _handleSaveClick = () => {
+
+  const handleSaveClick = () => {
     const hasTopics = form.selectedTopics?.length > 0
     if (hasTopics) {
       saveShout(form)

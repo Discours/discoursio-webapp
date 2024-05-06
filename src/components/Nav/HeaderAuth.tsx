@@ -57,6 +57,7 @@ export const HeaderAuth = (props: Props) => {
     toggleEditorPanel()
   }
 
+  // FIXME: use or remove
   const handleSaveClick = () => {
     const hasTopics = form.selectedTopics?.length > 0
     if (hasTopics) {

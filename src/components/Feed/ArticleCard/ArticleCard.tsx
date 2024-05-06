@@ -89,8 +89,8 @@ const getTitleAndSubtitle = (
 }
 
 const getMainTopicTitle = (article: Shout, lng: string) => {
-  const mainTopicSlug = article.main_topic || ''
-  const mainTopic = article.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
+  const mainTopicSlug = article?.main_topic || ''
+  const mainTopic = article?.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
   const mainTopicTitle =
     mainTopicSlug && lng === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
 
@@ -111,8 +111,8 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
-  const description = getDescription(props.article.body)
-  const aspectRatio = () => LAYOUT_ASPECT[props.article.layout]
+  const description = getDescription(props.article?.body)
+  const aspectRatio = () => LAYOUT_ASPECT[props.article?.layout]
   const [mainTopicTitle, mainTopicSlug] = getMainTopicTitle(props.article, lang())
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 

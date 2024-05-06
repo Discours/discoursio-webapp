@@ -36,6 +36,7 @@ import { UploadModalContent } from './UploadModalContent'
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
 
+import { Loading } from '../_shared/Loading'
 import styles from './SimplifiedEditor.module.scss'
 
 type Props = {
@@ -58,6 +59,7 @@ type Props = {
   controlsAlwaysVisible?: boolean
   autoFocus?: boolean
   isCancelButtonVisible?: boolean
+  isPosting?: boolean
 }
 
 const DEFAULT_MAX_LENGTH = 400
@@ -365,12 +367,14 @@ const SimplifiedEditor = (props: Props) => {
                 <Show when={isCancelButtonVisible()}>
                   <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
                 </Show>
-                <Button
-                  value={props.submitButtonText ?? t('Send')}
-                  variant="primary"
-                  disabled={isEmpty()}
-                  onClick={() => props.onSubmit(html())}
-                />
+                <Show when={!props.isPosting} fallback={<Loading />}>
+                  <Button
+                    value={props.submitButtonText ?? t('Send')}
+                    variant="primary"
+                    disabled={isEmpty()}
+                    onClick={() => props.onSubmit(html())}
+                  />
+                </Show>
               </div>
             </Show>
           </div>

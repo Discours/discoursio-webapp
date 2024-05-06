@@ -68,7 +68,9 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     }
   })
+  const [posting, setPosting] = createSignal(false)
   const handleSubmitComment = async (value: string) => {
+    setPosting(true)
     try {
       await createReaction({
         kind: ReactionKind.Comment,
@@ -81,6 +83,7 @@ export const CommentsTree = (props: Props) => {
       console.error('[handleCreate reaction]:', error)
     }
     setClearEditor(false)
+    setPosting(false)
   }
 
   return (
@@ -158,6 +161,7 @@ export const CommentsTree = (props: Props) => {
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}
           setClear={clearEditor()}
+          isPosting={posting()}
         />
       </ShowIfAuthenticated>
     </>

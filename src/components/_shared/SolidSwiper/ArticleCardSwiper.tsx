@@ -21,9 +21,11 @@ export const ArticleCardSwiper = (props: Props) => {
   const mainSwipeRef: { current: SwiperRef } = { current: null }
 
   onMount(async () => {
-    const { register } = await import('swiper/element/bundle')
-    register()
-    SwiperCore.use([Pagination, Navigation, Manipulation])
+    if (props.slides.length > 1) {
+      const { register } = await import('swiper/element/bundle')
+      register()
+      SwiperCore.use([Pagination, Navigation, Manipulation])
+    }
   })
 
   return (

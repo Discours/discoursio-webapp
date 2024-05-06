@@ -34,7 +34,7 @@ export const HeaderAuth = (props: Props) => {
   const { page } = useRouter()
   const { session, author, isSessionLoaded } = useSession()
   const { unreadNotificationsCount, showNotificationsPanel } = useNotifications()
-  const { form, toggleEditorPanel, saveShout, publishShout } = useEditorContext()
+  const { form, toggleEditorPanel, publishShout } = useEditorContext()
 
   const handleBellIconClick = (event: Event) => {
     event.preventDefault()
@@ -57,10 +57,6 @@ export const HeaderAuth = (props: Props) => {
 
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
-  }
-
-  const handleSaveButtonClick = () => {
-    saveShout(form)
   }
 
   const [width, setWidth] = createSignal(0)

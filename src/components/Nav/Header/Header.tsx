@@ -335,7 +335,7 @@ export const Header = (props: Props) => {
           <Show when={props.title}>
             <div
               class={clsx(styles.articleControls, 'col-auto', {
-                // FIXME: use or remove [styles.articleControlsAuthorized]: session()?.user?.id,
+                [styles.articleControlsAuthorized]: session()?.user?.id,
               })}
             >
               <SharePopup

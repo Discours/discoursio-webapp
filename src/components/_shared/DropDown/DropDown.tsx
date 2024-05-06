@@ -5,8 +5,8 @@ import { For, Show, createSignal } from 'solid-js'
 
 import { Popup } from '../Popup'
 
-import styles from './DropDown.module.scss'
 import popupStyles from '../Popup/Popup.module.scss'
+import styles from './DropDown.module.scss'
 
 export type Option = {
   value: string | number
@@ -62,7 +62,9 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
             {(option) => (
               <li>
                 <button
-                  class={clsx(popupStyles.action, {[styles.active]: props.currentOption.value === option.value})}
+                  class={clsx(popupStyles.action, {
+                    [styles.active]: props.currentOption.value === option.value,
+                  })}
                   onClick={() => props.onChange(option)}
                 >
                   {option.title}

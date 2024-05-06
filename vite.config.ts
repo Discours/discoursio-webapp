@@ -70,6 +70,7 @@ export default defineConfig(({ mode, command }) => {
       https: {},
       port: 3000,
     },
+    sourcemap: isDev,
     css: {
       devSourcemap: isDev,
       preprocessorOptions: {

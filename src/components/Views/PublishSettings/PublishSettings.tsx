@@ -6,11 +6,11 @@ import { createStore } from 'solid-js/store'
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { useTopics } from '../../../context/topics'
 import { Topic } from '../../../graphql/schema/core.gen'
 import { UploadedFile } from '../../../pages/types'
 import { router } from '../../../stores/router'
 import { hideModal, showModal } from '../../../stores/ui'
-import { loadAllTopics, useTopicsStore } from '../../../stores/zine/topics'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
 import { Button } from '../../_shared/Button'
@@ -53,7 +53,7 @@ const emptyConfig = {
 export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
   const { author } = useSession()
-  const { sortedTopics } = useTopicsStore()
+  const { sortedTopics } = useTopics()
   const { showSnackbar } = useSnackbar()
   const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
 
@@ -82,7 +82,6 @@ export const PublishSettings = (props: Props) => {
 
   onMount(() => {
     setSettingsForm(initialData())
-    loadAllTopics()
   })
 
   createEffect(() => setTopics(sortedTopics()))

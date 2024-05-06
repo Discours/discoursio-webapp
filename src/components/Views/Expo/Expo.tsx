@@ -192,7 +192,7 @@ export const Expo = (props: Props) => {
               )}
             </For>
             <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
-              <ArticleCardSwiper title={t('Top month articles')} slides={reactedTopMonthArticles()} />
+              <ArticleCardSwiper title={t('Top month')} slides={reactedTopMonthArticles()} />
             </Show>
             <For each={expoShouts().slice(LOAD_MORE_PAGE_SIZE, LOAD_MORE_PAGE_SIZE * 2)}>
               {(shout) => (

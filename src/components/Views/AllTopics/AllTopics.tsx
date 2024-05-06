@@ -2,10 +2,10 @@ import type { Topic } from '../../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
+import { useTopics } from '../../../context/topics'
 import { useRouter } from '../../../stores/router'
-import { setTopicsSort, useTopicsStore } from '../../../stores/zine/topics'
 import { capitalize } from '../../../utils/capitalize'
 import { dummyFilter } from '../../../utils/dummyFilter'
 import { getImageUrl } from '../../../utils/getImageUrl'
@@ -33,10 +33,12 @@ export const AllTopics = (props: Props) => {
   const [limit, setLimit] = createSignal(PAGE_SIZE)
   const ALPHABET =
     lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ#']
-
-  const { sortedTopics } = useTopicsStore({
-    topics: props.topics,
-    sortBy: searchParams().by || 'shouts',
+  const { sortedTopics, setTopicsSort, addTopics } = useTopics()
+  onMount(() => {
+    setTopicsSort(searchParams()?.by || 'shouts')
+    if (props.topics) {
+      addTopics(props.topics)
+    }
   })
 
   createEffect(() => {

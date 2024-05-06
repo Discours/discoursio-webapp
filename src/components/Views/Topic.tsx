@@ -5,10 +5,10 @@ import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
+import { useTopics } from '../../context/topics'
 import { useRouter } from '../../stores/router'
 import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
 import { useAuthorsStore } from '../../stores/zine/authors'
-import { useTopicsStore } from '../../stores/zine/topics'
 import { capitalize } from '../../utils/capitalize'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { getDescription } from '../../utils/meta'
@@ -43,7 +43,7 @@ export const TopicView = (props: Props) => {
   const { searchParams, changeSearchParams } = useRouter<TopicsPageSearchParams>()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
-  const { topicEntities } = useTopicsStore({ topics: [props.topic] })
+  const { topicEntities } = useTopics()
   const { authorsByTopic } = useAuthorsStore()
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
@@ -216,7 +216,7 @@ export const TopicView = (props: Props) => {
         wrapper={'author'}
       />
       <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
-        <ArticleCardSwiper title={t('Top month articles')} slides={reactedTopMonthArticles()} />
+        <ArticleCardSwiper title={t('Top month')} slides={reactedTopMonthArticles()} />
       </Show>
       <Beside
         beside={sortedArticles()[12]}

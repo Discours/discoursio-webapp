@@ -4,7 +4,8 @@ import { UploadedFile } from '../pages/types'
 
 import { thumborUrl } from './config'
 
-export const handleImageUpload = async (uploadFile: UploadFile): Promise<UploadedFile> => {
+export const handleImageUpload = async (uploadFile: UploadFile, _token: string): Promise<UploadedFile> => {
+  // TODO: image uploads can be authenticated too
   const formData = new FormData()
   formData.append('media', uploadFile.file, uploadFile.name)
   const response = await fetch(`${thumborUrl}/image`, {

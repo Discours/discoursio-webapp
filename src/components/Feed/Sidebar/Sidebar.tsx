@@ -4,18 +4,17 @@ import { For, Show, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
+import { useSeen } from '../../../context/seen'
 import { Author } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore } from '../../../stores/zine/articles'
-import { useSeenStore } from '../../../stores/zine/seen'
 import { Userpic } from '../../Author/Userpic'
 import { Icon } from '../../_shared/Icon'
-
 import styles from './Sidebar.module.scss'
 
 export const Sidebar = () => {
   const { t } = useLocalize()
-  const { seen } = useSeenStore()
+  const { seen } = useSeen()
   const { subscriptions } = useFollowing()
   const { page } = useRouter()
   const { articlesByTopic } = useArticlesStore()

@@ -12,6 +12,7 @@ import { InboxProvider } from '../context/inbox'
 import { LocalizeProvider } from '../context/localize'
 import { MediaQueryProvider } from '../context/mediaQuery'
 import { NotificationsProvider } from '../context/notifications'
+import { SeenProvider } from '../context/seen'
 import { SessionProvider } from '../context/session'
 import { SnackbarProvider } from '../context/snackbar'
 import { TopicsProvider } from '../context/topics'
@@ -115,21 +116,23 @@ export const App = (props: Props) => {
         <MediaQueryProvider>
           <SnackbarProvider>
             <TopicsProvider>
-              <ConfirmProvider>
-                <SessionProvider onStateChangeCallback={console.log}>
-                  <FollowingProvider>
-                    <ConnectProvider>
-                      <NotificationsProvider>
-                        <EditorProvider>
-                          <InboxProvider>
-                            <Dynamic component={pageComponent()} {...props} />
-                          </InboxProvider>
-                        </EditorProvider>
-                      </NotificationsProvider>
-                    </ConnectProvider>
-                  </FollowingProvider>
-                </SessionProvider>
-              </ConfirmProvider>
+              <SeenProvider>
+                <ConfirmProvider>
+                  <SessionProvider onStateChangeCallback={console.log}>
+                    <FollowingProvider>
+                      <ConnectProvider>
+                        <NotificationsProvider>
+                          <EditorProvider>
+                            <InboxProvider>
+                              <Dynamic component={pageComponent()} {...props} />
+                            </InboxProvider>
+                          </EditorProvider>
+                        </NotificationsProvider>
+                      </ConnectProvider>
+                    </FollowingProvider>
+                  </SessionProvider>
+                </ConfirmProvider>
+              </SeenProvider>
             </TopicsProvider>
           </SnackbarProvider>
         </MediaQueryProvider>

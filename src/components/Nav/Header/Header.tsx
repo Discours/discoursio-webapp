@@ -70,7 +70,6 @@ export const Header = (props: Props) => {
 
   createEffect(() => {
     if (topics()?.length) {
-      console.debug(topics())
       setRandomTopics(getRandomTopicsFromArray(topics()))
     }
   })

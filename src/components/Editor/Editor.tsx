@@ -151,7 +151,7 @@ export const Editor = (props: Props) => {
       }
 
       showSnackbar({ body: t('Uploading image') })
-      const result = await handleImageUpload(uplFile)
+      const result = await handleImageUpload(uplFile, session()?.access_token)
 
       editor()
         .chain()

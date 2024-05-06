@@ -69,7 +69,10 @@ export const Header = (props: Props) => {
   let windowScrollTop = 0
 
   createEffect(() => {
-    if (topics()) setRandomTopics(getRandomTopicsFromArray(topics()))
+    if (topics()?.length) {
+      console.debug(topics())
+      setRandomTopics(getRandomTopicsFromArray(topics()))
+    }
   })
 
   createEffect(() => {

@@ -1,6 +1,6 @@
 import { redirectPage } from '@nanostores/router'
-import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
+import { Meta } from '../context/meta'
 
 import { AuthGuard } from '../components/AuthGuard'
 import { Button } from '../components/_shared/Button'

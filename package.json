@@ -16,7 +16,7 @@
     "hygen": "HYGEN_TMPLS=gen hygen",
     "postinstall": "npm run codegen && npx patch-package",
     "check:code": "npx @biomejs/biome check src --log-kind=compact --verbose",
-    "check:code:fix": "npx @biomejs/biome lint src --log-kind=compact",
+    "check:code:fix": "npx @biomejs/biome check . --apply",
     "lint": "npm run lint:code && stylelint **/*.{scss,css}",
     "lint:code": "npx @biomejs/biome lint src --log-kind=compact --verbose",
     "lint:code:fix": "npx @biomejs/biome lint src --apply-unsafe --log-kind=compact --verbose",
@@ -52,9 +52,8 @@
     "@solid-primitives/memo": "1.2.4",
     "@solid-primitives/pagination": "0.2.10",
     "@solid-primitives/share": "2.0.4",
-    "@solid-primitives/storage": "1.3.9",
-    "@solid-primitives/upload": "0.0.110",
-    "@solidjs/meta": "0.29.1",
+    "@solid-primitives/storage": "^3.5.0",
+    "@solid-primitives/upload": "0.0.115",
     "@thisbeyond/solid-select": "0.14.0",
     "@tiptap/core": "2.2.3",
     "@tiptap/extension-blockquote": "2.2.3",
@@ -113,9 +112,9 @@
     "prosemirror-history": "1.3.2",
     "prosemirror-trailing-node": "2.0.7",
     "prosemirror-view": "1.32.7",
-    "rollup": "4.11.0",
+    "rollup": "4.17.2",
     "sass": "1.69.5",
-    "solid-js": "1.8.15",
+    "solid-js": "1.8.17",
     "solid-popper": "0.3.0",
     "solid-tiptap": "0.7.0",
     "solid-transition-group": "0.2.3",
@@ -129,7 +128,7 @@
     "typograf": "7.3.0",
     "uniqolor": "1.1.0",
     "vike": "0.4.148",
-    "vite": "5.2.10",
+    "vite": "5.2.11",
     "vite-plugin-mkcert": "^1.17.3",
     "vite-plugin-node-polyfills": "0.21.0",
     "vite-plugin-sass-dts": "^1.3.17",
@@ -141,7 +140,5 @@
     "y-prosemirror": "1.2.2",
     "yjs": "13.6.12"
   },
-  "trustedDependencies": [
-    "@biomejs/biome"
-  ]
+  "trustedDependencies": ["@biomejs/biome"]
 }

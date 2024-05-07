@@ -2,11 +2,11 @@ import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
-import { Link, Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { install } from 'ga-gtag'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
+import { Link, Meta } from '../../context/meta'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
@@ -38,6 +38,7 @@ import { CommentsTree } from './CommentsTree'
 import { SharePopup, getShareUrl } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
 
+import { useSeen } from '../../context/seen'
 import stylesHeader from '../Nav/Header/Header.module.scss'
 import styles from './Article.module.scss'
 
@@ -76,6 +77,7 @@ export const FullArticle = (props: Props) => {
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const { t, formatDate, lang } = useLocalize()
   const { author, session, requireAuthentication } = useSession()
+  const { addSeen } = useSeen()
 
   const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
 
@@ -302,6 +304,7 @@ export const FullArticle = (props: Props) => {
   onMount(async () => {
     install('G-LQ4B87H8C2')
     await loadReactionsBy({ by: { shout: props.article.slug } })
+    addSeen(props.article.slug)
     setIsReactionsLoaded(true)
     document.title = props.article.title
     window?.addEventListener('resize', updateIframeSizes)

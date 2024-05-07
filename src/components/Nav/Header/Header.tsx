@@ -48,7 +48,7 @@ export const Header = (props: Props) => {
   const { page } = useRouter()
   const { requireAuthentication } = useSession()
   const { searchParams } = useRouter<HeaderSearchParams>()
-  const { topics } = useTopics()
+  const { sortedTopics: topics } = useTopics()
   const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)

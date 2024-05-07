@@ -1,4 +1,4 @@
-import { Meta } from '@solidjs/meta'
+import { Meta } from '../../context/meta'
 
 import { Donate } from '../../components/Discours/Donate'
 import { StaticPage } from '../../components/Views/StaticPage'

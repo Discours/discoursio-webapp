@@ -8,7 +8,6 @@ import { PageLayout } from '../components/_shared/PageLayout'
 import { ReactionsProvider } from '../context/reactions'
 import { useRouter } from '../stores/router'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
-import { loadTopic } from '../stores/zine/topics'
 
 export const TopicPage = (props: PageProps) => {
   const { page } = useRouter()
@@ -25,7 +24,6 @@ export const TopicPage = (props: PageProps) => {
         limit: PRERENDERED_ARTICLES_COUNT,
         offset: 0,
       }),
-      loadTopic({ slug: slug() }),
     ])
 
   onMount(async () => {

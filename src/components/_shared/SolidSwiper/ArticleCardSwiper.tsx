@@ -10,6 +10,8 @@ import { ShowOnlyOnClient } from '../ShowOnlyOnClient'
 
 import { SwiperRef } from './swiper'
 
+import { Row1 } from '../../Feed/Row1'
+import { Row2 } from '../../Feed/Row2'
 import styles from './Swiper.module.scss'
 
 type Props = {
@@ -42,71 +44,62 @@ export const ArticleCardSwiper = (props: Props) => {
           <h2 class={styles.sliderTitle}>{props.title}</h2>
         </Show>
         <div class={styles.container}>
-          <Show
-            when={props.slides.length > 1}
-            fallback={
-              <ArticleCard
-                article={props.slides[0]}
-                settings={{
-                  isFloorImportant: true,
-                  isWithCover: true,
-                  nodate: true,
-                }}
-                desktopCoverSize="L"
-              />
-            }
-          >
-            <div class={styles.holder}>
-              <swiper-container
-                ref={(el) => (mainSwipeRef.current = el)}
-                centered-slides={true}
-                observer={true}
-                space-between={10}
-                breakpoints={{
-                  576: { spaceBetween: 20, slidesPerView: 1.5 },
-                  992: { spaceBetween: 52, slidesPerView: 1.5 },
-                }}
-                round-lengths={true}
-                loop={true}
-                speed={800}
-                autoplay={{
-                  disableOnInteraction: false,
-                  delay: 6000,
-                  pauseOnMouseEnter: true,
-                }}
-              >
-                <For each={props.slides}>
-                  {(slide, index) => (
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    <swiper-slide virtual-index={index()}>
-                      <ArticleCard
-                        article={slide}
-                        settings={{
-                          additionalClass: 'swiper-slide',
-                          isFloorImportant: true,
-                          isWithCover: true,
-                          nodate: true,
-                        }}
-                        desktopCoverSize="L"
-                      />
-                    </swiper-slide>
-                  )}
-                </For>
-              </swiper-container>
-              <div
-                class={clsx(styles.navigation, styles.prev)}
-                onClick={() => mainSwipeRef.current.swiper.slidePrev()}
-              >
-                <Icon name="swiper-l-arr" class={styles.icon} />
-              </div>
-              <div
-                class={clsx(styles.navigation, styles.next)}
-                onClick={() => mainSwipeRef.current.swiper.slideNext()}
-              >
-                <Icon name="swiper-r-arr" class={styles.icon} />
-              </div>
-            </div>
+          <Show when={props.slides.length > 0}>
+            <Show when={props.slides.length !== 1} fallback={<Row1 article={props.slides[0]} />}>
+              <Show when={props.slides.length !== 2} fallback={<Row2 articles={props.slides} />}>
+                <div class={styles.holder}>
+                  <swiper-container
+                    ref={(el) => (mainSwipeRef.current = el)}
+                    centered-slides={true}
+                    observer={true}
+                    space-between={10}
+                    breakpoints={{
+                      576: { spaceBetween: 20, slidesPerView: 1.5 },
+                      992: { spaceBetween: 52, slidesPerView: 1.5 },
+                    }}
+                    round-lengths={true}
+                    loop={true}
+                    speed={800}
+                    autoplay={{
+                      disableOnInteraction: false,
+                      delay: 6000,
+                      pauseOnMouseEnter: true,
+                    }}
+                  >
+                    <For each={props.slides}>
+                      {(slide, index) => (
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        <swiper-slide virtual-index={index()}>
+                          <ArticleCard
+                            article={slide}
+                            settings={{
+                              additionalClass: 'swiper-slide',
+                              isFloorImportant: true,
+                              isWithCover: true,
+                              nodate: true,
+                            }}
+                            desktopCoverSize="L"
+                          />
+                        </swiper-slide>
+                      )}
+                    </For>
+                  </swiper-container>
+                  <div
+                    class={clsx(styles.navigation, styles.prev)}
+                    onClick={() => mainSwipeRef.current.swiper.slidePrev()}
+                  >
+                    <Icon name="swiper-l-arr" class={styles.icon} />
+                  </div>
+                  <div
+                    class={clsx(styles.navigation, styles.next)}
+                    onClick={() => mainSwipeRef.current.swiper.slideNext()}
+                  >
+                    <Icon name="swiper-r-arr" class={styles.icon} />
+                  </div>
+                </div>
+              </Show>
+            </Show>
           </Show>
         </div>
       </div>

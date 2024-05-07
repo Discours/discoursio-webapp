@@ -1,18 +1,18 @@
 import { getPagePath } from '@nanostores/router'
-import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { Meta } from '../../../context/meta'
 import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
+import { useTopics } from '../../../context/topics'
 import { apiClient } from '../../../graphql/client/core'
 import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { showModal } from '../../../stores/ui'
 import { resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
-import { useTopicsStore } from '../../../stores/zine/topics'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { byCreated } from '../../../utils/sortby'
 import { CommentDate } from '../../Article/CommentDate'
@@ -103,7 +103,7 @@ export const FeedView = (props: Props) => {
   const { session } = useSession()
   const { loadReactionsBy } = useReactions()
   const { sortedArticles } = useArticlesStore()
-  const { topTopics } = useTopicsStore()
+  const { topTopics } = useTopics()
   const { topAuthors } = useTopAuthorsStore()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])

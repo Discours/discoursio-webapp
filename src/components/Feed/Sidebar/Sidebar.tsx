@@ -17,7 +17,7 @@ export const Sidebar = () => {
   const { seen } = useSeen()
   const { subscriptions } = useFollowing()
   const { page } = useRouter()
-  const { articlesByTopic } = useArticlesStore()
+  const { articlesByTopic, articlesByAuthor } = useArticlesStore()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
 
   const checkTopicIsSeen = (topicSlug: string) => {
@@ -25,8 +25,9 @@ export const Sidebar = () => {
   }
 
   const checkAuthorIsSeen = (authorSlug: string) => {
-    return Boolean(seen()[authorSlug])
+    return articlesByAuthor()[authorSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
+
   return (
     <div class={styles.sidebar}>
       <ul class={styles.feedFilters}>

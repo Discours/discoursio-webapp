@@ -177,16 +177,20 @@ export const ProfileSecurityPage = () => {
                           onFocus={() => setOldPasswordError()}
                           setError={oldPasswordError()}
                           onInput={(value) => handleInputChange('oldPassword', value)}
-                          value={formData()['oldPassword'] ?? ''}
+                          value={formData()['oldPassword'] ?? null}
                           disabled={isSubmitting()}
                         />
                       </div>
 
                       <h5>{t('New password')}</h5>
                       <PasswordField
-                        onInput={(value) => handleInputChange('newPassword', value)}
+                        onInput={(value) => {
+                          handleInputChange('newPassword', value)
+                          handleInputChange('newPasswordConfirm', null)
+                        }}
                         value={formData()['newPassword'] ?? ''}
                         disabled={isSubmitting()}
+                        disableAutocomplete={true}
                       />
 
                       <h5>{t('Confirm your new password')}</h5>
@@ -201,6 +205,7 @@ export const ProfileSecurityPage = () => {
                         setError={newPasswordError()}
                         onInput={(value) => handleCheckNewPassword(value)}
                         disabled={isSubmitting()}
+                        disableAutocomplete={true}
                       />
                       <h4>{t('Social networks')}</h4>
                       <h5>Google</h5>

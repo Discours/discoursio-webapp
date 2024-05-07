@@ -45,7 +45,7 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
         name: currentAuthor.name,
         slug: currentAuthor.slug,
         bio: currentAuthor.bio,
-        about: currentAuthor.about.length > 0 ? currentAuthor.about : '<p></p>',
+        about: currentAuthor.about.length > 0 ? `<p>${currentAuthor.about}</p>` : '<p></p>', // ¯\_(ツ)_/¯
         pic: userpicUrl(currentAuthor.pic),
         links: currentAuthor.links,
       })

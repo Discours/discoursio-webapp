@@ -76,17 +76,24 @@ export const AuthorView = (props: Props) => {
 
   const fetchData = async (slug: string) => {
     try {
-      const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
+      const [followsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
         apiClient.getAuthorFollowers({ slug }),
         loadAuthor({ slug }),
       ])
-      const { authors, topics } = subscriptionsResult
+      const { authors, topics, error } = followsResult
+      if (error) {
+        console.error(error)
+        return
+      }
+      console.debug(authorResult)
       setAuthor(authorResult)
+      console.debug(authors, topics)
       setFollowing([...(authors || []), ...(topics || [])])
+      console.debug(followersResult)
       setFollowers(followersResult || [])
 
-      console.debug('[components.Author] following data loaded', subscriptionsResult)
+      console.debug('[components.Author] author follows:', followsResult)
     } catch (error) {
       console.error('[components.Author] fetch error', error)
     }

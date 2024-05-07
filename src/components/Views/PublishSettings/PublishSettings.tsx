@@ -127,10 +127,10 @@ export const PublishSettings = (props: Props) => {
   }
   const handlePublishSubmit = () => {
     const shoutData = { ...props.form, ...settingsForm }
-    if (!shoutData?.mainTopic) {
-      showSnackbar({ body: t('Please, set the main topic first') })
-    } else {
+    if (shoutData?.mainTopic) {
       publishShout(shoutData)
+    } else {
+      showSnackbar({ body: t('Please, set the main topic first') })
     }
   }
   const handleSaveDraft = () => {

@@ -49,7 +49,6 @@ export type SessionContextType = {
   author: Resource<Author | null>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
-  isAuthenticated: Accessor<boolean>
   loadSession: () => AuthToken | Promise<AuthToken>
   setSession: (token: AuthToken | null) => void // setSession
   loadAuthor: (info?: unknown) => Author | Promise<Author>
@@ -74,6 +73,7 @@ export type SessionContextType = {
   resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
+// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
 const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()
@@ -272,12 +272,9 @@ export const SessionProvider = (props: {
 
   // callback state updater
   createEffect(
-    on(
-      () => props.onStateChangeCallback,
-      () => {
-        props.onStateChangeCallback(session())
-      },
-    ),
+    on([() => props.onStateChangeCallback, session], ([_, ses]) => {
+      ses?.user?.id && props.onStateChangeCallback(ses)
+    }),
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
@@ -381,9 +378,6 @@ export const SessionProvider = (props: {
       console.warn(error)
     }
   }
-
-  const isAuthenticated = createMemo(() => Boolean(author()))
-
   const actions = {
     loadSession,
     requireAuthentication,
@@ -409,7 +403,6 @@ export const SessionProvider = (props: {
     isSessionLoaded,
     author,
     ...actions,
-    isAuthenticated,
     resendVerifyEmail,
   }
 

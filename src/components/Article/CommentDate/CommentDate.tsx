@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const CommentDate = (props: Props) => {
-  const { t, formatDate } = useLocalize()
+  const { formatDate } = useLocalize()
 
   const formattedDate = (date: number) => {
     const formatDateOptions: Intl.DateTimeFormatOptions = props.isShort

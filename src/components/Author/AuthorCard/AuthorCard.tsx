@@ -43,7 +43,7 @@ export const AuthorCard = (props: Props) => {
   })
 
   createEffect(() => {
-    if (!subscriptions || !props.author) return
+    if (!(subscriptions && props.author)) return
     const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
     setIsSubscribed(subscribed)
   })
@@ -312,9 +312,9 @@ export const AuthorCard = (props: Props) => {
                     <For each={authorSubs()}>
                       {(subscription) =>
                         isAuthor(subscription) ? (
-                          <AuthorBadge author={subscription} />
+                          <AuthorBadge author={subscription} subscriptionsMode={true} />
                         ) : (
-                          <TopicBadge topic={subscription} />
+                          <TopicBadge topic={subscription} subscriptionsMode={true} />
                         )
                       }
                     </For>

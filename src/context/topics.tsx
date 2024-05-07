@@ -25,7 +25,7 @@ const setupIndexedDB = async () => {
   })
 }
 
-const getTopicsFromIndexedDB = async (db) => {
+const getTopicsFromIndexedDB = (db) => {
   const tx = db.transaction(STORE_NAME, 'readonly')
   const store = tx.objectStore(STORE_NAME)
   return store.getAll()
@@ -44,7 +44,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
 
   onMount(async () => {
     const db = await setupIndexedDB()
-    let topics = await getTopicsFromIndexedDB(db)
+    let topics = getTopicsFromIndexedDB(db)
 
     if (topics.length === 0) {
       topics = await apiClient.getAllTopics()

@@ -2,11 +2,11 @@ import type { Author } from '../../../graphql/schema/core.gen'
 
 import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Show, createMemo, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useRouter } from '../../../stores/router'
-import { setAuthorsSort, useAuthorsStore } from '../../../stores/zine/authors'
+import { useAuthorsStore } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { scrollHandler } from '../../../utils/scroll'
 import { authorLetterReduce, translateAuthor } from '../../../utils/translate'
@@ -33,7 +33,7 @@ export const AllAuthors = (props: Props) => {
   const [searchQuery, setSearchQuery] = createSignal('')
   const ALPHABET =
     lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ@']
-  const { searchParams, changeSearchParams } = useRouter<AllAuthorsPageSearchParams>()
+  const { searchParams } = useRouter<AllAuthorsPageSearchParams>()
   const { sortedAuthors } = useAuthorsStore({
     authors: props.authors,
     sortBy: searchParams().by || 'name',
@@ -42,7 +42,8 @@ export const AllAuthors = (props: Props) => {
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
     return sortedAuthors().filter((author) => {
-      return author.name.toLowerCase().includes(query) // Предполагаем, что у автора есть свойство name
+      // Предполагаем, что у автора есть свойство name
+      return author.name.toLowerCase().includes(query)
     })
   })
 

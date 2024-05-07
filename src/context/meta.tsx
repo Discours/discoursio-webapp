@@ -1,103 +1,219 @@
 import {
   Component,
-  JSX,
-  ParentComponent,
   createContext,
   createRenderEffect,
-  createSignal,
+  createUniqueId,
+  JSX,
   onCleanup,
+  ParentComponent,
+  sharedConfig,
   useContext,
 } from 'solid-js'
-import { isServer, spread } from 'solid-js/web'
+import { isServer, spread, escape as escapeMeta, useAssets, ssr } from 'solid-js/web'
 
 export const MetaContext = createContext<MetaContextType>()
 
 interface TagDescription {
   tag: string
-  props: Record<string, string>
-  cleanup?: () => void
+  props: Record<string, unknown>
+  setting?: { close?: boolean; escape?: boolean }
+  id: string
+  name?: string
+  ref?: Element
 }
 
 export interface MetaContextType {
-  addTag: (tag: TagDescription) => void
-  removeTag: (tag: TagDescription) => void
+  addTag: (tag: TagDescription) => number
+  removeTag: (tag: TagDescription, index: number) => void
+}
+
+const cascadingTags = ['title', 'meta']
+
+// https://html.spec.whatwg.org/multipage/semantics.html#the-title-element
+const titleTagProperties: string[] = []
+
+const metaTagProperties: string[] =
+  // https://html.spec.whatwg.org/multipage/semantics.html#the-meta-element
+  ['name', 'http-equiv', 'content', 'charset', 'media']
+    // additional properties
+    .concat(['property'])
+
+const getTagKey = (tag: TagDescription, properties: string[]) => {
+  // pick allowed properties and sort them
+  const tagProps = Object.fromEntries(
+    Object.entries(tag.props)
+      .filter(([k]) => properties.includes(k))
+      .sort(),
+  )
+
+  // treat `property` as `name` for meta tags
+  if (Object.hasOwn(tagProps, 'name') || Object.hasOwn(tagProps, 'property')) {
+    tagProps.name = tagProps.name || tagProps.property
+    tagProps.property = undefined
+  }
+
+  // concat tag name and properties as unique key for this tag
+  return tag.tag + JSON.stringify(tagProps)
 }
 
 function initClientProvider() {
-  const tags = new Map<string, TagDescription>()
-
-  function addTag(tag: TagDescription) {
-    const key = getTagKey(tag)
-    tags.set(key, tag)
-
-    const el = document.createElement(tag.tag)
-    spread(el, tag.props)
-    document.head.appendChild(el)
-
-    tag.cleanup = () => {
-      document.head.removeChild(el)
-      tags.delete(key)
-    }
+  if (!sharedConfig.context) {
+    const ssrTags = document.head.querySelectorAll('[data-sm]')
+    // `forEach` on `NodeList` is not supported in Googlebot, so use a workaround
+    Array.prototype.forEach.call(ssrTags, (ssrTag: Node) => ssrTag.parentNode?.removeChild(ssrTag))
   }
 
-  function removeTag(tag: TagDescription) {
-    const key = getTagKey(tag)
-    const existingTag = tags.get(key)
-    if (existingTag) {
-      if (existingTag.cleanup) existingTag.cleanup()
-      tags.delete(key)
+  const cascadedTagInstances = new Map()
+  // TODO: use one element for all tags of the same type, just swap out
+  // where the props get applied
+  function getElement(tag: TagDescription) {
+    if (tag.ref) {
+      return tag.ref
     }
+    let el = document.querySelector(`[data-sm="${tag.id}"]`)
+    if (el) {
+      if (el.tagName.toLowerCase() !== tag.tag) {
+        if (el.parentNode) {
+          // remove the old tag
+          el.parentNode.removeChild(el)
+        }
+        // add the new tag
+        el = document.createElement(tag.tag)
+      }
+      // use the old tag
+      el.removeAttribute('data-sm')
+    } else {
+      // create a new tag
+      el = document.createElement(tag.tag)
+    }
+    return el
   }
 
-  return { addTag, removeTag }
+  return {
+    addTag(tag: TagDescription) {
+      if (cascadingTags.indexOf(tag.tag) !== -1) {
+        const properties = tag.tag === 'title' ? titleTagProperties : metaTagProperties
+        const tagKey = getTagKey(tag, properties)
+
+        //  only cascading tags need to be kept as singletons
+        if (!cascadedTagInstances.has(tagKey)) {
+          cascadedTagInstances.set(tagKey, [])
+        }
+
+        let instances = cascadedTagInstances.get(tagKey)
+        const index = instances.length
+
+        instances = [...instances, tag]
+
+        // track indices synchronously
+        cascadedTagInstances.set(tagKey, instances)
+
+        const element = getElement(tag)
+        tag.ref = element
+
+        spread(element, tag.props)
+
+        let lastVisited = null
+        for (let i = index - 1; i >= 0; i--) {
+          if (instances[i] != null) {
+            lastVisited = instances[i]
+            break
+          }
+        }
+
+        if (element.parentNode !== document.head) {
+          document.head.appendChild(element)
+        }
+        if (lastVisited?.ref?.parentNode) {
+          document.head?.removeChild(lastVisited.ref)
+        }
+
+        return index
+      }
+
+      const element = getElement(tag)
+      tag.ref = element
+
+      spread(element, tag.props)
+
+      if (element.parentNode !== document.head) {
+        document.head.appendChild(element)
+      }
+
+      return -1
+    },
+    removeTag(tag: TagDescription, index: number) {
+      const properties = tag.tag === 'title' ? titleTagProperties : metaTagProperties
+      const tagKey = getTagKey(tag, properties)
+
+      if (tag.ref) {
+        const t = cascadedTagInstances.get(tagKey)
+        if (t) {
+          if (tag.ref.parentNode) {
+            tag.ref.parentNode.removeChild(tag.ref)
+            for (let i = index - 1; i >= 0; i--) {
+              if (t[i] != null) {
+                document.head.appendChild(t[i].ref)
+              }
+            }
+          }
+
+          t[index] = null
+          cascadedTagInstances.set(tagKey, t)
+        } else if (tag.ref.parentNode) {
+          tag.ref.parentNode.removeChild(tag.ref)
+        }
+      }
+    },
+  }
 }
 
 function initServerProvider() {
   const tags: TagDescription[] = []
+  useAssets(() => ssr(renderTags(tags)) as string)
 
-  function addTag(tagDesc: TagDescription) {
-    tags.push(tagDesc)
+  return {
+    addTag(tagDesc: TagDescription) {
+      // tweak only cascading tags
+      if (cascadingTags.indexOf(tagDesc.tag) !== -1) {
+        const properties = tagDesc.tag === 'title' ? titleTagProperties : metaTagProperties
+        const tagDescKey = getTagKey(tagDesc, properties)
+        const index = tags.findIndex(
+          (prev) => prev.tag === tagDesc.tag && getTagKey(prev, properties) === tagDescKey,
+        )
+        if (index !== -1) {
+          tags.splice(index, 1)
+        }
+      }
+      tags.push(tagDesc)
+      return tags.length
+    },
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: initial value
+    removeTag(_tag: TagDescription, _index: number) {},
   }
-
-  function removeTag(tag: TagDescription) {
-    const index = tags.findIndex((t) => getTagKey(t) === getTagKey(tag))
-    if (index !== -1) {
-      tags.splice(index, 1)
-    }
-  }
-
-  return { addTag, removeTag }
 }
 
 export const MetaProvider: ParentComponent = (props) => {
   const actions = isServer ? initServerProvider() : initClientProvider()
-  const [tags, setTags] = createSignal<TagDescription[]>([])
-
-  const addTag = (tag: TagDescription) => {
-    actions.addTag(tag)
-    setTags([...tags(), tag])
-  }
-
-  const removeTag = (tag: TagDescription) => {
-    actions.removeTag(tag)
-    setTags(tags().filter((t) => getTagKey(t) !== getTagKey(tag)))
-  }
-
-  onCleanup(() => {
-    for (const tag of tags()) {
-      tag.cleanup?.()
-    }
-  })
-
-  return <MetaContext.Provider value={{ addTag, removeTag }}>{props.children}</MetaContext.Provider>
+  return <MetaContext.Provider value={actions || {}}>{props.children}</MetaContext.Provider>
 }
 
-const getTagKey = (tag: TagDescription) => {
-  const props = Object.entries(tag.props)
-    .filter(([k]) => k !== 'children')
-    .sort()
+const MetaTag = (
+  tag: string,
+  props: { [k: string]: string },
+  setting?: { escape?: boolean; close?: boolean },
+) => {
+  useHead({
+    tag,
+    props,
+    setting,
+    id: createUniqueId(),
+    get name() {
+      return props.name || props.property
+    },
+  })
 
-  return `${tag.tag}${JSON.stringify(props)}`
+  return null
 }
 
 export function useHead(tagDesc: TagDescription) {
@@ -105,34 +221,48 @@ export function useHead(tagDesc: TagDescription) {
   if (!c) throw new Error('<MetaProvider /> should be in the tree')
 
   createRenderEffect(() => {
-    c.addTag(tagDesc)
-
-    return () => {
-      c.removeTag(tagDesc)
-    }
+    const index = c?.addTag(tagDesc)
+    onCleanup(() => c?.removeTag(tagDesc, index))
   })
 }
 
-const MetaTag = (tag: string, props: Record<string, string>) => {
-  useHead({ tag, props })
-
-  return null
+function renderTags(tags: TagDescription[]) {
+  return tags
+    .map((tag) => {
+      const keys = Object.keys(tag.props)
+      const props = keys
+        .map((k) =>
+          k === 'children'
+            ? ''
+            : ` ${k}="${
+                // @ts-expect-error
+                escapeMeta(tag.props[k], true)
+              }"`,
+        )
+        .join('')
+      const children = tag.props.children
+      if (tag.setting?.close) {
+        return `<${tag.tag} data-sm="${tag.id}"${props}>${
+          // @ts-expect-error
+          tag.setting?.escape ? escapeMeta(children) : children || ''
+        }</${tag.tag}>`
+      }
+      return `<${tag.tag} data-sm="${tag.id}"${props}/>`
+    })
+    .join('')
 }
 
 export const Title: Component<JSX.HTMLAttributes<HTMLTitleElement>> = (props) =>
-  MetaTag('title', props as Record<string, string>)
+  MetaTag('title', props, { escape: true, close: true })
 
 export const Style: Component<JSX.StyleHTMLAttributes<HTMLStyleElement>> = (props) =>
-  MetaTag('style', props as Record<string, string>)
+  MetaTag('style', props, { close: true })
 
-export const Meta: Component<JSX.MetaHTMLAttributes<HTMLMetaElement>> = (props) =>
-  MetaTag('meta', props as Record<string, string>)
+export const Meta: Component<JSX.MetaHTMLAttributes<HTMLMetaElement>> = (props) => MetaTag('meta', props)
 
-export const Link: Component<JSX.LinkHTMLAttributes<HTMLLinkElement>> = (props) =>
-  MetaTag('link', props as Record<string, string>)
+export const Link: Component<JSX.LinkHTMLAttributes<HTMLLinkElement>> = (props) => MetaTag('link', props)
 
-export const Base: Component<JSX.BaseHTMLAttributes<HTMLBaseElement>> = (props) =>
-  MetaTag('base', props as Record<string, string>)
+export const Base: Component<JSX.BaseHTMLAttributes<HTMLBaseElement>> = (props) => MetaTag('base', props)
 
 export const Stylesheet: Component<Omit<JSX.LinkHTMLAttributes<HTMLLinkElement>, 'rel'>> = (props) => (
   <Link rel="stylesheet" {...props} />

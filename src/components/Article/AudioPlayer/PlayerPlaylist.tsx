@@ -3,7 +3,7 @@ import { For, Show, createSignal, lazy } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { MediaItem } from '../../../pages/types'
-import { getDescription } from '../../../utils/meta'
+import { getDescription } from '../../../utils'
 import { Icon } from '../../_shared/Icon'
 import { Popover } from '../../_shared/Popover'
 import { SharePopup, getShareUrl } from '../SharePopup'

@@ -1,15 +1,15 @@
 import {
   Component,
+  JSX,
+  ParentComponent,
   createContext,
   createRenderEffect,
   createUniqueId,
-  JSX,
   onCleanup,
-  ParentComponent,
   sharedConfig,
   useContext,
 } from 'solid-js'
-import { isServer, spread, escape as escapeMeta, useAssets, ssr } from 'solid-js/web'
+import { escape as escapeMeta, isServer, spread, ssr, useAssets } from 'solid-js/web'
 
 export const MetaContext = createContext<MetaContextType>()
 
@@ -253,16 +253,19 @@ function renderTags(tags: TagDescription[]) {
 }
 
 export const Title: Component<JSX.HTMLAttributes<HTMLTitleElement>> = (props) =>
-  MetaTag('title', props, { escape: true, close: true })
+  MetaTag('title', props as { [k: string]: string }, { escape: true, close: true })
 
 export const Style: Component<JSX.StyleHTMLAttributes<HTMLStyleElement>> = (props) =>
-  MetaTag('style', props, { close: true })
+  MetaTag('style', props as { [k: string]: string }, { close: true })
 
-export const Meta: Component<JSX.MetaHTMLAttributes<HTMLMetaElement>> = (props) => MetaTag('meta', props)
+export const Meta: Component<JSX.MetaHTMLAttributes<HTMLMetaElement>> = (props) =>
+  MetaTag('meta', props as { [k: string]: string })
 
-export const Link: Component<JSX.LinkHTMLAttributes<HTMLLinkElement>> = (props) => MetaTag('link', props)
+export const Link: Component<JSX.LinkHTMLAttributes<HTMLLinkElement>> = (props) =>
+  MetaTag('link', props as { [k: string]: string })
 
-export const Base: Component<JSX.BaseHTMLAttributes<HTMLBaseElement>> = (props) => MetaTag('base', props)
+export const Base: Component<JSX.BaseHTMLAttributes<HTMLBaseElement>> = (props) =>
+  MetaTag('base', props as { [k: string]: string })
 
 export const Stylesheet: Component<Omit<JSX.LinkHTMLAttributes<HTMLLinkElement>, 'rel'>> = (props) => (
   <Link rel="stylesheet" {...props} />

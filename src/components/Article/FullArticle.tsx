@@ -2,11 +2,11 @@ import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
-import { Link, Meta } from '../../context/meta'
 import { clsx } from 'clsx'
 import { install } from 'ga-gtag'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
+import { Link, Meta } from '../../context/meta'
 
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'

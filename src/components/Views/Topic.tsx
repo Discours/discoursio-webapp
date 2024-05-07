@@ -1,8 +1,8 @@
 import { LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
 
-import { Meta } from '../../context/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { Meta } from '../../context/meta'
 
 import { useLocalize } from '../../context/localize'
 import { useTopics } from '../../context/topics'

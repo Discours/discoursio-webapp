@@ -1,9 +1,9 @@
 import { getPagePath } from '@nanostores/router'
-import { Meta } from '../../../context/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { Meta } from '../../../context/meta'
 import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
 import { useTopics } from '../../../context/topics'

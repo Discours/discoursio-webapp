@@ -1,11 +1,11 @@
 import {
   Component,
+  JSX,
+  ParentComponent,
   createContext,
   createRenderEffect,
   createSignal,
-  JSX,
   onCleanup,
-  ParentComponent,
   useContext,
 } from 'solid-js'
 import { isServer, spread } from 'solid-js/web'

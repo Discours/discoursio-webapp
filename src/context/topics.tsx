@@ -13,6 +13,7 @@ type TopicsContextType = {
   topTopics: Accessor<Topic[]>
   setTopicsSort: (sortBy: string) => void
   addTopics: (topics: Topic[]) => void
+  loadTopics: () => Promise<Topic[]>
 }
 
 const TopicsContext = createContext<TopicsContextType>()
@@ -33,11 +34,13 @@ const setupIndexedDB = async () => {
   })
 }
 
-const getTopicsFromIndexedDB = (db) => {
+const getTopicsFromIndexedDB = async (db) => {
   const tx = db.transaction(STORE_NAME, 'readonly')
   const store = tx.objectStore(STORE_NAME)
-  return store.getAll()
+  const topics = await store.getAll()
+  return { topics, timestamp: tx.done }
 }
+
 const saveTopicsToIndexedDB = async (db, topics) => {
   const tx = db.transaction(STORE_NAME, 'readwrite')
   const store = tx.objectStore(STORE_NAME)
@@ -105,14 +108,22 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
       }
     })
   }
+  const [db, setDb] = createSignal()
+  const loadTopics = async () => {
+    const ttt = await apiClient.getAllTopics()
+    await saveTopicsToIndexedDB(db(), ttt)
+    return ttt
+  }
 
   onMount(async () => {
     const db = await setupIndexedDB()
-    let topics = await getTopicsFromIndexedDB(db)
+    setDb(db)
+    let { topics, timestamp } = await getTopicsFromIndexedDB(db)
 
-    if (topics.length < 100) {
-      topics = await apiClient.getAllTopics()
-      await saveTopicsToIndexedDB(db, topics)
+    if (topics.length < 100 || Date.now() - timestamp > 3600000) {
+      const newTopics = await loadTopics()
+      await saveTopicsToIndexedDB(db, newTopics)
+      topics = newTopics
     }
     addTopics(topics)
     setRandomTopics(topics)
@@ -125,6 +136,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
     randomTopics,
     topTopics,
     addTopics,
+    loadTopics,
   }
 
   return <TopicsContext.Provider value={value}>{props.children}</TopicsContext.Provider>

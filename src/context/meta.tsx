@@ -170,7 +170,10 @@ function initClientProvider() {
 
 function initServerProvider() {
   const tags: TagDescription[] = []
-  useAssets(() => ssr(renderTags(tags)) as string)
+  useAssets(() => {
+    const rendered = renderTags(tags)
+    return ssr(rendered as string) as unknown as Element
+  })
 
   return {
     addTag(tagDesc: TagDescription) {
@@ -195,7 +198,7 @@ function initServerProvider() {
 
 export const MetaProvider: ParentComponent = (props) => {
   const actions = isServer ? initServerProvider() : initClientProvider()
-  return <MetaContext.Provider value={actions || {}}>{props.children}</MetaContext.Provider>
+  return <MetaContext.Provider value={actions as MetaContextType}>{props.children}</MetaContext.Provider>
 }
 
 const MetaTag = (

@@ -76,7 +76,7 @@ export const ProfileSecurityPage = () => {
       setIsFloatingPanelVisible(false)
     }
   }
-  const handleChangeEmail = (value: string) => {
+  const handleChangeEmail = (_value: string) => {
     if (!validateEmail(formData()['email'])) {
       setEmailError(t('Invalid email'))
       return

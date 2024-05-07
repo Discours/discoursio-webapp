@@ -73,7 +73,7 @@
     border: none;
     white-space: nowrap;
 
-    &:before {
+    &::before {
       content: '';
       height: 100%;
       left: 0;

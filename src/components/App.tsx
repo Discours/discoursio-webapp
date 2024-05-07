@@ -1,6 +1,6 @@
 import type { PageProps, RootSearchParams } from '../pages/types'
 
-import { Meta, MetaProvider } from '@solidjs/meta'
+import { Meta, MetaProvider } from '../context/meta'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 

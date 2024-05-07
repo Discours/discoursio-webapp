@@ -1,7 +1,7 @@
 import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
-import { Meta, Title } from '@solidjs/meta'
+import { Meta, Title } from '../../../context/meta'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 

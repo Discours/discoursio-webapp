@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js'
 
-import { Link } from '@solidjs/meta'
+import { Link } from '../../../context/meta'
 import { splitProps } from 'solid-js'
 
 import { getImageUrl } from '../../../utils/getImageUrl'

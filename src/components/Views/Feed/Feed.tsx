@@ -1,5 +1,5 @@
 import { getPagePath } from '@nanostores/router'
-import { Meta } from '@solidjs/meta'
+import { Meta } from '../../../context/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 

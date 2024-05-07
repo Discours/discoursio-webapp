@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js'
 
-import { Title } from '@solidjs/meta'
+import { Title } from '../../context/meta'
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
 

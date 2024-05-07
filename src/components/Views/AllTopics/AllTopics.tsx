@@ -1,6 +1,6 @@
 import type { Topic } from '../../../graphql/schema/core.gen'
 
-import { Meta } from '@solidjs/meta'
+import { Meta } from '../../../context/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import { useLocalize } from '../../../context/localize'

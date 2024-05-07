@@ -24,7 +24,7 @@ import { ImageCropper } from '../_shared/ImageCropper'
 import { Loading } from '../_shared/Loading'
 import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
-import { ProfileInput } from "../../graphql/schema/core.gen";
+import { ProfileInput } from '../../graphql/schema/core.gen'
 
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))

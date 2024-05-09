@@ -127,6 +127,12 @@
   }
 }
 
+.profilePopup {
+  @include media-breakpoint-up(sm) {
+    min-width: 22rem;
+  }
+}
+
 // TODO: animation
 // .popup {
 //  opacity: 1;

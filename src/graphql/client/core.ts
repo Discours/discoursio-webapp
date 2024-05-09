@@ -1,6 +1,5 @@
 import type {
   Author,
-  AuthorFollowsResult,
   CommonResult,
   FollowingEntity,
   LoadShoutsOptions,

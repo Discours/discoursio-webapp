@@ -100,7 +100,7 @@ export const ProfileSecurityPage = () => {
     const options: UpdateProfileInput = {
       old_password: formData()['oldPassword'],
       new_password: formData()['newPassword'] || formData()['oldPassword'],
-      confirm_new_password: formData()['newPassword']() || formData()['oldPassword'],
+      confirm_new_password: formData()['newPassword'] || formData()['oldPassword'],
       email: formData()['email'],
     }
 

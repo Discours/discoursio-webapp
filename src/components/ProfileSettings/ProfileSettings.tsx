@@ -9,9 +9,9 @@ import {
   createEffect,
   createSignal,
   lazy,
+  on,
   onCleanup,
   onMount,
-  on,
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 

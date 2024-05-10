@@ -1,6 +1,5 @@
 import type {
   Author,
-  AuthorFollowsResult,
   CommonResult,
   FollowingEntity,
   LoadShoutsOptions,
@@ -134,7 +133,7 @@ export const apiClient = {
     slug?: string
     author_id?: number
     user?: string
-  }): Promise<AuthorFollowsResult> => {
+  }): Promise<CommonResult> => {
     const response = await publicGraphQLClient.query(authorFollows, params).toPromise()
     return response.data.get_author_follows
   },

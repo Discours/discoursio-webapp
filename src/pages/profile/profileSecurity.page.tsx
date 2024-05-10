@@ -52,7 +52,7 @@ export const ProfileSecurityPage = () => {
     ),
   )
   const handleInputChange = (name: FormField, value: string) => {
-    if (name === 'email' || (name === 'newPasswordConfirm' && value.length > 0)) {
+    if (name === 'email' || (name === 'newPasswordConfirm' && value && value?.length > 0)) {
       setIsFloatingPanelVisible(true)
     }
     setFormData((prevData) => ({

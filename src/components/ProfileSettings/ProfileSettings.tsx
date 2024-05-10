@@ -1,7 +1,18 @@
 import { createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { For, Match, Show, Switch, createEffect, createSignal, lazy, onCleanup, onMount } from 'solid-js'
+import {
+  For,
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createSignal,
+  lazy,
+  onCleanup,
+  onMount,
+  on
+} from "solid-js";
 import { createStore } from 'solid-js/store'
 
 import { useConfirm } from '../../context/confirm'
@@ -117,7 +128,6 @@ export const ProfileSettings = () => {
     }
   }
 
-  console.log('%c!!! form:', 'color: #bada55', form)
   const handleCropAvatar = () => {
     const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
@@ -160,11 +170,17 @@ export const ProfileSettings = () => {
     onCleanup(() => window.removeEventListener('beforeunload', handleBeforeUnload))
   })
 
-  createEffect(() => {
-    if (Object.keys(prevForm).length > 0) {
-      setIsFloatingPanelVisible(!deepEqual(form, prevForm))
-    }
-  })
+  createEffect(
+    on(
+      () => deepEqual(form, prevForm),
+      () => {
+        if (Object.keys(prevForm).length > 0) {
+          setIsFloatingPanelVisible(!deepEqual(form, prevForm))
+        }
+      }
+    ),
+  )
+
   const handleDeleteSocialLink = (link) => {
     updateFormField('links', link, true)
   }

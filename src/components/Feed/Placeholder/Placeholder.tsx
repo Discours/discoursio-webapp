@@ -19,18 +19,21 @@ export const Placeholder = (props: PlaceholderProps) => {
       header: t('Feed settings'),
       text: t('Placeholder feed'),
       buttonLabel: author() ? t('Popular authors') : t('Create own feed'),
+      href: '/authors?by=followers',
     },
     feedCollaborations: {
       image: 'placeholder-experts.webp',
       header: t('Find collaborators'),
       text: t('Placeholder feedCollaborations'),
       buttonLabel: t('Find co-authors'),
+      href: '/authors?by=name',
     },
     feedDiscussions: {
       image: 'placeholder-discussions.webp',
       header: t('Participate in discussions'),
       text: t('Placeholder feedDiscussions'),
       buttonLabel: author() ? t('Current discussions') : t('Enter'),
+      href: '/feed?by=last_comment',
     },
   }
 
@@ -51,7 +54,7 @@ export const Placeholder = (props: PlaceholderProps) => {
             </a>
           }
         >
-          <button>{data[props.type].buttonLabel}</button>
+          <a href={data[props.type].href}>{data[props.type].buttonLabel}</a>
         </Show>
       </div>
     </div>

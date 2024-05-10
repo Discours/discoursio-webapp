@@ -18,6 +18,7 @@ import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
+import { Subscribers } from '../../_shared/Subscribers'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
 
@@ -126,59 +127,7 @@ export const AuthorCard = (props: Props) => {
             <div class={styles.authorAbout} innerHTML={props.author.bio} />
           </Show>
           <Show when={props.followers?.length > 0 || props.following?.length > 0}>
-            <div class={styles.subscribersContainer}>
-              <Show when={props.followers && props.followers.length > 0}>
-                <a href="?m=followers" class={styles.subscribers}>
-                  <For each={props.followers.slice(0, 3)}>
-                    {(f) => (
-                      <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
-                    )}
-                  </For>
-                  <div class={styles.subscribersCounter}>
-                    {t('SubscriberWithCount', {
-                      count: props.followers.length ?? 0,
-                    })}
-                  </div>
-                </a>
-              </Show>
-
-              <Show when={props.following && props.following.length > 0}>
-                <a href="?m=following" class={styles.subscribers}>
-                  <For each={props.following.slice(0, 3)}>
-                    {(f) => {
-                      if ('name' in f) {
-                        return (
-                          <Userpic
-                            size={'XS'}
-                            name={f.name}
-                            userpic={f.pic}
-                            class={styles.subscribersItem}
-                          />
-                        )
-                      }
-
-                      if ('title' in f) {
-                        return (
-                          <Userpic
-                            size={'XS'}
-                            name={f.title}
-                            userpic={f.pic}
-                            class={styles.subscribersItem}
-                          />
-                        )
-                      }
-
-                      return null
-                    }}
-                  </For>
-                  <div class={styles.subscribersCounter}>
-                    {t('SubscriptionWithCount', {
-                      count: props?.following.length ?? 0,
-                    })}
-                  </div>
-                </a>
-              </Show>
-            </div>
+            <Subscribers followers={props.followers} following={props.following} />
           </Show>
         </div>
         <ShowOnlyOnClient>

@@ -1,6 +1,5 @@
 .topicHeader {
-  @include font-size(1.7rem);
-
+  font-weight: 500;
   padding: 2.8rem $container-padding-x 0;
   text-align: center;
 
@@ -12,10 +11,16 @@
   }
 }
 
+.topicDescription {
+  @include font-size(1.8rem);
+  line-height: 1.4;
+  margin: 1rem 0 2rem;
+}
+
 .topicActions {
   margin-top: 2.8rem;
 
-  .write {
+  .writeControl {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -23,13 +28,34 @@
     min-width: 64px;
     font-size: 17px;
     padding: 8px 16px;
-    background: var(--background-color-invert);
-    color: var(--default-color-invert);
-    border: none;
+    border: 1px solid #f7f7f7;
+    background: #f7f7f7;
+    color: var(--default-color);
     font-weight: 500;
-    border-radius: 2px;
     cursor: pointer;
     margin: 0 1.2rem 1em;
     white-space: nowrap;
   }
+
+  .followControl,
+  .writeControl {
+    border-radius: 0.8rem;
+  }
+}
+
+.topicDetails {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.4rem;
+  justify-content: center;
+  gap: 4rem;
+  margin-top: 1.5rem;
+}
+
+.topicDetailsItem {
+  display: flex;
+}
+
+.topicDetailsIcon {
+
 }

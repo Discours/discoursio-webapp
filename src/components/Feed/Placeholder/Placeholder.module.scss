@@ -1,0 +1,117 @@
+.placeholder {
+  aspect-ratio: 1 / 0.8;
+  border-radius: 2.2rem;
+  display: flex;
+  @include font-size(1.4rem);
+  flex-direction: column;
+  font-weight: 500;
+  overflow: hidden;
+  position: relative;
+
+  h3 {
+    @include font-size(2.4rem);
+  }
+
+  button,
+  .button {
+    border-radius: 1.2rem;
+    display: block;
+    @include font-size(1.5rem);
+    margin-top: 3rem;
+    padding: 1rem 2rem;
+    width: 100%;
+  }
+}
+
+.placeholderCover {
+  flex: 0 100%;
+  position: relative;
+  width: 100%;
+
+  &:after {
+    bottom: 0;
+    content: '';
+    height: 20%;
+    left: 0;
+    position: absolute;
+    width: 100%;
+
+    .placeholder-feed & {
+      background: linear-gradient(to top, #171032, rgba(23, 16, 50, 0));
+    }
+
+    .placeholder-feedCollaborations & {
+      background: linear-gradient(to top, #070709, rgba(7, 7, 9, 0));
+    }
+
+    .placeholder-feedDiscussions & {
+      //background: linear-gradient(to top, #E9E9EE, rgba(233, 233, 238, 0));
+    }
+  }
+
+  img {
+    left: 0;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    width: 100%;
+  }
+}
+
+.placeholderContent {
+  padding: 1.6rem;
+  text-align: center;
+}
+
+.placeholder-feed,
+.placeholder-feedCollaborations {
+  color: var(--default-color-invert);
+
+  button,
+  .button {
+    background: var(--background-color);
+    color: var(--default-color);
+  }
+}
+
+.placeholder-feed {
+  background: #171032;
+
+  .placeholderCover {
+    img {
+      object-position: top;
+    }
+  }
+}
+
+.placeholder-feedCollaborations {
+  background: #070709;
+
+  .placeholderCover {
+    img {
+      object-position: bottom;
+    }
+  }
+}
+
+.placeholder-feedDiscussions {
+  background: #E9E9EE;
+
+  .placeholderCover {
+    padding: 2rem;
+    text-align: center;
+
+    img {
+      height: 90%;
+      mix-blend-mode: multiply;
+      object-fit: contain;
+      top: 10%;
+    }
+  }
+
+  button,
+  .button {
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+  }
+}

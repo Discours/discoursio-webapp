@@ -52,8 +52,13 @@ export const ProfileSecurityPage = () => {
     ),
   )
   const handleInputChange = (name: FormField, value: string) => {
-    if (name === 'email' || (name === 'newPasswordConfirm' && value && value?.length > 0)) {
+    if (
+      name === 'email' ||
+      (name === 'newPasswordConfirm' && value && value?.length > 0 && !emailError() && !newPasswordError())
+    ) {
       setIsFloatingPanelVisible(true)
+    } else {
+      setIsFloatingPanelVisible(false)
     }
     setFormData((prevData) => ({
       ...prevData,
@@ -186,7 +191,7 @@ export const ProfileSecurityPage = () => {
                       <PasswordField
                         onInput={(value) => {
                           handleInputChange('newPassword', value)
-                          handleInputChange('newPasswordConfirm', null)
+                          handleInputChange('newPasswordConfirm', '')
                         }}
                         value={formData()['newPassword'] ?? ''}
                         disabled={isSubmitting()}

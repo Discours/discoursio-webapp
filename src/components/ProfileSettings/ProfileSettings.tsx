@@ -11,8 +11,8 @@ import {
   lazy,
   onCleanup,
   onMount,
-  on
-} from "solid-js";
+  on,
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import { useConfirm } from '../../context/confirm'
@@ -177,7 +177,7 @@ export const ProfileSettings = () => {
         if (Object.keys(prevForm).length > 0) {
           setIsFloatingPanelVisible(!deepEqual(form, prevForm))
         }
-      }
+      },
     ),
   )
 

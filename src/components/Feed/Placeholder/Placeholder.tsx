@@ -6,7 +6,7 @@ import { useSession } from '../../../context/session'
 import styles from './Placeholder.module.scss'
 
 export type PlaceholderProps = {
-  type: 'feed' | 'feedCollaborations' | 'feedDiscussions'
+  type: string
 }
 
 export const Placeholder = (props: PlaceholderProps) => {

@@ -243,7 +243,7 @@ export const AuthorView = (props: Props) => {
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >
-                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author().about} />
+                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author()?.about || ''} />
                 </div>
 
                 <Show when={showExpandBioControl()}>

@@ -11,7 +11,7 @@
     "deploy": "graphql-codegen && npm run typecheck && vite build && vercel",
     "dev": "vite",
     "e2e": "npx playwright test --project=chromium",
-    "fix": "npm run lint:code:fix && stylelint **/*.{scss,css} --fix",
+    "fix": "npm run check:code:fix && stylelint **/*.{scss,css} --fix",
     "format": "npx @biomejs/biome format src/. --write",
     "hygen": "HYGEN_TMPLS=gen hygen",
     "postinstall": "npm run codegen && npx patch-package",

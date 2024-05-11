@@ -3,11 +3,11 @@ import { For, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
+import { Icon } from '../../_shared/Icon'
 import styles from './Placeholder.module.scss'
-import {Icon} from "../../_shared/Icon";
 
 export type PlaceholderProps = {
-  type: string,
+  type: string
   mode: 'feed' | 'profile'
 }
 
@@ -46,9 +46,9 @@ export const Placeholder = (props: PlaceholderProps) => {
       profileLinks: [
         {
           href: '/how-to-write-a-good-article',
-          label: t('How to write a good article')
-        }
-      ]
+          label: t('How to write a good article'),
+        },
+      ],
     },
     authorComments: {
       image: 'placeholder-discussions.webp',
@@ -59,25 +59,31 @@ export const Placeholder = (props: PlaceholderProps) => {
       profileLinks: [
         {
           href: '/about/discussion-rules',
-          label: t('Discussion rules')
+          label: t('Discussion rules'),
         },
         {
           href: '/about/discussion-rules#ban',
-          label: t('Block rules')
-        }
-      ]
+          label: t('Block rules'),
+        },
+      ],
     },
   }
 
   return (
-    <div class={clsx(styles.placeholder, styles[`placeholder--${props.type}`], styles[`placeholder--${props.mode}-mode`])}>
+    <div
+      class={clsx(
+        styles.placeholder,
+        styles[`placeholder--${props.type}`],
+        styles[`placeholder--${props.mode}-mode`],
+      )}
+    >
       <div class={styles.placeholderCover}>
         <img src={`/public/${data[props.type].image}`} />
       </div>
       <div class={styles.placeholderContent}>
         <div>
-          <h3 innerHTML={data[props.type].header}/>
-          <p innerHTML={data[props.type].text}/>
+          <h3 innerHTML={data[props.type].header} />
+          <p innerHTML={data[props.type].text} />
         </div>
 
         <Show when={data[props.type].profileLinks}>
@@ -85,7 +91,7 @@ export const Placeholder = (props: PlaceholderProps) => {
             <For each={data[props.type].profileLinks}>
               {(link) => (
                 <a href={link.href}>
-                  <Icon name="link-white" class={styles.icon}/>
+                  <Icon name="link-white" class={styles.icon} />
                   {link.label}
                 </a>
               )}
@@ -104,7 +110,7 @@ export const Placeholder = (props: PlaceholderProps) => {
           <a class={styles.button} href={data[props.type].href}>
             {data[props.type].buttonLabel}
             <Show when={props.mode === 'profile'}>
-              <Icon name="arrow-right-2" class={styles.icon}/>
+              <Icon name="arrow-right-2" class={styles.icon} />
             </Show>
           </a>
         </Show>

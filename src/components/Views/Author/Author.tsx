@@ -27,8 +27,8 @@ import { Loading } from '../../_shared/Loading'
 import { MODALS, hideModal } from '../../../stores/ui'
 import { byCreated } from '../../../utils/sortby'
 import stylesArticle from '../../Article/Article.module.scss'
+import { Placeholder } from '../../Feed/Placeholder'
 import styles from './Author.module.scss'
-import {Placeholder} from "../../Feed/Placeholder";
 
 type Props = {
   authorSlug: string
@@ -264,7 +264,6 @@ export const AuthorView = (props: Props) => {
             <Placeholder type={getPage().route} mode="profile" />
           </div>
 
-
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -285,7 +284,9 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'author'}>
-          <Show when={session()?.user?.app_data?.profile?.slug === props.authorSlug && !sortedArticles().length}>
+          <Show
+            when={session()?.user?.app_data?.profile?.slug === props.authorSlug && !sortedArticles().length}
+          >
             <div class="wide-container">
               <Placeholder type={getPage().route} mode="profile" />
             </div>

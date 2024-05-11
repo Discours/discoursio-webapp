@@ -1,9 +1,7 @@
 .placeholder {
-  aspect-ratio: 1 / 0.8;
   border-radius: 2.2rem;
   display: flex;
   @include font-size(1.4rem);
-  flex-direction: column;
   font-weight: 500;
   overflow: hidden;
   position: relative;
@@ -14,19 +12,26 @@
 
   button,
   .button {
+    align-items: center;
     border-radius: 1.2rem;
-    display: block;
+    display: flex;
     @include font-size(1.5rem);
+    gap: 0.6rem;
     margin-top: 3rem;
     padding: 1rem 2rem;
     width: 100%;
+
+    .icon {
+      height: 2.4rem;
+      width: 2.4rem;
+    }
   }
 }
 
-.placeholderCover {
-  flex: 0 100%;
-  position: relative;
-  width: 100%;
+.placeholder--feed-mode {
+  aspect-ratio: 1 / 0.8;
+  flex-direction: column;
+  text-align: center;
 
   &:after {
     bottom: 0;
@@ -36,35 +41,84 @@
     position: absolute;
     width: 100%;
 
-    .placeholder-feed & {
+    .placeholder--feed & {
       background: linear-gradient(to top, #171032, rgba(23, 16, 50, 0));
     }
 
-    .placeholder-feedCollaborations & {
+    .placeholder--feedCollaborations & {
       background: linear-gradient(to top, #070709, rgba(7, 7, 9, 0));
     }
+  }
 
-    .placeholder-feedDiscussions & {
-      //background: linear-gradient(to top, #E9E9EE, rgba(233, 233, 238, 0));
+  .placeholderCover {
+    flex: 0 100%;
+    width: 100%;
+
+    img {
+      position: absolute;
     }
   }
+}
+
+.placeholder--profile-mode {
+  min-height: 28rem;
+
+  .placeholderCover {
+    flex: 0 45rem;
+    min-width: 45rem;
+    order: 2;
+    padding: 1.6rem;
+
+    img {
+      height: auto;
+      width: 100%;
+    }
+  }
+
+  .placeholderContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    @include font-size(2rem);
+    line-height: 1.2;
+    padding: 3rem;
+  }
+
+  h3 {
+    @include font-size(3.8rem);
+  }
+
+  .button {
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+    bottom: 2rem;
+    position: absolute;
+    right: 2rem;
+    width: auto;
+
+    .icon {
+      filter: invert(1);
+    }
+  }
+}
+
+.placeholderCover {
+  position: relative;
 
   img {
     left: 0;
     height: 100%;
     object-fit: cover;
-    position: absolute;
     width: 100%;
   }
 }
 
 .placeholderContent {
   padding: 1.6rem;
-  text-align: center;
 }
 
-.placeholder-feed,
-.placeholder-feedCollaborations {
+.placeholder--feed,
+.placeholder--feedCollaborations {
   color: var(--default-color-invert);
 
   button,
@@ -74,7 +128,7 @@
   }
 }
 
-.placeholder-feed {
+.placeholder--feed {
   background: #171032;
 
   .placeholderCover {
@@ -84,7 +138,7 @@
   }
 }
 
-.placeholder-feedCollaborations {
+.placeholder--feedCollaborations {
   background: #070709;
 
   .placeholderCover {
@@ -94,7 +148,7 @@
   }
 }
 
-.placeholder-feedDiscussions {
+.placeholder--feedDiscussions {
   background: #E9E9EE;
 
   .placeholderCover {
@@ -113,5 +167,47 @@
   .button {
     background: var(--background-color-invert);
     color: var(--default-color-invert);
+  }
+}
+
+
+.placeholder--author {
+  background: #E58B72;
+}
+
+.placeholder--authorComments {
+  background: #E9E9EE;
+
+  .placeholderCover {
+    img {
+      mix-blend-mode: multiply;
+    }
+  }
+}
+
+.bottomLinks {
+  display: flex;
+  @include font-size(1.6rem);
+  gap: 4rem;
+
+  a {
+    border: none !important;
+    padding-left: 2.6rem;
+    position: relative;
+
+    &:hover {
+      .icon {
+        filter: invert(0);
+      }
+    }
+  }
+
+  .icon {
+    filter: invert(1);
+    height: 1.8rem;
+    left: 0;
+    position: absolute;
+    transition: filter 0.2s;
+    width: 1.8rem;
   }
 }

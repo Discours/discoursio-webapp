@@ -235,7 +235,8 @@ export const FeedView = (props: Props) => {
         </div>
 
         <div class="col-md-12 offset-xl-1">
-          <Show when={author() || !sortedArticles().length} fallback={<Placeholder type={page().route} />}>
+          <Show when={author() || !sortedArticles().length}
+                fallback={<Placeholder type={page().route} mode="feed" />}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
                 <li

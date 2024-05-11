@@ -18,7 +18,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
   const { t } = useLocalize()
 
   return (
-    <Popup {...props} horizontalAnchor="right">
+    <Popup {...props} horizontalAnchor="right" popupCssClass={styles.profilePopup}>
       <ul class="nodash">
         <li>
           <a class={styles.action} href={getPagePath(router, 'author', { slug: author().slug })}>

@@ -538,5 +538,6 @@
   "Confirm your new password": "Confirm your new password",
   "Connect": "Connect",
   "Incorrect old password": "Incorrect old password",
-  "Repeat new password": "Repeat new password"
+  "Repeat new password": "Repeat new password",
+  "Incorrect new password confirm": "Incorrect new password confirm"
 }

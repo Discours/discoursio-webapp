@@ -39,6 +39,7 @@ export const ProfileSecurityPage = () => {
   }
   const [formData, setFormData] = createSignal(initialState)
   const oldPasswordRef: { current: HTMLDivElement } = { current: null }
+  const newPasswordRepeatRef: { current: HTMLDivElement } = { current: null }
 
   createEffect(
     on(
@@ -90,6 +91,14 @@ export const ProfileSecurityPage = () => {
   const handleCheckNewPassword = (value: string) => {
     handleInputChange('newPasswordConfirm', value)
     if (value !== formData()['newPassword']) {
+      const rect = newPasswordRepeatRef.current.getBoundingClientRect()
+      const topPosition = window.scrollY + rect.top - DEFAULT_HEADER_OFFSET * 2
+      window.scrollTo({
+        top: topPosition,
+        left: 0,
+        behavior: 'smooth',
+      })
+      showSnackbar({ type: 'error', body: t('Incorrect new password confirm') })
       setNewPasswordError(t('Passwords are not equal'))
     }
   }
@@ -118,6 +127,7 @@ export const ProfileSecurityPage = () => {
             left: 0,
             behavior: 'smooth',
           })
+          setIsFloatingPanelVisible(false)
         }
         return
       }
@@ -199,19 +209,21 @@ export const ProfileSecurityPage = () => {
                       />
 
                       <h5>{t('Confirm your new password')}</h5>
-                      <PasswordField
-                        noValidate={true}
-                        value={
-                          formData()['newPasswordConfirm']?.length > 0
-                            ? formData()['newPasswordConfirm']
-                            : null
-                        }
-                        onFocus={() => setNewPasswordError()}
-                        setError={newPasswordError()}
-                        onInput={(value) => handleCheckNewPassword(value)}
-                        disabled={isSubmitting()}
-                        disableAutocomplete={true}
-                      />
+                      <div ref={(el) => (newPasswordRepeatRef.current = el)}>
+                        <PasswordField
+                          noValidate={true}
+                          value={
+                            formData()['newPasswordConfirm']?.length > 0
+                              ? formData()['newPasswordConfirm']
+                              : null
+                          }
+                          onFocus={() => setNewPasswordError()}
+                          setError={newPasswordError()}
+                          onInput={(value) => handleCheckNewPassword(value)}
+                          disabled={isSubmitting()}
+                          disableAutocomplete={true}
+                        />
+                      </div>
                       <h4>{t('Social networks')}</h4>
                       <h5>Google</h5>
                       <div class="pretty-form__item">

@@ -565,5 +565,6 @@
   "Confirm your new password": "Подтвердите новый пароль",
   "Connect": "Привязать",
   "Incorrect old password": "Старый пароль не верен",
-  "Repeat new password": "Повторите новый пароль"
+  "Repeat new password": "Повторите новый пароль",
+  "Incorrect new password confirm": "Неверное подтверждение нового пароля"
 }

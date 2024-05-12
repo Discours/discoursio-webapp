@@ -13,6 +13,7 @@ import {
   LoginInput,
   ResendVerifyEmailInput,
   SignupInput,
+  UpdateProfileInput,
   VerifyEmailInput,
 } from '@authorizerdev/authorizer-js'
 import {
@@ -58,6 +59,7 @@ export type SessionContextType = {
   ) => void
   signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
   signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
+  updateProfile: (params: UpdateProfileInput) => Promise<{ data: AuthToken; errors: Error[] }>
   signOut: () => Promise<void>
   oauth: (provider: string) => Promise<void>
   forgotPassword: (
@@ -305,6 +307,8 @@ export const SessionProvider = (props: {
   }
   const signUp = async (params: SignupInput) => await authenticate(authorizer().signup, params)
   const signIn = async (params: LoginInput) => await authenticate(authorizer().login, params)
+  const updateProfile = async (params: UpdateProfileInput) =>
+    await authenticate(authorizer().updateProfile, params)
 
   const signOut = async () => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
@@ -381,6 +385,7 @@ export const SessionProvider = (props: {
     signIn,
     signOut,
     confirmEmail,
+    updateProfile,
     setIsSessionLoaded,
     setSession,
     setAuthor,

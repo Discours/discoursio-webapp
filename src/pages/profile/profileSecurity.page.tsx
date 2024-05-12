@@ -157,7 +157,7 @@ export const ProfileSecurityPage = () => {
                           name="email"
                           id="email"
                           disabled={isSubmitting()}
-                          value={formData()['email']}
+                          value={formData()['email'] || ''}
                           placeholder={t('Email')}
                           onFocus={() => setEmailError()}
                           onInput={(event) => handleChangeEmail(event.target.value)}

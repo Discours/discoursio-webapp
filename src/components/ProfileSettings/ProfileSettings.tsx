@@ -20,6 +20,8 @@ import { useLocalize } from '../../context/localize'
 import { useProfileForm } from '../../context/profile'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/snackbar'
+import { ProfileInput } from '../../graphql/schema/core.gen'
+import styles from '../../pages/profile/Settings.module.scss'
 import { hideModal, showModal } from '../../stores/ui'
 import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
@@ -35,14 +37,12 @@ import { Loading } from '../_shared/Loading'
 import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
 
-import styles from '../../pages/profile/Settings.module.scss'
-
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))
 
 export const ProfileSettings = () => {
   const { t } = useLocalize()
-  const [prevForm, setPrevForm] = createStore({})
+  const [prevForm, setPrevForm] = createStore<ProfileInput>({})
   const [isFormInitialized, setIsFormInitialized] = createSignal(false)
   const [isSaving, setIsSaving] = createSignal(false)
   const [social, setSocial] = createSignal([])
@@ -59,6 +59,7 @@ export const ProfileSettings = () => {
   const { showSnackbar } = useSnackbar()
   const { loadAuthor, session } = useSession()
   const { showConfirm } = useConfirm()
+  const [clearAbout, setClearAbout] = createSignal(false)
 
   createEffect(() => {
     if (Object.keys(form).length > 0 && !isFormInitialized()) {
@@ -121,7 +122,9 @@ export const ProfileSettings = () => {
       declineButtonVariant: 'secondary',
     })
     if (isConfirmed) {
+      setClearAbout(true)
       setForm(clone(prevForm))
+      setClearAbout(false)
     }
   }
 
@@ -171,11 +174,13 @@ export const ProfileSettings = () => {
     on(
       () => deepEqual(form, prevForm),
       () => {
-        setIsFloatingPanelVisible(!deepEqual(form, prevForm))
+        if (Object.keys(prevForm).length > 0) {
+          setIsFloatingPanelVisible(!deepEqual(form, prevForm))
+        }
       },
-      { defer: true },
     ),
   )
+
   const handleDeleteSocialLink = (link) => {
     updateFormField('links', link, true)
   }
@@ -317,6 +322,8 @@ export const ProfileSettings = () => {
 
                     <h4>{t('About')}</h4>
                     <SimplifiedEditor
+                      resetToInitial={clearAbout()}
+                      noLimits={true}
                       variant="bordered"
                       onlyBubbleControls={true}
                       smallHeight={true}

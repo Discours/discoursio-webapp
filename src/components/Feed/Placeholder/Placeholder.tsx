@@ -78,7 +78,7 @@ export const Placeholder = (props: PlaceholderProps) => {
       )}
     >
       <div class={styles.placeholderCover}>
-        <img src={`/public/${data[props.type].image}`} />
+        <img src={`/${data[props.type].image}`} />
       </div>
       <div class={styles.placeholderContent}>
         <div>

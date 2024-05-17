@@ -13,7 +13,8 @@
 
   &:hover {
     .shoutCardCover {
-      img {
+      img,
+      .placeholderCoverImage {
         transform: scale(1.1);
       }
     }
@@ -122,9 +123,13 @@
     height: 100%;
     object-fit: cover;
     position: absolute;
+    width: 100%;
+  }
+
+  img,
+  .placeholderCoverImage {
     transform: scale(1);
     transition: transform 0.3s;
-    width: 100%;
   }
 }
 

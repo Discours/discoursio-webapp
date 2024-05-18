@@ -127,7 +127,7 @@ export const Comment = (props: Props) => {
     <li
       id={`comment_${props.comment.id}`}
       class={clsx(styles.comment, props.class, {
-        [styles.isNew]: props.comment?.created_at > props.lastSeen,
+        [styles.isNew]: props.lastSeen > (props.comment.updated_at || props.comment.created_at),
       })}
     >
       <Show when={!!body()}>

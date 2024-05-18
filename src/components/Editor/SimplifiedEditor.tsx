@@ -48,11 +48,13 @@ type Props = {
   onChange?: (text: string) => void
   variant?: 'minimal' | 'bordered'
   maxLength?: number
+  noLimits?: boolean
   maxHeight?: number
   submitButtonText?: string
   quoteEnabled?: boolean
   imageEnabled?: boolean
   setClear?: boolean
+  resetToInitial?: boolean
   smallHeight?: boolean
   submitByCtrlEnter?: boolean
   onlyBubbleControls?: boolean
@@ -124,7 +126,7 @@ const SimplifiedEditor = (props: Props) => {
         openOnClick: false,
       }),
       CharacterCount.configure({
-        limit: maxLength,
+        limit: props.noLimits ? null : maxLength,
       }),
       Blockquote.configure({
         HTMLAttributes: {
@@ -215,6 +217,10 @@ const SimplifiedEditor = (props: Props) => {
   createEffect(() => {
     if (props.setClear) {
       editor().commands.clearContent(true)
+    }
+    if (props.resetToInitial) {
+      editor().commands.clearContent(true)
+      editor().commands.setContent(props.initialContent)
     }
   })
 

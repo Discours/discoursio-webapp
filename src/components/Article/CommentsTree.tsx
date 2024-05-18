@@ -11,6 +11,7 @@ import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 
 import { Comment } from './Comment'
 
+import { useSeen } from '../../context/seen'
 import styles from './Article.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
@@ -48,21 +49,20 @@ export const CommentsTree = (props: Props) => {
     }
     return newSortedComments
   })
-
-  const dateFromLocalStorage = Number.parseInt(localStorage.getItem(`${props.shoutSlug}`))
+  const { seen } = useSeen()
+  const shoutLastSeen = createMemo(() => seen()[props.shoutSlug] ?? 0)
   const currentDate = new Date()
   const setCookie = () => localStorage.setItem(`${props.shoutSlug}`, `${currentDate}`)
 
   onMount(() => {
-    if (!dateFromLocalStorage) {
+    if (!shoutLastSeen()) {
       setCookie()
-    } else if (currentDate.getTime() > dateFromLocalStorage) {
+    } else if (currentDate.getTime() > shoutLastSeen()) {
       const newComments = comments().filter((c) => {
         if (c.reply_to || c.created_by.slug === author()?.slug) {
           return
         }
-        const created = c.created_at
-        return created > dateFromLocalStorage
+        return (c.updated_at || c.created_at) > shoutLastSeen()
       })
       setNewReactions(newComments)
       setCookie()
@@ -134,7 +134,7 @@ export const CommentsTree = (props: Props) => {
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}
               clickedReplyId={clickedReplyId()}
-              lastSeen={dateFromLocalStorage}
+              lastSeen={shoutLastSeen()}
             />
           )}
         </For>

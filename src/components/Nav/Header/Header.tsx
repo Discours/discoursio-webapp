@@ -48,7 +48,7 @@ export const Header = (props: Props) => {
   const { page } = useRouter()
   const { requireAuthentication } = useSession()
   const { searchParams } = useRouter<HeaderSearchParams>()
-  const { topics } = useTopics()
+  const { sortedTopics: topics } = useTopics()
   const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -334,7 +334,7 @@ export const Header = (props: Props) => {
           <Show when={props.title}>
             <div
               class={clsx(styles.articleControls, 'col-auto', {
-                // FIXME: use or remove [styles.articleControlsAuthorized]: session()?.user?.id,
+                [styles.articleControlsAuthorized]: session()?.user?.id,
               })}
             >
               <SharePopup

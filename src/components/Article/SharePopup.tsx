@@ -28,7 +28,7 @@ export const SharePopup = (props: SharePopupProps) => {
   })
 
   return (
-    <Popup {...props} variant="bordered" onVisibilityChange={(value) => setIsVisible(value)}>
+    <Popup {...props} onVisibilityChange={(value) => setIsVisible(value)}>
       <ShareLinks
         variant="inPopup"
         title={props.title}

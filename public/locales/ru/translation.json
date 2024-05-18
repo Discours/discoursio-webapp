@@ -419,7 +419,7 @@
   "Top authors": "Рейтинг авторов",
   "Top commented": "Самое комментируемое",
   "Top discussed": "Обсуждаемое",
-  "Top month articles": "Лучшие материалы месяца",
+  "Top month": "Лучшее за месяц",
   "Top rated": "Популярное",
   "Top recent": "Самое новое",
   "Top topics": "Интересные темы",
@@ -559,5 +559,13 @@
   "It's OK. Just enter your email to receive a link to change your password": "Ничего страшного. Просто укажите свою почту, чтобы получить ссылку для смены пароля",
   "Restore password": "Восстановить пароль",
   "Subscribing...": "Подписываем...",
-  "Unsubscribing...": "Отписываем..."
+  "Unsubscribing...": "Отписываем...",
+  "Login and security": "Вход и безопасность",
+  "Settings for account, email, password and login methods.": "Настройки аккаунта, почты, пароля и способов входа.",
+  "Current password": "Текущий пароль",
+  "Confirm your new password": "Подтвердите новый пароль",
+  "Connect": "Привязать",
+  "Incorrect old password": "Старый пароль не верен",
+  "Repeat new password": "Повторите новый пароль",
+  "Incorrect new password confirm": "Неверное подтверждение нового пароля"
 }

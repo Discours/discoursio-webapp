@@ -1,7 +1,7 @@
 import ssrPlugin from 'vike/plugin'
 import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
 import solidPlugin from 'vite-plugin-solid'
 

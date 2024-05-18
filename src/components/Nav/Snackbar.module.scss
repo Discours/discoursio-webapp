@@ -3,7 +3,10 @@
   color: #fff;
   font-size: 2rem;
   font-weight: 500;
+  left: 0;
   transition: background-color 0.3s;
+  position: absolute;
+  width: 100%;
 
   &.error {
     background-color: #d00820;

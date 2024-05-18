@@ -34,7 +34,7 @@ export const HeaderAuth = (props: Props) => {
   const { page } = useRouter()
   const { session, author, isSessionLoaded } = useSession()
   const { unreadNotificationsCount, showNotificationsPanel } = useNotifications()
-  const { form, toggleEditorPanel, saveShout, publishShout } = useEditorContext()
+  const { form, toggleEditorPanel, publishShout } = useEditorContext()
 
   const handleBellIconClick = (event: Event) => {
     event.preventDefault()
@@ -57,10 +57,6 @@ export const HeaderAuth = (props: Props) => {
 
   const handleBurgerButtonClick = () => {
     toggleEditorPanel()
-  }
-
-  const _handleSaveButtonClick = () => {
-    saveShout(form)
   }
 
   const [width, setWidth] = createSignal(0)
@@ -150,7 +146,6 @@ export const HeaderAuth = (props: Props) => {
                     {editorMode()}
                   </span>
                 }
-                variant="bordered"
                 popupCssClass={styles.editorPopup}
               >
                 <ul class={clsx('nodash', styles.editorModesList)}>
@@ -239,7 +234,12 @@ export const HeaderAuth = (props: Props) => {
               }
             >
               <Show when={!isSaveButtonVisible()}>
-                <div class={clsx(styles.userControlItem, styles.userControlItemInbox)}>
+                <div
+                  class={clsx(
+                    styles.userControlItem,
+                    // styles.userControlItemInbox
+                  )}
+                >
                   <a href={getPagePath(router, 'inbox')}>
                     <div classList={{ entered: page().path === '/inbox' }}>
                       <Icon name="inbox-white" class={styles.icon} />

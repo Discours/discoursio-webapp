@@ -46,7 +46,7 @@ export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
   const { modal } = useModalStore()
   const { page } = useRouter()
-  const { requireAuthentication } = useSession()
+  const { requireAuthentication, session } = useSession()
   const { searchParams } = useRouter<HeaderSearchParams>()
   const { sortedTopics: topics } = useTopics()
   const [randomTopics, setRandomTopics] = createSignal([])

@@ -225,9 +225,12 @@ export const SessionProvider = (props: {
           const appdata = session()?.user.app_data
           if (appdata) {
             const { profile } = appdata
-            setAuthor(profile)
-            addAuthors([profile])
-            if (!profile) loadAuthor()
+            if (profile?.id) {
+              setAuthor(profile)
+              addAuthors([profile])
+            } else {
+              setTimeout(loadAuthor, 15)
+            }
           }
         } catch (e) {
           console.error(e)

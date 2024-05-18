@@ -61,7 +61,12 @@ export const SendResetLinkForm = () => {
         redirect_uri: window.location.origin,
       })
       console.debug('[SendResetLinkForm] authorizer response:', data)
-      if (errors?.some((error) => error.message.includes('bad user credentials'))) {
+      if (
+        errors?.some(
+          (error) =>
+            error.message.includes('bad user credentials') || error.message.includes('user not found'),
+        )
+      ) {
         setIsUserNotFound(true)
       }
       if (data.message) setMessage(data.message)

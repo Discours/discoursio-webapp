@@ -13,8 +13,6 @@ import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { Button } from '../../_shared/Button'
 import { DarkModeToggle } from '../../_shared/DarkModeToggle'
 import { Icon } from '../../_shared/Icon'
-
-import { useSnackbar } from '../../../context/snackbar'
 import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
@@ -25,8 +23,16 @@ type Props = {
 
 export const Panel = (props: Props) => {
   const { t } = useLocalize()
-  const { isEditorPanelVisible, wordCounter, editorRef, form, toggleEditorPanel, saveShout, publishShout } =
-    useEditorContext()
+  const {
+    isEditorPanelVisible,
+    wordCounter,
+    editorRef,
+    form,
+    toggleEditorPanel,
+    saveShout,
+    saveDraft,
+    publishShout,
+  } = useEditorContext()
 
   const containerRef: { current: HTMLElement } = { current: null }
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
@@ -45,7 +51,12 @@ export const Panel = (props: Props) => {
   })
 
   const handleSaveClick = () => {
-    saveShout(form)
+    const hasTopics = form.selectedTopics?.length > 0
+    if (hasTopics) {
+      saveShout(form)
+    } else {
+      saveDraft(form)
+    }
   }
 
   const html = useEditorHTML(() => editorRef.current())

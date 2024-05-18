@@ -2,13 +2,12 @@ import type { PageProps } from './types'
 
 import { Show, createSignal, onCleanup, onMount } from 'solid-js'
 
-import { HomeView, PRERENDERED_ARTICLES_COUNT, RANDOM_TOPICS_COUNT } from '../components/Views/Home'
+import { HomeView, PRERENDERED_ARTICLES_COUNT } from '../components/Views/Home'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 import { loadShouts, resetSortedArticles } from '../stores/zine/articles'
-import { loadRandomTopics } from '../stores/zine/topics'
 
 export const HomePage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal(Boolean(props.homeShouts))
@@ -19,10 +18,7 @@ export const HomePage = (props: PageProps) => {
       return
     }
 
-    await Promise.all([
-      loadShouts({ filters: { featured: true }, limit: PRERENDERED_ARTICLES_COUNT }),
-      loadRandomTopics({ amount: RANDOM_TOPICS_COUNT }),
-    ])
+    await loadShouts({ filters: { featured: true }, limit: PRERENDERED_ARTICLES_COUNT })
 
     setIsLoaded(true)
   })

@@ -61,10 +61,10 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
           if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
             setConnected(true)
           } else if (response.status === 401) {
-            throw new Error('unauthorized')
+            throw new Error('SSE: cannot connect to real-time updates')
           } else {
             setRetried((r) => r + 1)
-            throw new Error('Internal Error')
+            throw new Error(`SSE: failed to connect ${retried()} times`)
           }
         },
         onclose() {

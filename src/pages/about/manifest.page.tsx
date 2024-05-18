@@ -1,4 +1,4 @@
-import { Meta } from '@solidjs/meta'
+import { Meta } from '../../context/meta'
 
 import { Feedback } from '../../components/Discours/Feedback'
 import { Modal } from '../../components/Nav/Modal'

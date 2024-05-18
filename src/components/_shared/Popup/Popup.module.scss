@@ -8,10 +8,14 @@
 
 .popup {
   background: var(--background-color);
+  border: 1px solid rgb(0 0 0 / 15%);
+  border-radius: 1.6rem;
+  box-shadow: 0 8px 16px 0 rgb(0 0 0 / 5%);
   color: var(--default-color);
   cursor: default;
   min-width: 144px;
   opacity: 1;
+  overflow: hidden;
   position: absolute;
   text-align: left;
   top: calc(100% + 11px);
@@ -21,22 +25,8 @@
     margin-bottom: 0;
 
     li {
+      margin: 0;
       position: relative;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  &.bordered {
-    @include font-size(1.6rem);
-
-    border: 2px solid #000;
-    padding: 2.4rem;
-
-    ul li {
-      margin-bottom: 1.6rem;
 
       &:last-child {
         margin-bottom: 0;
@@ -47,15 +37,16 @@
   &.tiny {
     @include font-size(1.4rem);
 
-    box-shadow: 0 4px 60px rgb(0 0 0 / 10%);
-    padding: 1rem;
+    .action {
+      padding: 0.5rem 1rem;
+    }
 
-    ul li {
-      margin-bottom: 1rem;
+    li:first-child .action {
+      padding-top: 1rem;
+    }
 
-      &:last-child {
-        margin-bottom: 0;
-      }
+    li:last-child .action {
+      padding-bottom: 1rem;
     }
   }
 
@@ -75,7 +66,6 @@
 
   .topBorderItem {
     border-top: 2px solid;
-    padding-top: 1em;
   }
 
   a:link,
@@ -83,25 +73,63 @@
     border: none;
     white-space: nowrap;
 
-    &:hover {
-      .icon img {
-        filter: invert(0);
-      }
+    &::before {
+      content: '';
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
     }
   }
 
   .icon {
     display: inline-block;
-    width: 3.6rem;
+    margin-right: 1rem;
+    width: 2.4rem;
 
     img {
       display: inline-block;
-      filter: invert(1);
-      max-height: 2rem;
-      max-width: 2rem;
+      max-height: 2.4rem;
+      max-width: 2.4rem;
       transition: filter 0.3s;
       vertical-align: middle;
     }
+  }
+
+  .action {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 16px;
+    font-size: inherit;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--black-500);
+      color: var(--black-50) !important;
+
+      .icon img {
+        filter: invert(1);
+      }
+    }
+  }
+
+  li:first-child .action {
+    padding-top: 16px;
+  }
+
+  li:last-child .action {
+    padding-bottom: 16px;
+  }
+}
+
+.profilePopup {
+  @include media-breakpoint-up(sm) {
+    min-width: 22rem;
   }
 }
 

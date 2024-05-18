@@ -1,8 +1,8 @@
 import { getPagePath } from '@nanostores/router'
-import { For, Show, batch, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
-import { apiClient } from '../../graphql/client/core'
+import { useTopics } from '../../context/topics'
 import { Shout, Topic } from '../../graphql/schema/core.gen'
 import { router } from '../../stores/router'
 import {
@@ -12,7 +12,6 @@ import {
   useArticlesStore,
 } from '../../stores/zine/articles'
 import { useTopAuthorsStore } from '../../stores/zine/topAuthors'
-import { useTopicsStore } from '../../stores/zine/topics'
 import { capitalize } from '../../utils/capitalize'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
@@ -47,13 +46,13 @@ export const HomeView = (props: Props) => {
       shouts: props.shouts,
     })
 
-  const { topTopics } = useTopicsStore()
+  const { topTopics } = useTopics()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const { topAuthors } = useTopAuthorsStore()
   const { t } = useLocalize()
 
-  const [randomTopic, setRandomTopic] = createSignal<Topic>(null)
-  const [randomTopicArticles, setRandomTopicArticles] = createSignal<Shout[]>([])
+  const [randomTopic, _setRandomTopic] = createSignal<Topic>(null)
+  const [randomTopicArticles, _setRandomTopicArticles] = createSignal<Shout[]>([])
 
   onMount(async () => {
     loadTopArticles()
@@ -111,7 +110,7 @@ export const HomeView = (props: Props) => {
           nodate={true}
         />
         <Show when={topMonthArticles()}>
-          <ArticleCardSwiper title={t('Top month articles')} slides={topMonthArticles()} />
+          <ArticleCardSwiper title={t('Top month')} slides={topMonthArticles()} />
         </Show>
         <Row2 articles={sortedArticles().slice(10, 12)} nodate={true} />
         <RowShort articles={sortedArticles().slice(12, 16)} />

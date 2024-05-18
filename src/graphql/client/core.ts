@@ -1,6 +1,5 @@
 import type {
   Author,
-  AuthorFollowsResult,
   CommonResult,
   FollowingEntity,
   LoadShoutsOptions,
@@ -134,7 +133,7 @@ export const apiClient = {
     slug?: string
     author_id?: number
     user?: string
-  }): Promise<AuthorFollowsResult> => {
+  }): Promise<CommonResult> => {
     const response = await publicGraphQLClient.query(authorFollows, params).toPromise()
     return response.data.get_author_follows
   },
@@ -175,7 +174,7 @@ export const apiClient = {
     console.debug('[graphql.client.core] deleteShout:', response)
   },
 
-  getDrafts: async (): Promise<Shout[]> => {
+  getDrafts: async (): Promise<CommonResult> => {
     const response = await apiClient.private.query(draftsLoad, {}).toPromise()
     console.debug('[graphql.client.core] getDrafts:', response)
     return response.data.get_shouts_drafts

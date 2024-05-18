@@ -1,4 +1,4 @@
-import { Meta } from '@solidjs/meta'
+import { Meta } from '../../context/meta'
 
 import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'

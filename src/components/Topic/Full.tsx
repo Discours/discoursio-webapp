@@ -1,7 +1,7 @@
-import type { Topic } from '../../graphql/schema/core.gen'
+import type { Author, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal } from 'solid-js'
+import { For, Show, createEffect, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
@@ -11,10 +11,13 @@ import { Button } from '../_shared/Button'
 
 import { Icon } from '../_shared/Icon'
 import { Subscribers } from '../_shared/Subscribers'
+import stylesCard from '../Author/AuthorCard/AuthorCard.module.scss'
+import { Userpic } from '../Author/Userpic'
 import styles from './Full.module.scss'
 
 type Props = {
   topic: Topic
+  followers?: Author[]
 }
 
 export const FullTopic = (props: Props) => {
@@ -69,7 +72,7 @@ export const FullTopic = (props: Props) => {
         </a>
       </div>
       <Show when={props.topic?.pic}>
-        <img src={props.topic.pic} alt={props.topic?.title} />
+        <img src={props.topic?.pic} alt={props.topic?.title} />
       </Show>
     </div>
   )

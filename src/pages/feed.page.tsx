@@ -1,6 +1,5 @@
 import { Match, Switch, createEffect, on, onCleanup } from 'solid-js'
 
-import { AuthGuard } from '../components/AuthGuard'
 import { Feed } from '../components/Views/Feed'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
@@ -48,9 +47,7 @@ export const FeedPage = () => {
             <Feed loadShouts={handleFeedLoadShouts} />
           </Match>
           <Match when={page().route === 'feedMy'}>
-            <AuthGuard>
-              <Feed loadShouts={handleMyFeedLoadShouts} />
-            </AuthGuard>
+            <Feed loadShouts={handleMyFeedLoadShouts} />
           </Match>
         </Switch>
       </ReactionsProvider>

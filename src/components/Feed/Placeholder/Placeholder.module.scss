@@ -17,6 +17,7 @@
     display: flex;
     @include font-size(1.5rem);
     gap: 0.6rem;
+    justify-content: center;
     margin-top: 3rem;
     padding: 1rem 2rem;
     width: 100%;
@@ -29,45 +30,62 @@
 }
 
 .placeholder--feed-mode {
-  aspect-ratio: 1 / 0.8;
   flex-direction: column;
+  min-height: 40rem;
   text-align: center;
 
-  &:after {
-    bottom: 0;
-    content: '';
-    height: 20%;
-    left: 0;
-    position: absolute;
-    width: 100%;
-
-    .placeholder--feed & {
-      background: linear-gradient(to top, #171032, rgba(23, 16, 50, 0));
-    }
-
-    .placeholder--feedCollaborations & {
-      background: linear-gradient(to top, #070709, rgba(7, 7, 9, 0));
-    }
+  @include media-breakpoint-up(lg) {
+    aspect-ratio: 1 / 0.8;
   }
 
   .placeholderCover {
-    flex: 0 100%;
-    width: 100%;
+    flex: 1 100%;
+    position: relative;
+
+    &:after {
+      bottom: 0;
+      content: '';
+      height: 20%;
+      left: 0;
+      position: absolute;
+      width: 100%;
+    }
 
     img {
       position: absolute;
     }
   }
+
+  &.placeholder--feedMy .placeholderCover:after {
+    background: linear-gradient(to top, #171032, rgba(23, 16, 50, 0));
+  }
+
+  &.placeholder--feedCollaborations .placeholderCover:after {
+    background: linear-gradient(to top, #070709, rgba(7, 7, 9, 0));
+  }
 }
 
 .placeholder--profile-mode {
-  min-height: 28rem;
+  min-height: 40rem;
+
+  @include media-breakpoint-down(md) {
+    display: block;
+  }
+
+  @include media-breakpoint-up(md) {
+    min-height: 28rem;
+  }
 
   .placeholderCover {
-    flex: 0 45rem;
-    min-width: 45rem;
-    order: 2;
     padding: 1.6rem;
+
+    @include media-breakpoint-up(md) {
+      flex: 0 45rem;
+      min-width: 50%;
+      order: 2;
+      position: static;
+      width: 45rem;
+    }
 
     img {
       height: auto;
@@ -92,9 +110,15 @@
     background: var(--background-color-invert);
     color: var(--default-color-invert);
     bottom: 2rem;
-    position: absolute;
+    left: 2rem;
     right: 2rem;
-    width: auto;
+    width: 100%;
+
+    @include media-breakpoint-up(md) {
+      left: auto;
+      position: absolute;
+      width: auto;
+    }
 
     .icon {
       filter: invert(1);
@@ -117,7 +141,7 @@
   padding: 1.6rem;
 }
 
-.placeholder--feed,
+.placeholder--feedMy,
 .placeholder--feedCollaborations {
   color: var(--default-color-invert);
 
@@ -128,7 +152,7 @@
   }
 }
 
-.placeholder--feed {
+.placeholder--feedMy {
   background: #171032;
 
   .placeholderCover {
@@ -189,6 +213,11 @@
   display: flex;
   @include font-size(1.6rem);
   gap: 4rem;
+
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+    gap: 1.4rem;
+  }
 
   a {
     border: none !important;

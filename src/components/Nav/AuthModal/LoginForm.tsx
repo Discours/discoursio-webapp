@@ -96,27 +96,30 @@ export const LoginForm = () => {
     try {
       const { errors } = await signIn({ email: email(), password: password() })
       if (errors?.length > 0) {
-        console.error('[signIn errors]', errors)
-        if (errors.some((error) => error.message.includes('user has not signed up email & password'))) {
-          setValidationErrors((prev) => ({
-            ...prev,
-            password: t('Something went wrong, check email and password'),
-          }))
-        } else if (errors.some((error) => error.message.includes('user not found'))) {
-          setSubmitError(t('User was not found'))
-        } else if (errors.some((error) => error.message.includes('email not verified'))) {
+        console.warn('[signIn] errors: ', errors)
+        let msg = ''
+        if (errors.some((error) => error.message === 'user has not signed up email & password')) {
+          const password = t('Something went wrong, check email and password')
+          setValidationErrors((prev) => ({ ...prev, password }))
+        } else if (errors.some((error) => error.message === 'user not found')) {
+          msg = t('User was not found')
+        } else if (errors.some((error) => error.message === 'email not verified')) {
+          msg = t('This email is not verified')
+        } else {
+          msg = t('Error', errors[0].message)
+        }
+
+        msg &&
           setSubmitError(
             <div class={styles.info}>
-              {t('This email is not verified')}
+              {msg}
               {'. '}
               <span class={'link'} onClick={handleSendLinkAgainClick}>
                 {t('Send link again')}
               </span>
             </div>,
           )
-        } else {
-          setSubmitError(t('Error', errors[0].message))
-        }
+
         return
       }
       hideModal()

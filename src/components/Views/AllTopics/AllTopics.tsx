@@ -1,13 +1,11 @@
 import type { Topic } from '../../../graphql/schema/core.gen'
 
-import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
-
-import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
+import { Meta } from '../../../context/meta'
+import { useTopics } from '../../../context/topics'
 import { useRouter } from '../../../stores/router'
-import { setTopicsSort, useTopicsStore } from '../../../stores/zine/topics'
 import { capitalize } from '../../../utils/capitalize'
 import { dummyFilter } from '../../../utils/dummyFilter'
 import { getImageUrl } from '../../../utils/getImageUrl'
@@ -35,11 +33,7 @@ export const AllTopics = (props: Props) => {
   const [limit, setLimit] = createSignal(PAGE_SIZE)
   const ALPHABET =
     lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ#']
-
-  const { sortedTopics } = useTopicsStore({
-    topics: props.topics,
-    sortBy: searchParams().by || 'shouts',
-  })
+  const { sortedTopics, setTopicsSort } = useTopics()
 
   createEffect(() => {
     if (!searchParams().by) {
@@ -82,7 +76,7 @@ export const AllTopics = (props: Props) => {
 
   const AllTopicsHead = () => (
     <div class="row">
-      <div class="col-lg-20 col-xl-18">
+      <div class="col-lg-18 col-xl-15">
         <h1>{t('Topics')}</h1>
         <p>{t('Subscribe what you like to tune your personal feed')}</p>
 
@@ -131,7 +125,7 @@ export const AllTopics = (props: Props) => {
 
             <Show when={filteredResults().length > 0}>
               <Show when={searchParams().by === 'title'}>
-                <div class="col-lg-20 col-xl-18">
+                <div class="col-lg-18 col-xl-15">
                   <ul class={clsx('nodash', styles.alphabet)}>
                     <For each={ALPHABET}>
                       {(letter, index) => (
@@ -182,7 +176,7 @@ export const AllTopics = (props: Props) => {
 
               <Show when={searchParams().by && searchParams().by !== 'title'}>
                 <div class="row">
-                  <div class="col-lg-20 col-xl-18 py-4">
+                  <div class="col-lg-18 col-xl-15 py-4">
                     <For each={filteredResults().slice(0, limit())}>
                       {(topic) => (
                         <>

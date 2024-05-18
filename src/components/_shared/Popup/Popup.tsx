@@ -14,7 +14,7 @@ export type PopupProps = {
   children: JSX.Element
   onVisibilityChange?: (isVisible: boolean) => void
   horizontalAnchor?: HorizontalAnchor
-  variant?: 'bordered' | 'tiny'
+  variant?: 'tiny'
   closePopup?: boolean
 }
 
@@ -54,7 +54,6 @@ export const Popup = (props: PopupProps) => {
           class={clsx(styles.popup, props.popupCssClass, {
             [styles.horizontalAnchorCenter]: horizontalAnchor === 'center',
             [styles.horizontalAnchorRight]: horizontalAnchor === 'right',
-            [styles.bordered]: props.variant === 'bordered',
             [styles.tiny]: props.variant === 'tiny',
           })}
         >

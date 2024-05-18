@@ -60,7 +60,7 @@ export const Draft = (props: Props) => {
       <div class={styles.actions}>
         <a
           class={styles.actionItem}
-          href={getPagePath(router, 'edit', { shoutId: props.shout.id.toString() })}
+          href={getPagePath(router, 'edit', { shoutId: props.shout?.id.toString() })}
         >
           {t('Edit')}
         </a>

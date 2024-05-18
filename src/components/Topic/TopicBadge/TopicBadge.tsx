@@ -48,7 +48,7 @@ export const TopicBadge = (props: Props) => {
     lang() === 'en' ? capitalize(props.topic.slug.replaceAll('-', ' ')) : props.topic.title
 
   return (
-    <div class={clsx(styles.TopicBadge, props.subscriptionsMode)}>
+    <div class={clsx(styles.TopicBadge, { [styles.TopicBadgeSubscriptionsMode]: props.subscriptionsMode })}>
       <div class={styles.content}>
         <div class={styles.basicInfo}>
           <Show when={props.subscriptionsMode}>

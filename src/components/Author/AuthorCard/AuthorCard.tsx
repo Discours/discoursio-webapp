@@ -65,7 +65,7 @@ export const AuthorCard = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, 'inbox')
       changeSearchParams({
-        initChat: props.author.id.toString(),
+        initChat: props.author?.id.toString(),
       })
     }, 'discussions')
   }

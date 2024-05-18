@@ -329,7 +329,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <Popover content={t('Edit')} disabled={isActionPopupActive()}>
                   {(triggerRef: (el) => void) => (
                     <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
-                      <a href={getPagePath(router, 'edit', { shoutId: props.article.id.toString() })}>
+                      <a href={getPagePath(router, 'edit', { shoutId: props.article?.id.toString() })}>
                         <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
                         <Icon
                           name="pencil-outline-hover"

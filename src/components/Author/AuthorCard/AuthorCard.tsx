@@ -43,7 +43,7 @@ export const AuthorCard = (props: Props) => {
   })
 
   createEffect(() => {
-    if (!subscriptions || !props.author) return
+    if (!(subscriptions && props.author)) return
     const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
     setIsSubscribed(subscribed)
   })
@@ -65,7 +65,7 @@ export const AuthorCard = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, 'inbox')
       changeSearchParams({
-        initChat: props.author.id.toString(),
+        initChat: props.author?.id.toString(),
       })
     }, 'discussions')
   }

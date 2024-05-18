@@ -1,10 +1,19 @@
+import { createLazyMemo } from '@solid-primitives/memo'
 import { openDB } from 'idb'
-import { Accessor, JSX, createContext, createSignal, onMount, useContext } from 'solid-js'
+import { Accessor, JSX, createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { apiClient } from '../graphql/client/core'
 import { Topic } from '../graphql/schema/core.gen'
+import { useRouter } from '../stores/router'
+import { byTopicStatDesc } from '../utils/sortby'
 
 type TopicsContextType = {
-  topics: Accessor<Topic[]>
+  topicEntities: Accessor<{ [topicSlug: string]: Topic }>
+  sortedTopics: Accessor<Topic[]>
+  randomTopics: Accessor<Topic[]>
+  topTopics: Accessor<Topic[]>
+  setTopicsSort: (sortBy: string) => void
+  addTopics: (topics: Topic[]) => void
+  loadTopics: () => Promise<Topic[]>
 }
 
 const TopicsContext = createContext<TopicsContextType>()
@@ -28,8 +37,10 @@ const setupIndexedDB = async () => {
 const getTopicsFromIndexedDB = async (db) => {
   const tx = db.transaction(STORE_NAME, 'readonly')
   const store = tx.objectStore(STORE_NAME)
-  return store.getAll()
+  const topics = await store.getAll()
+  return { topics, timestamp: tx.done }
 }
+
 const saveTopicsToIndexedDB = async (db, topics) => {
   const tx = db.transaction(STORE_NAME, 'readwrite')
   const store = tx.objectStore(STORE_NAME)
@@ -40,20 +51,93 @@ const saveTopicsToIndexedDB = async (db, topics) => {
 }
 
 export const TopicsProvider = (props: { children: JSX.Element }) => {
+  const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
+  const [sortAllBy, setSortAllBy] = createSignal<'shouts' | 'followers' | 'authors' | 'title'>('shouts')
   const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
+
+  const sortedTopics = createLazyMemo<Topic[]>(() => {
+    const topics = Object.values(topicEntities())
+    const { changeSearchParams } = useRouter()
+    switch (sortAllBy()) {
+      case 'followers': {
+        topics.sort(byTopicStatDesc('followers'))
+        break
+      }
+      case 'shouts': {
+        topics.sort(byTopicStatDesc('shouts'))
+        break
+      }
+      case 'authors': {
+        topics.sort(byTopicStatDesc('authors'))
+        break
+      }
+      case 'title': {
+        topics.sort((a, b) => a.title.localeCompare(b.title))
+        break
+      }
+      default: {
+        topics.sort(byTopicStatDesc('shouts'))
+        changeSearchParams({ by: 'shouts' })
+      }
+    }
+
+    return topics
+  })
+
+  const topTopics = createMemo(() => {
+    const topics = Object.values(topicEntities())
+    topics.sort(byTopicStatDesc('shouts'))
+    return topics
+  })
+
+  const addTopics = (...args: Topic[][]) => {
+    const allTopics = args.flatMap((topics) => (topics || []).filter(Boolean))
+
+    const newTopicEntities = allTopics.reduce(
+      (acc, topic) => {
+        acc[topic.slug] = topic
+        return acc
+      },
+      {} as Record<string, Topic>,
+    )
+
+    setTopicEntities((prevTopicEntities) => {
+      return {
+        ...prevTopicEntities,
+        ...newTopicEntities,
+      }
+    })
+  }
+  const [db, setDb] = createSignal()
+  const loadTopics = async () => {
+    const ttt = await apiClient.getAllTopics()
+    await saveTopicsToIndexedDB(db(), ttt)
+    return ttt
+  }
 
   onMount(async () => {
     const db = await setupIndexedDB()
-    let topics = await getTopicsFromIndexedDB(db)
+    setDb(db)
+    let { topics, timestamp } = await getTopicsFromIndexedDB(db)
 
-    if (topics.length === 0) {
-      topics = await apiClient.getAllTopics()
-      await saveTopicsToIndexedDB(db, topics)
+    if (topics.length < 100 || Date.now() - timestamp > 3600000) {
+      const newTopics = await loadTopics()
+      await saveTopicsToIndexedDB(db, newTopics)
+      topics = newTopics
     }
+    addTopics(topics)
     setRandomTopics(topics)
   })
 
-  const value: TopicsContextType = { topics: randomTopics }
+  const value: TopicsContextType = {
+    setTopicsSort: setSortAllBy,
+    topicEntities,
+    sortedTopics,
+    randomTopics,
+    topTopics,
+    addTopics,
+    loadTopics,
+  }
 
   return <TopicsContext.Provider value={value}>{props.children}</TopicsContext.Provider>
 }

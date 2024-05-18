@@ -1,17 +1,17 @@
 import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
 
 import { getPagePath } from '@nanostores/router'
-import { Meta, Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
+import { Meta, Title } from '../../../context/meta'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
 import { router, useRouter } from '../../../stores/router'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
-import { loadAuthor, useAuthorsStore } from '../../../stores/zine/authors'
+import { loadAuthor } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
@@ -39,10 +39,9 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { subscriptions, followers: myFollowers, loadSubscriptions } = useFollowing()
+  const { followers: myFollowers } = useFollowing()
   const { session } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
-  const { authorEntities } = useAuthorsStore({ authors: [props.author] })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -244,7 +243,7 @@ export const AuthorView = (props: Props) => {
                   class={styles.longBio}
                   classList={{ [styles.longBioExpanded]: isBioExpanded() }}
                 >
-                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author().about} />
+                  <div ref={(el) => (bioContainerRef.current = el)} innerHTML={author()?.about || ''} />
                 </div>
 
                 <Show when={showExpandBioControl()}>

@@ -1,5 +1,3 @@
-import { Buffer } from 'buffer'
-
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'
 
@@ -9,6 +7,7 @@ import { composeMediaItems } from '../../../utils/composeMediaItems'
 import { AudioPlayer } from '../../Article/AudioPlayer'
 import { DropArea } from '../../_shared/DropArea'
 
+// import { Buffer } from 'node:buffer'
 import styles from './AudioUploader.module.scss'
 
 window.Buffer = Buffer

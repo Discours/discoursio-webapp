@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -37,7 +37,7 @@ export const AuthorBadge = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
 
   createEffect(() => {
-    if (!subscriptions || !props.author) return
+    if (!(subscriptions && props.author)) return
     const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
     setIsSubscribed(subscribed)
   })
@@ -46,7 +46,6 @@ export const AuthorBadge = (props: Props) => {
     setIsMobileView(!mediaMatches.sm)
   })
 
-  const { setFollowing } = useFollowing()
   const { changeSearchParams } = useRouter()
   const { t, formatDate, lang } = useLocalize()
 
@@ -55,7 +54,7 @@ export const AuthorBadge = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, 'inbox')
       changeSearchParams({
-        initChat: props.author.id.toString(),
+        initChat: props.author?.id.toString(),
       })
     }, 'discussions')
   }
@@ -119,6 +118,9 @@ export const AuthorBadge = (props: Props) => {
               <div class={styles.bio}>
                 <Show when={props.author?.stat.shouts > 0}>
                   <div>{t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}</div>
+                </Show>
+                <Show when={props.author?.stat.comments > 0}>
+                  <div>{t('CommentsWithCount', { count: props.author.stat?.comments ?? 0 })}</div>
                 </Show>
                 <Show when={props.author?.stat.followers > 0}>
                   <div>{t('FollowersWithCount', { count: props.author.stat?.followers ?? 0 })}</div>

@@ -1,6 +1,7 @@
 import { Shout } from '../graphql/schema/core.gen'
 
 const MAX_DESCRIPTION_LENGTH = 150
+
 export const getDescription = (body: string): string => {
   if (!body) {
     return ''

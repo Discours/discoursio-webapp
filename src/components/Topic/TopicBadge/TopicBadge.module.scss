@@ -46,8 +46,9 @@
   .info {
     @include font-size(1.4rem);
     border: none;
-    //display: flex;
-    //flex-direction: column;
+
+    // display: flex;
+    // flex-direction: column;
 
     &:hover {
       background: unset;

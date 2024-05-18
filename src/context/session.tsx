@@ -13,6 +13,7 @@ import {
   LoginInput,
   ResendVerifyEmailInput,
   SignupInput,
+  UpdateProfileInput,
   VerifyEmailInput,
 } from '@authorizerdev/authorizer-js'
 import {
@@ -48,7 +49,6 @@ export type SessionContextType = {
   author: Resource<Author | null>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
-  isAuthenticated: Accessor<boolean>
   loadSession: () => AuthToken | Promise<AuthToken>
   setSession: (token: AuthToken | null) => void // setSession
   loadAuthor: (info?: unknown) => Author | Promise<Author>
@@ -59,6 +59,7 @@ export type SessionContextType = {
   ) => void
   signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
   signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
+  updateProfile: (params: UpdateProfileInput) => Promise<{ data: AuthToken; errors: Error[] }>
   signOut: () => Promise<void>
   oauth: (provider: string) => Promise<void>
   forgotPassword: (
@@ -72,6 +73,7 @@ export type SessionContextType = {
   resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
+// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
 const noop = () => {}
 
 const SessionContext = createContext<SessionContextType>()
@@ -223,9 +225,12 @@ export const SessionProvider = (props: {
           const appdata = session()?.user.app_data
           if (appdata) {
             const { profile } = appdata
-            setAuthor(profile)
-            addAuthors([profile])
-            if (!profile) loadAuthor()
+            if (profile?.id) {
+              setAuthor(profile)
+              addAuthors([profile])
+            } else {
+              setTimeout(loadAuthor, 15)
+            }
           }
         } catch (e) {
           console.error(e)
@@ -270,12 +275,9 @@ export const SessionProvider = (props: {
 
   // callback state updater
   createEffect(
-    on(
-      () => props.onStateChangeCallback,
-      () => {
-        props.onStateChangeCallback(session())
-      },
-    ),
+    on([() => props.onStateChangeCallback, session], ([_, ses]) => {
+      ses?.user?.id && props.onStateChangeCallback(ses)
+    }),
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
@@ -308,6 +310,8 @@ export const SessionProvider = (props: {
   }
   const signUp = async (params: SignupInput) => await authenticate(authorizer().signup, params)
   const signIn = async (params: LoginInput) => await authenticate(authorizer().login, params)
+  const updateProfile = async (params: UpdateProfileInput) =>
+    await authenticate(authorizer().updateProfile, params)
 
   const signOut = async () => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
@@ -377,9 +381,6 @@ export const SessionProvider = (props: {
       console.warn(error)
     }
   }
-
-  const isAuthenticated = createMemo(() => Boolean(author()))
-
   const actions = {
     loadSession,
     requireAuthentication,
@@ -387,6 +388,7 @@ export const SessionProvider = (props: {
     signIn,
     signOut,
     confirmEmail,
+    updateProfile,
     setIsSessionLoaded,
     setSession,
     setAuthor,
@@ -404,7 +406,6 @@ export const SessionProvider = (props: {
     isSessionLoaded,
     author,
     ...actions,
-    isAuthenticated,
     resendVerifyEmail,
   }
 

@@ -2,6 +2,7 @@ import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import { Accessor, Show, createMemo, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { throttle } from 'throttle-debounce'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
@@ -41,7 +42,9 @@ export const EMPTY_TOPIC: Topic = {
   slug: '',
 }
 
+const THROTTLING_INTERVAL = 2000
 const AUTO_SAVE_INTERVAL = 5000
+const AUTO_SAVE_DELAY = 5000
 const handleScrollTopButtonClick = (e) => {
   e.preventDefault()
   window.scrollTo({
@@ -65,12 +68,14 @@ export const EditView = (props: Props) => {
   } = useEditorContext()
   const shoutTopics = props.shout.topics || []
 
-  // TODO: проверить сохранение черновика в local storage (не работает)
   const draft = getDraftFromLocalStorage(props.shout.id)
+
   if (draft) {
-    setForm(Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id })
+    const draftForm = Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id }
+    setForm(draftForm)
+    console.debug('draft from localstorage: ', draftForm)
   } else {
-    setForm({
+    const draftForm = {
       slug: props.shout.slug,
       shoutId: props.shout.id,
       title: props.shout.title,
@@ -83,7 +88,9 @@ export const EditView = (props: Props) => {
       coverImageUrl: props.shout.cover,
       media: props.shout.media,
       layout: props.shout.layout,
-    })
+    }
+    setForm(draftForm)
+    console.debug('draft from props data: ', draftForm)
   }
 
   const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
@@ -106,9 +113,6 @@ export const EditView = (props: Props) => {
     onCleanup(() => {
       window.removeEventListener('scroll', handleScroll)
     })
-  })
-
-  onMount(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const handleBeforeUnload = (event) => {
       if (!deepEqual(prevForm, form)) {
@@ -180,42 +184,39 @@ export const EditView = (props: Props) => {
 
   let autoSaveTimeOutId: number | string | NodeJS.Timeout
 
-  //TODO: add throttle
+  const autoSave = async () => {
+    const hasChanges = !deepEqual(form, prevForm)
+    const hasTopic = Boolean(form.mainTopic)
+    if (hasChanges || hasTopic) {
+      console.debug('saving draft', form)
+      setSaving(true)
+      saveDraftToLocalStorage(form)
+      await saveDraft(form)
+      setPrevForm(clone(form))
+      setTimeout(() => setSaving(false), AUTO_SAVE_DELAY)
+    }
+  }
+
+  // Throttle the autoSave function
+  const throttledAutoSave = throttle(THROTTLING_INTERVAL, autoSave)
+
   const autoSaveRecursive = () => {
-    autoSaveTimeOutId = setTimeout(async () => {
-      const hasChanges = !deepEqual(form, prevForm)
-      if (hasChanges) {
-        setSaving(true)
-        if (props.shout?.published_at) {
-          saveDraftToLocalStorage(form)
-        } else {
-          await saveDraft(form)
-        }
-        setPrevForm(clone(form))
-        setTimeout(() => {
-          setSaving(false)
-        }, 2000)
-      }
+    autoSaveTimeOutId = setTimeout(() => {
+      throttledAutoSave()
       autoSaveRecursive()
     }, AUTO_SAVE_INTERVAL)
   }
 
-  const stopAutoSave = () => {
-    clearTimeout(autoSaveTimeOutId)
-  }
-
   onMount(() => {
     autoSaveRecursive()
-  })
-
-  onCleanup(() => {
-    stopAutoSave()
+    onCleanup(() => clearTimeout(autoSaveTimeOutId))
   })
 
   const showSubtitleInput = () => {
     setIsSubtitleVisible(true)
     subtitleInput.current.focus()
   }
+
   const showLeadInput = () => {
     setIsLeadVisible(true)
   }

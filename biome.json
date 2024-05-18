@@ -36,7 +36,8 @@
       "complexity": {
         "noForEach": "off",
         "useOptionalChain": "warn",
-        "useLiteralKeys": "off"
+        "useLiteralKeys": "off",
+        "noExcessiveCognitiveComplexity": "off"
       },
       "correctness": {
         "useHookAtTopLevel": "off"
@@ -54,15 +55,18 @@
         "noSvgWithoutTitle": "off"
       },
       "nursery": {
-        "useImportRestrictions": "off",
-        "useImportType": "off",
-        "useFilenamingConvention": "off"
+        "useImportRestrictions": "off"
+      },
+      "performance": {
+        "noBarrelFile": "off"
       },
       "style": {
         "useBlockStatements": "off",
         "noImplicitBoolean": "off",
         "useNamingConvention": "off",
-        "noDefaultExport": "off"
+        "useImportType": "off",
+        "noDefaultExport": "off",
+        "useFilenamingConvention": "off"
       },
       "suspicious": {
         "noConsoleLog": "off",

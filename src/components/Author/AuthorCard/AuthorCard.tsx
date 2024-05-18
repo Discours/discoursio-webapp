@@ -127,7 +127,12 @@ export const AuthorCard = (props: Props) => {
             <div class={styles.authorAbout} innerHTML={props.author.bio} />
           </Show>
           <Show when={props.followers?.length > 0 || props.following?.length > 0}>
-            <Subscribers followers={props.followers} following={props.following} />
+            <Subscribers
+              followers={props.followers}
+              followersAmount={props.author?.stat?.followers}
+              following={props.following}
+              followingAmount={props.author?.stat?.authors}
+            />
           </Show>
         </div>
         <ShowOnlyOnClient>

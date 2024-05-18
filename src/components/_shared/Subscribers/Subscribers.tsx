@@ -8,8 +8,10 @@ import { Userpic } from '../../Author/Userpic'
 import styles from './Subscribers.module.scss'
 
 type Props = {
-  followers: Author[]
+  followers?: Author[]
+  followersAmount?: number
   following?: Array<Author | Topic>
+  followingAmount?: number
 }
 
 export const Subscribers = (props: Props) => {
@@ -17,21 +19,21 @@ export const Subscribers = (props: Props) => {
 
   return (
     <div class={styles.subscribersContainer}>
-      <Show when={props.followers && props.followers.length > 0}>
-        <a href="?m=followers" class={styles.subscribers}>
+      <a href="?m=followers" class={styles.subscribers}>
+        <Show when={props.followers && props.followers.length > 0}>
           <For each={props.followers.slice(0, 3)}>
             {(f) => <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />}
           </For>
-          <div class={styles.subscribersCounter}>
-            {t('SubscriberWithCount', {
-              count: props.followers.length ?? 0,
-            })}
-          </div>
-        </a>
-      </Show>
+        </Show>
+        <div class={styles.subscribersCounter}>
+          {t('SubscriberWithCount', {
+            count: props.followersAmount || props.followers.length || 0,
+          })}
+        </div>
+      </a>
 
-      <Show when={props.following && props.following.length > 0}>
-        <a href="?m=following" class={styles.subscribers}>
+      <a href="?m=following" class={styles.subscribers}>
+        <Show when={props.following && props.following.length > 0}>
           <For each={props.following.slice(0, 3)}>
             {(f) => {
               if ('name' in f) {
@@ -45,13 +47,13 @@ export const Subscribers = (props: Props) => {
               return null
             }}
           </For>
-          <div class={styles.subscribersCounter}>
-            {t('SubscriptionWithCount', {
-              count: props?.following.length ?? 0,
-            })}
-          </div>
-        </a>
-      </Show>
+        </Show>
+        <div class={styles.subscribersCounter}>
+          {t('SubscriptionWithCount', {
+            count: props.followingAmount || props.following?.length || 0,
+          })}
+        </div>
+      </a>
     </div>
   )
 }

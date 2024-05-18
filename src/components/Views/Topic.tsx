@@ -1,4 +1,11 @@
-import { Author, LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
+import {
+  Author,
+  AuthorsBy,
+  LoadShoutsOptions,
+  QueryLoad_Authors_ByArgs,
+  Shout,
+  Topic,
+} from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
@@ -87,6 +94,12 @@ export const TopicView = (props: Props) => {
 
     setReactedTopMonthArticles(result)
   }
+  const [topicAuthors, setTopicAuthors] = createSignal<Author[]>([])
+  const loadTopicAuthors = async () => {
+    const by: AuthorsBy = { topic: props.topicSlug }
+    const result = await apiClient.loadAuthorsBy({ by })
+    setTopicAuthors(result)
+  }
 
   const loadRandom = () => {
     loadFavoriteTopArticles(topic()?.slug)
@@ -98,6 +111,7 @@ export const TopicView = (props: Props) => {
       () => topic()?.id,
       (_) => {
         loadTopicFollowers()
+        loadTopicAuthors()
         loadRandom()
       },
       { defer: true },
@@ -167,7 +181,7 @@ export const TopicView = (props: Props) => {
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={title()} />
       <Meta name="twitter:description" content={description()} />
-      <FullTopic topic={topic()} followers={followers()} />
+      <FullTopic topic={topic()} followers={followers()} authors={topicAuthors()} />
       <div class="wide-container">
         <div class={clsx(styles.groupControls, 'row group__controls')}>
           <div class="col-md-16">

@@ -5,6 +5,7 @@ import type {
   LoadShoutsOptions,
   MutationDelete_ShoutArgs,
   ProfileInput,
+  QueryGet_Topic_FollowersArgs,
   QueryLoad_Authors_ByArgs,
   QueryLoad_Shouts_Random_TopArgs,
   QueryLoad_Shouts_SearchArgs,
@@ -44,6 +45,7 @@ import authorsAll from '../query/core/authors-all'
 import authorsLoadBy from '../query/core/authors-load-by'
 import reactionsLoadBy from '../query/core/reactions-load-by'
 import topicBySlug from '../query/core/topic-by-slug'
+import topicFollowers from '../query/core/topic-followers'
 import topicsAll from '../query/core/topics-all'
 import topicsRandomQuery from '../query/core/topics-random'
 
@@ -127,6 +129,11 @@ export const apiClient = {
   getAuthorFollowers: async ({ slug }: { slug: string }): Promise<Author[]> => {
     const response = await publicGraphQLClient.query(authorFollowers, { slug }).toPromise()
     return response.data.get_author_followers
+  },
+
+  getTopicFollowers: async ({ slug }: QueryGet_Topic_FollowersArgs): Promise<Author[]> => {
+    const response = await publicGraphQLClient.query(topicFollowers, { slug }).toPromise()
+    return response.data.get_topic_followers
   },
 
   getAuthorFollows: async (params: {

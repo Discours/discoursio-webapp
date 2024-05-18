@@ -48,14 +48,18 @@ export const EditPage = () => {
 
   createEffect(
     on(
-      page,
+      () => page(),
       (p) => {
-        const shoutId = p?.path.split('/').pop()
-        const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
-        console.debug(`editing shout ${shoutIdFromUrl}`)
-        if (shoutIdFromUrl) setShoutId(shoutIdFromUrl)
+        if (p?.path) {
+          console.debug(p?.path)
+          const shoutId = p?.path.split('/').pop()
+          const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
+          console.debug(`editing shout ${shoutIdFromUrl}`)
+          if (shoutIdFromUrl) {
+            setShoutId(shoutIdFromUrl)
+          }
+        }
       },
-      { defer: true },
     ),
   )
 
@@ -70,6 +74,7 @@ export const EditPage = () => {
         }
       }
     }),
+    { defer: true },
   )
 
   const title = createMemo(() => {

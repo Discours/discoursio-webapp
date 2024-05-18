@@ -113,7 +113,6 @@
   padding-bottom: 56.2%; // 16:9
   position: relative;
   transform-origin: 50% 50%;
-  transition: transform 1s ease-in-out;
 
   &.loading {
     background: rgb(0 0 0 / 20%);
@@ -129,7 +128,7 @@
   img,
   .placeholderCoverImage {
     transform: scale(1);
-    transition: transform 0.3s;
+    transition: transform 1s ease-in-out;
   }
 }
 

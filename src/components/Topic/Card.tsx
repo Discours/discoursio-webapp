@@ -49,11 +49,9 @@ export const TopicCard = (props: TopicProps) => {
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      if (isSubscribed()) {
-        unfollow(FollowingEntity.Topic, props.topic.slug)
-      } else {
-        follow(FollowingEntity.Topic, props.topic.slug)
-      }
+      isSubscribed()
+        ? unfollow(FollowingEntity.Topic, props.topic.slug)
+        : follow(FollowingEntity.Topic, props.topic.slug)
     }, 'subscribe')
   }
 

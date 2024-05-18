@@ -19,6 +19,7 @@ import { Popover } from '../Popover'
 
 import { SwiperRef } from './swiper'
 
+import { useSession } from '../../../context/session'
 import styles from './Swiper.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
@@ -36,7 +37,7 @@ export const EditorSwiper = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [slideIndex, setSlideIndex] = createSignal(0)
   const [slideBody, setSlideBody] = createSignal<string>()
-
+  const { session } = useSession()
   const mainSwipeRef: { current: SwiperRef } = { current: null }
   const thumbSwipeRef: { current: SwiperRef } = { current: null }
 
@@ -100,7 +101,7 @@ export const EditorSwiper = (props: Props) => {
       setLoading(true)
       const results: UploadedFile[] = []
       for (const file of selectedFiles) {
-        const result = await handleImageUpload(file)
+        const result = await handleImageUpload(file, session()?.access_token)
         results.push(result)
       }
       props.onImagesAdd(composeMediaItems(results))

@@ -4,21 +4,20 @@ import { For, Show, createSignal } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
+import { useSeen } from '../../../context/seen'
 import { Author } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { useArticlesStore } from '../../../stores/zine/articles'
-import { useSeenStore } from '../../../stores/zine/seen'
 import { Userpic } from '../../Author/Userpic'
 import { Icon } from '../../_shared/Icon'
-
 import styles from './Sidebar.module.scss'
 
 export const Sidebar = () => {
   const { t } = useLocalize()
-  const { seen } = useSeenStore()
+  const { seen } = useSeen()
   const { subscriptions } = useFollowing()
   const { page } = useRouter()
-  const { articlesByTopic } = useArticlesStore()
+  const { articlesByTopic, articlesByAuthor } = useArticlesStore()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
 
   const checkTopicIsSeen = (topicSlug: string) => {
@@ -26,8 +25,9 @@ export const Sidebar = () => {
   }
 
   const checkAuthorIsSeen = (authorSlug: string) => {
-    return Boolean(seen()[authorSlug])
+    return articlesByAuthor()[authorSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
+
   return (
     <div class={styles.sidebar}>
       <ul class={styles.feedFilters}>

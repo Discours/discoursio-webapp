@@ -54,7 +54,7 @@ export const AuthorBadge = (props: Props) => {
     requireAuthentication(() => {
       openPage(router, 'inbox')
       changeSearchParams({
-        initChat: props.author.id.toString(),
+        initChat: props.author?.id.toString(),
       })
     }, 'discussions')
   }
@@ -117,6 +117,9 @@ export const AuthorBadge = (props: Props) => {
               <div class={styles.bio}>
                 <Show when={props.author?.stat.shouts > 0}>
                   <div>{t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}</div>
+                </Show>
+                <Show when={props.author?.stat.comments > 0}>
+                  <div>{t('CommentsWithCount', { count: props.author.stat?.comments ?? 0 })}</div>
                 </Show>
                 <Show when={props.author?.stat.followers > 0}>
                   <div>{t('FollowersWithCount', { count: props.author.stat?.followers ?? 0 })}</div>

@@ -1,8 +1,8 @@
 import type { Author } from '../../../graphql/schema/core.gen'
 
-import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createMemo, createSignal } from 'solid-js'
+import { Meta } from '../../../context/meta'
 
 import { useLocalize } from '../../../context/localize'
 import { useRouter } from '../../../stores/router'

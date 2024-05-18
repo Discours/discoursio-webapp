@@ -32,6 +32,7 @@ export const RegisterForm = () => {
   const { changeSearchParams } = useRouter<AuthModalSearchParams>()
   const { t } = useLocalize()
   const { signUp, isRegistered, resendVerifyEmail } = useSession()
+  // FIXME: use submit error data or remove signal
   const [_submitError, setSubmitError] = createSignal('')
   const [fullName, setFullName] = createSignal('')
   const [password, setPassword] = createSignal('')

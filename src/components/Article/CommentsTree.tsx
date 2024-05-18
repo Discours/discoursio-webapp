@@ -11,6 +11,7 @@ import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 
 import { Comment } from './Comment'
 
+import { useSeen } from '../../context/seen'
 import styles from './Article.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
@@ -29,7 +30,7 @@ export const CommentsTree = (props: Props) => {
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
   const [clearEditor, setClearEditor] = createSignal(false)
   const [clickedReplyId, setClickedReplyId] = createSignal<number>()
-  const { reactionEntities, createReaction } = useReactions()
+  const { reactionEntities, createReaction, loadReactionsBy } = useReactions()
 
   const comments = createMemo(() =>
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT'),
@@ -48,27 +49,28 @@ export const CommentsTree = (props: Props) => {
     }
     return newSortedComments
   })
-
-  const dateFromLocalStorage = Number.parseInt(localStorage.getItem(`${props.shoutSlug}`))
+  const { seen } = useSeen()
+  const shoutLastSeen = createMemo(() => seen()[props.shoutSlug] ?? 0)
   const currentDate = new Date()
   const setCookie = () => localStorage.setItem(`${props.shoutSlug}`, `${currentDate}`)
 
   onMount(() => {
-    if (!dateFromLocalStorage) {
+    if (!shoutLastSeen()) {
       setCookie()
-    } else if (currentDate.getTime() > dateFromLocalStorage) {
+    } else if (currentDate.getTime() > shoutLastSeen()) {
       const newComments = comments().filter((c) => {
         if (c.reply_to || c.created_by.slug === author()?.slug) {
           return
         }
-        const created = c.created_at
-        return created > dateFromLocalStorage
+        return (c.updated_at || c.created_at) > shoutLastSeen()
       })
       setNewReactions(newComments)
       setCookie()
     }
   })
+  const [posting, setPosting] = createSignal(false)
   const handleSubmitComment = async (value: string) => {
+    setPosting(true)
     try {
       await createReaction({
         kind: ReactionKind.Comment,
@@ -76,10 +78,12 @@ export const CommentsTree = (props: Props) => {
         shout: props.shoutId,
       })
       setClearEditor(true)
+      await loadReactionsBy({ by: { shout: props.shoutSlug } })
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
     setClearEditor(false)
+    setPosting(false)
   }
 
   return (
@@ -130,7 +134,7 @@ export const CommentsTree = (props: Props) => {
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}
               clickedReplyId={clickedReplyId()}
-              lastSeen={dateFromLocalStorage}
+              lastSeen={shoutLastSeen()}
             />
           )}
         </For>
@@ -157,6 +161,7 @@ export const CommentsTree = (props: Props) => {
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}
           setClear={clearEditor()}
+          isPosting={posting()}
         />
       </ShowIfAuthenticated>
     </>

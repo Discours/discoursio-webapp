@@ -31,7 +31,7 @@ export const LoginForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [password, setPassword] = createSignal('')
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-
+  // FIXME: use signal or remove
   const [_isLinkSent, setIsLinkSent] = createSignal(false)
   const authFormRef: { current: HTMLFormElement } = { current: null }
   const { showSnackbar } = useSnackbar()
@@ -97,7 +97,12 @@ export const LoginForm = () => {
       const { errors } = await signIn({ email: email(), password: password() })
       console.error('[signIn errors]', errors)
       if (errors?.length > 0) {
-        if (errors.some((error) => error.message.includes('bad user credentials'))) {
+        if (
+          errors.some(
+            (error) =>
+              error.message.includes('bad user credentials') || error.message.includes('user not found'),
+          )
+        ) {
           setValidationErrors((prev) => ({
             ...prev,
             password: t('Something went wrong, check email and password'),

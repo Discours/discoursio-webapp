@@ -69,6 +69,7 @@ const checkOpenOnClient = (link: HTMLAnchorElement, event) => {
   )
 }
 
+// TODO: use scrollToHash or remove
 const _scrollToHash = (hash: string) => {
   let selector = hash
 

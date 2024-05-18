@@ -28,10 +28,11 @@ const embedData = (data) => {
 
   const result: { src: string; width?: string; height?: string } = { src: '' }
 
-  // biome-ignore lint/style/useForOf: <explanation>
   for (let i = 0; i < attributes.length; i++) {
-    const attribute = attributes[i]
-    result[attribute.name] = attribute.value
+    const attribute = attributes.item(i)
+    if (attribute) {
+      result[attribute.name] = attribute.value
+    }
   }
 
   return result

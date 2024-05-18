@@ -5,6 +5,7 @@ import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { useSession } from '../../../context/session'
 import { UploadedFile } from '../../../pages/types'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
@@ -27,6 +28,7 @@ export const DropArea = (props: Props) => {
   const [dragActive, setDragActive] = createSignal(false)
   const [dropAreaError, setDropAreaError] = createSignal<string>()
   const [loading, setLoading] = createSignal(false)
+  const { session } = useSession()
 
   const runUpload = async (files) => {
     try {
@@ -35,7 +37,7 @@ export const DropArea = (props: Props) => {
       const results: UploadedFile[] = []
       for (const file of files) {
         const handler = props.fileType === 'image' ? handleImageUpload : handleFileUpload
-        const result = await handler(file)
+        const result = await handler(file, session()?.access_token)
         results.push(result)
       }
       props.onUpload(results)

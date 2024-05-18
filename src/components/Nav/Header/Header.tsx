@@ -48,7 +48,7 @@ export const Header = (props: Props) => {
   const { page } = useRouter()
   const { requireAuthentication } = useSession()
   const { searchParams } = useRouter<HeaderSearchParams>()
-  const { topics } = useTopics()
+  const { sortedTopics: topics } = useTopics()
   const [randomTopics, setRandomTopics] = createSignal([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
@@ -59,7 +59,7 @@ export const Header = (props: Props) => {
   const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
-  const { isAuthenticated } = useSession()
+  const { session } = useSession()
 
   const toggleFixed = () => setFixed(!fixed())
 
@@ -69,7 +69,9 @@ export const Header = (props: Props) => {
   let windowScrollTop = 0
 
   createEffect(() => {
-    setRandomTopics(getRandomTopicsFromArray(topics()))
+    if (topics()?.length) {
+      setRandomTopics(getRandomTopicsFromArray(topics()))
+    }
   })
 
   createEffect(() => {
@@ -333,7 +335,7 @@ export const Header = (props: Props) => {
           <Show when={props.title}>
             <div
               class={clsx(styles.articleControls, 'col-auto', {
-                [styles.articleControlsAuthorized]: isAuthenticated(),
+                [styles.articleControlsAuthorized]: session()?.user?.id,
               })}
             >
               <SharePopup

@@ -12,6 +12,7 @@ import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
 import { InlineForm } from '../InlineForm'
 
+import { useSession } from '../../../context/session'
 import styles from './UploadModalContent.module.scss'
 
 type Props = {
@@ -24,12 +25,12 @@ export const UploadModalContent = (props: Props) => {
   const [uploadError, setUploadError] = createSignal<string | undefined>()
   const [dragActive, setDragActive] = createSignal(false)
   const [dragError, setDragError] = createSignal<string | undefined>()
-
+  const { session } = useSession()
   const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
   const runUpload = async (file: UploadFile) => {
     try {
       setIsUploading(true)
-      const result = await handleImageUpload(file)
+      const result = await handleImageUpload(file, session()?.access_token)
       props.onClose(result)
       setIsUploading(false)
     } catch (error) {

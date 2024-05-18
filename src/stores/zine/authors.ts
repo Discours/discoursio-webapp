@@ -6,7 +6,7 @@ import { Author, QueryLoad_Authors_ByArgs } from '../../graphql/schema/core.gen'
 
 export type AuthorsSortBy = 'shouts' | 'name' | 'followers'
 type SortedAuthorsSetter = (prev: Author[]) => Author[]
-
+// FIXME: use signal or remove
 const [_sortAllBy, setSortAllBy] = createSignal<AuthorsSortBy>('name')
 
 export const setAuthorsSort = (sortBy: AuthorsSortBy) => setSortAllBy(sortBy)

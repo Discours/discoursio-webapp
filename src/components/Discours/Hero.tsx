@@ -1,7 +1,7 @@
 import { useLocalize } from '../../context/localize'
 import { useRouter } from '../../stores/router'
 import { showModal } from '../../stores/ui'
-import { AuthModalSearchParams } from '../Nav/AuthModal/types'
+import type { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
 import styles from './Hero.module.scss'
 

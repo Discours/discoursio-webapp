@@ -97,28 +97,27 @@ export const LoginForm = () => {
       const { errors } = await signIn({ email: email(), password: password() })
       if (errors?.length > 0) {
         console.warn('[signIn] errors: ', errors)
-        let msg = ''
+
         if (errors.some((error) => error.message === 'user has not signed up email & password')) {
           const password = t('Something went wrong, check email and password')
           setValidationErrors((prev) => ({ ...prev, password }))
         } else if (errors.some((error) => error.message === 'user not found')) {
-          msg = t('User was not found')
+          const email = t('User was not found')
+          setValidationErrors((prev) => ({ ...prev, email }))
         } else if (errors.some((error) => error.message === 'email not verified')) {
-          msg = t('This email is not verified')
+          const email = t('This email is not verified')
+          setValidationErrors((prev) => ({ ...prev, email }))
         } else {
-          msg = t('Error', errors[0].message)
-        }
-
-        msg &&
           setSubmitError(
             <div class={styles.info}>
-              {msg}
+              {t('Error', errors[0].message)}
               {'. '}
               <span class={'link'} onClick={handleSendLinkAgainClick}>
                 {t('Send link again')}
               </span>
             </div>,
           )
+        }
 
         return
       }

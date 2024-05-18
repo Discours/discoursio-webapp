@@ -99,8 +99,7 @@ export const LoginForm = () => {
         console.debug('[signIn] errors:', errors)
         if (
           errors.some(
-            (error) =>
-              error.message.includes('bad user credentials') || error.message.includes('user not found'),
+            (error) => error.message.includes('bad user credentials') || error.message.includes('user not'),
           )
         ) {
           setValidationErrors((prev) => ({

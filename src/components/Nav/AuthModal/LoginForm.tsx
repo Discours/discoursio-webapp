@@ -96,18 +96,14 @@ export const LoginForm = () => {
     try {
       const { errors } = await signIn({ email: email(), password: password() })
       if (errors?.length > 0) {
-        console.debug('[signIn] errors:', errors)
-        if (
-          errors.some(
-            (error) => error.message.includes('bad user credentials') || error.message.includes('user not'),
-          )
-        ) {
+        console.error('[signIn errors]', errors)
+        if (errors.some((error) => error.message.includes('user has not signed up email & password'))) {
           setValidationErrors((prev) => ({
             ...prev,
             password: t('Something went wrong, check email and password'),
           }))
         } else if (errors.some((error) => error.message.includes('user not found'))) {
-          setSubmitError('Пользователь не найден')
+          setSubmitError(t('User was not found'))
         } else if (errors.some((error) => error.message.includes('email not verified'))) {
           setSubmitError(
             <div class={styles.info}>

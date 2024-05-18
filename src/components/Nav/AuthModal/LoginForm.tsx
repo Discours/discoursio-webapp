@@ -95,8 +95,8 @@ export const LoginForm = () => {
 
     try {
       const { errors } = await signIn({ email: email(), password: password() })
-      console.error('[signIn errors]', errors)
       if (errors?.length > 0) {
+        console.debug('[signIn] errors:', errors)
         if (
           errors.some(
             (error) =>

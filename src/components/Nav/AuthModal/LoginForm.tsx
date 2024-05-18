@@ -97,28 +97,35 @@ export const LoginForm = () => {
       const { errors } = await signIn({ email: email(), password: password() })
       if (errors?.length > 0) {
         console.warn('[signIn] errors: ', errors)
-
-        if (errors.some((error) => error.message === 'user has not signed up email & password')) {
-          const password = t('Something went wrong, check email and password')
-          setValidationErrors((prev) => ({ ...prev, password }))
-        } else if (errors.some((error) => error.message === 'user not found')) {
-          const email = t('User was not found')
-          setValidationErrors((prev) => ({ ...prev, email }))
-        } else if (errors.some((error) => error.message === 'email not verified')) {
-          const email = t('This email is not verified')
-          setValidationErrors((prev) => ({ ...prev, email }))
-        } else {
-          setSubmitError(
-            <div class={styles.info}>
-              {t('Error', errors[0].message)}
-              {'. '}
-              <span class={'link'} onClick={handleSendLinkAgainClick}>
-                {t('Send link again')}
-              </span>
-            </div>,
-          )
-        }
-
+        errors.forEach((error) => {
+          switch (error.message) {
+            case 'user has not signed up email & password': {
+              setValidationErrors((prev) => ({
+                ...prev,
+                password: t('Something went wrong, check email and password'),
+              }))
+              break
+            }
+            case 'user not found': {
+              setValidationErrors((prev) => ({ ...prev, email: t('User was not found') }))
+              break
+            }
+            case 'email not verified': {
+              setValidationErrors((prev) => ({ ...prev, email: t('This email is not verified') }))
+              break
+            }
+            default:
+              setSubmitError(
+                <div class={styles.info}>
+                  {t('Error', errors[0].message)}
+                  {'. '}
+                  <span class={'link'} onClick={handleSendLinkAgainClick}>
+                    {t('Send link again')}
+                  </span>
+                </div>,
+              )
+          }
+        })
         return
       }
       hideModal()

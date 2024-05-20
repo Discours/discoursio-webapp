@@ -12,11 +12,6 @@ declare module '@tiptap/core' {
 
 export default Node.create({
   name: 'article',
-  defaultOptions: {
-    HTMLAttributes: {
-      'data-type': 'incut',
-    },
-  },
   group: 'block',
   content: 'block+',
 
@@ -30,6 +25,12 @@ export default Node.create({
 
   renderHTML({ HTMLAttributes }) {
     return ['article', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+  },
+
+  addOptions() {
+    return {
+      'data-type': 'incut',
+    };
   },
 
   addAttributes() {
@@ -47,20 +48,20 @@ export default Node.create({
     return {
       toggleArticle:
         () =>
-        // eslint-disable-next-line unicorn/consistent-function-scoping
-        ({ commands }) => {
-          return commands.toggleWrap('article')
-        },
+          // eslint-disable-next-line unicorn/consistent-function-scoping
+          ({ commands }) => {
+            return commands.toggleWrap('article')
+          },
       setArticleFloat:
         (value) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, { 'data-float': value })
-        },
+          ({ commands }) => {
+            return commands.updateAttributes(this.name, { 'data-float': value })
+          },
       setArticleBg:
         (value) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, { 'data-bg': value })
-        },
+          ({ commands }) => {
+            return commands.updateAttributes(this.name, { 'data-bg': value })
+          },
     }
   },
 })

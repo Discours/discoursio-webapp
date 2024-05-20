@@ -139,6 +139,12 @@
 
 .placeholderContent {
   padding: 1.6rem;
+
+  @include media-breakpoint-down(lg) {
+    br {
+      display: none;
+    }
+  }
 }
 
 .placeholder--feedMy,

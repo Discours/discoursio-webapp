@@ -2,7 +2,7 @@ import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import { Accessor, Show, createMemo, createSignal, lazy, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { throttle } from 'throttle-debounce'
+import { debounce } from 'throttle-debounce'
 
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
@@ -42,9 +42,8 @@ export const EMPTY_TOPIC: Topic = {
   slug: '',
 }
 
-const THROTTLING_INTERVAL = 2000
-const AUTO_SAVE_INTERVAL = 5000
-const AUTO_SAVE_DELAY = 5000
+const AUTO_SAVE_DELAY = 3000
+
 const handleScrollTopButtonClick = (e) => {
   e.preventDefault()
   window.scrollTo({
@@ -104,6 +103,8 @@ export const EditView = (props: Props) => {
     return JSON.parse(form.media || '[]')
   })
 
+  const [hasChanges, setHasChanges] = createSignal(false)
+
   onMount(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0)
@@ -113,7 +114,7 @@ export const EditView = (props: Props) => {
     onCleanup(() => {
       window.removeEventListener('scroll', handleScroll)
     })
-    // eslint-disable-next-line unicorn/consistent-function-scoping
+
     const handleBeforeUnload = (event) => {
       if (!deepEqual(prevForm, form)) {
         event.returnValue = t(
@@ -127,8 +128,8 @@ export const EditView = (props: Props) => {
   })
 
   const handleTitleInputChange = (value: string) => {
-    setForm('title', value)
-    setForm('slug', slugify(value))
+    handleInputChange('title', value)
+    handleInputChange('slug', slugify(value))
     if (value) {
       setFormErrors('title', '')
     }
@@ -136,21 +137,21 @@ export const EditView = (props: Props) => {
 
   const handleAddMedia = (data) => {
     const newMedia = [...mediaItems(), ...data]
-    setForm('media', JSON.stringify(newMedia))
+    handleInputChange('media', JSON.stringify(newMedia))
   }
   const handleSortedMedia = (data) => {
-    setForm('media', JSON.stringify(data))
+    handleInputChange('media', JSON.stringify(data))
   }
 
   const handleMediaDelete = (index) => {
     const copy = [...mediaItems()]
     copy.splice(index, 1)
-    setForm('media', JSON.stringify(copy))
+    handleInputChange('media', JSON.stringify(copy))
   }
 
   const handleMediaChange = (index, value) => {
     const updated = mediaItems().map((item, idx) => (idx === index ? value : item))
-    setForm('media', JSON.stringify(updated))
+    handleInputChange('media', JSON.stringify(updated))
   }
 
   const [baseAudioFields, setBaseAudioFields] = createSignal({
@@ -162,7 +163,7 @@ export const EditView = (props: Props) => {
   const handleBaseFieldsChange = (key, value) => {
     if (mediaItems().length > 0) {
       const updated = mediaItems().map((media) => ({ ...media, [key]: value }))
-      setForm('media', JSON.stringify(updated))
+      handleInputChange('media', JSON.stringify(updated))
     } else {
       setBaseAudioFields({ ...baseAudioFields(), [key]: value })
     }
@@ -182,34 +183,32 @@ export const EditView = (props: Props) => {
     }
   }
 
-  let autoSaveTimeOutId: number | string | NodeJS.Timeout
-
   const autoSave = async () => {
-    const hasChanges = !deepEqual(form, prevForm)
-    const hasTopic = Boolean(form.mainTopic)
-    if (hasChanges || hasTopic) {
+    console.log('autoSave called')
+    if (hasChanges()) {
       console.debug('saving draft', form)
       setSaving(true)
       saveDraftToLocalStorage(form)
       await saveDraft(form)
       setPrevForm(clone(form))
-      setTimeout(() => setSaving(false), AUTO_SAVE_DELAY)
+      setSaving(false)
+      setHasChanges(false)
     }
   }
 
-  // Throttle the autoSave function
-  const throttledAutoSave = throttle(THROTTLING_INTERVAL, autoSave)
+  const debouncedAutoSave = debounce(AUTO_SAVE_DELAY, autoSave)
 
-  const autoSaveRecursive = () => {
-    autoSaveTimeOutId = setTimeout(() => {
-      throttledAutoSave()
-      autoSaveRecursive()
-    }, AUTO_SAVE_INTERVAL)
+  const handleInputChange = (key, value) => {
+    console.log(`[handleInputChange] ${key}: ${value}`)
+    setForm(key, value)
+    setHasChanges(true)
+    debouncedAutoSave()
   }
 
   onMount(() => {
-    autoSaveRecursive()
-    onCleanup(() => clearTimeout(autoSaveTimeOutId))
+    onCleanup(() => {
+      debouncedAutoSave.cancel()
+    })
   })
 
   const showSubtitleInput = () => {
@@ -310,7 +309,7 @@ export const EditView = (props: Props) => {
                                 subtitleInput.current = el
                               }}
                               allowEnterKey={false}
-                              value={(value) => setForm('subtitle', value || '')}
+                              value={(value) => handleInputChange('subtitle', value || '')}
                               class={styles.subtitleInput}
                               placeholder={t('Subheader')}
                               initialValue={form.subtitle || ''}
@@ -324,7 +323,7 @@ export const EditView = (props: Props) => {
                               smallHeight={true}
                               placeholder={t('A short introduction to keep the reader interested')}
                               initialContent={form.lead}
-                              onChange={(value) => setForm('lead', value)}
+                              onChange={(value) => handleInputChange('lead', value)}
                             />
                           </Show>
                         </Show>
@@ -345,7 +344,7 @@ export const EditView = (props: Props) => {
                               }
                               isMultiply={false}
                               fileType={'image'}
-                              onUpload={(val) => setForm('coverImageUrl', val[0].url)}
+                              onUpload={(val) => handleInputChange('coverImageUrl', val[0].url)}
                             />
                           }
                         >
@@ -362,7 +361,7 @@ export const EditView = (props: Props) => {
                                 <div
                                   ref={triggerRef}
                                   class={styles.delete}
-                                  onClick={() => setForm('coverImageUrl', null)}
+                                  onClick={() => handleInputChange('coverImageUrl', null)}
                                 >
                                   <Icon name="close-white" />
                                 </div>
@@ -408,7 +407,7 @@ export const EditView = (props: Props) => {
               <Editor
                 shoutId={form.shoutId}
                 initialContent={form.body}
-                onChange={(body) => setForm('body', body)}
+                onChange={(body) => handleInputChange('body', body)}
               />
             </Show>
           </div>

@@ -30,53 +30,57 @@ const ConnectContext = createContext<ConnectContextType>()
 
 export const ConnectProvider = (props: { children: JSX.Element }) => {
   const [messageHandlers, setHandlers] = createSignal<MessageHandler[]>([])
-  // const [messages, setMessages] = createSignal<Array<SSEMessage>>([]);
   const [connected, setConnected] = createSignal(false)
   const { session } = useSession()
+  const [retried, setRetried] = createSignal<number>(0)
 
   const addHandler = (handler: MessageHandler) => {
     setHandlers((hhh) => [...hhh, handler])
   }
 
-  const [retried, setRetried] = createSignal<number>(0)
   createEffect(async () => {
     const token = session()?.access_token
-    if (token && !connected()) {
+    if (token && !connected() && retried() <= RECONNECT_TIMES) {
       console.info('[context.connect] init SSE connection')
-      await fetchEventSource('https://connect.discours.io', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-        onmessage(event) {
-          const m: SSEMessage = JSON.parse(event.data || '{}')
-          console.log('[context.connect] Received message:', m)
-
-          // Iterate over all registered handlers and call them
-          messageHandlers().forEach((handler) => handler(m))
-        },
-        async onopen(response) {
-          console.log('[context.connect] SSE connection opened', response)
-          if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
-            setConnected(true)
-          } else if (response.status === 401) {
-            throw new Error('SSE: cannot connect to real-time updates')
-          } else {
-            setRetried((r) => r + 1)
-            throw new Error(`SSE: failed to connect ${retried()} times`)
-          }
-        },
-        onclose() {
-          console.log('[context.connect] SSE connection closed by server')
-          setConnected(false)
-        },
-        onerror(err) {
-          if (err.message === 'unauthorized' || retried() > RECONNECT_TIMES) {
-            throw err // rethrow to stop the operation
-          }
-        },
-      })
+      try {
+        await fetchEventSource('https://connect.discours.io', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+          onmessage(event) {
+            const m: SSEMessage = JSON.parse(event.data || '{}')
+            console.log('[context.connect] Received message:', m)
+            messageHandlers().forEach((handler) => handler(m))
+          },
+          onopen: (response) => {
+            console.log('[context.connect] SSE connection opened', response)
+            if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
+              setConnected(true)
+              setRetried(0)
+              return Promise.resolve()
+            }
+            return Promise.reject(`SSE: cannot connect to real-time updates, status: ${response.status}`)
+          },
+          onclose() {
+            console.log('[context.connect] SSE connection closed by server')
+            setConnected(false)
+            if (retried() < RECONNECT_TIMES) {
+              setRetried((r) => r + 1)
+            }
+          },
+          onerror(err) {
+            console.error('[context.connect] SSE connection error:', err)
+            setConnected(false)
+            if (retried() < RECONNECT_TIMES) {
+              setRetried((r) => r + 1)
+            } else throw Error(err)
+          },
+        })
+      } catch (error) {
+        console.error('[context.connect] SSE connection failed:', error)
+      }
     }
   })
 

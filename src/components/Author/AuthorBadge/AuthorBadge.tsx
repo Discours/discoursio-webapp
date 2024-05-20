@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -34,17 +34,19 @@ export const AuthorBadge = (props: Props) => {
   const { author, requireAuthentication } = useSession()
   const { follow, unfollow, follows, following } = useFollowing()
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const [isFollowed, setIsFollowed] = createSignal<boolean>()
-
-  createEffect(() => {
-    if (!(follows && props.author)) return
-    const followed = follows?.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
-    setIsFollowed(followed)
-  })
-
-  createEffect(() => {
-    setIsMobileView(!mediaMatches.sm)
-  })
+  const [isFollowed, setIsFollowed] = createSignal<boolean>(
+    follows?.authors?.some((authorEntity) => authorEntity.id === props.author?.id),
+  )
+  createEffect(() => setIsMobileView(!mediaMatches.sm))
+  createEffect(
+    on(
+      [() => follows?.authors, () => props.author, following],
+      ([followingAuthors, currentAuthor, _]) => {
+        setIsFollowed(followingAuthors?.some((followedAuthor) => followedAuthor.id === currentAuthor?.id))
+      },
+      { defer: true },
+    ),
+  )
 
   const { changeSearchParams } = useRouter()
   const { t, formatDate, lang } = useLocalize()
@@ -132,7 +134,7 @@ export const AuthorBadge = (props: Props) => {
       <Show when={props.author.slug !== author()?.slug && !props.nameOnly}>
         <div class={styles.actions}>
           <FollowingButton
-            action={() => handleFollowClick()}
+            action={handleFollowClick}
             isFollowed={isFollowed()}
             actionMessageType={following()?.slug === props.author.slug ? following().type : undefined}
           />

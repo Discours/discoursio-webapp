@@ -62,7 +62,7 @@ export const TableOfContents = (props: Props) => {
   createEffect(
     on(
       () => props.body,
-      () => debouncedUpdateHeadings(),
+      (_) => debouncedUpdateHeadings(),
     ),
   )
 

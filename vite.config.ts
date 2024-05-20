@@ -16,7 +16,7 @@ const cssModuleHMR = () => {
       modules.forEach((module) => {
         if (module.id.includes('.scss') || module.id.includes('.css')) {
           module.isSelfAccepting = true
-          module.accept()
+          // module.accept()
         }
       })
     },

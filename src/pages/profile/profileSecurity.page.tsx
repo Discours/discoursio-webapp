@@ -44,10 +44,10 @@ export const ProfileSecurityPage = () => {
   createEffect(
     on(
       () => session()?.user?.email,
-      () => {
+      (email) => {
         setFormData((prevData) => ({
           ...prevData,
-          ['email']: session()?.user?.email,
+          email,
         }))
       },
     ),

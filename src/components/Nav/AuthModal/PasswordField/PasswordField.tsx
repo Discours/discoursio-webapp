@@ -63,18 +63,8 @@ export const PasswordField = (props: Props) => {
     }
   }
 
-  createEffect(
-    on(
-      () => error(),
-      () => {
-        props.errorMessage?.(error())
-      },
-      { defer: true },
-    ),
-  )
-  createEffect(() => {
-    setError(props.setError)
-  })
+  createEffect(on(error, (er) => er && props.errorMessage?.(er), { defer: true }))
+  createEffect(() => setError(props.setError))
 
   return (
     <div class={clsx(styles.PassportField, props.class)}>

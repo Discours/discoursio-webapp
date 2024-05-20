@@ -429,7 +429,7 @@
   }
 }
 
-.subscribersContainer {
+.followersContainer {
   display: flex;
   flex-wrap: wrap;
   font-size: 1.4rem;
@@ -440,7 +440,7 @@
   }
 }
 
-.subscribers {
+.followers {
   align-items: center;
   cursor: pointer;
   display: inline-flex;
@@ -456,7 +456,7 @@
     margin-right: 0;
   }
 
-  .subscribersItem {
+  .followersItem {
     position: relative;
 
     &:nth-child(1) {
@@ -473,7 +473,7 @@
     }
   }
 
-  .subscribersCounter {
+  .followsCounter {
     font-weight: 500;
     margin-left: 1rem;
   }
@@ -481,7 +481,7 @@
   &:hover {
     background: none !important;
 
-    .subscribersCounter {
+    .followsCounter {
       background: var(--background-color-invert);
     }
   }

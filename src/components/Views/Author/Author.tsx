@@ -40,65 +40,19 @@ const LOAD_MORE_PAGE_SIZE = 9
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
   const { followers: myFollowers, follows: myFollows } = useFollowing()
-  const { session, author: me } = useSession()
+  const { author: me } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
-  const [author, setAuthor] = createSignal<Author>()
+  const [author, setAuthor] = createSignal<Author>(props.author)
   const [followers, setFollowers] = createSignal([])
   const [following, changeFollowing] = createSignal<Array<Author | Topic>>([]) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
-  const [sessionChecked, setSessionChecked] = createSignal(false)
-  createEffect(
-    on(
-      [() => sessionChecked(), () => props.authorSlug, () => session()?.user?.app_data?.profile?.slug],
-      ([checked, slug, mySlug]) => {
-        if (!checked && slug && mySlug === slug) {
-          setSessionChecked(true)
-          const appdata = session()?.user.app_data
-          if (appdata) {
-            console.info('preloaded my own profile')
-            setFollowers(myFollowers())
-            setAuthor(me())
-            const { authors, topics } = myFollows
-            changeFollowing([...authors, ...topics])
-          }
-        }
-      },
-      { defer: true },
-    ),
-  )
-
-  const bioContainerRef: { current: HTMLDivElement } = { current: null }
-  const bioWrapperRef: { current: HTMLDivElement } = { current: null }
-
-  const fetchData = async (slug: string) => {
-    try {
-      const [followsResult, followersResult, authorResult] = await Promise.all([
-        apiClient.getAuthorFollows({ slug }),
-        apiClient.getAuthorFollowers({ slug }),
-        loadAuthor({ slug }),
-      ])
-      console.info('[components.Author] data loaded')
-      setAuthor(authorResult)
-      setFollowers(followersResult || [])
-      const { authors, topics } = followsResult
-      changeFollowing([...(authors || []), ...(topics || [])])
-    } catch (error) {
-      console.error('[components.Author] fetch error', error)
-    }
-  }
-
-  const checkBioHeight = () => {
-    if (bioContainerRef.current) {
-      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
-    }
-  }
-
+  // пагинация загрузки ленты постов
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
@@ -110,34 +64,70 @@ export const AuthorView = (props: Props) => {
     restoreScrollPosition()
   }
 
+  // загружает профиль и подписки
+  const [isFetching, setIsFetching] = createSignal(false)
+  const fetchData = async (slug) => {
+    setIsFetching(true)
+    const authorResult = await loadAuthor({ slug })
+    setAuthor(authorResult)
+    console.info(`[Author] profile for @${slug} fetched`)
+
+    const followsResult = await apiClient.getAuthorFollows({ slug })
+    const { authors, topics } = followsResult
+    changeFollowing([...(authors || []), ...(topics || [])])
+    console.info(`[Author] follows for @${slug} fetched`)
+
+    const followersResult = await apiClient.getAuthorFollowers({ slug })
+    setFollowers(followersResult || [])
+    console.info(`[Author] followers for @${slug} fetched`)
+    setIsFetching(false)
+  }
+
+  // проверяет не собственный ли это профиль, иначе - загружает
+  createEffect(
+    on([() => me(), () => props.authorSlug], ([myProfile, slug]) => {
+      const my = slug && myProfile?.slug === slug
+      if (my) {
+        console.debug('[Author] my profile precached')
+        myProfile && setAuthor(myProfile)
+        setFollowers(myFollowers() || [])
+        changeFollowing([...(myFollows?.authors || []), ...(myFollows?.topics || [])])
+      } else if (slug && !isFetching()) {
+        fetchData(slug)
+      }
+    }),
+    { defer: true },
+  )
+
+  // догружает ленту и комментарии
+  createEffect(
+    on(author, async (profile) => {
+      if (!commented() && profile) {
+        await loadMore()
+
+        const ccc = await apiClient.getReactionsBy({
+          by: { comment: true, created_by: profile.id },
+        })
+        setCommented(ccc)
+      }
+    }),
+  )
+
+  const bioContainerRef: { current: HTMLDivElement } = { current: null }
+  const bioWrapperRef: { current: HTMLDivElement } = { current: null }
+  const checkBioHeight = () => {
+    if (bioContainerRef.current) {
+      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
+    }
+  }
+
   onMount(() => {
     if (!modal) hideModal()
-    fetchData(props.authorSlug)
     checkBioHeight()
-    loadMore()
   })
 
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
-  )
-
-  const fetchComments = async (commenter: Author) => {
-    const data = await apiClient.getReactionsBy({
-      by: { comment: true, created_by: commenter.id },
-    })
-    setCommented(data)
-  }
-
-  const authorSlug = createMemo(() => author()?.slug)
-  createEffect(
-    on(
-      () => authorSlug(),
-      () => {
-        fetchData(authorSlug())
-        fetchComments(author())
-      },
-      { defer: true },
-    ),
   )
 
   const ogImage = createMemo(() =>
@@ -168,7 +158,7 @@ export const AuthorView = (props: Props) => {
         <Show when={author()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard author={author()} followers={followers() || []} following={following() || []} />
+              <AuthorCard author={author()} followers={followers() || []} flatFollows={following() || []} />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">

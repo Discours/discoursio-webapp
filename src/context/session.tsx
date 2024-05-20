@@ -96,15 +96,15 @@ export const SessionProvider = (props: {
   // handle auth state callback
   createEffect(
     on(
-      () => searchParams()?.state,
-      (state) => {
-        if (state) {
-          setOauthState((_s) => state)
-          const scope = searchParams()?.scope
-            ? searchParams()?.scope?.toString().split(' ')
+      searchParams,
+      (params) => {
+        if (params?.state) {
+          setOauthState((_s) => params?.state)
+          const scope = params?.scope
+            ? params?.scope?.toString().split(' ')
             : ['openid', 'profile', 'email']
           if (scope) console.info(`[context.session] scope: ${scope}`)
-          const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
+          const url = params?.redirect_uri || params?.redirectURL || window.location.href
           setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
           changeSearchParams({ mode: 'confirm-email', m: 'auth' }, true)
         }

@@ -143,16 +143,20 @@ export const FeedView = (props: Props) => {
     Promise.all([loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
   })
 
-  createEffect(() => {
-    if (session()?.access_token && !unratedArticles()) {
-      loadUnratedArticles()
-    }
-  })
+  createEffect(
+    on(
+      [() => session(), unratedArticles],
+      ([s, seen]) => {
+        if (s?.access_token && !(seen?.length > 0)) loadUnratedArticles()
+      },
+      { defer: true },
+    ),
+  )
 
   createEffect(
     on(
-      () => page().route + searchParams().by + searchParams().period + searchParams().visibility,
-      () => {
+      [page, searchParams],
+      (_, _p) => {
         resetSortedArticles()
         loadMore()
       },

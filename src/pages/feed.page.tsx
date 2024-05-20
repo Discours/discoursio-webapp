@@ -25,20 +25,9 @@ const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
 
 export const FeedPage = () => {
   const { t } = useLocalize()
-
-  onCleanup(() => resetSortedArticles())
-
   const { page } = useRouter()
-
-  createEffect(
-    on(
-      () => page().route,
-      () => {
-        resetSortedArticles()
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(on(page, (_) => resetSortedArticles(), { defer: true }))
+  onCleanup(() => resetSortedArticles())
 
   return (
     <PageLayout title={t('Feed')}>

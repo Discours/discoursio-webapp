@@ -136,21 +136,18 @@ export const InboxView = (props: Props) => {
   }
 
   createEffect(
-    on(
-      () => messages(),
-      () => {
-        if (!messagesContainerRef.current) {
-          return
-        }
-        if (messagesContainerRef.current.scrollTop >= messagesContainerRef.current.scrollHeight) {
-          return
-        }
-        messagesContainerRef.current.scroll({
-          top: messagesContainerRef.current.scrollHeight,
-          behavior: 'smooth',
-        })
-      },
-    ),
+    on(messages, () => {
+      if (!messagesContainerRef.current) {
+        return
+      }
+      if (messagesContainerRef.current.scrollTop >= messagesContainerRef.current.scrollHeight) {
+        return
+      }
+      messagesContainerRef.current.scroll({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }),
     { defer: true },
   )
   const handleScrollMessageContainer = () => {

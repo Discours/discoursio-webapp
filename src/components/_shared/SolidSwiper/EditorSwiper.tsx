@@ -61,7 +61,7 @@ export const EditorSwiper = (props: Props) => {
   createEffect(
     on(
       () => props.images.length,
-      () => {
+      (_) => {
         mainSwipeRef.current?.swiper.update()
         thumbSwipeRef.current?.swiper.update()
       },

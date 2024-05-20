@@ -87,13 +87,7 @@ export const TopicView = (props: Props) => {
     loadReactedTopMonthArticles(topic()?.slug)
   }
 
-  createEffect(
-    on(
-      () => topic(),
-      () => loadRandom(),
-      { defer: true },
-    ),
-  )
+  createEffect(on(topic, loadRandom, { defer: true }))
 
   const title = createMemo(
     () =>

@@ -94,20 +94,13 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
 
   createEffect(
     on(
-      () => author(),
-      (a) => {
-        if (a?.id) {
-          try {
-            const appdata = session()?.user.app_data
-            if (appdata) {
-              const { authors, followers, topics } = appdata
-              setFollows({ authors, topics })
-              setFollowers(followers)
-              if (!authors) fetchData()
-            }
-          } catch (e) {
-            console.error(e)
-          }
+      () => session()?.user.app_data,
+      (appdata) => {
+        if (appdata) {
+          const { authors, followers, topics } = appdata
+          setFollows({ authors, topics })
+          setFollowers(followers)
+          if (!authors) fetchData()
         }
       },
     ),

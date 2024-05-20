@@ -1,13 +1,13 @@
 .placeholder {
   border-radius: 2.2rem;
   display: flex;
-  @include font-size(1.4rem);
+  font-size: 1.4rem;
   font-weight: 500;
   overflow: hidden;
   position: relative;
 
   h3 {
-    @include font-size(2.4rem);
+    font-size: 2.4rem;
   }
 
   button,
@@ -68,28 +68,34 @@
 .placeholder--profile-mode {
   min-height: 40rem;
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(lg) {
     display: block;
   }
 
-  @include media-breakpoint-up(md) {
-    min-height: 28rem;
+  @include media-breakpoint-up(lg) {
+    max-height: 30rem;
+    min-height: auto;
   }
 
   .placeholderCover {
     padding: 1.6rem;
 
-    @include media-breakpoint-up(md) {
-      flex: 0 45rem;
-      min-width: 50%;
+    @include media-breakpoint-up(lg) {
+      //flex: 0 50%;
+      //min-width: 50%;
       order: 2;
       position: static;
-      width: 45rem;
     }
 
     img {
-      height: auto;
+      height: 100%;
+      object-fit: contain;
       width: 100%;
+      //width: auto;
+
+      @include media-breakpoint-up(lg) {
+        object-position: right;
+      }
     }
   }
 
@@ -97,9 +103,19 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    @include font-size(2rem);
+    font-size: 1.4rem;
     line-height: 1.2;
-    padding: 3rem;
+    min-width: 60%;
+    padding: 0 2rem 2rem;
+
+    @include media-breakpoint-up(md) {
+      font-size: 1.6rem;
+      padding: 3rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      font-size: 2rem;
+    }
   }
 
   h3 {
@@ -108,13 +124,14 @@
 
   .button {
     background: var(--background-color-invert);
-    color: var(--default-color-invert);
     bottom: 2rem;
+    color: var(--default-color-invert);
+    font-size: 1.6rem;
     left: 2rem;
     right: 2rem;
     width: 100%;
 
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       left: auto;
       position: absolute;
       width: auto;

@@ -27,6 +27,7 @@ import { Loading } from '../../_shared/Loading'
 import { MODALS, hideModal } from '../../../stores/ui'
 import { byCreated } from '../../../utils/sortby'
 import stylesArticle from '../../Article/Article.module.scss'
+import { Placeholder } from '../../Feed/Placeholder'
 import styles from './Author.module.scss'
 
 type Props = {
@@ -260,6 +261,10 @@ export const AuthorView = (props: Props) => {
         </Match>
         <Match when={getPage().route === 'authorComments'}>
           <div class="wide-container">
+            <Placeholder type={getPage().route} mode="profile" />
+          </div>
+
+          <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
                 <ul class={stylesArticle.comments}>
@@ -279,46 +284,56 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'author'}>
-          <Show when={sortedArticles().length === 1}>
-            <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
+          <Show
+            when={session()?.user?.app_data?.profile?.slug === props.authorSlug && !sortedArticles().length}
+          >
+            <div class="wide-container">
+              <Placeholder type={getPage().route} mode="profile" />
+            </div>
           </Show>
 
-          <Show when={sortedArticles().length === 2}>
-            <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
-          </Show>
+          <Show when={sortedArticles().length > 0}>
+            <Show when={sortedArticles().length === 1}>
+              <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
+            </Show>
 
-          <Show when={sortedArticles().length === 3}>
-            <Row3 articles={sortedArticles()} noauthor={true} nodate={true} />
-          </Show>
+            <Show when={sortedArticles().length === 2}>
+              <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
+            </Show>
 
-          <Show when={sortedArticles().length > 3}>
-            <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noauthor={true} />
-            <Row1 article={sortedArticles()[3]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noauthor={true} />
-            <Row1 article={sortedArticles()[6]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noauthor={true} />
+            <Show when={sortedArticles().length === 3}>
+              <Row3 articles={sortedArticles()} noauthor={true} nodate={true} />
+            </Show>
 
-            <For each={pages()}>
-              {(page) => (
-                <>
-                  <Row1 article={page[0]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
-                  <Row1 article={page[3]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
-                  <Row1 article={page[6]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
-                </>
-              )}
-            </For>
-          </Show>
+            <Show when={sortedArticles().length > 3}>
+              <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
+              <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noauthor={true} />
+              <Row1 article={sortedArticles()[3]} noauthor={true} nodate={true} />
+              <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noauthor={true} />
+              <Row1 article={sortedArticles()[6]} noauthor={true} nodate={true} />
+              <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noauthor={true} />
 
-          <Show when={isLoadMoreButtonVisible()}>
-            <p class="load-more-container">
-              <button class="button" onClick={loadMore}>
-                {t('Load more')}
-              </button>
-            </p>
+              <For each={pages()}>
+                {(page) => (
+                  <>
+                    <Row1 article={page[0]} noauthor={true} nodate={true} />
+                    <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
+                    <Row1 article={page[3]} noauthor={true} nodate={true} />
+                    <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
+                    <Row1 article={page[6]} noauthor={true} nodate={true} />
+                    <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
+                  </>
+                )}
+              </For>
+            </Show>
+
+            <Show when={isLoadMoreButtonVisible()}>
+              <p class="load-more-container">
+                <button class="button" onClick={loadMore}>
+                  {t('Load more')}
+                </button>
+              </p>
+            </Show>
           </Show>
         </Match>
       </Switch>

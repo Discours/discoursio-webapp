@@ -1,4 +1,4 @@
-import type { Topic } from '../../graphql/schema/core.gen'
+import type { Author, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
@@ -15,6 +15,8 @@ import styles from './Full.module.scss'
 
 type Props = {
   topic: Topic
+  followers?: Author[]
+  authors?: Author[]
 }
 
 export const FullTopic = (props: Props) => {
@@ -54,7 +56,12 @@ export const FullTopic = (props: Props) => {
           </div>
         </Show>
 
-        <Subscribers followers={props.topic?.followers} following={props.topic?.following} />
+        <Subscribers
+          followers={props.followers}
+          followersAmount={props.topic?.stat?.followers}
+          following={props.authors}
+          followingAmount={props.topic?.stat?.authors}
+        />
       </div>
 
       <div class={clsx(styles.topicActions)}>
@@ -69,7 +76,7 @@ export const FullTopic = (props: Props) => {
         </a>
       </div>
       <Show when={props.topic?.pic}>
-        <img src={props.topic.pic} alt={props.topic?.title} />
+        <img src={props.topic?.pic} alt={props.topic?.title} />
       </Show>
     </div>
   )

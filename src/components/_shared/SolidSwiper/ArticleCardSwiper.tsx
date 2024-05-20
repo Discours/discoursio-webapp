@@ -37,7 +37,6 @@ export const ArticleCardSwiper = (props: Props) => {
           [styles.Swiper]: props.slides.length > 1,
           [styles.articleMode]: true,
           [styles.ArticleCardSwiper]: props.slides.length > 1,
-          [styles.unswiped]: props.slides.length === 1,
         })}
       >
         <Show when={props.title}>

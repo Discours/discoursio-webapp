@@ -16,6 +16,9 @@ type Props = {
   onBlur?: (value: string) => void
   variant?: 'login' | 'registration'
   disableAutocomplete?: boolean
+  noValidate?: boolean
+  onFocus?: () => void
+  value?: string
 }
 
 const minLength = 8
@@ -27,7 +30,7 @@ export const PasswordField = (props: Props) => {
   const [showPassword, setShowPassword] = createSignal(false)
   const [error, setError] = createSignal<string>()
 
-  const validatePassword = (passwordToCheck) => {
+  const validatePassword = (passwordToCheck: string) => {
     if (passwordToCheck.length < minLength) {
       return t('Password should be at least 8 characters')
     }
@@ -50,11 +53,13 @@ export const PasswordField = (props: Props) => {
     }
 
     props.onInput(value)
-    const errorValue = validatePassword(value)
-    if (errorValue) {
-      setError(errorValue)
-    } else {
-      setError()
+    if (!props.noValidate) {
+      const errorValue = validatePassword(value)
+      if (errorValue) {
+        setError(errorValue)
+      } else {
+        setError()
+      }
     }
   }
 
@@ -78,6 +83,8 @@ export const PasswordField = (props: Props) => {
           id="password"
           name="password"
           disabled={props.disabled}
+          onFocus={props.onFocus}
+          value={props.value ? props.value : ''}
           autocomplete={props.disableAutocomplete ? 'one-time-code' : 'current-password'}
           type={showPassword() ? 'text' : 'password'}
           placeholder={props.placeholder || t('Password')}

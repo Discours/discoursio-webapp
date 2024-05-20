@@ -95,6 +95,7 @@
   "Community Principles": "Принципы сообщества",
   "Community values and rules of engagement for the open editorial team": "Ценности сообщества и правила взаимодействия открытой редакции",
   "Confirm": "Подтвердить",
+  "Contents": "Оглавление",
   "Contribute to free samizdat. Support Discours - an independent non-profit publication that works only for you. Become a pillar of the open newsroom": "Внесите вклад в свободный самиздат. Поддержите Дискурс — независимое некоммерческое издание, которое работает только для вас. Станьте опорой открытой редакции",
   "Cooperate": "Соучаствовать",
   "Copy link": "Скопировать ссылку",
@@ -492,7 +493,6 @@
   "cancel": "отменить",
   "collections": "коллекции",
   "community": "сообщество",
-  "contents": "оглавление",
   "create_chat": "Создать чат",
   "create_group": "Создать группу",
   "delimiter": "разделитель",
@@ -549,6 +549,7 @@
   "topicKeywords": "{topic}, Discours.io, статьи, журналистика, исследования",
   "topics": "темы",
   "user already exist": "пользователь уже существует",
+  "User was not found": "Пользователь не найден",
   "verified": "уже подтверждён",
   "video": "видео",
   "view": "просмотр",
@@ -558,5 +559,13 @@
   "It's OK. Just enter your email to receive a link to change your password": "Ничего страшного. Просто укажите свою почту, чтобы получить ссылку для смены пароля",
   "Restore password": "Восстановить пароль",
   "Subscribing...": "Подписываем...",
-  "Unsubscribing...": "Отписываем..."
+  "Unsubscribing...": "Отписываем...",
+  "Login and security": "Вход и безопасность",
+  "Settings for account, email, password and login methods.": "Настройки аккаунта, почты, пароля и способов входа.",
+  "Current password": "Текущий пароль",
+  "Confirm your new password": "Подтвердите новый пароль",
+  "Connect": "Привязать",
+  "Incorrect old password": "Старый пароль не верен",
+  "Repeat new password": "Повторите новый пароль",
+  "Incorrect new password confirm": "Неверное подтверждение нового пароля"
 }

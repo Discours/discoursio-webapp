@@ -103,7 +103,13 @@ export const HeaderAuth = (props: Props) => {
         <div class={clsx('col-auto col-lg-7', styles.usernav)}>
           <div class={styles.userControl}>
             <Show when={isCreatePostButtonVisible() && session()?.access_token}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+              <div
+                class={clsx(
+                  styles.userControlItem,
+                  styles.userControlItemVerbose,
+                  styles.userControlItemCreate,
+                )}
+              >
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
@@ -210,11 +216,17 @@ export const HeaderAuth = (props: Props) => {
             </Show>
 
             <Show when={isCreatePostButtonVisible() && !session()?.access_token}>
-              <div class={clsx(styles.userControlItem, styles.userControlItemVerbose)}>
+              <div
+                class={clsx(
+                  styles.userControlItem,
+                  styles.userControlItemVerbose,
+                  styles.userControlItemCreate,
+                )}
+              >
                 <a href={getPagePath(router, 'create')}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
-                  <Icon name="pencil" class={styles.icon} />
-                  <Icon name="pencil" class={clsx(styles.icon, styles.iconHover)} />
+                  <Icon name="pencil-outline" class={styles.icon} />
+                  <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
                 </a>
               </div>
             </Show>
@@ -227,7 +239,7 @@ export const HeaderAuth = (props: Props) => {
                     <a href="?m=auth&mode=login">
                       <span class={styles.textLabel}>{t('Enter')}</span>
                       <Icon name="key" class={styles.icon} />
-                      {/*<Icon name="user-default" class={clsx(styles.icon, styles.iconHover)} />*/}
+                      <Icon name="key" class={clsx(styles.icon, styles.iconHover)} />
                     </a>
                   </div>
                 </Show>

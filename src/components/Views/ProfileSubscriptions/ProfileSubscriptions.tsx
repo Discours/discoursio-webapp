@@ -1,12 +1,11 @@
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal } from 'solid-js'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { Author, Topic } from '../../../graphql/schema/core.gen'
-import { SubscriptionFilter } from '../../../pages/types'
+import { FollowsFilter } from '../../../pages/types'
 import { dummyFilter } from '../../../utils/dummyFilter'
-// TODO: refactor styles
 import { isAuthor } from '../../../utils/isAuthor'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
@@ -19,30 +18,30 @@ import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()
-  const { subscriptions } = useFollowing()
-  const [following, setFollowing] = createSignal<Array<Author | Topic>>([])
+  const { follows } = useFollowing()
+  const [flatFollows, setFlatFollows] = createSignal<Array<Author | Topic>>([])
   const [filtered, setFiltered] = createSignal<Array<Author | Topic>>([])
-  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
+  const [followsFilter, setFollowsFilter] = createSignal<FollowsFilter>('all')
   const [searchQuery, setSearchQuery] = createSignal('')
 
-  createEffect(() => {
-    const { authors, topics } = subscriptions
-    if (authors || topics) {
-      const fdata = [...(authors || []), ...(topics || [])]
-      setFollowing(fdata)
-      if (subscriptionFilter() === 'authors') {
-        setFiltered(fdata.filter((s) => 'name' in s))
-      } else if (subscriptionFilter() === 'topics') {
-        setFiltered(fdata.filter((s) => 'title' in s))
+  createEffect(() => setFlatFollows([...(follows?.authors || []), ...(follows?.topics || [])]))
+
+  createEffect(
+    on([flatFollows, followsFilter], ([flat, mode]) => {
+      if (mode === 'authors') {
+        setFiltered(flat.filter((s) => 'name' in s))
+      } else if (mode === 'topics') {
+        setFiltered(flat.filter((s) => 'title' in s))
       } else {
-        setFiltered(fdata)
+        setFiltered(flat)
       }
-    }
-  })
+    }),
+    { defer: true },
+  )
 
   createEffect(() => {
     if (searchQuery()) {
-      setFiltered(dummyFilter(following(), searchQuery(), lang()))
+      setFiltered(dummyFilter(flatFollows(), searchQuery(), lang()))
     }
   })
 
@@ -60,32 +59,32 @@ export const ProfileSubscriptions = () => {
             <div class="col-md-20 col-lg-18 col-xl-16">
               <h1>{t('My subscriptions')}</h1>
               <p class="description">{t('Here you can manage all your Discours subscriptions')}</p>
-              <Show when={following()} fallback={<Loading />}>
+              <Show when={flatFollows()} fallback={<Loading />}>
                 <ul class="view-switcher">
                   <li
                     class={clsx({
-                      'view-switcher__item--selected': subscriptionFilter() === 'all',
+                      'view-switcher__item--selected': followsFilter() === 'all',
                     })}
                   >
-                    <button type="button" onClick={() => setSubscriptionFilter('all')}>
+                    <button type="button" onClick={() => setFollowsFilter('all')}>
                       {t('All')}
                     </button>
                   </li>
                   <li
                     class={clsx({
-                      'view-switcher__item--selected': subscriptionFilter() === 'authors',
+                      'view-switcher__item--selected': followsFilter() === 'authors',
                     })}
                   >
-                    <button type="button" onClick={() => setSubscriptionFilter('authors')}>
+                    <button type="button" onClick={() => setFollowsFilter('authors')}>
                       {t('Authors')}
                     </button>
                   </li>
                   <li
                     class={clsx({
-                      'view-switcher__item--selected': subscriptionFilter() === 'topics',
+                      'view-switcher__item--selected': followsFilter() === 'topics',
                     })}
                   >
-                    <button type="button" onClick={() => setSubscriptionFilter('topics')}>
+                    <button type="button" onClick={() => setFollowsFilter('topics')}>
                       {t('Topics')}
                     </button>
                   </li>
@@ -104,9 +103,9 @@ export const ProfileSubscriptions = () => {
                     {(followingItem) => (
                       <div>
                         {isAuthor(followingItem) ? (
-                          <AuthorBadge minimizeSubscribeButton={true} author={followingItem} />
+                          <AuthorBadge minimize={true} author={followingItem} />
                         ) : (
-                          <TopicBadge minimizeSubscribeButton={true} topic={followingItem} />
+                          <TopicBadge minimize={true} topic={followingItem} />
                         )}
                       </div>
                     )}

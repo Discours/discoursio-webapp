@@ -17,7 +17,7 @@ export const CustomBlockquote = Blockquote.extend({
   content: 'block+',
 
   addOptions(): BlockquoteOptions {
-    return {} as BlockquoteOptions;
+    return {} as BlockquoteOptions
   },
 
   addAttributes() {
@@ -35,15 +35,13 @@ export const CustomBlockquote = Blockquote.extend({
   addCommands() {
     return {
       toggleBlockquote:
-        (type) => ({ commands }) => commands.toggleWrap(
-          this.name,
-          { 'data-type': type }
-        ),
+        (type) =>
+        ({ commands }) =>
+          commands.toggleWrap(this.name, { 'data-type': type }),
       setBlockQuoteFloat:
-        (value) => ({ commands }) => commands.updateAttributes(
-          this.name,
-          { 'data-float': value }
-        ),
+        (value) =>
+        ({ commands }) =>
+          commands.updateAttributes(this.name, { 'data-float': value }),
     }
   },
 })

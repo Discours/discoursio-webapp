@@ -10,17 +10,17 @@ import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { translit } from '../../../utils/ru2en'
 import { isCyrillic } from '../../../utils/translate'
-import { BadgeSubscribeButton } from '../../_shared/BadgeSubscribeButton'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+import { FollowingButton } from '../../_shared/FollowingButton'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 import styles from './AuthorBadge.module.scss'
 
 type Props = {
   author: Author
-  minimizeSubscribeButton?: boolean
+  minimize?: boolean
   showMessageButton?: boolean
   iconButtons?: boolean
   nameOnly?: boolean
@@ -32,14 +32,14 @@ type Props = {
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
   const { author, requireAuthentication } = useSession()
-  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
+  const { follow, unfollow, follows, following } = useFollowing()
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
+  const [isFollowed, setIsFollowed] = createSignal<boolean>()
 
   createEffect(() => {
-    if (!(subscriptions && props.author)) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
-    setIsSubscribed(subscribed)
+    if (!(follows && props.author)) return
+    const followed = follows?.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
+    setIsFollowed(followed)
   })
 
   createEffect(() => {
@@ -73,9 +73,9 @@ export const AuthorBadge = (props: Props) => {
 
   const handleFollowClick = () => {
     requireAuthentication(async () => {
-      const handle = isSubscribed() ? unfollow : follow
+      const handle = isFollowed() ? unfollow : follow
       await handle(FollowingEntity.Author, props.author.slug)
-    }, 'subscribe')
+    }, 'follow')
   }
 
   return (
@@ -131,12 +131,10 @@ export const AuthorBadge = (props: Props) => {
       </div>
       <Show when={props.author.slug !== author()?.slug && !props.nameOnly}>
         <div class={styles.actions}>
-          <BadgeSubscribeButton
+          <FollowingButton
             action={() => handleFollowClick()}
-            isSubscribed={isSubscribed()}
-            actionMessageType={
-              subscribeInAction()?.slug === props.author.slug ? subscribeInAction().type : undefined
-            }
+            isFollowed={isFollowed()}
+            actionMessageType={following()?.slug === props.author.slug ? following().type : undefined}
           />
           <Show when={props.showMessageButton}>
             <Button

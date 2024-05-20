@@ -39,54 +39,55 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { followers: myFollowers } = useFollowing()
-  const { session } = useSession()
+  const { followers: myFollowers, follows: myFollows } = useFollowing()
+  const { session, author: me } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [author, setAuthor] = createSignal<Author>()
   const [followers, setFollowers] = createSignal([])
-  const [following, setFollowing] = createSignal<Array<Author | Topic>>([]) // flat AuthorFollowsResult
+  const [following, changeFollowing] = createSignal<Array<Author | Topic>>([]) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
   const [sessionChecked, setSessionChecked] = createSignal(false)
-  createEffect(() => {
-    if (
-      !sessionChecked() &&
-      props.authorSlug &&
-      session()?.user?.app_data?.profile?.slug === props.authorSlug
-    ) {
-      setSessionChecked(true)
-      const appdata = session()?.user.app_data
-      if (appdata) {
-        console.info('preloaded my own profile')
-        const { authors, profile, topics } = appdata
-        setFollowers(myFollowers)
-        setAuthor(profile)
-        setFollowing([...authors, ...topics])
-      }
-    }
-  })
+  createEffect(
+    on(
+      [() => sessionChecked(), () => props.authorSlug, () => session()?.user?.app_data?.profile?.slug],
+      ([checked, slug, mySlug]) => {
+        if (!checked && slug && mySlug === slug) {
+          setSessionChecked(true)
+          const appdata = session()?.user.app_data
+          if (appdata) {
+            console.info('preloaded my own profile')
+            setFollowers(myFollowers())
+            setAuthor(me())
+            const { authors, topics } = myFollows
+            changeFollowing([...authors, ...topics])
+          }
+        }
+      },
+      { defer: true },
+    ),
+  )
 
   const bioContainerRef: { current: HTMLDivElement } = { current: null }
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
   const fetchData = async (slug: string) => {
     try {
-      const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
+      const [followsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
         apiClient.getAuthorFollowers({ slug }),
         loadAuthor({ slug }),
       ])
-      const { authors, topics } = subscriptionsResult
-      setAuthor(authorResult)
-      setFollowing([...(authors || []), ...(topics || [])])
-      setFollowers(followersResult || [])
-
       console.info('[components.Author] data loaded')
+      setAuthor(authorResult)
+      setFollowers(followersResult || [])
+      const { authors, topics } = followsResult
+      changeFollowing([...(authors || []), ...(topics || [])])
     } catch (error) {
       console.error('[components.Author] fetch error', error)
     }

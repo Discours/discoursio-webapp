@@ -8,7 +8,7 @@ import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
-import { SubscriptionFilter } from '../../../pages/types'
+import { FollowsFilter } from '../../../pages/types'
 import { router, useRouter } from '../../../stores/router'
 import { isAuthor } from '../../../utils/isAuthor'
 import { translit } from '../../../utils/ru2en'
@@ -33,19 +33,19 @@ export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
   const { author, isSessionLoaded, requireAuthentication } = useSession()
   const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
-  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
-  const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
+  const [followsFilter, setFollowsFilter] = createSignal<FollowsFilter>('all')
+  const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
+  const { follow, unfollow, follows, following } = useFollowing()
 
   onMount(() => {
     setAuthorSubs(props.following)
   })
 
   createEffect(() => {
-    if (!(subscriptions && props.author)) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
-    setIsSubscribed(subscribed)
+    if (!(follows && props.author)) return
+    const followed = follows?.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
+    setIsFollowed(followed)
   })
 
   const name = createMemo(() => {
@@ -72,11 +72,11 @@ export const AuthorCard = (props: Props) => {
 
   createEffect(() => {
     if (props.following) {
-      if (subscriptionFilter() === 'authors') {
+      if (followsFilter() === 'authors') {
         setAuthorSubs(props.following.filter((s) => 'name' in s))
-      } else if (subscriptionFilter() === 'topics') {
+      } else if (followsFilter() === 'topics') {
         setAuthorSubs(props.following.filter((s) => 'title' in s))
-      } else if (subscriptionFilter() === 'communities') {
+      } else if (followsFilter() === 'communities') {
         setAuthorSubs(props.following.filter((s) => 'title' in s))
       } else {
         setAuthorSubs(props.following)
@@ -86,18 +86,18 @@ export const AuthorCard = (props: Props) => {
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      isSubscribed()
+      isFollowed()
         ? unfollow(FollowingEntity.Author, props.author.slug)
         : follow(FollowingEntity.Author, props.author.slug)
-    }, 'subscribe')
+    }, 'follow')
   }
 
   const followButtonText = createMemo(() => {
-    if (subscribeInAction()?.slug === props.author.slug) {
-      return subscribeInAction().type === 'subscribe' ? t('Subscribing...') : t('Unsubscribing...')
+    if (following()?.slug === props.author.slug) {
+      return following().type === 'follow' ? t('Following...') : t('Unfollowing...')
     }
 
-    if (isSubscribed()) {
+    if (isFollowed()) {
       return (
         <>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
@@ -208,11 +208,11 @@ export const AuthorCard = (props: Props) => {
                   <Show when={authorSubs()?.length}>
                     <Button
                       onClick={handleFollowClick}
-                      disabled={Boolean(subscribeInAction())}
+                      disabled={Boolean(following())}
                       value={followButtonText()}
                       isSubscribeButton={true}
                       class={clsx({
-                        [stylesButton.subscribed]: isSubscribed(),
+                        [stylesButton.followed]: isFollowed(),
                       })}
                     />
                   </Show>
@@ -272,20 +272,20 @@ export const AuthorCard = (props: Props) => {
               <ul class="view-switcher">
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': subscriptionFilter() === 'all',
+                    'view-switcher__item--selected': followsFilter() === 'all',
                   })}
                 >
-                  <button type="button" onClick={() => setSubscriptionFilter('all')}>
+                  <button type="button" onClick={() => setFollowsFilter('all')}>
                     {t('All')}
                   </button>
                   <span class="view-switcher__counter">{props.following.length}</span>
                 </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': subscriptionFilter() === 'authors',
+                    'view-switcher__item--selected': followsFilter() === 'authors',
                   })}
                 >
-                  <button type="button" onClick={() => setSubscriptionFilter('authors')}>
+                  <button type="button" onClick={() => setFollowsFilter('authors')}>
                     {t('Authors')}
                   </button>
                   <span class="view-switcher__counter">
@@ -294,10 +294,10 @@ export const AuthorCard = (props: Props) => {
                 </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': subscriptionFilter() === 'topics',
+                    'view-switcher__item--selected': followsFilter() === 'topics',
                   })}
                 >
-                  <button type="button" onClick={() => setSubscriptionFilter('topics')}>
+                  <button type="button" onClick={() => setFollowsFilter('topics')}>
                     {t('Topics')}
                   </button>
                   <span class="view-switcher__counter">

@@ -30,7 +30,7 @@ export default Node.create({
   addOptions() {
     return {
       'data-type': 'incut',
-    };
+    }
   },
 
   addAttributes() {
@@ -48,20 +48,20 @@ export default Node.create({
     return {
       toggleArticle:
         () =>
-          // eslint-disable-next-line unicorn/consistent-function-scoping
-          ({ commands }) => {
-            return commands.toggleWrap('article')
-          },
+        // eslint-disable-next-line unicorn/consistent-function-scoping
+        ({ commands }) => {
+          return commands.toggleWrap('article')
+        },
       setArticleFloat:
         (value) =>
-          ({ commands }) => {
-            return commands.updateAttributes(this.name, { 'data-float': value })
-          },
+        ({ commands }) => {
+          return commands.updateAttributes(this.name, { 'data-float': value })
+        },
       setArticleBg:
         (value) =>
-          ({ commands }) => {
-            return commands.updateAttributes(this.name, { 'data-bg': value })
-          },
+        ({ commands }) => {
+          return commands.updateAttributes(this.name, { 'data-bg': value })
+        },
     }
   },
 })

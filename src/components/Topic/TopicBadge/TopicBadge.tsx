@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal } from 'solid-js'
+import { Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -8,12 +8,12 @@ import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { getImageUrl } from '../../../utils/getImageUrl'
-import { BadgeSubscribeButton } from '../../_shared/BadgeSubscribeButton'
+import { FollowingButton } from '../../_shared/FollowingButton'
 import styles from './TopicBadge.module.scss'
 
 type Props = {
   topic: Topic
-  minimizeSubscribeButton?: boolean
+  minimize?: boolean
   showStat?: boolean
   subscriptionsMode?: boolean
 }
@@ -23,18 +23,25 @@ export const TopicBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
   const [isMobileView, setIsMobileView] = createSignal(false)
   const { requireAuthentication } = useSession()
-  const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
-  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
+  const [isFollowed, setIsFollowed] = createSignal<boolean>()
+  const { follow, unfollow, follows, following } = useFollowing()
 
-  createEffect(() => {
-    if (!(subscriptions && props.topic)) return
-    const subscribed = subscriptions.topics?.some((topics) => topics.id === props.topic?.id)
-    setIsSubscribed(subscribed)
-  })
+  createEffect(
+    on(
+      [() => follows, () => props.topic],
+      ([flws, tpc]) => {
+        if (flws && tpc) {
+          const followed = follows?.topics?.some((topics) => topics.id === props.topic?.id)
+          setIsFollowed(followed)
+        }
+      },
+      { defer: true },
+    ),
+  )
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      isSubscribed()
+      isFollowed()
         ? follow(FollowingEntity.Topic, props.topic.slug)
         : unfollow(FollowingEntity.Topic, props.topic.slug)
     }, 'subscribe')
@@ -82,12 +89,10 @@ export const TopicBadge = (props: Props) => {
           </a>
         </div>
         <div class={styles.actions}>
-          <BadgeSubscribeButton
-            isSubscribed={isSubscribed()}
+          <FollowingButton
+            isFollowed={isFollowed()}
             action={handleFollowClick}
-            actionMessageType={
-              subscribeInAction()?.slug === props.topic.slug ? subscribeInAction().type : undefined
-            }
+            actionMessageType={following()?.slug === props.topic.slug ? following().type : undefined}
           />
         </div>
       </div>

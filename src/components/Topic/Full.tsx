@@ -17,14 +17,13 @@ type Props = {
 
 export const FullTopic = (props: Props) => {
   const { t } = useLocalize()
-  const { subscriptions, setFollowing } = useFollowing()
+  const { follows, changeFollowing } = useFollowing()
   const { requireAuthentication } = useSession()
   const [followed, setFollowed] = createSignal()
 
   createEffect(() => {
-    const subs = subscriptions
-    if (subs?.topics.length !== 0) {
-      const items = subs.topics || []
+    if (follows?.topics.length !== 0) {
+      const items = follows.topics || []
       setFollowed(items.some((x: Topic) => x?.slug === props.topic?.slug))
     }
   })
@@ -33,7 +32,7 @@ export const FullTopic = (props: Props) => {
     const really = !followed()
     setFollowed(really)
     requireAuthentication(() => {
-      setFollowing(FollowingEntity.Topic, props.topic.slug, really)
+      changeFollowing(FollowingEntity.Topic, props.topic.slug, really)
     }, 'follow')
   }
 

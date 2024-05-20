@@ -16,14 +16,15 @@
     }
 
     .action {
-      display: flex;
       align-items: center;
-      width: 100%;
       box-sizing: border-box;
-      padding: 8px 16px;
+      display: flex;
       font-size: inherit;
       font-weight: 500;
+      gap: 0.8rem;
+      padding: 8px 16px;
       text-align: left;
+      width: 100%;
       white-space: nowrap;
 
       &.soon {
@@ -32,11 +33,29 @@
         gap: 0.6rem;
         width: 100%;
         justify-content: space-between;
+
+        .icon {
+          opacity: 0.4;
+        }
       }
 
       &:hover {
         background: var(--black-500);
         color: var(--black-50) !important;
+
+        .icon {
+          filter: invert(1);
+          opacity: 1 !important;
+        }
+      }
+
+      .icon {
+        flex: 0 2.4rem;
+        min-width: 2.4rem;
+      }
+
+      .title {
+        flex: 1;
       }
     }
 

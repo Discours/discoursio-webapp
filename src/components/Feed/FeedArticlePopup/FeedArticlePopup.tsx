@@ -4,9 +4,9 @@ import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
 import { Popup } from '../../_shared/Popup'
 import { SoonChip } from '../../_shared/SoonChip'
-import { Icon } from '../../_shared/Icon'
 
 import styles from './FeedArticlePopup.module.scss'
 
@@ -39,7 +39,7 @@ export const FeedArticlePopup = (props: Props) => {
                 setHidePopup(true)
               }}
             >
-              <Icon name="share-outline" class={styles.icon}/>
+              <Icon name="share-outline" class={styles.icon} />
               <div class={styles.title}>{t('Share')}</div>
             </button>
           </li>
@@ -53,7 +53,7 @@ export const FeedArticlePopup = (props: Props) => {
                   setHidePopup(true)
                 }}
               >
-                <Icon name="pencil-outline" class={styles.icon}/>
+                <Icon name="pencil-outline" class={styles.icon} />
                 <div class={styles.title}>{t('Help to edit')}</div>
               </button>
             </li>
@@ -67,22 +67,22 @@ export const FeedArticlePopup = (props: Props) => {
                 setHidePopup(false)
               }}
             >
-              <Icon name="expert" class={styles.icon}/>
+              <Icon name="expert" class={styles.icon} />
               <div class={styles.title}>{t('Invite experts')}</div>
             </button>
           </li>
           <Show when={!props.canEdit}>
             <li>
               <button class={clsx(styles.action, styles.soon)} role="button">
-                <Icon name="bell-white" class={styles.icon}/>
+                <Icon name="bell-white" class={styles.icon} />
                 <div class={styles.title}>{t('Subscribe to comments')}</div>
-                <SoonChip/>
+                <SoonChip />
               </button>
             </li>
           </Show>
           <li>
             <button class={clsx(styles.action, styles.soon)} role="button">
-              <Icon name="bookmark" class={styles.icon}/>
+              <Icon name="bookmark" class={styles.icon} />
               <div class={styles.title}>{t('Add to bookmarks')}</div>
               <SoonChip />
             </button>

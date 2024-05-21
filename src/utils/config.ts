@@ -4,5 +4,5 @@ export const thumborUrl = import.meta.env.PUBLIC_THUMBOR_URL || 'https://images.
 export const errorsReportingDsn = import.meta.env.PUBLIC_GLITCHTIP_DSN || import.meta.env.PUBLIC_SENTRY_DSN || ''
 export const coreApiUrl = 'https://coretest.discours.io'
 export const chatApiUrl = 'https://inboxtest.discours.io'
-export const authApiUrl = 'https://authtest.discours.io'
+export const authApiUrl = 'https://authtest.discours.io/graphql'
 export const sseUrl = 'https://presencetest.discours.io'

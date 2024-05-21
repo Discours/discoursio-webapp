@@ -66,7 +66,7 @@ export type SessionContextType = {
     params: ForgotPasswordInput,
   ) => Promise<{ data: ForgotPasswordResponse; errors: Error[] }>
   changePassword: (password: string, token: string) => void
-  confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in auth.discours.io
+  confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in authorizer
   setIsSessionLoaded: (loaded: boolean) => void
   authorizer: () => Authorizer
   isRegistered: (email: string) => Promise<string>

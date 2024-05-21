@@ -7,11 +7,11 @@ export const thumborUrl = import.meta.env.PUBLIC_THUMBOR_URL || defaultThumborUr
 export const SENTRY_DSN = import.meta.env.PUBLIC_SENTRY_DSN || ''
 export const GLITCHTIP_DSN = import.meta.env.PUBLIC_GLITCHTIP_DSN || ''
 
-const defaultCoreUrl = 'https://core.discours.io'
+const defaultCoreUrl = 'https://coretest.discours.io'
 export const coreApiUrl = import.meta.env.PUBLIC_CORE_API || defaultCoreUrl
 
-const defaultChatUrl = 'https://chat.discours.io'
+const defaultChatUrl = 'https://inboxtest.discours.io'
 export const chatApiUrl = import.meta.env.PUBLIC_CHAT_API || defaultChatUrl
 
-const defaultAuthUrl = 'https://auth.discours.io'
+const defaultAuthUrl = 'https://authtest.discours.io'
 export const authApiUrl = import.meta.env.PUBLIC_AUTH_API || defaultAuthUrl

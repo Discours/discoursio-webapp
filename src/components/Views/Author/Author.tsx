@@ -67,7 +67,7 @@ export const AuthorView = (props: Props) => {
         const { authors, profile, topics } = appdata
         setFollowers(myFollowers)
         setAuthor(profile)
-        setFollowing([...authors, ...topics])
+        setFollowing([...(authors || []), ...(topics || [])])
       }
     }
   })
@@ -260,7 +260,9 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'authorComments'}>
-          <Show when={session()?.user?.app_data?.profile?.slug === props.authorSlug && !commented().length}>
+          <Show
+            when={session()?.user?.app_data?.profile?.slug === props.authorSlug && !commented()?.length}
+          >
             <div class="wide-container">
               <Placeholder type={getPage().route} mode="profile" />
             </div>

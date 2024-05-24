@@ -34,13 +34,14 @@ import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
 import { addAuthors } from '../stores/zine/authors'
 
+import { authApiUrl } from '../utils/config'
 import { useLocalize } from './localize'
 import { useSnackbar } from './snackbar'
 
 const defaultConfig: ConfigType = {
-  authorizerURL: 'https://auth.discours.io',
+  authorizerURL: authApiUrl.replace('/graphql', ''),
   redirectURL: 'https://testing.discours.io',
-  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24', // FIXME: use env?
+  clientID: '',
 }
 
 export type SessionContextType = {
@@ -73,9 +74,32 @@ export type SessionContextType = {
   resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
 }
 
-// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-const noop = () => {}
-
+const noop = () => null
+const metaRes = {
+  data: {
+    meta: {
+      version: 'latest',
+      // client_id: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
+      is_google_login_enabled: true,
+      is_facebook_login_enabled: true,
+      is_github_login_enabled: true,
+      is_linkedin_login_enabled: false,
+      is_apple_login_enabled: false,
+      is_twitter_login_enabled: true,
+      is_microsoft_login_enabled: false,
+      is_twitch_login_enabled: false,
+      is_roblox_login_enabled: false,
+      is_email_verification_enabled: true,
+      is_basic_authentication_enabled: true,
+      is_magic_link_login_enabled: true,
+      is_sign_up_enabled: true,
+      is_strong_password_enabled: false,
+      is_multi_factor_auth_enabled: true,
+      is_mobile_basic_authentication_enabled: true,
+      is_phone_verification_enabled: false,
+    },
+  },
+}
 const SessionContext = createContext<SessionContextType>()
 
 export function useSession() {
@@ -212,44 +236,41 @@ export const SessionProvider = (props: {
   })
 
   // when session is loaded
-  createEffect(() => {
-    if (session()) {
-      const token = session()?.access_token
-      if (token) {
-        if (!inboxClient.private) {
-          apiClient.connect(token)
-          inboxClient.connect(token)
-        }
-
-        try {
-          const appdata = session()?.user.app_data
-          if (appdata) {
-            const { profile } = appdata
-            if (profile?.id) {
-              setAuthor(profile)
-              addAuthors([profile])
-            } else {
-              setTimeout(loadAuthor, 15)
+  createEffect(
+    on(
+      session,
+      (s: AuthToken) => {
+        if (s) {
+          const token = s?.access_token
+          if (token) {
+            if (!inboxClient.private) {
+              apiClient.connect(token)
+              inboxClient.connect(token)
             }
+
+            try {
+              const appdata = session()?.user.app_data
+              if (appdata) {
+                const { profile } = appdata
+                if (profile?.id) {
+                  setAuthor(profile)
+                  addAuthors([profile])
+                } else {
+                  setTimeout(loadAuthor, 15)
+                }
+              }
+            } catch (e) {
+              console.error(e)
+            }
+            setIsSessionLoaded(true)
+          } else {
+            reset()
           }
-        } catch (e) {
-          console.error(e)
         }
-
-        setIsSessionLoaded(true)
-      }
-    }
-  })
-
-  // when author is loaded
-  createEffect(() => {
-    if (author()) {
-      addAuthors([author()])
-    } else {
-      reset()
-    }
-  })
-
+      },
+      { defer: true },
+    ),
+  )
   const reset = () => {
     setIsSessionLoaded(true)
     setSession(null)
@@ -257,20 +278,13 @@ export const SessionProvider = (props: {
   }
 
   // initial effect
-  onMount(async () => {
-    const metaRes = await authorizer().getMetaData()
+  onMount(() => {
     setConfig({
       ...defaultConfig,
       ...metaRes,
       redirectURL: window.location.origin,
     })
-    let s: AuthToken
-    try {
-      s = await loadSession()
-    } catch (error) {
-      console.warn('[context.session] load session failed', error)
-    }
-    if (!s) reset()
+    loadSession()
   })
 
   // callback state updater
@@ -318,6 +332,7 @@ export const SessionProvider = (props: {
     console.debug(authResult)
     reset()
     showSnackbar({ body: t("You've successfully logged out") })
+    console.debug(session())
   }
 
   const changePassword = async (password: string, token: string) => {

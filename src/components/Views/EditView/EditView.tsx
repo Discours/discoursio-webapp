@@ -28,6 +28,7 @@ import { EditorSwiper } from '../../_shared/SolidSwiper'
 import { PublishSettings } from '../PublishSettings'
 
 import styles from './EditView.module.scss'
+import { Loading } from '../../_shared/Loading'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
@@ -403,7 +404,7 @@ export const EditView = (props: Props) => {
                 </Show>
               </div>
             </div>
-            <Show when={page().route === 'edit'}>
+            <Show when={page().route === 'edit' && form?.shoutId} fallback={<Loading />}>
               <Editor
                 shoutId={form.shoutId}
                 initialContent={form.body}

@@ -40,7 +40,18 @@ const EMPTY_TOPIC: Topic = {
   id: -1,
   slug: '',
 }
-const emptyConfig = {
+
+interface FormConfig {
+  coverImageUrl?: string
+  mainTopic?: Topic
+  slug?: string
+  title?: string
+  subtitle?: string
+  description?: string
+  selectedTopics?: Topic[]
+}
+
+const emptyConfig: FormConfig = {
   coverImageUrl: '',
   mainTopic: EMPTY_TOPIC,
   slug: '',
@@ -78,7 +89,7 @@ export const PublishSettings = (props: Props) => {
     }
   })
 
-  const [settingsForm, setSettingsForm] = createStore(emptyConfig)
+  const [settingsForm, setSettingsForm] = createStore<FormConfig>(emptyConfig)
 
   onMount(() => {
     setSettingsForm(initialData())
@@ -96,12 +107,12 @@ export const PublishSettings = (props: Props) => {
     setSettingsForm('coverImageUrl', '')
   }
 
-  const handleTopicSelectChange = (newSelectedTopics) => {
+  const handleTopicSelectChange = (newSelectedTopics: Topic[]) => {
     if (
       props.form.selectedTopics.length === 0 ||
-      newSelectedTopics.every((topic) => topic.id !== props.form.mainTopic?.id)
+      newSelectedTopics.every((topic: Topic) => topic.id !== props.form.mainTopic?.id)
     ) {
-      setSettingsForm((prev) => {
+      setSettingsForm((prev: Topic) => {
         return {
           ...prev,
           mainTopic: newSelectedTopics[0],
@@ -193,7 +204,8 @@ export const PublishSettings = (props: Props) => {
                 fieldName={t('Header')}
                 placeholder={t('Come up with a title for your story')}
                 initialValue={settingsForm.title}
-                value={(value) => setSettingsForm('title', value)}
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                value={(value: any) => setSettingsForm('title', value)}
                 allowEnterKey={false}
                 maxLength={100}
               />
@@ -203,7 +215,8 @@ export const PublishSettings = (props: Props) => {
                 fieldName={t('Subheader')}
                 placeholder={t('Come up with a subtitle for your story')}
                 initialValue={settingsForm.subtitle || ''}
-                value={(value) => setSettingsForm('subtitle', value)}
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                value={(value: any) => setSettingsForm('subtitle', value)}
                 allowEnterKey={false}
                 maxLength={100}
               />
@@ -214,7 +227,8 @@ export const PublishSettings = (props: Props) => {
                 placeholder={t('Write a short introduction')}
                 label={t('Description')}
                 initialContent={composeDescription()}
-                onChange={(value) => setForm('description', value)}
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                onChange={(value: any) => setForm('description', value)}
                 maxLength={DESCRIPTION_MAX_LENGTH}
               />
             </div>

@@ -42,7 +42,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
   createEffect(
     on(
       () => session()?.access_token,
-      async ([tkn]) => {
+      async (tkn) => {
         if (!sseUrl) return
         if (!tkn) return
         if (!connected() && retried() <= RECONNECT_TIMES) {
@@ -67,7 +67,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
                   return Promise.resolve()
                 }
                 return Promise.reject(
-                  `SSE: cannot connect to real-time updates, status: ${response.status}`,
+                  `SSE: cannot connect to real-time updates: ${response.status}`,
                 )
               },
               onclose() {
@@ -75,7 +75,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
                 setConnected(false)
                 if (retried() < RECONNECT_TIMES) {
                   setRetried((r) => r + 1)
-                }
+                } else throw Error('closed by server')
               },
               onerror(err) {
                 console.error('[context.connect] SSE connection error:', err)

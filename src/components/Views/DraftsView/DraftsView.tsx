@@ -15,20 +15,24 @@ import styles from './DraftsView.module.scss'
 export const DraftsView = () => {
   const { author, loadSession } = useSession()
   const [drafts, setDrafts] = createSignal<Shout[]>([])
+  const [loading, setLoading] = createSignal(false)
 
   createEffect(
     on(
       () => author(),
       async (a) => {
         if (a) {
+          setLoading(true)
           const { shouts: loadedDrafts, error } = await apiClient.getDrafts()
           if (error) {
             console.warn(error)
             await loadSession()
           }
           setDrafts(loadedDrafts || [])
+          setLoading(false)
         }
       },
+      { defer: true },
     ),
   )
 
@@ -50,7 +54,7 @@ export const DraftsView = () => {
 
   return (
     <div class={clsx(styles.DraftsView)}>
-      <Show when={author()?.id} fallback={<Loading />}>
+      <Show when={!loading() && author()?.id} fallback={<Loading />}>
         <div class="wide-container">
           <div class="row">
             <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">

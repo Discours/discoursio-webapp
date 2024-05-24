@@ -16,7 +16,7 @@ export const Placeholder = (props: PlaceholderProps) => {
   const { author } = useSession()
 
   const data = {
-    feed: {
+    feedMy: {
       image: 'placeholder-feed.webp',
       header: t('Feed settings'),
       text: t('Placeholder feed'),

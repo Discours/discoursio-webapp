@@ -1,4 +1,4 @@
-import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
+import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on } from 'solid-js'
 
 import { AuthGuard } from '../components/AuthGuard'
 import { Loading } from '../components/_shared/Loading'
@@ -7,7 +7,7 @@ import { useLocalize } from '../context/localize'
 import { useSession } from '../context/session'
 import { apiClient } from '../graphql/client/core'
 import { Shout } from '../graphql/schema/core.gen'
-import { router } from '../stores/router'
+import { router, useRouter } from '../stores/router'
 
 import { redirectPage } from '@nanostores/router'
 import { useSnackbar } from '../context/snackbar'
@@ -33,6 +33,7 @@ const getContentTypeTitle = (layout: LayoutType) => {
 export const EditPage = () => {
   const { t } = useLocalize()
   const { session } = useSession()
+  const { page } = useRouter()
   const snackbar = useSnackbar()
 
   const fail = async (error: string) => {
@@ -45,12 +46,22 @@ export const EditPage = () => {
   const [shoutId, setShoutId] = createSignal<number>(0)
   const [shout, setShout] = createSignal<Shout>()
 
-  onMount(() => {
-    const shoutId = window.location.pathname.split('/').pop()
-    const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
-    console.debug(`editing shout ${shoutIdFromUrl}`)
-    if (shoutIdFromUrl) setShoutId(shoutIdFromUrl)
-  })
+  createEffect(
+    on(
+      () => page(),
+      (p) => {
+        if (p?.path) {
+          console.debug(p?.path)
+          const shoutId = p?.path.split('/').pop()
+          const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
+          console.debug(`editing shout ${shoutIdFromUrl}`)
+          if (shoutIdFromUrl) {
+            setShoutId(shoutIdFromUrl)
+          }
+        }
+      },
+    ),
+  )
 
   createEffect(
     on([session, shout, shoutId], async ([ses, sh, shid]) => {
@@ -63,6 +74,7 @@ export const EditPage = () => {
         }
       }
     }),
+    { defer: true },
   )
 
   const title = createMemo(() => {

@@ -260,28 +260,32 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'authorComments'}>
-          <div class="wide-container">
-            <Placeholder type={getPage().route} mode="profile" />
-          </div>
+          <Show when={session()?.user?.app_data?.profile?.slug === props.authorSlug && !commented().length}>
+            <div class="wide-container">
+              <Placeholder type={getPage().route} mode="profile" />
+            </div>
+          </Show>
 
-          <div class="wide-container">
-            <div class="row">
-              <div class="col-md-20 col-lg-18">
-                <ul class={stylesArticle.comments}>
-                  <For each={commented()?.sort(byCreated).reverse()}>
-                    {(comment) => (
-                      <Comment
-                        comment={comment}
-                        class={styles.comment}
-                        showArticleLink={true}
-                        onDelete={(id) => handleDeleteComment(id)}
-                      />
-                    )}
-                  </For>
-                </ul>
+          <Show when={commented()}>
+            <div class="wide-container">
+              <div class="row">
+                <div class="col-md-20 col-lg-18">
+                  <ul class={stylesArticle.comments}>
+                    <For each={commented()?.sort(byCreated).reverse()}>
+                      {(comment) => (
+                        <Comment
+                          comment={comment}
+                          class={styles.comment}
+                          showArticleLink={true}
+                          onDelete={(id) => handleDeleteComment(id)}
+                        />
+                      )}
+                    </For>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
+          </Show>
         </Match>
         <Match when={getPage().route === 'author'}>
           <Show

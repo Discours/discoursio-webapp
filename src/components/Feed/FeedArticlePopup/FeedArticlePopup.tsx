@@ -4,6 +4,7 @@ import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
 import { Popup } from '../../_shared/Popup'
 import { SoonChip } from '../../_shared/SoonChip'
 
@@ -38,7 +39,8 @@ export const FeedArticlePopup = (props: Props) => {
                 setHidePopup(true)
               }}
             >
-              {t('Share')}
+              <Icon name="share-outline" class={styles.icon} />
+              <div class={styles.title}>{t('Share')}</div>
             </button>
           </li>
           <Show when={!props.canEdit}>
@@ -51,7 +53,8 @@ export const FeedArticlePopup = (props: Props) => {
                   setHidePopup(true)
                 }}
               >
-                {t('Help to edit')}
+                <Icon name="pencil-outline" class={styles.icon} />
+                <div class={styles.title}>{t('Help to edit')}</div>
               </button>
             </li>
           </Show>
@@ -64,19 +67,24 @@ export const FeedArticlePopup = (props: Props) => {
                 setHidePopup(false)
               }}
             >
-              {t('Invite experts')}
+              <Icon name="expert" class={styles.icon} />
+              <div class={styles.title}>{t('Invite experts')}</div>
             </button>
           </li>
           <Show when={!props.canEdit}>
             <li>
               <button class={clsx(styles.action, styles.soon)} role="button">
-                {t('Subscribe to comments')} <SoonChip />
+                <Icon name="bell-white" class={styles.icon} />
+                <div class={styles.title}>{t('Subscribe to comments')}</div>
+                <SoonChip />
               </button>
             </li>
           </Show>
           <li>
             <button class={clsx(styles.action, styles.soon)} role="button">
-              {t('Add to bookmarks')} <SoonChip />
+              <Icon name="bookmark" class={styles.icon} />
+              <div class={styles.title}>{t('Add to bookmarks')}</div>
+              <SoonChip />
             </button>
           </li>
           {/*<Show when={!props.canEdit}>*/}

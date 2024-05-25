@@ -78,20 +78,19 @@
   }
 
   .placeholderCover {
+    flex: 1;
     padding: 1.6rem;
 
     @include media-breakpoint-up(lg) {
-      //flex: 0 50%;
-      //min-width: 50%;
       order: 2;
       position: static;
     }
 
     img {
-      height: 100%;
+      aspect-ratio: 16/10;
+      min-width: 40rem;
       object-fit: contain;
       width: 100%;
-      //width: auto;
 
       @include media-breakpoint-up(lg) {
         object-position: right;

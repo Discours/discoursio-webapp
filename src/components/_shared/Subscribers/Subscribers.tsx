@@ -1,9 +1,9 @@
-import {For, Show} from 'solid-js'
+import { For, Show } from 'solid-js'
 
-import {useLocalize} from '../../../context/localize'
+import { useLocalize } from '../../../context/localize'
 
-import {Author, Topic} from '../../../graphql/schema/core.gen'
-import {Userpic} from '../../Author/Userpic'
+import { Author, Topic } from '../../../graphql/schema/core.gen'
+import { Userpic } from '../../Author/Userpic'
 
 import styles from './Subscribers.module.scss'
 
@@ -15,7 +15,7 @@ type Props = {
 }
 
 export const Subscribers = (props: Props) => {
-  const {t} = useLocalize()
+  const { t } = useLocalize()
 
   return (
     <>
@@ -23,7 +23,7 @@ export const Subscribers = (props: Props) => {
         <Show when={props.followers && props.followers.length > 0}>
           <div class={styles.subscribersList}>
             <For each={props.followers.slice(0, 3)}>
-              {(f) => <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem}/>}
+              {(f) => <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />}
             </For>
           </div>
         </Show>
@@ -40,12 +40,15 @@ export const Subscribers = (props: Props) => {
             <For each={props.following.slice(0, 3)}>
               {(f) => {
                 if ('name' in f) {
-                  return <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem}/>
+                  return (
+                    <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
+                  )
                 }
 
                 if ('title' in f) {
-                  return <Userpic size={'XS'} name={f.title} userpic={f.pic}
-                                  class={styles.subscribersItem}/>
+                  return (
+                    <Userpic size={'XS'} name={f.title} userpic={f.pic} class={styles.subscribersItem} />
+                  )
                 }
 
                 return null

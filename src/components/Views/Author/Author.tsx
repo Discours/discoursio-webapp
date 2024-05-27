@@ -66,7 +66,7 @@ export const AuthorView = (props: Props) => {
         const { authors, profile, topics } = appdata
         setFollowers(myFollowers)
         setAuthor(profile)
-        setFollowing([...authors, ...topics])
+        setFollowing([...(authors || []), ...(topics || [])])
       }
     }
   })
@@ -75,6 +75,7 @@ export const AuthorView = (props: Props) => {
   const bioWrapperRef: { current: HTMLDivElement } = { current: null }
 
   const fetchData = async (slug: string) => {
+    if (author()?.stat.followers || author()?.stat.followers === (followers() || [])?.length) return
     try {
       const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
         apiClient.getAuthorFollows({ slug }),
@@ -215,7 +216,7 @@ export const AuthorView = (props: Props) => {
                         slug: props.authorSlug,
                       })}
                     >
-                      {t('Profile')}
+                      {t('About')}
                     </a>
                   </li>
                 </ul>

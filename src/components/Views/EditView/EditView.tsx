@@ -27,8 +27,8 @@ import { EditorSwiper } from '../../_shared/SolidSwiper'
 
 import { PublishSettings } from '../PublishSettings'
 
-import styles from './EditView.module.scss'
 import { Loading } from '../../_shared/Loading'
+import styles from './EditView.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))

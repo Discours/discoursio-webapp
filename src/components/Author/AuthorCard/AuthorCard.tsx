@@ -199,7 +199,12 @@ export const AuthorCard = (props: Props) => {
                   <For each={props.followers.slice(0, 3)}>
                     {(f: Author) => (
                       <Show when={f?.name}>
-                        <Userpic size={'XS'} name={f?.name || ''} userpic={f?.pic || ''} class={styles.followersItem} />
+                        <Userpic
+                          size={'XS'}
+                          name={f?.name || ''}
+                          userpic={f?.pic || ''}
+                          class={styles.followersItem}
+                        />
                       </Show>
                     )}
                   </For>

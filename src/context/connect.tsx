@@ -66,9 +66,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
                   setRetried(0)
                   return Promise.resolve()
                 }
-                return Promise.reject(
-                  `SSE: cannot connect to real-time updates: ${response.status}`,
-                )
+                return Promise.reject(`SSE: cannot connect to real-time updates: ${response.status}`)
               },
               onclose() {
                 console.log('[context.connect] SSE connection closed by server')

@@ -206,7 +206,7 @@ export const AuthorView = (props: Props) => {
                         slug: props.authorSlug,
                       })}
                     >
-                      {t('Profile')}
+                      {t('About')}
                     </a>
                   </li>
                 </ul>

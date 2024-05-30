@@ -1,0 +1,50 @@
+.subscribers {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  margin: 0 1rem 0 0;
+  vertical-align: top;
+  border-bottom: unset !important;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  .subscribersItem {
+    position: relative;
+
+    &:nth-child(1) {
+      z-index: 2;
+    }
+
+    &:nth-child(2) {
+      z-index: 1;
+    }
+
+    &:not(:last-child) {
+      margin-right: -4px;
+      box-shadow: 0 0 0 1px var(--background-color);
+    }
+  }
+
+  .subscribersCounter {
+    font-weight: 500;
+  }
+
+  &:hover {
+    background: none !important;
+
+    .subscribersCounter {
+      background: var(--background-color-invert);
+    }
+  }
+}
+
+.subscribersList {
+  display: flex;
+  margin-right: 0.6rem;
+}

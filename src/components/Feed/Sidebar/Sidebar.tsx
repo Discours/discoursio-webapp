@@ -83,32 +83,6 @@ export const Sidebar = () => {
             </span>
           </a>
         </li>
-        <li>
-          <a
-            href={getPagePath(router, 'feedBookmarks')}
-            class={clsx({
-              [styles.selected]: page().route === 'feedBookmarks',
-            })}
-          >
-            <span class={styles.sidebarItemName}>
-              <Icon name="bookmark" class={styles.icon} />
-              {t('Bookmarks')}
-            </span>
-          </a>
-        </li>
-        <li>
-          <a
-            href={getPagePath(router, 'feedNotifications')}
-            class={clsx({
-              [styles.selected]: page().route === 'feedNotifications',
-            })}
-          >
-            <span class={styles.sidebarItemName}>
-              <Icon name="feed-notifications" class={styles.icon} />
-              {t('Notifications')}
-            </span>
-          </a>
-        </li>
       </ul>
 
       <Show when={follows?.authors?.length > 0 || follows?.topics?.length > 0}>

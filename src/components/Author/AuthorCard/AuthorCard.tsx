@@ -18,6 +18,7 @@ import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
 import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
+import { Subscribers } from '../../_shared/Subscribers'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
 
@@ -192,61 +193,14 @@ export const AuthorCard = (props: Props) => {
           <Show when={props.author.bio}>
             <div class={styles.authorAbout} innerHTML={props.author.bio} />
           </Show>
-          <Show when={props.followers?.length > 0 || props.flatFollows?.length > 0}>
-            <div class={styles.followersContainer}>
-              <Show when={props.followers && props.followers.length > 0}>
-                <a href="?m=followers" class={styles.followers}>
-                  <For each={props.followers.slice(0, 3)}>
-                    {(f: Author) => (
-                      <Show when={f?.name}>
-                        <Userpic
-                          size={'XS'}
-                          name={f?.name || ''}
-                          userpic={f?.pic || ''}
-                          class={styles.followersItem}
-                        />
-                      </Show>
-                    )}
-                  </For>
-                  <div class={styles.followsCounter}>
-                    {t('FollowersWithCount', {
-                      count: props.followers.length ?? 0,
-                    })}
-                  </div>
-                </a>
-              </Show>
-
-              <Show when={props.flatFollows?.length > 0}>
-                <a href="?m=following" class={styles.followers}>
-                  <For each={props.flatFollows.slice(0, 3)}>
-                    {(f) => {
-                      if ('name' in f) {
-                        return (
-                          <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.followersItem} />
-                        )
-                      }
-
-                      if ('title' in f) {
-                        return (
-                          <Userpic
-                            size={'XS'}
-                            name={f.title}
-                            userpic={f.pic}
-                            class={styles.followersItem}
-                          />
-                        )
-                      }
-
-                      return null
-                    }}
-                  </For>
-                  <div class={styles.followsCounter}>
-                    {t('FollowsWithCount', {
-                      count: props?.flatFollows.length ?? 0,
-                    })}
-                  </div>
-                </a>
-              </Show>
+          <Show when={props.followers?.length > 0 || props.following?.length > 0}>
+            <div class={styles.subscribersContainer}>
+              <Subscribers
+                followers={props.followers}
+                followersAmount={props.author?.stat?.followers}
+                following={props.following}
+                followingAmount={props.author?.stat?.authors}
+              />
             </div>
           </Show>
         </div>

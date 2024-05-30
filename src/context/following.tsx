@@ -51,7 +51,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
         setFollows(result || EMPTY_SUBSCRIPTIONS)
       }
     } catch (error) {
-      console.info('[context.following] cannot get subs', error)
+      console.warn('[context.following] cannot get subs', error)
     } finally {
       setLoading(false)
     }

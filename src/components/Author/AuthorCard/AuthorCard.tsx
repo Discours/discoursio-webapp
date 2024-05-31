@@ -193,12 +193,12 @@ export const AuthorCard = (props: Props) => {
           <Show when={props.author.bio}>
             <div class={styles.authorAbout} innerHTML={props.author.bio} />
           </Show>
-          <Show when={props.followers?.length > 0 || props.following?.length > 0}>
+          <Show when={props.followers?.length > 0 || props.flatFollows?.length > 0}>
             <div class={styles.subscribersContainer}>
               <Subscribers
                 followers={props.followers}
                 followersAmount={props.author?.stat?.followers}
-                following={props.following}
+                following={props.flatFollows}
                 followingAmount={props.author?.stat?.authors}
               />
             </div>

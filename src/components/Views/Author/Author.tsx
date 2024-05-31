@@ -275,9 +275,7 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'author'}>
-          <Show
-            when={session()?.user?.app_data?.profile?.slug === props.authorSlug && !sortedArticles().length}
-          >
+          <Show when={me()?.slug === props.authorSlug && !sortedArticles().length}>
             <div class="wide-container">
               <Placeholder type={getPage().route} mode="profile" />
             </div>

@@ -1,7 +1,9 @@
 .placeholder {
   border-radius: 2.2rem;
   display: flex;
+
   @include font-size(1.4rem);
+
   font-weight: 500;
   overflow: hidden;
   position: relative;
@@ -15,7 +17,9 @@
     align-items: center;
     border-radius: 1.2rem;
     display: flex;
+
     @include font-size(1.5rem);
+
     gap: 0.6rem;
     margin-top: 3rem;
     padding: 1rem 2rem;
@@ -33,7 +37,7 @@
   flex-direction: column;
   text-align: center;
 
-  &:after {
+  &::after {
     bottom: 0;
     content: '';
     height: 20%;
@@ -42,11 +46,11 @@
     width: 100%;
 
     .placeholder--feed & {
-      background: linear-gradient(to top, #171032, rgba(23, 16, 50, 0));
+      background: linear-gradient(to top, #171032, rgb(23 16 50 / 0%));
     }
 
     .placeholder--feedCollaborations & {
-      background: linear-gradient(to top, #070709, rgba(7, 7, 9, 0));
+      background: linear-gradient(to top, #070709, rgb(7 7 9 / 0%));
     }
   }
 
@@ -79,7 +83,9 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
     @include font-size(2rem);
+
     line-height: 1.2;
     padding: 3rem;
   }
@@ -187,7 +193,9 @@
 
 .bottomLinks {
   display: flex;
+
   @include font-size(1.6rem);
+
   gap: 4rem;
 
   a {

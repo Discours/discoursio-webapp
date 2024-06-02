@@ -121,17 +121,19 @@ export const EditorSwiper = (props: Props) => {
 
   const handleChangeIndex = (direction: 'left' | 'right', index: number) => {
     const images = [...props.images]
-    if (direction === 'left' && index > 0) {
-      const copy = images.splice(index, 1)[0]
-      images.splice(index - 1, 0, copy)
-    } else if (direction === 'right' && index < images.length - 1) {
-      const copy = images.splice(index, 1)[0]
-      images.splice(index + 1, 0, copy)
+    if (images?.length > 0) {
+      if (direction === 'left' && index > 0) {
+        const copy = images.splice(index, 1)[0]
+        images.splice(index - 1, 0, copy)
+      } else if (direction === 'right' && index < images.length - 1) {
+        const copy = images.splice(index, 1)[0]
+        images.splice(index + 1, 0, copy)
+      }
+      props.onImagesSorted(images)
+      setTimeout(() => {
+        mainSwipeRef.current.swiper.slideTo(direction === 'left' ? index - 1 : index + 1)
+      }, 0)
     }
-    props.onImagesSorted(images)
-    setTimeout(() => {
-      mainSwipeRef.current.swiper.slideTo(direction === 'left' ? index - 1 : index + 1)
-    }, 0)
   }
 
   const handleSaveBeforeSlideChange = () => {

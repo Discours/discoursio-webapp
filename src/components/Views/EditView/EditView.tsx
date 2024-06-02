@@ -146,7 +146,7 @@ export const EditView = (props: Props) => {
 
   const handleMediaDelete = (index) => {
     const copy = [...mediaItems()]
-    copy.splice(index, 1)
+    if (copy?.length > 0) copy.splice(index, 1)
     handleInputChange('media', JSON.stringify(copy))
   }
 

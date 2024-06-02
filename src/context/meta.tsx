@@ -184,7 +184,7 @@ function initServerProvider() {
         const index = tags.findIndex(
           (prev) => prev.tag === tagDesc.tag && getTagKey(prev, properties) === tagDescKey,
         )
-        if (index !== -1) {
+        if (index !== -1 && tags?.length > 0) {
           tags.splice(index, 1)
         }
       }

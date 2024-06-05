@@ -1,15 +1,13 @@
 .placeholder {
   border-radius: 2.2rem;
   display: flex;
-
-  @include font-size(1.4rem);
-
+  font-size: 1.4rem;
   font-weight: 500;
   overflow: hidden;
   position: relative;
 
   h3 {
-    @include font-size(2.4rem);
+    font-size: 2.4rem;
   }
 
   button,
@@ -17,10 +15,9 @@
     align-items: center;
     border-radius: 1.2rem;
     display: flex;
-
     @include font-size(1.5rem);
-
     gap: 0.6rem;
+    justify-content: center;
     margin-top: 3rem;
     padding: 1rem 2rem;
     width: 100%;
@@ -33,49 +30,71 @@
 }
 
 .placeholder--feed-mode {
-  aspect-ratio: 1 / 0.8;
   flex-direction: column;
+  min-height: 40rem;
   text-align: center;
 
-  &::after {
-    bottom: 0;
-    content: '';
-    height: 20%;
-    left: 0;
-    position: absolute;
-    width: 100%;
-
-    .placeholder--feed & {
-      background: linear-gradient(to top, #171032, rgb(23 16 50 / 0%));
-    }
-
-    .placeholder--feedCollaborations & {
-      background: linear-gradient(to top, #070709, rgb(7 7 9 / 0%));
-    }
+  @include media-breakpoint-up(lg) {
+    aspect-ratio: 1 / 0.8;
   }
 
   .placeholderCover {
-    flex: 0 100%;
-    width: 100%;
+    flex: 1 100%;
+    position: relative;
+
+    &:after {
+      bottom: 0;
+      content: '';
+      height: 20%;
+      left: 0;
+      position: absolute;
+      width: 100%;
+    }
 
     img {
       position: absolute;
     }
   }
+
+  &.placeholder--feedMy .placeholderCover:after {
+    background: linear-gradient(to top, #171032, rgba(23, 16, 50, 0));
+  }
+
+  &.placeholder--feedCollaborations .placeholderCover:after {
+    background: linear-gradient(to top, #070709, rgba(7, 7, 9, 0));
+  }
 }
 
 .placeholder--profile-mode {
-  min-height: 28rem;
+  min-height: 40rem;
+
+  @include media-breakpoint-down(lg) {
+    display: block;
+  }
+
+  @include media-breakpoint-up(lg) {
+    max-height: 30rem;
+    min-height: auto;
+  }
 
   .placeholderCover {
-    flex: 0 45rem;
-    min-width: 45rem;
-    order: 2;
+    flex: 1;
     padding: 1.6rem;
 
+    @include media-breakpoint-up(lg) {
+      order: 2;
+      position: static;
+    }
+
     img {
-      height: auto;
+      aspect-ratio: 16/10;
+      min-width: 40rem;
+      object-fit: contain;
       width: 100%;
+
+      @include media-breakpoint-up(lg) {
+        object-position: right;
+      }
     }
   }
 
@@ -83,11 +102,19 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
-    @include font-size(2rem);
-
+    font-size: 1.4rem;
     line-height: 1.2;
-    padding: 3rem;
+    min-width: 60%;
+    padding: 0 2rem 2rem;
+
+    @include media-breakpoint-up(md) {
+      font-size: 1.6rem;
+      padding: 3rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      font-size: 2rem;
+    }
   }
 
   h3 {
@@ -96,11 +123,18 @@
 
   .button {
     background: var(--background-color-invert);
-    color: var(--default-color-invert);
     bottom: 2rem;
-    position: absolute;
+    color: var(--default-color-invert);
+    font-size: 1.6rem;
+    left: 2rem;
     right: 2rem;
-    width: auto;
+    width: 100%;
+
+    @include media-breakpoint-up(lg) {
+      left: auto;
+      position: absolute;
+      width: auto;
+    }
 
     .icon {
       filter: invert(1);
@@ -121,9 +155,15 @@
 
 .placeholderContent {
   padding: 1.6rem;
+
+  @include media-breakpoint-down(lg) {
+    br {
+      display: none;
+    }
+  }
 }
 
-.placeholder--feed,
+.placeholder--feedMy,
 .placeholder--feedCollaborations {
   color: var(--default-color-invert);
 
@@ -134,7 +174,7 @@
   }
 }
 
-.placeholder--feed {
+.placeholder--feedMy {
   background: #171032;
 
   .placeholderCover {
@@ -193,10 +233,13 @@
 
 .bottomLinks {
   display: flex;
-
   @include font-size(1.6rem);
-
   gap: 4rem;
+
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+    gap: 1.4rem;
+  }
 
   a {
     border: none !important;

@@ -251,9 +251,11 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'authorComments'}>
-          <div class="wide-container">
-            <Placeholder type={getPage().route} mode="profile" />
-          </div>
+          <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
+            <div class="wide-container">
+              <Placeholder type={getPage().route} mode="profile" />
+            </div>
+          </Show>
 
           <div class="wide-container">
             <div class="row">
@@ -275,7 +277,7 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'author'}>
-          <Show when={me()?.slug === props.authorSlug && !sortedArticles().length}>
+          <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
             <div class="wide-container">
               <Placeholder type={getPage().route} mode="profile" />
             </div>

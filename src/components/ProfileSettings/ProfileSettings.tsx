@@ -57,7 +57,7 @@ export const ProfileSettings = () => {
   const [nameError, setNameError] = createSignal<string>()
   const { form, submit, updateFormField, setForm } = useProfileForm()
   const { showSnackbar } = useSnackbar()
-  const { loadAuthor, session } = useSession()
+  const { loadSession, session } = useSession()
   const { showConfirm } = useConfirm()
   const [clearAbout, setClearAbout] = createSignal(false)
 
@@ -112,7 +112,7 @@ export const ProfileSettings = () => {
       setIsSaving(false)
     }
 
-    await loadAuthor() // renews author's profile
+    setTimeout(loadSession, 5000) // renews author's profile
   }
 
   const handleCancel = async () => {

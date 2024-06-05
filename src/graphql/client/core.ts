@@ -40,7 +40,6 @@ import loadShoutsUnrated from '../query/core/articles-load-unrated'
 import authorBy from '../query/core/author-by'
 import authorFollowers from '../query/core/author-followers'
 import authorFollows from '../query/core/author-follows'
-import authorId from '../query/core/author-id'
 import authorsAll from '../query/core/authors-all'
 import authorsLoadBy from '../query/core/authors-load-by'
 import reactionsLoadBy from '../query/core/reactions-load-by'
@@ -119,11 +118,6 @@ export const apiClient = {
   getAuthor: async (params: { slug?: string; author_id?: number }): Promise<Author> => {
     const response = await publicGraphQLClient.query(authorBy, params).toPromise()
     return response.data.get_author
-  },
-
-  getAuthorId: async (params: { user: string }): Promise<Author> => {
-    const response = await publicGraphQLClient.query(authorId, params).toPromise()
-    return response.data.get_author_id
   },
 
   getAuthorFollowers: async ({ slug }: { slug: string }): Promise<Author[]> => {

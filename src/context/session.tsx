@@ -47,13 +47,11 @@ const defaultConfig: ConfigType = {
 export type SessionContextType = {
   config: Accessor<ConfigType>
   session: Resource<AuthToken>
-  author: Resource<Author | null>
+  author: Accessor<Author>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
   loadSession: () => AuthToken | Promise<AuthToken>
   setSession: (token: AuthToken | null) => void // setSession
-  loadAuthor: (info?: unknown) => Author | Promise<Author>
-  setAuthor: (a: Author) => void
   requireAuthentication: (
     callback: (() => Promise<void>) | (() => void),
     modalSource: AuthModalSource,
@@ -205,6 +203,7 @@ export const SessionProvider = (props: {
     ssrLoadFrom: 'initial',
     initialValue: null,
   })
+  const author = createMemo(() => session().user?.app_data?.profile)
 
   const checkSessionIsExpired = () => {
     const expires_at_data = localStorage.getItem('expires_at')
@@ -226,15 +225,6 @@ export const SessionProvider = (props: {
 
   onCleanup(() => clearTimeout(minuteLater))
 
-  const authorData = async () => {
-    const u = session()?.user
-    return u ? (await apiClient.getAuthorId({ user: u.id.trim() })) || null : null
-  }
-  const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(authorData, {
-    ssrLoadFrom: 'initial',
-    initialValue: null,
-  })
-
   // when session is loaded
   createEffect(
     on(
@@ -249,16 +239,8 @@ export const SessionProvider = (props: {
             }
 
             try {
-              const appdata = session()?.user.app_data
-              if (appdata) {
-                const { profile } = appdata
-                if (profile?.id) {
-                  setAuthor(profile)
-                  addAuthors([profile])
-                } else {
-                  setTimeout(loadAuthor, 15)
-                }
-              }
+              const profile = session()?.user?.app_data?.profile
+              if (profile?.id) addAuthors([profile])
             } catch (e) {
               console.error(e)
             }
@@ -274,7 +256,6 @@ export const SessionProvider = (props: {
   const reset = () => {
     setIsSessionLoaded(true)
     setSession(null)
-    setAuthor(null)
   }
 
   // initial effect
@@ -406,9 +387,7 @@ export const SessionProvider = (props: {
     updateProfile,
     setIsSessionLoaded,
     setSession,
-    setAuthor,
     authorizer,
-    loadAuthor,
     forgotPassword,
     changePassword,
     oauth,

@@ -15,7 +15,9 @@
     align-items: center;
     border-radius: 1.2rem;
     display: flex;
+
     @include font-size(1.5rem);
+
     gap: 0.6rem;
     justify-content: center;
     margin-top: 3rem;
@@ -42,7 +44,7 @@
     flex: 1 100%;
     position: relative;
 
-    &:after {
+    &::after {
       bottom: 0;
       content: '';
       height: 20%;
@@ -56,12 +58,12 @@
     }
   }
 
-  &.placeholder--feedMy .placeholderCover:after {
-    background: linear-gradient(to top, #171032, rgba(23, 16, 50, 0));
+  &.placeholder--feedMy .placeholderCover::after {
+    background: linear-gradient(to top, #171032, rgb(23 16 50 / 0%));
   }
 
-  &.placeholder--feedCollaborations .placeholderCover:after {
-    background: linear-gradient(to top, #070709, rgba(7, 7, 9, 0));
+  &.placeholder--feedCollaborations .placeholderCover::after {
+    background: linear-gradient(to top, #070709, rgb(7 7 9 / 0%));
   }
 }
 
@@ -233,7 +235,9 @@
 
 .bottomLinks {
   display: flex;
+
   @include font-size(1.6rem);
+
   gap: 4rem;
 
   @include media-breakpoint-down(sm) {

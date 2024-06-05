@@ -203,7 +203,7 @@ export const SessionProvider = (props: {
     ssrLoadFrom: 'initial',
     initialValue: null,
   })
-  const author = createMemo(() => session().user?.app_data?.profile)
+  const author = createMemo(() => session()?.user?.app_data?.profile)
 
   const checkSessionIsExpired = () => {
     const expires_at_data = localStorage.getItem('expires_at')

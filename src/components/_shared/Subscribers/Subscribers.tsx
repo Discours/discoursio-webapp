@@ -28,7 +28,7 @@ export const Subscribers = (props: Props) => {
           </div>
         </Show>
         <div class={styles.subscribersCounter}>
-          {t('SubscriberWithCount', {
+          {t('some followers', {
             count: props.followersAmount || props.followers.length || 0,
           })}
         </div>
@@ -57,7 +57,7 @@ export const Subscribers = (props: Props) => {
           </div>
         </Show>
         <div class={styles.subscribersCounter}>
-          {t('SubscriptionWithCount', {
+          {t('some followings', {
             count: props.followingAmount || props.following?.length || 0,
           })}
         </div>

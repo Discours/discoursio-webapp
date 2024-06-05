@@ -104,7 +104,7 @@ export const TopicBadge = (props: Props) => {
             {t('authorsWithCount', { count: props.topic?.stat?.authors })}
           </span>
           <span class={styles.statsItem}>
-            {t('FollowersWithCount', { count: props.topic?.stat?.followers })}
+            {t('some followers', { count: props.topic?.stat?.followers })}
           </span>
           <Show when={props.topic?.stat?.comments}>
             <span class={styles.statsItem}>

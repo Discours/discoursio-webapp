@@ -124,7 +124,7 @@ export const AuthorBadge = (props: Props) => {
                   <div>{t('CommentsWithCount', { count: props.author.stat?.comments ?? 0 })}</div>
                 </Show>
                 <Show when={props.author?.stat.followers > 0}>
-                  <div>{t('FollowersWithCount', { count: props.author.stat?.followers ?? 0 })}</div>
+                  <div>{t('some followers', { count: props.author.stat?.followers ?? 0 })}</div>
                 </Show>
               </div>
             </Show>

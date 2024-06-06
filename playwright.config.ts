@@ -37,7 +37,6 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    /* Test against many viewports.
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
@@ -47,7 +46,8 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-    */
+
+    /* Test against many viewports.
     // {
     //   name: 'Mobile Chrome',
     //   use: { ...devices['Pixel 5'] },

@@ -27,16 +27,12 @@ export const TopicBadge = (props: Props) => {
   const { follow, unfollow, follows, following } = useFollowing()
 
   createEffect(
-    on(
-      [() => follows, () => props.topic],
-      ([flws, tpc]) => {
-        if (flws && tpc) {
-          const followed = follows?.topics?.some((topics) => topics.id === props.topic?.id)
-          setIsFollowed(followed)
-        }
-      },
-      { defer: true },
-    ),
+    on([() => follows, () => props.topic], ([flws, tpc]) => {
+      if (flws && tpc) {
+        const followed = follows?.topics?.some((topics) => topics.id === props.topic?.id)
+        setIsFollowed(followed)
+      }
+    }),
   )
 
   const handleFollowClick = () => {

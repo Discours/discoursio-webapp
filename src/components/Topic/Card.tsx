@@ -7,12 +7,10 @@ import { useSession } from '../../context/session'
 import { FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
 import { capitalize } from '../../utils/capitalize'
 import { CardTopic } from '../Feed/CardTopic'
-import { Button } from '../_shared/Button'
 import { CheckButton } from '../_shared/CheckButton'
-import { Icon } from '../_shared/Icon'
+import { FollowingButton } from '../_shared/FollowingButton'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
-import stylesButton from '../_shared/Button/Button.module.scss'
 import styles from './Card.module.scss'
 
 interface TopicProps {
@@ -38,20 +36,15 @@ export const TopicCard = (props: TopicProps) => {
     capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
   )
   const { author, requireAuthentication } = useSession()
-  const [isFollowed, setIsFollowed] = createSignal()
-  const { follow, unfollow, follows, following } = useFollowing()
-
+  const { follow, unfollow, follows } = useFollowing()
+  const [isFollowed, setIsFollowed] = createSignal(false)
   createEffect(
-    on(
-      [() => follows, () => props.topic],
-      ([flws, tpc]) => {
-        if (flws && tpc) {
-          const followed = flws.topics?.some((topics) => topics.id === props.topic?.id)
-          setIsFollowed(followed)
-        }
-      },
-      { defer: true },
-    ),
+    on([() => follows, () => props.topic], ([flws, tpc]) => {
+      if (flws && tpc) {
+        const followed = follows?.topics?.some((topics) => topics.id === props.topic?.id)
+        setIsFollowed(followed)
+      }
+    }),
   )
 
   const handleFollowClick = () => {
@@ -60,24 +53,6 @@ export const TopicCard = (props: TopicProps) => {
         ? unfollow(FollowingEntity.Topic, props.topic.slug)
         : follow(FollowingEntity.Topic, props.topic.slug)
     }, 'follow')
-  }
-
-  const subscribeValue = () => {
-    return (
-      <>
-        <Show when={props.iconButton}>
-          <Show when={isFollowed()} fallback="+">
-            <Icon name="check-followed" />
-          </Show>
-        </Show>
-        <Show when={!props.iconButton}>
-          <Show when={isFollowed()} fallback={t('Follow')}>
-            <span class={stylesButton.buttonSubscribeLabelHovered}>{t('Unfollow')}</span>
-            <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
-          </Show>
-        </Show>
-      </>
-    )
   }
 
   return (
@@ -141,25 +116,10 @@ export const TopicCard = (props: TopicProps) => {
               <Show
                 when={!props.minimize}
                 fallback={
-                  <CheckButton
-                    text={t('Follow')}
-                    checked={Boolean(isFollowed())}
-                    onClick={handleFollowClick}
-                  />
+                  <CheckButton text={t('Follow')} checked={isFollowed()} onClick={handleFollowClick} />
                 }
               >
-                <Button
-                  variant="bordered"
-                  size="M"
-                  value={subscribeValue()}
-                  onClick={handleFollowClick}
-                  isSubscribeButton={true}
-                  class={clsx(styles.actionButton, {
-                    [styles.isFollowing]:
-                      following()?.slug === props.topic.slug ? following().type : undefined,
-                    [stylesButton.followed]: isFollowed(),
-                  })}
-                />
+                <FollowingButton action={handleFollowClick} isFollowed={isFollowed()} />
               </Show>
             </Show>
           </ShowOnlyOnClient>
